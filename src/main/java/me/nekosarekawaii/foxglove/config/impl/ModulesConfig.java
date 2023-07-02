@@ -10,10 +10,6 @@ import me.nekosarekawaii.foxglove.value.Value;
 
 import java.io.IOException;
 
-/**
- * The ModulesConfig class represents the configuration for the modules in the Foxglove mod.
- * It extends the Config class and provides methods to save and load the module configurations.
- */
 public class ModulesConfig extends Config {
 
     public ModulesConfig() {
@@ -34,12 +30,14 @@ public class ModulesConfig extends Config {
             final JsonArray valuesArray = new JsonArray();
 
             for (final Value<?> value : module.getValues()) {
-                final JsonObject valueObject = new JsonObject();
-                valueObject.addProperty("name", value.getHashIdent());
+                if (value != null) {
+                    final JsonObject valueObject = new JsonObject();
+                    valueObject.addProperty("name", value.getHashIdent());
 
-                value.onConfigSave(valueObject);
+                    value.onConfigSave(valueObject);
 
-                valuesArray.add(valueObject);
+                    valuesArray.add(valueObject);
+                }
             }
 
             moduleObject.add("values", valuesArray);
@@ -68,11 +66,11 @@ public class ModulesConfig extends Config {
                     final Value<?> value = module.getValue(valueName);
 
                     if (value == null) {
-                        Foxglove.getInstance().getLogger().error("Couldnt find value: " + valueName);
+                        Foxglove.getInstance().getLogger().error("Couldn't find value: " + valueName);
                         continue;
                     }
 
-                    module.getValue(valueName).onConfigLoad(valueObject);
+                    value.onConfigLoad(valueObject);
                 }
 
                 module.setState(moduleObject.get("enabled").getAsBoolean());

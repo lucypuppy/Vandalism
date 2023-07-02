@@ -2,6 +2,7 @@ package me.nekosarekawaii.foxglove.mixin.com.mojang.authlib.yggdrasil;
 
 import com.mojang.authlib.yggdrasil.TextureUrlChecker;
 import me.nekosarekawaii.foxglove.Foxglove;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.ExploitFixerModule;
 import me.nekosarekawaii.foxglove.util.StringUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,13 +16,13 @@ public abstract class MixinTextureUrlChecker {
 
     @Inject(method = "isAllowedTextureDomain", at = @At("HEAD"), cancellable = true)
     private static void injectIsAllowedTextureDomain(final String url, final CallbackInfoReturnable<Boolean> cir) {
-        if (!Foxglove.getInstance().getFeatures().getAntiTextureDDoSModule().isEnabled()) {
-            return;
-        }
-        if (!StringUtils.startsWithIgnoreCase(url, correctTextureUrlStart)) {
-            // Using this instead of the default logger to highlight it red and prevent possible RCEs.
-            System.err.println("[" + Foxglove.getInstance().getName() + "] Game tried to load invalid Texture URL: " + url);
-            cir.setReturnValue(false);
+        final ExploitFixerModule exploitFixerModule = Foxglove.getInstance().getFeatures().getExploitFixerModule();
+        if (exploitFixerModule.isEnabled() && exploitFixerModule.antiTextureDDoS.getValue()) {
+            if (!StringUtils.startsWithIgnoreCase(url, correctTextureUrlStart)) {
+                // Using this instead of the default logger to highlight it red and prevent possible RCEs.
+                System.err.println("[" + Foxglove.getInstance().getName() + "] Game tried to load invalid Texture URL: " + url);
+                cir.setReturnValue(false);
+            }
         }
     }
 

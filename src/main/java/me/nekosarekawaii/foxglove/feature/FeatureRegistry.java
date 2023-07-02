@@ -16,7 +16,7 @@ import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.TestModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.AntiChatContextModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.AntiServerBlockListModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.AntiTextureDDoSModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.ExploitFixerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.AntiTelemetryModule;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -48,16 +48,16 @@ public class FeatureRegistry {
         return this.antiServerBlockListModule;
     }
 
-    private AntiTextureDDoSModule antiTextureDDoSModule;
-
-    public AntiTextureDDoSModule getAntiTextureDDoSModule() {
-        return this.antiTextureDDoSModule;
-    }
-
     private AntiTelemetryModule antiTelemetryModule;
 
     public AntiTelemetryModule getAntiTelemetryModule() {
         return this.antiTelemetryModule;
+    }
+
+    private ExploitFixerModule exploitFixerModule;
+
+    public ExploitFixerModule getExploitFixerModule() {
+        return this.exploitFixerModule;
     }
 
     private void register() {
@@ -67,7 +67,7 @@ public class FeatureRegistry {
                 this.testModule = new TestModule(),
                 this.antiChatContextModule = new AntiChatContextModule(),
                 this.antiServerBlockListModule = new AntiServerBlockListModule(),
-                this.antiTextureDDoSModule = new AntiTextureDDoSModule(),
+                this.exploitFixerModule = new ExploitFixerModule(),
                 this.antiTelemetryModule = new AntiTelemetryModule()
         );
         this.registerCommands(
