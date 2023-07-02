@@ -78,7 +78,7 @@ dependencies {
 	implementation "de.florianmichael:DietrichEvents2:${project.dietrichevents2_version}"
 
 	// Mods
-	//implementation "de.florianmichael:viafabricplus:${project.viafabricplus}"
+	modImplementation "de.florianmichael:viafabricplus:${project.viafabricplus}"
 }
 
 processResources {
