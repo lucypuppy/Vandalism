@@ -12,12 +12,12 @@ public class BooleanValue extends Value<Boolean> {
 
     @Override
     public void onConfigLoad(JsonObject valueObject) {
-        setValue(valueObject.get("boolean").getAsBoolean());
+        setValue(valueObject.get("value").getAsBoolean());
     }
 
     @Override
     public void onConfigSave(JsonObject valueObject) {
-        valueObject.addProperty("boolean", getValue());
+        valueObject.addProperty("value", getValue());
     }
 
 }

@@ -14,18 +14,18 @@ public class ColorValue extends Value<Color> {
 
     @Override
     public void onConfigLoad(JsonObject valueObject) {
-        setValue(new Color(valueObject.get("color_red").getAsInt(),
-                valueObject.get("color_green").getAsInt(),
-                valueObject.get("color_blue").getAsInt(),
-                valueObject.get("color_alpha").getAsInt()));
+        setValue(new Color(valueObject.get("value_red").getAsInt(),
+                valueObject.get("value_green").getAsInt(),
+                valueObject.get("value_blue").getAsInt(),
+                valueObject.get("value_alpha").getAsInt()));
     }
 
     @Override
     public void onConfigSave(JsonObject valueObject) {
-        valueObject.addProperty("color_red", getValue().getRed());
-        valueObject.addProperty("color_green", getValue().getGreen());
-        valueObject.addProperty("color_blue", getValue().getBlue());
-        valueObject.addProperty("color_alpha", getValue().getAlpha());
+        valueObject.addProperty("value_red", getValue().getRed());
+        valueObject.addProperty("value_green", getValue().getGreen());
+        valueObject.addProperty("value_blue", getValue().getBlue());
+        valueObject.addProperty("value_alpha", getValue().getAlpha());
     }
 
 }

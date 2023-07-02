@@ -28,7 +28,7 @@ public class MacroCommand extends Command implements KeyboardListener {
         builder
                 .then(literal("list")
                         .executes(context -> {
-                            final Object2ObjectOpenHashMap<String, Integer> macros = Foxglove.getInstance().getConfig().getChatMacros();
+                            final Object2ObjectOpenHashMap<String, Integer> macros = Foxglove.getInstance().getConfigManager().getMainConfig().getChatMacros();
                             if (macros.isEmpty()) {
                                 ChatUtils.errorChatMessage("No Macros are registered!");
                                 return SINGLE_SUCCESS;
@@ -76,7 +76,7 @@ public class MacroCommand extends Command implements KeyboardListener {
                 .then(literal("remove")
                         .then(argument("removeNumber", IntegerArgumentType.integer(1))
                                 .executes(context -> {
-                                    final Object2ObjectOpenHashMap<String, Integer> macros = Foxglove.getInstance().getConfig().getChatMacros();
+                                    final Object2ObjectOpenHashMap<String, Integer> macros = Foxglove.getInstance().getConfigManager().getMainConfig().getChatMacros();
                                     if (macros.isEmpty()) {
                                         ChatUtils.errorChatMessage("No Macros are registered!");
                                         return SINGLE_SUCCESS;
@@ -112,7 +112,7 @@ public class MacroCommand extends Command implements KeyboardListener {
         }
         if (this.message.isEmpty()) ChatUtils.errorChatMessage("Invalid Macro Message!");
         else {
-            Foxglove.getInstance().getConfig().getChatMacros().put(this.message, key);
+            Foxglove.getInstance().getConfigManager().getMainConfig().getChatMacros().put(this.message, key);
             ChatUtils.infoChatMessage("'" + this.message + "' has been bound to the Key " + GLFW.glfwGetKeyName(key, scanCode) + ".");
             this.message = "";
             Foxglove.getInstance().blockKeyEvent = false;
