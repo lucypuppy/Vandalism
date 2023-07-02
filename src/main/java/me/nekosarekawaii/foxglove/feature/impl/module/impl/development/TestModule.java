@@ -6,6 +6,7 @@ import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
 import me.nekosarekawaii.foxglove.util.ChatUtils;
+import me.nekosarekawaii.foxglove.value.Value;
 import me.nekosarekawaii.foxglove.value.value.BooleanValue;
 import me.nekosarekawaii.foxglove.value.value.ColorValue;
 import me.nekosarekawaii.foxglove.value.value.number.IntegerValue;
@@ -19,7 +20,8 @@ public class TestModule extends Module implements TickListener {
 
     private final BooleanValue booleanValue = new BooleanValue("Boolean Value", "Just a example boolean value.", this, false);
 
-    private final ColorValue colorValue = new ColorValue("Color Value", "Just a example color value.", this, Color.MAGENTA);
+    private final Value<Color> colorValue = new ColorValue("Color Value", "Just a example color value.", this, Color.MAGENTA)
+            .visibleConsumer(() -> this.booleanValue.getValue());
 
     private final IntegerValue integerValue = new IntegerValue("Integer Value", "Just a example integer value.", this, 1, 1);
 
