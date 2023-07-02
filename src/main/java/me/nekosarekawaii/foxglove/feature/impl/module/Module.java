@@ -6,8 +6,6 @@ import me.nekosarekawaii.foxglove.feature.Feature;
 import me.nekosarekawaii.foxglove.feature.FeatureType;
 import me.nekosarekawaii.foxglove.util.ChatUtils;
 import me.nekosarekawaii.foxglove.value.Value;
-//import net.raphimc.vialoader.util.VersionEnum;
-//import net.raphimc.vialoader.util.VersionRange;
 
 import java.lang.reflect.Field;
 
@@ -134,8 +132,10 @@ public abstract class Module extends Feature {
      */
     public Value<?> getValue(final String name) {
         for (final Value<?> value : this.values) {
-            if (value.getHashIdent().equalsIgnoreCase(name)) {
-                return value;
+            if (value != null) {
+                if (value.getHashIdent().equalsIgnoreCase(name)) {
+                    return value;
+                }
             }
         }
         return null;

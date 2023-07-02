@@ -30,8 +30,8 @@ public class ModulesConfig extends Config {
             final JsonArray valuesArray = new JsonArray();
 
             for (final Value<?> value : module.getValues()) {
+                final JsonObject valueObject = new JsonObject();
                 if (value != null) {
-                    final JsonObject valueObject = new JsonObject();
                     valueObject.addProperty("name", value.getHashIdent());
 
                     value.onConfigSave(valueObject);

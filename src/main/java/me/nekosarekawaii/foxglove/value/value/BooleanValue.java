@@ -6,17 +6,17 @@ import me.nekosarekawaii.foxglove.value.Value;
 
 public class BooleanValue extends Value<Boolean> {
 
-    public BooleanValue(String name, String description, Module parent, boolean defaultValue) {
+    public BooleanValue(final String name, final String description, final Module parent, final boolean defaultValue) {
         super(name, description, parent, defaultValue);
     }
 
     @Override
-    public void onConfigLoad(JsonObject valueObject) {
+    public void onConfigLoad(final JsonObject valueObject) {
         setValue(valueObject.get("value").getAsBoolean());
     }
 
     @Override
-    public void onConfigSave(JsonObject valueObject) {
+    public void onConfigSave(final JsonObject valueObject) {
         valueObject.addProperty("value", getValue());
     }
 
