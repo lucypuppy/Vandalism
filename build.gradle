@@ -16,18 +16,42 @@ repositories {
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
+
+	maven {
+		name = "Jitpack"
+		url = "https://jitpack.io/"
+	}
+
+	// ViaFabricPlus
+
+	maven {
+		name = "Lenni0451 releases"
+		url = "https://maven.lenni0451.net/releases"
+	}
+
+	maven {
+		name = "Lenni0451 snapshots"
+		url = "https://maven.lenni0451.net/snapshots"
+	}
+
+	maven {
+		name = "TerraformersMC"
+		url = "https://maven.terraformersmc.com/releases"
+	}
+
+	maven {
+		name = "OpenCollab Snapshots"
+		url = "https://repo.opencollab.dev/maven-snapshots/"
+	}
+
+	maven {
+		name = "ViaVersion"
+		url = "https://repo.viaversion.com"
+	}
 }
 
 loom {
-    splitEnvironmentSourceSets()
-
-    mods {
-        "modid" {
-            sourceSet sourceSets.main
-            sourceSet sourceSets.client
-        }
-    }
-
+	accessWidenerPath = file("src/main/resources/" + archives_base_name + ".accesswidener")
 }
 
 dependencies {
@@ -37,12 +61,24 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	
+	//modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
 	// Uncomment the following line to enable the deprecated Fabric API modules. 
 	// These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
 
 	// modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
+
+	// ImGUI
+	implementation "io.github.spair:imgui-java-binding:${project.spair_imgui_version}"
+	implementation "io.github.spair:imgui-java-lwjgl3:${project.spair_imgui_version}"
+	implementation "io.github.spair:imgui-java-natives-windows:${project.spair_imgui_version}"
+	implementation "io.github.spair:imgui-java-natives-linux:${project.spair_imgui_version}"
+
+	// Event System
+	implementation "de.florianmichael:DietrichEvents2:${project.dietrichevents2_version}"
+
+	// Mods
+	//implementation "de.florianmichael:viafabricplus:${project.viafabricplus}"
 }
 
 processResources {
@@ -65,27 +101,4 @@ java {
 
 	sourceCompatibility = JavaVersion.VERSION_17
 	targetCompatibility = JavaVersion.VERSION_17
-}
-
-jar {
-	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
-	}
-}
-
-// configure the maven publication
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			from components.java
-		}
-	}
-
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
-	}
 }
