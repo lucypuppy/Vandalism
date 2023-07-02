@@ -15,6 +15,7 @@ import me.nekosarekawaii.foxglove.gui.imgui.ImGUIMenu;
 import me.nekosarekawaii.foxglove.value.Value;
 import me.nekosarekawaii.foxglove.value.value.BooleanValue;
 import me.nekosarekawaii.foxglove.value.value.ColorValue;
+import me.nekosarekawaii.foxglove.value.value.ListValue;
 import me.nekosarekawaii.foxglove.value.value.number.DoubleValue;
 import me.nekosarekawaii.foxglove.value.value.number.FloatValue;
 import me.nekosarekawaii.foxglove.value.value.number.IntegerValue;
@@ -165,7 +166,18 @@ public class MainMenu extends ImGUIMenu {
                                 if (ImGui.colorEdit4(value.getName(), colorArray)) {
                                     colorValue.setValue(new Color(colorArray[0], colorArray[1], colorArray[2], colorArray[3]));
                                 }
-                            } else ImGui.button(value.getName() + " - Value Placeholder");
+                            } else if (value instanceof final ListValue listValue) {
+                                if (ImGui.beginCombo(value.getName(), listValue.getValue())) {
+                                    for (final String mode : listValue.getModes()) {
+                                        if (ImGui.selectable(mode, mode.equals(listValue.getValue()))) {
+                                            listValue.setValue(mode);
+                                        }
+                                    }
+                                    ImGui.endCombo();
+                                }
+                            } else {
+                                throw new RuntimeException("Unknown value type: " + value.getClass().getSimpleName());
+                            }
                         }
                         ImGui.endListBox();
                     }

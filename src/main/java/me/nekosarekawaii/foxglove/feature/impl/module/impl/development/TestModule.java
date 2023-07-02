@@ -9,6 +9,7 @@ import me.nekosarekawaii.foxglove.util.ChatUtils;
 import me.nekosarekawaii.foxglove.value.Value;
 import me.nekosarekawaii.foxglove.value.value.BooleanValue;
 import me.nekosarekawaii.foxglove.value.value.ColorValue;
+import me.nekosarekawaii.foxglove.value.value.ListValue;
 import me.nekosarekawaii.foxglove.value.value.number.IntegerValue;
 import me.nekosarekawaii.foxglove.value.value.number.slider.SliderDoubleValue;
 import me.nekosarekawaii.foxglove.value.value.number.slider.SliderIntegerValue;
@@ -28,6 +29,9 @@ public class TestModule extends Module implements TickListener {
     private final SliderDoubleValue sliderDoubleValue = new SliderDoubleValue("test doubkea", "Cum", this, 2.0, 1.0, 10.0, "%.1f");
 
     private final SliderIntegerValue sliderIntegerValue = new SliderIntegerValue("test int", "Cum", this, 2, 1, 10);
+
+    private final ListValue listValue = new ListValue("List Value", "Just a example list value.", this,
+            "Test", "Test1", "Test2", "Test3");
 
     @Override
     protected void onEnable() {
