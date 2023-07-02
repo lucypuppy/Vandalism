@@ -65,6 +65,12 @@ public class ModulesConfig extends Config {
                 for (final JsonElement valueElement : valuesArray) {
                     final JsonObject valueObject = valueElement.getAsJsonObject();
                     final String valueName = valueObject.get("name").getAsString();
+                    final Value<?> value = module.getValue(valueName);
+
+                    if (value == null) {
+                        Foxglove.getInstance().getLogger().error("Couldnt find value: " + valueName);
+                        continue;
+                    }
 
                     module.getValue(valueName).onConfigLoad(valueObject);
                 }
