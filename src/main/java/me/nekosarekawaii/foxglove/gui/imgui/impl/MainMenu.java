@@ -115,6 +115,9 @@ public class MainMenu extends ImGUIMenu {
                             }
                         }
                         for (final Value<?> value : values) {
+                            if (value.isVisible() != null && !value.isVisible().getAsBoolean())
+                                continue;
+
                             if (value instanceof final BooleanValue booleanValue) {
                                 if (ImGui.checkbox(value.getName(), booleanValue.getValue())) {
                                     booleanValue.setValue(!booleanValue.getValue());
