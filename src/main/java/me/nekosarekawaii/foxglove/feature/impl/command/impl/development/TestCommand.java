@@ -8,7 +8,7 @@ import me.nekosarekawaii.foxglove.util.ChatUtils;
 import net.minecraft.command.CommandSource;
 
 @CommandInfo(name = "Test", aliases = {"test"}, description = "This is just a command for development purposes.", category = FeatureCategory.DEVELOPMENT, isExperimental = true)
-public final class TestCommand extends Command {
+public class TestCommand extends Command {
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {

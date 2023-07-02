@@ -9,16 +9,14 @@ import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import me.nekosarekawaii.foxglove.config.ConfigManager;
 import me.nekosarekawaii.foxglove.config.impl.MainConfig;
-import me.nekosarekawaii.foxglove.event.ClientListener;
-import me.nekosarekawaii.foxglove.event.KeyboardListener;
-import me.nekosarekawaii.foxglove.event.RenderListener;
-import me.nekosarekawaii.foxglove.event.TickListener;
+import me.nekosarekawaii.foxglove.event.*;
 import me.nekosarekawaii.foxglove.feature.FeatureRegistry;
 import me.nekosarekawaii.foxglove.feature.impl.command.CommandHandler;
 import me.nekosarekawaii.foxglove.gui.imgui.ImGUIMenu;
 import me.nekosarekawaii.foxglove.gui.imgui.impl.MainMenu;
 import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.util.Window;
 import org.lwjgl.glfw.GLFW;
@@ -29,11 +27,7 @@ import java.awt.*;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 
-/**
- * The Foxglove class represents the main entry point for the Foxglove mod. It implements various event listeners
- * and handles the initialization and shutdown of the mod.
- */
-public final class Foxglove implements MinecraftWrapper, ClientListener, KeyboardListener, TickListener, RenderListener {
+public class Foxglove implements MinecraftWrapper, ClientListener, KeyboardListener, TickListener, RenderListener, ScreenListener {
 
 	private final static Foxglove instance = new Foxglove();
 
@@ -63,9 +57,6 @@ public final class Foxglove implements MinecraftWrapper, ClientListener, Keyboar
 	private ImGuiImplGlfw imGuiImplGlfw;
 	private ImGUIMenu currentImGUIMenu;
 
-	/**
-	 * Constructs a new instance of the Foxglove mod.
-	 */
 	public Foxglove() {
 		this.name = "Foxglove";
 		this.lowerCaseName = this.name.toLowerCase();
@@ -92,11 +83,9 @@ public final class Foxglove implements MinecraftWrapper, ClientListener, Keyboar
 		);
 		this.blockKeyEvent = false;
 		DietrichEvents2.global().subscribe(ClientEvent.ID, this);
+		DietrichEvents2.global().subscribe(OpenScreenEvent.ID, this);
 	}
 
-	/**
-	 * Starts the Foxglove mod. Initializes various components and registers event listeners.
-	 */
 	private void start() {
 		this.logger.info("Starting...");
 		this.logger.info("Version: {}", this.version);
@@ -125,9 +114,6 @@ public final class Foxglove implements MinecraftWrapper, ClientListener, Keyboar
 		Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
 	}
 
-	/**
-	 * Stops the Foxglove mod. Performs cleanup tasks and shuts down the mod.
-	 */
 	private void stop() {
 		this.logger.info("Stopping...");
 		this.configManager.save();
@@ -167,9 +153,6 @@ public final class Foxglove implements MinecraftWrapper, ClientListener, Keyboar
 		if (this.currentImGUIMenu != null) this.currentImGUIMenu.tick();
 	}
 
-	/**
-	 * Renders the current ImGui menu.
-	 */
 	private void renderCurrentImGUIMenu() {
 		if (this.currentImGUIMenu == null) return;
 		this.imGuiImplGlfw.newFrame();
@@ -199,155 +182,78 @@ public final class Foxglove implements MinecraftWrapper, ClientListener, Keyboar
 		}
 	}
 
-	/**
-	 * Returns the name of the Foxglove mod.
-	 *
-	 * @return the name of the mod
-	 */
+	@Override
+	public void onOpenScreen(final OpenScreenEvent event) {
+		if (event.screen instanceof TitleScreen) {
+			event.cancel();
+			mc().setScreen(new me.nekosarekawaii.foxglove.gui.screen.TitleScreen());
+		}
+	}
+
 	public String getName() {
 		return this.name;
 	}
 
-	/**
-	 * Returns the lowercase name of the Foxglove mod.
-	 *
-	 * @return the lowercase name of the mod
-	 */
 	public String getLowerCaseName() {
 		return this.lowerCaseName;
 	}
 
-	/**
-	 * Returns the version of the Foxglove mod.
-	 *
-	 * @return the version of the mod
-	 */
 	public String getVersion() {
 		return this.version;
 	}
 
-	/**
-	 * Returns the author of the Foxglove mod.
-	 *
-	 * @return the author of the mod
-	 */
 	public String getAuthor() {
 		return this.author;
 	}
 
-	/**
-	 * Returns the color associated with the Foxglove mod.
-	 *
-	 * @return the color of the mod
-	 */
 	public Color getColor() {
 		return this.color;
 	}
 
-	/**
-	 * Returns the RGB value of the color associated with the Foxglove mod.
-	 *
-	 * @return the RGB value of the color
-	 */
 	public int getColorRGB() {
 		return this.colorRGB;
 	}
 
-	/**
-	 * Returns the logger used by the Foxglove mod.
-	 *
-	 * @return the logger instance
-	 */
 	public Logger getLogger() {
 		return this.logger;
 	}
 
-	/**
-	 * Returns the directory where the Foxglove mod is installed.
-	 *
-	 * @return the mod directory
-	 */
 	public File getDir() {
 		return this.dir;
 	}
 
-	/**
-	 * Checks if it is the first start of the Foxglove mod.
-	 *
-	 * @return true if it is the first start, false otherwise
-	 */
 	public boolean isFirstStart() {
 		return this.firstStart;
 	}
 
-	/**
-	 * Checks if the Foxglove mod is running in JVM debug mode.
-	 *
-	 * @return true if running in JVM debug mode, false otherwise
-	 */
 	public boolean isJvmDebugMode() {
 		return this.jvmDebugMode;
 	}
 
-	/**
-	 * Returns the registry of features for the Foxglove mod.
-	 *
-	 * @return the feature registry
-	 */
 	public FeatureRegistry getFeatures() {
 		return this.features;
 	}
 
-	/**
-	 * Returns the command handler for the Foxglove mod.
-	 *
-	 * @return the command handler
-	 */
 	public CommandHandler getCommandHandler() {
 		return this.commandHandler;
 	}
 
-	/**
-	 * Returns the window title of the Foxglove mod.
-	 *
-	 * @return the window title
-	 */
 	public String getWindowTitle() {
 		return this.windowTitle;
 	}
 
-	/**
-	 * Returns the current ImGUIMenu being displayed.
-	 *
-	 * @return the current ImGUIMenu
-	 */
 	public ImGUIMenu getCurrentImGUIMenu() {
 		return this.currentImGUIMenu;
 	}
 
-	/**
-	 * Sets the current ImGUIMenu to be displayed.
-	 *
-	 * @param currentImGUIMenu the current ImGUIMenu
-	 */
 	public void setCurrentImGUIMenu(final ImGUIMenu currentImGUIMenu) {
 		this.currentImGUIMenu = currentImGUIMenu;
 	}
 
-	/**
-	 * Returns the config manager for the Foxglove mod.
-	 *
-	 * @return the config manager
-	 */
 	public ConfigManager getConfigManager() {
 		return this.configManager;
 	}
 
-	/**
-	 * Returns the config for the Foxglove mod.
-	 *
-	 * @return the config
-	 */
 	public MainConfig getConfig() {
 		return this.configManager.getMainConfig();
 	}

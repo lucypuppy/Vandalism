@@ -3,7 +3,7 @@ package me.nekosarekawaii.foxglove.util;
 /**
  * The MouseUtils class provides utility methods for mouse-related operations.
  */
-public final class MouseUtils {
+public class MouseUtils {
 
     /**
      * Checks if the mouse cursor is hovering over a specified area.

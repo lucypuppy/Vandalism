@@ -12,7 +12,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.util.Formatting;
 
 @CommandInfo(name = "Features", aliases = {"features", "listfeatures", "featureslist", "showfeatures"}, description = "This command lists all available features.", category = FeatureCategory.MISC)
-public final class FeaturesCommand extends Command {
+public class FeaturesCommand extends Command {
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {

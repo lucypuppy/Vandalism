@@ -7,7 +7,7 @@ import me.nekosarekawaii.foxglove.feature.impl.command.arguments.ModuleArgumentT
 import net.minecraft.command.CommandSource;
 
 @CommandInfo(name = "Toggle Module", aliases = {"togglemodule", "toggle", "t"}, description = "This Command enables/disables modules.")
-public final class ToggleModuleCommand extends Command {
+public class ToggleModuleCommand extends Command {
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {

@@ -13,7 +13,7 @@ import java.awt.*;
 /**
  * The ChatUtils class provides utility methods for displaying chat messages with different prefixes and styles in Minecraft.
  */
-public final class ChatUtils {
+public class ChatUtils {
 
     private static final MutableText chatPrefix = Text.literal("")
             .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))

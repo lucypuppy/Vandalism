@@ -9,7 +9,7 @@ import me.nekosarekawaii.foxglove.util.ChatUtils;
 import net.minecraft.command.CommandSource;
 
 @CommandInfo(name = "Reload", aliases = {"reload"}, description = "This command reloads all the mod features.", category = FeatureCategory.DEVELOPMENT)
-public final class ReloadCommand extends Command {
+public class ReloadCommand extends Command {
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {

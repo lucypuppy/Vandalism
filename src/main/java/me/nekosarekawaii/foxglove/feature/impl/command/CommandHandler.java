@@ -12,7 +12,7 @@ import net.minecraft.command.CommandSource;
  * The CommandHandler class is responsible for handling and executing commands in the Foxglove mod.
  * It utilizes the CommandDispatcher from the Brigadier library to register and dispatch commands.
  */
-public final class CommandHandler implements MinecraftWrapper {
+public class CommandHandler implements MinecraftWrapper {
 
     private CommandDispatcher<CommandSource> commandDispatcher;
     private CommandSource commandSource;

@@ -20,7 +20,7 @@ public abstract class MixinClientConnection {
         final PacketListener.PacketEvent packetEvent = new PacketListener.PacketEvent(PacketListener.PacketEventType.READ, packet);
         DietrichEvents2.global().postInternal(PacketListener.PacketEvent.ID, packetEvent);
         if (packetEvent.isCancelled()) callbackInfo.cancel();
-        packet = packetEvent.packet;
+        else packet = packetEvent.packet;
     }
 
     @Inject(method = "send(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/PacketCallbacks;)V", at = @At("HEAD"), cancellable = true)
@@ -28,7 +28,7 @@ public abstract class MixinClientConnection {
         final PacketListener.PacketEvent packetEvent = new PacketListener.PacketEvent(PacketListener.PacketEventType.WRITE, packet);
         DietrichEvents2.global().postInternal(PacketListener.PacketEvent.ID, packetEvent);
         if (packetEvent.isCancelled()) ci.cancel();
-        packet = packetEvent.packet;
+        else packet = packetEvent.packet;
     }
 
 }

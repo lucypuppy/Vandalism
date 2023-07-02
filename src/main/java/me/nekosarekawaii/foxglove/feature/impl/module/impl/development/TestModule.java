@@ -13,7 +13,7 @@ import me.nekosarekawaii.foxglove.value.value.number.IntegerValue;
 import java.awt.*;
 
 @ModuleInfo(name = "Test", description = "This is a Module for development purposes.", category = FeatureCategory.DEVELOPMENT, isExperimental = true)
-public final class TestModule extends Module implements TickListener {
+public class TestModule extends Module implements TickListener {
 
     private final BooleanValue booleanValue = new BooleanValue("Boolean Value", "Just a example boolean value.", this, false);
 

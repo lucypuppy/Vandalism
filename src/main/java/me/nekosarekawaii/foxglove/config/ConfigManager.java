@@ -17,7 +17,7 @@ import java.io.PrintWriter;
  * The ConfigManager class is responsible for managing the configuration files in the Foxglove mod.
  * It provides methods for saving and loading the configurations to/from JSON files.
  */
-public final class ConfigManager {
+public class ConfigManager {
 
     private final Gson gson;
     private final ObjectArrayList<Config> configs;

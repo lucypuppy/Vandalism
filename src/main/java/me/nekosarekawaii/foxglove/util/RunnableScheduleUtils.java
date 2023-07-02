@@ -7,7 +7,7 @@ import java.util.concurrent.Executors;
 /**
  * The RunnableScheduleUtils class provides utility methods for scheduling and executing Runnable tasks with a delay.
  */
-public final class RunnableScheduleUtils {
+public class RunnableScheduleUtils {
 
     /**
      * Schedules a Runnable task to be executed after a specified delay.

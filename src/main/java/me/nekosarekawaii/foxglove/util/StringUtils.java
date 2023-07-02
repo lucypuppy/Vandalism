@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 /**
  * The StringUtils class provides utility methods for manipulating and comparing strings.
  */
-public final class StringUtils {
+public class StringUtils {
 
     /**
      * Replaces the last occurrence of a target string with a replacement string in the input string.

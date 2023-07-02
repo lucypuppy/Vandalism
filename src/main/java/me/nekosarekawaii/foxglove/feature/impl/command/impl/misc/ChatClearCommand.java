@@ -7,7 +7,7 @@ import me.nekosarekawaii.foxglove.feature.impl.command.CommandInfo;
 import net.minecraft.command.CommandSource;
 
 @CommandInfo(name = "Chat Clear", aliases = {"chatclear", "clearchat", "cc"}, description = "This command clears the chat.", category = FeatureCategory.DEVELOPMENT, isExperimental = true)
-public final class ChatClearCommand extends Command {
+public class ChatClearCommand extends Command {
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {

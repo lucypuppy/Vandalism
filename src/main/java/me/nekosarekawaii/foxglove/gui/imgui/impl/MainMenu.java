@@ -16,7 +16,7 @@ import me.nekosarekawaii.foxglove.value.value.number.IntegerValue;
 
 import java.awt.*;
 
-public final class MainMenu extends ImGUIMenu {
+public class MainMenu extends ImGUIMenu {
 
     private static FeatureCategory currentFeatureCategory = null;
     private static Module currentModule = null;

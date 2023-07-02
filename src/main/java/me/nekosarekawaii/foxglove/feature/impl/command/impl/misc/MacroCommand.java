@@ -19,7 +19,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @CommandInfo(name = "Macro", aliases = {"macro"}, description = "This Command lets you add, remove and list Chat Macros.", category = FeatureCategory.MISC)
-public final class MacroCommand extends Command implements KeyboardListener {
+public class MacroCommand extends Command implements KeyboardListener {
 
     private String message = "";
 

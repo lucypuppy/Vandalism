@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * The ModuleArgumentType class represents a custom argument type for a command that expects a Module as an argument.
  * It provides parsing and suggestion functionality for module arguments.
  */
-public final class ModuleArgumentType implements ArgumentType<Module> {
+public class ModuleArgumentType implements ArgumentType<Module> {
 
     private static final DynamicCommandExceptionType notExisting = new DynamicCommandExceptionType(name -> Text.literal("No Module with the name " + name + " has been found!"));
 

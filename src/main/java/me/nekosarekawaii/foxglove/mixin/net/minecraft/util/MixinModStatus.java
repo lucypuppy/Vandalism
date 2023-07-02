@@ -17,7 +17,7 @@ public abstract class MixinModStatus {
     }
 
     @Inject(method = "check", at = @At("RETURN"), cancellable = true)
-    private static void injectCheck(final String defaultBrand, final Supplier<String> brandSupplier, final String environment, final Class<?> clazz, final CallbackInfoReturnable<ModStatus> cir) {
+    private static void injectCheck(final String vanillaBrand, final Supplier<String> brandSupplier, final String environment, final Class<?> clazz, CallbackInfoReturnable<ModStatus> cir) {
         cir.setReturnValue(new ModStatus(ModStatus.Confidence.PROBABLY_NOT, environment + " jar signature and brand is untouched"));
     }
 

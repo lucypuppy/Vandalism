@@ -21,24 +21,15 @@ import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.AntiTelemetryMod
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * The FeatureRegistry class is responsible for registering and managing features, including modules and commands,
- * in the Foxglove mod.
- */
-public final class FeatureRegistry {
+public class FeatureRegistry {
 
-    // The map to store features categorized by their type
     private final Object2ObjectOpenHashMap<FeatureType, FeatureList<? extends Feature>> features;
 
-    /**
-     * Constructs a new FeatureRegistry object and initializes the features map.
-     */
     public FeatureRegistry() {
         this.features = new Object2ObjectOpenHashMap<>();
         this.register();
     }
 
-    // Module instances
     private TestModule testModule;
 
     public TestModule getTestModule() {
@@ -69,14 +60,9 @@ public final class FeatureRegistry {
         return this.antiTelemetryModule;
     }
 
-    /**
-     * Registers the features in the FeatureRegistry, including modules and commands.
-     */
     private void register() {
-        // Initialize the feature lists
         this.features.put(FeatureType.MODULE, new FeatureList<Module>());
         this.features.put(FeatureType.COMMAND, new FeatureList<Command>());
-        // Register modules
         this.registerModules(
                 this.testModule = new TestModule(),
                 this.antiChatContextModule = new AntiChatContextModule(),
@@ -84,7 +70,6 @@ public final class FeatureRegistry {
                 this.antiTextureDDoSModule = new AntiTextureDDoSModule(),
                 this.antiTelemetryModule = new AntiTelemetryModule()
         );
-        // Register commands
         this.registerCommands(
                 new TestCommand(),
                 new ReloadCommand(),
@@ -95,40 +80,27 @@ public final class FeatureRegistry {
         );
     }
 
-    /**
-     * Reloads the FeatureRegistry by re-registering the features and enabling the previously enabled modules.
-     */
     public void reload() {
-        // Disable and remember enabled modules
-        final ObjectArrayList<Class<Module>> enabledModules = new ObjectArrayList<>();
+        final ObjectArrayList<String> enabledModules = new ObjectArrayList<>();
         for (final Module module : this.getModules()) {
             if (module.isEnabled()) {
                 module.disable();
-                enabledModules.add((Class<Module>) module.getClass());
+                enabledModules.add(module.getName());
             }
         }
-        // Clear features and register again
         this.features.clear();
         this.register();
-        // Enable previously enabled modules
-        for (final Class<Module> enabledModule : enabledModules) {
+        for (final String enabledModule : enabledModules) {
             final Module module = this.getModules().get(enabledModule);
             if (module.isEnabled()) {
                 module.enable();
             }
         }
-        // Register commands
         Foxglove.getInstance().getCommandHandler().register();
     }
 
-    /**
-     * Registers the provided modules in the FeatureRegistry.
-     *
-     * @param modules The modules to register.
-     */
     private void registerModules(final Module... modules) {
         for (final Module module : modules) {
-            // Check if the module is annotated with ModuleInfo
             if (module.getClass().isAnnotationPresent(ModuleInfo.class)) {
                 if (!this.getModules().contains(module)) {
                     this.getModules().add(module);
@@ -149,14 +121,8 @@ public final class FeatureRegistry {
         }
     }
 
-    /**
-     * Registers the provided commands in the FeatureRegistry.
-     *
-     * @param commands The commands to register.
-     */
     private void registerCommands(final Command... commands) {
         for (final Command command : commands) {
-            // Check if the command is annotated with CommandInfo
             if (command.getClass().isAnnotationPresent(CommandInfo.class)) {
                 if (!this.getCommands().contains(command)) {
                     this.getCommands().add(command);
@@ -177,38 +143,18 @@ public final class FeatureRegistry {
         }
     }
 
-    /**
-     * Returns the list of registered commands.
-     *
-     * @return The list of registered commands.
-     */
     public FeatureList<Command> getCommands() {
         return (FeatureList<Command>) this.features.get(FeatureType.COMMAND);
     }
 
-    /**
-     * Returns the list of registered modules.
-     *
-     * @return The list of registered modules.
-     */
     public FeatureList<Module> getModules() {
         return (FeatureList<Module>) this.features.get(FeatureType.MODULE);
     }
 
-    /**
-     * Checks if the FeatureRegistry is empty.
-     *
-     * @return true if the FeatureRegistry is empty, false otherwise.
-     */
     public boolean isEmpty() {
         return this.getCount() < 1;
     }
 
-    /**
-     * Returns the count of registered features.
-     *
-     * @return The count of registered features.
-     */
     public int getCount() {
         final AtomicInteger count = new AtomicInteger(0);
         this.features.forEach((type, featureList) -> count.addAndGet(featureList.size()));
