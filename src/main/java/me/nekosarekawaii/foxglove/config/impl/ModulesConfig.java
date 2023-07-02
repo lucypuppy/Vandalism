@@ -35,7 +35,7 @@ public class ModulesConfig extends Config {
 
             for (final Value<?> value : module.getValues()) {
                 final JsonObject valueObject = new JsonObject();
-                valueObject.addProperty("name", value.getName());
+                valueObject.addProperty("name", value.getHashIdent());
 
                 value.onConfigSave(valueObject);
 

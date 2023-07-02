@@ -42,6 +42,7 @@ public class ConfigManager {
     public ConfigManager() {
         this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         this.configs = new ObjectArrayList<>();
+
         this.addConfigs(
                 this.mainConfig = new MainConfig(),
                 this.modulesConfig = new ModulesConfig()
@@ -61,6 +62,22 @@ public class ConfigManager {
         }
     }
 
+    public void save(final Config... configs) {
+        for (final Config config : configs) {
+            try {
+                final FileWriter fileWriter = new FileWriter(config.file);
+                final PrintWriter printWriter = new PrintWriter(fileWriter);
+
+                printWriter.println(this.gson.toJson(config.save()));
+
+                printWriter.close();
+                fileWriter.close();
+            } catch (final IOException e) {
+                Foxglove.getInstance().getLogger().error("Failed to save Config: " + config.file.getName(), e);
+            }
+        }
+    }
+
     /**
      * Saves all the configurations to their respective JSON files.
      */
@@ -69,7 +86,9 @@ public class ConfigManager {
             try {
                 final FileWriter fileWriter = new FileWriter(config.file);
                 final PrintWriter printWriter = new PrintWriter(fileWriter);
+
                 printWriter.println(this.gson.toJson(config.save()));
+
                 printWriter.close();
                 fileWriter.close();
             } catch (final IOException e) {
@@ -87,6 +106,7 @@ public class ConfigManager {
                 final FileReader fileReader = new FileReader(config.file);
                 final JsonReader jsonReader = new JsonReader(fileReader);
                 final JsonElement jsonElement = JsonParser.parseReader(jsonReader);
+
                 if (!jsonElement.isJsonNull()) {
                     if (jsonReader.peek() != JsonToken.END_DOCUMENT) {
                         fileReader.close();
@@ -96,6 +116,7 @@ public class ConfigManager {
                         config.load((JsonObject) jsonElement);
                     }
                 }
+
                 fileReader.close();
                 jsonReader.close();
             } catch (final IOException e) {

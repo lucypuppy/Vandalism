@@ -31,7 +31,7 @@ public abstract class MixinScreen {
     private void injectHandleTextClick(final Style style, final CallbackInfoReturnable<Boolean> cir) {
         final ClickEvent clickEvent = style.getClickEvent();
         if (clickEvent == null) return;
-        final String prefix = Foxglove.getInstance().getConfig().getCommandPrefix();
+        final String prefix = Foxglove.getInstance().getConfigManager().getMainConfig().getCommandPrefix();
         if (clickEvent.getValue().startsWith(prefix)) {
             try {
                 Foxglove.getInstance().getCommandHandler().commandDispatch(style.getClickEvent().getValue().substring(prefix.length()));

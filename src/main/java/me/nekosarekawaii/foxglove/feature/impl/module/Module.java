@@ -134,7 +134,7 @@ public abstract class Module extends Feature {
      */
     public Value<?> getValue(final String name) {
         for (final Value<?> value : this.values) {
-            if (value.getName().equalsIgnoreCase(name)) {
+            if (value.getHashIdent().equalsIgnoreCase(name)) {
                 return value;
             }
         }

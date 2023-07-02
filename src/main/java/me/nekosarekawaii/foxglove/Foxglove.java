@@ -130,7 +130,7 @@ public class Foxglove implements MinecraftWrapper, ClientListener, KeyboardListe
 		if (this.currentImGUIMenu != null && !this.currentImGUIMenu.keyPress(key, scanCode, modifiers)) {
 			return;
 		}
-		if (this.getConfig().getMainMenuKeyCode() == key) {
+		if (this.configManager.getMainConfig().getMainMenuKeyCode() == key) {
 			if (!(this.currentImGUIMenu instanceof MainMenu)) {
 				this.setCurrentImGUIMenu(new MainMenu());
 			}
@@ -139,7 +139,7 @@ public class Foxglove implements MinecraftWrapper, ClientListener, KeyboardListe
 		if (this.blockKeyEvent || mc().currentScreen != null) return;
 		final ClientPlayNetworkHandler playNetworkHandler = mc().getNetworkHandler();
 		if (playNetworkHandler != null) {
-			Foxglove.getInstance().getConfig().getChatMacros().object2ObjectEntrySet().fastForEach(macro -> {
+			this.configManager.getMainConfig().getChatMacros().object2ObjectEntrySet().fastForEach(macro -> {
 				if (macro.getValue() == key) {
 					if (macro.getKey().startsWith("/")) playNetworkHandler.sendChatCommand(macro.getKey());
 					else playNetworkHandler.sendChatMessage(macro.getKey());
@@ -252,10 +252,6 @@ public class Foxglove implements MinecraftWrapper, ClientListener, KeyboardListe
 
 	public ConfigManager getConfigManager() {
 		return this.configManager;
-	}
-
-	public MainConfig getConfig() {
-		return this.configManager.getMainConfig();
 	}
 
 }

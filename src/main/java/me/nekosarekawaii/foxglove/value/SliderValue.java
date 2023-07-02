@@ -5,12 +5,14 @@ import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 public abstract class SliderValue<T> extends Value<T> {
 
     private final T min, max;
+    private final String format;
 
-    public SliderValue(final String name, final String description, final Module parent, final T defaultValue, final T min, final T max) {
+    public SliderValue(final String name, final String description, final Module parent, final T defaultValue, final T min, final T max, final String format) {
         super(name, description, parent, defaultValue);
 
         this.min = min;
         this.max = max;
+        this.format = format;
     }
 
     public T getMin() {
@@ -21,4 +23,7 @@ public abstract class SliderValue<T> extends Value<T> {
         return this.max;
     }
 
+    public String getFormat() {
+        return this.format;
+    }
 }
