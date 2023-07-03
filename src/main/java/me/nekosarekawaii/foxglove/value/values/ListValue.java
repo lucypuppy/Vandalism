@@ -1,6 +1,7 @@
-package me.nekosarekawaii.foxglove.value.value;
+package me.nekosarekawaii.foxglove.value.values;
 
 import com.google.gson.JsonObject;
+import imgui.ImGui;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.value.Value;
@@ -28,6 +29,18 @@ public class ListValue extends Value<String> {
     @Override
     public void onConfigSave(JsonObject valueObject) {
         valueObject.addProperty("value", getValue());
+    }
+
+    @Override
+    public void render() {
+        if (ImGui.beginCombo(getName(), getValue())) {
+            for (final String mode : getModes()) {
+                if (ImGui.selectable(mode, mode.equals(getValue()))) {
+                    setValue(mode);
+                }
+            }
+            ImGui.endCombo();
+        }
     }
 
 }

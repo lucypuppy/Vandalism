@@ -2,10 +2,6 @@ package me.nekosarekawaii.foxglove.gui.imgui.impl;
 
 import imgui.ImGui;
 import imgui.ImGuiIO;
-import imgui.flag.ImGuiDataType;
-import imgui.type.ImDouble;
-import imgui.type.ImFloat;
-import imgui.type.ImInt;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
@@ -13,17 +9,6 @@ import me.nekosarekawaii.foxglove.feature.FeatureList;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.gui.imgui.ImGUIMenu;
 import me.nekosarekawaii.foxglove.value.Value;
-import me.nekosarekawaii.foxglove.value.value.BooleanValue;
-import me.nekosarekawaii.foxglove.value.value.ColorValue;
-import me.nekosarekawaii.foxglove.value.value.ListValue;
-import me.nekosarekawaii.foxglove.value.value.number.DoubleValue;
-import me.nekosarekawaii.foxglove.value.value.number.FloatValue;
-import me.nekosarekawaii.foxglove.value.value.number.IntegerValue;
-import me.nekosarekawaii.foxglove.value.value.number.slider.SliderDoubleValue;
-import me.nekosarekawaii.foxglove.value.value.number.slider.SliderFloatValue;
-import me.nekosarekawaii.foxglove.value.value.number.slider.SliderIntegerValue;
-
-import java.awt.*;
 
 public class MainMenu extends ImGUIMenu {
 
@@ -39,10 +24,15 @@ public class MainMenu extends ImGUIMenu {
     public void render(final ImGuiIO imGuiIO) {
         if (ImGui.begin(Foxglove.getInstance().getName())) {
             ImGui.setWindowSize(0, 0);
+
             final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();
+
             if (ImGui.beginListBox("##general", 150, 510)) {
+
                 for (int i = 0; i < 3; i++) ImGui.spacing();
+
                 ImGui.sameLine();
+
                 ImGui.text(Foxglove.getInstance().getName() + " " + Foxglove.getInstance().getVersion());
 
                 for (int i = 0; i < 2; i++) ImGui.spacing();
@@ -76,6 +66,7 @@ public class MainMenu extends ImGUIMenu {
             }
             if (currentFeatureCategory != null) {
                 ImGui.sameLine();
+
                 if (ImGui.beginListBox("##modules", 200, 0)) {
                     ImGui.sameLine();
                     ImGui.text(currentFeatureCategory.normalName() + " - Modules");
@@ -88,9 +79,11 @@ public class MainMenu extends ImGUIMenu {
                         if (module.isExperimental()) {
                             ImGui.textColored(1f, 1f, 0f, 1f, "Experimental");
                         }
+
                         if (ImGui.button(module.getName())) {
                             currentModule = module;
                         }
+
                         if (module.isExperimental()) {
                             ImGui.newLine();
                         }
@@ -100,6 +93,7 @@ public class MainMenu extends ImGUIMenu {
                 }
                 if (currentModule != null) {
                     ImGui.sameLine();
+
                     if (ImGui.beginListBox("##moduleConfig", 500, 500)) {
                         ImGui.sameLine();
                         ImGui.text(currentModule.getName() + " - Config");
@@ -115,74 +109,19 @@ public class MainMenu extends ImGUIMenu {
                                 value.resetValue();
                             }
                         }
+
                         for (final Value<?> value : values) {
                             if (value.isVisible() != null && !value.isVisible().getAsBoolean())
                                 continue;
 
-                            if (value instanceof final BooleanValue booleanValue) {
-                                if (ImGui.checkbox(value.getName(), booleanValue.getValue())) {
-                                    booleanValue.setValue(!booleanValue.getValue());
-                                }
-                            } else if (value instanceof final IntegerValue integerValue) {
-                                final ImInt imInt = new ImInt(integerValue.getValue());
-
-                                if (ImGui.inputInt(value.getName(), imInt, integerValue.getStep())) {
-                                    integerValue.setValue(imInt.get());
-                                }
-                            } else if (value instanceof final DoubleValue doubleValue) {
-                                final ImDouble imDouble = new ImDouble(doubleValue.getValue());
-
-                                if (ImGui.inputDouble(value.getName(), imDouble, doubleValue.getStep())) {
-                                    doubleValue.setValue(imDouble.get());
-                                }
-                            } else if (value instanceof final FloatValue floatValue) {
-                                final ImFloat imFloat = new ImFloat(floatValue.getValue());
-
-                                if (ImGui.inputFloat(value.getName(), imFloat, floatValue.getStep())) {
-                                    floatValue.setValue(imFloat.get());
-                                }
-                            } else if (value instanceof final SliderDoubleValue sliderDoubleValue) {
-                                final ImDouble imDouble = new ImDouble(sliderDoubleValue.getValue());
-
-                                if (ImGui.sliderScalar(value.getName(), ImGuiDataType.Double, imDouble, sliderDoubleValue.getMin(), sliderDoubleValue.getMax(), sliderDoubleValue.getFormat())) {
-                                    sliderDoubleValue.setValue(imDouble.get());
-                                }
-                            } else if (value instanceof final SliderFloatValue sliderFloatValue) {
-                                final ImFloat imFloat = new ImFloat(sliderFloatValue.getValue());
-
-                                if (ImGui.sliderScalar(value.getName(), ImGuiDataType.Float, imFloat, sliderFloatValue.getMin(), sliderFloatValue.getMax(), sliderFloatValue.getFormat())) {
-                                    sliderFloatValue.setValue(imFloat.get());
-                                }
-                            } else if (value instanceof final SliderIntegerValue sliderIntegerValue) {
-                                final ImInt imInt = new ImInt(sliderIntegerValue.getValue());
-
-                                if (ImGui.sliderScalar(value.getName(), ImGuiDataType.S32, imInt, sliderIntegerValue.getMin(), sliderIntegerValue.getMax())) {
-                                    sliderIntegerValue.setValue(imInt.get());
-                                }
-                            } else if (value instanceof final ColorValue colorValue) {
-                                final Color color = colorValue.getValue();
-                                final float[] colorArray = new float[]{color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f};
-
-                                if (ImGui.colorEdit4(value.getName(), colorArray)) {
-                                    colorValue.setValue(new Color(colorArray[0], colorArray[1], colorArray[2], colorArray[3]));
-                                }
-                            } else if (value instanceof final ListValue listValue) {
-                                if (ImGui.beginCombo(value.getName(), listValue.getValue())) {
-                                    for (final String mode : listValue.getModes()) {
-                                        if (ImGui.selectable(mode, mode.equals(listValue.getValue()))) {
-                                            listValue.setValue(mode);
-                                        }
-                                    }
-                                    ImGui.endCombo();
-                                }
-                            } else {
-                                throw new RuntimeException("Unknown value type: " + value.getClass().getSimpleName());
-                            }
+                            value.render();
                         }
+
                         ImGui.endListBox();
                     }
                 }
             }
+
             ImGui.end();
         }
     }

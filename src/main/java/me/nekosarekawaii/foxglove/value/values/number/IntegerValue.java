@@ -1,9 +1,10 @@
-package me.nekosarekawaii.foxglove.value.value.number;
+package me.nekosarekawaii.foxglove.value.values.number;
 
 import com.google.gson.JsonObject;
+import imgui.ImGui;
+import imgui.type.ImInt;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.value.NumberValue;
-import me.nekosarekawaii.foxglove.value.Value;
 
 public class IntegerValue extends NumberValue<Integer> {
 
@@ -23,6 +24,15 @@ public class IntegerValue extends NumberValue<Integer> {
     @Override
     public void onConfigSave(final JsonObject valueObject) {
         valueObject.addProperty("value", getValue());
+    }
+
+    @Override
+    public void render() {
+        final ImInt imInt = new ImInt(getValue());
+
+        if (ImGui.inputInt(getName(), imInt, getStep())) {
+            setValue(imInt.get());
+        }
     }
 
 }

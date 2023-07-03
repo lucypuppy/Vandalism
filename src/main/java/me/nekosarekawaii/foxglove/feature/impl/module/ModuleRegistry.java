@@ -8,6 +8,7 @@ import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.AntiChatConte
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.AntiServerBlockListModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.ExploitFixerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.AntiTelemetryModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.DebugModule;
 
 public class ModuleRegistry {
 
@@ -41,6 +42,12 @@ public class ModuleRegistry {
         return this.exploitFixerModule;
     }
 
+    private DebugModule debugModule;
+
+    public DebugModule debugModule() {
+        return this.debugModule;
+    }
+
     private final FeatureList<Module> modules;
 
     public ModuleRegistry() {
@@ -72,7 +79,8 @@ public class ModuleRegistry {
                 this.antiChatContextModule = new AntiChatContextModule(),
                 this.antiServerBlockListModule = new AntiServerBlockListModule(),
                 this.exploitFixerModule = new ExploitFixerModule(),
-                this.antiTelemetryModule = new AntiTelemetryModule()
+                this.antiTelemetryModule = new AntiTelemetryModule(),
+                this.debugModule = new DebugModule()
         );
     }
 

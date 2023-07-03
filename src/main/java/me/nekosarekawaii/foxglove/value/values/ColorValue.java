@@ -1,6 +1,7 @@
-package me.nekosarekawaii.foxglove.value.value;
+package me.nekosarekawaii.foxglove.value.values;
 
 import com.google.gson.JsonObject;
+import imgui.ImGui;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.value.Value;
 
@@ -26,6 +27,15 @@ public class ColorValue extends Value<Color> {
         valueObject.addProperty("value_green", getValue().getGreen());
         valueObject.addProperty("value_blue", getValue().getBlue());
         valueObject.addProperty("value_alpha", getValue().getAlpha());
+    }
+
+    @Override
+    public void render() {
+        final float[] colorArray = new float[]{getValue().getRed() / 255f, getValue().getGreen() / 255f, getValue().getBlue() / 255f, getValue().getAlpha() / 255f};
+
+        if (ImGui.colorEdit4(getName(), colorArray)) {
+            setValue(new Color(colorArray[0], colorArray[1], colorArray[2], colorArray[3]));
+        }
     }
 
 }

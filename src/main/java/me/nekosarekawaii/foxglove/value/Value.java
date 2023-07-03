@@ -92,4 +92,7 @@ public abstract class Value<V> {
     public abstract void onConfigLoad(final JsonObject valueObject);
 
     public abstract void onConfigSave(final JsonObject valueObject);
+
+    public abstract void render();
+
 }

@@ -1,12 +1,6 @@
 package me.nekosarekawaii.foxglove;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import imgui.ImGui;
-import imgui.ImGuiIO;
-import imgui.extension.implot.ImPlot;
-import imgui.flag.ImGuiConfigFlags;
-import imgui.gl3.ImGuiImplGl3;
-import imgui.glfw.ImGuiImplGlfw;
 import me.nekosarekawaii.foxglove.config.ConfigManager;
 import me.nekosarekawaii.foxglove.creativetab.CreativeTabRegistry;
 import me.nekosarekawaii.foxglove.event.*;
@@ -14,6 +8,7 @@ import me.nekosarekawaii.foxglove.feature.impl.command.CommandRegistry;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleRegistry;
 import me.nekosarekawaii.foxglove.gui.imgui.ImGUIMenu;
 import me.nekosarekawaii.foxglove.gui.imgui.impl.MainMenu;
+import me.nekosarekawaii.foxglove.util.imgui.ImGuiRenderer;
 import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.TitleScreen;
@@ -29,13 +24,13 @@ import java.lang.management.ManagementFactory;
 
 public class Foxglove implements MinecraftWrapper, ClientListener, KeyboardListener, TickListener, RenderListener, ScreenListener {
 
-	private final static Foxglove instance = new Foxglove();
+    private final static Foxglove instance = new Foxglove();
 
-	public static Foxglove getInstance() {
-		return instance;
-	}
+    public static Foxglove getInstance() {
+        return instance;
+    }
 
-	private final String name, lowerCaseName, version, author, windowTitle;
+    private final String name, lowerCaseName, version, author, windowTitle;
 
     private final Color color;
     private final int colorRGB;
@@ -54,174 +49,163 @@ public class Foxglove implements MinecraftWrapper, ClientListener, KeyboardListe
 
     public boolean blockKeyEvent;
 
-    private ImGuiImplGl3 imGuiImplGl3;
-    private ImGuiImplGlfw imGuiImplGlfw;
+    public ImGuiRenderer imGuiRenderer;
+
     private ImGUIMenu currentImGUIMenu;
 
     public Foxglove() {
-		this.name = "Foxglove";
-		this.lowerCaseName = this.name.toLowerCase();
-		this.version = "1.0.0";
-		this.author = "NekosAreKawaii";
-		this.color = Color.MAGENTA;
-		this.colorRGB = this.color.getRGB();
-		this.logger = LoggerFactory.getLogger(this.name);
-		this.dir = new File(mc().runDirectory, this.lowerCaseName);
-		this.firstStart = !this.dir.exists();
-		if (this.firstStart) {
-			if (!this.dir.mkdirs()) {
-				this.logger.error("Failed to create Mod directory!");
-				System.exit(-1);
-			}
-		}
-		this.jvmDebugMode = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("jdwp");
-		this.windowTitle = String.format(
-				"%s %s made by %s%s",
-				this.name,
-				this.version,
-				this.author,
-				this.jvmDebugMode ? " - JVM Debug Mode" : ""
-		);
+        this.name = "Foxglove";
+        this.lowerCaseName = this.name.toLowerCase();
+        this.version = "1.0.0";
+        this.author = "NekosAreKawaii";
+        this.color = Color.MAGENTA;
+        this.colorRGB = this.color.getRGB();
+        this.logger = LoggerFactory.getLogger(this.name);
+        this.dir = new File(mc().runDirectory, this.lowerCaseName);
+        this.firstStart = !this.dir.exists();
+        if (this.firstStart) {
+            if (!this.dir.mkdirs()) {
+                this.logger.error("Failed to create Mod directory!");
+                System.exit(-1);
+            }
+        }
+        this.jvmDebugMode = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("jdwp");
+        this.windowTitle = String.format(
+                "%s %s made by %s%s",
+                this.name,
+                this.version,
+                this.author,
+                this.jvmDebugMode ? " - JVM Debug Mode" : ""
+        );
         this.blockKeyEvent = false;
         this.creativeTabRegistry = new CreativeTabRegistry();
         DietrichEvents2.global().subscribe(ClientEvent.ID, this);
-		DietrichEvents2.global().subscribe(OpenScreenEvent.ID, this);
-	}
+        DietrichEvents2.global().subscribe(OpenScreenEvent.ID, this);
+    }
 
-	private void start() {
+    private void start() {
         this.logger.info("Starting...");
         this.logger.info("Version: {}", this.version);
         this.logger.info("Made by {}", this.author);
+
         this.logger.info("Loading Features...");
         this.moduleRegistry = new ModuleRegistry();
         this.commandRegistry = new CommandRegistry();
         this.logger.info("Features loaded.");
+
         this.logger.info("Loading ImGUI Renderer...");
-        this.imGuiImplGl3 = new ImGuiImplGl3();
-        this.imGuiImplGlfw = new ImGuiImplGlfw();
-        ImGui.createContext();
-        ImPlot.createContext();
-        final ImGuiIO imGuiIO = ImGui.getIO();
-        imGuiIO.setConfigFlags(ImGuiConfigFlags.DockingEnable);
-        imGuiIO.setFontGlobalScale(1f);
-        imGuiIO.setIniFilename(this.dir.getName() + "/imgui.ini");
-		this.imGuiImplGlfw.init(mc().getWindow().getHandle(), true);
-		this.imGuiImplGl3.init();
-		this.logger.info("ImGUI Renderer loaded.");
-		this.configManager = new ConfigManager();
-		this.configManager.load();
-		DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
-		DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
-		DietrichEvents2.global().subscribe(TickEvent.ID, this);
-		Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
-	}
+        this.imGuiRenderer = new ImGuiRenderer(this.dir);
+        this.logger.info("ImGUI Renderer loaded.");
 
-	private void stop() {
-		this.logger.info("Stopping...");
-		this.configManager.save();
-	}
+        this.configManager = new ConfigManager();
+        this.configManager.load();
 
-	@Override
-	public void onStart() {
-		this.start();
-	}
+        DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
+        DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
+        DietrichEvents2.global().subscribe(TickEvent.ID, this);
 
-	@Override
-	public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-		if (action != GLFW.GLFW_PRESS) return;
-		if (this.currentImGUIMenu != null && !this.currentImGUIMenu.keyPress(key, scanCode, modifiers)) {
-			return;
-		}
-		if (this.configManager.getMainConfig().getMainMenuKeyCode() == key) {
-			if (!(this.currentImGUIMenu instanceof MainMenu)) {
-				this.setCurrentImGUIMenu(new MainMenu());
-			}
-			return;
-		}
-		if (this.blockKeyEvent || mc().currentScreen != null) return;
-		final ClientPlayNetworkHandler playNetworkHandler = mc().getNetworkHandler();
-		if (playNetworkHandler != null) {
-			this.configManager.getMainConfig().getChatMacros().object2ObjectEntrySet().fastForEach(macro -> {
-				if (macro.getValue() == key) {
-					if (macro.getKey().startsWith("/")) playNetworkHandler.sendChatCommand(macro.getKey());
-					else playNetworkHandler.sendChatMessage(macro.getKey());
-				}
-			});
-		}
-	}
+        Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
+    }
 
-	@Override
-	public void onTick() {
-		if (this.currentImGUIMenu != null) this.currentImGUIMenu.tick();
-	}
+    private void stop() {
+        this.logger.info("Stopping...");
+        this.configManager.save();
+    }
 
-	private void renderCurrentImGUIMenu() {
-		if (this.currentImGUIMenu == null) return;
-		this.imGuiImplGlfw.newFrame();
-		ImGui.newFrame();
-		this.currentImGUIMenu.render(ImGui.getIO());
-		ImGui.render();
-		this.imGuiImplGl3.renderDrawData(ImGui.getDrawData());
-		if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
-			final long pointer = GLFW.glfwGetCurrentContext();
-			ImGui.updatePlatformWindows();
-			ImGui.renderPlatformWindowsDefault();
-			GLFW.glfwMakeContextCurrent(pointer);
-		}
-	}
+    @Override
+    public void onStart() {
+        this.start();
+    }
 
-	@Override
-	public void onRender2D(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-		if (mc().currentScreen != null) {
-			this.renderCurrentImGUIMenu();
-		}
-	}
+    @Override
+    public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
+        if (action != GLFW.GLFW_PRESS) return;
+        if (this.currentImGUIMenu != null && !this.currentImGUIMenu.keyPress(key, scanCode, modifiers)) {
+            return;
+        }
+        if (this.configManager.getMainConfig().getMainMenuKeyCode() == key) {
+            if (!(this.currentImGUIMenu instanceof MainMenu)) {
+                this.setCurrentImGUIMenu(new MainMenu());
+            }
+            return;
+        }
+        if (this.blockKeyEvent || mc().currentScreen != null) return;
+        final ClientPlayNetworkHandler playNetworkHandler = mc().getNetworkHandler();
+        if (playNetworkHandler != null) {
+            this.configManager.getMainConfig().getChatMacros().object2ObjectEntrySet().fastForEach(macro -> {
+                if (macro.getValue() == key) {
+                    if (macro.getKey().startsWith("/")) playNetworkHandler.sendChatCommand(macro.getKey());
+                    else playNetworkHandler.sendChatMessage(macro.getKey());
+                }
+            });
+        }
+    }
 
-	@Override
-	public void onRender2DInGame(final DrawContext context, final float delta, final Window window) {
-		if (mc().currentScreen == null) {
-			this.renderCurrentImGUIMenu();
-		}
-	}
+    @Override
+    public void onTick() {
+        if (this.currentImGUIMenu != null) this.currentImGUIMenu.tick();
+    }
 
-	@Override
-	public void onOpenScreen(final OpenScreenEvent event) {
-		if (event.screen instanceof TitleScreen) {
-			event.cancel();
-			mc().setScreen(new me.nekosarekawaii.foxglove.gui.screen.TitleScreen());
-		}
-	}
+    private void renderImGuiContext() {
+        if (this.currentImGUIMenu != null) {
+            this.imGuiRenderer.addRenderInterface(io -> this.currentImGUIMenu.render(io));
+        }
 
-	public String getName() {
-		return this.name;
-	}
+        this.imGuiRenderer.render();
+    }
 
-	public String getLowerCaseName() {
-		return this.lowerCaseName;
-	}
+    @Override
+    public void onRender2D(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        if (mc().currentScreen != null) {
+            this.renderImGuiContext();
+        }
+    }
 
-	public String getVersion() {
-		return this.version;
-	}
+    @Override
+    public void onRender2DInGame(final DrawContext context, final float delta, final Window window) {
+        if (mc().currentScreen == null) {
+            this.renderImGuiContext();
+        }
+    }
 
-	public String getAuthor() {
-		return this.author;
-	}
+    @Override
+    public void onOpenScreen(final OpenScreenEvent event) {
+        if (event.screen instanceof TitleScreen) {
+            event.cancel();
+            mc().setScreen(new me.nekosarekawaii.foxglove.gui.screen.TitleScreen());
+        }
+    }
 
-	public Color getColor() {
-		return this.color;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public int getColorRGB() {
-		return this.colorRGB;
-	}
+    public String getLowerCaseName() {
+        return this.lowerCaseName;
+    }
 
-	public Logger getLogger() {
-		return this.logger;
-	}
+    public String getVersion() {
+        return this.version;
+    }
 
-	public File getDir() {
-		return this.dir;
+    public String getAuthor() {
+        return this.author;
+    }
+
+    public Color getColor() {
+        return this.color;
+    }
+
+    public int getColorRGB() {
+        return this.colorRGB;
+    }
+
+    public Logger getLogger() {
+        return this.logger;
+    }
+
+    public File getDir() {
+        return this.dir;
     }
 
     public boolean isFirstStart() {
@@ -252,12 +236,12 @@ public class Foxglove implements MinecraftWrapper, ClientListener, KeyboardListe
         return this.currentImGUIMenu;
     }
 
-	public void setCurrentImGUIMenu(final ImGUIMenu currentImGUIMenu) {
-		this.currentImGUIMenu = currentImGUIMenu;
-	}
+    public void setCurrentImGUIMenu(final ImGUIMenu currentImGUIMenu) {
+        this.currentImGUIMenu = currentImGUIMenu;
+    }
 
-	public ConfigManager getConfigManager() {
-		return this.configManager;
-	}
+    public ConfigManager getConfigManager() {
+        return this.configManager;
+    }
 
 }
