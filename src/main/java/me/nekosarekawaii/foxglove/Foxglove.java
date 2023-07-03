@@ -146,23 +146,25 @@ public class Foxglove implements MinecraftWrapper, ClientListener, KeyboardListe
         if (this.currentImGUIMenu != null) this.currentImGUIMenu.tick();
     }
 
-    private void renderCurrentImGUIMenu() {
+    private void renderImGuiContext() {
         if (this.currentImGUIMenu != null) {
-            this.imGuiRenderer.render(io -> this.currentImGUIMenu.render(io));
+            this.imGuiRenderer.addRenderInterface(io -> this.currentImGUIMenu.render(io));
         }
+
+        this.imGuiRenderer.render();
     }
 
     @Override
     public void onRender2D(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         if (mc().currentScreen != null) {
-            this.renderCurrentImGUIMenu();
+            this.renderImGuiContext();
         }
     }
 
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta, final Window window) {
         if (mc().currentScreen == null) {
-            this.renderCurrentImGUIMenu();
+            this.renderImGuiContext();
         }
     }
 

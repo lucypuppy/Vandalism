@@ -10,6 +10,7 @@ import imgui.extension.implot.ImPlot;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
 import org.lwjgl.glfw.GLFW;
 
@@ -19,6 +20,7 @@ public class ImGuiRenderer implements MinecraftWrapper {
 
     private final ImGuiImplGl3 imGuiImplGl3;
     private final ImGuiImplGlfw imGuiImplGlfw;
+    private final ObjectArrayList<RenderInterface> renderInterfaces = new ObjectArrayList<>();
 
     public ImGuiRenderer(final File dir) {
         this.imGuiImplGl3 = new ImGuiImplGl3();
@@ -38,11 +40,18 @@ public class ImGuiRenderer implements MinecraftWrapper {
         this.imGuiImplGl3.init();
     }
 
-    public void render(final RenderInterface renderInterface) {
+    public void render() {
+        if (this.renderInterfaces.isEmpty())
+            return;
+
         this.imGuiImplGlfw.newFrame(); // Handle keyboard and mouse interactions
         ImGui.newFrame();
 
-        renderInterface.render(ImGui.getIO());
+        final ImGuiIO imGuiIO = ImGui.getIO();
+        for (final RenderInterface renderInterface : this.renderInterfaces) {
+            renderInterface.render(imGuiIO);
+        }
+        this.renderInterfaces.clear();
 
         ImGui.endFrame();
         ImGui.render();
@@ -55,6 +64,10 @@ public class ImGuiRenderer implements MinecraftWrapper {
 
             GLFW.glfwMakeContextCurrent(pointer);
         }
+    }
+
+    public void addRenderInterface(final RenderInterface renderInterface) {
+        this.renderInterfaces.add(renderInterface);
     }
 
 }
