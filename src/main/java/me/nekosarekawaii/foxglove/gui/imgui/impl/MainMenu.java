@@ -2,6 +2,7 @@ package me.nekosarekawaii.foxglove.gui.imgui.impl;
 
 import imgui.ImGui;
 import imgui.ImGuiIO;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
@@ -14,6 +15,8 @@ public class MainMenu extends ImGUIMenu {
 
     private static FeatureCategory currentFeatureCategory = null;
     private static Module currentModule = null;
+
+    private static final Object2ObjectOpenHashMap<FeatureCategory, Module> moduleViewCache = new Object2ObjectOpenHashMap<>();
 
     private void resetModuleView() {
         currentFeatureCategory = null;
@@ -53,7 +56,7 @@ public class MainMenu extends ImGUIMenu {
                             if (!modulesByCategory.isEmpty()) {
                                 if (ImGui.button(featureCategory.normalName(), 134, 35)) {
                                     currentFeatureCategory = featureCategory;
-                                    currentModule = null;
+                                    currentModule = moduleViewCache.get(featureCategory);
                                 }
                             }
                         }
@@ -81,6 +84,8 @@ public class MainMenu extends ImGUIMenu {
                         }
 
                         if (ImGui.button(module.getName())) {
+                            moduleViewCache.remove(currentFeatureCategory);
+                            moduleViewCache.put(currentFeatureCategory, module);
                             currentModule = module;
                         }
 
