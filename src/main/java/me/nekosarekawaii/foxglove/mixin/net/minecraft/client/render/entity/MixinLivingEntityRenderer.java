@@ -1,7 +1,7 @@
 package me.nekosarekawaii.foxglove.mixin.net.minecraft.client.render.entity;
 
-import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.TrueSightModule;
+import de.florianmichael.dietrichevents2.DietrichEvents2;
+import me.nekosarekawaii.foxglove.event.LivingEntityListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
@@ -35,35 +35,38 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
 
     @Redirect(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;getRenderLayer(Lnet/minecraft/entity/LivingEntity;ZZZ)Lnet/minecraft/client/render/RenderLayer;"))
     private @Nullable RenderLayer injectRenderLayer(final LivingEntityRenderer instance, final T entity, final boolean showBody, final boolean translucent, final boolean showOutline) {
-        final RenderLayer renderLayer = this.getRenderLayer(entity, showBody, translucent, showOutline);
-        final TrueSightModule trueSightModule = Foxglove.getInstance().getModuleRegistry().getTrueSightModule();
-        if (trueSightModule.isEnabled() && trueSightModule.entities.getValue()) {
-            return null;
-        }
-        return renderLayer;
+        return null;
     }
 
     @Inject(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;getRenderLayer(Lnet/minecraft/entity/LivingEntity;ZZZ)Lnet/minecraft/client/render/RenderLayer;", shift = At.Shift.BEFORE))
-    private void injectRender(final T livingEntity, final float f, final float g, final MatrixStack matrixStack, final VertexConsumerProvider vertexConsumerProvider, final int i, final CallbackInfo ci) {
-        final TrueSightModule trueSightModule = Foxglove.getInstance().getModuleRegistry().getTrueSightModule();
-        if (trueSightModule.isEnabled() && trueSightModule.entities.getValue()) {
-            final boolean showBody = this.isVisible(livingEntity), showOutline = MinecraftClient.getInstance().hasOutline(livingEntity);
-            //final boolean translucent = !showBody && !livingEntity.isInvisibleTo(MinecraftClient.getInstance().player)
-            final boolean translucent = !showBody;
-            final VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(this.getRenderLayer(livingEntity, showBody, translucent, showOutline));
-            //TODO: Make something like a event or so that we can change the rgba of every living entity.
-            this.model.render(
-                    matrixStack,
-                    vertexConsumer,
-                    i,
-                    LivingEntityRenderer.getOverlay(livingEntity, this.getAnimationCounter(livingEntity, g)),
-                    1.0f,
-                    1.0f,
-                    1.0f,
-                    translucent ? 0.5f : 1.0f
-            );
-        }
+    private void injectRender(final T livingEntity, float f, float g, final MatrixStack matrixStack, final VertexConsumerProvider vertexConsumerProvider, int i, final CallbackInfo ci) {
+        boolean showBody = this.isVisible(livingEntity),
+                translucent = !showBody && !livingEntity.isInvisibleTo(MinecraftClient.getInstance().player),
+                showOutline = MinecraftClient.getInstance().hasOutline(livingEntity);
+        float red = 1.0f, green = 1.0f, blue = 1.0f, alpha = translucent ? 0.15f : 1.0f;
+        final LivingEntityListener.LivingEntityRenderEvent livingEntityRenderEvent = new LivingEntityListener.LivingEntityRenderEvent(livingEntity, f, g, matrixStack, vertexConsumerProvider, i, showBody, translucent, showOutline, red, green, blue, alpha);
+        DietrichEvents2.global().postInternal(LivingEntityListener.LivingEntityRenderEvent.ID, livingEntityRenderEvent);
+        f = livingEntityRenderEvent.f;
+        g = livingEntityRenderEvent.g;
+        red = livingEntityRenderEvent.red;
+        green = livingEntityRenderEvent.green;
+        blue = livingEntityRenderEvent.blue;
+        alpha = livingEntityRenderEvent.alpha;
+        i = livingEntityRenderEvent.i;
+        showBody = livingEntityRenderEvent.showBody;
+        translucent = livingEntityRenderEvent.translucent;
+        showOutline = livingEntityRenderEvent.showOutline;
+        final VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(this.getRenderLayer(livingEntity, showBody, translucent, showOutline));
+        this.model.render(
+                matrixStack,
+                vertexConsumer,
+                i,
+                LivingEntityRenderer.getOverlay(livingEntity, this.getAnimationCounter(livingEntity, g)),
+                red,
+                green,
+                blue,
+                alpha
+        );
     }
-
 
 }

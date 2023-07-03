@@ -9,20 +9,20 @@ import java.awt.*;
 
 public class ColorValue extends Value<Color> {
 
-    public ColorValue(String name, String description, Module parent, Color defaultValue) {
+    public ColorValue(final String name, final String description, final Module parent, final Color defaultValue) {
         super(name, description, parent, defaultValue);
     }
 
     @Override
-    public void onConfigLoad(JsonObject valueObject) {
-        setValue(new Color(valueObject.get("value_red").getAsInt(),
+    public void onConfigLoad(final JsonObject valueObject) {
+        this.setValue(new Color(valueObject.get("value_red").getAsInt(),
                 valueObject.get("value_green").getAsInt(),
                 valueObject.get("value_blue").getAsInt(),
                 valueObject.get("value_alpha").getAsInt()));
     }
 
     @Override
-    public void onConfigSave(JsonObject valueObject) {
+    public void onConfigSave(final JsonObject valueObject) {
         valueObject.addProperty("value_red", getValue().getRed());
         valueObject.addProperty("value_green", getValue().getGreen());
         valueObject.addProperty("value_blue", getValue().getBlue());
@@ -32,9 +32,9 @@ public class ColorValue extends Value<Color> {
     @Override
     public void render() {
         final float[] colorArray = new float[]{getValue().getRed() / 255f, getValue().getGreen() / 255f, getValue().getBlue() / 255f, getValue().getAlpha() / 255f};
-
+        //TODO: Fix Crash
         if (ImGui.colorEdit4(getName(), colorArray)) {
-            setValue(new Color(colorArray[0], colorArray[1], colorArray[2], colorArray[3]));
+            this.setValue(new Color(colorArray[0], colorArray[1], colorArray[2], colorArray[3]));
         }
     }
 

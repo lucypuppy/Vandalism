@@ -22,7 +22,7 @@ import java.awt.*;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 
-public class Foxglove implements MinecraftWrapper, ClientListener, KeyboardListener, TickListener, RenderListener, ScreenListener {
+public class Foxglove implements MinecraftWrapper, ClientListener, KeyboardListener, TickListener, Render2DListener, ScreenListener {
 
     private final static Foxglove instance = new Foxglove();
 
