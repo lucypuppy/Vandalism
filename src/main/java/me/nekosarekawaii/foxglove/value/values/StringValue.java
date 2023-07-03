@@ -2,6 +2,7 @@ package me.nekosarekawaii.foxglove.value.values;
 
 import com.google.gson.JsonObject;
 import imgui.ImGui;
+import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.value.Value;
@@ -25,7 +26,8 @@ public class StringValue extends Value<String> {
     @Override
     public void render() {
         final ImString imString = new ImString(this.getValue());
-        if (ImGui.inputText(this.getName(), imString)) {
+
+        if (ImGui.inputText(this.getName(), imString, ImGuiInputTextFlags.CallbackResize)) {
             this.setValue(imString.get());
         }
     }

@@ -25,7 +25,7 @@ public abstract class MixinClientWorld {
     @Final
     private static Set<Item> BLOCK_MARKER_ITEMS;
 
-    @Inject(method = "randomBlockDisplayTick", at = @At(value = "HEAD", target = "HEAD"))
+    @Inject(method = "randomBlockDisplayTick", at = @At(value = "HEAD", target = "HEAD"), remap = false)
     private void injectRandomBlockDisplayTick(final int centerX, final int centerY, final int centerZ, final int radius, final Random random, Block block, final BlockPos.Mutable pos, final CallbackInfo ci) {
         final TrueSightModule trueSightModule = Foxglove.getInstance().getModuleRegistry().getTrueSightModule();
         if (trueSightModule.isEnabled() && trueSightModule.blocks.getValue()) {
