@@ -24,10 +24,15 @@ public class MainMenu extends ImGUIMenu {
     public void render(final ImGuiIO imGuiIO) {
         if (ImGui.begin(Foxglove.getInstance().getName())) {
             ImGui.setWindowSize(0, 0);
+
             final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();
+
             if (ImGui.beginListBox("##general", 150, 510)) {
+
                 for (int i = 0; i < 3; i++) ImGui.spacing();
+
                 ImGui.sameLine();
+
                 ImGui.text(Foxglove.getInstance().getName() + " " + Foxglove.getInstance().getVersion());
 
                 for (int i = 0; i < 2; i++) ImGui.spacing();
@@ -61,6 +66,7 @@ public class MainMenu extends ImGUIMenu {
             }
             if (currentFeatureCategory != null) {
                 ImGui.sameLine();
+
                 if (ImGui.beginListBox("##modules", 200, 0)) {
                     ImGui.sameLine();
                     ImGui.text(currentFeatureCategory.normalName() + " - Modules");
@@ -73,9 +79,11 @@ public class MainMenu extends ImGUIMenu {
                         if (module.isExperimental()) {
                             ImGui.textColored(1f, 1f, 0f, 1f, "Experimental");
                         }
+
                         if (ImGui.button(module.getName())) {
                             currentModule = module;
                         }
+
                         if (module.isExperimental()) {
                             ImGui.newLine();
                         }
@@ -85,6 +93,7 @@ public class MainMenu extends ImGUIMenu {
                 }
                 if (currentModule != null) {
                     ImGui.sameLine();
+
                     if (ImGui.beginListBox("##moduleConfig", 500, 500)) {
                         ImGui.sameLine();
                         ImGui.text(currentModule.getName() + " - Config");
@@ -112,6 +121,7 @@ public class MainMenu extends ImGUIMenu {
                     }
                 }
             }
+
             ImGui.end();
         }
     }
