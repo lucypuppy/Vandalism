@@ -104,7 +104,7 @@ public class MainMenu extends ImGUIMenu {
 
                         if (ImGui.button(currentModule.isEnabled() ? "Disable" : "Enable")) {
                             currentModule.toggle();
-                        } else if (ImGui.button("Reset")) {
+                        } else if (ImGui.button("Reset Config")) {
                             for (final Value<?> value : values) {
                                 value.resetValue();
                             }
