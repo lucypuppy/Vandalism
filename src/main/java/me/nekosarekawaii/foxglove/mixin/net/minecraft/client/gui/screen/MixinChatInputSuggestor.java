@@ -4,7 +4,7 @@ import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.suggestion.Suggestions;
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.feature.impl.command.CommandHandler;
+import me.nekosarekawaii.foxglove.feature.impl.command.CommandRegistry;
 import net.minecraft.client.gui.screen.ChatInputSuggestor;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.command.CommandSource;
@@ -51,16 +51,16 @@ public abstract class MixinChatInputSuggestor {
             locals = LocalCapture.CAPTURE_FAILHARD
     )
     public void onRefresh(final CallbackInfo ci, final String string, final StringReader reader) {
-        final CommandHandler commandHandler = Foxglove.getInstance().getCommandHandler();
+        final CommandRegistry commandRegistry = Foxglove.getInstance().getCommandRegistry();
         final String prefix = Foxglove.getInstance().getConfigManager().getMainConfig().getCommandPrefix();
         final int length = prefix.length();
         if (reader.canRead(length) && reader.getString().startsWith(prefix, reader.getCursor())) {
             reader.setCursor(reader.getCursor() + length);
             if (this.parse == null)
-                this.parse = commandHandler.getCommandDispatcher().parse(reader, commandHandler.getCommandSource());
+                this.parse = commandRegistry.getCommandDispatcher().parse(reader, commandRegistry.getCommandSource());
             final int cursor = textField.getCursor();
             if (cursor >= 1 && (this.window == null || !this.completingSuggestions)) {
-                this.pendingSuggestions = commandHandler.getCommandDispatcher().getCompletionSuggestions(this.parse, cursor);
+                this.pendingSuggestions = commandRegistry.getCommandDispatcher().getCompletionSuggestions(this.parse, cursor);
                 this.pendingSuggestions.thenRun(() -> {
                     if (this.pendingSuggestions.isDone()) this.showCommandSuggestions();
                 });

@@ -15,7 +15,8 @@ public class ReloadCommand extends Command {
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
             ChatUtils.warningChatMessage("Reloading features...");
-            Foxglove.getInstance().getFeatures().reload();
+            Foxglove.getInstance().getModuleRegistry().reload();
+            Foxglove.getInstance().getCommandRegistry().reload();
             ChatUtils.infoChatMessage("Features reloaded!");
             return SINGLE_SUCCESS;
         });

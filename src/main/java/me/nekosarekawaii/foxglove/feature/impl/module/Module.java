@@ -9,8 +9,6 @@ import me.nekosarekawaii.foxglove.value.Value;
 
 public abstract class Module extends Feature {
 
-    //private VersionRange supportedVersions = null;
-
     private boolean enabled;
 
     private final ObjectArrayList<Value<?>> values;
@@ -75,18 +73,9 @@ public abstract class Module extends Feature {
         return null;
     }
 
-    /*public void setSupportedVersions(final VersionRange versionRange) {
-        this.supportedVersions = versionRange;
-    }
-
-    public boolean isSupported(final VersionEnum version) {
-        if (this.supportedVersions == null) return true;
-        return this.supportedVersions.contains(version);
-    }*/
-
     @Override
     public String toString() {
-        return "{" +
+        return '{' +
                 "name=" + this.getName() +
                 ", category=" + this.getCategory() +
                 ", enabled=" + this.enabled +

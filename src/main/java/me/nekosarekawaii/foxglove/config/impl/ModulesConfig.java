@@ -21,7 +21,7 @@ public class ModulesConfig extends Config {
         final JsonObject configObject = new JsonObject();
         final JsonArray moduleArray = new JsonArray();
 
-        for (final Module module : Foxglove.getInstance().getFeatures().getModules()) {
+        for (final Module module : Foxglove.getInstance().getModuleRegistry().getModules()) {
             final JsonObject moduleObject = new JsonObject();
 
             moduleObject.addProperty("name", module.getName());
@@ -55,7 +55,7 @@ public class ModulesConfig extends Config {
         for (final JsonElement moduleElement : moduleArray) {
             final JsonObject moduleObject = moduleElement.getAsJsonObject();
             final String moduleName = moduleObject.get("name").getAsString();
-            final Module module = Foxglove.getInstance().getFeatures().getModules().get(moduleName);
+            final Module module = Foxglove.getInstance().getModuleRegistry().getModules().get(moduleName);
 
             if (module != null) {
                 final JsonArray valuesArray = moduleObject.getAsJsonArray("values");

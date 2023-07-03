@@ -44,7 +44,7 @@ public class FeaturesCommand extends Command {
     }
 
     private void displayModules() {
-        final FeatureList<Module> modules = Foxglove.getInstance().getFeatures().getModules();
+        final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();
         if (modules.isEmpty()) {
             ChatUtils.errorChatMessage("No modules are registered!");
             return;
@@ -81,7 +81,7 @@ public class FeaturesCommand extends Command {
     }
 
     private void displayCommands() {
-        final FeatureList<Command> commands = Foxglove.getInstance().getFeatures().getCommands();
+        final FeatureList<Command> commands = Foxglove.getInstance().getCommandRegistry().getCommands();
         if (commands.size() - 1 < 1) {
             ChatUtils.errorChatMessage("No commands are registered!");
             return;

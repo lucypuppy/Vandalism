@@ -22,6 +22,7 @@
   "mixins": [
     "com.mojang.authlib.yggdrasil.MixinTextureUrlChecker",
     "com.mojang.authlib.yggdrasil.MixinYggdrasilUserApiService",
+    "net.minecraft.item.MixinItemGroup",
     "net.minecraft.util.MixinModStatus"
   ]
 }

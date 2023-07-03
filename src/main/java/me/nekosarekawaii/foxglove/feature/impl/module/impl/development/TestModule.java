@@ -16,7 +16,7 @@ import me.nekosarekawaii.foxglove.value.values.number.slider.SliderIntegerValue;
 
 import java.awt.*;
 
-@ModuleInfo(name = "Test", description = "This is a Module for development purposes.", category = FeatureCategory.DEVELOPMENT, isExperimental = true)
+@ModuleInfo(name = "Test", description = "This is just a module for development purposes.", category = FeatureCategory.DEVELOPMENT, isExperimental = true)
 public class TestModule extends Module implements TickListener {
 
     private final BooleanValue booleanValue = new BooleanValue("Boolean Value", "Just a example boolean value.", this, false);

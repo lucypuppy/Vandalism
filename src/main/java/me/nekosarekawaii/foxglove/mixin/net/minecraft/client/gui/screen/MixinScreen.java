@@ -34,7 +34,7 @@ public abstract class MixinScreen {
         final String prefix = Foxglove.getInstance().getConfigManager().getMainConfig().getCommandPrefix();
         if (clickEvent.getValue().startsWith(prefix)) {
             try {
-                Foxglove.getInstance().getCommandHandler().commandDispatch(style.getClickEvent().getValue().substring(prefix.length()));
+                Foxglove.getInstance().getCommandRegistry().commandDispatch(style.getClickEvent().getValue().substring(prefix.length()));
                 cir.setReturnValue(true);
             } catch (final CommandSyntaxException e) {
                 e.printStackTrace();
