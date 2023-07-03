@@ -56,6 +56,7 @@ public class MainMenu extends ImGUIMenu {
                             final FeatureList<Module> modulesByCategory = modules.get(featureCategory);
                             if (!modulesByCategory.isEmpty()) {
                                 if (ImGui.button(featureCategory.normalName(), 134, 35)) {
+                                    showConfig = false;
                                     currentFeatureCategory = featureCategory;
                                     currentModule = moduleViewCache.get(featureCategory);
                                 }

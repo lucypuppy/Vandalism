@@ -1,5 +1,6 @@
 package me.nekosarekawaii.foxglove.mixin.net.minecraft.client.gui.screen;
 
+import me.nekosarekawaii.foxglove.util.LastServerUtils;
 import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -39,30 +40,27 @@ public abstract class MixinGameMenuScreen extends Screen {
 					Text.translatable("selectServer.direct"),
 					b -> {
 						final ServerInfo serverInfo = new ServerInfo("", "", false);
-						this.client.setScreen(
-								new DirectConnectScreen(this, connect -> {
-									if (connect) {
-										this.disconnect();
-										ConnectScreen.connect(new MultiplayerScreen(new TitleScreen()), this.client, ServerAddress.parse(serverInfo.address), serverInfo, false);
-									} else this.client.setScreen(this);
-								}, serverInfo)
-						);
-					}
-			).width(98).build());
-		} else if (text == REPORT_BUGS_TEXT) {
-			final ButtonWidget button = ButtonWidget.builder(
-					Text.literal("Reconnect"),
-					b -> {
-						if (!this.client.isInSingleplayer()) {
-							final ServerInfo currentServerEntry = this.client.getCurrentServerEntry();
-							if (currentServerEntry != null) {
-								this.disconnect();
-								ConnectScreen.connect(new MultiplayerScreen(new TitleScreen()), this.client, ServerAddress.parse(currentServerEntry.address), currentServerEntry, false);
-							}
-						}
-					}
-			).width(98).build();
-			cir.setReturnValue(button);
+                        this.client.setScreen(
+                                new DirectConnectScreen(this, connect -> {
+                                    if (connect) {
+                                        this.disconnect();
+                                        ConnectScreen.connect(new MultiplayerScreen(new TitleScreen()), this.client, ServerAddress.parse(serverInfo.address), serverInfo, false);
+                                    } else this.client.setScreen(this);
+                                }, serverInfo)
+                        );
+                    }
+            ).width(98).build());
+        } else if (text == REPORT_BUGS_TEXT && !this.client.isInSingleplayer()) {
+            final ButtonWidget button = ButtonWidget.builder(
+                    Text.literal("Reconnect"),
+                    b -> {
+                        if (LastServerUtils.lastServerExists()) {
+                            this.disconnect();
+                            LastServerUtils.connectToLastServer();
+                        }
+                    }
+            ).width(98).build();
+            cir.setReturnValue(button);
 		}
 	}
 
