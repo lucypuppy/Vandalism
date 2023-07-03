@@ -1,6 +1,9 @@
-package me.nekosarekawaii.foxglove.value.value.number.slider;
+package me.nekosarekawaii.foxglove.value.values.number.slider;
 
 import com.google.gson.JsonObject;
+import imgui.ImGui;
+import imgui.flag.ImGuiDataType;
+import imgui.type.ImFloat;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.value.SliderValue;
 
@@ -24,6 +27,15 @@ public class SliderFloatValue extends SliderValue<Float> {
     @Override
     public void onConfigSave(JsonObject valueObject) {
         valueObject.addProperty("value", getValue());
+    }
+
+    @Override
+    public void render() {
+        final ImFloat imFloat = new ImFloat(getValue());
+
+        if (ImGui.sliderScalar(getName(), ImGuiDataType.Float, imFloat, getMin(), getMax(), getFormat())) {
+            setValue(imFloat.get());
+        }
     }
 
 }

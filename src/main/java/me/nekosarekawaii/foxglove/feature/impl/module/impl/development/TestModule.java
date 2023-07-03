@@ -7,12 +7,12 @@ import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
 import me.nekosarekawaii.foxglove.util.ChatUtils;
 import me.nekosarekawaii.foxglove.value.Value;
-import me.nekosarekawaii.foxglove.value.value.BooleanValue;
-import me.nekosarekawaii.foxglove.value.value.ColorValue;
-import me.nekosarekawaii.foxglove.value.value.ListValue;
-import me.nekosarekawaii.foxglove.value.value.number.IntegerValue;
-import me.nekosarekawaii.foxglove.value.value.number.slider.SliderDoubleValue;
-import me.nekosarekawaii.foxglove.value.value.number.slider.SliderIntegerValue;
+import me.nekosarekawaii.foxglove.value.values.BooleanValue;
+import me.nekosarekawaii.foxglove.value.values.ColorValue;
+import me.nekosarekawaii.foxglove.value.values.ListValue;
+import me.nekosarekawaii.foxglove.value.values.number.IntegerValue;
+import me.nekosarekawaii.foxglove.value.values.number.slider.SliderDoubleValue;
+import me.nekosarekawaii.foxglove.value.values.number.slider.SliderIntegerValue;
 
 import java.awt.*;
 

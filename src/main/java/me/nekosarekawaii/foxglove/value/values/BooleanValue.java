@@ -1,6 +1,7 @@
-package me.nekosarekawaii.foxglove.value.value;
+package me.nekosarekawaii.foxglove.value.values;
 
 import com.google.gson.JsonObject;
+import imgui.ImGui;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.value.Value;
 
@@ -18,6 +19,13 @@ public class BooleanValue extends Value<Boolean> {
     @Override
     public void onConfigSave(final JsonObject valueObject) {
         valueObject.addProperty("value", getValue());
+    }
+
+    @Override
+    public void render() {
+        if (ImGui.checkbox(getName(), getValue())) {
+            setValue(!getValue());
+        }
     }
 
 }

@@ -1,9 +1,10 @@
-package me.nekosarekawaii.foxglove.value.value.number;
+package me.nekosarekawaii.foxglove.value.values.number;
 
 import com.google.gson.JsonObject;
+import imgui.ImGui;
+import imgui.type.ImDouble;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.value.NumberValue;
-import me.nekosarekawaii.foxglove.value.Value;
 
 public class DoubleValue extends NumberValue<Double> {
 
@@ -23,6 +24,15 @@ public class DoubleValue extends NumberValue<Double> {
     @Override
     public void onConfigSave(JsonObject valueObject) {
         valueObject.addProperty("value", getValue());
+    }
+
+    @Override
+    public void render() {
+        final ImDouble imDouble = new ImDouble(getValue());
+
+        if (ImGui.inputDouble(getName(), imDouble, getStep())) {
+            setValue(imDouble.get());
+        }
     }
 
 }
