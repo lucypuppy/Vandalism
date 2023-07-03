@@ -8,10 +8,10 @@ import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import me.nekosarekawaii.foxglove.config.ConfigManager;
-import me.nekosarekawaii.foxglove.config.impl.MainConfig;
+import me.nekosarekawaii.foxglove.creativetab.CreativeTabRegistry;
 import me.nekosarekawaii.foxglove.event.*;
-import me.nekosarekawaii.foxglove.feature.FeatureRegistry;
-import me.nekosarekawaii.foxglove.feature.impl.command.CommandHandler;
+import me.nekosarekawaii.foxglove.feature.impl.command.CommandRegistry;
+import me.nekosarekawaii.foxglove.feature.impl.module.ModuleRegistry;
 import me.nekosarekawaii.foxglove.gui.imgui.ImGUIMenu;
 import me.nekosarekawaii.foxglove.gui.imgui.impl.MainMenu;
 import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
@@ -37,27 +37,28 @@ public class Foxglove implements MinecraftWrapper, ClientListener, KeyboardListe
 
 	private final String name, lowerCaseName, version, author, windowTitle;
 
-	private final Color color;
-	private final int colorRGB;
+    private final Color color;
+    private final int colorRGB;
 
-	private final Logger logger;
+    private final Logger logger;
 
-	private final File dir;
+    private final File dir;
 
-	private final boolean firstStart, jvmDebugMode;
+    private final boolean firstStart, jvmDebugMode;
 
-	private FeatureRegistry features;
-	private CommandHandler commandHandler;
+    private ModuleRegistry moduleRegistry;
+    private CommandRegistry commandRegistry;
+    private CreativeTabRegistry creativeTabRegistry;
 
-	private ConfigManager configManager;
+    private ConfigManager configManager;
 
-	public boolean blockKeyEvent;
+    public boolean blockKeyEvent;
 
-	private ImGuiImplGl3 imGuiImplGl3;
-	private ImGuiImplGlfw imGuiImplGlfw;
-	private ImGUIMenu currentImGUIMenu;
+    private ImGuiImplGl3 imGuiImplGl3;
+    private ImGuiImplGlfw imGuiImplGlfw;
+    private ImGUIMenu currentImGUIMenu;
 
-	public Foxglove() {
+    public Foxglove() {
 		this.name = "Foxglove";
 		this.lowerCaseName = this.name.toLowerCase();
 		this.version = "1.0.0";
@@ -81,28 +82,29 @@ public class Foxglove implements MinecraftWrapper, ClientListener, KeyboardListe
 				this.author,
 				this.jvmDebugMode ? " - JVM Debug Mode" : ""
 		);
-		this.blockKeyEvent = false;
-		DietrichEvents2.global().subscribe(ClientEvent.ID, this);
+        this.blockKeyEvent = false;
+        this.creativeTabRegistry = new CreativeTabRegistry();
+        DietrichEvents2.global().subscribe(ClientEvent.ID, this);
 		DietrichEvents2.global().subscribe(OpenScreenEvent.ID, this);
 	}
 
 	private void start() {
-		this.logger.info("Starting...");
-		this.logger.info("Version: {}", this.version);
-		this.logger.info("Made by {}", this.author);
-		this.logger.info("Loading Features...");
-		this.features = new FeatureRegistry();
-		this.commandHandler = new CommandHandler();
-		this.logger.info("Features loaded.");
-		this.logger.info("Loading ImGUI Renderer...");
-		this.imGuiImplGl3 = new ImGuiImplGl3();
-		this.imGuiImplGlfw = new ImGuiImplGlfw();
-		ImGui.createContext();
-		ImPlot.createContext();
-		final ImGuiIO imGuiIO = ImGui.getIO();
-		imGuiIO.setConfigFlags(ImGuiConfigFlags.DockingEnable);
-		imGuiIO.setFontGlobalScale(1f);
-		imGuiIO.setIniFilename(this.dir.getName() + "/imgui.ini");
+        this.logger.info("Starting...");
+        this.logger.info("Version: {}", this.version);
+        this.logger.info("Made by {}", this.author);
+        this.logger.info("Loading Features...");
+        this.moduleRegistry = new ModuleRegistry();
+        this.commandRegistry = new CommandRegistry();
+        this.logger.info("Features loaded.");
+        this.logger.info("Loading ImGUI Renderer...");
+        this.imGuiImplGl3 = new ImGuiImplGl3();
+        this.imGuiImplGlfw = new ImGuiImplGlfw();
+        ImGui.createContext();
+        ImPlot.createContext();
+        final ImGuiIO imGuiIO = ImGui.getIO();
+        imGuiIO.setConfigFlags(ImGuiConfigFlags.DockingEnable);
+        imGuiIO.setFontGlobalScale(1f);
+        imGuiIO.setIniFilename(this.dir.getName() + "/imgui.ini");
 		this.imGuiImplGlfw.init(mc().getWindow().getHandle(), true);
 		this.imGuiImplGl3.init();
 		this.logger.info("ImGUI Renderer loaded.");
@@ -220,31 +222,35 @@ public class Foxglove implements MinecraftWrapper, ClientListener, KeyboardListe
 
 	public File getDir() {
 		return this.dir;
-	}
+    }
 
-	public boolean isFirstStart() {
-		return this.firstStart;
-	}
+    public boolean isFirstStart() {
+        return this.firstStart;
+    }
 
-	public boolean isJvmDebugMode() {
-		return this.jvmDebugMode;
-	}
+    public boolean isJvmDebugMode() {
+        return this.jvmDebugMode;
+    }
 
-	public FeatureRegistry getFeatures() {
-		return this.features;
-	}
+    public ModuleRegistry getModuleRegistry() {
+        return this.moduleRegistry;
+    }
 
-	public CommandHandler getCommandHandler() {
-		return this.commandHandler;
-	}
+    public CommandRegistry getCommandRegistry() {
+        return this.commandRegistry;
+    }
 
-	public String getWindowTitle() {
-		return this.windowTitle;
-	}
+    public CreativeTabRegistry getCreativeTabRegistry() {
+        return this.creativeTabRegistry;
+    }
 
-	public ImGUIMenu getCurrentImGUIMenu() {
-		return this.currentImGUIMenu;
-	}
+    public String getWindowTitle() {
+        return this.windowTitle;
+    }
+
+    public ImGUIMenu getCurrentImGUIMenu() {
+        return this.currentImGUIMenu;
+    }
 
 	public void setCurrentImGUIMenu(final ImGUIMenu currentImGUIMenu) {
 		this.currentImGUIMenu = currentImGUIMenu;

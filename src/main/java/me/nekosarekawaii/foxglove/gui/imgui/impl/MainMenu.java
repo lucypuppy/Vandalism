@@ -39,7 +39,7 @@ public class MainMenu extends ImGUIMenu {
     public void render(final ImGuiIO imGuiIO) {
         if (ImGui.begin(Foxglove.getInstance().getName())) {
             ImGui.setWindowSize(0, 0);
-            final FeatureList<Module> modules = Foxglove.getInstance().getFeatures().getModules();
+            final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();
             if (ImGui.beginListBox("##general", 150, 510)) {
                 for (int i = 0; i < 3; i++) ImGui.spacing();
                 ImGui.sameLine();

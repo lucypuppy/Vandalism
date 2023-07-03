@@ -24,7 +24,7 @@ public abstract class MixinClientPlayNetworkHandler {
         final String prefix = Foxglove.getInstance().getConfigManager().getMainConfig().getCommandPrefix();
         if (message.startsWith(prefix)) {
             try {
-                Foxglove.getInstance().getCommandHandler().commandDispatch(message.substring(prefix.length()));
+                Foxglove.getInstance().getCommandRegistry().commandDispatch(message.substring(prefix.length()));
             } catch (final CommandSyntaxException e) {
                 ChatUtils.errorChatMessage(e.getMessage());
             }

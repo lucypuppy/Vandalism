@@ -25,7 +25,7 @@ public class ModuleArgumentType implements ArgumentType<Module> {
 
     private static final DynamicCommandExceptionType notExisting = new DynamicCommandExceptionType(name -> Text.literal("No Module with the name " + name + " has been found!"));
 
-    private static final Collection<String> examples = Foxglove.getInstance().getFeatures().getModules()
+    private static final Collection<String> examples = Foxglove.getInstance().getModuleRegistry().getModules()
             .stream()
             .limit(3)
             .map(Feature::getName)
@@ -61,7 +61,7 @@ public class ModuleArgumentType implements ArgumentType<Module> {
     @Override
     public Module parse(final StringReader reader) throws CommandSyntaxException {
         final String argument = reader.readString().replace("-", " ");
-        final Module module = Foxglove.getInstance().getFeatures().getModules().get(argument);
+        final Module module = Foxglove.getInstance().getModuleRegistry().getModules().get(argument);
         if (module == null) {
             throw notExisting.create(argument);
         }
@@ -78,7 +78,7 @@ public class ModuleArgumentType implements ArgumentType<Module> {
      */
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
-        return CommandSource.suggestMatching(Foxglove.getInstance().getFeatures().getModules().stream().map(feature -> feature.getName().replace(" ", "-")), builder);
+        return CommandSource.suggestMatching(Foxglove.getInstance().getModuleRegistry().getModules().stream().map(feature -> feature.getName().replace(" ", "-")), builder);
     }
 
     /**
