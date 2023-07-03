@@ -11,6 +11,7 @@
     "net.minecraft.client.gui.screen.MixinChatInputSuggestor",
     "net.minecraft.client.gui.screen.MixinGameMenuScreen",
     "net.minecraft.client.gui.screen.MixinScreen",
+    "net.minecraft.client.gui.screen.multiplayer.MixinServerEntry",
     "net.minecraft.client.gui.widget.MixinEntryListWidget",
     "net.minecraft.client.network.MixinAllowedAddressResolver",
     "net.minecraft.client.network.MixinClientPlayNetworkHandler",

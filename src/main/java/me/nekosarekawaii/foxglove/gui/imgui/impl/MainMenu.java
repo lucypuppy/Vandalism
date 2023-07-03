@@ -23,6 +23,8 @@ public class MainMenu extends ImGUIMenu {
         currentModule = null;
     }
 
+    private static boolean showConfig = true;
+
     @Override
     public void render(final ImGuiIO imGuiIO) {
         if (ImGui.begin(Foxglove.getInstance().getName())) {
@@ -39,11 +41,10 @@ public class MainMenu extends ImGUIMenu {
                 ImGui.text(Foxglove.getInstance().getName() + " " + Foxglove.getInstance().getVersion());
 
                 for (int i = 0; i < 2; i++) ImGui.spacing();
-				/*if (ImGui.button("Config", 142, 35)) {
-					this.resetModuleView();
-				} else if (ImGui.button("Accounts", 142, 35)) {
-					this.resetModuleView();
-				}*/
+                if (ImGui.button("Config", 142, 35)) {
+                    this.resetModuleView();
+                    showConfig = true;
+                }
                 if (!modules.isEmpty()) {
                     for (int i = 0; i < 5; i++) ImGui.spacing();
                     ImGui.sameLine();
@@ -67,7 +68,7 @@ public class MainMenu extends ImGUIMenu {
                 }
                 ImGui.endListBox();
             }
-            if (currentFeatureCategory != null) {
+            if (!showConfig && currentFeatureCategory != null) {
                 ImGui.sameLine();
 
                 if (ImGui.beginListBox("##modules", 200, 0)) {
