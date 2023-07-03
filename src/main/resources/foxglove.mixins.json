@@ -14,7 +14,9 @@
     "net.minecraft.client.gui.widget.MixinEntryListWidget",
     "net.minecraft.client.network.MixinAllowedAddressResolver",
     "net.minecraft.client.network.MixinClientPlayNetworkHandler",
+    "net.minecraft.client.render.entity.MixinLivingEntityRenderer",
     "net.minecraft.client.util.telemetry.MixinTelemetryManager",
+    "net.minecraft.client.world.MixinClientWorld",
     "net.minecraft.network.MixinClientConnection"
   ],
   "injectors": {
