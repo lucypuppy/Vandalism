@@ -29,10 +29,11 @@ public class CreativeTabRegistry {
     }
 
     public void register(final Item dummyItem) {
-        for (final CreativeTab creativeTab : this.creativeTabs) {
+        for (int i = 0; i < this.creativeTabs.size(); i++) {
+            final CreativeTab creativeTab = this.creativeTabs.get(i);
             final ItemGroup itemGroup = creativeTab.generate(dummyItem);
             creativeTab.setItemGroup(itemGroup);
-            Registry.register(Registries.ITEM_GROUP, new Identifier(Foxglove.getInstance().getLowerCaseName(), creativeTab.identifier()), itemGroup);
+            Registry.register(Registries.ITEM_GROUP, new Identifier(Foxglove.getInstance().getLowerCaseName(), Integer.toString(i)), itemGroup);
         }
     }
 

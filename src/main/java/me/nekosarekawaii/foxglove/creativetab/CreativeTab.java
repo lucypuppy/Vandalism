@@ -18,8 +18,6 @@ public abstract class CreativeTab {
         return this.itemGroup;
     }
 
-    public abstract String identifier();
-
     public abstract Text displayName();
 
     public ItemStack icon() {
