@@ -38,8 +38,8 @@ public class TrueSightModule extends Module implements LivingEntityListener {
             event.green = color.getGreen() / 255f;
             event.blue = color.getBlue() / 255f;
             event.alpha = color.getAlpha() / 255f;
-            event.showBody = event.alpha == 1.0f;
-            event.translucent = event.alpha < 1.0f;
+            if (event.alpha < 1.0f) event.translucent = true;
+            else event.showBody = true;
         }
     }
 
