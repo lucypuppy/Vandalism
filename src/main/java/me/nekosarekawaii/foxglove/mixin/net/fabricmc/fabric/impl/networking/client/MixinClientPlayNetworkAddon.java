@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ClientPlayNetworkAddon.class)
+@Mixin(value = ClientPlayNetworkAddon.class, remap = false)
 public abstract class MixinClientPlayNetworkAddon {
 
     @Inject(method = "invokeRegisterEvent", at = @At("HEAD"), cancellable = true)
