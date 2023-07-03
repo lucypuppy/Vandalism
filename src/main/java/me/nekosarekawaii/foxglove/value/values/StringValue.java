@@ -13,21 +13,20 @@ public class StringValue extends Value<String> {
     }
 
     @Override
-    public void onConfigLoad(JsonObject valueObject) {
+    public void onConfigLoad(final JsonObject valueObject) {
         setValue(valueObject.get("value").getAsString());
     }
 
     @Override
-    public void onConfigSave(JsonObject valueObject) {
+    public void onConfigSave(final JsonObject valueObject) {
         valueObject.addProperty("value", getValue());
     }
 
     @Override
     public void render() {
-        final ImString imString = new ImString(getValue());
-
-        if (ImGui.inputText(getName(), imString)) {
-            setValue(imString.get());
+        final ImString imString = new ImString(this.getValue());
+        if (ImGui.inputText(this.getName(), imString)) {
+            this.setValue(imString.get());
         }
     }
 

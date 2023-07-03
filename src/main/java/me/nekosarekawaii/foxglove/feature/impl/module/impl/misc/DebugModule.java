@@ -24,7 +24,7 @@ public class DebugModule extends Module implements RenderListener {
     }
 
     @Override
-    public void onRender2DInGame(DrawContext context, float delta, Window window) {
+    public void onRender2DInGame(final DrawContext context, final float delta, final Window window) {
         Foxglove.getInstance().imGuiRenderer.addRenderInterface(io -> {
             if (ImGui.begin("asdas")) {
 

@@ -7,7 +7,9 @@ import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.TestModul
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.AntiChatContextModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.AntiServerBlockListModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.ExploitFixerModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.AntiFabricModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.AntiTelemetryModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.BrandChangerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.DebugModule;
 
 public class ModuleRegistry {
@@ -48,6 +50,18 @@ public class ModuleRegistry {
         return this.debugModule;
     }
 
+    private AntiFabricModule antiFabricModule;
+
+    public AntiFabricModule getAntiFabricModule() {
+        return this.antiFabricModule;
+    }
+
+    private BrandChangerModule brandChangerModule;
+
+    public BrandChangerModule getBrandChangerModule() {
+        return this.brandChangerModule;
+    }
+
     private final FeatureList<Module> modules;
 
     public ModuleRegistry() {
@@ -78,8 +92,10 @@ public class ModuleRegistry {
                 this.testModule = new TestModule(),
                 this.antiChatContextModule = new AntiChatContextModule(),
                 this.antiServerBlockListModule = new AntiServerBlockListModule(),
-                this.exploitFixerModule = new ExploitFixerModule(),
                 this.antiTelemetryModule = new AntiTelemetryModule(),
+                this.exploitFixerModule = new ExploitFixerModule(),
+                this.antiFabricModule = new AntiFabricModule(),
+                this.brandChangerModule = new BrandChangerModule(),
                 this.debugModule = new DebugModule()
         );
     }
