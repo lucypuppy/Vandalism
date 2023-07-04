@@ -14,6 +14,7 @@ public abstract class Value<V> {
     private BooleanSupplier visible;
     private Consumer<V> valueChangeConsumer, valueChangedConsumer;
     private final String saveIdent;
+    private final IValue parent;
 
     public Value(final String name, final String description, final IValue parent, final V defaultValue) {
         this.name = name;
@@ -23,6 +24,7 @@ public abstract class Value<V> {
         this.defaultValue = defaultValue;
         this.setValue(defaultValue);
 
+        this.parent = parent;
         parent.getValues().add(this);
     }
 
@@ -38,10 +40,11 @@ public abstract class Value<V> {
         if (this.valueChangedConsumer != null)
             this.valueChangedConsumer.accept(value);
 
-
         if (Foxglove.getInstance().getConfigManager() != null) {
-            //TODO: Make value saving only available for the current config that is used.
-            Foxglove.getInstance().getConfigManager().save();
+            if (parent.getConfig() == null)
+                throw new IllegalStateException("Value Config is null");
+
+            Foxglove.getInstance().getConfigManager().save(this.parent.getConfig());
         }
     }
 

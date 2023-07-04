@@ -49,35 +49,23 @@ public class ConfigManager {
         }
     }
 
-    public void save(final Config... configs) {
-        for (final Config config : configs) {
-            try {
-                final FileWriter fileWriter = new FileWriter(config.file);
-                final PrintWriter printWriter = new PrintWriter(fileWriter);
+    public void save(final Config config) {
+        try {
+            final FileWriter fileWriter = new FileWriter(config.file);
+            final PrintWriter printWriter = new PrintWriter(fileWriter);
 
-                printWriter.println(this.gson.toJson(config.save()));
+            printWriter.println(this.gson.toJson(config.save()));
 
-                printWriter.close();
-                fileWriter.close();
-            } catch (final IOException e) {
-                Foxglove.getInstance().getLogger().error("Failed to save Config: " + config.file.getName(), e);
-            }
+            printWriter.close();
+            fileWriter.close();
+        } catch (final IOException e) {
+            Foxglove.getInstance().getLogger().error("Failed to save Config: " + config.file.getName(), e);
         }
     }
 
     public void save() {
         for (final Config config : this.configs) {
-            try {
-                final FileWriter fileWriter = new FileWriter(config.file);
-                final PrintWriter printWriter = new PrintWriter(fileWriter);
-
-                printWriter.println(this.gson.toJson(config.save()));
-
-                printWriter.close();
-                fileWriter.close();
-            } catch (final IOException e) {
-                Foxglove.getInstance().getLogger().error("Failed to save Config: " + config.file.getName(), e);
-            }
+            save(config);
         }
     }
 

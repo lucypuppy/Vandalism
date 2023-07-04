@@ -36,14 +36,19 @@ public class MainConfig extends Config {
     public JsonObject save() throws IOException {
         final JsonObject configObject = new JsonObject();
         final JsonArray valuesArray = new JsonArray();
+
         for (final Value<?> value : this.getValues()) {
             final JsonObject valueObject = new JsonObject();
+
             if (value != null) {
                 valueObject.addProperty("name", value.getHashIdent());
+
                 value.onConfigSave(valueObject);
+
                 valuesArray.add(valueObject);
             }
         }
+
         configObject.add("values", valuesArray);
         return configObject;
     }
@@ -52,14 +57,17 @@ public class MainConfig extends Config {
     public void load(final JsonObject jsonObject) throws IOException {
         if (jsonObject.has("values")) {
             final JsonArray valuesArray = jsonObject.getAsJsonArray("values");
+
             for (final JsonElement valueElement : valuesArray) {
                 final JsonObject valueObject = valueElement.getAsJsonObject();
                 final String valueName = valueObject.get("name").getAsString();
                 final Value<?> value = this.getValue(valueName);
+
                 if (value == null) {
                     Foxglove.getInstance().getLogger().error("Couldn't find Main Config value: " + valueName);
                     continue;
                 }
+
                 value.onConfigLoad(valueObject);
             }
         }
