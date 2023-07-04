@@ -1,6 +1,5 @@
 package me.nekosarekawaii.foxglove.feature.impl.module;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.feature.FeatureList;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.TestModule;
@@ -81,24 +80,6 @@ public class ModuleRegistry {
     public ModuleRegistry() {
         this.modules = new FeatureList<>();
         this.register();
-    }
-
-    public void reload() {
-        final ObjectArrayList<String> enabledModules = new ObjectArrayList<>();
-        for (final Module module : this.modules) {
-            if (module.isEnabled()) {
-                module.disable();
-                enabledModules.add(module.getName());
-            }
-        }
-        this.modules.clear();
-        this.register();
-        for (final String enabledModule : enabledModules) {
-            final Module module = this.getModules().get(enabledModule);
-            if (module.isEnabled()) {
-                module.enable();
-            }
-        }
     }
 
     private void register() {

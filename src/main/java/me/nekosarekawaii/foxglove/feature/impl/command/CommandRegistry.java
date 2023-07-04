@@ -5,7 +5,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.feature.FeatureList;
-import me.nekosarekawaii.foxglove.feature.impl.command.impl.development.ReloadCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.development.TestCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.ChatClearCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.FeaturesCommand;
@@ -28,17 +27,11 @@ public class CommandRegistry implements MinecraftWrapper {
         this.register();
     }
 
-    public void reload() {
-        this.commands.clear();
-        this.register();
-    }
-
     private void register() {
         this.commandDispatcher = new CommandDispatcher<>();
         this.commandSource = new ClientCommandSource(null, mc());
         this.registerCommands(
                 new TestCommand(),
-                new ReloadCommand(),
                 new FeaturesCommand(),
                 new ChatClearCommand(),
                 new ToggleModuleCommand(),
