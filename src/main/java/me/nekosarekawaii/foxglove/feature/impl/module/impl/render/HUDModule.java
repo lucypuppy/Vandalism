@@ -40,19 +40,33 @@ public class HUDModule extends Module implements Render2DListener {
     }
 
     private void render() {
-        if (mc().player == null) return;
+        if (mc().player == null)
+            return;
+
         Foxglove.getInstance().getImGuiRenderer().addRenderInterface(io -> {
-            if (mc().options.debugEnabled || mc().options.hudHidden) return;
+            if (mc().options.debugEnabled || mc().options.hudHidden)
+                return;
+
             if (this.moduleList.getValue()) {
-                io.addConfigFlags(ImGuiWindowFlags.NoDecoration);
-                if (ImGui.begin("Modules")) {
+                int windowFlags = ImGuiWindowFlags.NoCollapse;
+
+                if (mc().mouse.isCursorLocked()) {
+                    windowFlags |= ImGuiWindowFlags.NoTitleBar;
+                    windowFlags |= ImGuiWindowFlags.NoBackground;
+                    windowFlags |= ImGuiWindowFlags.NoMove;
+                    windowFlags |= ImGuiWindowFlags.NoResize;
+                }
+
+                if (ImGui.begin("Modules", windowFlags)) {
                     ImGui.setWindowSize(0, 0);
+
                     final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();
                     for (final Module module : modules) {
                         if (module != this && module.isEnabled()) {
                             ImGui.text(module.getName());
                         }
                     }
+
                     ImGui.end();
                 }
             }

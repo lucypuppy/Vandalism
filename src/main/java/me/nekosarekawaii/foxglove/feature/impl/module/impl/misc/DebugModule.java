@@ -3,6 +3,7 @@ package me.nekosarekawaii.foxglove.feature.impl.module.impl.misc;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import imgui.ImGui;
 import imgui.extension.implot.ImPlot;
+import imgui.flag.ImGuiWindowFlags;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.event.Render2DListener;
 import me.nekosarekawaii.foxglove.event.TickListener;
@@ -47,7 +48,16 @@ public class DebugModule extends Module implements Render2DListener, TickListene
             return;
 
         Foxglove.getInstance().getImGuiRenderer().addRenderInterface(io -> {
-            if (ImGui.begin("RoflGraph")) {
+            int windowFlags = ImGuiWindowFlags.NoCollapse;
+
+            if (mc().mouse.isCursorLocked()) {
+                windowFlags |= ImGuiWindowFlags.NoTitleBar;
+                windowFlags |= ImGuiWindowFlags.NoBackground;
+                windowFlags |= ImGuiWindowFlags.NoMove;
+                windowFlags |= ImGuiWindowFlags.NoResize;
+            }
+
+            if (ImGui.begin("RoflGraph", windowFlags)) {
                 if (ImPlot.beginPlot("lol")) {
                     ImPlot.plotLine("FPS", this.graphSize, this.fpsHistory.toArray(Integer[]::new));
                     ImPlot.endPlot();
