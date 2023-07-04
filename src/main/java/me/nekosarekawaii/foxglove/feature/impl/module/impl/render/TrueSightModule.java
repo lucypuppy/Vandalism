@@ -14,9 +14,9 @@ import java.awt.*;
 @ModuleInfo(name = "True Sight", description = "Makes invisible blocks and entities visible.", category = FeatureCategory.RENDER)
 public class TrueSightModule extends Module implements LivingEntityListener {
 
-    public final BooleanValue blocks = new BooleanValue("Blocks", "Makes invisible blocks visible.", this, true);
+    public final Value<Boolean> blocks = new BooleanValue("Blocks", "Makes invisible blocks visible.", this, true);
 
-    private final BooleanValue entities = new BooleanValue("Entities", "Makes invisible entities visible.", this, true);
+    private final Value<Boolean> entities = new BooleanValue("Entities", "Makes invisible entities visible.", this, true);
 
     private final Value<Color> entityColor = new ColorValue("Entity Color", "The Color of invisible entities.", this, new Color(255, 255, 255, 127)).visibleConsumer(this.entities::getValue);
 

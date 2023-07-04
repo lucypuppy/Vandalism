@@ -5,9 +5,9 @@ import imgui.ImGui;
 import imgui.flag.ImGuiDataType;
 import imgui.type.ImFloat;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
-import me.nekosarekawaii.foxglove.value.SliderValue;
+import me.nekosarekawaii.foxglove.value.SliderNumberValue;
 
-public class SliderFloatValue extends SliderValue<Float> {
+public class SliderFloatValue extends SliderNumberValue<Float> {
 
     public SliderFloatValue(final String name, final String description, final Module parent, final float defaultValue,
                             final float min, final float max, final String format) {

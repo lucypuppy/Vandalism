@@ -3,16 +3,16 @@ package me.nekosarekawaii.foxglove.value.values.number;
 import com.google.gson.JsonObject;
 import imgui.ImGui;
 import imgui.type.ImDouble;
-import me.nekosarekawaii.foxglove.feature.impl.module.Module;
-import me.nekosarekawaii.foxglove.value.NumberValue;
+import me.nekosarekawaii.foxglove.value.IValue;
+import me.nekosarekawaii.foxglove.value.StepNumberValue;
 
-public class DoubleValue extends NumberValue<Double> {
+public class DoubleValue extends StepNumberValue<Double> {
 
-    public DoubleValue(final String name, final String description, final Module parent, final double defaultValue, final double step) {
+    public DoubleValue(final String name, final String description, final IValue parent, final double defaultValue, final double step) {
         super(name, description, parent, defaultValue, step);
     }
 
-    public DoubleValue(final String name, final String description, final Module parent, final double defaultValue) {
+    public DoubleValue(final String name, final String description, final IValue parent, final double defaultValue) {
         this(name, description, parent, defaultValue, 1.0);
     }
 

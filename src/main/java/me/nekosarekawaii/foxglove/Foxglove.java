@@ -3,7 +3,9 @@ package me.nekosarekawaii.foxglove;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import me.nekosarekawaii.foxglove.config.ConfigManager;
 import me.nekosarekawaii.foxglove.creativetab.CreativeTabRegistry;
-import me.nekosarekawaii.foxglove.event.*;
+import me.nekosarekawaii.foxglove.event.KeyboardListener;
+import me.nekosarekawaii.foxglove.event.Render2DListener;
+import me.nekosarekawaii.foxglove.event.TickListener;
 import me.nekosarekawaii.foxglove.feature.impl.command.CommandRegistry;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleRegistry;
 import me.nekosarekawaii.foxglove.gui.imgui.ImGUIMenu;
@@ -11,8 +13,6 @@ import me.nekosarekawaii.foxglove.gui.imgui.impl.MainMenu;
 import me.nekosarekawaii.foxglove.util.imgui.ImGuiRenderer;
 import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.util.Window;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ import java.awt.*;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 
-public class Foxglove implements MinecraftWrapper, ClientListener, KeyboardListener, TickListener, Render2DListener, ScreenListener {
+public class Foxglove implements MinecraftWrapper, KeyboardListener, TickListener, Render2DListener {
 
     private final static Foxglove instance = new Foxglove();
 
@@ -41,13 +41,11 @@ public class Foxglove implements MinecraftWrapper, ClientListener, KeyboardListe
 
     private final boolean firstStart, jvmDebugMode;
 
+    private final CreativeTabRegistry creativeTabRegistry;
     private ModuleRegistry moduleRegistry;
     private CommandRegistry commandRegistry;
-    private CreativeTabRegistry creativeTabRegistry;
 
     private ConfigManager configManager;
-
-    public boolean blockKeyEvent;
 
     public ImGuiRenderer imGuiRenderer;
 
@@ -62,7 +60,7 @@ public class Foxglove implements MinecraftWrapper, ClientListener, KeyboardListe
         this.colorRGB = this.color.getRGB();
         this.logger = LoggerFactory.getLogger(this.name);
         this.dir = new File(mc().runDirectory, this.lowerCaseName);
-        this.firstStart = !this.dir.exists();
+        this.firstStart = !this.dir.exists(); //TODO: Make better first start check.
         if (this.firstStart) {
             if (!this.dir.mkdirs()) {
                 this.logger.error("Failed to create Mod directory!");
@@ -77,13 +75,10 @@ public class Foxglove implements MinecraftWrapper, ClientListener, KeyboardListe
                 this.author,
                 this.jvmDebugMode ? " - JVM Debug Mode" : ""
         );
-        this.blockKeyEvent = false;
         this.creativeTabRegistry = new CreativeTabRegistry();
-        DietrichEvents2.global().subscribe(ClientEvent.ID, this);
-        DietrichEvents2.global().subscribe(OpenScreenEvent.ID, this);
     }
 
-    private void start() {
+    public void start() {
         this.logger.info("Starting...");
         this.logger.info("Version: {}", this.version);
         this.logger.info("Made by {}", this.author);
@@ -113,31 +108,13 @@ public class Foxglove implements MinecraftWrapper, ClientListener, KeyboardListe
     }
 
     @Override
-    public void onStart() {
-        this.start();
-    }
-
-    @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         if (action != GLFW.GLFW_PRESS) return;
         if (this.currentImGUIMenu != null && !this.currentImGUIMenu.keyPress(key, scanCode, modifiers)) {
             return;
         }
-        if (this.configManager.getMainConfig().getMainMenuKeyCode() == key) {
-            if (!(this.currentImGUIMenu instanceof MainMenu)) {
-                this.setCurrentImGUIMenu(new MainMenu());
-            }
-            return;
-        }
-        if (this.blockKeyEvent || mc().currentScreen != null) return;
-        final ClientPlayNetworkHandler playNetworkHandler = mc().getNetworkHandler();
-        if (playNetworkHandler != null) {
-            this.configManager.getMainConfig().getChatMacros().object2ObjectEntrySet().fastForEach(macro -> {
-                if (macro.getValue() == key) {
-                    if (macro.getKey().startsWith("/")) playNetworkHandler.sendChatCommand(macro.getKey());
-                    else playNetworkHandler.sendChatMessage(macro.getKey());
-                }
-            });
+        if (this.configManager.getMainConfig().mainMenuKeyCode.getValue() == key && !(this.currentImGUIMenu instanceof MainMenu)) {
+            this.setCurrentImGUIMenu(new MainMenu());
         }
     }
 
@@ -165,14 +142,6 @@ public class Foxglove implements MinecraftWrapper, ClientListener, KeyboardListe
     public void onRender2DInGame(final DrawContext context, final float delta, final Window window) {
         if (mc().currentScreen == null) {
             this.renderImGuiContext();
-        }
-    }
-
-    @Override
-    public void onOpenScreen(final OpenScreenEvent event) {
-        if (event.screen instanceof TitleScreen) {
-            event.cancel();
-            mc().setScreen(new me.nekosarekawaii.foxglove.gui.screen.TitleScreen());
         }
     }
 

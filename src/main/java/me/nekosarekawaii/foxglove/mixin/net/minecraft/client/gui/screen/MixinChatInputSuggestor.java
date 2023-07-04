@@ -52,7 +52,7 @@ public abstract class MixinChatInputSuggestor {
     )
     public void onRefresh(final CallbackInfo ci, final String string, final StringReader reader) {
         final CommandRegistry commandRegistry = Foxglove.getInstance().getCommandRegistry();
-        final String prefix = Foxglove.getInstance().getConfigManager().getMainConfig().getCommandPrefix();
+        final String prefix = Foxglove.getInstance().getConfigManager().getMainConfig().commandPrefix.getValue();
         final int length = prefix.length();
         if (reader.canRead(length) && reader.getString().startsWith(prefix, reader.getCursor())) {
             reader.setCursor(reader.getCursor() + length);

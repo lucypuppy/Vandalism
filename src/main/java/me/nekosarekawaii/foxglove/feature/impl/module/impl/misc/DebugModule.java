@@ -72,4 +72,5 @@ public class DebugModule extends Module implements Render2DListener, TickListene
 
         this.lastFPS = curFPS;
     }
+
 }

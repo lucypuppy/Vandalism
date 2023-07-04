@@ -3,66 +3,65 @@ package me.nekosarekawaii.foxglove.config.impl;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.config.Config;
+import me.nekosarekawaii.foxglove.value.Value;
+import me.nekosarekawaii.foxglove.value.values.KeyInputValue;
+import me.nekosarekawaii.foxglove.value.values.StringValue;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.IOException;
 
 public class MainConfig extends Config {
 
-    private int mainMenuKeyCode;
-    private String commandPrefix;
-    private final Object2ObjectOpenHashMap<String, Integer> chatMacros;
+    public final Value<Integer> mainMenuKeyCode = new KeyInputValue(
+            "Main Menu Key",
+            "Change the key to open this Menu.",
+            this,
+            GLFW.GLFW_KEY_RIGHT_SHIFT
+    );
+
+    public final Value<String> commandPrefix = new StringValue(
+            "Command Prefix",
+            "Change the prefix to run the commands of the Mod.",
+            this,
+            "."
+    );
 
     public MainConfig() {
         super(Foxglove.getInstance().getDir(), "main");
-        this.mainMenuKeyCode = GLFW.GLFW_KEY_RIGHT_SHIFT;
-        this.commandPrefix = ".";
-        this.chatMacros = new Object2ObjectOpenHashMap<>();
-        this.chatMacros.put(".togglemodule test", GLFW.GLFW_KEY_J);
-    }
-
-    public int getMainMenuKeyCode() {
-        return this.mainMenuKeyCode;
-    }
-
-
-    public String getCommandPrefix() {
-        return this.commandPrefix;
-    }
-
-
-    public Object2ObjectOpenHashMap<String, Integer> getChatMacros() {
-        return this.chatMacros;
     }
 
     @Override
     public JsonObject save() throws IOException {
-        final JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("mainMenuKeyCode", this.mainMenuKeyCode);
-        jsonObject.addProperty("commandPrefix", this.commandPrefix);
-        final JsonArray chatMacrosJsonArray = new JsonArray();
-        for (final Object2ObjectOpenHashMap.Entry<String, Integer> entry : this.chatMacros.object2ObjectEntrySet()) {
-            final JsonObject chatMacroJsonObject = new JsonObject();
-            chatMacroJsonObject.addProperty("command", entry.getKey());
-            chatMacroJsonObject.addProperty("keyCode", entry.getValue());
-            chatMacrosJsonArray.add(chatMacroJsonObject);
+        final JsonObject configObject = new JsonObject();
+        final JsonArray valuesArray = new JsonArray();
+        for (final Value<?> value : this.getValues()) {
+            final JsonObject valueObject = new JsonObject();
+            if (value != null) {
+                valueObject.addProperty("name", value.getHashIdent());
+                value.onConfigSave(valueObject);
+                valuesArray.add(valueObject);
+            }
         }
-        jsonObject.add("chatMacros", chatMacrosJsonArray);
-        return jsonObject;
+        configObject.add("values", valuesArray);
+        return configObject;
     }
 
     @Override
     public void load(final JsonObject jsonObject) throws IOException {
-        this.mainMenuKeyCode = jsonObject.get("mainMenuKeyCode").getAsInt();
-        this.commandPrefix = jsonObject.get("commandPrefix").getAsString();
-        final JsonArray chatMacrosJsonArray = jsonObject.get("chatMacros").getAsJsonArray();
-        this.chatMacros.clear();
-        for (final JsonElement jsonElement : chatMacrosJsonArray) {
-            final JsonObject chatMacroJsonObject = jsonElement.getAsJsonObject();
-            this.chatMacros.put(chatMacroJsonObject.get("command").getAsString(), chatMacroJsonObject.get("keyCode").getAsInt());
+        if (jsonObject.has("values")) {
+            final JsonArray valuesArray = jsonObject.getAsJsonArray("values");
+            for (final JsonElement valueElement : valuesArray) {
+                final JsonObject valueObject = valueElement.getAsJsonObject();
+                final String valueName = valueObject.get("name").getAsString();
+                final Value<?> value = this.getValue(valueName);
+                if (value == null) {
+                    Foxglove.getInstance().getLogger().error("Couldn't find Main Config value: " + valueName);
+                    continue;
+                }
+                value.onConfigLoad(valueObject);
+            }
         }
     }
 

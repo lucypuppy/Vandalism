@@ -9,7 +9,6 @@ import me.nekosarekawaii.foxglove.feature.impl.command.impl.development.ReloadCo
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.development.TestCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.ChatClearCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.FeaturesCommand;
-import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.MacroCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.ToggleModuleCommand;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommandSource;
@@ -40,7 +39,6 @@ public class CommandRegistry {
                 new ReloadCommand(),
                 new FeaturesCommand(),
                 new ChatClearCommand(),
-                new MacroCommand(),
                 new ToggleModuleCommand()
         );
     }

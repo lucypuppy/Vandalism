@@ -115,9 +115,9 @@ public class FeaturesCommand extends Command {
                     .append(' ')
                     .append(
                             command.getAliasesString()
-                                    .replace("[", Formatting.DARK_GRAY + "[" + Formatting.YELLOW + Foxglove.getInstance().getConfigManager().getMainConfig().getCommandPrefix() + Formatting.GOLD)
+                                    .replace("[", Formatting.DARK_GRAY + "[" + Formatting.YELLOW + Foxglove.getInstance().getConfigManager().getMainConfig().commandPrefix.getValue() + Formatting.GOLD)
                                     .replace("]", Formatting.DARK_GRAY + "]")
-                                    .replace(", ", Formatting.DARK_GRAY + ", " + Formatting.YELLOW + Foxglove.getInstance().getConfigManager().getMainConfig().getCommandPrefix() + Formatting.GOLD)
+                                    .replace(", ", Formatting.DARK_GRAY + ", " + Formatting.YELLOW + Foxglove.getInstance().getConfigManager().getMainConfig().commandPrefix.getValue() + Formatting.GOLD)
                     )
                     .append(Formatting.RESET);
         }

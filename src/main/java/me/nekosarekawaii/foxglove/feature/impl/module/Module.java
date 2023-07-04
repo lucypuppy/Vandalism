@@ -5,9 +5,10 @@ import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.feature.Feature;
 import me.nekosarekawaii.foxglove.feature.FeatureType;
 import me.nekosarekawaii.foxglove.util.ChatUtils;
+import me.nekosarekawaii.foxglove.value.IValue;
 import me.nekosarekawaii.foxglove.value.Value;
 
-public abstract class Module extends Feature {
+public abstract class Module extends Feature implements IValue {
 
     private boolean enabled;
 
@@ -58,19 +59,9 @@ public abstract class Module extends Feature {
         return this.enabled;
     }
 
+    @Override
     public ObjectArrayList<Value<?>> getValues() {
         return this.values;
-    }
-
-    public Value<?> getValue(final String name) {
-        for (final Value<?> value : this.values) {
-            if (value != null) {
-                if (value.getHashIdent().equalsIgnoreCase(name)) {
-                    return value;
-                }
-            }
-        }
-        return null;
     }
 
     @Override

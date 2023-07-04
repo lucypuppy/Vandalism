@@ -21,7 +21,7 @@ public abstract class MixinClientPlayNetworkHandler {
 
     @Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
     private void onSendChatMessage(final String message, final CallbackInfo ci) {
-        final String prefix = Foxglove.getInstance().getConfigManager().getMainConfig().getCommandPrefix();
+        final String prefix = Foxglove.getInstance().getConfigManager().getMainConfig().commandPrefix.getValue();
         if (message.startsWith(prefix)) {
             try {
                 Foxglove.getInstance().getCommandRegistry().commandDispatch(message.substring(prefix.length()));

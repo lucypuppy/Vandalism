@@ -2,12 +2,12 @@ package me.nekosarekawaii.foxglove.value;
 
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 
-public abstract class SliderValue<T> extends Value<T> {
+public abstract class SliderNumberValue<T extends Number> extends NumberValue<T> {
 
     private final T min, max;
     private final String format;
 
-    public SliderValue(final String name, final String description, final Module parent, final T defaultValue, final T min, final T max, final String format) {
+    public SliderNumberValue(final String name, final String description, final Module parent, final T defaultValue, final T min, final T max, final String format) {
         super(name, description, parent, defaultValue);
 
         this.min = min;
@@ -26,4 +26,5 @@ public abstract class SliderValue<T> extends Value<T> {
     public String getFormat() {
         return this.format;
     }
+
 }

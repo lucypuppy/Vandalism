@@ -6,9 +6,7 @@ import net.minecraft.client.gui.screen.Screen;
 
 public interface ScreenListener extends Listener {
 
-
     void onOpenScreen(final OpenScreenEvent event);
-
 
     class OpenScreenEvent extends CancellableEvent<ScreenListener> {
 

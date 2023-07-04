@@ -5,9 +5,9 @@ import imgui.ImGui;
 import imgui.flag.ImGuiDataType;
 import imgui.type.ImInt;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
-import me.nekosarekawaii.foxglove.value.SliderValue;
+import me.nekosarekawaii.foxglove.value.SliderNumberValue;
 
-public class SliderIntegerValue extends SliderValue<Integer> {
+public class SliderIntegerValue extends SliderNumberValue<Integer> {
 
     public SliderIntegerValue(final String name, final String description, final Module parent, final int defaultValue, final int min, final int max) {
         super(name, description, parent, defaultValue, min, max, "");

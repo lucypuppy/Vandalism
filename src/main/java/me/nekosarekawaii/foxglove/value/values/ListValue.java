@@ -12,22 +12,21 @@ public class ListValue extends Value<String> {
 
     public ListValue(final String name, final String description, final Module parent, final String defaultValue, final String... modes) {
         super(name, description, parent, defaultValue);
-
         this.modes.add(defaultValue);
         this.modes.addAll(new ObjectArrayList<>(modes));
     }
 
     public ObjectArrayList<String> getModes() {
-        return modes;
+        return this.modes;
     }
 
     @Override
-    public void onConfigLoad(JsonObject valueObject) {
-        setValue(valueObject.get("value").getAsString());
+    public void onConfigLoad(final JsonObject valueObject) {
+        this.setValue(valueObject.get("value").getAsString());
     }
 
     @Override
-    public void onConfigSave(JsonObject valueObject) {
+    public void onConfigSave(final JsonObject valueObject) {
         valueObject.addProperty("value", getValue());
     }
 
@@ -36,7 +35,7 @@ public class ListValue extends Value<String> {
         if (ImGui.beginCombo(getName(), getValue())) {
             for (final String mode : getModes()) {
                 if (ImGui.selectable(mode, mode.equals(getValue()))) {
-                    setValue(mode);
+                    this.setValue(mode);
                 }
             }
             ImGui.endCombo();

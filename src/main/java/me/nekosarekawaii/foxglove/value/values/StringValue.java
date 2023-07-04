@@ -4,12 +4,12 @@ import com.google.gson.JsonObject;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
-import me.nekosarekawaii.foxglove.feature.impl.module.Module;
+import me.nekosarekawaii.foxglove.value.IValue;
 import me.nekosarekawaii.foxglove.value.Value;
 
 public class StringValue extends Value<String> {
 
-    public StringValue(final String name, final String description, final Module parent, final String defaultValue) {
+    public StringValue(final String name, final String description, final IValue parent, final String defaultValue) {
         super(name, description, parent, defaultValue);
     }
 
@@ -26,7 +26,6 @@ public class StringValue extends Value<String> {
     @Override
     public void render() {
         final ImString imString = new ImString(this.getValue());
-
         if (ImGui.inputText(this.getName(), imString, ImGuiInputTextFlags.CallbackResize)) {
             this.setValue(imString.get());
         }

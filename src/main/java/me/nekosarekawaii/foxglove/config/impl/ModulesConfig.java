@@ -66,7 +66,7 @@ public class ModulesConfig extends Config {
                     final Value<?> value = module.getValue(valueName);
 
                     if (value == null) {
-                        Foxglove.getInstance().getLogger().error("Couldn't find value: " + valueName);
+                        Foxglove.getInstance().getLogger().error("Couldn't find Modules Config value: " + valueName);
                         continue;
                     }
 

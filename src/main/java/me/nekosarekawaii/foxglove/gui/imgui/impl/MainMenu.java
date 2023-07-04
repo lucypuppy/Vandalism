@@ -129,13 +129,40 @@ public class MainMenu extends ImGUIMenu {
                 }
             }
 
+            if (showConfig) {
+                ImGui.sameLine();
+                if (ImGui.beginListBox("##mainConfig", 500, 500)) {
+                    ImGui.sameLine();
+                    ImGui.text("Config");
+
+                    for (int i = 0; i < 3; i++) ImGui.spacing();
+
+                    final ObjectArrayList<Value<?>> values = Foxglove.getInstance().getConfigManager().getMainConfig().getValues();
+
+                    if (ImGui.button("Reset Config")) {
+                        for (final Value<?> value : values) {
+                            value.resetValue();
+                        }
+                    }
+
+                    for (final Value<?> value : values) {
+                        if (value.isVisible() != null && !value.isVisible().getAsBoolean())
+                            continue;
+
+                        value.render();
+                    }
+
+                    ImGui.endListBox();
+                }
+            }
+
             ImGui.end();
         }
     }
 
     @Override
     public boolean keyPress(final int keyCode, final int scanCode, final int modifiers) {
-        if (Foxglove.getInstance().getConfigManager().getMainConfig().getMainMenuKeyCode() == keyCode) {
+        if (Foxglove.getInstance().getConfigManager().getMainConfig().mainMenuKeyCode.getValue() == keyCode) {
             Foxglove.getInstance().setCurrentImGUIMenu(null);
         }
         return false;
