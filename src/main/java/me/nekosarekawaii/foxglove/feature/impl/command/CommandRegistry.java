@@ -10,11 +10,11 @@ import me.nekosarekawaii.foxglove.feature.impl.command.impl.development.TestComm
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.ChatClearCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.FeaturesCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.ToggleModuleCommand;
-import net.minecraft.client.MinecraftClient;
+import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
 import net.minecraft.client.network.ClientCommandSource;
 import net.minecraft.command.CommandSource;
 
-public class CommandRegistry {
+public class CommandRegistry implements MinecraftWrapper {
 
     private CommandDispatcher<CommandSource> commandDispatcher;
     private CommandSource commandSource;
@@ -33,7 +33,7 @@ public class CommandRegistry {
 
     private void register() {
         this.commandDispatcher = new CommandDispatcher<>();
-        this.commandSource = new ClientCommandSource(null, MinecraftClient.getInstance());
+        this.commandSource = new ClientCommandSource(null, mc());
         this.registerCommands(
                 new TestCommand(),
                 new ReloadCommand(),

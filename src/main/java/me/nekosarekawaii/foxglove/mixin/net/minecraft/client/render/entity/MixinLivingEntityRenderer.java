@@ -2,7 +2,7 @@ package me.nekosarekawaii.foxglove.mixin.net.minecraft.client.render.entity;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import me.nekosarekawaii.foxglove.event.LivingEntityListener;
-import net.minecraft.client.MinecraftClient;
+import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LivingEntityRenderer.class)
-public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extends EntityModel<T>> {
+public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extends EntityModel<T>> implements MinecraftWrapper {
 
     @Shadow
     protected abstract @Nullable RenderLayer getRenderLayer(T entity, boolean showBody, boolean translucent, boolean showOutline);
@@ -41,8 +41,8 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
     @Inject(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;getRenderLayer(Lnet/minecraft/entity/LivingEntity;ZZZ)Lnet/minecraft/client/render/RenderLayer;", shift = At.Shift.BEFORE))
     private void injectRender(final T livingEntity, float f, float g, final MatrixStack matrixStack, final VertexConsumerProvider vertexConsumerProvider, int i, final CallbackInfo ci) {
         boolean showBody = this.isVisible(livingEntity),
-                translucent = !showBody && !livingEntity.isInvisibleTo(MinecraftClient.getInstance().player),
-                showOutline = MinecraftClient.getInstance().hasOutline(livingEntity);
+                translucent = !showBody && !livingEntity.isInvisibleTo(mc().player),
+                showOutline = mc().hasOutline(livingEntity);
         float red = 1.0f, green = 1.0f, blue = 1.0f, alpha = translucent ? 0.15f : 1.0f;
         final LivingEntityListener.LivingEntityRenderEvent livingEntityRenderEvent = new LivingEntityListener.LivingEntityRenderEvent(livingEntity, f, g, matrixStack, vertexConsumerProvider, i, showBody, translucent, showOutline, red, green, blue, alpha);
         DietrichEvents2.global().postInternal(LivingEntityListener.LivingEntityRenderEvent.ID, livingEntityRenderEvent);
