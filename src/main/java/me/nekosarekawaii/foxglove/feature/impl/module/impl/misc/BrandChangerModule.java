@@ -33,8 +33,7 @@ public class BrandChangerModule extends Module implements PacketListener {
         if (event.packet instanceof final CustomPayloadC2SPacket customPayloadC2SPacket) {
             final Identifier channel = customPayloadC2SPacket.getChannel();
             if (channel.equals(CustomPayloadC2SPacket.BRAND)) {
-                event.packet = new CustomPayloadC2SPacket(channel, new PacketByteBuf(Unpooled.buffer()).writeString(this.brand.getValue()));
-                //ChatUtils.infoChatMessage("Channel: " + customPayloadC2SPacket.getChannel() + " | Data: " + new String(((CustomPayloadC2SPacket) event.packet).getData().array()));
+                customPayloadC2SPacket.data = new PacketByteBuf(Unpooled.buffer()).writeString(this.brand.getValue());
             }
         }
     }
