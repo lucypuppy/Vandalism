@@ -2,6 +2,7 @@ package me.nekosarekawaii.foxglove.feature.impl.module;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.Foxglove;
+import me.nekosarekawaii.foxglove.config.Config;
 import me.nekosarekawaii.foxglove.feature.Feature;
 import me.nekosarekawaii.foxglove.feature.FeatureType;
 import me.nekosarekawaii.foxglove.util.ChatUtils;
@@ -72,6 +73,11 @@ public abstract class Module extends Feature implements IValue {
                 ", enabled=" + this.enabled +
                 ", experimental=" + this.isExperimental() +
                 '}';
+    }
+
+    @Override
+    public Config getConfig() {
+        return Foxglove.getInstance().getConfigManager().getModulesConfig();
     }
 
 }

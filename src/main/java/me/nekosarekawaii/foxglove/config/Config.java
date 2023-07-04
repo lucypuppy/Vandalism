@@ -37,4 +37,9 @@ public abstract class Config implements IValue {
         return this.values;
     }
 
+    @Override
+    public Config getConfig() {
+        return this;
+    }
+
 }
