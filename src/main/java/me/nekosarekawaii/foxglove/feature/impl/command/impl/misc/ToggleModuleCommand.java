@@ -1,12 +1,13 @@
 package me.nekosarekawaii.foxglove.feature.impl.command.impl.misc;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.impl.command.Command;
 import me.nekosarekawaii.foxglove.feature.impl.command.CommandInfo;
 import me.nekosarekawaii.foxglove.feature.impl.command.arguments.ModuleArgumentType;
 import net.minecraft.command.CommandSource;
 
-@CommandInfo(name = "Toggle Module", aliases = {"togglemodule", "toggle", "t"}, description = "This Command enables/disables modules.")
+@CommandInfo(name = "Toggle Module", aliases = {"togglemodule", "toggle", "t"}, description = "This Command enables/disables modules.", category = FeatureCategory.MISC)
 public class ToggleModuleCommand extends Command {
 
     @Override

@@ -9,6 +9,7 @@ import me.nekosarekawaii.foxglove.feature.impl.command.impl.development.ReloadCo
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.development.TestCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.ChatClearCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.FeaturesCommand;
+import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.GameModeCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.ToggleModuleCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.render.ClientsideGameModeCommand;
 import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
@@ -41,7 +42,8 @@ public class CommandRegistry implements MinecraftWrapper {
                 new FeaturesCommand(),
                 new ChatClearCommand(),
                 new ToggleModuleCommand(),
-                new ClientsideGameModeCommand()
+                new ClientsideGameModeCommand(),
+                new GameModeCommand()
         );
     }
 

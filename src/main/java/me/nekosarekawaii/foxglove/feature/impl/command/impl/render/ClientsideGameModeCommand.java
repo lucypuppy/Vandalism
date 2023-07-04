@@ -1,6 +1,7 @@
 package me.nekosarekawaii.foxglove.feature.impl.command.impl.render;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.impl.command.Command;
 import me.nekosarekawaii.foxglove.feature.impl.command.CommandInfo;
 import me.nekosarekawaii.foxglove.feature.impl.command.arguments.GameModeArgumentType;
@@ -10,7 +11,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.GameMode;
 
-@CommandInfo(name = "Clientside Game Mode", aliases = {"clientsidegamemode", "clientsidegm", "csgm", "fakegamemode", "fakegm"}, description = "Sets your Clientside Game Mode.")
+@CommandInfo(name = "Clientside Game Mode", aliases = {"clientsidegamemode", "clientsidegm", "csgm", "fakegamemode", "fakegm"}, description = "Sets your Clientside Game Mode.", category = FeatureCategory.RENDER)
 public class ClientsideGameModeCommand extends Command {
 
     @Override

@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.world.GameMode;
@@ -14,14 +15,19 @@ import net.minecraft.world.GameMode;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 
 public class GameModeArgumentType implements ArgumentType<GameMode> {
 
-    private static final DynamicCommandExceptionType notExisting = new DynamicCommandExceptionType(name -> Text.literal("No Game Mode with the name " + name + " has been found!"));
+    private final static DynamicCommandExceptionType notExisting = new DynamicCommandExceptionType(name -> Text.literal("No Game Mode with the name or id " + name + " has been found!"));
 
-    private static final Collection<String> examples = Arrays.stream(GameMode.values()).limit(3).map(GameMode::getName).collect(Collectors.toList());
+    private final ObjectArrayList<String> names;
+
+    public GameModeArgumentType() {
+        this.names = new ObjectArrayList<>();
+        this.names.addAll(Arrays.stream(GameMode.values()).map(GameMode::getName).toList());
+        this.names.addAll(Arrays.stream(GameMode.values()).map(gameMode -> Integer.toString(gameMode.getId())).toList());
+    }
 
     public static GameModeArgumentType create() {
         return new GameModeArgumentType();
@@ -34,19 +40,25 @@ public class GameModeArgumentType implements ArgumentType<GameMode> {
     @Override
     public GameMode parse(final StringReader reader) throws CommandSyntaxException {
         final String argument = reader.readString();
-        final GameMode gameMode = GameMode.byName(argument, null);
+        GameMode gameMode = GameMode.byName(argument, null);
+        if (gameMode == null) {
+            try {
+                gameMode = GameMode.byId(Integer.parseInt(argument));
+            } catch (final NumberFormatException ignored) {
+            }
+        }
         if (gameMode == null) throw notExisting.create(argument);
         return gameMode;
     }
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
-        return CommandSource.suggestMatching(Arrays.stream(GameMode.values()).map(GameMode::getName), builder);
+        return CommandSource.suggestMatching(names, builder);
     }
 
     @Override
     public Collection<String> getExamples() {
-        return examples;
+        return this.names.subList(0, 2);
     }
 
 }

@@ -13,10 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-/**
- * The ConfigManager class is responsible for managing the configuration files in the Foxglove mod.
- * It provides methods for saving and loading the configurations to/from JSON files.
- */
+
 public class ConfigManager {
 
     private final Gson gson;
@@ -34,11 +31,6 @@ public class ConfigManager {
         return this.modulesConfig;
     }
 
-    /**
-     * Constructs a new instance of the ConfigManager class.
-     * Initializes the Gson object and the list of configurations.
-     * Adds the main configuration to the list.
-     */
     public ConfigManager() {
         this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         this.configs = new ObjectArrayList<>();
@@ -49,11 +41,6 @@ public class ConfigManager {
         );
     }
 
-    /**
-     * Adds configurations to the list of managed configurations.
-     *
-     * @param configs the configurations to add
-     */
     private void addConfigs(final Config... configs) {
         for (final Config config : configs) {
             if (!this.configs.contains(config)) {
@@ -78,9 +65,6 @@ public class ConfigManager {
         }
     }
 
-    /**
-     * Saves all the configurations to their respective JSON files.
-     */
     public void save() {
         for (final Config config : this.configs) {
             try {
@@ -97,9 +81,6 @@ public class ConfigManager {
         }
     }
 
-    /**
-     * Loads all the configurations from their respective JSON files.
-     */
     public void load() {
         for (final Config config : this.configs) {
             try {
