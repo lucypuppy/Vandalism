@@ -71,7 +71,7 @@ public class CreativeTabRegistry implements PacketListener, MinecraftWrapper {
                 if (itemStack.hasCustomName()) {
                     if (this.itemGroups.contains(CreativeInventoryScreen.selectedTab)) {
                         //TODO: Improve this.
-                        itemStack.setCustomName(Text.literal(""));
+                        itemStack.removeCustomName();
                     }
                 }
             }
