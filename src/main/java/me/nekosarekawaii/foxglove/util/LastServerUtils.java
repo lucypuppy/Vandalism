@@ -17,7 +17,7 @@ public class LastServerUtils {
     }
 
     public static boolean lastServerExists() {
-        return lastServerInfo == null;
+        return lastServerInfo != null;
     }
 
     public static ServerInfo getLastServerInfo() {

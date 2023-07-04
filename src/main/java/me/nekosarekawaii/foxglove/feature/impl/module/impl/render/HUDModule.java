@@ -31,6 +31,16 @@ public class HUDModule extends Module implements Render2DListener {
 
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta, final Window window) {
+        if (mc().currentScreen == null) this.render();
+    }
+
+    @Override
+    public void onRender2D(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        if (mc().currentScreen != null) this.render();
+    }
+
+    private void render() {
+        if (mc().player == null) return;
         Foxglove.getInstance().getImGuiRenderer().addRenderInterface(io -> {
             if (mc().options.debugEnabled || mc().options.hudHidden) return;
             if (this.moduleList.getValue()) {

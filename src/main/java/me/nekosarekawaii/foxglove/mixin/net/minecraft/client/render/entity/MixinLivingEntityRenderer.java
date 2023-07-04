@@ -56,17 +56,20 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
         showBody = livingEntityRenderEvent.showBody;
         translucent = livingEntityRenderEvent.translucent;
         showOutline = livingEntityRenderEvent.showOutline;
-        final VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(this.getRenderLayer(livingEntity, showBody, translucent, showOutline));
-        this.model.render(
-                matrixStack,
-                vertexConsumer,
-                i,
-                LivingEntityRenderer.getOverlay(livingEntity, this.getAnimationCounter(livingEntity, g)),
-                red,
-                green,
-                blue,
-                alpha
-        );
+        final RenderLayer renderLayer = this.getRenderLayer(livingEntity, showBody, translucent, showOutline);
+        if (renderLayer != null) {
+            final VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(renderLayer);
+            this.model.render(
+                    matrixStack,
+                    vertexConsumer,
+                    i,
+                    LivingEntityRenderer.getOverlay(livingEntity, this.getAnimationCounter(livingEntity, g)),
+                    red,
+                    green,
+                    blue,
+                    alpha
+            );
+        }
     }
 
 }
