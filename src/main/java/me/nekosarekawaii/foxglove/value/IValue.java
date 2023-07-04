@@ -11,7 +11,7 @@ public interface IValue {
 
     default Value<?> getValue(final String name) {
         for (final Value<?> value : this.getValues()) {
-            if (value.getHashIdent().equalsIgnoreCase(name)) {
+            if (value.getHashIdent().equals(name)) {
                 return value;
             }
         }
