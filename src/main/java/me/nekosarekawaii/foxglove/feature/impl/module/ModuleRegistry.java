@@ -11,6 +11,7 @@ import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.AntiFabricModule
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.AntiTelemetryModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.BrandChangerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.DebugModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.HUDModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.TrueSightModule;
 
 public class ModuleRegistry {
@@ -66,7 +67,13 @@ public class ModuleRegistry {
     private TrueSightModule trueSightModule;
 
     public TrueSightModule getTrueSightModule() {
-        return trueSightModule;
+        return this.trueSightModule;
+    }
+
+    private HUDModule hudModule;
+
+    public HUDModule getHudModule() {
+        return this.hudModule;
     }
 
     private final FeatureList<Module> modules;
@@ -104,7 +111,8 @@ public class ModuleRegistry {
                 this.antiFabricModule = new AntiFabricModule(),
                 this.brandChangerModule = new BrandChangerModule(),
                 this.debugModule = new DebugModule(),
-                this.trueSightModule = new TrueSightModule()
+                this.trueSightModule = new TrueSightModule(),
+                this.hudModule = new HUDModule()
         );
     }
 

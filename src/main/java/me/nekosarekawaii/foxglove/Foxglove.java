@@ -47,7 +47,7 @@ public class Foxglove implements MinecraftWrapper, KeyboardListener, TickListene
 
     private ConfigManager configManager;
 
-    public ImGuiRenderer imGuiRenderer;
+    private ImGuiRenderer imGuiRenderer;
 
     private ImGUIMenu currentImGUIMenu;
 
@@ -207,6 +207,10 @@ public class Foxglove implements MinecraftWrapper, KeyboardListener, TickListene
 
     public void setCurrentImGUIMenu(final ImGUIMenu currentImGUIMenu) {
         this.currentImGUIMenu = currentImGUIMenu;
+    }
+
+    public ImGuiRenderer getImGuiRenderer() {
+        return this.imGuiRenderer;
     }
 
     public ConfigManager getConfigManager() {

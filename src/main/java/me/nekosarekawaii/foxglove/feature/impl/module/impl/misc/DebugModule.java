@@ -46,7 +46,7 @@ public class DebugModule extends Module implements Render2DListener, TickListene
         if (fpsHistory.size() < 100)
             return;
 
-        Foxglove.getInstance().imGuiRenderer.addRenderInterface(io -> {
+        Foxglove.getInstance().getImGuiRenderer().addRenderInterface(io -> {
             if (ImGui.begin("RoflGraph")) {
                 if (ImPlot.beginPlot("lol")) {
                     ImPlot.plotLine("FPS", this.graphSize, this.fpsHistory.toArray(Integer[]::new));

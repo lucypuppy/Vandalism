@@ -1,0 +1,52 @@
+package me.nekosarekawaii.foxglove.feature.impl.module.impl.render;
+
+import de.florianmichael.dietrichevents2.DietrichEvents2;
+import imgui.ImGui;
+import imgui.flag.ImGuiWindowFlags;
+import me.nekosarekawaii.foxglove.Foxglove;
+import me.nekosarekawaii.foxglove.event.Render2DListener;
+import me.nekosarekawaii.foxglove.feature.FeatureCategory;
+import me.nekosarekawaii.foxglove.feature.FeatureList;
+import me.nekosarekawaii.foxglove.feature.impl.module.Module;
+import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
+import me.nekosarekawaii.foxglove.value.Value;
+import me.nekosarekawaii.foxglove.value.values.BooleanValue;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.util.Window;
+
+@ModuleInfo(name = "HUD", description = "The In-game Overlay of the Mod.", category = FeatureCategory.RENDER, isDefaultEnabled = true)
+public class HUDModule extends Module implements Render2DListener {
+
+    private final Value<Boolean> moduleList = new BooleanValue("Module List", "Shows the Module List.", this, true);
+
+    @Override
+    protected void onEnable() {
+        DietrichEvents2.global().subscribe(Render2DListener.Render2DEvent.ID, this);
+    }
+
+    @Override
+    protected void onDisable() {
+        DietrichEvents2.global().unsubscribe(Render2DListener.Render2DEvent.ID, this);
+    }
+
+    @Override
+    public void onRender2DInGame(final DrawContext context, final float delta, final Window window) {
+        Foxglove.getInstance().getImGuiRenderer().addRenderInterface(io -> {
+            if (mc().options.debugEnabled || mc().options.hudHidden) return;
+            if (this.moduleList.getValue()) {
+                io.addConfigFlags(ImGuiWindowFlags.NoDecoration);
+                if (ImGui.begin("Modules")) {
+                    ImGui.setWindowSize(0, 0);
+                    final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();
+                    for (final Module module : modules) {
+                        if (module != this && module.isEnabled()) {
+                            ImGui.text(module.getName());
+                        }
+                    }
+                    ImGui.end();
+                }
+            }
+        });
+    }
+
+}

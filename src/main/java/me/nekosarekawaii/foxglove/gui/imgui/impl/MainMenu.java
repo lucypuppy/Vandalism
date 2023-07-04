@@ -26,6 +26,10 @@ public class MainMenu extends ImGUIMenu {
     private static boolean showConfig = true;
 
     @Override
+    public void init() {
+    }
+
+    @Override
     public void render(final ImGuiIO imGuiIO) {
         if (ImGui.begin(Foxglove.getInstance().getName())) {
             ImGui.setWindowSize(0, 0);
@@ -161,11 +165,19 @@ public class MainMenu extends ImGUIMenu {
     }
 
     @Override
+    public void tick() {
+    }
+
+    @Override
     public boolean keyPress(final int keyCode, final int scanCode, final int modifiers) {
         if (Foxglove.getInstance().getConfigManager().getMainConfig().mainMenuKeyCode.getValue() == keyCode) {
             Foxglove.getInstance().setCurrentImGUIMenu(null);
         }
         return false;
+    }
+
+    @Override
+    public void close() {
     }
 
 }
