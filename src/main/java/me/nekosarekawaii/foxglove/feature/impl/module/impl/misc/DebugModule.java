@@ -57,8 +57,8 @@ public class DebugModule extends Module implements Render2DListener, TickListene
                 windowFlags |= ImGuiWindowFlags.NoResize;
             }
 
-            if (ImGui.begin("RoflGraph", windowFlags)) {
-                if (ImPlot.beginPlot("lol")) {
+            if (ImGui.begin("Debug Graph", windowFlags)) {
+                if (ImPlot.beginPlot("Debug Graph")) {
                     ImPlot.plotLine("FPS", this.graphSize, this.fpsHistory.toArray(Integer[]::new));
                     ImPlot.endPlot();
                 }
