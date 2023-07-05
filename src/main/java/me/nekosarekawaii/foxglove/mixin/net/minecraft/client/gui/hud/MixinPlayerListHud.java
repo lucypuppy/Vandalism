@@ -1,7 +1,7 @@
 package me.nekosarekawaii.foxglove.mixin.net.minecraft.client.gui.hud;
 
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.BetterTabModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.BetterTabListModule;
 import me.nekosarekawaii.foxglove.util.ColorUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -29,14 +29,14 @@ public abstract class MixinPlayerListHud {
 
     @ModifyConstant(constant = @Constant(longValue = 80L), method = "collectPlayerEntries")
     private long modifyCount(final long count) {
-        final BetterTabModule betterTabModule = Foxglove.getInstance().getModuleRegistry().getBetterTabModule();
-        return betterTabModule.isEnabled() ? betterTabModule.tabSize.getValue() : count;
+        final BetterTabListModule betterTabListModule = Foxglove.getInstance().getModuleRegistry().getBetterTabListModule();
+        return betterTabListModule.isEnabled() ? betterTabListModule.tabSize.getValue() : count;
     }
 
     @Inject(method = "getPlayerName", at = @At("RETURN"), cancellable = true)
     private void injectGetPlayerName(final PlayerListEntry entry, final CallbackInfoReturnable<Text> cir) {
-        final BetterTabModule betterTabModule = Foxglove.getInstance().getModuleRegistry().getBetterTabModule();
-        if (betterTabModule.isEnabled() && betterTabModule.gamemode.getValue()) {
+        final BetterTabListModule betterTabListModule = Foxglove.getInstance().getModuleRegistry().getBetterTabListModule();
+        if (betterTabListModule.isEnabled() && betterTabListModule.gamemode.getValue()) {
             final int gameModeId = entry.getGameMode().getId();
             Formatting gameModeFormatting;
             switch (gameModeId) {
@@ -57,8 +57,8 @@ public abstract class MixinPlayerListHud {
 
     @ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Ljava/lang/Math;min(II)I"), index = 0)
     private int injectRenderWidth(final int width) {
-        final BetterTabModule betterTabModule = Foxglove.getInstance().getModuleRegistry().getBetterTabModule();
-        return betterTabModule.isEnabled() && betterTabModule.accurateLatency.getValue() ? (int) (width + (betterTabModule.pingScale.getValue() * 30)) : width;
+        final BetterTabListModule betterTabListModule = Foxglove.getInstance().getModuleRegistry().getBetterTabListModule();
+        return betterTabListModule.isEnabled() && betterTabListModule.accurateLatency.getValue() ? (int) (width + (betterTabListModule.pingScale.getValue() * 30)) : width;
     }
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V", ordinal = 2))
@@ -75,16 +75,16 @@ public abstract class MixinPlayerListHud {
         final MinecraftClient mc = MinecraftClient.getInstance();
         final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
         final int a = mc.isInSingleplayer() || (networkHandler != null && networkHandler.getConnection().isEncrypted()) ? 9 : 0, w = x + a;
-        final BetterTabModule betterTabModule = Foxglove.getInstance().getModuleRegistry().getBetterTabModule();
+        final BetterTabListModule betterTabListModule = Foxglove.getInstance().getModuleRegistry().getBetterTabListModule();
         int color = mc.options.getTextBackgroundColor(0x20FFFFFF);
-        if (betterTabModule.isEnabled() && betterTabModule.self.getValue() && mc.player != null && entry.getProfile().getId().equals(mc.player.getGameProfile().getId())) {
-            color = betterTabModule.selfColor.getValue().getRGB();
+        if (betterTabListModule.isEnabled() && betterTabListModule.self.getValue() && mc.player != null && entry.getProfile().getId().equals(mc.player.getGameProfile().getId())) {
+            color = betterTabListModule.selfColor.getValue().getRGB();
         }
         context.fill(w, y, w + width - a, y + 8, color);
         final TextRenderer textRenderer = mc.textRenderer;
         context.drawTextWithShadow(textRenderer, this.getPlayerName(entry), w, y, entry.getGameMode() == GameMode.SPECTATOR ? -1862270977 : -1);
-        if (betterTabModule.isEnabled() && betterTabModule.accurateLatency.getValue()) {
-            final float scale = betterTabModule.pingScale.getValue();
+        if (betterTabListModule.isEnabled() && betterTabListModule.accurateLatency.getValue()) {
+            final float scale = betterTabListModule.pingScale.getValue();
             final int latency = entry.getLatency();
             final String text = latency + " ms";
             context.getMatrices().push();
@@ -98,7 +98,7 @@ public abstract class MixinPlayerListHud {
                             Color.RED,
                             Color.YELLOW,
                             Color.GREEN,
-                            Math.min((float) latency / betterTabModule.highPing.getValue(), 1.0f)
+                            Math.min((float) latency / betterTabListModule.highPing.getValue(), 1.0f)
                     ).getRGB()
             );
             context.getMatrices().pop();

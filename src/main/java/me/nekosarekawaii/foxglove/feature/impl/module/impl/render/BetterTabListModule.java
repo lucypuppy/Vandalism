@@ -14,8 +14,8 @@ import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 
-@ModuleInfo(name = "Better Tab", description = "Shows you an improved version of the Game's Tab List.", category = FeatureCategory.RENDER)
-public class BetterTabModule extends Module implements KeyboardListener {
+@ModuleInfo(name = "Better Tab List", description = "Shows you an improved version of the Game's Tab List.", category = FeatureCategory.RENDER)
+public class BetterTabListModule extends Module implements KeyboardListener {
 
     public final Value<Integer> tabSize = new SliderIntegerValue("Tab List Size", "How many players to display in the Tab List.", this, 100, 1, 1000);
 

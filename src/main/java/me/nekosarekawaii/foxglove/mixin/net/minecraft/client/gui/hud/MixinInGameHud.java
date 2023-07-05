@@ -3,7 +3,7 @@ package me.nekosarekawaii.foxglove.mixin.net.minecraft.client.gui.hud;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.event.Render2DListener;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.BetterTabModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.BetterTabListModule;
 import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -28,9 +28,9 @@ public abstract class MixinInGameHud implements MinecraftWrapper {
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z"))
     public boolean redirectIsPressed(final KeyBinding instance) {
-        final BetterTabModule betterTabModule = Foxglove.getInstance().getModuleRegistry().getBetterTabModule();
-        if (betterTabModule.isEnabled() && betterTabModule.toggleable.getValue()) {
-            return betterTabModule.toggleState;
+        final BetterTabListModule betterTabListModule = Foxglove.getInstance().getModuleRegistry().getBetterTabListModule();
+        if (betterTabListModule.isEnabled() && betterTabListModule.toggleable.getValue()) {
+            return betterTabListModule.toggleState;
         }
         return instance.isPressed();
     }
