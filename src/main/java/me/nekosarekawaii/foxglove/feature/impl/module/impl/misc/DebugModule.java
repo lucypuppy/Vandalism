@@ -48,7 +48,7 @@ public class DebugModule extends Module implements Render2DListener, TickListene
             return;
 
         Foxglove.getInstance().getImGuiRenderer().addRenderInterface(io -> {
-            if (ImGui.begin("Debug Graph", ImGuiUtil.getIngameFlags(0))) {
+            if (ImGui.begin("Debug Graph", ImGuiUtil.getInGameFlags(0))) {
                 if (ImPlot.beginPlot("Debug Graph")) {
                     ImPlot.plotLine("FPS", this.graphSize, this.fpsHistory.toArray(Integer[]::new));
                     ImPlot.endPlot();

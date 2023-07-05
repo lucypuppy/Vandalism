@@ -5,7 +5,7 @@ import net.minecraft.client.MinecraftClient;
 
 public class ImGuiUtil {
 
-    public static int getIngameFlags(int windowFlags) {
+    public static int getInGameFlags(int windowFlags) {
         windowFlags |= ImGuiWindowFlags.NoCollapse;
 
         if (MinecraftClient.getInstance().mouse.isCursorLocked()) {

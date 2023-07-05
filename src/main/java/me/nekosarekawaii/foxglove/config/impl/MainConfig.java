@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.config.Config;
+import me.nekosarekawaii.foxglove.config.ValueableConfig;
 import me.nekosarekawaii.foxglove.value.Value;
 import me.nekosarekawaii.foxglove.value.values.KeyInputValue;
 import me.nekosarekawaii.foxglove.value.values.StringValue;
@@ -12,7 +12,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.io.IOException;
 
-public class MainConfig extends Config {
+public class MainConfig extends ValueableConfig {
 
     public final Value<Integer> mainMenuKeyCode = new KeyInputValue(
             "Main Menu Key",

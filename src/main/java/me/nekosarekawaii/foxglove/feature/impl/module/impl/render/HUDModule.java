@@ -48,7 +48,7 @@ public class HUDModule extends Module implements Render2DListener {
                 return;
 
             if (this.moduleList.getValue()) {
-                if (ImGui.begin("Module List", ImGuiUtil.getIngameFlags(0))) {
+                if (ImGui.begin("Module List", ImGuiUtil.getInGameFlags(0))) {
                     ImGui.setWindowSize(0, 0);
 
                     final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();

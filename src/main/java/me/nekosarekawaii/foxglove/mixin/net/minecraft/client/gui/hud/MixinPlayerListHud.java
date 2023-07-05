@@ -3,11 +3,12 @@ package me.nekosarekawaii.foxglove.mixin.net.minecraft.client.gui.hud;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.BetterTabListModule;
 import me.nekosarekawaii.foxglove.util.ColorUtils;
-import net.minecraft.client.MinecraftClient;
+import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -15,6 +16,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.world.GameMode;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -22,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.awt.*;
 
 @Mixin(PlayerListHud.class)
-public abstract class MixinPlayerListHud {
+public abstract class MixinPlayerListHud implements MinecraftWrapper {
 
     @Shadow
     public abstract Text getPlayerName(final PlayerListEntry entry);
@@ -70,6 +72,7 @@ public abstract class MixinPlayerListHud {
         return x;
     }
 
+    @Unique
     private final Color[] pingColors = new Color[]{
             Color.GREEN,
             Color.YELLOW,
@@ -77,25 +80,28 @@ public abstract class MixinPlayerListHud {
             Color.RED
     };
 
+    @Unique
     private final float[] pingSteps = new float[]{
             0.0f, 0.34f, 0.66f, 1.0f
     };
 
     @Inject(method = "renderLatencyIcon", at = @At("HEAD"), cancellable = true)
     private void injectRenderLatencyIcon(final DrawContext context, final int width, final int x, final int y, final PlayerListEntry entry, final CallbackInfo ci) {
-        final MinecraftClient mc = MinecraftClient.getInstance();
-        final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
-        final int a = mc.isInSingleplayer() || (networkHandler != null && networkHandler.getConnection().isEncrypted()) ? 9 : 0, w = x + a;
-        final BetterTabListModule betterTabListModule = Foxglove.getInstance().getModuleRegistry().getBetterTabListModule();
-        int color = mc.options.getTextBackgroundColor(0x20FFFFFF);
+        final ClientPlayNetworkHandler networkHandler = mc().getNetworkHandler();
+        final int a = mc().isInSingleplayer() || (networkHandler != null && networkHandler.getConnection().isEncrypted()) ? 9 : 0, w = x + a;
 
-        if (betterTabListModule.isEnabled() && betterTabListModule.self.getValue() && mc.player != null && entry.getProfile().getId().equals(mc.player.getGameProfile().getId())) {
+        final BetterTabListModule betterTabListModule = Foxglove.getInstance().getModuleRegistry().getBetterTabListModule();
+
+        int color = mc().options.getTextBackgroundColor(0x20FFFFFF);
+
+        final ClientPlayerEntity player = mc().player;
+        if (betterTabListModule.isEnabled() && betterTabListModule.self.getValue() && player != null && entry.getProfile().getId().equals(player.getGameProfile().getId())) {
             color = betterTabListModule.selfColor.getValue().getRGB();
         }
 
         context.fill(w, y, w + width - a, y + 8, color);
 
-        final TextRenderer textRenderer = mc.textRenderer;
+        final TextRenderer textRenderer = mc().textRenderer;
         context.drawTextWithShadow(textRenderer, this.getPlayerName(entry), w, y, entry.getGameMode() == GameMode.SPECTATOR ? -1862270977 : -1);
 
         if (betterTabListModule.isEnabled() && betterTabListModule.accurateLatency.getValue()) {

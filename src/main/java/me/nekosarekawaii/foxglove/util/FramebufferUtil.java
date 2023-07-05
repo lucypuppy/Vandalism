@@ -3,12 +3,14 @@ package me.nekosarekawaii.foxglove.util;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.SimpleFramebuffer;
+import net.minecraft.client.util.Window;
 
 public class FramebufferUtil {
 
     public static Framebuffer checkFramebuffer(final Framebuffer framebuffer, final boolean useDepth, final boolean getError) {
-        final int displayWidth = MinecraftClient.getInstance().getWindow().getWidth();
-        final int displayHeight = MinecraftClient.getInstance().getWindow().getHeight();
+        final Window window = MinecraftClient.getInstance().getWindow();
+
+        final int displayWidth = window.getWidth(), displayHeight = window.getHeight();
 
         if (framebuffer == null) {
             return new SimpleFramebuffer(displayWidth, displayHeight, useDepth, getError);

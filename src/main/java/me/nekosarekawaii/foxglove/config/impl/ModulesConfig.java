@@ -4,13 +4,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.config.Config;
+import me.nekosarekawaii.foxglove.config.ValueableConfig;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.value.Value;
 
 import java.io.IOException;
 
-public class ModulesConfig extends Config {
+public class ModulesConfig extends ValueableConfig {
 
     public ModulesConfig() {
         super(Foxglove.getInstance().getDir(), "modules");
