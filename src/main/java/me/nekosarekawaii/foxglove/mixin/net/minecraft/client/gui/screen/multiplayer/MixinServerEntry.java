@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(MultiplayerServerListWidget.ServerEntry.class)
 public abstract class MixinServerEntry {
 
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;getWidth(Lnet/minecraft/text/StringVisitable;)I"))
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;getWidth(Lnet/minecraft/text/StringVisitable;)I", shift = At.Shift.AFTER))
     private void injectRender(final DrawContext context, final int index, final int y, final int x, final int entryWidth, final int entryHeight, final int mouseX, final int mouseY, final boolean hovered, final float tickDelta, final CallbackInfo ci) {
         DietrichEvents2.global().postInternal(MultiplayerServerEntriesListener.TextRenderEvent.ID, new MultiplayerServerEntriesListener.TextRenderEvent(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, hovered, tickDelta));
     }

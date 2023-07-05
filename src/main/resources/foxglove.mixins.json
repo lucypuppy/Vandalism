@@ -8,6 +8,7 @@
     "net.minecraft.client.MixinKeyboard",
     "net.minecraft.client.MixinMinecraftClient",
     "net.minecraft.client.gui.hud.MixinInGameHud",
+    "net.minecraft.client.gui.hud.MixinPlayerListHud",
     "net.minecraft.client.gui.screen.MixinChatInputSuggestor",
     "net.minecraft.client.gui.screen.MixinConnectScreen",
     "net.minecraft.client.gui.screen.MixinDisconnectedScreen",

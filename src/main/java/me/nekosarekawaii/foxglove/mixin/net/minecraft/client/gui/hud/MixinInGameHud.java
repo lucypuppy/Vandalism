@@ -1,14 +1,18 @@
 package me.nekosarekawaii.foxglove.mixin.net.minecraft.client.gui.hud;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
+import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.event.Render2DListener;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.BetterTabModule;
 import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.Window;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -20,6 +24,15 @@ public abstract class MixinInGameHud implements MinecraftWrapper {
         context.getMatrices().push();
         DietrichEvents2.global().postInternal(Render2DListener.Render2DEvent.ID, new Render2DListener.Render2DEvent(context, tickDelta, window));
         context.getMatrices().pop();
+    }
+
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z"))
+    public boolean redirectIsPressed(final KeyBinding instance) {
+        final BetterTabModule betterTabModule = Foxglove.getInstance().getModuleRegistry().getBetterTabModule();
+        if (betterTabModule.isEnabled() && betterTabModule.toggleable.getValue()) {
+            return betterTabModule.toggleState;
+        }
+        return instance.isPressed();
     }
 
 }
