@@ -12,6 +12,8 @@ import me.nekosarekawaii.foxglove.util.imgui.ImGuiUtil;
 import me.nekosarekawaii.foxglove.value.Value;
 import me.nekosarekawaii.foxglove.value.values.BooleanValue;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.util.Window;
 
 @ModuleInfo(name = "HUD", description = "The In-game Overlay of the Mod.", category = FeatureCategory.RENDER, isDefaultEnabled = true)
@@ -36,7 +38,9 @@ public class HUDModule extends Module implements Render2DListener {
 
     @Override
     public void onRender2D(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        if (mc().currentScreen != null) this.render();
+        if (mc().currentScreen != null && (mc().currentScreen instanceof ChatScreen || mc().currentScreen instanceof InventoryScreen)) {
+            this.render();
+        }
     }
 
     private void render() {
