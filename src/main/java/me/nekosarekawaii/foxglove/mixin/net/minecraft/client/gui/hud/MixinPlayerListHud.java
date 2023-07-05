@@ -70,6 +70,17 @@ public abstract class MixinPlayerListHud {
         return x;
     }
 
+    private final Color[] pingColors = new Color[]{
+            Color.GREEN,
+            Color.YELLOW,
+            Color.ORANGE,
+            Color.RED
+    };
+
+    private final float[] pingSteps = new float[]{
+            0.0f, 0.34f, 0.66f, 1.0f
+    };
+
     @Inject(method = "renderLatencyIcon", at = @At("HEAD"), cancellable = true)
     private void injectRenderLatencyIcon(final DrawContext context, final int width, final int x, final int y, final PlayerListEntry entry, final CallbackInfo ci) {
         final MinecraftClient mc = MinecraftClient.getInstance();
@@ -77,31 +88,35 @@ public abstract class MixinPlayerListHud {
         final int a = mc.isInSingleplayer() || (networkHandler != null && networkHandler.getConnection().isEncrypted()) ? 9 : 0, w = x + a;
         final BetterTabListModule betterTabListModule = Foxglove.getInstance().getModuleRegistry().getBetterTabListModule();
         int color = mc.options.getTextBackgroundColor(0x20FFFFFF);
+
         if (betterTabListModule.isEnabled() && betterTabListModule.self.getValue() && mc.player != null && entry.getProfile().getId().equals(mc.player.getGameProfile().getId())) {
             color = betterTabListModule.selfColor.getValue().getRGB();
         }
+
         context.fill(w, y, w + width - a, y + 8, color);
+
         final TextRenderer textRenderer = mc.textRenderer;
         context.drawTextWithShadow(textRenderer, this.getPlayerName(entry), w, y, entry.getGameMode() == GameMode.SPECTATOR ? -1862270977 : -1);
+
         if (betterTabListModule.isEnabled() && betterTabListModule.accurateLatency.getValue()) {
             final float scale = betterTabListModule.pingScale.getValue();
             final int latency = entry.getLatency();
             final String text = latency + " ms";
+
             context.getMatrices().push();
-            context.getMatrices().scale(scale, scale, scale);
+            context.getMatrices().translate(w + width, y, 0.0);
+            context.getMatrices().scale(scale, scale, 1.0f);
+
             context.drawTextWithShadow(
                     textRenderer,
                     text,
-                    (int) (x / scale) + (int) (width / scale) - textRenderer.getWidth(text),
-                    (int) (y / scale),
-                    ColorUtils.mixColors(
-                            Color.RED,
-                            Color.YELLOW,
-                            Color.GREEN,
-                            Math.min((float) latency / betterTabListModule.highPing.getValue(), 1.0f)
-                    ).getRGB()
+                    -textRenderer.getWidth(text),
+                    0,
+                    ColorUtils.interpolate(Math.min((float) latency / betterTabListModule.highPing.getValue(), 1.0f), pingColors, pingSteps)
             );
+
             context.getMatrices().pop();
+
             ci.cancel();
         }
     }
