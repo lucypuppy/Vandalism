@@ -8,10 +8,10 @@ import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.FeatureList;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
-import me.nekosarekawaii.foxglove.gui.imgui.ImGUIMenu;
+import me.nekosarekawaii.foxglove.gui.imgui.ImGuiMenu;
 import me.nekosarekawaii.foxglove.value.Value;
 
-public class MainMenu extends ImGUIMenu {
+public class MainMenu extends ImGuiMenu {
 
     private static FeatureCategory currentFeatureCategory = null;
     private static Module currentModule = null;
@@ -171,7 +171,7 @@ public class MainMenu extends ImGUIMenu {
     @Override
     public boolean keyPress(final int keyCode, final int scanCode, final int modifiers) {
         if (Foxglove.getInstance().getConfigManager().getMainConfig().mainMenuKeyCode.getValue() == keyCode) {
-            Foxglove.getInstance().setCurrentImGUIMenu(null);
+            Foxglove.getInstance().setCurrentImGuiMenu(null);
         }
         return false;
     }

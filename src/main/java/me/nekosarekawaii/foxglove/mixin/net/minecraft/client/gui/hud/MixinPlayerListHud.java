@@ -107,7 +107,7 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
         if (betterTabListModule.isEnabled() && betterTabListModule.accurateLatency.getValue()) {
             final float scale = betterTabListModule.pingScale.getValue();
             final int latency = entry.getLatency();
-            final String text = latency + " ms";
+            final String text = latency + "ms";
 
             context.getMatrices().push();
             context.getMatrices().translate(w + width, y, 0.0);

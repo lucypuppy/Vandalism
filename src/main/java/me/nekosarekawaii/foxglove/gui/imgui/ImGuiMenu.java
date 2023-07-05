@@ -4,17 +4,17 @@ import imgui.ImGuiIO;
 import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
 
 
-public abstract class ImGUIMenu implements MinecraftWrapper {
+public abstract class ImGuiMenu implements MinecraftWrapper {
 
-    protected final ImGUIMenu parent;
+    protected final ImGuiMenu parent;
 
 
-    public ImGUIMenu(final ImGUIMenu parent) {
+    public ImGuiMenu(final ImGuiMenu parent) {
         this.parent = parent;
     }
 
 
-    public ImGUIMenu() {
+    public ImGuiMenu() {
         this(null);
     }
 

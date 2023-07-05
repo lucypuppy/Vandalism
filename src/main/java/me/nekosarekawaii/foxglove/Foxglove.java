@@ -8,7 +8,7 @@ import me.nekosarekawaii.foxglove.event.impl.Render2DListener;
 import me.nekosarekawaii.foxglove.event.impl.TickListener;
 import me.nekosarekawaii.foxglove.feature.impl.command.CommandRegistry;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleRegistry;
-import me.nekosarekawaii.foxglove.gui.imgui.ImGUIMenu;
+import me.nekosarekawaii.foxglove.gui.imgui.ImGuiMenu;
 import me.nekosarekawaii.foxglove.gui.imgui.impl.MainMenu;
 import me.nekosarekawaii.foxglove.util.imgui.ImGuiRenderer;
 import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
@@ -49,7 +49,7 @@ public class Foxglove implements MinecraftWrapper, KeyboardListener, TickListene
 
     private ImGuiRenderer imGuiRenderer;
 
-    private ImGUIMenu currentImGUIMenu;
+    private ImGuiMenu currentImGuiMenu;
 
     public Foxglove() {
         this.name = "Foxglove";
@@ -88,9 +88,9 @@ public class Foxglove implements MinecraftWrapper, KeyboardListener, TickListene
         this.commandRegistry = new CommandRegistry();
         this.logger.info("Features loaded.");
 
-        this.logger.info("Loading ImGUI Renderer...");
+        this.logger.info("Loading ImGui Renderer...");
         this.imGuiRenderer = new ImGuiRenderer(this.dir);
-        this.logger.info("ImGUI Renderer loaded.");
+        this.logger.info("ImGui Renderer loaded.");
 
         this.configManager = new ConfigManager();
         this.configManager.load();
@@ -110,22 +110,22 @@ public class Foxglove implements MinecraftWrapper, KeyboardListener, TickListene
     @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         if (action != GLFW.GLFW_PRESS) return;
-        if (this.currentImGUIMenu != null && !this.currentImGUIMenu.keyPress(key, scanCode, modifiers)) {
+        if (this.currentImGuiMenu != null && !this.currentImGuiMenu.keyPress(key, scanCode, modifiers)) {
             return;
         }
-        if (this.configManager.getMainConfig().mainMenuKeyCode.getValue() == key && !(this.currentImGUIMenu instanceof MainMenu)) {
-            this.setCurrentImGUIMenu(new MainMenu());
+        if (this.configManager.getMainConfig().mainMenuKeyCode.getValue() == key && !(this.currentImGuiMenu instanceof MainMenu)) {
+            this.setCurrentImGuiMenu(new MainMenu());
         }
     }
 
     @Override
     public void onTick() {
-        if (this.currentImGUIMenu != null) this.currentImGUIMenu.tick();
+        if (this.currentImGuiMenu != null) this.currentImGuiMenu.tick();
     }
 
     private void renderImGuiContext() {
-        if (this.currentImGUIMenu != null) {
-            this.imGuiRenderer.addRenderInterface(io -> this.currentImGUIMenu.render(io));
+        if (this.currentImGuiMenu != null) {
+            this.imGuiRenderer.addRenderInterface(io -> this.currentImGuiMenu.render(io));
         }
 
         this.imGuiRenderer.render();
@@ -201,12 +201,12 @@ public class Foxglove implements MinecraftWrapper, KeyboardListener, TickListene
         return this.windowTitle;
     }
 
-    public ImGUIMenu getCurrentImGUIMenu() {
-        return this.currentImGUIMenu;
+    public ImGuiMenu getCurrentImGuiMenu() {
+        return this.currentImGuiMenu;
     }
 
-    public void setCurrentImGUIMenu(final ImGUIMenu currentImGUIMenu) {
-        this.currentImGUIMenu = currentImGUIMenu;
+    public void setCurrentImGuiMenu(final ImGuiMenu currentImGuiMenu) {
+        this.currentImGuiMenu = currentImGuiMenu;
     }
 
     public ImGuiRenderer getImGuiRenderer() {
