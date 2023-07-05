@@ -3,7 +3,7 @@ package me.nekosarekawaii.foxglove.feature.impl.module.impl.render;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import imgui.ImGui;
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.event.Render2DListener;
+import me.nekosarekawaii.foxglove.event.impl.Render2DListener;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.FeatureList;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;

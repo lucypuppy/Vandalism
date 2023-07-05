@@ -1,11 +1,11 @@
-package me.nekosarekawaii.foxglove.feature.impl.module.impl.misc;
+package me.nekosarekawaii.foxglove.feature.impl.module.impl.development;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import imgui.ImGui;
 import imgui.extension.implot.ImPlot;
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.event.Render2DListener;
-import me.nekosarekawaii.foxglove.event.TickListener;
+import me.nekosarekawaii.foxglove.event.impl.Render2DListener;
+import me.nekosarekawaii.foxglove.event.impl.TickListener;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
@@ -16,19 +16,19 @@ import net.minecraft.client.util.Window;
 import java.util.ArrayList;
 import java.util.List;
 
-@ModuleInfo(name = "Debug Module", description = "Debug some stuff about the client.", category = FeatureCategory.MISC)
+@ModuleInfo(name = "Debug Module", description = "Debug some stuff about the client.", category = FeatureCategory.DEVELOPMENT)
 public class DebugModule extends Module implements Render2DListener, TickListener {
-
-    @Override
-    protected void onDisable() {
-        DietrichEvents2.global().unsubscribe(Render2DEvent.ID, this);
-        DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
-    }
 
     @Override
     protected void onEnable() {
         DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
         DietrichEvents2.global().subscribe(TickEvent.ID, this);
+    }
+
+    @Override
+    protected void onDisable() {
+        DietrichEvents2.global().unsubscribe(Render2DEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
     }
 
     private final List<Integer> fpsHistory = new ArrayList<>();

@@ -1,7 +1,7 @@
 package me.nekosarekawaii.foxglove.mixin.net.minecraft.client.render.entity;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import me.nekosarekawaii.foxglove.event.LivingEntityListener;
+import me.nekosarekawaii.foxglove.event.impl.LivingEntityListener;
 import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;

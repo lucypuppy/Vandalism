@@ -3,8 +3,8 @@ package me.nekosarekawaii.foxglove.creativetab;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.creativetab.impl.ExploitCreativeTab;
-import me.nekosarekawaii.foxglove.event.PacketListener;
+import me.nekosarekawaii.foxglove.creativetab.impl.ExploitPlayerHeadsCreativeTab;
+import me.nekosarekawaii.foxglove.event.impl.PacketListener;
 import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
@@ -26,7 +26,7 @@ public class CreativeTabRegistry implements PacketListener, MinecraftWrapper {
         this.creativeTabs = new ObjectArrayList<>();
         this.itemGroups = new ObjectArrayList<>();
         this.registerCreativeTabs(
-                new ExploitCreativeTab()
+                new ExploitPlayerHeadsCreativeTab()
         );
     }
 

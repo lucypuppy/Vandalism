@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "client": [
     "net.fabricmc.fabric.impl.networking.client.MixinClientPlayNetworkAddon",
+    "net.minecraft.client.MixinClientBrandRetriever",
     "net.minecraft.client.MixinKeyboard",
     "net.minecraft.client.MixinMinecraftClient",
     "net.minecraft.client.gui.hud.MixinInGameHud",

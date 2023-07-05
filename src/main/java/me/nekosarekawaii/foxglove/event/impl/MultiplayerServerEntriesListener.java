@@ -1,4 +1,4 @@
-package me.nekosarekawaii.foxglove.event;
+package me.nekosarekawaii.foxglove.event.impl;
 
 import de.florianmichael.dietrichevents2.core.AbstractEvent;
 import de.florianmichael.dietrichevents2.core.Listener;

@@ -2,14 +2,15 @@ package me.nekosarekawaii.foxglove.feature.impl.module;
 
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.feature.FeatureList;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.DebugModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.TestModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.AntiChatContextModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.AntiServerBlockListModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.ExploitFixerModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.AntiFabricModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.AntiTelemetryModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.BrandChangerModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.DebugModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.PacketBlockerModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.PacketLoggerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.BetterTabListModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.HUDModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.TrueSightModule;
@@ -52,12 +53,6 @@ public class ModuleRegistry {
         return this.debugModule;
     }
 
-    private AntiFabricModule antiFabricModule;
-
-    public AntiFabricModule getAntiFabricModule() {
-        return this.antiFabricModule;
-    }
-
     private BrandChangerModule brandChangerModule;
 
     public BrandChangerModule getBrandChangerModule() {
@@ -82,6 +77,18 @@ public class ModuleRegistry {
         return this.betterTabListModule;
     }
 
+    private PacketLoggerModule packetLoggerModule;
+
+    public PacketLoggerModule getPacketLoggerModule() {
+        return this.packetLoggerModule;
+    }
+
+    private PacketBlockerModule packetBlockerModule;
+
+    public PacketBlockerModule getPacketBlockerModule() {
+        return this.packetBlockerModule;
+    }
+
     private final FeatureList<Module> modules;
 
     public ModuleRegistry() {
@@ -96,12 +103,13 @@ public class ModuleRegistry {
                 this.antiServerBlockListModule = new AntiServerBlockListModule(),
                 this.antiTelemetryModule = new AntiTelemetryModule(),
                 this.exploitFixerModule = new ExploitFixerModule(),
-                this.antiFabricModule = new AntiFabricModule(),
                 this.brandChangerModule = new BrandChangerModule(),
                 this.debugModule = new DebugModule(),
                 this.trueSightModule = new TrueSightModule(),
                 this.hudModule = new HUDModule(),
-                this.betterTabListModule = new BetterTabListModule()
+                this.betterTabListModule = new BetterTabListModule(),
+                this.packetLoggerModule = new PacketLoggerModule(),
+                this.packetBlockerModule = new PacketBlockerModule()
         );
     }
 

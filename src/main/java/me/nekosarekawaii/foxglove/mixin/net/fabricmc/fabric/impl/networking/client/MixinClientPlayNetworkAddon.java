@@ -1,6 +1,7 @@
 package me.nekosarekawaii.foxglove.mixin.net.fabricmc.fabric.impl.networking.client;
 
 import me.nekosarekawaii.foxglove.Foxglove;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.PacketBlockerModule;
 import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,35 +14,40 @@ public abstract class MixinClientPlayNetworkAddon {
 
     @Inject(method = "invokeRegisterEvent", at = @At("HEAD"), cancellable = true)
     private void injectInvokeRegisterEvent(final CallbackInfo ci) {
-        if (Foxglove.getInstance().getModuleRegistry().getAntiFabricModule().isEnabled()) {
+        final PacketBlockerModule packetBlockerModule = Foxglove.getInstance().getModuleRegistry().getPacketBlockerModule();
+        if (packetBlockerModule.isEnabled() && packetBlockerModule.fabric.getValue()) {
             ci.cancel();
         }
     }
 
     @Inject(method = "invokeUnregisterEvent", at = @At("HEAD"), cancellable = true)
     private void injectInvokeUnregisterEvent(final CallbackInfo ci) {
-        if (Foxglove.getInstance().getModuleRegistry().getAntiFabricModule().isEnabled()) {
+        final PacketBlockerModule packetBlockerModule = Foxglove.getInstance().getModuleRegistry().getPacketBlockerModule();
+        if (packetBlockerModule.isEnabled() && packetBlockerModule.fabric.getValue()) {
             ci.cancel();
         }
     }
 
     @Inject(method = "handleRegistration", at = @At("HEAD"), cancellable = true)
     private void injectHandleRegistration(final Identifier channelName, final CallbackInfo ci) {
-        if (Foxglove.getInstance().getModuleRegistry().getAntiFabricModule().isEnabled()) {
+        final PacketBlockerModule packetBlockerModule = Foxglove.getInstance().getModuleRegistry().getPacketBlockerModule();
+        if (packetBlockerModule.isEnabled() && packetBlockerModule.fabric.getValue()) {
             ci.cancel();
         }
     }
 
     @Inject(method = "handleUnregistration", at = @At("HEAD"), cancellable = true)
     private void injectHandleUnregistration(final Identifier channelName, final CallbackInfo ci) {
-        if (Foxglove.getInstance().getModuleRegistry().getAntiFabricModule().isEnabled()) {
+        final PacketBlockerModule packetBlockerModule = Foxglove.getInstance().getModuleRegistry().getPacketBlockerModule();
+        if (packetBlockerModule.isEnabled() && packetBlockerModule.fabric.getValue()) {
             ci.cancel();
         }
     }
 
     @Inject(method = "onServerReady", at = @At("HEAD"), cancellable = true)
     private void injectOnServerReady(final CallbackInfo ci) {
-        if (Foxglove.getInstance().getModuleRegistry().getAntiFabricModule().isEnabled()) {
+        final PacketBlockerModule packetBlockerModule = Foxglove.getInstance().getModuleRegistry().getPacketBlockerModule();
+        if (packetBlockerModule.isEnabled() && packetBlockerModule.fabric.getValue()) {
             ci.cancel();
         }
     }

@@ -2,8 +2,8 @@ package me.nekosarekawaii.foxglove.mixin.net.minecraft.client;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.event.ScreenListener;
-import me.nekosarekawaii.foxglove.event.TickListener;
+import me.nekosarekawaii.foxglove.event.impl.ScreenListener;
+import me.nekosarekawaii.foxglove.event.impl.TickListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import org.spongepowered.asm.mixin.Mixin;

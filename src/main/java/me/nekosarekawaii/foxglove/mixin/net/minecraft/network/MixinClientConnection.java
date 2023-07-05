@@ -2,7 +2,7 @@ package me.nekosarekawaii.foxglove.mixin.net.minecraft.network;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import io.netty.channel.ChannelHandlerContext;
-import me.nekosarekawaii.foxglove.event.PacketListener;
+import me.nekosarekawaii.foxglove.event.impl.PacketListener;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.packet.Packet;
@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ClientConnection.class)
+@Mixin(value = ClientConnection.class, priority = 9999)
 public abstract class MixinClientConnection {
 
     @Inject(at =

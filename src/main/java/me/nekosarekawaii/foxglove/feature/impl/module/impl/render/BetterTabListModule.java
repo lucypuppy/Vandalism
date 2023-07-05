@@ -1,7 +1,7 @@
 package me.nekosarekawaii.foxglove.feature.impl.module.impl.render;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import me.nekosarekawaii.foxglove.event.KeyboardListener;
+import me.nekosarekawaii.foxglove.event.impl.KeyboardListener;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;

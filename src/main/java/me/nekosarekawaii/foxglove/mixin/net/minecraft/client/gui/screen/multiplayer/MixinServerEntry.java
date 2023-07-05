@@ -1,7 +1,7 @@
 package me.nekosarekawaii.foxglove.mixin.net.minecraft.client.gui.screen.multiplayer;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import me.nekosarekawaii.foxglove.event.MultiplayerServerEntriesListener;
+import me.nekosarekawaii.foxglove.event.impl.MultiplayerServerEntriesListener;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
 import org.spongepowered.asm.mixin.Mixin;
