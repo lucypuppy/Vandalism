@@ -44,9 +44,7 @@ public class ImGuiRenderer implements MinecraftWrapper {
         if (this.renderInterfaces.isEmpty())
             return;
 
-        if (!mc().mouse.isCursorLocked()) {
-            this.imGuiImplGlfw.newFrame(); // Handle keyboard and mouse interactions
-        }
+        this.imGuiImplGlfw.newFrame(); // Handle keyboard and mouse interactions
         ImGui.newFrame();
 
         final ImGuiIO imGuiIO = ImGui.getIO();
