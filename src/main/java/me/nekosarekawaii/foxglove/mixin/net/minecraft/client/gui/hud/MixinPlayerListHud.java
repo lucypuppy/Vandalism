@@ -107,17 +107,16 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
         if (betterTabListModule.isEnabled() && betterTabListModule.accurateLatency.getValue()) {
             final float scale = betterTabListModule.pingScale.getValue();
             final int latency = entry.getLatency();
-            final String text = latency + "ms";
+            final String text = latency + " ms";
 
             context.getMatrices().push();
-            context.getMatrices().translate(w + width, y, 0.0);
             context.getMatrices().scale(scale, scale, 1.0f);
 
             context.drawTextWithShadow(
                     textRenderer,
                     text,
-                    -textRenderer.getWidth(text),
-                    0,
+                    (int) (x / scale) + (int) (width / scale) - textRenderer.getWidth(text),
+                    (int) (y / scale),
                     ColorUtils.interpolate(Math.min((float) latency / betterTabListModule.highPing.getValue(), 1.0f), pingColors, pingSteps)
             );
 
