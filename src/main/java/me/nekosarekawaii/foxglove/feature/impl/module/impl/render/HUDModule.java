@@ -2,13 +2,13 @@ package me.nekosarekawaii.foxglove.feature.impl.module.impl.render;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import imgui.ImGui;
-import imgui.flag.ImGuiWindowFlags;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.event.Render2DListener;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.FeatureList;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
+import me.nekosarekawaii.foxglove.util.imgui.ImGuiUtil;
 import me.nekosarekawaii.foxglove.value.Value;
 import me.nekosarekawaii.foxglove.value.values.BooleanValue;
 import net.minecraft.client.gui.DrawContext;
@@ -48,16 +48,7 @@ public class HUDModule extends Module implements Render2DListener {
                 return;
 
             if (this.moduleList.getValue()) {
-                int windowFlags = ImGuiWindowFlags.NoCollapse;
-
-                if (mc().mouse.isCursorLocked()) {
-                    windowFlags |= ImGuiWindowFlags.NoTitleBar;
-                    windowFlags |= ImGuiWindowFlags.NoBackground;
-                    windowFlags |= ImGuiWindowFlags.NoMove;
-                    windowFlags |= ImGuiWindowFlags.NoResize;
-                }
-
-                if (ImGui.begin("Modules", windowFlags)) {
+                if (ImGui.begin("Module List", ImGuiUtil.getIngameFlags(0))) {
                     ImGui.setWindowSize(0, 0);
 
                     final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();
