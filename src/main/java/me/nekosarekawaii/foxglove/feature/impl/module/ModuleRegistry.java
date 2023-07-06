@@ -7,10 +7,7 @@ import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.TestModul
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.AntiChatContextModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.AntiServerBlockListModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.ExploitFixerModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.AntiTelemetryModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.BrandChangerModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.PacketBlockerModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.PacketLoggerModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.*;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.BetterTabListModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.HUDModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.TrueSightModule;
@@ -89,6 +86,12 @@ public class ModuleRegistry {
         return this.packetBlockerModule;
     }
 
+    private DontClearChatHistoryModule dontClearChatHistoryModule;
+
+    public DontClearChatHistoryModule getDontClearChatHistoryModule() {
+        return this.dontClearChatHistoryModule;
+    }
+
     private final FeatureList<Module> modules;
 
     public ModuleRegistry() {
@@ -109,7 +112,8 @@ public class ModuleRegistry {
                 this.hudModule = new HUDModule(),
                 this.betterTabListModule = new BetterTabListModule(),
                 this.packetLoggerModule = new PacketLoggerModule(),
-                this.packetBlockerModule = new PacketBlockerModule()
+                this.packetBlockerModule = new PacketBlockerModule(),
+                this.dontClearChatHistoryModule = new DontClearChatHistoryModule()
         );
     }
 
