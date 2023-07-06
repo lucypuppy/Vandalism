@@ -43,12 +43,13 @@ public class AccountConfig extends ValueableConfig {
     @Override
     public void load(final JsonObject jsonObject) throws IOException {
         final JsonArray accountArray = jsonObject.getAsJsonArray("alts");
+        final String lastSession = jsonObject.get("lastSession").getAsString();
 
         for (final JsonElement accountElement : accountArray) {
             final JsonObject accountObject = accountElement.getAsJsonObject();
             final String username = accountObject.get("username").getAsString();
             final String type = accountObject.get("type").getAsString();
-            final String lastSession = jsonObject.get("lastSession").getAsString();
+            final Account account;
 
             switch (type) {
                 case "microsoft" -> {
@@ -56,29 +57,21 @@ public class AccountConfig extends ValueableConfig {
                     final String password = accountObject.get("password").getAsString();
                     final String refreshToken = accountObject.get("refreshToken").getAsString();
                     final String uuid = accountObject.get("uuid").getAsString();
-                    final MicrosoftAccount microsoftAccount;
 
                     if (refreshToken.isEmpty() || uuid.isEmpty()) {
-                        microsoftAccount = new MicrosoftAccount(email, password);
+                        account = new MicrosoftAccount(email, password);
                     } else {
-                        microsoftAccount = new MicrosoftAccount(email, password, refreshToken, uuid, username);
-                    }
-
-                    this.accounts.add(microsoftAccount);
-
-                    if (lastSession.equals(microsoftAccount.getUsername())) {
-                        microsoftAccount.login();
+                        account = new MicrosoftAccount(email, password, refreshToken, uuid, username);
                     }
                 }
 
-                default -> {
-                    final CrackedAccount crackedAccount = new CrackedAccount(username);
-                    this.accounts.add(crackedAccount);
+                default -> account = new CrackedAccount(username);
+            }
 
-                    if (lastSession.equals(crackedAccount.getUsername())) {
-                        crackedAccount.login();
-                    }
-                }
+            this.accounts.add(account);
+
+            if (lastSession.equals(account.getUsername())) {
+                account.login();
             }
         }
     }
