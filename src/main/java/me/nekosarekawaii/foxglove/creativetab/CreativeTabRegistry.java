@@ -3,8 +3,9 @@ package me.nekosarekawaii.foxglove.creativetab;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.creativetab.impl.ExploitPlayerHeadsCreativeTab;
-import me.nekosarekawaii.foxglove.creativetab.impl.GriefSpawnEggsCreativeTab;
+import me.nekosarekawaii.foxglove.creativetab.impl.ClientCrasherCreativeTab;
+import me.nekosarekawaii.foxglove.creativetab.impl.ClientKickerCreativeTab;
+import me.nekosarekawaii.foxglove.creativetab.impl.GriefItemsCreativeTab;
 import me.nekosarekawaii.foxglove.event.EventPriorities;
 import me.nekosarekawaii.foxglove.event.impl.PacketListener;
 import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
@@ -29,8 +30,9 @@ public class CreativeTabRegistry implements PacketListener, MinecraftWrapper {
         this.creativeTabs = new ObjectArrayList<>();
         this.itemGroups = new ObjectArrayList<>();
         this.registerCreativeTabs(
-                new ExploitPlayerHeadsCreativeTab(),
-                new GriefSpawnEggsCreativeTab()
+                new ClientCrasherCreativeTab(),
+                new ClientKickerCreativeTab(),
+                new GriefItemsCreativeTab()
         );
     }
 

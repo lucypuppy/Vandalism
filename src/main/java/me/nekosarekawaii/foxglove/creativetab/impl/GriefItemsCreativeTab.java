@@ -9,10 +9,10 @@ import net.minecraft.util.Formatting;
 
 import java.util.Collection;
 
-public class GriefSpawnEggsCreativeTab extends CreativeTab {
+public class GriefItemsCreativeTab extends CreativeTab {
 
-    public GriefSpawnEggsCreativeTab() {
-        super(new ItemStack(Items.CREEPER_SPAWN_EGG).setCustomName(Text.literal("Grief Spawn Eggs")));
+    public GriefItemsCreativeTab() {
+        super(new ItemStack(Items.TNT).setCustomName(Text.literal("Grief Items")));
     }
 
     @Override
