@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(value = ClientBrandRetriever.class, priority = 9999)
 public abstract class MixinClientBrandRetriever {
 
-    @Inject(method = "getClientModName", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "getClientModName", at = @At("RETURN"), cancellable = true, remap = false)
     private static void redirectGetClientModName(CallbackInfoReturnable<String> cir) {
         if (Foxglove.getInstance() != null && Foxglove.getInstance().getModuleRegistry() != null) {
             final BrandChangerModule brandChangerModule = Foxglove.getInstance().getModuleRegistry().getBrandChangerModule();
