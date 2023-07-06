@@ -8,6 +8,8 @@ import me.nekosarekawaii.foxglove.gui.imgui.impl.alt.alttype.Account;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Session;
 
+import java.util.Optional;
+
 public class MicrosoftAccount extends Account {
 
     private final String email, password;
@@ -45,8 +47,8 @@ public class MicrosoftAccount extends Account {
             this.uuid = result.getProfile().getId();
 
             MinecraftClient.getInstance().session = new Session(this.getUsername(),
-                    uuid, result.getAccessToken(),
-                    null, null, Session.AccountType.MSA);
+                    uuid, result.getAccessToken(), Optional.empty(),
+                    Optional.empty(), Session.AccountType.MSA);
 
             return true;
         } catch (final Throwable throwable) {
