@@ -21,7 +21,11 @@ import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
+import java.util.UUID;
+
 public class CreativeTabRegistry implements PacketListener, MinecraftWrapper {
+
+    private final UUID clientsideName, clientsideGlint;
 
     private final ObjectArrayList<CreativeTab> creativeTabs;
     private final ObjectArrayList<ItemGroup> itemGroups;
@@ -29,6 +33,8 @@ public class CreativeTabRegistry implements PacketListener, MinecraftWrapper {
     public CreativeTabRegistry() {
         this.creativeTabs = new ObjectArrayList<>();
         this.itemGroups = new ObjectArrayList<>();
+        this.clientsideName = UUID.randomUUID();
+        this.clientsideGlint = UUID.randomUUID();
         this.registerCreativeTabs(
                 new ClientCrasherCreativeTab(),
                 new ClientKickerCreativeTab(),
@@ -77,15 +83,28 @@ public class CreativeTabRegistry implements PacketListener, MinecraftWrapper {
                     final ItemStack itemStack = creativeInventoryActionC2SPacket.getItemStack();
                     final NbtCompound nbt = itemStack.getNbt();
                     if (nbt != null) {
-                        if (itemStack.hasCustomName() && nbt.contains("clientsideName")) {
-                            itemStack.removeCustomName();
-                            nbt.remove("clientsideName");
+                        if (nbt.contains(this.getClientsideName())) {
+                            final NbtCompound display = itemStack.getSubNbt(ItemStack.DISPLAY_KEY);
+                            if (display != null) {
+                                display.remove(ItemStack.NAME_KEY);
+                                display.remove(ItemStack.LORE_KEY);
+                                if (display.isEmpty()) itemStack.removeSubNbt(ItemStack.DISPLAY_KEY);
+                            }
+                            nbt.remove(this.getClientsideName());
                         }
-                        if (nbt.contains("clientsideGlint")) nbt.remove("clientsideGlint");
+                        if (nbt.contains(this.getClientsideGlint())) nbt.remove(this.getClientsideGlint());
                     }
                 }
             }
         }
+    }
+
+    public String getClientsideName() {
+        return this.clientsideName.toString();
+    }
+
+    public String getClientsideGlint() {
+        return this.clientsideGlint.toString();
     }
 
 }
