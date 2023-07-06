@@ -31,6 +31,7 @@
     "com.mojang.authlib.yggdrasil.MixinTextureUrlChecker",
     "com.mojang.authlib.yggdrasil.MixinYggdrasilUserApiService",
     "net.minecraft.item.MixinItemGroup",
+    "net.minecraft.item.MixinItemStack",
     "net.minecraft.util.MixinModStatus"
   ]
 }
