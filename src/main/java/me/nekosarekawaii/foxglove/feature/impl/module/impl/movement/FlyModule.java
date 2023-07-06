@@ -55,9 +55,7 @@ public class FlyModule extends Module implements PacketListener, TickListener {
         final Packet<?> packet = event.packet;
         if (packet instanceof final PlayerMoveC2SPacket playerMoveC2SPacket) {
             if (this.antiKick.getValue()) {
-                //TODO: Make this working and test it on a vanilla and spigot server.
-                playerMoveC2SPacket.x *= Math.sin(player.age * 0.01);
-                playerMoveC2SPacket.y *= Math.cos(player.age * 0.01);
+                playerMoveC2SPacket.y += Math.sin(player.age) * 0.2;
             }
         }
     }
