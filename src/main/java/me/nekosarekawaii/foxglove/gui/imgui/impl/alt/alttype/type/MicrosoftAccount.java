@@ -5,7 +5,6 @@ import fr.litarvan.openauth.microsoft.MicrosoftAuthResult;
 import fr.litarvan.openauth.microsoft.MicrosoftAuthenticator;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.gui.imgui.impl.alt.alttype.Account;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Session;
 
 import java.util.Optional;
@@ -14,6 +13,10 @@ public class MicrosoftAccount extends Account {
 
     private final String email, password;
     private String refreshToken, uuid;
+
+    public MicrosoftAccount() {
+        this("browserSession", "-", null, null, "");
+    }
 
     public MicrosoftAccount(final String email, final String password) {
         this(email, password, null, null, email);
@@ -30,9 +33,33 @@ public class MicrosoftAccount extends Account {
 
     private static final MicrosoftAuthenticator authenticator = new MicrosoftAuthenticator();
 
-    @Override
-    public boolean login() {
+    public void loginWithBrowser() {
+        try {
+            final MicrosoftAuthResult result;
 
+            if (this.refreshToken == null || this.refreshToken.isEmpty()) {
+                result = authenticator.loginWithWebview();
+            } else {
+                result = authenticator.loginWithRefreshToken(this.refreshToken);
+            }
+
+            this.setUsername(result.getProfile().getName());
+            this.refreshToken = result.getRefreshToken();
+            this.uuid = result.getProfile().getId();
+
+            mc().session = new Session(this.getUsername(),
+                    this.uuid, result.getAccessToken(), Optional.empty(),
+                    Optional.empty(), Session.AccountType.MSA);
+        } catch (final Throwable throwable) {
+            throwable.printStackTrace();
+            return;
+        }
+        Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
+        Foxglove.getInstance().getLogger().info("Logged in with " + this.getUsername());
+    }
+
+    @Override
+    public void login() {
         try {
             final MicrosoftAuthResult result;
 
@@ -46,26 +73,27 @@ public class MicrosoftAccount extends Account {
             this.refreshToken = result.getRefreshToken();
             this.uuid = result.getProfile().getId();
 
-            MinecraftClient.getInstance().session = new Session(this.getUsername(),
-                    uuid, result.getAccessToken(), Optional.empty(),
+            mc().session = new Session(this.getUsername(),
+                    this.uuid, result.getAccessToken(), Optional.empty(),
                     Optional.empty(), Session.AccountType.MSA);
-
-            return true;
         } catch (final Throwable throwable) {
             throwable.printStackTrace();
+            return;
         }
-
         Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
-        System.out.println("Logged in with " + this.getUsername());
-        return false;
+        Foxglove.getInstance().getLogger().info("Logged in with " + this.getUsername());
     }
 
     @Override
-    public void onConfigSave(JsonObject jsonObject) {
+    public void onConfigSave(final JsonObject jsonObject) {
         jsonObject.addProperty("email", this.email);
         jsonObject.addProperty("password", this.password);
         jsonObject.addProperty("refreshToken", this.refreshToken);
         jsonObject.addProperty("uuid", this.uuid);
+    }
+
+    public boolean isBrowserSession() {
+        return this.email.equals("browserSession");
     }
 
 }

@@ -1,8 +1,9 @@
 package me.nekosarekawaii.foxglove.gui.imgui.impl.alt.alttype;
 
 import com.google.gson.JsonObject;
+import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
 
-public abstract class Account {
+public abstract class Account implements MinecraftWrapper {
 
     private final String type;
     private String username;
@@ -24,7 +25,7 @@ public abstract class Account {
         this.username = username;
     }
 
-    public abstract boolean login();
+    public abstract void login();
 
     public void onConfigSave(final JsonObject jsonObject) {
         // Nothing lol

@@ -40,9 +40,7 @@ public class AltMenu extends ImGuiMenu {
                         ImGui.sameLine();
 
                         if (ImGui.button("login##" + account.getUsername())) {
-                            executor.submit(() -> {
-                                account.login();
-                            });
+                            this.executor.submit(account::login);
                         }
 
                         ImGui.sameLine();
@@ -62,12 +60,23 @@ public class AltMenu extends ImGuiMenu {
                     ImGui.inputText("password", this.password, ImGuiInputTextFlags.Password);
 
                     if (ImGui.button("Add Microsoft")) {
-                        if(!email.isEmpty() && !password.isEmpty()) {
+                        if (!this.email.isEmpty() && !this.password.isEmpty()) {
                             Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts().add(
-                                    new MicrosoftAccount(email.get(), password.get()));
+                                    new MicrosoftAccount(this.email.get(), this.password.get()));
 
                             Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
                         }
+                    }
+
+                    if (ImGui.button("Add Microsoft (Browser)")) {
+                        this.executor.submit(() -> {
+                            final MicrosoftAccount account = new MicrosoftAccount();
+                            account.loginWithBrowser();
+                            if (!account.isBrowserSession()) {
+                                Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts().add(account);
+                                Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
+                            }
+                        });
                     }
 
                     ImGui.newLine();
