@@ -1,7 +1,7 @@
-package me.nekosarekawaii.foxglove.gui.imgui.impl.alt.alttype.type;
+package me.nekosarekawaii.foxglove.config.impl.alt.alttype.type;
 
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.gui.imgui.impl.alt.alttype.Account;
+import me.nekosarekawaii.foxglove.config.impl.alt.alttype.Account;
 import net.minecraft.client.util.Session;
 
 import java.util.Optional;

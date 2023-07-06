@@ -1,46 +1,42 @@
-package me.nekosarekawaii.foxglove.gui.imgui.impl.alt;
+package me.nekosarekawaii.foxglove.config.impl.alt;
 
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.gui.imgui.ImGuiMenu;
-import me.nekosarekawaii.foxglove.gui.imgui.impl.alt.alttype.Account;
-import me.nekosarekawaii.foxglove.gui.imgui.impl.alt.alttype.type.CrackedAccount;
-import me.nekosarekawaii.foxglove.gui.imgui.impl.alt.alttype.type.MicrosoftAccount;
-import net.minecraft.client.gui.screen.DirectConnectScreen;
-import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
+import me.nekosarekawaii.foxglove.config.impl.alt.alttype.Account;
+import me.nekosarekawaii.foxglove.config.impl.alt.alttype.type.CrackedAccount;
+import me.nekosarekawaii.foxglove.config.impl.alt.alttype.type.MicrosoftAccount;
+import net.minecraft.client.MinecraftClient;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class AltMenu extends ImGuiMenu {
+public class AltManager {
 
-    @Override
-    public void init() {
-    }
+    private final static ImString email = new ImString();
+    private final static ImString password = new ImString();
+    private final static ImString username = new ImString();
 
-    private final ImString email = new ImString();
-    private final ImString password = new ImString();
-    private final ImString username = new ImString();
+    private final static ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    public static boolean render = false;
 
-    @Override
-    public void render(final ImGuiIO imGuiIO) {
-        if (ImGui.begin("Alt Menu")) {
+    public static void render(final ImGuiIO io) {
+        if (ImGui.begin("Alt Manager")) {
             ImGui.setWindowSize(400, 0);
 
             if (ImGui.beginTabBar("")) {
                 if (ImGui.beginTabItem("List")) {
+                    ImGui.text("Current Account: " + MinecraftClient.getInstance().getSession().getUsername());
                     for (final Account account : Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts()) {
                         ImGui.text(account.getUsername());
 
                         ImGui.sameLine();
 
                         if (ImGui.button("login##" + account.getUsername())) {
-                            this.executor.submit(account::login);
+                            executor.submit(account::login);
                         }
 
                         ImGui.sameLine();
@@ -56,20 +52,21 @@ public class AltMenu extends ImGuiMenu {
                 }
 
                 if (ImGui.beginTabItem("Add")) {
-                    ImGui.inputText("email", this.email);
-                    ImGui.inputText("password", this.password, ImGuiInputTextFlags.Password);
+                    ImGui.text("Current Account: " + MinecraftClient.getInstance().getSession().getUsername());
+                    ImGui.inputText("E-Mail", email);
+                    ImGui.inputText("Password", password, ImGuiInputTextFlags.Password);
 
                     if (ImGui.button("Add Microsoft")) {
-                        if (!this.email.isEmpty() && !this.password.isEmpty()) {
+                        if (!email.isEmpty() && !password.isEmpty()) {
                             Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts().add(
-                                    new MicrosoftAccount(this.email.get(), this.password.get()));
+                                    new MicrosoftAccount(email.get(), password.get()));
 
                             Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
                         }
                     }
 
                     if (ImGui.button("Add Microsoft (Browser)")) {
-                        this.executor.submit(() -> {
+                        executor.submit(() -> {
                             final MicrosoftAccount account = new MicrosoftAccount();
                             account.loginWithBrowser();
                             if (!account.isBrowserSession()) {
@@ -80,12 +77,12 @@ public class AltMenu extends ImGuiMenu {
                     }
 
                     ImGui.newLine();
-                    ImGui.inputText("username", this.username);
+                    ImGui.inputText("Username", username);
 
                     if (ImGui.button("Add Cracked")) {
-                        if (!this.username.isEmpty()) {
+                        if (!username.isEmpty()) {
                             Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts().add(
-                                    new CrackedAccount(this.username.get()));
+                                    new CrackedAccount(username.get()));
 
                             Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
                         }
@@ -99,22 +96,6 @@ public class AltMenu extends ImGuiMenu {
 
             ImGui.end();
         }
-    }
-
-    @Override
-    public void tick() {
-        if (!(mc().currentScreen instanceof MultiplayerScreen || mc().currentScreen instanceof DirectConnectScreen)) {
-            Foxglove.getInstance().setCurrentImGuiMenu(null);
-        }
-    }
-
-    @Override
-    public boolean keyPress(final int keyCode, final int scanCode, final int modifiers) {
-        return false;
-    }
-
-    @Override
-    public void close() {
     }
 
 }
