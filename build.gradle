@@ -47,6 +47,11 @@ repositories {
 		name = "ViaVersion"
 		url = "https://repo.viaversion.com"
 	}
+
+	maven {
+		name = "Litarvan"
+		url = "https://litarvan.github.io/maven"
+	}
 }
 
 loom {
@@ -72,6 +77,9 @@ dependencies {
 	implementation "io.github.spair:imgui-java-lwjgl3:${project.spair_imgui_version}"
 	implementation "io.github.spair:imgui-java-natives-windows:${project.spair_imgui_version}"
 	implementation "io.github.spair:imgui-java-natives-linux:${project.spair_imgui_version}"
+
+	// OpenAuth
+	implementation "fr.litarvan:openauth:${project.openauth_version}"
 
 	// Event System
 	implementation "de.florianmichael:DietrichEvents2:${project.dietrichevents2_version}"
