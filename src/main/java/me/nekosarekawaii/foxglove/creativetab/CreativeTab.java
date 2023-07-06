@@ -1,5 +1,6 @@
 package me.nekosarekawaii.foxglove.creativetab;
 
+import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -38,7 +39,7 @@ public abstract class CreativeTab implements MinecraftWrapper {
 
     public ItemStack putClientsideName(final ItemStack itemStack, final Text name, final Text... description) {
         final NbtCompound nbtCompound = itemStack.getOrCreateNbt();
-        nbtCompound.put("clientsideName", new NbtCompound());
+        nbtCompound.put(Foxglove.getInstance().getCreativeTabRegistry().getClientsideName(), new NbtCompound());
         itemStack.setCustomName(name);
         if (description != null && description.length > 0) {
             final NbtList lore = new NbtList();
@@ -47,15 +48,14 @@ public abstract class CreativeTab implements MinecraftWrapper {
                     lore.add(NbtString.of(Text.Serializer.toJson(text)));
                 }
             }
-            itemStack.getOrCreateSubNbt("display").put("Lore", lore);
+            itemStack.getOrCreateSubNbt(ItemStack.DISPLAY_KEY).put(ItemStack.LORE_KEY, lore);
         }
         return itemStack;
     }
 
-
     public ItemStack putClientsideGlint(final ItemStack itemStack) {
         final NbtCompound nbtCompound = itemStack.getOrCreateNbt();
-        nbtCompound.put("clientsideGlint", new NbtCompound());
+        nbtCompound.put(Foxglove.getInstance().getCreativeTabRegistry().getClientsideGlint(), new NbtCompound());
         itemStack.setNbt(nbtCompound);
         return itemStack;
     }
