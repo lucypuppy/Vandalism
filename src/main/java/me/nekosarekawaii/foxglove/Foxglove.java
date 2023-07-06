@@ -1,6 +1,7 @@
 package me.nekosarekawaii.foxglove;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
+import imgui.internal.ImGui;
 import me.nekosarekawaii.foxglove.config.ConfigManager;
 import me.nekosarekawaii.foxglove.creativetab.CreativeTabRegistry;
 import me.nekosarekawaii.foxglove.event.impl.KeyboardListener;
@@ -10,9 +11,12 @@ import me.nekosarekawaii.foxglove.feature.impl.command.CommandRegistry;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleRegistry;
 import me.nekosarekawaii.foxglove.gui.imgui.ImGuiMenu;
 import me.nekosarekawaii.foxglove.gui.imgui.impl.MainMenu;
+import me.nekosarekawaii.foxglove.gui.imgui.impl.alt.AltMenu;
 import me.nekosarekawaii.foxglove.util.imgui.ImGuiRenderer;
 import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.DirectConnectScreen;
+import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.util.Window;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
@@ -126,6 +130,18 @@ public class Foxglove implements MinecraftWrapper, KeyboardListener, TickListene
     private void renderImGuiContext() {
         if (this.currentImGuiMenu != null) {
             this.imGuiRenderer.addRenderInterface(io -> this.currentImGuiMenu.render(io));
+        }
+
+        if (mc().currentScreen instanceof MultiplayerScreen || mc().currentScreen instanceof DirectConnectScreen) {
+            this.imGuiRenderer.addRenderInterface(io -> {
+                if (ImGui.beginMainMenuBar()) {
+                    if (ImGui.button("Alt Manager")) {
+                        setCurrentImGuiMenu(new AltMenu());
+                    }
+
+                    ImGui.endMainMenuBar();
+                }
+            });
         }
 
         this.imGuiRenderer.render();

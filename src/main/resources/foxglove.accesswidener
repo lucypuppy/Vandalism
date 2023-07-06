@@ -27,3 +27,6 @@ mutable field net/minecraft/network/packet/c2s/play/PlayerMoveC2SPacket pitch F
 mutable field net/minecraft/network/packet/c2s/play/PlayerMoveC2SPacket onGround Z
 mutable field net/minecraft/network/packet/c2s/play/PlayerMoveC2SPacket changePosition Z
 mutable field net/minecraft/network/packet/c2s/play/PlayerMoveC2SPacket changeLook Z
+
+accessible field net/minecraft/client/MinecraftClient session Lnet/minecraft/client/util/Session;
+mutable field net/minecraft/client/MinecraftClient session Lnet/minecraft/client/util/Session;
