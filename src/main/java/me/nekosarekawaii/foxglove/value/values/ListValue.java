@@ -3,14 +3,14 @@ package me.nekosarekawaii.foxglove.value.values;
 import com.google.gson.JsonObject;
 import imgui.ImGui;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import me.nekosarekawaii.foxglove.feature.impl.module.Module;
+import me.nekosarekawaii.foxglove.value.IValue;
 import me.nekosarekawaii.foxglove.value.Value;
 
 public class ListValue extends Value<String> {
 
     private final ObjectArrayList<String> modes = new ObjectArrayList<>();
 
-    public ListValue(final String name, final String description, final Module parent, final String defaultValue, final String... modes) {
+    public ListValue(final String name, final String description, final IValue parent, final String defaultValue, final String... modes) {
         super(name, description, parent, defaultValue);
         this.modes.add(defaultValue);
         this.modes.addAll(new ObjectArrayList<>(modes));

@@ -2,14 +2,14 @@ package me.nekosarekawaii.foxglove.value.values;
 
 import com.google.gson.JsonObject;
 import imgui.ImGui;
-import me.nekosarekawaii.foxglove.feature.impl.module.Module;
+import me.nekosarekawaii.foxglove.value.IValue;
 import me.nekosarekawaii.foxglove.value.Value;
 
 import java.awt.*;
 
 public class ColorValue extends Value<Color> {
 
-    public ColorValue(final String name, final String description, final Module parent, final Color defaultValue) {
+    public ColorValue(final String name, final String description, final IValue parent, final Color defaultValue) {
         super(name, description, parent, defaultValue);
     }
 

@@ -8,6 +8,7 @@ import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.AntiChatConte
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.AntiServerBlockListModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.ExploitFixerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.*;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.FlyModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.BetterTabListModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.HUDModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.TrueSightModule;
@@ -92,6 +93,12 @@ public class ModuleRegistry {
         return this.dontClearChatHistoryModule;
     }
 
+    private FlyModule flyModule;
+
+    public FlyModule getFlyModule() {
+        return this.flyModule;
+    }
+
     private final FeatureList<Module> modules;
 
     public ModuleRegistry() {
@@ -113,7 +120,8 @@ public class ModuleRegistry {
                 this.betterTabListModule = new BetterTabListModule(),
                 this.packetLoggerModule = new PacketLoggerModule(),
                 this.packetBlockerModule = new PacketBlockerModule(),
-                this.dontClearChatHistoryModule = new DontClearChatHistoryModule()
+                this.dontClearChatHistoryModule = new DontClearChatHistoryModule(),
+                this.flyModule = new FlyModule()
         );
     }
 
