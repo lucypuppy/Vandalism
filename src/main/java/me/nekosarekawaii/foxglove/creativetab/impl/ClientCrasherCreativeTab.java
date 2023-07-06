@@ -24,7 +24,7 @@ public class ClientCrasherCreativeTab extends CreativeTab {
 
         final VersionEnum targetVersion = ProtocolHack.getTargetVersion();
 
-        if (!targetVersion.isOlderThan(VersionEnum.r1_11)) {
+        if (targetVersion.isOlderThan(VersionEnum.r1_11)) {
 
             // This head uses a value that has an empty string as url.
             final ItemStack crashHead = new ItemStack(Items.PLAYER_HEAD);

@@ -6,10 +6,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.feature.FeatureList;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.development.TestCommand;
-import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.ChatClearCommand;
-import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.FeaturesCommand;
-import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.GameModeCommand;
-import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.ToggleModuleCommand;
+import me.nekosarekawaii.foxglove.feature.impl.command.impl.exploit.URLHeadCommand;
+import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.*;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.render.ClientsideGameModeCommand;
 import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
 import net.minecraft.client.network.ClientCommandSource;
@@ -36,7 +34,10 @@ public class CommandRegistry implements MinecraftWrapper {
                 new ChatClearCommand(),
                 new ToggleModuleCommand(),
                 new ClientsideGameModeCommand(),
-                new GameModeCommand()
+                new GameModeCommand(),
+                new URLHeadCommand(),
+                new SayCommand(),
+                new NBTCommand()
         );
     }
 

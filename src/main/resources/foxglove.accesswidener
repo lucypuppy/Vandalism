@@ -1,6 +1,11 @@
 accessWidener	v1	named
 accessible class net/minecraft/item/ItemGroup$EntriesImpl
 accessible field net/minecraft/client/gui/screen/ingame/CreativeInventoryScreen selectedTab Lnet/minecraft/item/ItemGroup;
+
 accessible field net/minecraft/network/packet/c2s/play/CustomPayloadC2SPacket data Lnet/minecraft/network/PacketByteBuf;
 mutable field net/minecraft/network/packet/c2s/play/CustomPayloadC2SPacket data Lnet/minecraft/network/PacketByteBuf;
+
 accessible field net/minecraft/client/option/KeyBinding boundKey Lnet/minecraft/client/util/InputUtil$Key;
+
+accessible field net/minecraft/client/network/ClientPlayNetworkHandler lastSeenMessagesCollector Lnet/minecraft/network/message/LastSeenMessagesCollector;
+accessible field net/minecraft/client/network/ClientPlayNetworkHandler messagePacker Lnet/minecraft/network/message/MessageChain$Packer;

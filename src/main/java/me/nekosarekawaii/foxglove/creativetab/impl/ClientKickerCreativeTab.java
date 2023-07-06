@@ -28,8 +28,11 @@ public class ClientKickerCreativeTab extends CreativeTab {
                         Formatting.RED + Formatting.BOLD.toString() + "Kick Head"
                 ),
                 Text.literal(
-                        Formatting.YELLOW + Formatting.BOLD.toString() + "Works on " +
+                        Formatting.YELLOW + Formatting.BOLD.toString() + "Kicks clients on " +
                                 Formatting.AQUA + Formatting.BOLD + "Paper Spigot Server"
+                ),
+                Text.literal(
+                        Formatting.GOLD + Formatting.BOLD.toString() + "Can crash older clients"
                 )
         );
         current.add(paperKickHead);
