@@ -6,12 +6,13 @@ import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.config.ValueableConfig;
-import me.nekosarekawaii.foxglove.gui.imgui.impl.alt.alttype.Account;
-import me.nekosarekawaii.foxglove.gui.imgui.impl.alt.alttype.type.CrackedAccount;
-import me.nekosarekawaii.foxglove.gui.imgui.impl.alt.alttype.type.MicrosoftAccount;
+import me.nekosarekawaii.foxglove.config.impl.alt.alttype.Account;
+import me.nekosarekawaii.foxglove.config.impl.alt.alttype.type.CrackedAccount;
+import me.nekosarekawaii.foxglove.config.impl.alt.alttype.type.MicrosoftAccount;
 import net.minecraft.client.MinecraftClient;
 
 import java.io.IOException;
+import java.util.UUID;
 
 public class AccountConfig extends ValueableConfig {
 
@@ -65,7 +66,9 @@ public class AccountConfig extends ValueableConfig {
                     }
                 }
 
-                default -> account = new CrackedAccount(username);
+                default -> {
+                    account = new CrackedAccount(username, UUID.fromString(accountObject.get("uuid").getAsString()));
+                }
             }
 
             this.accounts.add(account);

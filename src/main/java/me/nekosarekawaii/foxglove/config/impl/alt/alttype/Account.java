@@ -1,4 +1,4 @@
-package me.nekosarekawaii.foxglove.gui.imgui.impl.alt.alttype;
+package me.nekosarekawaii.foxglove.config.impl.alt.alttype;
 
 import com.google.gson.JsonObject;
 import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;

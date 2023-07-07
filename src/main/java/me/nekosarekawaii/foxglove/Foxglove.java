@@ -3,6 +3,7 @@ package me.nekosarekawaii.foxglove;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import imgui.internal.ImGui;
 import me.nekosarekawaii.foxglove.config.ConfigManager;
+import me.nekosarekawaii.foxglove.config.impl.alt.AltManager;
 import me.nekosarekawaii.foxglove.creativetab.CreativeTabRegistry;
 import me.nekosarekawaii.foxglove.event.impl.KeyboardListener;
 import me.nekosarekawaii.foxglove.event.impl.Render2DListener;
@@ -11,7 +12,6 @@ import me.nekosarekawaii.foxglove.feature.impl.command.CommandRegistry;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleRegistry;
 import me.nekosarekawaii.foxglove.gui.imgui.ImGuiMenu;
 import me.nekosarekawaii.foxglove.gui.imgui.impl.MainMenu;
-import me.nekosarekawaii.foxglove.gui.imgui.impl.alt.AltMenu;
 import me.nekosarekawaii.foxglove.util.imgui.ImGuiRenderer;
 import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
@@ -111,6 +111,8 @@ public class Foxglove implements MinecraftWrapper, KeyboardListener, TickListene
         this.configManager.save();
     }
 
+    private boolean renderBar = false;
+
     @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         if (action != GLFW.GLFW_PRESS) return;
@@ -119,6 +121,9 @@ public class Foxglove implements MinecraftWrapper, KeyboardListener, TickListene
         }
         if (this.configManager.getMainConfig().mainMenuKeyCode.getValue() == key && !(this.currentImGuiMenu instanceof MainMenu)) {
             this.setCurrentImGuiMenu(new MainMenu());
+        }
+        if (key == GLFW.GLFW_KEY_MENU) {
+            this.renderBar = !this.renderBar;
         }
     }
 
@@ -131,16 +136,15 @@ public class Foxglove implements MinecraftWrapper, KeyboardListener, TickListene
         if (this.currentImGuiMenu != null) {
             this.imGuiRenderer.addRenderInterface(io -> this.currentImGuiMenu.render(io));
         }
-
-        if (mc().currentScreen instanceof MultiplayerScreen || mc().currentScreen instanceof DirectConnectScreen) {
+        if (this.renderBar && (mc().currentScreen instanceof MultiplayerScreen || mc().currentScreen instanceof DirectConnectScreen)) {
             this.imGuiRenderer.addRenderInterface(io -> {
                 if (ImGui.beginMainMenuBar()) {
                     if (ImGui.button("Alt Manager")) {
-                        setCurrentImGuiMenu(new AltMenu());
+                        AltManager.render = !AltManager.render;
                     }
-
                     ImGui.endMainMenuBar();
                 }
+                if (AltManager.render) AltManager.render(io);
             });
         }
 
