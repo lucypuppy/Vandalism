@@ -22,11 +22,8 @@ public class ClientCrasherCreativeTab extends CreativeTab {
     @Override
     public Collection<ItemStack> entries() {
         final Collection<ItemStack> current = super.entries();
-
         final VersionEnum targetVersion = ProtocolHack.getTargetVersion();
-
         if (targetVersion.isOlderThan(VersionEnum.r1_11)) {
-
             // This head uses a value that has an empty string as url.
             final ItemStack crashHead = new ItemStack(Items.PLAYER_HEAD);
             final NbtCompound nbt = new NbtCompound();
@@ -52,7 +49,6 @@ public class ClientCrasherCreativeTab extends CreativeTab {
                     )
             );
             current.add(crashHead);
-
             // This head uses a value that has " .minecraft.net" as url.
             final ItemStack crashHeadV2 = new ItemStack(Items.PLAYER_HEAD);
             final NbtCompound nbtV2 = new NbtCompound();
@@ -80,7 +76,6 @@ public class ClientCrasherCreativeTab extends CreativeTab {
             current.add(crashHeadV2);
 
         }
-
         if (targetVersion.isOlderThan(VersionEnum.r1_15)) {
             final ItemStack crashSign = new ItemStack(Items.OAK_SIGN);
             final NbtCompound crashSignNbt = crashSign.getOrCreateNbt();
@@ -101,7 +96,6 @@ public class ClientCrasherCreativeTab extends CreativeTab {
                     )
             );
             current.add(crashSign);
-
             final ItemStack crashSignV2 = new ItemStack(Items.OAK_SIGN);
             final NbtCompound crashSignNbtV2 = crashSign.getOrCreateNbt();
             final NbtCompound crashSignBlockEntityTagV2 = new NbtCompound();
