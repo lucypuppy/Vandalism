@@ -105,7 +105,7 @@ public class MainMenu extends ImGuiMenu {
                 if (currentModule != null) {
                     ImGui.sameLine();
 
-                    if (ImGui.beginListBox("##moduleConfig", 500, 500)) {
+                    if (ImGui.beginListBox("##moduleConfig", 600, 500)) {
                         ImGui.sameLine();
                         ImGui.text(currentModule.getName() + " - Config");
 
@@ -135,7 +135,7 @@ public class MainMenu extends ImGuiMenu {
 
             if (showConfig) {
                 ImGui.sameLine();
-                if (ImGui.beginListBox("##mainConfig", 500, 500)) {
+                if (ImGui.beginListBox("##mainConfig", 600, 500)) {
                     ImGui.sameLine();
                     ImGui.text("Config");
 

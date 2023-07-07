@@ -6,8 +6,10 @@ import com.google.gson.JsonObject;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.config.ValueableConfig;
 import me.nekosarekawaii.foxglove.value.Value;
+import me.nekosarekawaii.foxglove.value.values.BooleanValue;
 import me.nekosarekawaii.foxglove.value.values.KeyInputValue;
 import me.nekosarekawaii.foxglove.value.values.StringValue;
+import me.nekosarekawaii.foxglove.value.values.number.slider.SliderIntegerValue;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.IOException;
@@ -27,6 +29,22 @@ public class MainConfig extends ValueableConfig {
             this,
             "."
     );
+
+    public final Value<Boolean> multiplayerScreenServerInformation = new BooleanValue(
+            "Multiplayer Screen Server Information",
+            "If enabled the Game shows all necessary server information behind a server list entry.",
+            this,
+            true
+    );
+
+    public final Value<Integer> maxServerVersionLength = new SliderIntegerValue(
+            "Max Server Version Length",
+            "Sets the max display length of a server version that is being displayed in the multiplayer screen.",
+            this,
+            60,
+            6,
+            250
+    ).visibleConsumer(this.multiplayerScreenServerInformation::getValue);
 
     public MainConfig() {
         super(Foxglove.getInstance().getDir(), "main");
