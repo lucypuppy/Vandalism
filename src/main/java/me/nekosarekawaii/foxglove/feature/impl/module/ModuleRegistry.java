@@ -6,6 +6,7 @@ import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.DebugModu
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.TestModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.AntiChatContextModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.AntiServerBlockListModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.AntiTimeoutKickModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.ExploitFixerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.*;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.FlyModule;
@@ -99,6 +100,12 @@ public class ModuleRegistry {
         return this.flyModule;
     }
 
+    private AntiTimeoutKickModule antiTimeoutKickModule;
+
+    public AntiTimeoutKickModule getAntiTimeoutKickModule() {
+        return this.antiTimeoutKickModule;
+    }
+
     private final FeatureList<Module> modules;
 
     public ModuleRegistry() {
@@ -121,7 +128,8 @@ public class ModuleRegistry {
                 this.packetLoggerModule = new PacketLoggerModule(),
                 this.packetBlockerModule = new PacketBlockerModule(),
                 this.dontClearChatHistoryModule = new DontClearChatHistoryModule(),
-                this.flyModule = new FlyModule()
+                this.flyModule = new FlyModule(),
+                this.antiTimeoutKickModule = new AntiTimeoutKickModule()
         );
     }
 
