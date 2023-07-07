@@ -66,10 +66,10 @@ public class AltManager {
                     ImGui.inputText("Password", password, ImGuiInputTextFlags.Password);
 
                     if (ImGui.button("Add Microsoft")) {
-                        if (!email.isEmpty() && !password.isEmpty()) {
+                        final String emailValue = email.get().replace(" ", ""), passwordValue = password.get().replace(" ", "");
+                        if (!emailValue.isEmpty() && !passwordValue.isEmpty()) {
                             final ObjectArrayList<Account> accounts = Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts();
                             boolean contains = false;
-                            final String emailValue = email.get();
                             for (final Account account : accounts) {
                                 if (account instanceof final MicrosoftAccount microsoftAccount) {
                                     if (microsoftAccount.getEmail().equals(emailValue)) {
@@ -81,7 +81,7 @@ public class AltManager {
                             if (!contains) {
                                 email.clear();
                                 password.clear();
-                                Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts().add(new MicrosoftAccount(email.get(), password.get()));
+                                Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts().add(new MicrosoftAccount(emailValue, passwordValue));
                                 Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
                             }
                         }
@@ -103,10 +103,10 @@ public class AltManager {
                     ImGui.inputText("UUID", uuid);
 
                     if (ImGui.button("Add Cracked")) {
-                        if (!username.isEmpty()) {
+                        final String usernameValue = username.get().replace(" ", "");
+                        if (!usernameValue.isEmpty()) {
                             final ObjectArrayList<Account> accounts = Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts();
                             boolean contains = false;
-                            final String usernameValue = username.get();
                             String uuidValue = uuid.get();
                             if (uuidValue.isEmpty()) uuidValue = Uuids.getOfflinePlayerUuid(usernameValue).toString();
                             for (final Account account : accounts) {
