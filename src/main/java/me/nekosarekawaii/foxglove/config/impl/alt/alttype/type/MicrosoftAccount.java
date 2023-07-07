@@ -92,8 +92,8 @@ public class MicrosoftAccount extends Account {
         jsonObject.addProperty("uuid", this.uuid);
     }
 
-    public boolean isBrowserSession() {
-        return this.email.equals("browserSession");
+    public String getEmail() {
+        return this.email;
     }
 
 }

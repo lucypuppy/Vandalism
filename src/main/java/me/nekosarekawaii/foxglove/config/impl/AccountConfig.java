@@ -12,6 +12,7 @@ import me.nekosarekawaii.foxglove.config.impl.alt.alttype.type.MicrosoftAccount;
 import net.minecraft.client.MinecraftClient;
 
 import java.io.IOException;
+import java.util.UUID;
 
 public class AccountConfig extends ValueableConfig {
 
@@ -65,7 +66,9 @@ public class AccountConfig extends ValueableConfig {
                     }
                 }
 
-                default -> account = new CrackedAccount(username);
+                default -> {
+                    account = new CrackedAccount(username, UUID.fromString(accountObject.get("uuid").getAsString()));
+                }
             }
 
             this.accounts.add(account);

@@ -4,34 +4,43 @@ import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.config.impl.alt.alttype.Account;
 import me.nekosarekawaii.foxglove.config.impl.alt.alttype.type.CrackedAccount;
 import me.nekosarekawaii.foxglove.config.impl.alt.alttype.type.MicrosoftAccount;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.util.Session;
+import net.minecraft.util.Uuids;
 
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class AltManager {
 
-    private final static ImString email = new ImString();
-    private final static ImString password = new ImString();
-    private final static ImString username = new ImString();
+    private final static ImString email = new ImString(), password = new ImString(), username = new ImString(), uuid = new ImString();
 
     private final static ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public static boolean render = false;
 
+    private static void renderCurrentAccount() {
+        ImGui.newLine();
+        final Session session = MinecraftClient.getInstance().getSession();
+        ImGui.text("Current Account: " + session.getUsername() + " | " + session.getUuid() + " | " + (session.getAccessToken().equals("-") ? "Cracked" : "Premium"));
+        ImGui.newLine();
+    }
+
     public static void render(final ImGuiIO io) {
         if (ImGui.begin("Alt Manager")) {
-            ImGui.setWindowSize(400, 0);
+            ImGui.setWindowSize(0, 0);
 
             if (ImGui.beginTabBar("")) {
                 if (ImGui.beginTabItem("List")) {
-                    ImGui.text("Current Account: " + MinecraftClient.getInstance().getSession().getUsername());
+                    renderCurrentAccount();
                     for (final Account account : Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts()) {
-                        ImGui.text(account.getUsername());
+                        ImGui.text(account.getUsername() + " | " + account.getType() + (account.getType().equals("cracked") ? " | " + ((CrackedAccount) account).getUuidString() : ""));
 
                         ImGui.sameLine();
 
@@ -52,16 +61,29 @@ public class AltManager {
                 }
 
                 if (ImGui.beginTabItem("Add")) {
-                    ImGui.text("Current Account: " + MinecraftClient.getInstance().getSession().getUsername());
+                    renderCurrentAccount();
                     ImGui.inputText("E-Mail", email);
                     ImGui.inputText("Password", password, ImGuiInputTextFlags.Password);
 
                     if (ImGui.button("Add Microsoft")) {
                         if (!email.isEmpty() && !password.isEmpty()) {
-                            Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts().add(
-                                    new MicrosoftAccount(email.get(), password.get()));
-
-                            Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
+                            final ObjectArrayList<Account> accounts = Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts();
+                            boolean contains = false;
+                            final String emailValue = email.get();
+                            for (final Account account : accounts) {
+                                if (account instanceof final MicrosoftAccount microsoftAccount) {
+                                    if (microsoftAccount.getEmail().equals(emailValue)) {
+                                        contains = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!contains) {
+                                email.clear();
+                                password.clear();
+                                Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts().add(new MicrosoftAccount(email.get(), password.get()));
+                                Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
+                            }
                         }
                     }
 
@@ -69,7 +91,7 @@ public class AltManager {
                         executor.submit(() -> {
                             final MicrosoftAccount account = new MicrosoftAccount();
                             account.loginWithBrowser();
-                            if (!account.isBrowserSession()) {
+                            if (!account.getUsername().isEmpty()) {
                                 Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts().add(account);
                                 Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
                             }
@@ -78,13 +100,31 @@ public class AltManager {
 
                     ImGui.newLine();
                     ImGui.inputText("Username", username);
+                    ImGui.inputText("UUID", uuid);
 
                     if (ImGui.button("Add Cracked")) {
                         if (!username.isEmpty()) {
-                            Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts().add(
-                                    new CrackedAccount(username.get()));
-
-                            Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
+                            final ObjectArrayList<Account> accounts = Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts();
+                            boolean contains = false;
+                            final String usernameValue = username.get();
+                            String uuidValue = uuid.get();
+                            if (uuidValue.isEmpty()) uuidValue = Uuids.getOfflinePlayerUuid(usernameValue).toString();
+                            for (final Account account : accounts) {
+                                if (account instanceof final CrackedAccount crackedAccount && crackedAccount.getUuidString().equals(uuidValue)) {
+                                    contains = true;
+                                    break;
+                                }
+                            }
+                            if (!contains) {
+                                try {
+                                    final UUID realUUID = UUID.fromString(uuidValue);
+                                    accounts.add(new CrackedAccount(usernameValue, realUUID));
+                                    Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
+                                    username.clear();
+                                    uuid.clear();
+                                } catch (final IllegalArgumentException ignored) {
+                                }
+                            }
                         }
                     }
 
