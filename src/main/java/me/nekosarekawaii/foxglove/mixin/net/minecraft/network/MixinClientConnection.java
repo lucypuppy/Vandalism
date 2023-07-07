@@ -7,12 +7,10 @@ import me.nekosarekawaii.foxglove.event.impl.PacketListener;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = ClientConnection.class)
@@ -40,10 +38,10 @@ public abstract class MixinClientConnection {
         if (packetEvent.isCancelled()) ci.cancel();
     }
 
-    @Redirect(method = "exceptionCaught", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/ClientConnection;disconnect(Lnet/minecraft/text/Text;)V", ordinal = 0))
-    private void redirectExceptionCaughtTimeoutDisconnect(final ClientConnection instance, final Text disconnectReason) {
+    @Inject(method = "exceptionCaught", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;debug(Ljava/lang/String;Ljava/lang/Throwable;)V", ordinal = 1), cancellable = true)
+    private void redirectExceptionCaughtTimeoutDisconnect(final ChannelHandlerContext context, final Throwable ex, final CallbackInfo ci) {
         if (!Foxglove.getInstance().getModuleRegistry().getAntiTimeoutKickModule().isEnabled())
-            instance.disconnect(disconnectReason);
+            ci.cancel();
     }
 
 }
