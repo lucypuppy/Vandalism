@@ -44,19 +44,25 @@ public class ImGuiRenderer implements MinecraftWrapper {
         if (this.renderInterfaces.isEmpty())
             return;
 
+        //Setup rendering
         this.imGuiImplGlfw.newFrame(); // Handle keyboard and mouse interactions
         ImGui.newFrame();
 
+        //Render
         final ImGuiIO imGuiIO = ImGui.getIO();
         for (final RenderInterface renderInterface : this.renderInterfaces) {
             renderInterface.render(imGuiIO);
         }
+
+        //Clear render stuff and end frame
         this.renderInterfaces.clear();
-
         ImGui.endFrame();
-        ImGui.render();
 
+        //Render
+        ImGui.render();
         this.imGuiImplGl3.renderDrawData(ImGui.getDrawData());
+
+        //Viewport
         if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
             final long pointer = GLFW.glfwGetCurrentContext();
             ImGui.updatePlatformWindows();

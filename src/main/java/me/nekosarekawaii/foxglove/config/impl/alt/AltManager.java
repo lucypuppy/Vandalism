@@ -3,6 +3,7 @@ package me.nekosarekawaii.foxglove.config.impl.alt;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.flag.ImGuiInputTextFlags;
+import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.Foxglove;
@@ -19,30 +20,35 @@ import java.util.concurrent.Executors;
 
 public class AltManager {
 
-    private final static ImString email = new ImString(), password = new ImString(), username = new ImString(), uuid = new ImString();
+    private final static ImString email = new ImString(), password = new ImString(), username = new ImString(16), uuid = new ImString();
 
     private final static ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public static boolean render = false;
 
     private static void renderCurrentAccount() {
-        ImGui.newLine();
         final Session session = MinecraftClient.getInstance().getSession();
-        ImGui.text("Current Account: " + session.getUsername() + " | " + session.getUuid() + " | " + (session.getAccessToken().equals("-") ? "Cracked" : "Premium"));
+        ImGui.text("Current Account:");
+        ImGui.text("Username: " + session.getUsername());
+        ImGui.text("UUID: " + session.getUuid());
+        ImGui.text("Type: " + (session.getAccessToken().equals("-") ? "Cracked" : "Premium"));
         ImGui.newLine();
     }
 
     public static void render(final ImGuiIO io) {
-        if (ImGui.begin("Alt Manager")) {
+        ImGui.setNextWindowSizeConstraints(320, 0, 320, 400);
+
+        if (ImGui.begin("Alt Manager", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoResize)) {
             ImGui.setWindowSize(0, 0);
 
             if (ImGui.beginTabBar("")) {
                 if (ImGui.beginTabItem("List")) {
                     renderCurrentAccount();
                     for (final Account account : Foxglove.getInstance().getConfigManager().getAltsConfig().getAccounts()) {
-                        ImGui.text(account.getUsername() + " | " + account.getType() + (account.getType().equals("cracked") ? " | " + ((CrackedAccount) account).getUuidString() : ""));
+                        ImGui.text(account.getUsername() + " | " + account.getType());
 
                         ImGui.sameLine();
+                        ImGui.setCursorPosX(320 - 108); //Hardcode lol rofl
 
                         if (ImGui.button("login##" + account.getUsername())) {
                             executor.submit(account::login);
