@@ -3,6 +3,7 @@ package me.nekosarekawaii.foxglove.gui.imgui.impl.alt;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.flag.ImGuiInputTextFlags;
+import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.gui.imgui.ImGuiMenu;
@@ -23,14 +24,16 @@ public class AltMenu extends ImGuiMenu {
 
     private final ImString email = new ImString();
     private final ImString password = new ImString();
-    private final ImString username = new ImString();
+    private final ImString username = new ImString(16);
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Override
     public void render(final ImGuiIO imGuiIO) {
-        if (ImGui.begin("Alt Menu")) {
-            ImGui.setWindowSize(400, 0);
+        ImGui.setNextWindowSizeConstraints(0, 0, 300, 400);
+
+        if (ImGui.begin("Alt Menu", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoResize)) {
+            ImGui.setWindowSize(0, 0);
 
             if (ImGui.beginTabBar("")) {
                 if (ImGui.beginTabItem("List")) {
@@ -38,6 +41,7 @@ public class AltMenu extends ImGuiMenu {
                         ImGui.text(account.getUsername());
 
                         ImGui.sameLine();
+                        ImGui.setCursorPosX(300 - 108); //Hardcode lol rofl
 
                         if (ImGui.button("login##" + account.getUsername())) {
                             this.executor.submit(account::login);
