@@ -10,6 +10,7 @@ import me.nekosarekawaii.foxglove.util.ChatUtils;
 import me.nekosarekawaii.foxglove.value.Value;
 import me.nekosarekawaii.foxglove.value.values.BooleanValue;
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
+import net.minecraft.network.packet.c2s.play.RequestCommandCompletionsC2SPacket;
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.util.Identifier;
 
@@ -19,6 +20,8 @@ public class PacketLoggerModule extends Module implements PacketListener {
     private final Value<Boolean> serverToClient = new BooleanValue("S2C", "Enable / Disable the logging of incoming packets.", this, true);
 
     private final Value<Boolean> customPayloadPacket = new BooleanValue("Custom Payload Packet", "Logs custom payload packets into the Chat.", this, false);
+
+    private final Value<Boolean> requestCommandCompletionsPacket = new BooleanValue("Request Command Completions Packet", "Logs request command completions packet into the Chat.", this, false);
 
     @Override
     protected void onEnable() {
@@ -37,7 +40,11 @@ public class PacketLoggerModule extends Module implements PacketListener {
             if (this.customPayloadPacket.getValue()) {
                 final Identifier channel = customPayloadC2SPacket.getChannel();
                 final String channelName = channel.getNamespace(), channelPath = channel.getPath();
-                ChatUtils.infoChatMessage("Incoming custom payload packet > Channel Name: " + channelName + " | Channel Path: " + channelPath);
+                ChatUtils.infoChatMessage("Outgoing custom payload packet > Channel Name: " + channelName + " | Channel Path: " + channelPath);
+            }
+        } else if (event.packet instanceof final RequestCommandCompletionsC2SPacket requestCommandCompletionsC2SPacket) {
+            if (this.requestCommandCompletionsPacket.getValue()) {
+                ChatUtils.infoChatMessage("Outgoing request command completions packet > ID: " + requestCommandCompletionsC2SPacket.getCompletionId() + " | Command: \"" + requestCommandCompletionsC2SPacket.getPartialCommand() + "\"");
             }
         }
     }
