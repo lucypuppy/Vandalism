@@ -39,7 +39,7 @@ public class AltManager {
             if (ImGui.beginTabBar("")) {
                 if (ImGui.beginTabItem("List")) {
                     renderCurrentAccount();
-                    for (final Account account : Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts()) {
+                    for (final Account account : Foxglove.getInstance().getConfigManager().getAltsConfig().getAccounts()) {
                         ImGui.text(account.getUsername() + " | " + account.getType() + (account.getType().equals("cracked") ? " | " + ((CrackedAccount) account).getUuidString() : ""));
 
                         ImGui.sameLine();
@@ -51,9 +51,9 @@ public class AltManager {
                         ImGui.sameLine();
 
                         if (ImGui.button("remove##" + account.getUsername())) {
-                            Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts().remove(account);
+                            Foxglove.getInstance().getConfigManager().getAltsConfig().getAccounts().remove(account);
 
-                            Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
+                            Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAltsConfig());
                         }
                     }
 
@@ -68,7 +68,7 @@ public class AltManager {
                     if (ImGui.button("Add Microsoft")) {
                         final String emailValue = email.get().replace(" ", ""), passwordValue = password.get().replace(" ", "");
                         if (!emailValue.isEmpty() && !passwordValue.isEmpty()) {
-                            final ObjectArrayList<Account> accounts = Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts();
+                            final ObjectArrayList<Account> accounts = Foxglove.getInstance().getConfigManager().getAltsConfig().getAccounts();
                             boolean contains = false;
                             for (final Account account : accounts) {
                                 if (account instanceof final MicrosoftAccount microsoftAccount) {
@@ -81,8 +81,8 @@ public class AltManager {
                             if (!contains) {
                                 email.clear();
                                 password.clear();
-                                Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts().add(new MicrosoftAccount(emailValue, passwordValue));
-                                Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
+                                Foxglove.getInstance().getConfigManager().getAltsConfig().getAccounts().add(new MicrosoftAccount(emailValue, passwordValue));
+                                Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAltsConfig());
                             }
                         }
                     }
@@ -92,8 +92,8 @@ public class AltManager {
                             final MicrosoftAccount account = new MicrosoftAccount();
                             account.loginWithBrowser();
                             if (!account.getUsername().isEmpty()) {
-                                Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts().add(account);
-                                Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
+                                Foxglove.getInstance().getConfigManager().getAltsConfig().getAccounts().add(account);
+                                Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAltsConfig());
                             }
                         });
                     }
@@ -105,7 +105,7 @@ public class AltManager {
                     if (ImGui.button("Add Cracked")) {
                         final String usernameValue = username.get().replace(" ", "");
                         if (!usernameValue.isEmpty()) {
-                            final ObjectArrayList<Account> accounts = Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts();
+                            final ObjectArrayList<Account> accounts = Foxglove.getInstance().getConfigManager().getAltsConfig().getAccounts();
                             boolean contains = false;
                             String uuidValue = uuid.get();
                             if (uuidValue.isEmpty()) uuidValue = Uuids.getOfflinePlayerUuid(usernameValue).toString();
@@ -119,7 +119,7 @@ public class AltManager {
                                 try {
                                     final UUID realUUID = UUID.fromString(uuidValue);
                                     accounts.add(new CrackedAccount(usernameValue, realUUID));
-                                    Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
+                                    Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAltsConfig());
                                     username.clear();
                                     uuid.clear();
                                 } catch (final IllegalArgumentException ignored) {

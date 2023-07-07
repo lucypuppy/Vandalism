@@ -14,9 +14,9 @@ import net.minecraft.client.MinecraftClient;
 import java.io.IOException;
 import java.util.UUID;
 
-public class AccountConfig extends ValueableConfig {
+public class AltsConfig extends ValueableConfig {
 
-    public AccountConfig() {
+    public AltsConfig() {
         super(Foxglove.getInstance().getDir(), "alts");
     }
 

@@ -5,7 +5,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.config.impl.AccountConfig;
+import me.nekosarekawaii.foxglove.config.impl.AltsConfig;
 import me.nekosarekawaii.foxglove.config.impl.MainConfig;
 import me.nekosarekawaii.foxglove.config.impl.ModulesConfig;
 
@@ -32,10 +32,10 @@ public class ConfigManager {
         return this.modulesConfig;
     }
 
-    public final AccountConfig accountConfig;
+    public final AltsConfig altsConfig;
 
-    public AccountConfig getAccountConfig() {
-        return accountConfig;
+    public AltsConfig getAltsConfig() {
+        return altsConfig;
     }
 
     public ConfigManager() {
@@ -45,7 +45,7 @@ public class ConfigManager {
         this.addConfigs(
                 this.mainConfig = new MainConfig(),
                 this.modulesConfig = new ModulesConfig(),
-                this.accountConfig = new AccountConfig()
+                this.altsConfig = new AltsConfig()
         );
     }
 

@@ -54,7 +54,7 @@ public class MicrosoftAccount extends Account {
             throwable.printStackTrace();
             return;
         }
-        Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
+        Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAltsConfig());
         Foxglove.getInstance().getLogger().info("Logged in with " + this.getUsername());
     }
 
@@ -80,7 +80,7 @@ public class MicrosoftAccount extends Account {
             throwable.printStackTrace();
             return;
         }
-        Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
+        Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAltsConfig());
         Foxglove.getInstance().getLogger().info("Logged in with " + this.getUsername());
     }
 
