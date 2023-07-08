@@ -39,7 +39,8 @@ public class CommandRegistry {
                 new SayCommand(),
                 new NBTCommand(),
                 new CheckCMDCommand(),
-                new PluginsCommand()
+                new PluginsCommand(),
+                new GiveCommand()
         );
     }
 
