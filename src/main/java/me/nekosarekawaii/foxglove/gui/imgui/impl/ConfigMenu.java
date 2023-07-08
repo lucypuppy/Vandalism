@@ -1,6 +1,7 @@
 package me.nekosarekawaii.foxglove.gui.imgui.impl;
 
 import imgui.ImGui;
+import imgui.flag.ImGuiWindowFlags;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.value.Value;
@@ -8,7 +9,7 @@ import me.nekosarekawaii.foxglove.value.Value;
 public class ConfigMenu {
 
     public static void render() {
-        if (ImGui.begin("Config")) {
+        if (ImGui.begin("Config", ImGuiWindowFlags.NoCollapse)) {
             ImGui.setWindowSize(0, 0);
             if (ImGui.beginListBox("##config", 600, 500)) {
 

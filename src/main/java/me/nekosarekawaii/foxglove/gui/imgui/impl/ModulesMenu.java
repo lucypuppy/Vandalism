@@ -1,6 +1,7 @@
 package me.nekosarekawaii.foxglove.gui.imgui.impl;
 
 import imgui.ImGui;
+import imgui.flag.ImGuiWindowFlags;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.Foxglove;
@@ -16,7 +17,7 @@ public class ModulesMenu {
     private static final Object2ObjectOpenHashMap<FeatureCategory, Module> moduleViewCache = new Object2ObjectOpenHashMap<>();
 
     public static void render() {
-        if (ImGui.begin("Modules")) {
+        if (ImGui.begin("Modules", ImGuiWindowFlags.NoCollapse)) {
             ImGui.setWindowSize(0, 0);
             final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();
             if (ImGui.beginListBox("##general", 150, 510)) {

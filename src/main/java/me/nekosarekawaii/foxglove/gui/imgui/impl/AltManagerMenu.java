@@ -35,7 +35,7 @@ public class AltManagerMenu {
     public static void render() {
         ImGui.setNextWindowSizeConstraints(320, 0, 320, 400);
 
-        if (ImGui.begin("Alt Manager", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoResize)) {
+        if (ImGui.begin("Alt Manager", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse)) {
             ImGui.setWindowSize(0, 0);
 
             if (ImGui.beginTabBar("")) {

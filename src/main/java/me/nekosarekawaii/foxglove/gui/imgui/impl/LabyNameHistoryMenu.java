@@ -1,6 +1,7 @@
 package me.nekosarekawaii.foxglove.gui.imgui.impl;
 
 import imgui.ImGui;
+import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.util.Http;
@@ -25,7 +26,7 @@ public class LabyNameHistoryMenu {
     private static Thread thread;
 
     public static void render() {
-        if (ImGui.begin("Laby Name History")) {
+        if (ImGui.begin("Laby Name History", ImGuiWindowFlags.NoCollapse)) {
             ImGui.setWindowSize(800, 800);
             ImGui.text("State: " + currentState.getMessage());
             ImGui.inputText("Username", username);
