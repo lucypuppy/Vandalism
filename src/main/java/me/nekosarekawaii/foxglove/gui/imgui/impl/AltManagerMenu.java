@@ -1,10 +1,9 @@
-package me.nekosarekawaii.foxglove.config.impl.alt;
+package me.nekosarekawaii.foxglove.gui.imgui.impl;
 
 import fr.litarvan.openauth.microsoft.MicrosoftAuthResult;
 import fr.litarvan.openauth.microsoft.MicrosoftAuthenticationException;
 import fr.litarvan.openauth.microsoft.MicrosoftAuthenticator;
 import imgui.ImGui;
-import imgui.ImGuiIO;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
@@ -22,7 +21,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class AltManager {
+public class AltManagerMenu {
 
     private final static ImString email = new ImString(), password = new ImString(), username = new ImString(16), uuid = new ImString();
 
@@ -41,7 +40,7 @@ public class AltManager {
         ImGui.newLine();
     }
 
-    public static void render(final ImGuiIO io) {
+    public static void render() {
         ImGui.setNextWindowSizeConstraints(320, 0, 320, 400);
 
         if (ImGui.begin("Alt Manager", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoResize)) {

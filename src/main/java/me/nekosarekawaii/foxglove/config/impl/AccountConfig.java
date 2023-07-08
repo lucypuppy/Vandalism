@@ -21,9 +21,9 @@ import java.security.InvalidKeyException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.UUID;
 
-public class AltsConfig extends ValueableConfig {
+public class AccountConfig extends ValueableConfig {
 
-    public AltsConfig() {
+    public AccountConfig() {
         super(Foxglove.getInstance().getDir(), "alts");
     }
 
