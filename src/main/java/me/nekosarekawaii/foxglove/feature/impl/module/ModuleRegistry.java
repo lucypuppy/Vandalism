@@ -112,6 +112,12 @@ public class ModuleRegistry {
         return this.bungeeCordSpoofModule;
     }
 
+    private GodModeModule godModeModule;
+
+    public GodModeModule getGodModeModule() {
+        return this.godModeModule;
+    }
+
     private final FeatureList<Module> modules;
 
     public ModuleRegistry() {
@@ -136,7 +142,8 @@ public class ModuleRegistry {
                 this.dontClearChatHistoryModule = new DontClearChatHistoryModule(),
                 this.flyModule = new FlyModule(),
                 this.antiTimeoutKickModule = new AntiTimeoutKickModule(),
-                this.bungeeCordSpoofModule = new BungeeCordSpoofModule()
+                this.bungeeCordSpoofModule = new BungeeCordSpoofModule(),
+                this.godModeModule = new GodModeModule()
         );
     }
 
