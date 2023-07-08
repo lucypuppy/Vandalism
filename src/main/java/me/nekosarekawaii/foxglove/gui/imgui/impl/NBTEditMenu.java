@@ -107,6 +107,12 @@ public class NBTEditMenu implements ImNbtDrawer {
 
     public void render() {
         if (this.show) {
+            if (ImGui.beginMainMenuBar()) {
+                if (ImGui.button("Close NBT Edit")) {
+                    this.hide();
+                }
+                ImGui.endMainMenuBar();
+            }
             ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0);
             if (ImGui.begin("NBT Edit", ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoCollapse)) {
                 this.window.render();
