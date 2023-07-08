@@ -31,7 +31,7 @@ public class FlyModule extends Module implements PacketListener, TickListener {
     protected void onDisable() {
         DietrichEvents2.global().unsubscribe(PacketEvent.ID, this);
         DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
-        final ClientPlayerEntity player = mc().player;
+        final ClientPlayerEntity player = mc.player;
         if (player == null) return;
         player.getAbilities().flying = false;
         player.getAbilities().allowFlying = false;
@@ -39,7 +39,7 @@ public class FlyModule extends Module implements PacketListener, TickListener {
 
     @Override
     public void onTick() {
-        final ClientPlayerEntity player = mc().player;
+        final ClientPlayerEntity player = mc.player;
         if (player == null) return;
         if (this.mode.getValue().equals(Mode.CREATIVE.normalName())) {
             player.getAbilities().flying = true;
@@ -50,7 +50,7 @@ public class FlyModule extends Module implements PacketListener, TickListener {
     @Override
     public void onWrite(final PacketEvent event) {
         if (event.isCancelled()) return;
-        final ClientPlayerEntity player = mc().player;
+        final ClientPlayerEntity player = mc.player;
         if (player == null) return;
         final Packet<?> packet = event.packet;
         if (packet instanceof final PlayerMoveC2SPacket playerMoveC2SPacket) {

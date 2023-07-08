@@ -49,13 +49,16 @@ public class FeaturesCommand extends Command {
             ChatUtils.errorChatMessage("No modules are registered!");
             return;
         }
+        final int moduleSize = modules.size();
         final StringBuilder moduleStringBuilder = new StringBuilder()
                 .append(Formatting.DARK_AQUA)
                 .append(Formatting.UNDERLINE)
-                .append("Modules")
+                .append("Modules (")
+                .append(moduleSize)
+                .append(')')
                 .append(Formatting.RESET)
                 .append('\n');
-        for (int i = 0; i < modules.size(); i++) {
+        for (int i = 0; i < moduleSize; i++) {
             final int number = i + 1;
             final Module module = modules.get(i);
             moduleStringBuilder
@@ -83,18 +86,21 @@ public class FeaturesCommand extends Command {
 
     private void displayCommands() {
         final FeatureList<Command> commands = Foxglove.getInstance().getCommandRegistry().getCommands();
-        if (commands.size() - 1 < 1) {
+        final int commandSize = commands.size();
+        if (commandSize - 1 < 1) {
             ChatUtils.errorChatMessage("No commands are registered!");
             return;
         }
         final StringBuilder commandStringBuilder = new StringBuilder()
                 .append(Formatting.DARK_AQUA)
                 .append(Formatting.UNDERLINE)
-                .append("Commands")
+                .append("Commands (")
+                .append(commandSize)
+                .append(')')
                 .append(Formatting.RESET)
                 .append('\n');
 
-        for (int i = 0; i < commands.size(); i++) {
+        for (int i = 0; i < commandSize; i++) {
             final int number = i + 1;
             final Command command = commands.get(i);
             commandStringBuilder

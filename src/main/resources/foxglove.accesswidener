@@ -38,3 +38,6 @@ accessible field net/minecraft/client/MinecraftClient userApiService Lcom/mojang
 mutable field net/minecraft/client/MinecraftClient userApiService Lcom/mojang/authlib/minecraft/UserApiService;
 
 accessible field net/minecraft/client/network/ClientCommandSource completionId I
+
+accessible field net/minecraft/network/packet/c2s/handshake/HandshakeC2SPacket address Ljava/lang/String;
+mutable field net/minecraft/network/packet/c2s/handshake/HandshakeC2SPacket address Ljava/lang/String;

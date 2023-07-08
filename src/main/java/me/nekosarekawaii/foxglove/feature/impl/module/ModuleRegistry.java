@@ -4,11 +4,11 @@ import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.feature.FeatureList;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.DebugModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.TestModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.AntiChatContextModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.AntiServerBlockListModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.AntiTimeoutKickModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.ExploitFixerModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.*;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.*;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.AntiTelemetryModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.DontClearChatHistoryModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.PacketBlockerModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.PacketLoggerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.FlyModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.BetterTabListModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.HUDModule;
@@ -106,6 +106,18 @@ public class ModuleRegistry {
         return this.antiTimeoutKickModule;
     }
 
+    private BungeeCordSpoofModule bungeeCordSpoofModule;
+
+    public BungeeCordSpoofModule getBungeeCordSpoofModule() {
+        return this.bungeeCordSpoofModule;
+    }
+
+    private GodModeModule godModeModule;
+
+    public GodModeModule getGodModeModule() {
+        return this.godModeModule;
+    }
+
     private final FeatureList<Module> modules;
 
     public ModuleRegistry() {
@@ -129,7 +141,9 @@ public class ModuleRegistry {
                 this.packetBlockerModule = new PacketBlockerModule(),
                 this.dontClearChatHistoryModule = new DontClearChatHistoryModule(),
                 this.flyModule = new FlyModule(),
-                this.antiTimeoutKickModule = new AntiTimeoutKickModule()
+                this.antiTimeoutKickModule = new AntiTimeoutKickModule(),
+                this.bungeeCordSpoofModule = new BungeeCordSpoofModule(),
+                this.godModeModule = new GodModeModule()
         );
     }
 

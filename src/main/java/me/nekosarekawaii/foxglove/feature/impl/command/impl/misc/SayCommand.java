@@ -24,7 +24,7 @@ public class SayCommand extends Command {
             final String message = context.getArgument("message", String.class);
             final Instant instant = Instant.now();
             final long l = NetworkEncryptionUtils.SecureRandomUtil.nextLong();
-            ClientPlayNetworkHandler handler = mc().getNetworkHandler();
+            ClientPlayNetworkHandler handler = mc.getNetworkHandler();
             if (handler != null) {
                 final LastSeenMessagesCollector.LastSeenMessages lastSeenMessages = handler.lastSeenMessagesCollector.collect();
                 final MessageSignatureData messageSignatureData = handler.messagePacker

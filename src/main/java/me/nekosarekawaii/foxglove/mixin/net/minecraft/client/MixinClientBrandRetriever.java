@@ -1,7 +1,7 @@
 package me.nekosarekawaii.foxglove.mixin.net.minecraft.client;
 
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.BrandChangerModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.BrandChangerModule;
 import net.minecraft.client.ClientBrandRetriever;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

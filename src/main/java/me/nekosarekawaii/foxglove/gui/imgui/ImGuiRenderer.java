@@ -2,7 +2,7 @@
  * This file is part of fabric-imgui-example-mod - https://github.com/FlorianMichael/fabric-imgui-example-mod
  * by FlorianMichael/EnZaXD and contributors
  */
-package me.nekosarekawaii.foxglove.util.imgui;
+package me.nekosarekawaii.foxglove.gui.imgui;
 
 import imgui.ImGui;
 import imgui.ImGuiIO;
@@ -11,12 +11,12 @@ import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
+import net.minecraft.client.MinecraftClient;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
 
-public class ImGuiRenderer implements MinecraftWrapper {
+public class ImGuiRenderer {
 
     private final ImGuiImplGl3 imGuiImplGl3;
     private final ImGuiImplGlfw imGuiImplGlfw;
@@ -36,7 +36,7 @@ public class ImGuiRenderer implements MinecraftWrapper {
         imGuiIO.setFontGlobalScale(1f);
         imGuiIO.setIniFilename(dir.getName() + "/imgui.ini");
 
-        this.imGuiImplGlfw.init(mc().getWindow().getHandle(), true);
+        this.imGuiImplGlfw.init(MinecraftClient.getInstance().getWindow().getHandle(), true);
         this.imGuiImplGl3.init();
     }
 

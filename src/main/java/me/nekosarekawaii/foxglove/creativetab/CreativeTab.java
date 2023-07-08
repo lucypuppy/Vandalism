@@ -1,7 +1,6 @@
 package me.nekosarekawaii.foxglove.creativetab;
 
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemStackSet;
@@ -12,7 +11,7 @@ import net.minecraft.text.Text;
 
 import java.util.Collection;
 
-public abstract class CreativeTab implements MinecraftWrapper {
+public abstract class CreativeTab {
 
     private final ItemStack icon;
     private ItemGroup itemGroup;

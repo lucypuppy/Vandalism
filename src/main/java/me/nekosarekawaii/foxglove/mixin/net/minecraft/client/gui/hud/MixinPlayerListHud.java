@@ -3,7 +3,7 @@ package me.nekosarekawaii.foxglove.mixin.net.minecraft.client.gui.hud;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.BetterTabListModule;
 import me.nekosarekawaii.foxglove.util.ColorUtils;
-import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.PlayerListHud;
@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.awt.*;
 
 @Mixin(PlayerListHud.class)
-public abstract class MixinPlayerListHud implements MinecraftWrapper {
+public abstract class MixinPlayerListHud {
 
     @Shadow
     public abstract Text getPlayerName(final PlayerListEntry entry);
@@ -87,21 +87,21 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
 
     @Inject(method = "renderLatencyIcon", at = @At("HEAD"), cancellable = true)
     private void injectRenderLatencyIcon(final DrawContext context, final int width, final int x, final int y, final PlayerListEntry entry, final CallbackInfo ci) {
-        final ClientPlayNetworkHandler networkHandler = mc().getNetworkHandler();
-        final int a = mc().isInSingleplayer() || (networkHandler != null && networkHandler.getConnection().isEncrypted()) ? 9 : 0, w = x + a;
+        final ClientPlayNetworkHandler networkHandler = MinecraftClient.getInstance().getNetworkHandler();
+        final int a = MinecraftClient.getInstance().isInSingleplayer() || (networkHandler != null && networkHandler.getConnection().isEncrypted()) ? 9 : 0, w = x + a;
 
         final BetterTabListModule betterTabListModule = Foxglove.getInstance().getModuleRegistry().getBetterTabListModule();
 
-        int color = mc().options.getTextBackgroundColor(0x20FFFFFF);
+        int color = MinecraftClient.getInstance().options.getTextBackgroundColor(0x20FFFFFF);
 
-        final ClientPlayerEntity player = mc().player;
+        final ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (betterTabListModule.isEnabled() && betterTabListModule.self.getValue() && player != null && entry.getProfile().getId().equals(player.getGameProfile().getId())) {
             color = betterTabListModule.selfColor.getValue().getRGB();
         }
 
         context.fill(w, y, w + width - a, y + 8, color);
 
-        final TextRenderer textRenderer = mc().textRenderer;
+        final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         context.drawTextWithShadow(textRenderer, this.getPlayerName(entry), w, y, entry.getGameMode() == GameMode.SPECTATOR ? -1862270977 : -1);
 
         if (betterTabListModule.isEnabled() && betterTabListModule.accurateLatency.getValue()) {

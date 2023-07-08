@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.raphimc.vialoader.util.VersionEnum;
@@ -21,11 +22,8 @@ public class ClientCrasherCreativeTab extends CreativeTab {
     @Override
     public Collection<ItemStack> entries() {
         final Collection<ItemStack> current = super.entries();
-
         final VersionEnum targetVersion = ProtocolHack.getTargetVersion();
-
         if (targetVersion.isOlderThan(VersionEnum.r1_11)) {
-
             // This head uses a value that has an empty string as url.
             final ItemStack crashHead = new ItemStack(Items.PLAYER_HEAD);
             final NbtCompound nbt = new NbtCompound();
@@ -51,7 +49,6 @@ public class ClientCrasherCreativeTab extends CreativeTab {
                     )
             );
             current.add(crashHead);
-
             // This head uses a value that has " .minecraft.net" as url.
             final ItemStack crashHeadV2 = new ItemStack(Items.PLAYER_HEAD);
             final NbtCompound nbtV2 = new NbtCompound();
@@ -78,6 +75,46 @@ public class ClientCrasherCreativeTab extends CreativeTab {
             );
             current.add(crashHeadV2);
 
+        }
+        if (targetVersion.isOlderThan(VersionEnum.r1_15)) {
+            final ItemStack crashSign = new ItemStack(Items.OAK_SIGN);
+            final NbtCompound crashSignNbt = crashSign.getOrCreateNbt();
+            final NbtCompound crashSignBlockEntityTag = new NbtCompound();
+            final NbtString crashSignText1 = NbtString.of(Text.Serializer.toJson(Text.translatable("translation.test.invalid")));
+            final NbtString crashSignText2 = NbtString.of(Text.Serializer.toJson(Text.literal("")));
+            final NbtString crashSignText3 = NbtString.of(Text.Serializer.toJson(Text.literal("")));
+            final NbtString crashSignText4 = NbtString.of(Text.Serializer.toJson(Text.literal("")));
+            crashSignBlockEntityTag.put("Text1", crashSignText1);
+            crashSignBlockEntityTag.put("Text2", crashSignText2);
+            crashSignBlockEntityTag.put("Text3", crashSignText3);
+            crashSignBlockEntityTag.put("Text4", crashSignText4);
+            crashSignNbt.put("BlockEntityTag", crashSignBlockEntityTag);
+            this.putClientsideName(
+                    crashSign,
+                    Text.literal(
+                            Formatting.RED + Formatting.BOLD.toString() + "Crash Sign"
+                    )
+            );
+            current.add(crashSign);
+            final ItemStack crashSignV2 = new ItemStack(Items.OAK_SIGN);
+            final NbtCompound crashSignNbtV2 = crashSign.getOrCreateNbt();
+            final NbtCompound crashSignBlockEntityTagV2 = new NbtCompound();
+            final NbtString crashSignText1V2 = NbtString.of(Text.Serializer.toJson(Text.translatable("translation.test.invalid2")));
+            final NbtString crashSignText2V2 = NbtString.of(Text.Serializer.toJson(Text.literal("")));
+            final NbtString crashSignText3V2 = NbtString.of(Text.Serializer.toJson(Text.literal("")));
+            final NbtString crashSignText4V2 = NbtString.of(Text.Serializer.toJson(Text.literal("")));
+            crashSignBlockEntityTagV2.put("Text1", crashSignText1V2);
+            crashSignBlockEntityTagV2.put("Text2", crashSignText2V2);
+            crashSignBlockEntityTagV2.put("Text3", crashSignText3V2);
+            crashSignBlockEntityTagV2.put("Text4", crashSignText4V2);
+            crashSignNbtV2.put("BlockEntityTag", crashSignBlockEntityTagV2);
+            this.putClientsideName(
+                    crashSignV2,
+                    Text.literal(
+                            Formatting.RED + Formatting.BOLD.toString() + "Crash Sign V2"
+                    )
+            );
+            current.add(crashSignV2);
         }
 
         return current;

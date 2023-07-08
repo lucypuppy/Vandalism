@@ -16,11 +16,11 @@ import java.io.IOException;
 
 public class MainConfig extends ValueableConfig {
 
-    public final Value<Integer> mainMenuKeyCode = new KeyInputValue(
-            "Main Menu Key",
-            "Change the key to open this Menu.",
+    public final Value<Integer> mainBarKeyCode = new KeyInputValue(
+            "Main Bar",
+            "Change the key to open the Main Bar.",
             this,
-            GLFW.GLFW_KEY_RIGHT_SHIFT
+            GLFW.GLFW_KEY_MENU
     );
 
     public final Value<String> commandPrefix = new StringValue(
@@ -45,6 +45,13 @@ public class MainConfig extends ValueableConfig {
             6,
             250
     ).visibleConsumer(this.multiplayerScreenServerInformation::getValue);
+
+    public final Value<Boolean> allowColorChar = new BooleanValue(
+            "Allow Color Char",
+            "Disables the color char restrictions of the Game.",
+            this,
+            true
+    );
 
     public MainConfig() {
         super(Foxglove.getInstance().getDir(), "main");

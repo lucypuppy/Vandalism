@@ -15,6 +15,7 @@
     "net.minecraft.client.gui.screen.MixinDisconnectedScreen",
     "net.minecraft.client.gui.screen.MixinGameMenuScreen",
     "net.minecraft.client.gui.screen.MixinScreen",
+    "net.minecraft.client.gui.screen.ingame.MixinAbstractSignEditScreen",
     "net.minecraft.client.gui.screen.multiplayer.MixinServerEntry",
     "net.minecraft.client.gui.widget.MixinEntryListWidget",
     "net.minecraft.client.network.MixinAllowedAddressResolver",
@@ -30,6 +31,7 @@
   "mixins": [
     "com.mojang.authlib.yggdrasil.MixinTextureUrlChecker",
     "com.mojang.authlib.yggdrasil.MixinYggdrasilUserApiService",
+    "net.minecraft.MixinSharedConstants",
     "net.minecraft.item.MixinItemGroup",
     "net.minecraft.item.MixinItemStack",
     "net.minecraft.util.MixinModStatus"

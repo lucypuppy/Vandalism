@@ -12,7 +12,7 @@ public class ChatClearCommand extends Command {
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
-            mc().inGameHud.getChatHud().clear(false);
+            mc.inGameHud.getChatHud().clear(false);
             return SINGLE_SUCCESS;
         });
     }

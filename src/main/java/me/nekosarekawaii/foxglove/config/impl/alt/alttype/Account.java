@@ -1,9 +1,8 @@
 package me.nekosarekawaii.foxglove.config.impl.alt.alttype;
 
 import com.google.gson.JsonObject;
-import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
 
-public abstract class Account implements MinecraftWrapper {
+public abstract class Account {
 
     private final String type;
     private String username;
