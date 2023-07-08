@@ -32,3 +32,6 @@ accessible field net/minecraft/client/MinecraftClient session Lnet/minecraft/cli
 mutable field net/minecraft/client/MinecraftClient session Lnet/minecraft/client/util/Session;
 
 accessible field net/minecraft/client/network/ClientCommandSource completionId I
+
+accessible field net/minecraft/network/packet/c2s/handshake/HandshakeC2SPacket address Ljava/lang/String;
+mutable field net/minecraft/network/packet/c2s/handshake/HandshakeC2SPacket address Ljava/lang/String;
