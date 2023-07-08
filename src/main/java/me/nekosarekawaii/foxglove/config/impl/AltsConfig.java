@@ -9,9 +9,16 @@ import me.nekosarekawaii.foxglove.config.ValueableConfig;
 import me.nekosarekawaii.foxglove.config.impl.alt.alttype.Account;
 import me.nekosarekawaii.foxglove.config.impl.alt.alttype.type.CrackedAccount;
 import me.nekosarekawaii.foxglove.config.impl.alt.alttype.type.MicrosoftAccount;
+import me.nekosarekawaii.foxglove.util.AES;
 import net.minecraft.client.MinecraftClient;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.SecretKey;
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.UUID;
 
 public class AltsConfig extends ValueableConfig {
@@ -50,25 +57,28 @@ public class AltsConfig extends ValueableConfig {
             final JsonObject accountObject = accountElement.getAsJsonObject();
             final String username = accountObject.get("username").getAsString();
             final String type = accountObject.get("type").getAsString();
-            final Account account;
+            Account account = null;
 
             switch (type) {
                 case "microsoft" -> {
-                    final String email = accountObject.get("email").getAsString();
-                    final String password = accountObject.get("password").getAsString();
-                    final String refreshToken = accountObject.get("refreshToken").getAsString();
-                    final String uuid = accountObject.get("uuid").getAsString();
+                    try {
+                        final SecretKey secretKey = AES.getKeyFromPassword(username);
+                        final String refreshToken = AES.decrypt(accountObject.get("refreshToken").getAsString(), secretKey);
+                        final String uuid = accountObject.get("uuid").getAsString();
 
-                    if (refreshToken.isEmpty() || uuid.isEmpty()) {
-                        account = new MicrosoftAccount(email, password);
-                    } else {
-                        account = new MicrosoftAccount(email, password, refreshToken, uuid, username);
+                        account = new MicrosoftAccount(refreshToken, uuid, username);
+                    } catch (final InvalidKeySpecException | InvalidKeyException | IllegalBlockSizeException |
+                                   BadPaddingException | InvalidAlgorithmParameterException e) {
+                        e.printStackTrace();
                     }
                 }
 
-                default -> {
-                    account = new CrackedAccount(username, UUID.fromString(accountObject.get("uuid").getAsString()));
-                }
+                default -> account = new CrackedAccount(username, UUID.fromString(accountObject.get("uuid").getAsString()));
+            }
+
+            if (account == null) {
+                System.out.println("Failed to load account: " + username);
+                continue;
             }
 
             this.accounts.add(account);
