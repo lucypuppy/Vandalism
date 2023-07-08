@@ -21,7 +21,7 @@ public class CrackedAccount extends Account {
     @Override
     public void login() {
         MinecraftClient.getInstance().session = new Session(this.getUsername(), this.uuidString, "-", Optional.empty(), Optional.empty(), Session.AccountType.LEGACY);
-        Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAltsConfig());
+        Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
         Foxglove.getInstance().getLogger().info("Logged in with " + this.getUsername());
     }
 
