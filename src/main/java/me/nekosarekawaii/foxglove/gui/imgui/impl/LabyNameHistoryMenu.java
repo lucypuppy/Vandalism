@@ -18,7 +18,7 @@ public class LabyNameHistoryMenu {
 
     private final static ImString username = new ImString(16);
 
-    private static String lastUsername = "";
+    private static String lastUsername = "", lastUUID = "";
 
     private static State currentState = State.WAITING_INPUT;
 
@@ -58,6 +58,7 @@ public class LabyNameHistoryMenu {
                         }
                         currentState = State.SUCCESS;
                         lastUsername = usernameValue;
+                        lastUUID = uuid;
                         for (final Name entry : history.username_history) {
                             final StringBuilder entryBuilder = new StringBuilder(entry.name);
                             if (entry.changed_at != null && entry.changed_at.getTime() != 0) {
@@ -71,7 +72,10 @@ public class LabyNameHistoryMenu {
                 }
             }
             if (!currentData.isEmpty()) {
-                if (ImGui.button("Copy")) {
+                ImGui.text("UUID: " + lastUUID);
+                ImGui.sameLine();
+                if (ImGui.button("Copy UUID")) MinecraftClient.getInstance().keyboard.setClipboard(lastUUID);
+                if (ImGui.button("Copy Name History")) {
                     final StringBuilder dataBuilder = new StringBuilder(lastUsername + "'s Name History\n\n");
                     for (int i = 0; i < currentData.size(); i++) {
                         final int currentIndex = i + 1;
@@ -83,12 +87,12 @@ public class LabyNameHistoryMenu {
                     currentData.clear();
                     currentState = State.WAITING_INPUT;
                 }
-                if (ImGui.beginListBox(lastUsername + "'s Name History", 550, 500)) {
+                if (ImGui.beginListBox(lastUsername + "'s Name History", 600, 500)) {
                     for (int i = 0; i < currentData.size(); i++) {
                         final String dataEntry = currentData.get(i);
                         ImGui.text(dataEntry);
                         ImGui.sameLine();
-                        if (ImGui.button("Copy##" + i)) {
+                        if (ImGui.button("Copy Entry##" + i)) {
                             MinecraftClient.getInstance().keyboard.setClipboard(dataEntry);
                         }
                     }
