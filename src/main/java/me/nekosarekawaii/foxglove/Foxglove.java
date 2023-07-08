@@ -1,24 +1,11 @@
 package me.nekosarekawaii.foxglove;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
-import imgui.internal.ImGui;
 import me.nekosarekawaii.foxglove.config.ConfigManager;
-import me.nekosarekawaii.foxglove.config.impl.alt.AltManager;
 import me.nekosarekawaii.foxglove.creativetab.CreativeTabRegistry;
-import me.nekosarekawaii.foxglove.event.impl.KeyboardListener;
-import me.nekosarekawaii.foxglove.event.impl.Render2DListener;
-import me.nekosarekawaii.foxglove.event.impl.TickListener;
 import me.nekosarekawaii.foxglove.feature.impl.command.CommandRegistry;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleRegistry;
-import me.nekosarekawaii.foxglove.gui.imgui.ImGuiMenu;
-import me.nekosarekawaii.foxglove.gui.imgui.impl.MainMenu;
-import me.nekosarekawaii.foxglove.util.imgui.ImGuiRenderer;
-import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.DirectConnectScreen;
-import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
-import net.minecraft.client.util.Window;
-import org.lwjgl.glfw.GLFW;
+import me.nekosarekawaii.foxglove.gui.imgui.ImGuiHandler;
+import net.minecraft.client.MinecraftClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +13,7 @@ import java.awt.*;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 
-public class Foxglove implements MinecraftWrapper, KeyboardListener, TickListener, Render2DListener {
+public class Foxglove {
 
     private final static Foxglove instance = new Foxglove();
 
@@ -46,14 +33,14 @@ public class Foxglove implements MinecraftWrapper, KeyboardListener, TickListene
     private final boolean firstStart, jvmDebugMode;
 
     private final CreativeTabRegistry creativeTabRegistry;
+
     private ModuleRegistry moduleRegistry;
+
     private CommandRegistry commandRegistry;
 
     private ConfigManager configManager;
 
-    private ImGuiRenderer imGuiRenderer;
-
-    private ImGuiMenu currentImGuiMenu;
+    private ImGuiHandler imGuiHandler;
 
     public Foxglove() {
         this.name = "Foxglove";
@@ -63,7 +50,7 @@ public class Foxglove implements MinecraftWrapper, KeyboardListener, TickListene
         this.color = Color.MAGENTA;
         this.colorRGB = this.color.getRGB();
         this.logger = LoggerFactory.getLogger(this.name);
-        this.dir = new File(mc().runDirectory, this.lowerCaseName);
+        this.dir = new File(MinecraftClient.getInstance().runDirectory, this.lowerCaseName);
         this.firstStart = !this.dir.exists(); //TODO: Make better first start check.
         if (this.firstStart) {
             if (!this.dir.mkdirs()) {
@@ -92,16 +79,12 @@ public class Foxglove implements MinecraftWrapper, KeyboardListener, TickListene
         this.commandRegistry = new CommandRegistry();
         this.logger.info("Features loaded.");
 
-        this.logger.info("Loading ImGui Renderer...");
-        this.imGuiRenderer = new ImGuiRenderer(this.dir);
-        this.logger.info("ImGui Renderer loaded.");
+        this.logger.info("Loading ImGui...");
+        this.imGuiHandler = new ImGuiHandler(this.dir);
+        this.logger.info("ImGui loaded.");
 
         this.configManager = new ConfigManager();
         this.configManager.load();
-
-        DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
-        DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
-        DietrichEvents2.global().subscribe(TickEvent.ID, this);
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
     }
@@ -109,60 +92,6 @@ public class Foxglove implements MinecraftWrapper, KeyboardListener, TickListene
     private void stop() {
         this.logger.info("Stopping...");
         this.configManager.save();
-    }
-
-    private boolean renderBar = false;
-
-    @Override
-    public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        if (action != GLFW.GLFW_PRESS) return;
-        if (this.currentImGuiMenu != null && !this.currentImGuiMenu.keyPress(key, scanCode, modifiers)) {
-            return;
-        }
-        if (this.configManager.getMainConfig().mainMenuKeyCode.getValue() == key && !(this.currentImGuiMenu instanceof MainMenu)) {
-            this.setCurrentImGuiMenu(new MainMenu());
-        }
-        if (key == GLFW.GLFW_KEY_MENU) {
-            this.renderBar = !this.renderBar;
-        }
-    }
-
-    @Override
-    public void onTick() {
-        if (this.currentImGuiMenu != null) this.currentImGuiMenu.tick();
-    }
-
-    private void renderImGuiContext() {
-        if (this.currentImGuiMenu != null) {
-            this.imGuiRenderer.addRenderInterface(io -> this.currentImGuiMenu.render(io));
-        }
-        if (this.renderBar && (mc().currentScreen instanceof MultiplayerScreen || mc().currentScreen instanceof DirectConnectScreen)) {
-            this.imGuiRenderer.addRenderInterface(io -> {
-                if (ImGui.beginMainMenuBar()) {
-                    if (ImGui.button("Alt Manager")) {
-                        AltManager.render = !AltManager.render;
-                    }
-                    ImGui.endMainMenuBar();
-                }
-                if (AltManager.render) AltManager.render(io);
-            });
-        }
-
-        this.imGuiRenderer.render();
-    }
-
-    @Override
-    public void onRender2D(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        if (mc().currentScreen != null) {
-            this.renderImGuiContext();
-        }
-    }
-
-    @Override
-    public void onRender2DInGame(final DrawContext context, final float delta, final Window window) {
-        if (mc().currentScreen == null) {
-            this.renderImGuiContext();
-        }
     }
 
     public String getName() {
@@ -221,20 +150,12 @@ public class Foxglove implements MinecraftWrapper, KeyboardListener, TickListene
         return this.windowTitle;
     }
 
-    public ImGuiMenu getCurrentImGuiMenu() {
-        return this.currentImGuiMenu;
-    }
-
-    public void setCurrentImGuiMenu(final ImGuiMenu currentImGuiMenu) {
-        this.currentImGuiMenu = currentImGuiMenu;
-    }
-
-    public ImGuiRenderer getImGuiRenderer() {
-        return this.imGuiRenderer;
-    }
-
     public ConfigManager getConfigManager() {
         return this.configManager;
+    }
+
+    public ImGuiHandler getImGuiHandler() {
+        return this.imGuiHandler;
     }
 
 }

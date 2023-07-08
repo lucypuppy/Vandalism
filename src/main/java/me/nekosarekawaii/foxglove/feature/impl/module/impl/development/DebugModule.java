@@ -9,7 +9,7 @@ import me.nekosarekawaii.foxglove.event.impl.TickListener;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
-import me.nekosarekawaii.foxglove.util.imgui.ImGuiUtil;
+import me.nekosarekawaii.foxglove.gui.imgui.ImGuiUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
 
@@ -47,7 +47,7 @@ public class DebugModule extends Module implements Render2DListener, TickListene
         if (fpsHistory.size() < 100)
             return;
 
-        Foxglove.getInstance().getImGuiRenderer().addRenderInterface(io -> {
+        Foxglove.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
             if (ImGui.begin("Debug Graph", ImGuiUtil.getInGameFlags(0))) {
                 if (ImPlot.beginPlot("Debug Graph")) {
                     ImPlot.plotLine("FPS", this.graphSize, this.fpsHistory.toArray(Integer[]::new));
@@ -61,7 +61,7 @@ public class DebugModule extends Module implements Render2DListener, TickListene
 
     @Override
     public void onTick() {
-        final int curFPS = mc().getCurrentFps();
+        final int curFPS = mc.getCurrentFps();
 
         if (curFPS != lastFPS) {
             this.fpsHistory.add(curFPS);

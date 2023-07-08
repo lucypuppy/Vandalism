@@ -1,4 +1,4 @@
-package me.nekosarekawaii.foxglove.util.imgui;
+package me.nekosarekawaii.foxglove.gui.imgui;
 
 import me.nekosarekawaii.foxglove.util.FramebufferUtil;
 import net.minecraft.client.gl.Framebuffer;

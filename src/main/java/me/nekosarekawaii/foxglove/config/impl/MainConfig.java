@@ -46,6 +46,13 @@ public class MainConfig extends ValueableConfig {
             250
     ).visibleConsumer(this.multiplayerScreenServerInformation::getValue);
 
+    public final Value<Boolean> allowColorChar = new BooleanValue(
+            "Allow Color Char",
+            "Disables the color char restrictions of the Game.",
+            this,
+            true
+    );
+
     public MainConfig() {
         super(Foxglove.getInstance().getDir(), "main");
     }

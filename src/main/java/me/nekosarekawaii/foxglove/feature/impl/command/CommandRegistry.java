@@ -10,11 +10,11 @@ import me.nekosarekawaii.foxglove.feature.impl.command.impl.exploit.CheckCMDComm
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.exploit.PluginsCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.*;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.render.ClientsideGameModeCommand;
-import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommandSource;
 import net.minecraft.command.CommandSource;
 
-public class CommandRegistry implements MinecraftWrapper {
+public class CommandRegistry {
 
     private CommandDispatcher<CommandSource> commandDispatcher;
     private CommandSource commandSource;
@@ -28,7 +28,7 @@ public class CommandRegistry implements MinecraftWrapper {
 
     private void register() {
         this.commandDispatcher = new CommandDispatcher<>();
-        this.commandSource = new ClientCommandSource(null, mc());
+        this.commandSource = new ClientCommandSource(null, MinecraftClient.getInstance());
         this.registerCommands(
                 new TestCommand(),
                 new FeaturesCommand(),

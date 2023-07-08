@@ -19,7 +19,7 @@ public class ClientsideGameModeCommand extends Command {
         builder
                 .then(argument("gamemode", GameModeArgumentType.create())
                         .executes(context -> {
-                            final ClientPlayerInteractionManager interactionManager = mc().interactionManager;
+                            final ClientPlayerInteractionManager interactionManager = mc.interactionManager;
                             if (interactionManager != null) {
                                 final GameMode gameMode = GameModeArgumentType.get(context);
                                 interactionManager.setGameMode(gameMode);

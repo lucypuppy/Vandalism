@@ -8,8 +8,8 @@ import me.nekosarekawaii.foxglove.creativetab.impl.ClientKickerCreativeTab;
 import me.nekosarekawaii.foxglove.creativetab.impl.GriefItemsCreativeTab;
 import me.nekosarekawaii.foxglove.event.EventPriorities;
 import me.nekosarekawaii.foxglove.event.impl.PacketListener;
-import me.nekosarekawaii.foxglove.wrapper.MinecraftWrapper;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -23,7 +23,7 @@ import net.minecraft.util.Identifier;
 
 import java.util.UUID;
 
-public class CreativeTabRegistry implements PacketListener, MinecraftWrapper {
+public class CreativeTabRegistry implements PacketListener {
 
     private final UUID clientsideName, clientsideGlint;
 
@@ -78,7 +78,7 @@ public class CreativeTabRegistry implements PacketListener, MinecraftWrapper {
     @Override
     public void onWrite(final PacketEvent event) {
         if (event.packet instanceof final CreativeInventoryActionC2SPacket creativeInventoryActionC2SPacket) {
-            if (mc().currentScreen instanceof CreativeInventoryScreen) {
+            if (MinecraftClient.getInstance().currentScreen instanceof CreativeInventoryScreen) {
                 if (this.itemGroups.contains(CreativeInventoryScreen.selectedTab)) {
                     final ItemStack itemStack = creativeInventoryActionC2SPacket.getItemStack();
                     final NbtCompound nbt = itemStack.getNbt();

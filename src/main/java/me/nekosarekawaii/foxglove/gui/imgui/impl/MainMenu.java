@@ -1,36 +1,29 @@
 package me.nekosarekawaii.foxglove.gui.imgui.impl;
 
 import imgui.ImGui;
-import imgui.ImGuiIO;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.FeatureList;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
-import me.nekosarekawaii.foxglove.gui.imgui.ImGuiMenu;
 import me.nekosarekawaii.foxglove.value.Value;
 
-public class MainMenu extends ImGuiMenu {
+public class MainMenu {
 
     private static FeatureCategory currentFeatureCategory = null;
     private static Module currentModule = null;
 
     private static final Object2ObjectOpenHashMap<FeatureCategory, Module> moduleViewCache = new Object2ObjectOpenHashMap<>();
 
-    private void resetModuleView() {
+    private static void resetModuleView() {
         currentFeatureCategory = null;
         currentModule = null;
     }
 
     private static boolean showConfig = true;
 
-    @Override
-    public void init() {
-    }
-
-    @Override
-    public void render(final ImGuiIO imGuiIO) {
+    public static void render() {
         if (ImGui.begin(Foxglove.getInstance().getName())) {
             ImGui.setWindowSize(0, 0);
 
@@ -46,7 +39,7 @@ public class MainMenu extends ImGuiMenu {
 
                 for (int i = 0; i < 2; i++) ImGui.spacing();
                 if (ImGui.button("Config", 142, 35)) {
-                    this.resetModuleView();
+                    resetModuleView();
                     showConfig = true;
                 }
                 if (!modules.isEmpty()) {
@@ -162,22 +155,6 @@ public class MainMenu extends ImGuiMenu {
 
             ImGui.end();
         }
-    }
-
-    @Override
-    public void tick() {
-    }
-
-    @Override
-    public boolean keyPress(final int keyCode, final int scanCode, final int modifiers) {
-        if (Foxglove.getInstance().getConfigManager().getMainConfig().mainMenuKeyCode.getValue() == keyCode) {
-            Foxglove.getInstance().setCurrentImGuiMenu(null);
-        }
-        return false;
-    }
-
-    @Override
-    public void close() {
     }
 
 }

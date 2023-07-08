@@ -16,7 +16,7 @@ public class GameModeCommand extends Command {
         builder
                 .then(argument("gamemode", GameModeArgumentType.create())
                         .executes(context -> {
-                            final ClientPlayNetworkHandler clientPlayNetworkHandler = mc().getNetworkHandler();
+                            final ClientPlayNetworkHandler clientPlayNetworkHandler = mc.getNetworkHandler();
                             final GameMode gameMode = GameModeArgumentType.get(context);
                             if (clientPlayNetworkHandler != null) {
                                 clientPlayNetworkHandler.sendChatCommand("gamemode " + gameMode.name().toLowerCase());

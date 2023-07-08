@@ -5,6 +5,7 @@ import fr.litarvan.openauth.microsoft.MicrosoftAuthResult;
 import fr.litarvan.openauth.microsoft.MicrosoftAuthenticator;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.config.impl.alt.alttype.Account;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Session;
 
 import java.util.Optional;
@@ -47,7 +48,7 @@ public class MicrosoftAccount extends Account {
             this.refreshToken = result.getRefreshToken();
             this.uuid = result.getProfile().getId();
 
-            mc().session = new Session(this.getUsername(),
+            MinecraftClient.getInstance().session = new Session(this.getUsername(),
                     this.uuid, result.getAccessToken(), Optional.empty(),
                     Optional.empty(), Session.AccountType.MSA);
         } catch (final Throwable throwable) {
@@ -73,7 +74,7 @@ public class MicrosoftAccount extends Account {
             this.refreshToken = result.getRefreshToken();
             this.uuid = result.getProfile().getId();
 
-            mc().session = new Session(this.getUsername(),
+            MinecraftClient.getInstance().session = new Session(this.getUsername(),
                     this.uuid, result.getAccessToken(), Optional.empty(),
                     Optional.empty(), Session.AccountType.MSA);
         } catch (final Throwable throwable) {
