@@ -9,51 +9,26 @@ import me.nekosarekawaii.foxglove.feature.FeatureList;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.value.Value;
 
-public class MainMenu {
+public class ModulesMenu {
 
     private static FeatureCategory currentFeatureCategory = null;
     private static Module currentModule = null;
-
     private static final Object2ObjectOpenHashMap<FeatureCategory, Module> moduleViewCache = new Object2ObjectOpenHashMap<>();
 
-    private static void resetModuleView() {
-        currentFeatureCategory = null;
-        currentModule = null;
-    }
-
-    private static boolean showConfig = true;
-
     public static void render() {
-        if (ImGui.begin(Foxglove.getInstance().getName())) {
+        if (ImGui.begin("Modules")) {
             ImGui.setWindowSize(0, 0);
-
             final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();
-
             if (ImGui.beginListBox("##general", 150, 510)) {
-
-                for (int i = 0; i < 3; i++) ImGui.spacing();
-
-                ImGui.sameLine();
-
-                ImGui.text(Foxglove.getInstance().getName() + " " + Foxglove.getInstance().getVersion());
-
-                for (int i = 0; i < 2; i++) ImGui.spacing();
-                if (ImGui.button("Config", 142, 35)) {
-                    resetModuleView();
-                    showConfig = true;
-                }
                 if (!modules.isEmpty()) {
-                    for (int i = 0; i < 5; i++) ImGui.spacing();
                     ImGui.sameLine();
-                    ImGui.text("Modules");
                     ImGui.spacing();
 
-                    if (ImGui.beginListBox("##modulecategories", 142, 300)) {
+                    if (ImGui.beginListBox("##modulecategories", 142, 500)) {
                         for (final FeatureCategory featureCategory : FeatureCategory.values()) {
                             final FeatureList<Module> modulesByCategory = modules.get(featureCategory);
                             if (!modulesByCategory.isEmpty()) {
                                 if (ImGui.button(featureCategory.normalName(), 134, 35)) {
-                                    showConfig = false;
                                     currentFeatureCategory = featureCategory;
                                     currentModule = moduleViewCache.get(featureCategory);
                                 }
@@ -66,7 +41,7 @@ public class MainMenu {
                 }
                 ImGui.endListBox();
             }
-            if (!showConfig && currentFeatureCategory != null) {
+            if (currentFeatureCategory != null) {
                 ImGui.sameLine();
 
                 if (ImGui.beginListBox("##modules", 200, 0)) {
@@ -123,33 +98,6 @@ public class MainMenu {
 
                         ImGui.endListBox();
                     }
-                }
-            }
-
-            if (showConfig) {
-                ImGui.sameLine();
-                if (ImGui.beginListBox("##mainConfig", 600, 500)) {
-                    ImGui.sameLine();
-                    ImGui.text("Config");
-
-                    for (int i = 0; i < 3; i++) ImGui.spacing();
-
-                    final ObjectArrayList<Value<?>> values = Foxglove.getInstance().getConfigManager().getMainConfig().getValues();
-
-                    if (ImGui.button("Reset Config")) {
-                        for (final Value<?> value : values) {
-                            value.resetValue();
-                        }
-                    }
-
-                    for (final Value<?> value : values) {
-                        if (value.isVisible() != null && !value.isVisible().getAsBoolean())
-                            continue;
-
-                        value.render();
-                    }
-
-                    ImGui.endListBox();
                 }
             }
 

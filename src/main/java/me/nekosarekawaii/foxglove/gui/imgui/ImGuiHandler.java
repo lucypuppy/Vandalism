@@ -5,9 +5,7 @@ import imgui.internal.ImGui;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.event.impl.KeyboardListener;
 import me.nekosarekawaii.foxglove.event.impl.Render2DListener;
-import me.nekosarekawaii.foxglove.gui.imgui.impl.AltManagerMenu;
-import me.nekosarekawaii.foxglove.gui.imgui.impl.MainMenu;
-import me.nekosarekawaii.foxglove.gui.imgui.impl.NBTEditMenu;
+import me.nekosarekawaii.foxglove.gui.imgui.impl.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
@@ -19,7 +17,7 @@ public class ImGuiHandler implements KeyboardListener, Render2DListener {
 
     private final ImGuiRenderer imGuiRenderer;
 
-    private boolean renderBar = false, renderMainMenu = false, renderAltManagerMenu = false;
+    private boolean renderBar = false, renderConfigMenu = false, renderModulesMenu = false, renderAltManagerMenu = false, renderLabyNameHistoryMenu = false;
 
     private final NBTEditMenu nbtEditMenu;
 
@@ -34,18 +32,32 @@ public class ImGuiHandler implements KeyboardListener, Render2DListener {
         this.imGuiRenderer.addRenderInterface(io -> {
             if (this.renderBar) {
                 if (ImGui.beginMainMenuBar()) {
+                    if (ImGui.button("Config")) {
+                        this.renderConfigMenu = !this.renderConfigMenu;
+                    }
+                    if (ImGui.button("Modules")) {
+                        this.renderModulesMenu = !this.renderModulesMenu;
+                    }
                     if (ImGui.button("Alt Manager")) {
                         this.renderAltManagerMenu = !this.renderAltManagerMenu;
                     }
+                    if (ImGui.button("Laby Name History")) {
+                        this.renderLabyNameHistoryMenu = !this.renderLabyNameHistoryMenu;
+                    }
                     ImGui.endMainMenuBar();
                 }
-                AltManagerMenu.render();
+            }
+            if (this.renderLabyNameHistoryMenu) {
+                LabyNameHistoryMenu.render();
             }
             if (this.renderAltManagerMenu) {
                 AltManagerMenu.render();
             }
-            if (this.renderMainMenu) {
-                MainMenu.render();
+            if (this.renderConfigMenu) {
+                ConfigMenu.render();
+            }
+            if (this.renderModulesMenu) {
+                ModulesMenu.render();
             }
             this.nbtEditMenu.render();
         });
@@ -63,9 +75,8 @@ public class ImGuiHandler implements KeyboardListener, Render2DListener {
     @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         if (action != GLFW.GLFW_PRESS) return;
-        if (key == GLFW.GLFW_KEY_MENU) this.renderBar = !this.renderBar;
-        else if (key == Foxglove.getInstance().getConfigManager().getMainConfig().mainMenuKeyCode.getValue()) {
-            this.renderMainMenu = !this.renderMainMenu;
+        if (key == Foxglove.getInstance().getConfigManager().getMainConfig().mainBarKeyCode.getValue()) {
+            this.renderBar = !this.renderBar;
         }
     }
 
