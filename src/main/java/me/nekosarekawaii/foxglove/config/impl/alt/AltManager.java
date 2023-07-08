@@ -1,5 +1,8 @@
 package me.nekosarekawaii.foxglove.config.impl.alt;
 
+import fr.litarvan.openauth.microsoft.MicrosoftAuthResult;
+import fr.litarvan.openauth.microsoft.MicrosoftAuthenticationException;
+import fr.litarvan.openauth.microsoft.MicrosoftAuthenticator;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.flag.ImGuiInputTextFlags;
@@ -11,6 +14,7 @@ import me.nekosarekawaii.foxglove.config.impl.alt.alttype.Account;
 import me.nekosarekawaii.foxglove.config.impl.alt.alttype.type.CrackedAccount;
 import me.nekosarekawaii.foxglove.config.impl.alt.alttype.type.MicrosoftAccount;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.util.ProfileKeys;
 import net.minecraft.client.util.Session;
 import net.minecraft.util.Uuids;
 
@@ -25,6 +29,8 @@ public class AltManager {
     private final static ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public static boolean render = false;
+
+    private static final MicrosoftAuthenticator authenticator = new MicrosoftAuthenticator();
 
     private static void renderCurrentAccount() {
         final Session session = MinecraftClient.getInstance().getSession();
@@ -51,7 +57,14 @@ public class AltManager {
                         ImGui.setCursorPosX(320 - 108); //Hardcode lol rofl
 
                         if (ImGui.button("login##" + account.getUsername())) {
-                            executor.submit(account::login);
+                            executor.submit(() -> {
+                                account.login();
+
+                                MinecraftClient.getInstance().profileKeys =
+                                        ProfileKeys.create(MinecraftClient.getInstance().userApiService,
+                                                MinecraftClient.getInstance().getSession(),
+                                                MinecraftClient.getInstance().runDirectory.toPath());
+                            });
                         }
 
                         ImGui.sameLine();
@@ -74,34 +87,20 @@ public class AltManager {
                     if (ImGui.button("Add Microsoft")) {
                         final String emailValue = email.get().replace(" ", ""), passwordValue = password.get().replace(" ", "");
                         if (!emailValue.isEmpty() && !passwordValue.isEmpty()) {
-                            final ObjectArrayList<Account> accounts = Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts();
-                            boolean contains = false;
-                            for (final Account account : accounts) {
-                                if (account instanceof final MicrosoftAccount microsoftAccount) {
-                                    if (microsoftAccount.getEmail().equals(emailValue)) {
-                                        contains = true;
-                                        break;
-                                    }
-                                }
-                            }
-                            if (!contains) {
-                                email.clear();
-                                password.clear();
-                                Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts().add(new MicrosoftAccount(emailValue, passwordValue));
-                                Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
-                            }
-                        }
-                    }
+                            executor.submit(() -> {
+                                try {
+                                    final MicrosoftAuthResult result = authenticator.loginWithCredentials(emailValue, passwordValue);
 
-                    if (ImGui.button("Add Microsoft (Browser)")) {
-                        executor.submit(() -> {
-                            final MicrosoftAccount account = new MicrosoftAccount();
-                            account.loginWithBrowser();
-                            if (!account.getUsername().isEmpty()) {
-                                Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts().add(account);
-                                Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
-                            }
-                        });
+                                    email.clear();
+                                    password.clear();
+
+                                    Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts().add(new MicrosoftAccount(result.getRefreshToken(), result.getProfile().getId(), result.getProfile().getName()));
+                                    Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
+                                } catch (final MicrosoftAuthenticationException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            });
+                        }
                     }
 
                     ImGui.newLine();
