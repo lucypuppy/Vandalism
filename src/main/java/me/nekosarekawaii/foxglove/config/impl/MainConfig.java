@@ -55,6 +55,13 @@ public class MainConfig extends ValueableConfig {
             true
     );
 
+    public final Value<Boolean> manageContainerButtons = new BooleanValue(
+            "Manage Container Buttons",
+            "Adds the store/steal buttons to containers.",
+            this,
+            true
+    );
+
     public MainConfig() {
         super(Foxglove.getInstance().getDir(), "main");
     }
