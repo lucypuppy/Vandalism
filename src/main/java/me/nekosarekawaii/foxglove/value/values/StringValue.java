@@ -15,7 +15,7 @@ public class StringValue extends Value<String> {
 
     @Override
     public void onConfigLoad(final JsonObject valueObject) {
-        setValue(valueObject.get("value").getAsString());
+        this.setValue(valueObject.get("value").getAsString());
     }
 
     @Override

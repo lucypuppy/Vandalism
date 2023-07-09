@@ -3,6 +3,7 @@ package me.nekosarekawaii.foxglove.config.impl;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.Pair;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.config.ValueableConfig;
 import me.nekosarekawaii.foxglove.value.Value;
@@ -16,11 +17,12 @@ import java.io.IOException;
 
 public class MainConfig extends ValueableConfig {
 
-    public final Value<Integer> mainBarKeyCode = new KeyInputValue(
-            "Main Bar",
-            "Change the key to open the Main Bar.",
+    public final Value<Pair<Integer, String>> menuBarKey = new KeyInputValue(
+            "Menu Bar Key",
+            "Change the key to open the Menu Bar.",
             this,
-            GLFW.GLFW_KEY_MENU
+            GLFW.GLFW_KEY_MENU,
+            "menu"
     );
 
     public final Value<String> commandPrefix = new StringValue(

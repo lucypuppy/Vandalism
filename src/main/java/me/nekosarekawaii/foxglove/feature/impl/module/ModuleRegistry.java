@@ -10,6 +10,7 @@ import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.DontClearChatHis
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.PacketBlockerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.PacketLoggerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.FlyModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.SpeedModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.BetterTabListModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.HUDModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.TrueSightModule;
@@ -118,6 +119,12 @@ public class ModuleRegistry {
         return this.godModeModule;
     }
 
+    private SpeedModule speedModule;
+
+    public SpeedModule getSpeedModule() {
+        return this.speedModule;
+    }
+
     private final FeatureList<Module> modules;
 
     public ModuleRegistry() {
@@ -143,7 +150,8 @@ public class ModuleRegistry {
                 this.flyModule = new FlyModule(),
                 this.antiTimeoutKickModule = new AntiTimeoutKickModule(),
                 this.bungeeCordSpoofModule = new BungeeCordSpoofModule(),
-                this.godModeModule = new GodModeModule()
+                this.godModeModule = new GodModeModule(),
+                this.speedModule = new SpeedModule()
         );
     }
 

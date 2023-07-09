@@ -53,7 +53,7 @@ public class AltManagerMenu {
                         ImGui.text(account.getUsername() + " | " + account.getType());
 
                         ImGui.sameLine();
-                        ImGui.setCursorPosX(320 - 108); //Hardcode lol rofl
+                        ImGui.setCursorPosX(212);
 
                         if (ImGui.button("login##" + account.getUsername())) {
                             executor.submit(() -> {

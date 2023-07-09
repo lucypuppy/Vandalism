@@ -1,6 +1,6 @@
 package me.nekosarekawaii.foxglove.value;
 
-public abstract class StepNumberValue<T extends Number> extends Value<T> {
+public abstract class StepNumberValue<T extends Number> extends NumberValue<T> {
 
     private final T step;
 

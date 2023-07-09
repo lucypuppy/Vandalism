@@ -75,7 +75,7 @@ public class ImGuiHandler implements KeyboardListener, Render2DListener {
     @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         if (action != GLFW.GLFW_PRESS) return;
-        if (key == Foxglove.getInstance().getConfigManager().getMainConfig().mainBarKeyCode.getValue()) {
+        if (key == Foxglove.getInstance().getConfigManager().getMainConfig().menuBarKey.getValue().left()) {
             this.renderBar = !this.renderBar;
         }
     }
