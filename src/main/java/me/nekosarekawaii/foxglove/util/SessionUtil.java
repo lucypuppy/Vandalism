@@ -11,6 +11,7 @@ import net.minecraft.client.network.SocialInteractionsManager;
 import net.minecraft.client.realms.RealmsClient;
 import net.minecraft.client.realms.RealmsPeriodicCheckers;
 import net.minecraft.client.report.AbuseReportContext;
+import net.minecraft.client.report.ReporterEnvironment;
 import net.minecraft.client.util.ProfileKeys;
 import net.minecraft.client.util.Session;
 
@@ -34,7 +35,12 @@ public class SessionUtil {
         client.userApiService = userApiService;
         client.socialInteractionsManager = new SocialInteractionsManager(client, userApiService);
         client.profileKeys = ProfileKeys.create(userApiService, session, client.runDirectory.toPath());
-        client.abuseReportContext = AbuseReportContext.create(client.abuseReportContext.environment, userApiService);
+
+        if (client.abuseReportContext == null) {
+            client.abuseReportContext = AbuseReportContext.create(ReporterEnvironment.ofIntegratedServer(), userApiService);
+        } else {
+            client.abuseReportContext = AbuseReportContext.create(client.abuseReportContext.environment, userApiService);
+        }
 
         // No one uses them but i will add them anyway
         final RealmsClient realmsClient = RealmsClient.createRealmsClient(client);
