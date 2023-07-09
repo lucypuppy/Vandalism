@@ -6,6 +6,7 @@ import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.creativetab.impl.ClientCrasherCreativeTab;
 import me.nekosarekawaii.foxglove.creativetab.impl.ClientKickerCreativeTab;
 import me.nekosarekawaii.foxglove.creativetab.impl.GriefItemsCreativeTab;
+import me.nekosarekawaii.foxglove.creativetab.impl.TestItemsCreativeTab;
 import me.nekosarekawaii.foxglove.event.EventPriorities;
 import me.nekosarekawaii.foxglove.event.impl.PacketListener;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
@@ -36,6 +37,7 @@ public class CreativeTabRegistry implements PacketListener {
         this.clientsideName = UUID.randomUUID();
         this.clientsideGlint = UUID.randomUUID();
         this.registerCreativeTabs(
+                new TestItemsCreativeTab(),
                 new ClientCrasherCreativeTab(),
                 new ClientKickerCreativeTab(),
                 new GriefItemsCreativeTab()
