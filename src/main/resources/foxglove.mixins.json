@@ -20,6 +20,7 @@
     "net.minecraft.client.gui.widget.MixinEntryListWidget",
     "net.minecraft.client.network.MixinAllowedAddressResolver",
     "net.minecraft.client.network.MixinClientPlayNetworkHandler",
+    "net.minecraft.client.realms.gui.screen.RealmsMainScreenAccessor",
     "net.minecraft.client.render.entity.MixinLivingEntityRenderer",
     "net.minecraft.client.util.telemetry.MixinTelemetryManager",
     "net.minecraft.client.world.MixinClientWorld",
@@ -30,6 +31,7 @@
   },
   "mixins": [
     "com.mojang.authlib.yggdrasil.MixinTextureUrlChecker",
+    "com.mojang.authlib.yggdrasil.MixinYggdrasilAuthenticationServiceAccessor",
     "com.mojang.authlib.yggdrasil.MixinYggdrasilUserApiService",
     "net.minecraft.MixinSharedConstants",
     "net.minecraft.item.MixinItemGroup",

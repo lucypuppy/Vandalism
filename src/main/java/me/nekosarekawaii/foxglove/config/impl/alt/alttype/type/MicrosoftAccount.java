@@ -6,7 +6,7 @@ import fr.litarvan.openauth.microsoft.MicrosoftAuthenticator;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.config.impl.alt.alttype.Account;
 import me.nekosarekawaii.foxglove.util.AES;
-import net.minecraft.client.MinecraftClient;
+import me.nekosarekawaii.foxglove.util.SessionUtil;
 import net.minecraft.client.util.Session;
 
 import javax.crypto.BadPaddingException;
@@ -39,9 +39,9 @@ public class MicrosoftAccount extends Account {
             this.refreshToken = result.getRefreshToken();
             this.uuid = result.getProfile().getId();
 
-            MinecraftClient.getInstance().session = new Session(this.getUsername(),
+            SessionUtil.setSession(new Session(this.getUsername(),
                     this.uuid, result.getAccessToken(), Optional.empty(),
-                    Optional.empty(), Session.AccountType.MSA);
+                    Optional.empty(), Session.AccountType.MSA));
         } catch (final Throwable throwable) {
             throwable.printStackTrace();
             return;
