@@ -36,9 +36,8 @@ public class ServerUtils {
     private final static Text SAVING_LEVEL_TEXT = Text.translatable("menu.savingLevel");
 
     public static void disconnect() {
-        if (client.world == null) return;
         final boolean inSingleplayer = client.isInSingleplayer();
-        client.world.disconnect();
+        if (client.world != null) client.world.disconnect();
         if (inSingleplayer) client.disconnect(new MessageScreen(SAVING_LEVEL_TEXT));
         else client.disconnect();
         final TitleScreen titleScreen = new TitleScreen();
