@@ -13,7 +13,6 @@ import me.nekosarekawaii.foxglove.config.impl.alt.alttype.Account;
 import me.nekosarekawaii.foxglove.config.impl.alt.alttype.type.CrackedAccount;
 import me.nekosarekawaii.foxglove.config.impl.alt.alttype.type.MicrosoftAccount;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.ProfileKeys;
 import net.minecraft.client.util.Session;
 import net.minecraft.util.Uuids;
 
@@ -58,11 +57,6 @@ public class AltManagerMenu {
                         if (ImGui.button("login##" + account.getUsername())) {
                             executor.submit(() -> {
                                 account.login();
-
-                                MinecraftClient.getInstance().profileKeys =
-                                        ProfileKeys.create(MinecraftClient.getInstance().userApiService,
-                                                MinecraftClient.getInstance().getSession(),
-                                                MinecraftClient.getInstance().runDirectory.toPath());
                             });
                         }
 

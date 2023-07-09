@@ -3,7 +3,7 @@ package me.nekosarekawaii.foxglove.config.impl.alt.alttype.type;
 import com.google.gson.JsonObject;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.config.impl.alt.alttype.Account;
-import net.minecraft.client.MinecraftClient;
+import me.nekosarekawaii.foxglove.util.SessionUtil;
 import net.minecraft.client.util.Session;
 
 import java.util.Optional;
@@ -20,7 +20,7 @@ public class CrackedAccount extends Account {
 
     @Override
     public void login() {
-        MinecraftClient.getInstance().session = new Session(this.getUsername(), this.uuidString, "-", Optional.empty(), Optional.empty(), Session.AccountType.LEGACY);
+        SessionUtil.setSession(new Session(this.getUsername(), this.uuidString, "-", Optional.empty(), Optional.empty(), Session.AccountType.LEGACY));
         Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
         Foxglove.getInstance().getLogger().info("Logged in with " + this.getUsername());
     }
