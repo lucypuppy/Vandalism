@@ -40,7 +40,8 @@ public class CommandRegistry {
                 new NBTCommand(),
                 new CheckCMDCommand(),
                 new PluginsCommand(),
-                new GiveCommand()
+                new GiveCommand(),
+                new CopyServerIPCommand()
         );
     }
 
