@@ -4,8 +4,6 @@ import me.nekosarekawaii.foxglove.creativetab.CreativeTab;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -34,13 +32,6 @@ public class ClientKickerCreativeTab extends CreativeTab {
                 )
         );
         current.add(paperKickHead);
-
-        //TODO: XItemsRemover
-        final ItemStack test = new ItemStack(Items.TNT);
-        final NbtList lore = new NbtList();
-        lore.add(NbtString.of(Text.Serializer.toJson(Text.literal("[pdd]"))));
-        test.getOrCreateSubNbt(ItemStack.DISPLAY_KEY).put(ItemStack.LORE_KEY, lore);
-        current.add(test);
 
         return current;
     }

@@ -7,7 +7,7 @@ import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.TestModul
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.*;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.AntiTelemetryModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.DontClearChatHistoryModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.PacketBlockerModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.ModPacketBlockerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.PacketLoggerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.FlyModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.SpeedModule;
@@ -83,10 +83,10 @@ public class ModuleRegistry {
         return this.packetLoggerModule;
     }
 
-    private PacketBlockerModule packetBlockerModule;
+    private ModPacketBlockerModule modPacketBlockerModule;
 
-    public PacketBlockerModule getPacketBlockerModule() {
-        return this.packetBlockerModule;
+    public ModPacketBlockerModule getModPacketBlockerModule() {
+        return this.modPacketBlockerModule;
     }
 
     private DontClearChatHistoryModule dontClearChatHistoryModule;
@@ -125,10 +125,10 @@ public class ModuleRegistry {
         return this.speedModule;
     }
 
-    private CraftCarry craftCarry;
+    private ServerCrasherModule serverCrasherModule;
 
-    public CraftCarry getCraftCarryModule() {
-        return this.craftCarry;
+    public ServerCrasherModule getServerCrasherModule() {
+        return this.serverCrasherModule;
     }
 
     private final FeatureList<Module> modules;
@@ -151,14 +151,14 @@ public class ModuleRegistry {
                 this.hudModule = new HUDModule(),
                 this.betterTabListModule = new BetterTabListModule(),
                 this.packetLoggerModule = new PacketLoggerModule(),
-                this.packetBlockerModule = new PacketBlockerModule(),
+                this.modPacketBlockerModule = new ModPacketBlockerModule(),
                 this.dontClearChatHistoryModule = new DontClearChatHistoryModule(),
                 this.flyModule = new FlyModule(),
                 this.antiTimeoutKickModule = new AntiTimeoutKickModule(),
                 this.bungeeCordSpoofModule = new BungeeCordSpoofModule(),
                 this.godModeModule = new GodModeModule(),
                 this.speedModule = new SpeedModule(),
-                this.craftCarry = new CraftCarry()
+                this.serverCrasherModule = new ServerCrasherModule()
         );
     }
 

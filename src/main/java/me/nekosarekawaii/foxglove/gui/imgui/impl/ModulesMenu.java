@@ -74,7 +74,7 @@ public class ModulesMenu {
                 if (currentModule != null) {
                     ImGui.sameLine();
 
-                    if (ImGui.beginListBox("##moduleConfig", 600, 500)) {
+                    if (ImGui.beginListBox("##moduleConfig", 1055, 600)) {
                         ImGui.sameLine();
                         ImGui.text(currentModule.getName() + " - Config");
 

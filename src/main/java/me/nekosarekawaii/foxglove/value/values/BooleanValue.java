@@ -13,7 +13,7 @@ public class BooleanValue extends Value<Boolean> {
 
     @Override
     public void onConfigLoad(final JsonObject valueObject) {
-        setValue(valueObject.get("value").getAsBoolean());
+        this.setValue(valueObject.get("value").getAsBoolean());
     }
 
     @Override
@@ -24,7 +24,7 @@ public class BooleanValue extends Value<Boolean> {
     @Override
     public void render() {
         if (ImGui.checkbox(getName(), getValue())) {
-            setValue(!getValue());
+            this.setValue(!getValue());
         }
     }
 

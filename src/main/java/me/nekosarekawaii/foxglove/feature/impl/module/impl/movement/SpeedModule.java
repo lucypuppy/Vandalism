@@ -10,8 +10,6 @@ import me.nekosarekawaii.foxglove.util.EnumNameNormalizer;
 import me.nekosarekawaii.foxglove.value.Value;
 import me.nekosarekawaii.foxglove.value.values.ListValue;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
 @ModuleInfo(name = "Speed", description = "Makes you faster.", category = FeatureCategory.MOVEMENT)
 public class SpeedModule extends Module implements PacketListener, TickListener {
@@ -20,13 +18,11 @@ public class SpeedModule extends Module implements PacketListener, TickListener 
 
     @Override
     protected void onEnable() {
-        DietrichEvents2.global().subscribe(PacketEvent.ID, this);
         DietrichEvents2.global().subscribe(TickEvent.ID, this);
     }
 
     @Override
     protected void onDisable() {
-        DietrichEvents2.global().unsubscribe(PacketEvent.ID, this);
         DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
     }
 
@@ -44,17 +40,6 @@ public class SpeedModule extends Module implements PacketListener, TickListener 
                 final double speed = 1.5;
                 player.setVelocity(Math.cos(yaw) * speed, player.getVelocity().getY(), Math.sin(yaw) * speed);
             }
-        }
-    }
-
-    @Override
-    public void onWrite(final PacketEvent event) {
-        if (event.isCancelled()) return;
-        final ClientPlayerEntity player = mc.player;
-        if (player == null) return;
-        final Packet<?> packet = event.packet;
-        if (packet instanceof final PlayerMoveC2SPacket playerMoveC2SPacket) {
-
         }
     }
 
