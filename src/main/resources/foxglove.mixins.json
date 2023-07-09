@@ -13,6 +13,7 @@
     "net.minecraft.client.gui.screen.MixinChatInputSuggestor",
     "net.minecraft.client.gui.screen.MixinConnectScreen",
     "net.minecraft.client.gui.screen.MixinDisconnectedScreen",
+    "net.minecraft.client.gui.screen.MixinDownloadingTerrainScreen",
     "net.minecraft.client.gui.screen.MixinGameMenuScreen",
     "net.minecraft.client.gui.screen.MixinScreen",
     "net.minecraft.client.gui.screen.ingame.MixinAbstractSignEditScreen",

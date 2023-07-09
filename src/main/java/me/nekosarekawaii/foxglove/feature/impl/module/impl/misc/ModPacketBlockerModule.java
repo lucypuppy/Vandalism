@@ -13,8 +13,8 @@ import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.util.Identifier;
 
-@ModuleInfo(name = "Packet Blocker", description = "Blocks incoming and outgoing packets.", category = FeatureCategory.MISC, isDefaultEnabled = true)
-public class PacketBlockerModule extends Module implements PacketListener {
+@ModuleInfo(name = "Mod Packet Blocker", description = "Blocks incoming and outgoing packets from mods.", category = FeatureCategory.MISC, isDefaultEnabled = true)
+public class ModPacketBlockerModule extends Module implements PacketListener {
 
     public final Value<Boolean> fabric = new BooleanValue(
             "Block Fabric Packets",
@@ -46,7 +46,7 @@ public class PacketBlockerModule extends Module implements PacketListener {
 
     @Override
     protected void onEnable() {
-        DietrichEvents2.global().subscribe(PacketEvent.ID, this, EventPriorities.HIGHEST.getPriority());
+        DietrichEvents2.global().subscribe(PacketEvent.ID, this, EventPriorities.HIGH.getPriority());
     }
 
     @Override

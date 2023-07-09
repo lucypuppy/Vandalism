@@ -58,14 +58,17 @@ public class KeyInputValue extends Value<Pair<Integer, String>> implements Keybo
                 this.listen = true;
                 DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
             }
+            ImGui.sameLine();
+            ImGui.text(this.getName());
         } else {
-            ImGui.text("Listening for key input...##" + this.getName());
-            if (ImGui.button("...##" + this.getName())) {
+            ImGui.text("Listening for key input...");
+            if (ImGui.button("Cancel##" + this.getName())) {
                 this.notListeningAnymore();
             }
             ImGui.sameLine();
-            if (ImGui.button("Cancel##" + this.getName())) {
+            if (ImGui.button("Reset##" + this.getName())) {
                 this.notListeningAnymore();
+                this.resetValue();
             }
         }
     }
@@ -73,18 +76,21 @@ public class KeyInputValue extends Value<Pair<Integer, String>> implements Keybo
     @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         if (action != GLFW.GLFW_PRESS) return;
-        this.setValue(new Pair<>() {
-            @Override
-            public Integer left() {
-                return key;
-            }
+        final String keyName = GLFW.glfwGetKeyName(key, scanCode);
+        if (keyName != null) {
+            this.notListeningAnymore();
+            this.setValue(new Pair<>() {
+                @Override
+                public Integer left() {
+                    return key;
+                }
 
-            @Override
-            public String right() {
-                return GLFW.glfwGetKeyName(key, scanCode);
-            }
-        });
-        this.notListeningAnymore();
+                @Override
+                public String right() {
+                    return keyName;
+                }
+            });
+        }
     }
 
     private void notListeningAnymore() {

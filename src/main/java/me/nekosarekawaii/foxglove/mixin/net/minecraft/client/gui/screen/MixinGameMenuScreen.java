@@ -1,6 +1,6 @@
 package me.nekosarekawaii.foxglove.mixin.net.minecraft.client.gui.screen;
 
-import me.nekosarekawaii.foxglove.util.LastServerUtils;
+import me.nekosarekawaii.foxglove.util.ServerUtils;
 import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -54,9 +54,9 @@ public abstract class MixinGameMenuScreen extends Screen {
             final ButtonWidget button = ButtonWidget.builder(
                     Text.literal("Reconnect"),
                     b -> {
-                        if (LastServerUtils.lastServerExists()) {
+                        if (ServerUtils.lastServerExists()) {
                             this.disconnect();
-                            LastServerUtils.connectToLastServer();
+                            ServerUtils.connectToLastServer();
                         }
                     }
             ).width(98).build();
