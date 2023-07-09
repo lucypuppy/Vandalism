@@ -59,10 +59,11 @@ public class KeyInputValue extends Value<Pair<Integer, String>> implements Keybo
                 DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
             }
         } else {
+            ImGui.text("Listening for key input...##" + this.getName());
             if (ImGui.button("...##" + this.getName())) {
                 this.notListeningAnymore();
             }
-            ImGui.text("Listening for key input...##" + this.getName());
+            ImGui.sameLine();
             if (ImGui.button("Cancel##" + this.getName())) {
                 this.notListeningAnymore();
             }
