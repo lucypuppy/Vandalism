@@ -131,6 +131,12 @@ public class ModuleRegistry {
         return this.serverCrasherModule;
     }
 
+    private CraftCarry craftCarry;
+
+    public CraftCarry getCraftCarryModule() {
+        return this.craftCarry;
+    }
+
     private final FeatureList<Module> modules;
 
     public ModuleRegistry() {
@@ -158,7 +164,8 @@ public class ModuleRegistry {
                 this.bungeeCordSpoofModule = new BungeeCordSpoofModule(),
                 this.godModeModule = new GodModeModule(),
                 this.speedModule = new SpeedModule(),
-                this.serverCrasherModule = new ServerCrasherModule()
+                this.serverCrasherModule = new ServerCrasherModule(),
+                this.craftCarry = new CraftCarry()
         );
     }
 
