@@ -125,6 +125,12 @@ public class ModuleRegistry {
         return this.speedModule;
     }
 
+    private ServerCrasherModule serverCrasherModule;
+
+    public ServerCrasherModule getServerCrasherModule() {
+        return this.serverCrasherModule;
+    }
+
     private final FeatureList<Module> modules;
 
     public ModuleRegistry() {
@@ -151,7 +157,8 @@ public class ModuleRegistry {
                 this.antiTimeoutKickModule = new AntiTimeoutKickModule(),
                 this.bungeeCordSpoofModule = new BungeeCordSpoofModule(),
                 this.godModeModule = new GodModeModule(),
-                this.speedModule = new SpeedModule()
+                this.speedModule = new SpeedModule(),
+                this.serverCrasherModule = new ServerCrasherModule()
         );
     }
 
