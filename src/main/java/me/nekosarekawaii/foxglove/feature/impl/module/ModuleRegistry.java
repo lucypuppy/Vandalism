@@ -131,10 +131,10 @@ public class ModuleRegistry {
         return this.serverCrasherModule;
     }
 
-    private CraftCarry craftCarry;
+    private CraftCarryModule craftCarryModule;
 
-    public CraftCarry getCraftCarryModule() {
-        return this.craftCarry;
+    public CraftCarryModule getCraftCarryModule() {
+        return this.craftCarryModule;
     }
 
     private final FeatureList<Module> modules;
@@ -165,7 +165,7 @@ public class ModuleRegistry {
                 this.godModeModule = new GodModeModule(),
                 this.speedModule = new SpeedModule(),
                 this.serverCrasherModule = new ServerCrasherModule(),
-                this.craftCarry = new CraftCarry()
+                this.craftCarryModule = new CraftCarryModule()
         );
     }
 
