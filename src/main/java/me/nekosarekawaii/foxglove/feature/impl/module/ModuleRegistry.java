@@ -137,7 +137,7 @@ public class ModuleRegistry {
         return this.craftCarryModule;
     }
 
-    public ConsoleSpammerModule consoleSpammerModule;
+    private ConsoleSpammerModule consoleSpammerModule;
 
     public ConsoleSpammerModule getConsoleSpammerModule() {
         return this.consoleSpammerModule;
