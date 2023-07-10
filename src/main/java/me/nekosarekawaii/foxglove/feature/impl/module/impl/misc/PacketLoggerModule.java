@@ -6,7 +6,7 @@ import me.nekosarekawaii.foxglove.event.impl.PacketListener;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
-import me.nekosarekawaii.foxglove.util.ChatUtils;
+import me.nekosarekawaii.foxglove.util.minecraft.ChatUtils;
 import me.nekosarekawaii.foxglove.value.Value;
 import me.nekosarekawaii.foxglove.value.values.BooleanValue;
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;

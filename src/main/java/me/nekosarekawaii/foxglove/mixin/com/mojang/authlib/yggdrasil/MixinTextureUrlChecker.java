@@ -3,7 +3,7 @@ package me.nekosarekawaii.foxglove.mixin.com.mojang.authlib.yggdrasil;
 import com.mojang.authlib.yggdrasil.TextureUrlChecker;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.ExploitFixerModule;
-import me.nekosarekawaii.foxglove.util.StringUtils;
+import me.nekosarekawaii.foxglove.util.string.StringUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

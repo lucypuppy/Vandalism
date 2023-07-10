@@ -1,4 +1,4 @@
-package me.nekosarekawaii.foxglove.util;
+package me.nekosarekawaii.foxglove.util.minecraft;
 
 import me.nekosarekawaii.foxglove.Foxglove;
 import net.minecraft.client.MinecraftClient;
@@ -10,7 +10,7 @@ import net.minecraft.util.Formatting;
 
 import java.awt.*;
 
-
+// Todo Recode this
 public class ChatUtils {
 
     private static final MutableText chatPrefix = Text.literal("")

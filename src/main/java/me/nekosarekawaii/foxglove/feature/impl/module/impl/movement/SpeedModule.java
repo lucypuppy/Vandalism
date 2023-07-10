@@ -6,7 +6,7 @@ import me.nekosarekawaii.foxglove.event.impl.TickListener;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
-import me.nekosarekawaii.foxglove.util.EnumNameNormalizer;
+import me.nekosarekawaii.foxglove.util.string.EnumNameNormalizer;
 import me.nekosarekawaii.foxglove.value.Value;
 import me.nekosarekawaii.foxglove.value.values.ListValue;
 import net.minecraft.client.network.ClientPlayerEntity;

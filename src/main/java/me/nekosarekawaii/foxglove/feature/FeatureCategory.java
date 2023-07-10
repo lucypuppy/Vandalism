@@ -1,6 +1,6 @@
 package me.nekosarekawaii.foxglove.feature;
 
-import me.nekosarekawaii.foxglove.util.EnumNameNormalizer;
+import me.nekosarekawaii.foxglove.util.string.EnumNameNormalizer;
 
 public enum FeatureCategory implements EnumNameNormalizer {
 

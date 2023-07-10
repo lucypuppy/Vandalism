@@ -6,7 +6,7 @@ import fr.litarvan.openauth.microsoft.MicrosoftAuthenticator;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.config.impl.alt.alttype.Account;
 import me.nekosarekawaii.foxglove.util.AES;
-import me.nekosarekawaii.foxglove.util.SessionUtil;
+import me.nekosarekawaii.foxglove.util.minecraft.SessionUtil;
 import net.minecraft.client.util.Session;
 
 import javax.crypto.BadPaddingException;

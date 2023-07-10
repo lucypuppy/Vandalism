@@ -1,8 +1,9 @@
-package me.nekosarekawaii.foxglove.util;
+package me.nekosarekawaii.foxglove.util.minecraft.inventory;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Hand;
 
+// Todo Recode this
 public record FindItemResult(int slot, int count) {
 
     public boolean found() {

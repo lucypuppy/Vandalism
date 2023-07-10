@@ -4,7 +4,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.impl.command.Command;
 import me.nekosarekawaii.foxglove.feature.impl.command.CommandInfo;
-import me.nekosarekawaii.foxglove.util.ChatUtils;
+import me.nekosarekawaii.foxglove.util.minecraft.ChatUtils;
 import net.minecraft.command.CommandSource;
 
 @CommandInfo(name = "Test", aliases = {"test"}, description = "This is just a command for development purposes.", category = FeatureCategory.DEVELOPMENT, isExperimental = true)

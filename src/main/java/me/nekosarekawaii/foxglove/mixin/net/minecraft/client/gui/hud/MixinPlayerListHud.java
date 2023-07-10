@@ -2,7 +2,7 @@ package me.nekosarekawaii.foxglove.mixin.net.minecraft.client.gui.hud;
 
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.BetterTabListModule;
-import me.nekosarekawaii.foxglove.util.ColorUtils;
+import me.nekosarekawaii.foxglove.util.render.ColorUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;

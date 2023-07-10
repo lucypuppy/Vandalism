@@ -1,4 +1,4 @@
-package me.nekosarekawaii.foxglove.util;
+package me.nekosarekawaii.foxglove.util.minecraft;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConnectScreen;

@@ -1,6 +1,6 @@
 package me.nekosarekawaii.foxglove.mixin.net.minecraft.client.gui.screen;
 
-import me.nekosarekawaii.foxglove.util.ServerUtils;
+import me.nekosarekawaii.foxglove.util.minecraft.ServerUtils;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.DownloadingTerrainScreen;
 import net.minecraft.client.gui.screen.Screen;
