@@ -1,4 +1,4 @@
-package me.nekosarekawaii.foxglove.util;
+package me.nekosarekawaii.foxglove.util.minecraft;
 
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.UserApiService;

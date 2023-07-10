@@ -1,4 +1,4 @@
-package me.nekosarekawaii.foxglove.util;
+package me.nekosarekawaii.foxglove.util.minecraft.inventory;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -9,6 +9,7 @@ import net.minecraft.screen.slot.SlotActionType;
 
 import java.util.function.Predicate;
 
+// Todo Recode this
 public class InvUtils {
 
     private final static MinecraftClient mc = MinecraftClient.getInstance();

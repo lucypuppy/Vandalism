@@ -1,4 +1,4 @@
-package me.nekosarekawaii.foxglove.util;
+package me.nekosarekawaii.foxglove.util.string;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

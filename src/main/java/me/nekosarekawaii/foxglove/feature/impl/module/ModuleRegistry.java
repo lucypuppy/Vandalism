@@ -137,6 +137,12 @@ public class ModuleRegistry {
         return this.craftCarryModule;
     }
 
+    public ConsoleSpammerModule consoleSpammerModule;
+
+    public ConsoleSpammerModule getConsoleSpammerModule() {
+        return this.consoleSpammerModule;
+    }
+
     private final FeatureList<Module> modules;
 
     public ModuleRegistry() {
@@ -165,7 +171,8 @@ public class ModuleRegistry {
                 this.godModeModule = new GodModeModule(),
                 this.speedModule = new SpeedModule(),
                 this.serverCrasherModule = new ServerCrasherModule(),
-                this.craftCarryModule = new CraftCarryModule()
+                this.craftCarryModule = new CraftCarryModule(),
+                this.consoleSpammerModule = new ConsoleSpammerModule()
         );
     }
 

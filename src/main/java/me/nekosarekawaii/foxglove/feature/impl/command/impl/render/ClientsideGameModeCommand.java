@@ -5,7 +5,7 @@ import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.impl.command.Command;
 import me.nekosarekawaii.foxglove.feature.impl.command.CommandInfo;
 import me.nekosarekawaii.foxglove.feature.impl.command.arguments.GameModeArgumentType;
-import me.nekosarekawaii.foxglove.util.ChatUtils;
+import me.nekosarekawaii.foxglove.util.minecraft.ChatUtils;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.Formatting;

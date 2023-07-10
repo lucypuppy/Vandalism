@@ -9,7 +9,7 @@ import me.nekosarekawaii.foxglove.feature.impl.command.Command;
 import me.nekosarekawaii.foxglove.feature.impl.command.CommandInfo;
 import me.nekosarekawaii.foxglove.feature.impl.command.arguments.NbtCompoundArgumentType;
 import me.nekosarekawaii.foxglove.gui.imgui.impl.NBTEditMenu;
-import me.nekosarekawaii.foxglove.util.ChatUtils;
+import me.nekosarekawaii.foxglove.util.minecraft.ChatUtils;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.NbtPathArgumentType;

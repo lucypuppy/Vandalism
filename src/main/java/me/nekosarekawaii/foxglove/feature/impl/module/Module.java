@@ -5,7 +5,7 @@ import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.config.Config;
 import me.nekosarekawaii.foxglove.feature.Feature;
 import me.nekosarekawaii.foxglove.feature.FeatureType;
-import me.nekosarekawaii.foxglove.util.ChatUtils;
+import me.nekosarekawaii.foxglove.util.minecraft.ChatUtils;
 import me.nekosarekawaii.foxglove.value.IValue;
 import me.nekosarekawaii.foxglove.value.Value;
 

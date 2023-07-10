@@ -2,7 +2,7 @@ package me.nekosarekawaii.foxglove.mixin.net.minecraft.client.network;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.util.ChatUtils;
+import me.nekosarekawaii.foxglove.util.minecraft.ChatUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import org.spongepowered.asm.mixin.Final;

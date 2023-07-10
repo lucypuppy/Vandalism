@@ -1,7 +1,7 @@
 package me.nekosarekawaii.foxglove.mixin.net.minecraft.client.gui.screen;
 
 
-import me.nekosarekawaii.foxglove.util.ServerUtils;
+import me.nekosarekawaii.foxglove.util.minecraft.ServerUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConnectScreen;
 import net.minecraft.client.gui.screen.Screen;
