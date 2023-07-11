@@ -15,7 +15,7 @@ public abstract class MixinYggdrasilUserApiService {
 
     @Inject(method = "newTelemetrySession", at = @At("RETURN"), cancellable = true)
     private void injectNewTelemetrySession(final Executor executor, final CallbackInfoReturnable<TelemetrySession> cir) {
-        if (Foxglove.getInstance().getModuleRegistry().getAntiTelemetryModule().isEnabled()) {
+        if (Foxglove.getInstance().getConfigManager().getMainConfig().antiTelemetry.getValue()) {
             cir.setReturnValue(TelemetrySession.DISABLED);
         }
     }

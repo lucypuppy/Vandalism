@@ -62,6 +62,34 @@ public class MainConfig extends ValueableConfig {
             true
     );
 
+    public final Value<Boolean> dontClearChatHistory = new BooleanValue(
+            "Dont Clear Chat History",
+            "Prevents the Game from clearing your chat history.",
+            this,
+            true
+    );
+
+    public final Value<Boolean> antiTelemetry = new BooleanValue(
+            "Anti Telemetry",
+            "Blocks the Telemetry of the Game.",
+            this,
+            true
+    );
+
+    public final Value<Boolean> antiServerBlockList = new BooleanValue(
+            "Anti Server Block List",
+            "Blocks the Server Block List from the Game.",
+            this,
+            true
+    );
+
+    public final Value<Boolean> antiTimeoutKick = new BooleanValue(
+            "Anti Timeout Kick",
+            "Prevents the Game from disconnecting after 30 seconds if the server doesn't response.",
+            this,
+            true
+    );
+
     public MainConfig() {
         super(Foxglove.getInstance().getDir(), "main");
     }

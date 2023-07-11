@@ -14,7 +14,7 @@ public abstract class MixinAllowedAddressResolver {
 
     @Redirect(method = "resolve", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/BlockListChecker;isAllowed(Lnet/minecraft/client/network/Address;)Z"))
     public boolean alwaysAllowAddressParsing(final BlockListChecker instance, final Address address) {
-        if (Foxglove.getInstance().getModuleRegistry().getAntiServerBlockListModule().isEnabled()) {
+        if (Foxglove.getInstance().getConfigManager().getMainConfig().antiServerBlockList.getValue()) {
             return true;
         }
         return instance.isAllowed(address);
@@ -22,7 +22,7 @@ public abstract class MixinAllowedAddressResolver {
 
     @Redirect(method = "resolve", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/BlockListChecker;isAllowed(Lnet/minecraft/client/network/ServerAddress;)Z"))
     public boolean alwaysAllowServerAddressParsing(final BlockListChecker instance, final ServerAddress serverAddress) {
-        if (Foxglove.getInstance().getModuleRegistry().getAntiServerBlockListModule().isEnabled()) {
+        if (Foxglove.getInstance().getConfigManager().getMainConfig().antiServerBlockList.getValue()) {
             return true;
         }
         return instance.isAllowed(serverAddress);

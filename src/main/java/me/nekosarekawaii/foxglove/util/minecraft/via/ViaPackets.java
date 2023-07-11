@@ -12,6 +12,8 @@ import net.raphimc.vialoader.util.VersionEnum;
 
 public class ViaPackets {
 
+    private final static MinecraftClient mc = MinecraftClient.getInstance();
+
     public static void sendCustomPayload(final Identifier identifier, final PacketByteBuf packetByteBuf) {
         if (ProtocolHack.getTargetVersion().isOlderThanOrEqualTo(VersionEnum.r1_12_2)) {
             final var pluginMessage = PacketWrapper.create(ServerboundPackets1_12.PLUGIN_MESSAGE, ProtocolHack.getMainUserConnection());
@@ -23,8 +25,8 @@ public class ViaPackets {
             } catch (final Exception e) {
                 e.printStackTrace();
             }
-        } else {
-            MinecraftClient.getInstance().player.networkHandler.sendPacket(new CustomPayloadC2SPacket(identifier, packetByteBuf));
+        } else if (mc.player != null) {
+            mc.player.networkHandler.sendPacket(new CustomPayloadC2SPacket(identifier, packetByteBuf));
         }
     }
 

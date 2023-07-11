@@ -45,7 +45,7 @@ public class Foxglove {
     public Foxglove() {
         this.name = "Foxglove";
         this.lowerCaseName = this.name.toLowerCase();
-        this.version = "1.1.0";
+        this.version = "1.1.1";
         this.author = "NekosAreKawaii";
         this.color = Color.MAGENTA;
         this.colorRGB = this.color.getRGB();

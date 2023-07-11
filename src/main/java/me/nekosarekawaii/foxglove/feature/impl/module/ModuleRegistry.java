@@ -5,8 +5,6 @@ import me.nekosarekawaii.foxglove.feature.FeatureList;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.DebugModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.TestModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.*;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.AntiTelemetryModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.DontClearChatHistoryModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.ModPacketBlockerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.PacketLoggerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.FlyModule;
@@ -27,18 +25,6 @@ public class ModuleRegistry {
 
     public AntiChatContextModule getAntiChatContextModule() {
         return this.antiChatContextModule;
-    }
-
-    private AntiServerBlockListModule antiServerBlockListModule;
-
-    public AntiServerBlockListModule getAntiServerBlockListModule() {
-        return this.antiServerBlockListModule;
-    }
-
-    private AntiTelemetryModule antiTelemetryModule;
-
-    public AntiTelemetryModule getAntiTelemetryModule() {
-        return this.antiTelemetryModule;
     }
 
     private ExploitFixerModule exploitFixerModule;
@@ -89,22 +75,10 @@ public class ModuleRegistry {
         return this.modPacketBlockerModule;
     }
 
-    private DontClearChatHistoryModule dontClearChatHistoryModule;
-
-    public DontClearChatHistoryModule getDontClearChatHistoryModule() {
-        return this.dontClearChatHistoryModule;
-    }
-
     private FlyModule flyModule;
 
     public FlyModule getFlyModule() {
         return this.flyModule;
-    }
-
-    private AntiTimeoutKickModule antiTimeoutKickModule;
-
-    public AntiTimeoutKickModule getAntiTimeoutKickModule() {
-        return this.antiTimeoutKickModule;
     }
 
     private BungeeCordSpoofModule bungeeCordSpoofModule;
@@ -154,8 +128,6 @@ public class ModuleRegistry {
         this.registerModules(
                 this.testModule = new TestModule(),
                 this.antiChatContextModule = new AntiChatContextModule(),
-                this.antiServerBlockListModule = new AntiServerBlockListModule(),
-                this.antiTelemetryModule = new AntiTelemetryModule(),
                 this.exploitFixerModule = new ExploitFixerModule(),
                 this.brandChangerModule = new BrandChangerModule(),
                 this.debugModule = new DebugModule(),
@@ -164,9 +136,7 @@ public class ModuleRegistry {
                 this.betterTabListModule = new BetterTabListModule(),
                 this.packetLoggerModule = new PacketLoggerModule(),
                 this.modPacketBlockerModule = new ModPacketBlockerModule(),
-                this.dontClearChatHistoryModule = new DontClearChatHistoryModule(),
                 this.flyModule = new FlyModule(),
-                this.antiTimeoutKickModule = new AntiTimeoutKickModule(),
                 this.bungeeCordSpoofModule = new BungeeCordSpoofModule(),
                 this.godModeModule = new GodModeModule(),
                 this.speedModule = new SpeedModule(),

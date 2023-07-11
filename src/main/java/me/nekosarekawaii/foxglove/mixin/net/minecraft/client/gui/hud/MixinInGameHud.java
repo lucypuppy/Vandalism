@@ -3,7 +3,6 @@ package me.nekosarekawaii.foxglove.mixin.net.minecraft.client.gui.hud;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.event.impl.Render2DListener;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.DontClearChatHistoryModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.BetterTabListModule;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.ChatHud;
@@ -38,8 +37,7 @@ public abstract class MixinInGameHud {
 
     @Redirect(method = "clear", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;clear(Z)V"))
     private void redirectChatHudClear(final ChatHud instance, final boolean clearHistory) {
-        final DontClearChatHistoryModule dontClearChatHistoryModule = Foxglove.getInstance().getModuleRegistry().getDontClearChatHistoryModule();
-        if (dontClearChatHistoryModule.isEnabled()) return;
+        if (Foxglove.getInstance().getConfigManager().getMainConfig().dontClearChatHistory.getValue()) return;
         instance.clear(clearHistory);
     }
 

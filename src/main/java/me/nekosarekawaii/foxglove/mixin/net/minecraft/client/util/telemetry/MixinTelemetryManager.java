@@ -27,14 +27,14 @@ public abstract class MixinTelemetryManager {
 
     @Inject(method = "<init>", at = @At(value = "FIELD", target = "Lnet/minecraft/client/util/telemetry/TelemetryManager;propertyMap:Lnet/minecraft/client/util/telemetry/PropertyMap;"))
     private void injectInit(final MinecraftClient client, final UserApiService userApi, final Session session, final CallbackInfo ci) {
-        if (Foxglove.getInstance().getModuleRegistry().getAntiTelemetryModule().isEnabled()) {
+        if (Foxglove.getInstance().getConfigManager().getMainConfig().antiTelemetry.getValue()) {
             this.propertyMap = PropertyMap.builder().build();
         }
     }
 
     @Inject(method = "getSender", at = @At("RETURN"), cancellable = true)
     private void injectComputeSender(final CallbackInfoReturnable<TelemetrySender> cir) {
-        if (Foxglove.getInstance().getModuleRegistry().getAntiTelemetryModule().isEnabled()) {
+        if (Foxglove.getInstance().getConfigManager().getMainConfig().antiTelemetry.getValue()) {
             cir.setReturnValue(TelemetrySender.NOOP);
         }
     }
