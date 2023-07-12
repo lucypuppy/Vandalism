@@ -2,7 +2,7 @@
  * This file is part of fabric-imgui-example-mod - https://github.com/FlorianMichael/fabric-imgui-example-mod
  * by FlorianMichael/EnZaXD and contributors
  */
-package me.nekosarekawaii.foxglove.gui.imgui;
+package me.nekosarekawaii.foxglove.imgui;
 
 import imgui.ImGuiIO;
 

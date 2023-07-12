@@ -1,11 +1,11 @@
-package me.nekosarekawaii.foxglove.gui.imgui;
+package me.nekosarekawaii.foxglove.imgui;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import imgui.internal.ImGui;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.event.impl.KeyboardListener;
 import me.nekosarekawaii.foxglove.event.impl.Render2DListener;
-import me.nekosarekawaii.foxglove.gui.imgui.impl.*;
+import me.nekosarekawaii.foxglove.imgui.impl.menu.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
@@ -17,7 +17,13 @@ public class ImGuiHandler implements KeyboardListener, Render2DListener {
 
     private final ImGuiRenderer imGuiRenderer;
 
-    private boolean renderBar = false, renderConfigMenu = false, renderModulesMenu = false, renderAltManagerMenu = false, renderLabyNameHistoryMenu = false;
+    private boolean
+            renderBar = false,
+            renderConfigMenu = false,
+            renderModulesMenu = false,
+            renderAltManagerMenu = false,
+            renderLabyNameHistoryMenu = false,
+            renderServerPingerMenu = false;
 
     private final NBTEditMenu nbtEditMenu;
 
@@ -44,6 +50,9 @@ public class ImGuiHandler implements KeyboardListener, Render2DListener {
                     if (ImGui.button("Laby Name History")) {
                         this.renderLabyNameHistoryMenu = !this.renderLabyNameHistoryMenu;
                     }
+                    if (ImGui.button("Server Pinger")) {
+                        this.renderServerPingerMenu = !this.renderServerPingerMenu;
+                    }
                     ImGui.endMainMenuBar();
                 }
             }
@@ -58,6 +67,9 @@ public class ImGuiHandler implements KeyboardListener, Render2DListener {
             }
             if (this.renderModulesMenu) {
                 ModulesMenu.render();
+            }
+            if (this.renderServerPingerMenu) {
+                ServerPingerMenu.render();
             }
             this.nbtEditMenu.render();
         });

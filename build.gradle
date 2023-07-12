@@ -68,17 +68,18 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	// Uncomment the following line to enable the deprecated Fabric API modules. 
-    // These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
+	// These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
 
-    // modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
+	// modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
 
-    // ImGUI
-    implementation "io.github.spair:imgui-java-binding:${project.spair_imgui_version}"
-    implementation "io.github.spair:imgui-java-lwjgl3:${project.spair_imgui_version}"
-    implementation "io.github.spair:imgui-java-natives-windows:${project.spair_imgui_version}"
-    implementation "io.github.spair:imgui-java-natives-linux:${project.spair_imgui_version}"
-
+	implementation "net.lenni0451:MCPing:${project.mc_ping_version}"
 	implementation "net.lenni0451:ImNbt:${project.imnbt_version}"
+
+	// ImGUI
+	implementation "io.github.spair:imgui-java-binding:${project.spair_imgui_version}"
+	implementation "io.github.spair:imgui-java-lwjgl3:${project.spair_imgui_version}"
+	implementation "io.github.spair:imgui-java-natives-windows:${project.spair_imgui_version}"
+	implementation "io.github.spair:imgui-java-natives-linux:${project.spair_imgui_version}"
 
 	// OpenAuth
 	implementation "fr.litarvan:openauth:${project.openauth_version}"

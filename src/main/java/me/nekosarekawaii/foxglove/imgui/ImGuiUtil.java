@@ -1,4 +1,4 @@
-package me.nekosarekawaii.foxglove.gui.imgui;
+package me.nekosarekawaii.foxglove.imgui;
 
 import imgui.flag.ImGuiWindowFlags;
 import net.minecraft.client.MinecraftClient;

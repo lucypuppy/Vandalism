@@ -1,4 +1,4 @@
-package me.nekosarekawaii.foxglove.gui.imgui.impl;
+package me.nekosarekawaii.foxglove.imgui.impl.menu;
 
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
@@ -27,7 +27,6 @@ public class LabyNameHistoryMenu {
 
     public static void render() {
         if (ImGui.begin("Laby Name History", ImGuiWindowFlags.NoCollapse)) {
-            ImGui.setWindowSize(800, 800);
             ImGui.text("State: " + currentState.getMessage());
             ImGui.inputText("Username", username);
             final String usernameValue = username.get().replace(" ", "");
@@ -88,7 +87,8 @@ public class LabyNameHistoryMenu {
                     currentData.clear();
                     currentState = State.WAITING_INPUT;
                 }
-                if (ImGui.beginListBox(lastUsername + "'s Name History", 600, 500)) {
+                ImGui.text(lastUsername + "'s Name History");
+                if (ImGui.beginListBox("##UsersNameHistory", 600, 500)) {
                     for (int i = 0; i < currentData.size(); i++) {
                         final String dataEntry = currentData.get(i);
                         ImGui.text(dataEntry);

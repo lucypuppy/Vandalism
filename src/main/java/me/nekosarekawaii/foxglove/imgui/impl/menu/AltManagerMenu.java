@@ -1,4 +1,4 @@
-package me.nekosarekawaii.foxglove.gui.imgui.impl;
+package me.nekosarekawaii.foxglove.imgui.impl.menu;
 
 import fr.litarvan.openauth.microsoft.MicrosoftAuthResult;
 import fr.litarvan.openauth.microsoft.MicrosoftAuthenticationException;
@@ -55,9 +55,7 @@ public class AltManagerMenu {
                         ImGui.setCursorPosX(212);
 
                         if (ImGui.button("login##" + account.getUsername())) {
-                            executor.submit(() -> {
-                                account.login();
-                            });
+                            executor.submit(account::login);
                         }
 
                         ImGui.sameLine();
@@ -114,6 +112,7 @@ public class AltManagerMenu {
                                 }
                             }
                             if (!contains) {
+                                //TODO: Validate UUID with Pattern.
                                 try {
                                     final UUID realUUID = UUID.fromString(uuidValue);
                                     accounts.add(new CrackedAccount(usernameValue, realUUID));
