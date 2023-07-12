@@ -1,6 +1,5 @@
 package me.nekosarekawaii.foxglove.value;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import imgui.ImGui;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -14,18 +13,10 @@ public class ValueCategory extends Value<ObjectArrayList<Value<?>>> implements I
 
     @Override
     public void onConfigLoad(final JsonObject valueObject) {
-        final JsonArray categoryValue = valueObject.get("value").getAsJsonArray();
-        for (final Value<?> value : this.getValue()) {
-            value.onConfigLoad(categoryValue.getAsJsonObject());
-        }
     }
 
     @Override
     public void onConfigSave(final JsonObject valueObject) {
-        final JsonArray categoryValue = valueObject.get("value").getAsJsonArray();
-        for (final Value<?> value : this.getValue()) {
-            value.onConfigSave(categoryValue.getAsJsonObject());
-        }
     }
 
     @Override
