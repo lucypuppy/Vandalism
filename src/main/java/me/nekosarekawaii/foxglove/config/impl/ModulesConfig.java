@@ -63,6 +63,8 @@ public class ModulesConfig extends ValueableConfig {
                 if (valuesElement != null) {
                     loadValues(valuesElement.getAsJsonObject(), module.getValues());
                 }
+            } else {
+                System.out.println("Module " + module.getName() + " not found in config!");
             }
         }
     }
