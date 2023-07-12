@@ -15,19 +15,19 @@ public class SliderIntegerValue extends SliderNumberValue<Integer> {
 
     @Override
     public void onConfigLoad(final JsonObject valueObject) {
-        setValue(valueObject.get("value").getAsInt());
+        this.setValue(valueObject.get("value").getAsInt());
     }
 
     @Override
     public void onConfigSave(final JsonObject valueObject) {
-        valueObject.addProperty("value", getValue());
+        valueObject.addProperty("value", this.getValue());
     }
 
     @Override
     public void render() {
         final ImInt imInt = new ImInt(getValue());
-        if (ImGui.sliderScalar(getName(), ImGuiDataType.S32, imInt, getMin(), getMax())) {
-            setValue(imInt.get());
+        if (ImGui.sliderScalar(this.getName() + "##" + this.getHashIdent(), ImGuiDataType.S32, imInt, this.getMin(), this.getMax())) {
+            this.setValue(imInt.get());
         }
     }
 

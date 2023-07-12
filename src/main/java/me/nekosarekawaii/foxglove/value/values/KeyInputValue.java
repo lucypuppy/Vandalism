@@ -54,7 +54,7 @@ public class KeyInputValue extends Value<Pair<Integer, String>> implements Keybo
     @Override
     public void render() {
         if (!this.listen) {
-            if (ImGui.button(this.getValue().right() + "##" + this.getName())) {
+            if (ImGui.button(this.getValue().right() + "##" + this.getName() + this.getHashIdent())) {
                 this.listen = true;
                 DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
             }
@@ -62,11 +62,11 @@ public class KeyInputValue extends Value<Pair<Integer, String>> implements Keybo
             ImGui.text(this.getName());
         } else {
             ImGui.text("Listening for key input...");
-            if (ImGui.button("Cancel##" + this.getName())) {
+            if (ImGui.button("Cancel##" + this.getName() + this.getHashIdent())) {
                 this.notListeningAnymore();
             }
             ImGui.sameLine();
-            if (ImGui.button("Reset##" + this.getName())) {
+            if (ImGui.button("Reset##" + this.getName() + this.getHashIdent())) {
                 this.notListeningAnymore();
                 this.resetValue();
             }

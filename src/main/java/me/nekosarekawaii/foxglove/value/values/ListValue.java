@@ -32,7 +32,7 @@ public class ListValue extends Value<String> {
 
     @Override
     public void render() {
-        if (ImGui.beginCombo(getName(), getValue())) {
+        if (ImGui.beginCombo(this.getName() + "##" + this.getHashIdent(), getValue())) {
             for (final String mode : getModes()) {
                 if (ImGui.selectable(mode, mode.equals(getValue()))) {
                     this.setValue(mode);

@@ -23,8 +23,8 @@ public class BooleanValue extends Value<Boolean> {
 
     @Override
     public void render() {
-        if (ImGui.checkbox(getName(), getValue())) {
-            this.setValue(!getValue());
+        if (ImGui.checkbox(this.getName() + "##" + this.getHashIdent(), this.getValue())) {
+            this.setValue(!this.getValue());
         }
     }
 

@@ -20,19 +20,19 @@ public class SliderDoubleValue extends SliderNumberValue<Double> {
 
     @Override
     public void onConfigLoad(final JsonObject valueObject) {
-        setValue(valueObject.get("value").getAsDouble());
+        this.setValue(valueObject.get("value").getAsDouble());
     }
 
     @Override
     public void onConfigSave(final JsonObject valueObject) {
-        valueObject.addProperty("value", getValue());
+        valueObject.addProperty("value", this.getValue());
     }
 
     @Override
     public void render() {
         final ImDouble imDouble = new ImDouble(getValue());
-        if (ImGui.sliderScalar(getName(), ImGuiDataType.Double, imDouble, getMin(), getMax(), getFormat())) {
-            setValue(imDouble.get());
+        if (ImGui.sliderScalar(this.getName() + "##" + this.getHashIdent(), ImGuiDataType.Double, imDouble, this.getMin(), this.getMax(), this.getFormat())) {
+            this.setValue(imDouble.get());
         }
     }
 

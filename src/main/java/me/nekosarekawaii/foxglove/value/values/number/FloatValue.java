@@ -18,7 +18,7 @@ public class FloatValue extends StepNumberValue<Float> {
 
     @Override
     public void onConfigLoad(final JsonObject valueObject) {
-        setValue(valueObject.get("value").getAsFloat());
+        this.setValue(valueObject.get("value").getAsFloat());
     }
 
     @Override
@@ -29,8 +29,8 @@ public class FloatValue extends StepNumberValue<Float> {
     @Override
     public void render() {
         final ImFloat imFloat = new ImFloat(getValue());
-        if (ImGui.inputFloat(getName(), imFloat, getStep())) {
-            setValue(imFloat.get());
+        if (ImGui.inputFloat(this.getName() + "##" + this.getHashIdent(), imFloat, getStep())) {
+            this.setValue(imFloat.get());
         }
     }
 

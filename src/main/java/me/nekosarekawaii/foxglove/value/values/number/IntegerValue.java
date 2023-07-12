@@ -18,7 +18,7 @@ public class IntegerValue extends StepNumberValue<Integer> {
 
     @Override
     public void onConfigLoad(final JsonObject valueObject) {
-        setValue(valueObject.get("value").getAsInt());
+        this.setValue(valueObject.get("value").getAsInt());
     }
 
     @Override
@@ -29,8 +29,7 @@ public class IntegerValue extends StepNumberValue<Integer> {
     @Override
     public void render() {
         final ImInt imInt = new ImInt(getValue());
-
-        if (ImGui.inputInt(getName(), imInt, getStep())) {
+        if (ImGui.inputInt(this.getName() + "##" + this.getHashIdent(), imInt, this.getStep())) {
             setValue(imInt.get());
         }
     }

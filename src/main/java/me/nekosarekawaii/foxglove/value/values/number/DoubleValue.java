@@ -17,21 +17,20 @@ public class DoubleValue extends StepNumberValue<Double> {
     }
 
     @Override
-    public void onConfigLoad(JsonObject valueObject) {
-        setValue(valueObject.get("value").getAsDouble());
+    public void onConfigLoad(final JsonObject valueObject) {
+        this.setValue(valueObject.get("value").getAsDouble());
     }
 
     @Override
-    public void onConfigSave(JsonObject valueObject) {
+    public void onConfigSave(final JsonObject valueObject) {
         valueObject.addProperty("value", getValue());
     }
 
     @Override
     public void render() {
         final ImDouble imDouble = new ImDouble(getValue());
-
-        if (ImGui.inputDouble(getName(), imDouble, getStep())) {
-            setValue(imDouble.get());
+        if (ImGui.inputDouble(this.getName() + "##" + this.getHashIdent(), imDouble, getStep())) {
+            this.setValue(imDouble.get());
         }
     }
 
