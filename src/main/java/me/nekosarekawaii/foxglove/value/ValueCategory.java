@@ -21,15 +21,15 @@ public class ValueCategory extends Value<ObjectArrayList<Value<?>>> implements I
 
     @Override
     public void render() {
-        ImGui.text(this.getName());
-        if (ImGui.beginListBox("##" + this.getName() + this.getHashIdent())) {
+        if (ImGui.treeNodeEx(this.getName() + "##" + this.getHashIdent())) {
             for (final Value<?> value : this.getValue()) {
                 if (value.isVisible() != null && !value.isVisible().getAsBoolean()) {
                     continue;
                 }
                 value.render();
             }
-            ImGui.endListBox();
+
+            ImGui.treePop();
         }
     }
 
