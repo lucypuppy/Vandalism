@@ -8,6 +8,7 @@ import me.nekosarekawaii.foxglove.feature.FeatureType;
 import me.nekosarekawaii.foxglove.util.minecraft.ChatUtils;
 import me.nekosarekawaii.foxglove.value.IValue;
 import me.nekosarekawaii.foxglove.value.Value;
+import me.nekosarekawaii.foxglove.value.values.list.ModeValue;
 
 public abstract class Module extends Feature implements IValue {
 
@@ -50,8 +51,16 @@ public abstract class Module extends Feature implements IValue {
             ChatUtils.infoChatMessage(this.getName() + " has been " + (state ? "enabled" : "disabled") + ".");
             if (state) {
                 this.onEnable();
+
+                this.values.stream()
+                        .filter(value -> value instanceof ModeValue<?>)
+                        .forEach(value -> ((ModeValue<?>) value).getSelectedMode().onEnable());
             } else {
                 this.onDisable();
+
+                this.values.stream()
+                        .filter(value -> value instanceof ModeValue<?>)
+                        .forEach(value -> ((ModeValue<?>) value).getSelectedMode().onDisable());
             }
         }
     }
