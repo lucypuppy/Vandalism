@@ -91,6 +91,10 @@ public abstract class Value<V> {
         return this.saveIdent;
     }
 
+    public IValue getParent() {
+        return this.parent;
+    }
+
     public abstract void onConfigLoad(final JsonObject valueObject);
 
     public abstract void onConfigSave(final JsonObject valueObject);
