@@ -1,12 +1,13 @@
 package me.nekosarekawaii.foxglove.config.impl;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.config.ValueableConfig;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.value.Value;
+import me.nekosarekawaii.foxglove.value.ValueCategory;
 
 import java.io.IOException;
 
@@ -18,64 +19,68 @@ public class ModulesConfig extends ValueableConfig {
 
     @Override
     public JsonObject save() throws IOException {
-        final JsonObject configObject = new JsonObject();
-        final JsonArray moduleArray = new JsonArray();
+        final JsonObject modulesObject = new JsonObject();
 
         for (final Module module : Foxglove.getInstance().getModuleRegistry().getModules()) {
             final JsonObject moduleObject = new JsonObject();
-
-            moduleObject.addProperty("name", module.getName());
             moduleObject.addProperty("enabled", module.isEnabled());
 
-            final JsonArray valuesArray = new JsonArray();
-
-            for (final Value<?> value : module.getValues()) {
-                final JsonObject valueObject = new JsonObject();
-                if (value != null) {
-                    valueObject.addProperty("name", value.getHashIdent());
-
-                    value.onConfigSave(valueObject);
-
-                    valuesArray.add(valueObject);
-                }
+            if (!module.getValues().isEmpty()) {
+                final JsonObject valuesObject = new JsonObject();
+                saveValues(valuesObject, module.getValues());
+                moduleObject.add("values", valuesObject);
             }
 
-            moduleObject.add("values", valuesArray);
-            moduleArray.add(moduleObject);
+            modulesObject.add(module.getName(), moduleObject);
         }
 
-        configObject.add("modules", moduleArray);
-        return configObject;
+        return modulesObject;
+    }
+
+    private void saveValues(final JsonObject valuesArray, final ObjectArrayList<Value<?>> values) {
+        for (final Value<?> value : values) {
+            final JsonObject valueObject = new JsonObject();
+
+            if (value instanceof ValueCategory) {
+                saveValues(valueObject, ((ValueCategory) value).getValues());
+            } else {
+                value.onConfigSave(valueObject);
+            }
+
+            valuesArray.add(value.getHashIdent(), valueObject);
+        }
     }
 
     @Override
     public void load(final JsonObject jsonObject) throws IOException {
-        final JsonArray moduleArray = jsonObject.getAsJsonArray("modules");
+        for (final Module module : Foxglove.getInstance().getModuleRegistry().getModules()) {
+            final JsonObject moduleObject = jsonObject.getAsJsonObject(module.getName());
 
-        for (final JsonElement moduleElement : moduleArray) {
-            final JsonObject moduleObject = moduleElement.getAsJsonObject();
-            final String moduleName = moduleObject.get("name").getAsString();
-            final Module module = Foxglove.getInstance().getModuleRegistry().getModules().get(moduleName);
-
-            if (module != null) {
-                final JsonArray valuesArray = moduleObject.getAsJsonArray("values");
-
-                for (final JsonElement valueElement : valuesArray) {
-                    final JsonObject valueObject = valueElement.getAsJsonObject();
-                    final String valueName = valueObject.get("name").getAsString();
-                    final Value<?> value = module.getValue(valueName);
-
-                    if (value == null) {
-                        Foxglove.getInstance().getLogger().error("Couldn't find Modules Config value: " + valueName);
-                        continue;
-                    }
-
-                    value.onConfigLoad(valueObject);
-                }
-
+            if (moduleObject != null) {
                 module.setState(moduleObject.get("enabled").getAsBoolean());
-            } else
-                Foxglove.getInstance().getLogger().error("Unimplemented module inside the Modules Config: " + moduleName);
+
+                final JsonElement valuesElement = moduleObject.get("values");
+                if (valuesElement != null) {
+                    loadValues(valuesElement.getAsJsonObject(), module.getValues());
+                }
+            }
+        }
+    }
+
+    private void loadValues(final JsonObject valuesArray, final ObjectArrayList<Value<?>> values) {
+        for (final Value<?> value : values) {
+            final JsonElement valueElement = valuesArray.get(value.getHashIdent());
+
+            if (valueElement == null) {
+                System.out.println("Value " + value.getName() + " not found in config!");
+                continue;
+            }
+
+            if (value instanceof ValueCategory) {
+                loadValues(valueElement.getAsJsonObject(), ((ValueCategory) value).getValues());
+            } else {
+                value.onConfigLoad(valueElement.getAsJsonObject());
+            }
         }
     }
 
