@@ -1,7 +1,5 @@
 package me.nekosarekawaii.foxglove.config.impl;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.Pair;
 import me.nekosarekawaii.foxglove.Foxglove;
@@ -97,20 +95,8 @@ public class MainConfig extends ValueableConfig {
     @Override
     public JsonObject save() throws IOException {
         final JsonObject configObject = new JsonObject();
-        final JsonArray valuesArray = new JsonArray();
-
-        for (final Value<?> value : this.getValues()) {
-            final JsonObject valueObject = new JsonObject();
-
-            if (value != null) {
-                valueObject.addProperty("name", value.getHashIdent());
-
-                value.onConfigSave(valueObject);
-
-                valuesArray.add(valueObject);
-            }
-        }
-
+        final JsonObject valuesArray = new JsonObject();
+        saveValues(valuesArray, this.getValues());
         configObject.add("values", valuesArray);
         return configObject;
     }
@@ -118,20 +104,7 @@ public class MainConfig extends ValueableConfig {
     @Override
     public void load(final JsonObject jsonObject) throws IOException {
         if (jsonObject.has("values")) {
-            final JsonArray valuesArray = jsonObject.getAsJsonArray("values");
-
-            for (final JsonElement valueElement : valuesArray) {
-                final JsonObject valueObject = valueElement.getAsJsonObject();
-                final String valueName = valueObject.get("name").getAsString();
-                final Value<?> value = this.getValue(valueName);
-
-                if (value == null) {
-                    Foxglove.getInstance().getLogger().error("Couldn't find Main Config value: " + valueName);
-                    continue;
-                }
-
-                value.onConfigLoad(valueObject);
-            }
+            loadValues(jsonObject.getAsJsonObject("values"), this.getValues());
         }
     }
 
