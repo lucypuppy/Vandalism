@@ -88,6 +88,22 @@ public class MainConfig extends ValueableConfig {
             true
     );
 
+    public final Value<Boolean> customChatLength = new BooleanValue(
+            "Custom Chat Length",
+            "Allows you to enable or disable a custom chat length.",
+            this,
+            true
+    );
+
+    public final Value<Integer> maxChatLength = new SliderIntegerValue(
+            "Max Chat Length",
+            "Set the Max Chat Length",
+            this,
+            1000,
+            1,
+            10000
+    ).visibleConsumer(this.customChatLength::getValue);
+
     public MainConfig() {
         super(Foxglove.getInstance().getDir(), "main");
     }

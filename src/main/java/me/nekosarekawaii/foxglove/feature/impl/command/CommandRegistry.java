@@ -41,7 +41,8 @@ public class CommandRegistry {
                 new CheckCMDCommand(),
                 new PluginsCommand(),
                 new GiveCommand(),
-                new CopyServerIPCommand()
+                new CopyServerIPCommand(),
+                new CopyPositionCommand()
         );
     }
 
