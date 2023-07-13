@@ -32,7 +32,7 @@ public class ImGuiRenderer {
 
         //Default settings
         final ImGuiIO imGuiIO = ImGui.getIO();
-        imGuiIO.setConfigFlags(ImGuiConfigFlags.DockingEnable | ImGuiConfigFlags.ViewportsEnable);
+        imGuiIO.setConfigFlags(ImGuiConfigFlags.DockingEnable);
         imGuiIO.setFontGlobalScale(1f);
         imGuiIO.setIniFilename(dir.getName() + "/imgui.ini");
 
