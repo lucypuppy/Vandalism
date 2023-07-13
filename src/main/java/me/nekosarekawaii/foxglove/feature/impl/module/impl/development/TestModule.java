@@ -18,7 +18,9 @@ public class TestModule extends Module {
     private final Value<Integer> integerValue = new IntegerValue("Test Integer", "awdawdawda", this.testValueCategory, 1);
 
     private final ValueCategory testValueCategory2 = new ValueCategory("Test 2", "Test Category", this.testValueCategory);
+    private final BooleanValue booleanValue1 = new BooleanValue("Test Boolean 1", "Testa wadawdwad", this.testValueCategory2, false);
 
     private final ValueCategory testValueCategory3 = new ValueCategory("Test 3", "Test Category", this.testValueCategory2);
+    private final BooleanValue booleanValue2 = new BooleanValue("Test Boolean 2", "Testa wadawdwad", this.testValueCategory3, false);
 
 }
