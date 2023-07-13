@@ -4,17 +4,20 @@
  */
 package me.nekosarekawaii.foxglove.imgui;
 
-import imgui.ImGui;
-import imgui.ImGuiIO;
+import imgui.*;
 import imgui.extension.implot.ImPlot;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import me.nekosarekawaii.foxglove.Foxglove;
 import net.minecraft.client.MinecraftClient;
+import org.apache.commons.compress.utils.IOUtils;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class ImGuiRenderer {
 
@@ -32,6 +35,30 @@ public class ImGuiRenderer {
 
         //Default settings
         final ImGuiIO imGuiIO = ImGui.getIO();
+
+        try {
+            final ImFontAtlas fonts = imGuiIO.getFonts();
+            final ImFontGlyphRangesBuilder rangesBuilder = new ImFontGlyphRangesBuilder();
+            rangesBuilder.addRanges(imGuiIO.getFonts().getGlyphRangesDefault());
+            rangesBuilder.addRanges(imGuiIO.getFonts().getGlyphRangesCyrillic());
+            rangesBuilder.addRanges(imGuiIO.getFonts().getGlyphRangesJapanese());
+            final short[] glyphRanges = rangesBuilder.buildRanges();
+            final ImFontConfig basicConfig = new ImFontConfig();
+            basicConfig.setGlyphRanges(imGuiIO.getFonts().getGlyphRangesCyrillic());
+            final String fontName = "Roboto-Regular";
+            final int size = 30;
+            final InputStream fontStream = ImGuiRenderer.class.getResourceAsStream("/assets/" + Foxglove.getInstance().getLowerCaseName() + "/font/" + fontName + ".ttf");
+            if (fontStream != null) {
+                basicConfig.setName(fontName + " " + size + "px");
+                final ImFont font = fonts.addFontFromMemoryTTF(IOUtils.toByteArray(fontStream), size, basicConfig, glyphRanges);
+                imGuiIO.setFontDefault(font);
+            }
+            fonts.build();
+            basicConfig.destroy();
+        } catch (final IOException ioException) {
+            Foxglove.getInstance().getLogger().error("Failed to load ImGui font: " + ioException);
+        }
+
         imGuiIO.setConfigFlags(ImGuiConfigFlags.DockingEnable);
         imGuiIO.setFontGlobalScale(1f);
         imGuiIO.setIniFilename(dir.getName() + "/imgui.ini");
