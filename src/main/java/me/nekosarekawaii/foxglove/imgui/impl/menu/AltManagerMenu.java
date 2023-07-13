@@ -54,13 +54,13 @@ public class AltManagerMenu {
                         ImGui.sameLine();
                         ImGui.setCursorPosX(212);
 
-                        if (ImGui.button("login##" + account.getUsername())) {
+                        if (ImGui.button("login###" + account.getUsername())) {
                             executor.submit(account::login);
                         }
 
                         ImGui.sameLine();
 
-                        if (ImGui.button("remove##" + account.getUsername())) {
+                        if (ImGui.button("remove###" + account.getUsername())) {
                             Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts().remove(account);
 
                             Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());

@@ -33,7 +33,7 @@ public class ColorValue extends Value<Color> {
     @Override
     public void render() {
         final float[] colorArray = new float[]{getValue().getRed() / 255f, getValue().getGreen() / 255f, getValue().getBlue() / 255f, getValue().getAlpha() / 255f};
-        if (ImGui.colorEdit4(this.getName() + "##" + this.getHashIdent(), colorArray)) {
+        if (ImGui.colorEdit4(this.getName() + "###" + this.getHashIdent(), colorArray)) {
             this.setValue(new Color(colorArray[0], colorArray[1], colorArray[2], colorArray[3]));
         }
     }
