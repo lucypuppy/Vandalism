@@ -9,10 +9,10 @@ import net.minecraft.util.Formatting;
 
 import java.util.Collection;
 
-public class ClientKickerCreativeTab extends CreativeTab {
+public class KickItemsCreativeTab extends CreativeTab {
 
-    public ClientKickerCreativeTab() {
-        super(new ItemStack(Items.FIREWORK_ROCKET).setCustomName(Text.literal("Client Kicker")));
+    public KickItemsCreativeTab() {
+        super(new ItemStack(Items.FIREWORK_ROCKET).setCustomName(Text.literal("Kick Items")));
     }
 
     @Override
@@ -25,7 +25,7 @@ public class ClientKickerCreativeTab extends CreativeTab {
         paperKickHead.setNbt(paperKickHeadNBT);
         this.putClientsideName(paperKickHead,
                 Text.literal(
-                        Formatting.RED + Formatting.BOLD.toString() + "Kick Head"
+                        Formatting.RED + Formatting.BOLD.toString() + "Client Kick Head"
                 ),
                 Text.literal(
                         Formatting.GOLD + Formatting.BOLD.toString() + "Can crash older clients"

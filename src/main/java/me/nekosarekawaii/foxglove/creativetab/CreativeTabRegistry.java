@@ -3,10 +3,7 @@ package me.nekosarekawaii.foxglove.creativetab;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.creativetab.impl.ClientCrasherCreativeTab;
-import me.nekosarekawaii.foxglove.creativetab.impl.ClientKickerCreativeTab;
-import me.nekosarekawaii.foxglove.creativetab.impl.GriefItemsCreativeTab;
-import me.nekosarekawaii.foxglove.creativetab.impl.TestItemsCreativeTab;
+import me.nekosarekawaii.foxglove.creativetab.impl.*;
 import me.nekosarekawaii.foxglove.event.EventPriorities;
 import me.nekosarekawaii.foxglove.event.impl.PacketListener;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
@@ -38,9 +35,10 @@ public class CreativeTabRegistry implements PacketListener {
         this.clientsideGlint = UUID.randomUUID();
         this.registerCreativeTabs(
                 new TestItemsCreativeTab(),
-                new ClientCrasherCreativeTab(),
-                new ClientKickerCreativeTab(),
-                new GriefItemsCreativeTab()
+                new CrashItemsCreativeTab(),
+                new KickItemsCreativeTab(),
+                new GriefItemsCreativeTab(),
+                new TrollItemsCreativeTab()
         );
     }
 

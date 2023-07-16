@@ -13,10 +13,10 @@ import net.raphimc.vialoader.util.VersionEnum;
 
 import java.util.Collection;
 
-public class ClientCrasherCreativeTab extends CreativeTab {
+public class CrashItemsCreativeTab extends CreativeTab {
 
-    public ClientCrasherCreativeTab() {
-        super(new ItemStack(Items.BARRIER).setCustomName(Text.literal("Client Crasher")));
+    public CrashItemsCreativeTab() {
+        super(new ItemStack(Items.BARRIER).setCustomName(Text.literal("Crash Items")));
     }
 
     @Override
@@ -42,7 +42,7 @@ public class ClientCrasherCreativeTab extends CreativeTab {
             crashHead.setNbt(nbt);
             this.putClientsideName(crashHead,
                     Text.literal(
-                            Formatting.DARK_RED + Formatting.BOLD.toString() + "Crash Head"
+                            Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head"
                     ),
                     Text.literal(
                             Formatting.YELLOW + Formatting.BOLD.toString() + "Working at <= 1.10.2 (needs to be placed in versions older than 1.8.0)"
@@ -67,7 +67,7 @@ public class ClientCrasherCreativeTab extends CreativeTab {
             crashHeadV2.setNbt(nbtV2);
             this.putClientsideName(crashHeadV2,
                     Text.literal(
-                            Formatting.DARK_RED + Formatting.BOLD.toString() + "Crash Head V2"
+                            Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head V2"
                     ),
                     Text.literal(
                             Formatting.YELLOW + Formatting.BOLD.toString() + "Working at <= 1.10.2 (needs to be placed in versions older than 1.8.0)"
@@ -92,7 +92,7 @@ public class ClientCrasherCreativeTab extends CreativeTab {
             this.putClientsideName(
                     crashSign,
                     Text.literal(
-                            Formatting.RED + Formatting.BOLD.toString() + "Crash Sign"
+                            Formatting.RED + Formatting.BOLD.toString() + "Client Crash Sign"
                     )
             );
             current.add(crashSign);
@@ -111,7 +111,7 @@ public class ClientCrasherCreativeTab extends CreativeTab {
             this.putClientsideName(
                     crashSignV2,
                     Text.literal(
-                            Formatting.RED + Formatting.BOLD.toString() + "Crash Sign V2"
+                            Formatting.RED + Formatting.BOLD.toString() + "Client Crash Sign V2"
                     )
             );
             current.add(crashSignV2);
