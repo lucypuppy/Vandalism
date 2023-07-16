@@ -57,7 +57,7 @@ public class HUDModule extends Module implements Render2DListener {
 
                     final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();
                     for (final Module module : modules) {
-                        if (module != this && module.isEnabled()) {
+                        if (module != this && module.isEnabled() && module.isShowInHud()) {
                             ImGui.text(module.getName());
                         }
                     }

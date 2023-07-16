@@ -70,17 +70,25 @@ public class ModulesMenu {
                             ImGui.textColored(0.8f, 0.1f, 0.1f, 1f, "Warning this is a experimental module which can have issues!");
                         }
 
-                        for (int i = 0; i < 3; i++) ImGui.spacing();
+                        ImGui.newLine();
 
                         final ObjectArrayList<Value<?>> values = currentModule.getValues();
 
-                        if (ImGui.button(currentModule.isEnabled() ? "Disable" : "Enable")) {
+                        if (ImGui.checkbox("Enabled", currentModule.isEnabled())) {
                             currentModule.toggle();
-                        } else if (ImGui.button("Reset Config")) {
+                        }
+
+                        if (ImGui.checkbox("ShowInHud", currentModule.isShowInHud())) {
+                            currentModule.setShowInHud(!currentModule.isShowInHud());
+                        }
+
+                        if (ImGui.button("Reset Config")) {
                             for (final Value<?> value : values) {
                                 value.resetValue();
                             }
                         }
+
+                        ImGui.newLine();
 
                         for (final Value<?> value : values) {
                             if (value.isVisible() != null && !value.isVisible().getAsBoolean())

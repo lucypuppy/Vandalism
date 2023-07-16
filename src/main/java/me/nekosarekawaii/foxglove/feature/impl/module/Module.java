@@ -12,7 +12,7 @@ import me.nekosarekawaii.foxglove.value.values.list.ModeValue;
 
 public abstract class Module extends Feature implements IValue {
 
-    private boolean enabled;
+    private boolean enabled, showInHud;
 
     private final ObjectArrayList<Value<?>> values;
 
@@ -24,6 +24,7 @@ public abstract class Module extends Feature implements IValue {
         this.setCategory(moduleInfo.category());
         this.setExperimental(moduleInfo.isExperimental());
         this.setState(moduleInfo.isDefaultEnabled() && Foxglove.getInstance().isFirstStart());
+        this.showInHud = true;
         this.values = new ObjectArrayList<>();
     }
 
@@ -67,6 +68,14 @@ public abstract class Module extends Feature implements IValue {
 
     public boolean isEnabled() {
         return this.enabled;
+    }
+
+    public boolean isShowInHud() {
+        return this.showInHud;
+    }
+
+    public void setShowInHud(final boolean showInHud) {
+        this.showInHud = showInHud;
     }
 
     @Override
