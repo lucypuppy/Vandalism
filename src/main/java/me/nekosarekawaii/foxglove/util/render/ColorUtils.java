@@ -4,46 +4,6 @@ import java.awt.*;
 
 public class ColorUtils {
 
-    public static int interpolate(final float progress, final Color[] colors, final float[] steps) {
-        if (colors.length != steps.length)
-            throw new IllegalArgumentException("Colors and steps must have the same length!");
-
-        if (colors.length == 0)
-            throw new IllegalArgumentException("Colors and steps must have a length greater than 0!");
-
-        if (progress < 0.0f || progress > 1.0f)
-            throw new IllegalArgumentException("Progress must be between 0 and 1!");
-
-        if (progress == 0.0f)
-            return colors[0].getRGB();
-
-        if (progress == 1.0f)
-            return colors[colors.length - 1].getRGB();
-
-        int left = 0;
-        int right = steps.length - 1;
-        int mid;
-
-        while (left < right) {
-            mid = (left + right) / 2;
-
-            if (progress >= steps[mid]) {
-                left = mid + 1;
-            } else {
-                right = mid;
-            }
-        }
-
-        if (left == 0) {
-            return colors[0].getRGB();
-        } else if (left == steps.length) {
-            return colors[colors.length - 1].getRGB();
-        } else {
-            final float stepProgress = (progress - steps[left - 1]) / (steps[left] - steps[left - 1]);
-            return interpolate(colors[left - 1], colors[left], stepProgress);
-        }
-    }
-
     public static int interpolate(final Color color1, final Color color2, final double percent) {
         final double inverse_percent = 1.0 - percent;
 

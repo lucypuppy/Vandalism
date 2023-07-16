@@ -16,7 +16,6 @@ import net.minecraft.util.Formatting;
 import net.minecraft.world.GameMode;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -72,19 +71,6 @@ public abstract class MixinPlayerListHud {
         return x;
     }
 
-    @Unique
-    private final Color[] pingColors = new Color[]{
-            Color.GREEN,
-            Color.YELLOW,
-            Color.ORANGE,
-            Color.RED
-    };
-
-    @Unique
-    private final float[] pingSteps = new float[]{
-            0.0f, 0.34f, 0.66f, 1.0f
-    };
-
     @Inject(method = "renderLatencyIcon", at = @At("HEAD"), cancellable = true)
     private void injectRenderLatencyIcon(final DrawContext context, final int width, final int x, final int y, final PlayerListEntry entry, final CallbackInfo ci) {
         final ClientPlayNetworkHandler networkHandler = MinecraftClient.getInstance().getNetworkHandler();
@@ -117,7 +103,8 @@ public abstract class MixinPlayerListHud {
                     text,
                     (int) (x / scale) + (int) (width / scale) - textRenderer.getWidth(text),
                     (int) (y / scale),
-                    ColorUtils.interpolate(Math.min((float) latency / betterTabListModule.highPing.getValue(), 1.0f), pingColors, pingSteps)
+                    ColorUtils.interpolate(Color.RED, Color.YELLOW, Color.GREEN,
+                            Math.min((float) latency / betterTabListModule.highPing.getValue(), 1.0f))
             );
 
             context.getMatrices().pop();
