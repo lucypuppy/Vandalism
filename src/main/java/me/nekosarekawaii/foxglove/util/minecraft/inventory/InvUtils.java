@@ -9,7 +9,7 @@ import net.minecraft.screen.slot.SlotActionType;
 
 import java.util.function.Predicate;
 
-// Todo Recode this
+//TODO: Recode this
 public class InvUtils {
 
     private final static MinecraftClient mc = MinecraftClient.getInstance();

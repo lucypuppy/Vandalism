@@ -6,7 +6,7 @@ import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 import net.minecraft.screen.*;
 
-// Todo Recode this
+//TODO: Recode this
 public class SlotUtils {
 
     private final static MinecraftClient mc = MinecraftClient.getInstance();

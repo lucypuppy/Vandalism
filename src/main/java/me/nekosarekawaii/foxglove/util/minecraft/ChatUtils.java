@@ -2,15 +2,12 @@ package me.nekosarekawaii.foxglove.util.minecraft;
 
 import me.nekosarekawaii.foxglove.Foxglove;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
+import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
 import java.awt.*;
 
-// Todo Recode this
+//TODO: Recode this
 public class ChatUtils {
 
     private static final MutableText chatPrefix = Text.literal("")
@@ -97,6 +94,12 @@ public class ChatUtils {
 
     public static void errorChatMessage(final Text message) {
         chatMessage(errorPrefix.copy().append(message));
+    }
+
+    public static MutableText getAsMutableText(final OrderedText text) {
+        final LickMyFuckingBallsMojangStringVisitor visitor = new LickMyFuckingBallsMojangStringVisitor();
+        text.accept(visitor);
+        return visitor.getMutableText();
     }
 
 }

@@ -48,7 +48,7 @@ public abstract class MixinServerEntry {
             final int textX = x + this.client.textRenderer.getWidth(text) + 22;
             String versionName = this.server.version.getString();
             final int maxServerVersionLength = Foxglove.getInstance().getConfigManager().getMainConfig().maxServerVersionLength.getValue();
-            // TODO: Improve this, because the performance could drop from the substring method! - NekosAreKawaii
+            //TODO:  Improve this, because the performance could drop from the substring method! - NekosAreKawaii
             if (versionName.length() > maxServerVersionLength)
                 versionName = versionName.substring(0, maxServerVersionLength);
             instance.drawTextWithShadow(textRenderer, versionText + versionName, textX, y, -1);

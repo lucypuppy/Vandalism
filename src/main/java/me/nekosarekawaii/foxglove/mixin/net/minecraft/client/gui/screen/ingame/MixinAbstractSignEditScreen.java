@@ -22,10 +22,7 @@ public abstract class MixinAbstractSignEditScreen extends Screen {
 
     @Inject(method = "init", at = @At("HEAD"))
     private void injectInit(final CallbackInfo ci) {
-        /***
-         * TODO: Implement this.
-         * Have a look at Formatting.FORMATTING_CODE_PATTERN
-         */
+        //TODO: Implement this -> Have a look at Formatting.FORMATTING_CODE_PATTERN
         this.addDrawableChild(ButtonWidget.builder(
                 Text.literal("Crash"),
                 button -> this.setCurrentRowMessage("Not implemented xD")

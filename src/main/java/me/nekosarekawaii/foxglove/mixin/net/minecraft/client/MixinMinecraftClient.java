@@ -4,8 +4,10 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.event.impl.ScreenListener;
 import me.nekosarekawaii.foxglove.event.impl.TickListener;
+import me.nekosarekawaii.foxglove.event.impl.WorldListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.world.ClientWorld;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -28,14 +30,19 @@ public abstract class MixinMinecraftClient {
 	@Inject(method = "tick", at = @At(value = "HEAD"))
 	private void injectTick(final CallbackInfo ci) {
 		DietrichEvents2.global().postInternal(TickListener.TickEvent.ID, new TickListener.TickEvent());
-	}
+    }
 
-	@Inject(method = "setScreen", at = @At(value = "HEAD"), cancellable = true)
-	private void injectSetScreen(Screen screen, final CallbackInfo ci) {
-		final ScreenListener.OpenScreenEvent openScreenEvent = new ScreenListener.OpenScreenEvent(screen);
-		DietrichEvents2.global().postInternal(ScreenListener.OpenScreenEvent.ID, openScreenEvent);
-		if (openScreenEvent.isCancelled()) ci.cancel();
-		else screen = openScreenEvent.screen;
-	}
+    @Inject(method = "setScreen", at = @At(value = "HEAD"), cancellable = true)
+    private void injectSetScreen(Screen screen, final CallbackInfo ci) {
+        final ScreenListener.OpenScreenEvent openScreenEvent = new ScreenListener.OpenScreenEvent(screen);
+        DietrichEvents2.global().postInternal(ScreenListener.OpenScreenEvent.ID, openScreenEvent);
+        if (openScreenEvent.isCancelled()) ci.cancel();
+        else screen = openScreenEvent.screen;
+    }
+
+    @Inject(method = "setWorld", at = @At("HEAD"))
+    private void injectSetWorld(final ClientWorld world, final CallbackInfo ci) {
+        DietrichEvents2.global().postInternal(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent());
+    }
 
 }
