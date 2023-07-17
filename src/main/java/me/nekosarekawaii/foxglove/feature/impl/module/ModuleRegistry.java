@@ -117,12 +117,6 @@ public class ModuleRegistry {
         return this.consoleSpammerModule;
     }
 
-    private BetterChatModule betterChatModule;
-
-    public BetterChatModule getBetterChatModule() {
-        return this.betterChatModule;
-    }
-
     private final FeatureList<Module> modules;
 
     public ModuleRegistry() {
@@ -148,8 +142,7 @@ public class ModuleRegistry {
                 this.speedModule = new SpeedModule(),
                 this.serverCrasherModule = new ServerCrasherModule(),
                 this.craftCarryModule = new CraftCarryModule(),
-                this.consoleSpammerModule = new ConsoleSpammerModule(),
-                this.betterChatModule = new BetterChatModule()
+                this.consoleSpammerModule = new ConsoleSpammerModule()
         );
     }
 
