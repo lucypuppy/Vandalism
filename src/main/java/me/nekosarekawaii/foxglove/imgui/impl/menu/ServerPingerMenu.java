@@ -28,7 +28,7 @@ import java.util.List;
 public class ServerPingerMenu {
 
     private final static ImString hostname = new ImString(253);
-    private final static ImInt port = new ImInt(25565), protocol = new ImInt(SharedConstants.getProtocolVersion()), autoPingTime = new ImInt(8000);
+    private final static ImInt port = new ImInt(25565), queryPort = new ImInt(25565), protocol = new ImInt(SharedConstants.getProtocolVersion()), autoPingTime = new ImInt(8000);
     private final static MsTimer autoPingTimer = new MsTimer();
     private final static List<String> versionName = new ArrayList<>(), motd = new ArrayList<>();
     private static MCPingResponse mcPingResponse = null;
@@ -51,6 +51,13 @@ public class ServerPingerMenu {
             ImGui.sameLine();
             if (ImGui.button("Reset##Port")) {
                 port.set(25565);
+            }
+            if (ImGui.inputInt("Query Port", queryPort, 1)) {
+                queryPort.set(Math.max(1, Math.min(queryPort.get(), 65535)));
+            }
+            ImGui.sameLine();
+            if (ImGui.button("Reset##QueryPort")) {
+                queryPort.set(25565);
             }
             ImGui.inputInt("Protocol", protocol, 1);
             ImGui.sameLine();
@@ -132,7 +139,11 @@ public class ServerPingerMenu {
             if (ImGui.begin("Player List", ImGuiWindowFlags.NoCollapse)) {
                 if (ImGui.beginListBox("##PlayerList", 600, 500)) {
                     for (final MCPingResponse.Players.Player player : mcPingResponse.players.sample) {
-                        ImGui.text(player.name + " (" + player.id + ")");
+                        final String playerText = player.name + " (" + player.id + ")";
+                        ImGui.text(playerText);
+                        ImGui.sameLine();
+                        if (ImGui.button("Copy##" + playerText))
+                            MinecraftClient.getInstance().keyboard.setClipboard(playerText);
                     }
                     ImGui.endListBox();
                 }
@@ -145,14 +156,22 @@ public class ServerPingerMenu {
                     if (mcPingResponse.modInfo != null) {
                         ImGui.text("[Mod Info Mods]");
                         for (final MCPingResponse.ModInfo.Mod mod : mcPingResponse.modInfo.modList) {
-                            ImGui.text(mod.modid + " (" + mod.version + ")");
+                            final String modText = mod.modid + " (" + mod.version + ")";
+                            ImGui.text(modText);
+                            ImGui.sameLine();
+                            if (ImGui.button("Copy##" + modText))
+                                MinecraftClient.getInstance().keyboard.setClipboard(modText);
                         }
                         ImGui.newLine();
                     }
                     if (mcPingResponse.forgeData != null) {
                         ImGui.text("[Forge Data Mods]");
                         for (final MCPingResponse.ForgeData.Mod mod : mcPingResponse.forgeData.mods) {
+                            final String modText = mod.modId + " (" + mod.modmarker + ")";
                             ImGui.text(mod.modId + " (" + mod.modmarker + ")");
+                            ImGui.sameLine();
+                            if (ImGui.button("Copy##" + modText))
+                                MinecraftClient.getInstance().keyboard.setClipboard(modText);
                         }
                     }
                     ImGui.endListBox();
@@ -165,6 +184,9 @@ public class ServerPingerMenu {
                 if (ImGui.beginListBox("##Plugins", 350, 500)) {
                     for (final String plugin : queryPingResponse.plugins.sample) {
                         ImGui.text(plugin);
+                        ImGui.sameLine();
+                        if (ImGui.button("Copy##" + plugin))
+                            MinecraftClient.getInstance().keyboard.setClipboard(plugin);
                     }
                     ImGui.endListBox();
                 }
@@ -228,7 +250,7 @@ public class ServerPingerMenu {
                     })
                     .getAsync();
             MCPing.pingQuery()
-                    .address(hostname.get(), port.get())
+                    .address(hostname.get(), queryPort.get())
                     .timeout(5000, 5000)
                     .exceptionHandler(t -> {
                         if (t instanceof BindException) {
