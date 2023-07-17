@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
+//TODO: Implement this correct.
 public class NBTEditMenu implements ImNbtDrawer {
 
     private static NativeImageBackedTexture icon = null;
