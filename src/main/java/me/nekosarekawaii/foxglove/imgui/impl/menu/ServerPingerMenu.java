@@ -42,19 +42,19 @@ public class ServerPingerMenu {
             ImGui.text("Query State: " + queryState.getMessage());
             ImGui.inputText("Hostname", hostname);
             ImGui.sameLine();
-            if (ImGui.button("Clear###Hostname")) {
+            if (ImGui.button("Clear##Hostname")) {
                 hostname.clear();
             }
             if (ImGui.inputInt("Port", port, 1)) {
                 port.set(Math.max(1, Math.min(port.get(), 65535)));
             }
             ImGui.sameLine();
-            if (ImGui.button("Reset###Port")) {
+            if (ImGui.button("Reset##Port")) {
                 port.set(25565);
             }
             ImGui.inputInt("Protocol", protocol, 1);
             ImGui.sameLine();
-            if (ImGui.button("Reset###Protocol")) {
+            if (ImGui.button("Reset##Protocol")) {
                 protocol.set(SharedConstants.getProtocolVersion());
             }
             if (ImGui.inputInt("Auto Ping Time", autoPingTime, 1)) {
@@ -80,7 +80,7 @@ public class ServerPingerMenu {
                 }
             }
             if (mcPingResponse != null) {
-                if (ImGui.button("Clear###ServerInfo")) {
+                if (ImGui.button("Clear##ServerInfo")) {
                     clear();
                 }
             }
@@ -100,7 +100,7 @@ public class ServerPingerMenu {
                         showPlugins = !showPlugins;
                     }
                 }
-                if (ImGui.beginListBox("###ServerInfo", 0, 500)) {
+                if (ImGui.beginListBox("##ServerInfo", 0, 500)) {
                     ImGui.text("[Server Address]");
                     ImGui.text(mcPingResponse.server.ip + ":" + mcPingResponse.server.port);
                     ImGui.newLine();
@@ -130,7 +130,7 @@ public class ServerPingerMenu {
         }
         if (showPlayerList && mcPingResponse != null && mcPingResponse.players.sample.length > 0) {
             if (ImGui.begin("Player List", ImGuiWindowFlags.NoCollapse)) {
-                if (ImGui.beginListBox("###PlayerList", 600, 500)) {
+                if (ImGui.beginListBox("##PlayerList", 600, 500)) {
                     for (final MCPingResponse.Players.Player player : mcPingResponse.players.sample) {
                         ImGui.text(player.name + " (" + player.id + ")");
                     }
@@ -141,7 +141,7 @@ public class ServerPingerMenu {
         }
         if (showMods && mcPingResponse != null && ((mcPingResponse.modInfo != null && mcPingResponse.modInfo.modList.length > 0) || (mcPingResponse.forgeData != null && mcPingResponse.forgeData.mods.length > 0))) {
             if (ImGui.begin("Mods", ImGuiWindowFlags.NoCollapse)) {
-                if (ImGui.beginListBox("###Mods", 600, 650)) {
+                if (ImGui.beginListBox("##Mods", 600, 650)) {
                     if (mcPingResponse.modInfo != null) {
                         ImGui.text("[Mod Info Mods]");
                         for (final MCPingResponse.ModInfo.Mod mod : mcPingResponse.modInfo.modList) {
@@ -162,7 +162,7 @@ public class ServerPingerMenu {
         }
         if (showPlugins && queryPingResponse != null && queryPingResponse.plugins.sample.length > 0) {
             if (ImGui.begin("Plugins", ImGuiWindowFlags.NoCollapse)) {
-                if (ImGui.beginListBox("###Plugins", 350, 500)) {
+                if (ImGui.beginListBox("##Plugins", 350, 500)) {
                     for (final String plugin : queryPingResponse.plugins.sample) {
                         ImGui.text(plugin);
                     }

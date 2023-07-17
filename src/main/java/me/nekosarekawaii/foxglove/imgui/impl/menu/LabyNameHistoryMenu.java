@@ -88,12 +88,12 @@ public class LabyNameHistoryMenu {
                     currentState = State.WAITING_INPUT;
                 }
                 ImGui.text(lastUsername + "'s Name History");
-                if (ImGui.beginListBox("###UsersNameHistory", 600, 500)) {
+                if (ImGui.beginListBox("##UsersNameHistory", 600, 500)) {
                     for (int i = 0; i < currentData.size(); i++) {
                         final String dataEntry = currentData.get(i);
                         ImGui.text(dataEntry);
                         ImGui.sameLine();
-                        if (ImGui.button("Copy Entry###" + i)) {
+                        if (ImGui.button("Copy Entry##" + i)) {
                             MinecraftClient.getInstance().keyboard.setClipboard(dataEntry);
                         }
                     }

@@ -11,7 +11,7 @@ public class ConfigMenu {
     public static void render() {
         if (ImGui.begin("Config", ImGuiWindowFlags.NoCollapse)) {
             ImGui.setWindowSize(0, 0);
-            if (ImGui.beginListBox("###config", 600, 500)) {
+            if (ImGui.beginListBox("##config", 600, 500)) {
                 final ObjectArrayList<Value<?>> values = Foxglove.getInstance().getConfigManager().getMainConfig().getValues();
 
                 if (ImGui.button("Reset Config")) {

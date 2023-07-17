@@ -31,7 +31,7 @@ public class SliderDoubleValue extends SliderNumberValue<Double> {
     @Override
     public void render() {
         final ImDouble imDouble = new ImDouble(getValue());
-        if (ImGui.sliderScalar(this.getName() + "###" + this.getHashIdent(), ImGuiDataType.Double, imDouble, this.getMin(), this.getMax(), this.getFormat())) {
+        if (ImGui.sliderScalar(this.getName() + "##" + this.getHashIdent(), ImGuiDataType.Double, imDouble, this.getMin(), this.getMax(), this.getFormat())) {
             this.setValue(imDouble.get());
         }
     }

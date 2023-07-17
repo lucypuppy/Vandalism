@@ -26,7 +26,7 @@ public class SliderIntegerValue extends SliderNumberValue<Integer> {
     @Override
     public void render() {
         final ImInt imInt = new ImInt(getValue());
-        if (ImGui.sliderScalar(this.getName() + "###" + this.getHashIdent(), ImGuiDataType.S32, imInt, this.getMin(), this.getMax())) {
+        if (ImGui.sliderScalar(this.getName() + "##" + this.getHashIdent(), ImGuiDataType.S32, imInt, this.getMin(), this.getMax())) {
             this.setValue(imInt.get());
         }
     }

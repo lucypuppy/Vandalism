@@ -18,15 +18,15 @@ public class ModulesMenu {
     private static final Object2ObjectOpenHashMap<FeatureCategory, Module> moduleViewCache = new Object2ObjectOpenHashMap<>();
 
     public static void render() {
-        if (ImGui.begin("Modules" + (currentFeatureCategory != null ? " > " + currentFeatureCategory.normalName() + (currentModule != null ? " > " + currentModule.getName() : "") : "") + "###modulesMenu", ImGuiWindowFlags.NoCollapse)) {
+        if (ImGui.begin("Modules" + (currentFeatureCategory != null ? " > " + currentFeatureCategory.normalName() + (currentModule != null ? " > " + currentModule.getName() : "") : "") + "##modulesMenu", ImGuiWindowFlags.NoCollapse)) {
             ImGui.setWindowSize(0, 0);
             final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();
-            if (ImGui.beginListBox("###general", 150, 600)) {
+            if (ImGui.beginListBox("##general", 150, 600)) {
                 if (!modules.isEmpty()) {
                     ImGui.sameLine();
                     ImGui.spacing();
 
-                    if (ImGui.beginListBox("###modulecategories", 142, 585)) {
+                    if (ImGui.beginListBox("##modulecategories", 142, 585)) {
                         for (final FeatureCategory featureCategory : FeatureCategory.values()) {
                             final FeatureList<Module> modulesByCategory = modules.get(featureCategory);
                             if (!modulesByCategory.isEmpty()) {
@@ -46,7 +46,7 @@ public class ModulesMenu {
             if (currentFeatureCategory != null) {
                 ImGui.sameLine();
 
-                if (ImGui.beginListBox("###modules", 200, 600)) {
+                if (ImGui.beginListBox("##modules", 200, 600)) {
                     final FeatureList<Module> modulesByCategory = modules.get(currentFeatureCategory);
                     for (final Module module : modulesByCategory) {
                         ImGui.pushStyleColor(ImGuiCol.Button, module.isEnabled() ? ImGui.getColorU32(ImGuiCol.ButtonActive) : ImGui.getColorU32(ImGuiCol.Button));
@@ -62,7 +62,7 @@ public class ModulesMenu {
                 if (currentModule != null) {
                     ImGui.sameLine();
 
-                    if (ImGui.beginListBox("###moduleConfig", 1055, 600)) {
+                    if (ImGui.beginListBox("##moduleConfig", 1055, 600)) {
                         ImGui.textColored(1f, 1f, 0f, 1f, currentModule.getDescription());
 
                         if (currentModule.isExperimental()) {
