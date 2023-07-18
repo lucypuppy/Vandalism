@@ -5,6 +5,7 @@ import me.nekosarekawaii.foxglove.feature.FeatureList;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.DebugModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.TestModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.*;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.ItemStackLoggerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.ModPacketBlockerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.PacketLoggerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.FlightModule;
@@ -117,6 +118,12 @@ public class ModuleRegistry {
         return this.consoleSpammerModule;
     }
 
+    private ItemStackLoggerModule itemStackLoggerModule;
+
+    public ItemStackLoggerModule getItemStackLoggerModule() {
+        return this.itemStackLoggerModule;
+    }
+
     private final FeatureList<Module> modules;
 
     public ModuleRegistry() {
@@ -142,7 +149,8 @@ public class ModuleRegistry {
                 this.speedModule = new SpeedModule(),
                 this.serverCrasherModule = new ServerCrasherModule(),
                 this.craftCarryModule = new CraftCarryModule(),
-                this.consoleSpammerModule = new ConsoleSpammerModule()
+                this.consoleSpammerModule = new ConsoleSpammerModule(),
+                this.itemStackLoggerModule = new ItemStackLoggerModule()
         );
     }
 
