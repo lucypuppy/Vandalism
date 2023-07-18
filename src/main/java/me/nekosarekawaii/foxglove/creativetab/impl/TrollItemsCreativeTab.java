@@ -53,6 +53,25 @@ public class TrollItemsCreativeTab extends CreativeTab {
         );
         current.add(killPotionLingering);
 
+        //bat_spawn_egg{EntityTag:{id:"minecraft:text_display",view_range:10000000f,shadow_radius:10000000f,shadow_strength:10000000f,shadow:1b}} 1
+
+        final ItemStack blackHoleSpawnEgg = new ItemStack(Items.BAT_SPAWN_EGG);
+        final NbtCompound blackHoleSpawnEggNBT = new NbtCompound();
+        final NbtCompound blackHoleSpawnEggEntityTag = new NbtCompound();
+        blackHoleSpawnEggEntityTag.putByte("shadow", (byte) 1);
+        blackHoleSpawnEggEntityTag.putFloat("shadow_strength", 10000000f);
+        blackHoleSpawnEggEntityTag.putFloat("shadow_radius", 10000000f);
+        blackHoleSpawnEggEntityTag.putFloat("view_range", 10000000f);
+        blackHoleSpawnEggEntityTag.putString("id", "minecraft:text_display");
+        blackHoleSpawnEggNBT.put("EntityTag", blackHoleSpawnEggEntityTag);
+        blackHoleSpawnEgg.setNbt(blackHoleSpawnEggNBT);
+        this.putClientsideName(blackHoleSpawnEgg,
+                Text.literal(
+                        Formatting.WHITE + Formatting.BOLD.toString() + "Black Hole"
+                )
+        );
+        current.add(blackHoleSpawnEgg);
+
         return current;
     }
 
