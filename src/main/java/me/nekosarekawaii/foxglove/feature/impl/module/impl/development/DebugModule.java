@@ -11,7 +11,9 @@ import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
 import me.nekosarekawaii.foxglove.imgui.ImGuiUtil;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.Window;
+import net.minecraft.screen.ScreenHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +50,7 @@ public class DebugModule extends Module implements Render2DListener, TickListene
             return;
 
         Foxglove.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
+
             if (ImGui.begin("Debug Graph", ImGuiUtil.getInGameFlags(0))) {
                 if (ImPlot.beginPlot("Debug Graph")) {
                     ImPlot.plotLine("FPS", this.graphSize, this.fpsHistory.toArray(Integer[]::new));
@@ -56,6 +59,21 @@ public class DebugModule extends Module implements Render2DListener, TickListene
 
                 ImGui.end();
             }
+
+            final ClientPlayerEntity player = mc.player;
+            if (player != null) {
+
+                final ScreenHandler screenHandler = player.currentScreenHandler;
+                if (screenHandler != null) {
+                    if (ImGui.begin("Current Screen Handler", ImGuiUtil.getInGameFlags(0))) {
+                        ImGui.text("Current Sync ID: " + screenHandler.syncId);
+                        ImGui.text("Current Revision: " + screenHandler.getRevision());
+                        ImGui.end();
+                    }
+                }
+
+            }
+
         });
     }
 
