@@ -1,11 +1,10 @@
 package me.nekosarekawaii.foxglove.event.impl;
 
-import de.florianmichael.dietrichevents2.core.AbstractEvent;
-import de.florianmichael.dietrichevents2.core.Listener;
+import de.florianmichael.dietrichevents2.AbstractEvent;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
 
-public interface Render2DListener extends Listener {
+public interface Render2DListener {
 
     default void onRender2DInGame(final DrawContext context, final float delta, final Window window) {
     }

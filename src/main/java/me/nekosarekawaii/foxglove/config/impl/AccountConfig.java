@@ -38,12 +38,13 @@ public class AccountConfig extends ValueableConfig {
             final JsonObject accountObject = new JsonObject();
             accountObject.addProperty("username", account.getUsername());
             accountObject.addProperty("type", account.getType());
+            accountObject.addProperty("uuid", account.getUuid());
 
             account.onConfigSave(accountObject);
             accountArray.add(accountObject);
         }
 
-        configObject.addProperty("lastSession", MinecraftClient.getInstance().session.getUsername());
+        configObject.addProperty("lastSession", (MinecraftClient.getInstance().session.getUsername() + MinecraftClient.getInstance().session.getUuid()).hashCode());
         configObject.add("alts", accountArray);
         return configObject;
     }
@@ -51,12 +52,13 @@ public class AccountConfig extends ValueableConfig {
     @Override
     public void load(final JsonObject jsonObject) throws IOException {
         final JsonArray accountArray = jsonObject.getAsJsonArray("alts");
-        final String lastSession = jsonObject.get("lastSession").getAsString();
+        final int lastSession = jsonObject.get("lastSession").getAsInt();
 
         for (final JsonElement accountElement : accountArray) {
             final JsonObject accountObject = accountElement.getAsJsonObject();
             final String username = accountObject.get("username").getAsString();
             final String type = accountObject.get("type").getAsString();
+            final String uuid = accountObject.get("uuid").getAsString();
             Account account = null;
 
             switch (type) {
@@ -64,7 +66,6 @@ public class AccountConfig extends ValueableConfig {
                     try {
                         final SecretKey secretKey = AES.getKeyFromPassword(username);
                         final String refreshToken = AES.decrypt(accountObject.get("refreshToken").getAsString(), secretKey);
-                        final String uuid = accountObject.get("uuid").getAsString();
 
                         account = new MicrosoftAccount(refreshToken, uuid, username);
                     } catch (final InvalidKeySpecException | InvalidKeyException | IllegalBlockSizeException |
@@ -73,7 +74,7 @@ public class AccountConfig extends ValueableConfig {
                     }
                 }
 
-                default -> account = new CrackedAccount(username, UUID.fromString(accountObject.get("uuid").getAsString()));
+                default -> account = new CrackedAccount(username, UUID.fromString(uuid));
             }
 
             if (account == null) {
@@ -83,7 +84,7 @@ public class AccountConfig extends ValueableConfig {
 
             this.accounts.add(account);
 
-            if (lastSession.equals(account.getUsername())) {
+            if (lastSession == (account.getUsername() + account.getUuid()).hashCode()) {
                 account.login();
             }
         }

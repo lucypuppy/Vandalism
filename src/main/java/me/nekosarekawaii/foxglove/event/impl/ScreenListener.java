@@ -1,10 +1,9 @@
 package me.nekosarekawaii.foxglove.event.impl;
 
-import de.florianmichael.dietrichevents2.core.Listener;
-import de.florianmichael.dietrichevents2.type.CancellableEvent;
+import de.florianmichael.dietrichevents2.CancellableEvent;
 import net.minecraft.client.gui.screen.Screen;
 
-public interface ScreenListener extends Listener {
+public interface ScreenListener {
 
     void onOpenScreen(final OpenScreenEvent event);
 
