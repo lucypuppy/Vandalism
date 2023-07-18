@@ -55,3 +55,5 @@ accessible field net/minecraft/network/packet/c2s/handshake/HandshakeC2SPacket a
 mutable field net/minecraft/network/packet/c2s/handshake/HandshakeC2SPacket address Ljava/lang/String;
 
 accessible method net/minecraft/client/network/ClientPlayerInteractionManager sendSequencedPacket (Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/client/network/SequencedPacketCreator;)V
+
+accessible field net/minecraft/client/MinecraftClient itemUseCooldown I

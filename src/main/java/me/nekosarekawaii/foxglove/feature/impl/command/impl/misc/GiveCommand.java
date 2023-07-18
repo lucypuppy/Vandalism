@@ -25,8 +25,8 @@ public class GiveCommand extends Command {
         builder.then(argument("item", ItemStackArgumentType.itemStack(REGISTRY_ACCESS)).executes(context -> {
             if (!mc.player.getAbilities().creativeMode) throw NOT_IN_CREATIVE.create();
 
-            ItemStack item = ItemStackArgumentType.getItemStackArgument(context, "item").createStack(1, false);
-            FindItemResult fir = InvUtils.find(ItemStack::isEmpty, 0, 8);
+            final ItemStack item = ItemStackArgumentType.getItemStackArgument(context, "item").createStack(1, false);
+            final FindItemResult fir = InvUtils.find(ItemStack::isEmpty, 0, 8);
             if (!fir.found()) throw NO_SPACE.create();
 
             mc.getNetworkHandler().sendPacket(new CreativeInventoryActionC2SPacket(36 + fir.slot(), item));
@@ -35,8 +35,8 @@ public class GiveCommand extends Command {
         }).then(argument("number", IntegerArgumentType.integer()).executes(context -> {
             if (!mc.player.getAbilities().creativeMode) throw NOT_IN_CREATIVE.create();
 
-            ItemStack item = ItemStackArgumentType.getItemStackArgument(context, "item").createStack(IntegerArgumentType.getInteger(context, "number"), false);
-            FindItemResult fir = InvUtils.find(ItemStack::isEmpty, 0, 8);
+            final ItemStack item = ItemStackArgumentType.getItemStackArgument(context, "item").createStack(IntegerArgumentType.getInteger(context, "number"), false);
+            final FindItemResult fir = InvUtils.find(ItemStack::isEmpty, 0, 8);
             if (!fir.found()) throw NO_SPACE.create();
 
             mc.getNetworkHandler().sendPacket(new CreativeInventoryActionC2SPacket(36 + fir.slot(), item));
