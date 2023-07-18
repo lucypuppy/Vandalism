@@ -36,6 +36,7 @@
     "com.mojang.authlib.yggdrasil.MixinTextureUrlChecker",
     "com.mojang.authlib.yggdrasil.MixinYggdrasilAuthenticationServiceAccessor",
     "com.mojang.authlib.yggdrasil.MixinYggdrasilUserApiService",
+    "imgui.glfw.ImGuiImplGlfwMixin",
     "net.minecraft.MixinSharedConstants",
     "net.minecraft.item.MixinItemGroup",
     "net.minecraft.item.MixinItemStack",
