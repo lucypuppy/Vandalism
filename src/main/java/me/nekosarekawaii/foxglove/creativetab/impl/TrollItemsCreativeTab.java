@@ -53,8 +53,6 @@ public class TrollItemsCreativeTab extends CreativeTab {
         );
         current.add(killPotionLingering);
 
-        //bat_spawn_egg{EntityTag:{id:"minecraft:text_display",view_range:10000000f,shadow_radius:10000000f,shadow_strength:10000000f,shadow:1b}} 1
-
         final ItemStack blackHoleSpawnEgg = new ItemStack(Items.BAT_SPAWN_EGG);
         final NbtCompound blackHoleSpawnEggNBT = new NbtCompound();
         final NbtCompound blackHoleSpawnEggEntityTag = new NbtCompound();
