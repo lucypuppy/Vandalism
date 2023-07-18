@@ -10,7 +10,7 @@ import java.awt.*;
 //TODO: Recode this
 public class ChatUtils {
 
-    private static final MutableText chatPrefix = Text.literal("")
+    private final static MutableText chatPrefix = Text.literal("")
             .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
             .append("(")
             .append(
@@ -36,7 +36,7 @@ public class ChatUtils {
         MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(chatPrefix.copy().append(message));
     }
 
-    private static final MutableText infoPrefix = Text.literal("")
+    private final static MutableText infoPrefix = Text.literal("")
             .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
             .append("[")
             .append(
@@ -56,7 +56,7 @@ public class ChatUtils {
         chatMessage(infoPrefix.copy().append(message));
     }
 
-    private static final MutableText warningPrefix = Text.literal("")
+    private final static MutableText warningPrefix = Text.literal("")
             .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
             .append("[")
             .append(
@@ -76,7 +76,7 @@ public class ChatUtils {
         chatMessage(warningPrefix.copy().append(message));
     }
 
-    private static final MutableText errorPrefix = Text.literal("")
+    private final static MutableText errorPrefix = Text.literal("")
             .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
             .append("[")
             .append(

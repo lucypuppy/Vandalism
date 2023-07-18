@@ -12,10 +12,10 @@ import java.util.Base64;
 
 public class AES {
 
-    private static final Cipher cipher;
-    private static final SecretKeyFactory factory;
-    private static final IvParameterSpec ivParameterSpec;
-    private static final byte[] hwid;
+    private final static Cipher cipher;
+    private final static SecretKeyFactory factory;
+    private final static IvParameterSpec ivParameterSpec;
+    private final static byte[] hwid;
 
     public static String encrypt(final String input, final SecretKey key) throws IllegalBlockSizeException, BadPaddingException,
             InvalidKeyException, InvalidAlgorithmParameterException {

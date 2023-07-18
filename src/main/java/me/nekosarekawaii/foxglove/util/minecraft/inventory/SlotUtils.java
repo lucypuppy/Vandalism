@@ -11,16 +11,16 @@ public class SlotUtils {
 
     private final static MinecraftClient mc = MinecraftClient.getInstance();
 
-    public static final int HOTBAR_START = 0;
-    public static final int HOTBAR_END = 8;
+    public final static int HOTBAR_START = 0;
+    public final static int HOTBAR_END = 8;
 
-    public static final int OFFHAND = 45;
+    public final static int OFFHAND = 45;
 
-    public static final int MAIN_START = 9;
-    public static final int MAIN_END = 35;
+    public final static int MAIN_START = 9;
+    public final static int MAIN_END = 35;
 
-    public static final int ARMOR_START = 36;
-    public static final int ARMOR_END = 39;
+    public final static int ARMOR_START = 36;
+    public final static int ARMOR_END = 39;
 
     public static int indexToId(int i) {
         if (mc.player == null) return -1;

@@ -19,6 +19,7 @@ import net.minecraft.util.Uuids;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Pattern;
 
 public class AltManagerMenu {
 
@@ -28,7 +29,12 @@ public class AltManagerMenu {
 
     public static boolean render = false;
 
-    private static final MicrosoftAuthenticator authenticator = new MicrosoftAuthenticator();
+    private final static MicrosoftAuthenticator authenticator = new MicrosoftAuthenticator();
+
+    private final static Pattern uuidPattern = Pattern.compile(
+            "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            Pattern.CASE_INSENSITIVE
+    );
 
     private static void renderCurrentAccount() {
         final Session session = MinecraftClient.getInstance().getSession();
@@ -110,16 +116,12 @@ public class AltManagerMenu {
                                     break;
                                 }
                             }
-                            if (!contains) {
-                                //TODO: Validate UUID with Pattern.
-                                try {
-                                    final UUID realUUID = UUID.fromString(uuidValue);
-                                    accounts.add(new CrackedAccount(usernameValue, realUUID));
-                                    Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
-                                    username.clear();
-                                    uuid.clear();
-                                } catch (final IllegalArgumentException ignored) {
-                                }
+                            if (!contains && uuidPattern.matcher(uuidValue).matches()) {
+                                final UUID realUUID = UUID.fromString(uuidValue);
+                                accounts.add(new CrackedAccount(usernameValue, realUUID));
+                                Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
+                                username.clear();
+                                uuid.clear();
                             }
                         }
                     }

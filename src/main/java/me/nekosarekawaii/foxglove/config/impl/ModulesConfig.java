@@ -21,7 +21,7 @@ public class ModulesConfig extends ValueableConfig {
         for (final Module module : Foxglove.getInstance().getModuleRegistry().getModules()) {
             final JsonObject moduleObject = new JsonObject();
             moduleObject.addProperty("enabled", module.isEnabled());
-            moduleObject.addProperty("showInHud", module.isShowInHud());
+            moduleObject.addProperty("showInModuleList", module.isShowInModuleList());
 
             if (!module.getValues().isEmpty()) {
                 final JsonObject valuesObject = new JsonObject();
@@ -44,8 +44,8 @@ public class ModulesConfig extends ValueableConfig {
                 if (moduleObject.has("enabled"))
                     module.setState(moduleObject.get("enabled").getAsBoolean());
 
-                if (moduleObject.has("showInHud"))
-                    module.setShowInHud(moduleObject.get("showInHud").getAsBoolean());
+                if (moduleObject.has("showInModuleList"))
+                    module.setShowInModuleList(moduleObject.get("showInModuleList").getAsBoolean());
 
                 final JsonElement valuesElement = moduleObject.get("values");
                 if (valuesElement != null) {

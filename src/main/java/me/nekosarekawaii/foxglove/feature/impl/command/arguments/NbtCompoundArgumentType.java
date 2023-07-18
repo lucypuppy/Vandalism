@@ -14,7 +14,7 @@ import static net.minecraft.nbt.StringNbtReader.EXPECTED_VALUE;
 
 public class NbtCompoundArgumentType implements ArgumentType<NbtCompound> {
 
-    private static final Collection<String> EXAMPLES = Arrays.asList("{foo:bar}", "{foo:[aa, bb],bar:15}");
+    private final static Collection<String> EXAMPLES = Arrays.asList("{foo:bar}", "{foo:[aa, bb],bar:15}");
 
     public static NbtCompoundArgumentType create() {
         return new NbtCompoundArgumentType();

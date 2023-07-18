@@ -5,6 +5,7 @@ import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.config.Config;
 import me.nekosarekawaii.foxglove.feature.Feature;
 import me.nekosarekawaii.foxglove.feature.FeatureType;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.HeadUpDisplayModule;
 import me.nekosarekawaii.foxglove.util.minecraft.ChatUtils;
 import me.nekosarekawaii.foxglove.value.IValue;
 import me.nekosarekawaii.foxglove.value.Value;
@@ -12,7 +13,7 @@ import me.nekosarekawaii.foxglove.value.values.list.ModeValue;
 
 public abstract class Module extends Feature implements IValue {
 
-    private boolean enabled, showInHud;
+    private boolean enabled, showInModuleList;
 
     private final ObjectArrayList<Value<?>> values;
 
@@ -24,7 +25,7 @@ public abstract class Module extends Feature implements IValue {
         this.setCategory(moduleInfo.category());
         this.setExperimental(moduleInfo.isExperimental());
         this.setState(moduleInfo.isDefaultEnabled() && Foxglove.getInstance().isFirstStart());
-        this.showInHud = true;
+        this.showInModuleList = !(this instanceof HeadUpDisplayModule);
         this.values = new ObjectArrayList<>();
     }
 
@@ -52,16 +53,18 @@ public abstract class Module extends Feature implements IValue {
             ChatUtils.infoChatMessage(this.getName() + " has been " + (state ? "enabled" : "disabled") + ".");
             if (state) {
                 this.onEnable();
-
-                this.values.stream()
-                        .filter(value -> value instanceof ModeValue<?>)
-                        .forEach(value -> ((ModeValue<?>) value).getSelectedMode().onEnable());
+                for (final Value<?> value : this.values) {
+                    if (value instanceof final ModeValue<?> modeValue) {
+                        modeValue.getSelectedMode().onEnable();
+                    }
+                }
             } else {
                 this.onDisable();
-
-                this.values.stream()
-                        .filter(value -> value instanceof ModeValue<?>)
-                        .forEach(value -> ((ModeValue<?>) value).getSelectedMode().onDisable());
+                for (final Value<?> value : this.values) {
+                    if (value instanceof final ModeValue<?> modeValue) {
+                        modeValue.getSelectedMode().onDisable();
+                    }
+                }
             }
         }
     }
@@ -70,12 +73,12 @@ public abstract class Module extends Feature implements IValue {
         return this.enabled;
     }
 
-    public boolean isShowInHud() {
-        return this.showInHud;
+    public boolean isShowInModuleList() {
+        return this.showInModuleList;
     }
 
-    public void setShowInHud(final boolean showInHud) {
-        this.showInHud = showInHud;
+    public void setShowInModuleList(final boolean showInModuleList) {
+        this.showInModuleList = showInModuleList;
     }
 
     @Override
@@ -85,12 +88,7 @@ public abstract class Module extends Feature implements IValue {
 
     @Override
     public String toString() {
-        return '{' +
-                "name=" + this.getName() +
-                ", category=" + this.getCategory() +
-                ", enabled=" + this.enabled +
-                ", experimental=" + this.isExperimental() +
-                '}';
+        return '{' + "name=" + this.getName() + ", category=" + this.getCategory() + ", enabled=" + this.enabled + ", experimental=" + this.isExperimental() + '}';
     }
 
     @Override

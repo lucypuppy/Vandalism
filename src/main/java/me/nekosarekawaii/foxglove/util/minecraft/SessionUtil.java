@@ -19,7 +19,7 @@ import java.util.UUID;
 
 public class SessionUtil {
 
-    private static final MinecraftClient client = MinecraftClient.getInstance();
+    private final static MinecraftClient client = MinecraftClient.getInstance();
 
     public static void setSession(final Session session) {
         // Set sessions

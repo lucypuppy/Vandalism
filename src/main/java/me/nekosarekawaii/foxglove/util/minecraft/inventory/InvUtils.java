@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 public class InvUtils {
 
     private final static MinecraftClient mc = MinecraftClient.getInstance();
-    private static final Action ACTION = new Action();
+    private final static Action ACTION = new Action();
     public static int previousSlot = -1;
 
     // Predicates

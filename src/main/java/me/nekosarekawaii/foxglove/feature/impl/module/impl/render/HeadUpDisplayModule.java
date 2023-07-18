@@ -16,8 +16,8 @@ import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.util.Window;
 
-@ModuleInfo(name = "HUD", description = "The In-game Overlay of the Mod.", category = FeatureCategory.RENDER, isDefaultEnabled = true)
-public class HUDModule extends Module implements Render2DListener {
+@ModuleInfo(name = "Head Up Display", description = "The In-game HUD of the Mod.", category = FeatureCategory.RENDER, isDefaultEnabled = true)
+public class HeadUpDisplayModule extends Module implements Render2DListener {
 
     private final Value<Boolean> moduleList = new BooleanValue("Module List", "Shows the Module List.", this, true);
 
@@ -53,14 +53,18 @@ public class HUDModule extends Module implements Render2DListener {
 
             if (this.moduleList.getValue()) {
                 if (ImGui.begin("Module List", ImGuiUtil.getInGameFlags(0))) {
-                    ImGui.setWindowSize(0, 0);
+
+                    boolean empty = true;
 
                     final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();
                     for (final Module module : modules) {
-                        if (module != this && module.isEnabled() && module.isShowInHud()) {
+                        if (module.isEnabled() && module.isShowInModuleList()) {
+                            empty = false;
                             ImGui.text(module.getName());
                         }
                     }
+
+                    ImGui.setWindowSize(empty ? 100 : 0, empty ? 50 : 0);
 
                     ImGui.end();
                 }

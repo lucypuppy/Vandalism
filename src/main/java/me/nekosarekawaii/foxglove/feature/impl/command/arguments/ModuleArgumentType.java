@@ -20,9 +20,9 @@ import java.util.stream.Collectors;
 
 public class ModuleArgumentType implements ArgumentType<Module> {
 
-    private static final DynamicCommandExceptionType notExisting = new DynamicCommandExceptionType(name -> Text.literal("No Module with the name " + name + " has been found!"));
+    private final static DynamicCommandExceptionType notExisting = new DynamicCommandExceptionType(name -> Text.literal("No Module with the name " + name + " has been found!"));
 
-    private static final Collection<String> examples = Foxglove.getInstance().getModuleRegistry().getModules()
+    private final static Collection<String> examples = Foxglove.getInstance().getModuleRegistry().getModules()
             .stream()
             .limit(3)
             .map(Feature::getName)

@@ -9,8 +9,6 @@ import me.nekosarekawaii.foxglove.value.Value;
 import me.nekosarekawaii.foxglove.value.values.BooleanValue;
 import me.nekosarekawaii.foxglove.value.values.ColorValue;
 
-import java.awt.*;
-
 @ModuleInfo(name = "True Sight", description = "Makes invisible blocks and entities visible.", category = FeatureCategory.RENDER)
 public class TrueSightModule extends Module implements LivingEntityListener {
 
@@ -18,7 +16,7 @@ public class TrueSightModule extends Module implements LivingEntityListener {
 
     private final Value<Boolean> entities = new BooleanValue("Entities", "Makes invisible entities visible.", this, true);
 
-    private final Value<Color> entityColor = new ColorValue("Entity Color", "The Color of invisible entities.", this, new Color(255, 255, 255, 127)).visibleConsumer(this.entities::getValue);
+    private final Value<float[]> entityColor = new ColorValue("Entity Color", "The Color of invisible entities.", this, 1.0f, 1.0f, 1.0f, 0.498f).visibleConsumer(this.entities::getValue);
 
     @Override
     protected void onEnable() {
@@ -33,11 +31,11 @@ public class TrueSightModule extends Module implements LivingEntityListener {
     @Override
     public void onRenderLivingEntity(final LivingEntityRenderEvent event) {
         if (this.entities.getValue() && !event.showBody) {
-            final Color color = this.entityColor.getValue();
-            event.red = color.getRed() / 255f;
-            event.green = color.getGreen() / 255f;
-            event.blue = color.getBlue() / 255f;
-            event.alpha = color.getAlpha() / 255f;
+            final float[] color = this.entityColor.getValue();
+            event.red = color[0];
+            event.green = color[1];
+            event.blue = color[2];
+            event.alpha = color[3];
             if (event.alpha < 1.0f) event.translucent = true;
             else event.showBody = true;
         }

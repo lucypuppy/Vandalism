@@ -82,7 +82,7 @@ public abstract class MixinPlayerListHud {
 
         final ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (betterTabListModule.isEnabled() && betterTabListModule.self.getValue() && player != null && entry.getProfile().getId().equals(player.getGameProfile().getId())) {
-            color = betterTabListModule.selfColor.getValue().getRGB();
+            color = betterTabListModule.selfColor.getRGBA();
         }
 
         context.fill(w, y, w + width - a, y + 8, color);

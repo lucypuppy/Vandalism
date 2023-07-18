@@ -19,9 +19,9 @@ import java.util.stream.Stream;
 //TODO: recode this
 public class Http {
 
-    private static final HttpClient CLIENT = HttpClient.newHttpClient();
+    private final static HttpClient CLIENT = HttpClient.newHttpClient();
 
-    private static final Gson GSON = new GsonBuilder()
+    private final static Gson GSON = new GsonBuilder()
             .registerTypeAdapter(Date.class, new JsonDateDeserializer())
             .create();
 

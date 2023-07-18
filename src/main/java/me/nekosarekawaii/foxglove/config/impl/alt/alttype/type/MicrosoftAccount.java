@@ -28,7 +28,7 @@ public class MicrosoftAccount extends Account {
         this.uuid = uuid;
     }
 
-    private static final MicrosoftAuthenticator authenticator = new MicrosoftAuthenticator();
+    private final static MicrosoftAuthenticator authenticator = new MicrosoftAuthenticator();
 
     @Override
     public void login() {

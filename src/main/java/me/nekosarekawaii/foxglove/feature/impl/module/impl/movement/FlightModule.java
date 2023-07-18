@@ -14,12 +14,12 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
-@ModuleInfo(name = "Fly", description = "Allows you to fly.", category = FeatureCategory.MOVEMENT)
-public class FlyModule extends Module implements PacketListener, TickListener {
+@ModuleInfo(name = "Flight", description = "Allows you to fly.", category = FeatureCategory.MOVEMENT)
+public class FlightModule extends Module implements PacketListener, TickListener {
 
     private final Value<Boolean> antiKick = new BooleanValue("Anti Kick", "Bypasses the vanilla fly kick.", this, false);
 
-    private final Value<String> mode = new ListValue("Mode", "The current fly mode.", this, Mode.CREATIVE.normalName());
+    private final Value<String> mode = new ListValue("Mode", "The current flight mode.", this, Mode.CREATIVE.normalName());
 
     @Override
     protected void onEnable() {

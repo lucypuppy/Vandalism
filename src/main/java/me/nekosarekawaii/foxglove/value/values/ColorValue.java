@@ -2,39 +2,57 @@ package me.nekosarekawaii.foxglove.value.values;
 
 import com.google.gson.JsonObject;
 import imgui.ImGui;
+import me.nekosarekawaii.foxglove.util.render.ColorUtils;
 import me.nekosarekawaii.foxglove.value.IValue;
 import me.nekosarekawaii.foxglove.value.Value;
 
-import java.awt.*;
+public class ColorValue extends Value<float[]> {
 
-//TODO: Improve this from java.awt.Color class to int with rgba.
-public class ColorValue extends Value<Color> {
+    private int rgba = 0;
 
-    public ColorValue(final String name, final String description, final IValue parent, final Color defaultValue) {
+    public ColorValue(final String name, final String description, final IValue parent, final float... defaultValue) {
         super(name, description, parent, defaultValue);
+        if (defaultValue.length > 4) {
+            throw new IllegalArgumentException("Color Array can't be bigger than 4 entries!");
+        }
     }
 
     @Override
     public void onConfigLoad(final JsonObject valueObject) {
-        this.setValue(new Color(valueObject.get("value_red").getAsInt(),
-                valueObject.get("value_green").getAsInt(),
-                valueObject.get("value_blue").getAsInt(),
-                valueObject.get("value_alpha").getAsInt()));
+        this.setValue(
+                valueObject.get("value_red").getAsFloat(),
+                valueObject.get("value_green").getAsFloat(),
+                valueObject.get("value_blue").getAsFloat(),
+                valueObject.get("value_alpha").getAsFloat()
+        );
     }
 
     @Override
     public void onConfigSave(final JsonObject valueObject) {
-        valueObject.addProperty("value_red", getValue().getRed());
-        valueObject.addProperty("value_green", getValue().getGreen());
-        valueObject.addProperty("value_blue", getValue().getBlue());
-        valueObject.addProperty("value_alpha", getValue().getAlpha());
+        valueObject.addProperty("value_red", this.getValue()[0]);
+        valueObject.addProperty("value_green", this.getValue()[1]);
+        valueObject.addProperty("value_blue", this.getValue()[2]);
+        valueObject.addProperty("value_alpha", this.getValue()[3]);
+    }
+
+    @Override
+    public void setValue(final float... value) {
+        super.setValue(value);
+        if (value.length > 4) {
+            throw new IllegalArgumentException("Color Array can't be bigger than 4 entries!");
+        }
+        this.rgba = ColorUtils.rgbaToValueFloat(this.getValue()[0], this.getValue()[0], this.getValue()[0], this.getValue()[0]);
+    }
+
+    public int getRGBA() {
+        return this.rgba;
     }
 
     @Override
     public void render() {
-        final float[] colorArray = new float[]{getValue().getRed() / 255f, getValue().getGreen() / 255f, getValue().getBlue() / 255f, getValue().getAlpha() / 255f};
+        final float[] colorArray = this.getValue();
         if (ImGui.colorEdit4(this.getName() + "##" + this.getHashIdent(), colorArray)) {
-            this.setValue(new Color(colorArray[0], colorArray[1], colorArray[2], colorArray[3]));
+            this.setValue(colorArray);
         }
     }
 

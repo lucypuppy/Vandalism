@@ -7,10 +7,10 @@ import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.TestModul
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.*;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.ModPacketBlockerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.PacketLoggerModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.FlyModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.FlightModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.SpeedModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.BetterTabListModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.HUDModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.HeadUpDisplayModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.TrueSightModule;
 
 public class ModuleRegistry {
@@ -51,10 +51,10 @@ public class ModuleRegistry {
         return this.trueSightModule;
     }
 
-    private HUDModule hudModule;
+    private HeadUpDisplayModule headUpDisplayModule;
 
-    public HUDModule getHudModule() {
-        return this.hudModule;
+    public HeadUpDisplayModule getHeadUpDisplayModule() {
+        return this.headUpDisplayModule;
     }
 
     private BetterTabListModule betterTabListModule;
@@ -75,10 +75,10 @@ public class ModuleRegistry {
         return this.modPacketBlockerModule;
     }
 
-    private FlyModule flyModule;
+    private FlightModule flightModule;
 
-    public FlyModule getFlyModule() {
-        return this.flyModule;
+    public FlightModule getFlightModule() {
+        return this.flightModule;
     }
 
     private BungeeCordSpoofModule bungeeCordSpoofModule;
@@ -132,11 +132,11 @@ public class ModuleRegistry {
                 this.brandChangerModule = new BrandChangerModule(),
                 this.debugModule = new DebugModule(),
                 this.trueSightModule = new TrueSightModule(),
-                this.hudModule = new HUDModule(),
+                this.headUpDisplayModule = new HeadUpDisplayModule(),
                 this.betterTabListModule = new BetterTabListModule(),
                 this.packetLoggerModule = new PacketLoggerModule(),
                 this.modPacketBlockerModule = new ModPacketBlockerModule(),
-                this.flyModule = new FlyModule(),
+                this.flightModule = new FlightModule(),
                 this.bungeeCordSpoofModule = new BungeeCordSpoofModule(),
                 this.godModeModule = new GodModeModule(),
                 this.speedModule = new SpeedModule(),

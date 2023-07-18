@@ -15,10 +15,10 @@ public class ModulesMenu {
 
     private static FeatureCategory currentFeatureCategory = null;
     private static Module currentModule = null;
-    private static final Object2ObjectOpenHashMap<FeatureCategory, Module> moduleViewCache = new Object2ObjectOpenHashMap<>();
+    private final static Object2ObjectOpenHashMap<FeatureCategory, Module> moduleViewCache = new Object2ObjectOpenHashMap<>();
 
     public static void render() {
-        if (ImGui.begin("Modules" + (currentFeatureCategory != null ? " > " + currentFeatureCategory.normalName() + (currentModule != null ? " > " + currentModule.getName() : "") : "") + "##modulesMenu", ImGuiWindowFlags.NoCollapse)) {
+        if (ImGui.begin("Modules" + (currentFeatureCategory != null ? " > " + currentFeatureCategory.normalName() + (currentModule != null ? " > " + currentModule.getName() : "") : "") + "###modulesMenu", ImGuiWindowFlags.NoCollapse)) {
             ImGui.setWindowSize(0, 0);
             final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();
             if (ImGui.beginListBox("##general", 150, 600)) {
@@ -78,8 +78,8 @@ public class ModulesMenu {
                             currentModule.toggle();
                         }
 
-                        if (ImGui.checkbox("ShowInHud", currentModule.isShowInHud())) {
-                            currentModule.setShowInHud(!currentModule.isShowInHud());
+                        if (ImGui.checkbox("Show in Module List", currentModule.isShowInModuleList())) {
+                            currentModule.setShowInModuleList(!currentModule.isShowInModuleList());
                         }
 
                         if (ImGui.button("Reset Config")) {

@@ -48,19 +48,19 @@ public abstract class Value<V> {
         }
     }
 
-    public Value<V> valueChangeConsumer(final Consumer<V> valueChangeConsumer) {
+    public <S extends Value<V>> S valueChangeConsumer(final Consumer<V> valueChangeConsumer) {
         this.valueChangeConsumer = valueChangeConsumer;
-        return this;
+        return (S) this;
     }
 
-    public Value<V> valueChangedConsumer(final Consumer<V> valueChangedConsumer) {
+    public <S extends Value<V>> S valueChangedConsumer(final Consumer<V> valueChangedConsumer) {
         this.valueChangedConsumer = valueChangedConsumer;
-        return this;
+        return (S) this;
     }
 
-    public Value<V> visibleConsumer(final BooleanSupplier visible) {
+    public <S extends Value<V>> S visibleConsumer(final BooleanSupplier visible) {
         this.visible = visible;
-        return this;
+        return (S) this;
     }
 
     public String getName() {
@@ -80,7 +80,7 @@ public abstract class Value<V> {
     }
 
     public void resetValue() {
-        this.value = this.defaultValue;
+        this.setValue(this.defaultValue);
     }
 
     public BooleanSupplier isVisible() {

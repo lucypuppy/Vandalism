@@ -9,7 +9,7 @@ import net.minecraft.util.Identifier;
 
 public class FabricBridge implements ClientModInitializer {
 
-    private static final Item dummyItem = new Item(new FabricItemSettings());
+    private final static Item dummyItem = new Item(new FabricItemSettings());
 
     @Override
     public void onInitializeClient() {

@@ -39,6 +39,10 @@ public class ColorUtils {
                 ((b & 0xFF));
     }
 
+    public static int rgbaToValueFloat(final float r, final float g, final float b, final float a) {
+        return rgbaToValue((int) (r * 255), (int) (g * 255), (int) (b * 255), (int) (a * 255));
+    }
+
     public static int[] valueToRGBA(final int value) {
         return new int[]{
                 ((value >> 16) & 0xFF),
