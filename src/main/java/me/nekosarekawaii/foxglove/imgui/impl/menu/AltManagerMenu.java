@@ -111,7 +111,7 @@ public class AltManagerMenu {
                             String uuidValue = uuid.get();
                             if (uuidValue.isEmpty()) uuidValue = Uuids.getOfflinePlayerUuid(usernameValue).toString();
                             for (final Account account : accounts) {
-                                if (account instanceof final CrackedAccount crackedAccount && crackedAccount.getUuidString().equals(uuidValue)) {
+                                if (account instanceof final CrackedAccount crackedAccount && crackedAccount.getUuid().equals(uuidValue)) {
                                     contains = true;
                                     break;
                                 }

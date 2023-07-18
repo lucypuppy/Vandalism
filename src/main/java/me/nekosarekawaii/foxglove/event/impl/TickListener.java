@@ -1,9 +1,8 @@
 package me.nekosarekawaii.foxglove.event.impl;
 
-import de.florianmichael.dietrichevents2.core.AbstractEvent;
-import de.florianmichael.dietrichevents2.core.Listener;
+import de.florianmichael.dietrichevents2.AbstractEvent;
 
-public interface TickListener extends Listener {
+public interface TickListener {
 
     void onTick();
 

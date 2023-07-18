@@ -1,12 +1,11 @@
 package me.nekosarekawaii.foxglove.event.impl;
 
-import de.florianmichael.dietrichevents2.core.Listener;
-import de.florianmichael.dietrichevents2.type.CancellableEvent;
+import de.florianmichael.dietrichevents2.CancellableEvent;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
-public interface LivingEntityListener extends Listener {
+public interface LivingEntityListener {
 
 
     void onRenderLivingEntity(final LivingEntityRenderEvent event);

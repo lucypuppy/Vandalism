@@ -1,10 +1,9 @@
 package me.nekosarekawaii.foxglove.event.impl;
 
-import de.florianmichael.dietrichevents2.core.Listener;
-import de.florianmichael.dietrichevents2.type.CancellableEvent;
+import de.florianmichael.dietrichevents2.CancellableEvent;
 import net.minecraft.network.packet.Packet;
 
-public interface PacketListener extends Listener {
+public interface PacketListener {
 
 
     default void onRead(final PacketEvent event) {

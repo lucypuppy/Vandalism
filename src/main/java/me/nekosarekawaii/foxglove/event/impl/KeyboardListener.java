@@ -1,9 +1,8 @@
 package me.nekosarekawaii.foxglove.event.impl;
 
-import de.florianmichael.dietrichevents2.core.AbstractEvent;
-import de.florianmichael.dietrichevents2.core.Listener;
+import de.florianmichael.dietrichevents2.AbstractEvent;
 
-public interface KeyboardListener extends Listener {
+public interface KeyboardListener {
 
     default void onChar(final long window, final int codePoint, final int modifiers) {
     }

@@ -19,13 +19,11 @@ import java.util.Optional;
 
 public class MicrosoftAccount extends Account {
 
-    private String refreshToken, uuid;
+    private String refreshToken;
 
     public MicrosoftAccount(final String refreshToken, String uuid, final String username) {
-        super("microsoft", username);
-
+        super("microsoft", username, uuid);
         this.refreshToken = refreshToken;
-        this.uuid = uuid;
     }
 
     private final static MicrosoftAuthenticator authenticator = new MicrosoftAuthenticator();
@@ -37,11 +35,10 @@ public class MicrosoftAccount extends Account {
 
             this.setUsername(result.getProfile().getName());
             this.refreshToken = result.getRefreshToken();
-            this.uuid = result.getProfile().getId();
+            this.setUuid(result.getProfile().getId());
 
-            SessionUtil.setSession(new Session(this.getUsername(),
-                    this.uuid, result.getAccessToken(), Optional.empty(),
-                    Optional.empty(), Session.AccountType.MSA));
+            SessionUtil.setSession(new Session(this.getUsername(), this.getUuid(), result.getAccessToken(),
+                    Optional.empty(), Optional.empty(), Session.AccountType.MSA));
         } catch (final Throwable throwable) {
             throwable.printStackTrace();
             return;
@@ -60,8 +57,6 @@ public class MicrosoftAccount extends Account {
                        InvalidAlgorithmParameterException e) {
             throw new RuntimeException(e);
         }
-
-        jsonObject.addProperty("uuid", this.uuid);
     }
 
 }
