@@ -23,6 +23,7 @@ public class CrashItemsCreativeTab extends CreativeTab {
     public Collection<ItemStack> entries() {
         final Collection<ItemStack> current = super.entries();
         final VersionEnum targetVersion = ProtocolHack.getTargetVersion();
+
         if (targetVersion.isOlderThan(VersionEnum.r1_11)) {
             // This head uses a value that has an empty string as url.
             final ItemStack crashHead = new ItemStack(Items.PLAYER_HEAD);
@@ -49,6 +50,7 @@ public class CrashItemsCreativeTab extends CreativeTab {
                     )
             );
             current.add(crashHead);
+
             // This head uses a value that has " .minecraft.net" as url.
             final ItemStack crashHeadV2 = new ItemStack(Items.PLAYER_HEAD);
             final NbtCompound nbtV2 = new NbtCompound();
@@ -74,8 +76,11 @@ public class CrashItemsCreativeTab extends CreativeTab {
                     )
             );
             current.add(crashHeadV2);
+
         }
+
         if (targetVersion.isOlderThan(VersionEnum.r1_15)) {
+
             final ItemStack crashSign = new ItemStack(Items.OAK_SIGN);
             final NbtCompound crashSignNbt = crashSign.getOrCreateNbt();
             final NbtCompound crashSignBlockEntityTag = new NbtCompound();
@@ -95,6 +100,7 @@ public class CrashItemsCreativeTab extends CreativeTab {
                     )
             );
             current.add(crashSign);
+
             final ItemStack crashSignV2 = new ItemStack(Items.OAK_SIGN);
             final NbtCompound crashSignNbtV2 = crashSign.getOrCreateNbt();
             final NbtCompound crashSignBlockEntityTagV2 = new NbtCompound();
@@ -114,7 +120,9 @@ public class CrashItemsCreativeTab extends CreativeTab {
                     )
             );
             current.add(crashSignV2);
+
         }
+
         final ItemStack crashEXPSpawnEgg = new ItemStack(Items.SHEEP_SPAWN_EGG);
         final NbtCompound crashEXPSpawnEggNBT = new NbtCompound();
         final NbtCompound crashEXPSpawnEggEntityTag = new NbtCompound();
@@ -135,6 +143,26 @@ public class CrashItemsCreativeTab extends CreativeTab {
                 )
         );
         current.add(crashEXPSpawnEgg);
+
+        if (targetVersion.isNewerThanOrEqualTo(VersionEnum.r1_20tor1_20_1)) {
+
+            final ItemStack gameFreezeEntitySpawnEgg = new ItemStack(Items.SALMON_SPAWN_EGG);
+            final NbtCompound gameFreezeEntitySpawnEggNBT = new NbtCompound();
+            final NbtCompound gameFreezeEntitySpawnEggEntityTag = new NbtCompound();
+            gameFreezeEntitySpawnEggEntityTag.putFloat("width", 999999f);
+            gameFreezeEntitySpawnEggEntityTag.putFloat("height", 999999f);
+            gameFreezeEntitySpawnEggEntityTag.putString("id", "minecraft:interaction");
+            gameFreezeEntitySpawnEggNBT.put("EntityTag", gameFreezeEntitySpawnEggEntityTag);
+            gameFreezeEntitySpawnEgg.setNbt(gameFreezeEntitySpawnEggNBT);
+            this.putClientsideName(gameFreezeEntitySpawnEgg,
+                    Text.literal(
+                            Formatting.DARK_RED + Formatting.BOLD.toString() + "Game Freeze Entity"
+                    )
+            );
+            current.add(gameFreezeEntitySpawnEgg);
+
+        }
+
         return current;
     }
 

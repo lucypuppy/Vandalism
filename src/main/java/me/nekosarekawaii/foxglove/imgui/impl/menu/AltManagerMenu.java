@@ -5,7 +5,6 @@ import fr.litarvan.openauth.microsoft.MicrosoftAuthenticationException;
 import fr.litarvan.openauth.microsoft.MicrosoftAuthenticator;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
-import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.Foxglove;
@@ -48,8 +47,7 @@ public class AltManagerMenu {
     public static void render() {
         ImGui.setNextWindowSizeConstraints(320, 0, 320, 400);
 
-        if (ImGui.begin("Alt Manager", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoResize)) {
-            ImGui.setWindowSize(0, 0);
+        if (ImGui.begin("Alt Manager")) {
 
             if (ImGui.beginTabBar("")) {
                 if (ImGui.beginTabItem("List")) {
