@@ -22,6 +22,7 @@
     "java": ">=17",
     "fabric-api": "*",
     "viafabricplus": "*",
-    "immediatelyfast": "*"
+    "immediatelyfast": "*",
+    "sodium": "*"
   }
 }

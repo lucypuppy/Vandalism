@@ -38,6 +38,7 @@
     "com.mojang.authlib.yggdrasil.MixinYggdrasilAuthenticationServiceAccessor",
     "com.mojang.authlib.yggdrasil.MixinYggdrasilUserApiService",
     "imgui.glfw.MixinImGuiImplGlfw",
+    "me.jellysquid.mods.sodium.client.render.MixinSodiumWorldRenderer",
     "net.minecraft.MixinSharedConstants",
     "net.minecraft.item.MixinItemGroup",
     "net.minecraft.item.MixinItemStack",

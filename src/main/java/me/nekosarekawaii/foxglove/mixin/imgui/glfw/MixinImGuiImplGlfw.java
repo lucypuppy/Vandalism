@@ -2,7 +2,6 @@ package me.nekosarekawaii.foxglove.mixin.imgui.glfw;
 
 import imgui.glfw.ImGuiImplGlfw;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ChatScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -13,7 +12,7 @@ public abstract class MixinImGuiImplGlfw {
 
     @Inject(method = "keyCallback", at = @At(value = "INVOKE", target = "Limgui/ImGui;getIO()Limgui/ImGuiIO;", shift = At.Shift.AFTER), cancellable = true, remap = false)
     public void injectKeyCallback(final long windowId, final int key, final int scancode, final int action, final int mods, final CallbackInfo ci) {
-        if (MinecraftClient.getInstance().mouse.isCursorLocked() || MinecraftClient.getInstance().currentScreen instanceof ChatScreen)
+        if (MinecraftClient.getInstance().mouse.isCursorLocked())
             ci.cancel();
     }
 

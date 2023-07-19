@@ -21,8 +21,6 @@ repositories {
 		url = "https://jitpack.io/"
 	}
 
-	// ViaFabricPlus
-
 	maven {
 		name = "Lenni0451 releases"
 		url = "https://maven.lenni0451.net/releases"
@@ -88,17 +86,18 @@ dependencies {
 	implementation "de.florianmichael:DietrichEvents2:${project.dietrichevents2_version}"
 
 	// Mods
-	modImplementation "de.florianmichael:viafabricplus:${project.viafabricplus}"
+	modImplementation "de.florianmichael:viafabricplus:${project.viafabricplus_version}"
+	modImplementation "com.github.CaffeineMC:sodium-fabric:${project.sodium_version}"
 
 	File mainFile = new File("src/main/java/me/nekosarekawaii/foxglove/Foxglove.java")
 	if (mainFile.exists()) {
-        System.out.println("Trying to update the version of the mod...")
-        List<String> lines = new ArrayList<>()
-        Scanner scanner = new Scanner(mainFile)
-        String versionLineStart = "        this.version = \"", versionLineEnd = "\";"
-        boolean needsToBeUpdated = false
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine()
+		System.out.println("Trying to update the version of the mod...")
+		List<String> lines = new ArrayList<>()
+		Scanner scanner = new Scanner(mainFile)
+		String versionLineStart = "        this.version = \"", versionLineEnd = "\";"
+		boolean needsToBeUpdated = false
+		while (scanner.hasNextLine()) {
+			String line = scanner.nextLine()
             if (!needsToBeUpdated && line.startsWith(versionLineStart)) {
                 String currentVersion = line.replace(versionLineStart, "").replace(versionLineEnd, "")
                 System.out.println("Current mod version found: " + currentVersion)

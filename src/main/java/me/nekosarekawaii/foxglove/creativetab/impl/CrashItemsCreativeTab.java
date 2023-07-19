@@ -146,20 +146,20 @@ public class CrashItemsCreativeTab extends CreativeTab {
 
         if (targetVersion.isNewerThanOrEqualTo(VersionEnum.r1_20tor1_20_1)) {
 
-            final ItemStack gameFreezeEntitySpawnEgg = new ItemStack(Items.SALMON_SPAWN_EGG);
-            final NbtCompound gameFreezeEntitySpawnEggNBT = new NbtCompound();
-            final NbtCompound gameFreezeEntitySpawnEggEntityTag = new NbtCompound();
-            gameFreezeEntitySpawnEggEntityTag.putFloat("width", 999999f);
-            gameFreezeEntitySpawnEggEntityTag.putFloat("height", 999999f);
-            gameFreezeEntitySpawnEggEntityTag.putString("id", "minecraft:interaction");
-            gameFreezeEntitySpawnEggNBT.put("EntityTag", gameFreezeEntitySpawnEggEntityTag);
-            gameFreezeEntitySpawnEgg.setNbt(gameFreezeEntitySpawnEggNBT);
-            this.putClientsideName(gameFreezeEntitySpawnEgg,
+            final ItemStack sodiumFreezeEntitySpawnEgg = new ItemStack(Items.SALMON_SPAWN_EGG);
+            final NbtCompound sodiumFreezeEntitySpawnEggNBT = new NbtCompound();
+            final NbtCompound sodiumFreezeEntitySpawnEggEntityTag = new NbtCompound();
+            sodiumFreezeEntitySpawnEggEntityTag.putFloat("width", 999999f);
+            sodiumFreezeEntitySpawnEggEntityTag.putFloat("height", 999999f);
+            sodiumFreezeEntitySpawnEggEntityTag.putString("id", "minecraft:interaction");
+            sodiumFreezeEntitySpawnEggNBT.put("EntityTag", sodiumFreezeEntitySpawnEggEntityTag);
+            sodiumFreezeEntitySpawnEgg.setNbt(sodiumFreezeEntitySpawnEggNBT);
+            this.putClientsideName(sodiumFreezeEntitySpawnEgg,
                     Text.literal(
-                            Formatting.DARK_RED + Formatting.BOLD.toString() + "Game Freeze Entity"
+                            Formatting.DARK_RED + Formatting.BOLD.toString() + "Sodium Freeze Entity"
                     )
             );
-            current.add(gameFreezeEntitySpawnEgg);
+            current.add(sodiumFreezeEntitySpawnEgg);
 
         }
 
