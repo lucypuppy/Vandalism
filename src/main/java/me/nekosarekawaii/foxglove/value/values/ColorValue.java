@@ -12,9 +12,8 @@ public class ColorValue extends Value<float[]> {
 
     public ColorValue(final String name, final String description, final IValue parent, final float... defaultValue) {
         super(name, description, parent, defaultValue);
-        if (defaultValue.length > 4) {
-            throw new IllegalArgumentException("Color Array can't be bigger than 4 entries!");
-        }
+
+        if (defaultValue.length != 4) throw new IllegalArgumentException("Color Array must be 4 entries long!");
     }
 
     @Override
@@ -37,11 +36,10 @@ public class ColorValue extends Value<float[]> {
 
     @Override
     public void setValue(final float... value) {
+        if (value.length != 4) throw new IllegalArgumentException("Color Array must be 4 entries long!");
+
         super.setValue(value);
-        if (value.length > 4) {
-            throw new IllegalArgumentException("Color Array can't be bigger than 4 entries!");
-        }
-        this.rgba = ColorUtils.rgbaToValueFloat(this.getValue()[0], this.getValue()[0], this.getValue()[0], this.getValue()[0]);
+        this.rgba = ColorUtils.rgbaToValueFloat(this.getValue()[0], this.getValue()[1], this.getValue()[2], this.getValue()[3]);
     }
 
     public int getRGBA() {
@@ -51,6 +49,7 @@ public class ColorValue extends Value<float[]> {
     @Override
     public void render() {
         final float[] colorArray = this.getValue();
+
         if (ImGui.colorEdit4(this.getName() + "##" + this.getHashIdent(), colorArray)) {
             this.setValue(colorArray);
         }
