@@ -22,7 +22,7 @@ public class ImGuiHandler implements KeyboardListener, Render2DListener {
             renderConfigMenu = false,
             renderModulesMenu = false,
             renderAltManagerMenu = false,
-            renderLabyNameHistoryMenu = false,
+            renderNameHistoryMenu = false,
             renderServerPingerMenu = false;
 
     private final NBTEditMenu nbtEditMenu;
@@ -47,8 +47,8 @@ public class ImGuiHandler implements KeyboardListener, Render2DListener {
                     if (ImGui.button("Alt Manager")) {
                         this.renderAltManagerMenu = !this.renderAltManagerMenu;
                     }
-                    if (ImGui.button("Laby Name History")) {
-                        this.renderLabyNameHistoryMenu = !this.renderLabyNameHistoryMenu;
+                    if (ImGui.button("Name History")) {
+                        this.renderNameHistoryMenu = !this.renderNameHistoryMenu;
                     }
                     if (ImGui.button("Server Pinger")) {
                         this.renderServerPingerMenu = !this.renderServerPingerMenu;
@@ -56,8 +56,8 @@ public class ImGuiHandler implements KeyboardListener, Render2DListener {
                     ImGui.endMainMenuBar();
                 }
             }
-            if (this.renderLabyNameHistoryMenu) {
-                LabyNameHistoryMenu.render();
+            if (this.renderNameHistoryMenu) {
+                NameHistoryMenu.render();
             }
             if (this.renderAltManagerMenu) {
                 AltManagerMenu.render();

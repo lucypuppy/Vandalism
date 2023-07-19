@@ -11,7 +11,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class LabyNameHistoryMenu {
+public class NameHistoryMenu {
 
     private final static DateFormat formatter = new SimpleDateFormat("hh:mm:ss, dd/MM/yyyy");
 
@@ -26,7 +26,7 @@ public class LabyNameHistoryMenu {
     private static Thread thread;
 
     public static void render() {
-        if (ImGui.begin("Laby Name History", ImGuiWindowFlags.NoCollapse)) {
+        if (ImGui.begin("Name History", ImGuiWindowFlags.NoCollapse)) {
             ImGui.text("State: " + currentState.getMessage());
             ImGui.inputText("Username", username);
             final String usernameValue = username.get().replace(" ", "");
