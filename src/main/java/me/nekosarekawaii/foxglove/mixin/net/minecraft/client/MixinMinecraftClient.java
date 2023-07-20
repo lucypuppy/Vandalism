@@ -5,12 +5,15 @@ import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.event.impl.ScreenListener;
 import me.nekosarekawaii.foxglove.event.impl.TickListener;
 import me.nekosarekawaii.foxglove.event.impl.WorldListener;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.FastPlaceModule;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.world.ClientWorld;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -27,9 +30,9 @@ public abstract class MixinMinecraftClient {
         callbackInfo.setReturnValue(Foxglove.getInstance().getWindowTitle());
     }
 
-	@Inject(method = "tick", at = @At(value = "HEAD"))
-	private void injectTick(final CallbackInfo ci) {
-		DietrichEvents2.global().postInternal(TickListener.TickEvent.ID, new TickListener.TickEvent());
+    @Inject(method = "tick", at = @At(value = "HEAD"))
+    private void injectTick(final CallbackInfo ci) {
+        DietrichEvents2.global().postInternal(TickListener.TickEvent.ID, new TickListener.TickEvent());
     }
 
     @Inject(method = "setScreen", at = @At(value = "HEAD"), cancellable = true)
@@ -43,6 +46,16 @@ public abstract class MixinMinecraftClient {
     @Inject(method = "setWorld", at = @At("HEAD"))
     private void injectSetWorld(final ClientWorld world, final CallbackInfo ci) {
         DietrichEvents2.global().postInternal(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent());
+    }
+
+    @ModifyConstant(method = "doItemUse", constant = @Constant(intValue = 4))
+    private int doItemUse(final int value) {
+        final FastPlaceModule fastPlaceModule = Foxglove.getInstance().getModuleRegistry().getFastPlaceModule();
+
+        if (fastPlaceModule.isEnabled())
+            return fastPlaceModule.itemUseCooldown.getValue();
+
+        return value;
     }
 
 }
