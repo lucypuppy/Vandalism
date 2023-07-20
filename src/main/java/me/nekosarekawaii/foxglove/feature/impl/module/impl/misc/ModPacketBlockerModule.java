@@ -23,6 +23,13 @@ public class ModPacketBlockerModule extends Module implements PacketListener {
             true
     );
 
+    private final Value<Boolean> journeymap = new BooleanValue(
+            "Block JourneyMap Packets",
+            "Blocks packets from JourneyMap.",
+            this,
+            true
+    ).visibleConsumer(() -> FabricLoader.getInstance().isModLoaded("journeymap"));
+
     private final Value<Boolean> roughlyEnoughItems = new BooleanValue(
             "Block Roughly Enough Items Packets",
             "Blocks packets from Roughly Enough Items.",
@@ -54,6 +61,11 @@ public class ModPacketBlockerModule extends Module implements PacketListener {
             final Identifier channel = customPayloadC2SPacket.getChannel();
             final String channelName = channel.getNamespace();
             switch (channelName) {
+                case "journeymap" -> {
+                    if (this.journeymap.getValue()) {
+                        event.cancel();
+                    }
+                }
                 case "roughlyenoughitems" -> {
                     if (this.roughlyEnoughItems.getValue()) {
                         event.cancel();
@@ -77,6 +89,11 @@ public class ModPacketBlockerModule extends Module implements PacketListener {
             final Identifier channel = customPayloadS2CPacket.getChannel();
             final String channelName = channel.getNamespace();
             switch (channelName) {
+                case "journeymap" -> {
+                    if (this.journeymap.getValue()) {
+                        event.cancel();
+                    }
+                }
                 case "roughlyenoughitems" -> {
                     if (this.roughlyEnoughItems.getValue()) {
                         event.cancel();
