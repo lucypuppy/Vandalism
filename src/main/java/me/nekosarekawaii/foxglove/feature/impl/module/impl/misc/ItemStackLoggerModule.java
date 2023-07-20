@@ -48,7 +48,7 @@ public class ItemStackLoggerModule extends Module implements PacketListener {
         DietrichEvents2.global().unsubscribe(PacketEvent.ID, this);
     }
 
-    private final static DateFormat formatter = new SimpleDateFormat("hh:mm:ss, dd/MM/yyyy");
+    private final static DateFormat formatter = new SimpleDateFormat("hh:mm:ss a, dd/MM/yyyy");
 
     @Override
     public void onRead(final PacketEvent event) {

@@ -86,6 +86,8 @@ public class Foxglove {
         this.configManager = new ConfigManager();
         this.configManager.load();
 
+        FabricBridge.modInitialized = true;
+
         Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
     }
 

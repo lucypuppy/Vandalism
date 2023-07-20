@@ -9,10 +9,11 @@ import net.minecraft.util.Identifier;
 
 public class FabricBridge implements ClientModInitializer {
 
-    private final static Item dummyItem = new Item(new FabricItemSettings());
+    public static boolean modInitialized = false;
 
     @Override
     public void onInitializeClient() {
+        final Item dummyItem = new Item(new FabricItemSettings());
         Registry.register(Registries.ITEM, new Identifier(Foxglove.getInstance().getLowerCaseName(), "dummy"), dummyItem);
         Foxglove.getInstance().getCreativeTabRegistry().register(dummyItem);
     }

@@ -13,7 +13,7 @@ import java.util.Date;
 
 public class NameHistoryMenu {
 
-    private final static DateFormat formatter = new SimpleDateFormat("hh:mm:ss, dd/MM/yyyy");
+    private final static DateFormat formatter = new SimpleDateFormat("hh:mm:ss a, dd/MM/yyyy");
 
     private final static ObjectArrayList<String> currentData = new ObjectArrayList<>();
 

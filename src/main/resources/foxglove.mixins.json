@@ -42,6 +42,7 @@
     "net.minecraft.MixinSharedConstants",
     "net.minecraft.item.MixinItemGroup",
     "net.minecraft.item.MixinItemStack",
+    "net.minecraft.util.MixinIdentifier",
     "net.minecraft.util.MixinModStatus",
     "net.minecraft.util.MixinStringHelper"
   ]

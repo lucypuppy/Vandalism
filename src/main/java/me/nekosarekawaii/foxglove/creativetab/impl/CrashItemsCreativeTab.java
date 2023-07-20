@@ -10,6 +10,7 @@ import net.minecraft.nbt.NbtString;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.raphimc.vialoader.util.VersionEnum;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.Collection;
 
@@ -160,6 +161,21 @@ public class CrashItemsCreativeTab extends CreativeTab {
                     )
             );
             current.add(sodiumFreezeEntitySpawnEgg);
+
+            final ItemStack instantCrashPot = new ItemStack(Items.DECORATED_POT);
+            final NbtCompound instantCrashPotNBT = new NbtCompound();
+            final NbtCompound instantCrashPotBlockEntityTag = new NbtCompound();
+            final NbtList instantCrashSherds = new NbtList();
+            instantCrashSherds.add(NbtString.of(RandomStringUtils.random(5).toLowerCase() + ":" + RandomStringUtils.random(5).toUpperCase()));
+            instantCrashPotBlockEntityTag.put("sherds", instantCrashSherds);
+            instantCrashPotNBT.put("BlockEntityTag", instantCrashPotBlockEntityTag);
+            instantCrashPot.setNbt(instantCrashPotNBT);
+            this.putClientsideName(instantCrashPot,
+                    Text.literal(
+                            Formatting.DARK_RED + Formatting.BOLD.toString() + "Instant Crash Pot"
+                    )
+            );
+            current.add(instantCrashPot);
 
         }
 
