@@ -15,7 +15,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
+import net.minecraft.entity.Ownable;
 import net.minecraft.screen.ScreenHandler;
 
 import java.util.ArrayList;
@@ -83,8 +83,8 @@ public class DebugModule extends Module implements Render2DListener, TickListene
                         for (final Entity entity : world.getEntities()) {
                             final String entityUUID = entity.getUuidAsString();
                             ImGui.text(entity.getName().getString() + " [" + entity.getClass().getSimpleName() + "] (" + player.distanceTo(entity) + ")");
-                            if (entity instanceof final EnderPearlEntity enderPearlEntity) {
-                                final Entity owner = enderPearlEntity.getOwner();
+                            if (entity instanceof final Ownable ownableEntity) {
+                                final Entity owner = ownableEntity.getOwner();
                                 if (owner != null) {
                                     ImGui.sameLine();
                                     final String ownerUUID = owner.getUuidAsString();
