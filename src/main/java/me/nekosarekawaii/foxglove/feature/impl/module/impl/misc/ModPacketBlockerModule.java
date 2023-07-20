@@ -37,13 +37,6 @@ public class ModPacketBlockerModule extends Module implements PacketListener {
             true
     ).visibleConsumer(() -> FabricLoader.getInstance().isModLoaded("architectury"));
 
-    private final Value<Boolean> litematicaServerPaster = new BooleanValue(
-            "Block Litematica Server Paster Packets",
-            "Blocks packets from Litematica Server Paster.",
-            this,
-            true
-    ).visibleConsumer(() -> FabricLoader.getInstance().isModLoaded("litematica-server-paster"));
-
     @Override
     protected void onEnable() {
         DietrichEvents2.global().subscribe(PacketEvent.ID, this, EventPriorities.HIGH.getPriority());
@@ -71,11 +64,6 @@ public class ModPacketBlockerModule extends Module implements PacketListener {
                         event.cancel();
                     }
                 }
-                case "litematica-server-paster" -> {
-                    if (this.litematicaServerPaster.getValue()) {
-                        event.cancel();
-                    }
-                }
                 default -> {
                 }
             }
@@ -96,11 +84,6 @@ public class ModPacketBlockerModule extends Module implements PacketListener {
                 }
                 case "architectury" -> {
                     if (this.architectury.getValue()) {
-                        event.cancel();
-                    }
-                }
-                case "litematica-server-paster" -> {
-                    if (this.litematicaServerPaster.getValue()) {
                         event.cancel();
                     }
                 }
