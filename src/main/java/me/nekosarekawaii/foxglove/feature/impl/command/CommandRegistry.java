@@ -8,6 +8,7 @@ import me.nekosarekawaii.foxglove.feature.FeatureList;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.development.TestCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.exploit.CheckCMDCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.exploit.PluginsCommand;
+import me.nekosarekawaii.foxglove.feature.impl.command.impl.exploit.TeleportEntitySpawnEggCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.*;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.render.ClientsideGameModeCommand;
 import net.minecraft.client.MinecraftClient;
@@ -42,7 +43,8 @@ public class CommandRegistry {
                 new PluginsCommand(),
                 new GiveCommand(),
                 new CopyServerIPCommand(),
-                new CopyPositionCommand()
+                new CopyPositionCommand(),
+                new TeleportEntitySpawnEggCommand()
         );
     }
 

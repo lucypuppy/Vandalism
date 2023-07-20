@@ -13,6 +13,9 @@ import me.nekosarekawaii.foxglove.imgui.ImGuiUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.Window;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
 import net.minecraft.screen.ScreenHandler;
 
 import java.util.ArrayList;
@@ -70,6 +73,37 @@ public class DebugModule extends Module implements Render2DListener, TickListene
                         ImGui.text("Current Revision: " + screenHandler.getRevision());
                         ImGui.end();
                     }
+                }
+
+                final ClientWorld world = mc.world;
+                if (world != null) {
+
+                    if (ImGui.begin("Entities in Range##debugModuleEntitiesInRange")) {
+                        int i = 0;
+                        for (final Entity entity : world.getEntities()) {
+                            final String entityUUID = entity.getUuidAsString();
+                            ImGui.text(entity.getName().getString() + " [" + entity.getClass().getSimpleName() + "] (" + player.distanceTo(entity) + ")");
+                            if (entity instanceof final EnderPearlEntity enderPearlEntity) {
+                                final Entity owner = enderPearlEntity.getOwner();
+                                if (owner != null) {
+                                    ImGui.sameLine();
+                                    final String ownerUUID = owner.getUuidAsString();
+                                    ImGui.text(" (Owner: " + owner.getName().getString() + ")");
+                                    ImGui.sameLine();
+                                    if (ImGui.button("Copy Owner Entity UUID##copyOwnerEntityUUID" + i)) {
+                                        mc.keyboard.setClipboard(ownerUUID);
+                                    }
+                                }
+                            }
+                            ImGui.sameLine();
+                            if (ImGui.button("Copy Entity UUID##copyEntityUUID" + i)) {
+                                mc.keyboard.setClipboard(entityUUID);
+                            }
+                            i++;
+                        }
+                        ImGui.end();
+                    }
+
                 }
 
             }

@@ -14,7 +14,7 @@ public class TestCommand extends Command {
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
             ChatUtils.infoChatMessage("Executed Test Command.");
-            return SINGLE_SUCCESS;
+            return singleSuccess;
         });
     }
 

@@ -11,6 +11,7 @@ import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.config.impl.alt.alttype.Account;
 import me.nekosarekawaii.foxglove.config.impl.alt.alttype.type.CrackedAccount;
 import me.nekosarekawaii.foxglove.config.impl.alt.alttype.type.MicrosoftAccount;
+import me.nekosarekawaii.foxglove.util.ValidatorUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Session;
 import net.minecraft.util.Uuids;
@@ -18,7 +19,6 @@ import net.minecraft.util.Uuids;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.regex.Pattern;
 
 public class AltManagerMenu {
 
@@ -29,11 +29,6 @@ public class AltManagerMenu {
     public static boolean render = false;
 
     private final static MicrosoftAuthenticator authenticator = new MicrosoftAuthenticator();
-
-    private final static Pattern uuidPattern = Pattern.compile(
-            "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            Pattern.CASE_INSENSITIVE
-    );
 
     private static void renderCurrentAccount() {
         final Session session = MinecraftClient.getInstance().getSession();
@@ -114,7 +109,7 @@ public class AltManagerMenu {
                                     break;
                                 }
                             }
-                            if (!contains && uuidPattern.matcher(uuidValue).matches()) {
+                            if (!contains && ValidatorUtils.isUUID(uuidValue)) {
                                 final UUID realUUID = UUID.fromString(uuidValue);
                                 accounts.add(new CrackedAccount(usernameValue, realUUID));
                                 Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());

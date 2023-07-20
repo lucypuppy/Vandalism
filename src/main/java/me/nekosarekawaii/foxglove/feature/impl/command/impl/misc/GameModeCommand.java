@@ -21,7 +21,7 @@ public class GameModeCommand extends Command {
                             if (clientPlayNetworkHandler != null) {
                                 clientPlayNetworkHandler.sendChatCommand("gamemode " + gameMode.name().toLowerCase());
                             }
-                            return SINGLE_SUCCESS;
+                            return singleSuccess;
                         })
                 );
     }

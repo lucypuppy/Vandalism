@@ -16,7 +16,7 @@ public class CopyServerIPCommand extends Command {
         builder.executes(context -> {
             mc.keyboard.setClipboard(ServerUtils.getLastServerInfo().address);
             ChatUtils.infoChatMessage("Server IP copied into the Clipboard.");
-            return SINGLE_SUCCESS;
+            return singleSuccess;
         });
     }
 

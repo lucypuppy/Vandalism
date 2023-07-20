@@ -16,17 +16,17 @@ public class ToggleModuleCommand extends Command {
                 .then(argument("module", ModuleArgumentType.create())
                         .executes(context -> {
                             ModuleArgumentType.get(context).toggle();
-                            return SINGLE_SUCCESS;
+                            return singleSuccess;
                         })
                         .then(literal("on")
                                 .executes(context -> {
                                     ModuleArgumentType.get(context).enable();
-                                    return SINGLE_SUCCESS;
+                                    return singleSuccess;
                                 }))
                         .then(literal("off")
                                 .executes(context -> {
                                     ModuleArgumentType.get(context).disable();
-                                    return SINGLE_SUCCESS;
+                                    return singleSuccess;
                                 })
                         )
                 );

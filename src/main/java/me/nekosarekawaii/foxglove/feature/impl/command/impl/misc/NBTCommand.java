@@ -48,7 +48,7 @@ public class NBTCommand extends Command {
                         ChatUtils.errorChatMessage("Some of the NBT data could not be found, try using: " + Foxglove.getInstance().getConfigManager().getMainConfig().commandPrefix.getValue() + "nbt set {nbt}");
                 }
             }
-            return SINGLE_SUCCESS;
+            return singleSuccess;
         })));
         builder.then(literal("set").then(argument("nbt", NbtCompoundArgumentType.create()).executes(context -> {
             final ClientPlayerEntity player = mc.player;
@@ -59,7 +59,7 @@ public class NBTCommand extends Command {
                     this.setStack(stack);
                 }
             }
-            return SINGLE_SUCCESS;
+            return singleSuccess;
         })));
         builder.then(literal("remove").then(argument("nbt_path", NbtPathArgumentType.nbtPath()).executes(context -> {
             final ClientPlayerEntity player = mc.player;
@@ -69,7 +69,7 @@ public class NBTCommand extends Command {
                     context.getArgument("nbt_path", NbtPathArgumentType.NbtPath.class).remove(stack.getNbt());
                 }
             }
-            return SINGLE_SUCCESS;
+            return singleSuccess;
         })));
         builder.then(literal("view").executes(context -> {
             final ClientPlayerEntity player = mc.player;
@@ -96,7 +96,7 @@ public class NBTCommand extends Command {
                     ChatUtils.infoChatMessage(text);
                 }
             }
-            return SINGLE_SUCCESS;
+            return singleSuccess;
         }));
         builder.then(literal("copy").executes(context -> {
             final ClientPlayerEntity player = mc.player;
@@ -120,7 +120,7 @@ public class NBTCommand extends Command {
                     ChatUtils.infoChatMessage(text);
                 }
             }
-            return SINGLE_SUCCESS;
+            return singleSuccess;
         }));
         builder.then(literal("paste").executes(context -> {
             final ClientPlayerEntity player = mc.player;
@@ -131,7 +131,7 @@ public class NBTCommand extends Command {
                     this.setStack(stack);
                 }
             }
-            return SINGLE_SUCCESS;
+            return singleSuccess;
         }));
         builder.then(literal("count").then(argument("count", IntegerArgumentType.integer(-127, 127)).executes(context -> {
             final ClientPlayerEntity player = mc.player;
@@ -144,7 +144,7 @@ public class NBTCommand extends Command {
                     ChatUtils.infoChatMessage("Set main hand stack count to " + count + ".");
                 }
             }
-            return SINGLE_SUCCESS;
+            return singleSuccess;
         })));
         builder.then(literal("gui").executes(context -> {
             final ClientPlayerEntity player = mc.player;
@@ -164,7 +164,7 @@ public class NBTCommand extends Command {
                     }
                 }
             }
-            return SINGLE_SUCCESS;
+            return singleSuccess;
         }));
     }
 

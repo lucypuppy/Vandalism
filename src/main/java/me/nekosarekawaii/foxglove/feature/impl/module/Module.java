@@ -53,16 +53,20 @@ public abstract class Module extends Feature implements IValue {
             ChatUtils.infoChatMessage(this.getName() + " has been " + (state ? "enabled" : "disabled") + ".");
             if (state) {
                 this.onEnable();
-                for (final Value<?> value : this.values) {
-                    if (value instanceof final ModeValue<?> modeValue) {
-                        modeValue.getSelectedMode().onEnable();
+                if (this.values != null) {
+                    for (final Value<?> value : this.values) {
+                        if (value instanceof final ModeValue<?> modeValue) {
+                            modeValue.getSelectedMode().onEnable();
+                        }
                     }
                 }
             } else {
                 this.onDisable();
-                for (final Value<?> value : this.values) {
-                    if (value instanceof final ModeValue<?> modeValue) {
-                        modeValue.getSelectedMode().onDisable();
+                if (this.values != null) {
+                    for (final Value<?> value : this.values) {
+                        if (value instanceof final ModeValue<?> modeValue) {
+                            modeValue.getSelectedMode().onDisable();
+                        }
                     }
                 }
             }

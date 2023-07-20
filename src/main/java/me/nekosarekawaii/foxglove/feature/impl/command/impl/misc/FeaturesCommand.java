@@ -20,25 +20,25 @@ public class FeaturesCommand extends Command {
                 .executes(context -> {
                     this.displayModules();
                     this.displayCommands();
-                    return SINGLE_SUCCESS;
+                    return singleSuccess;
                 })
                 .then(literal("all")
                         .executes(context -> {
                             this.displayModules();
                             this.displayCommands();
-                            return SINGLE_SUCCESS;
+                            return singleSuccess;
                         })
                 )
                 .then(literal("modules")
                         .executes(context -> {
                             this.displayModules();
-                            return SINGLE_SUCCESS;
+                            return singleSuccess;
                         })
                 )
                 .then(literal("commands")
                         .executes(context -> {
                             this.displayCommands();
-                            return SINGLE_SUCCESS;
+                            return singleSuccess;
                         })
                 );
     }

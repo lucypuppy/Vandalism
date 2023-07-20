@@ -16,7 +16,7 @@ import java.net.http.HttpResponse;
 import java.util.Date;
 import java.util.stream.Stream;
 
-//TODO: recode this
+//TODO: Recode this
 public class Http {
 
     private final static HttpClient CLIENT = HttpClient.newHttpClient();

@@ -24,14 +24,14 @@ public class SayCommand extends Command {
             final String message = context.getArgument("message", String.class);
             final Instant instant = Instant.now();
             final long l = NetworkEncryptionUtils.SecureRandomUtil.nextLong();
-            ClientPlayNetworkHandler handler = mc.getNetworkHandler();
+            final ClientPlayNetworkHandler handler = mc.getNetworkHandler();
             if (handler != null) {
                 final LastSeenMessagesCollector.LastSeenMessages lastSeenMessages = handler.lastSeenMessagesCollector.collect();
                 final MessageSignatureData messageSignatureData = handler.messagePacker
                         .pack(new MessageBody(message, instant, l, lastSeenMessages.lastSeen()));
                 handler.sendPacket(new ChatMessageC2SPacket(message, instant, l, messageSignatureData, lastSeenMessages.update()));
             }
-            return SINGLE_SUCCESS;
+            return singleSuccess;
         }));
     }
 
