@@ -5,7 +5,7 @@ import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.event.impl.ScreenListener;
 import me.nekosarekawaii.foxglove.event.impl.TickListener;
 import me.nekosarekawaii.foxglove.event.impl.WorldListener;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.FastPlaceModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.CustomItemUseCooldown;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.world.ClientWorld;
@@ -50,11 +50,8 @@ public abstract class MixinMinecraftClient {
 
     @ModifyConstant(method = "doItemUse", constant = @Constant(intValue = 4))
     private int doItemUse(final int value) {
-        final FastPlaceModule fastPlaceModule = Foxglove.getInstance().getModuleRegistry().getFastPlaceModule();
-
-        if (fastPlaceModule.isEnabled())
-            return fastPlaceModule.itemUseCooldown.getValue();
-
+        final CustomItemUseCooldown customItemUseCooldown = Foxglove.getInstance().getModuleRegistry().getCustomItemUseCooldown();
+        if (customItemUseCooldown.isEnabled()) return customItemUseCooldown.itemUseCooldown.getValue();
         return value;
     }
 

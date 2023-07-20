@@ -5,7 +5,7 @@ import me.nekosarekawaii.foxglove.feature.FeatureList;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.DebugModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.TestModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.*;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.FastPlaceModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.CustomItemUseCooldown;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.ItemStackLoggerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.ModPacketBlockerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.PacketLoggerModule;
@@ -125,10 +125,10 @@ public class ModuleRegistry {
         return this.itemStackLoggerModule;
     }
 
-    private FastPlaceModule fastPlaceModule;
+    private CustomItemUseCooldown customItemUseCooldown;
 
-    public FastPlaceModule getFastPlaceModule() {
-        return this.fastPlaceModule;
+    public CustomItemUseCooldown getCustomItemUseCooldown() {
+        return this.customItemUseCooldown;
     }
 
     private final FeatureList<Module> modules;
@@ -158,7 +158,7 @@ public class ModuleRegistry {
                 this.craftCarryModule = new CraftCarryModule(),
                 this.consoleSpammerModule = new ConsoleSpammerModule(),
                 this.itemStackLoggerModule = new ItemStackLoggerModule(),
-                this.fastPlaceModule = new FastPlaceModule()
+                this.customItemUseCooldown = new CustomItemUseCooldown()
         );
     }
 
