@@ -8,7 +8,7 @@ public interface WorldListener {
 
     class WorldLoadEvent extends AbstractEvent<WorldListener> {
 
-        public final static int ID = 8;
+        public final static int ID = 7;
 
         @Override
         public void call(final WorldListener listener) {

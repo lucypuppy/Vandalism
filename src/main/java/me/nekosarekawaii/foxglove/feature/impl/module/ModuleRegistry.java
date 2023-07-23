@@ -5,10 +5,11 @@ import me.nekosarekawaii.foxglove.feature.FeatureList;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.DebugModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.TestModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.*;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.CustomItemUseCooldown;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.CustomItemUseCooldownModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.ItemStackLoggerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.ModPacketBlockerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.PacketLoggerModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.CustomPushVelocityModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.FlightModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.SpeedModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.BetterTabListModule;
@@ -125,10 +126,16 @@ public class ModuleRegistry {
         return this.itemStackLoggerModule;
     }
 
-    private CustomItemUseCooldown customItemUseCooldown;
+    private CustomItemUseCooldownModule customItemUseCooldownModule;
 
-    public CustomItemUseCooldown getCustomItemUseCooldown() {
-        return this.customItemUseCooldown;
+    public CustomItemUseCooldownModule getCustomItemUseCooldownModule() {
+        return this.customItemUseCooldownModule;
+    }
+
+    private CustomPushVelocityModule customPushVelocityModule;
+
+    public CustomPushVelocityModule getCustomPushVelocityModule() {
+        return this.customPushVelocityModule;
     }
 
     private final FeatureList<Module> modules;
@@ -158,7 +165,8 @@ public class ModuleRegistry {
                 this.craftCarryModule = new CraftCarryModule(),
                 this.consoleSpammerModule = new ConsoleSpammerModule(),
                 this.itemStackLoggerModule = new ItemStackLoggerModule(),
-                this.customItemUseCooldown = new CustomItemUseCooldown()
+                this.customItemUseCooldownModule = new CustomItemUseCooldownModule(),
+                this.customPushVelocityModule = new CustomPushVelocityModule()
         );
     }
 
