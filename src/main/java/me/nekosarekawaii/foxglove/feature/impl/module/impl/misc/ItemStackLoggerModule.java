@@ -74,7 +74,9 @@ public class ItemStackLoggerModule extends Module implements PacketListener {
                         final Item item = stack.getItem();
                         final NbtCompound tag = stack.getNbt();
                         final int damage = stack.getDamage(), nbtCount = tag != null ? tag.getKeys().size() : 0;
-                        if (item.equals(Items.AIR) || nbtCount == 1 && tag.contains("Damage") && damage == 0) continue;
+                        if (item.equals(Items.AIR)) continue;
+                        if (nbtCount == 1 && tag.contains("Damage")) continue;
+                        if (damage == 0 && nbtCount == 0) continue;
                         final String logStart = "Player: " + player.getGameProfile().getName() + " | Item: " + item + " | Damage: " + damage + " | Count: " + stack.getCount() + " | NBT Count: " + nbtCount;
                         final StringBuilder data = new StringBuilder(logStart + " | NBT: ");
                         if (tag == null) data.append("{}");
