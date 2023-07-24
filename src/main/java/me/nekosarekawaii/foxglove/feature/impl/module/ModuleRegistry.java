@@ -12,6 +12,7 @@ import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.PacketLoggerModu
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.CustomPushVelocityModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.FlightModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.SpeedModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.StepModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.BetterTabListModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.HeadUpDisplayModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.TrueSightModule;
@@ -138,6 +139,12 @@ public class ModuleRegistry {
         return this.customPushVelocityModule;
     }
 
+    private StepModule stepModule;
+
+    public StepModule getStepModule() {
+        return this.stepModule;
+    }
+
     private final FeatureList<Module> modules;
 
     public ModuleRegistry() {
@@ -166,7 +173,8 @@ public class ModuleRegistry {
                 this.consoleSpammerModule = new ConsoleSpammerModule(),
                 this.itemStackLoggerModule = new ItemStackLoggerModule(),
                 this.customItemUseCooldownModule = new CustomItemUseCooldownModule(),
-                this.customPushVelocityModule = new CustomPushVelocityModule()
+                this.customPushVelocityModule = new CustomPushVelocityModule(),
+                this.stepModule = new StepModule()
         );
     }
 

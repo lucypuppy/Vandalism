@@ -3,6 +3,7 @@ package me.nekosarekawaii.foxglove.mixin.net.minecraft.entity;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import me.nekosarekawaii.foxglove.event.impl.EntityPushListener;
 import me.nekosarekawaii.foxglove.event.impl.FluidPushListener;
+import me.nekosarekawaii.foxglove.event.impl.StepListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
@@ -47,6 +48,17 @@ public abstract class MixinEntity {
             return entityPushEvent.value;
         }
         return constant;
+    }
+
+    @Redirect(method = "adjustMovementForCollisions(Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/Vec3d;", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getStepHeight()F"))
+    private float hookStepHeight(final Entity entity) {
+        if (MinecraftClient.getInstance().player == ((Entity) (Object) this)) {
+            final StepListener.StepEvent stepEvent = new StepListener.StepEvent(entity.getStepHeight());
+            DietrichEvents2.global().postInternal(StepListener.StepEvent.ID, stepEvent);
+            return stepEvent.stepHeight;
+        }
+
+        return entity.getStepHeight();
     }
 
 }
