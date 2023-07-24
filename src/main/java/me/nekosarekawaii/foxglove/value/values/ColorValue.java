@@ -8,8 +8,6 @@ import me.nekosarekawaii.foxglove.value.Value;
 
 public class ColorValue extends Value<float[]> {
 
-    private int rgba = 0;
-
     public ColorValue(final String name, final String description, final IValue parent, final float... defaultValue) {
         super(name, description, parent, defaultValue);
 
@@ -39,11 +37,10 @@ public class ColorValue extends Value<float[]> {
         if (value.length != 4) throw new IllegalArgumentException("Color Array must be 4 entries long!");
 
         super.setValue(value);
-        this.rgba = ColorUtils.rgbaToValueFloat(this.getValue()[0], this.getValue()[1], this.getValue()[2], this.getValue()[3]);
     }
 
     public int getRGBA() {
-        return this.rgba;
+        return ColorUtils.rgbaToValueFloat(this.getValue()[0], this.getValue()[1], this.getValue()[2], this.getValue()[3]);
     }
 
     @Override
