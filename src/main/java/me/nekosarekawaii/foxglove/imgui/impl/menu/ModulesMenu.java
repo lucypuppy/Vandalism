@@ -20,43 +20,44 @@ public class ModulesMenu {
     public static void render() {
         if (ImGui.begin("Modules" + (currentFeatureCategory != null ? " > " + currentFeatureCategory.normalName() + (currentModule != null ? " > " + currentModule.getName() : "") : "") + "###modulesMenu", ImGuiWindowFlags.NoCollapse)) {
             ImGui.setWindowSize(0, 0);
+
             final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();
             if (ImGui.beginListBox("##general", 150, 600)) {
                 if (!modules.isEmpty()) {
-                    ImGui.sameLine();
-                    ImGui.spacing();
 
-                    if (ImGui.beginListBox("##modulecategories", 142, 585)) {
-                        for (final FeatureCategory featureCategory : FeatureCategory.values()) {
-                            final FeatureList<Module> modulesByCategory = modules.get(featureCategory);
-                            if (!modulesByCategory.isEmpty()) {
-                                if (ImGui.button(featureCategory.normalName() + " (" + modulesByCategory.size() + ")", 134, 35)) {
-                                    currentFeatureCategory = featureCategory;
-                                    currentModule = moduleViewCache.get(featureCategory);
-                                }
+                    for (final FeatureCategory featureCategory : FeatureCategory.values()) {
+                        final FeatureList<Module> modulesByCategory = modules.get(featureCategory);
+
+                        if (!modulesByCategory.isEmpty()) {
+                            if (ImGui.button(featureCategory.normalName() + " (" + modulesByCategory.size() + ")", 140, 35)) {
+                                currentFeatureCategory = featureCategory;
+                                currentModule = moduleViewCache.get(featureCategory);
                             }
                         }
-
-                        ImGui.endListBox();
                     }
-
                 }
+
                 ImGui.endListBox();
             }
+
             if (currentFeatureCategory != null) {
                 ImGui.sameLine();
 
                 if (ImGui.beginListBox("##modules", 200, 600)) {
+
                     final FeatureList<Module> modulesByCategory = modules.get(currentFeatureCategory);
                     for (final Module module : modulesByCategory) {
                         ImGui.pushStyleColor(ImGuiCol.Button, module.isEnabled() ? ImGui.getColorU32(ImGuiCol.ButtonActive) : ImGui.getColorU32(ImGuiCol.Button));
+
                         if (ImGui.button(module.getName(), 190, 40)) {
                             moduleViewCache.remove(currentFeatureCategory);
                             moduleViewCache.put(currentFeatureCategory, module);
                             currentModule = module;
                         }
+
                         ImGui.popStyleColor();
                     }
+
                     ImGui.endListBox();
                 }
                 if (currentModule != null) {
