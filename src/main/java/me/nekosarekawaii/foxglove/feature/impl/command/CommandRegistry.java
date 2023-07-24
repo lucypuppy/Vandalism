@@ -6,7 +6,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.feature.FeatureList;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.development.TestCommand;
-import me.nekosarekawaii.foxglove.feature.impl.command.impl.exploit.CheckCMDCommand;
+import me.nekosarekawaii.foxglove.feature.impl.command.impl.exploit.CommandBlockStateCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.exploit.PluginsCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.exploit.TeleportEntitySpawnEggCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.*;
@@ -39,7 +39,7 @@ public class CommandRegistry {
                 new GameModeCommand(),
                 new SayCommand(),
                 new NBTCommand(),
-                new CheckCMDCommand(),
+                new CommandBlockStateCommand(),
                 new PluginsCommand(),
                 new GiveCommand(),
                 new CopyServerIPCommand(),
