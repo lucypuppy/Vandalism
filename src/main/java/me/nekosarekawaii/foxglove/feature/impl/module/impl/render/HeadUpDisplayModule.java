@@ -11,15 +11,22 @@ import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
 import me.nekosarekawaii.foxglove.imgui.ImGuiUtil;
 import me.nekosarekawaii.foxglove.value.Value;
 import me.nekosarekawaii.foxglove.value.values.BooleanValue;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.Window;
 
 @ModuleInfo(name = "Head Up Display", description = "The In-game HUD of the Mod.", category = FeatureCategory.RENDER, isDefaultEnabled = true)
 public class HeadUpDisplayModule extends Module implements Render2DListener {
 
-    private final Value<Boolean> moduleList = new BooleanValue("Module List", "Shows the Module List.", this, true);
+    private final Value<Boolean> enabledModuleList = new BooleanValue("Enabled Module List", "Shows the enabled module list.", this, true);
+    private final Value<Boolean> infos = new BooleanValue("Infos", "Shows general infos.", this, true);
+    private final Value<Boolean> fps = new BooleanValue("FPS", "Shows the current fps.", this, true);
+    private final Value<Boolean> username = new BooleanValue("Username", "Shows the current username.", this, true);
+    private final Value<Boolean> position = new BooleanValue("Position", "Shows the current position.", this, true);
+    private final Value<Boolean> serverBrand = new BooleanValue("Server Brand", "Shows the current server brand.", this, true);
 
     @Override
     protected void onEnable() {
@@ -44,18 +51,13 @@ public class HeadUpDisplayModule extends Module implements Render2DListener {
     }
 
     private void render() {
-        if (mc.player == null)
-            return;
-
+        final ClientPlayerEntity player = mc.player;
+        if (player == null) return;
         Foxglove.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
-            if (mc.options.debugEnabled || mc.options.hudHidden)
-                return;
-
-            if (this.moduleList.getValue()) {
-                if (ImGui.begin("Module List", ImGuiUtil.getInGameFlags(0))) {
-
+            if (mc.options.debugEnabled || mc.options.hudHidden) return;
+            if (this.enabledModuleList.getValue()) {
+                if (ImGui.begin("Enabled Module List##headupdisplaymodule", ImGuiUtil.getInGameFlags(0))) {
                     boolean empty = true;
-
                     final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();
                     for (final Module module : modules) {
                         if (module.isEnabled() && module.isShowInModuleList()) {
@@ -63,9 +65,25 @@ public class HeadUpDisplayModule extends Module implements Render2DListener {
                             ImGui.text(module.getName());
                         }
                     }
-
                     ImGui.setWindowSize(empty ? 100 : 0, empty ? 50 : 0);
-
+                    ImGui.end();
+                }
+            }
+            if (this.infos.getValue()) {
+                if (ImGui.begin("Infos##headupdisplaymodule", ImGuiUtil.getInGameFlags(0))) {
+                    ImGui.setWindowSize(0, 0);
+                    if (this.fps.getValue()) {
+                        ImGui.text("FPS: " + MinecraftClient.getInstance().getCurrentFps());
+                    }
+                    if (this.username.getValue()) {
+                        ImGui.text("Username: " + player.getGameProfile().getName());
+                    }
+                    if (this.position.getValue()) {
+                        ImGui.text("Position: " + player.getBlockPos().toShortString());
+                    }
+                    if (this.serverBrand.getValue()) {
+                        ImGui.text("Server Brand: " + player.getServerBrand());
+                    }
                     ImGui.end();
                 }
             }
