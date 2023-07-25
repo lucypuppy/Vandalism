@@ -1,7 +1,9 @@
 package me.nekosarekawaii.foxglove.creativetab.impl;
 
 import de.florianmichael.viafabricplus.protocolhack.ProtocolHack;
+import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.creativetab.CreativeTab;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.ExploitFixerModule;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -25,6 +27,7 @@ public class CrashItemsCreativeTab extends CreativeTab {
     public Collection<ItemStack> entries() {
         final Collection<ItemStack> current = super.entries();
         final VersionEnum targetVersion = ProtocolHack.getTargetVersion();
+        final ExploitFixerModule exploitFixerModule = Foxglove.getInstance().getModuleRegistry().getExploitFixerModule();
 
         if (targetVersion.isOlderThan(VersionEnum.r1_11)) {
             // This head uses a value that has an empty string as url.
@@ -163,31 +166,33 @@ public class CrashItemsCreativeTab extends CreativeTab {
             );
             current.add(sodiumFreezeEntitySpawnEgg);
 
-            final ItemStack instantCrashPot = new ItemStack(Items.DECORATED_POT);
-            final NbtCompound instantCrashPotNBT = new NbtCompound();
-            final NbtCompound instantCrashPotBlockEntityTag = new NbtCompound();
-            final NbtList instantCrashSherds = new NbtList();
-            instantCrashSherds.add(NbtString.of(RandomStringUtils.random(5).toLowerCase() + ":" + RandomStringUtils.random(5).toUpperCase()));
-            instantCrashPotBlockEntityTag.put("sherds", instantCrashSherds);
-            instantCrashPotNBT.put("BlockEntityTag", instantCrashPotBlockEntityTag);
-            instantCrashPot.setNbt(instantCrashPotNBT);
-            this.putClientsideName(instantCrashPot,
-                    Text.literal(
-                            Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Pot"
-                    )
-            );
-            current.add(instantCrashPot);
+            if (exploitFixerModule.isEnabled() && exploitFixerModule.blockInvalidIdentifierCrash.getValue()) {
+                final ItemStack instantCrashPot = new ItemStack(Items.DECORATED_POT);
+                final NbtCompound instantCrashPotNBT = new NbtCompound();
+                final NbtCompound instantCrashPotBlockEntityTag = new NbtCompound();
+                final NbtList instantCrashSherds = new NbtList();
+                instantCrashSherds.add(NbtString.of(RandomStringUtils.random(5).toLowerCase() + ":" + RandomStringUtils.random(5).toUpperCase()));
+                instantCrashPotBlockEntityTag.put("sherds", instantCrashSherds);
+                instantCrashPotNBT.put("BlockEntityTag", instantCrashPotBlockEntityTag);
+                instantCrashPot.setNbt(instantCrashPotNBT);
+                this.putClientsideName(instantCrashPot,
+                        Text.literal(
+                                Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Pot"
+                        )
+                );
+                current.add(instantCrashPot);
+            }
 
         }
 
         final ItemStack serverCrashEntity = new ItemStack(Items.PUFFERFISH_SPAWN_EGG);
         final NbtCompound serverCrashEntityNbt = new NbtCompound();
         final NbtCompound serverCrashEntityTagNbt = new NbtCompound();
-        final NbtList power = new NbtList();
-        power.add(NbtDouble.of(1.0E43));
-        power.add(NbtDouble.of(0));
-        power.add(NbtDouble.of(0));
-        serverCrashEntityTagNbt.put("power", power);
+        final NbtList serverCrashEntityPower = new NbtList();
+        serverCrashEntityPower.add(NbtDouble.of(1.0E43));
+        serverCrashEntityPower.add(NbtDouble.of(0));
+        serverCrashEntityPower.add(NbtDouble.of(0));
+        serverCrashEntityTagNbt.put("power", serverCrashEntityPower);
         serverCrashEntityTagNbt.putString("id", "minecraft:small_fireball");
         serverCrashEntityNbt.put("EntityTag", serverCrashEntityTagNbt);
         serverCrashEntity.setNbt(serverCrashEntityNbt);

@@ -38,7 +38,8 @@ public class CreativeTabRegistry implements PacketListener {
                 new CrashItemsCreativeTab(),
                 new KickItemsCreativeTab(),
                 new GriefItemsCreativeTab(),
-                new TrollItemsCreativeTab()
+                new TrollItemsCreativeTab(),
+                new SoundPlayerItemsCreativeTab()
         );
     }
 

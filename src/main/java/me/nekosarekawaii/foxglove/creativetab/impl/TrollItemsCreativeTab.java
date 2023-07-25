@@ -75,6 +75,20 @@ public class TrollItemsCreativeTab extends CreativeTab {
             current.add(blackHoleSpawnEgg);
         }
 
+        final ItemStack consoleErrorEntity = new ItemStack(Items.CAT_SPAWN_EGG);
+        final NbtCompound consoleSpammEntityNbt = new NbtCompound();
+        final NbtCompound consoleSpammEntityTagNbt = new NbtCompound();
+        consoleSpammEntityTagNbt.putByte("pickup", (byte) 3);
+        consoleSpammEntityTagNbt.putString("id", "minecraft:arrow");
+        consoleSpammEntityNbt.put("EntityTag", consoleSpammEntityTagNbt);
+        consoleErrorEntity.setNbt(consoleSpammEntityNbt);
+        this.putClientsideName(consoleErrorEntity,
+                Text.literal(
+                        Formatting.RED + Formatting.BOLD.toString() + "Console Error Entity"
+                )
+        );
+        current.add(consoleErrorEntity);
+
         return current;
     }
 
