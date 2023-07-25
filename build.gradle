@@ -1,0 +1,132 @@
+plugins {
+	id 'fabric-loom' version '1.2-SNAPSHOT'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+repositories {
+	maven {
+		name = "Jitpack"
+		url = "https://jitpack.io/"
+	}
+
+	maven {
+		name = "Lenni0451 releases"
+		url = "https://maven.lenni0451.net/releases"
+	}
+
+	maven {
+		name = "Lenni0451 snapshots"
+		url = "https://maven.lenni0451.net/snapshots"
+	}
+
+	maven {
+		name = "TerraformersMC"
+		url = "https://maven.terraformersmc.com/releases"
+	}
+
+	maven {
+		name = "OpenCollab Snapshots"
+		url = "https://repo.opencollab.dev/maven-snapshots/"
+	}
+
+	maven {
+		name = "ViaVersion"
+		url = "https://repo.viaversion.com"
+	}
+
+	maven {
+		name = "Litarvan"
+		url = "https://litarvan.github.io/maven"
+	}
+}
+
+loom {
+	accessWidenerPath = file("src/main/resources/" + archives_base_name + ".accesswidener")
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+	// Mods
+	modImplementation "de.florianmichael:viafabricplus:${project.viafabricplus_version}"
+	modImplementation "com.github.CaffeineMC:sodium-fabric:${project.sodium_version}"
+
+	// Libs
+	implementation "net.lenni0451:MCPing:${project.mc_ping_version}"
+	implementation "net.lenni0451:ImNbt:${project.imnbt_version}"
+
+	implementation "fr.litarvan:openauth:${project.openauth_version}"
+
+	implementation "io.github.spair:imgui-java-binding:${project.spair_imgui_version}"
+	implementation "io.github.spair:imgui-java-lwjgl3:${project.spair_imgui_version}"
+	implementation "io.github.spair:imgui-java-natives-windows:${project.spair_imgui_version}"
+	implementation "io.github.spair:imgui-java-natives-linux:${project.spair_imgui_version}"
+
+	implementation "de.florianmichael:DietrichEvents2:${project.dietrichevents2_version}"
+
+	// Version Updater
+	File mainFile = new File("src/main/java/me/nekosarekawaii/foxglove/Foxglove.java")
+	if (mainFile.exists()) {
+		System.out.println("Trying to update the version of the mod...")
+		List<String> lines = new ArrayList<>()
+		Scanner scanner = new Scanner(mainFile)
+		String versionLineStart = "        this.version = \"", versionLineEnd = "\";"
+		boolean needsToBeUpdated = false
+		while (scanner.hasNextLine()) {
+			String line = scanner.nextLine()
+            if (!needsToBeUpdated && line.startsWith(versionLineStart)) {
+                String currentVersion = line.replace(versionLineStart, "").replace(versionLineEnd, "")
+                System.out.println("Current mod version found: " + currentVersion)
+                if (currentVersion != project.version) {
+                    needsToBeUpdated = true
+                    line = versionLineStart + project.version + versionLineEnd
+                    System.out.println("Updated current mod version to: " + project.version)
+                } else System.out.println("Current mod version is up-to-date, no updating required.")
+            }
+            lines.add(line)
+        }
+        scanner.close()
+        if (needsToBeUpdated) {
+            if (!lines.isEmpty()) {
+                if (mainFile.delete()) {
+                    if (mainFile.createNewFile()) {
+                        PrintWriter printer = new PrintWriter(mainFile)
+                        for (String line : lines) printer.println(line)
+                        printer.close()
+                    } else throw new RuntimeException("Failed to create the main file!")
+                } else throw new RuntimeException("Failed to delete the main file!")
+            } else throw new RuntimeException("Empty main file!")
+        }
+    } else {
+		throw new RuntimeException("Main file doesn't exist!")
+	}
+
+}
+
+processResources {
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 17
+}
+
+java {
+	withSourcesJar()
+
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
+}

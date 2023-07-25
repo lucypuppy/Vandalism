@@ -1,0 +1,93 @@
+package me.nekosarekawaii.foxglove.feature.impl.module.impl.render;
+
+import de.florianmichael.dietrichevents2.DietrichEvents2;
+import imgui.ImGui;
+import me.nekosarekawaii.foxglove.Foxglove;
+import me.nekosarekawaii.foxglove.event.impl.Render2DListener;
+import me.nekosarekawaii.foxglove.feature.FeatureCategory;
+import me.nekosarekawaii.foxglove.feature.FeatureList;
+import me.nekosarekawaii.foxglove.feature.impl.module.Module;
+import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
+import me.nekosarekawaii.foxglove.imgui.ImGuiUtil;
+import me.nekosarekawaii.foxglove.value.Value;
+import me.nekosarekawaii.foxglove.value.values.BooleanValue;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.util.Window;
+
+@ModuleInfo(name = "Head Up Display", description = "The In-game HUD of the Mod.", category = FeatureCategory.RENDER, isDefaultEnabled = true)
+public class HeadUpDisplayModule extends Module implements Render2DListener {
+
+    private final Value<Boolean> enabledModuleList = new BooleanValue("Enabled Module List", "Shows the enabled module list.", this, true);
+    private final Value<Boolean> infos = new BooleanValue("Infos", "Shows general infos.", this, true);
+    private final Value<Boolean> fps = new BooleanValue("FPS", "Shows the current fps.", this, true);
+    private final Value<Boolean> username = new BooleanValue("Username", "Shows the current username.", this, true);
+    private final Value<Boolean> position = new BooleanValue("Position", "Shows the current position.", this, true);
+    private final Value<Boolean> serverBrand = new BooleanValue("Server Brand", "Shows the current server brand.", this, true);
+
+    @Override
+    protected void onEnable() {
+        DietrichEvents2.global().subscribe(Render2DListener.Render2DEvent.ID, this);
+    }
+
+    @Override
+    protected void onDisable() {
+        DietrichEvents2.global().unsubscribe(Render2DListener.Render2DEvent.ID, this);
+    }
+
+    @Override
+    public void onRender2DInGame(final DrawContext context, final float delta, final Window window) {
+        if (mc.currentScreen == null) this.render();
+    }
+
+    @Override
+    public void onRender2D(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        if (mc.currentScreen != null && (mc.currentScreen instanceof ChatScreen || mc.currentScreen instanceof InventoryScreen)) {
+            this.render();
+        }
+    }
+
+    private void render() {
+        final ClientPlayerEntity player = mc.player;
+        if (player == null) return;
+        Foxglove.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
+            if (mc.options.debugEnabled || mc.options.hudHidden) return;
+            if (this.enabledModuleList.getValue()) {
+                if (ImGui.begin("Enabled Module List##headupdisplaymodule", ImGuiUtil.getInGameFlags(0))) {
+                    boolean empty = true;
+                    final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();
+                    for (final Module module : modules) {
+                        if (module.isEnabled() && module.isShowInModuleList()) {
+                            empty = false;
+                            ImGui.text(module.getName());
+                        }
+                    }
+                    ImGui.setWindowSize(empty ? 100 : 0, empty ? 50 : 0);
+                    ImGui.end();
+                }
+            }
+            if (this.infos.getValue()) {
+                if (ImGui.begin("Infos##headupdisplaymodule", ImGuiUtil.getInGameFlags(0))) {
+                    ImGui.setWindowSize(0, 0);
+                    if (this.fps.getValue()) {
+                        ImGui.text("FPS: " + MinecraftClient.getInstance().getCurrentFps());
+                    }
+                    if (this.username.getValue()) {
+                        ImGui.text("Username: " + player.getGameProfile().getName());
+                    }
+                    if (this.position.getValue()) {
+                        ImGui.text("Position: " + player.getBlockPos().toShortString());
+                    }
+                    if (this.serverBrand.getValue()) {
+                        ImGui.text("Server Brand: " + player.getServerBrand());
+                    }
+                    ImGui.end();
+                }
+            }
+        });
+    }
+
+}

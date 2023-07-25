@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "foxglove",
+  "version": "${version}",
+  "name": "Foxglove",
+  "description": "A Utility Mod.",
+  "authors": [
+    "NekosAreKawaii"
+  ],
+  "environment": "client",
+  "mixins": [
+    "foxglove.mixins.json"
+  ],
+  "entrypoints": {
+    "client": [
+      "me.nekosarekawaii.foxglove.FabricBridge"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.14.21",
+    "minecraft": "~1.20.1",
+    "java": ">=17",
+    "fabric-api": "*",
+    "viafabricplus": "*",
+    "immediatelyfast": "*",
+    "sodium": "*"
+  }
+}
