@@ -9,6 +9,7 @@ import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.HeadUpDisplayM
 import me.nekosarekawaii.foxglove.util.minecraft.ChatUtils;
 import me.nekosarekawaii.foxglove.value.IValue;
 import me.nekosarekawaii.foxglove.value.Value;
+import me.nekosarekawaii.foxglove.value.ValueCategory;
 import me.nekosarekawaii.foxglove.value.values.list.ModeValue;
 
 public abstract class Module extends Feature implements IValue {
@@ -51,23 +52,26 @@ public abstract class Module extends Feature implements IValue {
         if (this.enabled != state) {
             this.enabled = state;
             ChatUtils.infoChatMessage(this.getName() + " has been " + (state ? "enabled" : "disabled") + ".");
+
             if (state) {
                 this.onEnable();
-                if (this.values != null) {
-                    for (final Value<?> value : this.values) {
-                        if (value instanceof final ModeValue<?> modeValue) {
-                            modeValue.getSelectedMode().onEnable();
-                        }
-                    }
-                }
             } else {
                 this.onDisable();
-                if (this.values != null) {
-                    for (final Value<?> value : this.values) {
-                        if (value instanceof final ModeValue<?> modeValue) {
-                            modeValue.getSelectedMode().onDisable();
-                        }
-                    }
+            }
+
+            recursiveModeEnable(state, this.values);
+        }
+    }
+
+    private void recursiveModeEnable(final boolean state, final ObjectArrayList<Value<?>> values) {
+        for (final Value<?> value : values) {
+            if (value instanceof final ValueCategory valueCategory) {
+                recursiveModeEnable(state, valueCategory.getValues());
+            } else if (value instanceof final ModeValue<?> modeValue) {
+                if (state) {
+                    modeValue.getSelectedMode().onEnable();
+                } else {
+                    modeValue.getSelectedMode().onDisable();
                 }
             }
         }
