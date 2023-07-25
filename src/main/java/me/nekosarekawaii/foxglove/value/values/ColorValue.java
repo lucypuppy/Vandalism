@@ -16,7 +16,7 @@ public class ColorValue extends Value<Color> {
 
     @Override
     public void onConfigLoad(final JsonObject valueObject) {
-        this.setValue(new Color(valueObject.get("value").getAsInt()));
+        this.setValue(new Color(valueObject.get("value").getAsInt(), true));
     }
 
     @Override
