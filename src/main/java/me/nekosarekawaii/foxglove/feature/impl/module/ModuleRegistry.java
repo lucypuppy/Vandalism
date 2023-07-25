@@ -9,6 +9,8 @@ import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.CustomItemUseCoo
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.ItemStackLoggerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.ModPacketBlockerModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.PacketLoggerModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.*;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.*;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.CustomPushVelocityModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.FlightModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.SpeedModule;
@@ -145,6 +147,18 @@ public class ModuleRegistry {
         return this.stepModule;
     }
 
+    private NofallModule nofallModule;
+
+    public NofallModule getNofallModule() {
+        return this.nofallModule;
+    }
+      
+    private CameraNoClipModule cameraNoClipModule;
+
+    public CameraNoClipModule getCameraNoClipModule() {
+        return cameraNoClipModule;
+    }
+
     private final FeatureList<Module> modules;
 
     public ModuleRegistry() {
@@ -174,7 +188,9 @@ public class ModuleRegistry {
                 this.itemStackLoggerModule = new ItemStackLoggerModule(),
                 this.customItemUseCooldownModule = new CustomItemUseCooldownModule(),
                 this.customPushVelocityModule = new CustomPushVelocityModule(),
-                this.stepModule = new StepModule()
+                this.stepModule = new StepModule(),
+                this.nofallModule = new NofallModule(),
+                this.cameraNoClipModule = new CameraNoClipModule()
         );
     }
 
