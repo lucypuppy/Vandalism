@@ -1,11 +1,11 @@
-package me.nekosarekawaii.foxglove.imgui;
+package me.nekosarekawaii.foxglove.gui.imgui;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import imgui.internal.ImGui;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.event.KeyboardListener;
 import me.nekosarekawaii.foxglove.event.Render2DListener;
-import me.nekosarekawaii.foxglove.imgui.impl.menu.*;
+import me.nekosarekawaii.foxglove.gui.imgui.impl.menu.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;

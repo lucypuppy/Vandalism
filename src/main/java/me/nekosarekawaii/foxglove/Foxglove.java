@@ -4,7 +4,7 @@ import me.nekosarekawaii.foxglove.config.ConfigManager;
 import me.nekosarekawaii.foxglove.creativetab.CreativeTabRegistry;
 import me.nekosarekawaii.foxglove.feature.impl.command.CommandRegistry;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleRegistry;
-import me.nekosarekawaii.foxglove.imgui.ImGuiHandler;
+import me.nekosarekawaii.foxglove.gui.imgui.ImGuiHandler;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.Person;
 import net.minecraft.client.MinecraftClient;

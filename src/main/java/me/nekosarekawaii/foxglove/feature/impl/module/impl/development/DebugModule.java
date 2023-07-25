@@ -7,7 +7,7 @@ import me.nekosarekawaii.foxglove.event.Render2DListener;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
-import me.nekosarekawaii.foxglove.imgui.ImGuiUtil;
+import me.nekosarekawaii.foxglove.gui.imgui.ImGuiUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.Window;

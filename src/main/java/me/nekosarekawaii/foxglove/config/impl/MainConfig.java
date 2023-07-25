@@ -21,7 +21,7 @@ public class MainConfig extends ValueableConfig {
     public final Value<Pair<Integer, String>> menuBarKey = new KeyInputValue(
             "Menu Bar Key",
             "Change the key to open the Menu Bar.",
-            menuCategory,
+            this.menuCategory,
             GLFW.GLFW_KEY_MENU,
             "menu"
     );
@@ -29,25 +29,32 @@ public class MainConfig extends ValueableConfig {
     public final Value<Boolean> manageContainerButtons = new BooleanValue(
             "Manage Container Buttons",
             "Adds the store/steal buttons to containers.",
-            menuCategory,
+            this.menuCategory,
             true
     );
 
     public final Value<Boolean> multiplayerScreenServerInformation = new BooleanValue(
             "Multiplayer Screen Server Information",
             "If enabled the Game shows all necessary server information behind a server list entry.",
-            menuCategory,
+            this.menuCategory,
             true
     );
 
     public final Value<Integer> maxServerVersionLength = new SliderIntegerValue(
             "Max Server Version Length",
             "Sets the max display length of a server version that is being displayed in the multiplayer screen.",
-            menuCategory,
+            this.menuCategory,
             60,
             6,
             250
     ).visibleConsumer(this.multiplayerScreenServerInformation::getValue);
+
+    public final Value<Boolean> resourcePackSpoof = new BooleanValue(
+            "Resource Pack Spoof",
+            "Allows you to spoof the server resource pack.",
+            this.menuCategory,
+            true
+    );
 
     public final ValueCategory chatCategory = new ValueCategory("Chat", "Chat settings", this);
 

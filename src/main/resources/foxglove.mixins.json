@@ -33,6 +33,8 @@
     "net.minecraft.client.render.MixinCamera",
     "net.minecraft.client.render.entity.MixinEntityRenderer",
     "net.minecraft.client.render.entity.MixinLivingEntityRenderer",
+    "net.minecraft.client.resource.MixinServerResourcePackProvider",
+    "net.minecraft.client.util.MixinNetworkUtils",
     "net.minecraft.client.util.MixinWindow",
     "net.minecraft.client.util.telemetry.MixinTelemetryManager",
     "net.minecraft.client.world.MixinClientWorld",

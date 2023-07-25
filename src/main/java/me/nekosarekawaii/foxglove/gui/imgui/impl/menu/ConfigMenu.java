@@ -1,4 +1,4 @@
-package me.nekosarekawaii.foxglove.imgui.impl.menu;
+package me.nekosarekawaii.foxglove.gui.imgui.impl.menu;
 
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
