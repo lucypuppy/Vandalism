@@ -18,25 +18,22 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class SoundPlayerItemsCreativeTab extends CreativeTab {
 
+    private final Collection<ItemStack> soundItems;
+
     private final List<Item> spawnEggs;
 
     public SoundPlayerItemsCreativeTab() {
         super(new ItemStack(Items.JUKEBOX).setCustomName(Text.literal("Sound Player Items")));
+        this.soundItems = new ArrayList<>();
         this.spawnEggs = new ArrayList<>();
         for (final Item item : Registries.ITEM) {
             if (item.toString().endsWith("_spawn_egg")) {
                 this.spawnEggs.add(item);
             }
         }
-    }
-
-    @Override
-    public Collection<ItemStack> entries() {
-        final Collection<ItemStack> current = super.entries();
         for (final SoundEvent soundEvent : Registries.SOUND_EVENT) {
-            current.add(this.generateItem(soundEvent.getId()));
+            this.soundItems.add(this.generateItem(soundEvent.getId()));
         }
-        return current;
     }
 
     private ItemStack generateItem(final Identifier soundIdentifier) {
@@ -54,6 +51,11 @@ public class SoundPlayerItemsCreativeTab extends CreativeTab {
                 )
         );
         return item;
+    }
+
+    @Override
+    public Collection<ItemStack> entries() {
+        return this.soundItems;
     }
 
 }
