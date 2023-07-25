@@ -31,9 +31,6 @@ public class SoundPlayerItemsCreativeTab extends CreativeTab {
                 this.spawnEggs.add(item);
             }
         }
-        for (final SoundEvent soundEvent : Registries.SOUND_EVENT) {
-            this.soundItems.add(this.generateItem(soundEvent.getId()));
-        }
     }
 
     private ItemStack generateItem(final Identifier soundIdentifier) {
@@ -55,6 +52,12 @@ public class SoundPlayerItemsCreativeTab extends CreativeTab {
 
     @Override
     public Collection<ItemStack> entries() {
+        if (this.soundItems.isEmpty()) {
+            for (final SoundEvent soundEvent : Registries.SOUND_EVENT) {
+                System.out.println(soundEvent.getId().toString());
+                this.soundItems.add(this.generateItem(soundEvent.getId()));
+            }
+        }
         return this.soundItems;
     }
 
