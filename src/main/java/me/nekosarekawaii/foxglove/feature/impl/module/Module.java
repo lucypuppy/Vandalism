@@ -64,6 +64,9 @@ public abstract class Module extends Feature implements IValue {
     }
 
     private void recursiveModeEnable(final boolean state, final ObjectArrayList<Value<?>> values) {
+        if (values == null)
+            return;
+
         for (final Value<?> value : values) {
             if (value instanceof final ValueCategory valueCategory) {
                 recursiveModeEnable(state, valueCategory.getValues());
