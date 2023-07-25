@@ -2,49 +2,34 @@ package me.nekosarekawaii.foxglove.feature.impl.module.impl.movement;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import me.nekosarekawaii.foxglove.event.PacketListener;
-import me.nekosarekawaii.foxglove.event.TickListener;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
-import me.nekosarekawaii.foxglove.util.string.EnumNameNormalizer;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.modes.flight.CreativeMode;
 import me.nekosarekawaii.foxglove.value.Value;
 import me.nekosarekawaii.foxglove.value.values.BooleanValue;
-import me.nekosarekawaii.foxglove.value.values.ListValue;
+import me.nekosarekawaii.foxglove.value.values.list.ModeValue;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
 @ModuleInfo(name = "Flight", description = "Allows you to fly.", category = FeatureCategory.MOVEMENT)
-public class FlightModule extends Module implements PacketListener, TickListener {
+public class FlightModule extends Module implements PacketListener {
 
     private final Value<Boolean> antiKick = new BooleanValue("Anti Kick", "Bypasses the vanilla fly kick.", this, false);
 
-    private final Value<String> mode = new ListValue("Mode", "The current flight mode.", this, Mode.CREATIVE.normalName());
+    private final Value<String> mode = new ModeValue<>("Mode", "The current flight mode.", this,
+            new CreativeMode(this)
+    );
 
     @Override
     protected void onEnable() {
         DietrichEvents2.global().subscribe(PacketEvent.ID, this);
-        DietrichEvents2.global().subscribe(TickEvent.ID, this);
     }
 
     @Override
     protected void onDisable() {
         DietrichEvents2.global().unsubscribe(PacketEvent.ID, this);
-        DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
-        final ClientPlayerEntity player = mc.player;
-        if (player == null) return;
-        player.getAbilities().flying = false;
-        player.getAbilities().allowFlying = false;
-    }
-
-    @Override
-    public void onTick() {
-        final ClientPlayerEntity player = mc.player;
-        if (player == null) return;
-        if (this.mode.getValue().equals(Mode.CREATIVE.normalName())) {
-            player.getAbilities().flying = true;
-            player.getAbilities().allowFlying = true;
-        }
     }
 
     @Override
@@ -58,23 +43,6 @@ public class FlightModule extends Module implements PacketListener, TickListener
                 playerMoveC2SPacket.y += Math.sin(player.age) * 0.2;
             }
         }
-    }
-
-    private enum Mode implements EnumNameNormalizer {
-
-        CREATIVE;
-
-        private final String normalName;
-
-        Mode() {
-            this.normalName = this.normalizeName(this.name());
-        }
-
-        @Override
-        public String normalName() {
-            return this.normalName;
-        }
-
     }
 
 }

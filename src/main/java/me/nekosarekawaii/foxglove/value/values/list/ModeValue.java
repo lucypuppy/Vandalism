@@ -12,12 +12,10 @@ public class ModeValue<T extends Module> extends ListValue {
     private final ObjectArrayList<Mode<T>> modes = new ObjectArrayList<>();
     private Mode<T> selectedMode;
 
-    // Cant find a better way for now.
-    public ModeValue(final String name, final String description, final Module parent, final Mode<T> defaultValue, final Mode<T>... modes) {
-        super(name, description, parent, defaultValue.getName(), Arrays.stream(modes).map(Mode::getName).toArray(String[]::new));
+    public ModeValue(final String name, final String description, final Module parent, final Mode<T>... modes) {
+        super(name, description, parent, modes[0].getName(), Arrays.stream(modes).map(Mode::getName).toArray(String[]::new));
 
-        this.selectedMode = defaultValue;
-        this.modes.add(defaultValue);
+        this.selectedMode = modes[0];
         this.modes.addAll(new ObjectArrayList<>(modes));
 
         this.valueChangedConsumer(s -> {
@@ -41,5 +39,4 @@ public class ModeValue<T extends Module> extends ListValue {
     public Mode<T> getSelectedMode() {
         return this.selectedMode;
     }
-
 }
