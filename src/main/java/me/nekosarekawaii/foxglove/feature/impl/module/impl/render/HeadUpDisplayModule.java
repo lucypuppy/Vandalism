@@ -17,6 +17,7 @@ import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.Window;
+import net.minecraft.client.world.ClientWorld;
 
 @ModuleInfo(name = "Head Up Display", description = "The In-game HUD of the Mod.", category = FeatureCategory.RENDER, isDefaultEnabled = true)
 public class HeadUpDisplayModule extends Module implements Render2DListener {
@@ -27,6 +28,7 @@ public class HeadUpDisplayModule extends Module implements Render2DListener {
     private final Value<Boolean> username = new BooleanValue("Username", "Shows the current username.", this, true);
     private final Value<Boolean> position = new BooleanValue("Position", "Shows the current position.", this, true);
     private final Value<Boolean> serverBrand = new BooleanValue("Server Brand", "Shows the current server brand.", this, true);
+    private final Value<Boolean> difficulty = new BooleanValue("Difficulty", "Shows the current world difficulty.", this, true);
 
     @Override
     protected void onEnable() {
@@ -52,7 +54,8 @@ public class HeadUpDisplayModule extends Module implements Render2DListener {
 
     private void render() {
         final ClientPlayerEntity player = mc.player;
-        if (player == null) return;
+        final ClientWorld world = mc.world;
+        if (player == null || world == null) return;
         Foxglove.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
             if (mc.options.debugEnabled || mc.options.hudHidden) return;
             if (this.enabledModuleList.getValue()) {
@@ -83,6 +86,9 @@ public class HeadUpDisplayModule extends Module implements Render2DListener {
                     }
                     if (this.serverBrand.getValue()) {
                         ImGui.text("Server Brand: " + player.getServerBrand());
+                    }
+                    if (this.difficulty.getValue()) {
+                        ImGui.text("Difficulty: " + world.getDifficulty().getName());
                     }
                     ImGui.end();
                 }
