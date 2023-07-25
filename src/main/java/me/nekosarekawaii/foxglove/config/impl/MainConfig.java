@@ -111,6 +111,13 @@ public class MainConfig extends ValueableConfig {
             true
     );
 
+    public final Value<Boolean> eliminateHitDelay = new BooleanValue(
+            "Eliminate Hit Delay",
+            "Eliminates the Hit Delay of the Game.",
+            accessibilityCategory,
+            false
+    );
+
     public MainConfig() {
         super(Foxglove.getInstance().getDir(), "main");
     }
