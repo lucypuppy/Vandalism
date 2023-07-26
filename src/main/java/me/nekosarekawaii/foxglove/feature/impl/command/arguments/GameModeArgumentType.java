@@ -53,7 +53,7 @@ public class GameModeArgumentType implements ArgumentType<GameMode> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
-        return CommandSource.suggestMatching(names, builder);
+        return CommandSource.suggestMatching(this.names, builder);
     }
 
     @Override

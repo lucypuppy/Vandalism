@@ -8,6 +8,7 @@ import me.nekosarekawaii.foxglove.feature.FeatureList;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.development.TestCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.exploit.CommandBlockStateCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.exploit.PluginsCommand;
+import me.nekosarekawaii.foxglove.feature.impl.command.impl.exploit.SoundEntitySpawnEggCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.exploit.TeleportEntitySpawnEggCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.*;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.render.ClientsideGameModeCommand;
@@ -44,7 +45,8 @@ public class CommandRegistry {
                 new GiveCommand(),
                 new CopyServerIPCommand(),
                 new CopyPositionCommand(),
-                new TeleportEntitySpawnEggCommand()
+                new TeleportEntitySpawnEggCommand(),
+                new SoundEntitySpawnEggCommand()
         );
     }
 
