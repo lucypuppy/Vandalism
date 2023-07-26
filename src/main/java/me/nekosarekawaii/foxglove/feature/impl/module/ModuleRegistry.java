@@ -5,16 +5,8 @@ import me.nekosarekawaii.foxglove.feature.FeatureList;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.DebugModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.TestModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.*;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.CustomItemUseCooldownModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.ItemStackLoggerModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.ModPacketBlockerModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.PacketLoggerModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.*;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.*;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.CustomPushVelocityModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.FlightModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.SpeedModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.StepModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.*;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.BetterTabListModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.HeadUpDisplayModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.TrueSightModule;
@@ -152,11 +144,17 @@ public class ModuleRegistry {
     public NofallModule getNofallModule() {
         return this.nofallModule;
     }
-      
+
     private CameraNoClipModule cameraNoClipModule;
 
     public CameraNoClipModule getCameraNoClipModule() {
-        return cameraNoClipModule;
+        return this.cameraNoClipModule;
+    }
+
+    private JoinLeaveModule joinLeaveModule;
+
+    public JoinLeaveModule getJoinLeaveModule() {
+        return this.joinLeaveModule;
     }
 
     private final FeatureList<Module> modules;
@@ -190,7 +188,8 @@ public class ModuleRegistry {
                 this.customPushVelocityModule = new CustomPushVelocityModule(),
                 this.stepModule = new StepModule(),
                 this.nofallModule = new NofallModule(),
-                this.cameraNoClipModule = new CameraNoClipModule()
+                this.cameraNoClipModule = new CameraNoClipModule(),
+                this.joinLeaveModule = new JoinLeaveModule()
         );
     }
 
