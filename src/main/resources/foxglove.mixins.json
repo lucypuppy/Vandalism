@@ -32,6 +32,7 @@
     "net.minecraft.client.realms.gui.screen.RealmsMainScreenAccessor",
     "net.minecraft.client.render.MixinCamera",
     "net.minecraft.client.render.entity.MixinEntityRenderer",
+    "net.minecraft.client.render.entity.MixinIllusionerEntityRenderer",
     "net.minecraft.client.render.entity.MixinLivingEntityRenderer",
     "net.minecraft.client.resource.MixinServerResourcePackProvider",
     "net.minecraft.client.util.MixinNetworkUtils",

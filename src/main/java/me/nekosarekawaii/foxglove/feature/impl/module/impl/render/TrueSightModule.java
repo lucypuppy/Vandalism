@@ -19,6 +19,10 @@ public class TrueSightModule extends Module implements LivingEntityListener {
 
     private final Value<Boolean> entities = new BooleanValue("Entities", "Makes invisible entities visible.", this, true);
 
+    public final Value<Boolean> illusionerEntity = new BooleanValue(
+            "Illusioner Entity", "Makes the illusioner entity visible.", this, true
+    ).visibleConsumer(this.entities::getValue);
+
     private final Value<Color> entityColor = new ColorValue("Entity Color", "The Color of invisible entities.", this, ColorUtils.withAlpha(Color.WHITE, 100)).visibleConsumer(this.entities::getValue);
 
     @Override
