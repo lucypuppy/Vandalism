@@ -126,6 +126,32 @@ public class CrashItemsCreativeTab extends CreativeTab {
             );
             current.add(crashSignV2);
 
+            final ItemStack crashBook = new ItemStack(Items.WRITTEN_BOOK);
+            final NbtList crashBookPages = new NbtList();
+            crashBookPages.add(NbtString.of(Text.Serializer.toJson(Text.translatable("translation.test.invalid"))));
+            crashBook.setSubNbt("pages", crashBookPages);
+            crashBook.setSubNbt("author", NbtString.of("Lucy Hörner"));
+            crashBook.setSubNbt("title", NbtString.of("Read Me!"));
+            this.putClientsideName(crashBook,
+                    Text.literal(
+                            Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book"
+                    )
+            );
+            current.add(crashBook);
+
+            final ItemStack crashBookV2 = new ItemStack(Items.WRITTEN_BOOK);
+            final NbtList crashBookPagesV2 = new NbtList();
+            crashBookPagesV2.add(NbtString.of(Text.Serializer.toJson(Text.translatable("translation.test.invalid2"))));
+            crashBookV2.setSubNbt("pages", crashBookPagesV2);
+            crashBookV2.setSubNbt("author", NbtString.of("Lucy Hörner"));
+            crashBookV2.setSubNbt("title", NbtString.of("Read Me!"));
+            this.putClientsideName(crashBookV2,
+                    Text.literal(
+                            Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book V2"
+                    )
+            );
+            current.add(crashBookV2);
+
         }
 
         final ItemStack crashEXPSpawnEgg = new ItemStack(Items.SHEEP_SPAWN_EGG);
