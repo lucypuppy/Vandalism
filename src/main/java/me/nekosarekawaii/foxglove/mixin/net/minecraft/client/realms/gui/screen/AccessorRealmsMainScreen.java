@@ -7,14 +7,16 @@ import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(RealmsMainScreen.class)
-public interface RealmsMainScreenAccessor {
+public interface AccessorRealmsMainScreen {
+
     @Accessor
     @Mutable
-    static void setCheckedClientCompatibility(boolean checked) {
+    static void setCheckedClientCompatibility(final boolean checked) {
     }
 
     @Accessor
     @Mutable
-    static void setRealmsGenericErrorScreen(Screen screen) {
+    static void setRealmsGenericErrorScreen(final Screen screen) {
     }
+
 }

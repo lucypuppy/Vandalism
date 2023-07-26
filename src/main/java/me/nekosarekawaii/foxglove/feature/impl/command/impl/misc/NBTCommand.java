@@ -38,7 +38,7 @@ public class NBTCommand extends Command {
             final ClientPlayerEntity player = mc.player;
             if (player != null) {
                 final ItemStack stack = player.getInventory().getMainHandStack();
-                if (validBasic(stack)) {
+                if (this.validBasic(stack)) {
                     final NbtCompound tag = NbtCompoundArgumentType.get(s);
                     final NbtCompound source = stack.getOrCreateNbt();
                     if (tag != null) {

@@ -5,7 +5,7 @@ import com.mojang.authlib.minecraft.UserApiService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 import me.nekosarekawaii.foxglove.mixin.com.mojang.authlib.yggdrasil.MixinYggdrasilAuthenticationServiceAccessor;
-import me.nekosarekawaii.foxglove.mixin.net.minecraft.client.realms.gui.screen.RealmsMainScreenAccessor;
+import me.nekosarekawaii.foxglove.mixin.net.minecraft.client.realms.gui.screen.AccessorRealmsMainScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.SocialInteractionsManager;
 import net.minecraft.client.realms.RealmsClient;
@@ -45,8 +45,8 @@ public class SessionUtil {
         // No one uses them but i will add them anyway
         final RealmsClient realmsClient = RealmsClient.createRealmsClient(client);
         client.realmsPeriodicCheckers = new RealmsPeriodicCheckers(realmsClient);
-        RealmsMainScreenAccessor.setCheckedClientCompatibility(false);
-        RealmsMainScreenAccessor.setRealmsGenericErrorScreen(null);
+        AccessorRealmsMainScreen.setCheckedClientCompatibility(false);
+        AccessorRealmsMainScreen.setRealmsGenericErrorScreen(null);
     }
 
     private static UserApiService getUserapiService(final Session session) {

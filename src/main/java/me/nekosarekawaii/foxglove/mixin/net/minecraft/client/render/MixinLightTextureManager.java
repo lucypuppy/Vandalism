@@ -8,11 +8,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LightmapTextureManager.class)
-public class LightTextureManagerMixin {
+public class MixinLightTextureManager {
 
     @Inject(method = "getDarknessFactor", at = @At("HEAD"), cancellable = true)
-    private void onGetDarknessFactor(final float delta, final CallbackInfoReturnable<Float> ci) {
-        if (!Foxglove.getInstance().getConfigManager().getMainConfig().blindnessEffect.getValue()) ci.setReturnValue(0F);
+    private void injectGetDarknessFactor(final float delta, final CallbackInfoReturnable<Float> ci) {
+        if (!Foxglove.getInstance().getConfigManager().getMainConfig().blindnessEffect.getValue())
+            ci.setReturnValue(0F);
     }
 
 }

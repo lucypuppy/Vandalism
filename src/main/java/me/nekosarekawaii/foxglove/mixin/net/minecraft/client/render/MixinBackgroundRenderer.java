@@ -10,11 +10,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(BackgroundRenderer.class)
-public class BackgroundRendererMixin {
+public class MixinBackgroundRenderer {
 
     @Inject(method = "getFogModifier", at = @At("HEAD"), cancellable = true)
-    private static void onGetFogModifier(final Entity entity, final float tickDelta, final CallbackInfoReturnable<StatusEffectFogModifier> ci) {
-        if (!Foxglove.getInstance().getConfigManager().getMainConfig().blindnessEffect.getValue()) ci.setReturnValue(null);
+    private static void injectGetFogModifier(final Entity entity, final float tickDelta, final CallbackInfoReturnable<StatusEffectFogModifier> ci) {
+        if (!Foxglove.getInstance().getConfigManager().getMainConfig().blindnessEffect.getValue())
+            ci.setReturnValue(null);
     }
 
 }
