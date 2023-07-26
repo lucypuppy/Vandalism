@@ -59,3 +59,5 @@ accessible method net/minecraft/client/network/ClientPlayerInteractionManager se
 
 accessible field net/minecraft/client/gui/screen/ConfirmScreen callback Lit/unimi/dsi/fastutil/booleans/BooleanConsumer;
 accessible field net/minecraft/client/gui/screen/ConfirmScreen message Lnet/minecraft/text/Text;
+
+accessible	class	net/minecraft/client/render/BackgroundRenderer$StatusEffectFogModifier

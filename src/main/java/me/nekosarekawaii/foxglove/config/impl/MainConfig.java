@@ -9,6 +9,7 @@ import me.nekosarekawaii.foxglove.value.ValueCategory;
 import me.nekosarekawaii.foxglove.value.values.BooleanValue;
 import me.nekosarekawaii.foxglove.value.values.KeyInputValue;
 import me.nekosarekawaii.foxglove.value.values.StringValue;
+import me.nekosarekawaii.foxglove.value.values.number.slider.SliderFloatValue;
 import me.nekosarekawaii.foxglove.value.values.number.slider.SliderIntegerValue;
 import org.lwjgl.glfw.GLFW;
 
@@ -122,6 +123,73 @@ public class MainConfig extends ValueableConfig {
             "Eliminate Hit Delay",
             "Eliminates the Hit Delay of the Game.",
             accessibilityCategory,
+            false
+    );
+
+    public final ValueCategory visualsCategory = new ValueCategory("Visuals", "Visuals settings", this);
+
+    public final Value<Float> fireOverlayOffset = new SliderFloatValue(
+            "Fire Overlay Offset",
+            "Change the Fire Overlay Offset",
+            visualsCategory,
+            0.0f,
+            0.0f,
+            0.4f,
+            "%.2f"
+    );
+
+    public final Value<Boolean> waterOverlay = new BooleanValue(
+            "Water Overlay",
+            "Enable/Disable Water Overlay",
+            visualsCategory,
+            false
+    );
+
+    public final Value<Boolean> inWallOverlay = new BooleanValue(
+            "In Wall Overlay",
+            "Enable/Disable In Wall Overlay",
+            visualsCategory,
+            false
+    );
+
+    public final Value<Boolean> freezeOverlay = new BooleanValue(
+            "Freeze Overlay",
+            "Enable/Disable Freeze Overlay",
+            visualsCategory,
+            false
+    );
+
+    public final Value<Boolean> pumpkinOverlay = new BooleanValue(
+            "Pumpkin Overlay",
+            "Enable/Disable Pumpkin Overlay",
+            visualsCategory,
+            false
+    );
+
+    public final Value<Boolean> spyGlassOverlay = new BooleanValue(
+            "Spyglass Overlay",
+            "Enable/Disable Spyglass Overlay",
+            visualsCategory,
+            false
+    );
+
+    public final Value<Boolean> nauseaOverlay = new BooleanValue(
+            "Nausea Overlay",
+            "Enable/Disable Nausea Overlay.",
+            visualsCategory,
+            false
+    );
+
+    public final Value<Boolean> blindnessEffect = new BooleanValue(
+            "Blindness Effect",
+            "Enable/Disable Blindness Effect.",
+            visualsCategory,
+            false
+    );
+    public final Value<Boolean> hurtCam = new BooleanValue(
+            "Hurt Cam",
+            "Enable/Disable Hurt Cam",
+            visualsCategory,
             false
     );
 
