@@ -11,6 +11,7 @@ import me.nekosarekawaii.foxglove.feature.impl.command.impl.exploit.PluginsComma
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.exploit.SoundEntitySpawnEggCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.exploit.TeleportEntitySpawnEggCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.*;
+import me.nekosarekawaii.foxglove.feature.impl.command.impl.movement.ClipCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.render.ClientsideGameModeCommand;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommandSource;
@@ -46,7 +47,8 @@ public class CommandRegistry {
                 new CopyServerIPCommand(),
                 new CopyPositionCommand(),
                 new TeleportEntitySpawnEggCommand(),
-                new SoundEntitySpawnEggCommand()
+                new SoundEntitySpawnEggCommand(),
+                new ClipCommand()
         );
     }
 
