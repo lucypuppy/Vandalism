@@ -13,7 +13,8 @@ public class ModeValue<T extends Module> extends ListValue {
     private Mode<T> selectedMode;
 
     public ModeValue(final String name, final String description, final Module parent, final Mode<T>... modes) {
-        super(name, description, parent, modes[0].getName(), Arrays.stream(modes).map(Mode::getName).toArray(String[]::new));
+        super(name, description, parent, modes[0].getName(), Arrays.stream(modes).map(Mode::getName)
+                .filter(t -> !modes[0].getName().equals(t)).toArray(String[]::new));
 
         this.selectedMode = modes[0];
         this.modes.addAll(new ObjectArrayList<>(modes));
