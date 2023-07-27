@@ -13,7 +13,7 @@ import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.util.Identifier;
 
-@ModuleInfo(name = "Mod Packet Blocker", description = "Blocks incoming and outgoing packets from mods.", category = FeatureCategory.MISC, isDefaultEnabled = true)
+@ModuleInfo(name = "Mod Packet Blocker", description = "Blocks incoming and outgoing packets from mods and fabric.", category = FeatureCategory.MISC, isDefaultEnabled = true)
 public class ModPacketBlockerModule extends Module implements PacketListener {
 
     public final Value<Boolean> fabric = new BooleanValue(
@@ -56,7 +56,6 @@ public class ModPacketBlockerModule extends Module implements PacketListener {
 
     @Override
     public void onWrite(final PacketEvent event) {
-        if (event.isCancelled()) return;
         if (event.packet instanceof final CustomPayloadC2SPacket customPayloadC2SPacket) {
             final Identifier channel = customPayloadC2SPacket.getChannel();
             final String channelName = channel.getNamespace();
@@ -84,7 +83,6 @@ public class ModPacketBlockerModule extends Module implements PacketListener {
 
     @Override
     public void onRead(final PacketEvent event) {
-        if (event.isCancelled()) return;
         if (event.packet instanceof final CustomPayloadS2CPacket customPayloadS2CPacket) {
             final Identifier channel = customPayloadS2CPacket.getChannel();
             final String channelName = channel.getNamespace();

@@ -20,7 +20,7 @@ public class CameraNoClipModule extends Module implements CameraDistanceListener
     }
 
     @Override
-    public void onCameraDistanceGet(CameraDistanceEvent event) {
+    public void onCameraDistanceGet(final CameraDistanceEvent event) {
         event.cancel();
     }
 }

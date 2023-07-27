@@ -35,7 +35,6 @@ public class PacketLoggerModule extends Module implements PacketListener {
 
     @Override
     public void onWrite(final PacketEvent event) {
-        if (event.isCancelled()) return;
         if (event.packet instanceof final CustomPayloadC2SPacket customPayloadC2SPacket) {
             if (this.customPayloadPacket.getValue()) {
                 final Identifier channel = customPayloadC2SPacket.getChannel();
@@ -51,7 +50,6 @@ public class PacketLoggerModule extends Module implements PacketListener {
 
     @Override
     public void onRead(final PacketEvent event) {
-        if (event.isCancelled()) return;
         if (!this.serverToClient.getValue()) return;
         if (event.packet instanceof final CustomPayloadS2CPacket customPayloadS2CPacket) {
             if (this.customPayloadPacket.getValue()) {

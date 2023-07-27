@@ -121,10 +121,10 @@ public class ModuleRegistry {
         return this.itemStackLoggerModule;
     }
 
-    private CustomItemUseCooldownModule customItemUseCooldownModule;
+    private FastUseModule fastUseModule;
 
-    public CustomItemUseCooldownModule getCustomItemUseCooldownModule() {
-        return this.customItemUseCooldownModule;
+    public FastUseModule getFastUseModule() {
+        return this.fastUseModule;
     }
 
     private CustomPushVelocityModule customPushVelocityModule;
@@ -139,10 +139,10 @@ public class ModuleRegistry {
         return this.stepModule;
     }
 
-    private NofallModule nofallModule;
+    private NoFallModule noFallModule;
 
-    public NofallModule getNofallModule() {
-        return this.nofallModule;
+    public NoFallModule getNoFallModule() {
+        return this.noFallModule;
     }
 
     private CameraNoClipModule cameraNoClipModule;
@@ -184,10 +184,10 @@ public class ModuleRegistry {
                 this.craftCarryModule = new CraftCarryModule(),
                 this.consoleSpammerModule = new ConsoleSpammerModule(),
                 this.itemStackLoggerModule = new ItemStackLoggerModule(),
-                this.customItemUseCooldownModule = new CustomItemUseCooldownModule(),
+                this.fastUseModule = new FastUseModule(),
                 this.customPushVelocityModule = new CustomPushVelocityModule(),
                 this.stepModule = new StepModule(),
-                this.nofallModule = new NofallModule(),
+                this.noFallModule = new NoFallModule(),
                 this.cameraNoClipModule = new CameraNoClipModule(),
                 this.joinLeaveModule = new JoinLeaveModule()
         );

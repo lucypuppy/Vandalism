@@ -9,8 +9,6 @@ import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.modes.flight
 import me.nekosarekawaii.foxglove.value.Value;
 import me.nekosarekawaii.foxglove.value.values.BooleanValue;
 import me.nekosarekawaii.foxglove.value.values.list.ModuleModeValue;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
 @ModuleInfo(name = "Flight", description = "Allows you to fly.", category = FeatureCategory.MOVEMENT)
@@ -34,13 +32,9 @@ public class FlightModule extends Module implements PacketListener {
 
     @Override
     public void onWrite(final PacketEvent event) {
-        if (event.isCancelled()) return;
-        final ClientPlayerEntity player = mc.player;
-        if (player == null) return;
-        final Packet<?> packet = event.packet;
-        if (packet instanceof final PlayerMoveC2SPacket playerMoveC2SPacket) {
+        if (event.packet instanceof final PlayerMoveC2SPacket playerMoveC2SPacket) {
             if (this.antiKick.getValue()) {
-                playerMoveC2SPacket.y += Math.sin(player.age) * 0.2;
+                playerMoveC2SPacket.y += Math.sin(mc.player.age) * 0.2;
             }
         }
     }
