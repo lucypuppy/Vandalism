@@ -4,8 +4,8 @@ import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.UserApiService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
-import me.nekosarekawaii.foxglove.mixin.com.mojang.authlib.yggdrasil.MixinYggdrasilAuthenticationServiceAccessor;
-import me.nekosarekawaii.foxglove.mixin.net.minecraft.client.realms.gui.screen.AccessorRealmsMainScreen;
+import me.nekosarekawaii.foxglove.accessors.AccessorRealmsMainScreen;
+import me.nekosarekawaii.foxglove.accessors.AccessorYggdrasilAuthenticationService;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.SocialInteractionsManager;
 import net.minecraft.client.realms.RealmsClient;
@@ -67,8 +67,8 @@ public class SessionUtil {
         final YggdrasilAuthenticationService authService = ((YggdrasilMinecraftSessionService) MinecraftClient.getInstance()
                 .getSessionService()).getAuthenticationService();
 
-        if (((MixinYggdrasilAuthenticationServiceAccessor) authService).getClientToken() == null) {
-            ((MixinYggdrasilAuthenticationServiceAccessor) authService).setClientToken(UUID.randomUUID().toString());
+        if (((AccessorYggdrasilAuthenticationService) authService).getClientToken() == null) {
+            ((AccessorYggdrasilAuthenticationService) authService).setClientToken(UUID.randomUUID().toString());
         }
 
         return authService;

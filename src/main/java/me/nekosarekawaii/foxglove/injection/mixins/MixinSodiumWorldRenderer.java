@@ -1,0 +1,25 @@
+package me.nekosarekawaii.foxglove.injection.mixins;
+
+import me.jellysquid.mods.sodium.client.render.SodiumWorldRenderer;
+import me.nekosarekawaii.foxglove.Foxglove;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.ExploitFixerModule;
+import net.minecraft.entity.Entity;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+@Mixin(value = SodiumWorldRenderer.class, remap = false)
+public abstract class MixinSodiumWorldRenderer {
+
+    @Inject(method = "isEntityVisible", at = @At(value = "INVOKE", target = "Lme/jellysquid/mods/sodium/client/render/SodiumWorldRenderer;isBoxVisible(DDDDDD)Z", shift = At.Shift.BEFORE), cancellable = true)
+    private void injectIsEntityVisible(final Entity entity, final CallbackInfoReturnable<Boolean> cir) {
+        final ExploitFixerModule exploitFixerModule = Foxglove.getInstance().getModuleRegistry().getExploitFixerModule();
+        if (exploitFixerModule.isEnabled()) {
+            if (entity.getVisibilityBoundingBox().getAverageSideLength() > exploitFixerModule.minSodiumEntityAverageSideLength.getValue()) {
+                cir.setReturnValue(true);
+            }
+        }
+    }
+
+}
