@@ -3,9 +3,11 @@
   "id": "foxglove",
   "version": "${version}",
   "name": "Foxglove",
-  "description": "A Minecraft Utility Mod for the Fabric Mod Loader.",
+  "description": "A utility mod for Minecraft.",
   "authors": [
-    "NekosAreKawaii"
+    "NekosAreKawaii",
+    "FooFieOwO",
+    "EnZaXD"
   ],
   "environment": "client",
   "mixins": [
