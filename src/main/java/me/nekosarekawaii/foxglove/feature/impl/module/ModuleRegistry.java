@@ -13,10 +13,22 @@ import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.TrueSightModul
 
 public class ModuleRegistry {
 
+    private HeadUpDisplayModule headUpDisplayModule;
+
+    public HeadUpDisplayModule getHeadUpDisplayModule() {
+        return this.headUpDisplayModule;
+    }
+
     private TestModule testModule;
 
     public TestModule getTestModule() {
         return this.testModule;
+    }
+
+    private DebugModule debugModule;
+
+    public DebugModule getDebugModule() {
+        return this.debugModule;
     }
 
     private AntiChatContextModule antiChatContextModule;
@@ -31,28 +43,17 @@ public class ModuleRegistry {
         return this.exploitFixerModule;
     }
 
-    private DebugModule debugModule;
-
-    public DebugModule getDebugModule() {
-        return this.debugModule;
-    }
-
     private BrandChangerModule brandChangerModule;
+
 
     public BrandChangerModule getBrandChangerModule() {
         return this.brandChangerModule;
     }
-
     private TrueSightModule trueSightModule;
+
 
     public TrueSightModule getTrueSightModule() {
         return this.trueSightModule;
-    }
-
-    private HeadUpDisplayModule headUpDisplayModule;
-
-    public HeadUpDisplayModule getHeadUpDisplayModule() {
-        return this.headUpDisplayModule;
     }
 
     private BetterTabListModule betterTabListModule;
@@ -157,22 +158,27 @@ public class ModuleRegistry {
         return this.joinLeaveModule;
     }
 
+    private boolean done;
+
     private final FeatureList<Module> modules;
 
     public ModuleRegistry() {
+        this.done = false;
         this.modules = new FeatureList<>();
         this.register();
+        this.done = true;
     }
 
     private void register() {
         this.registerModules(
+                //HUD should always be the first entry.
+                this.headUpDisplayModule = new HeadUpDisplayModule(),
                 this.testModule = new TestModule(),
                 this.antiChatContextModule = new AntiChatContextModule(),
                 this.exploitFixerModule = new ExploitFixerModule(),
                 this.brandChangerModule = new BrandChangerModule(),
                 this.debugModule = new DebugModule(),
                 this.trueSightModule = new TrueSightModule(),
-                this.headUpDisplayModule = new HeadUpDisplayModule(),
                 this.betterTabListModule = new BetterTabListModule(),
                 this.packetLoggerModule = new PacketLoggerModule(),
                 this.modPacketBlockerModule = new ModPacketBlockerModule(),
@@ -213,6 +219,10 @@ public class ModuleRegistry {
 
     public FeatureList<Module> getModules() {
         return this.modules;
+    }
+
+    public boolean isDone() {
+        return this.done;
     }
 
 }

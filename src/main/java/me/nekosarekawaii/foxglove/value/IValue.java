@@ -1,11 +1,12 @@
 package me.nekosarekawaii.foxglove.value;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.config.Config;
+
+import java.util.List;
 
 public interface IValue {
 
-    ObjectArrayList<Value<?>> getValues();
+    List<Value<?>> getValues();
 
     Config getConfig();
 

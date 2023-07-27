@@ -25,7 +25,7 @@ public class ModulesConfig extends ValueableConfig {
 
             if (!module.getValues().isEmpty()) {
                 final JsonObject valuesObject = new JsonObject();
-                saveValues(valuesObject, module.getValues());
+                this.saveValues(valuesObject, module.getValues());
                 moduleObject.add("values", valuesObject);
             }
 

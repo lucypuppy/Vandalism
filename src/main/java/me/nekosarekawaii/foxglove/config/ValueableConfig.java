@@ -9,10 +9,11 @@ import me.nekosarekawaii.foxglove.value.Value;
 import me.nekosarekawaii.foxglove.value.ValueCategory;
 
 import java.io.File;
+import java.util.List;
 
 public abstract class ValueableConfig extends Config implements IValue {
 
-    private final ObjectArrayList<Value<?>> values;
+    private final List<Value<?>> values;
 
     public ValueableConfig(final File configDir, final String name) {
         super(configDir, name);
@@ -20,7 +21,7 @@ public abstract class ValueableConfig extends Config implements IValue {
     }
 
     @Override
-    public ObjectArrayList<Value<?>> getValues() {
+    public List<Value<?>> getValues() {
         return this.values;
     }
 
@@ -29,12 +30,12 @@ public abstract class ValueableConfig extends Config implements IValue {
         return this;
     }
 
-    protected void saveValues(final JsonObject valuesArray, final ObjectArrayList<Value<?>> values) {
+    protected void saveValues(final JsonObject valuesArray, final List<Value<?>> values) {
         for (final Value<?> value : values) {
             final JsonObject valueObject = new JsonObject();
 
             if (value instanceof ValueCategory) {
-                saveValues(valueObject, ((ValueCategory) value).getValues());
+                this.saveValues(valueObject, ((ValueCategory) value).getValues());
             } else {
                 value.onConfigSave(valueObject);
             }
@@ -43,7 +44,7 @@ public abstract class ValueableConfig extends Config implements IValue {
         }
     }
 
-    protected void loadValues(final JsonObject valuesArray, final ObjectArrayList<Value<?>> values) {
+    protected void loadValues(final JsonObject valuesArray, final List<Value<?>> values) {
         for (final Value<?> value : values) {
             final JsonElement valueElement = valuesArray.get(value.getHashIdent());
 
@@ -53,7 +54,7 @@ public abstract class ValueableConfig extends Config implements IValue {
             }
 
             if (value instanceof ValueCategory) {
-                loadValues(valueElement.getAsJsonObject(), ((ValueCategory) value).getValues());
+                this.loadValues(valueElement.getAsJsonObject(), ((ValueCategory) value).getValues());
             } else {
                 value.onConfigLoad(valueElement.getAsJsonObject());
             }

@@ -4,18 +4,20 @@ import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiWindowFlags;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.FeatureList;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.value.Value;
 
+import java.util.List;
+import java.util.Map;
+
 public class ModulesMenu {
 
     private static FeatureCategory currentFeatureCategory = null;
     private static Module currentModule = null;
-    private final static Object2ObjectOpenHashMap<FeatureCategory, Module> moduleViewCache = new Object2ObjectOpenHashMap<>();
+    private final static Map<FeatureCategory, Module> moduleViewCache = new Object2ObjectOpenHashMap<>();
 
     public static void render() {
         if (ImGui.begin("Modules" + (currentFeatureCategory != null ? " > " + currentFeatureCategory.normalName() + (currentModule != null ? " > " + currentModule.getName() : "") : "") + "###modulesMenu", ImGuiWindowFlags.NoCollapse)) {
@@ -73,7 +75,7 @@ public class ModulesMenu {
 
                         ImGui.newLine();
 
-                        final ObjectArrayList<Value<?>> values = currentModule.getValues();
+                        final List<Value<?>> values = currentModule.getValues();
 
                         if (ImGui.checkbox("Enabled", currentModule.isEnabled())) {
                             currentModule.toggle();

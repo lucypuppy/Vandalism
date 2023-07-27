@@ -2,6 +2,7 @@ package me.nekosarekawaii.foxglove.feature.impl.module.impl.render;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import imgui.ImGui;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.event.Render2DListener;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
@@ -19,16 +20,55 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
 
+import java.util.Comparator;
+import java.util.List;
+
 @ModuleInfo(name = "Head Up Display", description = "The In-game HUD of the Mod.", category = FeatureCategory.RENDER, isDefaultEnabled = true)
 public class HeadUpDisplayModule extends Module implements Render2DListener {
 
-    private final Value<Boolean> enabledModuleList = new BooleanValue("Enabled Module List", "Shows the enabled module list.", this, true);
-    private final Value<Boolean> infos = new BooleanValue("Infos", "Shows general infos.", this, true);
-    private final Value<Boolean> fps = new BooleanValue("FPS", "Shows the current fps.", this, true);
-    private final Value<Boolean> username = new BooleanValue("Username", "Shows the current username.", this, true);
-    private final Value<Boolean> position = new BooleanValue("Position", "Shows the current position.", this, true);
-    private final Value<Boolean> serverBrand = new BooleanValue("Server Brand", "Shows the current server brand.", this, true);
-    private final Value<Boolean> difficulty = new BooleanValue("Difficulty", "Shows the current world difficulty.", this, true);
+    private final Value<Boolean> enabledModulesList = new BooleanValue(
+            "Enabled Modules List",
+            "Displays all enabled modules.",
+            this,
+            true
+    );
+
+    private final Value<Boolean> infos = new BooleanValue(
+            "Infos",
+            "Shows general infos.",
+            this,
+            true
+    );
+    private final Value<Boolean> fps = new BooleanValue(
+            "FPS",
+            "Shows the current fps.",
+            this,
+            true
+    ).visibleConsumer(this.infos::getValue);
+    private final Value<Boolean> username = new BooleanValue(
+            "Username",
+            "Shows the current username.",
+            this,
+            true
+    ).visibleConsumer(this.infos::getValue);
+    private final Value<Boolean> position = new BooleanValue(
+            "Position",
+            "Shows the current position.",
+            this,
+            true
+    ).visibleConsumer(this.infos::getValue);
+    private final Value<Boolean> serverBrand = new BooleanValue(
+            "Server Brand",
+            "Shows the current server brand.",
+            this,
+            true
+    ).visibleConsumer(this.infos::getValue);
+    private final Value<Boolean> difficulty = new BooleanValue(
+            "Difficulty",
+            "Shows the current world difficulty.",
+            this,
+            true
+    ).visibleConsumer(this.infos::getValue);
 
     @Override
     protected void onEnable() {
@@ -52,28 +92,38 @@ public class HeadUpDisplayModule extends Module implements Render2DListener {
         }
     }
 
+    private final List<String> enabledModules = new ObjectArrayList<>();
+
+    public void updateEnabledModules() {
+        this.enabledModules.clear();
+        final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();
+        for (final Module module : modules) {
+            final boolean display = module.isEnabled() && module.isShowInModuleList();
+            final String toDisplay = module.getName();
+            if (display) this.enabledModules.add(toDisplay);
+        }
+        this.enabledModules.sort(Comparator.comparingInt(String::length).reversed());
+    }
+
     private void render() {
         final ClientPlayerEntity player = mc.player;
         final ClientWorld world = mc.world;
         if (player == null || world == null) return;
         Foxglove.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
             if (mc.options.debugEnabled || mc.options.hudHidden) return;
-            if (this.enabledModuleList.getValue()) {
-                if (ImGui.begin("Enabled Module List##headupdisplaymodule", ImGuiUtil.getInGameFlags(0))) {
-                    boolean empty = true;
-                    final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();
-                    for (final Module module : modules) {
-                        if (module.isEnabled() && module.isShowInModuleList()) {
-                            empty = false;
-                            ImGui.text(module.getName());
-                        }
+            final int windowFlags = ImGuiUtil.getInGameFlags(0);
+            if (this.enabledModulesList.getValue()) {
+                if (ImGui.begin("Enabled Modules List##headupdisplaymodule", windowFlags)) {
+                    final boolean empty = this.enabledModules.isEmpty();
+                    for (final String enabledModule : this.enabledModules) {
+                        ImGui.text(enabledModule);
                     }
                     ImGui.setWindowSize(empty ? 100 : 0, empty ? 50 : 0);
                     ImGui.end();
                 }
             }
             if (this.infos.getValue()) {
-                if (ImGui.begin("Infos##headupdisplaymodule", ImGuiUtil.getInGameFlags(0))) {
+                if (ImGui.begin("Infos##headupdisplaymodule", windowFlags)) {
                     ImGui.setWindowSize(0, 0);
                     if (this.fps.getValue()) {
                         ImGui.text("FPS: " + MinecraftClient.getInstance().getCurrentFps());

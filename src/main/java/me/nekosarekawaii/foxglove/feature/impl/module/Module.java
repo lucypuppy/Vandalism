@@ -12,11 +12,13 @@ import me.nekosarekawaii.foxglove.value.Value;
 import me.nekosarekawaii.foxglove.value.ValueCategory;
 import me.nekosarekawaii.foxglove.value.values.list.ModuleModeValue;
 
+import java.util.List;
+
 public abstract class Module extends Feature implements IValue {
 
     private boolean enabled, showInModuleList;
 
-    private final ObjectArrayList<Value<?>> values;
+    private final List<Value<?>> values;
 
     public Module() {
         final ModuleInfo moduleInfo = this.getClass().getAnnotation(ModuleInfo.class);
@@ -53,17 +55,25 @@ public abstract class Module extends Feature implements IValue {
             this.enabled = state;
             ChatUtils.infoChatMessage(this.getName() + " has been " + (state ? "enabled" : "disabled") + ".");
 
+            final ModuleRegistry moduleRegistry = Foxglove.getInstance().getModuleRegistry();
+            if (moduleRegistry != null && moduleRegistry.isDone()) {
+                final HeadUpDisplayModule headUpDisplayModule = moduleRegistry.getHeadUpDisplayModule();
+                if (headUpDisplayModule != null) {
+                    headUpDisplayModule.updateEnabledModules();
+                }
+            }
+
             if (state) {
                 this.onEnable();
             } else {
                 this.onDisable();
             }
 
-            recursiveModeEnable(state, this.values);
+            this.recursiveModeEnable(state, this.values);
         }
     }
 
-    private void recursiveModeEnable(final boolean state, final ObjectArrayList<Value<?>> values) {
+    private void recursiveModeEnable(final boolean state, final List<Value<?>> values) {
         if (values == null)
             return;
 
@@ -93,7 +103,7 @@ public abstract class Module extends Feature implements IValue {
     }
 
     @Override
-    public ObjectArrayList<Value<?>> getValues() {
+    public List<Value<?>> getValues() {
         return this.values;
     }
 
