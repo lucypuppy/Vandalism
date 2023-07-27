@@ -7,7 +7,7 @@ import me.nekosarekawaii.foxglove.feature.impl.command.Command;
 import me.nekosarekawaii.foxglove.feature.impl.command.CommandInfo;
 import net.minecraft.command.CommandSource;
 
-@CommandInfo(name = "Clip", aliases = {"clip"}, description = "This command allows the player to clip to other positions.", category = FeatureCategory.MOVEMENT)
+@CommandInfo(name = "Clip", aliases = {"clip"}, description = "This command allows the player to clip to relative positions.", category = FeatureCategory.MOVEMENT)
 public class ClipCommand extends Command {
 
     @Override
