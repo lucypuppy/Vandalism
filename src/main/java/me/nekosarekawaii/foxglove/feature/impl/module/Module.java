@@ -58,9 +58,7 @@ public abstract class Module extends Feature implements IValue {
             final ModuleRegistry moduleRegistry = Foxglove.getInstance().getModuleRegistry();
             if (moduleRegistry != null && moduleRegistry.isDone()) {
                 final HeadUpDisplayModule headUpDisplayModule = moduleRegistry.getHeadUpDisplayModule();
-                if (headUpDisplayModule != null) {
-                    headUpDisplayModule.updateEnabledModules();
-                }
+                if (headUpDisplayModule != null) headUpDisplayModule.sortEnabledModules();
             }
 
             if (state) {

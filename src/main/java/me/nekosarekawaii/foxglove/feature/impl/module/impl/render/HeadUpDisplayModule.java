@@ -20,7 +20,6 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
 
-import java.util.Comparator;
 import java.util.List;
 
 @ModuleInfo(name = "Head Up Display", description = "The In-game HUD of the Mod.", category = FeatureCategory.RENDER, isDefaultEnabled = true)
@@ -93,24 +92,28 @@ public class HeadUpDisplayModule extends Module implements Render2DListener {
     }
 
     private final List<String> enabledModules = new ObjectArrayList<>();
+    private boolean sort = false;
 
-    public void updateEnabledModules() {
-        this.enabledModules.clear();
-        final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();
-        for (final Module module : modules) {
-            final boolean display = module.isEnabled() && module.isShowInModuleList();
-            final String toDisplay = module.getName();
-            if (display) this.enabledModules.add(toDisplay);
-        }
-        this.enabledModules.sort(Comparator.comparingInt(String::length).reversed());
+    public void sortEnabledModules() {
+        this.sort = true;
     }
 
     private void render() {
-        final ClientPlayerEntity player = mc.player;
-        final ClientWorld world = mc.world;
-        if (player == null || world == null) return;
         Foxglove.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
-            if (mc.options.debugEnabled || mc.options.hudHidden) return;
+            if (this.sort) {
+                this.sort = false;
+                this.enabledModules.clear();
+                final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();
+                for (final Module module : modules) {
+                    final boolean display = module.isEnabled() && module.isShowInModuleList();
+                    final String toDisplay = module.getName();
+                    if (display) this.enabledModules.add(toDisplay);
+                }
+                this.enabledModules.sort((s1, s2) -> Float.compare(ImGui.calcTextSize(s2).x, ImGui.calcTextSize(s1).x));
+            }
+            final ClientPlayerEntity player = mc.player;
+            final ClientWorld world = mc.world;
+            if (player == null || world == null || mc.options.debugEnabled || mc.options.hudHidden) return;
             final int windowFlags = ImGuiUtil.getInGameFlags(0);
             if (this.enabledModulesList.getValue()) {
                 if (ImGui.begin("Enabled Modules List##headupdisplaymodule", windowFlags)) {

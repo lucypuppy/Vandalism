@@ -69,7 +69,7 @@ public class TrollItemsCreativeTab extends CreativeTab {
             blackHoleSpawnEgg.setNbt(blackHoleSpawnEggNBT);
             this.putClientsideName(blackHoleSpawnEgg,
                     Text.literal(
-                            Formatting.WHITE + Formatting.BOLD.toString() + "Black Hole"
+                            Formatting.RED + Formatting.BOLD.toString() + "Black Hole"
                     )
             );
             current.add(blackHoleSpawnEgg);
