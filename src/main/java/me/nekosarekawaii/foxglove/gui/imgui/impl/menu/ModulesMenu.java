@@ -1,9 +1,8 @@
 package me.nekosarekawaii.foxglove.gui.imgui.impl.menu;
 
 import imgui.ImGui;
-import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiWindowFlags;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import imgui.type.ImBoolean;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.FeatureList;
@@ -11,98 +10,69 @@ import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.value.Value;
 
 import java.util.List;
-import java.util.Map;
 
 public class ModulesMenu {
 
-    private static FeatureCategory currentFeatureCategory = null;
-    private static Module currentModule = null;
-    private final static Map<FeatureCategory, Module> moduleViewCache = new Object2ObjectOpenHashMap<>();
-
     public static void render() {
-        if (ImGui.begin("Modules" + (currentFeatureCategory != null ? " > " + currentFeatureCategory.normalName() + (currentModule != null ? " > " + currentModule.getName() : "") : "") + "###modulesMenu", ImGuiWindowFlags.NoCollapse)) {
-            ImGui.setWindowSize(0, 0);
-
+        if (ImGui.begin("Modules", ImGuiWindowFlags.NoCollapse)) {
             final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();
-            if (ImGui.beginListBox("##general", 150, 600)) {
-                if (!modules.isEmpty()) {
-
-                    for (final FeatureCategory featureCategory : FeatureCategory.values()) {
-                        final FeatureList<Module> modulesByCategory = modules.get(featureCategory);
-
-                        if (!modulesByCategory.isEmpty()) {
-                            if (ImGui.button(featureCategory.normalName() + " (" + modulesByCategory.size() + ")", 140, 35)) {
-                                currentFeatureCategory = featureCategory;
-                                currentModule = moduleViewCache.get(featureCategory);
-                            }
-                        }
-                    }
-                }
-
-                ImGui.endListBox();
+            if (modules.isEmpty()) {
+                ImGui.end();
+                return;
             }
 
-            if (currentFeatureCategory != null) {
-                ImGui.sameLine();
+            if (ImGui.beginTabBar("moduleMenuTabBar")) {
+                for (final FeatureCategory featureCategory : FeatureCategory.values()) {
+                    final FeatureList<Module> modulesByCategory = modules.get(featureCategory);
 
-                if (ImGui.beginListBox("##modules", 200, 600)) {
+                    if (modulesByCategory.isEmpty())
+                        continue;
 
-                    final FeatureList<Module> modulesByCategory = modules.get(currentFeatureCategory);
-                    for (final Module module : modulesByCategory) {
-                        ImGui.pushStyleColor(ImGuiCol.Button, module.isEnabled() ? ImGui.getColorU32(ImGuiCol.ButtonActive) : ImGui.getColorU32(ImGuiCol.Button));
+                    if (ImGui.beginTabItem(featureCategory.normalName() + "##category")) {
+                        for (final Module module : modulesByCategory) {
+                            if (ImGui.collapsingHeader(module.getName() + "##" + featureCategory.normalName() + "module")) {
+                                final String moduleIdent = "##" + module.getName() + featureCategory.normalName();
+                                final List<Value<?>> values = module.getValues();
 
-                        if (ImGui.button(module.getName(), 190, 40)) {
-                            moduleViewCache.remove(currentFeatureCategory);
-                            moduleViewCache.put(currentFeatureCategory, module);
-                            currentModule = module;
-                        }
+                                if (module.isExperimental())
+                                    ImGui.textColored(0.8f, 0.1f, 0.1f, 1f, "Warning this is a experimental module which can have issues!");
 
-                        ImGui.popStyleColor();
-                    }
+                                if (ImGui.checkbox("Enabled" + moduleIdent, module.isEnabled()))
+                                    module.toggle();
 
-                    ImGui.endListBox();
-                }
-                if (currentModule != null) {
-                    ImGui.sameLine();
+                                ImGui.sameLine();
 
-                    if (ImGui.beginListBox("##moduleConfig", 1055, 600)) {
-                        ImGui.textColored(1f, 1f, 0f, 1f, currentModule.getDescription());
+                                final var showInModuleList = new ImBoolean(module.isShowInModuleList());
+                                if (ImGui.checkbox("Show in Module List" + moduleIdent, showInModuleList))
+                                    module.setShowInModuleList(showInModuleList.get());
 
-                        if (currentModule.isExperimental()) {
-                            ImGui.newLine();
-                            ImGui.textColored(0.8f, 0.1f, 0.1f, 1f, "Warning this is a experimental module which can have issues!");
-                        }
+                                ImGui.sameLine();
 
-                        ImGui.newLine();
+                                if (ImGui.button("Reset Config" + moduleIdent)) {
+                                    for (final Value<?> value : values)
+                                        value.resetValue();
+                                }
 
-                        final List<Value<?>> values = currentModule.getValues();
+                                if (!values.isEmpty()) {
+                                    ImGui.separator();
+                                    ImGui.newLine();
+                                }
 
-                        if (ImGui.checkbox("Enabled", currentModule.isEnabled())) {
-                            currentModule.toggle();
-                        }
+                                for (final Value<?> value : values) {
+                                    if (value.isVisible() != null && !value.isVisible().getAsBoolean())
+                                        continue;
 
-                        if (ImGui.checkbox("Show in Module List", currentModule.isShowInModuleList())) {
-                            currentModule.setShowInModuleList(!currentModule.isShowInModuleList());
-                        }
+                                    value.render();
+                                }
 
-                        if (ImGui.button("Reset Config")) {
-                            for (final Value<?> value : values) {
-                                value.resetValue();
+                                ImGui.newLine();
                             }
                         }
-
-                        ImGui.newLine();
-
-                        for (final Value<?> value : values) {
-                            if (value.isVisible() != null && !value.isVisible().getAsBoolean())
-                                continue;
-
-                            value.render();
-                        }
-
-                        ImGui.endListBox();
+                        ImGui.endTabItem();
                     }
                 }
+
+                ImGui.endTabItem();
             }
 
             ImGui.end();
