@@ -2,6 +2,7 @@ package me.nekosarekawaii.foxglove.value.values;
 
 import com.google.gson.JsonObject;
 import imgui.ImGui;
+import imgui.type.ImBoolean;
 import me.nekosarekawaii.foxglove.value.IValue;
 import me.nekosarekawaii.foxglove.value.Value;
 
@@ -23,9 +24,10 @@ public class BooleanValue extends Value<Boolean> {
 
     @Override
     public void render() {
-        if (ImGui.checkbox(this.getName() + "##" + this.getHashIdent(), this.getValue())) {
-            this.setValue(!this.getValue());
-        }
+        final var imValue = new ImBoolean(this.getValue());
+
+        if (ImGui.checkbox(this.getName() + "##" + this.getHashIdent(), imValue))
+            this.setValue(imValue.get());
     }
 
 }
