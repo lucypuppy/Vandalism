@@ -2,13 +2,13 @@ package me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.modes.fligh
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import me.nekosarekawaii.foxglove.event.TickListener;
-import me.nekosarekawaii.foxglove.feature.impl.module.Mode;
+import me.nekosarekawaii.foxglove.feature.impl.module.ModuleMode;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.FlightModule;
 import net.minecraft.client.network.ClientPlayerEntity;
 
-public class CreativeMode extends Mode<FlightModule> implements TickListener {
+public class CreativeModuleMode extends ModuleMode<FlightModule> implements TickListener {
 
-    public CreativeMode(final FlightModule parent) {
+    public CreativeModuleMode(final FlightModule parent) {
         super("Creative", parent);
     }
 

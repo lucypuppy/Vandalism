@@ -5,10 +5,10 @@ import me.nekosarekawaii.foxglove.event.PacketListener;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.modes.flight.CreativeMode;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.modes.flight.CreativeModuleMode;
 import me.nekosarekawaii.foxglove.value.Value;
 import me.nekosarekawaii.foxglove.value.values.BooleanValue;
-import me.nekosarekawaii.foxglove.value.values.list.ModeValue;
+import me.nekosarekawaii.foxglove.value.values.list.ModuleModeValue;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
@@ -18,8 +18,8 @@ public class FlightModule extends Module implements PacketListener {
 
     private final Value<Boolean> antiKick = new BooleanValue("Anti Kick", "Bypasses the vanilla fly kick.", this, false);
 
-    private final Value<String> mode = new ModeValue<>("Mode", "The current flight mode.", this,
-            new CreativeMode(this)
+    private final Value<String> mode = new ModuleModeValue<>("Mode", "The current flight mode.", this,
+            new CreativeModuleMode(this)
     );
 
     @Override

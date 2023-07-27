@@ -2,13 +2,13 @@ package me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.modes.speed
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import me.nekosarekawaii.foxglove.event.TickListener;
-import me.nekosarekawaii.foxglove.feature.impl.module.Mode;
+import me.nekosarekawaii.foxglove.feature.impl.module.ModuleMode;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.SpeedModule;
 import net.minecraft.client.network.ClientPlayerEntity;
 
-public class LongHopMode extends Mode<SpeedModule> implements TickListener {
+public class LongHopModuleMode extends ModuleMode<SpeedModule> implements TickListener {
 
-    public LongHopMode(final SpeedModule parent) {
+    public LongHopModuleMode(final SpeedModule parent) {
         super("Long Hop", parent);
     }
 

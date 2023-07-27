@@ -10,7 +10,7 @@ import me.nekosarekawaii.foxglove.util.minecraft.ChatUtils;
 import me.nekosarekawaii.foxglove.value.IValue;
 import me.nekosarekawaii.foxglove.value.Value;
 import me.nekosarekawaii.foxglove.value.ValueCategory;
-import me.nekosarekawaii.foxglove.value.values.list.ModeValue;
+import me.nekosarekawaii.foxglove.value.values.list.ModuleModeValue;
 
 public abstract class Module extends Feature implements IValue {
 
@@ -70,11 +70,11 @@ public abstract class Module extends Feature implements IValue {
         for (final Value<?> value : values) {
             if (value instanceof final ValueCategory valueCategory) {
                 recursiveModeEnable(state, valueCategory.getValues());
-            } else if (value instanceof final ModeValue<?> modeValue) {
+            } else if (value instanceof final ModuleModeValue<?> moduleModeValue) {
                 if (state) {
-                    modeValue.getSelectedMode().onEnable();
+                    moduleModeValue.getSelectedMode().onEnable();
                 } else {
-                    modeValue.getSelectedMode().onDisable();
+                    moduleModeValue.getSelectedMode().onDisable();
                 }
             }
         }
