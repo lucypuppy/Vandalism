@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
-public class MixinGameRenderer {
+public abstract class MixinGameRenderer {
 
     @Inject(method = "renderNausea", at = @At(value = "HEAD"), cancellable = true)
     public void renderNausea(final DrawContext context, final float distortionStrength, final CallbackInfo ci) {

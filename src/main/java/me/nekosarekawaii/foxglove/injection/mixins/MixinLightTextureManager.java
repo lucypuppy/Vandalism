@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LightmapTextureManager.class)
-public class MixinLightTextureManager {
+public abstract class MixinLightTextureManager {
 
     @Inject(method = "getDarknessFactor", at = @At("HEAD"), cancellable = true)
     private void injectGetDarknessFactor(final float delta, final CallbackInfoReturnable<Float> ci) {

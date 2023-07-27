@@ -7,10 +7,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Window.class)
-public class MixinWindow {
+public abstract class MixinWindow {
 
     @Inject(method = "logGlError", at = @At("HEAD"))
-    public void throwGLExceptions(int error, long description, CallbackInfo ci) {
+    public void injectLogGlError(final int error, final long description, final CallbackInfo ci) {
         new IllegalStateException().printStackTrace();
     }
+
 }

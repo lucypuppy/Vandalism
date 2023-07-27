@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(BackgroundRenderer.class)
-public class MixinBackgroundRenderer {
+public abstract class MixinBackgroundRenderer {
 
     @Inject(method = "getFogModifier", at = @At("HEAD"), cancellable = true)
     private static void injectGetFogModifier(final Entity entity, final float tickDelta, final CallbackInfoReturnable<StatusEffectFogModifier> ci) {

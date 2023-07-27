@@ -9,12 +9,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(WorldRenderer.class)
-public class MixinWorldRenderer {
+public abstract class MixinWorldRenderer {
 
     @Inject(method = "hasBlindnessOrDarkness", at = @At("HEAD"), cancellable = true)
-    private void onHasBlindnessOrDarknessEffect(final Camera camera, final CallbackInfoReturnable<Boolean> ci) {
-        if (!Foxglove.getInstance().getConfigManager().getMainConfig().blindnessEffect.getValue())
+    private void injectHasBlindnessOrDarknessEffect(final Camera camera, final CallbackInfoReturnable<Boolean> ci) {
+        if (!Foxglove.getInstance().getConfigManager().getMainConfig().blindnessEffect.getValue()) {
             ci.setReturnValue(false);
+        }
     }
 
 }
