@@ -1,18 +1,15 @@
 # Foxglove
 
-### A Minecraft Utility Mod for the Fabric Mod Loader.
+Foxglove is a utility mod for Minecraft designed to work with the Fabric Mod Loader.
 
-<br/>
+## Helpful Information
 
-> ### <u>Helpful Information's</u>
->
-> #### How to open the main bar?
->> On default settings you can use the menu key [≣] to open the mods main bar.
->>
->> The menu key should look like this:
->>
->> ![Menu Key](.github/images/menu_key.jpg)
->>
->> The main bar looks like this:
->>
->> ![Main Bar](.github/images/main_bar.png)
+### How to Open the Main Bar
+
+To open the main bar, use the menu key [≣] by default. The menu key is represented by the following icon:
+
+![Menu Key](.github/images/menu_key.jpg)
+
+The main bar itself looks like this:
+
+![Main Bar](.github/images/main_bar.png)
