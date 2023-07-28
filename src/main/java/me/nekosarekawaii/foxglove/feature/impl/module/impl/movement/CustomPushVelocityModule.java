@@ -13,17 +13,37 @@ import me.nekosarekawaii.foxglove.value.values.number.slider.SliderDoubleValue;
 @ModuleInfo(name = "Custom Push Velocity", description = "Allows you to customize the entity/block and liquid push velocity which applies to you.", category = FeatureCategory.MOVEMENT)
 public class CustomPushVelocityModule extends Module implements EntityPushListener, FluidPushListener {
 
-    private final Value<Boolean> cancelEntityPush = new BooleanValue("Cancel Entity Push", "Cancels the entity push velocity.", this, true);
+    private final Value<Boolean> modifyEntityPush = new BooleanValue(
+            "Modify Entity Push",
+            "If enabled you can modify the entity push velocity.",
+            this,
+            true
+    );
 
     private final Value<Double> entityPushMultiplier = new SliderDoubleValue(
-            "Entity Push Multiplier", "Which multiplier of velocity should a entity push apply to you.", this, 0.0d, -2.0d, 2.0d
-    ).visibleConsumer(() -> !this.cancelEntityPush.getValue());
+            "Entity Push Multiplier",
+            "Which multiplier of velocity should a entity push apply to you.",
+            this,
+            0.0d,
+            -2.0d,
+            2.0d
+    ).visibleConsumer(this.modifyEntityPush::getValue);
 
-    private final Value<Boolean> cancelFluidPush = new BooleanValue("Cancel Fluid Push", "Cancels the fluid push velocity.", this, true);
+    private final Value<Boolean> modifyFluidPush = new BooleanValue(
+            "Modify Fluid Push",
+            "If enabled you can modify the fluid push velocity.",
+            this,
+            true
+    );
 
     private final Value<Double> fluidPushSpeed = new SliderDoubleValue(
-            "Fluid Push Value", "Which value of speed should a fluid push apply to you.", this, 0.0d, -2.0d, 2.0d
-    ).visibleConsumer(() -> !this.cancelFluidPush.getValue());
+            "Fluid Push Value",
+            "Which value of speed should a fluid push apply to you.",
+            this,
+            0.0d,
+            -2.0d,
+            2.0d
+    ).visibleConsumer(this.modifyFluidPush::getValue);
 
     @Override
     protected void onEnable() {
@@ -39,14 +59,18 @@ public class CustomPushVelocityModule extends Module implements EntityPushListen
 
     @Override
     public void onEntityPush(final EntityPushEvent entityPushEvent) {
-        if (this.cancelEntityPush.getValue()) entityPushEvent.cancel();
-        else entityPushEvent.value = this.entityPushMultiplier.getValue();
+        if (!this.modifyEntityPush.getValue()) return;
+        final double value = this.entityPushMultiplier.getValue();
+        if (value == 0.0d) entityPushEvent.cancel();
+        else entityPushEvent.value = value;
     }
 
     @Override
     public void onFluidPush(final FluidPushEvent fluidPushEvent) {
-        if (this.cancelFluidPush.getValue()) fluidPushEvent.cancel();
-        else fluidPushEvent.speed = this.fluidPushSpeed.getValue();
+        if (!this.modifyFluidPush.getValue()) return;
+        final double speed = this.fluidPushSpeed.getValue();
+        if (speed == 0.0d) fluidPushEvent.cancel();
+        else fluidPushEvent.speed = speed;
     }
 
 }
