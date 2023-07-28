@@ -75,7 +75,7 @@ public class TrollItemsCreativeTab extends CreativeTab {
             current.add(blackHoleSpawnEgg);
         }
 
-        final ItemStack consoleErrorEntity = new ItemStack(Items.CAT_SPAWN_EGG);
+        final ItemStack consoleErrorEntity = new ItemStack(Items.HORSE_SPAWN_EGG);
         final NbtCompound consoleSpammEntityNbt = new NbtCompound();
         final NbtCompound consoleSpammEntityTagNbt = new NbtCompound();
         consoleSpammEntityTagNbt.putByte("pickup", (byte) 3);

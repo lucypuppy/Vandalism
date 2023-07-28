@@ -52,7 +52,7 @@ public class GriefItemsCreativeTab extends CreativeTab {
         );
         current.add(enchantedGriefCreeperSpawnEgg);
 
-        final ItemStack enderDragonSpawnEgg = new ItemStack(Items.FOX_SPAWN_EGG);
+        final ItemStack enderDragonSpawnEgg = new ItemStack(Items.SHEEP_SPAWN_EGG);
         final NbtCompound enderDragonSpawnEggNBT = new NbtCompound();
         final NbtCompound enderDragonSpawnEggEntityTag = new NbtCompound();
         enderDragonSpawnEggEntityTag.putString("id", "minecraft:ender_dragon");
@@ -65,7 +65,7 @@ public class GriefItemsCreativeTab extends CreativeTab {
         );
         current.add(enderDragonSpawnEgg);
 
-        final ItemStack witherSpawnEgg = new ItemStack(Items.AXOLOTL_SPAWN_EGG);
+        final ItemStack witherSpawnEgg = new ItemStack(Items.COW_SPAWN_EGG);
         final NbtCompound witherSpawnEggNBT = new NbtCompound();
         final NbtCompound witherSpawnEggEntityTag = new NbtCompound();
         witherSpawnEggEntityTag.putString("id", "minecraft:wither");

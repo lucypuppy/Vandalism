@@ -68,6 +68,12 @@ public class HeadUpDisplayModule extends Module implements Render2DListener {
             this,
             true
     ).visibleConsumer(this.infos::getValue);
+    private final Value<Boolean> permissionsLevel = new BooleanValue(
+            "Permissions Level",
+            "Shows the current permissions level.",
+            this,
+            true
+    ).visibleConsumer(this.infos::getValue);
 
     @Override
     protected void onEnable() {
@@ -142,6 +148,9 @@ public class HeadUpDisplayModule extends Module implements Render2DListener {
                     }
                     if (this.difficulty.getValue()) {
                         ImGui.text("Difficulty: " + world.getDifficulty().getName());
+                    }
+                    if (this.permissionsLevel.getValue()) {
+                        ImGui.text("Permissions Level: " + player.getPermissionLevel());
                     }
                     ImGui.end();
                 }

@@ -177,7 +177,7 @@ public class CrashItemsCreativeTab extends CreativeTab {
 
         if (targetVersion.isNewerThanOrEqualTo(VersionEnum.r1_20tor1_20_1)) {
 
-            final ItemStack sodiumFreezeEntitySpawnEgg = new ItemStack(Items.SALMON_SPAWN_EGG);
+            final ItemStack sodiumFreezeEntitySpawnEgg = new ItemStack(Items.BAT_SPAWN_EGG);
             final NbtCompound sodiumFreezeEntitySpawnEggNBT = new NbtCompound();
             final NbtCompound sodiumFreezeEntitySpawnEggEntityTag = new NbtCompound();
             sodiumFreezeEntitySpawnEggEntityTag.putFloat("width", 999999f);
@@ -211,7 +211,7 @@ public class CrashItemsCreativeTab extends CreativeTab {
 
         }
 
-        final ItemStack serverCrashEntity = new ItemStack(Items.PUFFERFISH_SPAWN_EGG);
+        final ItemStack serverCrashEntity = new ItemStack(Items.BAT_SPAWN_EGG);
         final NbtCompound serverCrashEntityNbt = new NbtCompound();
         final NbtCompound serverCrashEntityTagNbt = new NbtCompound();
         final NbtList serverCrashEntityPower = new NbtList();
