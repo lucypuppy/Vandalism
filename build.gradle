@@ -45,6 +45,11 @@ repositories {
 		name = "Litarvan"
 		url = "https://litarvan.github.io/maven"
 	}
+
+	maven {
+		name = "Modrinth"
+		url = "https://api.modrinth.com/maven"
+	}
 }
 
 loom {
@@ -59,7 +64,6 @@ dependencies {
 
 	// Mods
 	modImplementation "de.florianmichael:viafabricplus:${project.viafabricplus_version}"
-	modImplementation "com.github.CaffeineMC:sodium-fabric:${project.sodium_version}"
 
 	// Libs
 	implementation "net.lenni0451:MCPing:${project.mc_ping_version}"

@@ -6,10 +6,15 @@ import me.nekosarekawaii.foxglove.event.ScreenListener;
 import me.nekosarekawaii.foxglove.event.TickListener;
 import me.nekosarekawaii.foxglove.event.WorldListener;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.FastUseModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.ESPModule;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,6 +24,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = MinecraftClient.class)
 public abstract class MixinMinecraftClient {
+
+    @Shadow @Nullable public ClientPlayerEntity player;
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;onResolutionChanged()V"))
     private void injectInit(final CallbackInfo callbackInfo) {
@@ -49,10 +56,17 @@ public abstract class MixinMinecraftClient {
     }
 
     @ModifyConstant(method = "doItemUse", constant = @Constant(intValue = 4))
-    private int doItemUse(final int value) {
+    private int modifyDoItemUse(final int value) {
         final FastUseModule fastUseModule = Foxglove.getInstance().getModuleRegistry().getFastUseModule();
         if (fastUseModule.isEnabled()) return fastUseModule.itemUseCooldown.getValue();
         return value;
+    }
+
+    @Inject(method = "hasOutline", at = @At("RETURN"), cancellable = true)
+    private void injectHasOutline(final Entity entity, final CallbackInfoReturnable<Boolean> cir) {
+        if (entity == this.player) return;
+        final ESPModule espModule = Foxglove.getInstance().getModuleRegistry().getESPModule();
+        if (espModule.isEnabled()) cir.setReturnValue(true);
     }
 
 }

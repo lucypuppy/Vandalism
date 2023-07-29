@@ -2,7 +2,6 @@ package me.nekosarekawaii.foxglove.value.values;
 
 import com.google.gson.JsonObject;
 import imgui.ImGui;
-import me.nekosarekawaii.foxglove.util.render.ColorUtils;
 import me.nekosarekawaii.foxglove.value.IValue;
 import me.nekosarekawaii.foxglove.value.Value;
 

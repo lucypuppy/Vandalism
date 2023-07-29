@@ -63,3 +63,5 @@ accessible field net/minecraft/client/gui/screen/ConfirmScreen message Lnet/mine
 accessible	class	net/minecraft/client/render/BackgroundRenderer$StatusEffectFogModifier
 
 accessible method net/minecraft/client/network/ClientPlayerEntity getPermissionLevel ()I
+
+accessible method net/minecraft/client/MinecraftClient doItemUse ()V
