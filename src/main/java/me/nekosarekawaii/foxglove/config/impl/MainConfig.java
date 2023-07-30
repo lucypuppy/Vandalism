@@ -62,35 +62,35 @@ public class MainConfig extends ValueableConfig {
     public final Value<String> commandPrefix = new StringValue(
             "Command Prefix",
             "Change the prefix to run the commands of the Mod.",
-            chatCategory,
+            this.chatCategory,
             "."
     );
 
     public final Value<Boolean> allowColorChar = new BooleanValue(
             "Allow Color Char",
             "Disables the color char restrictions of the Game.",
-            chatCategory,
+            this.chatCategory,
             true
     );
 
     public final Value<Boolean> dontClearChatHistory = new BooleanValue(
             "Dont Clear Chat History",
             "Prevents the Game from clearing your chat history.",
-            chatCategory,
+            this.chatCategory,
             true
     );
 
     public final Value<Boolean> customChatLength = new BooleanValue(
             "Custom Chat Length",
             "Allows you to enable or disable a custom chat length.",
-            chatCategory,
+            this.chatCategory,
             true
     );
 
     public final Value<Integer> maxChatLength = new SliderIntegerValue(
             "Max Chat Length",
             "Set the Max Chat Length",
-            chatCategory,
+            this.chatCategory,
             1000,
             1,
             10000
@@ -98,31 +98,38 @@ public class MainConfig extends ValueableConfig {
 
     public final ValueCategory accessibilityCategory = new ValueCategory("Accessibility", "Accessibility settings", this);
 
+    public final Value<Boolean> spoofIsCreativeLevelTwoOp = new BooleanValue(
+            "Spoof Is Creative Level Two Op",
+            "Makes the Game think you are a in Creative Mode and you have Level Two Op.",
+            this.accessibilityCategory,
+            true
+    );
+
     public final Value<Boolean> antiTelemetry = new BooleanValue(
             "Anti Telemetry",
             "Blocks the Telemetry of the Game.",
-            accessibilityCategory,
+            this.accessibilityCategory,
             true
     );
 
     public final Value<Boolean> antiServerBlockList = new BooleanValue(
             "Anti Server Block List",
             "Blocks the Server Block List from the Game.",
-            accessibilityCategory,
+            this.accessibilityCategory,
             true
     );
 
     public final Value<Boolean> antiTimeoutKick = new BooleanValue(
             "Anti Timeout Kick",
             "Prevents the Game from disconnecting after 30 seconds if the server doesn't response.",
-            accessibilityCategory,
+            this.accessibilityCategory,
             true
     );
 
     public final Value<Boolean> eliminateHitDelay = new BooleanValue(
             "Eliminate Hit Delay",
             "Eliminates the Hit Delay of the Game.",
-            accessibilityCategory,
+            this.accessibilityCategory,
             false
     );
 
@@ -131,7 +138,7 @@ public class MainConfig extends ValueableConfig {
     public final Value<Float> fireOverlayOffset = new SliderFloatValue(
             "Fire Overlay Offset",
             "Change the Fire Overlay Offset",
-            visualsCategory,
+            this.visualsCategory,
             0.0f,
             0.0f,
             0.4f,
@@ -141,55 +148,55 @@ public class MainConfig extends ValueableConfig {
     public final Value<Boolean> waterOverlay = new BooleanValue(
             "Water Overlay",
             "Enable/Disable Water Overlay",
-            visualsCategory,
+            this.visualsCategory,
             false
     );
 
     public final Value<Boolean> inWallOverlay = new BooleanValue(
             "In Wall Overlay",
             "Enable/Disable In Wall Overlay",
-            visualsCategory,
+            this.visualsCategory,
             false
     );
 
     public final Value<Boolean> freezeOverlay = new BooleanValue(
             "Freeze Overlay",
             "Enable/Disable Freeze Overlay",
-            visualsCategory,
+            this.visualsCategory,
             false
     );
 
     public final Value<Boolean> pumpkinOverlay = new BooleanValue(
             "Pumpkin Overlay",
             "Enable/Disable Pumpkin Overlay",
-            visualsCategory,
+            this.visualsCategory,
             false
     );
 
     public final Value<Boolean> spyGlassOverlay = new BooleanValue(
             "Spyglass Overlay",
             "Enable/Disable Spyglass Overlay",
-            visualsCategory,
+            this.visualsCategory,
             false
     );
 
     public final Value<Boolean> nauseaOverlay = new BooleanValue(
             "Nausea Overlay",
             "Enable/Disable Nausea Overlay.",
-            visualsCategory,
+            this.visualsCategory,
             false
     );
 
     public final Value<Boolean> blindnessEffect = new BooleanValue(
             "Blindness Effect",
             "Enable/Disable Blindness Effect.",
-            visualsCategory,
+            this.visualsCategory,
             false
     );
     public final Value<Boolean> hurtCam = new BooleanValue(
             "Hurt Cam",
             "Enable/Disable Hurt Cam",
-            visualsCategory,
+            this.visualsCategory,
             false
     );
 
