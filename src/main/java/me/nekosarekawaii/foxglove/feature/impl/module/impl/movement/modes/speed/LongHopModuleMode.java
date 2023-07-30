@@ -26,8 +26,10 @@ public class LongHopModuleMode extends ModuleMode<SpeedModule> implements TickLi
     public void onTick() {
         final ClientPlayerEntity player = mc.player;
         if (player == null) return;
-        if (player.isOnGround() && (player.forwardSpeed != 0 || player.sidewaysSpeed != 0)) {
-            player.jump();
+        if (player.forwardSpeed != 0 || player.sidewaysSpeed != 0) {
+            if (player.isOnGround()) {
+                player.jump();
+            }
             final float yaw = (float) ((Math.atan2(player.forwardSpeed,
                     player.sidewaysSpeed) / Math.PI * 180.0F
                     + player.getYaw()
