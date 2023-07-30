@@ -23,7 +23,7 @@ public class CreativeModuleMode extends ModuleMode<FlightModule> implements Tick
         final ClientPlayerEntity player = mc.player;
         if (player == null) return;
         player.getAbilities().flying = false;
-        player.getAbilities().allowFlying = false;
+        player.getAbilities().allowFlying = player.getAbilities().creativeMode;
     }
 
     @Override

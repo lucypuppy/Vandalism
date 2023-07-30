@@ -8,12 +8,11 @@ import me.nekosarekawaii.foxglove.value.Value;
 
 public class ListValue extends Value<String> {
 
-    private final ObjectArrayList<String> modes = new ObjectArrayList<>();
+    private final ObjectArrayList<String> modes;
 
-    public ListValue(final String name, final String description, final IValue parent, final String defaultValue, final String... modes) {
-        super(name, description, parent, defaultValue);
-        this.modes.add(defaultValue);
-        this.modes.addAll(new ObjectArrayList<>(modes));
+    public ListValue(final String name, final String description, final IValue parent, final String... modes) {
+        super(name, description, parent, modes[0]);
+        this.modes = new ObjectArrayList<>(modes);
     }
 
     public ObjectArrayList<String> getModes() {
