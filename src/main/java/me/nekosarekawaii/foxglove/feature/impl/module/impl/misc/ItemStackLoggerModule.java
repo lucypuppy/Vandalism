@@ -140,6 +140,17 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                                 )
                         )
         );
+        final MutableText copyGiveCommandButton = Text.literal(" [Copy Give Command]");
+        copyGiveCommandButton.setStyle(
+                copyGiveCommandButton.getStyle()
+                        .withFormatting(Formatting.LIGHT_PURPLE)
+                        .withClickEvent(
+                                new ClickEvent(
+                                        ClickEvent.Action.COPY_TO_CLIPBOARD,
+                                        Foxglove.getInstance().getConfigManager().getMainConfig().commandPrefix.getValue() + "give " + item + nbt + " " + count
+                                )
+                        )
+        );
         final MutableText openFileButton = Text.literal(" [Open File]");
         openFileButton.setStyle(
                 openFileButton.getStyle()
@@ -151,7 +162,7 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                                 )
                         )
         );
-        text.append(copyButton).append(openFileButton);
+        text.append(copyButton).append(copyGiveCommandButton).append(openFileButton);
         if (tag != null) {
             final MutableText displayNBTButton = Text.literal(" [Display NBT]");
             displayNBTButton.setStyle(
