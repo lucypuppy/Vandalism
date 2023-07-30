@@ -1,5 +1,6 @@
 package me.nekosarekawaii.foxglove.value;
 
+import imgui.ImGui;
 import me.nekosarekawaii.foxglove.config.Config;
 
 import java.util.List;
@@ -18,6 +19,21 @@ public interface IValue {
         }
 
         return null;
+    }
+
+    default void renderValues() {
+        for (final Value<?> value : this.getValues()) {
+            if (value.isVisible() != null && !value.isVisible().getAsBoolean())
+                continue;
+
+            value.render();
+
+            if (ImGui.isItemHovered()) {
+                ImGui.beginTooltip();
+                ImGui.text(value.getDescription());
+                ImGui.endTooltip();
+            }
+        }
     }
 
 }

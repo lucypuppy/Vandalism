@@ -4,6 +4,7 @@ import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
 import me.nekosarekawaii.foxglove.Foxglove;
+import me.nekosarekawaii.foxglove.config.impl.MainConfig;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.FeatureList;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
@@ -23,17 +24,17 @@ public class ModulesMenu {
 
             if (ImGui.beginTabBar("moduleMenuTabBar")) {
                 if (ImGui.beginTabItem("Config##category")) {
-                    final List<Value<?>> values = Foxglove.getInstance().getConfigManager().getMainConfig().getValues();
+                    final MainConfig values = Foxglove.getInstance().getConfigManager().getMainConfig();
 
                     if (ImGui.button("Reset Config")) {
-                        for (final Value<?> value : values) {
+                        for (final Value<?> value : values.getValues()) {
                             value.resetValue();
                         }
                     }
 
                     ImGui.separator();
 
-                    renderValues(values);
+                    values.renderValues();
                     ImGui.endTabItem();
                 }
 
@@ -73,7 +74,7 @@ public class ModulesMenu {
                                     ImGui.newLine();
                                 }
 
-                                renderValues(values);
+                                module.renderValues();
                                 ImGui.newLine();
                             }
                         }
@@ -86,21 +87,6 @@ public class ModulesMenu {
             }
 
             ImGui.end();
-        }
-    }
-
-    private static void renderValues(final List<Value<?>> values) {
-        for (final Value<?> value : values) {
-            if (value.isVisible() != null && !value.isVisible().getAsBoolean())
-                continue;
-
-            value.render();
-
-            if (ImGui.isItemHovered()) {
-                ImGui.beginTooltip();
-                ImGui.text(value.getDescription());
-                ImGui.endTooltip();
-            }
         }
     }
 
