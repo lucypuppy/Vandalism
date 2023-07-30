@@ -140,7 +140,7 @@ public class MainConfig extends ValueableConfig {
             "Change the Fire Overlay Offset",
             this.visualsCategory,
             0.0f,
-            0.0f,
+            0.4f,
             0.4f,
             "%.2f"
     );
@@ -149,55 +149,55 @@ public class MainConfig extends ValueableConfig {
             "Water Overlay",
             "Enable/Disable Water Overlay",
             this.visualsCategory,
-            false
+            true
     );
 
     public final Value<Boolean> inWallOverlay = new BooleanValue(
             "In Wall Overlay",
             "Enable/Disable In Wall Overlay",
             this.visualsCategory,
-            false
+            true
     );
 
     public final Value<Boolean> freezeOverlay = new BooleanValue(
             "Freeze Overlay",
             "Enable/Disable Freeze Overlay",
             this.visualsCategory,
-            false
+            true
     );
 
     public final Value<Boolean> pumpkinOverlay = new BooleanValue(
             "Pumpkin Overlay",
             "Enable/Disable Pumpkin Overlay",
             this.visualsCategory,
-            false
+            true
     );
 
     public final Value<Boolean> spyGlassOverlay = new BooleanValue(
             "Spyglass Overlay",
             "Enable/Disable Spyglass Overlay",
             this.visualsCategory,
-            false
+            true
     );
 
     public final Value<Boolean> nauseaOverlay = new BooleanValue(
             "Nausea Overlay",
             "Enable/Disable Nausea Overlay.",
             this.visualsCategory,
-            false
+            true
     );
 
     public final Value<Boolean> blindnessEffect = new BooleanValue(
             "Blindness Effect",
             "Enable/Disable Blindness Effect.",
             this.visualsCategory,
-            false
+            true
     );
     public final Value<Boolean> hurtCam = new BooleanValue(
             "Hurt Cam",
             "Enable/Disable Hurt Cam",
             this.visualsCategory,
-            false
+            true
     );
 
     public MainConfig() {
