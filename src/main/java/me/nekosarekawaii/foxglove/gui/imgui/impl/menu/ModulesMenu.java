@@ -22,6 +22,21 @@ public class ModulesMenu {
             }
 
             if (ImGui.beginTabBar("moduleMenuTabBar")) {
+                if (ImGui.beginTabItem("Config##category")) {
+                    final List<Value<?>> values = Foxglove.getInstance().getConfigManager().getMainConfig().getValues();
+
+                    if (ImGui.button("Reset Config")) {
+                        for (final Value<?> value : values) {
+                            value.resetValue();
+                        }
+                    }
+
+                    ImGui.separator();
+
+                    renderValues(values);
+                    ImGui.endTabItem();
+                }
+
                 for (final FeatureCategory featureCategory : FeatureCategory.values()) {
                     final FeatureList<Module> modulesByCategory = modules.get(featureCategory);
 
@@ -58,24 +73,34 @@ public class ModulesMenu {
                                     ImGui.newLine();
                                 }
 
-                                for (final Value<?> value : values) {
-                                    if (value.isVisible() != null && !value.isVisible().getAsBoolean())
-                                        continue;
-
-                                    value.render();
-                                }
-
+                                renderValues(values);
                                 ImGui.newLine();
                             }
                         }
+
                         ImGui.endTabItem();
                     }
                 }
 
-                ImGui.endTabItem();
+                ImGui.endTabBar();
             }
 
             ImGui.end();
+        }
+    }
+
+    private static void renderValues(final List<Value<?>> values) {
+        for (final Value<?> value : values) {
+            if (value.isVisible() != null && !value.isVisible().getAsBoolean())
+                continue;
+
+            value.render();
+
+            if (ImGui.isItemHovered()) {
+                ImGui.beginTooltip();
+                ImGui.text(value.getDescription());
+                ImGui.endTooltip();
+            }
         }
     }
 
