@@ -23,10 +23,16 @@ public class ValueCategory extends Value<ObjectArrayList<Value<?>>> implements I
     public void render() {
         if (ImGui.treeNodeEx(this.getName() + "##" + this.getHashIdent())) {
             for (final Value<?> value : this.getValue()) {
-                if (value.isVisible() != null && !value.isVisible().getAsBoolean()) {
+                if (value.isVisible() != null && !value.isVisible().getAsBoolean())
                     continue;
-                }
+
                 value.render();
+
+                if (ImGui.isItemHovered()) {
+                    ImGui.beginTooltip();
+                    ImGui.text(value.getDescription());
+                    ImGui.endTooltip();
+                }
             }
 
             ImGui.treePop();
