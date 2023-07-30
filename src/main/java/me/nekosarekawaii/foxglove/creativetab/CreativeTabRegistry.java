@@ -23,7 +23,7 @@ import java.util.UUID;
 
 public class CreativeTabRegistry implements PacketListener {
 
-    private final UUID clientsideName, clientsideGlint;
+    private final String clientsideName, clientsideGlint;
 
     private final ObjectArrayList<CreativeTab> creativeTabs;
     private final ObjectArrayList<ItemGroup> itemGroups;
@@ -31,8 +31,8 @@ public class CreativeTabRegistry implements PacketListener {
     public CreativeTabRegistry() {
         this.creativeTabs = new ObjectArrayList<>();
         this.itemGroups = new ObjectArrayList<>();
-        this.clientsideName = UUID.randomUUID();
-        this.clientsideGlint = UUID.randomUUID();
+        this.clientsideName = UUID.randomUUID().toString();
+        this.clientsideGlint = UUID.randomUUID().toString();
         this.registerCreativeTabs(
                 new TestItemsCreativeTab(),
                 new CrashItemsCreativeTab(),
@@ -100,11 +100,11 @@ public class CreativeTabRegistry implements PacketListener {
     }
 
     public String getClientsideName() {
-        return this.clientsideName.toString();
+        return this.clientsideName;
     }
 
     public String getClientsideGlint() {
-        return this.clientsideGlint.toString();
+        return this.clientsideGlint;
     }
 
 }

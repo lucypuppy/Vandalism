@@ -16,22 +16,27 @@ import me.nekosarekawaii.foxglove.feature.impl.command.impl.render.ClientsideGam
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommandSource;
 import net.minecraft.command.CommandSource;
+import net.minecraft.text.ClickEvent;
+
+import java.util.UUID;
 
 public class CommandRegistry {
 
-    private CommandDispatcher<CommandSource> commandDispatcher;
-    private CommandSource commandSource;
+    private final CommandDispatcher<CommandSource> commandDispatcher;
+    private final CommandSource commandSource;
+    private final String commandSecret;
 
     private final FeatureList<Command> commands;
 
     public CommandRegistry() {
         this.commands = new FeatureList<>();
+        this.commandDispatcher = new CommandDispatcher<>();
+        this.commandSource = new ClientCommandSource(null, MinecraftClient.getInstance());
+        this.commandSecret = UUID.randomUUID().toString();
         this.register();
     }
 
     private void register() {
-        this.commandDispatcher = new CommandDispatcher<>();
-        this.commandSource = new ClientCommandSource(null, MinecraftClient.getInstance());
         this.registerCommands(
                 new TestCommand(),
                 new FeaturesCommand(),
@@ -90,6 +95,17 @@ public class CommandRegistry {
 
     public FeatureList<Command> getCommands() {
         return this.commands;
+    }
+
+    public String getCommandSecret() {
+        return this.commandSecret;
+    }
+
+    public ClickEvent generateClickEvent(final String command) {
+        return new ClickEvent(
+                ClickEvent.Action.RUN_COMMAND,
+                this.commandSecret + command
+        );
     }
 
 }

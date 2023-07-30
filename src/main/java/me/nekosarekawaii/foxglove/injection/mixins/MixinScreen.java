@@ -20,24 +20,27 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = Screen.class)
+@Mixin(value = Screen.class, priority = 9999)
 public abstract class MixinScreen {
 
     @Shadow
     @Nullable
     protected MinecraftClient client;
 
-    @Inject(method = "handleTextClick", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;)V", ordinal = 1, remap = false), cancellable = true)
+    @Inject(method = "handleTextClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/SharedConstants;stripInvalidChars(Ljava/lang/String;)Ljava/lang/String;", ordinal = 1, remap = false), cancellable = true)
     private void injectHandleTextClick(final Style style, final CallbackInfoReturnable<Boolean> cir) {
         final ClickEvent clickEvent = style.getClickEvent();
-        if (clickEvent == null) return;
-        final String prefix = Foxglove.getInstance().getConfigManager().getMainConfig().commandPrefix.getValue();
-        if (clickEvent.getValue().startsWith(prefix)) {
-            try {
-                Foxglove.getInstance().getCommandRegistry().commandDispatch(style.getClickEvent().getValue().substring(prefix.length()));
-                cir.setReturnValue(true);
-            } catch (final CommandSyntaxException e) {
-                e.printStackTrace();
+        if (clickEvent != null) {
+            if (clickEvent.getAction() == ClickEvent.Action.RUN_COMMAND) {
+                final String value = clickEvent.getValue(), secret = Foxglove.getInstance().getCommandRegistry().getCommandSecret();
+                if (value.startsWith(secret)) {
+                    try {
+                        Foxglove.getInstance().getCommandRegistry().commandDispatch(value.replaceFirst(secret, ""));
+                        cir.setReturnValue(true);
+                    } catch (final CommandSyntaxException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }

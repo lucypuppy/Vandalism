@@ -28,9 +28,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 @CommandInfo(name = "NBT", description = "Modifies NBT data for an item.", aliases = {"nbt", "changenbt", "nbtchange"}, category = FeatureCategory.MISC)
 public class NBTCommand extends Command {
+
+    public final static String displayTitleNbtKey = UUID.randomUUID().toString();
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
@@ -151,13 +154,12 @@ public class NBTCommand extends Command {
             if (player != null) {
                 final ItemStack stack = player.getInventory().getMainHandStack();
                 if (this.validBasic(stack)) {
-                    final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    final DataOutputStream out = new DataOutputStream(stream);
                     try {
+                        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        final DataOutputStream out = new DataOutputStream(stream);
                         NbtIo.write(stack.getOrCreateNbt(), out);
-                        final File file = new File(stack.getName().getString());
                         final NBTEditMenu nbtEditMenu = Foxglove.getInstance().getImGuiHandler().getNbtEditMenu();
-                        nbtEditMenu.getMainWindow().dragAndDrop(file, stream.toByteArray());
+                        nbtEditMenu.getMainWindow().dragAndDrop(new File(stack.getName().getString()), stream.toByteArray());
                         nbtEditMenu.show();
                     } catch (final IOException io) {
                         io.printStackTrace();
@@ -166,6 +168,31 @@ public class NBTCommand extends Command {
             }
             return singleSuccess;
         }));
+        builder.then(
+                literal("displaynbt")
+                        .then(argument("nbt", NbtCompoundArgumentType.create())
+                                .executes(context -> {
+                                            try {
+                                                final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                                final DataOutputStream out = new DataOutputStream(stream);
+                                                final NbtCompound nbt = NbtCompoundArgumentType.get(context);
+                                                final String displayTitle;
+                                                if (nbt.contains(displayTitleNbtKey)) {
+                                                    displayTitle = nbt.getString(displayTitleNbtKey);
+                                                    nbt.remove(displayTitleNbtKey);
+                                                } else displayTitle = "NBT";
+                                                NbtIo.write(nbt, out);
+                                                final NBTEditMenu nbtEditMenu = Foxglove.getInstance().getImGuiHandler().getNbtEditMenu();
+                                                nbtEditMenu.getMainWindow().dragAndDrop(new File(displayTitle), stream.toByteArray());
+                                                nbtEditMenu.show();
+                                            } catch (final IOException io) {
+                                                io.printStackTrace();
+                                            }
+                                            return singleSuccess;
+                                        }
+                                )
+                        )
+        );
     }
 
     private void setStack(final ItemStack stack) {
