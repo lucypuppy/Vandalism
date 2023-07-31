@@ -200,6 +200,13 @@ public class MainConfig extends ValueableConfig {
             true
     );
 
+    public final Value<Boolean> fullBright = new BooleanValue(
+            "Full Bright",
+            "Enable/Disable Full Bright",
+            this.visualsCategory,
+            false
+    );
+
     public MainConfig() {
         super(Foxglove.getInstance().getDir(), "main");
     }

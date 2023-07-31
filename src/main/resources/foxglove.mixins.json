@@ -35,6 +35,7 @@
     "mixins.MixinItemGroup",
     "mixins.MixinItemStack",
     "mixins.MixinKeyboard",
+    "mixins.MixinLightmapTextureManager",
     "mixins.MixinLightTextureManager",
     "mixins.MixinLivingEntityRenderer",
     "mixins.MixinMinecraftClient",
