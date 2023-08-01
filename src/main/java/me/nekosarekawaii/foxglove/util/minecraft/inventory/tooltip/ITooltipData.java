@@ -5,4 +5,5 @@ import net.minecraft.client.item.TooltipData;
 
 public interface ITooltipData extends TooltipData {
     TooltipComponent getComponent();
+    boolean renderPre();
 }

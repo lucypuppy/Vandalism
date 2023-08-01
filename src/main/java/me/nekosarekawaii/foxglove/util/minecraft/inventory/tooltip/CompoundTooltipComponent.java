@@ -23,6 +23,11 @@ public class CompoundTooltipComponent implements TooltipComponent, ITooltipData 
 	}
 
 	@Override
+	public boolean renderPre() {
+		return false;
+	}
+
+	@Override
 	public int getHeight() {
 		int height = 0;
 

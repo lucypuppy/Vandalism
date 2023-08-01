@@ -39,7 +39,14 @@ public class ContainerTooltipComponent implements TooltipComponent, ITooltipData
     }
 
     @Override
+    public boolean renderPre() {
+        return false;
+    }
+
+    @Override
     public void drawItems(final TextRenderer textRenderer, final int x, final int y, final DrawContext context) {
+        final MatrixStack matrixStack = context.getMatrices();
+
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(color[0], color[1], color[2], color[3]);
         context.drawTexture(TEXTURE_CONTAINER_BACKGROUND, x, y, 0, 0, 0, 176, 67, 176, 67);
@@ -48,7 +55,6 @@ public class ContainerTooltipComponent implements TooltipComponent, ITooltipData
         int row = 0;
         int i = 0;
         for (var itemStack : items) {
-            final MatrixStack matrixStack = new MatrixStack();
             matrixStack.push();
             matrixStack.translate(0, 0, 401);
 

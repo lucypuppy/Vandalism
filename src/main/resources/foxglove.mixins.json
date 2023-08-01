@@ -21,6 +21,7 @@
     "mixins.MixinConnectScreen",
     "mixins.MixinDisconnectedScreen",
     "mixins.MixinDownloadingTerrainScreen",
+    "mixins.MixinDrawContext",
     "mixins.MixinEntity",
     "mixins.MixinEntityRenderer",
     "mixins.MixinEntryListWidget",

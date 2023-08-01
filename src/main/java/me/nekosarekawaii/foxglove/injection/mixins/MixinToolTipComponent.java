@@ -13,8 +13,8 @@ public interface MixinToolTipComponent {
 
     @Inject(method = "of*", at = @At("HEAD"), cancellable = true)
     private static void of(final TooltipData data, final CallbackInfoReturnable<TooltipComponent> cir) {
-        if (data instanceof ITooltipData)
-            cir.setReturnValue(((ITooltipData) data).getComponent());
+        if (data instanceof final ITooltipData tooltipData)
+            cir.setReturnValue(tooltipData.getComponent());
     }
 
 }
