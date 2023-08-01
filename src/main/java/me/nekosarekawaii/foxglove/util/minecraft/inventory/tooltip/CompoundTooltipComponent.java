@@ -31,7 +31,7 @@ public class CompoundTooltipComponent implements TooltipComponent, ITooltipData 
 	public int getHeight() {
 		int height = 0;
 
-		for (var comp : components) {
+		for (var comp : this.components) {
 			height += comp.getHeight();
 		}
 
@@ -42,7 +42,7 @@ public class CompoundTooltipComponent implements TooltipComponent, ITooltipData 
 	public int getWidth(final TextRenderer textRenderer) {
 		int width = 0;
 
-		for (var comp : components) {
+		for (var comp : this.components) {
 			if (comp.getWidth(textRenderer) > width) {
 				width = comp.getWidth(textRenderer);
 			}
@@ -55,7 +55,7 @@ public class CompoundTooltipComponent implements TooltipComponent, ITooltipData 
 	public void drawItems(final TextRenderer textRenderer, final int x, final int y, final DrawContext context) {
 		int yOff = 0;
 
-		for (var comp : components) {
+		for (var comp : this.components) {
 			comp.drawItems(textRenderer, x, y + yOff, context);
 			yOff += comp.getHeight();
 		}

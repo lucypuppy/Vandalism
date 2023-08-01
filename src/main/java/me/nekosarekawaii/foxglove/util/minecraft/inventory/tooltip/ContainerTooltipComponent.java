@@ -1,6 +1,7 @@
 package me.nekosarekawaii.foxglove.util.minecraft.inventory.tooltip;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import me.nekosarekawaii.foxglove.Foxglove;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -13,7 +14,7 @@ import net.minecraft.util.collection.DefaultedList;
 
 public class ContainerTooltipComponent implements TooltipComponent, ITooltipData {
 
-    private static final Identifier TEXTURE_CONTAINER_BACKGROUND = new Identifier("foxglove", "textures/hud/container.png");
+    private static final Identifier TEXTURE_CONTAINER_BACKGROUND = new Identifier(Foxglove.getInstance().getLowerCaseName(), "textures/hud/container.png");
 
     private final DefaultedList<ItemStack> items;
     private final float[] color;
@@ -48,13 +49,13 @@ public class ContainerTooltipComponent implements TooltipComponent, ITooltipData
         final MatrixStack matrixStack = context.getMatrices();
 
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        RenderSystem.setShaderColor(color[0], color[1], color[2], color[3]);
+        RenderSystem.setShaderColor(this.color[0], this.color[1], this.color[2], this.color[3]);
         context.drawTexture(TEXTURE_CONTAINER_BACKGROUND, x, y, 0, 0, 0, 176, 67, 176, 67);
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
         int row = 0;
         int i = 0;
-        for (var itemStack : items) {
+        for (var itemStack : this.items) {
             matrixStack.push();
             matrixStack.translate(0, 0, 401);
 

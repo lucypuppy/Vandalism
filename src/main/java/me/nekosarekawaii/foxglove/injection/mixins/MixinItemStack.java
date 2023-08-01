@@ -2,7 +2,7 @@ package me.nekosarekawaii.foxglove.injection.mixins;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.event.ToolTipListener;
+import me.nekosarekawaii.foxglove.event.TooltipListener;
 import me.nekosarekawaii.foxglove.util.minecraft.inventory.tooltip.CompoundTooltipComponent;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.item.TooltipData;
@@ -29,12 +29,11 @@ public abstract class MixinItemStack {
     }
 
     @Inject(method = "getTooltipData", at = @At("RETURN"), cancellable = true)
-    private void onTooltipData(final CallbackInfoReturnable<Optional<TooltipData>> cir) {
+    private void injectTooltipData(final CallbackInfoReturnable<Optional<TooltipData>> cir) {
         final List<TooltipData> tooltipData = new ArrayList<>();
         cir.getReturnValue().ifPresent(tooltipData::add);
 
-        DietrichEvents2.global().postInternal(ToolTipListener.ToolTipEvent.ID,
-                new ToolTipListener.ToolTipEvent((ItemStack) (Object) this, tooltipData));
+        DietrichEvents2.global().postInternal(TooltipListener.TooltipEvent.ID, new TooltipListener.TooltipEvent((ItemStack) (Object) this, tooltipData));
 
         if (tooltipData.size() == 1) {
             cir.setReturnValue(Optional.of(tooltipData.get(0)));

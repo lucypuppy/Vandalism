@@ -43,12 +43,11 @@ public class ModuleRegistry {
 
     private BrandChangerModule brandChangerModule;
 
-
     public BrandChangerModule getBrandChangerModule() {
         return this.brandChangerModule;
     }
-    private TrueSightModule trueSightModule;
 
+    private TrueSightModule trueSightModule;
 
     public TrueSightModule getTrueSightModule() {
         return this.trueSightModule;
@@ -162,10 +161,10 @@ public class ModuleRegistry {
         return this.espModule;
     }
 
-    private BetterToolTipModule betterToolTipModule;
+    private BetterTooltipModule betterTooltipModule;
 
-    public BetterToolTipModule getBetterToolTipModule() {
-        return this.betterToolTipModule;
+    public BetterTooltipModule getBetterTooltipModule() {
+        return this.betterTooltipModule;
     }
 
     private boolean done;
@@ -207,7 +206,7 @@ public class ModuleRegistry {
                 this.cameraNoClipModule = new CameraNoClipModule(),
                 this.joinLeaveModule = new JoinLeaveModule(),
                 this.espModule = new ESPModule(),
-                this.betterToolTipModule = new BetterToolTipModule()
+                this.betterTooltipModule = new BetterTooltipModule()
         );
     }
 

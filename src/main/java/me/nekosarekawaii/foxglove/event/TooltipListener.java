@@ -6,23 +6,23 @@ import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
-public interface ToolTipListener {
+public interface TooltipListener {
 
-    void onTooltipData(final ToolTipEvent event);
+    void onTooltipData(final TooltipEvent event);
 
-    class ToolTipEvent extends AbstractEvent<ToolTipListener> {
+    class TooltipEvent extends AbstractEvent<TooltipListener> {
 
         public final static int ID = 12;
         public ItemStack itemStack;
         public final List<TooltipData> tooltipData;
 
-        public ToolTipEvent(final ItemStack itemStack, final List<TooltipData> tooltipData) {
+        public TooltipEvent(final ItemStack itemStack, final List<TooltipData> tooltipData) {
             this.itemStack = itemStack;
             this.tooltipData = tooltipData;
         }
 
         @Override
-        public void call(final ToolTipListener listener) {
+        public void call(final TooltipListener listener) {
             listener.onTooltipData(this);
         }
     }
