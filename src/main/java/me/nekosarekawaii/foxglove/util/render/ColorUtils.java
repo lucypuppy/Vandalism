@@ -1,5 +1,9 @@
 package me.nekosarekawaii.foxglove.util.render;
 
+import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.DyeColor;
+
 import java.awt.*;
 
 public class ColorUtils {
@@ -52,9 +56,22 @@ public class ColorUtils {
         };
     }
 
-
     public static Color withAlpha(final Color color, final int alpha) {
         return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+    }
+
+    public static float[] withAlpha(final float[] color, final float alpha) {
+        return new float[]{color[0], color[1], color[2], alpha};
+    }
+
+    public static float[] getShulkerColor(final ItemStack shulkerItem) {
+        final DyeColor dye = ((ShulkerBoxBlock) ShulkerBoxBlock.getBlockFromItem(shulkerItem.getItem())).getColor();
+
+        if (dye == null)
+            return new float[]{1f, 1f, 1f};
+
+        final float[] colors = dye.getColorComponents();
+        return new float[]{colors[0], colors[1], colors[2]};
     }
 
 }

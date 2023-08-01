@@ -51,6 +51,7 @@
     "mixins.MixinStringHelper",
     "mixins.MixinTelemetryManager",
     "mixins.MixinTextureUrlChecker",
+    "mixins.MixinToolTipComponent",
     "mixins.MixinWindow",
     "mixins.MixinWorldRenderer",
     "mixins.MixinYggdrasilUserApiService"

@@ -7,10 +7,7 @@ import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.TestModul
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.*;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.*;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.*;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.BetterTabListModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.ESPModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.HeadUpDisplayModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.TrueSightModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.*;
 
 public class ModuleRegistry {
 
@@ -165,6 +162,12 @@ public class ModuleRegistry {
         return this.espModule;
     }
 
+    private BetterToolTipModule betterToolTipModule;
+
+    public BetterToolTipModule getBetterToolTipModule() {
+        return this.betterToolTipModule;
+    }
+
     private boolean done;
 
     private final FeatureList<Module> modules;
@@ -203,7 +206,8 @@ public class ModuleRegistry {
                 this.noFallModule = new NoFallModule(),
                 this.cameraNoClipModule = new CameraNoClipModule(),
                 this.joinLeaveModule = new JoinLeaveModule(),
-                this.espModule = new ESPModule()
+                this.espModule = new ESPModule(),
+                this.betterToolTipModule = new BetterToolTipModule()
         );
     }
 
