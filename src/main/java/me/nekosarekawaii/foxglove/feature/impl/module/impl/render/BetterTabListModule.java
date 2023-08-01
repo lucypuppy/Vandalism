@@ -5,6 +5,7 @@ import me.nekosarekawaii.foxglove.event.KeyboardListener;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
+import me.nekosarekawaii.foxglove.util.render.ColorUtils;
 import me.nekosarekawaii.foxglove.value.Value;
 import me.nekosarekawaii.foxglove.value.values.BooleanValue;
 import me.nekosarekawaii.foxglove.value.values.ColorValue;
@@ -21,7 +22,7 @@ public class BetterTabListModule extends Module implements KeyboardListener {
 
     public final Value<Boolean> self = new BooleanValue("Highlight Self", "Highlights yourself in the Tab List.", this, true);
 
-    public final ColorValue selfColor = new ColorValue("Self Color", "The color to highlight your name with.", this, Color.GREEN).visibleConsumer(this.self::getValue);
+    public final ColorValue selfColor = new ColorValue("Self Color", "The color to highlight your name with.", this, ColorUtils.withAlpha(Color.GREEN, 100)).visibleConsumer(this.self::getValue);
 
     public final Value<Boolean> accurateLatency = new BooleanValue("Accurate Latency", "Shows the latency as a number in the Tab List.", this, true);
 
