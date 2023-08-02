@@ -45,6 +45,7 @@
     "mixins.MixinPlayerEntity",
     "mixins.MixinPlayerListHud",
     "mixins.MixinScreen",
+    "mixins.MixinScreenHandlerType",
     "mixins.MixinServerEntry",
     "mixins.MixinServerResourcePackProvider",
     "mixins.MixinSharedConstants",
