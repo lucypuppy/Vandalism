@@ -1,0 +1,254 @@
+package me.nekosarekawaii.foxglove.util.minecraft.inventory.tooltip;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.block.AbstractSignBlock;
+import net.minecraft.block.WoodType;
+import net.minecraft.block.entity.SignText;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.tooltip.TooltipComponent;
+import net.minecraft.client.item.TooltipData;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.render.*;
+import net.minecraft.client.render.block.entity.HangingSignBlockEntityRenderer;
+import net.minecraft.client.render.block.entity.SignBlockEntityRenderer;
+import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.HangingSignItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.SignItem;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.text.OrderedText;
+import net.minecraft.text.Text;
+import net.minecraft.util.DyeColor;
+import net.minecraft.util.Identifier;
+
+import java.util.Optional;
+
+public abstract class SignTooltipComponent<M extends Model> implements ITooltipData, TooltipComponent {
+
+    protected final WoodType type;
+    private final SignText front;
+    private final SignText back;
+    protected final M model;
+
+    public SignTooltipComponent(WoodType type, SignText front, SignText back, M model) {
+        this.type = type;
+        this.front = front;
+        this.back = back;
+        this.model = model;
+    }
+
+    public static Optional<TooltipData> fromItemStack(ItemStack stack) {
+        if (stack.getItem() instanceof HangingSignItem signItem) {
+            var block = signItem.getBlock();
+            var nbt = BlockItem.getBlockEntityNbt(stack);
+            if (nbt != null) return Optional.ofNullable(fromTag(AbstractSignBlock.getWoodType(block), nbt, true));
+        } else if (stack.getItem() instanceof SignItem signItem) {
+            var block = signItem.getBlock();
+            var nbt = BlockItem.getBlockEntityNbt(stack);
+            if (nbt != null) return Optional.ofNullable(fromTag(AbstractSignBlock.getWoodType(block), nbt, false));
+        }
+        return Optional.empty();
+    }
+
+    public static SignTooltipComponent<?> fromTag(WoodType type, NbtCompound nbt, boolean hanging) {
+        Optional<SignText> front = Optional.empty();
+        Optional<SignText> back = Optional.empty();
+
+        if (nbt.contains("front_text")) {
+            front = SignText.CODEC
+                    .parse(NbtOps.INSTANCE, nbt.getCompound("front_text"))
+                    .resultOrPartial(s -> {
+                    })
+                    .map(SignTooltipComponent::parseLines);
+        }
+
+        if (nbt.contains("back_text")) {
+            back = SignText.CODEC
+                    .parse(NbtOps.INSTANCE, nbt.getCompound("back_text"))
+                    .resultOrPartial(s -> {
+                    })
+                    .map(SignTooltipComponent::parseLines);
+        }
+
+        if (front.isEmpty() && back.isEmpty()) {
+            return null;
+        } else if (hanging) {
+            return new HangingSign(type, front.orElse(null), back.orElse(null));
+        } else {
+            return new Sign(type, front.orElse(null), back.orElse(null));
+        }
+    }
+
+    private static SignText parseLines(SignText text) {
+        for (int line = 0; line < 4; line++) {
+            Text unfilteredMessage = text.getMessage(line, false);
+            Text filteredMessage = text.getMessage(line, true);
+            text = text.withMessage(line, unfilteredMessage, filteredMessage);
+        }
+
+        return text;
+    }
+
+    @Override
+    public TooltipComponent getComponent() {
+        return this;
+    }
+
+    @Override
+    public boolean renderPre() {
+        return false;
+    }
+
+    protected boolean shouldShowBack() {
+        return this.front == null || (this.back != null && Screen.hasControlDown());
+    }
+
+    private SignText getText() {
+        if (this.shouldShowBack()) return this.back;
+        else return this.front;
+    }
+
+    private OrderedText[] getOrderedMessages() {
+        return this.getText().getOrderedMessages(MinecraftClient.getInstance().shouldFilterText(), Text::asOrderedText);
+    }
+
+    @Override
+    public void drawItems(TextRenderer textRenderer, int x, int y, DrawContext graphics) {
+        DiffuseLighting.enableGuiDepthLighting();
+        MatrixStack matrices = graphics.getMatrices();
+        matrices.push();
+        matrices.translate(x + 2, y, 0);
+
+        matrices.push();
+        var immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
+        var spriteIdentifier = this.getSignTextureId();
+        var vertexConsumer = spriteIdentifier != null ? spriteIdentifier.getVertexConsumer(immediate, this.model::getLayer) : null;
+        this.renderModel(graphics, vertexConsumer);
+        immediate.draw();
+        matrices.pop();
+
+        matrices.translate(0, this.getTextOffset(), 10);
+
+        var messages = this.getOrderedMessages();
+        int signColor = this.getText().getColor().getSignColor();
+
+        if (this.getText().isGlowing()) {
+            int outlineColor;
+
+            if (this.getText().getColor() == DyeColor.BLACK) {
+                outlineColor = -988212;
+            } else {
+                int r = (int) (((signColor >> 24) & 255) * 0.4);
+                int g = (int) (((signColor >> 16) & 255) * 0.4);
+                int b = (int) (((signColor >> 8) & 255) * 0.4);
+
+                outlineColor = (b >> 8) | (g >> 16) | (r >> 24);
+            }
+
+            for (int i = 0; i < messages.length; i++) {
+                var text = messages[i];
+                textRenderer.drawWithOutline(text, (int) (45 - textRenderer.getWidth(text) / 2.f), i * 10,
+                        signColor, outlineColor, matrices.peek().getPositionMatrix(), graphics.getVertexConsumers(),
+                        LightmapTextureManager.MAX_LIGHT_COORDINATE
+                );
+            }
+        } else {
+            for (int i = 0; i < messages.length; i++) {
+                var text = messages[i];
+                graphics.drawText(textRenderer, text, (int) (45 - textRenderer.getWidth(text) / 2.f), i * 10, signColor, false);
+            }
+        }
+
+        matrices.pop();
+
+        DiffuseLighting.disableGuiDepthLighting();
+    }
+
+    public abstract SpriteIdentifier getSignTextureId();
+
+    public abstract void renderModel(DrawContext graphics, VertexConsumer vertexConsumer);
+
+    /**
+     * {@return the vertical offset between the start of the component and where the text lines should be drawn}
+     */
+    protected abstract int getTextOffset();
+
+    public static class Sign extends SignTooltipComponent<SignBlockEntityRenderer.SignModel> {
+
+        public Sign(WoodType type, SignText front, SignText back) {
+            super(type, front, back, SignBlockEntityRenderer.createSignModel(MinecraftClient.getInstance().getEntityModelLoader(), type));
+        }
+
+        @Override
+        public int getHeight() {
+            return 52;
+        }
+
+        @Override
+        public int getWidth(TextRenderer textRenderer) {
+            return 94;
+        }
+
+        @Override
+        public SpriteIdentifier getSignTextureId() {
+            return TexturedRenderLayers.getSignTextureId(this.type);
+        }
+
+        @Override
+        protected int getTextOffset() {
+            return 4;
+        }
+
+        @Override
+        public void renderModel(DrawContext graphics, VertexConsumer vertexConsumer) {
+            graphics.getMatrices().translate(45, 56, 0);
+            graphics.getMatrices().scale(65, 65, -65);
+            this.model.stick.visible = false;
+            this.model.root.visible = true;
+            this.model.root.render(graphics.getMatrices(), vertexConsumer, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
+        }
+    }
+
+    public static class HangingSign extends SignTooltipComponent<HangingSignBlockEntityRenderer.HangingSignModel> {
+        private final Identifier textureId = new Identifier("textures/gui/hanging_signs/" + this.type.name() + ".png");
+
+        public HangingSign(WoodType type, SignText front, SignText back) {
+            super(type, front, back, null);
+        }
+
+        @Override
+        public int getHeight() {
+            return 68;
+        }
+
+        @Override
+        public int getWidth(TextRenderer textRenderer) {
+            return 94;
+        }
+
+        @Override
+        public SpriteIdentifier getSignTextureId() {
+            return null;
+        }
+
+        @Override
+        protected int getTextOffset() {
+            return 26;
+        }
+
+        @Override
+        public void renderModel(DrawContext graphics, VertexConsumer vertexConsumer) {
+            graphics.getMatrices().translate(44.5, 32, 0);
+            RenderSystem.setShaderColor(1.f, 1.f, 1.f, 1.f);
+            graphics.getMatrices().scale(4.f, 4.f, 1.f);
+            graphics.drawTexture(this.textureId, -8, -8, 0.f, 0.f, 16, 16, 16, 16);
+        }
+    }
+
+}
