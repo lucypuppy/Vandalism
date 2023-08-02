@@ -167,6 +167,12 @@ public class ModuleRegistry {
         return this.betterTooltipModule;
     }
 
+    private PhaseModule phaseModule;
+
+    public PhaseModule getPhaseModule() {
+        return this.phaseModule;
+    }
+
     private boolean done;
 
     private final FeatureList<Module> modules;
@@ -206,7 +212,8 @@ public class ModuleRegistry {
                 this.cameraNoClipModule = new CameraNoClipModule(),
                 this.joinLeaveModule = new JoinLeaveModule(),
                 this.espModule = new ESPModule(),
-                this.betterTooltipModule = new BetterTooltipModule()
+                this.betterTooltipModule = new BetterTooltipModule(),
+                this.phaseModule = new PhaseModule()
         );
     }
 
