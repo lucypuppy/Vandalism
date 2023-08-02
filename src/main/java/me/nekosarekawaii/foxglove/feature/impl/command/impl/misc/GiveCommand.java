@@ -6,8 +6,6 @@ import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.impl.command.Command;
 import me.nekosarekawaii.foxglove.feature.impl.command.CommandInfo;
 import me.nekosarekawaii.foxglove.util.minecraft.ChatUtils;
-import me.nekosarekawaii.foxglove.util.minecraft.inventory.FindItemResult;
-import me.nekosarekawaii.foxglove.util.minecraft.inventory.InvUtils;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandSource;
@@ -40,11 +38,14 @@ public class GiveCommand extends Command {
     private void giveItem(final ItemStack item) throws Throwable {
         final ClientPlayerEntity player = mc.player;
         final ClientPlayNetworkHandler handler = mc.getNetworkHandler();
+
         if (player != null && handler != null) {
             if (!player.getAbilities().creativeMode) throw notInCreativeMode.create();
-            final FindItemResult fir = InvUtils.find(ItemStack::isEmpty, 0, 8);
-            if (!fir.found()) throw notSpaceInHotBar.create();
-            handler.sendPacket(new CreativeInventoryActionC2SPacket(36 + fir.slot(), item));
+
+            final int emptySlot = mc.player.getInventory().getEmptySlot();
+            if (emptySlot == -1 || emptySlot > 8) throw notSpaceInHotBar.create();
+
+            handler.sendPacket(new CreativeInventoryActionC2SPacket(36 + emptySlot, item));
         }
     }
 
