@@ -39,16 +39,22 @@ public class BetterTooltipModule extends Module implements TooltipListener {
 
     @Override
     public void onTooltipData(final TooltipEvent event) {
-        final ItemStack itemStack = event.itemStack;
-        final List<TooltipData> tooltipData = event.tooltipData;
 
-        if (event.itemStack.getItem().toString().endsWith("sign")) {
-            SignTooltipComponent.fromItemStack(event.itemStack).ifPresent(tooltipData::add);
-        } else if (event.itemStack.getItem() instanceof BannerPatternItem patternItem) {
-            final boolean present = Registries.BANNER_PATTERN.getEntryList(patternItem.getPattern()).isPresent() &&
+        final ItemStack itemStack = event.itemStack;
+        final Item item = itemStack.getItem();
+        final List<TooltipData> tooltipData = event.tooltipData;
+        final String itemId = item.toString();
+
+        if (itemId.endsWith("sign")) {
+            SignTooltipComponent.fromItemStack(itemStack).ifPresent(tooltipData::add);
+        } else if (item instanceof BannerPatternItem patternItem) {
+            final boolean present =
+                    Registries.BANNER_PATTERN.getEntryList(patternItem.getPattern()).isPresent() &&
                     Registries.BANNER_PATTERN.getEntryList(patternItem.getPattern()).get().size() != 0;
-            final RegistryEntry<BannerPattern> bannerPattern = (present ?
-                    Registries.BANNER_PATTERN.getEntryList(patternItem.getPattern()).get().get(0) : null);
+            final RegistryEntry<BannerPattern> bannerPattern = (
+                    present ?
+                            Registries.BANNER_PATTERN.getEntryList(patternItem.getPattern()).get().get(0) : null
+            );
 
             if (bannerPattern != null) {
                 final ItemStack bannerItem = new ItemStack(Items.GRAY_BANNER);
@@ -59,15 +65,15 @@ public class BetterTooltipModule extends Module implements TooltipListener {
 
                 tooltipData.add(new BannerTooltipComponent(bannerItem));
             }
-        } else if (event.itemStack.getItem() instanceof BannerItem) {
-            tooltipData.add(new BannerTooltipComponent(event.itemStack));
-        } else if (itemStack.getItem() == Items.FILLED_MAP) {
+        } else if (item instanceof BannerItem) {
+            tooltipData.add(new BannerTooltipComponent(itemStack));
+        } else if (item == Items.FILLED_MAP) {
             final Integer mapId = FilledMapItem.getMapId(itemStack);
 
             if (mapId != null)
                 tooltipData.add(new MapTooltipComponent(mapId));
-        } else if (itemStack.getItem().toString().endsWith("shulker_box")) {
-            final NbtCompound compoundTag = event.itemStack.getSubNbt("BlockEntityTag");
+        } else if (itemId.endsWith("shulker_box")) {
+            final NbtCompound compoundTag = itemStack.getSubNbt("BlockEntityTag");
 
             if (compoundTag == null || !compoundTag.contains("Items", 9))
                 return;
@@ -75,8 +81,9 @@ public class BetterTooltipModule extends Module implements TooltipListener {
             final DefaultedList<ItemStack> itemStacks = DefaultedList.ofSize(27, ItemStack.EMPTY);
             Inventories.readNbt(compoundTag, itemStacks);
             tooltipData.add(new ContainerTooltipComponent(itemStacks,
-                    ColorUtils.withAlpha(ColorUtils.getShulkerColor(event.itemStack), 1f)));
+                    ColorUtils.withAlpha(ColorUtils.getShulkerColor(itemStack), 1f)));
         }
+
     }
 
 
