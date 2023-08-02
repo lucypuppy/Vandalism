@@ -28,7 +28,6 @@ public class Foxglove {
     private final Collection<String> authors;
 
     private final Color color;
-    private final int colorRGB;
 
     private final Logger logger;
 
@@ -55,7 +54,6 @@ public class Foxglove {
         this.authors = modContainer.getAuthors().stream().map(Person::getName).toList();
 
         this.color = Color.MAGENTA;
-        this.colorRGB = this.color.getRGB();
         this.logger = LoggerFactory.getLogger(this.name);
         this.dir = new File(MinecraftClient.getInstance().runDirectory, this.lowerCaseName);
         this.firstStart = !this.dir.exists(); //TODO: Make better first start check.
@@ -121,10 +119,6 @@ public class Foxglove {
 
     public Color getColor() {
         return this.color;
-    }
-
-    public int getColorRGB() {
-        return this.colorRGB;
     }
 
     public Logger getLogger() {

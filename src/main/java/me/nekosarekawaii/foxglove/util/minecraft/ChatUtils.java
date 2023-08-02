@@ -7,20 +7,34 @@ import net.minecraft.util.Formatting;
 
 import java.awt.*;
 
-//TODO: Recode this
 public class ChatUtils {
 
-    private final static MutableText chatPrefix = Text.literal("")
+    private final static Text clientName = FormattingUtils.interpolateTextColor(Foxglove.getInstance().getName(),
+            Color.PINK, Foxglove.getInstance().getColor());
+
+    private final static MutableText chatPrefix = Text.empty()
             .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
             .append("(")
-            .append(
-                    Text
-                            .literal(Foxglove.getInstance().getName())
-                            .setStyle(
-                                    Style.EMPTY.withColor(TextColor.fromRgb(Foxglove.getInstance().getColorRGB()))
-                            )
-            )
+            .append(clientName)
             .append(") ");
+
+    private final static MutableText infoPrefix = Text.empty()
+            .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
+            .append("[")
+            .append(Text.literal("Info").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Color.GREEN.getRGB()))))
+            .append("] ");
+
+    private final static MutableText warningPrefix = Text.empty()
+            .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
+            .append("[")
+            .append(Text.literal("Warning").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Color.ORANGE.getRGB()))))
+            .append("] ");
+
+    private final static MutableText errorPrefix = Text.empty()
+            .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
+            .append("[")
+            .append(Text.literal("Error").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Color.RED.getRGB()))))
+            .append("] ");
 
     public static void emptyChatMessage() {
         if (MinecraftClient.getInstance().world == null) return;
@@ -36,18 +50,6 @@ public class ChatUtils {
         MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(chatPrefix.copy().append(message));
     }
 
-    private final static MutableText infoPrefix = Text.literal("")
-            .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
-            .append("[")
-            .append(
-                    Text
-                            .literal("Info")
-                            .setStyle(
-                                    Style.EMPTY.withColor(TextColor.fromRgb(Color.GREEN.getRGB()))
-                            )
-            )
-            .append("] ");
-
     public static void infoChatMessage(final String message) {
         infoChatMessage(Text.literal(message));
     }
@@ -56,18 +58,6 @@ public class ChatUtils {
         chatMessage(infoPrefix.copy().append(message));
     }
 
-    private final static MutableText warningPrefix = Text.literal("")
-            .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
-            .append("[")
-            .append(
-                    Text
-                            .literal("Warning")
-                            .setStyle(
-                                    Style.EMPTY.withColor(TextColor.fromRgb(Color.ORANGE.getRGB()))
-                            )
-            )
-            .append("] ");
-
     public static void warningChatMessage(final String message) {
         warningChatMessage(Text.literal(message));
     }
@@ -75,18 +65,6 @@ public class ChatUtils {
     public static void warningChatMessage(final Text message) {
         chatMessage(warningPrefix.copy().append(message));
     }
-
-    private final static MutableText errorPrefix = Text.literal("")
-            .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
-            .append("[")
-            .append(
-                    Text
-                            .literal("Error")
-                            .setStyle(
-                                    Style.EMPTY.withColor(TextColor.fromRgb(Color.RED.getRGB()))
-                            )
-            )
-            .append("] ");
 
     public static void errorChatMessage(final String message) {
         errorChatMessage(Text.literal(message));
