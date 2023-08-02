@@ -65,3 +65,5 @@ accessible	class	net/minecraft/client/render/BackgroundRenderer$StatusEffectFogM
 accessible method net/minecraft/client/network/ClientPlayerEntity getPermissionLevel ()I
 
 accessible method net/minecraft/client/MinecraftClient doItemUse ()V
+
+accessible method net/minecraft/client/render/block/entity/SignBlockEntityRenderer getColor (Lnet/minecraft/block/entity/SignText;)I

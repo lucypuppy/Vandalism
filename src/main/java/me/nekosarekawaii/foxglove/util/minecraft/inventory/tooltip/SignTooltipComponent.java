@@ -24,7 +24,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
-import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 
 import java.util.Optional;
@@ -118,6 +117,8 @@ public abstract class SignTooltipComponent<M extends Model> implements ITooltipD
         return this.getText().getOrderedMessages(MinecraftClient.getInstance().shouldFilterText(), Text::asOrderedText);
     }
 
+
+    //TODO recode this rendering and use the SignBlockEntityRenderer for everything.
     @Override
     public void drawItems(TextRenderer textRenderer, int x, int y, DrawContext graphics) {
         DiffuseLighting.enableGuiDepthLighting();
@@ -136,25 +137,13 @@ public abstract class SignTooltipComponent<M extends Model> implements ITooltipD
         matrices.translate(0, this.getTextOffset(), 10);
 
         var messages = this.getOrderedMessages();
-        int signColor = this.getText().getColor().getSignColor();
+        var signColor = this.getText().getColor().getSignColor();
 
         if (this.getText().isGlowing()) {
-            int outlineColor;
-
-            if (this.getText().getColor() == DyeColor.BLACK) {
-                outlineColor = -988212;
-            } else {
-                int r = (int) (((signColor >> 24) & 255) * 0.4);
-                int g = (int) (((signColor >> 16) & 255) * 0.4);
-                int b = (int) (((signColor >> 8) & 255) * 0.4);
-
-                outlineColor = (b >> 8) | (g >> 16) | (r >> 24);
-            }
-
             for (int i = 0; i < messages.length; i++) {
                 var text = messages[i];
                 textRenderer.drawWithOutline(text, (int) (45 - textRenderer.getWidth(text) / 2.f), i * 10,
-                        signColor, outlineColor, matrices.peek().getPositionMatrix(), graphics.getVertexConsumers(),
+                        signColor, SignBlockEntityRenderer.getColor(this.getText()), matrices.peek().getPositionMatrix(), graphics.getVertexConsumers(),
                         LightmapTextureManager.MAX_LIGHT_COORDINATE
                 );
             }
