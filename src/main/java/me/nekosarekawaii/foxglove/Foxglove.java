@@ -5,9 +5,11 @@ import me.nekosarekawaii.foxglove.creativetab.CreativeTabRegistry;
 import me.nekosarekawaii.foxglove.feature.impl.command.CommandRegistry;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleRegistry;
 import me.nekosarekawaii.foxglove.gui.imgui.ImGuiHandler;
+import me.nekosarekawaii.foxglove.util.minecraft.FormattingUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.Person;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,8 +28,9 @@ public class Foxglove {
 
     private final String name, lowerCaseName, version, windowTitle;
     private final Collection<String> authors;
+    private final Text clientNameText;
 
-    private final Color color;
+    private final Color color1, color2;
 
     private final Logger logger;
 
@@ -52,8 +55,10 @@ public class Foxglove {
         final var modContainer = FabricLoader.getInstance().getModContainer(this.lowerCaseName).get().getMetadata();
         this.version = modContainer.getVersion().getFriendlyString();
         this.authors = modContainer.getAuthors().stream().map(Person::getName).toList();
+        this.color1 = Color.MAGENTA;
+        this.color2 = Color.PINK;
+        this.clientNameText = FormattingUtils.interpolateTextColor(this.name, this.color1, this.color2);
 
-        this.color = Color.MAGENTA;
         this.logger = LoggerFactory.getLogger(this.name);
         this.dir = new File(MinecraftClient.getInstance().runDirectory, this.lowerCaseName);
         this.firstStart = !this.dir.exists(); //TODO: Make better first start check.
@@ -117,8 +122,8 @@ public class Foxglove {
         return authors;
     }
 
-    public Color getColor() {
-        return this.color;
+    public Text getClientNameText() {
+        return clientNameText;
     }
 
     public Logger getLogger() {

@@ -9,13 +9,10 @@ import java.awt.*;
 
 public class ChatUtils {
 
-    private final static Text clientName = FormattingUtils.interpolateTextColor(Foxglove.getInstance().getName(),
-            Foxglove.getInstance().getColor(), Color.PINK);
-
     private final static MutableText chatPrefix = Text.empty()
             .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
             .append("(")
-            .append(clientName)
+            .append(Foxglove.getInstance().getClientNameText())
             .append(") ");
 
     private final static MutableText infoPrefix = Text.empty()
@@ -75,7 +72,7 @@ public class ChatUtils {
     }
 
     public static MutableText getAsMutableText(final OrderedText text) {
-        final LickMyFuckingBallsMojangStringVisitor visitor = new LickMyFuckingBallsMojangStringVisitor();
+        final StringVisitorAccessor visitor = new StringVisitorAccessor();
         text.accept(visitor);
         return visitor.getMutableText();
     }

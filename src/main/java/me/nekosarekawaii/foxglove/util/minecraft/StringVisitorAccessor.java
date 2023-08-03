@@ -5,7 +5,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
-public class LickMyFuckingBallsMojangStringVisitor implements CharacterVisitor {
+public class StringVisitorAccessor implements CharacterVisitor {
 
     private final MutableText mutableText = Text.literal("");
 
