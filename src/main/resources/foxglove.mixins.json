@@ -33,6 +33,7 @@
     "mixins.MixinImGuiImplGlfw",
     "mixins.MixinInGameHud",
     "mixins.MixinInGameOverlayRenderer",
+    "mixins.MixinInventoryScreen",
     "mixins.MixinItemGroup",
     "mixins.MixinItemStack",
     "mixins.MixinKeyboard",
