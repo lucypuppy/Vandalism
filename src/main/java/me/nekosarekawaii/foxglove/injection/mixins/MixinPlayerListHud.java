@@ -103,7 +103,7 @@ public abstract class MixinPlayerListHud {
                     text,
                     (int) (x / scale) + (int) (width / scale) - textRenderer.getWidth(text),
                     (int) (y / scale),
-                    ColorUtils.interpolate(Color.RED, Color.YELLOW, Color.GREEN,
+                    ColorUtils.interpolate(Color.GREEN, Color.YELLOW, Color.RED,
                             Math.min((float) latency / betterTabListModule.highPing.getValue(), 1.0f))
             );
 

@@ -10,7 +10,7 @@ import java.awt.*;
 public class ChatUtils {
 
     private final static Text clientName = FormattingUtils.interpolateTextColor(Foxglove.getInstance().getName(),
-            Color.PINK, Foxglove.getInstance().getColor());
+            Foxglove.getInstance().getColor(), Color.PINK);
 
     private final static MutableText chatPrefix = Text.empty()
             .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
