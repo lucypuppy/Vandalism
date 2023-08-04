@@ -34,6 +34,15 @@ public class BetterTabListModule extends Module implements KeyboardListener {
 
     public final Value<Boolean> toggleable = new BooleanValue("Toggleable Tab List", "Makes the Tab List toggleable.", this, false);
 
+    public final Value<Color> lowPingColor =
+            new ColorValue("Low Ping Color", "The color to display the minimum ping with.", this, Color.GREEN);
+
+    public final Value<Color> averagePingColor =
+            new ColorValue("Average Ping Color", "The color to display the average ping with.", this, Color.YELLOW);
+
+    public final Value<Color> highPingColor =
+            new ColorValue("High Ping Color", "The color to display the maximum ping with.", this, Color.RED);
+
     public boolean toggleState = false;
 
     @Override
