@@ -39,7 +39,6 @@ public class BetterTooltipModule extends Module implements TooltipListener {
 
     @Override
     public void onTooltipData(final TooltipEvent event) {
-
         final ItemStack itemStack = event.itemStack;
         final Item item = itemStack.getItem();
         final List<TooltipData> tooltipData = event.tooltipData;
@@ -72,19 +71,20 @@ public class BetterTooltipModule extends Module implements TooltipListener {
 
             if (mapId != null)
                 tooltipData.add(new MapTooltipComponent(mapId));
-        } else if (itemId.endsWith("shulker_box")) {
+        } else {
             final NbtCompound compoundTag = itemStack.getSubNbt("BlockEntityTag");
 
             if (compoundTag == null || !compoundTag.contains("Items", 9))
                 return;
 
+            float[] color = new float[]{1f, 1f, 1f};
+            if (itemId.endsWith("shulker_box"))
+                color = ColorUtils.getShulkerColor(itemStack);
+
             final DefaultedList<ItemStack> itemStacks = DefaultedList.ofSize(27, ItemStack.EMPTY);
             Inventories.readNbt(compoundTag, itemStacks);
-            tooltipData.add(new ContainerTooltipComponent(itemStacks,
-                    ColorUtils.withAlpha(ColorUtils.getShulkerColor(itemStack), 1f)));
+            tooltipData.add(new ContainerTooltipComponent(itemStacks, ColorUtils.withAlpha(color, 1f)));
         }
-
     }
-
 
 }
