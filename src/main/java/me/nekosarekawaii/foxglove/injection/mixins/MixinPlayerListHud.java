@@ -20,8 +20,6 @@ import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.awt.*;
-
 @Mixin(PlayerListHud.class)
 public abstract class MixinPlayerListHud {
 
@@ -103,8 +101,8 @@ public abstract class MixinPlayerListHud {
                     text,
                     (int) (x / scale) + (int) (width / scale) - textRenderer.getWidth(text),
                     (int) (y / scale),
-                    ColorUtils.interpolate(Color.GREEN, Color.YELLOW, Color.RED,
-                            Math.min((float) latency / betterTabListModule.highPing.getValue(), 1.0f))
+                    ColorUtils.interpolate(betterTabListModule.lowPingColor.getValue(), betterTabListModule.averagePingColor.getValue(),
+                            betterTabListModule.highPingColor.getValue(), Math.min((float) latency / betterTabListModule.highPing.getValue(), 1.0f))
             );
 
             context.getMatrices().pop();
