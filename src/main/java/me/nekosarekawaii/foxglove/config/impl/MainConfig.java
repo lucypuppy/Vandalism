@@ -156,7 +156,7 @@ public class MainConfig extends ValueableConfig {
             "Change the Fire Overlay Offset",
             this.visualsCategory,
             0.0f,
-            0.4f,
+            0.0f,
             0.4f,
             "%.2f"
     );
