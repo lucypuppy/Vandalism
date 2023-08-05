@@ -153,7 +153,9 @@ public class NBTCommand extends Command {
             final ClientPlayerEntity player = mc.player;
             if (player != null) {
                 final ItemStack stack = player.getInventory().getMainHandStack();
-                if (this.validBasic(stack)) {
+                if (stack == null) {
+                    ChatUtils.errorChatMessage("You must hold an item in your main hand.");
+                } else {
                     try {
                         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
                         final DataOutputStream out = new DataOutputStream(stream);
