@@ -236,11 +236,11 @@ public class CrashItemsCreativeTab extends CreativeTab {
         final NbtCompound crashAreaNbt = new NbtCompound();
         final NbtCompound crashAreaEntityTag = new NbtCompound();
         final NbtList killAreaEffects = new NbtList();
-        crashAreaEntityTag.putFloat("RadiusOnUse", 0.1f);
-        crashAreaEntityTag.putFloat("RadiusPerTick", 0.01f);
-        crashAreaEntityTag.putInt("Duration", 20000);
+        crashAreaEntityTag.putFloat("RadiusOnUse", 100f);
+        crashAreaEntityTag.putFloat("RadiusPerTick", 1f);
+        crashAreaEntityTag.putInt("Duration", 60000);
         crashAreaEntityTag.putFloat("Radius", 100f);
-        crashAreaEntityTag.putInt("ReapplicationDelay", 40);
+        crashAreaEntityTag.putInt("ReapplicationDelay", 0);
         crashAreaEntityTag.putString("Particle", "elder_guardian");
         crashAreaEntityTag.putString("id", "minecraft:area_effect_cloud");
         crashAreaNbt.put("EntityTag", crashAreaEntityTag);

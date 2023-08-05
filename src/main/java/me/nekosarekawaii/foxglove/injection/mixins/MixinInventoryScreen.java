@@ -25,13 +25,13 @@ public abstract class MixinInventoryScreen extends AbstractInventoryScreen<Playe
     }
 
     @Inject(method = "init", at = @At("RETURN"))
-    public void injectInit(CallbackInfo ci) {
+    public void injectInit(final CallbackInfo ci) {
         if (Foxglove.getInstance().getConfigManager().getMainConfig().craftingDupe.getValue()) {
             this.addDrawableChild(ButtonWidget.builder(Text.literal("Crafting Dupe (1.17.0)"), button -> {
-                final var outputSlot = this.getScreenHandler().getSlot(0);
-
-                onMouseClick(outputSlot, outputSlot.id, 0, SlotActionType.THROW);
+                final Slot outputSlot = this.getScreenHandler().getSlot(0);
+                this.onMouseClick(outputSlot, outputSlot.id, 0, SlotActionType.THROW);
             }).position(5, 5).size(110, 20).build());
         }
     }
+
 }
