@@ -6,10 +6,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.feature.FeatureList;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.development.TestCommand;
-import me.nekosarekawaii.foxglove.feature.impl.command.impl.exploit.CommandBlockStateCommand;
-import me.nekosarekawaii.foxglove.feature.impl.command.impl.exploit.PluginsCommand;
-import me.nekosarekawaii.foxglove.feature.impl.command.impl.exploit.SoundEntitySpawnEggCommand;
-import me.nekosarekawaii.foxglove.feature.impl.command.impl.exploit.TeleportEntitySpawnEggCommand;
+import me.nekosarekawaii.foxglove.feature.impl.command.impl.exploit.*;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.*;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.movement.ClipCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.render.ClientsideGameModeCommand;
@@ -54,7 +51,8 @@ public class CommandRegistry {
                 new TeleportEntitySpawnEggCommand(),
                 new SoundEntitySpawnEggCommand(),
                 new ClipCommand(),
-                new ServerBrandCommand()
+                new ServerBrandCommand(),
+                new SkriptDupeCommand()
         );
     }
 
