@@ -9,6 +9,8 @@ import me.nekosarekawaii.foxglove.feature.impl.command.impl.development.TestComm
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.exploit.*;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.misc.*;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.movement.ClipCommand;
+import me.nekosarekawaii.foxglove.feature.impl.command.impl.movement.HClipCommand;
+import me.nekosarekawaii.foxglove.feature.impl.command.impl.movement.VClipCommand;
 import me.nekosarekawaii.foxglove.feature.impl.command.impl.render.ClientsideGameModeCommand;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommandSource;
@@ -51,6 +53,8 @@ public class CommandRegistry {
                 new TeleportEntitySpawnEggCommand(),
                 new SoundEntitySpawnEggCommand(),
                 new ClipCommand(),
+                new VClipCommand(),
+                new HClipCommand(),
                 new ServerBrandCommand(),
                 new SkriptDupeCommand()
         );
