@@ -232,6 +232,26 @@ public class CrashItemsCreativeTab extends CreativeTab {
         );
         current.add(serverCrashEntity);
 
+        final ItemStack crashArea = new ItemStack(Items.SALMON_SPAWN_EGG);
+        final NbtCompound crashAreaNbt = new NbtCompound();
+        final NbtCompound crashAreaEntityTag = new NbtCompound();
+        final NbtList killAreaEffects = new NbtList();
+        crashAreaEntityTag.putFloat("RadiusOnUse", 0.1f);
+        crashAreaEntityTag.putFloat("RadiusPerTick", 0.01f);
+        crashAreaEntityTag.putInt("Duration", 20000);
+        crashAreaEntityTag.putFloat("Radius", 100f);
+        crashAreaEntityTag.putInt("ReapplicationDelay", 40);
+        crashAreaEntityTag.putString("Particle", "elder_guardian");
+        crashAreaEntityTag.putString("id", "minecraft:area_effect_cloud");
+        crashAreaNbt.put("EntityTag", crashAreaEntityTag);
+        crashArea.setNbt(crashAreaNbt);
+        this.putClientsideName(crashArea,
+                Text.literal(
+                        Formatting.RED + "Crash Area"
+                )
+        );
+        current.add(crashArea);
+
         return current;
     }
 

@@ -1,5 +1,6 @@
 package me.nekosarekawaii.foxglove.injection.mixins;
 
+import me.nekosarekawaii.foxglove.Foxglove;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -24,11 +25,13 @@ public abstract class MixinInventoryScreen extends AbstractInventoryScreen<Playe
     }
 
     @Inject(method = "init", at = @At("RETURN"))
-    public void hookCraftingDupe(CallbackInfo ci) {
-        this.addDrawableChild(ButtonWidget.builder(Text.literal("Crafting Dupe (1.17.0)"), button -> {
-            final var outputSlot = this.getScreenHandler().getSlot(0);
+    public void injectInit(CallbackInfo ci) {
+        if (Foxglove.getInstance().getConfigManager().getMainConfig().craftingDupe.getValue()) {
+            this.addDrawableChild(ButtonWidget.builder(Text.literal("Crafting Dupe (1.17.0)"), button -> {
+                final var outputSlot = this.getScreenHandler().getSlot(0);
 
-            onMouseClick(outputSlot, outputSlot.id, 0, SlotActionType.THROW);
-        }).position(5, 5).size(110, 20).build());
+                onMouseClick(outputSlot, outputSlot.id, 0, SlotActionType.THROW);
+            }).position(5, 5).size(110, 20).build());
+        }
     }
 }
