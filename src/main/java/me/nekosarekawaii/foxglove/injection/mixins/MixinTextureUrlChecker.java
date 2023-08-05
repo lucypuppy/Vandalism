@@ -16,7 +16,8 @@ public abstract class MixinTextureUrlChecker {
     private static void injectIsAllowedTextureDomain(final String url, final CallbackInfoReturnable<Boolean> cir) {
         final ExploitFixerModule exploitFixerModule = Foxglove.getInstance().getModuleRegistry().getExploitFixerModule();
         if (exploitFixerModule.isEnabled() && exploitFixerModule.blockInvalidTextureUrls.getValue()) {
-            if (!StringUtils.startsWithIgnoreCase(url, exploitFixerModule.correctTextureUrlStart)) {
+            //TODO: This has an edge case where another player could know this and send a url that starts with :// and our check would get bypassed. I will fix this ~ NekosAreKawaii
+            if (!StringUtils.startsWithIgnoreCase(url.toLowerCase().split("://")[1], exploitFixerModule.correctTextureUrlStart)) {
                 cir.setReturnValue(false);
             }
         }
