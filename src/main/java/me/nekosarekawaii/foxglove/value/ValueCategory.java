@@ -22,7 +22,7 @@ public class ValueCategory extends Value<ObjectArrayList<Value<?>>> implements I
     @Override
     public void render() {
         if (ImGui.treeNodeEx(this.getName() + "##" + this.getHashIdent())) {
-            renderValues();
+            this.renderValues();
             ImGui.treePop();
         }
     }
@@ -35,6 +35,13 @@ public class ValueCategory extends Value<ObjectArrayList<Value<?>>> implements I
     @Override
     public Config getConfig() {
         return this.getParent().getConfig();
+    }
+
+    @Override
+    public void resetValue() {
+        for (final Value<?> value : this.getValue()) {
+            value.resetValue();
+        }
     }
 
 }
