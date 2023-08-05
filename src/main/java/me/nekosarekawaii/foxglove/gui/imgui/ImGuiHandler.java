@@ -19,7 +19,7 @@ public class ImGuiHandler implements KeyboardListener, Render2DListener {
 
     private boolean
             renderBar = false,
-            renderModulesMenu = false,
+            renderConfigMenu = false,
             renderAltManagerMenu = false,
             renderNameHistoryMenu = false,
             renderServerPingerMenu = false;
@@ -37,8 +37,8 @@ public class ImGuiHandler implements KeyboardListener, Render2DListener {
         this.imGuiRenderer.addRenderInterface(io -> {
             if (this.renderBar) {
                 if (ImGui.beginMainMenuBar()) {
-                    if (ImGui.button("Modules")) {
-                        this.renderModulesMenu = !this.renderModulesMenu;
+                    if (ImGui.button("Config")) {
+                        this.renderConfigMenu = !this.renderConfigMenu;
                     }
                     if (ImGui.button("Alt Manager")) {
                         this.renderAltManagerMenu = !this.renderAltManagerMenu;
@@ -52,14 +52,14 @@ public class ImGuiHandler implements KeyboardListener, Render2DListener {
                     ImGui.endMainMenuBar();
                 }
             }
-            if (this.renderNameHistoryMenu) {
-                NameHistoryMenu.render();
+            if (this.renderConfigMenu) {
+                ConfigMenu.render();
             }
             if (this.renderAltManagerMenu) {
                 AltManagerMenu.render();
             }
-            if (this.renderModulesMenu) {
-                ModulesMenu.render();
+            if (this.renderNameHistoryMenu) {
+                NameHistoryMenu.render();
             }
             if (this.renderServerPingerMenu) {
                 ServerPingerMenu.render();
