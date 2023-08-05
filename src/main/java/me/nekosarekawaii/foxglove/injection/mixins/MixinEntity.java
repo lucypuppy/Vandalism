@@ -51,7 +51,7 @@ public abstract class MixinEntity {
     }
 
     @Redirect(method = "adjustMovementForCollisions(Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/Vec3d;", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getStepHeight()F"))
-    private float hookStepHeight(final Entity entity) {
+    private float injectAdjustMovementForCollisions(final Entity entity) {
         if (MinecraftClient.getInstance().player == ((Entity) (Object) this)) {
             final StepListener.StepEvent stepEvent = new StepListener.StepEvent(entity.getStepHeight());
             DietrichEvents2.global().postInternal(StepListener.StepEvent.ID, stepEvent);

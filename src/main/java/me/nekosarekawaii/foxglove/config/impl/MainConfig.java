@@ -96,6 +96,22 @@ public class MainConfig extends ValueableConfig {
             10000
     ).visibleConsumer(this.customChatLength::getValue);
 
+    public final ValueCategory exploitCategory = new ValueCategory("Exploit", "Exploit settings", this);
+
+    public final Value<Boolean> lecternCrasher = new BooleanValue(
+            "Lectern Crasher",
+            "Allows you to crash the Server with a Lectern.",
+            this.exploitCategory,
+            true
+    );
+
+    public final Value<Boolean> craftingDupe = new BooleanValue(
+            "Crafting Dupe",
+            "Allows you to dupe items.",
+            this.exploitCategory,
+            true
+    );
+
     public final ValueCategory accessibilityCategory = new ValueCategory("Accessibility", "Accessibility settings", this);
 
     public final Value<Boolean> spoofIsCreativeLevelTwoOp = new BooleanValue(
