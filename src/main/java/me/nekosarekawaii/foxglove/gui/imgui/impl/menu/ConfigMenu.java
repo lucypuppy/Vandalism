@@ -12,29 +12,29 @@ import me.nekosarekawaii.foxglove.value.Value;
 
 import java.util.List;
 
-public class ModulesMenu {
+public class ConfigMenu {
 
     public static void render() {
-        if (ImGui.begin("Modules", ImGuiWindowFlags.NoCollapse)) {
+        if (ImGui.begin("Config", ImGuiWindowFlags.NoCollapse)) {
             final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();
             if (modules.isEmpty()) {
                 ImGui.end();
                 return;
             }
 
-            if (ImGui.beginTabBar("moduleMenuTabBar")) {
-                if (ImGui.beginTabItem("Config##category")) {
-                    final MainConfig values = Foxglove.getInstance().getConfigManager().getMainConfig();
+            if (ImGui.beginTabBar("configTabBar")) {
+                if (ImGui.beginTabItem("Main##mainconfigtabitem")) {
+                    final MainConfig mainConfigValues = Foxglove.getInstance().getConfigManager().getMainConfig();
 
-                    if (ImGui.button("Reset Config")) {
-                        for (final Value<?> value : values.getValues()) {
+                    if (ImGui.button("Reset Main Config##mainconfigresetbutton")) {
+                        for (final Value<?> value : mainConfigValues.getValues()) {
                             value.resetValue();
                         }
                     }
 
                     ImGui.separator();
 
-                    values.renderValues();
+                    mainConfigValues.renderValues();
                     ImGui.endTabItem();
                 }
 
@@ -44,10 +44,10 @@ public class ModulesMenu {
                     if (modulesByCategory.isEmpty())
                         continue;
 
-                    if (ImGui.beginTabItem(featureCategory.normalName() + "##category")) {
+                    if (ImGui.beginTabItem(featureCategory.normalName() + " Modules##modulesfeaturecategory")) {
                         for (final Module module : modulesByCategory) {
-                            if (ImGui.collapsingHeader(module.getName() + "##" + featureCategory.normalName() + "module")) {
-                                final String moduleIdent = "##" + module.getName() + featureCategory.normalName();
+                            if (ImGui.collapsingHeader(module.getName() + "##modules" + featureCategory.normalName() + "module")) {
+                                final String moduleIdent = "##" + module.getName() + featureCategory.normalName() + "module";
                                 final List<Value<?>> values = module.getValues();
 
                                 if (module.isExperimental())
