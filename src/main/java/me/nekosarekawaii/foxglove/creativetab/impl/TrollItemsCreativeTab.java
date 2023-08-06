@@ -191,7 +191,7 @@ public class TrollItemsCreativeTab extends CreativeTab {
         final ItemStack consoleErrorHead = new ItemStack(Items.PLAYER_HEAD);
         final NbtCompound consoleErrorHeadNbt = new NbtCompound();
         final NbtCompound consoleErrorHeadSkullOwner = new NbtCompound();
-        consoleErrorHeadSkullOwner.putIntArray("Id", new int[]{-1543419622, 14829807, -1493208798, 1828353364});
+        consoleErrorHeadSkullOwner.putIntArray("Id", new int[]{1, 2, 3, 4});
         consoleErrorHeadSkullOwner.putString("Name", " ");
         consoleErrorHeadNbt.put("SkullOwner", consoleErrorHeadSkullOwner);
         consoleErrorHead.setNbt(consoleErrorHeadNbt);
