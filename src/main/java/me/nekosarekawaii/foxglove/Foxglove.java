@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.File;
-import java.lang.management.ManagementFactory;
 import java.util.Collection;
 
 public class Foxglove {
@@ -37,7 +36,7 @@ public class Foxglove {
 
     private final File dir;
 
-    private final boolean firstStart, jvmDebugMode;
+    private final boolean firstStart;
 
     private final CreativeTabRegistry creativeTabRegistry;
 
@@ -49,7 +48,7 @@ public class Foxglove {
 
     private ImGuiHandler imGuiHandler;
 
-    private CustomServerList selectedServerList = null; //null means default serverlist;
+    private CustomServerList selectedServerList;
 
     public Foxglove() {
         this.name = "Foxglove";
@@ -71,15 +70,13 @@ public class Foxglove {
                 System.exit(-1);
             }
         }
-        this.jvmDebugMode = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("jdwp");
         this.windowTitle = String.format(
-                "%s %s made by %s%s",
+                "%s made by %s",
                 this.name,
-                this.version,
-                String.join(", ", this.authors),
-                this.jvmDebugMode ? " - JVM Debug Mode" : ""
+                String.join(", ", this.authors)
         );
         this.creativeTabRegistry = new CreativeTabRegistry();
+        this.selectedServerList = null;
     }
 
     public void start() {
@@ -139,10 +136,6 @@ public class Foxglove {
 
     public boolean isFirstStart() {
         return this.firstStart;
-    }
-
-    public boolean isJvmDebugMode() {
-        return this.jvmDebugMode;
     }
 
     public ModuleRegistry getModuleRegistry() {
