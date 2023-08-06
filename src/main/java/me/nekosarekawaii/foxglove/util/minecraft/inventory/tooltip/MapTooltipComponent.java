@@ -14,7 +14,7 @@ import net.minecraft.util.Identifier;
 
 public class MapTooltipComponent implements TooltipComponent, ITooltipData {
 
-    private static final Identifier TEXTURE_MAP_BACKGROUND = new Identifier("textures/map/map_background.png");
+    private final static Identifier TEXTURE_MAP_BACKGROUND = new Identifier("textures/map/map_background.png");
     private final int mapId;
     private final float scale = 1.0f;
 

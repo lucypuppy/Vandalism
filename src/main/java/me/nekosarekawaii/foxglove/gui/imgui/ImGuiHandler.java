@@ -22,7 +22,8 @@ public class ImGuiHandler implements KeyboardListener, Render2DListener {
             renderConfigMenu = false,
             renderAltManagerMenu = false,
             renderNameHistoryMenu = false,
-            renderServerPingerMenu = false;
+            renderServerPingerMenu = false,
+            renderBugScraperMenu = false;
 
     private final NBTEditMenu nbtEditMenu;
 
@@ -37,17 +38,20 @@ public class ImGuiHandler implements KeyboardListener, Render2DListener {
         this.imGuiRenderer.addRenderInterface(io -> {
             if (this.renderBar) {
                 if (ImGui.beginMainMenuBar()) {
-                    if (ImGui.button("Config")) {
+                    if (ImGui.button("Config##barbutton")) {
                         this.renderConfigMenu = !this.renderConfigMenu;
                     }
-                    if (ImGui.button("Alt Manager")) {
+                    if (ImGui.button("Alt Manager##barbutton")) {
                         this.renderAltManagerMenu = !this.renderAltManagerMenu;
                     }
-                    if (ImGui.button("Name History")) {
+                    if (ImGui.button("Name History##barbutton")) {
                         this.renderNameHistoryMenu = !this.renderNameHistoryMenu;
                     }
-                    if (ImGui.button("Server Pinger")) {
+                    if (ImGui.button("Server Pinger##barbutton")) {
                         this.renderServerPingerMenu = !this.renderServerPingerMenu;
+                    }
+                    if (ImGui.button("Bug Scraper##barbutton")) {
+                        this.renderBugScraperMenu = !this.renderBugScraperMenu;
                     }
                     ImGui.endMainMenuBar();
                 }
@@ -63,6 +67,9 @@ public class ImGuiHandler implements KeyboardListener, Render2DListener {
             }
             if (this.renderServerPingerMenu) {
                 ServerPingerMenu.render();
+            }
+            if (this.renderBugScraperMenu) {
+                BugScraperMenu.render();
             }
             this.nbtEditMenu.render();
         });

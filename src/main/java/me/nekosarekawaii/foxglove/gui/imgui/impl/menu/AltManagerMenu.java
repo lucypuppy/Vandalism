@@ -45,7 +45,7 @@ public class AltManagerMenu {
         if (ImGui.begin("Alt Manager")) {
 
             if (ImGui.beginTabBar("")) {
-                if (ImGui.beginTabItem("List")) {
+                if (ImGui.beginTabItem("List##altmanager")) {
                     renderCurrentAccount();
                     for (final Account account : Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts()) {
                         ImGui.text(account.getUsername() + " | " + account.getType());
@@ -68,12 +68,12 @@ public class AltManagerMenu {
                     ImGui.endTabItem();
                 }
 
-                if (ImGui.beginTabItem("Add")) {
+                if (ImGui.beginTabItem("Add##altmanager")) {
                     renderCurrentAccount();
-                    ImGui.inputText("E-Mail", email);
-                    ImGui.inputText("Password", password, ImGuiInputTextFlags.Password);
+                    ImGui.inputText("E-Mail##altmanager", email);
+                    ImGui.inputText("Password##altmanager", password, ImGuiInputTextFlags.Password);
 
-                    if (ImGui.button("Add Microsoft")) {
+                    if (ImGui.button("Add Microsoft##altmanager")) {
                         final String emailValue = email.get().replace(" ", ""), passwordValue = password.get().replace(" ", "");
                         if (!emailValue.isEmpty() && !passwordValue.isEmpty()) {
                             executor.submit(() -> {
@@ -93,10 +93,10 @@ public class AltManagerMenu {
                     }
 
                     ImGui.newLine();
-                    ImGui.inputText("Username", username);
-                    ImGui.inputText("UUID", uuid);
+                    ImGui.inputText("Username##altmanager", username);
+                    ImGui.inputText("UUID##altmanager", uuid);
 
-                    if (ImGui.button("Add Cracked")) {
+                    if (ImGui.button("Add Cracked##altmanager")) {
                         final String usernameValue = username.get().replace(" ", "");
                         if (!usernameValue.isEmpty()) {
                             final ObjectArrayList<Account> accounts = Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts();
