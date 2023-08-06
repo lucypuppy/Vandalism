@@ -11,6 +11,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+//TODO: Request Java Power Kit from EnZaXD and remove this class.
 public class NameHistoryMenu {
 
     private final static DateFormat formatter = new SimpleDateFormat("hh:mm:ss a, dd/MM/yyyy");
@@ -28,54 +29,57 @@ public class NameHistoryMenu {
     public static void render() {
         if (ImGui.begin("Name History", ImGuiWindowFlags.NoCollapse)) {
             ImGui.text("State: " + currentState.getMessage());
-            ImGui.inputText("Username", username);
+            ImGui.inputText("Username##namehistory", username);
             final String usernameValue = username.get().replace(" ", "");
             if (usernameValue.length() > 2) {
-                if (ImGui.button("Get")) {
-                    currentData.clear();
-                    thread = new Thread(() -> {
-                        String uuid = "";
-                        try {
-                            currentState = State.WAITING_MOJANG_RESPONSE;
-                            final Player player = Http.get("https://api.mojang.com/users/profiles/minecraft/" + usernameValue).sendJson(Player.class);
-                            if (player != null) uuid = player.id();
-                            else currentState = State.MOJANG_FETCH_ERROR;
-                        } catch (final Exception ignored) {
-                            currentState = State.MOJANG_FETCH_ERROR;
-                            return;
-                        }
-                        if (uuid.isEmpty()) {
-                            currentState = State.FAILED;
-                            return;
-                        }
-                        if (currentState == State.FAILED) return;
-                        currentState = State.WAITING_LABY_RESPONSE;
-                        final String labyUrl = "https://laby.net/api/v2/user/" + uuid + "/get-profile";
-                        final NameHistory history = Http.get(labyUrl).sendJson(NameHistory.class);
-                        if (history == null || history.username_history == null || history.username_history.length == 0) {
-                            currentState = State.FAILED;
-                            return;
-                        }
-                        currentState = State.SUCCESS;
-                        lastUsername = usernameValue;
-                        lastUUID = uuid;
-                        for (final Name entry : history.username_history) {
-                            final StringBuilder entryBuilder = new StringBuilder(entry.name);
-                            if (entry.changed_at != null && entry.changed_at.getTime() != 0) {
-                                entryBuilder.append(" | Changed at: ").append(formatter.format(entry.changed_at));
+                if (currentState.equals(State.WAITING_INPUT)) {
+                    if (ImGui.button("Get##namehistory")) {
+                        currentData.clear();
+                        thread = new Thread(() -> {
+                            String uuid = "";
+                            try {
+                                currentState = State.WAITING_MOJANG_RESPONSE;
+                                final Player player = Http.get("https://api.mojang.com/users/profiles/minecraft/" + usernameValue).sendJson(Player.class);
+                                if (player != null) uuid = player.id();
+                                else currentState = State.MOJANG_FETCH_ERROR;
+                            } catch (final Exception ignored) {
+                                currentState = State.MOJANG_FETCH_ERROR;
+                                return;
                             }
-                            entryBuilder.append(" | Accurate: ").append(entry.accurate);
-                            currentData.add(entryBuilder.toString());
-                        }
-                    });
-                    thread.start();
+                            if (uuid.isEmpty()) {
+                                currentState = State.FAILED;
+                                return;
+                            }
+                            if (currentState == State.FAILED) return;
+                            currentState = State.WAITING_LABY_RESPONSE;
+                            final String labyUrl = "https://laby.net/api/v2/user/" + uuid + "/get-profile";
+                            final NameHistory history = Http.get(labyUrl).sendJson(NameHistory.class);
+                            if (history == null || history.username_history == null || history.username_history.length == 0) {
+                                currentState = State.FAILED;
+                                return;
+                            }
+                            currentState = State.SUCCESS;
+                            lastUsername = usernameValue;
+                            lastUUID = uuid;
+                            for (final Name entry : history.username_history) {
+                                final StringBuilder entryBuilder = new StringBuilder(entry.name);
+                                if (entry.changed_at != null && entry.changed_at.getTime() != 0) {
+                                    entryBuilder.append(" | Changed at: ").append(formatter.format(entry.changed_at));
+                                }
+                                entryBuilder.append(" | Accurate: ").append(entry.accurate);
+                                currentData.add(entryBuilder.toString());
+                            }
+                        });
+                        thread.start();
+                    }
                 }
             }
             if (!currentData.isEmpty()) {
                 ImGui.text("UUID: " + lastUUID);
                 ImGui.sameLine();
-                if (ImGui.button("Copy UUID")) MinecraftClient.getInstance().keyboard.setClipboard(lastUUID);
-                if (ImGui.button("Copy Name History")) {
+                if (ImGui.button("Copy UUID##namehistory"))
+                    MinecraftClient.getInstance().keyboard.setClipboard(lastUUID);
+                if (ImGui.button("Copy Name History##namehistory")) {
                     final StringBuilder dataBuilder = new StringBuilder(lastUsername + "'s Name History\n\n");
                     for (int i = 0; i < currentData.size(); i++) {
                         final int currentIndex = i + 1;
@@ -83,17 +87,17 @@ public class NameHistoryMenu {
                     }
                     MinecraftClient.getInstance().keyboard.setClipboard(dataBuilder.toString());
                 }
-                if (ImGui.button("Clear")) {
+                if (ImGui.button("Clear##namehistory")) {
                     currentData.clear();
                     currentState = State.WAITING_INPUT;
                 }
                 ImGui.text(lastUsername + "'s Name History");
-                if (ImGui.beginListBox("##UsersNameHistory", 600, 500)) {
+                if (ImGui.beginListBox("##Usersnamehistory", 600, 500)) {
                     for (int i = 0; i < currentData.size(); i++) {
                         final String dataEntry = currentData.get(i);
                         ImGui.text(dataEntry);
                         ImGui.sameLine();
-                        if (ImGui.button("Copy Entry##" + i)) {
+                        if (ImGui.button("Copy Entry##" + i + "namehistory")) {
                             MinecraftClient.getInstance().keyboard.setClipboard(dataEntry);
                         }
                     }
@@ -104,7 +108,7 @@ public class NameHistoryMenu {
                 case FAILED, ABORTED, MOJANG_FETCH_ERROR, WAITING_INPUT, SUCCESS -> {
                 }
                 default -> {
-                    if (ImGui.button("Cancel")) {
+                    if (ImGui.button("Cancel##namehistory")) {
                         currentState = State.ABORTED;
                         if (thread.isAlive()) thread.interrupt();
                     }

@@ -40,31 +40,31 @@ public class ServerPingerMenu {
         if (ImGui.begin("Server Pinger", ImGuiWindowFlags.NoCollapse)) {
             ImGui.text("State: " + currentState.getMessage());
             ImGui.text("Query State: " + queryState.getMessage());
-            ImGui.inputText("Hostname", hostname);
+            ImGui.inputText("Hostname##serverpinger", hostname);
             ImGui.sameLine();
-            if (ImGui.button("Clear##Hostname")) {
+            if (ImGui.button("Clear##Hostnameserverpinger")) {
                 hostname.clear();
             }
             if (ImGui.inputInt("Port", port, 1)) {
                 port.set(Math.max(1, Math.min(port.get(), 65535)));
             }
             ImGui.sameLine();
-            if (ImGui.button("Reset##Port")) {
+            if (ImGui.button("Reset##Portserverpinger")) {
                 port.set(25565);
             }
-            if (ImGui.inputInt("Query Port", queryPort, 1)) {
+            if (ImGui.inputInt("Query Port##serverpinger", queryPort, 1)) {
                 queryPort.set(Math.max(1, Math.min(queryPort.get(), 65535)));
             }
             ImGui.sameLine();
-            if (ImGui.button("Reset##QueryPort")) {
+            if (ImGui.button("Reset##QueryPortserverpinger")) {
                 queryPort.set(25565);
             }
-            ImGui.inputInt("Protocol", protocol, 1);
+            ImGui.inputInt("Protocol##serverpinger", protocol, 1);
             ImGui.sameLine();
-            if (ImGui.button("Reset##Protocol")) {
+            if (ImGui.button("Reset##Protocolserverpinger")) {
                 protocol.set(SharedConstants.getProtocolVersion());
             }
-            if (ImGui.inputInt("Auto Ping Time", autoPingTime, 1)) {
+            if (ImGui.inputInt("Auto Ping Time##serverpinger", autoPingTime, 1)) {
                 autoPingTime.set(Math.max(1000, Math.min(autoPingTime.get(), 60000)));
             }
             if (autoPing && !hostname.isEmpty()) {
@@ -76,38 +76,38 @@ public class ServerPingerMenu {
                 } else ImGui.text("Pinging...");
             }
             if (!hostname.isEmpty() && currentState != State.WAITING_RESPONSE) {
-                if (ImGui.button("Auto Ping: " + (autoPing ? "Disable" : "Enable"))) {
+                if (ImGui.button("Auto Ping: " + (autoPing ? "Disable" : "Enable") + "##serverpinger")) {
                     autoPing = !autoPing;
                 }
                 if (!autoPing) {
                     ImGui.sameLine();
-                    if (ImGui.button("Ping")) {
+                    if (ImGui.button("Ping##serverpinger")) {
                         ping();
                     }
                 }
             }
             if (mcPingResponse != null) {
-                if (ImGui.button("Clear##ServerInfo")) {
+                if (ImGui.button("Clear##ServerInfoserverpinger")) {
                     clear();
                 }
             }
             if (mcPingResponse != null) {
                 if (mcPingResponse.players.sample.length > 0) {
-                    if (ImGui.button("Player List: " + (showPlayerList ? "Disable" : "Enable"))) {
+                    if (ImGui.button("Player List: " + (showPlayerList ? "Disable" : "Enable") + "##serverpinger")) {
                         showPlayerList = !showPlayerList;
                     }
                 }
                 if ((mcPingResponse.modInfo != null && mcPingResponse.modInfo.modList.length > 0) || (mcPingResponse.forgeData != null && mcPingResponse.forgeData.mods.length > 0)) {
-                    if (ImGui.button("Mods: " + (showMods ? "Disable" : "Enable"))) {
+                    if (ImGui.button("Mods: " + (showMods ? "Disable" : "Enable") + "##serverpinger")) {
                         showMods = !showMods;
                     }
                 }
                 if (queryPingResponse != null && queryPingResponse.plugins.sample.length > 0) {
-                    if (ImGui.button("Plugins: " + (showPlugins ? "Disable" : "Enable"))) {
+                    if (ImGui.button("Plugins: " + (showPlugins ? "Disable" : "Enable") + "##serverpinger")) {
                         showPlugins = !showPlugins;
                     }
                 }
-                if (ImGui.beginListBox("##ServerInfo", 0, 500)) {
+                if (ImGui.beginListBox("##ServerInfoserverpinger", 0, 500)) {
                     ImGui.text("[Server Address]");
                     ImGui.text(mcPingResponse.server.ip + ":" + mcPingResponse.server.port);
                     ImGui.newLine();
@@ -136,13 +136,13 @@ public class ServerPingerMenu {
             ImGui.end();
         }
         if (showPlayerList && mcPingResponse != null && mcPingResponse.players.sample.length > 0) {
-            if (ImGui.begin("Player List", ImGuiWindowFlags.NoCollapse)) {
-                if (ImGui.beginListBox("##PlayerList", 600, 500)) {
+            if (ImGui.begin("Player List##serverpinger", ImGuiWindowFlags.NoCollapse)) {
+                if (ImGui.beginListBox("##PlayerListserverpinger", 600, 500)) {
                     for (final MCPingResponse.Players.Player player : mcPingResponse.players.sample) {
                         final String playerText = player.name + " (" + player.id + ")";
                         ImGui.text(playerText);
                         ImGui.sameLine();
-                        if (ImGui.button("Copy##" + playerText))
+                        if (ImGui.button("Copy##" + playerText + "serverpinger"))
                             MinecraftClient.getInstance().keyboard.setClipboard(playerText);
                     }
                     ImGui.endListBox();
@@ -151,15 +151,15 @@ public class ServerPingerMenu {
             }
         }
         if (showMods && mcPingResponse != null && ((mcPingResponse.modInfo != null && mcPingResponse.modInfo.modList.length > 0) || (mcPingResponse.forgeData != null && mcPingResponse.forgeData.mods.length > 0))) {
-            if (ImGui.begin("Mods", ImGuiWindowFlags.NoCollapse)) {
-                if (ImGui.beginListBox("##Mods", 600, 650)) {
+            if (ImGui.begin("Mods##serverpinger", ImGuiWindowFlags.NoCollapse)) {
+                if (ImGui.beginListBox("##Modsserverpinger", 600, 650)) {
                     if (mcPingResponse.modInfo != null) {
                         ImGui.text("[Mod Info Mods]");
                         for (final MCPingResponse.ModInfo.Mod mod : mcPingResponse.modInfo.modList) {
                             final String modText = mod.modid + " (" + mod.version + ")";
                             ImGui.text(modText);
                             ImGui.sameLine();
-                            if (ImGui.button("Copy##" + modText))
+                            if (ImGui.button("Copy##" + modText + "serverpinger"))
                                 MinecraftClient.getInstance().keyboard.setClipboard(modText);
                         }
                         ImGui.newLine();
@@ -170,7 +170,7 @@ public class ServerPingerMenu {
                             final String modText = mod.modId + " (" + mod.modmarker + ")";
                             ImGui.text(mod.modId + " (" + mod.modmarker + ")");
                             ImGui.sameLine();
-                            if (ImGui.button("Copy##" + modText))
+                            if (ImGui.button("Copy##" + modText + "serverpinger"))
                                 MinecraftClient.getInstance().keyboard.setClipboard(modText);
                         }
                     }
@@ -180,12 +180,12 @@ public class ServerPingerMenu {
             }
         }
         if (showPlugins && queryPingResponse != null && queryPingResponse.plugins.sample.length > 0) {
-            if (ImGui.begin("Plugins", ImGuiWindowFlags.NoCollapse)) {
-                if (ImGui.beginListBox("##Plugins", 350, 500)) {
+            if (ImGui.begin("Plugins##serverpinger", ImGuiWindowFlags.NoCollapse)) {
+                if (ImGui.beginListBox("##Pluginsserverpinger", 350, 500)) {
                     for (final String plugin : queryPingResponse.plugins.sample) {
                         ImGui.text(plugin);
                         ImGui.sameLine();
-                        if (ImGui.button("Copy##" + plugin))
+                        if (ImGui.button("Copy##" + plugin + "serverpinger"))
                             MinecraftClient.getInstance().keyboard.setClipboard(plugin);
                     }
                     ImGui.endListBox();
@@ -230,6 +230,7 @@ public class ServerPingerMenu {
                     })
                     .finishHandler(response -> {
                         mcPingResponse = response;
+                        //TODO: Recode this.
                         final List<StringVisitable> versionNameLines = MinecraftClient.getInstance().textRenderer.getTextHandler().wrapLines(mcPingResponse.version.name, 310, Style.EMPTY);
                         for (final StringVisitable versionNameLine : versionNameLines) {
                             versionName.add(versionNameLine.getString());
