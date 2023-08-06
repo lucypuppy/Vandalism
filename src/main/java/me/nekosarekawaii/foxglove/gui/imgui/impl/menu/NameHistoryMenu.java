@@ -32,7 +32,7 @@ public class NameHistoryMenu {
             ImGui.inputText("Username##namehistory", username);
             final String usernameValue = username.get().replace(" ", "");
             if (usernameValue.length() > 2) {
-                if (currentState.equals(State.WAITING_INPUT)) {
+                if (!currentState.name().contains("WAITING")) {
                     if (ImGui.button("Get##namehistory")) {
                         currentData.clear();
                         thread = new Thread(() -> {
