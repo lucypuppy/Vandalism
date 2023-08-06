@@ -35,7 +35,7 @@ public abstract class MixinEntityRenderer<T extends Entity> {
     )
     private void injectRenderLabelIfPresent(final T entity, Text text, final MatrixStack matrixStack, final VertexConsumerProvider vertexConsumerProvider, final int light, final CallbackInfo ci) {
         final ExploitFixerModule exploitFixerModule = Foxglove.getInstance().getModuleRegistry().getExploitFixerModule();
-        if (exploitFixerModule.isEnabled()) {
+        if (exploitFixerModule.isEnabled() && exploitFixerModule.modifyDisplayNameLength.getValue()) {
             final String oldTextString = text.getString();
             final int oldLength = oldTextString.length(), maxLength = exploitFixerModule.maxDisplayNameLength.getValue();
             if (oldLength > maxLength) {
