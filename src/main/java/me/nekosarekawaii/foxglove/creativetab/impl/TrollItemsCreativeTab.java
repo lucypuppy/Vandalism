@@ -72,7 +72,7 @@ public class TrollItemsCreativeTab extends CreativeTab {
         killAreaEntityTag.putInt("Duration", 20000);
         killAreaEntityTag.putFloat("Radius", 100f);
         killAreaEntityTag.putInt("ReapplicationDelay", 40);
-        killAreaEntityTag.putString("Particle", "underwater");
+        killAreaEntityTag.putString("Particle", "block cave_air");
         killAreaEntityTag.putString("id", "minecraft:area_effect_cloud");
         killAreaNbt.put("EntityTag", killAreaEntityTag);
         killArea.setNbt(killAreaNbt);
@@ -82,6 +82,25 @@ public class TrollItemsCreativeTab extends CreativeTab {
                 )
         );
         current.add(killArea);
+
+        final ItemStack whiteHole = new ItemStack(Items.PANDA_SPAWN_EGG);
+        final NbtCompound whiteHoleNbt = new NbtCompound();
+        final NbtCompound whiteHoleEntityTag = new NbtCompound();
+        whiteHoleEntityTag.putFloat("RadiusOnUse", 0.1f);
+        whiteHoleEntityTag.putFloat("RadiusPerTick", 0.01f);
+        whiteHoleEntityTag.putInt("Duration", 20000);
+        whiteHoleEntityTag.putFloat("Radius", 100f);
+        whiteHoleEntityTag.putInt("ReapplicationDelay", 40);
+        whiteHoleEntityTag.putString("Particle", "flash");
+        whiteHoleEntityTag.putString("id", "minecraft:area_effect_cloud");
+        whiteHoleNbt.put("EntityTag", whiteHoleEntityTag);
+        whiteHole.setNbt(whiteHoleNbt);
+        this.putClientsideName(whiteHole,
+                Text.literal(
+                        Formatting.WHITE + Formatting.BOLD.toString() + "White Hole"
+                )
+        );
+        current.add(whiteHole);
 
         if (targetVersion.isNewerThanOrEqualTo(VersionEnum.r1_20tor1_20_1)) {
             final ItemStack blackHoleSpawnEgg = new ItemStack(Items.BAT_SPAWN_EGG);

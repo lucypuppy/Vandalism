@@ -175,42 +175,6 @@ public class CrashItemsCreativeTab extends CreativeTab {
         );
         current.add(crashEXPSpawnEgg);
 
-        if (targetVersion.isNewerThanOrEqualTo(VersionEnum.r1_20tor1_20_1)) {
-
-            final ItemStack sodiumFreezeEntitySpawnEgg = new ItemStack(Items.BAT_SPAWN_EGG);
-            final NbtCompound sodiumFreezeEntitySpawnEggNBT = new NbtCompound();
-            final NbtCompound sodiumFreezeEntitySpawnEggEntityTag = new NbtCompound();
-            sodiumFreezeEntitySpawnEggEntityTag.putFloat("width", 999999f);
-            sodiumFreezeEntitySpawnEggEntityTag.putFloat("height", 999999f);
-            sodiumFreezeEntitySpawnEggEntityTag.putString("id", "minecraft:interaction");
-            sodiumFreezeEntitySpawnEggNBT.put("EntityTag", sodiumFreezeEntitySpawnEggEntityTag);
-            sodiumFreezeEntitySpawnEgg.setNbt(sodiumFreezeEntitySpawnEggNBT);
-            this.putClientsideName(sodiumFreezeEntitySpawnEgg,
-                    Text.literal(
-                            Formatting.DARK_RED + Formatting.BOLD.toString() + "Sodium Client Freeze Entity"
-                    )
-            );
-            current.add(sodiumFreezeEntitySpawnEgg);
-
-            if (exploitFixerModule.isEnabled() && exploitFixerModule.blockInvalidIdentifierCrash.getValue()) {
-                final ItemStack instantCrashPot = new ItemStack(Items.DECORATED_POT);
-                final NbtCompound instantCrashPotNBT = new NbtCompound();
-                final NbtCompound instantCrashPotBlockEntityTag = new NbtCompound();
-                final NbtList instantCrashSherds = new NbtList();
-                instantCrashSherds.add(NbtString.of(RandomStringUtils.random(5).toLowerCase() + ":" + RandomStringUtils.random(5).toUpperCase()));
-                instantCrashPotBlockEntityTag.put("sherds", instantCrashSherds);
-                instantCrashPotNBT.put("BlockEntityTag", instantCrashPotBlockEntityTag);
-                instantCrashPot.setNbt(instantCrashPotNBT);
-                this.putClientsideName(instantCrashPot,
-                        Text.literal(
-                                Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Pot"
-                        )
-                );
-                current.add(instantCrashPot);
-            }
-
-        }
-
         final ItemStack serverCrashEntity = new ItemStack(Items.BAT_SPAWN_EGG);
         final NbtCompound serverCrashEntityNbt = new NbtCompound();
         final NbtCompound serverCrashEntityTagNbt = new NbtCompound();
@@ -235,7 +199,6 @@ public class CrashItemsCreativeTab extends CreativeTab {
         final ItemStack crashArea = new ItemStack(Items.SALMON_SPAWN_EGG);
         final NbtCompound crashAreaNbt = new NbtCompound();
         final NbtCompound crashAreaEntityTag = new NbtCompound();
-        final NbtList killAreaEffects = new NbtList();
         crashAreaEntityTag.putFloat("RadiusOnUse", 100f);
         crashAreaEntityTag.putFloat("RadiusPerTick", 1f);
         crashAreaEntityTag.putInt("Duration", 60000);
@@ -247,10 +210,50 @@ public class CrashItemsCreativeTab extends CreativeTab {
         crashArea.setNbt(crashAreaNbt);
         this.putClientsideName(crashArea,
                 Text.literal(
-                        Formatting.RED + "Crash Area"
+                        Formatting.RED + "Client Crash Area"
+                ),
+                Text.literal(
+                        "Spawns a crash wheel xD"
                 )
         );
         current.add(crashArea);
+
+        if (targetVersion.isNewerThanOrEqualTo(VersionEnum.r1_20tor1_20_1)) {
+
+            if (exploitFixerModule.isEnabled() && exploitFixerModule.blockInvalidIdentifierCrash.getValue()) {
+
+                final ItemStack instantCrashPot = new ItemStack(Items.DECORATED_POT);
+                final NbtCompound instantCrashPotNBT = new NbtCompound();
+                final NbtCompound instantCrashPotBlockEntityTag = new NbtCompound();
+                final NbtList instantCrashSherds = new NbtList();
+                instantCrashSherds.add(NbtString.of(RandomStringUtils.random(5).toLowerCase() + ":" + RandomStringUtils.random(5).toUpperCase()));
+                instantCrashPotBlockEntityTag.put("sherds", instantCrashSherds);
+                instantCrashPotNBT.put("BlockEntityTag", instantCrashPotBlockEntityTag);
+                instantCrashPot.setNbt(instantCrashPotNBT);
+                this.putClientsideName(instantCrashPot,
+                        Text.literal(
+                                Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Pot"
+                        )
+                );
+                current.add(instantCrashPot);
+            }
+
+            final ItemStack sodiumFreezeEntitySpawnEgg = new ItemStack(Items.BAT_SPAWN_EGG);
+            final NbtCompound sodiumFreezeEntitySpawnEggNBT = new NbtCompound();
+            final NbtCompound sodiumFreezeEntitySpawnEggEntityTag = new NbtCompound();
+            sodiumFreezeEntitySpawnEggEntityTag.putFloat("width", 999999f);
+            sodiumFreezeEntitySpawnEggEntityTag.putFloat("height", 999999f);
+            sodiumFreezeEntitySpawnEggEntityTag.putString("id", "minecraft:interaction");
+            sodiumFreezeEntitySpawnEggNBT.put("EntityTag", sodiumFreezeEntitySpawnEggEntityTag);
+            sodiumFreezeEntitySpawnEgg.setNbt(sodiumFreezeEntitySpawnEggNBT);
+            this.putClientsideName(sodiumFreezeEntitySpawnEgg,
+                    Text.literal(
+                            Formatting.DARK_RED + Formatting.BOLD.toString() + "Sodium Client Freeze Entity"
+                    )
+            );
+            current.add(sodiumFreezeEntitySpawnEgg);
+
+        }
 
         return current;
     }
