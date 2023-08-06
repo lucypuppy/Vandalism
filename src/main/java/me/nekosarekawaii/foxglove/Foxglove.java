@@ -5,6 +5,7 @@ import me.nekosarekawaii.foxglove.creativetab.CreativeTabRegistry;
 import me.nekosarekawaii.foxglove.feature.impl.command.CommandRegistry;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleRegistry;
 import me.nekosarekawaii.foxglove.gui.imgui.ImGuiHandler;
+import me.nekosarekawaii.foxglove.util.CustomServerList;
 import me.nekosarekawaii.foxglove.util.minecraft.FormattingUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.Person;
@@ -47,6 +48,8 @@ public class Foxglove {
     private ConfigManager configManager;
 
     private ImGuiHandler imGuiHandler;
+
+    private CustomServerList selectedServerList = null; //null means default serverlist;
 
     public Foxglove() {
         this.name = "Foxglove";
@@ -164,6 +167,14 @@ public class Foxglove {
 
     public ImGuiHandler getImGuiHandler() {
         return this.imGuiHandler;
+    }
+
+    public CustomServerList getSelectedServerList() {
+        return selectedServerList;
+    }
+
+    public void setSelectedServerList(final CustomServerList selectedServerList) {
+        this.selectedServerList = selectedServerList;
     }
 
 }

@@ -43,6 +43,7 @@
     "mixins.MixinLivingEntityRenderer",
     "mixins.MixinMinecraftClient",
     "mixins.MixinModStatus",
+    "mixins.MixinMultiplayerScreen",
     "mixins.MixinNetworkUtils",
     "mixins.MixinParticleManager",
     "mixins.MixinPlayerEntity",
