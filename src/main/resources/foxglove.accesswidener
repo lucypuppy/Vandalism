@@ -71,5 +71,8 @@ accessible method net/minecraft/client/render/block/entity/SignBlockEntityRender
 accessible field net/minecraft/client/option/ServerList servers Ljava/util/List;
 accessible field net/minecraft/client/option/ServerList hiddenServers Ljava/util/List;
 accessible field net/minecraft/client/option/ServerList LOGGER Lorg/slf4j/Logger;
+accessible field net/minecraft/client/option/ServerList client Lnet/minecraft/client/MinecraftClient;
+
+mutable field net/minecraft/client/gui/screen/Screen title Lnet/minecraft/text/Text;
 
 accessible method net/minecraft/client/particle/ParticleManager clearParticles ()V
