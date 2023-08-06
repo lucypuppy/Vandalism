@@ -50,40 +50,31 @@ public class KickItemsCreativeTab extends CreativeTab {
         current.add(paperKickHeadPackage);
 
         if (targetVersion.isNewerThanOrEqualTo(VersionEnum.r1_20tor1_20_1)) {
-            final ItemStack kickStandPackage = new ItemStack(Items.FURNACE);
-            final NbtCompound kickStandPackageNbt = new NbtCompound();
-            final NbtCompound kickStandPackageBlockEntityTag = new NbtCompound();
-            final NbtList kickStandPackageBlockEntityTagItemsList = new NbtList();
-            final NbtCompound kickStandPackageBlockEntityTagItemsListSlot0 = new NbtCompound();
-            kickStandPackageBlockEntityTagItemsListSlot0.putByte("Slot", (byte) 0);
-            kickStandPackageBlockEntityTagItemsListSlot0.putString("id", "minecraft:armor_stand");
-            kickStandPackageBlockEntityTagItemsListSlot0.putByte("Count", (byte) 1);
-            final NbtCompound kickStandPackageBlockEntityTagItemsListSlot0EntityTag = new NbtCompound();
-            final NbtList kickStandPackageBlockEntityTagItemsListSlot0EntityTagArmorItems = new NbtList();
-            final NbtCompound kickStandPackageBlockEntityTagItemsListSlot0EntityTagArmorItemsKickItem = new NbtCompound();
-            final NbtCompound kickStandPackageBlockEntityTagItemsListSlot0EntityTagArmorItemsKickItemTag = new NbtCompound();
-            final NbtCompound kickStandPackageBlockEntityTagItemsListSlot0EntityTagArmorItemsKickItemTagTrim = new NbtCompound();
-            kickStandPackageBlockEntityTagItemsListSlot0EntityTagArmorItemsKickItemTagTrim.putString("pattern", RandomStringUtils.random(5).toLowerCase() + ":" + RandomStringUtils.random(5).toUpperCase());
-            kickStandPackageBlockEntityTagItemsListSlot0EntityTagArmorItemsKickItemTagTrim.putString("material", "minecraft:amethyst");
-            kickStandPackageBlockEntityTagItemsListSlot0EntityTagArmorItemsKickItemTag.put("Trim", kickStandPackageBlockEntityTagItemsListSlot0EntityTagArmorItemsKickItemTagTrim);
-            kickStandPackageBlockEntityTagItemsListSlot0EntityTagArmorItemsKickItem.put("tag", kickStandPackageBlockEntityTagItemsListSlot0EntityTagArmorItemsKickItemTag);
-            kickStandPackageBlockEntityTagItemsListSlot0EntityTagArmorItemsKickItem.putByte("Count", (byte) 1);
-            kickStandPackageBlockEntityTagItemsListSlot0EntityTagArmorItemsKickItem.putString("id", "minecraft:diamond_helmet");
-            kickStandPackageBlockEntityTagItemsListSlot0EntityTagArmorItems.add(kickStandPackageBlockEntityTagItemsListSlot0EntityTagArmorItemsKickItem);
-            kickStandPackageBlockEntityTagItemsListSlot0EntityTag.put("ArmorItems", kickStandPackageBlockEntityTagItemsListSlot0EntityTagArmorItems);
-            final NbtCompound kickStandPackageBlockEntityTagItemsListSlot0Tag = new NbtCompound();
-            kickStandPackageBlockEntityTagItemsListSlot0Tag.put("EntityTag", kickStandPackageBlockEntityTagItemsListSlot0EntityTag);
-            kickStandPackageBlockEntityTagItemsListSlot0.put("tag", kickStandPackageBlockEntityTagItemsListSlot0Tag);
-            kickStandPackageBlockEntityTagItemsList.add(kickStandPackageBlockEntityTagItemsListSlot0);
-            kickStandPackageBlockEntityTag.put("Items", kickStandPackageBlockEntityTagItemsList);
-            kickStandPackageNbt.put("BlockEntityTag", kickStandPackageBlockEntityTag);
-            kickStandPackage.setNbt(kickStandPackageNbt);
-            this.putClientsideName(kickStandPackage,
+
+            final ItemStack kickStand = new ItemStack(Items.ARMOR_STAND);
+            final NbtCompound kickStandNbt = new NbtCompound();
+            final NbtCompound kickStandEntityTag = new NbtCompound();
+            final NbtList kickStandEntityTagArmorItems = new NbtList();
+            final NbtCompound kickStandEntityTagArmorItemsItem = new NbtCompound();
+            final NbtCompound kickStandEntityTagArmorItemsItemTag = new NbtCompound();
+            final NbtCompound kickStandEntityTagArmorItemsItemTagTrim = new NbtCompound();
+            kickStandEntityTagArmorItemsItemTagTrim.putString("pattern", RandomStringUtils.random(5).toLowerCase() + ":" + RandomStringUtils.random(5).toUpperCase());
+            kickStandEntityTagArmorItemsItemTagTrim.putString("material", "minecraft:amethyst");
+            kickStandEntityTagArmorItemsItemTag.put("Trim", kickStandEntityTagArmorItemsItemTagTrim);
+            kickStandEntityTagArmorItemsItem.put("tag", kickStandEntityTagArmorItemsItemTag);
+            kickStandEntityTagArmorItemsItem.putByte("Count", (byte) 1);
+            kickStandEntityTagArmorItemsItem.putString("id", "minecraft:diamond_helmet");
+            kickStandEntityTagArmorItems.add(kickStandEntityTagArmorItemsItem);
+            kickStandEntityTag.put("ArmorItems", kickStandEntityTagArmorItems);
+            kickStandNbt.put("EntityTag", kickStandEntityTag);
+            kickStand.setNbt(kickStandNbt);
+            this.putClientsideName(kickStand,
                     Text.literal(
                             Formatting.RED + Formatting.BOLD.toString() + "Kick Stand"
                     )
             );
-            current.add(kickStandPackage);
+            current.add(kickStand);
+
         }
 
         return current;
