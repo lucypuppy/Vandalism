@@ -181,9 +181,29 @@ public class TrollItemsCreativeTab extends CreativeTab {
         this.putClientsideName(consoleErrorEntity,
                 Text.literal(
                         Formatting.RED + Formatting.BOLD.toString() + "Console Error Entity"
+                ),
+                Text.literal(
+                        Formatting.LIGHT_PURPLE + Formatting.BOLD.toString() + "Works on Scissors"
                 )
         );
         current.add(consoleErrorEntity);
+
+        final ItemStack consoleErrorHead = new ItemStack(Items.PLAYER_HEAD);
+        final NbtCompound consoleErrorHeadNbt = new NbtCompound();
+        final NbtCompound consoleErrorHeadSkullOwner = new NbtCompound();
+        consoleErrorHeadSkullOwner.putIntArray("Id", new int[]{-1543419622, 14829807, -1493208798, 1828353364});
+        consoleErrorHeadSkullOwner.putString("Name", " ");
+        consoleErrorHeadNbt.put("SkullOwner", consoleErrorHeadSkullOwner);
+        consoleErrorHead.setNbt(consoleErrorHeadNbt);
+        this.putClientsideName(consoleErrorHead,
+                Text.literal(
+                        Formatting.RED + Formatting.BOLD.toString() + "Console Error Head"
+                ),
+                Text.literal(
+                        Formatting.LIGHT_PURPLE + Formatting.BOLD.toString() + "Works on Scissors"
+                )
+        );
+        current.add(consoleErrorHead);
 
         return current;
     }
