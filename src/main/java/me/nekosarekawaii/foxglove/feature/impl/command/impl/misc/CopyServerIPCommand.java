@@ -14,7 +14,7 @@ public class CopyServerIPCommand extends Command {
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
-            mc.keyboard.setClipboard(ServerUtils.getLastServerInfo().address);
+            mc.keyboard.setClipboard(ServerUtils.getLastServerInfo().address + " | " + mc.getNetworkHandler().getConnection().getAddress().toString());
             ChatUtils.infoChatMessage("Server IP copied into the Clipboard.");
             return singleSuccess;
         });
