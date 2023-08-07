@@ -53,6 +53,7 @@
     "mixins.MixinServerEntry",
     "mixins.MixinServerResourcePackProvider",
     "mixins.MixinSharedConstants",
+    "mixins.MixinSignBlockEntityRenderer",
     "mixins.MixinSodiumWorldRenderer",
     "mixins.MixinStringHelper",
     "mixins.MixinTelemetryManager",

@@ -151,6 +151,13 @@ public class MainConfig extends ValueableConfig {
 
     public final ValueCategory visualsCategory = new ValueCategory("Visuals", "Visuals settings", this);
 
+    public final Value<Boolean> hideSignTextFeature = new BooleanValue(
+            "Hide Sign Text Feature",
+            "Allows you to hide text of signs when creating a new one.",
+            this.visualsCategory,
+            false
+    );
+
     public final Value<Float> fireOverlayOffset = new SliderFloatValue(
             "Fire Overlay Offset",
             "Change the Fire Overlay Offset",
