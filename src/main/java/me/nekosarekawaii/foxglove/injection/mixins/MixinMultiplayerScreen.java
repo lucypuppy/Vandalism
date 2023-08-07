@@ -1,6 +1,7 @@
 package me.nekosarekawaii.foxglove.injection.mixins;
 
 import me.nekosarekawaii.foxglove.Foxglove;
+import me.nekosarekawaii.foxglove.gui.elements.DropDownWidget;
 import me.nekosarekawaii.foxglove.util.CustomServerList;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -30,6 +31,9 @@ public abstract class MixinMultiplayerScreen extends Screen {
     @Unique
     private final String[] serverLists = new String[]{"TestServers", "Grief", "Crash"};
 
+    @Unique
+    private final ButtonWidget[] buttons = new ButtonWidget[serverLists.length + 1];
+
     protected MixinMultiplayerScreen(final Text title) {
         super(title);
     }
@@ -52,26 +56,38 @@ public abstract class MixinMultiplayerScreen extends Screen {
         final ButtonWidget defaultBtn = ButtonWidget.builder(Text.literal("Default"), button -> {
             Foxglove.getInstance().setSelectedServerList(null);
             MinecraftClient.getInstance().setScreen(new MultiplayerScreen(parent));
-        }).position(5, 8).size(50, 13).build();
+        }).size(0, 13).build();
 
         if (Foxglove.getInstance().getSelectedServerList() == null)
             defaultBtn.active = false;
 
-        this.addDrawableChild(defaultBtn);
+        buttons[0] = defaultBtn;
 
         for (int i = 0; i < serverLists.length; i++) {
             final String list = serverLists[i];
             final ButtonWidget btn = ButtonWidget.builder(Text.literal(list), button -> {
                 Foxglove.getInstance().setSelectedServerList(new CustomServerList(list));
                 MinecraftClient.getInstance().setScreen(new MultiplayerScreen(parent));
-            }).position(5 + ((i + 1) * 52), 8).size(50, 13).build();
+            }).size(0, 13).build();
 
             if (Foxglove.getInstance().getSelectedServerList() != null &&
                     Foxglove.getInstance().getSelectedServerList().getName().equalsIgnoreCase(list))
                 btn.active = false;
 
-            this.addDrawableChild(btn);
+            buttons[i + 1] = btn;
         }
+
+        addDrawableChild(new DropDownWidget(5, 5, 65, 16, Text.literal("Server List"), this, buttons));
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        for (final ButtonWidget buttonWidget : buttons) {
+            if (buttonWidget.mouseClicked(mouseX, mouseY, button))
+                return false;
+        }
+
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
 }
