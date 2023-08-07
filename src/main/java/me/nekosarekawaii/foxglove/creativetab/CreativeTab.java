@@ -36,27 +36,26 @@ public abstract class CreativeTab {
         return ItemStackSet.create();
     }
 
-    public ItemStack putClientsideName(final ItemStack itemStack, final Text name, final Text... description) {
-        final NbtCompound nbtCompound = itemStack.getOrCreateNbt();
-        nbtCompound.put(Foxglove.getInstance().getCreativeTabRegistry().getClientsideName(), new NbtCompound());
-        itemStack.setCustomName(name);
-        if (description != null && description.length > 0) {
-            final NbtList lore = new NbtList();
-            for (final Text text : description) {
-                if (text != null) {
-                    lore.add(NbtString.of(Text.Serializer.toJson(text)));
-                }
-            }
-            itemStack.getOrCreateSubNbt(ItemStack.DISPLAY_KEY).put(ItemStack.LORE_KEY, lore);
+    public ItemStack createItem(final ItemStack stack, final Text name, final Text... description) {
+        return createItem(stack, name, false, description);
+    }
+
+    public ItemStack createItem(final ItemStack stack, final Text name, final boolean glint, final Text... description) {
+        final var registry = Foxglove.getInstance().getCreativeTabRegistry();
+        final var base = stack.getOrCreateNbt();
+
+        base.put(registry.getClientsideName(), new NbtCompound());
+        if (glint) {
+            base.put(registry.getClientsideGlint(), new NbtCompound());
         }
-        return itemStack;
+        stack.setCustomName(name);
+        if (description != null && description.length > 0) {
+            final var lore = new NbtList();
+            for (final Text text : description) {
+                if (text != null) lore.add(NbtString.of(Text.Serializer.toJson(text)));
+            }
+            stack.getOrCreateSubNbt(ItemStack.DISPLAY_KEY).put(ItemStack.LORE_KEY, lore);
+        }
+        return stack;
     }
-
-    public ItemStack putClientsideGlint(final ItemStack itemStack) {
-        final NbtCompound nbtCompound = itemStack.getOrCreateNbt();
-        nbtCompound.put(Foxglove.getInstance().getCreativeTabRegistry().getClientsideGlint(), new NbtCompound());
-        itemStack.setNbt(nbtCompound);
-        return itemStack;
-    }
-
 }

@@ -24,60 +24,67 @@ public class KickItemsCreativeTab extends CreativeTab {
         final Collection<ItemStack> current = super.entries();
         final VersionEnum targetVersion = ProtocolHack.getTargetVersion();
 
-        final ItemStack paperKickHeadPackage = new ItemStack(Items.FURNACE);
-        final NbtCompound paperKickHeadPackageNbt = new NbtCompound();
-        final NbtCompound paperKickHeadPackageBlockEntityTag = new NbtCompound();
-        final NbtList paperKickHeadPackageBlockEntityTagItemsList = new NbtList();
-        final NbtCompound paperKickHeadPackageBlockEntityTagItemsListSlot0 = new NbtCompound();
-        paperKickHeadPackageBlockEntityTagItemsListSlot0.putByte("Slot", (byte) 0);
-        paperKickHeadPackageBlockEntityTagItemsListSlot0.putString("id", "minecraft:player_head");
-        paperKickHeadPackageBlockEntityTagItemsListSlot0.putByte("Count", (byte) 1);
-        final NbtCompound paperKickHeadPackageBlockEntityTagItemsListSlot0Tag = new NbtCompound();
-        paperKickHeadPackageBlockEntityTagItemsListSlot0Tag.putString("SkullOwner", " ");
-        paperKickHeadPackageBlockEntityTagItemsListSlot0.put("tag", paperKickHeadPackageBlockEntityTagItemsListSlot0Tag);
-        paperKickHeadPackageBlockEntityTagItemsList.add(paperKickHeadPackageBlockEntityTagItemsListSlot0);
-        paperKickHeadPackageBlockEntityTag.put("Items", paperKickHeadPackageBlockEntityTagItemsList);
-        paperKickHeadPackageNbt.put("BlockEntityTag", paperKickHeadPackageBlockEntityTag);
-        paperKickHeadPackage.setNbt(paperKickHeadPackageNbt);
-        this.putClientsideName(paperKickHeadPackage,
-                Text.literal(
-                        Formatting.RED + Formatting.BOLD.toString() + "Paper Kick Head"
-                ),
-                Text.literal(
-                        Formatting.GOLD + Formatting.BOLD.toString() + "Can crash older clients"
-                )
-        );
-        current.add(paperKickHeadPackage);
-
+        current.add(createItem(createPaperKickHead(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Paper Kick Head"), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Can crash older clients")));
         if (targetVersion.isNewerThanOrEqualTo(VersionEnum.r1_20tor1_20_1)) {
-
-            final ItemStack kickStand = new ItemStack(Items.ARMOR_STAND);
-            final NbtCompound kickStandNbt = new NbtCompound();
-            final NbtCompound kickStandEntityTag = new NbtCompound();
-            final NbtList kickStandEntityTagArmorItems = new NbtList();
-            final NbtCompound kickStandEntityTagArmorItemsItem = new NbtCompound();
-            final NbtCompound kickStandEntityTagArmorItemsItemTag = new NbtCompound();
-            final NbtCompound kickStandEntityTagArmorItemsItemTagTrim = new NbtCompound();
-            kickStandEntityTagArmorItemsItemTagTrim.putString("pattern", RandomStringUtils.random(5).toLowerCase() + ":" + RandomStringUtils.random(5).toUpperCase());
-            kickStandEntityTagArmorItemsItemTagTrim.putString("material", "minecraft:amethyst");
-            kickStandEntityTagArmorItemsItemTag.put("Trim", kickStandEntityTagArmorItemsItemTagTrim);
-            kickStandEntityTagArmorItemsItem.put("tag", kickStandEntityTagArmorItemsItemTag);
-            kickStandEntityTagArmorItemsItem.putByte("Count", (byte) 1);
-            kickStandEntityTagArmorItemsItem.putString("id", "minecraft:diamond_helmet");
-            kickStandEntityTagArmorItems.add(kickStandEntityTagArmorItemsItem);
-            kickStandEntityTag.put("ArmorItems", kickStandEntityTagArmorItems);
-            kickStandNbt.put("EntityTag", kickStandEntityTag);
-            kickStand.setNbt(kickStandNbt);
-            this.putClientsideName(kickStand,
-                    Text.literal(
-                            Formatting.RED + Formatting.BOLD.toString() + "Kick Stand"
-                    )
-            );
-            current.add(kickStand);
-
+            current.add(createItem(createKickStand(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Stand")));
         }
-
         return current;
     }
 
+    private ItemStack createPaperKickHead() {
+        final var item = new ItemStack(Items.FURNACE);
+        final var base = new NbtCompound();
+
+        final var blockEntityTag = new NbtCompound();
+        final var items = new NbtList();
+
+        final var firstSlot = new NbtCompound();
+        firstSlot.putByte("Slot", (byte) 0);
+        firstSlot.putString("id", "minecraft:player_head");
+        firstSlot.putByte("Count", (byte) 1);
+
+        final var skullOwner = new NbtCompound();
+        skullOwner.putString("SkullOwner", " ");
+        firstSlot.put("tag", skullOwner);
+
+        items.add(firstSlot);
+
+        blockEntityTag.put("Items", items);
+        base.put("BlockEntityTag", blockEntityTag);
+
+        item.setNbt(base);
+
+        return item;
+    }
+
+    private ItemStack createKickStand() {
+        final var item = new ItemStack(Items.ARMOR_STAND);
+        final var base = new NbtCompound();
+
+        final var entityTag = new NbtCompound();
+
+        final var armorItems = new NbtList();
+
+        final var firstArmorItem = new NbtCompound();
+        final var armorItemBase = new NbtCompound();
+
+        final var armorTrim = new NbtCompound();
+        armorTrim.putString("pattern", RandomStringUtils.random(5).toLowerCase() + ":" + RandomStringUtils.random(5).toUpperCase());
+        armorTrim.putString("material", "minecraft:amethyst");
+
+        armorItemBase.put("Trim", armorTrim);
+
+        firstArmorItem.put("tag", armorItemBase);
+        firstArmorItem.putByte("Count", (byte) 1);
+        firstArmorItem.putString("id", "minecraft:diamond_helmet");
+
+        armorItems.add(firstArmorItem);
+
+        entityTag.put("ArmorItems", armorItems);
+        base.put("EntityTag", entityTag);
+
+        item.setNbt(base);
+
+        return item;
+    }
 }

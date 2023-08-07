@@ -2,6 +2,7 @@ package me.nekosarekawaii.foxglove.creativetab.impl;
 
 import de.florianmichael.viafabricplus.protocolhack.ProtocolHack;
 import me.nekosarekawaii.foxglove.creativetab.CreativeTab;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -10,6 +11,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.raphimc.vialoader.util.VersionEnum;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 public class TrollItemsCreativeTab extends CreativeTab {
@@ -23,208 +25,171 @@ public class TrollItemsCreativeTab extends CreativeTab {
         final Collection<ItemStack> current = super.entries();
         final VersionEnum targetVersion = ProtocolHack.getTargetVersion();
 
-        final NbtCompound killPotionEffectNbt = new NbtCompound();
-        killPotionEffectNbt.putInt("Amplifier", 125);
-        killPotionEffectNbt.putInt("Duration", 2000);
-        killPotionEffectNbt.putInt("Id", 6);
-        final NbtList killPotionEffectList = new NbtList();
-        killPotionEffectList.add(killPotionEffectNbt);
-        final NbtCompound killPotionNbt = new NbtCompound();
-        killPotionNbt.put("CustomPotionEffects", killPotionEffectList);
-
-        final ItemStack killPotion = new ItemStack(Items.POTION);
-        killPotion.setNbt(killPotionNbt);
-        this.putClientsideName(
-                killPotion,
-                Text.literal(Formatting.RED + "Kill Potion")
-        );
-        current.add(killPotion);
-
-        final ItemStack killPotionSplash = new ItemStack(Items.SPLASH_POTION);
-        killPotionSplash.setNbt(killPotionNbt);
-        this.putClientsideName(
-                killPotionSplash,
-                Text.literal(Formatting.RED + "Kill Potion")
-        );
-        current.add(killPotionSplash);
-
-        final ItemStack killPotionLingering = new ItemStack(Items.LINGERING_POTION);
-        killPotionLingering.setNbt(killPotionNbt);
-        this.putClientsideName(
-                killPotionLingering,
-                Text.literal(Formatting.RED + "Kill Potion")
-        );
-        current.add(killPotionLingering);
-
-        final ItemStack killArea = new ItemStack(Items.SALMON_SPAWN_EGG);
-        final NbtCompound killAreaNbt = new NbtCompound();
-        final NbtCompound killAreaEntityTag = new NbtCompound();
-        final NbtList killAreaEffects = new NbtList();
-        final NbtCompound killAreaEffect = new NbtCompound();
-        killAreaEffect.putInt("Id", 6);
-        killAreaEffect.putByte("ShowParticles", (byte) 0);
-        killAreaEffect.putInt("Duration", 20);
-        killAreaEffect.putByte("Amplifier", (byte) 125);
-        killAreaEffects.add(killAreaEffect);
-        killAreaEntityTag.put("Effects", killAreaEffects);
-        killAreaEntityTag.putFloat("RadiusOnUse", 0.1f);
-        killAreaEntityTag.putFloat("RadiusPerTick", 0.01f);
-        killAreaEntityTag.putInt("Duration", 20000);
-        killAreaEntityTag.putFloat("Radius", 100f);
-        killAreaEntityTag.putInt("ReapplicationDelay", 40);
-        killAreaEntityTag.putString("Particle", "block cave_air");
-        killAreaEntityTag.putString("id", "minecraft:area_effect_cloud");
-        killAreaNbt.put("EntityTag", killAreaEntityTag);
-        killArea.setNbt(killAreaNbt);
-        this.putClientsideName(killArea,
-                Text.literal(
-                        Formatting.RED + "Kill Area"
-                )
-        );
-        current.add(killArea);
-
-        final ItemStack whiteHole = new ItemStack(Items.PANDA_SPAWN_EGG);
-        final NbtCompound whiteHoleNbt = new NbtCompound();
-        final NbtCompound whiteHoleEntityTag = new NbtCompound();
-        whiteHoleEntityTag.putFloat("RadiusOnUse", 0.1f);
-        whiteHoleEntityTag.putFloat("RadiusPerTick", 0.01f);
-        whiteHoleEntityTag.putInt("Duration", 20000);
-        whiteHoleEntityTag.putFloat("Radius", 100f);
-        whiteHoleEntityTag.putInt("ReapplicationDelay", 40);
-        whiteHoleEntityTag.putString("Particle", "flash");
-        whiteHoleEntityTag.putString("id", "minecraft:area_effect_cloud");
-        whiteHoleNbt.put("EntityTag", whiteHoleEntityTag);
-        whiteHole.setNbt(whiteHoleNbt);
-        this.putClientsideName(whiteHole,
-                Text.literal(
-                        Formatting.WHITE + Formatting.BOLD.toString() + "White Hole"
-                )
-        );
-        current.add(whiteHole);
-
-        if (targetVersion.isNewerThanOrEqualTo(VersionEnum.r1_20tor1_20_1)) {
-            final ItemStack blackHoleSpawnEgg = new ItemStack(Items.BAT_SPAWN_EGG);
-            final NbtCompound blackHoleSpawnEggNBT = new NbtCompound();
-            final NbtCompound blackHoleSpawnEggEntityTag = new NbtCompound();
-            blackHoleSpawnEggEntityTag.putByte("shadow", (byte) 1);
-            blackHoleSpawnEggEntityTag.putFloat("shadow_strength", 10000000f);
-            blackHoleSpawnEggEntityTag.putFloat("shadow_radius", 10000000f);
-            blackHoleSpawnEggEntityTag.putFloat("view_range", 10000000f);
-            blackHoleSpawnEggEntityTag.putString("id", "minecraft:text_display");
-            blackHoleSpawnEggNBT.put("EntityTag", blackHoleSpawnEggEntityTag);
-            blackHoleSpawnEgg.setNbt(blackHoleSpawnEggNBT);
-            this.putClientsideName(blackHoleSpawnEgg,
-                    Text.literal(
-                            Formatting.RED + Formatting.BOLD.toString() + "Black Hole"
-                    )
-            );
-            current.add(blackHoleSpawnEgg);
+        for (Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
+            current.add(createItem(createKillPotion(new ItemStack(item)), Text.literal(Formatting.RED + "Kill Potion")));
         }
-
-        final ItemStack eventHorizonArea = new ItemStack(Items.BAT_SPAWN_EGG);
-        final NbtCompound eventHorizonAreaNbt = new NbtCompound();
-        final NbtCompound eventHorizonAreaEntityTag = new NbtCompound();
-        final NbtList eventHorizonEffects = new NbtList();
-        final NbtCompound eventHorizonEffect1 = new NbtCompound();
-        eventHorizonEffect1.putInt("Id", 2);
-        eventHorizonEffect1.putByte("ShowParticles", (byte) 0);
-        eventHorizonEffect1.putInt("Duration", 170);
-        eventHorizonEffect1.putByte("Amplifier", (byte) 125);
-        eventHorizonEffects.add(eventHorizonEffect1);
-        final NbtCompound eventHorizonEffect2 = new NbtCompound();
-        eventHorizonEffect2.putInt("Id", 4);
-        eventHorizonEffect2.putByte("ShowParticles", (byte) 0);
-        eventHorizonEffect2.putInt("Duration", 150);
-        eventHorizonEffect2.putByte("Amplifier", (byte) 125);
-        eventHorizonEffects.add(eventHorizonEffect2);
-        final NbtCompound eventHorizonEffect3 = new NbtCompound();
-        eventHorizonEffect3.putInt("Id", 11);
-        eventHorizonEffect3.putByte("ShowParticles", (byte) 0);
-        eventHorizonEffect3.putInt("Duration", 170);
-        eventHorizonEffect3.putByte("Amplifier", (byte) 125);
-        eventHorizonEffects.add(eventHorizonEffect3);
-        final NbtCompound eventHorizonEffect4 = new NbtCompound();
-        eventHorizonEffect4.putInt("Id", 14);
-        eventHorizonEffect4.putByte("ShowParticles", (byte) 0);
-        eventHorizonEffect4.putInt("Duration", 130);
-        eventHorizonEffect4.putByte("Amplifier", (byte) 1);
-        eventHorizonEffects.add(eventHorizonEffect4);
-        final NbtCompound eventHorizonEffect5 = new NbtCompound();
-        eventHorizonEffect5.putInt("Id", 18);
-        eventHorizonEffect5.putByte("ShowParticles", (byte) 0);
-        eventHorizonEffect5.putInt("Duration", 170);
-        eventHorizonEffect5.putByte("Amplifier", (byte) 125);
-        eventHorizonEffects.add(eventHorizonEffect5);
-        final NbtCompound eventHorizonEffect6 = new NbtCompound();
-        eventHorizonEffect6.putInt("Id", 20);
-        eventHorizonEffect6.putByte("ShowParticles", (byte) 0);
-        eventHorizonEffect6.putInt("Duration", 160);
-        eventHorizonEffect6.putByte("Amplifier", (byte) 1);
-        eventHorizonEffects.add(eventHorizonEffect6);
-        final NbtCompound eventHorizonEffect7 = new NbtCompound();
-        eventHorizonEffect7.putInt("Id", 25);
-        eventHorizonEffect7.putByte("ShowParticles", (byte) 0);
-        eventHorizonEffect7.putInt("Duration", 19);
-        eventHorizonEffect7.putByte("Amplifier", (byte) 125);
-        eventHorizonEffects.add(eventHorizonEffect7);
-        final NbtCompound eventHorizonEffect8 = new NbtCompound();
-        eventHorizonEffect8.putInt("Id", 33);
-        eventHorizonEffect8.putByte("ShowParticles", (byte) 0);
-        eventHorizonEffect8.putInt("Duration", 170);
-        eventHorizonEffect8.putByte("Amplifier", (byte) 125);
-        eventHorizonEffects.add(eventHorizonEffect8);
-        eventHorizonAreaEntityTag.put("Effects", eventHorizonEffects);
-        eventHorizonAreaEntityTag.putFloat("RadiusOnUse", 0.1f);
-        eventHorizonAreaEntityTag.putFloat("RadiusPerTick", 0.01f);
-        eventHorizonAreaEntityTag.putInt("Duration", 20000);
-        eventHorizonAreaEntityTag.putFloat("Radius", 100f);
-        eventHorizonAreaEntityTag.putInt("ReapplicationDelay", 40);
-        eventHorizonAreaEntityTag.putString("Particle", "item air");
-        eventHorizonAreaEntityTag.putString("id", "minecraft:area_effect_cloud");
-        eventHorizonAreaNbt.put("EntityTag", eventHorizonAreaEntityTag);
-        eventHorizonArea.setNbt(eventHorizonAreaNbt);
-        this.putClientsideName(eventHorizonArea,
-                Text.literal(
-                        Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area"
-                )
-        );
-        current.add(eventHorizonArea);
-
-        final ItemStack consoleErrorEntity = new ItemStack(Items.HORSE_SPAWN_EGG);
-        final NbtCompound consoleErrorEntityNbt = new NbtCompound();
-        final NbtCompound consoleErrorEntityTagNbt = new NbtCompound();
-        consoleErrorEntityTagNbt.putByte("pickup", (byte) 3);
-        consoleErrorEntityTagNbt.putString("id", "minecraft:arrow");
-        consoleErrorEntityNbt.put("EntityTag", consoleErrorEntityTagNbt);
-        consoleErrorEntity.setNbt(consoleErrorEntityNbt);
-        this.putClientsideName(consoleErrorEntity,
-                Text.literal(
-                        Formatting.RED + Formatting.BOLD.toString() + "Console Error Entity"
-                ),
-                Text.literal(
-                        Formatting.LIGHT_PURPLE + Formatting.BOLD.toString() + "Works on Scissors"
-                )
-        );
-        current.add(consoleErrorEntity);
-
-        final ItemStack consoleErrorHead = new ItemStack(Items.PLAYER_HEAD);
-        final NbtCompound consoleErrorHeadNbt = new NbtCompound();
-        final NbtCompound consoleErrorHeadSkullOwner = new NbtCompound();
-        consoleErrorHeadSkullOwner.putIntArray("Id", new int[]{1, 2, 3, 4});
-        consoleErrorHeadSkullOwner.putString("Name", " ");
-        consoleErrorHeadNbt.put("SkullOwner", consoleErrorHeadSkullOwner);
-        consoleErrorHead.setNbt(consoleErrorHeadNbt);
-        this.putClientsideName(consoleErrorHead,
-                Text.literal(
-                        Formatting.RED + Formatting.BOLD.toString() + "Console Error Head"
-                ),
-                Text.literal(
-                        Formatting.LIGHT_PURPLE + Formatting.BOLD.toString() + "Works on Scissors"
-                )
-        );
-        current.add(consoleErrorHead);
-
+        current.add(createItem(createKillArea(), Text.literal(Formatting.RED + "Kill Area")));
+        current.add(createItem(createWhiteHole(), Text.literal(Formatting.WHITE + Formatting.BOLD.toString() + "White Hole")));
+        if (targetVersion.isNewerThanOrEqualTo(VersionEnum.r1_20tor1_20_1)) {
+            current.add(createItem(createBlackHole(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Black Hole")));
+        }
+        current.add(createItem(createEventHorizonArea(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area")));
+        current.add(createItem(createConsoleErrorEntity(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Console Error Entity"), Text.literal(Formatting.LIGHT_PURPLE + Formatting.BOLD.toString() + "Works on Scissors")));
+        current.add(createItem(createConsoleErrorHead(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Console Error Head"), Text.literal(Formatting.LIGHT_PURPLE + Formatting.BOLD.toString() + "Works on Scissors")));
         return current;
     }
 
+    private ItemStack createKillPotion(final ItemStack origin) {
+        final var base = new NbtCompound();
+
+        final NbtList customPotionEffects = new NbtList();
+
+        final NbtCompound customPotionEffect = new NbtCompound();
+        customPotionEffect.putInt("Amplifier", 125);
+        customPotionEffect.putInt("Duration", 2000);
+        customPotionEffect.putInt("Id", 6);
+
+        customPotionEffects.add(customPotionEffect);
+        base.put("CustomPotionEffects", customPotionEffects);
+
+        origin.setNbt(base);
+
+        return origin;
+    }
+
+    private ItemStack createKillArea() {
+        final var item = new ItemStack(Items.SALMON_SPAWN_EGG);
+        final var base = new NbtCompound();
+
+        final var entityTag = new NbtCompound();
+        final var effects = new NbtList();
+
+        final var firstEffect = new NbtCompound();
+        firstEffect.putInt("Id", 6);
+        firstEffect.putByte("ShowParticles", (byte) 0);
+        firstEffect.putInt("Duration", 20);
+        firstEffect.putByte("Amplifier", (byte) 125);
+
+        effects.add(firstEffect);
+
+        entityTag.put("Effects", effects);
+        entityTag.putFloat("RadiusOnUse", 0.1f);
+        entityTag.putFloat("RadiusPerTick", 0.01f);
+        entityTag.putInt("Duration", 20000);
+        entityTag.putFloat("Radius", 100f);
+        entityTag.putInt("ReapplicationDelay", 40);
+        entityTag.putString("Particle", "block cave_air");
+        entityTag.putString("id", "minecraft:area_effect_cloud");
+
+        base.put("EntityTag", entityTag);
+        item.setNbt(base);
+
+        return item;
+    }
+
+    private ItemStack createWhiteHole() {
+        final var item = new ItemStack(Items.PANDA_SPAWN_EGG);
+        final var base = new NbtCompound();
+
+        final var entityTag = new NbtCompound();
+        entityTag.putFloat("RadiusOnUse", 0.1f);
+        entityTag.putFloat("RadiusPerTick", 0.01f);
+        entityTag.putInt("Duration", 20000);
+        entityTag.putFloat("Radius", 100f);
+        entityTag.putInt("ReapplicationDelay", 40);
+        entityTag.putString("Particle", "flash");
+        entityTag.putString("id", "minecraft:area_effect_cloud");
+
+        base.put("EntityTag", entityTag);
+        item.setNbt(base);
+
+        return item;
+    }
+
+    private ItemStack createBlackHole() {
+        final var item = new ItemStack(Items.BAT_SPAWN_EGG);
+        final var base = new NbtCompound();
+
+        final var entityTag = new NbtCompound();
+        entityTag.putByte("shadow", (byte) 1);
+        entityTag.putFloat("shadow_strength", 10000000f);
+        entityTag.putFloat("shadow_radius", 10000000f);
+        entityTag.putFloat("view_range", 10000000f);
+        entityTag.putString("id", "minecraft:text_display");
+
+        base.put("EntityTag", entityTag);
+        item.setNbt(base);
+
+        return item;
+    }
+
+    private NbtCompound createEffect(final int id, final int duration, final int amplifier) {
+        final NbtCompound effect = new NbtCompound();
+        effect.putInt("Id", id);
+        effect.putByte("ShowParticles", (byte) 0);
+        effect.putInt("Duration", duration);
+        effect.putByte("Amplifier", (byte) amplifier);
+
+        return effect;
+    }
+
+    private ItemStack createEventHorizonArea() {
+        final var item = new ItemStack(Items.BAT_SPAWN_EGG);
+        final var base = new NbtCompound();
+
+        final var entityTag = new NbtCompound();
+        final var effects = new NbtList();
+
+        effects.add(createEffect(2, 170, 125));
+        effects.add(createEffect(4, 150, 125));
+        effects.add(createEffect(11, 170, 125));
+        effects.add(createEffect(14, 130, 1));
+        effects.add(createEffect(18, 170, 125));
+        effects.add(createEffect(20, 160, 1));
+        effects.add(createEffect(25, 19, 125));
+        effects.add(createEffect(33, 170, 125));
+
+        entityTag.put("Effects", effects);
+
+        entityTag.putFloat("RadiusOnUse", 0.1f);
+        entityTag.putFloat("RadiusPerTick", 0.01f);
+        entityTag.putInt("Duration", 20000);
+        entityTag.putFloat("Radius", 100f);
+        entityTag.putInt("ReapplicationDelay", 40);
+        entityTag.putString("Particle", "item air");
+        entityTag.putString("id", "minecraft:area_effect_cloud");
+
+        base.put("EntityTag", entityTag);
+        item.setNbt(base);
+
+        return item;
+    }
+
+    private ItemStack createConsoleErrorEntity() {
+        final var item = new ItemStack(Items.HORSE_SPAWN_EGG);
+        final var base = new NbtCompound();
+
+        final var entityTag = new NbtCompound();
+        entityTag.putByte("pickup", (byte) 3);
+        entityTag.putString("id", "minecraft:arrow");
+
+        base.put("EntityTag", entityTag);
+        item.setNbt(base);
+
+        return item;
+    }
+
+    private ItemStack createConsoleErrorHead() {
+        final var item = new ItemStack(Items.PLAYER_HEAD);
+        final var base = new NbtCompound();
+
+        final var skullOwner = new NbtCompound();
+        skullOwner.putIntArray("Id", new int[]{1, 2, 3, 4});
+        skullOwner.putString("Name", " ");
+
+        base.put("SkullOwner", skullOwner);
+        item.setNbt(base);
+
+        return item;
+    }
 }
