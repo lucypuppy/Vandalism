@@ -65,7 +65,7 @@ public abstract class MixinMinecraftClient {
     @Inject(method = "hasOutline", at = @At("RETURN"), cancellable = true)
     private void injectHasOutline(final Entity entity, final CallbackInfoReturnable<Boolean> cir) {
         if (entity == this.player) return;
-        final ESPModule espModule = Foxglove.getInstance().getModuleRegistry().getESPModule();
+        final ESPModule espModule = Foxglove.getInstance().getModuleRegistry().getEspModule();
         if (espModule.isEnabled()) cir.setReturnValue(true);
     }
 

@@ -25,7 +25,7 @@ public abstract class MixinWorldRenderer {
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/OutlineVertexConsumerProvider;setColor(IIII)V"))
     private void redirectSetOutlineColor(final OutlineVertexConsumerProvider instance, final int red, final int green, final int blue, final int alpha) {
-        final ESPModule espModule = Foxglove.getInstance().getModuleRegistry().getESPModule();
+        final ESPModule espModule = Foxglove.getInstance().getModuleRegistry().getEspModule();
         if (espModule.isEnabled()) {
             final Color color = espModule.outlineColor.getValue();
             instance.setColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());

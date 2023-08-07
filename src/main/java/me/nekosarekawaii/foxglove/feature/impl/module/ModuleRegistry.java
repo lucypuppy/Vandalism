@@ -157,7 +157,7 @@ public class ModuleRegistry {
 
     private ESPModule espModule;
 
-    public ESPModule getESPModule() {
+    public ESPModule getEspModule() {
         return this.espModule;
     }
 
@@ -171,6 +171,12 @@ public class ModuleRegistry {
 
     public PhaseModule getPhaseModule() {
         return this.phaseModule;
+    }
+
+    private VelocityModule velocityModule;
+
+    public VelocityModule getVelocityModule() {
+        return velocityModule;
     }
 
     private boolean done;
@@ -213,7 +219,8 @@ public class ModuleRegistry {
                 this.joinLeaveModule = new JoinLeaveModule(),
                 this.espModule = new ESPModule(),
                 this.betterTooltipModule = new BetterTooltipModule(),
-                this.phaseModule = new PhaseModule()
+                this.phaseModule = new PhaseModule(),
+                this.velocityModule = new VelocityModule()
         );
     }
 
