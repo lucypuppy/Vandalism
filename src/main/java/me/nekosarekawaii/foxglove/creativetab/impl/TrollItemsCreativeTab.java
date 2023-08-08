@@ -2,7 +2,6 @@ package me.nekosarekawaii.foxglove.creativetab.impl;
 
 import de.florianmichael.viafabricplus.protocolhack.ProtocolHack;
 import me.nekosarekawaii.foxglove.creativetab.CreativeTab;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -25,7 +24,7 @@ public class TrollItemsCreativeTab extends CreativeTab {
         final Collection<ItemStack> current = super.entries();
         final VersionEnum targetVersion = ProtocolHack.getTargetVersion();
 
-        for (Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
+        for (var item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
             current.add(createItem(createKillPotion(new ItemStack(item)), Text.literal(Formatting.RED + "Kill Potion")));
         }
         current.add(createItem(createKillArea(), Text.literal(Formatting.RED + "Kill Area")));
@@ -42,9 +41,9 @@ public class TrollItemsCreativeTab extends CreativeTab {
     private ItemStack createKillPotion(final ItemStack origin) {
         final var base = new NbtCompound();
 
-        final NbtList customPotionEffects = new NbtList();
+        final var customPotionEffects = new NbtList();
 
-        final NbtCompound customPotionEffect = new NbtCompound();
+        final var customPotionEffect = new NbtCompound();
         customPotionEffect.putInt("Amplifier", 125);
         customPotionEffect.putInt("Duration", 2000);
         customPotionEffect.putInt("Id", 6);
@@ -123,16 +122,6 @@ public class TrollItemsCreativeTab extends CreativeTab {
         return item;
     }
 
-    private NbtCompound createEffect(final int id, final int duration, final int amplifier) {
-        final NbtCompound effect = new NbtCompound();
-        effect.putInt("Id", id);
-        effect.putByte("ShowParticles", (byte) 0);
-        effect.putInt("Duration", duration);
-        effect.putByte("Amplifier", (byte) amplifier);
-
-        return effect;
-    }
-
     private ItemStack createEventHorizonArea() {
         final var item = new ItemStack(Items.BAT_SPAWN_EGG);
         final var base = new NbtCompound();
@@ -140,14 +129,14 @@ public class TrollItemsCreativeTab extends CreativeTab {
         final var entityTag = new NbtCompound();
         final var effects = new NbtList();
 
-        effects.add(createEffect(2, 170, 125));
-        effects.add(createEffect(4, 150, 125));
-        effects.add(createEffect(11, 170, 125));
-        effects.add(createEffect(14, 130, 1));
-        effects.add(createEffect(18, 170, 125));
-        effects.add(createEffect(20, 160, 1));
-        effects.add(createEffect(25, 19, 125));
-        effects.add(createEffect(33, 170, 125));
+        effects.add(createEffect(2, 170, 125, false));
+        effects.add(createEffect(4, 150, 125, false));
+        effects.add(createEffect(11, 170, 125, false));
+        effects.add(createEffect(14, 130, 1, false));
+        effects.add(createEffect(18, 170, 125, false));
+        effects.add(createEffect(20, 160, 1, false));
+        effects.add(createEffect(25, 19, 125, false));
+        effects.add(createEffect(33, 170, 125, false));
 
         entityTag.put("Effects", effects);
 

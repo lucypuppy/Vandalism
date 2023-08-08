@@ -43,11 +43,8 @@ public abstract class CreativeTab {
     public ItemStack createItem(final ItemStack stack, final Text name, final boolean glint, final Text... description) {
         final var registry = Foxglove.getInstance().getCreativeTabRegistry();
         final var base = stack.getOrCreateNbt();
-
         base.put(registry.getClientsideName(), new NbtCompound());
-        if (glint) {
-            base.put(registry.getClientsideGlint(), new NbtCompound());
-        }
+        if (glint) base.put(registry.getClientsideGlint(), new NbtCompound());
         stack.setCustomName(name);
         if (description != null && description.length > 0) {
             final var lore = new NbtList();
@@ -58,4 +55,14 @@ public abstract class CreativeTab {
         }
         return stack;
     }
+
+    public NbtCompound createEffect(final int id, final int duration, final int amplifier, final boolean showParticles) {
+        final var effect = new NbtCompound();
+        effect.putInt("Id", id);
+        effect.putByte("ShowParticles", showParticles ? (byte) 1 : (byte) 0);
+        effect.putInt("Duration", duration);
+        effect.putByte("Amplifier", (byte) amplifier);
+        return effect;
+    }
+
 }
