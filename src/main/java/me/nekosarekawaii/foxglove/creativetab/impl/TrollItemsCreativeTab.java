@@ -33,8 +33,6 @@ public class TrollItemsCreativeTab extends CreativeTab {
             current.add(createItem(createBlackHole(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Black Hole")));
         }
         current.add(createItem(createEventHorizonArea(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area")));
-        current.add(createItem(createConsoleErrorEntity(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Console Error Entity"), Text.literal(Formatting.LIGHT_PURPLE + Formatting.BOLD.toString() + "Works on Scissors")));
-        current.add(createItem(createConsoleErrorHead(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Console Error Head"), Text.literal(Formatting.LIGHT_PURPLE + Formatting.BOLD.toString() + "Works on Scissors")));
         return current;
     }
 
@@ -154,31 +152,4 @@ public class TrollItemsCreativeTab extends CreativeTab {
         return item;
     }
 
-    private ItemStack createConsoleErrorEntity() {
-        final var item = new ItemStack(Items.HORSE_SPAWN_EGG);
-        final var base = new NbtCompound();
-
-        final var entityTag = new NbtCompound();
-        entityTag.putByte("pickup", (byte) 3);
-        entityTag.putString("id", "minecraft:arrow");
-
-        base.put("EntityTag", entityTag);
-        item.setNbt(base);
-
-        return item;
-    }
-
-    private ItemStack createConsoleErrorHead() {
-        final var item = new ItemStack(Items.PLAYER_HEAD);
-        final var base = new NbtCompound();
-
-        final var skullOwner = new NbtCompound();
-        skullOwner.putIntArray("Id", new int[]{1, 2, 3, 4});
-        skullOwner.putString("Name", " ");
-
-        base.put("SkullOwner", skullOwner);
-        item.setNbt(base);
-
-        return item;
-    }
 }
