@@ -50,7 +50,7 @@ public class CrashItemsCreativeTab extends CreativeTab {
 
         current.add(createItem(createClientCrashExperience(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Client Crash Experience")));
         current.add(createItem(createServerCrashEntity(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Crash Entity"), Text.literal("Doesn't work on Paper Spigot Servers.")));
-        current.add(createItem(createClientCrashArea(), Text.literal(Formatting.RED + "Client Crash Area"), Text.literal("Spawns a crash wheel xD")));
+        current.add(createItem(createClientCrashArea(), Text.literal(Formatting.RED + "Client Crash Area")));
 
         if (targetVersion.isNewerThanOrEqualTo(VersionEnum.r1_20tor1_20_1)) {
             if (exploitFixerModule.isEnabled() && exploitFixerModule.blockInvalidIdentifierCrash.getValue()) {
