@@ -1,6 +1,5 @@
 package me.nekosarekawaii.foxglove.creativetab.impl;
 
-import de.florianmichael.viafabricplus.protocolhack.ProtocolHack;
 import me.nekosarekawaii.foxglove.creativetab.CreativeTab;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -8,7 +7,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.raphimc.vialoader.util.VersionEnum;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.Collection;
@@ -22,13 +20,11 @@ public class KickItemsCreativeTab extends CreativeTab {
     @Override
     public Collection<ItemStack> entries() {
         final Collection<ItemStack> current = super.entries();
-        final VersionEnum targetVersion = ProtocolHack.getTargetVersion();
 
         current.add(createItem(createKickHead(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Head"), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Can crash older clients")));
-        if (targetVersion.isNewerThanOrEqualTo(VersionEnum.r1_20tor1_20_1)) {
-            current.add(createItem(createKickHeadV2(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Head V2"), Text.literal(Formatting.AQUA + "Place on a note block and right click"), Text.literal(Formatting.AQUA + "the note block to explode other clients!")));
-            current.add(createItem(createKickStand(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Stand")));
-        }
+        current.add(createItem(createKickHeadV2(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Head V2"), Text.literal(Formatting.AQUA + "Place on a note block and right click"), Text.literal(Formatting.AQUA + "the note block to explode other clients!")));
+        current.add(createItem(createKickStand(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Stand")));
+
         return current;
     }
 

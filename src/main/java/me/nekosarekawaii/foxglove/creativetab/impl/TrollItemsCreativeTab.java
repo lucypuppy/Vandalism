@@ -1,6 +1,5 @@
 package me.nekosarekawaii.foxglove.creativetab.impl;
 
-import de.florianmichael.viafabricplus.protocolhack.ProtocolHack;
 import me.nekosarekawaii.foxglove.creativetab.CreativeTab;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -8,7 +7,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.raphimc.vialoader.util.VersionEnum;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,17 +20,15 @@ public class TrollItemsCreativeTab extends CreativeTab {
     @Override
     public Collection<ItemStack> entries() {
         final Collection<ItemStack> current = super.entries();
-        final VersionEnum targetVersion = ProtocolHack.getTargetVersion();
 
         for (var item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
             current.add(createItem(createKillPotion(new ItemStack(item)), Text.literal(Formatting.RED + "Kill Potion")));
         }
         current.add(createItem(createKillArea(), Text.literal(Formatting.RED + "Kill Area")));
         current.add(createItem(createWhiteHole(), Text.literal(Formatting.WHITE + Formatting.BOLD.toString() + "White Hole")));
-        if (targetVersion.isNewerThanOrEqualTo(VersionEnum.r1_20tor1_20_1)) {
-            current.add(createItem(createBlackHole(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Black Hole")));
-        }
+        current.add(createItem(createBlackHole(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Black Hole")));
         current.add(createItem(createEventHorizonArea(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area")));
+
         return current;
     }
 

@@ -1,6 +1,5 @@
 package me.nekosarekawaii.foxglove.creativetab.impl;
 
-import de.florianmichael.viafabricplus.protocolhack.ProtocolHack;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.creativetab.CreativeTab;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.ExploitFixerModule;
@@ -9,7 +8,6 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.raphimc.vialoader.util.VersionEnum;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.Collection;
@@ -23,47 +21,31 @@ public class CrashItemsCreativeTab extends CreativeTab {
     @Override
     public Collection<ItemStack> entries() {
         final Collection<ItemStack> current = super.entries();
-        final VersionEnum targetVersion = ProtocolHack.getTargetVersion();
         final ExploitFixerModule exploitFixerModule = Foxglove.getInstance().getModuleRegistry().getExploitFixerModule();
 
-        if (targetVersion.isOlderThan(VersionEnum.r1_11)) {
-            // This head uses a value that has an empty string as url.
-            current.add(createItem(createCrashSkull("ewogICJ0aW1lc3RhbXAiIDogMTY4ODYwNjcyODYzNywKICAicHJvZmlsZUlkIiA6ICJhNDAxNDkxYTAwZTI0OGVmYTZmZjcxMjI2Y2ZhNzU1NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlZDBjaW5VIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICIiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="),
-                    Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head"),
-                    Text.literal(Formatting.YELLOW + Formatting.BOLD.toString() + "Working at <= 1.10.2 (needs to be placed in versions older than 1.8.0)")
-            ));
-
-            // This head uses a value that has " .minecraft.net" as url.
-            current.add(createItem(createCrashSkull("ewogICJ0aW1lc3RhbXAiIDogMTY4ODYwNjcyODYzNywKICAicHJvZmlsZUlkIiA6ICJhNDAxNDkxYTAwZTI0OGVmYTZmZjcxMjI2Y2ZhNzU1NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlZDBjaW5VIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICIgLm1pbmVjcmFmdC5uZXQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="),
-                    Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head V2"),
-                    Text.literal(Formatting.YELLOW + Formatting.BOLD.toString() + "Working at <= 1.10.2 (needs to be placed in versions older than 1.8.0)")
-            ));
-        }
-
-        if (targetVersion.isOlderThan(VersionEnum.r1_15)) {
-            current.add(createItem(createCrashSign("translation.test.invalid"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign")));
-            current.add(createItem(createCrashSign("translation.test.invalid2"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign V2")));
-
-            current.add(createItem(createCrashBook("translation.test.invalid"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book")));
-            current.add(createItem(createCrashBook("translation.test.invalid2"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book V2")));
-        }
-
+        current.add(createItem(createCrashSkull("ewogICJ0aW1lc3RhbXAiIDogMTY4ODYwNjcyODYzNywKICAicHJvZmlsZUlkIiA6ICJhNDAxNDkxYTAwZTI0OGVmYTZmZjcxMjI2Y2ZhNzU1NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlZDBjaW5VIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICIiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="),
+                Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head"),
+                Text.literal(Formatting.YELLOW + Formatting.BOLD.toString() + "Working at <= 1.10.2 (needs to be placed in versions older than 1.8.0)")
+        ));
+        current.add(createItem(createCrashSkull("ewogICJ0aW1lc3RhbXAiIDogMTY4ODYwNjcyODYzNywKICAicHJvZmlsZUlkIiA6ICJhNDAxNDkxYTAwZTI0OGVmYTZmZjcxMjI2Y2ZhNzU1NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlZDBjaW5VIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICIgLm1pbmVjcmFmdC5uZXQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="),
+                Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head V2"),
+                Text.literal(Formatting.YELLOW + Formatting.BOLD.toString() + "Working at <= 1.10.2 (needs to be placed in versions older than 1.8.0)")
+        ));
+        current.add(createItem(createCrashSign("translation.test.invalid"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign")));
+        current.add(createItem(createCrashSign("translation.test.invalid2"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign V2")));
+        current.add(createItem(createCrashBook("translation.test.invalid"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book")));
+        current.add(createItem(createCrashBook("translation.test.invalid2"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book V2")));
         current.add(createItem(createClientCrashExperience(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Client Crash Experience")));
         current.add(createItem(createServerCrashEntity(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Crash Entity"), Text.literal("Doesn't work on Paper Spigot Servers.")));
         current.add(createItem(createClientCrashArea(), Text.literal(Formatting.RED + "Client Crash Area")));
+        current.add(createItem(createSodiumClientFreezeEntity(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Sodium Client Freeze Entity")));
+        current.add(createItem(this.createInstantCrashSculkItem(),
+                Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Instant Crash Block"),
+                Text.literal(Formatting.AQUA + Formatting.BOLD.toString() + "Works on Paper")
+        ));
 
-        if (targetVersion.isNewerThanOrEqualTo(VersionEnum.r1_20tor1_20_1)) {
-            if (exploitFixerModule.isEnabled() && exploitFixerModule.blockInvalidIdentifierCrash.getValue()) {
-                current.add(createItem(createClientInstantCrashPot(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Pot")));
-            }
-            current.add(createItem(createSodiumClientFreezeEntity(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Sodium Client Freeze Entity")));
-        }
-
-        if (targetVersion.isNewerThanOrEqualTo(VersionEnum.r1_19_1tor1_19_2)) {
-            current.add(createItem(this.createInstantCrashSculkItem(),
-                    Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Instant Crash Block"),
-                    Text.literal(Formatting.AQUA + Formatting.BOLD.toString() + "Works on Paper")
-            ));
+        if (exploitFixerModule.isEnabled() && exploitFixerModule.blockInvalidIdentifierCrash.getValue()) {
+            current.add(createItem(createClientInstantCrashPot(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Pot")));
         }
 
         return current;

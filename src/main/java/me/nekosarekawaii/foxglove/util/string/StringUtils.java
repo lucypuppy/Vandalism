@@ -26,7 +26,7 @@ public class StringUtils {
 
     public static boolean startsWithIgnoreCase(final String input, final String target) {
         if (input == null || target == null) return false;
-        return input.toLowerCase().startsWith(target);
+        return input.toLowerCase().startsWith(target.toLowerCase());
     }
 
 }
