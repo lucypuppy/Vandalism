@@ -29,12 +29,6 @@ public class ModuleRegistry {
         return this.debugModule;
     }
 
-    private AntiChatContextModule antiChatContextModule;
-
-    public AntiChatContextModule getAntiChatContextModule() {
-        return this.antiChatContextModule;
-    }
-
     private ExploitFixerModule exploitFixerModule;
 
     public ExploitFixerModule getExploitFixerModule() {
@@ -201,7 +195,6 @@ public class ModuleRegistry {
                 //HUD should always be the first entry.
                 this.headUpDisplayModule = new HeadUpDisplayModule(),
                 this.testModule = new TestModule(),
-                this.antiChatContextModule = new AntiChatContextModule(),
                 this.exploitFixerModule = new ExploitFixerModule(),
                 this.brandChangerModule = new BrandChangerModule(),
                 this.debugModule = new DebugModule(),
