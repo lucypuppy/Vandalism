@@ -176,13 +176,13 @@ public class ModuleRegistry {
     private VelocityModule velocityModule;
 
     public VelocityModule getVelocityModule() {
-        return velocityModule;
+        return this.velocityModule;
     }
 
     private AutoFishModule autoFishModule;
 
     public AutoFishModule getAutoFishModule() {
-        return autoFishModule;
+        return this.autoFishModule;
     }
 
     private boolean done;
