@@ -179,6 +179,12 @@ public class ModuleRegistry {
         return velocityModule;
     }
 
+    private AutoFishModule autoFishModule;
+
+    public AutoFishModule getAutoFishModule() {
+        return autoFishModule;
+    }
+
     private boolean done;
 
     private final FeatureList<Module> modules;
@@ -220,7 +226,8 @@ public class ModuleRegistry {
                 this.espModule = new ESPModule(),
                 this.betterTooltipModule = new BetterTooltipModule(),
                 this.phaseModule = new PhaseModule(),
-                this.velocityModule = new VelocityModule()
+                this.velocityModule = new VelocityModule(),
+                this.autoFishModule = new AutoFishModule()
         );
     }
 
