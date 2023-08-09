@@ -5,10 +5,7 @@ import me.nekosarekawaii.foxglove.event.TooltipListener;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
-import me.nekosarekawaii.foxglove.util.minecraft.inventory.tooltip.BannerTooltipComponent;
-import me.nekosarekawaii.foxglove.util.minecraft.inventory.tooltip.ContainerTooltipComponent;
-import me.nekosarekawaii.foxglove.util.minecraft.inventory.tooltip.MapTooltipComponent;
-import me.nekosarekawaii.foxglove.util.minecraft.inventory.tooltip.SignTooltipComponent;
+import me.nekosarekawaii.foxglove.util.minecraft.inventory.tooltip.*;
 import me.nekosarekawaii.foxglove.util.render.ColorUtils;
 import net.minecraft.block.entity.BannerPattern;
 import net.minecraft.block.entity.BannerPatterns;
@@ -19,7 +16,10 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.collection.DefaultedList;
 
 import java.util.List;
@@ -83,6 +83,9 @@ public class BetterTooltipModule extends Module implements TooltipListener {
 
             final DefaultedList<ItemStack> itemStacks = DefaultedList.ofSize(27, ItemStack.EMPTY);
             Inventories.readNbt(compoundTag, itemStacks);
+
+            tooltipData.add(new TextTooltipComponent(Text.literal("(Press alt + middle click to open inventory)")
+                    .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY)).asOrderedText()));
             tooltipData.add(new ContainerTooltipComponent(itemStacks, ColorUtils.withAlpha(color, 1f)));
         }
     }

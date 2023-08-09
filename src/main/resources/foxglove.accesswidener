@@ -79,3 +79,5 @@ accessible method net/minecraft/client/particle/ParticleManager clearParticles (
 
 accessible method net/minecraft/client/gui/screen/Screen addDrawableChild (Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;
 accessible method net/minecraft/client/gui/screen/Screen addDrawable (Lnet/minecraft/client/gui/Drawable;)Lnet/minecraft/client/gui/Drawable;
+
+accessible field net/minecraft/entity/projectile/FishingBobberEntity caughtFish Z
