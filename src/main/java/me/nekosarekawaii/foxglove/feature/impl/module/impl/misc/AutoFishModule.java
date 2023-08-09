@@ -8,6 +8,8 @@ import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
 import me.nekosarekawaii.foxglove.util.timer.impl.ms.MsTimer;
 import me.nekosarekawaii.foxglove.value.Value;
 import me.nekosarekawaii.foxglove.value.values.number.slider.SliderIntegerValue;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
 import net.minecraft.util.Hand;
 
@@ -31,22 +33,24 @@ public class AutoFishModule extends Module implements TickListener {
 
     @Override
     public void onTick() {
-        if (mc.player == null)
+        final ClientPlayerEntity player = mc.player;
+        final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
+        if (player == null || networkHandler == null)
             return;
 
-        if (mc.player.fishHook != null) {
-            if (!hasFish && mc.player.fishHook.caughtFish && mc.player.fishHook.getVelocity().y < -0.2) {
-                hasFish = true;
-                retractDelay.reset();
+        if (player.fishHook != null) {
+            if (!this.hasFish && player.fishHook.caughtFish && player.fishHook.getVelocity().y < -0.2) {
+                this.hasFish = true;
+                this.retractDelay.reset();
             }
 
-            if (hasFish && retractDelay.hasReached(retractDelayValue.getValue(), true)) {
-                mc.getNetworkHandler().sendPacket(new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, 0));
-                throwDelay.reset();
+            if (this.hasFish && this.retractDelay.hasReached(this.retractDelayValue.getValue(), true)) {
+                networkHandler.sendPacket(new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, 0));
+                this.throwDelay.reset();
             }
         } else if (throwDelay.hasReached(throwDelayValue.getValue(), true)) {
-            mc.getNetworkHandler().sendPacket(new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, 0));
-            hasFish = false;
+            networkHandler.sendPacket(new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, 0));
+            this.hasFish = false;
         }
     }
 
