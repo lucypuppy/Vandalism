@@ -30,6 +30,7 @@ public abstract class MixinParticleManager {
             final double velocityY,
             final double velocityZ
     ) {
+        //TODO: Fix crash by not returning null.
         final ExploitFixerModule exploitFixerModule = Foxglove.getInstance().getModuleRegistry().getExploitFixerModule();
         if (exploitFixerModule.isEnabled() && exploitFixerModule.blockTooManyParticles.getValue()) {
             final String particleId = parameters.asString();
