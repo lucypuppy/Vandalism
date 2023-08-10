@@ -4,7 +4,7 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import imgui.ImGui;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.event.Render2DListener;
+import me.nekosarekawaii.foxglove.event.RenderListener;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.FeatureList;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
@@ -23,7 +23,7 @@ import net.minecraft.client.world.ClientWorld;
 import java.util.List;
 
 @ModuleInfo(name = "Head Up Display", description = "The In-game HUD of the Mod.", category = FeatureCategory.RENDER, isDefaultEnabled = true)
-public class HeadUpDisplayModule extends Module implements Render2DListener {
+public class HeadUpDisplayModule extends Module implements RenderListener {
 
     private final Value<Boolean> enabledModulesList = new BooleanValue(
             "Enabled Modules List",
@@ -77,12 +77,12 @@ public class HeadUpDisplayModule extends Module implements Render2DListener {
 
     @Override
     protected void onEnable() {
-        DietrichEvents2.global().subscribe(Render2DListener.Render2DEvent.ID, this);
+        DietrichEvents2.global().subscribe(RenderListener.Render2DEvent.ID, this);
     }
 
     @Override
     protected void onDisable() {
-        DietrichEvents2.global().unsubscribe(Render2DListener.Render2DEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(RenderListener.Render2DEvent.ID, this);
     }
 
     @Override

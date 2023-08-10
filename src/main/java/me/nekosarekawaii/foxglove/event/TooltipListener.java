@@ -25,6 +25,7 @@ public interface TooltipListener {
         public void call(final TooltipListener listener) {
             listener.onTooltipData(this);
         }
+
     }
 
 }

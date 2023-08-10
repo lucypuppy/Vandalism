@@ -55,7 +55,7 @@ public class ModPacketBlockerModule extends Module implements PacketListener {
     }
 
     @Override
-    public void onWrite(final PacketEvent event) {
+    public void onPacketWrite(final PacketEvent event) {
         if (event.packet instanceof final CustomPayloadC2SPacket customPayloadC2SPacket) {
             final Identifier channel = customPayloadC2SPacket.getChannel();
             final String channelName = channel.getNamespace();
@@ -82,7 +82,7 @@ public class ModPacketBlockerModule extends Module implements PacketListener {
     }
 
     @Override
-    public void onRead(final PacketEvent event) {
+    public void onPacketRead(final PacketEvent event) {
         if (event.packet instanceof final CustomPayloadS2CPacket customPayloadS2CPacket) {
             final Identifier channel = customPayloadS2CPacket.getChannel();
             final String channelName = channel.getNamespace();

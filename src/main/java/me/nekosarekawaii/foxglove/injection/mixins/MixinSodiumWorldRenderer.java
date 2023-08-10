@@ -1,7 +1,7 @@
 package me.nekosarekawaii.foxglove.injection.mixins;
 
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.ExploitFixerModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.VisualThrottleModule;
 import net.minecraft.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
@@ -15,9 +15,9 @@ public abstract class MixinSodiumWorldRenderer {
 
     @Inject(method = "isEntityVisible", at = @At(value = "INVOKE", target = "Lme/jellysquid/mods/sodium/client/render/SodiumWorldRenderer;isBoxVisible(DDDDDD)Z", shift = At.Shift.BEFORE), cancellable = true)
     private void injectIsEntityVisible(final Entity entity, final CallbackInfoReturnable<Boolean> cir) {
-        final ExploitFixerModule exploitFixerModule = Foxglove.getInstance().getModuleRegistry().getExploitFixerModule();
-        if (exploitFixerModule.isEnabled()) {
-            if (entity.getVisibilityBoundingBox().getAverageSideLength() > exploitFixerModule.minSodiumEntityAverageSideLength.getValue()) {
+        final VisualThrottleModule visualThrottleModule = Foxglove.getInstance().getModuleRegistry().getRenderingLimiterModule();
+        if (visualThrottleModule.isEnabled()) {
+            if (entity.getVisibilityBoundingBox().getAverageSideLength() > visualThrottleModule.minSodiumEntityAverageSideLength.getValue()) {
                 cir.setReturnValue(true);
             }
         }

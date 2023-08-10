@@ -3,7 +3,7 @@ package me.nekosarekawaii.foxglove.injection.mixins;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.event.Render2DListener;
+import me.nekosarekawaii.foxglove.event.RenderListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.MessageScreen;
@@ -55,7 +55,7 @@ public abstract class MixinScreen {
     @Inject(method = "render", at = @At(value = "RETURN"))
     private void injectRender(final DrawContext context, final int mouseX, final int mouseY, final float delta, final CallbackInfo ci) {
         context.getMatrices().push();
-        DietrichEvents2.global().postInternal(Render2DListener.Render2DEvent.ID, new Render2DListener.Render2DEvent(context, mouseX, mouseY, delta));
+        DietrichEvents2.global().postInternal(RenderListener.Render2DEvent.ID, new RenderListener.Render2DEvent(context, mouseX, mouseY, delta));
         context.getMatrices().pop();
     }
 

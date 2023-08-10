@@ -1,8 +1,8 @@
 package me.nekosarekawaii.foxglove.feature.impl.module.impl.movement;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import me.nekosarekawaii.foxglove.event.EntityPushListener;
-import me.nekosarekawaii.foxglove.event.FluidPushListener;
+import me.nekosarekawaii.foxglove.event.EntityListener;
+import me.nekosarekawaii.foxglove.event.FluidListener;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
@@ -11,7 +11,7 @@ import me.nekosarekawaii.foxglove.value.values.BooleanValue;
 import me.nekosarekawaii.foxglove.value.values.number.slider.SliderDoubleValue;
 
 @ModuleInfo(name = "Custom Push Velocity", description = "Allows you to customize the entity/block and liquid push velocity which applies to you.", category = FeatureCategory.MOVEMENT)
-public class CustomPushVelocityModule extends Module implements EntityPushListener, FluidPushListener {
+public class CustomVelocityModule extends Module implements EntityListener, FluidListener {
 
     private final Value<Boolean> modifyEntityPush = new BooleanValue(
             "Modify Entity Push",

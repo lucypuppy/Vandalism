@@ -23,7 +23,7 @@ public class VelocityModule extends Module implements PacketListener {
     }
 
     @Override
-    public void onRead(final PacketEvent event) {
+    public void onPacketRead(final PacketEvent event) {
         final ClientPlayerEntity player = mc.player;
         if (player == null) return;
         final Packet<?> packet = event.packet;

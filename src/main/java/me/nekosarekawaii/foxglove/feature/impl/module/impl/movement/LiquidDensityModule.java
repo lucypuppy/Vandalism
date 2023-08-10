@@ -8,7 +8,7 @@ import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.util.shape.VoxelShapes;
 
-@ModuleInfo(name = "Liquid Density", description = "Makes you walk on liquids.", category = FeatureCategory.MOVEMENT)
+@ModuleInfo(name = "Liquid Density", description = "Lets you walk on liquids.", category = FeatureCategory.MOVEMENT)
 public class LiquidDensityModule extends Module implements BlockListener {
 
     @Override
@@ -22,7 +22,7 @@ public class LiquidDensityModule extends Module implements BlockListener {
     }
 
     @Override
-    public void getCollisionShape(BlockEvent event) {
+    public void onCollisionShapeGet(final BlockEvent event) {
         if (mc.player == null)
             return;
 

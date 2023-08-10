@@ -6,10 +6,10 @@ import net.minecraft.network.packet.Packet;
 public interface PacketListener {
 
 
-    default void onRead(final PacketEvent event) {
+    default void onPacketRead(final PacketEvent event) {
     }
 
-    default void onWrite(final PacketEvent event) {
+    default void onPacketWrite(final PacketEvent event) {
     }
 
     enum PacketEventType {
@@ -32,9 +32,9 @@ public interface PacketListener {
         @Override
         public void call(final PacketListener listener) {
             if (this.type == PacketEventType.READ) {
-                listener.onRead(this);
+                listener.onPacketRead(this);
             } else {
-                listener.onWrite(this);
+                listener.onPacketWrite(this);
             }
         }
 

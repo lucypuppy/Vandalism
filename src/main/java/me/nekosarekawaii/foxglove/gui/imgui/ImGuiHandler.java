@@ -4,7 +4,7 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import imgui.internal.ImGui;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.event.KeyboardListener;
-import me.nekosarekawaii.foxglove.event.Render2DListener;
+import me.nekosarekawaii.foxglove.event.RenderListener;
 import me.nekosarekawaii.foxglove.gui.imgui.impl.menu.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -13,7 +13,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
 
-public class ImGuiHandler implements KeyboardListener, Render2DListener {
+public class ImGuiHandler implements KeyboardListener, RenderListener {
 
     private final ImGuiRenderer imGuiRenderer;
 
@@ -32,6 +32,7 @@ public class ImGuiHandler implements KeyboardListener, Render2DListener {
         this.nbtEditMenu = new NBTEditMenu();
         DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
         DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
+        Foxglove.getInstance().getLogger().info("ImGui loaded.");
     }
 
     private void renderImGuiContext() {

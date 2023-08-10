@@ -31,7 +31,7 @@ public class FlightModule extends Module implements PacketListener {
     }
 
     @Override
-    public void onWrite(final PacketEvent event) {
+    public void onPacketWrite(final PacketEvent event) {
         if (event.packet instanceof final PlayerMoveC2SPacket playerMoveC2SPacket) {
             if (this.antiKick.getValue()) {
                 playerMoveC2SPacket.y += Math.sin(mc.player.age) * 0.2;

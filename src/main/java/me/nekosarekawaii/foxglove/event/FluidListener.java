@@ -2,11 +2,12 @@ package me.nekosarekawaii.foxglove.event;
 
 import de.florianmichael.dietrichevents2.CancellableEvent;
 
-public interface FluidPushListener {
+public interface FluidListener {
 
-    void onFluidPush(final FluidPushEvent fluidPushEvent);
+    default void onFluidPush(final FluidPushEvent fluidPushEvent) {
+    }
 
-    class FluidPushEvent extends CancellableEvent<FluidPushListener> {
+    class FluidPushEvent extends CancellableEvent<FluidListener> {
 
         public final static int ID = 9;
 
@@ -17,7 +18,7 @@ public interface FluidPushListener {
         }
 
         @Override
-        public void call(final FluidPushListener listener) {
+        public void call(final FluidListener listener) {
             listener.onFluidPush(this);
         }
 

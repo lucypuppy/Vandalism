@@ -1,13 +1,13 @@
 package me.nekosarekawaii.foxglove.feature.impl.module.impl.misc;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import me.nekosarekawaii.foxglove.event.CameraDistanceListener;
+import me.nekosarekawaii.foxglove.event.CameraListener;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
 
 @ModuleInfo(name = "Camera No Clip", description = "Allows you to clip through blocks while in camera mode.", category = FeatureCategory.MISC)
-public class CameraNoClipModule extends Module implements CameraDistanceListener {
+public class CameraNoClipModule extends Module implements CameraListener {
 
     @Override
     protected void onEnable() {

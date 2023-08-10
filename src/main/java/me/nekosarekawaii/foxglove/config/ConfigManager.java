@@ -96,6 +96,7 @@ public class ConfigManager {
 
                 fileReader.close();
                 jsonReader.close();
+                Foxglove.getInstance().getLogger().info("Configs loaded.");
             } catch (final IOException e) {
                 Foxglove.getInstance().getLogger().error("Failed to load Config: " + config.file.getName(), e);
             }
