@@ -7,7 +7,8 @@ import net.minecraft.util.shape.VoxelShape;
 
 public interface BlockListener {
 
-    void getCollisionShape(BlockEvent event);
+    default void onCollisionShapeGet(final BlockEvent event) {
+    }
 
     class BlockEvent extends AbstractEvent<BlockListener> {
 
@@ -18,7 +19,7 @@ public interface BlockListener {
         public VoxelShape shape;
         public boolean shouldUpdate;
 
-        public BlockEvent(BlockState state, BlockPos pos, VoxelShape shape) {
+        public BlockEvent(final BlockState state, final BlockPos pos, final VoxelShape shape) {
             this.state = state;
             this.pos = pos;
             this.shape = shape;
@@ -27,8 +28,9 @@ public interface BlockListener {
 
         @Override
         public void call(final BlockListener listener) {
-            listener.getCollisionShape(this);
+            listener.onCollisionShapeGet(this);
         }
+
     }
 
 }

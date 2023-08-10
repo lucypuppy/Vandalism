@@ -1,5 +1,7 @@
 package me.nekosarekawaii.foxglove.config.impl;
 
+import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
+import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.Pair;
 import me.nekosarekawaii.foxglove.Foxglove;
@@ -11,11 +13,35 @@ import me.nekosarekawaii.foxglove.value.values.KeyInputValue;
 import me.nekosarekawaii.foxglove.value.values.StringValue;
 import me.nekosarekawaii.foxglove.value.values.number.slider.SliderFloatValue;
 import me.nekosarekawaii.foxglove.value.values.number.slider.SliderIntegerValue;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.IOException;
 
 public class MainConfig extends ValueableConfig {
+
+    private static class DisconnectListener implements NativeKeyListener {
+
+        @Override
+        public void nativeKeyPressed(final NativeKeyEvent nativeEvent) {
+            if (Foxglove.getInstance().getConfigManager().getMainConfig().forceDisconnectKeybind.getValue()) {
+                if (nativeEvent.getKeyCode() == 3663) { // END Key
+                    final ClientPlayNetworkHandler networkHandler = MinecraftClient.getInstance().getNetworkHandler();
+                    if (networkHandler != null) {
+                        networkHandler.getConnection().disconnect(Text.literal("Manual force disconnect."));
+                    }
+                }
+            }
+        }
+
+    }
+
+    public MainConfig() {
+        super(Foxglove.getInstance().getDir(), "main");
+        Foxglove.getInstance().getNativeInputHook().registerKeyListener(new DisconnectListener());
+    }
 
     public final ValueCategory menuCategory = new ValueCategory("Menu", "Menu Settings", this);
 
@@ -113,6 +139,13 @@ public class MainConfig extends ValueableConfig {
     );
 
     public final ValueCategory accessibilityCategory = new ValueCategory("Accessibility", "Accessibility settings", this);
+
+    public final Value<Boolean> forceDisconnectKeybind = new BooleanValue(
+            "Force Disconnect Keybind",
+            "Enables that you can disconnect with the key END even if the Game is freezed.",
+            this.accessibilityCategory,
+            true
+    );
 
     public final Value<Boolean> spoofIsCreativeLevelTwoOp = new BooleanValue(
             "Spoof Is Creative Level Two Op",
@@ -230,15 +263,11 @@ public class MainConfig extends ValueableConfig {
             false
     );
 
-    public MainConfig() {
-        super(Foxglove.getInstance().getDir(), "main");
-    }
-
     @Override
     public JsonObject save() throws IOException {
         final JsonObject configObject = new JsonObject();
         final JsonObject valuesArray = new JsonObject();
-        saveValues(valuesArray, this.getValues());
+        this.saveValues(valuesArray, this.getValues());
         configObject.add("values", valuesArray);
         return configObject;
     }
@@ -246,7 +275,8 @@ public class MainConfig extends ValueableConfig {
     @Override
     public void load(final JsonObject jsonObject) throws IOException {
         if (jsonObject.has("values")) {
-            loadValues(jsonObject.getAsJsonObject("values"), this.getValues());
+            this.loadValues(jsonObject.getAsJsonObject("values"), this.getValues());
         }
     }
+
 }

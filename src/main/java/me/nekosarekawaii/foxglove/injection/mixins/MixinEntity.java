@@ -1,8 +1,8 @@
 package me.nekosarekawaii.foxglove.injection.mixins;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import me.nekosarekawaii.foxglove.event.EntityPushListener;
-import me.nekosarekawaii.foxglove.event.FluidPushListener;
+import me.nekosarekawaii.foxglove.event.EntityListener;
+import me.nekosarekawaii.foxglove.event.FluidListener;
 import me.nekosarekawaii.foxglove.event.StepListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
@@ -20,8 +20,8 @@ public abstract class MixinEntity {
     @Redirect(method = "updateWaterState", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;updateMovementInFluid(Lnet/minecraft/registry/tag/TagKey;D)Z"))
     private boolean redirectUpdateWaterState(final Entity instance, final TagKey<Fluid> tag, final double speed) {
         if (MinecraftClient.getInstance().player == ((Entity) (Object) this)) {
-            final FluidPushListener.FluidPushEvent fluidPushEvent = new FluidPushListener.FluidPushEvent(speed);
-            DietrichEvents2.global().postInternal(FluidPushListener.FluidPushEvent.ID, fluidPushEvent);
+            final FluidListener.FluidPushEvent fluidPushEvent = new FluidListener.FluidPushEvent(speed);
+            DietrichEvents2.global().postInternal(FluidListener.FluidPushEvent.ID, fluidPushEvent);
             if (fluidPushEvent.isCancelled()) return false;
             else return instance.updateMovementInFluid(tag, fluidPushEvent.speed);
         }
@@ -31,8 +31,8 @@ public abstract class MixinEntity {
     @Redirect(method = "checkWaterState", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;updateMovementInFluid(Lnet/minecraft/registry/tag/TagKey;D)Z"))
     private boolean redirectCheckWaterState(final Entity instance, final TagKey<Fluid> tag, final double speed) {
         if (MinecraftClient.getInstance().player == ((Entity) (Object) this)) {
-            final FluidPushListener.FluidPushEvent fluidPushEvent = new FluidPushListener.FluidPushEvent(speed);
-            DietrichEvents2.global().postInternal(FluidPushListener.FluidPushEvent.ID, fluidPushEvent);
+            final FluidListener.FluidPushEvent fluidPushEvent = new FluidListener.FluidPushEvent(speed);
+            DietrichEvents2.global().postInternal(FluidListener.FluidPushEvent.ID, fluidPushEvent);
             if (fluidPushEvent.isCancelled()) return false;
             else return instance.updateMovementInFluid(tag, fluidPushEvent.speed);
         }
@@ -42,8 +42,8 @@ public abstract class MixinEntity {
     @ModifyConstant(constant = @Constant(doubleValue = 0.05000000074505806), method = "pushAwayFrom")
     private double modifyPushVelocity(final double constant) {
         if (MinecraftClient.getInstance().player == ((Entity) (Object) this)) {
-            final EntityPushListener.EntityPushEvent entityPushEvent = new EntityPushListener.EntityPushEvent(constant);
-            DietrichEvents2.global().postInternal(EntityPushListener.EntityPushEvent.ID, entityPushEvent);
+            final EntityListener.EntityPushEvent entityPushEvent = new EntityListener.EntityPushEvent(constant);
+            DietrichEvents2.global().postInternal(EntityListener.EntityPushEvent.ID, entityPushEvent);
             if (entityPushEvent.isCancelled()) return 0;
             return entityPushEvent.value;
         }

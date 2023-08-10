@@ -6,6 +6,7 @@ import me.nekosarekawaii.foxglove.feature.impl.command.CommandRegistry;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleRegistry;
 import me.nekosarekawaii.foxglove.gui.imgui.ImGuiHandler;
 import me.nekosarekawaii.foxglove.util.CustomServerList;
+import me.nekosarekawaii.foxglove.util.NativeInputHook;
 import me.nekosarekawaii.foxglove.util.minecraft.FormattingUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.Person;
@@ -50,6 +51,8 @@ public class Foxglove {
 
     private CustomServerList selectedServerList;
 
+    private NativeInputHook nativeInputHook;
+
     public Foxglove() {
         this.name = "Foxglove";
         this.lowerCaseName = this.name.toLowerCase();
@@ -91,14 +94,18 @@ public class Foxglove {
 
         this.logger.info("Loading ImGui...");
         this.imGuiHandler = new ImGuiHandler(this.dir);
-        this.logger.info("ImGui loaded.");
 
+        this.logger.info("Registering native input hook...");
+        this.nativeInputHook = new NativeInputHook();
+
+        this.logger.info("Loading configs...");
         this.configManager = new ConfigManager();
         this.configManager.load();
 
         FabricBridge.modInitialized = true;
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
+        this.logger.info("Done!");
     }
 
     private void stop() {
@@ -168,6 +175,10 @@ public class Foxglove {
 
     public void setSelectedServerList(final CustomServerList selectedServerList) {
         this.selectedServerList = selectedServerList;
+    }
+
+    public NativeInputHook getNativeInputHook() {
+        return this.nativeInputHook;
     }
 
 }

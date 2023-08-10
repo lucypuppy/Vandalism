@@ -119,9 +119,9 @@ public class ModuleRegistry {
         return this.fastUseModule;
     }
 
-    private CustomPushVelocityModule customPushVelocityModule;
+    private CustomVelocityModule customPushVelocityModule;
 
-    public CustomPushVelocityModule getCustomPushVelocityModule() {
+    public CustomVelocityModule getCustomPushVelocityModule() {
         return this.customPushVelocityModule;
     }
 
@@ -185,6 +185,12 @@ public class ModuleRegistry {
         return this.liquidDensityModule;
     }
 
+    private VisualThrottleModule visualThrottleModule;
+
+    public VisualThrottleModule getRenderingLimiterModule() {
+        return this.visualThrottleModule;
+    }
+
     private boolean done;
 
     private final FeatureList<Module> modules;
@@ -217,7 +223,7 @@ public class ModuleRegistry {
                 this.consoleSpammerModule = new ConsoleSpammerModule(),
                 this.itemStackLoggerModule = new ItemStackLoggerModule(),
                 this.fastUseModule = new FastUseModule(),
-                this.customPushVelocityModule = new CustomPushVelocityModule(),
+                this.customPushVelocityModule = new CustomVelocityModule(),
                 this.stepModule = new StepModule(),
                 this.noFallModule = new NoFallModule(),
                 this.cameraNoClipModule = new CameraNoClipModule(),
@@ -227,7 +233,8 @@ public class ModuleRegistry {
                 this.phaseModule = new PhaseModule(),
                 this.velocityModule = new VelocityModule(),
                 this.autoFishModule = new AutoFishModule(),
-                this.liquidDensityModule = new LiquidDensityModule()
+                this.liquidDensityModule = new LiquidDensityModule(),
+                this.visualThrottleModule = new VisualThrottleModule()
         );
     }
 

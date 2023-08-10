@@ -1,7 +1,7 @@
 package me.nekosarekawaii.foxglove.injection.mixins;
 
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.ExploitFixerModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.VisualThrottleModule;
 import me.nekosarekawaii.foxglove.util.ParticleTracker;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleFactory;
@@ -30,27 +30,26 @@ public abstract class MixinParticleManager {
             final double velocityY,
             final double velocityZ
     ) {
-        final ExploitFixerModule exploitFixerModule = Foxglove.getInstance().getModuleRegistry().getExploitFixerModule();
-        if (exploitFixerModule.isEnabled() && exploitFixerModule.blockTooManyParticles.getValue()) {
+        final VisualThrottleModule visualThrottleModule = Foxglove.getInstance().getModuleRegistry().getRenderingLimiterModule();
+        if (visualThrottleModule.isEnabled() && visualThrottleModule.blockTooManyParticles.getValue()) {
             final String particleId = parameters.asString();
-            if (exploitFixerModule.particleTrackerMap.containsKey(particleId)) {
-                final ParticleTracker particleTracker = exploitFixerModule.particleTrackerMap.get(particleId);
+            if (visualThrottleModule.particleTrackerMap.containsKey(particleId)) {
+                final ParticleTracker particleTracker = visualThrottleModule.particleTrackerMap.get(particleId);
                 particleTracker.increaseCount();
-                if (particleTracker.getCount() > exploitFixerModule.countToBlockParticles.getValue()) {
-                    return particleFactory.createParticle(parameters, world, 0, -256, 0, 0, 0, 0);
+                if (particleTracker.getCount() > visualThrottleModule.countToBlockParticles.getValue()) {
+                    return null; //TODO: Make NullPointerException crash fix! ~ NekosAreKawaii
                 }
-            }
-            else exploitFixerModule.particleTrackerMap.put(particleId, new ParticleTracker(particleId));
+            } else visualThrottleModule.particleTrackerMap.put(particleId, new ParticleTracker(particleId));
         }
         return particleFactory.createParticle(parameters, world, x, y, z, velocityX, velocityY, velocityZ);
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void injectTick(final CallbackInfo ci) {
-        final ExploitFixerModule exploitFixerModule = Foxglove.getInstance().getModuleRegistry().getExploitFixerModule();
-        if (exploitFixerModule.isEnabled() && exploitFixerModule.blockTooManyParticles.getValue()) {
-            for (final ParticleTracker particleTracker : exploitFixerModule.particleTrackerMap.values()) {
-                if (particleTracker.getTimer().hasReached(exploitFixerModule.particleBlockingCountResetDelay.getValue(), true)) {
+        final VisualThrottleModule visualThrottleModule = Foxglove.getInstance().getModuleRegistry().getRenderingLimiterModule();
+        if (visualThrottleModule.isEnabled() && visualThrottleModule.blockTooManyParticles.getValue()) {
+            for (final ParticleTracker particleTracker : visualThrottleModule.particleTrackerMap.values()) {
+                if (particleTracker.getTimer().hasReached(visualThrottleModule.particleBlockingCountResetDelay.getValue(), true)) {
                     particleTracker.resetCount();
                 }
             }
@@ -59,7 +58,7 @@ public abstract class MixinParticleManager {
 
     @Inject(method = "clearParticles", at = @At("HEAD"))
     private void injectClearParticles(final CallbackInfo ci) {
-        Foxglove.getInstance().getModuleRegistry().getExploitFixerModule().particleTrackerMap.clear();
+        Foxglove.getInstance().getModuleRegistry().getRenderingLimiterModule().particleTrackerMap.clear();
     }
 
 }

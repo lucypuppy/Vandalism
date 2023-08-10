@@ -1,7 +1,7 @@
 package me.nekosarekawaii.foxglove.injection.mixins;
 
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.ExploitFixerModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.VisualThrottleModule;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -34,10 +34,10 @@ public abstract class MixinEntityRenderer<T extends Entity> {
             cancellable = true
     )
     private void injectRenderLabelIfPresent(final T entity, Text text, final MatrixStack matrixStack, final VertexConsumerProvider vertexConsumerProvider, final int light, final CallbackInfo ci) {
-        final ExploitFixerModule exploitFixerModule = Foxglove.getInstance().getModuleRegistry().getExploitFixerModule();
-        if (exploitFixerModule.isEnabled() && exploitFixerModule.modifyDisplayNameLength.getValue()) {
+        final VisualThrottleModule visualThrottleModule = Foxglove.getInstance().getModuleRegistry().getRenderingLimiterModule();
+        if (visualThrottleModule.isEnabled() && visualThrottleModule.modifyDisplayNameLength.getValue()) {
             final String oldTextString = text.getString();
-            final int oldLength = oldTextString.length(), maxLength = exploitFixerModule.maxDisplayNameLength.getValue();
+            final int oldLength = oldTextString.length(), maxLength = visualThrottleModule.maxDisplayNameLength.getValue();
             if (oldLength > maxLength) {
                 text = Text.literal(oldTextString.substring(0, maxLength)).setStyle(text.getStyle());
                 final double d = this.dispatcher.getSquaredDistanceToCamera(entity);

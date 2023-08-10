@@ -41,7 +41,7 @@ public class PacketLoggerModule extends Module implements PacketListener {
     }
 
     @Override
-    public void onWrite(final PacketEvent event) {
+    public void onPacketWrite(final PacketEvent event) {
         final Packet<?> packet = event.packet;
         if (packet instanceof final CustomPayloadC2SPacket c2SPacket) {
             if (this.customPayloadPacket.getValue()) {
@@ -65,7 +65,7 @@ public class PacketLoggerModule extends Module implements PacketListener {
     }
 
     @Override
-    public void onRead(final PacketEvent event) {
+    public void onPacketRead(final PacketEvent event) {
         final Packet<?> packet = event.packet;
         if (packet instanceof final CustomPayloadS2CPacket s2CPacket) {
             if (this.customPayloadPacket.getValue()) {

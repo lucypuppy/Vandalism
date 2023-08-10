@@ -69,6 +69,8 @@ dependencies {
 	implementation "net.lenni0451:MCPing:${project.mc_ping_version}"
 	implementation "net.lenni0451:ImNbt:${project.imnbt_version}"
 
+	implementation "com.github.kwhat:jnativehook:${project.jnativehook_version}"
+
 	implementation "fr.litarvan:openauth:${project.openauth_version}"
 
 	implementation "io.github.spair:imgui-java-binding:${project.spair_imgui_version}"

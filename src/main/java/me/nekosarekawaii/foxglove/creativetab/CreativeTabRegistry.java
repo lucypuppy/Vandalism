@@ -78,7 +78,7 @@ public class CreativeTabRegistry implements PacketListener {
     }
 
     @Override
-    public void onWrite(final PacketEvent event) {
+    public void onPacketWrite(final PacketEvent event) {
         if (event.packet instanceof final CreativeInventoryActionC2SPacket creativeInventoryActionC2SPacket) {
             if (MinecraftClient.getInstance().currentScreen instanceof CreativeInventoryScreen) {
                 if (this.itemGroups.contains(CreativeInventoryScreen.selectedTab)) {

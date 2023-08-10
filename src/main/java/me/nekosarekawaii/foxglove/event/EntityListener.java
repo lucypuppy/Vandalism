@@ -2,11 +2,12 @@ package me.nekosarekawaii.foxglove.event;
 
 import de.florianmichael.dietrichevents2.CancellableEvent;
 
-public interface EntityPushListener {
+public interface EntityListener {
 
-    void onEntityPush(final EntityPushEvent entityPushEvent);
+    default void onEntityPush(final EntityPushEvent entityPushEvent) {
+    }
 
-    class EntityPushEvent extends CancellableEvent<EntityPushListener> {
+    class EntityPushEvent extends CancellableEvent<EntityListener> {
 
         public final static int ID = 8;
 
@@ -17,7 +18,7 @@ public interface EntityPushListener {
         }
 
         @Override
-        public void call(final EntityPushListener listener) {
+        public void call(final EntityListener listener) {
             listener.onEntityPush(this);
         }
 

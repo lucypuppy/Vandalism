@@ -3,7 +3,7 @@ package me.nekosarekawaii.foxglove.feature.impl.module.impl.development;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import imgui.ImGui;
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.event.Render2DListener;
+import me.nekosarekawaii.foxglove.event.RenderListener;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
@@ -17,7 +17,7 @@ import net.minecraft.entity.Ownable;
 import net.minecraft.screen.ScreenHandler;
 
 @ModuleInfo(name = "Debug Module", description = "Debug some stuff about the client.", category = FeatureCategory.DEVELOPMENT)
-public class DebugModule extends Module implements Render2DListener {
+public class DebugModule extends Module implements RenderListener {
 
     @Override
     protected void onEnable() {

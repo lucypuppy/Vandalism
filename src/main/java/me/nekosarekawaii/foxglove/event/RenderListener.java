@@ -4,7 +4,7 @@ import de.florianmichael.dietrichevents2.AbstractEvent;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
 
-public interface Render2DListener {
+public interface RenderListener {
 
     default void onRender2DInGame(final DrawContext context, final float delta, final Window window) {
     }
@@ -16,7 +16,7 @@ public interface Render2DListener {
         IN_GAME, OUT_GAME
     }
 
-    class Render2DEvent extends AbstractEvent<Render2DListener> {
+    class Render2DEvent extends AbstractEvent<RenderListener> {
 
         public final static int ID = 3;
 
@@ -45,7 +45,7 @@ public interface Render2DListener {
         }
 
         @Override
-        public void call(final Render2DListener listener) {
+        public void call(final RenderListener listener) {
             if (this.type == Render2DEventType.IN_GAME) {
                 listener.onRender2DInGame(this.context, this.delta, this.window);
             } else {
