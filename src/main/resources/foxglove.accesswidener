@@ -81,3 +81,5 @@ accessible method net/minecraft/client/gui/screen/Screen addDrawableChild (Lnet/
 accessible method net/minecraft/client/gui/screen/Screen addDrawable (Lnet/minecraft/client/gui/Drawable;)Lnet/minecraft/client/gui/Drawable;
 
 accessible field net/minecraft/entity/projectile/FishingBobberEntity caughtFish Z
+
+accessible method net/minecraft/block/AbstractBlock$AbstractBlockState asBlockState ()Lnet/minecraft/block/BlockState;

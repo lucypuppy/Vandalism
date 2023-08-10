@@ -179,6 +179,12 @@ public class ModuleRegistry {
         return this.autoFishModule;
     }
 
+    private LiquidDensityModule liquidDensityModule;
+
+    public LiquidDensityModule getLiquidDensityModule() {
+        return this.liquidDensityModule;
+    }
+
     private boolean done;
 
     private final FeatureList<Module> modules;
@@ -220,7 +226,8 @@ public class ModuleRegistry {
                 this.betterTooltipModule = new BetterTooltipModule(),
                 this.phaseModule = new PhaseModule(),
                 this.velocityModule = new VelocityModule(),
-                this.autoFishModule = new AutoFishModule()
+                this.autoFishModule = new AutoFishModule(),
+                this.liquidDensityModule = new LiquidDensityModule()
         );
     }
 

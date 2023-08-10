@@ -6,6 +6,7 @@
   "client": [
     "accessors.AccessorRealmsMainScreen",
     "accessors.AccessorYggdrasilAuthenticationService",
+    "mixins.MixinAbstractBlockState",
     "mixins.MixinAbstractSignEditScreen",
     "mixins.MixinAllowedAddressResolver",
     "mixins.MixinBackgroundRenderer",
