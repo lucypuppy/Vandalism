@@ -29,6 +29,7 @@ public class TrollItemsCreativeTab extends CreativeTab {
         current.add(createItem(createBlackHole(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Black Hole")));
         current.add(createItem(createEventHorizonArea(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area")));
 
+
         return current;
     }
 
@@ -38,7 +39,7 @@ public class TrollItemsCreativeTab extends CreativeTab {
         final var customPotionEffects = new NbtList();
 
         final var customPotionEffect = new NbtCompound();
-        customPotionEffect.putInt("Amplifier", 125);
+        customPotionEffect.putByte("Amplifier", (byte) 125);
         customPotionEffect.putInt("Duration", 2000);
         customPotionEffect.putInt("Id", 6);
 
