@@ -19,6 +19,7 @@ public class ImGuiHandler implements KeyboardListener, RenderListener {
 
     private boolean
             renderBar = false,
+            renderDemoMenu = false,
             renderConfigMenu = false,
             renderAltManagerMenu = false,
             renderNameHistoryMenu = false,
@@ -39,6 +40,9 @@ public class ImGuiHandler implements KeyboardListener, RenderListener {
         this.imGuiRenderer.addRenderInterface(io -> {
             if (this.renderBar) {
                 if (ImGui.beginMainMenuBar()) {
+                    if (ImGui.button("Demo##barbutton")) {
+                        this.renderDemoMenu = !this.renderDemoMenu;
+                    }
                     if (ImGui.button("Config##barbutton")) {
                         this.renderConfigMenu = !this.renderConfigMenu;
                     }
@@ -56,6 +60,9 @@ public class ImGuiHandler implements KeyboardListener, RenderListener {
                     }
                     ImGui.endMainMenuBar();
                 }
+            }
+            if (this.renderDemoMenu) {
+                ImGui.showDemoWindow();
             }
             if (this.renderConfigMenu) {
                 ConfigMenu.render();
