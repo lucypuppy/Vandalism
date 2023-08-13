@@ -10,6 +10,7 @@
     "mixins.MixinAbstractSignEditScreen",
     "mixins.MixinAllowedAddressResolver",
     "mixins.MixinBackgroundRenderer",
+    "mixins.MixinBuiltinModelItemRenderer",
     "mixins.MixinCamera",
     "mixins.MixinChatInputSuggestor",
     "mixins.MixinChatScreen",

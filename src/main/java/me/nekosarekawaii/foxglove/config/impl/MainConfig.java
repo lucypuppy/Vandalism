@@ -191,9 +191,19 @@ public class MainConfig extends ValueableConfig {
             false
     );
 
+    public final Value<Float> shieldAlpha = new SliderFloatValue(
+            "Shield Alpha",
+            "Change the alpha of a shield.",
+            this.visualsCategory,
+            1.0f,
+            0.1f,
+            1.0f,
+            "%.2f"
+    );
+
     public final Value<Float> fireOverlayOffset = new SliderFloatValue(
             "Fire Overlay Offset",
-            "Change the Fire Overlay Offset",
+            "Change the Fire Overlay Offset.",
             this.visualsCategory,
             0.0f,
             0.0f,
@@ -203,35 +213,35 @@ public class MainConfig extends ValueableConfig {
 
     public final Value<Boolean> waterOverlay = new BooleanValue(
             "Water Overlay",
-            "Enable/Disable Water Overlay",
+            "Enable/Disable Water Overlay.",
             this.visualsCategory,
             true
     );
 
     public final Value<Boolean> inWallOverlay = new BooleanValue(
             "In Wall Overlay",
-            "Enable/Disable In Wall Overlay",
+            "Enable/Disable In Wall Overlay.",
             this.visualsCategory,
             true
     );
 
     public final Value<Boolean> freezeOverlay = new BooleanValue(
             "Freeze Overlay",
-            "Enable/Disable Freeze Overlay",
+            "Enable/Disable Freeze Overlay.",
             this.visualsCategory,
             true
     );
 
     public final Value<Boolean> pumpkinOverlay = new BooleanValue(
             "Pumpkin Overlay",
-            "Enable/Disable Pumpkin Overlay",
+            "Enable/Disable Pumpkin Overlay.",
             this.visualsCategory,
             true
     );
 
     public final Value<Boolean> spyGlassOverlay = new BooleanValue(
             "Spyglass Overlay",
-            "Enable/Disable Spyglass Overlay",
+            "Enable/Disable Spyglass Overlay.",
             this.visualsCategory,
             true
     );
@@ -251,14 +261,14 @@ public class MainConfig extends ValueableConfig {
     );
     public final Value<Boolean> hurtCam = new BooleanValue(
             "Hurt Cam",
-            "Enable/Disable Hurt Cam",
+            "Enable/Disable Hurt Cam.",
             this.visualsCategory,
             true
     );
 
     public final Value<Boolean> fullBright = new BooleanValue(
             "Full Bright",
-            "Enable/Disable Full Bright",
+            "Enable/Disable Full Bright.",
             this.visualsCategory,
             false
     );
