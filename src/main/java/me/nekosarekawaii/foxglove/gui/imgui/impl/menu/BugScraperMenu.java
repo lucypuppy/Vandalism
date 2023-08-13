@@ -10,9 +10,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.util.string.EnumNameNormalizer;
 import me.nekosarekawaii.foxglove.util.string.StringUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.StringVisitable;
-import net.minecraft.text.Style;
 import net.minecraft.util.Util;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -20,7 +17,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.net.URI;
-import java.util.List;
 
 //TODO: Add the rest of searching and filtering.
 public class BugScraperMenu {
@@ -166,14 +162,9 @@ public class BugScraperMenu {
                                     Foxglove.getInstance().getLogger().error("Failed to open bug link: " + link, e);
                                 }
                             }
-                            //TODO: Recode this.
-                            final List<StringVisitable> versionNameLines = MinecraftClient.getInstance().textRenderer.getTextHandler().wrapLines(
-                                    bug.summary(),
-                                    580, Style.EMPTY
-                            );
-                            for (final StringVisitable versionNameLine : versionNameLines) {
-                                ImGui.text(versionNameLine.getString());
-                            }
+                            ImGui.pushTextWrapPos(ImGui.getCursorPos().x + 685);
+                            ImGui.text(bug.summary());
+                            ImGui.popTextWrapPos();
                             ImGui.endListBox();
                         }
                     }

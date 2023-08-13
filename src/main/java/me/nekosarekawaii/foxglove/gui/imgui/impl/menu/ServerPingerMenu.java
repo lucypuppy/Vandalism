@@ -230,7 +230,6 @@ public class ServerPingerMenu {
                     })
                     .finishHandler(response -> {
                         mcPingResponse = response;
-                        //TODO: Recode this.
                         final List<StringVisitable> versionNameLines = MinecraftClient.getInstance().textRenderer.getTextHandler().wrapLines(mcPingResponse.version.name, 310, Style.EMPTY);
                         for (final StringVisitable versionNameLine : versionNameLines) {
                             versionName.add(versionNameLine.getString());
