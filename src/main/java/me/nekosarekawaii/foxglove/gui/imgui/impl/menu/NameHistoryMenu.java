@@ -11,7 +11,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-//TODO: Request Java Power Kit from EnZaXD and remove this class.
 public class NameHistoryMenu {
 
     private final static DateFormat formatter = new SimpleDateFormat("hh:mm:ss a, dd/MM/yyyy");
