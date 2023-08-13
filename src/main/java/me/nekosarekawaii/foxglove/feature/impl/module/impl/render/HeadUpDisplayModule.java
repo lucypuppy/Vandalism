@@ -77,12 +77,12 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
 
     @Override
     protected void onEnable() {
-        DietrichEvents2.global().subscribe(RenderListener.Render2DEvent.ID, this);
+        DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
     }
 
     @Override
     protected void onDisable() {
-        DietrichEvents2.global().unsubscribe(RenderListener.Render2DEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(Render2DEvent.ID, this);
     }
 
     @Override

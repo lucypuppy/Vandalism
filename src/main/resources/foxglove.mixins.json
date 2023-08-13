@@ -55,6 +55,7 @@
     "mixins.MixinServerEntry",
     "mixins.MixinServerResourcePackProvider",
     "mixins.MixinSharedConstants",
+    "mixins.MixinShulkerBoxScreen",
     "mixins.MixinSignBlockEntityRenderer",
     "mixins.MixinSodiumWorldRenderer",
     "mixins.MixinStringHelper",
