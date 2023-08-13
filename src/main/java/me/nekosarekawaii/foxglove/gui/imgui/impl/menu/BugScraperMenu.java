@@ -8,6 +8,7 @@ import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.Foxglove;
+import me.nekosarekawaii.foxglove.util.string.EnumNameNormalizer;
 import me.nekosarekawaii.foxglove.util.string.StringUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.StringVisitable;
@@ -21,7 +22,7 @@ import org.jsoup.select.Elements;
 import java.net.URI;
 import java.util.List;
 
-//TODO: Finish this ~ NekosAreKawaii
+//TODO: Add the rest of searching and filtering.
 public class BugScraperMenu {
 
     private final static String
@@ -37,15 +38,54 @@ public class BugScraperMenu {
 
     private static State currentState = State.WAITING_INPUT;
 
+    private enum Filter implements EnumNameNormalizer {
+
+        NONE(""),
+        ALL_ISSUES("allissues"),
+        ALL_OPEN_ISSUES("allopenissues"),
+        DONE_ISSUES("doneissues"),
+        ADDED_RECENTLY("addedrecently"),
+        RESOLVED_RECENTLY("resolvedrecently"),
+        UPDATED_RECENTLY("updatedrecently");
+
+        private final String normalName, value;
+
+        Filter(final String value) {
+            this.normalName = this.normalizeName(this.name());
+            this.value = value;
+        }
+
+        @Override
+        public String normalName() {
+            return this.normalName;
+        }
+
+        public String getValue() {
+            return this.value;
+        }
+
+    }
+
+    private static Filter currentFilter = Filter.NONE;
+
+
     public static void render() {
-        if (ImGui.begin("Bug Scraper", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize)) {
-            ImGui.setWindowSize(750, 750);
+        if (ImGui.begin("Bug Scraper", ImGuiWindowFlags.NoCollapse)) {
             ImGui.text("State: " + currentState.getMessage() + (currentState == State.PARSE_ERROR ? " (" + currentState.getId() + ")" : ""));
+            if (ImGui.beginCombo("Filter##bugscraper", currentFilter.normalName())) {
+                for (final Filter filter : Filter.values()) {
+                    if (ImGui.selectable(filter.normalName(), filter.normalName().equals(currentFilter.normalName()))) {
+                        currentFilter = filter;
+                    }
+                }
+                ImGui.endCombo();
+            }
             if (ImGui.button("Scrape##bugscraper")) {
+                currentData.clear();
                 new Thread(() -> {
                     currentState = State.SENDING_REQUEST;
                     try {
-                        final Document document = Jsoup.connect(url).userAgent(userAgent).followRedirects(true).get();
+                        final Document document = Jsoup.connect(url + (currentFilter != Filter.NONE ? "?filter=" + currentFilter.getValue() : "")).userAgent(userAgent).followRedirects(true).get();
                         currentState = State.PARSING_DATA;
                         final Elements scripts = document.select(scriptTag);
                         for (final Element script : scripts) {
