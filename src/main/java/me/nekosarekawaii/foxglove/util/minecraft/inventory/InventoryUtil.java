@@ -4,8 +4,11 @@ import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.screen.slot.SlotActionType;
 
 import java.util.List;
 
@@ -34,4 +37,20 @@ public class InventoryUtil {
 
         return int2ObjectMap;
     }
+
+    public static <T extends ScreenHandler> void quickMoveInventory(final HandledScreen<T> screen, final int from, final int to) {
+        for (int i = from; i < to; i++) {
+            final T handler = screen.getScreenHandler();
+
+            if (handler.slots.size() <= i || mc.currentScreen == null || mc.interactionManager == null)
+                break;
+
+            final Slot slot = handler.slots.get(i);
+            if (slot.getStack().isEmpty())
+                continue;
+
+            mc.interactionManager.clickSlot(handler.syncId, slot.id, 0, SlotActionType.QUICK_MOVE, mc.player);
+        }
+    }
+
 }

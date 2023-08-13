@@ -14,12 +14,12 @@ public class LongHopModuleMode extends ModuleMode<SpeedModule> implements TickLi
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(TickListener.TickEvent.ID, this);
+        DietrichEvents2.global().subscribe(TickEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(TickListener.TickEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
     }
 
     @Override

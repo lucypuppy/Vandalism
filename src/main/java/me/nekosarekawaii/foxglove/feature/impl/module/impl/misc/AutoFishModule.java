@@ -23,12 +23,12 @@ public class AutoFishModule extends Module implements TickListener {
 
     @Override
     protected void onEnable() {
-        DietrichEvents2.global().subscribe(TickListener.TickEvent.ID, this);
+        DietrichEvents2.global().subscribe(TickEvent.ID, this);
     }
 
     @Override
     protected void onDisable() {
-        DietrichEvents2.global().unsubscribe(TickListener.TickEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
     }
 
     @Override

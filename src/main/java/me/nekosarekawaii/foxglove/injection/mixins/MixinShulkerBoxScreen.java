@@ -2,26 +2,24 @@ package me.nekosarekawaii.foxglove.injection.mixins;
 
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.util.minecraft.inventory.InventoryUtil;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.ScreenHandlerProvider;
+import net.minecraft.client.gui.screen.ingame.ShulkerBoxScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.GenericContainerScreenHandler;
+import net.minecraft.screen.ShulkerBoxScreenHandler;
 import net.minecraft.text.Text;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
-@Mixin(GenericContainerScreen.class)
-public abstract class MixinGenericContainerScreen extends HandledScreen<GenericContainerScreenHandler> implements ScreenHandlerProvider<GenericContainerScreenHandler> {
+@Mixin(ShulkerBoxScreen.class)
+public abstract class MixinShulkerBoxScreen extends HandledScreen<ShulkerBoxScreenHandler> implements ScreenHandlerProvider<ShulkerBoxScreenHandler> {
 
-    @Shadow
-    @Final
-    private int rows;
+    @Unique
+    private final int rows = 3;
 
-    public MixinGenericContainerScreen(final GenericContainerScreenHandler container, final PlayerInventory playerInventory, final Text name) {
-        super(container, playerInventory, name);
+    public MixinShulkerBoxScreen(ShulkerBoxScreenHandler handler, PlayerInventory inventory, Text title) {
+        super(handler, inventory, title);
     }
 
     @Override
