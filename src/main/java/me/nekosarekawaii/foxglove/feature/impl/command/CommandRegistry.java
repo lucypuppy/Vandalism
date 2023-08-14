@@ -57,7 +57,8 @@ public class CommandRegistry {
                 new VClipCommand(),
                 new HClipCommand(),
                 new ServerBrandCommand(),
-                new SkriptDupeCommand()
+                new SkriptDupeCommand(),
+                new NavigateXCommand()
         );
     }
 

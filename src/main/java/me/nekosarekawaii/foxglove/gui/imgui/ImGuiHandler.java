@@ -7,6 +7,7 @@ import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.event.KeyboardListener;
 import me.nekosarekawaii.foxglove.event.RenderListener;
 import me.nekosarekawaii.foxglove.gui.imgui.impl.menu.*;
+import me.nekosarekawaii.foxglove.gui.imgui.impl.menu.macro.MacrosMenu;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
@@ -24,6 +25,7 @@ public class ImGuiHandler implements KeyboardListener, RenderListener {
             renderBar = false,
             renderDemoMenu = false,
             renderConfigMenu = false,
+            renderMacrosMenu = false,
             renderAltManagerMenu = false,
             renderNameHistoryMenu = false,
             renderServerPingerMenu = false,
@@ -50,6 +52,9 @@ public class ImGuiHandler implements KeyboardListener, RenderListener {
                     if (ImGui.button("Config##barbutton")) {
                         this.renderConfigMenu = !this.renderConfigMenu;
                     }
+                    if (ImGui.button("Macros##barbutton")) {
+                        this.renderMacrosMenu = !this.renderMacrosMenu;
+                    }
                     if (ImGui.button("Alt Manager##barbutton")) {
                         this.renderAltManagerMenu = !this.renderAltManagerMenu;
                     }
@@ -70,6 +75,9 @@ public class ImGuiHandler implements KeyboardListener, RenderListener {
             }
             if (this.renderConfigMenu) {
                 ConfigMenu.render();
+            }
+            if (this.renderMacrosMenu) {
+                MacrosMenu.render();
             }
             if (this.renderAltManagerMenu) {
                 AltManagerMenu.render();
