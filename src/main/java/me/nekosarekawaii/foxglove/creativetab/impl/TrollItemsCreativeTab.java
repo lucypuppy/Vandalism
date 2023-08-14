@@ -28,20 +28,20 @@ public class TrollItemsCreativeTab extends CreativeTab {
         current.add(createItem(createWhiteHole(), Text.literal(Formatting.WHITE + Formatting.BOLD.toString() + "White Hole")));
         current.add(createItem(createBlackHole(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Black Hole")));
         current.add(createItem(createEventHorizonArea(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area")));
-        current.add(createItem(createDemonCore(), Text.literal(Formatting.DARK_RED + "Demon Core")));
+        current.add(createItem(createStargazer(), Text.literal(Formatting.YELLOW + Formatting.BOLD.toString() + "Stargazer"), true));
 
         return current;
     }
 
-    private ItemStack createDemonCore() {
+    private ItemStack createStargazer() {
         final var item = new ItemStack(Items.COW_SPAWN_EGG);
         final var base = new NbtCompound();
 
         final var entityTag = new NbtCompound();
 
-        entityTag.putInt("Steps", 0);
+        entityTag.putInt("Steps", Integer.MIN_VALUE);
         entityTag.putString("id", "minecraft:shulker_bullet");
-        entityTag.putString("CustomName", Text.Serializer.toJson(Text.literal("Demon Core").formatted(Formatting.RED)));
+        entityTag.putString("CustomName", Text.Serializer.toJson(Text.literal("\u2728").formatted(Formatting.YELLOW, Formatting.BOLD)));
         entityTag.putByte("CustomNameVisible", (byte) 1);
         entityTag.putByte("NoGravity", (byte) 1);
 
