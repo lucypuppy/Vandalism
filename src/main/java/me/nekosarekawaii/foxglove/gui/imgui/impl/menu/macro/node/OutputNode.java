@@ -1,0 +1,4 @@
+package me.nekosarekawaii.foxglove.gui.imgui.impl.menu.macro.node;
+
+public interface OutputNode {
+}

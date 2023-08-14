@@ -42,7 +42,7 @@ public class GiveCommand extends Command {
         if (player != null && handler != null) {
             if (!player.getAbilities().creativeMode) throw notInCreativeMode.create();
 
-            final int emptySlot = mc.player.getInventory().getEmptySlot();
+            final int emptySlot = player.getInventory().getEmptySlot();
             if (emptySlot == -1 || emptySlot > 8) throw notSpaceInHotBar.create();
 
             handler.sendPacket(new CreativeInventoryActionC2SPacket(36 + emptySlot, item));

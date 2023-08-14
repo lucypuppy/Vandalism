@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 @Environment(EnvType.CLIENT)
 public class DropDownWidget extends PressableWidget {
 
-    protected static final DropDownWidget.NarrationSupplier DEFAULT_NARRATION_SUPPLIER = textSupplier -> (MutableText) textSupplier.get();
+    protected final static DropDownWidget.NarrationSupplier DEFAULT_NARRATION_SUPPLIER = Supplier::get;
     protected final DropDownWidget.PressAction onPress;
     protected final DropDownWidget.NarrationSupplier narrationSupplier;
     protected boolean expanded = false;

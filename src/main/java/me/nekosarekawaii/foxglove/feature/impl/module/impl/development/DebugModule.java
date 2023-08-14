@@ -50,14 +50,14 @@ public class DebugModule extends Module implements RenderListener {
                         int i = 0;
                         for (final Entity entity : world.getEntities()) {
                             final String entityUUID = entity.getUuidAsString();
-                            ImGui.text(entity.getName().getString() + " [" + entity.getClass().getSimpleName() + "] (" + player.distanceTo(entity) + ")");
+                            ImGui.textWrapped(entity.getName().getString() + " [" + entity.getClass().getSimpleName() + "] (" + player.distanceTo(entity) + ")");
 
                             if (entity instanceof final Ownable ownableEntity) {
                                 final Entity owner = ownableEntity.getOwner();
                                 if (owner != null) {
                                     ImGui.sameLine();
                                     final String ownerUUID = owner.getUuidAsString();
-                                    ImGui.text(" (Owner: " + owner.getName().getString() + ")");
+                                    ImGui.textWrapped(" (Owner: " + owner.getName().getString() + ")");
                                     ImGui.sameLine();
                                     if (ImGui.button("Copy Owner Entity UUID##copyOwnerEntityUUID" + i)) {
                                         mc.keyboard.setClipboard(ownerUUID);
