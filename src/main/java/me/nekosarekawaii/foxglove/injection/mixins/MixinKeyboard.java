@@ -1,6 +1,8 @@
 package me.nekosarekawaii.foxglove.injection.mixins;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
+import imgui.ImGui;
+import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.event.KeyboardListener;
 import net.minecraft.client.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
@@ -10,6 +12,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Keyboard.class)
 public abstract class MixinKeyboard {
+
+    @Inject(method = "onKey", at = @At("HEAD"), cancellable = true)
+    private void onKey(long window, int key, int scanCode, int action, int modifiers, CallbackInfo ci) {
+        if (ImGui.isItemClicked() || Foxglove.getInstance().getImGuiHandler().isHovered())
+            ci.cancel();
+    }
+
+    @Inject(method = "onChar", at = @At("HEAD"), cancellable = true)
+    private void onChar(long window, int codePoint, int modifiers, CallbackInfo ci) {
+        if (ImGui.isItemClicked() || Foxglove.getInstance().getImGuiHandler().isHovered())
+            ci.cancel();
+    }
 
     @Inject(method = "onKey", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;", shift = At.Shift.BEFORE, ordinal = 0))
     private void injectKeyboardKey(final long window, final int key, final int scanCode, final int action, final int modifiers, final CallbackInfo callbackInfo) {

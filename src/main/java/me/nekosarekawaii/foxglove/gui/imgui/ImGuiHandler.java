@@ -1,6 +1,7 @@
 package me.nekosarekawaii.foxglove.gui.imgui;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
+import imgui.flag.ImGuiHoveredFlags;
 import imgui.internal.ImGui;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.event.KeyboardListener;
@@ -13,6 +14,8 @@ import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
 
+
+//Todo recode this
 public class ImGuiHandler implements KeyboardListener, RenderListener {
 
     private final ImGuiRenderer imGuiRenderer;
@@ -24,7 +27,8 @@ public class ImGuiHandler implements KeyboardListener, RenderListener {
             renderAltManagerMenu = false,
             renderNameHistoryMenu = false,
             renderServerPingerMenu = false,
-            renderBugScraperMenu = false;
+            renderBugScraperMenu = false,
+            hovered = false;
 
     private final NBTEditMenu nbtEditMenu;
 
@@ -79,6 +83,18 @@ public class ImGuiHandler implements KeyboardListener, RenderListener {
             if (this.renderBugScraperMenu) {
                 BugScraperMenu.render();
             }
+
+            if (this.renderDemoMenu ||
+                    this.renderConfigMenu ||
+                    this.renderAltManagerMenu ||
+                    this.renderNameHistoryMenu ||
+                    this.renderServerPingerMenu ||
+                    this.renderBugScraperMenu) {
+                this.hovered = ImGui.isWindowHovered(ImGuiHoveredFlags.AnyWindow);
+            } else {
+                this.hovered = false;
+            }
+
             this.nbtEditMenu.render();
         });
         this.imGuiRenderer.render();
@@ -112,6 +128,10 @@ public class ImGuiHandler implements KeyboardListener, RenderListener {
         if (MinecraftClient.getInstance().currentScreen == null) {
             this.renderImGuiContext();
         }
+    }
+
+    public boolean isHovered() {
+        return this.hovered;
     }
 
 }
