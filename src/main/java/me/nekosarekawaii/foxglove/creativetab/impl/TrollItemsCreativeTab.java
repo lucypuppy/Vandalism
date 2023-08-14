@@ -28,9 +28,27 @@ public class TrollItemsCreativeTab extends CreativeTab {
         current.add(createItem(createWhiteHole(), Text.literal(Formatting.WHITE + Formatting.BOLD.toString() + "White Hole")));
         current.add(createItem(createBlackHole(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Black Hole")));
         current.add(createItem(createEventHorizonArea(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area")));
-
+        current.add(createItem(createDemonCore(), Text.literal(Formatting.DARK_RED + "Demon Core")));
 
         return current;
+    }
+
+    private ItemStack createDemonCore() {
+        final var item = new ItemStack(Items.COW_SPAWN_EGG);
+        final var base = new NbtCompound();
+
+        final var entityTag = new NbtCompound();
+
+        entityTag.putInt("Steps", 0);
+        entityTag.putString("id", "minecraft:shulker_bullet");
+        entityTag.putString("CustomName", Text.Serializer.toJson(Text.literal("Demon Core").formatted(Formatting.RED)));
+        entityTag.putByte("CustomNameVisible", (byte) 1);
+        entityTag.putByte("NoGravity", (byte) 1);
+
+        base.put("EntityTag", entityTag);
+        item.setNbt(base);
+
+        return item;
     }
 
     private ItemStack createKillPotion(final ItemStack origin) {
