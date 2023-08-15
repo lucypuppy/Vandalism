@@ -15,6 +15,10 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.Ownable;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.util.Uuids;
+
+import java.util.Arrays;
+import java.util.UUID;
 
 @ModuleInfo(name = "Debug Module", description = "Debug some stuff about the client.", category = FeatureCategory.DEVELOPMENT)
 public class DebugModule extends Module implements RenderListener {
@@ -60,7 +64,7 @@ public class DebugModule extends Module implements RenderListener {
                                     ImGui.textWrapped(" (Owner: " + owner.getName().getString() + ")");
                                     ImGui.sameLine();
                                     if (ImGui.button("Copy Owner Entity UUID##copyOwnerEntityUUID" + i)) {
-                                        mc.keyboard.setClipboard(ownerUUID);
+                                        mc.keyboard.setClipboard(ownerUUID + " | " + Arrays.toString(Uuids.toIntArray(UUID.fromString(ownerUUID))));
                                     }
                                 }
                             }
@@ -68,7 +72,7 @@ public class DebugModule extends Module implements RenderListener {
                             ImGui.sameLine();
 
                             if (ImGui.button("Copy Entity UUID##copyEntityUUID" + i)) {
-                                mc.keyboard.setClipboard(entityUUID);
+                                mc.keyboard.setClipboard(entityUUID + " | " + Arrays.toString(Uuids.toIntArray(UUID.fromString(entityUUID))));
                             }
                             i++;
                         }
