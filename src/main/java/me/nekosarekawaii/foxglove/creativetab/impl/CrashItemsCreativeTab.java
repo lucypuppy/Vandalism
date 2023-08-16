@@ -24,34 +24,25 @@ public class CrashItemsCreativeTab extends CreativeTab {
         final ExploitFixerModule exploitFixerModule = Foxglove.getInstance().getModuleRegistry().getExploitFixerModule();
 
         current.add(createItem(createCrashSkull("ewogICJ0aW1lc3RhbXAiIDogMTY4ODYwNjcyODYzNywKICAicHJvZmlsZUlkIiA6ICJhNDAxNDkxYTAwZTI0OGVmYTZmZjcxMjI2Y2ZhNzU1NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlZDBjaW5VIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICIiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="),
-                Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head"),
-                Text.literal(Formatting.YELLOW + Formatting.BOLD.toString() + "Working at <= 1.10.2 (needs to be placed in versions older than 1.8.0)")
+                Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head")
         ));
         current.add(createItem(createCrashSkull("ewogICJ0aW1lc3RhbXAiIDogMTY4ODYwNjcyODYzNywKICAicHJvZmlsZUlkIiA6ICJhNDAxNDkxYTAwZTI0OGVmYTZmZjcxMjI2Y2ZhNzU1NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlZDBjaW5VIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICIgLm1pbmVjcmFmdC5uZXQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="),
-                Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head V2"),
-                Text.literal(Formatting.YELLOW + Formatting.BOLD.toString() + "Working at <= 1.10.2 (needs to be placed in versions older than 1.8.0)")
+                Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head V2")
         ));
         current.add(createItem(createCrashSign("translation.test.invalid"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign")));
         current.add(createItem(createCrashSign("translation.test.invalid2"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign V2")));
         current.add(createItem(createCrashBook("translation.test.invalid"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book")));
         current.add(createItem(createCrashBook("translation.test.invalid2"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book V2")));
         current.add(createItem(createClientCrashExperience(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Client Crash Experience")));
-        current.add(createItem(createServerCrashEntity(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Crash Entity"), Text.literal("Doesn't work on Paper Spigot Servers.")));
+        current.add(createItem(createServerCrashEntity(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Crash Entity")));
         current.add(createItem(createClientCrashArea(), Text.literal(Formatting.RED + "Client Crash Area")));
         current.add(createItem(createSodiumClientFreezeEntity(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Sodium Freeze Entity")));
-        current.add(createItem(this.createInstantCrashSculkItem(),
-                Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Instant Crash Block"),
-                Text.literal(Formatting.AQUA + Formatting.BOLD.toString() + "Works on Paper")
-        ));
+        current.add(createItem(this.createInstantCrashSculkItem(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Instant Crash Block")));
         //TODO: Fix NBT Data with ViaVersion NBT API
-        current.add(createItem(this.createViaVersionCrashFurnace(),
-                Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Via Version Furnace")
-        ));
+        current.add(createItem(this.createViaVersionCrashFurnace(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Via Version Furnace")));
 
         //TODO: Fix NBT Data with ViaVersion NBT API
-        current.add(createItem(this.createSwordCrasher(),
-                Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Crash Bane Sword")
-        ));
+        current.add(createItem(this.createSwordCrasher(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Crash Bane Sword")));
 
         if (exploitFixerModule.isEnabled() && exploitFixerModule.blockInvalidIdentifierCrash.getValue()) {
             current.add(createItem(createClientInstantCrashPot(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Pot")));
