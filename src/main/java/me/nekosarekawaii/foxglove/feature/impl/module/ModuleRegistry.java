@@ -191,6 +191,12 @@ public class ModuleRegistry {
         return this.visualThrottleModule;
     }
 
+    private ElytraFlightModule elytraFlightModule;
+
+    public ElytraFlightModule getElytraFlightModule() {
+        return this.elytraFlightModule;
+    }
+
     private boolean done;
 
     private final FeatureList<Module> modules;
@@ -234,7 +240,8 @@ public class ModuleRegistry {
                 this.velocityModule = new VelocityModule(),
                 this.autoFishModule = new AutoFishModule(),
                 this.liquidDensityModule = new LiquidDensityModule(),
-                this.visualThrottleModule = new VisualThrottleModule()
+                this.visualThrottleModule = new VisualThrottleModule(),
+                this.elytraFlightModule = new ElytraFlightModule()
         );
     }
 
