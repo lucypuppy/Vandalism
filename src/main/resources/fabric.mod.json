@@ -3,7 +3,7 @@
   "id": "foxglove",
   "version": "${version}",
   "name": "Foxglove",
-  "description": "A utility mod for Minecraft.",
+  "description": "A utility mod.",
   "authors": [
     "NekosAreKawaii",
     "FooFieOwO",
@@ -15,7 +15,7 @@
   ],
   "entrypoints": {
     "client": [
-      "me.nekosarekawaii.foxglove.FabricBridge"
+      "de.nekosarekawaii.foxglove.FabricBridge"
     ]
   },
   "depends": {
