@@ -6,7 +6,7 @@ import de.nekosarekawaii.foxglove.feature.Feature;
 import de.nekosarekawaii.foxglove.feature.FeatureCategory;
 import de.nekosarekawaii.foxglove.feature.impl.command.Command;
 import de.nekosarekawaii.foxglove.feature.impl.command.CommandInfo;
-import net.minecraft.client.network.ClientPlayerEntity;
+import de.nekosarekawaii.foxglove.util.minecraft.player.MovementUtil;
 import net.minecraft.command.CommandSource;
 
 @CommandInfo(name = "V-Clip", aliases = {"vclip"}, description = "This command allows the player to clip to relative y positions.", category = FeatureCategory.MOVEMENT)
@@ -16,15 +16,12 @@ public class VClipCommand extends Command {
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.then(argument("vertical", DoubleArgumentType.doubleArg(-10.0, 10.0))
                 .executes(context -> {
-                    final ClientPlayerEntity player = Feature.mc.player;
+                            final var player = Feature.mc.player;
+
                             if (player != null) {
-                                final double vertical = context.getArgument("vertical", Double.class);
-                                player.setPos(
-                                        player.getX(),
-                                        player.getY() + vertical,
-                                        player.getZ()
-                                );
+                                MovementUtil.clip(context.getArgument("vertical", Double.class), 0.0);
                             }
+
                             return singleSuccess;
                         }
                 )

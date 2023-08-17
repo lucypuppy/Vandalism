@@ -4,7 +4,7 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.foxglove.event.TickListener;
 import de.nekosarekawaii.foxglove.feature.impl.module.ModuleMode;
 import de.nekosarekawaii.foxglove.feature.impl.module.impl.movement.SpeedModule;
-import net.minecraft.client.network.ClientPlayerEntity;
+import de.nekosarekawaii.foxglove.util.minecraft.player.MovementUtil;
 
 public class LongHopModuleMode extends ModuleMode<SpeedModule> implements TickListener {
 
@@ -24,18 +24,14 @@ public class LongHopModuleMode extends ModuleMode<SpeedModule> implements TickLi
 
     @Override
     public void onTick() {
-        final ClientPlayerEntity player = mc.player;
+        final var player = mc.player;
         if (player == null) return;
+
         if (player.forwardSpeed != 0 || player.sidewaysSpeed != 0) {
-            if (player.isOnGround()) {
+            if (player.isOnGround())
                 player.jump();
-            }
-            final float yaw = (float) ((Math.atan2(player.forwardSpeed,
-                    player.sidewaysSpeed) / Math.PI * 180.0F
-                    + player.getYaw()
-            ) * Math.PI / 180.0F);
-            final double speed = 1.5;
-            player.setVelocity(Math.cos(yaw) * speed, player.getVelocity().getY(), Math.sin(yaw) * speed);
+
+            MovementUtil.setSpeed(1.5);
         }
     }
 
