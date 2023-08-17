@@ -21,13 +21,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class MacrosMenu extends ImGuiMenu {
+//TODO: Finish this.
+public class MacrosImGuiMenu extends ImGuiMenu {
 
     private final NodeEditorContext context;
 
     private final List<Macro> macros;
 
-    public MacrosMenu() {
+    public MacrosImGuiMenu() {
         super("Macros");
         this.macros = new ArrayList<>();
         final NodeEditorConfig config = new NodeEditorConfig();
