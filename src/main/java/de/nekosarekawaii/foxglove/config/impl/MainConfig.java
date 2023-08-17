@@ -184,6 +184,23 @@ public class MainConfig extends ValueableConfig {
 
     public final ValueCategory visualsCategory = new ValueCategory("Visuals", "Visuals settings", this);
 
+    public final Value<Boolean> customBobView = new BooleanValue(
+            "Custom Bob View",
+            "If enabled allows you to customize the bob view camera effect.",
+            this.visualsCategory,
+            false
+    );
+
+    public final Value<Float> customBobViewValue = new SliderFloatValue(
+            "Custom Bob View Value",
+            "Here you can change the custom bob view value.-",
+            this.visualsCategory,
+            5.0f,
+            0.0f,
+            50.0f,
+            "%.2f"
+    ).visibleConsumer(this.customBobView::getValue);
+
     public final Value<Boolean> hideSignTextFeature = new BooleanValue(
             "Hide Sign Text Feature",
             "Allows you to hide text of signs when creating a new one.",
