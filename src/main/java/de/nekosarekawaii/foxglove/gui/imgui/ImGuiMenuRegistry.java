@@ -2,7 +2,7 @@ package de.nekosarekawaii.foxglove.gui.imgui;
 
 import de.nekosarekawaii.foxglove.Foxglove;
 import de.nekosarekawaii.foxglove.gui.imgui.impl.menu.*;
-import de.nekosarekawaii.foxglove.gui.imgui.impl.menu.macro.MacrosMenu;
+import de.nekosarekawaii.foxglove.gui.imgui.impl.menu.macro.MacrosImGuiMenu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +16,11 @@ public class ImGuiMenuRegistry {
         this.registerImGuiMenus(
                 new DemoImGuiMenu(),
                 new ConfigImGuiMenu(),
-                new MacrosMenu(),
+                new MacrosImGuiMenu(),
                 new AltManagerImGuiMenu(),
                 new NameHistoryImGuiMenu(),
                 new ServerPingerImGuiMenu(),
+                new PortScannerImGuiMenu(),
                 new BugScraperImGuiMenu()
         );
     }

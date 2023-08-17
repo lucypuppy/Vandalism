@@ -11,6 +11,7 @@ import fr.litarvan.openauth.microsoft.MicrosoftAuthenticationException;
 import fr.litarvan.openauth.microsoft.MicrosoftAuthenticator;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
+import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Session;
@@ -39,38 +40,46 @@ public class AltManagerImGuiMenu extends ImGuiMenu {
 
     private static void renderCurrentAccount() {
         final Session session = MinecraftClient.getInstance().getSession();
-        ImGui.text("Current Account:");
-        ImGui.text("Username: " + session.getUsername());
-        ImGui.text("UUID: " + session.getUuid());
-        ImGui.text("Type: " + (session.getAccessToken().equals("-") ? "Cracked" : "Premium"));
-        ImGui.newLine();
+        ImGui.text("Current Account");
+        if (ImGui.beginListBox("##currentAccountData", 340, 65)) {
+            ImGui.text("Username: " + session.getUsername());
+            ImGui.text("UUID: " + session.getUuid());
+            ImGui.text("Type: " + (session.getAccessToken().equals("-") ? "Cracked" : "Premium"));
+            ImGui.endListBox();
+        }
     }
 
     @Override
     public void render() {
-        ImGui.setNextWindowSizeConstraints(320, 0, 320, 400);
+        //TODO: Use this for more GUI's
+        ImGui.setNextWindowSizeConstraints(320, 0, 380, 400);
 
-        if (ImGui.begin("Alt Manager")) {
+        if (ImGui.begin("Alt Manager", ImGuiWindowFlags.NoCollapse)) {
 
-            if (ImGui.beginTabBar("")) {
+            if (ImGui.beginTabBar("##altmanagertabbar")) {
                 if (ImGui.beginTabItem("List##altmanager")) {
                     renderCurrentAccount();
-                    for (final Account account : Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts()) {
-                        ImGui.text(account.getUsername() + " | " + account.getType());
+                    ImGui.newLine();
+                    ImGui.text("Accounts");
+                    if (ImGui.beginListBox("##accountList", 340, 0)) {
+                        for (final Account account : Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts()) {
+                            ImGui.text(account.getUsername() + " | " + account.getType());
 
-                        ImGui.sameLine();
-                        ImGui.setCursorPosX(212);
+                            ImGui.sameLine();
+                            ImGui.setCursorPosX(212);
 
-                        if (ImGui.button("login##" + account.getUsername())) {
-                            this.executor.submit(account::login);
+                            if (ImGui.button("login##" + account.getUsername())) {
+                                this.executor.submit(account::login);
+                            }
+
+                            ImGui.sameLine();
+
+                            if (ImGui.button("remove##" + account.getUsername())) {
+                                Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts().remove(account);
+                                Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
+                            }
                         }
-
-                        ImGui.sameLine();
-
-                        if (ImGui.button("remove##" + account.getUsername())) {
-                            Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts().remove(account);
-                            Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
-                        }
+                        ImGui.endListBox();
                     }
 
                     ImGui.endTabItem();
