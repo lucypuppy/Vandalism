@@ -18,9 +18,9 @@ import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class AccountConfig extends ValueableConfig {
 
@@ -28,7 +28,7 @@ public class AccountConfig extends ValueableConfig {
 
     public AccountConfig() {
         super(Foxglove.getInstance().getDir(), "alts");
-        this.accounts = new ArrayList<>();
+        this.accounts = new CopyOnWriteArrayList<>();
     }
 
     @Override
