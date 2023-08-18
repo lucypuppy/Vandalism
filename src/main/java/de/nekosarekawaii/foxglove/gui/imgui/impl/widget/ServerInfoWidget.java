@@ -23,7 +23,9 @@ public class ServerInfoWidget {
 
     public ServerInfoWidget() {
         this.mcPingResponse = null;
-        this.showMods = this.showPlayerList = this.showPlugins = false;
+        this.showMods = false;
+        this.showPlayerList = false;
+        this.showPlugins = false;
         this.motd = "";
         this.queryPingResponse = null;
     }

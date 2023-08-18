@@ -30,11 +30,13 @@ public class ServerPingerImGuiMenu extends ImGuiMenu {
     public ServerPingerImGuiMenu() {
         super("Server Pinger");
         this.hostname = new ImString(253);
-        this.port = this.queryPort = new ImInt(25565);
+        this.port = new ImInt(25565);
+        this.queryPort = new ImInt(25565);
         this.protocol = new ImInt(SharedConstants.getProtocolVersion());
         this.autoPingTime = new ImInt(8000);
         this.autoPingTimer = new MsTimer();
-        this.currentState = this.queryState = State.WAITING_INPUT;
+        this.currentState = State.WAITING_INPUT;
+        this.queryState = State.WAITING_INPUT;
         this.autoPing = false;
         this.serverInfoWidget = new ServerInfoWidget();
     }
@@ -104,13 +106,15 @@ public class ServerPingerImGuiMenu extends ImGuiMenu {
     private void clear() {
         this.serverInfoWidget.setMcPingResponse(null);
         this.serverInfoWidget.setQueryPingResponse(null);
-        this.currentState = this.queryState = State.WAITING_INPUT;
+        this.currentState = State.WAITING_INPUT;
+        this.queryState = State.WAITING_INPUT;
     }
 
     private void ping() {
         if (!this.hostname.isEmpty()) {
             this.clear();
-            this.currentState = this.queryState = State.WAITING_RESPONSE;
+            this.currentState = State.WAITING_RESPONSE;
+            this.queryState = State.WAITING_RESPONSE;
             MCPing.pingModern(this.protocol.get())
                     .address(this.hostname.get(), this.port.get())
                     .timeout(5000, 5000)
