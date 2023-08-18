@@ -25,7 +25,8 @@ public class ImGuiHandler implements KeyboardListener, RenderListener {
     private final NBTEditWidget nbtEditWidget;
 
     public ImGuiHandler(final File dir) {
-        this.renderBar = this.hovered = false;
+        this.renderBar = false;
+        this.hovered = false;
         this.imGuiRenderer = new ImGuiRenderer(dir);
         this.imGuiMenuRegistry = new ImGuiMenuRegistry();
         this.nbtEditWidget = new NBTEditWidget();

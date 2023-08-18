@@ -32,7 +32,9 @@ public class AltManagerImGuiMenu extends ImGuiMenu {
 
     public AltManagerImGuiMenu() {
         super("Alt Manager");
-        this.email = this.password = this.uuid = new ImString();
+        this.email = new ImString();
+        this.password = new ImString();
+        this.uuid = new ImString();
         this.username = new ImString(16);
         this.executor = Executors.newSingleThreadExecutor();
         this.authenticator = new MicrosoftAuthenticator();
@@ -74,6 +76,7 @@ public class AltManagerImGuiMenu extends ImGuiMenu {
 
                             ImGui.sameLine();
 
+                            //TODO: Fix crash
                             if (ImGui.button("remove##" + account.getUsername())) {
                                 Foxglove.getInstance().getConfigManager().getAccountConfig().getAccounts().remove(account);
                                 Foxglove.getInstance().getConfigManager().save(Foxglove.getInstance().getConfigManager().getAccountConfig());
