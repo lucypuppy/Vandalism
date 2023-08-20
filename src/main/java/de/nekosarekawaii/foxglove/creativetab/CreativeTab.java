@@ -8,6 +8,8 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -36,20 +38,33 @@ public abstract class CreativeTab {
         return ItemStackSet.create();
     }
 
-    public ItemStack createItem(final ItemStack stack, final Text name, final Text... description) {
-        return createItem(stack, name, false, description);
+    public ItemStack createItem(final ItemStack stack, final Text name, @Nullable final Text... description) {
+        return createItem(stack, name, false, null, description);
     }
 
-    public ItemStack createItem(final ItemStack stack, final Text name, final boolean glint, final Text... description) {
+    public ItemStack createItem(final ItemStack stack, final Text name, @Nullable final String author, @Nullable final Text... description) {
+        return createItem(stack, name, false, author, description);
+    }
+
+    public ItemStack createItem(final ItemStack stack, final Text name, final boolean glint) {
+        return createItem(stack, name, glint, null);
+    }
+
+    public ItemStack createItem(final ItemStack stack, final Text name, final boolean glint, @Nullable final String author, @Nullable final Text... description) {
         final var registry = Foxglove.getInstance().getCreativeTabRegistry();
         final var base = stack.getOrCreateNbt();
         base.put(registry.getClientsideName(), new NbtCompound());
         if (glint) base.put(registry.getClientsideGlint(), new NbtCompound());
         stack.setCustomName(name);
-        if (description != null && description.length > 0) {
+        if (description != null || author != null) {
             final var lore = new NbtList();
-            for (final Text text : description) {
-                if (text != null) lore.add(NbtString.of(Text.Serializer.toJson(text)));
+            if (author != null) {
+                lore.add(NbtString.of(Text.Serializer.toJson(Text.of(Formatting.AQUA + Formatting.BOLD.toString() + "Author" + Formatting.DARK_GRAY + ": " + Formatting.GOLD + Formatting.BOLD + author))));
+            }
+            if (description != null) {
+                for (final Text text : description) {
+                    if (text != null) lore.add(NbtString.of(Text.Serializer.toJson(text)));
+                }
             }
             stack.getOrCreateSubNbt(ItemStack.DISPLAY_KEY).put(ItemStack.LORE_KEY, lore);
         }

@@ -24,28 +24,30 @@ public class CrashItemsCreativeTab extends CreativeTab {
         final ExploitFixerModule exploitFixerModule = Foxglove.getInstance().getModuleRegistry().getExploitFixerModule();
 
         current.add(createItem(createCrashSkull("ewogICJ0aW1lc3RhbXAiIDogMTY4ODYwNjcyODYzNywKICAicHJvZmlsZUlkIiA6ICJhNDAxNDkxYTAwZTI0OGVmYTZmZjcxMjI2Y2ZhNzU1NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlZDBjaW5VIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICIiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="),
-                Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head")
+                Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head"),
+                "Garkolym"
         ));
         current.add(createItem(createCrashSkull("ewogICJ0aW1lc3RhbXAiIDogMTY4ODYwNjcyODYzNywKICAicHJvZmlsZUlkIiA6ICJhNDAxNDkxYTAwZTI0OGVmYTZmZjcxMjI2Y2ZhNzU1NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlZDBjaW5VIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICIgLm1pbmVjcmFmdC5uZXQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="),
-                Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head V2")
+                Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head V2"),
+                "Garkolym"
         ));
-        current.add(createItem(createCrashSign("translation.test.invalid"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign")));
-        current.add(createItem(createCrashSign("translation.test.invalid2"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign V2")));
-        current.add(createItem(createCrashBook("translation.test.invalid"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book")));
-        current.add(createItem(createCrashBook("translation.test.invalid2"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book V2")));
-        current.add(createItem(createClientCrashExperience(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Client Crash Experience")));
-        current.add(createItem(createServerCrashEntity(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Crash Entity")));
-        current.add(createItem(createClientCrashArea(), Text.literal(Formatting.RED + "Client Crash Area")));
-        current.add(createItem(createSodiumClientFreezeEntity(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Sodium Freeze Entity")));
-        current.add(createItem(this.createInstantCrashSculkItem(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Instant Crash Block")));
+        current.add(createItem(createCrashSign("translation.test.invalid"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign"), "NekosAreKawaii"));
+        current.add(createItem(createCrashSign("translation.test.invalid2"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign V2"), "NekosAreKawaii"));
+        current.add(createItem(createCrashBook("translation.test.invalid"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book"), "Lenni0451"));
+        current.add(createItem(createCrashBook("translation.test.invalid2"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book V2"), "NekosAreKawaii"));
+        current.add(createItem(createClientCrashExperience(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Client Crash Experience"), "NekosAreKawaii"));
+        current.add(createItem(createServerCrashEntity(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Crash Entity"), "TaxEvasiqn"));
+        current.add(createItem(createClientCrashArea(), Text.literal(Formatting.RED + "Client Crash Area"), "NekosAreKawaii"));
+        current.add(createItem(createSodiumClientFreezeEntity(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Sodium Freeze Entity"), "NekosAreKawaii"));
+        current.add(createItem(this.createInstantCrashSculkItem(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Instant Crash Block"), "Putzefurcht"));
         //TODO: Fix NBT Data with ViaVersion NBT API
-        current.add(createItem(this.createViaVersionCrashFurnace(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Via Version Furnace")));
+        current.add(createItem(this.createViaVersionCrashFurnace(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Via Version Furnace"), "Putzefurcht"));
 
         //TODO: Fix NBT Data with ViaVersion NBT API
-        current.add(createItem(this.createSwordCrasher(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Crash Bane Sword")));
+        current.add(createItem(this.createSwordCrasher(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Crash Bane Sword"), "Putzefurcht"));
 
         if (exploitFixerModule.isEnabled() && exploitFixerModule.blockInvalidIdentifierCrash.getValue()) {
-            current.add(createItem(createClientInstantCrashPot(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Pot")));
+            current.add(createItem(createClientInstantCrashPot(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Pot"), "maniaplay"));
         }
 
         return current;
