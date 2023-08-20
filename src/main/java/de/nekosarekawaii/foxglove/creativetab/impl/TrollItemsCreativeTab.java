@@ -24,12 +24,12 @@ public class TrollItemsCreativeTab extends CreativeTab {
         for (var item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
             current.add(createItem(createKillPotion(new ItemStack(item)), Text.literal(Formatting.RED + "Kill Potion")));
         }
-        current.add(createItem(createKillArea(), Text.literal(Formatting.RED + "Kill Area")));
-        current.add(createItem(createWhiteHole(), Text.literal(Formatting.WHITE + Formatting.BOLD.toString() + "White Hole")));
-        current.add(createItem(createBlackHole(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Black Hole")));
-        current.add(createItem(createEventHorizonArea(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area")));
-        current.add(createItem(createStargazer(), Text.literal(Formatting.YELLOW + Formatting.BOLD.toString() + "Stargazer"), true));
-        current.add(createItem(createShyDevVibing(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "ShyDev Vibing"), true));
+        current.add(createItem(createKillArea(), Text.literal(Formatting.RED + "Kill Area"), "EnZaXD"));
+        current.add(createItem(createWhiteHole(), Text.literal(Formatting.WHITE + Formatting.BOLD.toString() + "White Hole"), "NekosAreKawaii"));
+        current.add(createItem(createBlackHole(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Black Hole"), "AdvancedCode"));
+        current.add(createItem(createEventHorizonArea(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area"), "NekosAreKawaii"));
+        current.add(createItem(createStargazer(), Text.literal(Formatting.YELLOW + Formatting.BOLD.toString() + "Stargazer"), true, "ShyDev"));
+        current.add(createItem(createShyDevVibing(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "ShyDev Vibing"), true, "ShyDev"));
 
         return current;
     }

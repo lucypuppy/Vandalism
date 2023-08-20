@@ -22,8 +22,8 @@ public class KickItemsCreativeTab extends CreativeTab {
         final Collection<ItemStack> current = super.entries();
 
         current.add(createItem(createKickHead(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Head")));
-        current.add(createItem(createKickHeadV2(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Head V2")));
-        current.add(createItem(createKickStand(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Stand")));
+        current.add(createItem(createKickHeadV2(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Head V2"), "NekosAreKawaii"));
+        current.add(createItem(createKickStand(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Stand"), "NekosAreKawaii"));
 
         return current;
     }
