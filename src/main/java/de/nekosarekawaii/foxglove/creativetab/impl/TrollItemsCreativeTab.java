@@ -29,8 +29,32 @@ public class TrollItemsCreativeTab extends CreativeTab {
         current.add(createItem(createBlackHole(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Black Hole")));
         current.add(createItem(createEventHorizonArea(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area")));
         current.add(createItem(createStargazer(), Text.literal(Formatting.YELLOW + Formatting.BOLD.toString() + "Stargazer"), true));
+        current.add(createItem(createShyDevVibing(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "ShyDev Vibing"), true));
 
         return current;
+    }
+
+    private ItemStack createShyDevVibing() {
+        final var item = new ItemStack(Items.DONKEY_SPAWN_EGG);
+        final var base = new NbtCompound();
+
+        final var entityTag = new NbtCompound();
+
+        entityTag.putInt("TreasurePosX", 0);
+        entityTag.putInt("TreasurePosY", 0);
+        entityTag.putInt("TreasurePosZ", 0);
+        entityTag.putInt("Moistness", 1999980);
+        entityTag.putString("id", "minecraft:dolphin");
+        entityTag.putString("CustomName", Text.Serializer.toJson(Text.literal("\u2728 ShyDev \u2728").formatted(Formatting.GOLD, Formatting.BOLD)));
+        entityTag.putByte("CustomNameVisible", (byte) 1);
+        entityTag.putByte("Glowing", (byte) 1);
+        entityTag.putByte("GotFish", (byte) 1);
+        entityTag.putByte("CanFindTreasure", (byte) 1);
+
+        base.put("EntityTag", entityTag);
+        item.setNbt(base);
+
+        return item;
     }
 
     private ItemStack createStargazer() {
