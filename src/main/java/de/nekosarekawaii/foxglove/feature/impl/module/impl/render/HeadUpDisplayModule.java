@@ -11,6 +11,7 @@ import de.nekosarekawaii.foxglove.gui.imgui.ImGuiUtil;
 import de.nekosarekawaii.foxglove.value.Value;
 import de.nekosarekawaii.foxglove.value.values.BooleanValue;
 import imgui.ImGui;
+import imgui.flag.ImGuiWindowFlags;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatScreen;
@@ -127,6 +128,10 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
             final ClientWorld world = mc.world;
             if (player == null || world == null || mc.options.debugEnabled || mc.options.hudHidden) return;
             final int windowFlags = ImGuiUtil.getInGameFlags(0);
+            if (ImGui.begin("Watermark##headupdisplaymodule", windowFlags | ImGuiWindowFlags.NoResize)) {
+                ImGui.text(Foxglove.getInstance().getName() + "\tv" + Foxglove.getInstance().getVersion());
+                ImGui.end();
+            }
             if (this.enabledModulesList.getValue()) {
                 if (ImGui.begin("Enabled Modules List##headupdisplaymodule", windowFlags)) {
                     final boolean empty = this.enabledModules.isEmpty();
