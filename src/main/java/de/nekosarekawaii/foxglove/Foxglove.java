@@ -5,7 +5,6 @@ import de.nekosarekawaii.foxglove.creativetab.CreativeTabRegistry;
 import de.nekosarekawaii.foxglove.feature.impl.command.CommandRegistry;
 import de.nekosarekawaii.foxglove.feature.impl.module.ModuleRegistry;
 import de.nekosarekawaii.foxglove.gui.imgui.ImGuiHandler;
-import de.nekosarekawaii.foxglove.util.CustomServerList;
 import de.nekosarekawaii.foxglove.util.NativeInputHook;
 import de.nekosarekawaii.foxglove.util.minecraft.FormattingUtils;
 import net.fabricmc.loader.api.FabricLoader;
@@ -47,8 +46,6 @@ public class Foxglove {
 
     private ImGuiHandler imGuiHandler;
 
-    private CustomServerList selectedServerList;
-
     private NativeInputHook nativeInputHook;
 
     public Foxglove() {
@@ -75,7 +72,6 @@ public class Foxglove {
                 String.join(", ", this.authors)
         );
         this.creativeTabRegistry = new CreativeTabRegistry();
-        this.selectedServerList = null;
     }
 
     public void start() {
@@ -163,14 +159,6 @@ public class Foxglove {
 
     public ImGuiHandler getImGuiHandler() {
         return this.imGuiHandler;
-    }
-
-    public CustomServerList getSelectedServerList() {
-        return selectedServerList;
-    }
-
-    public void setSelectedServerList(final CustomServerList selectedServerList) {
-        this.selectedServerList = selectedServerList;
     }
 
     public NativeInputHook getNativeInputHook() {
