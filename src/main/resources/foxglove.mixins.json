@@ -46,7 +46,6 @@
     "mixins.MixinMinecraftClient",
     "mixins.MixinModStatus",
     "mixins.MixinMouse",
-    "mixins.MixinMultiplayerScreen",
     "mixins.MixinNetworkUtils",
     "mixins.MixinParticleManager",
     "mixins.MixinPlayerEntity",
