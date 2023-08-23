@@ -126,10 +126,13 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
             }
             final ClientPlayerEntity player = mc.player;
             final ClientWorld world = mc.world;
-            if (player == null || world == null || mc.options.debugEnabled || mc.options.hudHidden) return;
+            if (player == null || world == null || mc.options.debugEnabled || mc.options.hudHidden || mc.currentScreen instanceof InventoryScreen)
+                return;
             final int windowFlags = ImGuiUtil.getInGameFlags(0);
             if (ImGui.begin("Watermark##headupdisplaymodule", windowFlags | ImGuiWindowFlags.NoResize)) {
+                ImGui.setWindowSize(0, 0);
                 ImGui.text(Foxglove.getInstance().getName() + "\tv" + Foxglove.getInstance().getVersion());
+                ImGui.text("Made by " + Foxglove.getInstance().getAuthorsAsString());
                 ImGui.end();
             }
             if (this.enabledModulesList.getValue()) {

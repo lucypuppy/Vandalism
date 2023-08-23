@@ -26,7 +26,7 @@ public class Foxglove {
         return instance;
     }
 
-    private final String name, lowerCaseName, version, windowTitle;
+    private final String name, lowerCaseName, version, windowTitle, authorsString;
     private final Collection<String> authors;
     private final Text clientNameText;
 
@@ -53,8 +53,10 @@ public class Foxglove {
         this.lowerCaseName = this.name.toLowerCase();
 
         final var modContainer = FabricLoader.getInstance().getModContainer(this.lowerCaseName).get().getMetadata();
-        this.version = modContainer.getVersion().getFriendlyString();
+        final String ver = modContainer.getVersion().getFriendlyString();
+        this.version = ver.equals("${version}") ? "1337" : ver;
         this.authors = modContainer.getAuthors().stream().map(Person::getName).toList();
+        this.authorsString = String.join(", ", this.authors);
         this.clientNameText = FormattingUtils.interpolateTextColor(this.name, Color.MAGENTA, Color.PINK);
 
         this.logger = LoggerFactory.getLogger(this.name);
@@ -66,10 +68,11 @@ public class Foxglove {
                 System.exit(-1);
             }
         }
+
         this.windowTitle = String.format(
                 "%s made by %s",
                 this.name,
-                String.join(", ", this.authors)
+                this.authorsString
         );
         this.creativeTabRegistry = new CreativeTabRegistry();
     }
@@ -118,7 +121,11 @@ public class Foxglove {
     }
 
     public Collection<String> getAuthors() {
-        return authors;
+        return this.authors;
+    }
+
+    public String getAuthorsAsString() {
+        return this.authorsString;
     }
 
     public Text getClientNameText() {
