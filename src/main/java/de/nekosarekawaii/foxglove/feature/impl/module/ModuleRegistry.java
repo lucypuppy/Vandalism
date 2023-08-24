@@ -187,7 +187,7 @@ public class ModuleRegistry {
 
     private VisualThrottleModule visualThrottleModule;
 
-    public VisualThrottleModule getRenderingLimiterModule() {
+    public VisualThrottleModule getVisualThrottleModule() {
         return this.visualThrottleModule;
     }
 

@@ -30,7 +30,7 @@ public abstract class MixinParticleManager {
             final double velocityY,
             final double velocityZ
     ) {
-        final VisualThrottleModule visualThrottleModule = Foxglove.getInstance().getModuleRegistry().getRenderingLimiterModule();
+        final VisualThrottleModule visualThrottleModule = Foxglove.getInstance().getModuleRegistry().getVisualThrottleModule();
         if (visualThrottleModule.isEnabled() && visualThrottleModule.blockTooManyParticles.getValue()) {
             final String particleId = parameters.asString();
             if (visualThrottleModule.particleTrackerMap.containsKey(particleId)) {
@@ -46,7 +46,7 @@ public abstract class MixinParticleManager {
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void injectTick(final CallbackInfo ci) {
-        final VisualThrottleModule visualThrottleModule = Foxglove.getInstance().getModuleRegistry().getRenderingLimiterModule();
+        final VisualThrottleModule visualThrottleModule = Foxglove.getInstance().getModuleRegistry().getVisualThrottleModule();
         if (visualThrottleModule.isEnabled() && visualThrottleModule.blockTooManyParticles.getValue()) {
             for (final ParticleTracker particleTracker : visualThrottleModule.particleTrackerMap.values()) {
                 if (particleTracker.getTimer().hasReached(visualThrottleModule.particleBlockingCountResetDelay.getValue(), true)) {
@@ -58,7 +58,7 @@ public abstract class MixinParticleManager {
 
     @Inject(method = "clearParticles", at = @At("HEAD"))
     private void injectClearParticles(final CallbackInfo ci) {
-        Foxglove.getInstance().getModuleRegistry().getRenderingLimiterModule().particleTrackerMap.clear();
+        Foxglove.getInstance().getModuleRegistry().getVisualThrottleModule().particleTrackerMap.clear();
     }
 
 }

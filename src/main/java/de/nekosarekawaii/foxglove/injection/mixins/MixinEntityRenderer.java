@@ -34,7 +34,7 @@ public abstract class MixinEntityRenderer<T extends Entity> {
             cancellable = true
     )
     private void injectRenderLabelIfPresent(final T entity, Text text, final MatrixStack matrixStack, final VertexConsumerProvider vertexConsumerProvider, final int light, final CallbackInfo ci) {
-        final VisualThrottleModule visualThrottleModule = Foxglove.getInstance().getModuleRegistry().getRenderingLimiterModule();
+        final VisualThrottleModule visualThrottleModule = Foxglove.getInstance().getModuleRegistry().getVisualThrottleModule();
         if (visualThrottleModule.isEnabled() && visualThrottleModule.modifyDisplayNameLength.getValue()) {
             final String oldTextString = text.getString();
             final int oldLength = oldTextString.length(), maxLength = visualThrottleModule.maxDisplayNameLength.getValue();
