@@ -85,34 +85,40 @@ public class ItemStackLoggerModule extends Module implements TickListener {
         try {
             final Item item = stack.getItem();
             if (item.equals(Items.AIR)) return;
-            final StringBuilder itemName = new StringBuilder(item.toString().replace("_", " "));
-            if (Block.getBlockFromItem(item) == Blocks.AIR) itemName.append(" item");
-            else itemName.append(" block");
+            final String rawItemName = item.toString().replace("_", " ");
+            final StringBuilder itemName = new StringBuilder(rawItemName);
+            if (!rawItemName.contains("block") && !rawItemName.contains("item")) {
+                if (Block.getBlockFromItem(item) == Blocks.AIR) itemName.append(" item");
+                else itemName.append(" block");
+            }
             final NbtCompound base = stack.getNbt();
             final int damage = stack.getDamage(), nbtCount = (base != null) ? base.getKeys().size() : 0, count = stack.getCount();
             if ((nbtCount == 1 && base.contains("Damage")) || (damage == 0 && nbtCount == 0)) {
                 return;
             }
-            final String name = (entity instanceof PlayerEntity player)
-                    ? "player " + player.getGameProfile().getName()
-                    : "entity " + entity.getName().getString(),
-                    position = "[Position] " + entity.getBlockPos().toShortString(),
-                    damageString = "[Damage] " + damage,
-                    countString = "[Count] " + count,
-                    nbtCountString = "[NBT Count] " + nbtCount,
-                    logStart = String.format("%s%n%n%s%n%n%s%n%n%s%n", position, damageString, countString, nbtCountString),
-                    data = logStart + System.lineSeparator() + "[NBT]" + System.lineSeparator(),
-                    nbt,
-                    displayNbt;
+            final String nbt,
+                    displayNbt,
+                    itemNameString = itemName.toString(),
+                    entityType = (entity instanceof PlayerEntity) ? "Player" : "Entity",
+                    entityName = entityType.equals("Player") ? ((PlayerEntity) entity).getGameProfile().getName() : entity.getName().getString(),
+                    itemFromText = itemNameString + " from " + entityType + " " + entityName;
             if (base == null) {
                 nbt = "{}";
                 displayNbt = "{}";
             } else {
                 nbt = NbtHelper.toPrettyPrintedText(base).getString();
                 final NbtCompound copy = base.copy();
-                copy.putString(NBTCommand.displayTitleNbtKey, itemName + " from " + name);
+                copy.putString(NBTCommand.displayTitleNbtKey, itemFromText);
                 displayNbt = NbtHelper.toPrettyPrintedText(copy).getString();
             }
+            final String giveCommand = Foxglove.getInstance().getConfigManager().getMainConfig().commandPrefix.getValue() + "give " + item + nbt + " " + count,
+                    server = "[Server] " + (ServerUtils.lastServerExists() ? ServerUtils.getLastServerInfo().address : "single player"),
+                    position = "[Position] " + entity.getBlockPos().toShortString(),
+                    damageString = "[Damage] " + damage,
+                    countString = "[Count] " + count,
+                    nbtCountString = "[NBT Count] " + nbtCount,
+                    logStart = String.format("%s%n%n[%s] %s%n%n%s%n%n%s%n%n%s%n%n%s%n", server, entityType, entityName, position, damageString, countString, nbtCountString),
+                    data = logStart + System.lineSeparator() + "[NBT]" + System.lineSeparator();
             if (!this.loggedItemsDir.exists()) {
                 if (!this.loggedItemsDir.mkdirs()) {
                     Foxglove.getInstance().getLogger().error("Failed to create '" + this.loggedItemsDir.getAbsolutePath() + "' directory!");
@@ -120,28 +126,14 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                     return;
                 }
             }
-            final File serverDir = new File(this.loggedItemsDir, ServerUtils.lastServerExists() ? ServerUtils.getLastServerInfo().address : "single player");
-            if (!serverDir.exists()) {
-                if (!serverDir.mkdirs()) {
-                    Foxglove.getInstance().getLogger().error("Failed to create '" + serverDir.getAbsolutePath() + "' directory!");
-                    return;
-                }
-            }
-            final File entityDir = new File(serverDir, name);
-            if (!entityDir.exists()) {
-                if (!entityDir.mkdirs()) {
-                    Foxglove.getInstance().getLogger().error("Failed to create '" + entityDir.getAbsolutePath() + "' directory!");
-                    return;
-                }
-            }
-            final File itemNameDir = new File(entityDir, itemName.toString());
+            final File itemNameDir = new File(this.loggedItemsDir, itemName.toString());
             if (!itemNameDir.exists()) {
                 if (!itemNameDir.mkdirs()) {
                     Foxglove.getInstance().getLogger().error("Failed to create '" + itemNameDir.getAbsolutePath() + "' directory!");
                     return;
                 }
             }
-            final File itemNbtFile = new File(itemNameDir, String.valueOf(name.hashCode() + itemName.hashCode() + nbt.hashCode()));
+            final File itemNbtFile = new File(itemNameDir, nbtCount + " NBT's  " + damageString.hashCode() + "  " + nbt.hashCode());
             if (itemNbtFile.exists()) return;
             final String normalWithoutNBT = position + " | " + damageString + " | " + countString + " | " + nbtCountString;
             String prettyNBT;
@@ -152,7 +144,7 @@ public class ItemStackLoggerModule extends Module implements TickListener {
             }
             Files.write(
                     Path.of(itemNbtFile.getAbsolutePath()),
-                    ("[Data from " + formatter.format(new Date()) + "]" + System.lineSeparator() + System.lineSeparator() + data + prettyNBT).getBytes(),
+                    ("[Date] " + this.formatter.format(new Date()) + System.lineSeparator() + System.lineSeparator() + data + prettyNBT + System.lineSeparator() + System.lineSeparator() + "[Give Command]" + System.lineSeparator() + giveCommand + System.lineSeparator()).getBytes(),
                     StandardOpenOption.CREATE,
                     StandardOpenOption.APPEND
             );
@@ -176,7 +168,7 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                                 .withClickEvent(
                                         new ClickEvent(
                                                 ClickEvent.Action.COPY_TO_CLIPBOARD,
-                                                Foxglove.getInstance().getConfigManager().getMainConfig().commandPrefix.getValue() + "give " + item + nbt + " " + count
+                                                giveCommand
                                         )
                                 )
                 );
@@ -215,7 +207,7 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                     text.append(displayNBTButton);
                 }
                 ChatUtils.infoChatMessage(Text.literal("Item Stack Logger").formatted(Formatting.AQUA));
-                ChatUtils.chatMessage(Text.literal("Found a " + itemName + " from " + name + ".").formatted(Formatting.DARK_AQUA), false);
+                ChatUtils.chatMessage(Text.literal("Found a " + itemFromText + ".").formatted(Formatting.DARK_AQUA), false);
                 ChatUtils.chatMessage(Text.literal(normalWithoutNBT).formatted(Formatting.LIGHT_PURPLE), false);
                 ChatUtils.chatMessage(text.formatted(Formatting.DARK_GREEN), false);
             }
