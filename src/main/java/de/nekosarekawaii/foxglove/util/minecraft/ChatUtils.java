@@ -42,9 +42,17 @@ public class ChatUtils {
         chatMessage(Text.literal(message));
     }
 
+    public static void chatMessage(final String message, final boolean prefix) {
+        chatMessage(Text.literal(message), prefix);
+    }
+
     public static void chatMessage(final Text message) {
+        chatMessage(message, true);
+    }
+
+    public static void chatMessage(final Text message, final boolean prefix) {
         if (MinecraftClient.getInstance().world == null) return;
-        MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(chatPrefix.copy().append(message));
+        MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(prefix ? chatPrefix.copy().append(message) : message);
     }
 
     public static void infoChatMessage(final String message) {
