@@ -13,6 +13,8 @@ import de.nekosarekawaii.foxglove.feature.impl.module.Module;
 import de.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
 import de.nekosarekawaii.foxglove.util.minecraft.ChatUtils;
 import de.nekosarekawaii.foxglove.util.minecraft.ServerUtils;
+import de.nekosarekawaii.foxglove.value.Value;
+import de.nekosarekawaii.foxglove.value.values.BooleanValue;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.world.ClientWorld;
@@ -39,6 +41,8 @@ import java.util.Date;
 
 @ModuleInfo(name = "Item Stack Logger", description = "Logs incoming player item stacks into the chat and writes a complete log into a log file.", category = FeatureCategory.MISC)
 public class ItemStackLoggerModule extends Module implements TickListener {
+
+    private final Value<Boolean> notifyInChat = new BooleanValue("Notify in Chat", "If enabled this module sends a notification into the chat to inform you about a newly found item.", this, true);
 
     private final File loggedItemsDir;
     private final DateFormat formatter;
@@ -171,67 +175,69 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                     StandardOpenOption.CREATE,
                     StandardOpenOption.APPEND
             );
-            final MutableText text = Text.literal("Options:");
-            final MutableText copyButton = Text.literal(" (Copy Data)");
-            copyButton.setStyle(
-                    copyButton.getStyle()
-                            .withFormatting(Formatting.GREEN)
-                            .withClickEvent(
-                                    new ClickEvent(
-                                            ClickEvent.Action.COPY_TO_CLIPBOARD,
-                                            normalWithoutNBT + " | [NBT] " + nbt
-                                    )
-                            )
-            );
-            final MutableText copyGiveCommandButton = Text.literal(" (Copy Give Command)");
-            copyGiveCommandButton.setStyle(
-                    copyGiveCommandButton.getStyle()
-                            .withFormatting(Formatting.YELLOW)
-                            .withClickEvent(
-                                    new ClickEvent(
-                                            ClickEvent.Action.COPY_TO_CLIPBOARD,
-                                            Foxglove.getInstance().getConfigManager().getMainConfig().commandPrefix.getValue() + "give " + item + nbt + " " + count
-                                    )
-                            )
-            );
-            final MutableText openDirectoryButton = Text.literal(" (Open Directory)");
-            openDirectoryButton.setStyle(
-                    openDirectoryButton.getStyle()
-                            .withFormatting(Formatting.GOLD)
-                            .withClickEvent(
-                                    new ClickEvent(
-                                            ClickEvent.Action.OPEN_FILE,
-                                            itemNbtFile.getParent()
-                                    )
-                            )
-            );
-            final MutableText openFileButton = Text.literal(" (Open File)");
-            openFileButton.setStyle(
-                    openFileButton.getStyle()
-                            .withFormatting(Formatting.RED)
-                            .withClickEvent(
-                                    new ClickEvent(
-                                            ClickEvent.Action.OPEN_FILE,
-                                            itemNbtFile.getAbsolutePath()
-                                    )
-                            )
-            );
-            text.append(copyButton).append(copyGiveCommandButton).append(openDirectoryButton).append(openFileButton);
-            if (tag != null) {
-                final MutableText displayNBTButton = Text.literal(" (Display NBT)");
-                displayNBTButton.setStyle(
-                        displayNBTButton.getStyle()
-                                .withFormatting(Formatting.DARK_RED)
+            if (this.notifyInChat.getValue()) {
+                final MutableText text = Text.literal("Options:");
+                final MutableText copyButton = Text.literal(" (Copy Data)");
+                copyButton.setStyle(
+                        copyButton.getStyle()
+                                .withFormatting(Formatting.GREEN)
                                 .withClickEvent(
-                                        Foxglove.getInstance().getCommandRegistry().generateClickEvent("nbt displaynbt " + displayNbt)
+                                        new ClickEvent(
+                                                ClickEvent.Action.COPY_TO_CLIPBOARD,
+                                                normalWithoutNBT + " | [NBT] " + nbt
+                                        )
                                 )
                 );
-                text.append(displayNBTButton);
+                final MutableText copyGiveCommandButton = Text.literal(" (Copy Give Command)");
+                copyGiveCommandButton.setStyle(
+                        copyGiveCommandButton.getStyle()
+                                .withFormatting(Formatting.YELLOW)
+                                .withClickEvent(
+                                        new ClickEvent(
+                                                ClickEvent.Action.COPY_TO_CLIPBOARD,
+                                                Foxglove.getInstance().getConfigManager().getMainConfig().commandPrefix.getValue() + "give " + item + nbt + " " + count
+                                        )
+                                )
+                );
+                final MutableText openDirectoryButton = Text.literal(" (Open Directory)");
+                openDirectoryButton.setStyle(
+                        openDirectoryButton.getStyle()
+                                .withFormatting(Formatting.GOLD)
+                                .withClickEvent(
+                                        new ClickEvent(
+                                                ClickEvent.Action.OPEN_FILE,
+                                                itemNbtFile.getParent()
+                                        )
+                                )
+                );
+                final MutableText openFileButton = Text.literal(" (Open File)");
+                openFileButton.setStyle(
+                        openFileButton.getStyle()
+                                .withFormatting(Formatting.RED)
+                                .withClickEvent(
+                                        new ClickEvent(
+                                                ClickEvent.Action.OPEN_FILE,
+                                                itemNbtFile.getAbsolutePath()
+                                        )
+                                )
+                );
+                text.append(copyButton).append(copyGiveCommandButton).append(openDirectoryButton).append(openFileButton);
+                if (tag != null) {
+                    final MutableText displayNBTButton = Text.literal(" (Display NBT)");
+                    displayNBTButton.setStyle(
+                            displayNBTButton.getStyle()
+                                    .withFormatting(Formatting.DARK_RED)
+                                    .withClickEvent(
+                                            Foxglove.getInstance().getCommandRegistry().generateClickEvent("nbt displaynbt " + displayNbt)
+                                    )
+                    );
+                    text.append(displayNBTButton);
+                }
+                ChatUtils.infoChatMessage(Text.literal("Item Stack Logger").formatted(Formatting.AQUA));
+                ChatUtils.chatMessage(Text.literal("Found a " + itemName + " from " + name + ".").formatted(Formatting.DARK_AQUA), false);
+                ChatUtils.chatMessage(Text.literal(normalWithoutNBT).formatted(Formatting.LIGHT_PURPLE), false);
+                ChatUtils.chatMessage(text.formatted(Formatting.DARK_GREEN), false);
             }
-            ChatUtils.infoChatMessage(Text.literal("Item Stack Logger").formatted(Formatting.AQUA));
-            ChatUtils.chatMessage(Text.literal("Found a " + itemName + " from " + name + ".").formatted(Formatting.DARK_AQUA), false);
-            ChatUtils.chatMessage(Text.literal(normalWithoutNBT).formatted(Formatting.LIGHT_PURPLE), false);
-            ChatUtils.chatMessage(text.formatted(Formatting.DARK_GREEN), false);
         } catch (final Throwable throwable) {
             Foxglove.getInstance().getLogger().error("Failed to log stack!", throwable);
         }
