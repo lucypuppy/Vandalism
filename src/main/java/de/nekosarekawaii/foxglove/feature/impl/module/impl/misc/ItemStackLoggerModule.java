@@ -87,10 +87,18 @@ public class ItemStackLoggerModule extends Module implements TickListener {
             if (nbtCount == 1 && tag.contains("Damage")) return;
             if (damage == 0 && nbtCount == 0) return;
             final String name = entity instanceof final PlayerEntity player ? "player " + player.getGameProfile().getName() : "entity " + entity.getName().getString();
-            final String logStart = "[Position] " + System.lineSeparator() + entity.getBlockPos().toShortString() + System.lineSeparator() + System.lineSeparator() + "[Damage] " + System.lineSeparator() + damage + System.lineSeparator() + System.lineSeparator() + "[Count] " + System.lineSeparator() + count + System.lineSeparator() + System.lineSeparator() + "[NBT Count] " + System.lineSeparator() + nbtCount;
+            final String
+                    position = "[Position] " + entity.getBlockPos().toShortString(),
+                    damageString = "[Damage] " + damage,
+                    countString = "[Count] " + count,
+                    nbtCountString = "[NBT Count] " + nbtCount;
+            final String logStart =
+                    position.replace("]", "]" + System.lineSeparator()) + System.lineSeparator() + System.lineSeparator() +
+                            damageString.replace("]", "]" + System.lineSeparator()) + System.lineSeparator() + System.lineSeparator() +
+                            countString.replace("]", "]" + System.lineSeparator()) + System.lineSeparator() + System.lineSeparator() +
+                            nbtCountString.replace("]", "]" + System.lineSeparator());
             final StringBuilder data = new StringBuilder(logStart + System.lineSeparator() + System.lineSeparator() + "[NBT]" + System.lineSeparator());
-            String nbt;
-            final String displayNbt;
+            final String nbt, displayNbt;
             if (tag == null) {
                 nbt = "{}";
                 displayNbt = "{}";
@@ -99,10 +107,6 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                 final NbtCompound copy = tag.copy();
                 copy.putString(NBTCommand.displayTitleNbtKey, itemName + " from " + name);
                 displayNbt = NbtHelper.toPrettyPrintedText(copy).getString();
-            }
-            try {
-                nbt = this.gson.toJson(JsonParser.parseString(nbt));
-            } catch (final Throwable ignored) {
             }
             if (this.loggedItemsDir.exists()) {
                 if (!this.loggedItemsDir.isDirectory()) {
@@ -154,30 +158,35 @@ public class ItemStackLoggerModule extends Module implements TickListener {
             }
             final File itemNbtFile = new File(itemNameDir, String.valueOf(name.hashCode() + itemName.hashCode() + nbt.hashCode()));
             if (itemNbtFile.exists()) return;
-            data.append(nbt);
-            final String dataString = data.toString();
+            final String dataString = data.toString(), normalWithoutNBT = position + " | " + damageString + " | " + countString + " | " + nbtCountString;
+            String prettyNBT;
+            try {
+                prettyNBT = this.gson.toJson(JsonParser.parseString(nbt));
+            } catch (final Throwable ignored) {
+                prettyNBT = nbt;
+            }
             Files.write(
                     Path.of(itemNbtFile.getAbsolutePath()),
-                    ("[Data from " + formatter.format(new Date()) + "]" + System.lineSeparator() + System.lineSeparator() + dataString).getBytes(),
+                    ("[Data from " + formatter.format(new Date()) + "]" + System.lineSeparator() + System.lineSeparator() + dataString + prettyNBT).getBytes(),
                     StandardOpenOption.CREATE,
                     StandardOpenOption.APPEND
             );
             final MutableText text = Text.literal("Options:");
-            final MutableText copyButton = Text.literal(" [Copy]");
+            final MutableText copyButton = Text.literal(" (Copy Data)");
             copyButton.setStyle(
                     copyButton.getStyle()
-                            .withFormatting(Formatting.YELLOW)
+                            .withFormatting(Formatting.GREEN)
                             .withClickEvent(
                                     new ClickEvent(
                                             ClickEvent.Action.COPY_TO_CLIPBOARD,
-                                            dataString
+                                            normalWithoutNBT + " | [NBT] " + nbt
                                     )
                             )
             );
-            final MutableText copyGiveCommandButton = Text.literal(" [Copy Give Command]");
+            final MutableText copyGiveCommandButton = Text.literal(" (Copy Give Command)");
             copyGiveCommandButton.setStyle(
                     copyGiveCommandButton.getStyle()
-                            .withFormatting(Formatting.GOLD)
+                            .withFormatting(Formatting.YELLOW)
                             .withClickEvent(
                                     new ClickEvent(
                                             ClickEvent.Action.COPY_TO_CLIPBOARD,
@@ -185,7 +194,18 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                                     )
                             )
             );
-            final MutableText openFileButton = Text.literal(" [Open File]");
+            final MutableText openDirectoryButton = Text.literal(" (Open Directory)");
+            openDirectoryButton.setStyle(
+                    openDirectoryButton.getStyle()
+                            .withFormatting(Formatting.GOLD)
+                            .withClickEvent(
+                                    new ClickEvent(
+                                            ClickEvent.Action.OPEN_FILE,
+                                            itemNbtFile.getParent()
+                                    )
+                            )
+            );
+            final MutableText openFileButton = Text.literal(" (Open File)");
             openFileButton.setStyle(
                     openFileButton.getStyle()
                             .withFormatting(Formatting.RED)
@@ -196,9 +216,9 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                                     )
                             )
             );
-            text.append(copyButton).append(copyGiveCommandButton).append(openFileButton);
+            text.append(copyButton).append(copyGiveCommandButton).append(openDirectoryButton).append(openFileButton);
             if (tag != null) {
-                final MutableText displayNBTButton = Text.literal(" [Display NBT]");
+                final MutableText displayNBTButton = Text.literal(" (Display NBT)");
                 displayNBTButton.setStyle(
                         displayNBTButton.getStyle()
                                 .withFormatting(Formatting.DARK_RED)
@@ -208,10 +228,10 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                 );
                 text.append(displayNBTButton);
             }
-            ChatUtils.infoChatMessage(Text.literal("Item Stack Logger").formatted(Formatting.GREEN));
+            ChatUtils.infoChatMessage(Text.literal("Item Stack Logger").formatted(Formatting.AQUA));
             ChatUtils.chatMessage(Text.literal("Found a " + itemName + " from " + name + ".").formatted(Formatting.DARK_AQUA), false);
-            ChatUtils.chatMessage(Text.literal(logStart.replace(System.lineSeparator(), " | ")).formatted(Formatting.LIGHT_PURPLE), false);
-            ChatUtils.chatMessage(text.formatted(Formatting.AQUA), false);
+            ChatUtils.chatMessage(Text.literal(normalWithoutNBT).formatted(Formatting.LIGHT_PURPLE), false);
+            ChatUtils.chatMessage(text.formatted(Formatting.DARK_GREEN), false);
         } catch (final Throwable throwable) {
             Foxglove.getInstance().getLogger().error("Failed to log stack!", throwable);
         }
