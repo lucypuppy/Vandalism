@@ -2,17 +2,23 @@ package de.nekosarekawaii.foxglove.util.rotation;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.foxglove.event.PacketListener;
+import de.nekosarekawaii.foxglove.event.RenderListener;
+import de.nekosarekawaii.foxglove.util.render.RenderUtils;
 import de.nekosarekawaii.foxglove.util.rotation.rotationtypes.Rotation;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.util.Window;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 import net.minecraft.util.math.MathHelper;
 
-public class RotationListener implements PacketListener {
+public class RotationListener implements PacketListener, RenderListener {
 
-    private Rotation rotation, lastRotation;
+    private Rotation fixedRotation, rotation, lastRotation;
+    private double partialIterations;
 
     public RotationListener() {
         DietrichEvents2.global().subscribe(PacketEvent.ID, this);
+        DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
     }
 
     @Override
@@ -26,10 +32,15 @@ public class RotationListener implements PacketListener {
     public void onPacketWrite(PacketEvent event) {
         if (event.packet instanceof final PlayerMoveC2SPacket packet && this.rotation != null && this.lastRotation != null &&
                 (this.rotation.getYaw() != this.lastRotation.getYaw() || this.rotation.getPitch() != this.lastRotation.getPitch())) {
-            final Rotation fixedRotation = bruteforceGCD(this.rotation); // Fix the GCD Before we send it to the server.
-
             packet.yaw = fixedRotation.getYaw();
             packet.pitch = fixedRotation.getPitch();
+        }
+    }
+
+    @Override
+    public void onRender2DInGame(DrawContext context, float delta, Window window) {
+        if (this.rotation != null) {
+            this.fixedRotation = bruteforceGCD(this.rotation, delta);
         }
     }
 
@@ -40,14 +51,20 @@ public class RotationListener implements PacketListener {
     }
 
     // Bruteforce GCD Method best for hvh tested it really often.
-    private Rotation bruteforceGCD(final Rotation rotation) {
-        float yaw = rotation.getYaw();
-        float pitch = rotation.getPitch();
+    private Rotation bruteforceGCD(final Rotation rotation, final float partialTicks) {
+        var yaw = rotation.getYaw();
+        var pitch = rotation.getPitch();
 
-        final float mouseSensitivity = (float) ((108 / 200f) * 0.6F + 0.2F);
-        final double multiplier = mouseSensitivity * mouseSensitivity * mouseSensitivity * 8.0F * 0.15D;
+        // TODO add a system to get the mouse multiplier for every minecraft version without rounding errors.
+        final var mouseSensitivity = (float) ((108 / 200f) * 0.6F + 0.2F);
+        final var multiplier = mouseSensitivity * mouseSensitivity * mouseSensitivity * 8.0F * 0.15D;
 
-        for (int i = 0; i <= 4; i++) {
+        var iterationsNeeded = RenderUtils.getFps() / 20.0;
+        iterationsNeeded *= partialTicks;
+        final var iterations = MathHelper.floor(iterationsNeeded + partialIterations);
+        partialIterations += iterationsNeeded - iterations;
+
+        for (int i = 0; i <= iterations; i++) {
             yaw = lastRotation.getYaw() + (float) (Math.round((yaw - lastRotation.getYaw()) / multiplier) * multiplier);
             pitch = lastRotation.getPitch() + (float) (Math.round((pitch - lastRotation.getPitch()) / multiplier) * multiplier);
         }
