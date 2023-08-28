@@ -7,6 +7,7 @@ import de.nekosarekawaii.foxglove.event.TickListener;
 import de.nekosarekawaii.foxglove.event.WorldListener;
 import de.nekosarekawaii.foxglove.feature.impl.module.impl.misc.FastUseModule;
 import de.nekosarekawaii.foxglove.feature.impl.module.impl.render.ESPModule;
+import de.nekosarekawaii.foxglove.util.render.RenderUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -67,6 +68,11 @@ public abstract class MixinMinecraftClient {
         if (entity == this.player) return;
         final ESPModule espModule = Foxglove.getInstance().getModuleRegistry().getEspModule();
         if (espModule.isEnabled()) cir.setReturnValue(true);
+    }
+
+    @Inject(method = "render", at = @At("HEAD"))
+    public void onRender(boolean tick, CallbackInfo ci) {
+        RenderUtils.drawFrame();
     }
 
 }
