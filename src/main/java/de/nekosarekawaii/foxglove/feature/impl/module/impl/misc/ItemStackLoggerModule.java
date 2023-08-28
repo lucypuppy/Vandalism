@@ -84,38 +84,34 @@ public class ItemStackLoggerModule extends Module implements TickListener {
     private void logStack(final Entity entity, final ItemStack stack) {
         try {
             final Item item = stack.getItem();
-            final String itemName = item.toString().replace("_", " ") + " " + (Block.getBlockFromItem(item) == Blocks.AIR ? "item" : "block");
-            final NbtCompound tag = stack.getNbt();
-            final int damage = stack.getDamage(), nbtCount = tag != null ? tag.getKeys().size() : 0, count = stack.getCount();
             if (item.equals(Items.AIR)) return;
-            if (nbtCount == 1 && tag.contains("Damage")) return;
-            if (damage == 0 && nbtCount == 0) return;
-            final String name = entity instanceof final PlayerEntity player ? "player " + player.getGameProfile().getName() : "entity " + entity.getName().getString();
-            final String
+            final StringBuilder itemName = new StringBuilder(item.toString().replace("_", " "));
+            if (Block.getBlockFromItem(item) == Blocks.AIR) itemName.append(" item");
+            else itemName.append(" block");
+            final NbtCompound base = stack.getNbt();
+            final int damage = stack.getDamage(), nbtCount = (base != null) ? base.getKeys().size() : 0, count = stack.getCount();
+            if ((nbtCount == 1 && base.contains("Damage")) || (damage == 0 && nbtCount == 0)) {
+                return;
+            }
+            final String name = (entity instanceof PlayerEntity player)
+                    ? "player " + player.getGameProfile().getName()
+                    : "entity " + entity.getName().getString(),
                     position = "[Position] " + entity.getBlockPos().toShortString(),
                     damageString = "[Damage] " + damage,
                     countString = "[Count] " + count,
-                    nbtCountString = "[NBT Count] " + nbtCount;
-            final String logStart =
-                    position.replace("]", "]" + System.lineSeparator()) + System.lineSeparator() + System.lineSeparator() +
-                            damageString.replace("]", "]" + System.lineSeparator()) + System.lineSeparator() + System.lineSeparator() +
-                            countString.replace("]", "]" + System.lineSeparator()) + System.lineSeparator() + System.lineSeparator() +
-                            nbtCountString.replace("]", "]" + System.lineSeparator());
-            final StringBuilder data = new StringBuilder(logStart + System.lineSeparator() + System.lineSeparator() + "[NBT]" + System.lineSeparator());
-            final String nbt, displayNbt;
-            if (tag == null) {
+                    nbtCountString = "[NBT Count] " + nbtCount,
+                    logStart = String.format("%s%n%n%s%n%n%s%n%n%s%n", position, damageString, countString, nbtCountString),
+                    data = logStart + System.lineSeparator() + "[NBT]" + System.lineSeparator(),
+                    nbt,
+                    displayNbt;
+            if (base == null) {
                 nbt = "{}";
                 displayNbt = "{}";
             } else {
-                nbt = NbtHelper.toPrettyPrintedText(tag).getString();
-                final NbtCompound copy = tag.copy();
+                nbt = NbtHelper.toPrettyPrintedText(base).getString();
+                final NbtCompound copy = base.copy();
                 copy.putString(NBTCommand.displayTitleNbtKey, itemName + " from " + name);
                 displayNbt = NbtHelper.toPrettyPrintedText(copy).getString();
-            }
-            if (this.loggedItemsDir.exists()) {
-                if (!this.loggedItemsDir.isDirectory()) {
-                    this.loggedItemsDir.delete();
-                }
             }
             if (!this.loggedItemsDir.exists()) {
                 if (!this.loggedItemsDir.mkdirs()) {
@@ -125,11 +121,6 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                 }
             }
             final File serverDir = new File(this.loggedItemsDir, ServerUtils.lastServerExists() ? ServerUtils.getLastServerInfo().address : "single player");
-            if (serverDir.exists()) {
-                if (!serverDir.isDirectory()) {
-                    serverDir.delete();
-                }
-            }
             if (!serverDir.exists()) {
                 if (!serverDir.mkdirs()) {
                     Foxglove.getInstance().getLogger().error("Failed to create '" + serverDir.getAbsolutePath() + "' directory!");
@@ -137,23 +128,13 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                 }
             }
             final File entityDir = new File(serverDir, name);
-            if (entityDir.exists()) {
-                if (!entityDir.isDirectory()) {
-                    entityDir.delete();
-                }
-            }
             if (!entityDir.exists()) {
                 if (!entityDir.mkdirs()) {
                     Foxglove.getInstance().getLogger().error("Failed to create '" + entityDir.getAbsolutePath() + "' directory!");
                     return;
                 }
             }
-            final File itemNameDir = new File(entityDir, itemName);
-            if (itemNameDir.exists()) {
-                if (!itemNameDir.isDirectory()) {
-                    itemNameDir.delete();
-                }
-            }
+            final File itemNameDir = new File(entityDir, itemName.toString());
             if (!itemNameDir.exists()) {
                 if (!itemNameDir.mkdirs()) {
                     Foxglove.getInstance().getLogger().error("Failed to create '" + itemNameDir.getAbsolutePath() + "' directory!");
@@ -162,7 +143,7 @@ public class ItemStackLoggerModule extends Module implements TickListener {
             }
             final File itemNbtFile = new File(itemNameDir, String.valueOf(name.hashCode() + itemName.hashCode() + nbt.hashCode()));
             if (itemNbtFile.exists()) return;
-            final String dataString = data.toString(), normalWithoutNBT = position + " | " + damageString + " | " + countString + " | " + nbtCountString;
+            final String normalWithoutNBT = position + " | " + damageString + " | " + countString + " | " + nbtCountString;
             String prettyNBT;
             try {
                 prettyNBT = this.gson.toJson(JsonParser.parseString(nbt));
@@ -171,7 +152,7 @@ public class ItemStackLoggerModule extends Module implements TickListener {
             }
             Files.write(
                     Path.of(itemNbtFile.getAbsolutePath()),
-                    ("[Data from " + formatter.format(new Date()) + "]" + System.lineSeparator() + System.lineSeparator() + dataString + prettyNBT).getBytes(),
+                    ("[Data from " + formatter.format(new Date()) + "]" + System.lineSeparator() + System.lineSeparator() + data + prettyNBT).getBytes(),
                     StandardOpenOption.CREATE,
                     StandardOpenOption.APPEND
             );
@@ -222,7 +203,7 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                                 )
                 );
                 text.append(copyButton).append(copyGiveCommandButton).append(openDirectoryButton).append(openFileButton);
-                if (tag != null) {
+                if (base != null) {
                     final MutableText displayNBTButton = Text.literal(" (Display NBT)");
                     displayNBTButton.setStyle(
                             displayNBTButton.getStyle()
