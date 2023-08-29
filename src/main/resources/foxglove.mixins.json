@@ -16,6 +16,7 @@
     "mixins.MixinChatScreen",
     "mixins.MixinClientBrandRetriever",
     "mixins.MixinClientConnection",
+    "mixins.MixinClientPlayer",
     "mixins.MixinClientPlayerInteractionManager",
     "mixins.MixinClientPlayNetworkAddon",
     "mixins.MixinClientPlayNetworkHandler",

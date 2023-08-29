@@ -23,9 +23,10 @@ public abstract class MixinPlayerEntity {
 
     @Redirect(method = "tickNewAi", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;getYaw()F"))
     private float redirectTickNewAi(PlayerEntity instance) {
-        if ((Object) this == MinecraftClient.getInstance().player &&
-                Foxglove.getInstance().getRotationListener().getFixedRotation() != null) {
-            return Foxglove.getInstance().getRotationListener().getFixedRotation().getYaw();
+        if (MinecraftClient.getInstance().player == ((PlayerEntity) (Object) this)) {
+            if (Foxglove.getInstance().getRotationListener().getRotation() != null) {
+                return Foxglove.getInstance().getRotationListener().getRotation().getYaw();
+            }
         }
 
         return instance.getYaw();
