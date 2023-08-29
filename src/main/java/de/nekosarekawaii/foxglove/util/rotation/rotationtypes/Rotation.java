@@ -1,16 +1,12 @@
 package de.nekosarekawaii.foxglove.util.rotation.rotationtypes;
 
-import de.nekosarekawaii.foxglove.util.rotation.RotationPriority;
-
 public class Rotation {
 
     private float yaw, pitch;
-    private RotationPriority priority;
 
-    public Rotation(float yaw, float pitch, RotationPriority priority) {
+    public Rotation(float yaw, float pitch) {
         this.yaw = yaw;
         this.pitch = pitch;
-        this.priority = priority;
     }
 
     public void setYaw(float yaw) {
@@ -27,14 +23,6 @@ public class Rotation {
 
     public float getPitch() {
         return this.pitch;
-    }
-
-    public void setPriority(RotationPriority priority) {
-        this.priority = priority;
-    }
-
-    public RotationPriority getPriority() {
-        return priority;
     }
 
 }
