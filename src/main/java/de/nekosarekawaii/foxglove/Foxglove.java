@@ -7,6 +7,7 @@ import de.nekosarekawaii.foxglove.feature.impl.module.ModuleRegistry;
 import de.nekosarekawaii.foxglove.gui.imgui.ImGuiHandler;
 import de.nekosarekawaii.foxglove.util.NativeInputHook;
 import de.nekosarekawaii.foxglove.util.minecraft.FormattingUtils;
+import de.nekosarekawaii.foxglove.util.rotation.RotationListener;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.Person;
 import net.minecraft.client.MinecraftClient;
@@ -48,6 +49,8 @@ public class Foxglove {
 
     private NativeInputHook nativeInputHook;
 
+    private RotationListener rotationListener;
+
     public Foxglove() {
         this.name = "Foxglove";
         this.lowerCaseName = this.name.toLowerCase();
@@ -83,6 +86,7 @@ public class Foxglove {
         this.logger.info("Made by {}", String.join(", ", this.authors));
 
         this.logger.info("Loading Features...");
+        this.rotationListener = new RotationListener();
         this.moduleRegistry = new ModuleRegistry();
         this.commandRegistry = new CommandRegistry();
         this.logger.info("Features loaded.");
@@ -170,6 +174,10 @@ public class Foxglove {
 
     public NativeInputHook getNativeInputHook() {
         return this.nativeInputHook;
+    }
+
+    public RotationListener getRotationListener() {
+        return rotationListener;
     }
 
 }

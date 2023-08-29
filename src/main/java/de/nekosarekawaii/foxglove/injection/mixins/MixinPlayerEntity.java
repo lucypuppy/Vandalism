@@ -6,6 +6,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerEntity.class)
@@ -18,6 +19,16 @@ public abstract class MixinPlayerEntity {
                 cir.setReturnValue(true);
             }
         }
+    }
+
+    @Redirect(method = "tickNewAi", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;getYaw()F"))
+    private float redirectTickNewAi(PlayerEntity instance) {
+        if ((Object) this == MinecraftClient.getInstance().player &&
+                Foxglove.getInstance().getRotationListener().getFixedRotation() != null) {
+            return Foxglove.getInstance().getRotationListener().getFixedRotation().getYaw();
+        }
+
+        return instance.getYaw();
     }
 
 }
