@@ -67,6 +67,9 @@ accessible method net/minecraft/client/network/ClientPlayerEntity getPermissionL
 accessible field net/minecraft/entity/Entity yaw F
 accessible field net/minecraft/entity/Entity pitch F
 
+accessible field  net/minecraft/client/network/ClientPlayerEntity lastYaw F
+accessible field  net/minecraft/client/network/ClientPlayerEntity lastPitch F
+
 accessible method net/minecraft/client/MinecraftClient doItemUse ()V
 
 accessible method net/minecraft/client/render/block/entity/SignBlockEntityRenderer getColor (Lnet/minecraft/block/entity/SignText;)I

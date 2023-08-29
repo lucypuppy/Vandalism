@@ -9,14 +9,14 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
-import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 
 public class RotationListener implements PacketListener, RenderListener {
 
-    private Rotation fixedRotation, rotation, lastRotation;
-    private double partialIterations, rotateSpeed;
+    private Rotation rotation, targetRotation, lastRotation;
+    private double partialIterations;
+    private float rotateSpeed;
     private RotationPriority currentPriority;
 
     public RotationListener() {
@@ -25,48 +25,49 @@ public class RotationListener implements PacketListener, RenderListener {
     }
 
     @Override
-    public void onPacketRead(PacketEvent event) {
-        if (event.packet instanceof final PlayerPositionLookS2CPacket packet) { // Set the lastRotation to the rotation we send to the server.
-            this.lastRotation = new Rotation(packet.getYaw(), packet.getPitch());
-        }
-    }
-
-    @Override
     public void onPacketWrite(PacketEvent event) {
-        if (event.packet instanceof final PlayerMoveC2SPacket packet && this.fixedRotation != null) {
-            packet.yaw = fixedRotation.getYaw();
-            packet.pitch = fixedRotation.getPitch();
+        if (event.packet instanceof final PlayerMoveC2SPacket packet) {
+            if (this.rotation != null) {
+                packet.yaw = this.rotation.getYaw();
+                packet.pitch = this.rotation.getPitch();
+                packet.changeLook = true;
+            }
         }
     }
 
     @Override
     public void onRender2DInGame(DrawContext context, float delta, Window window) {
-        if (this.rotation != null) {
-            this.fixedRotation = bruteforceGCD(rotationSmoothing(this.rotation, this.lastRotation, rotateSpeed), delta);
+        var player = MinecraftClient.getInstance().player;
+        if (player == null) return;
+
+        this.lastRotation = new Rotation(player.lastYaw, player.lastPitch);
+
+        if (this.targetRotation != null) {
+            this.rotation = bruteforceGCD(rotationDistribution(this.targetRotation, this.lastRotation,
+                    this.rotateSpeed), delta);
             return;
         }
 
-        final var player = MinecraftClient.getInstance().player;
-        if (this.fixedRotation == null || player == null)
+        if (this.rotation == null)
             return;
 
-        final var yaw = player.yaw;
+        final var yaw = wrapDegreesFixed(player.yaw);
         final var pitch = player.pitch;
-        final var yawDiff = Math.abs(yaw - this.fixedRotation.getYaw());
-        final var pitchDiff = Math.abs(pitch - this.fixedRotation.getYaw());
+        final var yawDiff = Math.abs(yaw - this.rotation.getYaw());
+        final var pitchDiff = Math.abs(pitch - this.rotation.getPitch());
 
-        if (yawDiff > 0.1 || pitchDiff > 0.1) {
-            this.fixedRotation = bruteforceGCD(rotationSmoothing(new Rotation(yaw, pitch), this.lastRotation, rotateSpeed), delta);
+        if (yawDiff <= 1 && pitchDiff <= 1) {
+            this.rotation = null;
             return;
         }
 
-
-        this.fixedRotation = null;
+        this.rotation = bruteforceGCD(rotationDistribution(new Rotation(yaw, pitch), this.lastRotation,
+                this.rotateSpeed), delta);
     }
 
-    public void setRotation(final @Nullable Rotation rotation, final double rotateSpeed, final RotationPriority priority) {
-        if (currentPriority == null || priority.getPriority() >= currentPriority.getPriority()) {
-            this.rotation = rotation;
+    public void setRotation(final @Nullable Rotation rotation, final float rotateSpeed, final RotationPriority priority) {
+        if (this.currentPriority == null || priority.getPriority() >= this.currentPriority.getPriority()) {
+            this.targetRotation = rotation;
             this.rotateSpeed = rotateSpeed;
             this.currentPriority = priority;
         }
@@ -87,29 +88,25 @@ public class RotationListener implements PacketListener, RenderListener {
         partialIterations += iterationsNeeded - iterations;
 
         for (int i = 0; i <= iterations; i++) {
-            yaw = lastRotation.getYaw() + (float) (Math.round((yaw - lastRotation.getYaw()) / multiplier) * multiplier);
-            pitch = lastRotation.getPitch() + (float) (Math.round((pitch - lastRotation.getPitch()) / multiplier) * multiplier);
+            yaw = this.lastRotation.getYaw() + (float) (Math.round((yaw - this.lastRotation.getYaw()) / multiplier) * multiplier);
+            pitch = this.lastRotation.getPitch() + (float) (Math.round((pitch - this.lastRotation.getPitch()) / multiplier) * multiplier);
         }
 
-        rotation.setYaw(wrapDegreesFixed(yaw));
-        rotation.setPitch(pitch);
-        return rotation;
+        return new Rotation(wrapDegreesFixed(yaw), pitch);
     }
 
     // This is a fix method for rounding errors in the yaw detectable with a simple check.
     private float wrapDegreesFixed(final float yaw) {
-        return lastRotation.getYaw() + MathHelper.wrapDegrees(yaw - lastRotation.getYaw());
+        return this.lastRotation.getYaw() + MathHelper.wrapDegrees(yaw - this.lastRotation.getYaw());
     }
 
-    public Rotation rotationSmoothing(final Rotation rotation, final Rotation lastRotation, final double speed) {
+    public Rotation rotationDistribution(Rotation rotation, Rotation lastRotation, float speed) {
         if (speed > 0) {
-            var yaw = rotation.getYaw();
-            var pitch = rotation.getPitch();
             final var lastYaw = lastRotation.getYaw();
             final var lastPitch = lastRotation.getPitch();
 
-            final double deltaYaw = wrapDegreesFixed(yaw - lastYaw);
-            final double deltaPitch = pitch - lastPitch;
+            final double deltaYaw = MathHelper.wrapDegrees(rotation.getYaw() - lastYaw);
+            final double deltaPitch = rotation.getPitch() - lastPitch;
 
             final double distance = Math.sqrt(deltaYaw * deltaYaw + deltaPitch * deltaPitch);
             final double distributionYaw = Math.abs(deltaYaw / distance);
@@ -121,15 +118,14 @@ public class RotationListener implements PacketListener, RenderListener {
             final float moveYaw = (float) Math.max(Math.min(deltaYaw, maxYaw), -maxYaw);
             final float movePitch = (float) Math.max(Math.min(deltaPitch, maxPitch), -maxPitch);
 
-            rotation.setYaw(lastYaw + moveYaw);
-            rotation.setPitch(lastPitch + movePitch);
+            return new Rotation(lastYaw + moveYaw, lastPitch + movePitch);
         }
 
         return rotation;
     }
 
-    public Rotation getFixedRotation() {
-        return fixedRotation;
+    public Rotation getRotation() {
+        return this.rotation;
     }
 
 }
