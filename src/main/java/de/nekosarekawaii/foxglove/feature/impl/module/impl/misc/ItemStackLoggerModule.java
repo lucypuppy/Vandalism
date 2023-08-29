@@ -87,8 +87,9 @@ public class ItemStackLoggerModule extends Module implements TickListener {
             if (item.equals(Items.AIR)) return;
             final String rawItemName = item.toString().replace("_", " ");
             final StringBuilder itemName = new StringBuilder(rawItemName);
+            final boolean isItem = Block.getBlockFromItem(item) == Blocks.AIR;
             if (!rawItemName.contains("block") && !rawItemName.contains("item")) {
-                if (Block.getBlockFromItem(item) == Blocks.AIR) itemName.append(" item");
+                if (isItem) itemName.append(" item");
                 else itemName.append(" block");
             }
             final NbtCompound base = stack.getNbt();
@@ -120,7 +121,9 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                     logStart = String.format("%s%n%n%s: %s%n%n%s%n%n%s%n%n%s%n%n%s%n", server, entityType, entityName, position, damageString, countString, nbtCountString),
                     data = logStart + System.lineSeparator();
             if (!this.loggedItemsDir.exists()) this.loggedItemsDir.mkdirs();
-            final File itemNameDir = new File(this.loggedItemsDir, itemName.toString());
+            final File itemOrBlockDir = new File(this.loggedItemsDir, isItem ? "item" : "block");
+            if (!itemOrBlockDir.exists()) itemOrBlockDir.mkdirs();
+            final File itemNameDir = new File(itemOrBlockDir, itemNameString.replace(" item", "").replace(" block", ""));
             if (!itemNameDir.exists()) itemNameDir.mkdirs();
             final File itemZipFile = new File(itemNameDir, nbtCount + "-[" + damageString.hashCode() + nbt.hashCode() + "].zip");
             if (!itemZipFile.exists()) {

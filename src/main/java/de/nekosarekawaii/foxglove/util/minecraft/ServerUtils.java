@@ -33,17 +33,21 @@ public class ServerUtils {
         lastServerInfo = serverInfo;
     }
 
-    private final static Text SAVING_LEVEL_TEXT = Text.translatable("menu.savingLevel");
-
     public static void disconnect() {
+        disconnect(client, true);
+    }
+
+    public static void disconnect(final MinecraftClient client, final boolean gui) {
         final boolean inSingleplayer = client.isInSingleplayer();
         if (client.world != null) client.world.disconnect();
-        if (inSingleplayer) client.disconnect(new MessageScreen(SAVING_LEVEL_TEXT));
+        if (inSingleplayer) client.disconnect(new MessageScreen(Text.translatable("menu.savingLevel")));
         else client.disconnect();
-        final TitleScreen titleScreen = new TitleScreen();
-        if (inSingleplayer) client.setScreen(titleScreen);
-        else if (client.isConnectedToRealms()) client.setScreen(new RealmsMainScreen(titleScreen));
-        else client.setScreen(new MultiplayerScreen(titleScreen));
+        if (gui) {
+            final TitleScreen titleScreen = new TitleScreen();
+            if (inSingleplayer) client.setScreen(titleScreen);
+            else if (client.isConnectedToRealms()) client.setScreen(new RealmsMainScreen(titleScreen));
+            else client.setScreen(new MultiplayerScreen(titleScreen));
+        }
     }
 
 }
