@@ -32,12 +32,12 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
+import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @ModuleInfo(name = "Item Stack Logger", description = "Logs incoming player item stacks into the chat and writes a complete log into a log file.", category = FeatureCategory.MISC)
 public class ItemStackLoggerModule extends Module implements TickListener {
@@ -112,42 +112,35 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                 displayNbt = NbtHelper.toPrettyPrintedText(copy).getString();
             }
             final String giveCommand = Foxglove.getInstance().getConfigManager().getMainConfig().commandPrefix.getValue() + "give " + item + nbt + " " + count,
-                    server = "[Server] " + (ServerUtils.lastServerExists() ? ServerUtils.getLastServerInfo().address : "single player"),
-                    position = "[Position] " + entity.getBlockPos().toShortString(),
-                    damageString = "[Damage] " + damage,
-                    countString = "[Count] " + count,
-                    nbtCountString = "[NBT Count] " + nbtCount,
-                    logStart = String.format("%s%n%n[%s] %s%n%n%s%n%n%s%n%n%s%n%n%s%n", server, entityType, entityName, position, damageString, countString, nbtCountString),
-                    data = logStart + System.lineSeparator() + "[NBT]" + System.lineSeparator();
-            if (!this.loggedItemsDir.exists()) {
-                if (!this.loggedItemsDir.mkdirs()) {
-                    Foxglove.getInstance().getLogger().error("Failed to create '" + this.loggedItemsDir.getAbsolutePath() + "' directory!");
-                    this.setState(false);
-                    return;
-                }
-            }
+                    server = "Server: " + (ServerUtils.lastServerExists() ? ServerUtils.getLastServerInfo().address : "single player"),
+                    position = "Position: " + entity.getBlockPos().toShortString(),
+                    damageString = "Damage: " + damage,
+                    countString = "Count: " + count,
+                    nbtCountString = "NBT Count: " + nbtCount,
+                    logStart = String.format("%s%n%n%s: %s%n%n%s%n%n%s%n%n%s%n%n%s%n", server, entityType, entityName, position, damageString, countString, nbtCountString),
+                    data = logStart + System.lineSeparator();
+            if (!this.loggedItemsDir.exists()) this.loggedItemsDir.mkdirs();
             final File itemNameDir = new File(this.loggedItemsDir, itemName.toString());
-            if (!itemNameDir.exists()) {
-                if (!itemNameDir.mkdirs()) {
-                    Foxglove.getInstance().getLogger().error("Failed to create '" + itemNameDir.getAbsolutePath() + "' directory!");
-                    return;
+            if (!itemNameDir.exists()) itemNameDir.mkdirs();
+            final File itemZipFile = new File(itemNameDir, nbtCount + "-[" + damageString.hashCode() + nbt.hashCode() + "].zip");
+            if (!itemZipFile.exists()) {
+                itemZipFile.createNewFile();
+                try (final ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(itemZipFile, true))) {
+                    final ZipEntry zipEntry = new ZipEntry("data." + Foxglove.getInstance().getLowerCaseName() + "-log");
+                    zipOutputStream.putNextEntry(zipEntry);
+                    zipOutputStream.write((
+                            "Date: " + this.formatter.format(new Date()) + System.lineSeparator() +
+                                    System.lineSeparator() +
+                                    data + "[Give Command]" + System.lineSeparator() +
+                                    giveCommand + System.lineSeparator() +
+                                    System.lineSeparator() +
+                                    "[NBT]" + System.lineSeparator() +
+                                    this.gson.toJson(JsonParser.parseString(nbt))
+                    ).getBytes());
+                    zipOutputStream.closeEntry();
                 }
-            }
-            final File itemNbtFile = new File(itemNameDir, nbtCount + " NBT's  " + damageString.hashCode() + "  " + nbt.hashCode());
-            if (itemNbtFile.exists()) return;
+            } else return;
             final String normalWithoutNBT = position + " | " + damageString + " | " + countString + " | " + nbtCountString;
-            String prettyNBT;
-            try {
-                prettyNBT = this.gson.toJson(JsonParser.parseString(nbt));
-            } catch (final Throwable ignored) {
-                prettyNBT = nbt;
-            }
-            Files.write(
-                    Path.of(itemNbtFile.getAbsolutePath()),
-                    ("[Date] " + this.formatter.format(new Date()) + System.lineSeparator() + System.lineSeparator() + data + prettyNBT + System.lineSeparator() + System.lineSeparator() + "[Give Command]" + System.lineSeparator() + giveCommand + System.lineSeparator()).getBytes(),
-                    StandardOpenOption.CREATE,
-                    StandardOpenOption.APPEND
-            );
             if (this.notifyInChat.getValue()) {
                 final MutableText text = Text.literal("Options:");
                 final MutableText copyButton = Text.literal(" (Copy Data)");
@@ -179,7 +172,7 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                                 .withClickEvent(
                                         new ClickEvent(
                                                 ClickEvent.Action.OPEN_FILE,
-                                                itemNbtFile.getParent()
+                                                itemZipFile.getParent()
                                         )
                                 )
                 );
@@ -190,7 +183,7 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                                 .withClickEvent(
                                         new ClickEvent(
                                                 ClickEvent.Action.OPEN_FILE,
-                                                itemNbtFile.getAbsolutePath()
+                                                itemZipFile.getAbsolutePath()
                                         )
                                 )
                 );
