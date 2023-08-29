@@ -42,10 +42,12 @@
     "mixins.MixinLecternScreen",
     "mixins.MixinLightmapTextureManager",
     "mixins.MixinLightTextureManager",
+    "mixins.MixinLivingEntity",
     "mixins.MixinLivingEntityRenderer",
     "mixins.MixinMinecraftClient",
     "mixins.MixinModStatus",
     "mixins.MixinMouse",
+    "mixins.MixinMultiplayerScreen",
     "mixins.MixinNetworkUtils",
     "mixins.MixinParticleManager",
     "mixins.MixinPlayerEntity",
@@ -64,8 +66,7 @@
     "mixins.MixinToolTipComponent",
     "mixins.MixinWindow",
     "mixins.MixinWorldRenderer",
-    "mixins.MixinYggdrasilUserApiService",
-    "mixins.MixinLivingEntity"
+    "mixins.MixinYggdrasilUserApiService"
   ],
   "injectors": {
     "defaultRequire": 1

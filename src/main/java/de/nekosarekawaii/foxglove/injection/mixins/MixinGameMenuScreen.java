@@ -1,11 +1,10 @@
 package de.nekosarekawaii.foxglove.injection.mixins;
 
 import de.nekosarekawaii.foxglove.util.minecraft.ServerUtils;
-import net.minecraft.client.gui.screen.*;
+import net.minecraft.client.gui.screen.GameMenuScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.network.ServerAddress;
-import net.minecraft.client.network.ServerInfo;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,18 +36,8 @@ public abstract class MixinGameMenuScreen extends Screen {
 		if (this.client == null) return;
 		if (text == SEND_FEEDBACK_TEXT) {
 			cir.setReturnValue(ButtonWidget.builder(
-					Text.translatable("selectServer.direct"),
-					b -> {
-						final ServerInfo serverInfo = new ServerInfo("", "", false);
-                        this.client.setScreen(
-                                new DirectConnectScreen(this, connect -> {
-                                    if (connect) {
-                                        this.disconnect();
-                                        ConnectScreen.connect(new MultiplayerScreen(new TitleScreen()), this.client, ServerAddress.parse(serverInfo.address), serverInfo, false);
-                                    } else this.client.setScreen(this);
-                                }, serverInfo)
-                        );
-                    }
+                    Text.translatable("menu.multiplayer"),
+                    b -> this.client.setScreen(new MultiplayerScreen(this))
             ).width(98).build());
         } else if (text == REPORT_BUGS_TEXT && !this.client.isInSingleplayer()) {
             final ButtonWidget button = ButtonWidget.builder(
