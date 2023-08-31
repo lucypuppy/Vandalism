@@ -1,18 +1,17 @@
 package de.nekosarekawaii.foxglove.injection.mixins;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.foxglove.Foxglove;
 import de.nekosarekawaii.foxglove.event.EntityListener;
 import de.nekosarekawaii.foxglove.event.FluidListener;
 import de.nekosarekawaii.foxglove.event.StepListener;
+import de.nekosarekawaii.foxglove.util.rotation.rotationtypes.Rotation;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.registry.tag.TagKey;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Constant;
-import org.spongepowered.asm.mixin.injection.ModifyConstant;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 
 @Mixin(Entity.class)
 public abstract class MixinEntity {
@@ -59,6 +58,26 @@ public abstract class MixinEntity {
         }
 
         return entity.getStepHeight();
+    }
+
+    @ModifyVariable(method = "getRotationVector(FF)Lnet/minecraft/util/math/Vec3d;", at = @At("HEAD"), ordinal = 1, argsOnly = true)
+    private float modifyYaw(final float yaw) {
+        if (MinecraftClient.getInstance().player == (Object) this) {
+            final Rotation rotation = Foxglove.getInstance().getRotationListener().getRotation();
+            if (rotation != null) return rotation.getYaw();
+        }
+
+        return yaw;
+    }
+
+    @ModifyVariable(method = "getRotationVector(FF)Lnet/minecraft/util/math/Vec3d;", at = @At("HEAD"), ordinal = 0, argsOnly = true)
+    private float modifyPitch(final float pitch) {
+        if (MinecraftClient.getInstance().player == (Object) this) {
+            final Rotation rotation = Foxglove.getInstance().getRotationListener().getRotation();
+            if (rotation != null) return rotation.getPitch();
+        }
+
+        return pitch;
     }
 
 }

@@ -13,9 +13,10 @@ public abstract class MixinLivingEntity {
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getYaw()F"), slice = @Slice(to = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getYaw()F", ordinal = 1)))
     private float redirectTick(LivingEntity instance) {
-        if ((Object) this == MinecraftClient.getInstance().player &&
-                Foxglove.getInstance().getRotationListener().getRotation() != null) {
-            return Foxglove.getInstance().getRotationListener().getRotation().getYaw();
+        if ((Object) this == MinecraftClient.getInstance().player) {
+            if (Foxglove.getInstance().getRotationListener().getRotation() != null) {
+                return Foxglove.getInstance().getRotationListener().getRotation().getYaw();
+            }
         }
 
         return instance.getYaw();
@@ -23,12 +24,24 @@ public abstract class MixinLivingEntity {
 
     @Redirect(method = "turnHead", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getYaw()F"))
     private float redirectTurnHead(LivingEntity instance) {
-        if ((Object) this == MinecraftClient.getInstance().player &&
-                Foxglove.getInstance().getRotationListener().getRotation() != null) {
-            return Foxglove.getInstance().getRotationListener().getRotation().getYaw();
+        if ((Object) this == MinecraftClient.getInstance().player) {
+            if (Foxglove.getInstance().getRotationListener().getRotation() != null) {
+                return Foxglove.getInstance().getRotationListener().getRotation().getYaw();
+            }
         }
 
         return instance.getYaw();
+    }
+
+    @Redirect(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getPitch()F"))
+    private float redirectTravel(LivingEntity instance) {
+        if ((Object) this == MinecraftClient.getInstance().player) {
+            if (Foxglove.getInstance().getRotationListener().getRotation() != null) {
+                return Foxglove.getInstance().getRotationListener().getRotation().getPitch();
+            }
+        }
+
+        return instance.getPitch();
     }
 
 }

@@ -10,9 +10,13 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class RotationListener implements PacketListener, RenderListener {
+
+    private final MinecraftClient mc = MinecraftClient.getInstance();
 
     private Rotation rotation, targetRotation, lastRotation;
     private double partialIterations;
@@ -37,7 +41,7 @@ public class RotationListener implements PacketListener, RenderListener {
 
     @Override
     public void onRender2DInGame(DrawContext context, float delta, Window window) {
-        var player = MinecraftClient.getInstance().player;
+        var player = mc.player;
         if (player == null) return;
 
         this.lastRotation = new Rotation(player.lastYaw, player.lastPitch);
@@ -56,7 +60,7 @@ public class RotationListener implements PacketListener, RenderListener {
         final var yawDiff = Math.abs(yaw - this.rotation.getYaw());
         final var pitchDiff = Math.abs(pitch - this.rotation.getPitch());
 
-        if (yawDiff <= 1 && pitchDiff <= 1) {
+        if (yawDiff <= 0.5 && pitchDiff <= 0.5) {
             this.rotation = null;
             return;
         }
@@ -73,14 +77,24 @@ public class RotationListener implements PacketListener, RenderListener {
         }
     }
 
+    public void setRotation(final @NotNull Vec3d to, final float rotateSpeed, final RotationPriority priority) {
+        if (mc.player == null)
+            return;
+
+        final var eyePos = mc.player.getEyePos();
+        final var diff = to.subtract(eyePos);
+        final var hypot = Math.hypot(diff.getX(), diff.getZ());
+        final var yaw = (float) (MathHelper.atan2(diff.getZ(), diff.getX()) * (180.0F / Math.PI)) - 90.0F;
+        final var pitch = (float) (-MathHelper.atan2(diff.getY(), hypot) * (180.0F / Math.PI));
+
+        setRotation(new Rotation(yaw, pitch), rotateSpeed, priority);
+    }
+
     // Bruteforce GCD Method best for hvh tested it really often.
     private Rotation bruteforceGCD(final Rotation rotation, final float partialTicks) {
         var yaw = rotation.getYaw();
         var pitch = rotation.getPitch();
-
-        // TODO add a system to get the mouse multiplier for every minecraft version without rounding errors.
-        final var mouseSensitivity = (float) ((108 / 200f) * 0.6F + 0.2F);
-        final var multiplier = mouseSensitivity * mouseSensitivity * mouseSensitivity * 8.0F * 0.15D;
+        final double multiplier = getMouseMultiplier();
 
         var iterationsNeeded = RenderUtils.getFps() / 20.0;
         iterationsNeeded *= partialTicks;
@@ -95,6 +109,11 @@ public class RotationListener implements PacketListener, RenderListener {
         return new Rotation(wrapDegreesFixed(yaw), pitch);
     }
 
+    private double getMouseMultiplier() {
+        final double f = mc.options.getMouseSensitivity().getValue() * 0.6F + 0.2F;
+        return f * f * f * 8.0;
+    }
+
     // This is a fix method for rounding errors in the yaw detectable with a simple check.
     private float wrapDegreesFixed(final float yaw) {
         return this.lastRotation.getYaw() + MathHelper.wrapDegrees(yaw - this.lastRotation.getYaw());
@@ -105,18 +124,18 @@ public class RotationListener implements PacketListener, RenderListener {
             final var lastYaw = lastRotation.getYaw();
             final var lastPitch = lastRotation.getPitch();
 
-            final double deltaYaw = MathHelper.wrapDegrees(rotation.getYaw() - lastYaw);
-            final double deltaPitch = rotation.getPitch() - lastPitch;
+            final var deltaYaw = MathHelper.wrapDegrees(rotation.getYaw() - lastYaw);
+            final var deltaPitch = rotation.getPitch() - lastPitch;
 
-            final double distance = Math.sqrt(deltaYaw * deltaYaw + deltaPitch * deltaPitch);
-            final double distributionYaw = Math.abs(deltaYaw / distance);
-            final double distributionPitch = Math.abs(deltaPitch / distance);
+            final var distance = Math.sqrt(deltaYaw * deltaYaw + deltaPitch * deltaPitch);
+            final var distributionYaw = Math.abs(deltaYaw / distance);
+            final var distributionPitch = Math.abs(deltaPitch / distance);
 
-            final double maxYaw = speed * distributionYaw;
-            final double maxPitch = speed * distributionPitch;
+            final var maxYaw = speed * distributionYaw;
+            final var maxPitch = speed * distributionPitch;
 
-            final float moveYaw = (float) Math.max(Math.min(deltaYaw, maxYaw), -maxYaw);
-            final float movePitch = (float) Math.max(Math.min(deltaPitch, maxPitch), -maxPitch);
+            final var moveYaw = (float) Math.max(Math.min(deltaYaw, maxYaw), -maxYaw);
+            final var movePitch = (float) Math.max(Math.min(deltaPitch, maxPitch), -maxPitch);
 
             return new Rotation(lastYaw + moveYaw, lastPitch + movePitch);
         }

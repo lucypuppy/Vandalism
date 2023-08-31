@@ -14,7 +14,7 @@ public abstract class MixinPlayerEntity {
 
     @Inject(method = "isCreativeLevelTwoOp", at = @At("RETURN"), cancellable = true)
     private void injectIsCreativeLevelTwoOp(final CallbackInfoReturnable<Boolean> cir) {
-        if (MinecraftClient.getInstance().player == ((PlayerEntity) (Object) this)) {
+        if (MinecraftClient.getInstance().player == (Object) this) {
             if (Foxglove.getInstance().getConfigManager().getMainConfig().spoofIsCreativeLevelTwoOp.getValue()) {
                 cir.setReturnValue(true);
             }
@@ -23,7 +23,7 @@ public abstract class MixinPlayerEntity {
 
     @Redirect(method = "tickNewAi", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;getYaw()F"))
     private float redirectTickNewAi(PlayerEntity instance) {
-        if (MinecraftClient.getInstance().player == ((PlayerEntity) (Object) this)) {
+        if (MinecraftClient.getInstance().player == (Object) this) {
             if (Foxglove.getInstance().getRotationListener().getRotation() != null) {
                 return Foxglove.getInstance().getRotationListener().getRotation().getYaw();
             }
