@@ -1,7 +1,9 @@
 package de.nekosarekawaii.foxglove.injection.mixins;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.foxglove.Foxglove;
 import de.nekosarekawaii.foxglove.event.LivingEntityListener;
+import de.nekosarekawaii.foxglove.util.rotation.rotationtypes.Rotation;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
@@ -10,6 +12,7 @@ import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -70,6 +73,16 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
                     alpha
             );
         }
+    }
+
+    @Redirect(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/MathHelper;lerp(FFF)F", ordinal = 0))
+    private float redirectRotationPitch(float g, float f, float s) {
+        final Rotation rotation = Foxglove.getInstance().getRotationListener().getRotation();
+
+        if (rotation != null)
+            return rotation.getPitch();
+
+        return MathHelper.lerp(g, f, s);
     }
 
 }

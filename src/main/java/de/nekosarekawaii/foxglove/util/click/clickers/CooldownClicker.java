@@ -12,8 +12,10 @@ public class CooldownClicker extends ClickGenerator {
     @Override
     public void update() {
         if (MinecraftClient.getInstance().player != null &&
-                MinecraftClient.getInstance().player.getAttackCooldownProgress(0.25f) >= 1.0f)
+                MinecraftClient.getInstance().player.getAttackCooldownProgress(0.25f) >= 1.0f) {
             clickAction.run();
+            MinecraftClient.getInstance().player.resetLastAttackedTicks();
+        }
     }
 
 }
