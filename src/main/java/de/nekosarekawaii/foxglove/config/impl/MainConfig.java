@@ -183,6 +183,24 @@ public class MainConfig extends ValueableConfig {
     );
 
     public final ValueCategory visualsCategory = new ValueCategory("Visuals", "Visuals settings", this);
+    public final ValueCategory blockHitCategory = new ValueCategory("BlockHit", "BlockHit settings (<=1.8.x)", this.visualsCategory);
+
+    public final Value<Boolean> blockHitAnimation = new BooleanValue(
+            "BlockHit Animation",
+            "Enable/Disable BlockHit Animation.",
+            this.blockHitCategory,
+            true
+    );
+
+    public final Value<Float> blockItemSize = new SliderFloatValue(
+            "Item Size",
+            "Change the size of items.",
+            this.blockHitCategory,
+            1.0f,
+            0.1f,
+            2.0f,
+            "%.2f"
+    );
 
     public final Value<Boolean> customBobView = new BooleanValue(
             "Custom Bob View",

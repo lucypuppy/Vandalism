@@ -31,6 +31,7 @@
     "mixins.MixinGameMenuScreen",
     "mixins.MixinGameRenderer",
     "mixins.MixinGenericContainerScreen",
+    "mixins.MixinHeldItemRenderer",
     "mixins.MixinIdentifier",
     "mixins.MixinIllusionerEntityRenderer",
     "mixins.MixinImGuiImplGlfw",
