@@ -20,6 +20,8 @@ import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.UUID;
+
 @Mixin(PlayerListHud.class)
 public abstract class MixinPlayerListHud {
 
@@ -37,7 +39,7 @@ public abstract class MixinPlayerListHud {
         final BetterTabListModule betterTabListModule = Foxglove.getInstance().getModuleRegistry().getBetterTabListModule();
         if (betterTabListModule.isEnabled() && betterTabListModule.gamemode.getValue()) {
             final int gameModeId = entry.getGameMode().getId();
-            Formatting gameModeFormatting;
+            final Formatting gameModeFormatting;
             switch (gameModeId) {
                 case 0 -> gameModeFormatting = Formatting.DARK_GREEN;
                 case 1 -> gameModeFormatting = Formatting.RED;
@@ -73,29 +75,30 @@ public abstract class MixinPlayerListHud {
     private void injectRenderLatencyIcon(final DrawContext context, final int width, final int x, final int y, final PlayerListEntry entry, final CallbackInfo ci) {
         final ClientPlayNetworkHandler networkHandler = MinecraftClient.getInstance().getNetworkHandler();
         final int a = MinecraftClient.getInstance().isInSingleplayer() || (networkHandler != null && networkHandler.getConnection().isEncrypted()) ? 9 : 0, w = x + a;
-
         final BetterTabListModule betterTabListModule = Foxglove.getInstance().getModuleRegistry().getBetterTabListModule();
-
         int color = MinecraftClient.getInstance().options.getTextBackgroundColor(0x20FFFFFF);
-
         final ClientPlayerEntity player = MinecraftClient.getInstance().player;
-        if (betterTabListModule.isEnabled() && betterTabListModule.self.getValue() && player != null && entry.getProfile().getId().equals(player.getGameProfile().getId())) {
-            color = betterTabListModule.selfColor.getValue().getRGB();
+        if (betterTabListModule.isEnabled() && betterTabListModule.self.getValue()) {
+            if (player != null) {
+                final UUID uuidToUse;
+                final IdentityTheftModule identityTheftModule = Foxglove.getInstance().getModuleRegistry().getIdentityTheftModule();
+                if (identityTheftModule.isEnabled() && identityTheftModule.getCurrentTarget() != null)
+                    uuidToUse = identityTheftModule.getCurrentTarget();
+                else uuidToUse = player.getGameProfile().getId();
+                if (entry.getProfile().getId().equals(uuidToUse)) {
+                    color = betterTabListModule.selfColor.getValue().getRGB();
+                }
+            }
         }
-
         context.fill(w, y, w + width - a, y + 8, color);
-
         final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         context.drawTextWithShadow(textRenderer, this.getPlayerName(entry), w, y, entry.getGameMode() == GameMode.SPECTATOR ? -1862270977 : -1);
-
         if (betterTabListModule.isEnabled() && betterTabListModule.accurateLatency.getValue()) {
             final float scale = betterTabListModule.pingScale.getValue();
             final int latency = entry.getLatency();
             final String text = latency + " ms";
-
             context.getMatrices().push();
             context.getMatrices().scale(scale, scale, 1.0f);
-
             context.drawTextWithShadow(
                     textRenderer,
                     text,
@@ -104,9 +107,7 @@ public abstract class MixinPlayerListHud {
                     ColorUtils.interpolate(betterTabListModule.lowPingColor.getValue(), betterTabListModule.averagePingColor.getValue(),
                             betterTabListModule.highPingColor.getValue(), Math.min((float) latency / betterTabListModule.highPing.getValue(), 1.0f))
             );
-
             context.getMatrices().pop();
-
             ci.cancel();
         }
     }
