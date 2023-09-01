@@ -26,6 +26,13 @@ import java.util.List;
 @ModuleInfo(name = "Head Up Display", description = "The In-game HUD of the Mod.", category = FeatureCategory.RENDER, isDefaultEnabled = true)
 public class HeadUpDisplayModule extends Module implements RenderListener {
 
+    private final Value<Boolean> transparent = new BooleanValue(
+            "Transparent",
+            "Makes the background and the titlebar from the HUD elements invisible.",
+            this,
+            false
+    );
+
     private final Value<Boolean> enabledModulesList = new BooleanValue(
             "Enabled Modules List",
             "Displays all enabled modules.",
@@ -128,7 +135,7 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
             final ClientWorld world = mc.world;
             if (player == null || world == null || mc.options.debugEnabled || mc.options.hudHidden || mc.currentScreen instanceof InventoryScreen)
                 return;
-            final int windowFlags = ImGuiUtil.getInGameFlags(0);
+            final int windowFlags = this.transparent.getValue() ? ImGuiUtil.getInGameFlags(0) : 0;
             if (ImGui.begin("Watermark##headupdisplaymodule", windowFlags | ImGuiWindowFlags.NoResize)) {
                 ImGui.setWindowSize(0, 0);
                 ImGui.text(Foxglove.getInstance().getName() + "\tv" + Foxglove.getInstance().getVersion());
