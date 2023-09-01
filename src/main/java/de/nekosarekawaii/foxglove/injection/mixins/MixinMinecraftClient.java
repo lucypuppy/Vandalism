@@ -52,8 +52,13 @@ public abstract class MixinMinecraftClient {
     }
 
     @Inject(method = "setWorld", at = @At("HEAD"))
-    private void injectSetWorld(final ClientWorld world, final CallbackInfo ci) {
-        DietrichEvents2.global().postInternal(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent());
+    private void injectSetWorldHead(final ClientWorld world, final CallbackInfo ci) {
+        DietrichEvents2.global().postInternal(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent(WorldListener.State.PRE));
+    }
+
+    @Inject(method = "setWorld", at = @At("RETURN"))
+    private void injectSetWorldReturn(final ClientWorld world, final CallbackInfo ci) {
+        DietrichEvents2.global().postInternal(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent(WorldListener.State.POST));
     }
 
     @ModifyConstant(method = "doItemUse", constant = @Constant(intValue = 4))
