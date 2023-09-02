@@ -6,6 +6,7 @@ import de.nekosarekawaii.foxglove.feature.FeatureCategory;
 import de.nekosarekawaii.foxglove.feature.impl.module.Module;
 import de.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
 import net.minecraft.block.FluidBlock;
+import net.minecraft.block.FluidFillable;
 import net.minecraft.util.shape.VoxelShapes;
 
 @ModuleInfo(name = "Liquid Density", description = "Lets you walk on liquids.", category = FeatureCategory.MOVEMENT)
@@ -26,7 +27,8 @@ public class LiquidDensityModule extends Module implements BlockListener {
         if (mc.player == null)
             return;
 
-        if (event.pos.getY() < mc.player.getY() && event.state.getBlock() instanceof FluidBlock) {
+        if (event.pos.getY() < mc.player.getY() && (event.state.getBlock() instanceof FluidBlock ||
+                event.state.getBlock() instanceof FluidFillable)) {
             event.shape = VoxelShapes.fullCube();
             event.shouldUpdate = true;
         }
