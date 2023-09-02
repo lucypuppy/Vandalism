@@ -23,7 +23,7 @@ public class MessageEncryptModule extends Module {
         final var stringBuilder = new StringBuilder();
 
         for (final var c : text.toCharArray()) {
-            if (c > offsetChar) {
+            if (c >= offsetChar) {
                 stringBuilder.append((char) ((c - offsetChar) ^ 98));
             } else {
                 stringBuilder.append(c);
@@ -35,7 +35,7 @@ public class MessageEncryptModule extends Module {
 
     public boolean isEncrypted(String text) {
         for (final var c : text.toCharArray()) {
-            if (c > offsetChar && c < checkChar)
+            if (c >= offsetChar && c < checkChar)
                 return true;
         }
         return false;
