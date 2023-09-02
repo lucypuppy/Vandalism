@@ -19,15 +19,16 @@ public class MessageEncryptModule extends Module {
         return stringBuilder.toString();
     }
 
-    public String decodeMessage(String text) {
+    public String decodeMessage(final String message) {
         final var stringBuilder = new StringBuilder();
 
-        for (final var c : text.toCharArray()) {
-            if (c >= offsetChar) {
+        for (final var c : message.toCharArray()) {
+            if (c >= offsetChar && c < checkChar) {
                 stringBuilder.append((char) ((c - offsetChar) ^ 98));
-            } else {
-                stringBuilder.append(c);
+                continue;
             }
+
+            stringBuilder.append(c);
         }
 
         return stringBuilder.toString();
@@ -38,6 +39,7 @@ public class MessageEncryptModule extends Module {
             if (c >= offsetChar && c < checkChar)
                 return true;
         }
+
         return false;
     }
 
