@@ -16,6 +16,7 @@ import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -35,6 +36,9 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
 
     @Shadow
     protected M model;
+
+    @Unique
+    private float rotationPitch;
 
     @Redirect(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;getRenderLayer(Lnet/minecraft/entity/LivingEntity;ZZZ)Lnet/minecraft/client/render/RenderLayer;"))
     private @Nullable RenderLayer injectRenderLayer(final LivingEntityRenderer instance, final T entity, final boolean showBody, final boolean translucent, final boolean showOutline) {
@@ -75,12 +79,21 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
         }
     }
 
-    @Redirect(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/MathHelper;lerp(FFF)F", ordinal = 0))
-    private float redirectRotationPitch(float g, float f, float s) {
-        final Rotation rotation = Foxglove.getInstance().getRotationListener().getRotation();
+    @Inject(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At("HEAD"))
+    private void injectRenderB(T livingEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci) {
+        rotationPitch = Float.NaN;
 
-        if (rotation != null)
-            return rotation.getPitch();
+        final Rotation rotation = Foxglove.getInstance().getRotationListener().getRotation();
+        if (livingEntity != MinecraftClient.getInstance().player || rotation == null)
+            return;
+
+        rotationPitch = rotation.getPitch();
+    }
+
+    @Redirect(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/MathHelper;lerp(FFF)F"))
+    private float redirectRotationPitch(float g, float f, float s) {
+        if (!Float.isNaN(rotationPitch))
+            return rotationPitch;
 
         return MathHelper.lerp(g, f, s);
     }
