@@ -203,6 +203,12 @@ public class ModuleRegistry {
         return this.ambienceModule;
     }
 
+    private MessageEncryptModule messageEncryptModule;
+
+    public MessageEncryptModule getMessageEncryptModule() {
+        return this.messageEncryptModule;
+    }
+
     private boolean done;
 
     private final FeatureList<Module> modules;
@@ -248,7 +254,8 @@ public class ModuleRegistry {
                 this.liquidDensityModule = new LiquidDensityModule(),
                 this.visualThrottleModule = new VisualThrottleModule(),
                 this.elytraFlightModule = new ElytraFlightModule(),
-                this.ambienceModule = new AmbienceModule()
+                this.ambienceModule = new AmbienceModule(),
+                this.messageEncryptModule = new MessageEncryptModule()
         );
     }
 
