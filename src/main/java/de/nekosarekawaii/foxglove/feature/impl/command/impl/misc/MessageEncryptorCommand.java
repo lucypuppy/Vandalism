@@ -5,7 +5,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.foxglove.feature.FeatureCategory;
 import de.nekosarekawaii.foxglove.feature.impl.command.Command;
 import de.nekosarekawaii.foxglove.util.MessageEncryptUtil;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.command.CommandSource;
 import net.minecraft.network.encryption.NetworkEncryptionUtils;
 import net.minecraft.network.message.LastSeenMessagesCollector;
@@ -34,12 +33,12 @@ public class MessageEncryptorCommand extends Command {
             final String message = MessageEncryptUtil.encryptMessage(context.getArgument("message", String.class));
             final Instant instant = Instant.now();
             final long l = NetworkEncryptionUtils.SecureRandomUtil.nextLong();
-            final ClientPlayNetworkHandler handler = mc().getNetworkHandler();
-            if (handler != null) {
-                final LastSeenMessagesCollector.LastSeenMessages lastSeenMessages = handler.lastSeenMessagesCollector.collect();
-                final MessageSignatureData messageSignatureData = handler.messagePacker
-                        .pack(new MessageBody(message, instant, l, lastSeenMessages.lastSeen()));
-                handler.sendPacket(new ChatMessageC2SPacket(message, instant, l, messageSignatureData, lastSeenMessages.update()));
+            if (networkHandler() != null) {
+                final LastSeenMessagesCollector.LastSeenMessages lastSeenMessages = networkHandler().lastSeenMessagesCollector.collect();
+                final MessageSignatureData messageSignatureData = networkHandler().messagePacker.pack(
+                        new MessageBody(message, instant, l, lastSeenMessages.lastSeen())
+                );
+                networkHandler().sendPacket(new ChatMessageC2SPacket(message, instant, l, messageSignatureData, lastSeenMessages.update()));
             }
             return singleSuccess;
         }));
