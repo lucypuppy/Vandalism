@@ -2,6 +2,7 @@ package de.nekosarekawaii.foxglove.injection.mixins;
 
 import de.nekosarekawaii.foxglove.Foxglove;
 import de.nekosarekawaii.foxglove.feature.impl.module.impl.misc.MessageEncryptorModule;
+import de.nekosarekawaii.foxglove.util.MessageEncryptUtil;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
@@ -23,15 +24,18 @@ public abstract class MixinChatHud {
     @ModifyArg(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;ILnet/minecraft/client/gui/hud/MessageIndicator;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/ChatMessages;breakRenderedChatMessageLines(Lnet/minecraft/text/StringVisitable;ILnet/minecraft/client/font/TextRenderer;)Ljava/util/List;"))
     public StringVisitable modifyMessage(final StringVisitable content) {
         final MessageEncryptorModule messageEncryptModule = Foxglove.getInstance().getModuleRegistry().getMessageEncryptModule();
+
         if (messageEncryptModule.isEnabled()) {
             final MutableText text = (MutableText) content;
             final String stringTest = text.getString();
-            if (messageEncryptModule.isEncrypted(stringTest)) {
+
+            if (MessageEncryptUtil.isEncrypted(stringTest)) {
                 return text.append(ENCRYPTION_PREFIX.setStyle(ENCRYPTION_PREFIX.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                        Text.literal(messageEncryptModule.decodeMessage(stringTest))
+                        Text.literal(MessageEncryptUtil.decodeMessage(stringTest))
                 ))));
             }
         }
+
         return content;
     }
 
