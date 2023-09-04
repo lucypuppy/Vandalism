@@ -27,7 +27,7 @@ public class VisualThrottleModule extends Module {
             "Block too many particles",
             "Blocks particles when their count is too high.",
             this,
-            true
+            false
     );
 
     public final Value<Integer> countToBlockParticles = new SliderIntegerValue(
@@ -70,7 +70,7 @@ public class VisualThrottleModule extends Module {
                 "Limits the game rendering to enhance performance or even prevent crashes.",
                 FeatureCategory.RENDER,
                 true,
-                true
+                false
         );
     }
 
