@@ -58,7 +58,7 @@ public class CommandRegistry {
                 new ServerBrandCommand(),
                 new SkriptDupeCommand(),
                 new NavigateXCommand(),
-                new MessageEncryptCommand()
+                new MessageEncryptorCommand()
         );
     }
 
