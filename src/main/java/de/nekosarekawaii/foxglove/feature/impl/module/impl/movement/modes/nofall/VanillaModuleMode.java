@@ -23,9 +23,9 @@ public class VanillaModuleMode extends ModuleMode<NoFallModule> implements Packe
     }
 
     @Override
-    public void onPacketWrite(final PacketEvent event) {
+    public void onPacket(final PacketEvent event) {
         if (event.packet instanceof final PlayerMoveC2SPacket playerPacket) {
-            if (mc.player.fallDistance > 2.0f) {
+            if (player().fallDistance > 2.0f) {
                 playerPacket.onGround = true;
             }
         }

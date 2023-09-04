@@ -1,7 +1,7 @@
 package de.nekosarekawaii.foxglove.injection.mixins;
 
 import de.nekosarekawaii.foxglove.Foxglove;
-import net.minecraft.client.MinecraftClient;
+import de.nekosarekawaii.foxglove.util.MinecraftWrapper;
 import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -10,11 +10,11 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerEntity.class)
-public abstract class MixinPlayerEntity {
+public abstract class MixinPlayerEntity implements MinecraftWrapper {
 
     @Inject(method = "isCreativeLevelTwoOp", at = @At("RETURN"), cancellable = true)
     private void injectIsCreativeLevelTwoOp(final CallbackInfoReturnable<Boolean> cir) {
-        if (MinecraftClient.getInstance().player == (Object) this) {
+        if (player() == (Object) this) {
             if (Foxglove.getInstance().getConfigManager().getMainConfig().spoofIsCreativeLevelTwoOp.getValue()) {
                 cir.setReturnValue(true);
             }
@@ -23,7 +23,7 @@ public abstract class MixinPlayerEntity {
 
     @Redirect(method = "tickNewAi", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;getYaw()F"))
     private float redirectTickNewAi(PlayerEntity instance) {
-        if (MinecraftClient.getInstance().player == (Object) this) {
+        if (player() == (Object) this) {
             if (Foxglove.getInstance().getRotationListener().getRotation() != null) {
                 return Foxglove.getInstance().getRotationListener().getRotation().getYaw();
             }

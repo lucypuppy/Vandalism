@@ -1,4 +1,4 @@
-package de.nekosarekawaii.foxglove.util.minecraft;
+package de.nekosarekawaii.foxglove.util;
 
 import net.minecraft.text.CharacterVisitor;
 import net.minecraft.text.MutableText;

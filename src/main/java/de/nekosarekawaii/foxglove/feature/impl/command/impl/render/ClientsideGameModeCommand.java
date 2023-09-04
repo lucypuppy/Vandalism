@@ -1,34 +1,45 @@
 package de.nekosarekawaii.foxglove.feature.impl.command.impl.render;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import de.nekosarekawaii.foxglove.feature.Feature;
 import de.nekosarekawaii.foxglove.feature.FeatureCategory;
 import de.nekosarekawaii.foxglove.feature.impl.command.Command;
-import de.nekosarekawaii.foxglove.feature.impl.command.CommandInfo;
 import de.nekosarekawaii.foxglove.feature.impl.command.arguments.GameModeArgumentType;
-import de.nekosarekawaii.foxglove.util.minecraft.ChatUtils;
-import net.minecraft.client.network.ClientPlayerInteractionManager;
+import de.nekosarekawaii.foxglove.util.ChatUtils;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.GameMode;
 
-@CommandInfo(name = "Clientside Game Mode", aliases = {"clientsidegamemode", "clientsidegm", "csgm", "fakegamemode", "fakegm"}, description = "Sets your Clientside Game Mode.", category = FeatureCategory.RENDER)
 public class ClientsideGameModeCommand extends Command {
+
+    public ClientsideGameModeCommand() {
+        super(
+                "Clientside Game Mode",
+                "Allows you to set your clientside game mode.",
+                FeatureCategory.RENDER,
+                false,
+                "clientsidegamemode",
+                "fakegamemode",
+                "cgm",
+                "fgm"
+        );
+    }
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
-        builder
-                .then(argument("gamemode", GameModeArgumentType.create())
-                        .executes(context -> {
-                            final ClientPlayerInteractionManager interactionManager = Feature.mc.interactionManager;
-                            if (interactionManager != null) {
-                                final GameMode gameMode = GameModeArgumentType.get(context);
-                                interactionManager.setGameMode(gameMode);
-                                ChatUtils.infoChatMessage(Formatting.GREEN + "Your Clientside Game Mode has been set to" + Formatting.DARK_GRAY + ": " + Formatting.GOLD + gameMode.name() + " " + Formatting.DARK_GRAY + "(" + Formatting.DARK_AQUA + gameMode.getId() + Formatting.DARK_GRAY + ")");
-                            }
-                            return singleSuccess;
-                        })
-                );
+        builder.then(argument("gamemode", GameModeArgumentType.create())
+                .executes(context -> {
+                    if (interactionManager() != null) {
+                        final GameMode gameMode = GameModeArgumentType.get(context);
+                        interactionManager().setGameMode(gameMode);
+                        ChatUtils.infoChatMessage(
+                                Formatting.GREEN + "Your Clientside Game Mode has been set to" + Formatting.DARK_GRAY
+                                        + ": " + Formatting.GOLD + gameMode.name() + " " + Formatting.DARK_GRAY +
+                                        "(" + Formatting.DARK_AQUA + gameMode.getId() + Formatting.DARK_GRAY + ")"
+                        );
+                    }
+                    return singleSuccess;
+                })
+        );
     }
 
 }

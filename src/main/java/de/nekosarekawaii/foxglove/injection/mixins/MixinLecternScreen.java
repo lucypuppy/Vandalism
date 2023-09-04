@@ -1,12 +1,10 @@
 package de.nekosarekawaii.foxglove.injection.mixins;
 
 import de.nekosarekawaii.foxglove.Foxglove;
-import de.nekosarekawaii.foxglove.util.minecraft.inventory.InventoryUtil;
+import de.nekosarekawaii.foxglove.util.inventory.InventoryUtil;
 import net.minecraft.client.gui.screen.ingame.BookScreen;
 import net.minecraft.client.gui.screen.ingame.LecternScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.packet.c2s.play.ClickSlotC2SPacket;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
@@ -24,11 +22,16 @@ public abstract class MixinLecternScreen extends BookScreen {
         if (Foxglove.getInstance().getConfigManager().getMainConfig().lecternCrasher.getValue()) {
             addDrawableChild(ButtonWidget.builder(Text.of("Lectern Crasher (1.14+)"), button -> {
                 if (client == null) return;
-                final ClientPlayerEntity player = client.player;
-                final ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
-                if (player == null || networkHandler == null) return;
-                final ScreenHandler screenHandler = player.currentScreenHandler;
-                networkHandler.sendPacket(new ClickSlotC2SPacket(screenHandler.syncId, screenHandler.getRevision(), 0, 0, SlotActionType.QUICK_MOVE, screenHandler.getCursorStack().copy(), InventoryUtil.createDummyModifiers()));
+                if (client.player == null || client.getNetworkHandler() == null) return;
+                final ScreenHandler screenHandler = client.player.currentScreenHandler;
+                client.getNetworkHandler().sendPacket(new ClickSlotC2SPacket(
+                        screenHandler.syncId,
+                        screenHandler.getRevision(),
+                        0, 0,
+                        SlotActionType.QUICK_MOVE,
+                        screenHandler.getCursorStack().copy(),
+                        InventoryUtil.createDummyModifiers())
+                );
             }).position(5, 5).size(110, 20).build());
         }
     }

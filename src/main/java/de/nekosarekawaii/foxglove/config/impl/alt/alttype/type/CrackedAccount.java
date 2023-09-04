@@ -2,7 +2,7 @@ package de.nekosarekawaii.foxglove.config.impl.alt.alttype.type;
 
 import de.nekosarekawaii.foxglove.Foxglove;
 import de.nekosarekawaii.foxglove.config.impl.alt.alttype.Account;
-import de.nekosarekawaii.foxglove.util.minecraft.SessionUtil;
+import de.nekosarekawaii.foxglove.util.SessionUtil;
 import net.minecraft.client.util.Session;
 
 import java.util.Optional;
@@ -19,4 +19,5 @@ public class CrackedAccount extends Account {
         SessionUtil.setSession(new Session(this.getUsername(), this.getUuid(), "-", Optional.empty(), Optional.empty(), Session.AccountType.LEGACY));
         Foxglove.getInstance().getLogger().info("Logged in with " + this.getUsername());
     }
+
 }

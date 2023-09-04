@@ -1,6 +1,5 @@
 package de.nekosarekawaii.foxglove.creativetab;
 
-import de.nekosarekawaii.foxglove.Foxglove;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemStackSet;
@@ -16,10 +15,16 @@ import java.util.Collection;
 public abstract class CreativeTab {
 
     private final ItemStack icon;
+    private final Text displayName;
     private ItemGroup itemGroup;
 
-    public CreativeTab(final ItemStack icon) {
+    public CreativeTab(final Text displayName, final ItemStack icon) {
+        this.displayName = displayName;
         this.icon = icon;
+    }
+
+    public Text getDisplayName() {
+        return this.displayName;
     }
 
     public ItemStack getIcon() {
@@ -51,13 +56,12 @@ public abstract class CreativeTab {
     }
 
     public ItemStack createItem(final ItemStack stack, final Text name, final boolean glint, @Nullable final String author, @Nullable final Text... description) {
-        final var registry = Foxglove.getInstance().getCreativeTabRegistry();
-        final var base = stack.getOrCreateNbt();
-        base.put(registry.getClientsideName(), new NbtCompound());
-        if (glint) base.put(registry.getClientsideGlint(), new NbtCompound());
+        final NbtCompound base = stack.getOrCreateNbt();
+        base.put(CreativeTabRegistry.CLIENTSIDE_NAME, new NbtCompound());
+        if (glint) base.put(CreativeTabRegistry.CLIENTSIDE_GLINT, new NbtCompound());
         stack.setCustomName(name);
         if (description != null || author != null) {
-            final var lore = new NbtList();
+            final NbtList lore = new NbtList();
             if (author != null) {
                 lore.add(NbtString.of(Text.Serializer.toJson(Text.of(Formatting.AQUA + Formatting.BOLD.toString() + "Author" + Formatting.DARK_GRAY + ": " + Formatting.GOLD + Formatting.BOLD + author))));
             }
@@ -72,7 +76,7 @@ public abstract class CreativeTab {
     }
 
     public NbtCompound createEffect(final int id, final int duration, final int amplifier, final boolean showParticles) {
-        final var effect = new NbtCompound();
+        final NbtCompound effect = new NbtCompound();
         effect.putInt("Id", id);
         effect.putByte("ShowParticles", showParticles ? (byte) 1 : (byte) 0);
         effect.putInt("Duration", duration);

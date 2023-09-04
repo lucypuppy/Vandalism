@@ -5,14 +5,24 @@ import de.nekosarekawaii.foxglove.Foxglove;
 import de.nekosarekawaii.foxglove.feature.FeatureCategory;
 import de.nekosarekawaii.foxglove.feature.FeatureList;
 import de.nekosarekawaii.foxglove.feature.impl.command.Command;
-import de.nekosarekawaii.foxglove.feature.impl.command.CommandInfo;
 import de.nekosarekawaii.foxglove.feature.impl.module.Module;
-import de.nekosarekawaii.foxglove.util.minecraft.ChatUtils;
+import de.nekosarekawaii.foxglove.util.ChatUtils;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.Formatting;
 
-@CommandInfo(name = "Features", aliases = {"features", "listfeatures", "featureslist", "showfeatures"}, description = "This command lists all available features.", category = FeatureCategory.MISC)
 public class FeaturesCommand extends Command {
+
+    public FeaturesCommand() {
+        super(
+                "Features",
+                "Shows you the features of this mod and all their description.",
+                FeatureCategory.MISC,
+                false,
+                "features",
+                "featureslist",
+                "help"
+        );
+    }
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {

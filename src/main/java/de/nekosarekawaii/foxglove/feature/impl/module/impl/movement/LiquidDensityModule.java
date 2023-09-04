@@ -4,13 +4,22 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.foxglove.event.BlockListener;
 import de.nekosarekawaii.foxglove.feature.FeatureCategory;
 import de.nekosarekawaii.foxglove.feature.impl.module.Module;
-import de.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
+import net.minecraft.block.Block;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.block.FluidFillable;
 import net.minecraft.util.shape.VoxelShapes;
 
-@ModuleInfo(name = "Liquid Density", description = "Lets you walk on liquids.", category = FeatureCategory.MOVEMENT)
 public class LiquidDensityModule extends Module implements BlockListener {
+
+    public LiquidDensityModule() {
+        super(
+                "Liquid Density",
+                "Lets you and vehicles be just like jesus.",
+                FeatureCategory.MOVEMENT,
+                false,
+                false
+        );
+    }
 
     @Override
     protected void onEnable() {
@@ -24,11 +33,15 @@ public class LiquidDensityModule extends Module implements BlockListener {
 
     @Override
     public void onCollisionShapeGet(final BlockEvent event) {
-        if (mc.player == null)
-            return;
-
-        if (event.pos.getY() < mc.player.getY() && (event.state.getBlock() instanceof FluidBlock ||
-                event.state.getBlock() instanceof FluidFillable)) {
+        if (player() == null) return;
+        final Block block = event.state.getBlock();
+        if (
+                event.pos.getY() < player().getY() &&
+                        (
+                                block instanceof FluidBlock ||
+                                        block instanceof FluidFillable
+                        )
+        ) {
             event.shape = VoxelShapes.fullCube();
             event.shouldUpdate = true;
         }

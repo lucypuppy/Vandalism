@@ -1,6 +1,6 @@
 package de.nekosarekawaii.foxglove.injection.mixins;
 
-import de.nekosarekawaii.foxglove.util.minecraft.inventory.ScreenHandlerTypes;
+import de.nekosarekawaii.foxglove.util.inventory.ScreenHandlerTypes;
 import net.minecraft.resource.featuretoggle.FeatureFlag;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;

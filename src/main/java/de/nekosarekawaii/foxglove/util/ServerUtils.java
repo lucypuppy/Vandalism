@@ -1,4 +1,4 @@
-package de.nekosarekawaii.foxglove.util.minecraft;
+package de.nekosarekawaii.foxglove.util;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConnectScreen;
@@ -12,13 +12,11 @@ import net.minecraft.text.Text;
 
 public class ServerUtils {
 
-    private final static MinecraftClient client = MinecraftClient.getInstance();
-
     private static ServerInfo lastServerInfo = null;
 
     public static void connectToLastServer() {
         if (lastServerInfo == null) return;
-        ConnectScreen.connect(new MultiplayerScreen(new TitleScreen()), client, ServerAddress.parse(lastServerInfo.address), lastServerInfo, false);
+        ConnectScreen.connect(new MultiplayerScreen(new TitleScreen()), MinecraftClient.getInstance(), ServerAddress.parse(lastServerInfo.address), lastServerInfo, false);
     }
 
     public static boolean lastServerExists() {
@@ -34,19 +32,21 @@ public class ServerUtils {
     }
 
     public static void disconnect() {
-        disconnect(client, true);
+        disconnect(true);
     }
 
-    public static void disconnect(final MinecraftClient client, final boolean gui) {
-        final boolean inSingleplayer = client.isInSingleplayer();
-        if (client.world != null) client.world.disconnect();
-        if (inSingleplayer) client.disconnect(new MessageScreen(Text.translatable("menu.savingLevel")));
-        else client.disconnect();
+    public static void disconnect(final boolean gui) {
+        final boolean inSingleplayer = MinecraftClient.getInstance().isInSingleplayer();
+        if (MinecraftClient.getInstance().world != null) MinecraftClient.getInstance().world.disconnect();
+        if (inSingleplayer)
+            MinecraftClient.getInstance().disconnect(new MessageScreen(Text.translatable("menu.savingLevel")));
+        else MinecraftClient.getInstance().disconnect();
         if (gui) {
             final TitleScreen titleScreen = new TitleScreen();
-            if (inSingleplayer) client.setScreen(titleScreen);
-            else if (client.isConnectedToRealms()) client.setScreen(new RealmsMainScreen(titleScreen));
-            else client.setScreen(new MultiplayerScreen(titleScreen));
+            if (inSingleplayer) MinecraftClient.getInstance().setScreen(titleScreen);
+            else if (MinecraftClient.getInstance().isConnectedToRealms())
+                MinecraftClient.getInstance().setScreen(new RealmsMainScreen(titleScreen));
+            else MinecraftClient.getInstance().setScreen(new MultiplayerScreen(titleScreen));
         }
     }
 

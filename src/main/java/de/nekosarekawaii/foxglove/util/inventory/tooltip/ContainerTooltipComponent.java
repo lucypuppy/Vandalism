@@ -1,8 +1,8 @@
-package de.nekosarekawaii.foxglove.util.minecraft.inventory.tooltip;
+package de.nekosarekawaii.foxglove.util.inventory.tooltip;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.nekosarekawaii.foxglove.Foxglove;
-import net.minecraft.client.MinecraftClient;
+import de.nekosarekawaii.foxglove.util.MinecraftWrapper;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 
-public class ContainerTooltipComponent implements TooltipComponent, ITooltipData {
+public class ContainerTooltipComponent implements TooltipComponent, ITooltipData, MinecraftWrapper {
 
     private final static Identifier TEXTURE_CONTAINER_BACKGROUND = new Identifier(Foxglove.getInstance().getLowerCaseName(), "textures/hud/container.png");
 
@@ -55,12 +55,12 @@ public class ContainerTooltipComponent implements TooltipComponent, ITooltipData
 
         int row = 0;
         int i = 0;
-        for (var itemStack : this.items) {
+        for (final ItemStack itemStack : this.items) {
             matrixStack.push();
             matrixStack.translate(0, 0, 401);
 
             context.drawItem(itemStack, x + 8 + i * 18, y + 7 + row * 18);
-            context.drawItemInSlot(MinecraftClient.getInstance().textRenderer, itemStack, x + 8 + i * 18, y + 7 + row * 18, null);
+            context.drawItemInSlot(textRenderer(), itemStack, x + 8 + i * 18, y + 7 + row * 18, null);
 
             matrixStack.pop();
 

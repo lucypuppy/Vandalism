@@ -1,7 +1,7 @@
 package de.nekosarekawaii.foxglove.injection.mixins;
 
 import de.nekosarekawaii.foxglove.Foxglove;
-import de.nekosarekawaii.foxglove.util.SignHideUtils;
+import de.nekosarekawaii.foxglove.config.impl.MainConfig;
 import net.minecraft.block.entity.SignText;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.SignBlockEntityRenderer;
@@ -17,9 +17,9 @@ public abstract class MixinSignBlockEntityRenderer {
 
     @Inject(method = "renderText", at = @At(value = "HEAD"), cancellable = true)
     private void redirectRenderText(final BlockPos pos, final SignText signText, final MatrixStack matrices, final VertexConsumerProvider vertexConsumers, final int light, final int lineHeight, final int lineWidth, final boolean front, final CallbackInfo ci) {
-        if (Foxglove.getInstance().getConfigManager().getMainConfig().hideSignTextFeature.getValue()) {
+        if (Foxglove.getInstance().getConfigManager().getMainConfig().hideSignText.getValue()) {
             for (int i = 0; i < 4; i++) {
-                if (signText.getMessage(i, false).getString().equals(SignHideUtils.secret)) {
+                if (signText.getMessage(i, false).getString().equals(MainConfig.SIGN_HIDE_SECRET)) {
                     ci.cancel();
                 }
             }

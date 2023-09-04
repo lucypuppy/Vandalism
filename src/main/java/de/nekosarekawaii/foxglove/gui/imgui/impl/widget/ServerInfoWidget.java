@@ -1,17 +1,15 @@
 package de.nekosarekawaii.foxglove.gui.imgui.impl.widget;
 
 import com.google.gson.JsonSyntaxException;
+import de.nekosarekawaii.foxglove.util.MinecraftWrapper;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import net.lenni0451.mcping.responses.MCPingResponse;
 import net.lenni0451.mcping.responses.QueryPingResponse;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
-public class ServerInfoWidget {
-
-    protected final static MinecraftClient mc = MinecraftClient.getInstance();
+public class ServerInfoWidget implements MinecraftWrapper {
 
     private MCPingResponse mcPingResponse;
 
@@ -79,7 +77,7 @@ public class ServerInfoWidget {
                 ImGui.text(serverAddress);
                 ImGui.sameLine();
                 if (ImGui.button("Copy Server Address##serverpinger")) {
-                    mc.keyboard.setClipboard(serverAddress);
+                    keyboard().setClipboard(serverAddress);
                 }
                 ImGui.newLine();
             }
@@ -89,7 +87,7 @@ public class ServerInfoWidget {
             ImGui.text(protocol);
             ImGui.sameLine();
             if (ImGui.button("Copy Protocol##serverpinger")) {
-                mc.keyboard.setClipboard(protocol);
+                keyboard().setClipboard(protocol);
             }
             final String name = version.name;
             if (!name.isEmpty()) {
@@ -98,7 +96,7 @@ public class ServerInfoWidget {
                 ImGui.textWrapped(name);
                 ImGui.sameLine();
                 if (ImGui.button("Copy Version Name##serverpinger")) {
-                    mc.keyboard.setClipboard(name);
+                    keyboard().setClipboard(name);
                 }
             }
             ImGui.newLine();
@@ -107,7 +105,7 @@ public class ServerInfoWidget {
             ImGui.textWrapped(populationInfo);
             ImGui.sameLine();
             if (ImGui.button("Copy Population Info##serverpinger")) {
-                mc.keyboard.setClipboard(populationInfo);
+                keyboard().setClipboard(populationInfo);
             }
             if (!this.motd.isEmpty()) {
                 ImGui.newLine();
@@ -115,7 +113,7 @@ public class ServerInfoWidget {
                 ImGui.textWrapped(this.motd);
                 ImGui.sameLine();
                 if (ImGui.button("Copy MOTD##serverpinger")) {
-                    mc.keyboard.setClipboard(this.motd);
+                    keyboard().setClipboard(this.motd);
                 }
             }
             ImGui.endListBox();
@@ -128,7 +126,7 @@ public class ServerInfoWidget {
                         ImGui.text(playerText);
                         ImGui.sameLine();
                         if (ImGui.button("Copy##" + playerText + "serverpinger")) {
-                            mc.keyboard.setClipboard(playerText);
+                            keyboard().setClipboard(playerText);
                         }
                     }
                     ImGui.endListBox();
@@ -146,7 +144,7 @@ public class ServerInfoWidget {
                             ImGui.text(modText);
                             ImGui.sameLine();
                             if (ImGui.button("Copy##" + modText + "serverpinger")) {
-                                mc.keyboard.setClipboard(modText);
+                                keyboard().setClipboard(modText);
                             }
                         }
                         ImGui.newLine();
@@ -158,7 +156,7 @@ public class ServerInfoWidget {
                             ImGui.text(mod.modId + " (" + mod.modmarker + ")");
                             ImGui.sameLine();
                             if (ImGui.button("Copy##" + modText + "serverpinger")) {
-                                mc.keyboard.setClipboard(modText);
+                                keyboard().setClipboard(modText);
                             }
                         }
                     }
@@ -174,7 +172,7 @@ public class ServerInfoWidget {
                         ImGui.text(plugin);
                         ImGui.sameLine();
                         if (ImGui.button("Copy##" + plugin + "serverpinger")) {
-                            mc.keyboard.setClipboard(plugin);
+                            keyboard().setClipboard(plugin);
                         }
                     }
                     ImGui.endListBox();

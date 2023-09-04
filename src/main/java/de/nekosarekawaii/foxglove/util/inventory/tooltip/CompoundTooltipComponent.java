@@ -1,4 +1,4 @@
-package de.nekosarekawaii.foxglove.util.minecraft.inventory.tooltip;
+package de.nekosarekawaii.foxglove.util.inventory.tooltip;
 
 import com.google.common.collect.Lists;
 import net.minecraft.client.font.TextRenderer;
@@ -31,7 +31,7 @@ public class CompoundTooltipComponent implements TooltipComponent, ITooltipData 
 	public int getHeight() {
 		int height = 0;
 
-		for (var comp : this.components) {
+        for (final TooltipComponent comp : this.components) {
 			height += comp.getHeight();
 		}
 
@@ -42,7 +42,7 @@ public class CompoundTooltipComponent implements TooltipComponent, ITooltipData 
 	public int getWidth(final TextRenderer textRenderer) {
 		int width = 0;
 
-		for (var comp : this.components) {
+        for (final TooltipComponent comp : this.components) {
 			if (comp.getWidth(textRenderer) > width) {
 				width = comp.getWidth(textRenderer);
 			}
@@ -55,7 +55,7 @@ public class CompoundTooltipComponent implements TooltipComponent, ITooltipData 
 	public void drawItems(final TextRenderer textRenderer, final int x, final int y, final DrawContext context) {
 		int yOff = 0;
 
-		for (var comp : this.components) {
+        for (final TooltipComponent comp : this.components) {
 			comp.drawItems(textRenderer, x, y + yOff, context);
 			yOff += comp.getHeight();
 		}
@@ -65,7 +65,7 @@ public class CompoundTooltipComponent implements TooltipComponent, ITooltipData 
 	public void drawText(final TextRenderer textRenderer, final int x, final int y, final Matrix4f matrix4f, final VertexConsumerProvider.Immediate immediate) {
 		int yOff = 0;
 
-		for (var comp : components) {
+        for (final TooltipComponent comp : this.components) {
 			comp.drawText(textRenderer, x, y + yOff, matrix4f, immediate);
 			yOff += comp.getHeight();
 		}

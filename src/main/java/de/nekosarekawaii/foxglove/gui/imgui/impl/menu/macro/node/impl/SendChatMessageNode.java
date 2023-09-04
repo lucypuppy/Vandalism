@@ -3,7 +3,6 @@ package de.nekosarekawaii.foxglove.gui.imgui.impl.menu.macro.node.impl;
 import de.nekosarekawaii.foxglove.gui.imgui.impl.menu.macro.node.RunnableNode;
 import imgui.ImGui;
 import imgui.type.ImString;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 
 public class SendChatMessageNode extends RunnableNode {
 
@@ -22,9 +21,8 @@ public class SendChatMessageNode extends RunnableNode {
 
     @Override
     public void run() {
-        final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
-        if (networkHandler != null) {
-            networkHandler.sendChatMessage(this.message.get());
+        if (networkHandler() != null) {
+            networkHandler().sendChatMessage(this.message.get());
         }
     }
 

@@ -1,6 +1,6 @@
 package de.nekosarekawaii.foxglove.gui.imgui.impl.menu.macro.node;
 
-import de.nekosarekawaii.foxglove.util.string.EnumNameNormalizer;
+import de.nekosarekawaii.foxglove.util.EnumNameNormalizer;
 
 public enum NodeTypes implements EnumNameNormalizer {
 

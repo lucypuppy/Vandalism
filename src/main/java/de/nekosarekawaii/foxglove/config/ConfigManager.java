@@ -15,7 +15,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class ConfigManager {
 
     private final Gson gson;
@@ -68,7 +67,7 @@ public class ConfigManager {
             printWriter.close();
             fileWriter.close();
         } catch (final IOException e) {
-            Foxglove.getInstance().getLogger().error("Failed to save Config: " + config.file.getName(), e);
+            Foxglove.getInstance().getLogger().error("Failed to save config: " + config.file.getName(), e);
         }
     }
 
@@ -79,6 +78,7 @@ public class ConfigManager {
     }
 
     public void load() {
+        Foxglove.getInstance().getLogger().info("Loading configs...");
         for (final Config config : this.configs) {
             try {
                 final FileReader fileReader = new FileReader(config.file);
@@ -99,7 +99,7 @@ public class ConfigManager {
                 jsonReader.close();
                 Foxglove.getInstance().getLogger().info("Config " + config.file.getName() + " loaded.");
             } catch (final IOException | JsonSyntaxException e) {
-                Foxglove.getInstance().getLogger().error("Failed to load Config: " + config.file.getName(), e);
+                Foxglove.getInstance().getLogger().error("Failed to load config: " + config.file.getName(), e);
             }
         }
     }

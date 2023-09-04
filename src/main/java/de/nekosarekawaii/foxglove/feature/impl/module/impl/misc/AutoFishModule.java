@@ -4,22 +4,46 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.foxglove.event.TickListener;
 import de.nekosarekawaii.foxglove.feature.FeatureCategory;
 import de.nekosarekawaii.foxglove.feature.impl.module.Module;
-import de.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
 import de.nekosarekawaii.foxglove.util.timer.impl.ms.MsTimer;
 import de.nekosarekawaii.foxglove.value.Value;
 import de.nekosarekawaii.foxglove.value.values.number.slider.SliderIntegerValue;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
 import net.minecraft.util.Hand;
 
-@ModuleInfo(name = "Auto Fish", description = "Automatically fishes for you.", category = FeatureCategory.MISC)
 public class AutoFishModule extends Module implements TickListener {
 
-    private final MsTimer retractDelay = new MsTimer(), throwDelay = new MsTimer();
+    private final MsTimer retractDelayTimer = new MsTimer(), throwDelayTimer = new MsTimer();
+
     private boolean hasFish = false;
-    public final Value<Integer> throwDelayValue = new SliderIntegerValue("Throw Delay", "Here you can input the custom throw delay value.", this, 1000, 0, 5000);
-    public final Value<Integer> retractDelayValue = new SliderIntegerValue("Retract Delay", "Here you can input the custom retract delay value.", this, 500, 0, 1000);
+
+    public final Value<Integer> throwDelayValue = new SliderIntegerValue(
+            "Throw Delay",
+            "Here you can input the custom throw delay value.",
+            this,
+            1000,
+            0,
+            5000
+    );
+
+    public final Value<Integer> retractDelayValue = new SliderIntegerValue(
+            "Retract Delay",
+            "Here you can input the custom retract delay value.",
+            this,
+            500,
+            0,
+            1000
+    );
+
+    public AutoFishModule() {
+        super(
+                "Auto Fish",
+                "",
+                FeatureCategory.MISC,
+                false,
+                false
+        );
+    }
 
     @Override
     protected void onEnable() {
@@ -33,23 +57,19 @@ public class AutoFishModule extends Module implements TickListener {
 
     @Override
     public void onTick() {
-        final ClientPlayerEntity player = mc.player;
-        final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
-        if (player == null || networkHandler == null)
-            return;
-
-        if (player.fishHook != null) {
-            if (!this.hasFish && player.fishHook.caughtFish && player.fishHook.getVelocity().y < -0.2) {
+        if (player() == null || networkHandler() == null) return;
+        final FishingBobberEntity fishHook = player().fishHook;
+        if (fishHook != null) {
+            if (!this.hasFish && fishHook.caughtFish && fishHook.getVelocity().y < -0.2) {
                 this.hasFish = true;
-                this.retractDelay.reset();
+                this.retractDelayTimer.reset();
             }
-
-            if (this.hasFish && this.retractDelay.hasReached(this.retractDelayValue.getValue(), true)) {
-                networkHandler.sendPacket(new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, 0));
-                this.throwDelay.reset();
+            if (this.hasFish && this.retractDelayTimer.hasReached(this.retractDelayValue.getValue(), true)) {
+                networkHandler().sendPacket(new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, 0));
+                this.throwDelayTimer.reset();
             }
-        } else if (throwDelay.hasReached(throwDelayValue.getValue(), true)) {
-            networkHandler.sendPacket(new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, 0));
+        } else if (this.throwDelayTimer.hasReached(this.throwDelayValue.getValue(), true)) {
+            networkHandler().sendPacket(new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, 0));
             this.hasFish = false;
         }
     }

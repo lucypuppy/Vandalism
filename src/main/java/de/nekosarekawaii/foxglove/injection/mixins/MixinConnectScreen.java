@@ -1,7 +1,7 @@
 package de.nekosarekawaii.foxglove.injection.mixins;
 
 
-import de.nekosarekawaii.foxglove.util.minecraft.ServerUtils;
+import de.nekosarekawaii.foxglove.util.ServerUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConnectScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -23,7 +23,7 @@ public abstract class MixinConnectScreen {
 
     @Redirect(method = "connect(Lnet/minecraft/client/gui/screen/Screen;Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/network/ServerAddress;Lnet/minecraft/client/network/ServerInfo;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;disconnect()V"))
     private static void redirectConnect(final MinecraftClient instance) {
-        ServerUtils.disconnect(instance, false);
+        ServerUtils.disconnect(false);
     }
 
 }

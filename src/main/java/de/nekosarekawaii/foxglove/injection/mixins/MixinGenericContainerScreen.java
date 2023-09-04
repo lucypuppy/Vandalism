@@ -1,7 +1,7 @@
 package de.nekosarekawaii.foxglove.injection.mixins;
 
 import de.nekosarekawaii.foxglove.Foxglove;
-import de.nekosarekawaii.foxglove.util.minecraft.inventory.InventoryUtil;
+import de.nekosarekawaii.foxglove.util.inventory.InventoryUtil;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.ScreenHandlerProvider;
@@ -27,15 +27,36 @@ public abstract class MixinGenericContainerScreen extends HandledScreen<GenericC
     @Override
     protected void init() {
         super.init();
-
         if (Foxglove.getInstance().getConfigManager().getMainConfig().manageContainerButtons.getValue()) {
-            addDrawableChild(ButtonWidget
-                    .builder(Text.literal("Steal"), b -> InventoryUtil.quickMoveInventory(this, 0, rows * 9))
-                    .dimensions(x + backgroundWidth - 108, y - 14, 50, 12).build());
-
-            addDrawableChild(ButtonWidget
-                    .builder(Text.literal("Store"), b -> InventoryUtil.quickMoveInventory(this, rows * 9, rows * 9 + 44))
-                    .dimensions(x + backgroundWidth - 56, y - 14, 50, 12).build());
+            this.addDrawableChild(
+                    ButtonWidget.builder(Text.literal("Steal"), b -> InventoryUtil.quickMoveInventory(
+                                    this,
+                                    0,
+                                    this.rows * 9
+                            ))
+                            .dimensions(
+                                    this.x + this.backgroundWidth - 108,
+                                    this.y - 14,
+                                    50,
+                                    12
+                            ).build()
+            );
+            this.addDrawableChild(
+                    ButtonWidget.builder(Text.literal("Store"), b ->
+                                    InventoryUtil.quickMoveInventory(
+                                            this,
+                                            this.rows * 9,
+                                            this.rows * 9 + 44
+                                    )
+                            )
+                            .dimensions(
+                                    this.x + this.backgroundWidth - 56,
+                                    this.y - 14,
+                                    50,
+                                    12
+                            )
+                            .build()
+            );
         }
     }
 

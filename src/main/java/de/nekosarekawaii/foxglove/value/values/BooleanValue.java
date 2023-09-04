@@ -24,7 +24,7 @@ public class BooleanValue extends Value<Boolean> {
 
     @Override
     public void render() {
-        final var imValue = new ImBoolean(this.getValue());
+        final ImBoolean imValue = new ImBoolean(this.getValue());
 
         if (ImGui.checkbox(this.getName() + "##" + this.getHashIdent(), imValue))
             this.setValue(imValue.get());

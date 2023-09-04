@@ -1,4 +1,4 @@
-package de.nekosarekawaii.foxglove.util.minecraft.inventory.tooltip;
+package de.nekosarekawaii.foxglove.util.inventory.tooltip;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
@@ -65,10 +65,12 @@ public class MapTooltipComponent implements TooltipComponent, ITooltipData {
 
         matrices.push();
         matrices.translate(x, y, 0);
-        matrices.scale(scale, scale, 0);
+        matrices.scale(this.scale, this.scale, 0);
         matrices.translate(8, 8, 0);
         MinecraftClient.getInstance().gameRenderer.getMapRenderer().draw(matrices, consumer, this.mapId, mapState, false, 0xF000F0);
         consumer.draw();
         matrices.pop();
+
     }
+
 }

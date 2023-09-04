@@ -14,7 +14,10 @@ import java.util.Collection;
 public class KickItemsCreativeTab extends CreativeTab {
 
     public KickItemsCreativeTab() {
-        super(new ItemStack(Items.FIREWORK_ROCKET).setCustomName(Text.literal("Kick Items")));
+        super(
+                Text.literal("Kick Items"),
+                new ItemStack(Items.FIREWORK_ROCKET)
+        );
     }
 
     @Override
@@ -29,18 +32,18 @@ public class KickItemsCreativeTab extends CreativeTab {
     }
 
     private ItemStack createKickHead() {
-        final var item = new ItemStack(Items.FURNACE);
-        final var base = new NbtCompound();
+        final ItemStack item = new ItemStack(Items.FURNACE);
+        final NbtCompound base = new NbtCompound();
 
-        final var blockEntityTag = new NbtCompound();
-        final var items = new NbtList();
+        final NbtCompound blockEntityTag = new NbtCompound();
+        final NbtList items = new NbtList();
 
-        final var firstSlot = new NbtCompound();
+        final NbtCompound firstSlot = new NbtCompound();
         firstSlot.putByte("Slot", (byte) 0);
         firstSlot.putString("id", "minecraft:player_head");
         firstSlot.putByte("Count", (byte) 1);
 
-        final var skullOwner = new NbtCompound();
+        final NbtCompound skullOwner = new NbtCompound();
         skullOwner.putString("SkullOwner", " ");
         firstSlot.put("tag", skullOwner);
 
@@ -55,10 +58,10 @@ public class KickItemsCreativeTab extends CreativeTab {
     }
 
     private ItemStack createKickHeadV2() {
-        final var item = new ItemStack(Items.PLAYER_HEAD);
+        final ItemStack item = new ItemStack(Items.PLAYER_HEAD);
 
-        final var base = new NbtCompound();
-        final var blockEntityTag = new NbtCompound();
+        final NbtCompound base = new NbtCompound();
+        final NbtCompound blockEntityTag = new NbtCompound();
 
         blockEntityTag.putString("note_block_sound", RandomStringUtils.randomAlphabetic(5).toLowerCase().repeat(6552));
         base.put("BlockEntityTag", blockEntityTag);
@@ -69,17 +72,17 @@ public class KickItemsCreativeTab extends CreativeTab {
     }
 
     private ItemStack createKickStand() {
-        final var item = new ItemStack(Items.ARMOR_STAND);
-        final var base = new NbtCompound();
+        final ItemStack item = new ItemStack(Items.ARMOR_STAND);
+        final NbtCompound base = new NbtCompound();
 
-        final var entityTag = new NbtCompound();
+        final NbtCompound entityTag = new NbtCompound();
 
-        final var armorItems = new NbtList();
+        final NbtList armorItems = new NbtList();
 
-        final var firstArmorItem = new NbtCompound();
-        final var armorItemBase = new NbtCompound();
+        final NbtCompound firstArmorItem = new NbtCompound();
+        final NbtCompound armorItemBase = new NbtCompound();
 
-        final var armorTrim = new NbtCompound();
+        final NbtCompound armorTrim = new NbtCompound();
         armorTrim.putString("pattern", RandomStringUtils.random(5).toLowerCase() + ":" + RandomStringUtils.random(5).toUpperCase());
         armorTrim.putString("material", "minecraft:amethyst");
 
@@ -98,4 +101,5 @@ public class KickItemsCreativeTab extends CreativeTab {
 
         return item;
     }
+
 }

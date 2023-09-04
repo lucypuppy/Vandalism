@@ -1,4 +1,4 @@
-package de.nekosarekawaii.foxglove.util.string;
+package de.nekosarekawaii.foxglove.util;
 
 public interface EnumNameNormalizer {
 
@@ -8,6 +8,8 @@ public interface EnumNameNormalizer {
         return name.charAt(0) + name.substring(1).toLowerCase();
     }
 
-    String normalName();
+    default String normalName() {
+        return null;
+    }
 
 }

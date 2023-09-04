@@ -7,7 +7,6 @@ import de.nekosarekawaii.foxglove.feature.impl.module.impl.movement.PhaseModule;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.FluidBlock;
-import net.minecraft.client.network.ClientPlayerEntity;
 
 public class FallingBlockModuleMode extends ModuleMode<PhaseModule> implements TickListener {
 
@@ -27,23 +26,22 @@ public class FallingBlockModuleMode extends ModuleMode<PhaseModule> implements T
 
     @Override
     public void onTick() {
-        final ClientPlayerEntity player = mc.player;
-        if (player == null) return;
-        final Block block = player.getBlockStateAtPos().getBlock();
+        if (player() == null) return;
+        final Block block = player().getBlockStateAtPos().getBlock();
         if (!(block instanceof AirBlock) && !(block instanceof FluidBlock)) {
             final double
-                    yaw = Math.toRadians(player.headYaw),
-                    horizontal = player.forwardSpeed > 0 ? 1 : player.forwardSpeed < 0 ? -1 : 0;
+                    yaw = Math.toRadians(player().headYaw),
+                    horizontal = player().forwardSpeed > 0 ? 1 : player().forwardSpeed < 0 ? -1 : 0;
             double vertical = 0;
-            if (mc.options.sneakKey.isPressed()) {
+            if (options().sneakKey.isPressed()) {
                 vertical = -1;
-            } else if (mc.options.jumpKey.isPressed() && player.fallDistance < 2.0f) {
+            } else if (options().jumpKey.isPressed() && player().fallDistance < 2.0f) {
                 vertical = 1;
             }
-            player.setPos(
-                    player.getX() - Math.sin(yaw) * horizontal,
-                    player.getY() + vertical,
-                    player.getZ() + Math.cos(yaw) * horizontal
+            player().setPos(
+                    player().getX() - Math.sin(yaw) * horizontal,
+                    player().getY() + vertical,
+                    player().getZ() + Math.cos(yaw) * horizontal
             );
         }
     }

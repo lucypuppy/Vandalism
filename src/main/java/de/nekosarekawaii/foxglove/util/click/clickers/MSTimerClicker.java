@@ -9,9 +9,7 @@ public class MSTimerClicker extends ClickGenerator {
     private final MsTimer timer;
     private long nextClick = -1, minDelay, maxDelay;
 
-    public MSTimerClicker(final Runnable clickAction) {
-        super(clickAction);
-
+    public MSTimerClicker() {
         this.timer = new MsTimer();
     }
 

@@ -2,26 +2,32 @@ package de.nekosarekawaii.foxglove.feature.impl.command.impl.movement;
 
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import de.nekosarekawaii.foxglove.feature.Feature;
 import de.nekosarekawaii.foxglove.feature.FeatureCategory;
 import de.nekosarekawaii.foxglove.feature.impl.command.Command;
-import de.nekosarekawaii.foxglove.feature.impl.command.CommandInfo;
-import de.nekosarekawaii.foxglove.util.minecraft.player.MovementUtil;
+import de.nekosarekawaii.foxglove.util.MovementUtil;
 import net.minecraft.command.CommandSource;
 
-@CommandInfo(name = "V-Clip", aliases = {"vclip"}, description = "This command allows the player to clip to relative y positions.", category = FeatureCategory.MOVEMENT)
 public class VClipCommand extends Command {
+
+    public VClipCommand() {
+        super(
+                "VClip",
+                "Allows you to teleport yourself by vertical offset.",
+                FeatureCategory.MOVEMENT,
+                false,
+                "vclip",
+                "vtp",
+                "verticalteleport"
+        );
+    }
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
-        builder.then(argument("vertical", DoubleArgumentType.doubleArg(-10.0, 10.0))
+        builder.then(argument("vertical-offset", DoubleArgumentType.doubleArg(-10.0, 10.0))
                 .executes(context -> {
-                            final var player = Feature.mc.player;
-
-                            if (player != null) {
-                                MovementUtil.clip(context.getArgument("vertical", Double.class), 0.0);
+                    if (player() != null) {
+                        MovementUtil.clip(context.getArgument("vertical-offset", Double.class), 0.0);
                             }
-
                             return singleSuccess;
                         }
                 )

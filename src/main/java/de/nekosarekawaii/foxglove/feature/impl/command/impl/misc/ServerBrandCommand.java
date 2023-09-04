@@ -1,23 +1,35 @@
 package de.nekosarekawaii.foxglove.feature.impl.command.impl.misc;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import de.nekosarekawaii.foxglove.feature.Feature;
 import de.nekosarekawaii.foxglove.feature.FeatureCategory;
 import de.nekosarekawaii.foxglove.feature.impl.command.Command;
-import de.nekosarekawaii.foxglove.feature.impl.command.CommandInfo;
-import de.nekosarekawaii.foxglove.util.minecraft.ChatUtils;
+import de.nekosarekawaii.foxglove.util.ChatUtils;
 import net.minecraft.command.CommandSource;
 
-import java.util.Objects;
-
-@CommandInfo(name = "ServerBrand", description = "Shows the server brand of the current server.", aliases = { "brand", "serverbrand", "showserverbrand" }, category = FeatureCategory.MISC)
 public class ServerBrandCommand extends Command {
 
-    @Override
-    public void build(LiteralArgumentBuilder<CommandSource> builder) {
-        builder.requires(commandSource -> !Feature.mc.isInSingleplayer()).executes(context -> {
-            ChatUtils.infoChatMessage("Server brand: " + Objects.requireNonNull(Feature.mc.player).getServerBrand());
-            return singleSuccess;
-        });
+    public ServerBrandCommand() {
+        super(
+                "Server Brand",
+                "Lets you view and copy the brand from the server you are currently connected to.",
+                FeatureCategory.MISC,
+                false,
+                "serverbrand",
+                "brand"
+        );
     }
+
+    @Override
+    public void build(final LiteralArgumentBuilder<CommandSource> builder) {
+        builder.then(literal("view").executes(context -> {
+            ChatUtils.infoChatMessage("Server Brand: " + player().getServerBrand());
+            return singleSuccess;
+        }));
+        builder.then(literal("copy").executes(context -> {
+            keyboard().setClipboard(player().getServerBrand());
+            ChatUtils.infoChatMessage("Server Brand copied into the Clipboard.");
+            return singleSuccess;
+        }));
+    }
+
 }

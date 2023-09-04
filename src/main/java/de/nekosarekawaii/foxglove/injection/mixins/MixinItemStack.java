@@ -1,9 +1,9 @@
 package de.nekosarekawaii.foxglove.injection.mixins;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.nekosarekawaii.foxglove.Foxglove;
+import de.nekosarekawaii.foxglove.creativetab.CreativeTabRegistry;
 import de.nekosarekawaii.foxglove.event.TooltipListener;
-import de.nekosarekawaii.foxglove.util.minecraft.inventory.tooltip.CompoundTooltipComponent;
+import de.nekosarekawaii.foxglove.util.inventory.tooltip.CompoundTooltipComponent;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.item.TooltipData;
@@ -32,7 +32,7 @@ public abstract class MixinItemStack {
     @Redirect(method = "hasGlint", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;hasGlint(Lnet/minecraft/item/ItemStack;)Z"))
     private boolean injectGetDisplayStacks(final Item instance, final ItemStack stack) {
         final NbtCompound nbt = stack.getNbt();
-        return instance.hasGlint(stack) || (nbt != null && nbt.contains(Foxglove.getInstance().getCreativeTabRegistry().getClientsideGlint()));
+        return instance.hasGlint(stack) || (nbt != null && nbt.contains(CreativeTabRegistry.CLIENTSIDE_GLINT));
     }
 
     @Inject(method = "getTooltip", at = @At(value = "RETURN"))
@@ -41,23 +41,26 @@ public abstract class MixinItemStack {
         final ItemStack itemStack = (ItemStack) (Object) this;
 
         if (itemStack.getItem() instanceof CompassItem && CompassItem.hasLodestone(itemStack)) {
-            var nbt = itemStack.getNbt();
+            final NbtCompound nbt = itemStack.getNbt();
 
-            if (nbt == null)
+            if (nbt == null) {
                 return;
+            }
 
             final GlobalPos globalPos = CompassItem.createLodestonePos(nbt);
 
-            if (globalPos == null)
+            if (globalPos == null) {
                 return;
+            }
 
             final BlockPos pos = globalPos.getPos();
-            var posText = Text.literal(String.format("X: %d, Y: %d, Z: %d", pos.getX(), pos.getY(), pos.getZ()))
-                    .formatted(Formatting.GOLD);
+            final Text posText = Text.literal(String.format("X: %d, Y: %d, Z: %d", pos.getX(), pos.getY(), pos.getZ())).formatted(Formatting.GOLD);
 
             final Text position = Text.literal("Position: ").formatted(Formatting.GRAY).append(posText);
-            final Text dimension = Text.literal("Dimension: ").formatted(Formatting.GRAY)
-                    .append(Text.literal(globalPos.getDimension().getValue().toString()).formatted(Formatting.GOLD));
+            final Text dimension = Text.literal("Dimension: ")
+                    .formatted(Formatting.GRAY)
+                    .append(Text.literal(globalPos.getDimension().getValue().toString())
+                            .formatted(Formatting.GOLD));
 
             if (context.isAdvanced()) {
                 tooltip.add(tooltip.size() - 2, position);
@@ -81,7 +84,7 @@ public abstract class MixinItemStack {
         } else if (tooltipData.size() > 1) {
             final CompoundTooltipComponent comp = new CompoundTooltipComponent();
 
-            for (var data : tooltipData) {
+            for (final TooltipData data : tooltipData) {
                 comp.addComponent(TooltipComponent.of(data));
             }
 

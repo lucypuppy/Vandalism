@@ -96,7 +96,7 @@ public class NameHistoryImGuiMenu extends ImGuiMenu {
                 ImGui.text("UUID Data: " + this.lastUUID);
                 ImGui.sameLine();
                 if (ImGui.button("Copy UUID Data##namehistory")) {
-                    mc.keyboard.setClipboard(this.lastUUID);
+                    keyboard().setClipboard(this.lastUUID);
                 }
                 if (ImGui.button("Copy Name History##namehistory")) {
                     final StringBuilder dataBuilder = new StringBuilder(this.lastUsername + "'s Name History\n\n");
@@ -104,7 +104,7 @@ public class NameHistoryImGuiMenu extends ImGuiMenu {
                         final int currentIndex = i + 1;
                         dataBuilder.append(currentIndex < 10 ? "0" + currentIndex : currentIndex).append(". ").append(this.currentData.get(i)).append('\n');
                     }
-                    mc.keyboard.setClipboard(dataBuilder.toString());
+                    keyboard().setClipboard(dataBuilder.toString());
                 }
                 if (ImGui.button("Clear##namehistory")) {
                     this.currentData.clear();
@@ -117,7 +117,7 @@ public class NameHistoryImGuiMenu extends ImGuiMenu {
                         ImGui.text(dataEntry);
                         ImGui.sameLine();
                         if (ImGui.button("Copy Entry##" + i + "namehistory")) {
-                            mc.keyboard.setClipboard(dataEntry);
+                            keyboard().setClipboard(dataEntry);
                         }
                     }
                     ImGui.endListBox();

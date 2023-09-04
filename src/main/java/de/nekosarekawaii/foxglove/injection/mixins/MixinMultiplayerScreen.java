@@ -25,8 +25,8 @@ public abstract class MixinMultiplayerScreen extends Screen {
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void injectTick(final CallbackInfo ci) {
-        if (this.client == null) return;
-        if (this.parent instanceof GameMenuScreen && this.client.player == null) {
+        if (client == null) return;
+        if (this.parent instanceof GameMenuScreen && client.player == null) {
             this.parent = new TitleScreen();
         }
     }

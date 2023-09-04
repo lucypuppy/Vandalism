@@ -1,4 +1,4 @@
-package de.nekosarekawaii.foxglove.util.minecraft.inventory;
+package de.nekosarekawaii.foxglove.util.inventory;
 
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -10,49 +10,34 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.util.collection.DefaultedList;
 
 import java.util.List;
 
 public class InventoryUtil {
 
-    private final static MinecraftClient mc = MinecraftClient.getInstance();
-
     public static Int2ObjectMap<ItemStack> createDummyModifiers() {
-        final var int2ObjectMap = new Int2ObjectOpenHashMap<ItemStack>();
-        final ClientPlayerEntity player = mc.player;
+        final Int2ObjectOpenHashMap<ItemStack> int2ObjectMap = new Int2ObjectOpenHashMap<>();
+        final ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player == null) return int2ObjectMap;
-
-        final var defaultedList = player.currentScreenHandler.slots;
-
+        final DefaultedList<Slot> defaultedList = player.currentScreenHandler.slots;
         final List<ItemStack> list = Lists.newArrayListWithCapacity(defaultedList.size());
-        for (Slot slot : defaultedList) {
-            list.add(slot.getStack().copy());
-        }
-
+        for (final Slot slot : defaultedList) list.add(slot.getStack().copy());
         for (int i = 0; i < defaultedList.size(); i++) {
-            final var original = list.get(i);
-            final var copy = defaultedList.get(i).getStack();
-
-            if (!ItemStack.areEqual(original, copy)) {
-                int2ObjectMap.put(i, copy.copy());
-            }
+            final ItemStack original = list.get(i), copy = defaultedList.get(i).getStack();
+            if (!ItemStack.areEqual(original, copy)) int2ObjectMap.put(i, copy.copy());
         }
-
         return int2ObjectMap;
     }
 
     public static <T extends ScreenHandler> void quickMoveInventory(final HandledScreen<T> screen, final int from, final int to) {
         for (int i = from; i < to; i++) {
             final T handler = screen.getScreenHandler();
-
-            if (handler.slots.size() <= i || mc.currentScreen == null || mc.interactionManager == null)
+            if (handler.slots.size() <= i || MinecraftClient.getInstance().currentScreen == null || MinecraftClient.getInstance().interactionManager == null)
                 break;
-
             final Slot slot = handler.slots.get(i);
-            if (slot.getStack().isEmpty())
-                continue;
-
-            mc.interactionManager.clickSlot(handler.syncId, slot.id, 0, SlotActionType.QUICK_MOVE, mc.player);
+            if (slot.getStack().isEmpty()) continue;
+            MinecraftClient.getInstance().interactionManager.clickSlot(handler.syncId, slot.id, 0, SlotActionType.QUICK_MOVE, MinecraftClient.getInstance().player);
         }
     }
 

@@ -15,15 +15,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinEntryListWidget {
 
     @Shadow
+    private boolean renderBackground;
+
+    @Shadow
     @Final
     protected MinecraftClient client;
 
-    @Shadow
-    private boolean renderBackground;
-
     @Inject(method = "render", at = @At(value = "HEAD"))
     private void injectDrawTexture(final DrawContext context, final int mouseX, final int mouseY, final float delta, final CallbackInfo ci) {
-        if (this.client != null && this.client.player != null && this.client.world != null && !(this.client.currentScreen instanceof PackScreen)) {
+        if (client != null && client.player != null && client.world != null && !(client.currentScreen instanceof PackScreen)) {
             this.renderBackground = false;
         }
     }
