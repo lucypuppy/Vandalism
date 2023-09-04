@@ -57,7 +57,8 @@ public class CommandRegistry {
                 new HClipCommand(),
                 new ServerBrandCommand(),
                 new SkriptDupeCommand(),
-                new NavigateXCommand()
+                new NavigateXCommand(),
+                new MessageEncryptCommand()
         );
     }
 
