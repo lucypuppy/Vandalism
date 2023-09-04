@@ -12,7 +12,6 @@ import de.nekosarekawaii.foxglove.value.values.BooleanValue;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.util.Window;
 
@@ -101,7 +100,7 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
 
     @Override
     public void onRender2D(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        if (currentScreen() != null && (currentScreen() instanceof ChatScreen || currentScreen() instanceof InventoryScreen)) {
+        if (currentScreen() != null) {
             this.render();
         }
     }
