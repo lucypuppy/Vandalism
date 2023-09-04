@@ -35,10 +35,10 @@ public class ModuleRegistry {
         return this.exploitFixerModule;
     }
 
-    private BrandChangerModule brandChangerModule;
+    private ClientBrandChangerModule clientBrandChangerModule;
 
-    public BrandChangerModule getBrandChangerModule() {
-        return this.brandChangerModule;
+    public ClientBrandChangerModule getClientBrandChanger() {
+        return this.clientBrandChangerModule;
     }
 
     private TrueSightModule trueSightModule;
@@ -71,10 +71,10 @@ public class ModuleRegistry {
         return this.flightModule;
     }
 
-    private BungeeCordSpoofModule bungeeCordSpoofModule;
+    private BungeeCordSpooferModule bungeeCordSpooferModule;
 
-    public BungeeCordSpoofModule getBungeeCordSpoofModule() {
-        return this.bungeeCordSpoofModule;
+    public BungeeCordSpooferModule getBungeeCordSpooferModule() {
+        return this.bungeeCordSpooferModule;
     }
 
     private GodModeModule godModeModule;
@@ -119,10 +119,10 @@ public class ModuleRegistry {
         return this.fastUseModule;
     }
 
-    private CustomVelocityModule customPushVelocityModule;
+    private PushVelocityModule pushVelocityModule;
 
-    public CustomVelocityModule getCustomPushVelocityModule() {
-        return this.customPushVelocityModule;
+    public PushVelocityModule getPushVelocityModule() {
+        return this.pushVelocityModule;
     }
 
     private StepModule stepModule;
@@ -203,9 +203,9 @@ public class ModuleRegistry {
         return this.ambienceModule;
     }
 
-    private MessageEncryptModule messageEncryptModule;
+    private MessageEncryptorModule messageEncryptModule;
 
-    public MessageEncryptModule getMessageEncryptModule() {
+    public MessageEncryptorModule getMessageEncryptModule() {
         return this.messageEncryptModule;
     }
 
@@ -226,14 +226,14 @@ public class ModuleRegistry {
                 this.headUpDisplayModule = new HeadUpDisplayModule(),
                 this.testModule = new TestModule(),
                 this.exploitFixerModule = new ExploitFixerModule(),
-                this.brandChangerModule = new BrandChangerModule(),
+                this.clientBrandChangerModule = new ClientBrandChangerModule(),
                 this.debugModule = new DebugModule(),
                 this.trueSightModule = new TrueSightModule(),
                 this.betterTabListModule = new BetterTabListModule(),
                 this.packetLoggerModule = new PacketLoggerModule(),
                 this.modPacketBlockerModule = new ModPacketBlockerModule(),
                 this.flightModule = new FlightModule(),
-                this.bungeeCordSpoofModule = new BungeeCordSpoofModule(),
+                this.bungeeCordSpooferModule = new BungeeCordSpooferModule(),
                 this.godModeModule = new GodModeModule(),
                 this.speedModule = new SpeedModule(),
                 this.serverCrasherModule = new ServerCrasherModule(),
@@ -241,7 +241,7 @@ public class ModuleRegistry {
                 this.consoleSpammerModule = new ConsoleSpammerModule(),
                 this.itemStackLoggerModule = new ItemStackLoggerModule(),
                 this.fastUseModule = new FastUseModule(),
-                this.customPushVelocityModule = new CustomVelocityModule(),
+                this.pushVelocityModule = new PushVelocityModule(),
                 this.stepModule = new StepModule(),
                 this.noFallModule = new NoFallModule(),
                 this.cameraNoClipModule = new CameraNoClipModule(),
@@ -255,26 +255,23 @@ public class ModuleRegistry {
                 this.visualThrottleModule = new VisualThrottleModule(),
                 this.elytraFlightModule = new ElytraFlightModule(),
                 this.ambienceModule = new AmbienceModule(),
-                this.messageEncryptModule = new MessageEncryptModule()
+                this.messageEncryptModule = new MessageEncryptorModule()
         );
     }
 
     private void registerModules(final Module... modules) {
+        Foxglove.getInstance().getLogger().info("Registering modules...");
         for (final Module module : modules) {
-            if (module.getClass().isAnnotationPresent(ModuleInfo.class)) {
-                if (!this.modules.contains(module)) {
-                    this.modules.add(module);
-                    Foxglove.getInstance().getLogger().info("Module '" + module + "' has been registered.");
-                } else {
-                    Foxglove.getInstance().getLogger().error("Duplicated Module found: " + module);
-                }
+            if (!this.modules.contains(module)) {
+                this.modules.add(module);
+                Foxglove.getInstance().getLogger().info("Module '" + module + "' has been registered.");
             } else {
-                Foxglove.getInstance().getLogger().error("Module '" + module + "' is not annotated with Module Info!");
+                Foxglove.getInstance().getLogger().error("Duplicated module found: " + module);
             }
         }
         final int moduleListSize = this.modules.size();
-        if (moduleListSize < 1) Foxglove.getInstance().getLogger().info("No Modules found!");
-        else Foxglove.getInstance().getLogger().info("Registered " + moduleListSize + " Module/s.");
+        if (moduleListSize < 1) Foxglove.getInstance().getLogger().info("No modules found!");
+        else Foxglove.getInstance().getLogger().info("Registered " + moduleListSize + " module/s.");
     }
 
     public FeatureList<Module> getModules() {

@@ -10,14 +10,12 @@ import de.nekosarekawaii.foxglove.event.TickListener;
 import de.nekosarekawaii.foxglove.feature.FeatureCategory;
 import de.nekosarekawaii.foxglove.feature.impl.command.impl.misc.NBTCommand;
 import de.nekosarekawaii.foxglove.feature.impl.module.Module;
-import de.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
-import de.nekosarekawaii.foxglove.util.minecraft.ChatUtils;
-import de.nekosarekawaii.foxglove.util.minecraft.ServerUtils;
+import de.nekosarekawaii.foxglove.util.ChatUtils;
+import de.nekosarekawaii.foxglove.util.ServerUtils;
 import de.nekosarekawaii.foxglove.value.Value;
 import de.nekosarekawaii.foxglove.value.values.BooleanValue;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -39,18 +37,28 @@ import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-@ModuleInfo(name = "Item Stack Logger", description = "Logs incoming player item stacks into the chat and writes a complete log into a log file.", category = FeatureCategory.MISC)
 public class ItemStackLoggerModule extends Module implements TickListener {
 
-    private final Value<Boolean> notifyInChat = new BooleanValue("Notify in Chat", "If enabled this module sends a notification into the chat to inform you about a newly found item.", this, true);
+    private final Value<Boolean> notifyInChat = new BooleanValue(
+            "Notify in Chat",
+            "If enabled this module sends a notification into the chat to inform you about a newly found item.",
+            this,
+            true
+    );
 
-    private final File loggedItemsDir;
+    private final static File LOGGED_ITEMS_DIR = new File(Foxglove.getInstance().getDir(), "logged-items");
+
     private final DateFormat formatter;
     private final Gson gson;
 
     public ItemStackLoggerModule() {
-        super();
-        this.loggedItemsDir = new File(Foxglove.getInstance().getDir(), "logged-items");
+        super(
+                "Item Stack Logger",
+                "Logs item stacks to '" + LOGGED_ITEMS_DIR.getAbsolutePath() + "'",
+                FeatureCategory.MISC,
+                false,
+                false
+        );
         this.formatter = new SimpleDateFormat("hh:mm:ss a, dd/MM/yyyy");
         this.gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
     }
@@ -67,10 +75,9 @@ public class ItemStackLoggerModule extends Module implements TickListener {
 
     @Override
     public void onTick() {
-        final ClientWorld world = mc.world;
-        if (world == null) return;
-        for (final Entity entity : world.getEntities()) {
-            if (entity == mc.player) continue;
+        if (world() == null) return;
+        for (final Entity entity : world().getEntities()) {
+            if (entity == player()) continue;
             if (entity instanceof final ItemEntity itemEntity) {
                 this.logStack(entity, itemEntity.getStack());
             } else {
@@ -109,7 +116,7 @@ public class ItemStackLoggerModule extends Module implements TickListener {
             } else {
                 nbt = NbtHelper.toPrettyPrintedText(base).getString();
                 final NbtCompound copy = base.copy();
-                copy.putString(NBTCommand.displayTitleNbtKey, itemFromText);
+                copy.putString(NBTCommand.DISPLAY_TITLE_NBT_KEY, itemFromText);
                 displayNbt = NbtHelper.toPrettyPrintedText(copy).getString();
             }
             final String giveCommand = Foxglove.getInstance().getConfigManager().getMainConfig().commandPrefix.getValue() + "give " + item + nbt + " " + count,
@@ -120,29 +127,28 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                     nbtCountString = "NBT Count: " + nbtCount,
                     logStart = String.format("%s%n%n%s: %s%n%n%s%n%n%s%n%n%s%n%n%s%n", server, entityType, entityName, position, damageString, countString, nbtCountString),
                     data = logStart + System.lineSeparator();
-            if (!this.loggedItemsDir.exists()) this.loggedItemsDir.mkdirs();
-            final File itemOrBlockDir = new File(this.loggedItemsDir, isItem ? "item" : "block");
-            if (!itemOrBlockDir.exists()) itemOrBlockDir.mkdirs();
+            LOGGED_ITEMS_DIR.mkdirs();
+            final File itemOrBlockDir = new File(LOGGED_ITEMS_DIR, isItem ? "item" : "block");
+            itemOrBlockDir.mkdirs();
             final File itemNameDir = new File(itemOrBlockDir, itemNameString.replace(" item", "").replace(" block", ""));
-            if (!itemNameDir.exists()) itemNameDir.mkdirs();
+            itemNameDir.mkdirs();
             final File itemZipFile = new File(itemNameDir, nbtCount + "-[" + damageString.hashCode() + nbt.hashCode() + "].zip");
-            if (!itemZipFile.exists()) {
-                itemZipFile.createNewFile();
-                try (final ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(itemZipFile, true))) {
-                    final ZipEntry zipEntry = new ZipEntry("data." + Foxglove.getInstance().getLowerCaseName() + "-log");
-                    zipOutputStream.putNextEntry(zipEntry);
-                    zipOutputStream.write((
-                            "Date: " + this.formatter.format(new Date()) + System.lineSeparator() +
-                                    System.lineSeparator() +
-                                    data + "[Give Command]" + System.lineSeparator() +
-                                    giveCommand + System.lineSeparator() +
-                                    System.lineSeparator() +
-                                    "[NBT]" + System.lineSeparator() +
-                                    this.gson.toJson(JsonParser.parseString(nbt))
-                    ).getBytes());
-                    zipOutputStream.closeEntry();
-                }
-            } else return;
+            if (itemZipFile.exists()) return;
+            itemZipFile.createNewFile();
+            try (final ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(itemZipFile, true))) {
+                final ZipEntry zipEntry = new ZipEntry("data." + Foxglove.getInstance().getLowerCaseName() + "-log");
+                zipOutputStream.putNextEntry(zipEntry);
+                zipOutputStream.write((
+                        "Date: " + this.formatter.format(new Date()) + System.lineSeparator() +
+                                System.lineSeparator() +
+                                data + "[Give Command]" + System.lineSeparator() +
+                                giveCommand + System.lineSeparator() +
+                                System.lineSeparator() +
+                                "[NBT]" + System.lineSeparator() +
+                                this.gson.toJson(JsonParser.parseString(nbt))
+                ).getBytes());
+                zipOutputStream.closeEntry();
+            }
             final String normalWithoutNBT = position + " | " + damageString + " | " + countString + " | " + nbtCountString;
             if (this.notifyInChat.getValue()) {
                 final MutableText text = Text.literal("Options:");

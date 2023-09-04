@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import de.nekosarekawaii.foxglove.feature.Feature;
+import de.nekosarekawaii.foxglove.feature.FeatureCategory;
 import de.nekosarekawaii.foxglove.feature.FeatureType;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
@@ -26,14 +27,13 @@ public abstract class Command extends Feature {
     private final String[] aliases;
     private final String aliasesString;
 
-    public Command() {
-        final CommandInfo commandInfo = this.getClass().getAnnotation(CommandInfo.class);
-        this.setName(commandInfo.name());
-        this.setDescription(commandInfo.description());
+    public Command(final String name, final String description, final FeatureCategory category, final boolean isExperimental, final String... aliases) {
+        this.setName(name);
+        this.setDescription(description);
         this.setType(FeatureType.COMMAND);
-        this.setCategory(commandInfo.category());
-        this.setExperimental(commandInfo.isExperimental());
-        this.aliases = commandInfo.aliases();
+        this.setCategory(category);
+        this.setExperimental(isExperimental);
+        this.aliases = aliases;
         this.aliasesString = Arrays.toString(this.aliases);
     }
 

@@ -5,9 +5,8 @@ import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.foxglove.event.PacketListener;
 import de.nekosarekawaii.foxglove.feature.FeatureCategory;
 import de.nekosarekawaii.foxglove.feature.impl.module.Module;
-import de.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
-import de.nekosarekawaii.foxglove.util.minecraft.ChatUtils;
-import de.nekosarekawaii.foxglove.util.minecraft.inventory.ScreenHandlerTypes;
+import de.nekosarekawaii.foxglove.util.ChatUtils;
+import de.nekosarekawaii.foxglove.util.inventory.ScreenHandlerTypes;
 import de.nekosarekawaii.foxglove.value.Value;
 import de.nekosarekawaii.foxglove.value.values.BooleanValue;
 import net.minecraft.item.ItemStack;
@@ -19,16 +18,45 @@ import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.network.packet.s2c.play.OpenScreenS2CPacket;
 import net.minecraft.util.Identifier;
 
-@ModuleInfo(name = "Packet Logger", description = "Logs incoming and outgoing packets into the Chat.", category = FeatureCategory.MISC)
 public class PacketLoggerModule extends Module implements PacketListener {
 
-    private final Value<Boolean> customPayloadPacket = new BooleanValue("Custom Payload Packet", "Logs custom payload packets into the Chat.", this, false);
+    private final Value<Boolean> customPayloadPacket = new BooleanValue(
+            "Custom Payload Packet",
+            "Logs custom payload packets into the Chat.",
+            this,
+            false
+    );
 
-    private final Value<Boolean> requestCommandCompletionsC2SPacket = new BooleanValue("Request Command Completions C2S Packet", "Logs request command completions packets into the Chat.", this, false);
+    private final Value<Boolean> requestCommandCompletionsC2SPacket = new BooleanValue(
+            "Request Command Completions C2S Packet",
+            "Logs request command completions packets into the Chat.",
+            this,
+            false
+    );
 
-    private final Value<Boolean> clickSlotC2SPacket = new BooleanValue("Click Slot C2S Packet", "Logs click slot packets into the Chat.", this, false);
+    private final Value<Boolean> clickSlotC2SPacket = new BooleanValue(
+            "Click Slot C2S Packet",
+            "Logs click slot packets into the Chat.",
+            this,
+            false
+    );
 
-    private final Value<Boolean> openScreenS2CPacket = new BooleanValue("Open Screen S2C Packet", "Logs open screen packets into the Chat.", this, false);
+    private final Value<Boolean> openScreenS2CPacket = new BooleanValue(
+            "Open Screen S2C Packet",
+            "Logs open screen packets into the Chat.",
+            this,
+            false
+    );
+
+    public PacketLoggerModule() {
+        super(
+                "Packet Logger",
+                "Logs game packets and their data into the chat.",
+                FeatureCategory.MISC,
+                true,
+                false
+        );
+    }
 
     @Override
     protected void onEnable() {
@@ -41,7 +69,7 @@ public class PacketLoggerModule extends Module implements PacketListener {
     }
 
     @Override
-    public void onPacketWrite(final PacketEvent event) {
+    public void onPacket(final PacketEvent event) {
         final Packet<?> packet = event.packet;
         if (packet instanceof final CustomPayloadC2SPacket c2SPacket) {
             if (this.customPayloadPacket.getValue()) {
@@ -51,7 +79,10 @@ public class PacketLoggerModule extends Module implements PacketListener {
             }
         } else if (packet instanceof final RequestCommandCompletionsC2SPacket c2SPacket) {
             if (this.requestCommandCompletionsC2SPacket.getValue()) {
-                ChatUtils.infoChatMessage("Outgoing request command completions packet > Id: " + c2SPacket.getCompletionId() + " | Command: \"" + c2SPacket.getPartialCommand() + "\"");
+                ChatUtils.infoChatMessage(
+                        "Outgoing request command completions packet > Id: " + c2SPacket.getCompletionId() + " | " +
+                                "Command: \"" + c2SPacket.getPartialCommand() + "\""
+                );
             }
         } else if (packet instanceof final ClickSlotC2SPacket c2SPacket) {
             if (this.clickSlotC2SPacket.getValue()) {
@@ -59,23 +90,33 @@ public class PacketLoggerModule extends Module implements PacketListener {
                 for (final ItemStack itemStack : c2SPacket.getModifiedStacks().values().toArray(new ItemStack[0])) {
                     modifiedStacks.append(itemStack.getName().getString()).append(';');
                 }
-                ChatUtils.infoChatMessage("Outgoing click slot packet > Sync Id: " + c2SPacket.getSyncId() + " | Revision: " + c2SPacket.getRevision() + " | Slot: " + c2SPacket.getSlot() + " | Button: " + c2SPacket.getButton() + " | Action Type: " + c2SPacket.getActionType().name() + " | Stack: " + c2SPacket.getStack().getName().getString() + " | Modified Stacks: " + modifiedStacks);
+                ChatUtils.infoChatMessage(
+                        "Outgoing click slot packet > Sync Id: " + c2SPacket.getSyncId() + " | " +
+                                "Revision: " + c2SPacket.getRevision() + " | " +
+                                "Slot: " + c2SPacket.getSlot() + " | " +
+                                "Button: " + c2SPacket.getButton() + " | " +
+                                "Action Type: " + c2SPacket.getActionType().name() + " | " +
+                                "Stack: " + c2SPacket.getStack().getName().getString() + " | " +
+                                "Modified Stacks: " + modifiedStacks
+                );
             }
-        }
-    }
-
-    @Override
-    public void onPacketRead(final PacketEvent event) {
-        final Packet<?> packet = event.packet;
-        if (packet instanceof final CustomPayloadS2CPacket s2CPacket) {
+        } else if (packet instanceof final CustomPayloadS2CPacket s2CPacket) {
             if (this.customPayloadPacket.getValue()) {
                 final Identifier channel = s2CPacket.getChannel();
                 final String channelName = channel.getNamespace(), channelPath = channel.getPath();
-                ChatUtils.infoChatMessage("Incoming custom payload packet > Channel Name: " + channelName + " | Channel Path: " + channelPath);
+                ChatUtils.infoChatMessage(
+                        "Incoming custom payload packet > Channel Name: " + channelName + " | " +
+                                "Channel Path: " + channelPath
+                );
             }
         } else if (packet instanceof final OpenScreenS2CPacket s2cPacket) {
             if (this.openScreenS2CPacket.getValue()) {
-                ChatUtils.infoChatMessage("Incoming open screen packet > Name: " + s2cPacket.getName() + " | Sync Id: " + s2cPacket.getSyncId() + " | Screen Handler Type Id: " + ScreenHandlerTypes.getId(s2cPacket.getScreenHandlerType()));
+                ChatUtils.infoChatMessage(
+                        "Incoming open screen packet > Name: " + s2cPacket.getName() + " | " +
+                                "Sync Id: " + s2cPacket.getSyncId() + " | " +
+                                "Screen Handler Type Id: " +
+                                ScreenHandlerTypes.getId(s2cPacket.getScreenHandlerType())
+                );
             }
         }
     }

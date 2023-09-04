@@ -4,14 +4,11 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.foxglove.Foxglove;
-import de.nekosarekawaii.foxglove.feature.Feature;
 import de.nekosarekawaii.foxglove.feature.FeatureCategory;
 import de.nekosarekawaii.foxglove.feature.impl.command.Command;
-import de.nekosarekawaii.foxglove.feature.impl.command.CommandInfo;
 import de.nekosarekawaii.foxglove.feature.impl.command.arguments.NbtCompoundArgumentType;
 import de.nekosarekawaii.foxglove.gui.imgui.impl.widget.NBTEditWidget;
-import de.nekosarekawaii.foxglove.util.minecraft.ChatUtils;
-import net.minecraft.client.network.ClientPlayerEntity;
+import de.nekosarekawaii.foxglove.util.ChatUtils;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.NbtPathArgumentType;
 import net.minecraft.item.ItemStack;
@@ -31,33 +28,44 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
-@CommandInfo(name = "NBT", description = "Modifies NBT data for an item.", aliases = {"nbt", "changenbt", "nbtchange"}, category = FeatureCategory.MISC)
 public class NBTCommand extends Command {
 
-    public final static String displayTitleNbtKey = UUID.randomUUID().toString();
+    public final static String DISPLAY_TITLE_NBT_KEY = UUID.randomUUID().toString();
+
+    public NBTCommand() {
+        super(
+                "NBT",
+                "Allows you to view and modify the nbt data from an item stack.",
+                FeatureCategory.MISC,
+                false,
+                "nbt"
+        );
+    }
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.then(literal("add").then(argument("nbt", NbtCompoundArgumentType.create()).executes(s -> {
-            final ClientPlayerEntity player = Feature.mc.player;
-            if (player != null) {
-                final ItemStack stack = player.getInventory().getMainHandStack();
+            if (player() != null) {
+                final ItemStack stack = player().getInventory().getMainHandStack();
                 if (this.validBasic(stack)) {
                     final NbtCompound tag = NbtCompoundArgumentType.get(s);
                     final NbtCompound source = stack.getOrCreateNbt();
                     if (tag != null) {
                         source.copyFrom(tag);
                         this.setStack(stack);
-                    } else
-                        ChatUtils.errorChatMessage("Some of the NBT data could not be found, try using: " + Foxglove.getInstance().getConfigManager().getMainConfig().commandPrefix.getValue() + "nbt set {nbt}");
+                    } else {
+                        ChatUtils.errorChatMessage(
+                                "Some of the NBT data could not be found, try using: " +
+                                        Foxglove.getInstance().getConfigManager().getMainConfig().commandPrefix.getValue() + "nbt set {nbt}"
+                        );
+                    }
                 }
             }
             return singleSuccess;
         })));
         builder.then(literal("set").then(argument("nbt", NbtCompoundArgumentType.create()).executes(context -> {
-            final ClientPlayerEntity player = Feature.mc.player;
-            if (player != null) {
-                final ItemStack stack = player.getInventory().getMainHandStack();
+            if (player() != null) {
+                final ItemStack stack = player().getInventory().getMainHandStack();
                 if (this.validBasic(stack)) {
                     stack.setNbt(NbtCompoundArgumentType.get(context));
                     this.setStack(stack);
@@ -66,9 +74,8 @@ public class NBTCommand extends Command {
             return singleSuccess;
         })));
         builder.then(literal("remove").then(argument("nbt_path", NbtPathArgumentType.nbtPath()).executes(context -> {
-            final ClientPlayerEntity player = Feature.mc.player;
-            if (player != null) {
-                final ItemStack stack = player.getInventory().getMainHandStack();
+            if (player() != null) {
+                final ItemStack stack = player().getInventory().getMainHandStack();
                 if (this.validBasic(stack)) {
                     context.getArgument("nbt_path", NbtPathArgumentType.NbtPath.class).remove(stack.getNbt());
                 }
@@ -76,9 +83,8 @@ public class NBTCommand extends Command {
             return singleSuccess;
         })));
         builder.then(literal("view").executes(context -> {
-            final ClientPlayerEntity player = Feature.mc.player;
-            if (player != null) {
-                final ItemStack stack = player.getInventory().getMainHandStack();
+            if (player() != null) {
+                final ItemStack stack = player().getInventory().getMainHandStack();
                 if (stack == null) {
                     ChatUtils.errorChatMessage("You must hold an item in your main hand.");
                 } else {
@@ -103,44 +109,31 @@ public class NBTCommand extends Command {
             return singleSuccess;
         }));
         builder.then(literal("copy").executes(context -> {
-            final ClientPlayerEntity player = Feature.mc.player;
-            if (player != null) {
-                final ItemStack stack = player.getInventory().getMainHandStack();
+            if (player() != null) {
+                final ItemStack stack = player().getInventory().getMainHandStack();
                 if (stack == null) {
                     ChatUtils.errorChatMessage("You must hold an item in your main hand.");
                 } else {
                     final NbtCompound tag = stack.getOrCreateNbt();
-                    Feature.mc.keyboard.setClipboard(tag.toString());
-                    final MutableText nbt = Text.literal("NBT");
-                    nbt.setStyle(nbt.getStyle()
-                            .withFormatting(Formatting.UNDERLINE)
-                            .withHoverEvent(new HoverEvent(
-                                    HoverEvent.Action.SHOW_TEXT,
-                                    NbtHelper.toPrettyPrintedText(tag)
-                            )));
-                    final MutableText text = Text.literal("");
-                    text.append(nbt);
-                    text.append(Text.literal(" data copied!"));
-                    ChatUtils.infoChatMessage(text);
+                    keyboard().setClipboard(tag.toString());
+                    ChatUtils.infoChatMessage("NBT copied into the Clipboard.");
                 }
             }
             return singleSuccess;
         }));
         builder.then(literal("paste").executes(context -> {
-            final ClientPlayerEntity player = Feature.mc.player;
-            if (player != null) {
-                final ItemStack stack = player.getInventory().getMainHandStack();
+            if (player() != null) {
+                final ItemStack stack = player().getInventory().getMainHandStack();
                 if (this.validBasic(stack)) {
-                    stack.setNbt(new NbtCompoundArgumentType().parse(new StringReader(Feature.mc.keyboard.getClipboard())));
+                    stack.setNbt(new NbtCompoundArgumentType().parse(new StringReader(keyboard().getClipboard())));
                     this.setStack(stack);
                 }
             }
             return singleSuccess;
         }));
         builder.then(literal("count").then(argument("count", IntegerArgumentType.integer(-127, 127)).executes(context -> {
-            final ClientPlayerEntity player = Feature.mc.player;
-            if (player != null) {
-                final ItemStack stack = player.getInventory().getMainHandStack();
+            if (player() != null) {
+                final ItemStack stack = player().getInventory().getMainHandStack();
                 if (this.validBasic(stack)) {
                     final int count = IntegerArgumentType.getInteger(context, "count");
                     stack.setCount(count);
@@ -151,9 +144,8 @@ public class NBTCommand extends Command {
             return singleSuccess;
         })));
         builder.then(literal("gui").executes(context -> {
-            final ClientPlayerEntity player = Feature.mc.player;
-            if (player != null) {
-                final ItemStack stack = player.getInventory().getMainHandStack();
+            if (player() != null) {
+                final ItemStack stack = player().getInventory().getMainHandStack();
                 if (stack == null) {
                     ChatUtils.errorChatMessage("You must hold an item in your main hand.");
                 } else {
@@ -165,49 +157,43 @@ public class NBTCommand extends Command {
                         nbtEditWidget.getMainWindow().dragAndDrop(new File(stack.getName().getString()), stream.toByteArray());
                         nbtEditWidget.show();
                     } catch (final IOException io) {
-                        io.printStackTrace();
+                        Foxglove.getInstance().getLogger().error("Failed to open ImNbt Gui.", io);
                     }
                 }
             }
             return singleSuccess;
         }));
-        builder.then(
-                literal("displaynbt")
-                        .then(argument("nbt", NbtCompoundArgumentType.create())
-                                .executes(context -> {
-                                            try {
-                                                final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                                final DataOutputStream out = new DataOutputStream(stream);
-                                                final NbtCompound nbt = NbtCompoundArgumentType.get(context);
-                                                final String displayTitle;
-                                                if (nbt.contains(displayTitleNbtKey)) {
-                                                    displayTitle = nbt.getString(displayTitleNbtKey);
-                                                    nbt.remove(displayTitleNbtKey);
-                                                } else displayTitle = "NBT";
-                                                NbtIo.write(nbt, out);
-                                                final NBTEditWidget nbtEditWidget = Foxglove.getInstance().getImGuiHandler().getNbtEditWidget();
-                                                nbtEditWidget.getMainWindow().dragAndDrop(new File(displayTitle), stream.toByteArray());
-                                                nbtEditWidget.show();
-                                            } catch (final IOException io) {
-                                                io.printStackTrace();
-                                            }
-                                            return singleSuccess;
-                                        }
-                                )
-                        )
-        );
+        builder.then(literal("displaynbt").then(argument("nbt", NbtCompoundArgumentType.create())
+                .executes(context -> {
+                            try {
+                                final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                final DataOutputStream out = new DataOutputStream(stream);
+                                final NbtCompound nbt = NbtCompoundArgumentType.get(context);
+                                final String displayTitle;
+                                if (nbt.contains(DISPLAY_TITLE_NBT_KEY)) {
+                                    displayTitle = nbt.getString(DISPLAY_TITLE_NBT_KEY);
+                                    nbt.remove(DISPLAY_TITLE_NBT_KEY);
+                                } else displayTitle = "NBT";
+                                NbtIo.write(nbt, out);
+                                final NBTEditWidget nbtEditWidget = Foxglove.getInstance().getImGuiHandler().getNbtEditWidget();
+                                nbtEditWidget.getMainWindow().dragAndDrop(new File(displayTitle), stream.toByteArray());
+                                nbtEditWidget.show();
+                            } catch (final IOException io) {
+                                Foxglove.getInstance().getLogger().error("Failed to open ImNbt Gui.", io);
+                            }
+                            return singleSuccess;
+                        }
+                )));
     }
 
     private void setStack(final ItemStack stack) {
-        final ClientPlayerEntity player = Feature.mc.player;
-        if (player == null) return;
-        player.networkHandler.sendPacket(new CreativeInventoryActionC2SPacket(36 + player.getInventory().selectedSlot, stack));
+        if (player() == null) return;
+        networkHandler().sendPacket(new CreativeInventoryActionC2SPacket(36 + player().getInventory().selectedSlot, stack));
     }
 
     private boolean validBasic(final ItemStack stack) {
-        final ClientPlayerEntity player = Feature.mc.player;
-        if (player == null) return false;
-        if (!player.getAbilities().creativeMode) {
+        if (player() == null) return false;
+        if (!player().getAbilities().creativeMode) {
             ChatUtils.errorChatMessage("Creative mode only.");
             return false;
         }

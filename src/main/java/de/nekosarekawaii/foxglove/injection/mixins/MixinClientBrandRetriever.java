@@ -1,7 +1,7 @@
 package de.nekosarekawaii.foxglove.injection.mixins;
 
 import de.nekosarekawaii.foxglove.Foxglove;
-import de.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.BrandChangerModule;
+import de.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.ClientBrandChangerModule;
 import net.minecraft.client.ClientBrandRetriever;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,9 +20,9 @@ public abstract class MixinClientBrandRetriever {
     @Inject(method = "getClientModName", at = @At("RETURN"), cancellable = true, remap = false)
     private static void injectGetClientModName(CallbackInfoReturnable<String> cir) {
         if (Foxglove.getInstance() != null && Foxglove.getInstance().getModuleRegistry() != null) {
-            final BrandChangerModule brandChangerModule = Foxglove.getInstance().getModuleRegistry().getBrandChangerModule();
-            if (brandChangerModule.isEnabled()) {
-                cir.setReturnValue(brandChangerModule.brand.getValue());
+            final ClientBrandChangerModule clientBrandChangerModule = Foxglove.getInstance().getModuleRegistry().getClientBrandChanger();
+            if (clientBrandChangerModule.isEnabled()) {
+                cir.setReturnValue(clientBrandChangerModule.brand.getValue());
             }
         }
         cir.setReturnValue(VANILLA);

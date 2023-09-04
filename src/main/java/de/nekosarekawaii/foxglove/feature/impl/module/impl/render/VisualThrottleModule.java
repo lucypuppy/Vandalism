@@ -2,17 +2,14 @@ package de.nekosarekawaii.foxglove.feature.impl.module.impl.render;
 
 import de.nekosarekawaii.foxglove.feature.FeatureCategory;
 import de.nekosarekawaii.foxglove.feature.impl.module.Module;
-import de.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
 import de.nekosarekawaii.foxglove.util.ParticleTracker;
 import de.nekosarekawaii.foxglove.value.Value;
 import de.nekosarekawaii.foxglove.value.values.BooleanValue;
 import de.nekosarekawaii.foxglove.value.values.number.slider.SliderIntegerValue;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.particle.ParticleManager;
 
 import java.util.HashMap;
 
-@ModuleInfo(name = "Visual Throttle", description = "Fine-tunes your Game experience by controlling and optimizing specific aspects of in-game rendering.", category = FeatureCategory.RENDER)
 public class VisualThrottleModule extends Module {
 
     public final Value<Integer> minSodiumEntityAverageSideLength = new SliderIntegerValue(
@@ -40,12 +37,7 @@ public class VisualThrottleModule extends Module {
             10,
             2,
             1000
-    ).visibleConsumer(this.blockTooManyParticles::getValue).valueChangeConsumer((value) -> {
-        final ParticleManager particleManager = mc.particleManager;
-        if (particleManager != null) {
-            mc.particleManager.clearParticles();
-        }
-    });
+    ).visibleConsumer(this.blockTooManyParticles::getValue);
 
     public final Value<Integer> particleBlockingCountResetDelay = new SliderIntegerValue(
             "Particle blocking reset delay",
@@ -71,5 +63,15 @@ public class VisualThrottleModule extends Module {
             3,
             500
     ).visibleConsumer(this.modifyDisplayNameLength::getValue);
+
+    public VisualThrottleModule() {
+        super(
+                "Visual Throttle",
+                "Limits the game rendering to enhance performance or even prevent crashes.",
+                FeatureCategory.RENDER,
+                true,
+                true
+        );
+    }
 
 }

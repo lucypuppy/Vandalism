@@ -1,4 +1,4 @@
-package de.nekosarekawaii.foxglove.util.minecraft.inventory;
+package de.nekosarekawaii.foxglove.util.inventory;
 
 import net.minecraft.screen.ScreenHandlerType;
 

@@ -1,6 +1,6 @@
 package de.nekosarekawaii.foxglove.injection.mixins;
 
-import de.nekosarekawaii.foxglove.util.minecraft.inventory.tooltip.ITooltipData;
+import de.nekosarekawaii.foxglove.util.inventory.tooltip.ITooltipData;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.item.TooltipData;
 import org.spongepowered.asm.mixin.Mixin;

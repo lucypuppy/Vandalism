@@ -1,10 +1,8 @@
 package de.nekosarekawaii.foxglove.feature.impl.module;
 
-import net.minecraft.client.MinecraftClient;
+import de.nekosarekawaii.foxglove.util.MinecraftWrapper;
 
-public abstract class ModuleMode<T extends Module> {
-
-    protected final static MinecraftClient mc = MinecraftClient.getInstance();
+public abstract class ModuleMode<T extends Module> implements MinecraftWrapper {
 
     private final String name;
     private final T parent;

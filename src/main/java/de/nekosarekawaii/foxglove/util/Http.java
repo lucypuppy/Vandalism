@@ -2,7 +2,7 @@ package de.nekosarekawaii.foxglove.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import de.nekosarekawaii.foxglove.util.string.JsonDateDeserializer;
+import de.nekosarekawaii.foxglove.Foxglove;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -86,10 +86,10 @@ public class Http {
             if (method != null) builder.method(method.name(), HttpRequest.BodyPublishers.noBody());
 
             try {
-                var res = CLIENT.send(builder.build(), responseBodyHandler);
+                final HttpResponse<T> res = CLIENT.send(builder.build(), responseBodyHandler);
                 return res.statusCode() == 200 ? res.body() : null;
             } catch (final IOException | InterruptedException e) {
-                e.printStackTrace();
+                Foxglove.getInstance().getLogger().error("Failed to send http post.", e);
                 return null;
             }
         }

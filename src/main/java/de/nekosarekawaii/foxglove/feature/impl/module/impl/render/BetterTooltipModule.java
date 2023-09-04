@@ -4,8 +4,7 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.foxglove.event.TooltipListener;
 import de.nekosarekawaii.foxglove.feature.FeatureCategory;
 import de.nekosarekawaii.foxglove.feature.impl.module.Module;
-import de.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
-import de.nekosarekawaii.foxglove.util.minecraft.inventory.tooltip.*;
+import de.nekosarekawaii.foxglove.util.inventory.tooltip.*;
 import de.nekosarekawaii.foxglove.util.render.ColorUtils;
 import net.minecraft.block.entity.BannerPattern;
 import net.minecraft.block.entity.BannerPatterns;
@@ -25,8 +24,17 @@ import net.minecraft.util.collection.DefaultedList;
 import java.util.List;
 import java.util.Optional;
 
-@ModuleInfo(name = "Better Tooltip", description = "A module which improves the tooltip rendering.", category = FeatureCategory.RENDER)
 public class BetterTooltipModule extends Module implements TooltipListener {
+
+    public BetterTooltipModule() {
+        super(
+                "Better Tooltip",
+                "Improves item tooltips from the game.",
+                FeatureCategory.RENDER,
+                false,
+                false
+        );
+    }
 
     @Override
     protected void onEnable() {
@@ -65,24 +73,29 @@ public class BetterTooltipModule extends Module implements TooltipListener {
             tooltipData.add(new BannerTooltipComponent(itemStack));
         } else if (item == Items.FILLED_MAP) {
             final Integer mapId = FilledMapItem.getMapId(itemStack);
-
-            if (mapId != null)
+            if (mapId != null) {
                 tooltipData.add(new MapTooltipComponent(mapId));
+            }
         } else {
             final NbtCompound compoundTag = itemStack.getSubNbt("BlockEntityTag");
 
-            if (compoundTag == null || !compoundTag.contains("Items", 9))
+            if (compoundTag == null || !compoundTag.contains("Items", 9)) {
                 return;
+            }
 
             float[] color = new float[]{1f, 1f, 1f};
-            if (itemId.endsWith("shulker_box"))
+            if (itemId.endsWith("shulker_box")) {
                 color = ColorUtils.getShulkerColor(itemStack);
+            }
 
             final DefaultedList<ItemStack> itemStacks = DefaultedList.ofSize(27, ItemStack.EMPTY);
             Inventories.readNbt(compoundTag, itemStacks);
 
-            tooltipData.add(new TextTooltipComponent(Text.literal("(Press alt + middle click to open inventory)")
-                    .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY)).asOrderedText()));
+            tooltipData.add(new TextTooltipComponent(
+                    Text.literal("(Press alt + middle click to open inventory)")
+                            .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
+                            .asOrderedText())
+            );
             tooltipData.add(new ContainerTooltipComponent(itemStacks, ColorUtils.withAlpha(color, 1f)));
         }
     }

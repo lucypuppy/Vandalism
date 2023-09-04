@@ -4,6 +4,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.foxglove.Foxglove;
 import de.nekosarekawaii.foxglove.event.RenderListener;
+import de.nekosarekawaii.foxglove.feature.impl.command.CommandRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.MessageScreen;
@@ -32,13 +33,13 @@ public abstract class MixinScreen {
         final ClickEvent clickEvent = style.getClickEvent();
         if (clickEvent != null) {
             if (clickEvent.getAction() == ClickEvent.Action.RUN_COMMAND) {
-                final String value = clickEvent.getValue(), secret = Foxglove.getInstance().getCommandRegistry().getCommandSecret();
+                final String value = clickEvent.getValue(), secret = CommandRegistry.COMMAND_SECRET;
                 if (value.startsWith(secret)) {
                     try {
                         Foxglove.getInstance().getCommandRegistry().commandDispatch(value.replaceFirst(secret, ""));
                         cir.setReturnValue(true);
                     } catch (final CommandSyntaxException e) {
-                        e.printStackTrace();
+                        Foxglove.getInstance().getLogger().error("Failed to run command.", e);
                     }
                 }
             }
@@ -47,7 +48,7 @@ public abstract class MixinScreen {
 
     @Inject(method = "renderBackgroundTexture", at = @At(value = "HEAD"), cancellable = true)
     private void injectRenderBackgroundTexture(final DrawContext context, final CallbackInfo ci) {
-        if (this.client != null && this.client.player != null && this.client.world != null && !(this.client.currentScreen instanceof MessageScreen) && !(this.client.currentScreen instanceof TelemetryInfoScreen) && !(this.client.currentScreen instanceof PackScreen)) {
+        if (client != null && client.player != null && client.world != null && !(client.currentScreen instanceof MessageScreen) && !(client.currentScreen instanceof TelemetryInfoScreen) && !(client.currentScreen instanceof PackScreen)) {
             ci.cancel();
         }
     }

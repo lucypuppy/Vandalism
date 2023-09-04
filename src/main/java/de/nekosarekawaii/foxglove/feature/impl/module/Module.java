@@ -3,9 +3,10 @@ package de.nekosarekawaii.foxglove.feature.impl.module;
 import de.nekosarekawaii.foxglove.Foxglove;
 import de.nekosarekawaii.foxglove.config.Config;
 import de.nekosarekawaii.foxglove.feature.Feature;
+import de.nekosarekawaii.foxglove.feature.FeatureCategory;
 import de.nekosarekawaii.foxglove.feature.FeatureType;
 import de.nekosarekawaii.foxglove.feature.impl.module.impl.render.HeadUpDisplayModule;
-import de.nekosarekawaii.foxglove.util.minecraft.ChatUtils;
+import de.nekosarekawaii.foxglove.util.ChatUtils;
 import de.nekosarekawaii.foxglove.value.IValue;
 import de.nekosarekawaii.foxglove.value.Value;
 import de.nekosarekawaii.foxglove.value.ValueCategory;
@@ -20,14 +21,13 @@ public abstract class Module extends Feature implements IValue {
 
     private final List<Value<?>> values;
 
-    public Module() {
-        final ModuleInfo moduleInfo = this.getClass().getAnnotation(ModuleInfo.class);
-        this.setName(moduleInfo.name());
-        this.setDescription(moduleInfo.description());
+    public Module(final String name, final String description, final FeatureCategory category, final boolean isExperimental, final boolean isDefaultEnabled) {
+        this.setName(name);
+        this.setDescription(description);
         this.setType(FeatureType.MODULE);
-        this.setCategory(moduleInfo.category());
-        this.setExperimental(moduleInfo.isExperimental());
-        this.setState(moduleInfo.isDefaultEnabled() && Foxglove.getInstance().isFirstStart());
+        this.setCategory(category);
+        this.setExperimental(isExperimental);
+        this.setState(isDefaultEnabled);
         this.showInModuleList = !(this instanceof HeadUpDisplayModule);
         this.values = new ArrayList<>();
     }
@@ -72,9 +72,7 @@ public abstract class Module extends Feature implements IValue {
     }
 
     private void recursiveModeEnable(final boolean state, final List<Value<?>> values) {
-        if (values == null)
-            return;
-
+        if (values == null) return;
         for (final Value<?> value : values) {
             if (value instanceof final ValueCategory valueCategory) {
                 recursiveModeEnable(state, valueCategory.getValues());

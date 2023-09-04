@@ -1,5 +1,6 @@
 package de.nekosarekawaii.foxglove.util;
 
+import de.nekosarekawaii.foxglove.Foxglove;
 import net.minecraft.client.MinecraftClient;
 
 import java.util.concurrent.Executors;
@@ -12,7 +13,7 @@ public class RunnableScheduleUtils {
                 Thread.sleep(delay);
                 runnable.run();
             } catch (final InterruptedException e) {
-                e.printStackTrace();
+                Foxglove.getInstance().getLogger().error("Failed to schedule runnable thread.", e);
             }
         });
     }
@@ -23,7 +24,7 @@ public class RunnableScheduleUtils {
                 Thread.sleep(delay);
                 MinecraftClient.getInstance().execute(runnable);
             } catch (final InterruptedException e) {
-                e.printStackTrace();
+                Foxglove.getInstance().getLogger().error("Failed to schedule runnable into minecraft thread.", e);
             }
         });
     }

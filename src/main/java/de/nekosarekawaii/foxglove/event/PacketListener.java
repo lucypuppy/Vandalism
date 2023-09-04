@@ -6,36 +6,21 @@ import net.minecraft.network.packet.Packet;
 public interface PacketListener {
 
 
-    default void onPacketRead(final PacketEvent event) {
-    }
-
-    default void onPacketWrite(final PacketEvent event) {
-    }
-
-    enum PacketEventType {
-        READ, WRITE
-    }
+    void onPacket(final PacketEvent event);
 
     class PacketEvent extends CancellableEvent<PacketListener> {
 
         public final static int ID = 2;
 
-        private final PacketEventType type;
-
         public Packet<?> packet;
 
-        public PacketEvent(final PacketEventType type, final Packet<?> packet) {
-            this.type = type;
+        public PacketEvent(final Packet<?> packet) {
             this.packet = packet;
         }
 
         @Override
         public void call(final PacketListener listener) {
-            if (this.type == PacketEventType.READ) {
-                listener.onPacketRead(this);
-            } else {
-                listener.onPacketWrite(this);
-            }
+            listener.onPacket(this);
         }
 
     }

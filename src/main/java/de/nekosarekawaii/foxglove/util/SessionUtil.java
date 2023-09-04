@@ -1,9 +1,10 @@
-package de.nekosarekawaii.foxglove.util.minecraft;
+package de.nekosarekawaii.foxglove.util;
 
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.UserApiService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
+import de.nekosarekawaii.foxglove.Foxglove;
 import de.nekosarekawaii.foxglove.injection.accessors.AccessorRealmsMainScreen;
 import de.nekosarekawaii.foxglove.injection.accessors.AccessorYggdrasilAuthenticationService;
 import net.minecraft.client.MinecraftClient;
@@ -19,32 +20,30 @@ import java.util.UUID;
 
 public class SessionUtil {
 
-    private final static MinecraftClient client = MinecraftClient.getInstance();
-
     public static void setSession(final Session session) {
         // Set sessions
-        client.session = session;
-        client.getSplashTextLoader().session = session;
+        MinecraftClient.getInstance().session = session;
+        MinecraftClient.getInstance().getSplashTextLoader().session = session;
 
         // Refresh the session properties
-        client.getSessionProperties().clear();
-        client.getSessionProperties();
+        MinecraftClient.getInstance().getSessionProperties().clear();
+        MinecraftClient.getInstance().getSessionProperties();
 
         // Refresh userapi stuff
         final UserApiService userApiService = getUserapiService(session);
-        client.userApiService = userApiService;
-        client.socialInteractionsManager = new SocialInteractionsManager(client, userApiService);
-        client.profileKeys = ProfileKeys.create(userApiService, session, client.runDirectory.toPath());
+        MinecraftClient.getInstance().userApiService = userApiService;
+        MinecraftClient.getInstance().socialInteractionsManager = new SocialInteractionsManager(MinecraftClient.getInstance(), userApiService);
+        MinecraftClient.getInstance().profileKeys = ProfileKeys.create(userApiService, session, MinecraftClient.getInstance().runDirectory.toPath());
 
-        if (client.abuseReportContext == null) {
-            client.abuseReportContext = AbuseReportContext.create(ReporterEnvironment.ofIntegratedServer(), userApiService);
+        if (MinecraftClient.getInstance().abuseReportContext == null) {
+            MinecraftClient.getInstance().abuseReportContext = AbuseReportContext.create(ReporterEnvironment.ofIntegratedServer(), userApiService);
         } else {
-            client.abuseReportContext = AbuseReportContext.create(client.abuseReportContext.environment, userApiService);
+            MinecraftClient.getInstance().abuseReportContext = AbuseReportContext.create(MinecraftClient.getInstance().abuseReportContext.environment, userApiService);
         }
 
         // No one uses them but i will add them anyway
-        final RealmsClient realmsClient = RealmsClient.createRealmsClient(client);
-        client.realmsPeriodicCheckers = new RealmsPeriodicCheckers(realmsClient);
+        final RealmsClient realmsClient = RealmsClient.createRealmsClient(MinecraftClient.getInstance());
+        MinecraftClient.getInstance().realmsPeriodicCheckers = new RealmsPeriodicCheckers(realmsClient);
         AccessorRealmsMainScreen.setCheckedClientCompatibility(false);
         AccessorRealmsMainScreen.setRealmsGenericErrorScreen(null);
     }
@@ -56,7 +55,7 @@ public class SessionUtil {
             try {
                 userApiService = getAuthService().createUserApiService(session.getAccessToken());
             } catch (final AuthenticationException e) {
-                e.printStackTrace();
+                Foxglove.getInstance().getLogger().error("Failed account authentication.", e);
             }
         }
 
@@ -64,8 +63,7 @@ public class SessionUtil {
     }
 
     private static YggdrasilAuthenticationService getAuthService() {
-        final YggdrasilAuthenticationService authService = ((YggdrasilMinecraftSessionService) MinecraftClient.getInstance()
-                .getSessionService()).getAuthenticationService();
+        final YggdrasilAuthenticationService authService = ((YggdrasilMinecraftSessionService) MinecraftClient.getInstance().getSessionService()).getAuthenticationService();
 
         if (((AccessorYggdrasilAuthenticationService) authService).getClientToken() == null) {
             ((AccessorYggdrasilAuthenticationService) authService).setClientToken(UUID.randomUUID().toString());

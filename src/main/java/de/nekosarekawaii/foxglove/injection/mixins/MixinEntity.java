@@ -5,8 +5,8 @@ import de.nekosarekawaii.foxglove.Foxglove;
 import de.nekosarekawaii.foxglove.event.EntityListener;
 import de.nekosarekawaii.foxglove.event.FluidListener;
 import de.nekosarekawaii.foxglove.event.StepListener;
+import de.nekosarekawaii.foxglove.util.MinecraftWrapper;
 import de.nekosarekawaii.foxglove.util.rotation.rotationtypes.Rotation;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.registry.tag.TagKey;
@@ -14,11 +14,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 
 @Mixin(Entity.class)
-public abstract class MixinEntity {
+public abstract class MixinEntity implements MinecraftWrapper {
 
     @Redirect(method = "updateWaterState", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;updateMovementInFluid(Lnet/minecraft/registry/tag/TagKey;D)Z"))
     private boolean redirectUpdateWaterState(final Entity instance, final TagKey<Fluid> tag, final double speed) {
-        if (MinecraftClient.getInstance().player == ((Entity) (Object) this)) {
+        if (player() == ((Entity) (Object) this)) {
             final FluidListener.FluidPushEvent fluidPushEvent = new FluidListener.FluidPushEvent(speed);
             DietrichEvents2.global().postInternal(FluidListener.FluidPushEvent.ID, fluidPushEvent);
             if (fluidPushEvent.isCancelled()) return false;
@@ -29,7 +29,7 @@ public abstract class MixinEntity {
 
     @Redirect(method = "checkWaterState", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;updateMovementInFluid(Lnet/minecraft/registry/tag/TagKey;D)Z"))
     private boolean redirectCheckWaterState(final Entity instance, final TagKey<Fluid> tag, final double speed) {
-        if (MinecraftClient.getInstance().player == ((Entity) (Object) this)) {
+        if (player() == ((Entity) (Object) this)) {
             final FluidListener.FluidPushEvent fluidPushEvent = new FluidListener.FluidPushEvent(speed);
             DietrichEvents2.global().postInternal(FluidListener.FluidPushEvent.ID, fluidPushEvent);
             if (fluidPushEvent.isCancelled()) return false;
@@ -40,7 +40,7 @@ public abstract class MixinEntity {
 
     @ModifyConstant(constant = @Constant(doubleValue = 0.05000000074505806), method = "pushAwayFrom")
     private double modifyPushVelocity(final double constant) {
-        if (MinecraftClient.getInstance().player == ((Entity) (Object) this)) {
+        if (player() == ((Entity) (Object) this)) {
             final EntityListener.EntityPushEvent entityPushEvent = new EntityListener.EntityPushEvent(constant);
             DietrichEvents2.global().postInternal(EntityListener.EntityPushEvent.ID, entityPushEvent);
             if (entityPushEvent.isCancelled()) return 0;
@@ -51,32 +51,29 @@ public abstract class MixinEntity {
 
     @Redirect(method = "adjustMovementForCollisions(Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/Vec3d;", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getStepHeight()F"))
     private float injectAdjustMovementForCollisions(final Entity entity) {
-        if (MinecraftClient.getInstance().player == ((Entity) (Object) this)) {
+        if (player() == ((Entity) (Object) this)) {
             final StepListener.StepEvent stepEvent = new StepListener.StepEvent(entity.getStepHeight());
             DietrichEvents2.global().postInternal(StepListener.StepEvent.ID, stepEvent);
             return stepEvent.stepHeight;
         }
-
         return entity.getStepHeight();
     }
 
     @ModifyVariable(method = "getRotationVector(FF)Lnet/minecraft/util/math/Vec3d;", at = @At("HEAD"), ordinal = 1, argsOnly = true)
     private float modifyYaw(final float yaw) {
-        if (MinecraftClient.getInstance().player == (Object) this) {
+        if (player() == (Object) this) {
             final Rotation rotation = Foxglove.getInstance().getRotationListener().getRotation();
             if (rotation != null) return rotation.getYaw();
         }
-
         return yaw;
     }
 
     @ModifyVariable(method = "getRotationVector(FF)Lnet/minecraft/util/math/Vec3d;", at = @At("HEAD"), ordinal = 0, argsOnly = true)
     private float modifyPitch(final float pitch) {
-        if (MinecraftClient.getInstance().player == (Object) this) {
+        if (player() == (Object) this) {
             final Rotation rotation = Foxglove.getInstance().getRotationListener().getRotation();
             if (rotation != null) return rotation.getPitch();
         }
-
         return pitch;
     }
 

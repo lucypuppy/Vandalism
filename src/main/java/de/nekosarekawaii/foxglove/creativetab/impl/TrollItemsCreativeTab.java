@@ -1,6 +1,7 @@
 package de.nekosarekawaii.foxglove.creativetab.impl;
 
 import de.nekosarekawaii.foxglove.creativetab.CreativeTab;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -14,14 +15,17 @@ import java.util.Collection;
 public class TrollItemsCreativeTab extends CreativeTab {
 
     public TrollItemsCreativeTab() {
-        super(new ItemStack(Items.END_CRYSTAL).setCustomName(Text.literal("Troll Items")));
+        super(
+                Text.literal("Troll Items"),
+                new ItemStack(Items.END_CRYSTAL)
+        );
     }
 
     @Override
     public Collection<ItemStack> entries() {
         final Collection<ItemStack> current = super.entries();
 
-        for (var item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
+        for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
             current.add(createItem(createKillPotion(new ItemStack(item)), Text.literal(Formatting.RED + "Kill Potion")));
         }
         current.add(createItem(createKillArea(), Text.literal(Formatting.RED + "Kill Area"), "EnZaXD"));
@@ -35,10 +39,10 @@ public class TrollItemsCreativeTab extends CreativeTab {
     }
 
     private ItemStack createShyDevVibing() {
-        final var item = new ItemStack(Items.DONKEY_SPAWN_EGG);
-        final var base = new NbtCompound();
+        final ItemStack item = new ItemStack(Items.DONKEY_SPAWN_EGG);
+        final NbtCompound base = new NbtCompound();
 
-        final var entityTag = new NbtCompound();
+        final NbtCompound entityTag = new NbtCompound();
 
         entityTag.putInt("TreasurePosX", 0);
         entityTag.putInt("TreasurePosY", 0);
@@ -58,10 +62,10 @@ public class TrollItemsCreativeTab extends CreativeTab {
     }
 
     private ItemStack createStargazer() {
-        final var item = new ItemStack(Items.COW_SPAWN_EGG);
-        final var base = new NbtCompound();
+        final ItemStack item = new ItemStack(Items.COW_SPAWN_EGG);
+        final NbtCompound base = new NbtCompound();
 
-        final var entityTag = new NbtCompound();
+        final NbtCompound entityTag = new NbtCompound();
 
         entityTag.putInt("Steps", Integer.MIN_VALUE);
         entityTag.putString("id", "minecraft:shulker_bullet");
@@ -76,11 +80,11 @@ public class TrollItemsCreativeTab extends CreativeTab {
     }
 
     private ItemStack createKillPotion(final ItemStack origin) {
-        final var base = new NbtCompound();
+        final NbtCompound base = new NbtCompound();
 
-        final var customPotionEffects = new NbtList();
+        final NbtList customPotionEffects = new NbtList();
 
-        final var customPotionEffect = new NbtCompound();
+        final NbtCompound customPotionEffect = new NbtCompound();
         customPotionEffect.putByte("Amplifier", (byte) 125);
         customPotionEffect.putInt("Duration", 2000);
         customPotionEffect.putInt("Id", 6);
@@ -94,13 +98,13 @@ public class TrollItemsCreativeTab extends CreativeTab {
     }
 
     private ItemStack createKillArea() {
-        final var item = new ItemStack(Items.SALMON_SPAWN_EGG);
-        final var base = new NbtCompound();
+        final ItemStack item = new ItemStack(Items.SALMON_SPAWN_EGG);
+        final NbtCompound base = new NbtCompound();
 
-        final var entityTag = new NbtCompound();
-        final var effects = new NbtList();
+        final NbtCompound entityTag = new NbtCompound();
+        final NbtList effects = new NbtList();
 
-        final var firstEffect = new NbtCompound();
+        final NbtCompound firstEffect = new NbtCompound();
         firstEffect.putInt("Id", 6);
         firstEffect.putByte("ShowParticles", (byte) 0);
         firstEffect.putInt("Duration", 20);
@@ -124,10 +128,10 @@ public class TrollItemsCreativeTab extends CreativeTab {
     }
 
     private ItemStack createWhiteHole() {
-        final var item = new ItemStack(Items.PANDA_SPAWN_EGG);
-        final var base = new NbtCompound();
+        final ItemStack item = new ItemStack(Items.PANDA_SPAWN_EGG);
+        final NbtCompound base = new NbtCompound();
 
-        final var entityTag = new NbtCompound();
+        final NbtCompound entityTag = new NbtCompound();
         entityTag.putFloat("RadiusOnUse", 0.1f);
         entityTag.putFloat("RadiusPerTick", 0.01f);
         entityTag.putInt("Duration", 20000);
@@ -143,10 +147,10 @@ public class TrollItemsCreativeTab extends CreativeTab {
     }
 
     private ItemStack createBlackHole() {
-        final var item = new ItemStack(Items.BAT_SPAWN_EGG);
-        final var base = new NbtCompound();
+        final ItemStack item = new ItemStack(Items.BAT_SPAWN_EGG);
+        final NbtCompound base = new NbtCompound();
 
-        final var entityTag = new NbtCompound();
+        final NbtCompound entityTag = new NbtCompound();
         entityTag.putByte("shadow", (byte) 1);
         entityTag.putFloat("shadow_strength", 10000000f);
         entityTag.putFloat("shadow_radius", 10000000f);
@@ -160,11 +164,11 @@ public class TrollItemsCreativeTab extends CreativeTab {
     }
 
     private ItemStack createEventHorizonArea() {
-        final var item = new ItemStack(Items.BAT_SPAWN_EGG);
-        final var base = new NbtCompound();
+        final ItemStack item = new ItemStack(Items.BAT_SPAWN_EGG);
+        final NbtCompound base = new NbtCompound();
 
-        final var entityTag = new NbtCompound();
-        final var effects = new NbtList();
+        final NbtCompound entityTag = new NbtCompound();
+        final NbtList effects = new NbtList();
 
         effects.add(createEffect(2, 170, 125, false));
         effects.add(createEffect(4, 150, 125, false));

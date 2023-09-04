@@ -5,13 +5,11 @@ import de.nekosarekawaii.foxglove.event.EntityListener;
 import de.nekosarekawaii.foxglove.event.FluidListener;
 import de.nekosarekawaii.foxglove.feature.FeatureCategory;
 import de.nekosarekawaii.foxglove.feature.impl.module.Module;
-import de.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
 import de.nekosarekawaii.foxglove.value.Value;
 import de.nekosarekawaii.foxglove.value.values.BooleanValue;
 import de.nekosarekawaii.foxglove.value.values.number.slider.SliderDoubleValue;
 
-@ModuleInfo(name = "Custom Push Velocity", description = "Allows you to customize the entity/block and liquid push velocity which applies to you.", category = FeatureCategory.MOVEMENT)
-public class CustomVelocityModule extends Module implements EntityListener, FluidListener {
+public class PushVelocityModule extends Module implements EntityListener, FluidListener {
 
     private final Value<Boolean> modifyEntityPush = new BooleanValue(
             "Modify Entity Push",
@@ -44,6 +42,16 @@ public class CustomVelocityModule extends Module implements EntityListener, Flui
             -2.0d,
             2.0d
     ).visibleConsumer(this.modifyFluidPush::getValue);
+
+    public PushVelocityModule() {
+        super(
+                "Push Velocity",
+                "Modifies the entity and the fluid push velocity you take.",
+                FeatureCategory.MOVEMENT,
+                false,
+                false
+        );
+    }
 
     @Override
     protected void onEnable() {

@@ -25,8 +25,8 @@ public class ColorValue extends Value<Color> {
 
     @Override
     public void render() {
-        final var rgb = this.getValue().getRGB();
-        final var colorArray = new float[] {
+        final int rgb = this.getValue().getRGB();
+        final float[] colorArray = new float[]{
                 ((rgb >> 16) & 0xff) / 255F,
                 ((rgb >> 8) & 0xff) / 255F,
                 ((rgb) & 0xff) / 255F,

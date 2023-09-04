@@ -2,20 +2,30 @@ package de.nekosarekawaii.foxglove.feature.impl.command.impl.misc;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import de.nekosarekawaii.foxglove.feature.Feature;
 import de.nekosarekawaii.foxglove.feature.FeatureCategory;
 import de.nekosarekawaii.foxglove.feature.impl.command.Command;
-import de.nekosarekawaii.foxglove.feature.impl.command.CommandInfo;
-import de.nekosarekawaii.foxglove.util.minecraft.ChatUtils;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.ClientPlayerEntity;
+import de.nekosarekawaii.foxglove.util.ChatUtils;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 
-@CommandInfo(name = "Give", description = "Gives you any item.", aliases = {"give", "giveitem", "item", "i"}, category = FeatureCategory.MISC)
 public class GiveCommand extends Command {
+
+    public GiveCommand() {
+        super(
+                "Give",
+                "Gives you items when you are in creative mode.",
+                FeatureCategory.MISC,
+                false,
+                "give",
+                "giveitem",
+                "itemgive",
+                "getitem",
+                "itemget",
+                "i"
+        );
+    }
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
@@ -28,7 +38,9 @@ public class GiveCommand extends Command {
             return singleSuccess;
         }).then(argument("number", IntegerArgumentType.integer()).executes(context -> {
             try {
-                this.giveItem(ItemStackArgumentType.getItemStackArgument(context, "item").createStack(IntegerArgumentType.getInteger(context, "number"), false));
+                this.giveItem(ItemStackArgumentType.getItemStackArgument(context, "item").createStack(
+                        IntegerArgumentType.getInteger(context, "number"), false)
+                );
             } catch (final Throwable throwable) {
                 ChatUtils.errorChatMessage("Failed to give item cause of: " + throwable);
             }
@@ -37,16 +49,11 @@ public class GiveCommand extends Command {
     }
 
     private void giveItem(final ItemStack item) throws Throwable {
-        final ClientPlayerEntity player = Feature.mc.player;
-        final ClientPlayNetworkHandler handler = Feature.mc.getNetworkHandler();
-
-        if (player != null && handler != null) {
-            if (!player.getAbilities().creativeMode) throw notInCreativeMode.create();
-
-            final int emptySlot = player.getInventory().getEmptySlot();
+        if (player() != null && networkHandler() != null) {
+            if (!player().getAbilities().creativeMode) throw notInCreativeMode.create();
+            final int emptySlot = player().getInventory().getEmptySlot();
             if (emptySlot == -1 || emptySlot > 8) throw notSpaceInHotBar.create();
-
-            handler.sendPacket(new CreativeInventoryActionC2SPacket(36 + emptySlot, item));
+            networkHandler().sendPacket(new CreativeInventoryActionC2SPacket(36 + emptySlot, item));
         }
     }
 

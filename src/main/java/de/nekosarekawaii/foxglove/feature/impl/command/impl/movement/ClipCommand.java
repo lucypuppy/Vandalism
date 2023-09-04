@@ -4,25 +4,34 @@ import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.foxglove.feature.FeatureCategory;
 import de.nekosarekawaii.foxglove.feature.impl.command.Command;
-import de.nekosarekawaii.foxglove.feature.impl.command.CommandInfo;
-import de.nekosarekawaii.foxglove.util.minecraft.player.MovementUtil;
+import de.nekosarekawaii.foxglove.util.MovementUtil;
 import net.minecraft.command.CommandSource;
 
-@CommandInfo(name = "Clip", aliases = {"clip"}, description = "This command allows the player to clip to relative positions.", category = FeatureCategory.MOVEMENT)
 public class ClipCommand extends Command {
+
+    public ClipCommand() {
+        super(
+                "Clip",
+                "Allows you to teleport yourself by vertical and horizontal offset.",
+                FeatureCategory.MOVEMENT,
+                false,
+                "clip",
+                "tp",
+                "teleport"
+        );
+    }
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
-        builder.then(argument("vertical", DoubleArgumentType.doubleArg(-10.0, 10.0))
-                .then(argument("horizontal", DoubleArgumentType.doubleArg(-10.0, 10.0))
+        builder.then(argument("vertical-offset", DoubleArgumentType.doubleArg(-10.0, 10.0))
+                .then(argument("horizontal-offset", DoubleArgumentType.doubleArg(-10.0, 10.0))
                         .executes(context -> {
-                                    final var player = mc.player;
-
-                                    if (player != null) {
-                                        MovementUtil.clip(context.getArgument("vertical", Double.class),
-                                                context.getArgument("horizontal", Double.class));
+                            if (player() != null) {
+                                MovementUtil.clip(
+                                        context.getArgument("vertical-offset", Double.class),
+                                        context.getArgument("horizontal-offset", Double.class)
+                                );
                                     }
-
                                     return singleSuccess;
                                 }
                         )

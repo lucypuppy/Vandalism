@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import de.nekosarekawaii.foxglove.Foxglove;
 import de.nekosarekawaii.foxglove.config.impl.alt.alttype.Account;
 import de.nekosarekawaii.foxglove.util.AES;
-import de.nekosarekawaii.foxglove.util.minecraft.SessionUtil;
+import de.nekosarekawaii.foxglove.util.SessionUtil;
 import fr.litarvan.openauth.microsoft.MicrosoftAuthResult;
 import fr.litarvan.openauth.microsoft.MicrosoftAuthenticator;
 import net.minecraft.client.util.Session;
@@ -40,7 +40,7 @@ public class MicrosoftAccount extends Account {
             SessionUtil.setSession(new Session(this.getUsername(), this.getUuid(), result.getAccessToken(),
                     Optional.empty(), Optional.empty(), Session.AccountType.MSA));
         } catch (final Throwable throwable) {
-            throwable.printStackTrace();
+            Foxglove.getInstance().getLogger().error("Failed to log into a microsoft account.", throwable);
             return;
         }
 
@@ -58,4 +58,5 @@ public class MicrosoftAccount extends Account {
             throw new RuntimeException(e);
         }
     }
+
 }

@@ -29,13 +29,13 @@ public abstract class MixinMinecraftClient {
     @Shadow @Nullable public ClientPlayerEntity player;
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;onResolutionChanged()V"))
-    private void injectInit(final CallbackInfo callbackInfo) {
-        Foxglove.getInstance().start();
+    private void injectInit(final CallbackInfo ci) {
+        Foxglove.getInstance().start((MinecraftClient) (Object) this);
     }
 
-    @Inject(method = "getWindowTitle", at = @At("RETURN"), cancellable = true)
-    private void injectWindowTitle(final CallbackInfoReturnable<String> callbackInfo) {
-        callbackInfo.setReturnValue(Foxglove.getInstance().getWindowTitle());
+    @Inject(method = "updateWindowTitle", at = @At("HEAD"), cancellable = true)
+    private void injectUpdateWindowTitle(final CallbackInfo ci) {
+        ci.cancel();
     }
 
     @Inject(method = "tick", at = @At(value = "HEAD"))

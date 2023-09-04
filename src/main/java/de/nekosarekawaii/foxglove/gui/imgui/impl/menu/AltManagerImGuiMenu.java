@@ -13,7 +13,6 @@ import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Session;
 import net.minecraft.util.Uuids;
 
@@ -40,8 +39,8 @@ public class AltManagerImGuiMenu extends ImGuiMenu {
         this.authenticator = new MicrosoftAuthenticator();
     }
 
-    private static void renderCurrentAccount() {
-        final Session session = MinecraftClient.getInstance().getSession();
+    private void renderCurrentAccount() {
+        final Session session = mc().session;
         ImGui.text("Current Account");
         if (ImGui.beginListBox("##currentAccountData", 340, 65)) {
             ImGui.text("Username: " + session.getUsername());

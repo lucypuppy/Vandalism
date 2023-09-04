@@ -36,4 +36,9 @@ public abstract class MixinItemGroup {
         }
     }
 
+    @Inject(method = "shouldDisplay", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemGroup;hasStacks()Z"), cancellable = true)
+    private void injectShouldDisplay(final CallbackInfoReturnable<Boolean> cir) {
+        cir.setReturnValue(true);
+    }
+
 }

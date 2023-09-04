@@ -1,10 +1,8 @@
 package de.nekosarekawaii.foxglove.gui.imgui;
 
-import net.minecraft.client.MinecraftClient;
+import de.nekosarekawaii.foxglove.util.MinecraftWrapper;
 
-public abstract class ImGuiMenu {
-
-    protected final static MinecraftClient mc = MinecraftClient.getInstance();
+public abstract class ImGuiMenu implements MinecraftWrapper {
 
     private final String name;
 

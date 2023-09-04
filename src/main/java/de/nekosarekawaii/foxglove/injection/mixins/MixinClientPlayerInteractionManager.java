@@ -11,9 +11,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinClientPlayerInteractionManager {
 
     @Inject(method = "hasLimitedAttackSpeed", at = @At("HEAD"), cancellable = true)
-    public void injectHasLimitedAttackSpeed(CallbackInfoReturnable<Boolean> cir) {
+    public void injectHasLimitedAttackSpeed(final CallbackInfoReturnable<Boolean> cir) {
         if (Foxglove.getInstance().getConfigManager().getMainConfig().eliminateHitDelay.getValue()) {
             cir.setReturnValue(false);
         }
     }
+
 }

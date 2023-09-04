@@ -1,7 +1,7 @@
 package de.nekosarekawaii.foxglove.injection.mixins;
 
-import de.nekosarekawaii.foxglove.FabricBridge;
 import de.nekosarekawaii.foxglove.Foxglove;
+import de.nekosarekawaii.foxglove.feature.impl.module.ModuleRegistry;
 import de.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.ExploitFixerModule;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,11 +25,15 @@ public abstract class MixinIdentifier {
 
     @Inject(method = "validateNamespace", at = @At("HEAD"), cancellable = true)
     private static void injectValidateNamespace(final String namespace, final String path, final CallbackInfoReturnable<String> cir) {
-        if (FabricBridge.modInitialized) {
-            final ExploitFixerModule exploitFixerModule = Foxglove.getInstance().getModuleRegistry().getExploitFixerModule();
-            if (exploitFixerModule != null && exploitFixerModule.isEnabled() && exploitFixerModule.blockInvalidIdentifierCrash.getValue()) {
-                if (!isNamespaceValid(namespace)) {
-                    cir.setReturnValue("invalid");
+        final Foxglove foxglove = Foxglove.getInstance();
+        if (foxglove != null) {
+            final ModuleRegistry moduleRegistry = foxglove.getModuleRegistry();
+            if (moduleRegistry != null && moduleRegistry.isDone()) {
+                final ExploitFixerModule exploitFixerModule = moduleRegistry.getExploitFixerModule();
+                if (exploitFixerModule != null && exploitFixerModule.isEnabled() && exploitFixerModule.blockInvalidIdentifierCrash.getValue()) {
+                    if (!isNamespaceValid(namespace)) {
+                        cir.setReturnValue("invalid");
+                    }
                 }
             }
         }
@@ -37,11 +41,15 @@ public abstract class MixinIdentifier {
 
     @Inject(method = "validatePath", at = @At("HEAD"), cancellable = true)
     private static void injectValidatePath(final String namespace, final String path, final CallbackInfoReturnable<String> cir) {
-        if (FabricBridge.modInitialized) {
-            final ExploitFixerModule exploitFixerModule = Foxglove.getInstance().getModuleRegistry().getExploitFixerModule();
-            if (exploitFixerModule != null && exploitFixerModule.isEnabled() && exploitFixerModule.blockInvalidIdentifierCrash.getValue()) {
-                if (!isPathValid(namespace)) {
-                    cir.setReturnValue("invalid");
+        final Foxglove foxglove = Foxglove.getInstance();
+        if (foxglove != null) {
+            final ModuleRegistry moduleRegistry = foxglove.getModuleRegistry();
+            if (moduleRegistry != null && moduleRegistry.isDone()) {
+                final ExploitFixerModule exploitFixerModule = moduleRegistry.getExploitFixerModule();
+                if (exploitFixerModule != null && exploitFixerModule.isEnabled() && exploitFixerModule.blockInvalidIdentifierCrash.getValue()) {
+                    if (!isPathValid(namespace)) {
+                        cir.setReturnValue("invalid");
+                    }
                 }
             }
         }

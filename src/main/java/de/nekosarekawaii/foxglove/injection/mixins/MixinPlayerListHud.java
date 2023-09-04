@@ -7,8 +7,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.PlayerListHud;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -71,42 +69,29 @@ public abstract class MixinPlayerListHud {
 
     @Inject(method = "renderLatencyIcon", at = @At("HEAD"), cancellable = true)
     private void injectRenderLatencyIcon(final DrawContext context, final int width, final int x, final int y, final PlayerListEntry entry, final CallbackInfo ci) {
-        final ClientPlayNetworkHandler networkHandler = MinecraftClient.getInstance().getNetworkHandler();
-        final int a = MinecraftClient.getInstance().isInSingleplayer() || (networkHandler != null && networkHandler.getConnection().isEncrypted()) ? 9 : 0, w = x + a;
-
+        final int a = MinecraftClient.getInstance().isInSingleplayer() || (MinecraftClient.getInstance().getNetworkHandler() != null && MinecraftClient.getInstance().getNetworkHandler().getConnection().isEncrypted()) ? 9 : 0, w = x + a;
         final BetterTabListModule betterTabListModule = Foxglove.getInstance().getModuleRegistry().getBetterTabListModule();
-
         int color = MinecraftClient.getInstance().options.getTextBackgroundColor(0x20FFFFFF);
-
-        final ClientPlayerEntity player = MinecraftClient.getInstance().player;
-        if (betterTabListModule.isEnabled() && betterTabListModule.self.getValue() && player != null && entry.getProfile().getId().equals(player.getGameProfile().getId())) {
+        if (betterTabListModule.isEnabled() && betterTabListModule.self.getValue() && MinecraftClient.getInstance().player != null && entry.getProfile().getId().equals(MinecraftClient.getInstance().player.getGameProfile().getId())) {
             color = betterTabListModule.selfColor.getValue().getRGB();
         }
-
         context.fill(w, y, w + width - a, y + 8, color);
-
-        final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-        context.drawTextWithShadow(textRenderer, this.getPlayerName(entry), w, y, entry.getGameMode() == GameMode.SPECTATOR ? -1862270977 : -1);
-
+        context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, this.getPlayerName(entry), w, y, entry.getGameMode() == GameMode.SPECTATOR ? -1862270977 : -1);
         if (betterTabListModule.isEnabled() && betterTabListModule.accurateLatency.getValue()) {
             final float scale = betterTabListModule.pingScale.getValue();
             final int latency = entry.getLatency();
             final String text = latency + " ms";
-
             context.getMatrices().push();
             context.getMatrices().scale(scale, scale, 1.0f);
-
             context.drawTextWithShadow(
-                    textRenderer,
+                    MinecraftClient.getInstance().textRenderer,
                     text,
-                    (int) (x / scale) + (int) (width / scale) - textRenderer.getWidth(text),
+                    (int) (x / scale) + (int) (width / scale) - MinecraftClient.getInstance().textRenderer.getWidth(text),
                     (int) (y / scale),
                     ColorUtils.interpolate(betterTabListModule.lowPingColor.getValue(), betterTabListModule.averagePingColor.getValue(),
                             betterTabListModule.highPingColor.getValue(), Math.min((float) latency / betterTabListModule.highPing.getValue(), 1.0f))
             );
-
             context.getMatrices().pop();
-
             ci.cancel();
         }
     }

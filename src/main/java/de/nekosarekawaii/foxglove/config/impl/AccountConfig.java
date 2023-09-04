@@ -9,6 +9,7 @@ import de.nekosarekawaii.foxglove.config.impl.alt.alttype.Account;
 import de.nekosarekawaii.foxglove.config.impl.alt.alttype.type.CrackedAccount;
 import de.nekosarekawaii.foxglove.config.impl.alt.alttype.type.MicrosoftAccount;
 import de.nekosarekawaii.foxglove.util.AES;
+import de.nekosarekawaii.foxglove.util.MinecraftWrapper;
 import net.minecraft.client.MinecraftClient;
 
 import javax.crypto.BadPaddingException;
@@ -72,7 +73,7 @@ public class AccountConfig extends ValueableConfig {
                         account = new MicrosoftAccount(refreshToken, uuid, username);
                     } catch (final InvalidKeySpecException | InvalidKeyException | IllegalBlockSizeException |
                                    BadPaddingException | InvalidAlgorithmParameterException e) {
-                        e.printStackTrace();
+                        Foxglove.getInstance().getLogger().error("Microsoft account authentication failed.", e);
                     }
                 }
 
@@ -80,7 +81,7 @@ public class AccountConfig extends ValueableConfig {
             }
 
             if (account == null) {
-                System.out.println("Failed to load account: " + username);
+                Foxglove.getInstance().getLogger().error("Failed to load account: " + username);
                 continue;
             }
 

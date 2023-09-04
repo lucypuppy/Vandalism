@@ -21,9 +21,10 @@ import java.util.UUID;
 
 public class CommandRegistry {
 
+    public final static String COMMAND_SECRET = UUID.randomUUID().toString();
+
     private final CommandDispatcher<CommandSource> commandDispatcher;
     private final CommandSource commandSource;
-    private final String commandSecret;
 
     private final FeatureList<Command> commands;
 
@@ -31,7 +32,6 @@ public class CommandRegistry {
         this.commands = new FeatureList<>();
         this.commandDispatcher = new CommandDispatcher<>();
         this.commandSource = new ClientCommandSource(null, MinecraftClient.getInstance());
-        this.commandSecret = UUID.randomUUID().toString();
         this.register();
     }
 
@@ -62,26 +62,23 @@ public class CommandRegistry {
     }
 
     private void registerCommands(final Command... commands) {
+        Foxglove.getInstance().getLogger().info("Registering commands...");
         for (final Command command : commands) {
-            if (command.getClass().isAnnotationPresent(CommandInfo.class)) {
-                if (!this.commands.contains(command)) {
-                    for (final String alias : command.getAliases()) {
-                        final LiteralArgumentBuilder<CommandSource> builder = LiteralArgumentBuilder.literal(alias);
-                        command.build(builder);
-                        this.commandDispatcher.register(builder);
-                    }
-                    this.commands.add(command);
-                    Foxglove.getInstance().getLogger().info("Command '" + command + "' has been registered.");
-                } else {
-                    Foxglove.getInstance().getLogger().error("Duplicated Command found: " + command);
+            if (!this.commands.contains(command)) {
+                for (final String alias : command.getAliases()) {
+                    final LiteralArgumentBuilder<CommandSource> builder = LiteralArgumentBuilder.literal(alias);
+                    command.build(builder);
+                    this.commandDispatcher.register(builder);
                 }
+                this.commands.add(command);
+                Foxglove.getInstance().getLogger().info("Command '" + command + "' has been registered.");
             } else {
-                Foxglove.getInstance().getLogger().error("Command '" + command + "' is not annotated with Command Info!");
+                Foxglove.getInstance().getLogger().error("Duplicated command found: " + command);
             }
         }
         final int commandListSize = this.commands.size();
-        if (commandListSize < 1) Foxglove.getInstance().getLogger().info("No Commands found!");
-        else Foxglove.getInstance().getLogger().info("Registered " + commandListSize + " Command/s.");
+        if (commandListSize < 1) Foxglove.getInstance().getLogger().info("No commands found!");
+        else Foxglove.getInstance().getLogger().info("Registered " + commandListSize + " command/s.");
     }
 
     public void commandDispatch(final String message) throws CommandSyntaxException {
@@ -100,14 +97,10 @@ public class CommandRegistry {
         return this.commands;
     }
 
-    public String getCommandSecret() {
-        return this.commandSecret;
-    }
-
     public ClickEvent generateClickEvent(final String command) {
         return new ClickEvent(
                 ClickEvent.Action.RUN_COMMAND,
-                this.commandSecret + command
+                COMMAND_SECRET + command
         );
     }
 

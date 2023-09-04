@@ -1,12 +1,10 @@
 package de.nekosarekawaii.foxglove.feature;
 
-import net.minecraft.client.MinecraftClient;
+import de.nekosarekawaii.foxglove.util.MinecraftWrapper;
 import net.raphimc.vialoader.util.VersionEnum;
 import net.raphimc.vialoader.util.VersionRange;
 
-public abstract class Feature {
-
-    protected final static MinecraftClient mc = MinecraftClient.getInstance();
+public abstract class Feature implements MinecraftWrapper {
 
     private VersionRange supportedVersions = null;
 
@@ -54,7 +52,6 @@ public abstract class Feature {
     public boolean isExperimental() {
         return this.experimental;
     }
-
 
     public void setSupportedVersions(final VersionRange versionRange) {
         this.supportedVersions = versionRange;

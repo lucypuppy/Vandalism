@@ -1,6 +1,6 @@
 package de.nekosarekawaii.foxglove.injection.mixins;
 
-import de.nekosarekawaii.foxglove.util.minecraft.ServerUtils;
+import de.nekosarekawaii.foxglove.util.ServerUtils;
 import net.minecraft.client.gui.screen.DisconnectedScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.*;
@@ -33,9 +33,7 @@ public abstract class MixinDisconnectedScreen extends Screen {
                 }
             });
             final String text = textBuilder.toString();
-            if (!text.isEmpty() && this.client != null) {
-                this.client.keyboard.setClipboard(text);
-            }
+            if (!text.isEmpty()) client.keyboard.setClipboard(text);
         }).build(), positioner);
         return widget;
     }

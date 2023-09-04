@@ -2,9 +2,10 @@ package de.nekosarekawaii.foxglove.util.click;
 
 public abstract class ClickGenerator {
 
-    protected final Runnable clickAction;
+    protected Runnable clickAction = () -> {
+    };
 
-    public ClickGenerator(final Runnable clickAction) {
+    public void setClickAction(final Runnable clickAction) {
         this.clickAction = clickAction;
     }
 

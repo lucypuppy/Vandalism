@@ -1,4 +1,4 @@
-package de.nekosarekawaii.foxglove.util.minecraft;
+package de.nekosarekawaii.foxglove.util;
 
 import de.nekosarekawaii.foxglove.util.render.ColorUtils;
 import net.minecraft.text.MutableText;

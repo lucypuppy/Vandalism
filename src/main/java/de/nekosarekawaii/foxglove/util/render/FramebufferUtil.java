@@ -1,11 +1,12 @@
 package de.nekosarekawaii.foxglove.util.render;
 
+import de.nekosarekawaii.foxglove.util.MinecraftWrapper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.SimpleFramebuffer;
 import net.minecraft.client.util.Window;
 
-public class FramebufferUtil {
+public class FramebufferUtil implements MinecraftWrapper {
 
     public static Framebuffer checkFramebuffer(final Framebuffer framebuffer, final boolean useDepth, final boolean getError) {
         final Window window = MinecraftClient.getInstance().getWindow();

@@ -1,6 +1,6 @@
 package de.nekosarekawaii.foxglove.injection.mixins;
 
-import de.nekosarekawaii.foxglove.util.minecraft.ServerUtils;
+import de.nekosarekawaii.foxglove.util.ServerUtils;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
@@ -37,9 +37,9 @@ public abstract class MixinGameMenuScreen extends Screen {
 		if (text == SEND_FEEDBACK_TEXT) {
 			cir.setReturnValue(ButtonWidget.builder(
                     Text.translatable("menu.multiplayer"),
-                    b -> this.client.setScreen(new MultiplayerScreen(this))
+                    b -> client.setScreen(new MultiplayerScreen(this))
             ).width(98).build());
-        } else if (text == REPORT_BUGS_TEXT && !this.client.isInSingleplayer()) {
+        } else if (text == REPORT_BUGS_TEXT && !client.isInSingleplayer()) {
             final ButtonWidget button = ButtonWidget.builder(
                     Text.literal("Reconnect"),
                     b -> {

@@ -5,16 +5,16 @@ import de.nekosarekawaii.foxglove.Foxglove;
 import de.nekosarekawaii.foxglove.event.KeyboardListener;
 import de.nekosarekawaii.foxglove.event.RenderListener;
 import de.nekosarekawaii.foxglove.gui.imgui.impl.widget.NBTEditWidget;
+import de.nekosarekawaii.foxglove.util.MinecraftWrapper;
 import imgui.flag.ImGuiHoveredFlags;
 import imgui.internal.ImGui;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
 
-public class ImGuiHandler implements KeyboardListener, RenderListener {
+public class ImGuiHandler implements KeyboardListener, RenderListener, MinecraftWrapper {
 
     private boolean renderBar, hovered;
 
@@ -79,14 +79,14 @@ public class ImGuiHandler implements KeyboardListener, RenderListener {
 
     @Override
     public void onRender2D(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        if (MinecraftClient.getInstance().currentScreen != null) {
+        if (currentScreen() != null) {
             this.renderImGuiContext();
         }
     }
 
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta, final Window window) {
-        if (MinecraftClient.getInstance().currentScreen == null) {
+        if (currentScreen() == null) {
             this.renderImGuiContext();
         }
     }

@@ -14,11 +14,6 @@
   "mixins": [
     "foxglove.mixins.json"
   ],
-  "entrypoints": {
-    "client": [
-      "de.nekosarekawaii.foxglove.FabricBridge"
-    ]
-  },
   "depends": {
     "fabricloader": ">=0.14.21",
     "minecraft": "~1.20.1",

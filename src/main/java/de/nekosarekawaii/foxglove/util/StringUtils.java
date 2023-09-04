@@ -1,4 +1,4 @@
-package de.nekosarekawaii.foxglove.util.string;
+package de.nekosarekawaii.foxglove.util;
 
 import java.util.regex.Pattern;
 

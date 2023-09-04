@@ -1,10 +1,13 @@
 package de.nekosarekawaii.foxglove.config.impl;
 
+import com.github.kwhat.jnativehook.GlobalScreen;
+import com.github.kwhat.jnativehook.NativeHookException;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 import com.google.gson.JsonObject;
 import de.nekosarekawaii.foxglove.Foxglove;
 import de.nekosarekawaii.foxglove.config.ValueableConfig;
+import de.nekosarekawaii.foxglove.util.MinecraftWrapper;
 import de.nekosarekawaii.foxglove.value.Value;
 import de.nekosarekawaii.foxglove.value.ValueCategory;
 import de.nekosarekawaii.foxglove.value.values.BooleanValue;
@@ -13,34 +16,36 @@ import de.nekosarekawaii.foxglove.value.values.StringValue;
 import de.nekosarekawaii.foxglove.value.values.number.slider.SliderFloatValue;
 import de.nekosarekawaii.foxglove.value.values.number.slider.SliderIntegerValue;
 import it.unimi.dsi.fastutil.Pair;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.text.Text;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.IOException;
 
-public class MainConfig extends ValueableConfig {
-
-    private static class DisconnectListener implements NativeKeyListener {
-
-        @Override
-        public void nativeKeyPressed(final NativeKeyEvent nativeEvent) {
-            if (Foxglove.getInstance().getConfigManager().getMainConfig().forceDisconnectKeybind.getValue()) {
-                if (nativeEvent.getKeyCode() == 3663) { // END Key
-                    final ClientPlayNetworkHandler networkHandler = MinecraftClient.getInstance().getNetworkHandler();
-                    if (networkHandler != null) {
-                        networkHandler.getConnection().disconnect(Text.literal("Manual force disconnect."));
-                    }
-                }
-            }
-        }
-
-    }
+public class MainConfig extends ValueableConfig implements MinecraftWrapper {
 
     public MainConfig() {
         super(Foxglove.getInstance().getDir(), "main");
-        Foxglove.getInstance().getNativeInputHook().registerKeyListener(new DisconnectListener());
+        try {
+            GlobalScreen.registerNativeHook();
+            GlobalScreen.addNativeKeyListener(new NativeKeyListener() {
+
+                @Override
+                public void nativeKeyPressed(final NativeKeyEvent nativeEvent) {
+                    if (Foxglove.getInstance().getConfigManager().getMainConfig().forceDisconnectKeybind.getValue()) {
+                        if (nativeEvent.getKeyCode() == 3663) { // END Key
+                            if (networkHandler() != null) {
+                                networkHandler().getConnection().disconnect(Text.literal("Manual force disconnect."));
+                            }
+                        }
+                    }
+                }
+
+            });
+            Foxglove.getInstance().getLogger().info("Successfully registered native input hook disconnect listener.");
+        } catch (final NativeHookException e) {
+            Foxglove.getInstance().getLogger().error("Failed to register native input hook disconnect listener.", e);
+        }
     }
 
     public final ValueCategory menuCategory = new ValueCategory("Menu", "Menu Settings", this);
@@ -83,7 +88,11 @@ public class MainConfig extends ValueableConfig {
             true
     );
 
-    public final ValueCategory chatCategory = new ValueCategory("Chat", "Chat settings", this);
+    public final ValueCategory chatCategory = new ValueCategory(
+            "Chat",
+            "Chat settings",
+            this
+    );
 
     public final Value<String> commandPrefix = new StringValue(
             "Command Prefix",
@@ -122,7 +131,11 @@ public class MainConfig extends ValueableConfig {
             10000
     ).visibleConsumer(this.customChatLength::getValue);
 
-    public final ValueCategory exploitCategory = new ValueCategory("Exploit", "Exploit settings", this);
+    public final ValueCategory exploitCategory = new ValueCategory(
+            "Exploit",
+            "Exploit settings",
+            this
+    );
 
     public final Value<Boolean> lecternCrasher = new BooleanValue(
             "Lectern Crasher",
@@ -138,11 +151,15 @@ public class MainConfig extends ValueableConfig {
             true
     );
 
-    public final ValueCategory accessibilityCategory = new ValueCategory("Accessibility", "Accessibility settings", this);
+    public final ValueCategory accessibilityCategory = new ValueCategory(
+            "Accessibility",
+            "Accessibility settings",
+            this
+    );
 
     public final Value<Boolean> forceDisconnectKeybind = new BooleanValue(
             "Force Disconnect Keybind",
-            "Enables that you can disconnect with the key END even if the Game is freezed.",
+            "Enables that you can disconnect with the key END even if the Game is frozen.",
             this.accessibilityCategory,
             true
     );
@@ -182,8 +199,17 @@ public class MainConfig extends ValueableConfig {
             false
     );
 
-    public final ValueCategory visualsCategory = new ValueCategory("Visuals", "Visuals settings", this);
-    public final ValueCategory blockHitCategory = new ValueCategory("BlockHit", "BlockHit settings (<=1.8.x)", this.visualsCategory);
+    public final ValueCategory visualsCategory = new ValueCategory(
+            "Visuals",
+            "Visuals settings",
+            this
+    );
+
+    public final ValueCategory blockHitCategory = new ValueCategory(
+            "BlockHit",
+            "BlockHit settings (<=1.8.x)",
+            this.visualsCategory
+    );
 
     public final Value<Boolean> blockHitAnimation = new BooleanValue(
             "BlockHit Animation",
@@ -219,9 +245,11 @@ public class MainConfig extends ValueableConfig {
             "%.2f"
     ).visibleConsumer(this.customBobView::getValue);
 
-    public final Value<Boolean> hideSignTextFeature = new BooleanValue(
-            "Hide Sign Text Feature",
-            "Allows you to hide text of signs when creating a new one.",
+    public final static String SIGN_HIDE_SECRET = RandomStringUtils.randomAlphanumeric(4);
+
+    public final Value<Boolean> hideSignText = new BooleanValue(
+            "Hide Sign Text",
+            "Hides text of signs when creating a new one.",
             this.visualsCategory,
             false
     );
@@ -310,8 +338,7 @@ public class MainConfig extends ValueableConfig {
 
     @Override
     public JsonObject save() throws IOException {
-        final JsonObject configObject = new JsonObject();
-        final JsonObject valuesArray = new JsonObject();
+        final JsonObject configObject = new JsonObject(), valuesArray = new JsonObject();
         this.saveValues(valuesArray, this.getValues());
         configObject.add("values", valuesArray);
         return configObject;

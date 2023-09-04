@@ -13,7 +13,10 @@ import java.util.Collection;
 public class GriefItemsCreativeTab extends CreativeTab {
 
     public GriefItemsCreativeTab() {
-        super(new ItemStack(Items.TNT).setCustomName(Text.literal("Grief Items")));
+        super(
+                Text.literal("Grief Items"),
+                new ItemStack(Items.TNT)
+        );
     }
 
     @Override
@@ -29,10 +32,10 @@ public class GriefItemsCreativeTab extends CreativeTab {
     }
 
     private ItemStack createGriefCreeper() {
-        final var item = new ItemStack(Items.PIG_SPAWN_EGG);
-        final var base = new NbtCompound();
+        final ItemStack item = new ItemStack(Items.PIG_SPAWN_EGG);
+        final NbtCompound base = new NbtCompound();
 
-        final var entityTag = new NbtCompound();
+        final NbtCompound entityTag = new NbtCompound();
         entityTag.putInt("Fuse", 0);
         entityTag.putInt("ExplosionRadius", 127);
         entityTag.putString("id", "minecraft:creeper");
@@ -45,10 +48,10 @@ public class GriefItemsCreativeTab extends CreativeTab {
     }
 
     private ItemStack createPoweredGriefCreeper() {
-        final var item = new ItemStack(Items.COW_SPAWN_EGG);
-        final var base = new NbtCompound();
+        final ItemStack item = new ItemStack(Items.COW_SPAWN_EGG);
+        final NbtCompound base = new NbtCompound();
 
-        final var entityTag = new NbtCompound();
+        final NbtCompound entityTag = new NbtCompound();
         entityTag.putInt("Fuse", 0);
         entityTag.putInt("ExplosionRadius", 127);
         entityTag.putByte("powered", (byte) 1);
@@ -61,10 +64,10 @@ public class GriefItemsCreativeTab extends CreativeTab {
     }
 
     private ItemStack createSpawnEgg(final Item origin, final String id) {
-        final var item = new ItemStack(origin);
-        final var base = new NbtCompound();
+        final ItemStack item = new ItemStack(origin);
+        final NbtCompound base = new NbtCompound();
 
-        final var entityTag = new NbtCompound();
+        final NbtCompound entityTag = new NbtCompound();
         entityTag.putString("id", id);
 
         base.put("EntityTag", entityTag);
@@ -72,4 +75,5 @@ public class GriefItemsCreativeTab extends CreativeTab {
 
         return item;
     }
+
 }

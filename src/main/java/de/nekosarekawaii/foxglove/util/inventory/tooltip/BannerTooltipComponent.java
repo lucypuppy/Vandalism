@@ -1,4 +1,4 @@
-package de.nekosarekawaii.foxglove.util.minecraft.inventory.tooltip;
+package de.nekosarekawaii.foxglove.util.inventory.tooltip;
 
 import net.minecraft.block.entity.BannerBlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -42,12 +42,12 @@ public class BannerTooltipComponent implements TooltipComponent, ITooltipData {
     }
 
     @Override
-    public int getWidth(TextRenderer textRenderer) {
+    public int getWidth(final TextRenderer textRenderer) {
         return 16 * 5;
     }
 
     @Override
-    public void drawItems(TextRenderer textRenderer, int x, int y, DrawContext context) {
+    public void drawItems(final TextRenderer textRenderer, final int x, final int y, final DrawContext context) {
         DiffuseLighting.disableGuiDepthLighting();
         final MatrixStack matrices = context.getMatrices();
         matrices.push();
@@ -86,4 +86,5 @@ public class BannerTooltipComponent implements TooltipComponent, ITooltipData {
         matrices.pop();
         DiffuseLighting.enableGuiDepthLighting();
     }
+
 }
