@@ -203,10 +203,10 @@ public class ModuleRegistry {
         return this.ambienceModule;
     }
 
-    private MessageEncryptorModule messageEncryptModule;
+    private MessageEncryptorModule messageEncryptorModule;
 
-    public MessageEncryptorModule getMessageEncryptModule() {
-        return this.messageEncryptModule;
+    public MessageEncryptorModule getMessageEncryptorModule() {
+        return this.messageEncryptorModule;
     }
 
     private boolean done;
@@ -255,7 +255,7 @@ public class ModuleRegistry {
                 this.visualThrottleModule = new VisualThrottleModule(),
                 this.elytraFlightModule = new ElytraFlightModule(),
                 this.ambienceModule = new AmbienceModule(),
-                this.messageEncryptModule = new MessageEncryptorModule()
+                this.messageEncryptorModule = new MessageEncryptorModule()
         );
     }
 
