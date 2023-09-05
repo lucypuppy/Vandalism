@@ -1,4 +1,4 @@
-package de.nekosarekawaii.foxglove.feature.impl.module.impl.misc;
+package de.nekosarekawaii.foxglove.feature.impl.module.impl.render;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.foxglove.event.CameraListener;
@@ -11,7 +11,7 @@ public class CameraNoClipModule extends Module implements CameraListener {
         super(
                 "Camera No Clip",
                 "Disables camera block collision and lets you see trough blocks.",
-                FeatureCategory.MISC,
+                FeatureCategory.RENDER,
                 false,
                 false
         );

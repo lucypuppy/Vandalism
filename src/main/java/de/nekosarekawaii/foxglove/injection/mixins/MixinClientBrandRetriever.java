@@ -20,7 +20,7 @@ public abstract class MixinClientBrandRetriever {
     @Inject(method = "getClientModName", at = @At("RETURN"), cancellable = true, remap = false)
     private static void injectGetClientModName(CallbackInfoReturnable<String> cir) {
         if (Foxglove.getInstance() != null && Foxglove.getInstance().getModuleRegistry() != null) {
-            final ClientBrandChangerModule clientBrandChangerModule = Foxglove.getInstance().getModuleRegistry().getClientBrandChanger();
+            final ClientBrandChangerModule clientBrandChangerModule = Foxglove.getInstance().getModuleRegistry().getClientBrandChangerModule();
             if (clientBrandChangerModule.isEnabled()) {
                 cir.setReturnValue(clientBrandChangerModule.brand.getValue());
             }

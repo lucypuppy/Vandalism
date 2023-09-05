@@ -37,7 +37,7 @@ public class ModuleRegistry {
 
     private ClientBrandChangerModule clientBrandChangerModule;
 
-    public ClientBrandChangerModule getClientBrandChanger() {
+    public ClientBrandChangerModule getClientBrandChangerModule() {
         return this.clientBrandChangerModule;
     }
 
