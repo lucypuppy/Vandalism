@@ -3,7 +3,7 @@ package de.nekosarekawaii.foxglove.util;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 
-public class MovementUtil implements MinecraftWrapper {
+public class MovementUtil {
 
     public static double getDirection() {
         final ClientPlayerEntity player = MinecraftClient.getInstance().player;

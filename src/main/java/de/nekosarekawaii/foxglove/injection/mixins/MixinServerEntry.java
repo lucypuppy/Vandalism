@@ -2,7 +2,7 @@ package de.nekosarekawaii.foxglove.injection.mixins;
 
 import de.florianmichael.viafabricplus.protocolhack.ProtocolHack;
 import de.nekosarekawaii.foxglove.Foxglove;
-import de.nekosarekawaii.foxglove.util.MinecraftWrapper;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
@@ -19,11 +19,15 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(MultiplayerServerListWidget.ServerEntry.class)
-public abstract class MixinServerEntry implements MinecraftWrapper {
+public abstract class MixinServerEntry {
 
     @Shadow
     @Final
     private ServerInfo server;
+
+    @Shadow
+    @Final
+    private MinecraftClient client;
 
     @Inject(method = "protocolVersionMatches", at = @At(value = "RETURN"), cancellable = true)
     private void injectProtocolVersionMatches(final CallbackInfoReturnable<Boolean> cir) {
@@ -41,7 +45,7 @@ public abstract class MixinServerEntry implements MinecraftWrapper {
     private int redirectRender(final DrawContext instance, final TextRenderer textRenderer, final Text text, final int x, final int y, final int color, final boolean shadow) {
         instance.drawText(textRenderer, text, x, y, color, shadow);
         if (Foxglove.getInstance().getConfigManager().getMainConfig().multiplayerScreenServerInformation.getValue()) {
-            final int textX = x + textRenderer().getWidth(text) + 22;
+            final int textX = x + this.client.textRenderer.getWidth(text) + 22;
             String versionName = this.server.version.getString();
             final int maxServerVersionLength = Foxglove.getInstance().getConfigManager().getMainConfig().maxServerVersionLength.getValue();
             //TODO: Improve this, because the performance could drop from the substring method!
