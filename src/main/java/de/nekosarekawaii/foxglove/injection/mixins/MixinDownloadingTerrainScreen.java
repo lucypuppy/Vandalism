@@ -1,6 +1,5 @@
 package de.nekosarekawaii.foxglove.injection.mixins;
 
-import de.nekosarekawaii.foxglove.util.MinecraftWrapper;
 import de.nekosarekawaii.foxglove.util.ServerUtils;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.DownloadingTerrainScreen;
@@ -14,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(DownloadingTerrainScreen.class)
-public abstract class MixinDownloadingTerrainScreen extends Screen implements MinecraftWrapper {
+public abstract class MixinDownloadingTerrainScreen extends Screen {
 
     @Shadow
     public abstract void close();
@@ -25,7 +24,7 @@ public abstract class MixinDownloadingTerrainScreen extends Screen implements Mi
 
     @Inject(method = "render", at = @At("RETURN"))
     private void injectRender(final DrawContext context, final int mouseX, final int mouseY, final float delta, final CallbackInfo ci) {
-        context.drawCenteredTextWithShadow(textRenderer(), "Press [ESC] to cancel.", this.width / 2, this.height / 2 - 50 + this.textRenderer.fontHeight, 0xFFFFFF);
+        context.drawCenteredTextWithShadow(this.textRenderer, "Press [ESC] to cancel.", this.width / 2, this.height / 2 - 50 + this.textRenderer.fontHeight, 0xFFFFFF);
     }
 
     @Override

@@ -2,7 +2,7 @@ package de.nekosarekawaii.foxglove.injection.mixins;
 
 import de.nekosarekawaii.foxglove.Foxglove;
 import de.nekosarekawaii.foxglove.feature.impl.module.impl.render.VisualThrottleModule;
-import de.nekosarekawaii.foxglove.util.MinecraftWrapper;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityRenderer.class)
-public abstract class MixinEntityRenderer<T extends Entity> implements MinecraftWrapper {
+public abstract class MixinEntityRenderer<T extends Entity> {
 
     @Shadow
     @Final
@@ -47,7 +47,7 @@ public abstract class MixinEntityRenderer<T extends Entity> implements Minecraft
                 final float
                         labelHeight = entity.getNameLabelHeight(),
                         labelY = "deadmau5".equals(text.getString()) ? -10f : 0f,
-                        bgOpacity = options().getTextBackgroundOpacity(0.25f),
+                        bgOpacity = MinecraftClient.getInstance().options.getTextBackgroundOpacity(0.25f),
                         labelX = -textRenderer.getWidth(text) / 2f;
                 matrixStack.push();
                 matrixStack.translate(0.0f, labelHeight, 0.0f);

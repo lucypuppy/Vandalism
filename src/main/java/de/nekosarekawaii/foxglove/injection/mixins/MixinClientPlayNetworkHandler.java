@@ -4,7 +4,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.nekosarekawaii.foxglove.Foxglove;
 import de.nekosarekawaii.foxglove.gui.screen.CustomResourcePackConfirmScreen;
 import de.nekosarekawaii.foxglove.util.ChatUtils;
-import de.nekosarekawaii.foxglove.util.MinecraftWrapper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -16,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
-public abstract class MixinClientPlayNetworkHandler implements MinecraftWrapper {
+public abstract class MixinClientPlayNetworkHandler {
 
     @Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
     private void onSendChatMessage(final String message, final CallbackInfo ci) {
@@ -27,7 +26,7 @@ public abstract class MixinClientPlayNetworkHandler implements MinecraftWrapper 
             } catch (final CommandSyntaxException e) {
                 ChatUtils.errorChatMessage(e.getMessage());
             }
-            mc().inGameHud.getChatHud().addToMessageHistory(message);
+            MinecraftClient.getInstance().inGameHud.getChatHud().addToMessageHistory(message);
             ci.cancel();
         }
     }
