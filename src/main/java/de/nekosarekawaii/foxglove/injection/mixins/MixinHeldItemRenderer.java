@@ -15,6 +15,7 @@ import net.minecraft.util.math.RotationAxis;
 import net.raphimc.vialoader.util.VersionEnum;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -34,19 +35,42 @@ public abstract class MixinHeldItemRenderer {
     private void injectRenderFirstPersonItem(final AbstractClientPlayerEntity player, final float tickDelta, final float pitch, final Hand hand, final float swingProgress, final ItemStack item, final float equipProgress, final MatrixStack matrices, final VertexConsumerProvider vertexConsumers, final int light, final CallbackInfo ci) {
         final MainConfig mainConfig = Foxglove.getInstance().getConfigManager().getMainConfig();
         final float itemSize = mainConfig.blockItemSize.getValue();
+        final String blockHitAnimations = mainConfig.blockHitAnimations.getValue().toLowerCase();
+
         if (ProtocolHack.getTargetVersion().isOlderThanOrEqualTo(VersionEnum.r1_8) && this.client.player != null && this.client.player.isBlocking() && mainConfig.blockHitAnimation.getValue()) {
-
-            final float swing = MathHelper.sin(MathHelper.sqrt(swingProgress / 33.0f) * (float) Math.PI);
-
-            matrices.translate(0, -0.1, 0.2);
-            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(45.0F));
-
-            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(swing * -80.0F));
-            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(swing * -45.0F));
-            matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(swing * -20.0F));
+            switch (blockHitAnimations) {
+                case "suicide" -> suicideBlockAnimation(matrices, swingProgress);
+                case "foxglove" -> foxgloveBlockAnimation(matrices, swingProgress);
+            }
 
             matrices.scale(itemSize, itemSize, itemSize);
         }
+    }
+
+    @Unique
+    private void suicideBlockAnimation(final MatrixStack matrices, final float swingProgress) {
+        final float swing = MathHelper.sin(MathHelper.sqrt(swingProgress / 33.0f) * (float) Math.PI);
+
+        matrices.translate(0, -0.1, 0.2);
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(45.0F));
+
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(swing * -80.0F));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(swing * -45.0F));
+        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(swing * -20.0F));
+    }
+
+    @Unique
+    private void foxgloveBlockAnimation(final MatrixStack matrices, final float swingProgress) {
+        final float swing = MathHelper.sin(MathHelper.sqrt(swingProgress) * (float) Math.PI);
+        final float idk = MathHelper.sin(swingProgress * swingProgress * (float) Math.PI);
+
+        matrices.translate(0, -0.1, 0.2);
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(45.0F));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(20.0F));
+
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(swing * -80.0F));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(idk * -20.0F));
+        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(swing * -20.0F));
     }
 
 }
