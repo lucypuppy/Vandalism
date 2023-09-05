@@ -11,8 +11,6 @@ import de.nekosarekawaii.foxglove.util.rotation.RotationPriority;
 import de.nekosarekawaii.foxglove.util.rotation.rotationtypes.Rotation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,9 +55,8 @@ public class TestModule extends Module implements TickListener {
             return;
         }
         final Entity target = entities.get(0);
-        final Box box = target.getBoundingBox();
-        final double y = box.minY + (box.maxY - box.minY) * 0.9;
-        Foxglove.getInstance().getRotationListener().setRotation(new Vec3d(target.getX(), y, target.getZ()), 20, RotationPriority.HIGH);
+
+        Foxglove.getInstance().getRotationListener().setRotation(target, true, 3.5f, 20, RotationPriority.HIGH);
         this.clickGenerator.setClickAction(mc()::doAttack);
         this.clickGenerator.update();
     }

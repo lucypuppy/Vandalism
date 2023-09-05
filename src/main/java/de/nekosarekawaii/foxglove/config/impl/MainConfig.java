@@ -12,6 +12,7 @@ import de.nekosarekawaii.foxglove.value.Value;
 import de.nekosarekawaii.foxglove.value.ValueCategory;
 import de.nekosarekawaii.foxglove.value.values.BooleanValue;
 import de.nekosarekawaii.foxglove.value.values.KeyInputValue;
+import de.nekosarekawaii.foxglove.value.values.ListValue;
 import de.nekosarekawaii.foxglove.value.values.StringValue;
 import de.nekosarekawaii.foxglove.value.values.number.slider.SliderFloatValue;
 import de.nekosarekawaii.foxglove.value.values.number.slider.SliderIntegerValue;
@@ -209,6 +210,15 @@ public class MainConfig extends ValueableConfig implements MinecraftWrapper {
             "BlockHit",
             "BlockHit settings (<=1.8.x)",
             this.visualsCategory
+    );
+
+    public final ListValue blockHitAnimations = new ListValue(
+            "BlockHit Animations",
+            "Change the BlockHit Animation.",
+            this.blockHitCategory,
+            "None",
+            "Foxglove",
+            "Suicide"
     );
 
     public final Value<Boolean> blockHitAnimation = new BooleanValue(
