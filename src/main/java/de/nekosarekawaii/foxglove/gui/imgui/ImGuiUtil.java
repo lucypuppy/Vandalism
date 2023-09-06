@@ -11,9 +11,11 @@ public class ImGuiUtil {
         if (MinecraftClient.getInstance().mouse.isCursorLocked()) {
             windowFlags |= ImGuiWindowFlags.NoTitleBar;
             windowFlags |= ImGuiWindowFlags.NoBackground;
+            windowFlags |= ImGuiWindowFlags.NoScrollbar;
+
             windowFlags |= ImGuiWindowFlags.NoMove;
             windowFlags |= ImGuiWindowFlags.NoResize;
-            windowFlags |= ImGuiWindowFlags.NoMouseInputs;
+            windowFlags |= ImGuiWindowFlags.NoInputs;
             windowFlags |= ImGuiWindowFlags.NoScrollWithMouse;
         }
 
