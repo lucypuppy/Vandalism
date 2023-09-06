@@ -209,6 +209,12 @@ public class ModuleRegistry {
         return this.messageEncryptorModule;
     }
 
+    private IllegalBlockPlaceModule illegalBlockPlaceModule;
+
+    public IllegalBlockPlaceModule getIllegalBlockPlaceModule() {
+        return this.illegalBlockPlaceModule;
+    }
+
     private boolean done;
 
     private final FeatureList<Module> modules;
@@ -255,7 +261,8 @@ public class ModuleRegistry {
                 this.visualThrottleModule = new VisualThrottleModule(),
                 this.elytraFlightModule = new ElytraFlightModule(),
                 this.ambienceModule = new AmbienceModule(),
-                this.messageEncryptorModule = new MessageEncryptorModule()
+                this.messageEncryptorModule = new MessageEncryptorModule(),
+                this.illegalBlockPlaceModule = new IllegalBlockPlaceModule()
         );
     }
 

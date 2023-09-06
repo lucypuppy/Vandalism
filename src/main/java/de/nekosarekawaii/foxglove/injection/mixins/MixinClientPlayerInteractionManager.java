@@ -25,12 +25,10 @@ public abstract class MixinClientPlayerInteractionManager {
     @Redirect(method = "interactBlockInternal", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;useOnBlock(Lnet/minecraft/item/ItemUsageContext;)Lnet/minecraft/util/ActionResult;"))
     private ActionResult redirectInteractBlockInternal(final ItemStack instance, final ItemUsageContext context) {
         ActionResult actionResult = instance.useOnBlock(context);
-        if (actionResult != null) {
+        final IllegalBlockPlaceModule illegalBlockPlaceModule = Foxglove.getInstance().getModuleRegistry().getIllegalBlockPlaceModule();
+        if (illegalBlockPlaceModule.isEnabled() && illegalBlockPlaceModule.viaVersionBug.getValue()) {
             if (actionResult == ActionResult.FAIL) {
-                final IllegalBlockPlaceModule illegalBlockPlaceModule = Foxglove.getInstance().getModuleRegistry().getIllegalBlockPlaceModule();
-                if (illegalBlockPlaceModule.isEnabled()) {
-                    actionResult = ActionResult.SUCCESS;
-                }
+                actionResult = ActionResult.SUCCESS;
             }
         }
         return actionResult;
