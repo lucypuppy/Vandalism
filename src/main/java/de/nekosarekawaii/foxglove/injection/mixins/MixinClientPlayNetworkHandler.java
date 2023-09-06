@@ -35,11 +35,11 @@ public abstract class MixinClientPlayNetworkHandler {
     private void redirectOnResourcePackSend(final MinecraftClient instance, final Screen screen) {
         if (screen instanceof final ConfirmScreen confirmScreen) {
             if (Foxglove.getInstance().getConfigManager().getMainConfig().resourcePackSpoof.getValue()) {
-                setScreen(new CustomResourcePackConfirmScreen(confirmScreen.callback, confirmScreen.getTitle(), confirmScreen.message));
+                instance.setScreen(new CustomResourcePackConfirmScreen(confirmScreen.callback, confirmScreen.getTitle(), confirmScreen.message));
                 return;
             }
         }
-        setScreen(screen);
+        instance.setScreen(screen);
     }
 
 }
