@@ -284,6 +284,13 @@ public class MainConfig extends ValueableConfig implements MinecraftWrapper {
             "%.2f"
     );
 
+    public final Value<Boolean> portalScreen = new BooleanValue(
+            "Portal Screen",
+            "If this option is enabled you are allowed to use screens in portals.",
+            this.visualsCategory,
+            true
+    );
+
     public final Value<Boolean> waterOverlay = new BooleanValue(
             "Water Overlay",
             "Enable/Disable Water Overlay.",
