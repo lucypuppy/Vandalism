@@ -13,7 +13,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
+import org.apache.commons.lang3.RandomUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,6 +24,7 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
     private Rotation rotation, targetRotation, lastRotation;
     private double partialIterations;
     private float rotateSpeed;
+    private Vec2f rotateSpeedMinMax;
     private RotationPriority currentPriority;
 
     public RotationListener() {
@@ -46,7 +49,7 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
 
         if (this.targetRotation != null) {
             this.rotation = this.bruteforceGCD(
-                    rotationDistribution(this.targetRotation, this.lastRotation, this.rotateSpeed),
+                    rotationDistribution(this.targetRotation, this.lastRotation),
                     delta
             );
             return;
@@ -67,28 +70,26 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
         }
 
         this.rotation = this.bruteforceGCD(
-                rotationDistribution(new Rotation(yaw, pitch), this.lastRotation,
-                        this.rotateSpeed
-                ),
+                rotationDistribution(new Rotation(yaw, pitch), this.lastRotation),
                 delta
         );
     }
 
-    public void setRotation(final @Nullable Rotation rotation, final float rotateSpeed, final RotationPriority priority) {
+    public void setRotation(final @Nullable Rotation rotation, final Vec2f rotateSpeedMinMax, final RotationPriority priority) {
         if (this.currentPriority == null || priority.getPriority() >= this.currentPriority.getPriority()) {
             this.targetRotation = rotation;
-            this.rotateSpeed = rotateSpeed;
+            this.rotateSpeedMinMax = rotateSpeedMinMax;
             this.currentPriority = priority;
         }
     }
 
-    public void setRotation(final @NotNull Vec3d to, final float rotateSpeed, final RotationPriority priority) {
+    public void setRotation(final @NotNull Vec3d to, final Vec2f rotateSpeedMinMax, final RotationPriority priority) {
         if (player() == null) return;
 
-        this.setRotation(vecToRotation(to, player().getEyePos()), rotateSpeed, priority);
+        this.setRotation(vecToRotation(to, player().getEyePos()), rotateSpeedMinMax, priority);
     }
 
-    public void setRotation(final Entity entity, final boolean bestHitVec, final double range, final float rotateSpeed, final RotationPriority priority) {
+    public void setRotation(final Entity entity, final boolean bestHitVec, final double range, final Vec2f rotateSpeedMinMax, final RotationPriority priority) {
         if (player() == null) return;
 
         final Vec3d eyePos = player().getEyePos();
@@ -97,7 +98,7 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
 
         Rotation normalRotations = vecToRotation(getEntityVector, eyePos);
         if (RaytraceUtil.rayTraceBlock(normalRotations.getVector(), range))
-            setRotation(normalRotations, rotateSpeed, priority);
+            setRotation(normalRotations, rotateSpeedMinMax, priority);
 
         Vec3d currentVector = null;
         for (double x = 0.00D; x < 1.00D; x += 0.1D) {
@@ -117,7 +118,7 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
                         continue;
 
                     if (!bestHitVec) {
-                        setRotation(parsedRotation, rotateSpeed, priority);
+                        setRotation(parsedRotation, rotateSpeedMinMax, priority);
                     } else if (currentVector == null || eyePos.distanceTo(vector) <= eyePos.distanceTo(currentVector)) {
                         currentVector = vector;
                         normalRotations = parsedRotation;
@@ -126,7 +127,7 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
             }
         }
 
-        setRotation(normalRotations, rotateSpeed, priority);
+        setRotation(normalRotations, rotateSpeedMinMax, priority);
     }
 
     public Rotation vecToRotation(final Vec3d to, final Vec3d eyePos) {
@@ -188,8 +189,12 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
         return this.lastRotation.getYaw() + MathHelper.wrapDegrees(yaw - this.lastRotation.getYaw());
     }
 
-    public Rotation rotationDistribution(final Rotation rotation, final Rotation lastRotation, final float speed) {
-        if (speed > 0) {
+    public Rotation rotationDistribution(final Rotation rotation, final Rotation lastRotation) {
+        if (rotateSpeedMinMax.x > 0 && rotateSpeedMinMax.y > 0) { //Todo code a better calculation for the rotate speed.
+            rotateSpeed = RandomUtils.nextFloat(rotateSpeedMinMax.x, rotateSpeedMinMax.y);
+        }
+
+        if (rotateSpeed > 0) {
             final float
                     lastYaw = lastRotation.getYaw(),
                     lastPitch = lastRotation.getPitch(),
@@ -200,8 +205,8 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
                     distance = Math.sqrt(deltaYaw * deltaYaw + deltaPitch * deltaPitch),
                     distributionYaw = Math.abs(deltaYaw / distance),
                     distributionPitch = Math.abs(deltaPitch / distance),
-                    maxYaw = speed * distributionYaw,
-                    maxPitch = speed * distributionPitch;
+                    maxYaw = rotateSpeed * distributionYaw,
+                    maxPitch = rotateSpeed * distributionPitch;
 
             final float
                     moveYaw = (float) Math.max(Math.min(deltaYaw, maxYaw), -maxYaw),

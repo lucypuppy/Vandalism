@@ -8,6 +8,8 @@ public class MSTimerClicker extends ClickGenerator {
 
     private final MsTimer timer;
     private long nextClick = -1, minDelay, maxDelay;
+    private int highs, lows;
+    private boolean fastClicks;
 
     public MSTimerClicker() {
         this.timer = new MsTimer();
@@ -27,6 +29,35 @@ public class MSTimerClicker extends ClickGenerator {
             }
         }
     }
+
+    //Todo stammina
+    /*private void calculateNewDelay() {
+        if (fastClicks) {
+            this.nextClick = RandomUtils.nextLong(minDelay, maxDelay / 2);
+        } else {
+            this.nextClick = RandomUtils.nextLong(minDelay, maxDelay);
+        }
+
+        final float minDiff = Math.abs(nextClick - minDelay);
+        final float maxDiff = Math.abs(nextClick - maxDelay);
+
+        if (maxDiff > minDiff) {
+            highs++;
+        } else {
+            lows++;
+        }
+
+        final int clicks = highs + lows;
+        final float highPercent = (float) highs / clicks * 100;
+        final float lowPercent = (float) lows / clicks * 100;
+
+        if (clicks > 30) {
+            //ChatUtils.chatMessage(highPercent + " " + lowPercent + " " + fastClicks);
+            fastClicks = lowPercent > highPercent;
+            highs = 0;
+            lows = 0;
+        }
+    }*/
 
     public void setMinDelay(final long minDelay) {
         this.minDelay = minDelay;
