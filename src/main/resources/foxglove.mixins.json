@@ -69,7 +69,8 @@
     "mixins.MixinToolTipComponent",
     "mixins.MixinWindow",
     "mixins.MixinWorldRenderer",
-    "mixins.MixinYggdrasilUserApiService"
+    "mixins.MixinYggdrasilUserApiService",
+    "mixins.MixinTridentItem"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,6 +1,7 @@
 package de.nekosarekawaii.foxglove.feature.impl.module.impl.movement;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.foxglove.Foxglove;
 import de.nekosarekawaii.foxglove.event.BlockListener;
 import de.nekosarekawaii.foxglove.feature.FeatureCategory;
 import de.nekosarekawaii.foxglove.feature.impl.module.Module;
@@ -33,7 +34,7 @@ public class LiquidDensityModule extends Module implements BlockListener {
 
     @Override
     public void onCollisionShapeGet(final BlockEvent event) {
-        if (player() == null) return;
+        if (player() == null || Foxglove.getInstance().getModuleRegistry().getRiptideBoostMultiplierModule().isExempted()) return;
         final BlockState state = event.state;
         final Block block = state.getBlock();
         if (event.pos.getY() < player().getY() && (block instanceof FluidBlock || !block.getFluidState(state).isEmpty())) {
