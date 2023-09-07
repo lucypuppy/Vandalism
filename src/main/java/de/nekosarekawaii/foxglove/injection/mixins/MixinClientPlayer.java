@@ -2,6 +2,8 @@ package de.nekosarekawaii.foxglove.injection.mixins;
 
 import de.nekosarekawaii.foxglove.Foxglove;
 import de.nekosarekawaii.foxglove.util.rotation.rotationtypes.Rotation;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,6 +26,11 @@ public abstract class MixinClientPlayer {
         if (rotation != null) return rotation.getPitch();
 
         return instance.getPitch();
+    }
+
+    @Redirect(method = "updateNausea", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;shouldPause()Z"))
+    public boolean updateNausea(Screen screen) {
+        return Foxglove.getInstance().getConfigManager().getMainConfig().portalScreen.getValue() || screen.shouldPause();
     }
 
 }
