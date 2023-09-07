@@ -48,12 +48,14 @@ public class ConfigImGuiMenu extends ImGuiMenu {
                                 else disabledModules.add(module);
                             }
                             if (!enabledModules.isEmpty()) {
+                                ImGui.newLine();
                                 ImGui.text("Enabled Modules (" + enabledModules.size() + ")");
                                 for (final Module module : enabledModules) {
                                     this.renderModule(module);
                                 }
                             }
                             if (!disabledModules.isEmpty()) {
+                                ImGui.newLine();
                                 ImGui.text("Disabled Modules (" + disabledModules.size() + ")");
                                 for (final Module module : disabledModules) {
                                     this.renderModule(module);
