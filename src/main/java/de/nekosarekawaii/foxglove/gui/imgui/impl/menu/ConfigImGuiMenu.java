@@ -41,7 +41,7 @@ public class ConfigImGuiMenu extends ImGuiMenu {
                         final FeatureList<Module> modulesByCategory = modules.get(featureCategory);
                         if (modulesByCategory.isEmpty()) continue;
                         if (ImGui.beginTabItem(featureCategory.normalName() + " Modules##modulesfeaturecategory")) {
-                            //TODO: Make performance improve to this code with something like caching.
+                            //TODO: Make performance improvement to this code with something like caching.
                             final List<Module> enabledModules = new ArrayList<>(), disabledModules = new ArrayList<>();
                             for (final Module module : modulesByCategory) {
                                 if (module.isEnabled()) enabledModules.add(module);
