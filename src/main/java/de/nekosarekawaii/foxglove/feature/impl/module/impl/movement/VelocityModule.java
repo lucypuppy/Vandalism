@@ -30,6 +30,7 @@ public class VelocityModule extends Module implements PacketListener {
 
     @Override
     public void onPacket(final PacketEvent event) {
+        if (player() == null) return;
         if (event.packet instanceof final EntityVelocityUpdateS2CPacket entityVelocityUpdateS2CPacket) {
             if (entityVelocityUpdateS2CPacket.getId() == player().getId()) {
                 event.cancel();
