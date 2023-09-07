@@ -100,7 +100,7 @@ public class DebugModule extends Module implements RenderListener, PacketListene
                         }
                     }
                     if (this.showOpenCustomPayloadChannels.getValue()) {
-                        if (ImGui.begin("Open Custom Payload Channel##debugModuleShowOpenCustomPayloadChannels")) {
+                        if (ImGui.begin("Open Custom Payload Channels##debugModuleShowOpenCustomPayloadChannels")) {
                             for (final String channel : this.openCustomPayloadChannels) {
                                 ImGui.text(channel);
                             }
