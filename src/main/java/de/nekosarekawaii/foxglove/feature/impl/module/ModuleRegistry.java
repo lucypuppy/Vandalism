@@ -215,6 +215,12 @@ public class ModuleRegistry {
         return this.illegalBlockPlaceModule;
     }
 
+    private RiptideBoostMultiplierModule riptideBoostMultiplierModule;
+
+    public RiptideBoostMultiplierModule getRiptideBoostMultiplierModule() {
+        return this.riptideBoostMultiplierModule;
+    }
+
     private boolean done;
 
     private final FeatureList<Module> modules;
@@ -262,7 +268,8 @@ public class ModuleRegistry {
                 this.elytraFlightModule = new ElytraFlightModule(),
                 this.ambienceModule = new AmbienceModule(),
                 this.messageEncryptorModule = new MessageEncryptorModule(),
-                this.illegalBlockPlaceModule = new IllegalBlockPlaceModule()
+                this.illegalBlockPlaceModule = new IllegalBlockPlaceModule(),
+                this.riptideBoostMultiplierModule = new RiptideBoostMultiplierModule()
         );
     }
 
