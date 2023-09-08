@@ -49,7 +49,7 @@ public class MainConfig extends ValueableConfig implements MinecraftWrapper {
         }
     }
 
-    public final ValueCategory menuCategory = new ValueCategory("Menu", "Menu Settings", this);
+    private final ValueCategory menuCategory = new ValueCategory("Menu", "Menu settings", this);
 
     public final Value<Pair<Integer, String>> menuBarKey = new KeyInputValue(
             "Menu Bar Key",
@@ -89,7 +89,7 @@ public class MainConfig extends ValueableConfig implements MinecraftWrapper {
             true
     );
 
-    public final ValueCategory chatCategory = new ValueCategory(
+    private final ValueCategory chatCategory = new ValueCategory(
             "Chat",
             "Chat settings",
             this
@@ -132,7 +132,7 @@ public class MainConfig extends ValueableConfig implements MinecraftWrapper {
             10000
     ).visibleConsumer(this.customChatLength::getValue);
 
-    public final ValueCategory exploitCategory = new ValueCategory(
+    private final ValueCategory exploitCategory = new ValueCategory(
             "Exploit",
             "Exploit settings",
             this
@@ -152,7 +152,7 @@ public class MainConfig extends ValueableConfig implements MinecraftWrapper {
             true
     );
 
-    public final ValueCategory accessibilityCategory = new ValueCategory(
+    private final ValueCategory accessibilityCategory = new ValueCategory(
             "Accessibility",
             "Accessibility settings",
             this
@@ -200,13 +200,13 @@ public class MainConfig extends ValueableConfig implements MinecraftWrapper {
             false
     );
 
-    public final ValueCategory visualsCategory = new ValueCategory(
+    private final ValueCategory visualsCategory = new ValueCategory(
             "Visuals",
             "Visuals settings",
             this
     );
 
-    public final ValueCategory blockHitCategory = new ValueCategory(
+    private final ValueCategory blockHitCategory = new ValueCategory(
             "BlockHit",
             "BlockHit settings (<=1.8.x)",
             this.visualsCategory
@@ -352,6 +352,28 @@ public class MainConfig extends ValueableConfig implements MinecraftWrapper {
             this.visualsCategory,
             false
     );
+
+    public final ValueCategory movementCategory = new ValueCategory(
+            "Movement",
+            "Movement settings",
+            this
+    );
+
+    public final Value<Boolean> customizeRiptideBoostMultiplier = new BooleanValue(
+            "Customize Riptide Boost Multiplier",
+            "If enabled shows you a slider to modify the riptide boost multiplier.",
+            this.movementCategory,
+            false
+    );
+
+    public final Value<Float> riptideBoostMultiplier = new SliderFloatValue(
+            "Riptide Boost Multiplier",
+            "Lets you modify the riptide boost multiplier.",
+            this,
+            1.0f,
+            -5.0f,
+            5.0f
+    ).visibleConsumer(this.customizeRiptideBoostMultiplier::getValue);
 
     @Override
     public JsonObject save() throws IOException {
