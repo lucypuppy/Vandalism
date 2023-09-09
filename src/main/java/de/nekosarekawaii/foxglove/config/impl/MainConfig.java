@@ -369,7 +369,7 @@ public class MainConfig extends ValueableConfig implements MinecraftWrapper {
     public final Value<Float> riptideBoostMultiplier = new SliderFloatValue(
             "Riptide Boost Multiplier",
             "Lets you modify the riptide boost multiplier.",
-            this,
+            this.movementCategory,
             1.0f,
             -5.0f,
             5.0f
