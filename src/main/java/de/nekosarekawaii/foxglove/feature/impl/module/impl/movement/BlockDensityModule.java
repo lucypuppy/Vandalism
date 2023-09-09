@@ -4,20 +4,18 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.foxglove.event.BlockListener;
 import de.nekosarekawaii.foxglove.feature.FeatureCategory;
 import de.nekosarekawaii.foxglove.feature.impl.module.Module;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FluidBlock;
+import net.minecraft.block.*;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.shape.VoxelShapes;
 
-public class LiquidDensityModule extends Module implements BlockListener {
+public class BlockDensityModule extends Module implements BlockListener {
 
-    public LiquidDensityModule() {
+    public BlockDensityModule() {
         super(
-                "Liquid Density",
-                "Lets you and vehicles be just like jesus.",
+                "Block Density",
+                "Prevents you and your vehicles from clipping into fluid blocks, cactus blocks, sweet berry bush blocks, powder snow blocks, magma blocks and cobweb blocks.",
                 FeatureCategory.MOVEMENT,
                 false,
                 false
@@ -37,16 +35,19 @@ public class LiquidDensityModule extends Module implements BlockListener {
     @Override
     public void onCollisionShapeGet(final BlockEvent event) {
         if (player() == null) return;
-        if (options().useKey.isPressed()) {
-            final ItemStack mainHandStack = player().getMainHandStack();
-            if (mainHandStack.getItem() == Items.TRIDENT && EnchantmentHelper.getRiptide(mainHandStack) > 0) {
-                return;
-            }
-        }
-        if (player().isUsingRiptide()) return;
         final BlockState state = event.state;
         final Block block = state.getBlock();
-        if (event.pos.getY() < player().getY() && (block instanceof FluidBlock || !block.getFluidState(state).isEmpty())) {
+        final boolean isFluidBlock = event.pos.getY() < player().getY() && (block instanceof FluidBlock || !block.getFluidState(state).isEmpty());
+        if (isFluidBlock) {
+            if (options().useKey.isPressed()) {
+                final ItemStack mainHandStack = player().getMainHandStack();
+                if (mainHandStack.getItem() == Items.TRIDENT && EnchantmentHelper.getRiptide(mainHandStack) > 0) {
+                    return;
+                }
+            }
+            if (player().isUsingRiptide()) return;
+        }
+        if (isFluidBlock || block instanceof CactusBlock || block instanceof SweetBerryBushBlock || block instanceof PowderSnowBlock || block instanceof MagmaBlock || block instanceof CobwebBlock) {
             event.shape = VoxelShapes.fullCube();
             event.shouldUpdate = true;
         }
