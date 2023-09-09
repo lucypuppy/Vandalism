@@ -179,10 +179,10 @@ public class ModuleRegistry {
         return this.autoFishModule;
     }
 
-    private LiquidDensityModule liquidDensityModule;
+    private BlockDensityModule blockDensityModule;
 
-    public LiquidDensityModule getLiquidDensityModule() {
-        return this.liquidDensityModule;
+    public BlockDensityModule getBlockDensityModule() {
+        return this.blockDensityModule;
     }
 
     private VisualThrottleModule visualThrottleModule;
@@ -257,7 +257,7 @@ public class ModuleRegistry {
                 this.phaseModule = new PhaseModule(),
                 this.velocityModule = new VelocityModule(),
                 this.autoFishModule = new AutoFishModule(),
-                this.liquidDensityModule = new LiquidDensityModule(),
+                this.blockDensityModule = new BlockDensityModule(),
                 this.visualThrottleModule = new VisualThrottleModule(),
                 this.elytraFlightModule = new ElytraFlightModule(),
                 this.ambienceModule = new AmbienceModule(),
