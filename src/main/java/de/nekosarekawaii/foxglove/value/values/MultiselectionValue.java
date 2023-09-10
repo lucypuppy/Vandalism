@@ -10,19 +10,19 @@ import imgui.ImGui;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultiselectionValue extends Value<List<String>> {
+public class MultiselectionValue extends Value<ArrayList<String>> {
 
     private final List<String> existingValues;
 
     public MultiselectionValue(final String name, final String description, final IValue parent, final String[] existingValues, final String... selectedValues) {
         super(name, description, parent, selectedValues == null ? new ArrayList<>() : new ArrayList<>(List.of(selectedValues)));
-        this.existingValues = new ArrayList<>(List.of(existingValues));
+        this.existingValues = List.of(existingValues);
     }
 
     @Override
     public void onConfigLoad(final JsonObject valueObject) {
         final JsonArray jsonArray = valueObject.get("value").getAsJsonArray();
-        this.setValue(jsonArray.asList().stream().map(JsonElement::getAsString).toList());
+        this.setValue(new ArrayList<>(jsonArray.asList().stream().map(JsonElement::getAsString).toList()));
     }
 
     @Override
