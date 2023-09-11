@@ -4,8 +4,7 @@ import de.florianmichael.dietrichevents2.CancellableEvent;
 
 public interface FluidListener {
 
-    default void onFluidPush(final FluidPushEvent fluidPushEvent) {
-    }
+    void onFluidPush(final FluidPushEvent fluidPushEvent);
 
     class FluidPushEvent extends CancellableEvent<FluidListener> {
 

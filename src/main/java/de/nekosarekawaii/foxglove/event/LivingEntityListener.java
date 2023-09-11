@@ -7,10 +7,7 @@ import net.minecraft.entity.LivingEntity;
 
 public interface LivingEntityListener {
 
-
-    default void onRenderLivingEntity(final LivingEntityRenderEvent event) {
-    }
-
+    void onRenderLivingEntity(final LivingEntityRenderEvent event);
 
     class LivingEntityRenderEvent extends CancellableEvent<LivingEntityListener> {
 

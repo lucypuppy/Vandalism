@@ -4,8 +4,7 @@ import de.florianmichael.dietrichevents2.CancellableEvent;
 
 public interface EntityListener {
 
-    default void onEntityPush(final EntityPushEvent entityPushEvent) {
-    }
+    void onEntityPush(final EntityPushEvent entityPushEvent);
 
     class EntityPushEvent extends CancellableEvent<EntityListener> {
 
