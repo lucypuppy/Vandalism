@@ -13,7 +13,9 @@ public interface TooltipListener {
     class TooltipEvent extends AbstractEvent<TooltipListener> {
 
         public final static int ID = 12;
+
         public ItemStack itemStack;
+
         public final List<TooltipData> tooltipData;
 
         public TooltipEvent(final ItemStack itemStack, final List<TooltipData> tooltipData) {

@@ -1,11 +1,11 @@
 package de.nekosarekawaii.foxglove.feature.impl.module.impl.render;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.nekosarekawaii.foxglove.event.CameraListener;
+import de.nekosarekawaii.foxglove.event.CameraClipRaytraceListener;
 import de.nekosarekawaii.foxglove.feature.FeatureCategory;
 import de.nekosarekawaii.foxglove.feature.impl.module.Module;
 
-public class CameraNoClipModule extends Module implements CameraListener {
+public class CameraNoClipModule extends Module implements CameraClipRaytraceListener {
 
     public CameraNoClipModule() {
         super(
@@ -19,16 +19,16 @@ public class CameraNoClipModule extends Module implements CameraListener {
 
     @Override
     protected void onEnable() {
-        DietrichEvents2.global().subscribe(CameraDistanceEvent.ID, this);
+        DietrichEvents2.global().subscribe(CameraClipRaytraceEvent.ID, this);
     }
 
     @Override
     protected void onDisable() {
-        DietrichEvents2.global().unsubscribe(CameraDistanceEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(CameraClipRaytraceEvent.ID, this);
     }
 
     @Override
-    public void onCameraDistanceGet(final CameraDistanceEvent event) {
+    public void onCameraClipRaytrace(final CameraClipRaytraceEvent event) {
         event.cancel();
     }
 

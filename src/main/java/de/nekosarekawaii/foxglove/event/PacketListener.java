@@ -5,7 +5,6 @@ import net.minecraft.network.packet.Packet;
 
 public interface PacketListener {
 
-
     void onPacket(final PacketEvent event);
 
     class PacketEvent extends CancellableEvent<PacketListener> {

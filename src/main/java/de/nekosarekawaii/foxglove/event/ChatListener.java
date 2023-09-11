@@ -4,8 +4,7 @@ import de.florianmichael.dietrichevents2.AbstractEvent;
 
 public interface ChatListener {
 
-    default void onChatSend(final ChatSendEvent event) {
-    }
+    void onChatSend(final ChatSendEvent event);
 
     class ChatSendEvent extends AbstractEvent<ChatListener> {
 
