@@ -3,16 +3,13 @@ package de.nekosarekawaii.foxglove.value.values;
 import de.nekosarekawaii.foxglove.value.IValue;
 import imgui.ImGui;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class ListValue extends StringValue {
 
-    private final List<String> values;
+    private final String[] values;
 
     public ListValue(final String name, final String description, final IValue parent, final String... values) {
         super(name, description, parent, values[0]);
-        this.values = Arrays.asList(values);
+        this.values = values;
     }
 
     @Override
