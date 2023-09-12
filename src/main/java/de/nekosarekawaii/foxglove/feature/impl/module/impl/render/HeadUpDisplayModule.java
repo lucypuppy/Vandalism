@@ -10,6 +10,7 @@ import de.nekosarekawaii.foxglove.gui.imgui.ImGuiUtil;
 import de.nekosarekawaii.foxglove.value.Value;
 import de.nekosarekawaii.foxglove.value.ValueCategory;
 import de.nekosarekawaii.foxglove.value.values.BooleanValue;
+import de.nekosarekawaii.foxglove.value.values.ListValue;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import net.minecraft.client.gui.DrawContext;
@@ -35,6 +36,14 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
             true
     );
 
+    private final Value<String> enabledModulesListSortDirection = new ListValue(
+            "Enabled Modules List Sort Direction",
+            "Change the direction which the enabled modules are sorted to.",
+            this,
+            "Up",
+            "Down"
+    ).visibleConsumer(this.enabledModulesList::getValue).valueChangeConsumer((newValue) -> this.sortEnabledModules());
+
     private final Value<Boolean> watermark = new BooleanValue(
             "Watermark",
             "Shows the watermark.",
@@ -58,42 +67,42 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
     private final Value<Boolean> fps = new BooleanValue(
             "FPS",
             "Shows the current fps.",
-            infoElements,
+            this.infoElements,
             true
     ).visibleConsumer(this.infos::getValue);
 
     private final Value<Boolean> username = new BooleanValue(
             "Username",
             "Shows the current username.",
-            infoElements,
+            this.infoElements,
             true
     ).visibleConsumer(this.infos::getValue);
 
     private final Value<Boolean> position = new BooleanValue(
             "Position",
             "Shows the current position.",
-            infoElements,
+            this.infoElements,
             true
     ).visibleConsumer(this.infos::getValue);
 
     private final Value<Boolean> serverBrand = new BooleanValue(
             "Server Brand",
             "Shows the current server brand.",
-            infoElements,
+            this.infoElements,
             true
     ).visibleConsumer(this.infos::getValue);
 
     private final Value<Boolean> difficulty = new BooleanValue(
             "Difficulty",
             "Shows the current world difficulty.",
-            infoElements,
+            this.infoElements,
             true
     ).visibleConsumer(this.infos::getValue);
 
     private final Value<Boolean> permissionsLevel = new BooleanValue(
             "Permissions Level",
             "Shows the current permissions level.",
-            infoElements,
+            this.infoElements,
             true
     ).visibleConsumer(this.infos::getValue);
 
@@ -141,27 +150,37 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
     private void render() {
         Foxglove.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
 
+            // sort enabled modules
             if (this.sort) {
                 this.sort = false;
                 this.enabledModules.clear();
                 final FeatureList<Module> modules = Foxglove.getInstance().getModuleRegistry().getModules();
 
                 for (final Module module : modules) {
-                    final boolean display = module.isEnabled() && module.isShowInModuleList();
-                    final String toDisplay = module.getName();
-                    if (display) this.enabledModules.add(toDisplay);
+                    if (module.isEnabled() && module.isShowInModuleList()) {
+                        this.enabledModules.add(module.getName());
+                    }
                 }
 
-                this.enabledModules.sort((s1, s2) -> Float.compare(ImGui.calcTextSize(s2).x, ImGui.calcTextSize(s1).x));
+                this.enabledModules.sort((s1, s2) -> {
+                    final int compare;
+                    switch (this.enabledModulesListSortDirection.getValue()) {
+                        case "Up" -> compare = Float.compare(ImGui.calcTextSize(s2).x, ImGui.calcTextSize(s1).x);
+                        case "Down" -> compare = Float.compare(ImGui.calcTextSize(s1).x, ImGui.calcTextSize(s2).x);
+                        default -> compare = 0;
+                    }
+                    return compare;
+                });
             }
 
-            if (player() == null || world() == null || options().debugEnabled || options().hudHidden || currentScreen() instanceof InventoryScreen)
+            if (player() == null || world() == null || options().debugEnabled || options().hudHidden || currentScreen() instanceof InventoryScreen) {
                 return;
+            }
 
             final int windowFlags = this.transparent.getValue() ? ImGuiUtil.getInGameFlags(0) : (mouse().isCursorLocked() ? ImGuiWindowFlags.NoCollapse : 0);
 
-            // Render Watermark
-            if (watermark.getValue()) {
+            // Render watermark
+            if (this.watermark.getValue()) {
                 if (ImGui.begin("Watermark##headupdisplaymodule", windowFlags | ImGuiWindowFlags.NoResize)) {
                     ImGui.setWindowSize(0, 0);
                     ImGui.text(Foxglove.getInstance().getName() + "\tv" + Foxglove.getInstance().getVersion());
@@ -170,7 +189,7 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
                 }
             }
 
-            // Render module list
+            // Render enabled modules list
             if (this.enabledModulesList.getValue()) {
                 if (ImGui.begin("Enabled Modules##headupdisplaymodule", windowFlags)) {
                     final boolean empty = this.enabledModules.isEmpty();
@@ -213,6 +232,7 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
                     ImGui.end();
                 }
             }
+
         });
     }
 
