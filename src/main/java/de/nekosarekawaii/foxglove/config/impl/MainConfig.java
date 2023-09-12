@@ -82,9 +82,9 @@ public class MainConfig extends ValueableConfig implements MinecraftWrapper {
             250
     ).visibleConsumer(this.multiplayerScreenServerInformation::getValue);
 
-    public final Value<Boolean> resourcePackSpoof = new BooleanValue(
-            "Resource Pack Spoof",
-            "Allows you to spoof the server resource pack.",
+    public final Value<Boolean> moreResourcePackOptions = new BooleanValue(
+            "More Server Resource Pack Options",
+            "Shows more options in the Server Resource Pack Download Screen.",
             this.menuCategory,
             true
     );
