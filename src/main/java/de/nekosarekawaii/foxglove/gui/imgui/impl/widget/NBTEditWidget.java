@@ -9,6 +9,8 @@ import net.lenni0451.imnbt.ui.types.Window;
 import net.lenni0451.imnbt.ui.windows.AboutWindow;
 import net.lenni0451.imnbt.ui.windows.DiffWindow;
 import net.lenni0451.imnbt.ui.windows.MainWindow;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.main.Main;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
@@ -47,6 +49,9 @@ public class NBTEditWidget implements ImNbtDrawer {
     }
 
     public void show() {
+        if (MinecraftClient.getInstance().player != null && MinecraftClient.getInstance().mouse.isCursorLocked()) {
+            MinecraftClient.getInstance().execute(() -> MinecraftClient.getInstance().setScreen(new ChatScreen("")));
+        }
         this.show = true;
     }
 
@@ -114,16 +119,18 @@ public class NBTEditWidget implements ImNbtDrawer {
                 }
                 ImGui.endMainMenuBar();
             }
-            ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0);
-            if (ImGui.begin("NBT Edit", ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoCollapse)) {
-                this.window.render();
-                ImGui.end();
+            if (!MinecraftClient.getInstance().mouse.isCursorLocked()) {
+                ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0);
+                if (ImGui.begin("NBT Edit", ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoCollapse)) {
+                    this.window.render();
+                    ImGui.end();
+                }
+                if (this.popup != null) {
+                    this.popup.open();
+                    this.popup.render(this);
+                }
+                ImGui.popStyleVar();
             }
-            if (this.popup != null) {
-                this.popup.open();
-                this.popup.render(this);
-            }
-            ImGui.popStyleVar();
         }
     }
 
