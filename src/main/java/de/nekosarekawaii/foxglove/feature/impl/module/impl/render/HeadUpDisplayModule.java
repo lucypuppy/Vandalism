@@ -14,6 +14,8 @@ import de.nekosarekawaii.foxglove.value.values.ListValue;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.util.Window;
 
@@ -21,6 +23,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HeadUpDisplayModule extends Module implements RenderListener {
+
+    private final Value<Boolean> inventoryScreenBringToFront = new BooleanValue(
+            "Inventory Screen bring to front",
+            "Renders the hud over inventory screens.",
+            this,
+            false
+    );
+
+    private final Value<Boolean> gameMenuScreenBringToFront = new BooleanValue(
+            "Game Menu Screen bring to front",
+            "Renders the hud over the game menu screen.",
+            this,
+            false
+    );
 
     private final Value<Boolean> transparent = new BooleanValue(
             "Transparent",
@@ -123,9 +139,10 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
 
     @Override
     public void onRender2D(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        if (currentScreen() != null) {
-            this.render();
-        }
+        if (currentScreen() instanceof ChatScreen ||
+                (currentScreen() instanceof InventoryScreen && this.inventoryScreenBringToFront.getValue()) ||
+                (currentScreen() instanceof GameMenuScreen && this.gameMenuScreenBringToFront.getValue())
+        ) render();
     }
 
     private final List<String> enabledModules;
@@ -173,7 +190,7 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
                 });
             }
 
-            if (player() == null || world() == null || options().debugEnabled || options().hudHidden || currentScreen() instanceof InventoryScreen) {
+            if (player() == null || world() == null || options().debugEnabled || options().hudHidden) {
                 return;
             }
 
