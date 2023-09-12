@@ -15,14 +15,13 @@ public abstract class MixinKeyboard {
 
     @Inject(method = "onKey", at = @At("HEAD"), cancellable = true)
     private void onKey(long window, int key, int scanCode, int action, int modifiers, CallbackInfo ci) {
-        if (ImGui.isItemClicked() || Foxglove.getInstance().getImGuiHandler().isHovered())
-            ci.cancel();
+        if (key == Foxglove.getInstance().getImGuiHandler().getKey()) return;
+        if (ImGui.isItemClicked() || Foxglove.getInstance().getImGuiHandler().isHovered()) ci.cancel();
     }
 
     @Inject(method = "onChar", at = @At("HEAD"), cancellable = true)
     private void onChar(long window, int codePoint, int modifiers, CallbackInfo ci) {
-        if (ImGui.isItemClicked() || Foxglove.getInstance().getImGuiHandler().isHovered())
-            ci.cancel();
+        if (ImGui.isItemClicked() || Foxglove.getInstance().getImGuiHandler().isHovered()) ci.cancel();
     }
 
     @Inject(method = "onKey", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;", shift = At.Shift.BEFORE, ordinal = 0))
