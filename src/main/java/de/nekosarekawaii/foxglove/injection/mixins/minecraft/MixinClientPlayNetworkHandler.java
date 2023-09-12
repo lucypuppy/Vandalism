@@ -34,7 +34,7 @@ public abstract class MixinClientPlayNetworkHandler {
     @Redirect(method = "method_34013", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;setScreen(Lnet/minecraft/client/gui/screen/Screen;)V"))
     private void redirectOnResourcePackSend(final MinecraftClient instance, final Screen screen) {
         if (screen instanceof final ConfirmScreen confirmScreen) {
-            if (Foxglove.getInstance().getConfigManager().getMainConfig().resourcePackSpoof.getValue()) {
+            if (Foxglove.getInstance().getConfigManager().getMainConfig().moreResourcePackOptions.getValue()) {
                 instance.setScreen(new CustomResourcePackConfirmScreen(confirmScreen.callback, confirmScreen.getTitle(), confirmScreen.message));
                 return;
             }

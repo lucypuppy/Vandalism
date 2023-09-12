@@ -19,6 +19,7 @@ public class ImGuiMenuRegistry {
                 new AltManagerImGuiMenu(),
                 new NameHistoryImGuiMenu(),
                 new ServerPingerImGuiMenu(),
+                new ServerAddressResolverImGuiMenu(),
                 new BugScraperImGuiMenu()
         );
     }
