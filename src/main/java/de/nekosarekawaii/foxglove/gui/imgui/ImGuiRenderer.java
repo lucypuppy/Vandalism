@@ -86,7 +86,7 @@ public class ImGuiRenderer {
         colors[ImGuiCol.TabUnfocused] = new float[]{0.10f, 0.09f, 0.12f, 1.00f};
         colors[ImGuiCol.TabUnfocusedActive] = new float[]{0.24f, 0.23f, 0.29f, 1.00f};
         colors[ImGuiCol.TitleBg] = new float[]{0.10f, 0.09f, 0.12f, 1.00f};
-        colors[ImGuiCol.TitleBgCollapsed] = new float[]{1.00f, 0.98f, 0.95f, 0.75f};
+        colors[ImGuiCol.TitleBgCollapsed] = new float[]{0.10f, 0.09f, 0.12f, 1.00f};
         colors[ImGuiCol.TitleBgActive] = new float[]{0.07f, 0.07f, 0.09f, 1.00f};
         colors[ImGuiCol.MenuBarBg] = new float[]{0.10f, 0.09f, 0.12f, 1.00f};
         colors[ImGuiCol.ScrollbarBg] = new float[]{0.10f, 0.09f, 0.12f, 1.00f};
