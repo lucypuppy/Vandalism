@@ -102,6 +102,13 @@ public class MainConfig extends ValueableConfig implements MinecraftWrapper {
             "."
     );
 
+    public final Value<Boolean> displayTypedChars = new BooleanValue(
+            "Display Typed Chars",
+            "Displays the current char count of from the chat input field.",
+            this.chatCategory,
+            true
+    );
+
     public final Value<Boolean> allowColorChar = new BooleanValue(
             "Allow Color Char",
             "Disables the color char restrictions of the Game.",

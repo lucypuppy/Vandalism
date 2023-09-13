@@ -1,6 +1,7 @@
 package de.nekosarekawaii.foxglove.injection.mixins.minecraft;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.terraformersmc.modmenu.gui.ModsScreen;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.foxglove.Foxglove;
 import de.nekosarekawaii.foxglove.event.RenderListener;
@@ -48,7 +49,7 @@ public abstract class MixinScreen {
 
     @Inject(method = "renderBackgroundTexture", at = @At(value = "HEAD"), cancellable = true)
     private void injectRenderBackgroundTexture(final DrawContext context, final CallbackInfo ci) {
-        if (client != null && client.player != null && client.world != null && !(client.currentScreen instanceof MessageScreen) && !(client.currentScreen instanceof TelemetryInfoScreen) && !(client.currentScreen instanceof PackScreen)) {
+        if (client != null && client.player != null && client.world != null && !(client.currentScreen instanceof MessageScreen) && !(client.currentScreen instanceof TelemetryInfoScreen) && !(client.currentScreen instanceof PackScreen) && !(client.currentScreen instanceof ModsScreen)) {
             ci.cancel();
         }
     }

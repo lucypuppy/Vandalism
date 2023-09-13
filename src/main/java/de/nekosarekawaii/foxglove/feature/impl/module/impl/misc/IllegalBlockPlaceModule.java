@@ -1,6 +1,7 @@
 package de.nekosarekawaii.foxglove.feature.impl.module.impl.misc;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.florianmichael.viafabricplus.protocolhack.ProtocolHack;
 import de.nekosarekawaii.foxglove.event.TickListener;
 import de.nekosarekawaii.foxglove.feature.FeatureCategory;
 import de.nekosarekawaii.foxglove.feature.impl.module.Module;
@@ -15,16 +16,16 @@ import net.minecraft.item.SpawnEggItem;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
+import net.raphimc.vialoader.util.VersionEnum;
 
-public class IllegalBlockPlaceModule extends Module
-        implements TickListener {
+public class IllegalBlockPlaceModule extends Module implements TickListener {
 
     public Value<Boolean> viaVersionBug = new BooleanValue(
             "ViaVersion Bug",
             "Allows you to place blocks inside your-self on versions lower than 1.13 on servers that are using the plugin ViaVersion.",
             this,
             true
-    );
+    ).visibleConsumer(() -> ProtocolHack.getTargetVersion().isOlderThanOrEqualTo(VersionEnum.r1_12_2));
 
     public IllegalBlockPlaceModule() {
         super(
