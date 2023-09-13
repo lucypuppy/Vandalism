@@ -10,8 +10,7 @@ import de.nekosarekawaii.foxglove.util.click.clickers.MSTimerClicker;
 import de.nekosarekawaii.foxglove.util.rotation.RotationPriority;
 import de.nekosarekawaii.foxglove.util.rotation.rotationtypes.Rotation;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec2f;
 
 import java.util.ArrayList;
@@ -48,7 +47,7 @@ public class TestModule extends Module implements TickListener {
         if (world() == null || player() == null) return;
         final List<Entity> entities = new ArrayList<>();
         world().getEntities().forEach(entity -> {
-            if (entity instanceof LivingEntity && entity instanceof VillagerEntity && player().distanceTo(entity) < 6 && entity != player()) {
+            if (entity instanceof PlayerEntity && player().distanceTo(entity) < 6 && entity != player()) {
                 entities.add(entity);
             }
         });
@@ -58,7 +57,11 @@ public class TestModule extends Module implements TickListener {
         }
         final Entity target = entities.get(0);
 
-        Foxglove.getInstance().getRotationListener().setRotation(target, true, 3.5f, new Vec2f(15, 20), RotationPriority.HIGH);
+        final Rotation rotation = Rotation.Builder.build(target, true, 3.5f, 0.1D);
+
+        if (rotation != null) {
+            Foxglove.getInstance().getRotationListener().setRotation(rotation, new Vec2f(80, 100), RotationPriority.HIGH);
+        }
 
         if (this.clickGenerator instanceof final MSTimerClicker clicker) {
             clicker.setMinDelay(20);
