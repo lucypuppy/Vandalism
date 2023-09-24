@@ -6,8 +6,8 @@ public class MouseUtils {
         return mouseY <= y2 && mouseY >= y1 && mouseX <= x2 && mouseX >= x1;
     }
 
-    public static boolean isHoveredWithinBounds(final double x, final double y, final double width, final double height, final int mouseX, final int mouseY) {
-        return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
+    public static boolean isHoveredWithinBounds(final double mouseX, final double mouseY, final int x, final int y, final int width, final int height) {
+        return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
     }
 
     public static boolean isHoveredCircle(final double x, final double y, final double radius, final int mouseX, final int mouseY) {

@@ -8,15 +8,11 @@ import de.foxglovedevelopment.foxglove.gui.imgui.ImGuiHandler;
 import de.foxglovedevelopment.foxglove.util.rotation.RotationListener;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.loader.api.metadata.ModMetadata;
-import net.fabricmc.loader.api.metadata.Person;
 import net.minecraft.client.MinecraftClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 public class Foxglove {
@@ -27,9 +23,9 @@ public class Foxglove {
         return instance;
     }
 
-    private final String name, lowerCaseName, version, windowTitle, authorsString;
+    private final String name, lowerCaseName, version, windowTitle, author;
 
-    private final static String FALLBACK_VERSION = "1337", FALLBACK_AUTHOR = "NekosAreKawaii";
+    private final static String FALLBACK_VERSION = "1337";
 
     private final Logger logger;
 
@@ -50,24 +46,24 @@ public class Foxglove {
     public Foxglove() {
         this.name = "Foxglove";
         this.lowerCaseName = this.name.toLowerCase();
+        this.author = "NekosAreKawaii";
         final String modVersionString;
-        final Collection<String> modAuthors;
-        final Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(this.lowerCaseName);
+        final Optional<ModContainer> modContainer = FabricLoader.
+                getInstance().
+                getModContainer(this.lowerCaseName);
         if (modContainer.isPresent()) {
-            final ModMetadata modMetadata = modContainer.get().getMetadata();
-            modVersionString = modMetadata.getVersion().getFriendlyString();
-            modAuthors = modMetadata.getAuthors().stream().map(Person::getName).toList();
-        } else {
-            modVersionString = FALLBACK_VERSION;
-            modAuthors = List.of(FALLBACK_AUTHOR);
-        }
+            modVersionString = modContainer.
+                    get().
+                    getMetadata().
+                    getVersion().
+                    getFriendlyString();
+        } else modVersionString = FALLBACK_VERSION;
         this.version = modVersionString.equals("${version}") ? FALLBACK_VERSION : modVersionString;
-        this.authorsString = String.join(", ", modAuthors);
         this.logger = LoggerFactory.getLogger(this.name);
         this.windowTitle = String.format(
                 "%s made by %s",
                 this.name,
-                this.authorsString
+                this.author
         );
     }
 
@@ -75,7 +71,7 @@ public class Foxglove {
         mc.getWindow().setTitle(this.windowTitle + " | Starting...");
         this.logger.info("Starting...");
         this.logger.info("Version: {}", this.version);
-        this.logger.info("Made by {}", this.authorsString);
+        this.logger.info("Made by {}", this.author);
         this.dir = new File(mc.runDirectory, this.lowerCaseName);
         this.dir.mkdirs();
         this.creativeTabRegistry = new CreativeTabRegistry();
@@ -107,8 +103,8 @@ public class Foxglove {
         return this.version;
     }
 
-    public String getAuthorsAsString() {
-        return this.authorsString;
+    public String getAuthor() {
+        return this.author;
     }
 
     public Logger getLogger() {
