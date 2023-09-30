@@ -8,12 +8,10 @@ import com.google.gson.JsonObject;
 import de.foxglovedevelopment.foxglove.Foxglove;
 import de.foxglovedevelopment.foxglove.config.ValueableConfig;
 import de.foxglovedevelopment.foxglove.util.MinecraftWrapper;
+import de.foxglovedevelopment.foxglove.util.rotation.RotationGCD;
 import de.foxglovedevelopment.foxglove.value.Value;
 import de.foxglovedevelopment.foxglove.value.ValueCategory;
-import de.foxglovedevelopment.foxglove.value.values.BooleanValue;
-import de.foxglovedevelopment.foxglove.value.values.KeyInputValue;
-import de.foxglovedevelopment.foxglove.value.values.ListValue;
-import de.foxglovedevelopment.foxglove.value.values.StringValue;
+import de.foxglovedevelopment.foxglove.value.values.*;
 import de.foxglovedevelopment.foxglove.value.values.number.slider.SliderFloatValue;
 import de.foxglovedevelopment.foxglove.value.values.number.slider.SliderIntegerValue;
 import it.unimi.dsi.fastutil.Pair;
@@ -381,6 +379,27 @@ public class MainConfig extends ValueableConfig implements MinecraftWrapper {
             -5.0f,
             5.0f
     ).visibleConsumer(this.customizeRiptideBoostMultiplier::getValue);
+
+    private final ValueCategory rotationCategory = new ValueCategory(
+            "Rotation",
+            "Rotation settings",
+            this
+    );
+
+    public final Value<Boolean> rotateBack = new BooleanValue(
+            "Rotate Back",
+            "Enable / Disable smooth rotate back.",
+            this.rotationCategory,
+            true
+    );
+
+    public final EnumListSetting<RotationGCD> gcdMode = new EnumListSetting<>(
+            "GCD Mode",
+            "Change the GCD Mode.",
+            this.rotationCategory,
+            RotationGCD.REAL,
+            RotationGCD.NONE
+    );
 
     @Override
     public JsonObject save() throws IOException {
