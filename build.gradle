@@ -79,6 +79,11 @@ dependencies {
 	implementation "io.github.spair:imgui-java-natives-linux:${project.spair_imgui_version}"
 
 	implementation "de.florianmichael:DietrichEvents2:${project.dietrichevents2_version}"
+
+	implementation "de.florianmichael.rclasses:common:${project.rclasses}"
+	implementation "de.florianmichael.rclasses:math:${project.rclasses}"
+	implementation "de.florianmichael.rclasses:pattern:${project.rclasses}"
+	implementation "de.florianmichael.rclasses:io:${project.rclasses}"
 }
 
 processResources {

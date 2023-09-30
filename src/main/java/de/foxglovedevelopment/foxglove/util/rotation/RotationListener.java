@@ -1,6 +1,7 @@
 package de.foxglovedevelopment.foxglove.util.rotation;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.foxglovedevelopment.foxglove.Foxglove;
 import de.foxglovedevelopment.foxglove.event.PacketListener;
 import de.foxglovedevelopment.foxglove.event.RenderListener;
 import de.foxglovedevelopment.foxglove.util.MinecraftWrapper;
@@ -12,7 +13,6 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 import org.apache.commons.lang3.RandomUtils;
-import org.jetbrains.annotations.Nullable;
 
 public class RotationListener implements PacketListener, RenderListener, MinecraftWrapper {
 
@@ -43,10 +43,7 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
         this.lastRotation = new Rotation(player().lastYaw, player().lastPitch);
 
         if (this.targetRotation != null) {
-            this.rotation = this.bruteforceGCD(
-                    rotationDistribution(this.targetRotation, this.lastRotation),
-                    delta
-            );
+            this.rotation = this.applyGCDFix(rotationDistribution(this.targetRotation, this.lastRotation), delta);
             return;
         }
 
@@ -54,7 +51,7 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
             return;
 
         final float
-                yaw = wrapDegreesFixed(player().yaw),
+                yaw = MathHelper.wrapDegrees(player().yaw),
                 pitch = player().pitch,
                 yawDiff = Math.abs(yaw - this.rotation.getYaw()),
                 pitchDiff = Math.abs(pitch - this.rotation.getPitch());
@@ -64,13 +61,15 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
             return;
         }
 
-        this.rotation = this.bruteforceGCD(
-                rotationDistribution(new Rotation(yaw, pitch), this.lastRotation),
-                delta
-        );
+        if (!Foxglove.getInstance().getConfigManager().getMainConfig().rotateBack.getValue()) {
+            this.rotation = this.applyGCDFix(new Rotation(yaw, pitch), delta);
+            return;
+        }
+
+        this.rotation = this.applyGCDFix(rotationDistribution(new Rotation(yaw, pitch), this.lastRotation), delta);
     }
 
-    public void setRotation(final @Nullable Rotation rotation, final Vec2f rotateSpeedMinMax, final RotationPriority priority) {
+    public void setRotation(final Rotation rotation, final Vec2f rotateSpeedMinMax, final RotationPriority priority) {
         if (this.currentPriority == null || priority.getPriority() >= this.currentPriority.getPriority()) {
             this.targetRotation = rotation;
             this.rotateSpeedMinMax = rotateSpeedMinMax;
@@ -78,44 +77,30 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
         }
     }
 
+    public void resetRotation() {
+        this.targetRotation = null;
+    }
+
     // Bruteforce GCD Method best for hvh tested it really often.
-    private Rotation bruteforceGCD(final Rotation rotation, final float partialTicks) {
-        float yaw = rotation.getYaw(), pitch = rotation.getPitch();
+    private Rotation applyGCDFix(final Rotation rotation, final float partialTicks) {
+        final double f = mc().options.getMouseSensitivity().getValue() * 0.6F + 0.2F;
+        final double g = f * f * f;
+        final double gcd = g * 8.0;
+        final boolean disallowGCD = mc().options.getPerspective().isFirstPerson() && mc().player.isUsingSpyglass();
 
-        final double sensitivity = mc().options.getMouseSensitivity().getValue();
-        final double multiplier = getMouseMultiplier(sensitivity) * 0.15D;
-
-        double iterationsNeeded = RenderUtils.getFps() / 20.0;
-        iterationsNeeded *= partialTicks;
+        //Calculate needed ierations for the best gcd.
+        final double iterationsNeeded = (RenderUtils.getFps() / 20.0) * partialTicks;
         final int iterations = MathHelper.floor(iterationsNeeded + this.partialIterations);
         this.partialIterations += iterationsNeeded - iterations;
 
-        for (int i = 0; i <= iterations; i++) {
-            yaw = this.lastRotation.getYaw() + (float) (
-                    Math.round((yaw - this.lastRotation.getYaw()) / multiplier) * multiplier
-            );
+        final RotationGCD gcdMode = Foxglove.getInstance().getConfigManager().getMainConfig().gcdMode.getValue();
+        final Rotation fixedRotation = gcdMode.getLambda().apply(rotation, this.lastRotation, disallowGCD ? g : gcd, iterations);
 
-            pitch = this.lastRotation.getPitch() + (float) (
-                    Math.round((pitch - this.lastRotation.getPitch()) / multiplier) * multiplier
-            );
-        }
+        //Fix for a small check i coded some time in the past idk how it worked but this fixed it.
+        fixedRotation.setYaw(this.lastRotation.getYaw() + MathHelper.wrapDegrees(fixedRotation.getYaw() - this.lastRotation.getYaw()));
+        fixedRotation.setPitch(MathHelper.clamp(fixedRotation.getPitch(), -90.0F, 90.0F));
 
-        return new Rotation(wrapDegreesFixed(yaw), pitch);
-    }
-
-    private double getMouseMultiplier(final double sensitivity) {
-        final double f = sensitivity * 0.6F + 0.2F;
-        final double g = f * f * f;
-
-        if (mc().options.getPerspective().isFirstPerson() && mc().player.isUsingSpyglass())
-            return g;
-
-        return g * 8.0;
-    }
-
-    // This is a fix method for rounding errors in the yaw detectable with a simple check.
-    private float wrapDegreesFixed(final float yaw) {
-        return this.lastRotation.getYaw() + MathHelper.wrapDegrees(yaw - this.lastRotation.getYaw());
+        return fixedRotation;
     }
 
     public Rotation rotationDistribution(final Rotation rotation, final Rotation lastRotation) {
@@ -130,19 +115,23 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
                     deltaYaw = MathHelper.wrapDegrees(rotation.getYaw() - lastYaw),
                     deltaPitch = rotation.getPitch() - lastPitch;
 
-            final double
-                    distance = Math.sqrt(deltaYaw * deltaYaw + deltaPitch * deltaPitch),
-                    distributionYaw = Math.abs(deltaYaw / distance),
-                    distributionPitch = Math.abs(deltaPitch / distance),
-                    maxYaw = rotateSpeed * distributionYaw,
-                    maxPitch = rotateSpeed * distributionPitch;
+            final double distance = Math.sqrt(deltaYaw * deltaYaw + deltaPitch * deltaPitch);
 
-            final float
-                    moveYaw = (float) Math.max(Math.min(deltaYaw, maxYaw), -maxYaw),
-                    movePitch = (float) Math.max(Math.min(deltaPitch, maxPitch), -maxPitch);
+            if (distance > 0) {
+                final double
+                        distributionYaw = Math.abs(deltaYaw / distance),
+                        distributionPitch = Math.abs(deltaPitch / distance),
+                        maxYaw = rotateSpeed * distributionYaw,
+                        maxPitch = rotateSpeed * distributionPitch;
 
-            return new Rotation(lastYaw + moveYaw, lastPitch + movePitch);
+                final float
+                        moveYaw = (float) Math.max(Math.min(deltaYaw, maxYaw), -maxYaw),
+                        movePitch = (float) Math.max(Math.min(deltaPitch, maxPitch), -maxPitch);
+
+                return new Rotation(lastYaw + moveYaw, lastPitch + movePitch);
+            }
         }
+
         return rotation;
     }
 

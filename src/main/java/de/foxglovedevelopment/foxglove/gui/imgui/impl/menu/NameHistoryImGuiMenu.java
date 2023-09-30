@@ -1,12 +1,16 @@
 package de.foxglovedevelopment.foxglove.gui.imgui.impl.menu;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import de.florianmichael.rclasses.io.WebUtils;
 import de.foxglovedevelopment.foxglove.gui.imgui.ImGuiMenu;
-import de.foxglovedevelopment.foxglove.util.Http;
+import de.foxglovedevelopment.foxglove.util.JsonDateDeserializer;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import net.minecraft.util.Uuids;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -25,6 +29,8 @@ public class NameHistoryImGuiMenu extends ImGuiMenu {
 
     private Thread thread;
 
+    private final Gson gson;
+
     public NameHistoryImGuiMenu() {
         super("Name History");
         this.formatter = new SimpleDateFormat("hh:mm:ss a, dd/MM/yyyy");
@@ -33,6 +39,10 @@ public class NameHistoryImGuiMenu extends ImGuiMenu {
         this.lastUsername = this.lastUUID = "";
         this.currentState = State.WAITING_INPUT;
         this.thread = null;
+
+        this.gson = new GsonBuilder()
+                .registerTypeAdapter(Date.class, new JsonDateDeserializer())
+                .create();
     }
 
     @Override
@@ -50,7 +60,10 @@ public class NameHistoryImGuiMenu extends ImGuiMenu {
                             String uuidIntArray = "";
                             try {
                                 this.currentState = State.WAITING_MOJANG_RESPONSE;
-                                final Player player = Http.get("https://api.mojang.com/users/profiles/minecraft/" + usernameValue).sendJson(Player.class);
+
+                                final String content = WebUtils.DEFAULT.get("https://api.mojang.com/users/profiles/minecraft/" + usernameValue);
+                                final Player player = gson.fromJson(content, Player.class);
+
                                 if (player != null) {
                                     uuid = UUID.fromString(player.id()
                                             .replaceFirst(
@@ -71,7 +84,16 @@ public class NameHistoryImGuiMenu extends ImGuiMenu {
                             if (this.currentState == State.FAILED) return;
                             this.currentState = State.WAITING_LABY_RESPONSE;
                             final String labyUrl = "https://laby.net/api/v2/user/" + uuid + "/get-profile";
-                            final NameHistory history = Http.get(labyUrl).sendJson(NameHistory.class);
+
+                            NameHistory history = null;
+
+                            try {
+                                final String content = WebUtils.DEFAULT.get(labyUrl);
+                                history = gson.fromJson(content, NameHistory.class);
+                            } catch (final IOException ignored) {
+
+                            }
+
                             if (history == null || history.username_history == null || history.username_history.length == 0) {
                                 this.currentState = State.FAILED;
                                 return;

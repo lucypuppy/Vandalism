@@ -7,7 +7,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import org.joml.SimplexNoise;
 
 public class Rotation {
 
@@ -34,15 +33,6 @@ public class Rotation {
         return this.pitch;
     }
 
-    public void addNoise() { //Todo finish this @Lilly
-        final float noiseYaw = SimplexNoise.noise(yaw, 0) * 5;
-        final float noisePitch = SimplexNoise.noise(pitch, 0) * 5;
-        final float noise = SimplexNoise.noise(noiseYaw, noisePitch);
-
-        yaw += noise;
-        pitch += noise;
-    }
-
     public Vec3d getVector() {
         final float f = pitch * (float) (Math.PI / 180.0);
         final float g = -yaw * (float) (Math.PI / 180.0);
@@ -51,6 +41,11 @@ public class Rotation {
         final float j = MathHelper.cos(f);
         final float k = MathHelper.sin(f);
         return new Vec3d(i * j, -k, h * j);
+    }
+
+    @Override
+    public String toString() {
+        return "Rotation{" + "yaw=" + yaw + ", pitch=" + pitch + '}';
     }
 
     public static class Builder {
@@ -106,15 +101,15 @@ public class Rotation {
             return new Rotation(yaw, pitch);
         }
 
-        //Todo recode this. @Lilly
         private static Vec3d getNearestPoint(final Entity entity, final Box box, final PlayerEntity player) {
-            final double nearestX = Math.max(box.minX, Math.min(entity.getX(), box.maxX));
-            final double nearestZ = Math.max(box.minZ, Math.min(entity.getZ(), box.maxZ));
+            final double nearestX = MathHelper.clamp(entity.getX(), box.minX, box.maxX);
+            final double nearestZ = MathHelper.clamp(entity.getZ(), box.minZ, box.maxZ);
 
-            final double nearestY = entity.getY() + Math.max(0,
-                    Math.min(player.getY() - entity.getY() + player.getEyeHeight(player.getPose()),
-                            (box.maxY - box.minY) * 0.9)
-            );
+            //Todo find a better way to calculate this
+            final double entityY = entity.getY();
+            final double playerY = player.getY() + player.getEyeHeight(player.getPose());
+            final double boxHeight = (box.maxY - box.minY) * 0.9;
+            final double nearestY = entityY + MathHelper.clamp(playerY - entityY, 0, boxHeight);
 
             return new Vec3d(nearestX, nearestY, nearestZ);
         }

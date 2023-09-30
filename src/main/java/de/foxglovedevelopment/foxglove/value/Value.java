@@ -19,7 +19,12 @@ public abstract class Value<V> {
     public Value(final String name, final String description, final IValue parent, final V defaultValue) {
         this.name = name;
         this.description = description;
-        this.saveIdent = name + "-" + description.hashCode() + "-" + defaultValue.hashCode();
+
+        if (defaultValue instanceof Enum<?>) { //Shitfix for a bug with enums.
+            this.saveIdent = name + "-" + description.hashCode() + "-" + defaultValue.toString().hashCode();
+        } else {
+            this.saveIdent = name + "-" + description.hashCode() + "-" + defaultValue.hashCode();
+        }
 
         this.defaultValue = defaultValue;
         this.setValue(defaultValue);
