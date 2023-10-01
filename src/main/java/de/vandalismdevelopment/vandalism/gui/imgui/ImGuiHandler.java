@@ -1,0 +1,70 @@
+package de.vandalismdevelopment.vandalism.gui.imgui;
+
+import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.event.KeyboardListener;
+import de.vandalismdevelopment.vandalism.event.RenderListener;
+import de.vandalismdevelopment.vandalism.gui.imgui.impl.widget.NBTEditWidget;
+import de.vandalismdevelopment.vandalism.gui.screen.ImGuiScreen;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
+import net.minecraft.client.gui.DrawContext;
+import org.lwjgl.glfw.GLFW;
+
+import java.io.File;
+
+public class ImGuiHandler implements KeyboardListener, RenderListener, MinecraftWrapper {
+
+    private final ImGuiRenderer imGuiRenderer;
+
+    private final ImGuiMenuRegistry imGuiMenuRegistry;
+
+    private final NBTEditWidget nbtEditWidget;
+
+    public ImGuiHandler(final File dir) {
+        this.imGuiRenderer = new ImGuiRenderer(dir);
+        this.imGuiMenuRegistry = new ImGuiMenuRegistry();
+        this.nbtEditWidget = new NBTEditWidget();
+        DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
+        DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
+        Vandalism.getInstance().getLogger().info("ImGui loaded.");
+    }
+
+
+    public ImGuiRenderer getImGuiRenderer() {
+        return this.imGuiRenderer;
+    }
+
+    public NBTEditWidget getNbtEditWidget() {
+        return this.nbtEditWidget;
+    }
+
+    public ImGuiMenuRegistry getImGuiMenuRegistry() {
+        return this.imGuiMenuRegistry;
+    }
+
+    @Override
+    public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
+        if (action != GLFW.GLFW_PRESS) return;
+        if (key == Vandalism.getInstance().getConfigManager().getMainConfig().menuKey.getValue().left()) {
+            if (currentScreen() instanceof ImGuiScreen) currentScreen().close();
+            else setScreen(new ImGuiScreen(currentScreen()));
+        }
+    }
+
+
+    @Override
+    public void onRender2D(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        this.render();
+    }
+
+    @Override
+    public void onRender2DInGame(final DrawContext context, final float delta) {
+        this.render();
+    }
+
+    private void render() {
+        this.imGuiRenderer.render();
+        this.nbtEditWidget.render();
+    }
+
+}
