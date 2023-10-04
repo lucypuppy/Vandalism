@@ -3,7 +3,7 @@
   "id": "vandalism",
   "version": "${version}",
   "name": "Vandalism",
-  "description": "A utility mod.",
+  "description": "Vandalism is a mod for Minecraft designed to train server administrators.",
   "authors": [
     "VandalismDevelopment"
   ],
