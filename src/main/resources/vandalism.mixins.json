@@ -6,6 +6,7 @@
   "client": [
     "mixins.minecraft.MixinAbstractBlockState",
     "mixins.minecraft.MixinAbstractSignEditScreen",
+    "mixins.minecraft.MixinAccessibilityOnboardingScreen",
     "mixins.minecraft.MixinAllowedAddressResolver",
     "mixins.minecraft.MixinBackgroundRenderer",
     "mixins.minecraft.MixinBuiltinModelItemRenderer",
