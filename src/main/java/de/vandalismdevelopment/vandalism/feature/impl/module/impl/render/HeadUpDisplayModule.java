@@ -13,6 +13,7 @@ import de.vandalismdevelopment.vandalism.value.values.BooleanValue;
 import de.vandalismdevelopment.vandalism.value.values.ListValue;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.GameMenuScreen;
@@ -133,7 +134,7 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
 
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
-        if (currentScreen() == null) this.render();
+        if (currentScreen() == null) this.render(context);
     }
 
     @Override
@@ -141,7 +142,7 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
         if (currentScreen() instanceof ChatScreen ||
                 (currentScreen() instanceof InventoryScreen && this.inventoryScreenBringToFront.getValue()) ||
                 (currentScreen() instanceof GameMenuScreen && this.gameMenuScreenBringToFront.getValue())
-        ) render();
+        ) render(context);
     }
 
     private final List<String> enabledModules;
@@ -163,99 +164,79 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
         this.sort = true;
     }
 
-    private void render() {
-        Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
+    private void render(final DrawContext context) {
+        if (player() == null || world() == null) {
+            return;
+        }
 
-            // sort enabled modules
-            if (this.sort) {
-                this.sort = false;
-                this.enabledModules.clear();
-                final FeatureList<Module> modules = Vandalism.getInstance().getModuleRegistry().getModules();
+        final TextRenderer textRenderer = mc().textRenderer;
 
-                for (final Module module : modules) {
-                    if (module.isEnabled() && module.isShowInModuleList()) {
-                        this.enabledModules.add(module.getName());
-                    }
-                }
+        // sort enabled modules
+        if (this.sort) {
+            this.sort = false;
+            this.enabledModules.clear();
+            final FeatureList<Module> modules = Vandalism.getInstance().getModuleRegistry().getModules();
 
-                this.enabledModules.sort((s1, s2) -> {
-                    final int compare;
-                    switch (this.enabledModulesListSortDirection.getValue()) {
-                        case "Up" -> compare = Float.compare(ImGui.calcTextSize(s2).x, ImGui.calcTextSize(s1).x);
-                        case "Down" -> compare = Float.compare(ImGui.calcTextSize(s1).x, ImGui.calcTextSize(s2).x);
-                        default -> compare = 0;
-                    }
-                    return compare;
-                });
-            }
-
-            if (player() == null || world() == null || !mc().inGameHud.getDebugHud().shouldShowDebugHud()) {
-                return;
-            }
-
-            final int windowFlags = this.transparent.getValue() ? ImGuiUtil.getInGameFlags(0) : (mouse().isCursorLocked() ? ImGuiWindowFlags.NoCollapse : 0);
-
-            // Render watermark
-            if (this.watermark.getValue()) {
-                if (ImGui.begin("Watermark##headupdisplaymodule", windowFlags | ImGuiWindowFlags.NoResize)) {
-                    ImGui.setWindowSize(0, 0);
-                    ImGui.text(Vandalism.getInstance().getName() + "\tv" + Vandalism.getInstance().getVersion());
-                    ImGui.text("Made by " + Vandalism.getInstance().getAuthor());
-                    ImGui.end();
+            for (final Module module : modules) {
+                if (module.isEnabled() && module.isShowInModuleList()) {
+                    this.enabledModules.add(module.getName());
                 }
             }
 
-            // Render enabled modules list
-            if (this.enabledModulesList.getValue()) {
-                if (ImGui.begin("Enabled Modules##headupdisplaymodule", windowFlags)) {
-                    final boolean empty = this.enabledModules.isEmpty();
-
-                    for (final String enabledModule : this.enabledModules) {
-                        ImGui.text(enabledModule);
-                    }
-
-                    ImGui.setWindowSize(empty ? 100 : 0, empty ? 50 : 0);
-                    ImGui.end();
+            this.enabledModules.sort((s1, s2) -> {
+                final int compare;
+                switch (this.enabledModulesListSortDirection.getValue()) {
+                    case "Up" -> compare = Float.compare(ImGui.calcTextSize(s2).x, ImGui.calcTextSize(s1).x);
+                    case "Down" -> compare = Float.compare(ImGui.calcTextSize(s1).x, ImGui.calcTextSize(s2).x);
+                    default -> compare = 0;
                 }
+                return compare;
+            });
+        }
+
+        int y = 5;
+        context.drawText(textRenderer, "Vandalism", 5, y, 0, true);
+
+        y += textRenderer.fontHeight + 5;
+        for (final String enabledModule : this.enabledModules) {
+            context.drawText(textRenderer, enabledModule, 5, y, 0, true);
+            y += textRenderer.fontHeight;
+        }
+
+        y += 5;
+        if (this.fps.getValue()) {
+            context.drawText(textRenderer, "FPS: " + mc().getCurrentFps(), 5, y, 0, true);
+            y += textRenderer.fontHeight;
+        }
+
+        if (this.username.getValue()) {
+            context.drawText(textRenderer, "Username: " + player().getGameProfile().getName(), 5, y, 0, true);
+            y += textRenderer.fontHeight;
+        }
+
+        if (this.position.getValue()) {
+            context.drawText(textRenderer, "Position: " + player().getBlockPos().toShortString(), 5, y, 0, true);
+            y += textRenderer.fontHeight;
+        }
+
+        if (this.serverBrand.getValue()) {
+            final String serverBrand = networkHandler().getBrand();
+
+            if (serverBrand != null) {
+                final String brand = "Server Brand: " + serverBrand.replaceFirst("\\(.*?\\) ", "");
+                context.drawText(textRenderer, brand, 5, y, 0, true);
+                y += textRenderer.fontHeight;
             }
+        }
 
-            // Render infos
-            if (this.infos.getValue()) {
-                if (ImGui.begin("Infos##headupdisplaymodule", windowFlags)) {
-                    ImGui.setWindowSize(0, 0);
+        if (this.difficulty.getValue()) {
+            context.drawText(textRenderer, "Difficulty: " + world().getDifficulty().getName(), 5, y, 0, true);
+            y += textRenderer.fontHeight;
+        }
 
-                    if (this.fps.getValue()) {
-                        ImGui.text("FPS: " + mc().getCurrentFps());
-                    }
-
-                    if (this.username.getValue()) {
-                        ImGui.text("Username: " + player().getGameProfile().getName());
-                    }
-
-                    if (this.position.getValue()) {
-                        ImGui.text("Position: " + player().getBlockPos().toShortString());
-                    }
-
-                    if (this.serverBrand.getValue()) {
-                        final String serverBrand = networkHandler().getBrand();
-                        if (serverBrand != null) {
-                            ImGui.text("Server Brand: " + serverBrand.replaceFirst("\\(.*?\\) ", ""));
-                        }
-                    }
-
-                    if (this.difficulty.getValue()) {
-                        ImGui.text("Difficulty: " + world().getDifficulty().getName());
-                    }
-
-                    if (this.permissionsLevel.getValue()) {
-                        ImGui.text("Permissions Level: " + player().getPermissionLevel());
-                    }
-
-                    ImGui.end();
-                }
-            }
-
-        });
+        if (this.permissionsLevel.getValue()) {
+            context.drawText(textRenderer, "Permissions Level: " + player().getPermissionLevel(), 5, y, 0, true);
+        }
     }
 
 }
