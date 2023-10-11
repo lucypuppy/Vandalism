@@ -43,10 +43,17 @@ public abstract class MixinScreen {
         }
     }
 
-    @Inject(method = "render", at = @At(value = "TAIL"))
-    private void injectRender(final DrawContext context, final int mouseX, final int mouseY, final float delta, final CallbackInfo ci) {
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;renderBackground(Lnet/minecraft/client/gui/DrawContext;IIF)V", shift = At.Shift.BEFORE))
+    private void injectRenderPre(final DrawContext context, final int mouseX, final int mouseY, final float delta, final CallbackInfo ci) {
         context.getMatrices().push();
-        DietrichEvents2.global().postInternal(RenderListener.Render2DEvent.ID, new RenderListener.Render2DEvent(context, mouseX, mouseY, delta));
+        DietrichEvents2.global().postInternal(RenderListener.Render2DEvent.ID, new RenderListener.Render2DEvent(context, mouseX, mouseY, delta, false));
+        context.getMatrices().pop();
+    }
+
+    @Inject(method = "render", at = @At(value = "RETURN"))
+    private void injectRenderPost(final DrawContext context, final int mouseX, final int mouseY, final float delta, final CallbackInfo ci) {
+        context.getMatrices().push();
+        DietrichEvents2.global().postInternal(RenderListener.Render2DEvent.ID, new RenderListener.Render2DEvent(context, mouseX, mouseY, delta, true));
         context.getMatrices().pop();
     }
 

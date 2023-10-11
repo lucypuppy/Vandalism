@@ -161,7 +161,7 @@ public class ServerPingerImGuiMenu extends ImGuiMenu {
                         }
                     })
                     .finishHandler(response -> {
-                        this.serverInfoWidget.setQueryPingResponse(null);
+                        this.serverInfoWidget.setQueryPingResponse(response);
                         this.queryState = State.SUCCESS;
                     })
                     .getAsync();

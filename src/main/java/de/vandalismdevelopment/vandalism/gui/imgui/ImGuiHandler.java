@@ -53,7 +53,7 @@ public class ImGuiHandler implements KeyboardListener, RenderListener, Minecraft
 
 
     @Override
-    public void onRender2D(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+    public void onRender2DOutGamePost(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         this.render();
     }
 
