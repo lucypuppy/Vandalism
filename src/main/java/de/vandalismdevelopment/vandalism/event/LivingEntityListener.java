@@ -54,7 +54,6 @@ public interface LivingEntityListener {
 
         public final MatrixStack matrixStack;
 
-
         public int light;
 
         public LivingEntityRenderPostEvent(final LivingEntity livingEntity, final float yaw, final float tickDelta, final MatrixStack matrixStack, final int light) {
