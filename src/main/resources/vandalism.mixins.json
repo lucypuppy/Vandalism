@@ -28,6 +28,7 @@
     "mixins.minecraft.MixinDrawContext",
     "mixins.minecraft.MixinEntity",
     "mixins.minecraft.MixinEntityRenderer",
+    "mixins.minecraft.MixinFeatureRenderer",
     "mixins.minecraft.MixinGameMenuScreen",
     "mixins.minecraft.MixinGameRenderer",
     "mixins.minecraft.MixinGenericContainerScreen",
