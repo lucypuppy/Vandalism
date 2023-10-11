@@ -1,40 +1,34 @@
 package de.vandalismdevelopment.vandalism.event;
 
-import de.florianmichael.dietrichevents2.CancellableEvent;
-import net.minecraft.client.render.VertexConsumerProvider;
+import de.florianmichael.dietrichevents2.AbstractEvent;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
 public interface LivingEntityListener {
 
-    void onRenderLivingEntity(final LivingEntityRenderEvent event);
+    default void onLivingEntityRenderBottomLayer(final LivingEntityRenderBottomLayerEvent event) {}
 
-    class LivingEntityRenderEvent extends CancellableEvent<LivingEntityListener> {
+    class LivingEntityRenderBottomLayerEvent extends AbstractEvent<LivingEntityListener> {
 
         public final static int ID = 6;
 
         public final LivingEntity livingEntity;
 
-        public float f, g, red, green, blue, alpha;
-
         public final MatrixStack matrixStack;
 
-        public final VertexConsumerProvider vertexConsumerProvider;
+        public final VertexConsumer vertexConsumer;
 
-        public int i;
+        public int light, overlay;
 
-        public boolean showBody, translucent, showOutline;
+        public float red, green, blue, alpha;
 
-        public LivingEntityRenderEvent(final LivingEntity livingEntity, final float f, final float g, final MatrixStack matrixStack, final VertexConsumerProvider vertexConsumerProvider, final int i, final boolean showBody, final boolean translucent, final boolean showOutline, final float red, final float green, final float blue, final float alpha) {
+        public LivingEntityRenderBottomLayerEvent(final LivingEntity livingEntity, final MatrixStack matrixStack, final VertexConsumer vertexConsumer, final int light, final int overlay, final float red, final float green, final float blue, final float alpha) {
             this.livingEntity = livingEntity;
-            this.f = f;
-            this.g = g;
             this.matrixStack = matrixStack;
-            this.vertexConsumerProvider = vertexConsumerProvider;
-            this.i = i;
-            this.showBody = showBody;
-            this.translucent = translucent;
-            this.showOutline = showOutline;
+            this.vertexConsumer = vertexConsumer;
+            this.light = light;
+            this.overlay = overlay;
             this.red = red;
             this.green = green;
             this.blue = blue;
@@ -43,7 +37,37 @@ public interface LivingEntityListener {
 
         @Override
         public void call(final LivingEntityListener listener) {
-            listener.onRenderLivingEntity(this);
+            listener.onLivingEntityRenderBottomLayer(this);
+        }
+
+    }
+
+    default void onLivingEntityRenderPost(final LivingEntityRenderPostEvent event) {}
+
+    class LivingEntityRenderPostEvent extends AbstractEvent<LivingEntityListener> {
+
+        public final static int ID = 15;
+
+        public final LivingEntity livingEntity;
+
+        public float yaw, tickDelta;
+
+        public final MatrixStack matrixStack;
+
+
+        public int light;
+
+        public LivingEntityRenderPostEvent(final LivingEntity livingEntity, final float yaw, final float tickDelta, final MatrixStack matrixStack, final int light) {
+            this.livingEntity = livingEntity;
+            this.yaw = yaw;
+            this.tickDelta = tickDelta;
+            this.matrixStack = matrixStack;
+            this.light = light;
+        }
+
+        @Override
+        public void call(final LivingEntityListener listener) {
+            listener.onLivingEntityRenderPost(this);
         }
 
     }

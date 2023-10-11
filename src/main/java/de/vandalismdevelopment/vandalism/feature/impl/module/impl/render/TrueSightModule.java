@@ -53,24 +53,22 @@ public class TrueSightModule extends Module implements LivingEntityListener {
 
     @Override
     protected void onEnable() {
-        DietrichEvents2.global().subscribe(LivingEntityRenderEvent.ID, this);
+        DietrichEvents2.global().subscribe(LivingEntityRenderBottomLayerEvent.ID, this);
     }
 
     @Override
     protected void onDisable() {
-        DietrichEvents2.global().unsubscribe(LivingEntityRenderEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(LivingEntityRenderBottomLayerEvent.ID, this);
     }
 
     @Override
-    public void onRenderLivingEntity(final LivingEntityRenderEvent event) {
-        if (this.entities.getValue() && !event.showBody) {
+    public void onLivingEntityRenderBottomLayer(final LivingEntityRenderBottomLayerEvent event) {
+        if (this.entities.getValue() && event.livingEntity.isInvisible()) {
             final Color color = this.entityColor.getValue();
             event.red = color.getRed() / 255F;
             event.green = color.getGreen() / 255F;
             event.blue = color.getBlue() / 255F;
             event.alpha = color.getAlpha() / 255F;
-            if (event.alpha < 1.0f) event.translucent = true;
-            else event.showBody = true;
         }
     }
 
