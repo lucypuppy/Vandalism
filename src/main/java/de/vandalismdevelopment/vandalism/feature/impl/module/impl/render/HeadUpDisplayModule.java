@@ -6,10 +6,12 @@ import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.FeatureList;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
+import de.vandalismdevelopment.vandalism.gui.screen.ImGuiScreen;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
 import de.vandalismdevelopment.vandalism.value.values.BooleanValue;
 import de.vandalismdevelopment.vandalism.value.values.ListValue;
+import de.vandalismdevelopment.vandalism.value.values.number.IntegerValue;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.GameMenuScreen;
@@ -83,12 +85,31 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
             true
     ).visibleConsumer(this.infos::getValue);
 
+
     private final Value<Boolean> position = new BooleanValue(
             "Position",
             "Shows the current position.",
             this.infoElements,
             true
     ).visibleConsumer(this.infos::getValue);
+
+    private final ValueCategory positionElements = new ValueCategory(
+            "Position Elements",
+            "Elements that are shown in the position category.",
+            this
+    ).visibleConsumer(this.position::getValue);
+
+    private final Value<Integer> positionDecimalPlaces = new IntegerValue(
+            "Position Decimal Places",
+            "Allows you to change the viewable amount of decimal places from the x/y/z position (from 1 - 15).",
+            this.positionElements,
+            2,
+            1
+    ).visibleConsumer(this.position::getValue);
+     /*.valueChangeConsumer(value -> { TODO needs to be fixed because it does nothing.
+        if (value < 1) value = 1;
+        else if (value > 15) value = 15;
+    });*/
 
     private final Value<Boolean> serverBrand = new BooleanValue(
             "Server Brand",
@@ -127,10 +148,16 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
     }
 
     @Override
-    public void onRender2D(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        if (currentScreen() instanceof ChatScreen ||
-                (currentScreen() instanceof InventoryScreen && this.inventoryScreenBringToFront.getValue()) ||
-                (currentScreen() instanceof GameMenuScreen && this.gameMenuScreenBringToFront.getValue())
+    public void onRender2DOutGamePre(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        if (currentScreen() instanceof ImGuiScreen) render(context);
+    }
+
+    @Override
+    public void onRender2DOutGamePost(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        if (
+             currentScreen() instanceof ChatScreen ||
+             (currentScreen() instanceof InventoryScreen && this.inventoryScreenBringToFront.getValue()) ||
+             (currentScreen() instanceof GameMenuScreen && this.gameMenuScreenBringToFront.getValue())
         ) render(context);
     }
 
@@ -182,15 +209,16 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
             });
         }
 
-        int color = -1, x = 5, y = 5;
+        int color = -1, x = 5, y = 25;
+        boolean shadow = false;
 
         if (this.watermark.getValue()) {
-            context.drawText(textRenderer(), Vandalism.getInstance().getName(), x, y, color, true);
+            context.drawText(textRenderer(), Vandalism.getInstance().getName(), x, y, color, shadow);
             y += textRenderer().fontHeight + 10;
         }
 
         for (final String enabledModule : this.enabledModules) {
-            context.drawText(textRenderer(), enabledModule, x, y, color, true);
+            context.drawText(textRenderer(), enabledModule, x, y, color, shadow);
             y += textRenderer().fontHeight;
         }
 
@@ -198,17 +226,21 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
             y += 10;
 
             if (this.fps.getValue()) {
-                context.drawText(textRenderer(), "FPS: " + mc().getCurrentFps(), x, y, color, true);
+                context.drawText(textRenderer(), "FPS: " + mc().getCurrentFps(), x, y, color, shadow);
                 y += textRenderer().fontHeight;
             }
 
             if (this.username.getValue()) {
-                context.drawText(textRenderer(), "Username: " + player().getGameProfile().getName(), x, y, color, true);
+                context.drawText(textRenderer(), "Username: " + player().getGameProfile().getName(), x, y, color, shadow);
                 y += textRenderer().fontHeight;
             }
 
             if (this.position.getValue()) {
-                context.drawText(textRenderer(), "Position: " + player().getBlockPos().toShortString(), x, y, color, true);
+                final int positionDecimalPlacesRawValue = this.positionDecimalPlaces.getValue();
+                if (positionDecimalPlacesRawValue < 1) this.positionDecimalPlaces.setValue(1);
+                else if (positionDecimalPlacesRawValue > 15) this.positionDecimalPlaces.setValue(15);
+                final String positionDecimalPlaces = "%." + this.positionDecimalPlaces.getValue() + "f";
+                context.drawText(textRenderer(), "Position: " + String.format(positionDecimalPlaces + ", " + positionDecimalPlaces + ", " + positionDecimalPlaces, player().getX(), player().getY(), player().getZ()), x, y, color, shadow);
                 y += textRenderer().fontHeight;
             }
 
@@ -217,18 +249,18 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
 
                 if (serverBrand != null) {
                     final String brand = "Server Brand: " + serverBrand.replaceFirst("\\(.*?\\) ", "");
-                    context.drawText(textRenderer(), brand, x, y, color, true);
+                    context.drawText(textRenderer(), brand, x, y, color, shadow);
                     y += textRenderer().fontHeight;
                 }
             }
 
             if (this.difficulty.getValue()) {
-                context.drawText(textRenderer(), "Difficulty: " + world().getDifficulty().getName(), x, y, color, true);
+                context.drawText(textRenderer(), "Difficulty: " + world().getDifficulty().getName(), x, y, color, shadow);
                 y += textRenderer().fontHeight;
             }
 
             if (this.permissionsLevel.getValue()) {
-                context.drawText(textRenderer(), "Permissions Level: " + player().getPermissionLevel(), x, y, color, true);
+                context.drawText(textRenderer(), "Permissions Level: " + player().getPermissionLevel(), x, y, color, shadow);
             }
         }
 

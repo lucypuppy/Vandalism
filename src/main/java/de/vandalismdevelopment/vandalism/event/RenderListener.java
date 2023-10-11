@@ -8,11 +8,14 @@ public interface RenderListener {
     default void onRender2DInGame(final DrawContext context, final float delta) {
     }
 
-    default void onRender2D(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+    default void onRender2DOutGamePre(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+    }
+
+    default void onRender2DOutGamePost(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
     }
 
     enum Render2DEventType {
-        IN_GAME, OUT_GAME
+        IN_GAME, OUT_GAME_PRE, OUT_GAME_POST
     }
 
     class Render2DEvent extends AbstractEvent<RenderListener> {
@@ -24,8 +27,8 @@ public interface RenderListener {
         private final int mouseX, mouseY;
         private final float delta;
 
-        public Render2DEvent(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-            this.type = Render2DEventType.OUT_GAME;
+        public Render2DEvent(final DrawContext context, final int mouseX, final int mouseY, final float delta, final boolean post) {
+            this.type = post ? Render2DEventType.OUT_GAME_POST : Render2DEventType.OUT_GAME_PRE;
             this.context = context;
             this.mouseX = mouseX;
             this.mouseY = mouseY;
@@ -42,10 +45,11 @@ public interface RenderListener {
 
         @Override
         public void call(final RenderListener listener) {
-            if (this.type == Render2DEventType.IN_GAME) {
-                listener.onRender2DInGame(this.context, this.delta);
-            } else {
-                listener.onRender2D(this.context, this.mouseX, this.mouseY, this.delta);
+            switch (this.type) {
+                case IN_GAME -> listener.onRender2DInGame(this.context, this.delta);
+                case OUT_GAME_PRE -> listener.onRender2DOutGamePre(this.context, this.mouseX, this.mouseY, this.delta);
+                case OUT_GAME_POST -> listener.onRender2DOutGamePost(this.context, this.mouseX, this.mouseY, this.delta);
+                default -> {}
             }
         }
 
