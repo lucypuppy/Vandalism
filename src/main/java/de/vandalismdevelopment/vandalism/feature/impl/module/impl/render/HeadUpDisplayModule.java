@@ -240,7 +240,18 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
                 if (positionDecimalPlacesRawValue < 1) this.positionDecimalPlaces.setValue(1);
                 else if (positionDecimalPlacesRawValue > 15) this.positionDecimalPlaces.setValue(15);
                 final String positionDecimalPlaces = "%." + this.positionDecimalPlaces.getValue() + "f";
-                context.drawText(textRenderer(), "Position: " + String.format(positionDecimalPlaces + ", " + positionDecimalPlaces + ", " + positionDecimalPlaces, player().getX(), player().getY(), player().getZ()), x, y, color, shadow);
+                context.drawText(
+                    textRenderer(), 
+                    "Position: " + String.format(
+                        positionDecimalPlaces + ", " + positionDecimalPlaces + ", " + positionDecimalPlaces, 
+                        player().getX(), 
+                        player().getY(), 
+                        player().getZ()
+                    ), 
+                    x, y, 
+                    color, 
+                    shadow
+                );
                 y += textRenderer().fontHeight;
             }
 
