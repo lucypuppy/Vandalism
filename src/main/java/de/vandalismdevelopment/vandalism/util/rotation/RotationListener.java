@@ -103,7 +103,7 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
     }
 
     public Rotation rotationDistribution(final Rotation rotation, final Rotation lastRotation) {
-        if (rotateSpeedMinMax.x > 0 && rotateSpeedMinMax.y > 0) { //Todo code a better calculation for the rotate speed.
+        if (rotateSpeedMinMax.x > 0 && rotateSpeedMinMax.y > 0) { //TODO: Code a better calculation for the rotate speed.
             rotateSpeed = RandomUtils.nextFloat(rotateSpeedMinMax.x, rotateSpeedMinMax.y);
         }
 
