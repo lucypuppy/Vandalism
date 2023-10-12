@@ -26,7 +26,7 @@ public class BoxMuellerClicker extends ClickGenerator {
         this.nextClick = MathUtil.cpsToMs(this.cps);
     }
 
-    //Todo fix tick bug (cps is not accurate)
+    //TODO: Fix tick bug (cps is not accurate)
     @Override
     public void update() {
         if (this.timer.hasReached(this.nextClick, true)) {

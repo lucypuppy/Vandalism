@@ -106,7 +106,8 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
             2,
             1
     ).visibleConsumer(this.position::getValue);
-     /*.valueChangeConsumer(value -> { TODO needs to be fixed because it does nothing.
+    //TODO: This needs to be fixed because it does nothing.
+     /*.valueChangeConsumer(value -> {
         if (value < 1) value = 1;
         else if (value > 15) value = 15;
     });*/

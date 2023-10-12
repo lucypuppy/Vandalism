@@ -105,7 +105,7 @@ public class Rotation {
             final double nearestX = MathHelper.clamp(entity.getX(), box.minX, box.maxX);
             final double nearestZ = MathHelper.clamp(entity.getZ(), box.minZ, box.maxZ);
 
-            //Todo find a better way to calculate this
+            //TODO: Find a better way to calculate this!
             final double entityY = entity.getY();
             final double playerY = player.getY() + player.getEyeHeight(player.getPose());
             final double boxHeight = (box.maxY - box.minY) * 0.9;

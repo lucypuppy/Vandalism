@@ -117,7 +117,7 @@ public abstract class SignTooltipComponent<M extends Model> implements ITooltipD
         return this.getText().getOrderedMessages(MinecraftClient.getInstance().shouldFilterText(), Text::asOrderedText);
     }
 
-    //TODO recode this rendering and use the SignBlockEntityRenderer for everything.
+    //TODO: Recode this rendering and use the SignBlockEntityRenderer for everything.
     @Override
     public void drawItems(final TextRenderer textRenderer, final int x, final int y, final DrawContext graphics) {
         DiffuseLighting.enableGuiDepthLighting();
