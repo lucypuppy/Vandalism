@@ -51,30 +51,32 @@ loom {
 }
 
 dependencies {
-
-	// fabric
+	// Fabric
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	// dependencies
-	implementation "de.florianmichael:DietrichEvents2:${project.dietrichevents2_version}"
+	// ImGui
 	implementation "io.github.spair:imgui-java-binding:${project.spair_imgui_version}"
 	implementation "io.github.spair:imgui-java-lwjgl3:${project.spair_imgui_version}"
 	implementation "io.github.spair:imgui-java-natives-windows:${project.spair_imgui_version}"
 	implementation "io.github.spair:imgui-java-natives-linux:${project.spair_imgui_version}"
-	implementation "fr.litarvan:openauth:${project.openauth_version}"
-	implementation "com.github.kwhat:jnativehook:${project.jnativehook_version}"
-	implementation "net.lenni0451:ImNbt:${project.imnbt_version}"
-	implementation "net.lenni0451:MCPing:${project.mc_ping_version}"
+
+	// Misc
+	modImplementation "de.florianmichael:viafabricplus:${project.viafabricplus_version}"
+	implementation "de.florianmichael:DietrichEvents2:${project.dietrichevents2_version}"
 	implementation "de.florianmichael.rclasses:common:${project.rclasses}"
 	implementation "de.florianmichael.rclasses:math:${project.rclasses}"
 	implementation "de.florianmichael.rclasses:pattern:${project.rclasses}"
 	implementation "de.florianmichael.rclasses:io:${project.rclasses}"
-	implementation "org.jsoup:jsoup:${project.jsoup}"
-	modImplementation "de.florianmichael:viafabricplus:${project.viafabricplus_version}"
 
+	implementation "net.lenni0451:ImNbt:${project.imnbt_version}"
+	implementation "net.lenni0451:MCPing:${project.mc_ping_version}"
+
+	implementation "fr.litarvan:openauth:${project.openauth_version}"
+	implementation "com.github.kwhat:jnativehook:${project.jnativehook_version}"
+	implementation "org.jsoup:jsoup:${project.jsoup}"
 }
 
 processResources {
