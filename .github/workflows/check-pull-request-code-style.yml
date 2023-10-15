@@ -11,7 +11,7 @@ jobs:
         uses: nikitasavinov/checkstyle-action@master
         with:
           reporter: 'github-pr-check'
-          checkstyle_config: google_checks.xml
+          checkstyle_config: custom_google_checks_checkstyle.xml
           level: error
           filter_mode: added
           fail_on_error: true
