@@ -2,52 +2,40 @@ package de.vandalismdevelopment.vandalism.util;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConnectScreen;
-import net.minecraft.client.gui.screen.MessageScreen;
+import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
-import net.minecraft.client.realms.gui.screen.RealmsMainScreen;
-import net.minecraft.text.Text;
 
 public class ServerUtils {
 
-    private static ServerInfo lastServerInfo = null;
+    private static ServerInfo LAST_SERVER_INFO = null;
 
     public static void connectToLastServer() {
-        if (lastServerInfo == null) return;
-        ConnectScreen.connect(new MultiplayerScreen(new TitleScreen()), MinecraftClient.getInstance(), ServerAddress.parse(lastServerInfo.address), lastServerInfo, false);
+        if (LAST_SERVER_INFO == null) return;
+        ConnectScreen.connect(
+              new MultiplayerScreen(new TitleScreen()),
+              MinecraftClient.getInstance(),
+              ServerAddress.parse(LAST_SERVER_INFO.address),
+              LAST_SERVER_INFO,
+              false
+        );
     }
 
     public static boolean lastServerExists() {
-        return lastServerInfo != null;
+        return LAST_SERVER_INFO != null;
     }
 
     public static ServerInfo getLastServerInfo() {
-        return lastServerInfo;
+        return LAST_SERVER_INFO;
     }
 
     public static void setLastServerInfo(final ServerInfo serverInfo) {
-        lastServerInfo = serverInfo;
+        LAST_SERVER_INFO = serverInfo;
     }
 
     public static void disconnect() {
-        disconnect(true);
+        new GameMenuScreen(true).disconnect();
     }
-
-    public static void disconnect(final boolean gui) {
-        final boolean inSingleplayer = MinecraftClient.getInstance().isInSingleplayer();
-        if (MinecraftClient.getInstance().world != null) MinecraftClient.getInstance().world.disconnect();
-        if (inSingleplayer)
-            MinecraftClient.getInstance().disconnect(new MessageScreen(Text.translatable("menu.savingLevel")));
-        else MinecraftClient.getInstance().disconnect();
-        if (gui) {
-            final TitleScreen titleScreen = new TitleScreen();
-            if (inSingleplayer) MinecraftClient.getInstance().setScreen(titleScreen);
-            else if (MinecraftClient.getInstance().isRealmsEnabled())
-                MinecraftClient.getInstance().setScreen(new RealmsMainScreen(titleScreen));
-            else MinecraftClient.getInstance().setScreen(new MultiplayerScreen(titleScreen));
-        }
-    }
-
 }

@@ -102,3 +102,5 @@ accessible field net/minecraft/client/session/report/AbuseReportContext environm
 accessible class net/minecraft/client/texture/PlayerSkinProvider$Key
 
 accessible method net/minecraft/client/texture/PlayerSkinProvider getTextureEntry (Lcom/mojang/authlib/GameProfile;)Lcom/mojang/authlib/properties/Property;
+
+accessible method net/minecraft/client/gui/screen/GameMenuScreen disconnect ()V
