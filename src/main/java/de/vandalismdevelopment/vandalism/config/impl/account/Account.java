@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.config.impl.alt.alttype;
+package de.vandalismdevelopment.vandalism.config.impl.account;
 
 import com.google.gson.JsonObject;
 
@@ -36,10 +36,8 @@ public abstract class Account {
         this.uuid = uuid;
     }
 
-    public abstract void login();
+    public abstract void login() throws Throwable;
 
-    public void onConfigSave(final JsonObject jsonObject) {
-        // Nothing lol
-    }
+    public void onConfigSave(final JsonObject jsonObject) {}
 
 }

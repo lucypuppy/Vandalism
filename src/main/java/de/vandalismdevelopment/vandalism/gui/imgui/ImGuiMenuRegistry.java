@@ -16,7 +16,7 @@ public class ImGuiMenuRegistry {
                 new DemoImGuiMenu(),
                 new ConfigImGuiMenu(),
                 //TODO: Finish this -> new MacrosImGuiMenu(),
-                new AltManagerImGuiMenu(),
+                new AccountManagerImGuiMenu(),
                 new NameHistoryImGuiMenu(),
                 new ServerPingerImGuiMenu(),
                 new ServerAddressResolverImGuiMenu(),

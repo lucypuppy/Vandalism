@@ -36,11 +36,6 @@ repositories {
 	}
 
 	maven {
-		name = "Litarvan"
-		url = "https://litarvan.github.io/maven"
-	}
-
-	maven {
 		name = "Modrinth"
 		url = "https://api.modrinth.com/maven"
 	}
@@ -74,7 +69,7 @@ dependencies {
 	implementation "net.lenni0451:ImNbt:${project.imnbt_version}"
 	implementation "net.lenni0451:MCPing:${project.mc_ping_version}"
 
-	implementation "fr.litarvan:openauth:${project.openauth_version}"
+	implementation "net.raphimc:MinecraftAuth:${project.minecraftauth_version}"
 	implementation "com.github.kwhat:jnativehook:${project.jnativehook_version}"
 	implementation "org.jsoup:jsoup:${project.jsoup}"
 }

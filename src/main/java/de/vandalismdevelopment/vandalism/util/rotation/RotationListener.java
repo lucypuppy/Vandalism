@@ -87,7 +87,7 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
         final double gcd = g * 8.0;
         final boolean disallowGCD = mc().options.getPerspective().isFirstPerson() && mc().player.isUsingSpyglass();
 
-        //Calculate needed ierations for the best gcd.
+        //Calculate needed iterations for the best gcd.
         final double iterationsNeeded = (RenderUtils.getFps() / 20.0) * partialTicks;
         final int iterations = MathHelper.floor(iterationsNeeded + this.partialIterations);
         this.partialIterations += iterationsNeeded - iterations;
@@ -95,7 +95,7 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
         final RotationGCD gcdMode = Vandalism.getInstance().getConfigManager().getMainConfig().gcdMode.getValue();
         final Rotation fixedRotation = gcdMode.getLambda().apply(rotation, this.lastRotation, disallowGCD ? g : gcd, iterations);
 
-        //Fix for a small check i coded some time in the past idk how it worked but this fixed it.
+        //Fix for a small check I coded some time in the past idk how it worked but this fixed it.
         fixedRotation.setYaw(this.lastRotation.getYaw() + MathHelper.wrapDegrees(fixedRotation.getYaw() - this.lastRotation.getYaw()));
         fixedRotation.setPitch(MathHelper.clamp(fixedRotation.getPitch(), -90.0F, 90.0F));
 

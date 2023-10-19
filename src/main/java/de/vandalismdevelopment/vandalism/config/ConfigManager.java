@@ -4,9 +4,9 @@ import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.config.impl.AccountConfig;
 import de.vandalismdevelopment.vandalism.config.impl.MainConfig;
 import de.vandalismdevelopment.vandalism.config.impl.ModulesConfig;
+import de.vandalismdevelopment.vandalism.config.impl.account.AccountConfig;
 
 import java.io.FileReader;
 import java.io.FileWriter;
