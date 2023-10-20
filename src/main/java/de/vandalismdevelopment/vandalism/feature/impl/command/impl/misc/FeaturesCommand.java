@@ -133,9 +133,13 @@ public class FeaturesCommand extends Command {
                     .append(' ')
                     .append(
                             command.getAliasesString()
-                                    .replace("[", Formatting.DARK_GRAY + "[" + Formatting.YELLOW + Vandalism.getInstance().getConfigManager().getMainConfig().commandPrefix.getValue() + Formatting.GOLD)
+                                    .replace("[", Formatting.DARK_GRAY + "[" + Formatting.YELLOW +
+                                            Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.commandPrefix.getValue() + Formatting.GOLD
+                                    )
                                     .replace("]", Formatting.DARK_GRAY + "]")
-                                    .replace(", ", Formatting.DARK_GRAY + ", " + Formatting.YELLOW + Vandalism.getInstance().getConfigManager().getMainConfig().commandPrefix.getValue() + Formatting.GOLD)
+                                    .replace(", ", Formatting.DARK_GRAY + ", " + Formatting.YELLOW +
+                                            Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.commandPrefix.getValue() + Formatting.GOLD
+                                    )
                     )
                     .append(Formatting.RESET);
         }

@@ -27,7 +27,7 @@ public abstract class MixinGenericContainerScreen extends HandledScreen<GenericC
     @Override
     protected void init() {
         super.init();
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().manageContainerButtons.getValue()) {
+        if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.manageContainerButtons.getValue()) {
             this.addDrawableChild(
                     ButtonWidget.builder(Text.literal("Steal"), b -> InventoryUtil.quickMoveInventory(
                                     this,

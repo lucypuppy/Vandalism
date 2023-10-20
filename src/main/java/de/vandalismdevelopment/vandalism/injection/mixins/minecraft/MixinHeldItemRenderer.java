@@ -34,10 +34,10 @@ public abstract class MixinHeldItemRenderer {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/HeldItemRenderer;renderItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/json/ModelTransformationMode;ZLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V"))
     private void injectRenderFirstPersonItem(final AbstractClientPlayerEntity player, final float tickDelta, final float pitch, final Hand hand, final float swingProgress, final ItemStack item, final float equipProgress, final MatrixStack matrices, final VertexConsumerProvider vertexConsumers, final int light, final CallbackInfo ci) {
         final MainConfig mainConfig = Vandalism.getInstance().getConfigManager().getMainConfig();
-        final float itemSize = mainConfig.blockItemSize.getValue();
-        final String blockHitAnimations = mainConfig.blockHitAnimations.getValue().toLowerCase();
+        final float itemSize = mainConfig.visualCategory.blockItemSize.getValue();
+        final String blockHitAnimations = mainConfig.visualCategory.blockHitAnimations.getValue().toLowerCase();
 
-        if (ProtocolHack.getTargetVersion().isOlderThanOrEqualTo(VersionEnum.r1_8) && this.client.player != null && this.client.player.isBlocking() && mainConfig.blockHitAnimation.getValue()) {
+        if (ProtocolHack.getTargetVersion().isOlderThanOrEqualTo(VersionEnum.r1_8) && this.client.player != null && this.client.player.isBlocking() && mainConfig.visualCategory.blockHitAnimation.getValue()) {
             switch (blockHitAnimations) {
                 case "suicide" -> suicideBlockAnimation(matrices, swingProgress);
                 case "own" -> ownBlockAnimation(matrices, swingProgress);

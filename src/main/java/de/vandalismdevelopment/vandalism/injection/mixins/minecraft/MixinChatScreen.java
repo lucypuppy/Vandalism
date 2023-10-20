@@ -35,8 +35,8 @@ public abstract class MixinChatScreen {
     @Inject(method = "init", at = @At(value = "RETURN"))
     private void injectInit(final CallbackInfo ci) {
         this.realMaxLength = this.chatField.getMaxLength();
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().customChatLength.getValue()) {
-            this.chatField.setMaxLength(Vandalism.getInstance().getConfigManager().getMainConfig().maxChatLength.getValue());
+        if (Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.customChatLength.getValue()) {
+            this.chatField.setMaxLength(Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.maxChatLength.getValue());
         }
     }
 
@@ -53,7 +53,7 @@ public abstract class MixinChatScreen {
 
     @Inject(method = "render", at = @At(value = "HEAD"))
     private void injectRender(final DrawContext context, final int mouseX, final int mouseY, final float delta, final CallbackInfo ci) {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().displayTypedChars.getValue()) {
+        if (Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.displayTypedChars.getValue()) {
             final int current = this.chatField.getText().length();
             final MutableText text = Text.literal(Formatting.RESET.toString() + current + Formatting.DARK_GRAY + " / ")
                     .append(

@@ -22,7 +22,7 @@ public abstract class MixinBuiltinModelItemRenderer {
             )
     )
     private RenderLayer redirectRender(final ShieldEntityModel instance, final Identifier identifier) {
-        final float value = Vandalism.getInstance().getConfigManager().getMainConfig().shieldAlpha.getValue();
+        final float value = Vandalism.getInstance().getConfigManager().getMainConfig().visualCategory.shieldAlpha.getValue();
         if (value < 1.0f) return RenderLayer.getEntityTranslucent(identifier);
         return instance.getLayer(identifier);
     }
@@ -36,7 +36,7 @@ public abstract class MixinBuiltinModelItemRenderer {
             index = 7
     )
     private float modifyRender(final float value) {
-        return Vandalism.getInstance().getConfigManager().getMainConfig().shieldAlpha.getValue();
+        return Vandalism.getInstance().getConfigManager().getMainConfig().visualCategory.shieldAlpha.getValue();
     }
 
 }

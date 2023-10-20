@@ -56,7 +56,7 @@ public class NBTCommand extends Command {
                     } else {
                         ChatUtils.errorChatMessage(
                                 "Some of the NBT data could not be found, try using: " +
-                                        Vandalism.getInstance().getConfigManager().getMainConfig().commandPrefix.getValue() + "nbt set {nbt}"
+                                        Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.commandPrefix.getValue() + "nbt set {nbt}"
                         );
                     }
                 }
@@ -94,7 +94,7 @@ public class NBTCommand extends Command {
                             .withFormatting(Formatting.UNDERLINE)
                             .withClickEvent(new ClickEvent(
                                     ClickEvent.Action.RUN_COMMAND,
-                                    Vandalism.getInstance().getConfigManager().getMainConfig().commandPrefix.getValue() + "nbt copy")
+                                    Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.commandPrefix.getValue() + "nbt copy")
                             ).withHoverEvent(new HoverEvent(
                                     HoverEvent.Action.SHOW_TEXT,
                                     Text.literal("Copy the NBT data to your clipboard.")

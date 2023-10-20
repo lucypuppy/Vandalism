@@ -1,6 +1,7 @@
 package de.vandalismdevelopment.vandalism.util.rotation;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.florianmichael.rclasses.common.RandomUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.event.PacketListener;
 import de.vandalismdevelopment.vandalism.event.RenderListener;
@@ -11,7 +12,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
-import org.apache.commons.lang3.RandomUtils;
 
 public class RotationListener implements PacketListener, RenderListener, MinecraftWrapper {
 
@@ -60,7 +60,7 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
             return;
         }
 
-        if (!Vandalism.getInstance().getConfigManager().getMainConfig().rotateBack.getValue()) {
+        if (!Vandalism.getInstance().getConfigManager().getMainConfig().rotationCategory.rotateBack.getValue()) {
             this.rotation = this.applyGCDFix(new Rotation(yaw, pitch), delta);
             return;
         }
@@ -92,7 +92,7 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
         final int iterations = MathHelper.floor(iterationsNeeded + this.partialIterations);
         this.partialIterations += iterationsNeeded - iterations;
 
-        final RotationGCD gcdMode = Vandalism.getInstance().getConfigManager().getMainConfig().gcdMode.getValue();
+        final RotationGCD gcdMode = Vandalism.getInstance().getConfigManager().getMainConfig().rotationCategory.gcdMode.getValue();
         final Rotation fixedRotation = gcdMode.getLambda().apply(rotation, this.lastRotation, disallowGCD ? g : gcd, iterations);
 
         //Fix for a small check I coded some time in the past idk how it worked but this fixed it.
@@ -104,7 +104,7 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
 
     public Rotation rotationDistribution(final Rotation rotation, final Rotation lastRotation) {
         if (rotateSpeedMinMax.x > 0 && rotateSpeedMinMax.y > 0) { //TODO: Code a better calculation for the rotate speed.
-            rotateSpeed = RandomUtils.nextFloat(rotateSpeedMinMax.x, rotateSpeedMinMax.y);
+            rotateSpeed = RandomUtils.randomFloat(rotateSpeedMinMax.x, rotateSpeedMinMax.y);
         }
 
         if (rotateSpeed > 0) {

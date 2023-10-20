@@ -15,7 +15,7 @@ public abstract class MixinPlayerEntity {
     @Inject(method = "isCreativeLevelTwoOp", at = @At("RETURN"), cancellable = true)
     private void injectIsCreativeLevelTwoOp(final CallbackInfoReturnable<Boolean> cir) {
         if (MinecraftClient.getInstance().player == ((PlayerEntity) (Object) this)) {
-            if (Vandalism.getInstance().getConfigManager().getMainConfig().spoofIsCreativeLevelTwoOp.getValue()) {
+            if (Vandalism.getInstance().getConfigManager().getMainConfig().accessibilityCategory.spoofIsCreativeLevelTwoOp.getValue()) {
                 cir.setReturnValue(true);
             }
         }

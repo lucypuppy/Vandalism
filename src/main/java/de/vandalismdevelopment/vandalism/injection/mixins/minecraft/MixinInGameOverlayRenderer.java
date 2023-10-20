@@ -17,17 +17,17 @@ public abstract class MixinInGameOverlayRenderer {
 
     @ModifyConstant(method = "renderFireOverlay", constant = @Constant(floatValue = -0.3F))
     private static float getFireOffset(final float value) {
-        return value - Vandalism.getInstance().getConfigManager().getMainConfig().fireOverlayOffset.getValue();
+        return value - Vandalism.getInstance().getConfigManager().getMainConfig().visualCategory.fireOverlayOffset.getValue();
     }
 
     @Inject(method = "renderUnderwaterOverlay", at = @At("HEAD"), cancellable = true)
     private static void injectRenderUnderwaterOverlay(final MinecraftClient minecraftClient, final MatrixStack matrixStack, final CallbackInfo ci) {
-        if (!Vandalism.getInstance().getConfigManager().getMainConfig().waterOverlay.getValue()) ci.cancel();
+        if (!Vandalism.getInstance().getConfigManager().getMainConfig().visualCategory.waterOverlay.getValue()) ci.cancel();
     }
 
     @Inject(method = "renderInWallOverlay", at = @At("HEAD"), cancellable = true)
     private static void injectRenderUnderwaterOverlay(final Sprite sprite, final MatrixStack matrices, final CallbackInfo ci) {
-        if (!Vandalism.getInstance().getConfigManager().getMainConfig().inWallOverlay.getValue()) ci.cancel();
+        if (!Vandalism.getInstance().getConfigManager().getMainConfig().visualCategory.inWallOverlay.getValue()) ci.cancel();
     }
 
 }

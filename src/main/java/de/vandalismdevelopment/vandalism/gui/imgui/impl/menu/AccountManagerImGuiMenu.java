@@ -124,7 +124,7 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                     this.renderCurrentData();
                     ImGui.newLine();
                     ImGui.text("Microsoft");
-                    if (ImGui.button("Add Microsoft (External)##accountmanager")) {
+                    if (ImGui.button("Add Microsoft (Device Code)##accountmanager")) {
                         this.executor.submit(() -> {
                             try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
                                 final StepMCProfile.MCProfile mcProfile = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.getFromInput(

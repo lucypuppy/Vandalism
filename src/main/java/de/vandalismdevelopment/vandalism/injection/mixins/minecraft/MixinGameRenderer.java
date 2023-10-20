@@ -24,23 +24,23 @@ public abstract class MixinGameRenderer {
 
     @Inject(method = "renderNausea", at = @At(value = "HEAD"), cancellable = true)
     public void renderNausea(final DrawContext context, final float distortionStrength, final CallbackInfo ci) {
-        if (!Vandalism.getInstance().getConfigManager().getMainConfig().nauseaOverlay.getValue()) ci.cancel();
+        if (!Vandalism.getInstance().getConfigManager().getMainConfig().visualCategory.nauseaOverlay.getValue()) ci.cancel();
     }
 
     @Inject(method = "tiltViewWhenHurt", at = @At(value = "HEAD"), cancellable = true)
     public void tiltViewWhenHurt(final MatrixStack matrices, final float tickDelta, final CallbackInfo ci) {
-        if (!Vandalism.getInstance().getConfigManager().getMainConfig().hurtCam.getValue()) ci.cancel();
+        if (!Vandalism.getInstance().getConfigManager().getMainConfig().visualCategory.hurtCam.getValue()) ci.cancel();
     }
 
     @Inject(method = "bobView", at = @At("HEAD"), cancellable = true)
     private void injectBobView(final MatrixStack matrixStack, final float f, final CallbackInfo callbackInfo) {
-        if (!Vandalism.getInstance().getConfigManager().getMainConfig().customBobView.getValue()) {
+        if (!Vandalism.getInstance().getConfigManager().getMainConfig().visualCategory.customBobView.getValue()) {
             return;
         }
         if (!(this.client.getCameraEntity() instanceof PlayerEntity playerEntity)) {
             return;
         }
-        final float additionalBobbing = Vandalism.getInstance().getConfigManager().getMainConfig().customBobViewValue.getValue();
+        final float additionalBobbing = Vandalism.getInstance().getConfigManager().getMainConfig().visualCategory.customBobViewValue.getValue();
         if (additionalBobbing <= 0f) {
             callbackInfo.cancel();
             return;

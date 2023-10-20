@@ -15,7 +15,7 @@ public abstract class MixinYggdrasilUserApiService {
 
     @Inject(method = "newTelemetrySession", at = @At("RETURN"), cancellable = true)
     private void injectNewTelemetrySession(final Executor executor, final CallbackInfoReturnable<TelemetrySession> cir) {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().antiTelemetry.getValue()) {
+        if (Vandalism.getInstance().getConfigManager().getMainConfig().accessibilityCategory.antiTelemetry.getValue()) {
             cir.setReturnValue(TelemetrySession.DISABLED);
         }
     }

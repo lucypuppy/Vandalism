@@ -19,7 +19,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(TelemetryManager.class)
 public abstract class MixinTelemetryManager {
 
-
     @Mutable
     @Shadow
     @Final
@@ -27,14 +26,14 @@ public abstract class MixinTelemetryManager {
 
     @Inject(method = "<init>", at = @At(value = "FIELD", target = "Lnet/minecraft/client/session/telemetry/TelemetryManager;propertyMap:Lnet/minecraft/client/session/telemetry/PropertyMap;"))
     private void injectInit(final MinecraftClient client, final UserApiService userApi, final Session session, final CallbackInfo ci) {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().antiTelemetry.getValue()) {
+        if (Vandalism.getInstance().getConfigManager().getMainConfig().accessibilityCategory.antiTelemetry.getValue()) {
             this.propertyMap = PropertyMap.builder().build();
         }
     }
 
     @Inject(method = "getSender", at = @At("RETURN"), cancellable = true)
     private void injectComputeSender(final CallbackInfoReturnable<TelemetrySender> cir) {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().antiTelemetry.getValue()) {
+        if (Vandalism.getInstance().getConfigManager().getMainConfig().accessibilityCategory.antiTelemetry.getValue()) {
             cir.setReturnValue(TelemetrySender.NOOP);
         }
     }
