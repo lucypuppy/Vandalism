@@ -14,7 +14,7 @@ public abstract class MixinBackgroundRenderer {
 
     @Inject(method = "getFogModifier", at = @At("HEAD"), cancellable = true)
     private static void injectGetFogModifier(final Entity entity, final float tickDelta, final CallbackInfoReturnable<StatusEffectFogModifier> ci) {
-        if (!Vandalism.getInstance().getConfigManager().getMainConfig().blindnessEffect.getValue())
+        if (!Vandalism.getInstance().getConfigManager().getMainConfig().visualCategory.blindnessEffect.getValue())
             ci.setReturnValue(null);
     }
 

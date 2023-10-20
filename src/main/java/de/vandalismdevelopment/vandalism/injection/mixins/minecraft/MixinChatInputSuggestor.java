@@ -52,7 +52,7 @@ public abstract class MixinChatInputSuggestor {
     )
     public void onRefresh(final CallbackInfo ci, final String string, final StringReader reader) {
         final CommandRegistry commandRegistry = Vandalism.getInstance().getCommandRegistry();
-        final String prefix = Vandalism.getInstance().getConfigManager().getMainConfig().commandPrefix.getValue();
+        final String prefix = Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.commandPrefix.getValue();
         final int length = prefix.length();
         if (reader.canRead(length) && reader.getString().startsWith(prefix, reader.getCursor())) {
             reader.setCursor(reader.getCursor() + length);

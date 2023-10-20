@@ -16,7 +16,9 @@ public abstract class MixinNetworkUtils {
 
     @Redirect(method = "method_15303", at = @At(value = "INVOKE", target = "Ljava/io/InputStream;read([B)I"))
     private static int redirectByteWriting(final InputStream inputStream, final byte[] bs) throws IOException {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().moreResourcePackOptions.getValue() && CustomResourcePackConfirmScreen.skipDownload) {
+        if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.moreResourcePackOptions.getValue() &&
+                CustomResourcePackConfirmScreen.skipDownload
+        ) {
             return -1;
         }
         return inputStream.read(bs);

@@ -2,12 +2,13 @@ package de.vandalismdevelopment.vandalism.value;
 
 import com.google.gson.JsonObject;
 import de.vandalismdevelopment.vandalism.config.Config;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import imgui.ImGui;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ValueCategory extends Value<List<Value<?>>> implements IValue {
+public class ValueCategory extends Value<List<Value<?>>> implements IValue, MinecraftWrapper {
 
     public ValueCategory(final String name, final String description, final IValue parent) {
         super(name, description, parent, "category", new ArrayList<>());

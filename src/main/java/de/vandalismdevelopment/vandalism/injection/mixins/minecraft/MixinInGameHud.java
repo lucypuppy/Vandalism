@@ -45,7 +45,7 @@ public abstract class MixinInGameHud {
 
     @Redirect(method = "clear", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;clear(Z)V"))
     private void redirectChatHudClear(final ChatHud instance, final boolean clearHistory) {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().dontClearChatHistory.getValue()) return;
+        if (Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.dontClearChatHistory.getValue()) return;
         instance.clear(clearHistory);
     }
 
@@ -53,16 +53,16 @@ public abstract class MixinInGameHud {
     public void injectRender(final DrawContext context, final Identifier texture, final float opacity, final CallbackInfo ci) {
         final MainConfig config = Vandalism.getInstance().getConfigManager().getMainConfig();
 
-        if (texture.getPath().equals("textures/misc/pumpkinblur.png") && !config.pumpkinOverlay.getValue())
+        if (texture.getPath().equals("textures/misc/pumpkinblur.png") && !config.visualCategory.pumpkinOverlay.getValue())
             ci.cancel();
 
-        if (texture.getPath().equals("textures/misc/powder_snow_outline.png") && !config.freezeOverlay.getValue())
+        if (texture.getPath().equals("textures/misc/powder_snow_outline.png") && !config.visualCategory.freezeOverlay.getValue())
             ci.cancel();
     }
 
     @Inject(method = "renderSpyglassOverlay", at = @At(value = "HEAD"), cancellable = true)
     public void injectRenderSpyglassOverlay(final DrawContext context, final float scale, final CallbackInfo ci) {
-        if (!Vandalism.getInstance().getConfigManager().getMainConfig().spyGlassOverlay.getValue()) ci.cancel();
+        if (!Vandalism.getInstance().getConfigManager().getMainConfig().visualCategory.spyGlassOverlay.getValue()) ci.cancel();
     }
 
 }

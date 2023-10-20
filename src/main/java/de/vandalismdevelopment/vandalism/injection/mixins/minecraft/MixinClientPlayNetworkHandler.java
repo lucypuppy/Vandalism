@@ -15,7 +15,7 @@ public abstract class MixinClientPlayNetworkHandler {
 
     @Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
     private void onSendChatMessage(final String message, final CallbackInfo ci) {
-        final String prefix = Vandalism.getInstance().getConfigManager().getMainConfig().commandPrefix.getValue();
+        final String prefix = Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.commandPrefix.getValue();
         if (message.startsWith(prefix)) {
             try {
                 Vandalism.getInstance().getCommandRegistry().commandDispatch(message.substring(prefix.length()));

@@ -35,7 +35,7 @@ public abstract class MixinServerResourcePackProvider {
 
     @Redirect(method = "method_4634", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;execute(Ljava/lang/Runnable;)V"))
     private void injectExecute(final MinecraftClient instance, final Runnable runnable) {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().moreResourcePackOptions.getValue() && CustomResourcePackConfirmScreen.dump) {
+        if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.moreResourcePackOptions.getValue() && CustomResourcePackConfirmScreen.dump) {
             return;
         }
         instance.execute(runnable);
@@ -84,7 +84,7 @@ public abstract class MixinServerResourcePackProvider {
 
     @Redirect(method = "method_4634", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resource/ServerResourcePackProvider;loadServerPack(Ljava/io/File;Lnet/minecraft/resource/ResourcePackSource;)Ljava/util/concurrent/CompletableFuture;"))
     private CompletableFuture<Void> injectLoadServerPacket(final ServerResourcePackProvider instance, final File file, final ResourcePackSource packSource) {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().moreResourcePackOptions.getValue() && CustomResourcePackConfirmScreen.dump) {
+        if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.moreResourcePackOptions.getValue() && CustomResourcePackConfirmScreen.dump) {
             final File resourcePackFile = new File(MinecraftClient.getInstance().getResourcePackDir().toFile(), ServerUtils.getLastServerInfo().address + "-server-resource-pack-" + file.getName());
             try {
                 Files.move(file.toPath(), resourcePackFile.toPath());
@@ -131,13 +131,13 @@ public abstract class MixinServerResourcePackProvider {
 
     @Redirect(method = "download", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/NetworkUtils;downloadResourcePack(Ljava/io/File;Ljava/net/URL;Ljava/util/Map;ILnet/minecraft/util/ProgressListener;Ljava/net/Proxy;)Ljava/util/concurrent/CompletableFuture;"))
     private CompletableFuture<?> redirectDownloadResourcePack(final File file, final URL url, final Map<String, String> headers, final int maxFileSize, final @Nullable ProgressListener progressListener, final Proxy proxy) {
-        final boolean cancelProgressListener = Vandalism.getInstance().getConfigManager().getMainConfig().moreResourcePackOptions.getValue() && CustomResourcePackConfirmScreen.skipDownload;
+        final boolean cancelProgressListener = Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.moreResourcePackOptions.getValue() && CustomResourcePackConfirmScreen.skipDownload;
         return NetworkUtils.downloadResourcePack(file, url, headers, maxFileSize, cancelProgressListener ? null : progressListener, proxy);
     }
 
     @Inject(method = "verifyFile", at = @At("HEAD"), cancellable = true)
     private void injectVerifyFile(final String expectedSha1, final File file, final CallbackInfoReturnable<Boolean> cir) {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().moreResourcePackOptions.getValue() && CustomResourcePackConfirmScreen.skipDownload) {
+        if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.moreResourcePackOptions.getValue() && CustomResourcePackConfirmScreen.skipDownload) {
             cir.setReturnValue(true);
         }
     }

@@ -31,7 +31,7 @@ public abstract class MixinServerEntry {
 
     @Inject(method = "protocolVersionMatches", at = @At(value = "RETURN"), cancellable = true)
     private void injectProtocolVersionMatches(final CallbackInfoReturnable<Boolean> cir) {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().multiplayerScreenServerInformation.getValue()) {
+        if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.multiplayerScreenServerInformation.getValue()) {
             cir.setReturnValue(true);
         }
     }
@@ -46,10 +46,10 @@ public abstract class MixinServerEntry {
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;IIIZ)I"))
     private int redirectRender(final DrawContext instance, final TextRenderer textRenderer, final Text text, final int x, final int y, final int color, final boolean shadow) {
         instance.drawText(textRenderer, text, x, y, color, shadow);
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().multiplayerScreenServerInformation.getValue()) {
+        if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.multiplayerScreenServerInformation.getValue()) {
             final int textX = x + this.client.textRenderer.getWidth(text) + 22;
             String versionName = this.server.version.getString();
-            final int maxServerVersionLength = Vandalism.getInstance().getConfigManager().getMainConfig().maxServerVersionLength.getValue();
+            final int maxServerVersionLength = Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.maxServerVersionLength.getValue();
             //TODO: Improve this, because the performance could drop from the substring method!
             if (versionName.length() > maxServerVersionLength)
                 versionName = versionName.substring(0, maxServerVersionLength);

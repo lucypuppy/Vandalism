@@ -16,7 +16,7 @@ public abstract class MixinClientCommonNetworkHandler {
     @Redirect(method = "showPackConfirmationScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;setScreen(Lnet/minecraft/client/gui/screen/Screen;)V"))
     private void redirectShowPackConfirmationScreen(final MinecraftClient instance, final Screen screen) {
         if (screen instanceof final ConfirmScreen confirmScreen) {
-            if (Vandalism.getInstance().getConfigManager().getMainConfig().moreResourcePackOptions.getValue()) {
+            if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.moreResourcePackOptions.getValue()) {
                 instance.setScreen(new CustomResourcePackConfirmScreen(confirmScreen.callback, confirmScreen.getTitle(), confirmScreen.message));
                 return;
             }

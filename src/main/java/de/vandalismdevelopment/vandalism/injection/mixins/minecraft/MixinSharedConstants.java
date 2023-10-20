@@ -12,7 +12,7 @@ public abstract class MixinSharedConstants {
 
     @Inject(method = "isValidChar", at = @At("RETURN"), cancellable = true)
     private static void injectIsValidChar(final char chr, final CallbackInfoReturnable<Boolean> cir) {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().allowColorChar.getValue()) {
+        if (Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.allowColorChar.getValue()) {
             if (chr == '§') cir.setReturnValue(true);
         }
     }

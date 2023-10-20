@@ -27,7 +27,7 @@ public abstract class MixinClientPlayer {
 
     @Redirect(method = "updateNausea", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;shouldPause()Z"))
     public boolean redirectUpdateNausea(final Screen screen) {
-        return Vandalism.getInstance().getConfigManager().getMainConfig().portalScreen.getValue() || screen.shouldPause();
+        return Vandalism.getInstance().getConfigManager().getMainConfig().visualCategory.portalScreen.getValue() || screen.shouldPause();
     }
 
 }

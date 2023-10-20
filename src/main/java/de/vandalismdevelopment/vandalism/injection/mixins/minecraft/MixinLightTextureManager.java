@@ -12,8 +12,9 @@ public abstract class MixinLightTextureManager {
 
     @Inject(method = "getDarknessFactor", at = @At("HEAD"), cancellable = true)
     private void injectGetDarknessFactor(final float delta, final CallbackInfoReturnable<Float> ci) {
-        if (!Vandalism.getInstance().getConfigManager().getMainConfig().blindnessEffect.getValue())
+        if (!Vandalism.getInstance().getConfigManager().getMainConfig().visualCategory.blindnessEffect.getValue()) {
             ci.setReturnValue(0F);
+        }
     }
 
 }

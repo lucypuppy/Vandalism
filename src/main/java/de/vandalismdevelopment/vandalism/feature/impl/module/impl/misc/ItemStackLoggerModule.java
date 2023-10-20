@@ -119,7 +119,7 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                 copy.putString(NBTCommand.DISPLAY_TITLE_NBT_KEY, itemFromText);
                 displayNbt = NbtHelper.toPrettyPrintedText(copy).getString();
             }
-            final String giveCommand = Vandalism.getInstance().getConfigManager().getMainConfig().commandPrefix.getValue() + "give " + item + nbt + " " + count,
+            final String giveCommand = Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.commandPrefix.getValue() + "give " + item + nbt + " " + count,
                     server = "Server: " + (ServerUtils.lastServerExists() ? ServerUtils.getLastServerInfo().address : "single player"),
                     position = "Position: " + entity.getBlockPos().toShortString(),
                     damageString = "Damage: " + damage,

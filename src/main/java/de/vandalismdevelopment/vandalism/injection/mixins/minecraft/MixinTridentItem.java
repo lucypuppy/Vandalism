@@ -12,9 +12,10 @@ public abstract class MixinTridentItem {
 
     @ModifyArgs(method = "onStoppedUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;addVelocity(DDD)V"))
     public void modifyArgsOnStoppedUsing(final Args args) {
-        if (!Vandalism.getInstance().getConfigManager().getMainConfig().customizeRiptideBoostMultiplier.getValue())
+        if (!Vandalism.getInstance().getConfigManager().getMainConfig().movementCategory.customizeRiptideBoostMultiplier.getValue()) {
             return;
-        final float multiplier = Vandalism.getInstance().getConfigManager().getMainConfig().riptideBoostMultiplier.getValue();
+        }
+        final float multiplier = Vandalism.getInstance().getConfigManager().getMainConfig().movementCategory.riptideBoostMultiplier.getValue();
         for (int i = 0; i < 2; i++) args.set(i, (double) args.get(i) * multiplier);
     }
 

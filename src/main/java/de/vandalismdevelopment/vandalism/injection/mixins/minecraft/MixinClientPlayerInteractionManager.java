@@ -19,7 +19,7 @@ public abstract class MixinClientPlayerInteractionManager {
 
     @Inject(method = "hasLimitedAttackSpeed", at = @At("HEAD"), cancellable = true)
     public void injectHasLimitedAttackSpeed(final CallbackInfoReturnable<Boolean> cir) {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().eliminateHitDelay.getValue()) {
+        if (Vandalism.getInstance().getConfigManager().getMainConfig().accessibilityCategory.eliminateHitDelay.getValue()) {
             cir.setReturnValue(false);
         }
     }

@@ -18,7 +18,7 @@ public abstract class MixinWorldRenderer {
 
     @Inject(method = "hasBlindnessOrDarkness", at = @At("HEAD"), cancellable = true)
     private void injectHasBlindnessOrDarknessEffect(final Camera camera, final CallbackInfoReturnable<Boolean> ci) {
-        if (!Vandalism.getInstance().getConfigManager().getMainConfig().blindnessEffect.getValue()) {
+        if (!Vandalism.getInstance().getConfigManager().getMainConfig().visualCategory.blindnessEffect.getValue()) {
             ci.setReturnValue(false);
         }
     }
