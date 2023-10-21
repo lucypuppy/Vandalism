@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.util.click.clickers;
 
 import de.florianmichael.rclasses.common.RandomUtils;
-import de.florianmichael.rclasses.math.MathUtils;
+import de.florianmichael.rclasses.math.integration.BoxMullerTransform;
 import de.florianmichael.rclasses.pattern.evicting.EvictingList;
 import de.vandalismdevelopment.vandalism.util.MathUtil;
 import de.vandalismdevelopment.vandalism.util.click.ClickGenerator;
@@ -31,7 +31,7 @@ public class BoxMuellerClicker extends ClickGenerator {
     public void update() {
         if (this.timer.hasReached(this.nextClick, true)) {
             if (this.updatePossibility == 100 || (Math.random() * 100) >= (100 - this.updatePossibility)) {
-                this.cps = (int) MathUtils.boxMuellerDistribution(ThreadLocalRandom.current(), 1, 20, this.mean, this.std);
+                this.cps = (int) BoxMullerTransform.distribution(ThreadLocalRandom.current(), 1, 20, this.mean, this.std);
             }
 
             this.nextClick = MathUtil.cpsToMs(this.cps);
