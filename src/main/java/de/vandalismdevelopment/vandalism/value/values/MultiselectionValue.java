@@ -10,7 +10,7 @@ import imgui.ImGui;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultiselectionValue extends Value<ArrayList<String>> {
+public class MultiselectionValue extends Value<List<String>> {
 
     private final List<String> existingValues;
 
@@ -21,16 +21,13 @@ public class MultiselectionValue extends Value<ArrayList<String>> {
 
     @Override
     public void onConfigLoad(final JsonObject valueObject) {
-        final JsonArray jsonArray = valueObject.get("value").getAsJsonArray();
-        this.setValue(new ArrayList<>(jsonArray.asList().stream().map(JsonElement::getAsString).toList()));
+        this.setValue(new ArrayList<>(valueObject.get("value").getAsJsonArray().asList().stream().map(JsonElement::getAsString).toList()));
     }
 
     @Override
     public void onConfigSave(final JsonObject valueObject) {
         final JsonArray jsonArray = new JsonArray();
-        for (final String value : this.getValue()) {
-            jsonArray.add(value);
-        }
+        for (final String value : this.getValue()) jsonArray.add(value);
         valueObject.add("value", jsonArray);
     }
 

@@ -41,15 +41,17 @@ public class ModulesConfig extends ValueableConfig {
             final JsonObject moduleObject = jsonObject.getAsJsonObject(module.getName());
 
             if (moduleObject != null) {
-                if (moduleObject.has("enabled"))
+                if (moduleObject.has("enabled")) {
                     module.setState(moduleObject.get("enabled").getAsBoolean());
+                }
 
-                if (moduleObject.has("showInModuleList"))
+                if (moduleObject.has("showInModuleList")) {
                     module.setShowInModuleList(moduleObject.get("showInModuleList").getAsBoolean());
+                }
 
                 final JsonElement valuesElement = moduleObject.get("values");
                 if (valuesElement != null) {
-                    loadValues(valuesElement.getAsJsonObject(), module.getValues());
+                    this.loadValues(valuesElement.getAsJsonObject(), module.getValues());
                 }
             } else {
                 Vandalism.getInstance().getLogger().error("Module " + module.getName() + " not found in config!");

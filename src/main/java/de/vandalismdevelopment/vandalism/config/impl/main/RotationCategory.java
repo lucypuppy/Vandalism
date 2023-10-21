@@ -5,7 +5,7 @@ import de.vandalismdevelopment.vandalism.util.rotation.RotationGCD;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
 import de.vandalismdevelopment.vandalism.value.values.BooleanValue;
-import de.vandalismdevelopment.vandalism.value.values.EnumListSetting;
+import de.vandalismdevelopment.vandalism.value.values.EnumValue;
 
 public class RotationCategory extends ValueCategory {
 
@@ -20,7 +20,7 @@ public class RotationCategory extends ValueCategory {
             true
     );
 
-    public final EnumListSetting<RotationGCD> gcdMode = new EnumListSetting<>(
+    public final EnumValue<RotationGCD> gcdMode = new EnumValue<>(
             "GCD Mode",
             "Change the GCD Mode.",
             this,
