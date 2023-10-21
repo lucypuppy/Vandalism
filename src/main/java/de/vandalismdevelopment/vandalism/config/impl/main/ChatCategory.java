@@ -22,7 +22,7 @@ public class ChatCategory extends ValueCategory {
 
     public final Value<Boolean> displayTypedChars = new BooleanValue(
             "Display Typed Chars",
-            "Displays the current char count of from the chat input field.",
+            "Displays the current char count of the chat input field.",
             this,
             true
     );

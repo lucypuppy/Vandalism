@@ -32,6 +32,8 @@ public abstract class ValueableConfig extends Config implements IValue {
 
     protected void saveValues(final JsonObject valuesArray, final List<Value<?>> values) {
         for (final Value<?> value : values) {
+            if (value == null) continue;
+
             final JsonObject valueObject = new JsonObject();
 
             if (value instanceof ValueCategory) {

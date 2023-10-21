@@ -20,7 +20,7 @@ public abstract class Value<V> {
         this.name = name;
         this.description = description;
 
-        this.saveIdent = name + " " + parent.iName() + " [" + description.hashCode() + "] (" + dataType + ")";
+        this.saveIdent = name + " (" + dataType + ")";
 
         this.defaultValue = defaultValue;
         this.setValue(defaultValue);
@@ -30,20 +30,24 @@ public abstract class Value<V> {
     }
 
     public void setValue(final V value) {
-        if (this.value == value)
+        if (this.value == value) {
             return;
+        }
 
-        if (this.valueChangeConsumer != null)
+        if (this.valueChangeConsumer != null) {
             this.valueChangeConsumer.accept(value);
+        }
 
         this.value = value;
 
-        if (this.valueChangedConsumer != null)
+        if (this.valueChangedConsumer != null) {
             this.valueChangedConsumer.accept(value);
+        }
 
         if (Vandalism.getInstance().getConfigManager() != null) {
-            if (parent.getConfig() == null)
-                throw new IllegalStateException("Value Config is null");
+            if (this.parent.getConfig() == null) {
+                throw new IllegalStateException("Value config for the parent " + this.parent.iName() + " is null!");
+            }
 
             Vandalism.getInstance().getConfigManager().save(this.parent.getConfig());
         }

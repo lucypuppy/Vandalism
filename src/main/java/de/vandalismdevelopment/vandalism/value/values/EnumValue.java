@@ -6,12 +6,12 @@ import de.vandalismdevelopment.vandalism.value.IValue;
 import de.vandalismdevelopment.vandalism.value.Value;
 import imgui.ImGui;
 
-public class EnumListSetting<T extends IName> extends Value<T> {
+public class EnumValue<T extends IName> extends Value<T> {
 
     private final T[] values;
 
-    public EnumListSetting(final String name, final String description, final IValue parent, final T... values) {
-        super(name, description, parent, "enum list", values[0]);
+    public EnumValue(final String name, final String description, final IValue parent, final T... values) {
+        super(name, description, parent, "enum", values[0]);
         this.values = values;
     }
 
@@ -32,7 +32,7 @@ public class EnumListSetting<T extends IName> extends Value<T> {
 
     @Override
     public void render() {
-        final String selectedName = getValue().getName();
+        final String selectedName = this.getValue().getName();
 
         if (ImGui.beginCombo(this.getName() + "##" + this.getHashIdent(), selectedName)) {
             for (final T mode : this.values) {
