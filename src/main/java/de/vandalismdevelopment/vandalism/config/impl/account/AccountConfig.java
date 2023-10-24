@@ -39,10 +39,10 @@ public class AccountConfig extends ValueableConfig {
             account.onConfigSave(accountObject);
             accountArray.add(accountObject);
         }
-        final UUID sessionUuid = MinecraftClient.getInstance().session.getUuidOrNull();
+        final UUID sessionUuid = MinecraftClient.getInstance().getSession().getUuidOrNull();
         configObject.addProperty(
                 "lastSession",
-                (MinecraftClient.getInstance().session.getUsername() + (sessionUuid != null ? sessionUuid.toString() : "")).hashCode()
+                (MinecraftClient.getInstance().getSession().getUsername() + (sessionUuid != null ? sessionUuid.toString() : "")).hashCode()
         );
         configObject.add("accounts", accountArray);
         return configObject;

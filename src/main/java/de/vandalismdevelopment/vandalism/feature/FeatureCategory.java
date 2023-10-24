@@ -17,4 +17,13 @@ public enum FeatureCategory implements EnumNameNormalizer {
         return this.normalName;
     }
 
+    public static FeatureCategory fromNormalName(final String normalName) {
+        for (final FeatureCategory category : FeatureCategory.values()) {
+            if (category.normalName().equalsIgnoreCase(normalName)) {
+                return category;
+            }
+        }
+        return null;
+    }
+
 }

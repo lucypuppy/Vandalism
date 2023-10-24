@@ -41,8 +41,6 @@ public class AES {
             IV_PARAMETER_SPEC = new IvParameterSpec(new byte[]{
                     42, 49, 55, 1, 99, 62, 70, 83, 104, 115, 8, 15, 91, 120, 27, 33
             });
-
-            //Idk if this works on linux or mac os
             HWID = System.getenv("PROCESSOR_IDENTIFIER").getBytes();
         } catch (final NoSuchAlgorithmException | NoSuchPaddingException exception) {
             throw new RuntimeException("Failed to initialize AES", exception);
