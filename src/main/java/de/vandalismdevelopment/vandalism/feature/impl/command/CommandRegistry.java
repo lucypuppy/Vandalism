@@ -57,7 +57,8 @@ public class CommandRegistry {
                 new HClipCommand(),
                 new ServerBrandCommand(),
                 new SkriptDupeCommand(),
-                new NavigateXCommand()
+                new NavigateXCommand(),
+                new ScriptCommand()
         );
     }
 
@@ -93,15 +94,15 @@ public class CommandRegistry {
         return this.commandSource;
     }
 
-    public FeatureList<Command> getCommands() {
-        return this.commands;
-    }
-
     public ClickEvent generateClickEvent(final String command) {
         return new ClickEvent(
                 ClickEvent.Action.RUN_COMMAND,
                 COMMAND_SECRET + command
         );
+    }
+
+    public FeatureList<Command> getCommands() {
+        return this.commands;
     }
 
 }

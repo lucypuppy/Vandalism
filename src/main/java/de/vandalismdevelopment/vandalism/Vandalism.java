@@ -4,6 +4,7 @@ import de.vandalismdevelopment.vandalism.config.ConfigManager;
 import de.vandalismdevelopment.vandalism.creativetab.CreativeTabRegistry;
 import de.vandalismdevelopment.vandalism.feature.impl.command.CommandRegistry;
 import de.vandalismdevelopment.vandalism.feature.impl.module.ModuleRegistry;
+import de.vandalismdevelopment.vandalism.feature.impl.script.ScriptRegistry;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiHandler;
 import de.vandalismdevelopment.vandalism.util.rotation.RotationListener;
 import net.fabricmc.loader.api.FabricLoader;
@@ -45,13 +46,15 @@ public class Vandalism {
 
     private CreativeTabRegistry creativeTabRegistry;
 
+    private ImGuiHandler imGuiHandler;
+
+    private ScriptRegistry scriptRegistry;
+
     private ModuleRegistry moduleRegistry;
 
     private CommandRegistry commandRegistry;
 
     private ConfigManager configManager;
-
-    private ImGuiHandler imGuiHandler;
 
     private RotationListener rotationListener;
 
@@ -157,10 +160,11 @@ public class Vandalism {
         this.dir = new File(mc.runDirectory, this.lowerCaseName);
         this.dir.mkdirs();
         this.creativeTabRegistry = new CreativeTabRegistry();
+        this.imGuiHandler = new ImGuiHandler(this.dir);
+        this.scriptRegistry = new ScriptRegistry(this.dir);
         this.rotationListener = new RotationListener();
         this.moduleRegistry = new ModuleRegistry();
         this.commandRegistry = new CommandRegistry();
-        this.imGuiHandler = new ImGuiHandler(this.dir);
         this.configManager = new ConfigManager();
         this.configManager.load();
         Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
@@ -197,6 +201,18 @@ public class Vandalism {
         return this.dir;
     }
 
+    public CreativeTabRegistry getCreativeTabRegistry() {
+        return this.creativeTabRegistry;
+    }
+
+    public ImGuiHandler getImGuiHandler() {
+        return this.imGuiHandler;
+    }
+
+    public ScriptRegistry getScriptRegistry() {
+        return this.scriptRegistry;
+    }
+
     public ModuleRegistry getModuleRegistry() {
         return this.moduleRegistry;
     }
@@ -205,16 +221,8 @@ public class Vandalism {
         return this.commandRegistry;
     }
 
-    public CreativeTabRegistry getCreativeTabRegistry() {
-        return this.creativeTabRegistry;
-    }
-
     public ConfigManager getConfigManager() {
         return this.configManager;
-    }
-
-    public ImGuiHandler getImGuiHandler() {
-        return this.imGuiHandler;
     }
 
     public RotationListener getRotationListener() {

@@ -29,8 +29,6 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
     private final ImString username, uuid;
 
     private String statusLine1, statusLine2;
-    private long loginSessionTime;
-
     private final ExecutorService executor;
 
     public AccountManagerImGuiMenu() {
@@ -41,14 +39,9 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
         this.executor = Executors.newSingleThreadExecutor();
     }
 
-    private void resetLoginSessionTime() {
-        this.loginSessionTime = -1L;
-    }
-
     private void resetStatus() {
         this.statusLine1 = "Waiting for input...";
         this.statusLine2 = "";
-        this.resetLoginSessionTime();
     }
 
     private void delayedResetStatus() {
@@ -73,10 +66,6 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
         if (ImGui.beginListBox("##currentAccountLoginStatus", 560, 75)) {
             ImGui.text(this.statusLine1);
             ImGui.text(this.statusLine2);
-            if (this.loginSessionTime > -1L) {
-                final long timeLeft = (this.loginSessionTime - System.currentTimeMillis()) / 1000;
-                ImGui.text("Login session expires in " + timeLeft + " seconds.");
-            }
             ImGui.endListBox();
         }
     }
@@ -133,7 +122,6 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                                                 msaDeviceCode -> {
                                                     this.statusLine1 = "Please enter the code \"" + msaDeviceCode.userCode() + "\" at \"" + msaDeviceCode.verificationUri() + "\".";
                                                     this.statusLine2 = "The code has been copied to your clipboard and the login page has been opened.";
-                                                    this.loginSessionTime = msaDeviceCode.expireTimeMs();
                                                     Util.getOperatingSystem().open(msaDeviceCode.verificationUri());
                                                     keyboard().setClipboard(msaDeviceCode.userCode());
                                                 }
@@ -147,12 +135,10 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                                         )
                                 );
                                 Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getAccountConfig());
-                                this.resetLoginSessionTime();
                                 this.statusLine1 = "Successfully added the microsoft account to your account list:";
                                 this.statusLine2 = mcProfile.name();
                             }
                             catch (final Throwable throwable) {
-                                this.resetLoginSessionTime();
                                 Vandalism.getInstance().getLogger().error("Failed to log into a microsoft account.", throwable);
                                 this.statusLine1 = "Failed to add the microsoft account to your account list.";
                                 this.statusLine2 = throwable.toString();

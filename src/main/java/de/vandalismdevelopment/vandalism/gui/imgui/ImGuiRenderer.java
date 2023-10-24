@@ -31,20 +31,16 @@ public class ImGuiRenderer {
         this.imGuiImplGl3 = new ImGuiImplGl3();
         this.imGuiImplGlfw = new ImGuiImplGlfw();
         this.renderInterfaces = new ArrayList<>();
-
         // Create context
         ImGui.createContext();
         ImPlot.createContext();
-
         //Default settings
         final ImGuiIO imGuiIO = ImGui.getIO();
         imGuiIO.setConfigFlags(ImGuiConfigFlags.DockingEnable);
         imGuiIO.setFontGlobalScale(1f);
         imGuiIO.setIniFilename(dir.getName() + "/imgui.ini");
-
-        loadFonts(imGuiIO);
-        setStyle();
-
+        this.loadFonts(imGuiIO);
+        this.setStyle();
         this.imGuiImplGlfw.init(MinecraftClient.getInstance().getWindow().getHandle(), true);
         this.imGuiImplGl3.init();
     }
@@ -52,7 +48,6 @@ public class ImGuiRenderer {
     // Sets the style for ImGui. It's a bit autistic but yeah.
     private void setStyle() {
         final ImGuiStyle style = ImGui.getStyle();
-
         style.setWindowPadding(15, 15);
         style.setWindowRounding(5.0f);
         style.setFramePadding(5, 5);
@@ -68,8 +63,7 @@ public class ImGuiRenderer {
         style.setTabBorderSize(0);
         style.setWindowBorderSize(0);
         style.setGrabRounding(3.0f);
-
-        float[][] colors = style.getColors();
+        final float[][] colors = style.getColors();
         colors[ImGuiCol.Text] = new float[]{0.80f, 0.80f, 0.83f, 1.00f};
         colors[ImGuiCol.TextDisabled] = new float[]{0.24f, 0.23f, 0.29f, 1.00f};
         colors[ImGuiCol.WindowBg] = new float[]{0.06f, 0.05f, 0.07f, 1.00f};
@@ -105,7 +99,6 @@ public class ImGuiRenderer {
         colors[ImGuiCol.ResizeGrip] = new float[]{0.00f, 0.00f, 0.00f, 0.00f};
         colors[ImGuiCol.ResizeGripHovered] = new float[]{0.56f, 0.56f, 0.58f, 1.00f};
         colors[ImGuiCol.ResizeGripActive] = new float[]{0.06f, 0.05f, 0.07f, 1.00f};
-
         style.setColors(colors);
     }
 
@@ -113,74 +106,59 @@ public class ImGuiRenderer {
         final ImFontAtlas atlas = imGuiIO.getFonts();
         final ImFontConfig fontConfig = new ImFontConfig();
         fontConfig.setPixelSnapH(true);
-
         final ImFontGlyphRangesBuilder rangesBuilder = new ImFontGlyphRangesBuilder();
         rangesBuilder.addRanges(imGuiIO.getFonts().getGlyphRangesDefault());
         rangesBuilder.addRanges(imGuiIO.getFonts().getGlyphRangesCyrillic());
         rangesBuilder.addRanges(imGuiIO.getFonts().getGlyphRangesJapanese());
         final short[] glyphRanges = rangesBuilder.buildRanges();
-
         final ImFont robotoRegular16 = loadFont("roboto-regular", 16, atlas, fontConfig, glyphRanges);
         if (robotoRegular16 != null) imGuiIO.setFontDefault(robotoRegular16);
-
         atlas.build();
         fontConfig.destroy();
     }
 
     private ImFont loadFont(final String fontName, final int size, final ImFontAtlas atlas, final ImFontConfig fontConfig, final short[] glyphRanges) {
         final Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(Vandalism.getInstance().getLowerCaseName());
-
         if (modContainer.isEmpty()) {
             Vandalism.getInstance().getLogger().error("Could not find mod container for mod " + Vandalism.getInstance().getLowerCaseName());
             return null;
         }
-
         final String pathString = "assets/" + Vandalism.getInstance().getLowerCaseName() + "/font/" + fontName + ".ttf";
         final Optional<Path> path = modContainer.get().findPath(pathString);
-
         if (path.isEmpty()) {
-            Vandalism.getInstance().getLogger().error("Could not find font file " + pathString);
+            Vandalism.getInstance().getLogger().error("Could not find font file: " + pathString);
             return null;
         }
-
         try {
             fontConfig.setName(fontName + " " + size + "px");
             return atlas.addFontFromMemoryTTF(IOUtils.toByteArray(Files.newInputStream(path.get())), size, fontConfig, glyphRanges);
         } catch (final IOException e) {
-            e.printStackTrace();
+            Vandalism.getInstance().getLogger().error("Failed to load font: " + pathString, e);
         }
-
         return null;
     }
 
     public void render() {
-        if (this.renderInterfaces.isEmpty())
-            return;
-
+        if (this.renderInterfaces.isEmpty()) return;
         //Setup rendering
         this.imGuiImplGlfw.newFrame(); // Handle keyboard and mouse interactions
         ImGui.newFrame();
-
         //Render
         final ImGuiIO imGuiIO = ImGui.getIO();
         for (final RenderInterface renderInterface : this.renderInterfaces) {
             renderInterface.render(imGuiIO);
         }
-
         //Clear render stuff and end frame
         this.renderInterfaces.clear();
         ImGui.endFrame();
-
         //Render
         ImGui.render();
         this.imGuiImplGl3.renderDrawData(ImGui.getDrawData());
-
         //Viewport
         if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
             final long pointer = GLFW.glfwGetCurrentContext();
             ImGui.updatePlatformWindows();
             ImGui.renderPlatformWindowsDefault();
-
             GLFW.glfwMakeContextCurrent(pointer);
         }
     }

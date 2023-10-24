@@ -2,6 +2,7 @@ package de.vandalismdevelopment.vandalism.gui.imgui;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.*;
+import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.script.ScriptsImGuiMenu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ public class ImGuiMenuRegistry {
                 new DemoImGuiMenu(),
                 new ConfigImGuiMenu(),
                 //TODO: Finish this -> new MacrosImGuiMenu(),
+                new ScriptsImGuiMenu(),
                 new AccountManagerImGuiMenu(),
                 new NameHistoryImGuiMenu(),
                 new ServerPingerImGuiMenu(),
@@ -40,6 +42,15 @@ public class ImGuiMenuRegistry {
 
     public List<ImGuiMenu> getImGuiMenus() {
         return this.imGuiMenus;
+    }
+
+    public <M extends ImGuiMenu> M getImGuiMenuByClass(final Class<M> clazz) {
+        for (final ImGuiMenu imGuiMenu : this.imGuiMenus) {
+            if (imGuiMenu.getClass().equals(clazz)) {
+                return (M) imGuiMenu;
+            }
+        }
+        return null;
     }
 
 }

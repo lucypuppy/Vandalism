@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class ScreenHandlerTypes {
 
-    private static final HashMap<Integer, String> SCREEN_HANDLER_TYPE_ID_MAP = new HashMap<>();
+    private final static HashMap<Integer, String> SCREEN_HANDLER_TYPE_ID_MAP = new HashMap<>();
 
     public static String getId(final ScreenHandlerType<?> screenHandlerType) {
         if (screenHandlerType != null) {
