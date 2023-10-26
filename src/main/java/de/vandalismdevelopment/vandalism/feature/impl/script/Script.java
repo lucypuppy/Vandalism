@@ -55,7 +55,11 @@ public class Script extends Feature implements IValue {
     }
 
     public int getKeyCode() {
-        return this.keyCode.getValue().left();
+        return this.keyCode.getValue().getLeft();
+    }
+
+    public void setKeyCode(final int keyCode) {
+        this.keyCode.setKeyCode(keyCode);
     }
 
     @Override
@@ -67,7 +71,7 @@ public class Script extends Feature implements IValue {
                 ", file=" + this.file.getName() +
                 ", version='" + this.version + '\'' +
                 ", author='" + this.author + '\'' +
-                ", keyCode=" + this.keyCode.getValue().right() +
+                ", keyCode=" + this.keyCode.getValue().getRight() +
                 '}';
     }
 

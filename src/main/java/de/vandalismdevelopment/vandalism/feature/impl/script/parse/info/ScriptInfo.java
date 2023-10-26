@@ -1,10 +1,10 @@
-package de.vandalismdevelopment.vandalism.feature.impl.script.info;
+package de.vandalismdevelopment.vandalism.feature.impl.script.parse.info;
 
-import de.vandalismdevelopment.vandalism.feature.impl.script.info.impl.CategoryScriptInfo;
-import de.vandalismdevelopment.vandalism.feature.impl.script.info.impl.bool.ExperimentalScriptInfo;
-import de.vandalismdevelopment.vandalism.feature.impl.script.info.impl.string.AuthorScriptInfo;
-import de.vandalismdevelopment.vandalism.feature.impl.script.info.impl.string.DescriptionScriptInfo;
-import de.vandalismdevelopment.vandalism.feature.impl.script.info.impl.string.VersionScriptInfo;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.impl.CategoryScriptInfo;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.impl.bool.ExperimentalScriptInfo;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.impl.string.AuthorScriptInfo;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.impl.string.DescriptionScriptInfo;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.impl.string.VersionScriptInfo;
 
 public enum ScriptInfo {
 

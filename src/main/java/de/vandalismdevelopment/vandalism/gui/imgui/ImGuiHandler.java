@@ -45,7 +45,7 @@ public class ImGuiHandler implements KeyboardListener, RenderListener, Minecraft
     @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         if (action != GLFW.GLFW_PRESS) return;
-        if (key == Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.menuKey.getValue().left()) {
+        if (key == Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.menuKey.getValue().getLeft()) {
             if (currentScreen() instanceof ImGuiScreen) currentScreen().close();
             else setScreen(new ImGuiScreen(currentScreen()));
         }

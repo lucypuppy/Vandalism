@@ -1,6 +1,7 @@
-package de.vandalismdevelopment.vandalism.feature.impl.script;
+package de.vandalismdevelopment.vandalism.feature.impl.script.parse.variable;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.ScriptParser;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 

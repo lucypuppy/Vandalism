@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.feature.impl.script;
+package de.vandalismdevelopment.vandalism.feature.impl.script.parse.command;
 
 public interface ScriptCommandExecution {
 

@@ -6,7 +6,7 @@ import de.vandalismdevelopment.vandalism.value.ValueCategory;
 import de.vandalismdevelopment.vandalism.value.values.BooleanValue;
 import de.vandalismdevelopment.vandalism.value.values.KeyInputValue;
 import de.vandalismdevelopment.vandalism.value.values.number.slider.SliderIntegerValue;
-import it.unimi.dsi.fastutil.Pair;
+import net.minecraft.util.Pair;
 import org.lwjgl.glfw.GLFW;
 
 public class MenuCategory extends ValueCategory {

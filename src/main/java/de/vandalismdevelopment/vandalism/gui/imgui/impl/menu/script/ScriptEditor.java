@@ -2,14 +2,13 @@ package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.script;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.feature.impl.script.ScriptCommand;
-import de.vandalismdevelopment.vandalism.feature.impl.script.ScriptExecutor;
-import de.vandalismdevelopment.vandalism.feature.impl.script.ScriptParser;
-import de.vandalismdevelopment.vandalism.feature.impl.script.info.IScriptInfo;
-import de.vandalismdevelopment.vandalism.feature.impl.script.info.ScriptInfo;
-import de.vandalismdevelopment.vandalism.feature.impl.script.info.impl.BooleanScriptInfo;
-import de.vandalismdevelopment.vandalism.feature.impl.script.info.impl.CategoryScriptInfo;
-import de.vandalismdevelopment.vandalism.feature.impl.script.info.impl.StringScriptInfo;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.ScriptParser;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.command.ScriptCommand;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.IScriptInfo;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.ScriptInfo;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.impl.BooleanScriptInfo;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.impl.CategoryScriptInfo;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.impl.StringScriptInfo;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
@@ -146,7 +145,11 @@ public class ScriptEditor {
                 return;
             }
             if (this.rename) {
-                if (this.scriptFile.exists()) this.scriptFile.delete();
+                if (this.scriptFile.exists()) {
+                    if (!this.scriptFile.delete()) {
+                        Vandalism.getInstance().getLogger().warn("Failed to delete old script file: " + this.scriptFile.getName());
+                    }
+                }
                 this.scriptFile = new File(
                         Vandalism.getInstance().getScriptRegistry().getDirectory(),
                         this.scriptName.get() + ScriptParser.SCRIPT_FILE_EXTENSION
@@ -195,7 +198,9 @@ public class ScriptEditor {
                                 if (textLine.startsWith(ScriptParser.INFO_CHAR)) {
                                     if (textLine.length() > 1) {
                                         throw new RuntimeException(
-                                                "Unknown script info '" + textLine.split("( )+")[0].replaceFirst(ScriptParser.INFO_CHAR, "") + "'"
+                                                "Unknown script info '" +
+                                                        textLine.split("( )+")[0].replaceFirst(ScriptParser.INFO_CHAR, "")
+                                                        + "'"
                                         );
                                     } else {
                                         throw new RuntimeException("Empty script info");
@@ -271,17 +276,17 @@ public class ScriptEditor {
             offset += 99;
             ImGui.sameLine();
             if (
-                    ScriptExecutor.isScriptRunning(this.scriptFile) ||
+                    Vandalism.getInstance().getScriptRegistry().isScriptRunning(this.scriptFile) ||
                             (!this.canBeSaved() && this.scriptFile.exists() && this.scriptFile.length() > 0 && MinecraftClient.getInstance().player != null)
             ) {
                 if (ImGui.button(
-                        (ScriptExecutor.isScriptRunning(this.scriptFile) ? "Kill" : "Execute") +
+                        (Vandalism.getInstance().getScriptRegistry().isScriptRunning(this.scriptFile) ? "Kill" : "Execute") +
                                 "##scriptsexecutein" + this.originalScriptName + "editor",
                         offset, buttonHeight
                 )) {
-                    if (ScriptExecutor.isScriptRunning(this.scriptFile)) {
-                        ScriptExecutor.killRunningScriptByScriptFile(this.scriptFile);
-                    } else ScriptExecutor.executeScriptByScriptFile(this.scriptFile);
+                    if (Vandalism.getInstance().getScriptRegistry().isScriptRunning(this.scriptFile)) {
+                        Vandalism.getInstance().getScriptRegistry().killRunningScriptByScriptFile(this.scriptFile);
+                    } else Vandalism.getInstance().getScriptRegistry().executeScriptByScriptFile(this.scriptFile);
                 }
             }
             offset += 99;

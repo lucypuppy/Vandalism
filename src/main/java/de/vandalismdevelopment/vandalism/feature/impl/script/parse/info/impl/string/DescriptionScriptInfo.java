@@ -1,6 +1,6 @@
-package de.vandalismdevelopment.vandalism.feature.impl.script.info.impl.string;
+package de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.impl.string;
 
-import de.vandalismdevelopment.vandalism.feature.impl.script.info.impl.StringScriptInfo;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.impl.StringScriptInfo;
 
 public class DescriptionScriptInfo extends StringScriptInfo {
 

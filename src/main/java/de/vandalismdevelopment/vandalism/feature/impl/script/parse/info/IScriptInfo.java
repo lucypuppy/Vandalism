@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.feature.impl.script.info;
+package de.vandalismdevelopment.vandalism.feature.impl.script.parse.info;
 
 public interface IScriptInfo<T> {
 

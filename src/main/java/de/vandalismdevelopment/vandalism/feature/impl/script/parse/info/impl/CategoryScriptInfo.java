@@ -1,7 +1,7 @@
-package de.vandalismdevelopment.vandalism.feature.impl.script.info.impl;
+package de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.impl;
 
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
-import de.vandalismdevelopment.vandalism.feature.impl.script.info.IScriptInfo;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.IScriptInfo;
 
 public class CategoryScriptInfo implements IScriptInfo<FeatureCategory> {
 
