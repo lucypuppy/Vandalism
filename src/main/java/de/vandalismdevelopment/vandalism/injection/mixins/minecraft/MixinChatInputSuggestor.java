@@ -56,11 +56,10 @@ public abstract class MixinChatInputSuggestor {
         final int length = prefix.length();
         if (reader.canRead(length) && reader.getString().startsWith(prefix, reader.getCursor())) {
             reader.setCursor(reader.getCursor() + length);
-            if (this.parse == null)
-                this.parse = commandRegistry.getCommandDispatcher().parse(reader, commandRegistry.getCommandSource());
-            final int cursor = textField.getCursor();
+            if (this.parse == null) this.parse = commandRegistry.parse(reader);
+            final int cursor = this.textField.getCursor();
             if (cursor >= 1 && (this.window == null || !this.completingSuggestions)) {
-                this.pendingSuggestions = commandRegistry.getCommandDispatcher().getCompletionSuggestions(this.parse, cursor);
+                this.pendingSuggestions = commandRegistry.getCompletionSuggestions(this.parse, cursor);
                 this.pendingSuggestions.thenRun(() -> {
                     if (this.pendingSuggestions.isDone()) this.showCommandSuggestions();
                 });

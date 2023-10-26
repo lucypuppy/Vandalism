@@ -19,7 +19,7 @@ public class ServerAddressResolverImGuiMenu extends ImGuiMenu {
     public void render() {
         if (ImGui.begin("Server Address Resolver", ImGuiWindowFlags.NoCollapse)) {
             ImGui.inputText("Hostname##serveraddressresolver", this.hostname);
-            if (!this.hostname.isEmpty()) {
+            if (!this.hostname.get().isBlank()) {
                 if (ImGui.button("Copy Resolved Server Address##serveraddressresolver")) {
                     final ServerAddress serverAddress = ServerAddress.parse(this.hostname.get(), 25565);
                     final String oldAddress = serverAddress.toInetSocketAddress().toString();

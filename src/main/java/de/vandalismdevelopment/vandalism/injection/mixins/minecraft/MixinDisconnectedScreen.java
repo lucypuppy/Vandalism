@@ -33,7 +33,9 @@ public abstract class MixinDisconnectedScreen extends Screen {
                 }
             });
             final String text = textBuilder.toString();
-            if (!text.isEmpty()) client.keyboard.setClipboard(text);
+            if (client != null && !text.isBlank()) {
+                client.keyboard.setClipboard(text);
+            }
         }).build(), positioner);
         return widget;
     }

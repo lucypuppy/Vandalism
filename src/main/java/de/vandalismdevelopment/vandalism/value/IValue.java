@@ -13,7 +13,7 @@ public interface IValue {
 
     default Value<?> getValue(final String name) {
         for (final Value<?> value : this.getValues()) {
-            if (value.getHashIdent().equals(name)) {
+            if (value.getSaveIdentifier().equals(name)) {
                 return value;
             }
         }
@@ -36,6 +36,6 @@ public interface IValue {
         }
     }
 
-    String iName();
+    String getValueName();
 
 }

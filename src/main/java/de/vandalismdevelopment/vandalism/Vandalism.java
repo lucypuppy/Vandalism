@@ -9,6 +9,7 @@ import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiHandler;
 import de.vandalismdevelopment.vandalism.util.rotation.RotationListener;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.main.Main;
 import net.minecraft.client.texture.NativeImage;
@@ -36,9 +37,7 @@ public class Vandalism {
         return INSTANCE;
     }
 
-    private final String name, lowerCaseName, version, windowTitle, author;
-
-    private final static String FALLBACK_VERSION = "1337";
+    private final String id, name, version, windowTitle, author;
 
     private final Logger logger;
 
@@ -59,25 +58,17 @@ public class Vandalism {
     private RotationListener rotationListener;
 
     public Vandalism() {
-        this.name = "Vandalism";
-        this.lowerCaseName = this.name.toLowerCase();
-        this.author = "Vandalism Development";
-        final String modVersionString;
-        final Optional<ModContainer> modContainer = FabricLoader.
-                getInstance().
-                getModContainer(this.lowerCaseName);
-        if (modContainer.isPresent()) {
-            modVersionString = modContainer.
-                    get().
-                    getMetadata().
-                    getVersion().
-                    getFriendlyString();
-        } else modVersionString = FALLBACK_VERSION;
-        this.version = modVersionString.equals("${version}") ? FALLBACK_VERSION : modVersionString;
+        this.id = "vandalism";
+        final Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(this.id);
+        final ModMetadata modMetadata = modContainer.get().getMetadata();
+        this.name = modMetadata.getName();
+        this.author = modMetadata.getAuthors().stream().findFirst().get().getName();
+        this.version = modMetadata.getVersion().getFriendlyString();
         this.logger = LoggerFactory.getLogger(this.name);
         this.windowTitle = String.format(
-                "%s made by %s",
+                "%s v%s made by %s",
                 this.name,
+                this.version,
                 this.author
         );
     }
@@ -89,7 +80,7 @@ public class Vandalism {
             case GLFW.GLFW_PLATFORM_X11: {
                 final int[] iconSizes = new int[]{16, 32, 48, 128, 256};
                 final List<InputStream> inputStreams = new ArrayList<>();
-                final String iconTexturesPath = "assets/" + this.lowerCaseName + "/textures/icon/";
+                final String iconTexturesPath = "assets/" + this.id + "/textures/icon/";
                 for (final int iconSize : iconSizes) {
                     final InputStream inputStream =
                             Main.class
@@ -148,24 +139,22 @@ public class Vandalism {
     }
 
     public void start(final MinecraftClient mc) {
-        mc.getWindow().setTitle(this.windowTitle + " | Starting...");
+        mc.getWindow().setTitle(String.format("Starting %s ...", this.windowTitle));
         try {
             this.setIcon(mc.getWindow());
         } catch (final IOException | RuntimeException exception) {
             this.logger.error("Couldn't set icon.", exception);
         }
-        this.logger.info("Starting...");
-        this.logger.info("Version: {}", this.version);
-        this.logger.info("Made by {}", this.author);
-        this.dir = new File(mc.runDirectory, this.lowerCaseName);
+        this.logger.info("Starting {} ...", this.windowTitle);
+        this.dir = new File(mc.runDirectory, this.id);
         this.dir.mkdirs();
         this.creativeTabRegistry = new CreativeTabRegistry();
         this.imGuiHandler = new ImGuiHandler(this.dir);
+        this.configManager = new ConfigManager(this.dir);
         this.scriptRegistry = new ScriptRegistry(this.dir);
         this.rotationListener = new RotationListener();
         this.moduleRegistry = new ModuleRegistry();
         this.commandRegistry = new CommandRegistry();
-        this.configManager = new ConfigManager();
         this.configManager.load();
         Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
         this.logger.info("Done!");
@@ -177,12 +166,12 @@ public class Vandalism {
         this.configManager.save();
     }
 
-    public String getName() {
-        return this.name;
+    public String getId() {
+        return this.id;
     }
 
-    public String getLowerCaseName() {
-        return this.lowerCaseName;
+    public String getName() {
+        return this.name;
     }
 
     public String getVersion() {

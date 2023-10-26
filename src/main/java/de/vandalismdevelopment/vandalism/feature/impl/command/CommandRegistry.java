@@ -1,8 +1,11 @@
 package de.vandalismdevelopment.vandalism.feature.impl.command;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.ParseResults;
+import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.Suggestions;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.FeatureList;
 import de.vandalismdevelopment.vandalism.feature.impl.command.impl.development.TestCommand;
@@ -18,6 +21,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.text.ClickEvent;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class CommandRegistry {
 
@@ -82,16 +86,24 @@ public class CommandRegistry {
         else Vandalism.getInstance().getLogger().info("Registered " + commandListSize + " command/s.");
     }
 
-    public void commandDispatch(final String message) throws CommandSyntaxException {
+    public void execute(final String message) throws CommandSyntaxException {
         this.commandDispatcher.execute(message, this.commandSource);
     }
 
-    public CommandDispatcher<CommandSource> getCommandDispatcher() {
-        return this.commandDispatcher;
+    public ParseResults<CommandSource> parse(final String command) {
+        return this.commandDispatcher.parse(command, this.commandSource);
     }
 
-    public CommandSource getCommandSource() {
-        return this.commandSource;
+    public ParseResults<CommandSource> parse(final StringReader reader) {
+        return this.commandDispatcher.parse(reader, this.commandSource);
+    }
+
+    public CompletableFuture<Suggestions> getCompletionSuggestions(final ParseResults<CommandSource> parseResults, final int cursor) {
+        return this.commandDispatcher.getCompletionSuggestions(parseResults, cursor);
+    }
+
+    public FeatureList<Command> getCommands() {
+        return this.commands;
     }
 
     public ClickEvent generateClickEvent(final String command) {
@@ -99,10 +111,6 @@ public class CommandRegistry {
                 ClickEvent.Action.RUN_COMMAND,
                 COMMAND_SECRET + command
         );
-    }
-
-    public FeatureList<Command> getCommands() {
-        return this.commands;
     }
 
 }

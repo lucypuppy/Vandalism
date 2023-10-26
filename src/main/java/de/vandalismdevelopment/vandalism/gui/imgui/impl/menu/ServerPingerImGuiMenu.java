@@ -73,7 +73,7 @@ public class ServerPingerImGuiMenu extends ImGuiMenu {
             if (ImGui.inputInt("Auto Ping Time##serverpinger", this.autoPingTime, 1)) {
                 this.autoPingTime.set(Math.max(1000, Math.min(this.autoPingTime.get(), 60000)));
             }
-            if (this.autoPing && !this.hostname.isEmpty()) {
+            if (this.autoPing && !this.hostname.get().isBlank()) {
                 if (this.currentState != State.WAITING_RESPONSE) {
                     ImGui.text("Pinging in " + (this.autoPingTime.get() - this.autoPingTimer.getElapsedTime()) + "ms");
                     if (this.autoPingTimer.hasReached(this.autoPingTime.get(), true)) {
@@ -81,7 +81,7 @@ public class ServerPingerImGuiMenu extends ImGuiMenu {
                     }
                 } else ImGui.text("Pinging...");
             }
-            if (!this.hostname.isEmpty() && this.currentState != State.WAITING_RESPONSE) {
+            if (!this.hostname.get().isBlank() && this.currentState != State.WAITING_RESPONSE) {
                 if (ImGui.button("Auto Ping: " + (this.autoPing ? "Disable" : "Enable") + "##serverpinger")) {
                     this.autoPing = !this.autoPing;
                 }
@@ -111,7 +111,7 @@ public class ServerPingerImGuiMenu extends ImGuiMenu {
     }
 
     private void ping() {
-        if (!this.hostname.isEmpty()) {
+        if (!this.hostname.get().isBlank()) {
             this.clear();
             this.currentState = State.WAITING_RESPONSE;
             this.queryState = State.WAITING_RESPONSE;

@@ -23,6 +23,13 @@ public class MenuCategory extends ValueCategory {
             "rshift"
     );
 
+    public final Value<Boolean> scriptExecutionLogging = new BooleanValue(
+            "Script Execution Logging",
+            "Enables/Disables the logging for the script execution.",
+            this,
+            false
+    );
+
     public final Value<Boolean> manageContainerButtons = new BooleanValue(
             "Manage Container Buttons",
             "Adds the store/steal buttons to containers.",

@@ -1,6 +1,8 @@
 package de.vandalismdevelopment.vandalism.gui.imgui;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.gui.minecraft.ImGuiScreen;
+import de.vandalismdevelopment.vandalism.injection.access.IImGuiImplGlfw;
 import imgui.*;
 import imgui.extension.implot.ImPlot;
 import imgui.flag.ImGuiCol;
@@ -118,12 +120,12 @@ public class ImGuiRenderer {
     }
 
     private ImFont loadFont(final String fontName, final int size, final ImFontAtlas atlas, final ImFontConfig fontConfig, final short[] glyphRanges) {
-        final Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(Vandalism.getInstance().getLowerCaseName());
+        final Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(Vandalism.getInstance().getId());
         if (modContainer.isEmpty()) {
-            Vandalism.getInstance().getLogger().error("Could not find mod container for mod " + Vandalism.getInstance().getLowerCaseName());
+            Vandalism.getInstance().getLogger().error("Could not find mod container for mod " + Vandalism.getInstance().getId());
             return null;
         }
-        final String pathString = "assets/" + Vandalism.getInstance().getLowerCaseName() + "/font/" + fontName + ".ttf";
+        final String pathString = "assets/" + Vandalism.getInstance().getId() + "/font/" + fontName + ".ttf";
         final Optional<Path> path = modContainer.get().findPath(pathString);
         if (path.isEmpty()) {
             Vandalism.getInstance().getLogger().error("Could not find font file: " + pathString);
@@ -138,8 +140,22 @@ public class ImGuiRenderer {
         return null;
     }
 
+    private boolean hasSyncedStates;
+
     public void render() {
-        if (this.renderInterfaces.isEmpty()) return;
+        if (this.renderInterfaces.isEmpty()) {
+            if (!this.hasSyncedStates && !(MinecraftClient.getInstance().currentScreen instanceof ImGuiScreen)) {
+                ((IImGuiImplGlfw) this.imGuiImplGlfw).forceUpdateMouseCursor();
+                if (MinecraftClient.getInstance().player != null && MinecraftClient.getInstance().currentScreen == null) {
+                    MinecraftClient.getInstance().mouse.unlockCursor();
+                    MinecraftClient.getInstance().mouse.lockCursor();
+                }
+                this.hasSyncedStates = true;
+            }
+            return;
+        } else {
+            this.hasSyncedStates = false;
+        }
         //Setup rendering
         this.imGuiImplGlfw.newFrame(); // Handle keyboard and mouse interactions
         ImGui.newFrame();

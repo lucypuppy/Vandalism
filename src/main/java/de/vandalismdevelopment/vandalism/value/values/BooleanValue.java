@@ -26,7 +26,7 @@ public class BooleanValue extends Value<Boolean> {
     public void render() {
         final ImBoolean imValue = new ImBoolean(this.getValue());
 
-        if (ImGui.checkbox(this.getName() + "##" + this.getHashIdent(), imValue))
+        if (ImGui.checkbox(this.getName() + "##" + this.getSaveIdentifier(), imValue))
             this.setValue(imValue.get());
     }
 

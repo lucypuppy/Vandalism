@@ -33,7 +33,7 @@ public class ColorValue extends Value<Color> {
                 ((rgb >> 24) & 0xff) / 255F
         };
 
-        if (ImGui.colorEdit4(this.getName() + "##" + this.getHashIdent(), colorArray)) {
+        if (ImGui.colorEdit4(this.getName() + "##" + this.getSaveIdentifier(), colorArray)) {
             this.setValue(new Color(colorArray[0], colorArray[1], colorArray[2], colorArray[3]));
         }
     }

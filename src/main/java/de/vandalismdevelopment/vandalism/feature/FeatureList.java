@@ -1,8 +1,12 @@
 package de.vandalismdevelopment.vandalism.feature;
 
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-public class FeatureList<A extends Feature> extends ArrayList<A> {
+public class FeatureList<A extends Feature> extends CopyOnWriteArrayList<A> {
+
+    public A get(final String name) {
+        return this.get(name, true);
+    }
 
     public A get(final String name, final boolean ignoreCase) {
         for (final A feature : this) {
@@ -15,10 +19,6 @@ public class FeatureList<A extends Feature> extends ArrayList<A> {
             }
         }
         return null;
-    }
-
-    public A get(final String name) {
-        return this.get(name, true);
     }
 
     public <B extends A> B get(final Class<B> clazz) {

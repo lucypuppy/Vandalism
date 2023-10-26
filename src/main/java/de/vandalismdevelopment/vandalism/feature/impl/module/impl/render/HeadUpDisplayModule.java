@@ -6,7 +6,7 @@ import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.FeatureList;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.gui.screen.ImGuiScreen;
+import de.vandalismdevelopment.vandalism.gui.minecraft.ImGuiScreen;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
 import de.vandalismdevelopment.vandalism.value.values.BooleanValue;
@@ -155,6 +155,7 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
 
     @Override
     public void onRender2DOutGamePost(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        if (mc().inGameHud != null && mc().inGameHud.getDebugHud().shouldShowDebugHud()) return;
         if (
              currentScreen() instanceof ChatScreen ||
              (currentScreen() instanceof InventoryScreen && this.inventoryScreenBringToFront.getValue()) ||

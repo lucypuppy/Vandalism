@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 public abstract class MixinLightmapTextureManager {
 
     @ModifyArgs(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/NativeImage;setColor(III)V"))
-    private void update(final Args args) {
+    private void modifyArgsUpdate(final Args args) {
         if (Vandalism.getInstance().getConfigManager().getMainConfig().visualCategory.fullBright.getValue()) {
             args.set(2, 0xFFFFFFFF);
         }

@@ -7,6 +7,9 @@ import de.vandalismdevelopment.vandalism.config.impl.account.impl.CrackedAccount
 import de.vandalismdevelopment.vandalism.config.impl.account.impl.MicrosoftAccount;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiMenu;
 import imgui.ImGui;
+import imgui.ImGuiInputTextCallbackData;
+import imgui.callback.ImGuiInputTextCallback;
+import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import net.minecraft.client.MinecraftClient;
@@ -25,6 +28,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class AccountManagerImGuiMenu extends ImGuiMenu {
+
+    private final static ImGuiInputTextCallback USERNAME_NAME_FILTER = new ImGuiInputTextCallback() {
+
+        @Override
+        public void accept(final ImGuiInputTextCallbackData imGuiInputTextCallbackData) {
+            if (imGuiInputTextCallbackData.getEventChar() == 0) return;
+            if (!Character.isLetterOrDigit(imGuiInputTextCallbackData.getEventChar()) && imGuiInputTextCallbackData.getEventChar() != '_' && imGuiInputTextCallbackData.getEventChar() != '§') {
+                imGuiInputTextCallbackData.setEventChar((char) 0);
+            }
+        }
+
+    };
 
     private final ImString username, uuid;
 
@@ -72,6 +87,7 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
 
     @Override
     public void render() {
+        final List<Account> accounts = Vandalism.getInstance().getConfigManager().getAccountConfig().getAccounts();
         if (ImGui.begin("Account Manager", ImGuiWindowFlags.NoCollapse)) {
             if (ImGui.beginTabBar("##accountmanagertabbar")) {
                 if (ImGui.beginTabItem("List##accountmanager")) {
@@ -79,7 +95,7 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                     ImGui.newLine();
                     ImGui.text("Accounts");
                     if (ImGui.beginListBox("##accountList", 340, 0)) {
-                        for (final Account account : Vandalism.getInstance().getConfigManager().getAccountConfig().getAccounts()) {
+                        for (final Account account : accounts) {
                             ImGui.text(account.getUsername() + " | " + account.getType());
                             ImGui.sameLine();
                             ImGui.setCursorPosX(212);
@@ -101,7 +117,7 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                             });
                             ImGui.sameLine();
                             if (ImGui.button("remove##" + account.getUsername())) {
-                                Vandalism.getInstance().getConfigManager().getAccountConfig().getAccounts().remove(account);
+                                accounts.remove(account);
                                 Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getAccountConfig());
                             }
                         }
@@ -127,7 +143,7 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                                                 }
                                         )
                                 );
-                                Vandalism.getInstance().getConfigManager().getAccountConfig().getAccounts().add(
+                                accounts.add(
                                         new MicrosoftAccount(
                                                 mcProfile.toJson().toString(),
                                                 mcProfile.id(),
@@ -148,16 +164,20 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                     }
                     ImGui.newLine();
                     ImGui.text("Cracked");
-                    ImGui.inputText("Username##accountmanager", this.username);
+                    ImGui.inputText("Username##accountmanager", this.username,
+                            ImGuiInputTextFlags.CallbackCharFilter,
+                            USERNAME_NAME_FILTER
+                    );
                     ImGui.inputText("UUID##accountmanager", this.uuid);
-                    if (ImGui.button("Add Cracked (Direct)##accountmanager")) {
-                        this.executor.submit(() -> {
-                            final String usernameValue = this.username.get().replace(" ", "");
-                            if (!usernameValue.isEmpty()) {
-                                final List<Account> accounts = Vandalism.getInstance().getConfigManager().getAccountConfig().getAccounts();
+                    final String usernameValue = this.username.get();
+                    if (!usernameValue.isBlank()) {
+                        if (ImGui.button("Add Cracked (Direct)##accountmanager")) {
+                            this.executor.submit(() -> {
                                 boolean contains = false;
                                 String uuidValue = this.uuid.get();
-                                if (uuidValue.isEmpty()) uuidValue = Uuids.getOfflinePlayerUuid(usernameValue).toString();
+                                if (uuidValue.isBlank()) {
+                                    uuidValue = Uuids.getOfflinePlayerUuid(usernameValue).toString();
+                                }
                                 for (final Account account : accounts) {
                                     if (account instanceof final CrackedAccount crackedAccount && crackedAccount.getUuid().toString().equals(uuidValue)) {
                                         contains = true;
@@ -177,13 +197,9 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                                     this.statusLine1 = "Failed to add the cracked account to your account list.";
                                     this.statusLine2 = "The UUID is invalid or already in use.";
                                 }
-                            }
-                            else {
-                                this.statusLine1 = "Failed to add the cracked account to your account list.";
-                                this.statusLine2 = "The username is empty.";
-                            }
-                            this.delayedResetStatus();
-                        });
+                                this.delayedResetStatus();
+                            });
+                        }
                     }
                     ImGui.endTabItem();
                 }

@@ -18,7 +18,7 @@ public abstract class MixinClientPlayNetworkHandler {
         final String prefix = Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.commandPrefix.getValue();
         if (message.startsWith(prefix)) {
             try {
-                Vandalism.getInstance().getCommandRegistry().commandDispatch(message.substring(prefix.length()));
+                Vandalism.getInstance().getCommandRegistry().execute(message.substring(prefix.length()));
             } catch (final CommandSyntaxException e) {
                 ChatUtils.errorChatMessage(e.getMessage());
             }

@@ -5,7 +5,7 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.event.KeyboardListener;
 import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.widget.NBTEditWidget;
-import de.vandalismdevelopment.vandalism.gui.screen.ImGuiScreen;
+import de.vandalismdevelopment.vandalism.gui.minecraft.ImGuiScreen;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 import org.lwjgl.glfw.GLFW;

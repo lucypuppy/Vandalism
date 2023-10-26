@@ -31,7 +31,7 @@ public class SliderFloatValue extends SliderNumberValue<Float> {
     @Override
     public void render() {
         final ImFloat imFloat = new ImFloat(getValue());
-        if (ImGui.sliderScalar(this.getName() + "##" + this.getHashIdent(), ImGuiDataType.Float, imFloat, this.getMin(), this.getMax(), this.getFormat())) {
+        if (ImGui.sliderScalar(this.getName() + "##" + this.getSaveIdentifier(), ImGuiDataType.Float, imFloat, this.getMin(), this.getMax(), this.getFormat())) {
             this.setValue(imFloat.get());
         }
     }

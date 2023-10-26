@@ -10,7 +10,10 @@ import de.vandalismdevelopment.vandalism.config.impl.account.impl.MicrosoftAccou
 import de.vandalismdevelopment.vandalism.util.AES;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Uuids;
+import net.raphimc.mcauth.MinecraftAuth;
+import net.raphimc.mcauth.util.logging.ILogger;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -20,9 +23,27 @@ public class AccountConfig extends ValueableConfig {
 
     private final List<Account> accounts;
 
-    public AccountConfig() {
-        super(Vandalism.getInstance().getDir(), "accounts");
+    public AccountConfig(final File dir) {
+        super(dir, "accounts");
         this.accounts = new CopyOnWriteArrayList<>();
+        MinecraftAuth.LOGGER = new ILogger() {
+
+            @Override
+            public void info(final String message) {
+                Vandalism.getInstance().getLogger().info(message);
+            }
+
+            @Override
+            public void warn(final String message) {
+                Vandalism.getInstance().getLogger().info(message);
+            }
+
+            @Override
+            public void error(final String message) {
+                Vandalism.getInstance().getLogger().error(message);
+            }
+
+        };
     }
 
     @Override

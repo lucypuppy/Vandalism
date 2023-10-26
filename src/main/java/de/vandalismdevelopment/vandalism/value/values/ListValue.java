@@ -29,7 +29,7 @@ public class ListValue extends Value<String> {
         if (!this.values.contains(value)) {
             value = this.getDefaultValue();
             Vandalism.getInstance().getLogger().error(
-                    "Could not find list value with the name '" + value + "' for the value config '" + this.getParent().iName() + "' resetting it to the default value '" + this.getDefaultValue() + "'."
+                    "Could not find list value with the name '" + value + "' for the value config '" + this.getParent().getValueName() + "' resetting it to the default value '" + this.getDefaultValue() + "'."
             );
         }
         this.setValue(value);
@@ -42,7 +42,7 @@ public class ListValue extends Value<String> {
 
     @Override
     public void render() {
-        if (ImGui.beginCombo(this.getName() + "##" + this.getHashIdent(), getValue())) {
+        if (ImGui.beginCombo(this.getName() + "##" + this.getSaveIdentifier(), getValue())) {
             for (final String mode : this.values) {
                 if (ImGui.selectable(mode, mode.equals(getValue()))) {
                     this.setValue(mode);

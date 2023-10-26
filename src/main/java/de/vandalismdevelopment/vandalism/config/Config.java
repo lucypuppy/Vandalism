@@ -8,8 +8,8 @@ import java.io.IOException;
 
 public abstract class Config {
 
-    public final File file;
-    public final String name;
+    private final File file;
+    private final String name;
 
     public Config(final File configDir, final String name) {
         this.name = name;
@@ -22,6 +22,14 @@ public abstract class Config {
                 exception.printStackTrace();
             }
         }
+    }
+
+    public File getFile() {
+        return this.file;
+    }
+
+    public String getName() {
+        return this.name;
     }
 
     public abstract JsonObject save() throws IOException;

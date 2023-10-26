@@ -33,7 +33,7 @@ public abstract class MixinScreen {
                 final String value = clickEvent.getValue(), secret = CommandRegistry.COMMAND_SECRET;
                 if (value.startsWith(secret)) {
                     try {
-                        Vandalism.getInstance().getCommandRegistry().commandDispatch(value.replaceFirst(secret, ""));
+                        Vandalism.getInstance().getCommandRegistry().execute(value.replaceFirst(secret, ""));
                         cir.setReturnValue(true);
                     } catch (final CommandSyntaxException e) {
                         Vandalism.getInstance().getLogger().error("Failed to run command.", e);

@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.gui.screen;
+package de.vandalismdevelopment.vandalism.gui.minecraft;
 
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.minecraft.client.gui.screen.ConfirmScreen;

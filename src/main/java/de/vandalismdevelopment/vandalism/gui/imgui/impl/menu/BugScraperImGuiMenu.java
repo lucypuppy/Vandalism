@@ -19,6 +19,7 @@ import org.jsoup.select.Elements;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 //TODO: Add the rest of searching and filtering.
 public class BugScraperImGuiMenu extends ImGuiMenu {
@@ -54,7 +55,7 @@ public class BugScraperImGuiMenu extends ImGuiMenu {
             }
             if (ImGui.button("Scrape##bugscraper")) {
                 this.currentData.clear();
-                new Thread(() -> {
+                Executors.newSingleThreadExecutor().submit(() -> {
                     this.currentState = State.SENDING_REQUEST;
                     try {
                         final Document document = Jsoup.connect(this.url + (this.currentFilter != Filter.NONE ? "?filter=" + this.currentFilter.getValue() : "")).userAgent(this.userAgent).followRedirects(true).get();
@@ -109,7 +110,7 @@ public class BugScraperImGuiMenu extends ImGuiMenu {
                         this.currentState = State.FAILED_FETCH;
                         Vandalism.getInstance().getLogger().error(this.currentState.getMessage(), e);
                     }
-                }).start();
+                });
             }
             if (!this.currentData.isEmpty()) {
                 if (ImGui.button("Clear##bugscraper")) {

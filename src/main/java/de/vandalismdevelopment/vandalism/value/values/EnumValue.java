@@ -34,7 +34,7 @@ public class EnumValue<T extends IName> extends Value<T> {
     public void render() {
         final String selectedName = this.getValue().getName();
 
-        if (ImGui.beginCombo(this.getName() + "##" + this.getHashIdent(), selectedName)) {
+        if (ImGui.beginCombo(this.getName() + "##" + this.getSaveIdentifier(), selectedName)) {
             for (final T mode : this.values) {
                 final String name = mode.getName();
 

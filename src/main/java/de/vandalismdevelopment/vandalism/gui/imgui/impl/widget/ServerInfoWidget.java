@@ -90,7 +90,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                 keyboard().setClipboard(protocol);
             }
             final String name = version.name;
-            if (!name.isEmpty()) {
+            if (!name.isBlank()) {
                 ImGui.newLine();
                 ImGui.text("[Version Name]");
                 ImGui.textWrapped(name);
@@ -107,7 +107,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
             if (ImGui.button("Copy Population Info##serverpinger")) {
                 keyboard().setClipboard(populationInfo);
             }
-            if (!this.motd.isEmpty()) {
+            if (!this.motd.isBlank()) {
                 ImGui.newLine();
                 ImGui.text("[MOTD]");
                 ImGui.textWrapped(this.motd);
