@@ -42,13 +42,13 @@ public abstract class ValueableConfig extends Config implements IValue {
                 value.onConfigSave(valueObject);
             }
 
-            valuesArray.add(value.getHashIdent(), valueObject);
+            valuesArray.add(value.getSaveIdentifier(), valueObject);
         }
     }
 
     protected void loadValues(final JsonObject valuesArray, final List<Value<?>> values) {
         for (final Value<?> value : values) {
-            final JsonElement valueElement = valuesArray.get(value.getHashIdent());
+            final JsonElement valueElement = valuesArray.get(value.getSaveIdentifier());
 
             if (valueElement == null) {
                 Vandalism.getInstance().getLogger().error("Value " + value.getName() + " not found in config!");
@@ -64,8 +64,8 @@ public abstract class ValueableConfig extends Config implements IValue {
     }
 
     @Override
-    public String iName() {
-        return this.name;
+    public String getValueName() {
+        return this.getName();
     }
 
 }

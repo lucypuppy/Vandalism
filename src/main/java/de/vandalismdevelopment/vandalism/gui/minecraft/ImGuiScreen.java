@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.gui.screen;
+package de.vandalismdevelopment.vandalism.gui.minecraft;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiMenu;
@@ -12,7 +12,7 @@ public class ImGuiScreen extends Screen {
     private final Screen prevScreen;
 
     public ImGuiScreen(final Screen prevScreen) {
-        super(Text.literal("ImGui"));
+        super(Text.literal("ImGUI"));
         this.prevScreen = prevScreen;
     }
 

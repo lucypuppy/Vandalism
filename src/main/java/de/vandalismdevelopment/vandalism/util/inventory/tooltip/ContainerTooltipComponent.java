@@ -14,7 +14,7 @@ import net.minecraft.util.collection.DefaultedList;
 
 public class ContainerTooltipComponent implements TooltipComponent, ITooltipData, MinecraftWrapper {
 
-    private final static Identifier TEXTURE_CONTAINER_BACKGROUND = new Identifier(Vandalism.getInstance().getLowerCaseName(), "textures/hud/container.png");
+    private final static Identifier TEXTURE_CONTAINER_BACKGROUND = new Identifier(Vandalism.getInstance().getId(), "textures/hud/container.png");
 
     private final DefaultedList<ItemStack> items;
     private final float[] color;

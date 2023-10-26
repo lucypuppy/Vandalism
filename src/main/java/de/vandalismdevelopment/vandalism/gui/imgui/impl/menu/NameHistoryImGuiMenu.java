@@ -50,7 +50,7 @@ public class NameHistoryImGuiMenu extends ImGuiMenu {
         if (ImGui.begin("Name History", ImGuiWindowFlags.NoCollapse)) {
             ImGui.text("State: " + this.currentState.getMessage());
             ImGui.inputText("Username##namehistory", this.username);
-            final String usernameValue = this.username.get().replace(" ", "");
+            final String usernameValue = this.username.get().trim();
             if (usernameValue.length() > 2) {
                 if (this.currentState.equals(State.WAITING_INPUT) || !this.currentState.name().contains("WAITING")) {
                     if (ImGui.button("Get##namehistory")) {

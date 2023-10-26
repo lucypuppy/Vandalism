@@ -136,7 +136,7 @@ public class ItemStackLoggerModule extends Module implements TickListener {
             if (itemZipFile.exists()) return;
             itemZipFile.createNewFile();
             try (final ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(itemZipFile, true))) {
-                final ZipEntry zipEntry = new ZipEntry("data." + Vandalism.getInstance().getLowerCaseName() + "-log");
+                final ZipEntry zipEntry = new ZipEntry("data." + Vandalism.getInstance().getId() + "-log");
                 zipOutputStream.putNextEntry(zipEntry);
                 zipOutputStream.write((
                         "Date: " + this.formatter.format(new Date()) + System.lineSeparator() +

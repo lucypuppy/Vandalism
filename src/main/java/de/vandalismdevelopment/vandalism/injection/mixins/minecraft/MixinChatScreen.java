@@ -43,7 +43,7 @@ public abstract class MixinChatScreen {
     @Redirect(method = "sendMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ChatScreen;normalize(Ljava/lang/String;)Ljava/lang/String;"))
     private String redirectSendMessage(final ChatScreen instance, String chatText) {
         chatText = instance.normalize(chatText);
-        if (!chatText.isEmpty()) {
+        if (!chatText.isBlank()) {
             final ChatListener.ChatSendEvent chatSendEvent = new ChatListener.ChatSendEvent(chatText);
             DietrichEvents2.global().postInternal(ChatListener.ChatSendEvent.ID, chatSendEvent);
             chatText = chatSendEvent.message;

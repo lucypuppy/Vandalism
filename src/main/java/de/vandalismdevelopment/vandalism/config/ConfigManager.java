@@ -6,12 +6,10 @@ import com.google.gson.stream.JsonToken;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.config.impl.MainConfig;
 import de.vandalismdevelopment.vandalism.config.impl.ModulesConfig;
+import de.vandalismdevelopment.vandalism.config.impl.ScriptConfig;
 import de.vandalismdevelopment.vandalism.config.impl.account.AccountConfig;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +17,6 @@ public class ConfigManager {
 
     private final Gson gson;
     private final List<Config> configs;
-
     private final MainConfig mainConfig;
 
     public MainConfig getMainConfig() {
@@ -32,20 +29,26 @@ public class ConfigManager {
         return this.modulesConfig;
     }
 
-    public final AccountConfig accountConfig;
+    private final AccountConfig accountConfig;
 
     public AccountConfig getAccountConfig() {
-        return accountConfig;
+        return this.accountConfig;
     }
 
-    public ConfigManager() {
+    private final ScriptConfig scriptConfig;
+
+    public ScriptConfig getScriptConfig() {
+        return this.scriptConfig;
+    }
+
+    public ConfigManager(final File dir) {
         this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         this.configs = new ArrayList<>();
-
         this.addConfigs(
-                this.mainConfig = new MainConfig(),
-                this.modulesConfig = new ModulesConfig(),
-                this.accountConfig = new AccountConfig()
+                this.mainConfig = new MainConfig(dir),
+                this.modulesConfig = new ModulesConfig(dir),
+                this.accountConfig = new AccountConfig(dir),
+                this.scriptConfig = new ScriptConfig(dir)
         );
     }
 
@@ -57,34 +60,13 @@ public class ConfigManager {
         }
     }
 
-    public void save(final Config config) {
-        try {
-            final FileWriter fileWriter = new FileWriter(config.file);
-            final PrintWriter printWriter = new PrintWriter(fileWriter);
-
-            printWriter.println(this.gson.toJson(config.save()));
-
-            printWriter.close();
-            fileWriter.close();
-        } catch (final IOException e) {
-            Vandalism.getInstance().getLogger().error("Failed to save config: " + config.file.getName(), e);
-        }
-    }
-
-    public void save() {
-        for (final Config config : this.configs) {
-            save(config);
-        }
-    }
-
     public void load() {
         Vandalism.getInstance().getLogger().info("Loading configs...");
         for (final Config config : this.configs) {
             try {
-                final FileReader fileReader = new FileReader(config.file);
+                final FileReader fileReader = new FileReader(config.getFile());
                 final JsonReader jsonReader = new JsonReader(fileReader);
                 final JsonElement jsonElement = JsonParser.parseReader(jsonReader);
-
                 if (!jsonElement.isJsonNull()) {
                     if (jsonReader.peek() != JsonToken.END_DOCUMENT) {
                         fileReader.close();
@@ -94,13 +76,30 @@ public class ConfigManager {
                         config.load((JsonObject) jsonElement);
                     }
                 }
-
                 fileReader.close();
                 jsonReader.close();
-                Vandalism.getInstance().getLogger().info("Config " + config.file.getName() + " loaded.");
+                Vandalism.getInstance().getLogger().info("Config " + config.getFile().getName() + " loaded.");
             } catch (final IOException | JsonSyntaxException e) {
-                Vandalism.getInstance().getLogger().error("Failed to load config: " + config.file.getName(), e);
+                Vandalism.getInstance().getLogger().error("Failed to load config: " + config.getFile().getName(), e);
             }
+        }
+    }
+
+    public void save(final Config config) {
+        try {
+            final FileWriter fileWriter = new FileWriter(config.getFile());
+            final PrintWriter printWriter = new PrintWriter(fileWriter);
+            printWriter.println(this.gson.toJson(config.save()));
+            printWriter.close();
+            fileWriter.close();
+        } catch (final IOException e) {
+            Vandalism.getInstance().getLogger().error("Failed to save config: " + config.getFile().getName(), e);
+        }
+    }
+
+    public void save() {
+        for (final Config config : this.configs) {
+            this.save(config);
         }
     }
 

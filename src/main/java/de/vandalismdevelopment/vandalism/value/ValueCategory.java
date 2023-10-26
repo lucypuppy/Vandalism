@@ -24,7 +24,7 @@ public class ValueCategory extends Value<List<Value<?>>> implements IValue, Mine
 
     @Override
     public void render() {
-        if (ImGui.treeNodeEx(this.getName() + "##" + this.getHashIdent())) {
+        if (ImGui.treeNodeEx(this.getName() + "##" + this.getSaveIdentifier())) {
             this.renderValues();
             ImGui.treePop();
         }
@@ -48,7 +48,7 @@ public class ValueCategory extends Value<List<Value<?>>> implements IValue, Mine
     }
 
     @Override
-    public String iName() {
+    public String getValueName() {
         return this.getName();
     }
 

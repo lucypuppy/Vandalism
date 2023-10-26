@@ -1,17 +1,17 @@
 package de.vandalismdevelopment.vandalism.config.impl;
 
 import com.google.gson.JsonObject;
-import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.config.ValueableConfig;
 import de.vandalismdevelopment.vandalism.config.impl.main.*;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 
+import java.io.File;
 import java.io.IOException;
 
 public class MainConfig extends ValueableConfig implements MinecraftWrapper {
 
-    public MainConfig() {
-        super(Vandalism.getInstance().getDir(), "main");
+    public MainConfig(final File dir) {
+        super(dir, "main");
     }
 
     public final MenuCategory menuCategory = new MenuCategory(this);

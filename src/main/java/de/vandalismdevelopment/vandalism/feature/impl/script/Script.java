@@ -1,15 +1,25 @@
 package de.vandalismdevelopment.vandalism.feature.impl.script;
 
+import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.config.Config;
 import de.vandalismdevelopment.vandalism.feature.Feature;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.FeatureType;
+import de.vandalismdevelopment.vandalism.value.IValue;
+import de.vandalismdevelopment.vandalism.value.Value;
+import de.vandalismdevelopment.vandalism.value.values.KeyInputValue;
+import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Script extends Feature {
+public class Script extends Feature implements IValue {
 
     private final File file;
     private final String version, author;
+    private final List<Value<?>> values;
+    private final KeyInputValue keyCode;
 
     public Script(
             final File file,
@@ -28,6 +38,8 @@ public class Script extends Feature {
         this.file = file;
         this.version = version;
         this.author = author;
+        this.values = new ArrayList<>();
+        this.keyCode = new KeyInputValue("Keybind", "The keybind of this script.", this, GLFW.GLFW_KEY_UNKNOWN, "Unknown");
     }
 
     public File getFile() {
@@ -42,6 +54,10 @@ public class Script extends Feature {
         return this.author;
     }
 
+    public int getKeyCode() {
+        return this.keyCode.getValue().left();
+    }
+
     @Override
     public String toString() {
         return '{' +
@@ -51,7 +67,23 @@ public class Script extends Feature {
                 ", file=" + this.file.getName() +
                 ", version='" + this.version + '\'' +
                 ", author='" + this.author + '\'' +
+                ", keyCode=" + this.keyCode.getValue().right() +
                 '}';
+    }
+
+    @Override
+    public List<Value<?>> getValues() {
+        return this.values;
+    }
+
+    @Override
+    public Config getConfig() {
+        return Vandalism.getInstance().getConfigManager().getScriptConfig();
+    }
+
+    @Override
+    public String getValueName() {
+        return this.getName();
     }
 
 }

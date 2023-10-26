@@ -4,6 +4,7 @@ import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.UserApiService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilEnvironment;
+import de.vandalismdevelopment.vandalism.Vandalism;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.SocialInteractionsManager;
 import net.minecraft.client.realms.RealmsClient;
@@ -22,7 +23,10 @@ public class SessionUtil {
         // Set skin / cape session
         MinecraftClient.getInstance().getSplashTextLoader().session = session;
 
-        if (session.getAccountType().equals(Session.AccountType.LEGACY)) return;
+        if (session.getAccountType().equals(Session.AccountType.LEGACY)) {
+            Vandalism.getInstance().getLogger().info("Logged in as: " + session.getUsername());
+            return;
+        }
 
         // Refresh api
         final UserApiService userApiService;
@@ -60,6 +64,8 @@ public class SessionUtil {
         // Refresh realms
         final RealmsClient realmsClient = RealmsClient.createRealmsClient(MinecraftClient.getInstance());
         MinecraftClient.getInstance().realmsPeriodicCheckers = new RealmsPeriodicCheckers(realmsClient);
+
+        Vandalism.getInstance().getLogger().info("Logged in as: " + session.getUsername());
     }
 
 }

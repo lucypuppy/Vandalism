@@ -13,14 +13,14 @@ public abstract class Value<V> {
     private V value;
     private BooleanSupplier visible;
     private Consumer<V> valueChangeConsumer, valueChangedConsumer;
-    private final String saveIdent;
+    private final String saveIdentifier;
     private final IValue parent;
 
     public Value(final String name, final String description, final IValue parent, final String dataType, final V defaultValue) {
         this.name = name;
         this.description = description;
 
-        this.saveIdent = name + " (" + dataType + ")";
+        this.saveIdentifier = name + " (" + dataType + ")" + " [" + parent.getValueName().hashCode() + "]";
 
         this.defaultValue = defaultValue;
         this.setValue(defaultValue);
@@ -44,9 +44,9 @@ public abstract class Value<V> {
             this.valueChangedConsumer.accept(value);
         }
 
-        if (Vandalism.getInstance().getConfigManager() != null) {
+        if (Vandalism.getInstance().getConfigManager() != null && this.parent != null) {
             if (this.parent.getConfig() == null) {
-                throw new IllegalStateException("Value config for the parent " + this.parent.iName() + " is null!");
+                throw new IllegalStateException("Value config for the parent " + this.parent.getValueName() + " is null!");
             }
 
             Vandalism.getInstance().getConfigManager().save(this.parent.getConfig());
@@ -92,8 +92,8 @@ public abstract class Value<V> {
         return this.visible;
     }
 
-    public String getHashIdent() {
-        return this.saveIdent;
+    public String getSaveIdentifier() {
+        return this.saveIdentifier;
     }
 
     public IValue getParent() {

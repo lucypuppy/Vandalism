@@ -99,13 +99,13 @@ public abstract class Module extends Feature implements IValue {
     }
 
     @Override
-    public List<Value<?>> getValues() {
-        return this.values;
+    public String toString() {
+        return '{' + "name=" + this.getName() + ", category=" + this.getCategory() + ", enabled=" + this.enabled + ", experimental=" + this.isExperimental() + '}';
     }
 
     @Override
-    public String toString() {
-        return '{' + "name=" + this.getName() + ", category=" + this.getCategory() + ", enabled=" + this.enabled + ", experimental=" + this.isExperimental() + '}';
+    public List<Value<?>> getValues() {
+        return this.values;
     }
 
     @Override
@@ -114,7 +114,7 @@ public abstract class Module extends Feature implements IValue {
     }
 
     @Override
-    public String iName() {
+    public String getValueName() {
         return this.getName();
     }
 

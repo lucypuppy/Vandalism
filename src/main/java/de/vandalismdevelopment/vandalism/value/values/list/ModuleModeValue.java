@@ -34,7 +34,7 @@ public class ModuleModeValue<T extends Module> extends ListValue {
             }
         }
         Vandalism.getInstance().getLogger().error(
-                "Could not find module mode with the name '" + name + "' for module '" + this.getParent().iName() + "' resetting it to the default module mode '" + this.getDefaultValue() + "'."
+                "Could not find module mode with the name '" + name + "' for module '" + this.getParent().getValueName() + "' resetting it to the default module mode '" + this.getDefaultValue() + "'."
         );
         return this.getValue(this.getDefaultValue());
     }

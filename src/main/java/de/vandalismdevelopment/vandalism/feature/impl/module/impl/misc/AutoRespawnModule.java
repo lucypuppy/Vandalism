@@ -22,9 +22,9 @@ public class AutoRespawnModule extends Module implements TickListener {
             "Delay",
             "The delay in ticks before respawning.",
             this,
+            2000,
             0,
-            0,
-            100
+            10000
     ).visibleConsumer(() -> !this.instantRespawn.getValue());
 
     private final Value<Boolean> autoBack = new BooleanValue(

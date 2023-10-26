@@ -5,6 +5,7 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
 import de.vandalismdevelopment.vandalism.feature.impl.command.arguments.ScriptArgumentType;
+import de.vandalismdevelopment.vandalism.feature.impl.script.ScriptExecutor;
 import de.vandalismdevelopment.vandalism.util.ChatUtils;
 import net.minecraft.command.CommandSource;
 
@@ -24,7 +25,7 @@ public class ScriptCommand extends Command {
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.then(literal("execute").then(argument("script", ScriptArgumentType.create())
                 .executes(context -> {
-                    Vandalism.getInstance().getScriptRegistry().executeScript(ScriptArgumentType.get(context));
+                    ScriptExecutor.executeScriptByScriptFile(ScriptArgumentType.get(context).getFile());
                     return SINGLE_SUCCESS;
                 })
         ));

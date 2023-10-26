@@ -2,12 +2,9 @@ accessWidener	v1	named
 
 accessible class net/minecraft/item/ItemGroup$EntriesImpl
 accessible field net/minecraft/client/gui/screen/ingame/CreativeInventoryScreen selectedTab Lnet/minecraft/item/ItemGroup;
-
 accessible field net/minecraft/client/option/KeyBinding boundKey Lnet/minecraft/client/util/InputUtil$Key;
-
 accessible field net/minecraft/client/network/ClientPlayNetworkHandler lastSeenMessagesCollector Lnet/minecraft/network/message/LastSeenMessagesCollector;
 accessible field net/minecraft/client/network/ClientPlayNetworkHandler messagePacker Lnet/minecraft/network/message/MessageChain$Packer;
-
 accessible field net/minecraft/network/packet/c2s/play/PlayerMoveC2SPacket x D
 accessible field net/minecraft/network/packet/c2s/play/PlayerMoveC2SPacket y D
 accessible field net/minecraft/network/packet/c2s/play/PlayerMoveC2SPacket z D
@@ -16,7 +13,6 @@ accessible field net/minecraft/network/packet/c2s/play/PlayerMoveC2SPacket pitch
 accessible field net/minecraft/network/packet/c2s/play/PlayerMoveC2SPacket onGround Z
 accessible field net/minecraft/network/packet/c2s/play/PlayerMoveC2SPacket changePosition Z
 accessible field net/minecraft/network/packet/c2s/play/PlayerMoveC2SPacket changeLook Z
-
 mutable field net/minecraft/network/packet/c2s/play/PlayerMoveC2SPacket x D
 mutable field net/minecraft/network/packet/c2s/play/PlayerMoveC2SPacket y D
 mutable field net/minecraft/network/packet/c2s/play/PlayerMoveC2SPacket z D
@@ -25,82 +21,50 @@ mutable field net/minecraft/network/packet/c2s/play/PlayerMoveC2SPacket pitch F
 mutable field net/minecraft/network/packet/c2s/play/PlayerMoveC2SPacket onGround Z
 mutable field net/minecraft/network/packet/c2s/play/PlayerMoveC2SPacket changePosition Z
 mutable field net/minecraft/network/packet/c2s/play/PlayerMoveC2SPacket changeLook Z
-
 accessible field net/minecraft/client/MinecraftClient session Lnet/minecraft/client/session/Session;
 mutable field net/minecraft/client/MinecraftClient session Lnet/minecraft/client/session/Session;
-
 accessible field net/minecraft/client/resource/SplashTextResourceSupplier session Lnet/minecraft/client/session/Session;
 mutable field net/minecraft/client/resource/SplashTextResourceSupplier session Lnet/minecraft/client/session/Session;
-
 accessible field net/minecraft/client/MinecraftClient profileKeys Lnet/minecraft/client/session/ProfileKeys;
 mutable field net/minecraft/client/MinecraftClient profileKeys Lnet/minecraft/client/session/ProfileKeys;
-
 accessible field net/minecraft/client/MinecraftClient userApiService Lcom/mojang/authlib/minecraft/UserApiService;
 mutable field net/minecraft/client/MinecraftClient userApiService Lcom/mojang/authlib/minecraft/UserApiService;
-
 accessible field net/minecraft/client/MinecraftClient socialInteractionsManager Lnet/minecraft/client/network/SocialInteractionsManager;
 mutable field net/minecraft/client/MinecraftClient socialInteractionsManager Lnet/minecraft/client/network/SocialInteractionsManager;
-
 accessible field net/minecraft/client/MinecraftClient realmsPeriodicCheckers Lnet/minecraft/client/realms/RealmsPeriodicCheckers;
 mutable field net/minecraft/client/MinecraftClient realmsPeriodicCheckers Lnet/minecraft/client/realms/RealmsPeriodicCheckers;
-
 accessible field net/minecraft/client/MinecraftClient abuseReportContext Lnet/minecraft/client/session/report/AbuseReportContext;
-
 accessible field net/minecraft/client/network/ClientCommandSource completionId I
-
 accessible field net/minecraft/network/packet/c2s/handshake/HandshakeC2SPacket address Ljava/lang/String;
 mutable field net/minecraft/network/packet/c2s/handshake/HandshakeC2SPacket address Ljava/lang/String;
-
 accessible method net/minecraft/client/network/ClientPlayerInteractionManager sendSequencedPacket (Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/client/network/SequencedPacketCreator;)V
-
 accessible field net/minecraft/client/gui/screen/ConfirmScreen callback Lit/unimi/dsi/fastutil/booleans/BooleanConsumer;
 accessible field net/minecraft/client/gui/screen/ConfirmScreen message Lnet/minecraft/text/Text;
-
 accessible	class	net/minecraft/client/render/BackgroundRenderer$StatusEffectFogModifier
-
 accessible method net/minecraft/client/network/ClientPlayerEntity getPermissionLevel ()I
-
 accessible field net/minecraft/entity/Entity yaw F
 accessible field net/minecraft/entity/Entity pitch F
-
 accessible field  net/minecraft/client/network/ClientPlayerEntity lastYaw F
 accessible field  net/minecraft/client/network/ClientPlayerEntity lastPitch F
-
 accessible method net/minecraft/client/MinecraftClient doItemUse ()V
-
 accessible method net/minecraft/client/render/block/entity/SignBlockEntityRenderer getColor (Lnet/minecraft/block/entity/SignText;)I
-
 accessible field net/minecraft/client/option/ServerList servers Ljava/util/List;
 accessible field net/minecraft/client/option/ServerList hiddenServers Ljava/util/List;
 accessible field net/minecraft/client/option/ServerList LOGGER Lorg/slf4j/Logger;
 accessible field net/minecraft/client/option/ServerList client Lnet/minecraft/client/MinecraftClient;
-
 mutable field net/minecraft/client/gui/screen/Screen title Lnet/minecraft/text/Text;
-
 accessible method net/minecraft/client/particle/ParticleManager clearParticles ()V
-
 accessible method net/minecraft/client/gui/screen/Screen addDrawableChild (Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;
 accessible method net/minecraft/client/gui/screen/Screen addDrawable (Lnet/minecraft/client/gui/Drawable;)Lnet/minecraft/client/gui/Drawable;
-
 accessible field net/minecraft/entity/projectile/FishingBobberEntity caughtFish Z
-
 accessible method net/minecraft/block/AbstractBlock$AbstractBlockState asBlockState ()Lnet/minecraft/block/BlockState;
-
 mutable field net/minecraft/client/gui/screen/multiplayer/MultiplayerScreen parent Lnet/minecraft/client/gui/screen/Screen;
-
 accessible method net/minecraft/client/MinecraftClient doAttack ()Z
-
 accessible field net/minecraft/network/packet/s2c/play/WorldTimeUpdateS2CPacket timeOfDay J
 mutable field net/minecraft/network/packet/s2c/play/WorldTimeUpdateS2CPacket timeOfDay J
-
 accessible field net/minecraft/client/MinecraftClient itemUseCooldown I
-
 accessible method net/minecraft/client/gui/widget/TextFieldWidget getMaxLength ()I
-
 accessible field net/minecraft/client/session/report/AbuseReportContext environment Lnet/minecraft/client/session/report/ReporterEnvironment;
-
 accessible class net/minecraft/client/texture/PlayerSkinProvider$Key
-
 accessible method net/minecraft/client/texture/PlayerSkinProvider getTextureEntry (Lcom/mojang/authlib/GameProfile;)Lcom/mojang/authlib/properties/Property;
-
 accessible method net/minecraft/client/gui/screen/GameMenuScreen disconnect ()V

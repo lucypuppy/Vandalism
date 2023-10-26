@@ -53,7 +53,7 @@ public class CreativeTabRegistry implements PacketListener, MinecraftWrapper {
                 creativeTab.setItemGroup(itemGroup);
                 this.itemGroups.add(itemGroup);
                 Registry.register(Registries.ITEM_GROUP, new Identifier(
-                                Vandalism.getInstance().getLowerCaseName(),
+                                Vandalism.getInstance().getId(),
                                 Integer.toString(i)),
                         itemGroup
                 );
