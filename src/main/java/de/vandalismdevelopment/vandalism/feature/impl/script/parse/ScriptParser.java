@@ -1,9 +1,12 @@
-package de.vandalismdevelopment.vandalism.feature.impl.script;
+package de.vandalismdevelopment.vandalism.feature.impl.script.parse;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
-import de.vandalismdevelopment.vandalism.feature.impl.script.info.ScriptInfo;
+import de.vandalismdevelopment.vandalism.feature.impl.script.Script;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.command.ScriptCommand;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.ScriptInfo;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.variable.ScriptVariable;
 import net.minecraft.util.Pair;
 
 import java.io.File;
@@ -31,32 +34,27 @@ public class ScriptParser {
     ) throws RuntimeException {
         if (line.startsWith(CODE_CHAR)) {
             if (line.startsWith(CODE_CHAR + CODE_CHAR)) line = line.replaceFirst(CODE_CHAR + CODE_CHAR, CODE_CHAR);
-            for (final ScriptCommand command : ScriptCommand.values()) {
-                final String commandStart = CODE_CHAR + command.name().toLowerCase();
+            for (final ScriptCommand scriptCommand : ScriptCommand.values()) {
+                final String commandStart = CODE_CHAR + scriptCommand.name().toLowerCase();
                 if (line.split("( )+")[0].equals(commandStart)) {
-                    final String[] commandCodePair = line.substring(commandStart.length() - 1).trim().split(" ", 2);
-                    if (commandCodePair.length != 2) {
-                        if (commandCodePair.length == 1) {
-                            throw new RuntimeException(
-                                    "Failed to parse script command '" + line.replaceFirst(ScriptParser.CODE_CHAR, "") + "'" +
-                                            (advancedErrors ? " in script '" + scriptName + "' at line " + lineNumber : "") +
-                                            " due to a missing command argument"
-                            );
-                        } else {
-                            throw new RuntimeException(
-                                    "Failed to parse script command '" + line.replaceFirst(ScriptParser.CODE_CHAR, "") + "'" +
-                                            (advancedErrors ? " in script '" + scriptName + "' at line " + lineNumber : "") +
-                                            " due to an invalid command argument count " + commandCodePair.length
-                            );
-                        }
+                    String code;
+                    final String command = line.substring(commandStart.length() - 1).trim();
+                    final String[] commandCodePair = command.split(" ", 2);
+                    if (commandCodePair.length >= 2) {
+                        code = commandCodePair[1];
+                    } else if (commandCodePair.length == 1) {
+                        code = "";
+                    } else {
+                        throw new RuntimeException(
+                                "Invalid script command '" + line + "' " + (advancedErrors ? "in script '" + scriptName + "' at line " + lineNumber : "")
+                        );
                     }
-                    final String code = commandCodePair[1];
                     try {
-                        command.check(scriptName, lineNumber, code);
+                        scriptCommand.check(scriptName, lineNumber, code);
                     } catch (final Exception e) {
                         throw new RuntimeException(e);
                     }
-                    return new Pair<>(command, new Pair<>(lineNumber, code));
+                    return new Pair<>(scriptCommand, new Pair<>(lineNumber, code));
                 }
             }
         }

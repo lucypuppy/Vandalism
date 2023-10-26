@@ -1,23 +1,34 @@
 package de.vandalismdevelopment.vandalism.feature.impl.script;
 
+import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.event.KeyboardListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureList;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.ScriptParser;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.command.ScriptCommand;
+import de.vandalismdevelopment.vandalism.util.ChatUtils;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.Pair;
+import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class ScriptRegistry {
+public class ScriptRegistry implements KeyboardListener {
 
     private final File directory;
 
     private final FeatureList<Script> scripts;
 
-    private final ScriptKeyboardListener scriptKeyboardListener;
+    private final ConcurrentHashMap<File, Thread> runningScripts;
 
     public ScriptRegistry(final File dir) {
         this.directory = new File(dir, "scripts");
         this.scripts = new FeatureList<>();
         this.load();
-        this.scriptKeyboardListener = new ScriptKeyboardListener();
+        this.runningScripts = new ConcurrentHashMap<>();
+        DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
     }
 
     public void load() {
@@ -51,7 +62,10 @@ public class ScriptRegistry {
             }
             final Script script = ScriptParser.parseScriptObjectFromFile(file);
             final Script existingScript = this.scripts.get(script.getName());
-            if (existingScript != null) this.scripts.remove(existingScript);
+            if (existingScript != null) {
+                script.setKeyCode(existingScript.getKeyCode());
+                this.scripts.remove(existingScript);
+            }
             this.scripts.add(script);
             Vandalism.getInstance().getLogger().info("Script '" + script + "' has been loaded.");
         } catch (final Exception e) {
@@ -65,6 +79,105 @@ public class ScriptRegistry {
 
     public FeatureList<Script> getScripts() {
         return this.scripts;
+    }
+
+    public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
+        if (action != GLFW.GLFW_PRESS ||
+                MinecraftClient.getInstance().player == null ||
+                MinecraftClient.getInstance().currentScreen != null
+        ) return;
+        for (final Script script : Vandalism.getInstance().getScriptRegistry().getScripts()) {
+            if (script.getKeyCode() == key) {
+                if (this.isScriptRunning(script.getFile())) {
+                    this.killRunningScriptByScriptFile(script.getFile());
+                }
+                this.executeScriptByScriptFile(script.getFile());
+            }
+        }
+    }
+
+    public int getRunningScriptsCount() {
+        return this.runningScripts.size();
+    }
+
+    public boolean isScriptRunning(final File file) {
+        return this.runningScripts.containsKey(file);
+    }
+
+    public void killAllRunningScripts() {
+        for (final File file : this.runningScripts.keySet()) {
+            this.killRunningScriptByScriptFile(file);
+        }
+    }
+
+    public void killRunningScriptByScriptFile(final File file) {
+        try {
+            if (this.runningScripts.containsKey(file)) {
+                final Thread thread = this.runningScripts.get(file);
+                if (thread.isAlive()) thread.interrupt();
+                this.runningScripts.remove(file);
+            }
+        } catch (final Exception exception) {
+            Vandalism.getInstance().getLogger().error("Failed to kill running script: " + file.getName(), exception);
+        }
+    }
+
+    public void executeScriptByScriptFile(final File file) {
+        final boolean inGame = MinecraftClient.getInstance().player != null;
+        try {
+            if (isScriptRunning(file)) {
+                throw new RuntimeException("Failed to execute script '" + file.getName() + "' because it is already running");
+            }
+            if (file == null || !file.exists() || !file.isFile() || file.length() < 1) {
+                throw new RuntimeException("Failed to parse script code from script file because the file is null");
+            }
+            final String scriptName = file.getName().replaceFirst(ScriptParser.SCRIPT_FILE_EXTENSION, "");
+            final Thread scriptThread = new Thread(() -> {
+                try {
+                    final boolean executionLogging =
+                            Vandalism.getInstance().getConfigManager().getMainConfig()
+                                    .menuCategory.scriptExecutionLogging.getValue();
+                    if (executionLogging) {
+                        final String executingMessage = "Executing script " + scriptName + " ...";
+                        if (inGame) ChatUtils.infoChatMessage(executingMessage);
+                        else Vandalism.getInstance().getLogger().info(executingMessage);
+                    }
+                    final List<Pair<ScriptCommand, Pair<Integer, String>>> code = ScriptParser.parseCodeFromScriptFile(file);
+                    if (code.isEmpty())
+                        throw new RuntimeException("The code of the script " + scriptName + " is empty");
+                    for (int i = 0; i < code.size(); i++) {
+                        final Pair<ScriptCommand, Pair<Integer, String>> entry = code.get(i);
+                        if (entry == null) {
+                            throw new RuntimeException("The code of the script " + scriptName + " " +
+                                    " contains an invalid entry at line: " + (i + 1)
+                            );
+                        }
+                        final Pair<Integer, String> line = entry.getRight();
+                        if (line == null) {
+                            throw new RuntimeException("The code of the script " + scriptName +
+                                    " contains an invalid line at: " + (i + 1)
+                            );
+                        }
+                        entry.getLeft().execute(scriptName, line.getLeft(), line.getRight());
+                    }
+                    if (executionLogging) {
+                        Thread.sleep(100);
+                        final String executedMessage = "Executed script " + scriptName + ".";
+                        if (inGame) ChatUtils.infoChatMessage(executedMessage);
+                        else Vandalism.getInstance().getLogger().info(executedMessage);
+                    }
+                } catch (final Exception e) {
+                    if (inGame)
+                        ChatUtils.errorChatMessage("Failed to execute script '" + scriptName + "' due to: " + e);
+                    else Vandalism.getInstance().getLogger().error("Failed to execute script", e);
+                }
+            }, "script-execution-" + (getRunningScriptsCount() + 1) + "-" + scriptName);
+            this.runningScripts.put(file, scriptThread);
+            scriptThread.start();
+        } catch (final Exception e) {
+            if (inGame) ChatUtils.errorChatMessage("Invalid script file: " + e);
+            else Vandalism.getInstance().getLogger().error("Invalid script file", e);
+        }
     }
 
 }

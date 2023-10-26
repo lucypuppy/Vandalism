@@ -4,8 +4,7 @@ import de.florianmichael.rclasses.common.RandomUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.FeatureList;
 import de.vandalismdevelopment.vandalism.feature.impl.script.Script;
-import de.vandalismdevelopment.vandalism.feature.impl.script.ScriptExecutor;
-import de.vandalismdevelopment.vandalism.feature.impl.script.ScriptParser;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.ScriptParser;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiMenu;
 import de.vandalismdevelopment.vandalism.value.Value;
 import imgui.ImGui;
@@ -59,15 +58,21 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
                     this.scriptEditors.put(scriptFile, new ScriptEditor(scriptFile));
                 }
                 if (!this.scriptEditors.isEmpty()) {
-                    if (ImGui.button((this.scriptEditors.size() < 2 ? "Close editor" : "Close all editors (" + this.scriptEditors.size() + ")") + "##scriptsclosealleditors")) {
+                    if (ImGui.button(
+                            (this.scriptEditors.size() < 2 ? "Close editor" : "Close all editors (" + this.scriptEditors.size() + ")") +
+                                    "##scriptsclosealleditors"
+                    )
+                    ) {
                         for (final ScriptEditor scriptEditor : this.scriptEditors.values()) {
                             scriptEditor.close();
                         }
                     }
                 }
-                if (ScriptExecutor.getRunningScriptsCount() > 0) {
-                    if (ImGui.button("Kill " + ScriptExecutor.getRunningScriptsCount() + " running script/s##scriptskill")) {
-                        ScriptExecutor.killAllRunningScripts();
+                if (Vandalism.getInstance().getScriptRegistry().getRunningScriptsCount() > 0) {
+                    if (ImGui.button("Kill " + Vandalism.getInstance().getScriptRegistry().getRunningScriptsCount() +
+                            " running script/s##scriptskill")
+                    ) {
+                        Vandalism.getInstance().getScriptRegistry().killAllRunningScripts();
                     }
                 }
                 ImGui.endMenuBar();
@@ -75,7 +80,9 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
             if (ImGui.beginTabBar("##scriptstabbar", ImGuiTabBarFlags.AutoSelectNewTabs)) {
                 if (ImGui.beginTabItem("List##scriptstablist")) {
                     if (!this.hideHint) {
-                        ImGui.textColored(1.0f, 1.0f, 0.0f, 0.8f, "Hint: You can enable execution logging in: config -> main config -> menu category -> script execution logging");
+                        ImGui.textColored(1.0f, 1.0f, 0.0f, 0.8f, "Hint: You can enable execution logging in: " +
+                                "config -> main config -> menu category -> script execution logging"
+                        );
                         ImGui.sameLine();
                         if (ImGui.button("Hide hint##scriptshidehint", 0, 22)) this.hideHint = true;
                     } else if (ImGui.button("Show hint##scriptshidehint", 0, 22)) this.hideHint = false;
@@ -121,13 +128,15 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
                                                     scriptValue.render();
                                                 if (scriptFile.length() > 0 && MinecraftClient.getInstance().player != null) {
                                                     if (ImGui.button(
-                                                            (ScriptExecutor.isScriptRunning(scriptFile) ? "Kill" : "Execute") +
-                                                                    "##scriptsexecute" + script.getName(),
+                                                            (Vandalism.getInstance().getScriptRegistry()
+                                                                    .isScriptRunning(scriptFile) ? "Kill" : "Execute") + "##scriptsexecute" +
+                                                                    script.getName(),
                                                             buttonWidth, buttonHeight
                                                     )) {
-                                                        if (ScriptExecutor.isScriptRunning(scriptFile)) {
-                                                            ScriptExecutor.killRunningScriptByScriptFile(scriptFile);
-                                                        } else ScriptExecutor.executeScriptByScriptFile(scriptFile);
+                                                        if (Vandalism.getInstance().getScriptRegistry().isScriptRunning(scriptFile)) {
+                                                            Vandalism.getInstance().getScriptRegistry().killRunningScriptByScriptFile(scriptFile);
+                                                        } else
+                                                            Vandalism.getInstance().getScriptRegistry().executeScriptByScriptFile(scriptFile);
                                                     }
                                                 }
                                                 if (!this.scriptEditors.containsKey(scriptFile)) {

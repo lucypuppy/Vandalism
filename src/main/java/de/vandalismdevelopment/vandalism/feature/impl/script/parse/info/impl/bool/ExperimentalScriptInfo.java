@@ -1,6 +1,6 @@
-package de.vandalismdevelopment.vandalism.feature.impl.script.info.impl.bool;
+package de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.impl.bool;
 
-import de.vandalismdevelopment.vandalism.feature.impl.script.info.impl.BooleanScriptInfo;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.impl.BooleanScriptInfo;
 
 public class ExperimentalScriptInfo extends BooleanScriptInfo {
 
