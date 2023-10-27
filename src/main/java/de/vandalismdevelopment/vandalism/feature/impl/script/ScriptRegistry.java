@@ -80,11 +80,9 @@ public class ScriptRegistry implements KeyboardListener {
         return this.scripts;
     }
 
+    @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        if (action != GLFW.GLFW_PRESS ||
-                MinecraftClient.getInstance().player == null ||
-                MinecraftClient.getInstance().currentScreen != null
-        ) return;
+        if (action != GLFW.GLFW_PRESS || MinecraftClient.getInstance().player == null) return;
         for (final Script script : Vandalism.getInstance().getScriptRegistry().getScripts()) {
             if (script.getKeyCode() == key) {
                 if (this.isScriptRunning(script.getFile())) {

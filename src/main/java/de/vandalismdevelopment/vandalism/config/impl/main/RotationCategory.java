@@ -10,7 +10,7 @@ import de.vandalismdevelopment.vandalism.value.values.EnumValue;
 public class RotationCategory extends ValueCategory {
 
     public RotationCategory(final MainConfig parent) {
-        super("Rotation", "Rotation related settings.", parent);
+        super("Rotation", "Rotation related configs.", parent);
     }
 
     public final Value<Boolean> rotateBack = new BooleanValue(

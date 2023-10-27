@@ -12,7 +12,7 @@ import org.lwjgl.glfw.GLFW;
 public class MenuCategory extends ValueCategory {
     
     public MenuCategory(final MainConfig parent) {
-        super("Menu", "Menu related settings.", parent);
+        super("Menu", "Menu related configs.", parent);
     }
 
     public final Value<Pair<Integer, String>> menuKey = new KeyInputValue(

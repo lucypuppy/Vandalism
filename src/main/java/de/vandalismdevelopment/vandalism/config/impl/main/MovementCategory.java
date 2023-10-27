@@ -9,7 +9,7 @@ import de.vandalismdevelopment.vandalism.value.values.number.slider.SliderFloatV
 public class MovementCategory extends ValueCategory {
 
     public MovementCategory(final MainConfig parent) {
-        super("Movement", "Movement related settings.", parent);
+        super("Movement", "Movement related configs.", parent);
     }
 
     public final Value<Boolean> customizeRiptideBoostMultiplier = new BooleanValue(

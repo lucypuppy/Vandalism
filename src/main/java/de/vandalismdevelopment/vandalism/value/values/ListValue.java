@@ -29,7 +29,9 @@ public class ListValue extends Value<String> {
         if (!this.values.contains(value)) {
             value = this.getDefaultValue();
             Vandalism.getInstance().getLogger().error(
-                    "Could not find list value with the name '" + value + "' for the value config '" + this.getParent().getValueName() + "' resetting it to the default value '" + this.getDefaultValue() + "'."
+                    "Could not find list value with the name '" + value + "' for the value config '" +
+                            this.getParent().getValueName() +
+                            "' resetting it to the default value '" + this.getDefaultValue() + "'."
             );
         }
         this.setValue(value);

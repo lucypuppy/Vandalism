@@ -10,26 +10,63 @@ import de.vandalismdevelopment.vandalism.util.ChatUtils;
 import de.vandalismdevelopment.vandalism.value.IValue;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
+import de.vandalismdevelopment.vandalism.value.values.BooleanValue;
+import de.vandalismdevelopment.vandalism.value.values.KeyInputValue;
 import de.vandalismdevelopment.vandalism.value.values.list.ModuleModeValue;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Module extends Feature implements IValue {
 
-    private boolean enabled, showInModuleList;
-
     private final List<Value<?>> values;
+    private final BooleanValue enabled, showInModuleList;
+    private final KeyInputValue keyCode;
 
     public Module(final String name, final String description, final FeatureCategory category, final boolean isExperimental, final boolean isDefaultEnabled) {
+        this(name, description, category, isExperimental, isDefaultEnabled, GLFW.GLFW_KEY_UNKNOWN);
+    }
+
+    public Module(final String name, final String description, final FeatureCategory category, final boolean isExperimental, final boolean isDefaultEnabled, final int keyCode) {
         this.setName(name);
         this.setDescription(description);
         this.setType(FeatureType.MODULE);
         this.setCategory(category);
         this.setExperimental(isExperimental);
-        this.setState(isDefaultEnabled);
-        this.showInModuleList = !(this instanceof HeadUpDisplayModule);
         this.values = new ArrayList<>();
+        this.enabled = new BooleanValue(
+                "Enabled",
+                "Whether this module is enabled.",
+                this,
+                isDefaultEnabled
+        ).valueChangedConsumer(value -> {
+            if (player() != null) {
+                ChatUtils.infoChatMessage(this.getName() + " has been " + (value ? "enabled" : "disabled") + ".");
+            }
+            final ModuleRegistry moduleRegistry = Vandalism.getInstance().getModuleRegistry();
+            if (moduleRegistry != null && moduleRegistry.isDone()) {
+                final HeadUpDisplayModule headUpDisplayModule = moduleRegistry.getHeadUpDisplayModule();
+                if (headUpDisplayModule != null) headUpDisplayModule.sortEnabledModules();
+            }
+            if (value) this.onEnable();
+            else this.onDisable();
+            this.recursiveModeEnable(value, this.values);
+        });
+        this.showInModuleList = new BooleanValue(
+                "Show in Module List",
+                "Whether this module should be shown in the module list.",
+                this,
+                !(this instanceof HeadUpDisplayModule)
+        );
+        this.keyCode = new KeyInputValue(
+                "Keybind",
+                "The keybind of this module.",
+                this,
+                keyCode,
+                "unknown"
+        );
+        this.setState(isDefaultEnabled);
     }
 
     protected void onEnable() {
@@ -47,29 +84,12 @@ public abstract class Module extends Feature implements IValue {
     }
 
     public void toggle() {
-        this.setState(!this.enabled);
+        this.setState(!this.enabled.getValue());
     }
 
     public void setState(final boolean state) {
-        if (this.enabled != state) {
-            this.enabled = state;
-            if (player() != null) {
-                ChatUtils.infoChatMessage(this.getName() + " has been " + (state ? "enabled" : "disabled") + ".");
-            }
-
-            final ModuleRegistry moduleRegistry = Vandalism.getInstance().getModuleRegistry();
-            if (moduleRegistry != null && moduleRegistry.isDone()) {
-                final HeadUpDisplayModule headUpDisplayModule = moduleRegistry.getHeadUpDisplayModule();
-                if (headUpDisplayModule != null) headUpDisplayModule.sortEnabledModules();
-            }
-
-            if (state) {
-                this.onEnable();
-            } else {
-                this.onDisable();
-            }
-
-            this.recursiveModeEnable(state, this.values);
+        if (this.enabled.getValue() != state) {
+            this.enabled.setValue(state);
         }
     }
 
@@ -89,20 +109,34 @@ public abstract class Module extends Feature implements IValue {
     }
 
     public boolean isEnabled() {
-        return this.enabled;
-    }
-
-    public boolean isShowInModuleList() {
-        return this.showInModuleList;
+        return this.enabled.getValue();
     }
 
     public void setShowInModuleList(final boolean showInModuleList) {
-        this.showInModuleList = showInModuleList;
+        this.showInModuleList.setValue(showInModuleList);
+    }
+
+    public boolean isShowInModuleList() {
+        return this.showInModuleList.getValue();
+    }
+
+    public void setKeyCode(final int keyCode) {
+        this.keyCode.setKeyCode(keyCode);
+    }
+
+    public int getKeyCode() {
+        return this.keyCode.getValue().getLeft();
     }
 
     @Override
     public String toString() {
-        return '{' + "name=" + this.getName() + ", category=" + this.getCategory() + ", enabled=" + this.enabled + ", experimental=" + this.isExperimental() + '}';
+        return '{' +
+                "name=" + this.getName() +
+                ", category=" + this.getCategory() +
+                ", enabled=" + this.enabled +
+                ", experimental=" + this.isExperimental() +
+                ", keyCode=" + this.keyCode.getValue().getRight() +
+                '}';
     }
 
     @Override

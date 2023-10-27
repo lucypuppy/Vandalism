@@ -39,7 +39,13 @@ public class Script extends Feature implements IValue {
         this.version = version;
         this.author = author;
         this.values = new ArrayList<>();
-        this.keyCode = new KeyInputValue("Keybind", "The keybind of this script.", this, GLFW.GLFW_KEY_UNKNOWN, "Unknown");
+        this.keyCode = new KeyInputValue(
+                "Keybind",
+                "The keybind of this script.",
+                this,
+                GLFW.GLFW_KEY_UNKNOWN,
+                "unknown"
+        );
     }
 
     public File getFile() {

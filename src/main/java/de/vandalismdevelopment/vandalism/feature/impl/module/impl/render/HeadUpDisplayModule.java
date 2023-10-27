@@ -11,7 +11,7 @@ import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
 import de.vandalismdevelopment.vandalism.value.values.BooleanValue;
 import de.vandalismdevelopment.vandalism.value.values.ListValue;
-import de.vandalismdevelopment.vandalism.value.values.number.IntegerValue;
+import de.vandalismdevelopment.vandalism.value.values.number.slider.SliderIntegerValue;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.GameMenuScreen;
@@ -99,18 +99,14 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
             this
     ).visibleConsumer(this.position::getValue);
 
-    private final Value<Integer> positionDecimalPlaces = new IntegerValue(
+    private final Value<Integer> positionDecimalPlaces = new SliderIntegerValue(
             "Position Decimal Places",
-            "Allows you to change the viewable amount of decimal places from the x/y/z position (from 1 - 15).",
+            "Allows you to change the viewable amount of decimal places from the x/y/z position.",
             this.positionElements,
             2,
-            1
+            1,
+            15
     ).visibleConsumer(this.position::getValue);
-    //TODO: This needs to be fixed because it does nothing.
-     /*.valueChangeConsumer(value -> {
-        if (value < 1) value = 1;
-        else if (value > 15) value = 15;
-    });*/
 
     private final Value<Boolean> serverBrand = new BooleanValue(
             "Server Brand",
@@ -132,6 +128,21 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
             this.infoElements,
             true
     ).visibleConsumer(this.infos::getValue);
+
+    private final List<String> enabledModules;
+    private boolean sort;
+
+    public HeadUpDisplayModule() {
+        super(
+                "Head Up Display",
+                "Shows various infos from the game and the mod in game.",
+                FeatureCategory.RENDER,
+                false,
+                true
+        );
+        this.enabledModules = new ArrayList<>();
+        this.sort = false;
+    }
 
     @Override
     protected void onEnable() {
@@ -157,25 +168,10 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
     public void onRender2DOutGamePost(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         if (mc().inGameHud != null && mc().inGameHud.getDebugHud().shouldShowDebugHud()) return;
         if (
-             currentScreen() instanceof ChatScreen ||
-             (currentScreen() instanceof InventoryScreen && this.inventoryScreenBringToFront.getValue()) ||
-             (currentScreen() instanceof GameMenuScreen && this.gameMenuScreenBringToFront.getValue())
+                currentScreen() instanceof ChatScreen ||
+                        (currentScreen() instanceof InventoryScreen && this.inventoryScreenBringToFront.getValue()) ||
+                        (currentScreen() instanceof GameMenuScreen && this.gameMenuScreenBringToFront.getValue())
         ) render(context);
-    }
-
-    private final List<String> enabledModules;
-    private boolean sort;
-
-    public HeadUpDisplayModule() {
-        super(
-                "Head Up Display",
-                "Shows various infos from the game and the mod in game.",
-                FeatureCategory.RENDER,
-                false,
-                true
-        );
-        this.enabledModules = new ArrayList<>();
-        this.sort = false;
     }
 
     public void sortEnabledModules() {
