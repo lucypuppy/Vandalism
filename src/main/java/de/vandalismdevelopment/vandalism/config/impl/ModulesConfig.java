@@ -20,8 +20,6 @@ public class ModulesConfig extends ValueableConfig {
         final JsonObject modulesObject = new JsonObject();
         for (final Module module : Vandalism.getInstance().getModuleRegistry().getModules()) {
             final JsonObject moduleObject = new JsonObject();
-            moduleObject.addProperty("enabled", module.isEnabled());
-            moduleObject.addProperty("showInModuleList", module.isShowInModuleList());
             if (!module.getValues().isEmpty()) {
                 final JsonObject valuesObject = new JsonObject();
                 this.saveValues(valuesObject, module.getValues());
@@ -37,12 +35,6 @@ public class ModulesConfig extends ValueableConfig {
         for (final Module module : Vandalism.getInstance().getModuleRegistry().getModules()) {
             final JsonObject moduleObject = jsonObject.getAsJsonObject(module.getName());
             if (moduleObject != null) {
-                if (moduleObject.has("enabled")) {
-                    module.setState(moduleObject.get("enabled").getAsBoolean());
-                }
-                if (moduleObject.has("showInModuleList")) {
-                    module.setShowInModuleList(moduleObject.get("showInModuleList").getAsBoolean());
-                }
                 final JsonElement valuesElement = moduleObject.get("values");
                 if (valuesElement != null) {
                     this.loadValues(valuesElement.getAsJsonObject(), module.getValues());

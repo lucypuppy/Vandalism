@@ -11,12 +11,12 @@ import org.apache.commons.lang3.RandomStringUtils;
 public class VisualCategory extends ValueCategory {
 
     public VisualCategory(final MainConfig parent) {
-        super("Visual", "Visual related settings.", parent);
+        super("Visual", "Visual related configs.", parent);
     }
 
     private final ValueCategory blockHitCategory = new ValueCategory(
             "BlockHit",
-            "BlockHit settings (<=1.8.x)",
+            "BlockHit configs (<=1.8.x)",
             this
     );
 

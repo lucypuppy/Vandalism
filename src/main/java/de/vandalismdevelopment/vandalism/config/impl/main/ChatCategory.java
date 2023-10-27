@@ -10,7 +10,7 @@ import de.vandalismdevelopment.vandalism.value.values.number.slider.SliderIntege
 public class ChatCategory extends ValueCategory {
     
     public ChatCategory(final MainConfig parent) {
-        super("Chat", "Chat related settings.", parent);
+        super("Chat", "Chat related configs.", parent);
     }
 
     public final Value<String> commandPrefix = new StringValue(

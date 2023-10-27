@@ -14,7 +14,7 @@ import net.minecraft.text.Text;
 public class AccessibilityCategory extends ValueCategory {
 
     public AccessibilityCategory(final MainConfig parent) {
-        super("Accessibility", "Accessibility related settings.", parent);
+        super("Accessibility", "Accessibility related configs.", parent);
         try {
             GlobalScreen.registerNativeHook();
             GlobalScreen.addNativeKeyListener(new NativeKeyListener() {

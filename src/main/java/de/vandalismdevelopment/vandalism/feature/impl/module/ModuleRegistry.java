@@ -1,6 +1,8 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module;
 
+import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.event.KeyboardListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureList;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.development.DebugModule;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.development.TestModule;
@@ -8,8 +10,10 @@ import de.vandalismdevelopment.vandalism.feature.impl.module.impl.exploit.*;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.misc.*;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement.*;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.render.*;
+import net.minecraft.client.MinecraftClient;
+import org.lwjgl.glfw.GLFW;
 
-public class ModuleRegistry {
+public class ModuleRegistry implements KeyboardListener {
 
     private HeadUpDisplayModule headUpDisplayModule;
 
@@ -229,6 +233,7 @@ public class ModuleRegistry {
         this.done = false;
         this.modules = new FeatureList<>();
         this.register();
+        DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
         this.done = true;
     }
 
@@ -290,6 +295,16 @@ public class ModuleRegistry {
 
     public FeatureList<Module> getModules() {
         return this.modules;
+    }
+
+    @Override
+    public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
+        if (action != GLFW.GLFW_PRESS || MinecraftClient.getInstance().player == null) return;
+        for (final Module module : Vandalism.getInstance().getModuleRegistry().getModules()) {
+            if (module.getKeyCode() == key) {
+                module.toggle();
+            }
+        }
     }
 
     public boolean isDone() {

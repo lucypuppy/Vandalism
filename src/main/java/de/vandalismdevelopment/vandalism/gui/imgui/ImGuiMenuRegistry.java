@@ -16,6 +16,7 @@ public class ImGuiMenuRegistry {
         this.registerImGuiMenus(
                 new DemoImGuiMenu(),
                 new ConfigImGuiMenu(),
+                new ModulesImGuiMenu(),
                 //TODO: Finish this -> new MacrosImGuiMenu(),
                 new ScriptsImGuiMenu(),
                 new AccountManagerImGuiMenu(),
