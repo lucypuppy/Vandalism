@@ -46,12 +46,13 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
             return;
         }
 
-        if (this.rotation == null)
+        if (this.rotation == null) {
             return;
+        }
 
         final float
-                yaw = MathHelper.wrapDegrees(player().yaw),
-                pitch = player().pitch,
+                yaw = MathHelper.wrapDegrees(player().getYaw()),
+                pitch = player().getPitch(),
                 yawDiff = Math.abs(yaw - this.rotation.getYaw()),
                 pitchDiff = Math.abs(pitch - this.rotation.getPitch());
 
@@ -82,10 +83,10 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
 
     // Bruteforce GCD Method best for hvh tested it really often.
     private Rotation applyGCDFix(final Rotation rotation, final float partialTicks) {
-        final double f = mc().options.getMouseSensitivity().getValue() * 0.6F + 0.2F;
+        final double f = options().getMouseSensitivity().getValue() * 0.6F + 0.2F;
         final double g = f * f * f;
         final double gcd = g * 8.0;
-        final boolean disallowGCD = mc().options.getPerspective().isFirstPerson() && mc().player.isUsingSpyglass();
+        final boolean disallowGCD = options().getPerspective().isFirstPerson() && player().isUsingSpyglass();
 
         //Calculate needed iterations for the best gcd.
         final double iterationsNeeded = (RenderUtils.getFps() / 20.0) * partialTicks;
@@ -103,11 +104,11 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
     }
 
     public Rotation rotationDistribution(final Rotation rotation, final Rotation lastRotation) {
-        if (rotateSpeedMinMax.x > 0 && rotateSpeedMinMax.y > 0) { //TODO: Code a better calculation for the rotate speed.
-            rotateSpeed = RandomUtils.randomFloat(rotateSpeedMinMax.x, rotateSpeedMinMax.y);
+        if (this.rotateSpeedMinMax.x > 0 && this.rotateSpeedMinMax.y > 0) { //TODO: Code a better calculation for the rotate speed.
+            this.rotateSpeed = RandomUtils.randomFloat(this.rotateSpeedMinMax.x, this.rotateSpeedMinMax.y);
         }
 
-        if (rotateSpeed > 0) {
+        if (this.rotateSpeed > 0) {
             final float
                     lastYaw = lastRotation.getYaw(),
                     lastPitch = lastRotation.getPitch(),
@@ -120,8 +121,8 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
                 final double
                         distributionYaw = Math.abs(deltaYaw / distance),
                         distributionPitch = Math.abs(deltaPitch / distance),
-                        maxYaw = rotateSpeed * distributionYaw,
-                        maxPitch = rotateSpeed * distributionPitch;
+                        maxYaw = this.rotateSpeed * distributionYaw,
+                        maxPitch = this.rotateSpeed * distributionPitch;
 
                 final float
                         moveYaw = (float) Math.max(Math.min(deltaYaw, maxYaw), -maxYaw),
