@@ -9,7 +9,6 @@ import de.vandalismdevelopment.vandalism.util.MovementUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandSource;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
@@ -48,13 +47,14 @@ public enum ScriptCommand {
         final String[] args = code.split("( )+");
         if (args.length < 1) throw new RuntimeException("AddChatMessage command needs at least one argument");
         if (execute) {
-            final MutableText prefix = Text.empty()
+            ChatUtils.chatMessage(Text.empty()
                     .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
                     .append("[")
                     .append(Text.literal(scriptName)
                             .setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Color.CYAN.getRGB()))))
-                    .append("] ");
-            ChatUtils.chatMessage(prefix.append(Text.literal(ScriptParser.applyCodeReplacements(code))));
+                    .append("] ")
+                    .append(Text.literal(ScriptParser.applyCodeReplacements(code)))
+            );
         }
     }),
     JUMP((scriptName, lineNumber, code, execute) -> {
@@ -114,9 +114,75 @@ public enum ScriptCommand {
             } else throw new RuntimeException("Unknown script command after set speed command '" + command + "'");
         }
     }),
-    VELOCITY_X((scriptName, lineNumber, code, execute) -> {
+    SET_YAW((scriptName, lineNumber, code, execute) -> {
         final String[] args = code.split("( )+");
-        if (args.length < 1) throw new RuntimeException("VelocityX command needs at least one argument");
+        if (args.length < 1) throw new RuntimeException("SetVelocityYaw command needs at least one argument");
+        final String
+                commandWithCode = ScriptParser.CODE_CHAR + code.substring(code.indexOf(" ") + 1),
+                command = commandWithCode.replaceFirst(ScriptParser.CODE_CHAR, "");
+        final float yaw;
+        try {
+            yaw = Float.parseFloat(args[0].trim());
+        } catch (final NumberFormatException e) {
+            throw new RuntimeException("Invalid float value '" + args[0] + "' for yaw argument after SetYaw command");
+        }
+        if (execute) {
+            final ClientPlayerEntity player = MinecraftClient.getInstance().player;
+            if (player != null) {
+                player.setYaw(yaw);
+            }
+        }
+        if (args.length > 1) {
+            final Pair<ScriptCommand, Pair<Integer, String>> parsedCodeObject = ScriptParser.parseCodeFromScriptLine(
+                    scriptName,
+                    commandWithCode,
+                    lineNumber,
+                    execute
+            );
+            if (parsedCodeObject != null) {
+                final String parsedCode = parsedCodeObject.getRight().getRight();
+                final ScriptCommand scriptCommand = parsedCodeObject.getLeft();
+                if (execute) scriptCommand.execute(scriptName, lineNumber, parsedCode);
+                else scriptCommand.check(scriptName, lineNumber, parsedCode);
+            } else throw new RuntimeException("Unknown script command after set yaw command '" + command + "'");
+        }
+    }),
+    SET_PITCH((scriptName, lineNumber, code, execute) -> {
+        final String[] args = code.split("( )+");
+        if (args.length < 1) throw new RuntimeException("SetVelocityPitch command needs at least one argument");
+        final String
+                commandWithCode = ScriptParser.CODE_CHAR + code.substring(code.indexOf(" ") + 1),
+                command = commandWithCode.replaceFirst(ScriptParser.CODE_CHAR, "");
+        final float pitch;
+        try {
+            pitch = Float.parseFloat(args[0].trim());
+        } catch (final NumberFormatException e) {
+            throw new RuntimeException("Invalid float value '" + args[0] + "' for pitch argument after SetYaw command");
+        }
+        if (execute) {
+            final ClientPlayerEntity player = MinecraftClient.getInstance().player;
+            if (player != null) {
+                player.setPitch(pitch);
+            }
+        }
+        if (args.length > 1) {
+            final Pair<ScriptCommand, Pair<Integer, String>> parsedCodeObject = ScriptParser.parseCodeFromScriptLine(
+                    scriptName,
+                    commandWithCode,
+                    lineNumber,
+                    execute
+            );
+            if (parsedCodeObject != null) {
+                final String parsedCode = parsedCodeObject.getRight().getRight();
+                final ScriptCommand scriptCommand = parsedCodeObject.getLeft();
+                if (execute) scriptCommand.execute(scriptName, lineNumber, parsedCode);
+                else scriptCommand.check(scriptName, lineNumber, parsedCode);
+            } else throw new RuntimeException("Unknown script command after set pitch command '" + command + "'");
+        }
+    }),
+    SET_VELOCITY_X((scriptName, lineNumber, code, execute) -> {
+        final String[] args = code.split("( )+");
+        if (args.length < 1) throw new RuntimeException("SetVelocityX command needs at least one argument");
         final String
                 commandWithCode = ScriptParser.CODE_CHAR + code.substring(code.indexOf(" ") + 1),
                 command = commandWithCode.replaceFirst(ScriptParser.CODE_CHAR, "");
@@ -124,7 +190,7 @@ public enum ScriptCommand {
         try {
             xVelocity = Double.parseDouble(args[0].trim());
         } catch (final NumberFormatException e) {
-            throw new RuntimeException("Invalid double value '" + args[0] + "' for xVelocity argument after VelocityX command");
+            throw new RuntimeException("Invalid double value '" + args[0] + "' for xVelocity argument after SetVelocityX command");
         }
         if (execute) {
             final ClientPlayerEntity player = MinecraftClient.getInstance().player;
@@ -145,12 +211,12 @@ public enum ScriptCommand {
                 final ScriptCommand scriptCommand = parsedCodeObject.getLeft();
                 if (execute) scriptCommand.execute(scriptName, lineNumber, parsedCode);
                 else scriptCommand.check(scriptName, lineNumber, parsedCode);
-            } else throw new RuntimeException("Unknown script command after velocity x command '" + command + "'");
+            } else throw new RuntimeException("Unknown script command after set velocity x command '" + command + "'");
         }
     }),
-    VELOCITY_Y((scriptName, lineNumber, code, execute) -> {
+    SET_VELOCITY_Y((scriptName, lineNumber, code, execute) -> {
         final String[] args = code.split("( )+");
-        if (args.length < 1) throw new RuntimeException("VelocityY command needs at least one argument");
+        if (args.length < 1) throw new RuntimeException("SetVelocityY command needs at least one argument");
         final String
                 commandWithCode = ScriptParser.CODE_CHAR + code.substring(code.indexOf(" ") + 1),
                 command = commandWithCode.replaceFirst(ScriptParser.CODE_CHAR, "");
@@ -158,7 +224,7 @@ public enum ScriptCommand {
         try {
             yVelocity = Double.parseDouble(args[0].trim());
         } catch (final NumberFormatException e) {
-            throw new RuntimeException("Invalid double value '" + args[0] + "' for yVelocity argument after VelocityY command");
+            throw new RuntimeException("Invalid double value '" + args[0] + "' for yVelocity argument after SetVelocityY command");
         }
         if (execute) {
             final ClientPlayerEntity player = MinecraftClient.getInstance().player;
@@ -179,12 +245,12 @@ public enum ScriptCommand {
                 final ScriptCommand scriptCommand = parsedCodeObject.getLeft();
                 if (execute) scriptCommand.execute(scriptName, lineNumber, parsedCode);
                 else scriptCommand.check(scriptName, lineNumber, parsedCode);
-            } else throw new RuntimeException("Unknown script command after velocity y command '" + command + "'");
+            } else throw new RuntimeException("Unknown script command after set velocity y command '" + command + "'");
         }
     }),
-    VELOCITY_Z((scriptName, lineNumber, code, execute) -> {
+    SET_VELOCITY_Z((scriptName, lineNumber, code, execute) -> {
         final String[] args = code.split("( )+");
-        if (args.length < 1) throw new RuntimeException("VelocityZ command needs at least one argument");
+        if (args.length < 1) throw new RuntimeException("SetVelocityZ command needs at least one argument");
         final String
                 commandWithCode = ScriptParser.CODE_CHAR + code.substring(code.indexOf(" ") + 1),
                 command = commandWithCode.replaceFirst(ScriptParser.CODE_CHAR, "");
@@ -192,7 +258,7 @@ public enum ScriptCommand {
         try {
             zVelocity = Double.parseDouble(args[0].trim());
         } catch (final NumberFormatException e) {
-            throw new RuntimeException("Invalid double value '" + args[0] + "' for zVelocity argument after VelocityZ command");
+            throw new RuntimeException("Invalid double value '" + args[0] + "' for zVelocity argument after SetVelocityZ command");
         }
         if (execute) {
             final ClientPlayerEntity player = MinecraftClient.getInstance().player;
@@ -213,7 +279,7 @@ public enum ScriptCommand {
                 final ScriptCommand scriptCommand = parsedCodeObject.getLeft();
                 if (execute) scriptCommand.execute(scriptName, lineNumber, parsedCode);
                 else scriptCommand.check(scriptName, lineNumber, parsedCode);
-            } else throw new RuntimeException("Unknown script command after velocity z command '" + command + "'");
+            } else throw new RuntimeException("Unknown script command after set velocity z command '" + command + "'");
         }
     }),
     WAIT((scriptName, lineNumber, code, execute) -> {
