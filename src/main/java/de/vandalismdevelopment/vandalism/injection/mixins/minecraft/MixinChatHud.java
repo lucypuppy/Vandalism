@@ -1,6 +1,7 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.minecraft;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.feature.impl.module.ModuleRegistry;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.misc.MessageEncryptorModule;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.text.HoverEvent;
@@ -16,14 +17,25 @@ public abstract class MixinChatHud {
 
     @ModifyArg(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;ILnet/minecraft/client/gui/hud/MessageIndicator;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/ChatMessages;breakRenderedChatMessageLines(Lnet/minecraft/text/StringVisitable;ILnet/minecraft/client/font/TextRenderer;)Ljava/util/List;"))
     public StringVisitable modifyMessage(final StringVisitable content) {
-        final MessageEncryptorModule messageEncryptorModule = Vandalism.getInstance().getModuleRegistry().getMessageEncryptorModule();
-        if (messageEncryptorModule.isEnabled()) {
-            final MutableText text = (MutableText) content;
-            final String stringTest = text.getString();
-            if (messageEncryptorModule.isEncrypted(stringTest)) {
-                return text.append(MessageEncryptorModule.ENCRYPTION_PREFIX.setStyle(MessageEncryptorModule.ENCRYPTION_PREFIX.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                        Text.literal(messageEncryptorModule.decryptMessage(stringTest))
-                ))));
+        final ModuleRegistry moduleRegistry = Vandalism.getInstance().getModuleRegistry();
+        if (moduleRegistry != null) {
+            final MessageEncryptorModule messageEncryptorModule = moduleRegistry.getMessageEncryptorModule();
+            if (messageEncryptorModule.isEnabled()) {
+                final MutableText text = (MutableText) content;
+                final String stringTest = text.getString();
+                if (messageEncryptorModule.isEncrypted(stringTest)) {
+                    return text
+                            .append(MessageEncryptorModule.ENCRYPTION_PREFIX
+                                    .setStyle(MessageEncryptorModule.ENCRYPTION_PREFIX.getStyle()
+                                            .withHoverEvent(
+                                                    new HoverEvent(
+                                                            HoverEvent.Action.SHOW_TEXT,
+                                                            Text.literal(
+                                                                    messageEncryptorModule.decryptMessage(stringTest)
+                                                            )
+                                                    )
+                                            )));
+                }
             }
         }
         return content;

@@ -32,7 +32,6 @@ public class ScriptRegistry implements KeyboardListener {
     }
 
     public void load() {
-        if (!this.scripts.isEmpty()) this.scripts.clear();
         if (this.directory.exists() && !this.directory.isDirectory()) {
             if (!this.directory.delete()) {
                 Vandalism.getInstance().getLogger().error("Failed to delete invalid scripts directory!");

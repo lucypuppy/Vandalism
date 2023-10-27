@@ -8,9 +8,11 @@ import de.vandalismdevelopment.vandalism.feature.impl.script.parse.ScriptParser;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiMenu;
 import de.vandalismdevelopment.vandalism.value.Value;
 import imgui.ImGui;
+import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiTabBarFlags;
 import imgui.flag.ImGuiTableFlags;
 import imgui.flag.ImGuiWindowFlags;
+import imgui.type.ImBoolean;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Util;
 
@@ -23,16 +25,21 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ScriptsImGuiMenu extends ImGuiMenu {
 
-    private static final SimpleDateFormat MODIFICATION_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss a");
+    private final static SimpleDateFormat MODIFICATION_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss a");
+
+    private final static String[] HINTS = new String[]{
+            "You can enable execution logging in: " +
+                    "config -> main config -> menu category -> script execution logging"
+    };
 
     private final ConcurrentHashMap<File, ScriptEditor> scriptEditors;
 
-    private boolean hideHint;
+    private final ImBoolean hideHints;
 
     public ScriptsImGuiMenu() {
         super("Scripts");
         this.scriptEditors = new ConcurrentHashMap<>();
-        this.hideHint = false;
+        this.hideHints = new ImBoolean(false);
     }
 
     @Override
@@ -79,22 +86,34 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
             }
             if (ImGui.beginTabBar("##scriptstabbar", ImGuiTabBarFlags.AutoSelectNewTabs)) {
                 if (ImGui.beginTabItem("List##scriptstablist")) {
-                    if (!this.hideHint) {
-                        ImGui.textColored(1.0f, 1.0f, 0.0f, 0.8f, "Hint: You can enable execution logging in: " +
-                                "config -> main config -> menu category -> script execution logging"
-                        );
-                        ImGui.sameLine();
-                        if (ImGui.button("Hide hint##scriptshidehint", 0, 22)) this.hideHint = true;
-                    } else if (ImGui.button("Show hint##scriptshidehint", 0, 22)) this.hideHint = false;
-                    ImGui.newLine();
+                    if (!this.hideHints.get()) {
+                        ImGui.textWrapped("Hints");
+                        ImGui.separator();
+                        if (ImGui.beginListBox("##scriptshints", -1, 26 * HINTS.length)) {
+                            for (final String hint : HINTS) {
+                                ImGui.textWrapped(hint);
+                            }
+                            ImGui.endListBox();
+                        }
+                    }
+                    ImGui.checkbox("Hide hints##scriptshidehints", this.hideHints);
+                    ImGui.separator();
+                    ImGui.spacing();
+                    ImGui.textWrapped("Scripts");
+                    ImGui.separator();
                     if (scripts.isEmpty()) {
                         ImGui.textWrapped("No scripts loaded!");
                     } else {
-                        final TableColumn[] tableColumns = TableColumn.values();
-                        final int maxTableColumns = tableColumns.length;
-                        if (ImGui.beginTable("scripts##scriptstable", maxTableColumns, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg)) {
-                            for (final TableColumn tableColumn : tableColumns) {
-                                ImGui.tableSetupColumn(tableColumn.normalName());
+                        final ScriptsTableColumn[] scriptsTableColumns = ScriptsTableColumn.values();
+                        final int maxTableColumns = scriptsTableColumns.length;
+                        if (ImGui.beginTable("scripts##scriptstable", maxTableColumns,
+                                ImGuiTableFlags.Borders |
+                                        ImGuiTableFlags.Resizable |
+                                        ImGuiTableFlags.RowBg |
+                                        ImGuiTableFlags.ContextMenuInBody
+                        )) {
+                            for (final ScriptsTableColumn scriptsTableColumn : scriptsTableColumns) {
+                                ImGui.tableSetupColumn(scriptsTableColumn.normalName());
                             }
                             ImGui.tableHeadersRow();
                             for (final Script script : scripts) {
@@ -104,85 +123,101 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
                                     continue;
                                 }
                                 ImGui.tableNextRow();
-                                for (int i = 0; i < maxTableColumns; i++) {
-                                    ImGui.tableSetColumnIndex(i);
-                                    final TableColumn tableColumn = tableColumns[i];
-                                    final File scriptFile = script.getFile();
-                                    if (scriptFile != null && scriptFile.exists()) {
-                                        switch (tableColumn) {
-                                            case NAME ->
-                                                    ImGui.textWrapped(script.getName() + (!scriptFile.canWrite() ? " (Read-Only)" : ""));
+                                final File scriptFile = script.getFile();
+                                if (scriptFile != null && scriptFile.exists()) {
+                                    final int buttonWidth = -1, buttonHeight = 28;
+                                    for (int i = 0; i < maxTableColumns; i++) {
+                                        ImGui.tableSetColumnIndex(i);
+                                        final ScriptsTableColumn scriptsTableColumn = scriptsTableColumns[i];
+                                        switch (scriptsTableColumn) {
+                                            case NAME -> {
+                                                ImGui.textWrapped(script.getName() + (!scriptFile.canWrite() ? " (Read-Only)" : ""));
+                                            }
                                             case VERSION -> ImGui.textWrapped(script.getVersion());
                                             case AUTHOR -> ImGui.textWrapped(script.getAuthor());
                                             case DESCRIPTION -> ImGui.textWrapped(script.getDescription());
                                             case CATEGORY -> ImGui.textWrapped(script.getCategory().normalName());
-                                            case EXPERIMENTAL ->
-                                                    ImGui.textWrapped(script.isExperimental() ? "Yes" : "No");
+                                            case EXPERIMENTAL -> {
+                                                ImGui.textWrapped(script.isExperimental() ? "Yes" : "No");
+                                            }
                                             case MODIFICATION_DATE -> {
                                                 ImGui.textWrapped(MODIFICATION_DATE_FORMAT.format(new Date(script.getFile().lastModified())));
                                             }
-                                            case ACTIONS -> {
+                                            case QUICK_ACTIONS -> {
                                                 ImGui.spacing();
-                                                final int buttonWidth = -1, buttonHeight = 28;
-                                                for (final Value<?> scriptValue : script.getValues())
-                                                    scriptValue.render();
-                                                if (scriptFile.length() > 0 && MinecraftClient.getInstance().player != null) {
+                                                if (MinecraftClient.getInstance().player != null) {
                                                     if (ImGui.button(
                                                             (Vandalism.getInstance().getScriptRegistry()
-                                                                    .isScriptRunning(scriptFile) ? "Kill" : "Execute") + "##scriptsexecute" +
+                                                                    .isScriptRunning(scriptFile) ? "Kill" : "Execute") + "##scriptsexecuteorkill" +
                                                                     script.getName(),
                                                             buttonWidth, buttonHeight
                                                     )) {
                                                         if (Vandalism.getInstance().getScriptRegistry().isScriptRunning(scriptFile)) {
                                                             Vandalism.getInstance().getScriptRegistry().killRunningScriptByScriptFile(scriptFile);
-                                                        } else
+                                                        } else {
                                                             Vandalism.getInstance().getScriptRegistry().executeScriptByScriptFile(scriptFile);
-                                                    }
-                                                }
-                                                if (!this.scriptEditors.containsKey(scriptFile)) {
-                                                    if (ImGui.button("Edit##scriptsedit" + script.getName(), buttonWidth, buttonHeight)) {
-                                                        if (!scriptFile.exists()) {
-                                                            Vandalism.getInstance().getLogger().error(
-                                                                    "Failed to open script editor for script file '" +
-                                                                            scriptFile.getName() +
-                                                                            "' because the file doesn't exist!"
-                                                            );
-                                                            return;
-                                                        }
-                                                        try {
-                                                            final Scanner scanner = new Scanner(scriptFile);
-                                                            final StringBuilder codeBuilder = new StringBuilder();
-                                                            while (scanner.hasNextLine()) {
-                                                                codeBuilder.append(scanner.nextLine()).append('\n');
-                                                            }
-                                                            scanner.close();
-                                                            final String code = codeBuilder.toString();
-                                                            if (!code.isBlank()) {
-                                                                this.scriptEditors.put(scriptFile, new ScriptEditor(scriptFile, code));
-                                                            }
-                                                        } catch (final Throwable throwable) {
-                                                            Vandalism.getInstance().getLogger().error("Error while opening script file: " + scriptFile.getName(), throwable);
-                                                        }
-                                                    }
-                                                } else {
-                                                    final ScriptEditor scriptEditor = this.scriptEditors.get(scriptFile);
-                                                    if (ImGui.button("Close editor##scriptseditorclose" + script.getName(), buttonWidth, buttonHeight)) {
-                                                        scriptEditor.close();
-                                                    }
-                                                    if (scriptEditor.canBeSaved()) {
-                                                        ImGui.sameLine();
-                                                        if (ImGui.button("Save##scriptssave" + script.getName(), buttonWidth, buttonHeight)) {
-                                                            scriptEditor.save();
                                                         }
                                                     }
                                                 }
-                                                if (ImGui.button("Delete##scriptsdelete" + script.getName(), buttonWidth, buttonHeight)) {
-                                                    if (!script.getFile().delete()) {
-                                                        Vandalism.getInstance().getLogger().error("Failed to delete script: " + script.getName());
+                                                ImGui.button("...##scriptsmoreactions" + script.getName());
+                                                if (ImGui.beginPopupContextItem("##scriptsmoreactionspopup" + script.getName(),
+                                                        ImGuiPopupFlags.MouseButtonLeft
+                                                )) {
+                                                    ImGui.text(script.getName());
+                                                    ImGui.separator();
+                                                    ImGui.spacing();
+                                                    if (!this.scriptEditors.containsKey(scriptFile)) {
+                                                        if (ImGui.button("Edit##scriptsedit" + script.getName(), buttonWidth, buttonHeight)) {
+                                                            if (!scriptFile.exists()) {
+                                                                Vandalism.getInstance().getLogger().error(
+                                                                        "Failed to open script editor for script file '" +
+                                                                                scriptFile.getName() +
+                                                                                "' because the file doesn't exist!"
+                                                                );
+                                                            } else {
+                                                                try {
+                                                                    final Scanner scanner = new Scanner(scriptFile);
+                                                                    final StringBuilder codeBuilder = new StringBuilder();
+                                                                    while (scanner.hasNextLine()) {
+                                                                        codeBuilder.append(scanner.nextLine()).append('\n');
+                                                                    }
+                                                                    scanner.close();
+                                                                    final String code = codeBuilder.toString();
+                                                                    if (!code.isBlank()) {
+                                                                        this.scriptEditors.put(scriptFile, new ScriptEditor(scriptFile, code));
+                                                                    }
+                                                                } catch (final Throwable throwable) {
+                                                                    Vandalism.getInstance().getLogger().error(
+                                                                            "Error while opening script file: " + scriptFile.getName(),
+                                                                            throwable
+                                                                    );
+                                                                }
+                                                            }
+                                                        }
                                                     } else {
-                                                        scripts.remove(script);
-                                                        Vandalism.getInstance().getLogger().info("Deleted script: " + script.getName());
+                                                        final ScriptEditor scriptEditor = this.scriptEditors.get(scriptFile);
+                                                        if (ImGui.button("Close editor##scriptseditorclose" + script.getName(), buttonWidth, buttonHeight)) {
+                                                            scriptEditor.close();
+                                                        }
+                                                        if (scriptEditor.canBeSaved()) {
+                                                            if (ImGui.button("Save##scriptssave" + script.getName(), buttonWidth, buttonHeight)) {
+                                                                scriptEditor.save();
+                                                            }
+                                                        }
                                                     }
+                                                    if (ImGui.button("Delete##scriptsdelete" + script.getName(), buttonWidth, buttonHeight)) {
+                                                        if (!script.getFile().delete()) {
+                                                            Vandalism.getInstance().getLogger().error("Failed to delete script: " + script.getName());
+                                                        } else {
+                                                            scripts.remove(script);
+                                                            Vandalism.getInstance().getLogger().info("Deleted script: " + script.getName());
+                                                        }
+                                                    }
+                                                    ImGui.endPopup();
+                                                }
+                                                ImGui.sameLine();
+                                                for (final Value<?> scriptValue : script.getValues()) {
+                                                    scriptValue.render();
                                                 }
                                                 ImGui.spacing();
                                             }

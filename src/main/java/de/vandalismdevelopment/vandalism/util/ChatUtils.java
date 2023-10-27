@@ -2,6 +2,8 @@ package de.vandalismdevelopment.vandalism.util;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.hud.ChatHud;
+import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
@@ -37,30 +39,23 @@ public class ChatUtils {
     private final static MutableText CHAT_PREFIX = Text.empty()
             .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
             .append("(")
-            .append(FormattingUtils.interpolateTextColor(Vandalism.getInstance().getName(), Color.MAGENTA, Color.PINK))
+            .append(
+                    Text.literal(
+                            Vandalism.getInstance().getName()
+                    ).setStyle(
+                            Style.EMPTY.withColor(
+                                    TextColor.fromRgb(
+                                            Color.WHITE.getRGB()
+                                    )
+                            )
+                    )
+            )
             .append(") ");
 
-    public static void emptyChatMessage() {
-        if (MinecraftClient.getInstance().world == null) return;
-        MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.literal("\n"));
-    }
-
-    public static void chatMessage(final String message) {
-        chatMessage(Text.literal(message));
-    }
-
-    public static void chatMessage(final String message, final boolean prefix) {
-        chatMessage(Text.literal(message), prefix);
-    }
-
-    public static void chatMessage(final Text message) {
-        chatMessage(message, true);
-    }
-
-    public static void chatMessage(final Text message, final boolean prefix) {
-        if (MinecraftClient.getInstance() == null) return;
-        if (MinecraftClient.getInstance().world == null) return;
-        MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(prefix ? CHAT_PREFIX.copy().append(message) : message);
+    public static MutableText getAsMutableText(final OrderedText text) {
+        final StringVisitorAccessor visitor = new StringVisitorAccessor();
+        text.accept(visitor);
+        return visitor.getMutableText();
     }
 
     public static void infoChatMessage(final String message) {
@@ -87,10 +82,31 @@ public class ChatUtils {
         chatMessage(Type.ERROR.getPrefix().copy().append(message));
     }
 
-    public static MutableText getAsMutableText(final OrderedText text) {
-        final StringVisitorAccessor visitor = new StringVisitorAccessor();
-        text.accept(visitor);
-        return visitor.getMutableText();
+    public static void emptyChatMessage() {
+        final InGameHud inGameHud = MinecraftClient.getInstance().inGameHud;
+        if (inGameHud == null) return;
+        inGameHud.getChatHud().addMessage(Text.literal("\n"));
+    }
+
+    public static void chatMessage(final String message) {
+        chatMessage(Text.literal(message));
+    }
+
+    public static void chatMessage(final Text message) {
+        chatMessage(message, true);
+    }
+
+    public static void chatMessage(final String message, final boolean prefix) {
+        chatMessage(Text.literal(message), prefix);
+    }
+
+    public static void chatMessage(final Text message, final boolean prefix) {
+        if (MinecraftClient.getInstance() == null) return;
+        final InGameHud inGameHud = MinecraftClient.getInstance().inGameHud;
+        if (inGameHud == null) return;
+        final ChatHud chatHud = inGameHud.getChatHud();
+        if (chatHud == null) return;
+        chatHud.addMessage(prefix ? CHAT_PREFIX.copy().append(message) : message);
     }
 
 }
