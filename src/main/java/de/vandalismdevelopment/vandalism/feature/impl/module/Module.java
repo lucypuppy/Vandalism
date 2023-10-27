@@ -53,7 +53,9 @@ public abstract class Module extends Feature implements IValue {
     public void setState(final boolean state) {
         if (this.enabled != state) {
             this.enabled = state;
-            ChatUtils.infoChatMessage(this.getName() + " has been " + (state ? "enabled" : "disabled") + ".");
+            if (player() != null) {
+                ChatUtils.infoChatMessage(this.getName() + " has been " + (state ? "enabled" : "disabled") + ".");
+            }
 
             final ModuleRegistry moduleRegistry = Vandalism.getInstance().getModuleRegistry();
             if (moduleRegistry != null && moduleRegistry.isDone()) {

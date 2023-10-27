@@ -4,17 +4,26 @@ import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.ScriptParser;
+import de.vandalismdevelopment.vandalism.util.ChatUtils;
 import de.vandalismdevelopment.vandalism.util.MovementUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandSource;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.Vec3d;
+
+import java.awt.*;
 
 public enum ScriptCommand {
 
     RUN((scriptName, lineNumber, code, execute) -> {
         final String[] args = code.split("( )+");
+        if (args.length < 1) throw new RuntimeException("Run command needs at least one argument");
         if (args[0].equals("script") && args.length > 2 && args[1].equals("execute") && args[2].equals(scriptName)) {
             throw new RuntimeException("This script can't run itself because this would cause a stack overflow");
         }
@@ -33,6 +42,19 @@ public enum ScriptCommand {
             } else if (parse.getContext().getCommand() == null) {
                 throw new RuntimeException("The command needs at least one argument");
             }
+        }
+    }),
+    ADD_CHAT_MESSAGE((scriptName, lineNumber, code, execute) -> {
+        final String[] args = code.split("( )+");
+        if (args.length < 1) throw new RuntimeException("AddChatMessage command needs at least one argument");
+        if (execute) {
+            final MutableText prefix = Text.empty()
+                    .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
+                    .append("[")
+                    .append(Text.literal(scriptName)
+                            .setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Color.CYAN.getRGB()))))
+                    .append("] ");
+            ChatUtils.chatMessage(prefix.append(Text.literal(ScriptParser.applyCodeReplacements(code))));
         }
     }),
     JUMP((scriptName, lineNumber, code, execute) -> {
@@ -211,7 +233,6 @@ public enum ScriptCommand {
         }
         if (execute) Thread.sleep(delay);
         if (args.length > 1) {
-            System.out.println(commandWithCode);
             final Pair<ScriptCommand, Pair<Integer, String>> parsedCodeObject = ScriptParser.parseCodeFromScriptLine(
                     scriptName,
                     commandWithCode,

@@ -281,7 +281,7 @@ public class ScriptEditor {
             ) {
                 if (ImGui.button(
                         (Vandalism.getInstance().getScriptRegistry().isScriptRunning(this.scriptFile) ? "Kill" : "Execute") +
-                                "##scriptsexecutein" + this.originalScriptName + "editor",
+                                "##scriptsexecuteorkillin" + this.originalScriptName + "editor",
                         offset, buttonHeight
                 )) {
                     if (Vandalism.getInstance().getScriptRegistry().isScriptRunning(this.scriptFile)) {

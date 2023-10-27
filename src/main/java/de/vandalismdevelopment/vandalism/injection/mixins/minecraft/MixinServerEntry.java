@@ -51,8 +51,9 @@ public abstract class MixinServerEntry {
             String versionName = this.server.version.getString();
             final int maxServerVersionLength = Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.maxServerVersionLength.getValue();
             //TODO: Improve this, because the performance could drop from the substring method!
-            if (versionName.length() > maxServerVersionLength)
+            if (versionName.length() > maxServerVersionLength) {
                 versionName = versionName.substring(0, maxServerVersionLength);
+            }
             instance.drawTextWithShadow(textRenderer, VERSION_TEXT + versionName, textX, y, -1);
             instance.drawTextWithShadow(textRenderer, PROTOCOL_TEXT + this.server.protocolVersion, textX, y + textRenderer.fontHeight, -1);
             if (this.server.protocolVersion != ProtocolHack.getTargetVersion().getVersion()) {
