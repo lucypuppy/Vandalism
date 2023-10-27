@@ -125,7 +125,7 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
                                 ImGui.tableNextRow();
                                 final File scriptFile = script.getFile();
                                 if (scriptFile != null && scriptFile.exists()) {
-                                    final int buttonWidth = -1, buttonHeight = 28;
+                                    final int buttonWidth = 100, buttonHeight = 28;
                                     for (int i = 0; i < maxTableColumns; i++) {
                                         ImGui.tableSetColumnIndex(i);
                                         final ScriptsTableColumn scriptsTableColumn = scriptsTableColumns[i];
@@ -145,20 +145,6 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
                                             }
                                             case QUICK_ACTIONS -> {
                                                 ImGui.spacing();
-                                                if (MinecraftClient.getInstance().player != null) {
-                                                    if (ImGui.button(
-                                                            (Vandalism.getInstance().getScriptRegistry()
-                                                                    .isScriptRunning(scriptFile) ? "Kill" : "Execute") + "##scriptsexecuteorkill" +
-                                                                    script.getName(),
-                                                            buttonWidth, buttonHeight
-                                                    )) {
-                                                        if (Vandalism.getInstance().getScriptRegistry().isScriptRunning(scriptFile)) {
-                                                            Vandalism.getInstance().getScriptRegistry().killRunningScriptByScriptFile(scriptFile);
-                                                        } else {
-                                                            Vandalism.getInstance().getScriptRegistry().executeScriptByScriptFile(scriptFile);
-                                                        }
-                                                    }
-                                                }
                                                 ImGui.button("...##scriptsmoreactions" + script.getName());
                                                 if (ImGui.beginPopupContextItem("##scriptsmoreactionspopup" + script.getName(),
                                                         ImGuiPopupFlags.MouseButtonLeft
@@ -166,6 +152,20 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
                                                     ImGui.text(script.getName());
                                                     ImGui.separator();
                                                     ImGui.spacing();
+                                                    if (MinecraftClient.getInstance().player != null) {
+                                                        if (ImGui.button(
+                                                                (Vandalism.getInstance().getScriptRegistry()
+                                                                        .isScriptRunning(scriptFile) ? "Kill" : "Execute") + "##scriptsexecuteorkill" +
+                                                                        script.getName(),
+                                                                buttonWidth, buttonHeight
+                                                        )) {
+                                                            if (Vandalism.getInstance().getScriptRegistry().isScriptRunning(scriptFile)) {
+                                                                Vandalism.getInstance().getScriptRegistry().killRunningScriptByScriptFile(scriptFile);
+                                                            } else {
+                                                                Vandalism.getInstance().getScriptRegistry().executeScriptByScriptFile(scriptFile);
+                                                            }
+                                                        }
+                                                    }
                                                     if (!this.scriptEditors.containsKey(scriptFile)) {
                                                         if (ImGui.button("Edit##scriptsedit" + script.getName(), buttonWidth, buttonHeight)) {
                                                             if (!scriptFile.exists()) {
