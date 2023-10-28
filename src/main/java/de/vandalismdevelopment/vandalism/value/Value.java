@@ -2,6 +2,7 @@ package de.vandalismdevelopment.vandalism.value;
 
 import com.google.gson.JsonObject;
 import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.value.values.BooleanValue;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
@@ -30,7 +31,7 @@ public abstract class Value<V> {
     }
 
     public void setValue(final V value) {
-        if (this.value == value) {
+        if (this.value == value && !(this instanceof BooleanValue)) { //@Todo this is a small badfix find a better solution _FooFieOwO
             return;
         }
 
