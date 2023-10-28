@@ -34,6 +34,7 @@
     "minecraft.MixinGameRenderer",
     "minecraft.MixinGenericContainerScreen",
     "minecraft.MixinHeldItemRenderer",
+    "minecraft.MixinIcons",
     "minecraft.MixinIdentifier",
     "minecraft.MixinIllusionerEntityRenderer",
     "minecraft.MixinInGameHud",

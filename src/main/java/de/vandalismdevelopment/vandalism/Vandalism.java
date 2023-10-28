@@ -11,22 +11,10 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.main.Main;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.util.Window;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWImage;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.system.MemoryUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 public class Vandalism {
@@ -73,78 +61,8 @@ public class Vandalism {
         );
     }
 
-    private void setIcon(final Window window) throws IOException, RuntimeException {
-        final int platform = GLFW.glfwGetPlatform();
-        switch (platform) {
-            case GLFW.GLFW_PLATFORM_WIN32:
-            case GLFW.GLFW_PLATFORM_X11: {
-                final int[] iconSizes = new int[]{16, 32, 48, 128, 256};
-                final List<InputStream> inputStreams = new ArrayList<>();
-                final String iconTexturesPath = "assets/" + this.id + "/textures/icon/";
-                for (final int iconSize : iconSizes) {
-                    final InputStream inputStream =
-                            Main.class
-                                    .getClassLoader()
-                                    .getResourceAsStream(iconTexturesPath + "icon_" + iconSize + "x" + iconSize + ".png");
-                    if (inputStream != null) inputStreams.add(inputStream);
-                }
-                if (inputStreams.isEmpty()) {
-                    throw new RuntimeException("Failed to find icons.");
-                }
-                final List<ByteBuffer> byteBuffers = new ArrayList<>(inputStreams.size());
-                try {
-                    final MemoryStack memoryStack = MemoryStack.stackPush();
-                    try {
-                        final GLFWImage.Buffer buffer = GLFWImage.malloc(inputStreams.size(), memoryStack);
-                        for (int i = 0; i < inputStreams.size(); ++i) {
-                            final NativeImage nativeImage = NativeImage.read(inputStreams.get(i));
-                            try {
-                                final ByteBuffer byteBuffer = MemoryUtil.memAlloc(nativeImage.getWidth() * nativeImage.getHeight() * 4);
-                                byteBuffers.add(byteBuffer);
-                                byteBuffer.asIntBuffer().put(nativeImage.copyPixelsRgba());
-                                buffer.position(i);
-                                buffer.width(nativeImage.getWidth());
-                                buffer.height(nativeImage.getHeight());
-                                buffer.pixels(byteBuffer);
-                            } catch (final Throwable throwable) {
-                                try {
-                                    nativeImage.close();
-                                } catch (final Throwable throwable2) {
-                                    throwable.addSuppressed(throwable2);
-                                }
-                                throw throwable;
-                            }
-                            nativeImage.close();
-                        }
-                        GLFW.glfwSetWindowIcon(window.getHandle(), buffer.position(0));
-                    } catch (final Throwable throwable) {
-                        try {
-                            memoryStack.close();
-                        } catch (Throwable throwable2) {
-                            throwable.addSuppressed(throwable2);
-                        }
-                        throw throwable;
-                    }
-                    memoryStack.close();
-                    break;
-                } finally {
-                    byteBuffers.forEach(MemoryUtil::memFree);
-                }
-            }
-            default: {
-                this.logger.warn("Not setting icon for unrecognized platform: {}", platform);
-            }
-        }
-
-    }
-
     public void start(final MinecraftClient mc) {
         mc.getWindow().setTitle(String.format("Starting %s ...", this.windowTitle));
-        try {
-            this.setIcon(mc.getWindow());
-        } catch (final IOException | RuntimeException exception) {
-            this.logger.error("Couldn't set icon.", exception);
-        }
         this.logger.info("Starting {} ...", this.windowTitle);
         this.dir = new File(mc.runDirectory, this.id);
         this.dir.mkdirs();
