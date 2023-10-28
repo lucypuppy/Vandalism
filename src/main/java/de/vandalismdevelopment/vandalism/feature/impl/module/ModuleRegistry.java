@@ -239,8 +239,6 @@ public class ModuleRegistry implements KeyboardListener {
 
     private void register() {
         this.registerModules(
-                //HUD should always be the first entry.
-                this.headUpDisplayModule = new HeadUpDisplayModule(),
                 this.testModule = new TestModule(),
                 this.exploitFixerModule = new ExploitFixerModule(),
                 this.clientBrandChangerModule = new ClientBrandChangerModule(),
@@ -274,7 +272,8 @@ public class ModuleRegistry implements KeyboardListener {
                 this.ambienceModule = new AmbienceModule(),
                 this.messageEncryptorModule = new MessageEncryptorModule(),
                 this.illegalBlockPlaceModule = new IllegalBlockPlaceModule(),
-                this.autoRespawnModule = new AutoRespawnModule()
+                this.autoRespawnModule = new AutoRespawnModule(),
+                this.headUpDisplayModule = new HeadUpDisplayModule()
         );
     }
 
@@ -283,9 +282,9 @@ public class ModuleRegistry implements KeyboardListener {
         for (final Module module : modules) {
             if (!this.modules.contains(module)) {
                 this.modules.add(module);
-                Vandalism.getInstance().getLogger().info("Module '" + module + "' has been registered.");
+                Vandalism.getInstance().getLogger().info("Module '" + module.toString() + "' has been registered.");
             } else {
-                Vandalism.getInstance().getLogger().error("Duplicated module found: " + module);
+                Vandalism.getInstance().getLogger().error("Duplicated module found: " + module.toString());
             }
         }
         final int moduleListSize = this.modules.size();
@@ -299,9 +298,10 @@ public class ModuleRegistry implements KeyboardListener {
 
     @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        if (action != GLFW.GLFW_PRESS || MinecraftClient.getInstance().player == null) return;
+        if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN || MinecraftClient.getInstance().player == null || MinecraftClient.getInstance().currentScreen != null)
+            return;
         for (final Module module : Vandalism.getInstance().getModuleRegistry().getModules()) {
-            if (module.getKeyCode() == key) {
+            if (module.getKeyBind().getKeyCode() == key) {
                 module.toggle();
             }
         }

@@ -28,17 +28,18 @@ public class ImGuiMenuRegistry {
     }
 
     private void registerImGuiMenus(final ImGuiMenu... imGuiMenus) {
+        Vandalism.getInstance().getLogger().info("Registering imgui menus...");
         for (final ImGuiMenu imGuiMenu : imGuiMenus) {
             if (!this.imGuiMenus.contains(imGuiMenu)) {
                 this.imGuiMenus.add(imGuiMenu);
                 Vandalism.getInstance().getLogger().info("ImGui Menu '" + imGuiMenu + "' has been registered.");
             } else {
-                Vandalism.getInstance().getLogger().error("Duplicated ImGui Menu found: " + imGuiMenu);
+                Vandalism.getInstance().getLogger().error("Duplicated imgui menu found: " + imGuiMenu);
             }
         }
         final int imGuiMenuListSize = this.imGuiMenus.size();
-        if (imGuiMenuListSize < 1) Vandalism.getInstance().getLogger().info("No ImGui Menus found!");
-        else Vandalism.getInstance().getLogger().info("Registered " + imGuiMenuListSize + " ImGui Menu/s.");
+        if (imGuiMenuListSize < 1) Vandalism.getInstance().getLogger().info("No imgui menus found!");
+        else Vandalism.getInstance().getLogger().info("Registered " + imGuiMenuListSize + " imGui menu/s.");
     }
 
     public List<ImGuiMenu> getImGuiMenus() {

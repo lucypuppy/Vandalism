@@ -3,6 +3,7 @@ package de.vandalismdevelopment.vandalism.config.impl.account;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import de.florianmichael.rclasses.common.StringUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.config.ValueableConfig;
 import de.vandalismdevelopment.vandalism.config.impl.account.impl.CrackedAccount;
@@ -15,11 +16,29 @@ import net.raphimc.mcauth.util.logging.ILogger;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class AccountConfig extends ValueableConfig {
+
+    private final static HashMap<String, String> LOG_FILTERS = new HashMap<>();
+
+    static {
+        LOG_FILTERS.put("Got GameOwnership, games:", "Got GameOwnership games.");
+        LOG_FILTERS.put("Got MC Profile, name:", "Got MC Profile name.");
+    }
+
+    private static String overwriteLogContent(final String message) {
+        for (final Map.Entry<String, String> entry : LOG_FILTERS.entrySet()) {
+            if (StringUtils.contains(message, entry.getKey())) {
+                return entry.getValue();
+            }
+        }
+        return message;
+    }
 
     private final List<Account> accounts;
 
@@ -30,17 +49,17 @@ public class AccountConfig extends ValueableConfig {
 
             @Override
             public void info(final String message) {
-                Vandalism.getInstance().getLogger().info(message);
+                Vandalism.getInstance().getLogger().info(overwriteLogContent(message));
             }
 
             @Override
             public void warn(final String message) {
-                Vandalism.getInstance().getLogger().info(message);
+                Vandalism.getInstance().getLogger().info(overwriteLogContent(message));
             }
 
             @Override
             public void error(final String message) {
-                Vandalism.getInstance().getLogger().error(message);
+                Vandalism.getInstance().getLogger().error(overwriteLogContent(message));
             }
 
         };

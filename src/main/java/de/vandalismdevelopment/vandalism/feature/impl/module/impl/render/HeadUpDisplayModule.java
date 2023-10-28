@@ -178,8 +178,8 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
         this.sort = true;
     }
 
+    //TODO: Fix rendering issues on game restart.
     private void render(final DrawContext context) {
-
         if (player() == null || world() == null) {
             return;
         }

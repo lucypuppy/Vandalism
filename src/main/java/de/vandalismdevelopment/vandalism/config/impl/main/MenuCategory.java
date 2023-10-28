@@ -1,13 +1,12 @@
 package de.vandalismdevelopment.vandalism.config.impl.main;
 
 import de.vandalismdevelopment.vandalism.config.impl.MainConfig;
+import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
 import de.vandalismdevelopment.vandalism.value.values.BooleanValue;
 import de.vandalismdevelopment.vandalism.value.values.KeyInputValue;
 import de.vandalismdevelopment.vandalism.value.values.number.slider.SliderIntegerValue;
-import net.minecraft.util.Pair;
-import org.lwjgl.glfw.GLFW;
 
 public class MenuCategory extends ValueCategory {
     
@@ -15,12 +14,11 @@ public class MenuCategory extends ValueCategory {
         super("Menu", "Menu related configs.", parent);
     }
 
-    public final Value<Pair<Integer, String>> menuKey = new KeyInputValue(
+    public final Value<GlfwKeyName> menuKey = new KeyInputValue(
             "Menu Key",
             "Change the key to open the Menu.",
             this,
-            GLFW.GLFW_KEY_RIGHT_SHIFT,
-            "rshift"
+            GlfwKeyName.RIGHT_SHIFT
     );
 
     public final Value<Boolean> scriptExecutionLogging = new BooleanValue(

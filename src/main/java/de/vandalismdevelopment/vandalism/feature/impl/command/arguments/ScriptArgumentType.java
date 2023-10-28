@@ -8,6 +8,7 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.feature.Feature;
 import de.vandalismdevelopment.vandalism.feature.impl.script.Script;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.Text;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 public class ScriptArgumentType implements ArgumentType<Script> {
 
     private final static DynamicCommandExceptionType NOT_EXISTING = new DynamicCommandExceptionType(name -> {
-        return Text.literal("No Script with the name " + name + " has been found!");
+        return Text.literal("No script with the name " + name + " has been found!");
     });
 
     private final static Collection<String> EXAMPLES = Vandalism.getInstance().getScriptRegistry().getScripts()
@@ -39,7 +40,7 @@ public class ScriptArgumentType implements ArgumentType<Script> {
 
     @Override
     public Script parse(final StringReader reader) throws CommandSyntaxException {
-        final String argument = reader.readString().replace("-", " ");
+        final String argument = reader.readString();
         final Script script = Vandalism.getInstance().getScriptRegistry().getScripts().get(argument);
         if (script == null) throw NOT_EXISTING.create(argument);
         return script;
@@ -47,9 +48,7 @@ public class ScriptArgumentType implements ArgumentType<Script> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
-        return CommandSource.suggestMatching(Vandalism.getInstance().getScriptRegistry().getScripts().stream().map(script -> {
-            return script.getName().replace(" ", "-");
-        }), builder);
+        return CommandSource.suggestMatching(Vandalism.getInstance().getScriptRegistry().getScripts().stream().map(Feature::getName), builder);
     }
 
     @Override

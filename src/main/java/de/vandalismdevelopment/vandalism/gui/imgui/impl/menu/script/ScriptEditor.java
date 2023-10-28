@@ -9,6 +9,7 @@ import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.ScriptIn
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.impl.BooleanScriptInfo;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.impl.CategoryScriptInfo;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.impl.StringScriptInfo;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.variable.ScriptVariable;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
@@ -23,9 +24,7 @@ import net.minecraft.util.Pair;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class ScriptEditor {
 
@@ -41,35 +40,61 @@ public class ScriptEditor {
                     imGuiInputTextCallbackData.getEventChar() != ')' &&
                     imGuiInputTextCallbackData.getEventChar() != '#'
             ) {
-                imGuiInputTextCallbackData.setEventChar((char) 0);
+                if (imGuiInputTextCallbackData.getEventChar() == ' ') {
+                    imGuiInputTextCallbackData.setEventChar('-');
+                } else {
+                    imGuiInputTextCallbackData.setEventChar((char) 0);
+                }
             }
         }
 
     };
 
-    private final static String EXAMPLE_CODE;
-
-    static {
-        final StringBuilder exampleCodeBuilder = new StringBuilder();
+    private static String getInfoExample() {
+        final StringBuilder exampleInfoBuilder = new StringBuilder();
         for (final ScriptInfo scriptInfo : ScriptInfo.values()) {
-            exampleCodeBuilder.append(ScriptParser.INFO_CHAR).append(scriptInfo.getTag()).append(' ');
+            exampleInfoBuilder.append(ScriptParser.INFO_CHAR).append(scriptInfo.getTag()).append(' ');
             final IScriptInfo<?> iScriptInfo = scriptInfo.get();
             if (iScriptInfo instanceof final StringScriptInfo stringScriptInfo) {
-                exampleCodeBuilder.append(stringScriptInfo.defaultValue());
+                exampleInfoBuilder.append(stringScriptInfo.defaultValue());
             } else if (iScriptInfo instanceof final CategoryScriptInfo categoryScriptInfo) {
-                exampleCodeBuilder.append(categoryScriptInfo.defaultValue().normalName());
+                exampleInfoBuilder.append(categoryScriptInfo.defaultValue().normalName());
             } else if (iScriptInfo instanceof final BooleanScriptInfo booleanScriptInfo) {
-                exampleCodeBuilder.append(booleanScriptInfo.defaultValue());
+                exampleInfoBuilder.append(booleanScriptInfo.defaultValue());
             }
-            exampleCodeBuilder.append('\n');
+            exampleInfoBuilder.append('\n');
+        }
+        exampleInfoBuilder.append('\n');
+        return exampleInfoBuilder.toString();
+    }
+
+    private static String getExampleCode() {
+        final StringBuilder exampleCodeBuilder = new StringBuilder();
+        exampleCodeBuilder.append(getInfoExample());
+        exampleCodeBuilder.append("This is a list of all the available script commands and their examples:\n\n");
+        for (final ScriptCommand scriptCommand : ScriptCommand.values()) {
+            exampleCodeBuilder
+                    .append("\t\t")
+                    .append(ScriptParser.CODE_CHAR)
+                    .append(scriptCommand.name().toLowerCase())
+                    .append(" - ")
+                    .append(StringUtils.replaceAll(scriptCommand.getExample(), "\n", "\n\t\t"))
+                    .append("\n\n");
         }
         exampleCodeBuilder.append("\n\n");
-        exampleCodeBuilder.append("You can use \"").append(ScriptParser.CODE_CHAR).append("\" as prefix to execute a command like this: ");
-        exampleCodeBuilder.append(ScriptParser.CODE_CHAR).append(ScriptCommand.RUN.name().toLowerCase()).append(" say Hello World!\n");
-        exampleCodeBuilder.append("You can also use variables with \"").append(ScriptParser.VARIABLE_CHAR).append("\" as prefix and suffix like this: ");
-        exampleCodeBuilder.append(ScriptParser.CODE_CHAR).append(ScriptCommand.RUN.name().toLowerCase()).append(" say Hello ");
-        exampleCodeBuilder.append(ScriptParser.VARIABLE_CHAR).append("username").append(ScriptParser.VARIABLE_CHAR).append("!\n\n\n");
-        EXAMPLE_CODE = exampleCodeBuilder.toString();
+        exampleCodeBuilder.append("This is a list of all the available script variables and their descriptions:\n\n");
+        for (final ScriptVariable scriptVariable : ScriptVariable.values()) {
+            exampleCodeBuilder
+                    .append("\t\t")
+                    .append(ScriptParser.VARIABLE_CHAR)
+                    .append(scriptVariable.name().toLowerCase())
+                    .append(ScriptParser.VARIABLE_CHAR)
+                    .append(" - ")
+                    .append(scriptVariable.getDescription())
+                    .append('\n');
+        }
+        exampleCodeBuilder.append("\n\n\n");
+        return exampleCodeBuilder.toString();
     }
 
     private File scriptFile;
@@ -79,8 +104,8 @@ public class ScriptEditor {
     private String originalScriptName;
     private boolean rename, closed;
 
-    public ScriptEditor(final File scriptFile) {
-        this(scriptFile, EXAMPLE_CODE, true);
+    public ScriptEditor(final File scriptFile, final boolean exampleCode) {
+        this(scriptFile, exampleCode ? getExampleCode() : getInfoExample(), true);
     }
 
     public ScriptEditor(final File scriptFile, final String code) {
@@ -91,9 +116,30 @@ public class ScriptEditor {
         this.scriptFile = scriptFile;
         this.lastScriptFileModification = this.scriptFile.lastModified();
         this.textEditor = new TextEditor();
-        this.textEditor.setLanguageDefinition(TextEditorLanguageDefinition.c());
+        final TextEditorLanguageDefinition languageDefinition = TextEditorLanguageDefinition.c();
+        final List<String> keywords = new ArrayList<>();
+        for (final ScriptCommand scriptCommand : ScriptCommand.values()) {
+            keywords.add(scriptCommand.name().toLowerCase());
+        }
+        for (final ScriptVariable scriptVariable : ScriptVariable.values()) {
+            keywords.add(scriptVariable.name().toLowerCase());
+        }
+        languageDefinition.setKeywords(keywords.toArray(new String[0]));
+        final Map<String, String> preprocIdentifierMap = new HashMap<>();
+        for (final ScriptCommand scriptCommand : ScriptCommand.values()) {
+            preprocIdentifierMap.put(scriptCommand.name().toLowerCase(), scriptCommand.getExample());
+        }
+        for (final ScriptVariable scriptVariable : ScriptVariable.values()) {
+            preprocIdentifierMap.put(
+                    scriptVariable.name().toLowerCase(),
+                    scriptVariable.getDescription()
+            );
+        }
+        languageDefinition.setPreprocIdentifiers(preprocIdentifierMap);
+        this.textEditor.setLanguageDefinition(languageDefinition);
         this.textEditor.setText(code);
         this.textEditor.setShowWhitespaces(false);
+        //this.textEditor.setImGuiChildIgnored(true); TODO: Add injection or pushStyle to hide the horizontal scrollbar instead of using this.
         this.originalScriptName = StringUtils.replaceLast(scriptFile.getName(), ScriptParser.SCRIPT_FILE_EXTENSION, "");
         this.scriptName = new ImString(this.originalScriptName, Math.max(this.originalScriptName.length(), 50));
         this.infoTextField = new ImString(100);
@@ -213,12 +259,21 @@ public class ScriptEditor {
                             );
                             if (line == null) {
                                 if (textLine.startsWith(ScriptParser.CODE_CHAR)) {
+                                    final StringBuilder commands = new StringBuilder("Available script commands are:\n");
+                                    for (final ScriptCommand scriptCommand : ScriptCommand.values()) {
+                                        commands.append("\t\t")
+                                                .append(scriptCommand.name().toLowerCase())
+                                                .append(" - ")
+                                                .append(scriptCommand.getExample().split("\n")[0])
+                                                .append('\n');
+                                    }
                                     if (textLine.length() > 1) {
                                         throw new RuntimeException(
-                                                "Unknown script command '" + textLine.replaceFirst(ScriptParser.CODE_CHAR, "") + "'"
+                                                "Unknown script command '" + textLine.replaceFirst(ScriptParser.CODE_CHAR, "") + "'\n\n" +
+                                                        commands
                                         );
                                     } else {
-                                        throw new RuntimeException("Empty script command");
+                                        throw new RuntimeException(commands.toString());
                                     }
                                 }
                             } else {
@@ -265,51 +320,46 @@ public class ScriptEditor {
             }
             final int cPosX = this.textEditor.getCursorPositionLine(), cPosY = this.textEditor.getCursorPositionColumn();
             this.infoTextField.set(cPosX + "/" + cPosY + " " + this.textEditor.getTotalLines() + " lines");
-            int offset = -445, buttonHeight = 27;
-            if (unsaved) offset -= 99;
-            ImGui.setNextItemWidth(offset);
+            int buttonWidth = 0, buttonHeight = 27;
+            ImGui.setNextItemWidth(-300);
             ImGui.inputText(
                     "##scriptsinfotextfield" + this.originalScriptName + "editor",
                     this.infoTextField,
                     ImGuiInputTextFlags.ReadOnly
             );
-            offset += 99;
-            ImGui.sameLine();
             if (
                     Vandalism.getInstance().getScriptRegistry().isScriptRunning(this.scriptFile) ||
                             (!this.canBeSaved() && this.scriptFile.exists() && this.scriptFile.length() > 0 && MinecraftClient.getInstance().player != null)
             ) {
+                ImGui.sameLine();
                 if (ImGui.button(
                         (Vandalism.getInstance().getScriptRegistry().isScriptRunning(this.scriptFile) ? "Kill" : "Execute") +
                                 "##scriptsexecuteorkillin" + this.originalScriptName + "editor",
-                        offset, buttonHeight
+                        buttonWidth, buttonHeight
                 )) {
                     if (Vandalism.getInstance().getScriptRegistry().isScriptRunning(this.scriptFile)) {
                         Vandalism.getInstance().getScriptRegistry().killRunningScriptByScriptFile(this.scriptFile);
                     } else Vandalism.getInstance().getScriptRegistry().executeScriptByScriptFile(this.scriptFile);
                 }
             }
-            offset += 99;
-            ImGui.sameLine();
             if (!this.rename && !this.isReadOnly()) {
-                if (ImGui.button("Rename##scriptsrenamein" + this.originalScriptName + "editor", offset, buttonHeight)) {
+                ImGui.sameLine();
+                if (ImGui.button("Rename##scriptsrenamein" + this.originalScriptName + "editor", buttonWidth, buttonHeight)) {
                     this.rename = true;
                 }
-                offset += 99;
             }
             if (this.canBeSaved()) {
                 ImGui.sameLine();
                 if (ImGui.button(
                         (this.scriptFile.exists() ? "Save" : "Create") + "##scriptssavein" + this.originalScriptName + "editor",
-                        offset,
+                        buttonWidth,
                         buttonHeight
                 )) {
                     this.save();
                 }
-                offset += 140;
             }
             ImGui.sameLine();
-            if (ImGui.button((unsaved ? "Cancel" : "Close") + "##scriptsclosein" + this.originalScriptName + "editor", offset, buttonHeight)) {
+            if (ImGui.button((unsaved ? "Cancel" : "Close") + "##scriptsclosein" + this.originalScriptName + "editor", buttonWidth, buttonHeight)) {
                 if (this.rename && this.scriptFile.exists()) {
                     this.rename = false;
                     this.scriptName.set(this.originalScriptName);

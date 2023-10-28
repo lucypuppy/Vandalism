@@ -20,7 +20,9 @@ import java.util.stream.Collectors;
 
 public class ModuleArgumentType implements ArgumentType<Module> {
 
-    private final static DynamicCommandExceptionType NOT_EXISTING = new DynamicCommandExceptionType(name -> Text.literal("No Module with the name " + name + " has been found!"));
+    private final static DynamicCommandExceptionType NOT_EXISTING = new DynamicCommandExceptionType(
+            name -> Text.literal("No module with the name " + name + " has been found!")
+    );
 
     private final static Collection<String> EXAMPLES = Vandalism.getInstance().getModuleRegistry().getModules()
             .stream()
@@ -48,7 +50,10 @@ public class ModuleArgumentType implements ArgumentType<Module> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
-        return CommandSource.suggestMatching(Vandalism.getInstance().getModuleRegistry().getModules().stream().map(feature -> feature.getName().replace(" ", "-")), builder);
+        return CommandSource.suggestMatching(Vandalism.getInstance().getModuleRegistry().getModules().stream().map(
+                        feature -> feature.getName().replace(" ", "-")),
+                builder
+        );
     }
 
     @Override

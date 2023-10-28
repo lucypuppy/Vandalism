@@ -20,7 +20,9 @@ import java.util.concurrent.CompletableFuture;
 
 public class SoundArgumentType implements ArgumentType<SoundEvent> {
 
-    private final static DynamicCommandExceptionType notExisting = new DynamicCommandExceptionType(id -> Text.literal("No Sound with the id " + id + " has been found!"));
+    private final static DynamicCommandExceptionType notExisting = new DynamicCommandExceptionType(
+            id -> Text.literal("No sound with the id " + id + " has been found!")
+    );
 
     private final List<String> ids;
 

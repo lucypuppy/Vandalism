@@ -32,23 +32,25 @@ public class ScriptRegistry implements KeyboardListener {
     }
 
     public void load() {
+        Vandalism.getInstance().getLogger().info("Loading scripts...");
         if (this.directory.exists() && !this.directory.isDirectory()) {
             if (!this.directory.delete()) {
                 Vandalism.getInstance().getLogger().error("Failed to delete invalid scripts directory!");
-                return;
+            }
+        } else {
+            if (!this.directory.exists()) {
+                if (!this.directory.mkdirs()) {
+                    Vandalism.getInstance().getLogger().error("Failed to create scripts directory!");
+                }
+            } else {
+                final File[] files = this.directory.listFiles();
+                if (files != null) {
+                    for (final File file : files) {
+                        this.loadScriptFromFile(file);
+                    }
+                }
             }
         }
-        if (!this.directory.exists()) {
-            if (!this.directory.mkdirs()) {
-                Vandalism.getInstance().getLogger().error("Failed to create scripts directory!");
-                return;
-            }
-            Vandalism.getInstance().getLogger().info("No scripts loaded!");
-            return;
-        }
-        final File[] files = this.directory.listFiles();
-        if (files == null) return;
-        for (final File file : files) this.loadScriptFromFile(file);
         final int scriptListSize = this.scripts.size();
         if (scriptListSize < 1) Vandalism.getInstance().getLogger().info("No scripts loaded!");
         else Vandalism.getInstance().getLogger().info("Loaded " + scriptListSize + " script/s.");
@@ -62,7 +64,7 @@ public class ScriptRegistry implements KeyboardListener {
             final Script script = ScriptParser.parseScriptObjectFromFile(file);
             final Script existingScript = this.scripts.get(script.getName());
             if (existingScript != null) {
-                script.setKeyCode(existingScript.getKeyCode());
+                script.setKeyBind(existingScript.getKeyBind());
                 this.scripts.remove(existingScript);
             }
             this.scripts.add(script);
@@ -82,9 +84,10 @@ public class ScriptRegistry implements KeyboardListener {
 
     @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        if (action != GLFW.GLFW_PRESS || MinecraftClient.getInstance().player == null) return;
+        if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN || MinecraftClient.getInstance().player == null || MinecraftClient.getInstance().currentScreen != null)
+            return;
         for (final Script script : Vandalism.getInstance().getScriptRegistry().getScripts()) {
-            if (script.getKeyCode() == key) {
+            if (script.getKeyBind().getKeyCode() == key) {
                 if (this.isScriptRunning(script.getFile())) {
                     this.killRunningScriptByScriptFile(script.getFile());
                 }
