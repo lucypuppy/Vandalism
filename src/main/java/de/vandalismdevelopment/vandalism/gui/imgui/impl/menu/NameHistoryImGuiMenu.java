@@ -15,6 +15,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+//TODO: This doesn't work anymore, fix it!
 public class NameHistoryImGuiMenu extends ImGuiMenu {
 
     private final DateFormat formatter;
@@ -101,13 +102,19 @@ public class NameHistoryImGuiMenu extends ImGuiMenu {
                             this.currentState = State.SUCCESS;
                             this.lastUsername = usernameValue;
                             this.lastUUID = uuid + " | " + uuidIntArray;
-                            for (final Name entry : history.username_history) {
-                                final StringBuilder entryBuilder = new StringBuilder(entry.name);
-                                if (entry.changed_at != null && entry.changed_at.getTime() != 0) {
-                                    entryBuilder.append(" | Changed at: ").append(formatter.format(entry.changed_at));
+                            try {
+                                for (final Name entry : history.username_history) {
+                                    if (entry != null) {
+                                        final StringBuilder entryBuilder = new StringBuilder(entry.name);
+                                        if (entry.changed_at != null && entry.changed_at.getTime() != 0) {
+                                            entryBuilder.append(" | Changed at: ").append(formatter.format(entry.changed_at));
+                                        }
+                                        entryBuilder.append(" | Accurate: ").append(entry.accurate);
+                                        this.currentData.add(entryBuilder.toString());
+                                    }
                                 }
-                                entryBuilder.append(" | Accurate: ").append(entry.accurate);
-                                this.currentData.add(entryBuilder.toString());
+                            } catch (final Exception ignored) {
+                                this.currentState = State.FAILED;
                             }
                         });
                         this.thread.start();
