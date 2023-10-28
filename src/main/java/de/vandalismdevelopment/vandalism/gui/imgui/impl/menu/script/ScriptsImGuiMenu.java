@@ -56,13 +56,21 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
                 if (ImGui.button("Reload##scriptsreload")) {
                     Vandalism.getInstance().getScriptRegistry().load();
                 }
+                if (ImGui.button("Create new example script##scriptscreatenewexamplescript")) {
+                    final String name = "Example#" + RandomUtils.randomInt(1000, 9999);
+                    final File scriptFile = new File(
+                            Vandalism.getInstance().getScriptRegistry().getDirectory(),
+                            name + ScriptParser.SCRIPT_FILE_EXTENSION
+                    );
+                    this.scriptEditors.put(scriptFile, new ScriptEditor(scriptFile, true));
+                }
                 if (ImGui.button("Create new script##scriptscreatenewscript")) {
                     final String name = "Template#" + RandomUtils.randomInt(1000, 9999);
                     final File scriptFile = new File(
                             Vandalism.getInstance().getScriptRegistry().getDirectory(),
                             name + ScriptParser.SCRIPT_FILE_EXTENSION
                     );
-                    this.scriptEditors.put(scriptFile, new ScriptEditor(scriptFile));
+                    this.scriptEditors.put(scriptFile, new ScriptEditor(scriptFile, false));
                 }
                 if (!this.scriptEditors.isEmpty()) {
                     if (ImGui.button(

@@ -44,7 +44,7 @@ public class CommandRegistry {
                 new TestCommand(),
                 new FeaturesCommand(),
                 new ChatClearCommand(),
-                new ToggleModuleCommand(),
+                new ModuleCommand(),
                 new ClientsideGameModeCommand(),
                 new SayCommand(),
                 new NBTCommand(),

@@ -59,7 +59,7 @@ public abstract class Command extends Feature {
     public String toString() {
         return '{' +
                 "name=" + this.getName() +
-                ", category=" + this.getCategory() +
+                ", category=" + this.getCategory().normalName() +
                 ", experimental=" + this.isExperimental() +
                 ", aliases=" + this.getAliasesString() +
                 '}';

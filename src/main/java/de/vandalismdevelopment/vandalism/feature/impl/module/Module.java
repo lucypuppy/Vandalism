@@ -7,13 +7,13 @@ import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.FeatureType;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.render.HeadUpDisplayModule;
 import de.vandalismdevelopment.vandalism.util.ChatUtils;
+import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
 import de.vandalismdevelopment.vandalism.value.IValue;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
 import de.vandalismdevelopment.vandalism.value.values.BooleanValue;
 import de.vandalismdevelopment.vandalism.value.values.KeyInputValue;
 import de.vandalismdevelopment.vandalism.value.values.list.ModuleModeValue;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,13 +22,13 @@ public abstract class Module extends Feature implements IValue {
 
     private final List<Value<?>> values;
     private final BooleanValue enabled, showInModuleList;
-    private final KeyInputValue keyCode;
+    private final KeyInputValue keyBind;
 
     public Module(final String name, final String description, final FeatureCategory category, final boolean isExperimental, final boolean isDefaultEnabled) {
-        this(name, description, category, isExperimental, isDefaultEnabled, GLFW.GLFW_KEY_UNKNOWN);
+        this(name, description, category, isExperimental, isDefaultEnabled, GlfwKeyName.UNKNOWN);
     }
 
-    public Module(final String name, final String description, final FeatureCategory category, final boolean isExperimental, final boolean isDefaultEnabled, final int keyCode) {
+    public Module(final String name, final String description, final FeatureCategory category, final boolean isExperimental, final boolean isDefaultEnabled, final GlfwKeyName keyBind) {
         this.setName(name);
         this.setDescription(description);
         this.setType(FeatureType.MODULE);
@@ -40,31 +40,18 @@ public abstract class Module extends Feature implements IValue {
                 "Whether this module is enabled.",
                 this,
                 isDefaultEnabled
-        ).valueChangedConsumer(value -> {
-            if (player() != null) {
-                ChatUtils.infoChatMessage(this.getName() + " has been " + (value ? "enabled" : "disabled") + ".");
-            }
-            final ModuleRegistry moduleRegistry = Vandalism.getInstance().getModuleRegistry();
-            if (moduleRegistry != null && moduleRegistry.isDone()) {
-                final HeadUpDisplayModule headUpDisplayModule = moduleRegistry.getHeadUpDisplayModule();
-                if (headUpDisplayModule != null) headUpDisplayModule.sortEnabledModules();
-            }
-            if (value) this.onEnable();
-            else this.onDisable();
-            this.recursiveModeEnable(value, this.values);
-        });
+        ).valueChangedConsumer(this::setState);
         this.showInModuleList = new BooleanValue(
                 "Show in Module List",
                 "Whether this module should be shown in the module list.",
                 this,
                 !(this instanceof HeadUpDisplayModule)
         );
-        this.keyCode = new KeyInputValue(
-                "Keybind",
-                "The keybind of this module.",
+        this.keyBind = new KeyInputValue(
+                "Key Bind",
+                "The key bind of this module.",
                 this,
-                keyCode,
-                "unknown"
+                keyBind
         );
         this.setState(isDefaultEnabled);
     }
@@ -90,6 +77,19 @@ public abstract class Module extends Feature implements IValue {
     public void setState(final boolean state) {
         if (this.enabled.getValue() != state) {
             this.enabled.setValue(state);
+            if (player() != null) {
+                ChatUtils.infoChatMessage(this.getName() + " has been " + (state ? "enabled" : "disabled") + ".");
+            }
+            final ModuleRegistry moduleRegistry = Vandalism.getInstance().getModuleRegistry();
+            if (moduleRegistry != null && moduleRegistry.isDone()) {
+                final HeadUpDisplayModule headUpDisplayModule = moduleRegistry.getHeadUpDisplayModule();
+                if (headUpDisplayModule != null) {
+                    headUpDisplayModule.sortEnabledModules();
+                }
+            }
+            if (state) this.onEnable();
+            else this.onDisable();
+            this.recursiveModeEnable(state, this.values);
         }
     }
 
@@ -112,30 +112,26 @@ public abstract class Module extends Feature implements IValue {
         return this.enabled.getValue();
     }
 
-    public void setShowInModuleList(final boolean showInModuleList) {
-        this.showInModuleList.setValue(showInModuleList);
-    }
-
     public boolean isShowInModuleList() {
         return this.showInModuleList.getValue();
     }
 
-    public void setKeyCode(final int keyCode) {
-        this.keyCode.setKeyCode(keyCode);
+    public void setKeyBind(final GlfwKeyName glfwKeyName) {
+        this.keyBind.setValue(glfwKeyName);
     }
 
-    public int getKeyCode() {
-        return this.keyCode.getValue().getLeft();
+    public GlfwKeyName getKeyBind() {
+        return this.keyBind.getValue();
     }
 
     @Override
     public String toString() {
         return '{' +
                 "name=" + this.getName() +
-                ", category=" + this.getCategory() +
-                ", enabled=" + this.enabled +
+                ", category=" + this.getCategory().normalName() +
+                ", enabled=" + this.enabled.getValue() +
                 ", experimental=" + this.isExperimental() +
-                ", keyCode=" + this.keyCode.getValue().getRight() +
+                ", keyBind=" + this.keyBind.getValue().normalName() +
                 '}';
     }
 

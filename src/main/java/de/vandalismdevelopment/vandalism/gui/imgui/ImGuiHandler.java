@@ -26,9 +26,7 @@ public class ImGuiHandler implements KeyboardListener, RenderListener, Minecraft
         this.nbtEditWidget = new NBTEditWidget();
         DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
         DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
-        Vandalism.getInstance().getLogger().info("ImGui loaded.");
     }
-
 
     public ImGuiRenderer getImGuiRenderer() {
         return this.imGuiRenderer;
@@ -44,13 +42,12 @@ public class ImGuiHandler implements KeyboardListener, RenderListener, Minecraft
 
     @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        if (action != GLFW.GLFW_PRESS) return;
-        if (key == Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.menuKey.getValue().getLeft()) {
+        if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN) return;
+        if (key == Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.menuKey.getValue().getKeyCode()) {
             if (currentScreen() instanceof ImGuiScreen) currentScreen().close();
             else setScreen(new ImGuiScreen(currentScreen()));
         }
     }
-
 
     @Override
     public void onRender2DOutGamePost(final DrawContext context, final int mouseX, final int mouseY, final float delta) {

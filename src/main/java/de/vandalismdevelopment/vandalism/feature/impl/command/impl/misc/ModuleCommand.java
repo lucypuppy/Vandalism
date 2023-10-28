@@ -1,0 +1,47 @@
+package de.vandalismdevelopment.vandalism.feature.impl.command.impl.misc;
+
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
+import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
+import de.vandalismdevelopment.vandalism.feature.impl.command.arguments.GlfwKeyNameArgumentType;
+import de.vandalismdevelopment.vandalism.feature.impl.command.arguments.ModuleArgumentType;
+import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
+import de.vandalismdevelopment.vandalism.util.ChatUtils;
+import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
+import net.minecraft.command.CommandSource;
+
+public class ModuleCommand extends Command {
+
+    public ModuleCommand() {
+        super(
+                "Module",
+                "Lets you toggle and bind modules.",
+                FeatureCategory.MISC,
+                false,
+                "module"
+        );
+    }
+
+    @Override
+    public void build(final LiteralArgumentBuilder<CommandSource> builder) {
+        builder.then(literal("toggle").then(argument("module", ModuleArgumentType.create())
+                .executes(context -> {
+                    ModuleArgumentType.get(context).toggle();
+                    return SINGLE_SUCCESS;
+                })
+        ));
+        builder.then(literal("bind").then(argument("module", ModuleArgumentType.create())
+                .then(argument("glfwkeyname", GlfwKeyNameArgumentType.create())
+                        .executes(context -> {
+                            final Module module = ModuleArgumentType.get(context);
+                            final GlfwKeyName glfwKeyName = GlfwKeyNameArgumentType.get(context);
+                            module.setKeyBind(glfwKeyName);
+                            ChatUtils.infoChatMessage(
+                                    "Bound module " + module.getName() + " to key " + glfwKeyName.normalName() + "."
+                            );
+                            return SINGLE_SUCCESS;
+                        })
+                )));
+    }
+
+}

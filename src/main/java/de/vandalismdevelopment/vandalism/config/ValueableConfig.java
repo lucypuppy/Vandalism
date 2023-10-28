@@ -51,7 +51,7 @@ public abstract class ValueableConfig extends Config implements IValue {
             final JsonElement valueElement = valuesArray.get(value.getSaveIdentifier());
 
             if (valueElement == null) {
-                Vandalism.getInstance().getLogger().error("Value " + value.getName() + " not found in config!");
+                Vandalism.getInstance().getLogger().error("Value " + value.getSaveIdentifier() + " not found in config!");
                 continue;
             }
 

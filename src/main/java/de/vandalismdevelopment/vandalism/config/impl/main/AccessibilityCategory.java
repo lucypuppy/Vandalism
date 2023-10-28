@@ -31,7 +31,6 @@ public class AccessibilityCategory extends ValueCategory {
                 }
 
             });
-            Vandalism.getInstance().getLogger().info("Successfully registered native input hook disconnect listener.");
         } catch (final NativeHookException e) {
             Vandalism.getInstance().getLogger().error("Failed to register native input hook disconnect listener.", e);
         }

@@ -45,10 +45,7 @@ public class NBTEditWidget implements ImNbtDrawer {
         if (icon == null) {
             try {
                 final InputStream inputStream = Main.class.getClassLoader().getResourceAsStream("assets/icons.png");
-                if (inputStream == null) {
-                    Vandalism.getInstance().getLogger().error("The input stream of assets/icons.png is null for some reason.");
-                    return;
-                }
+                if (inputStream == null) return; //TODO: Fix that.
                 icon = new NativeImageBackedTexture(NativeImage.read(inputStream));
             } catch (final IOException e) {
                 Vandalism.getInstance().getLogger().error("Failed to load nbt edit widget icon!", e);

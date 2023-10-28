@@ -7,9 +7,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.Text;
-import net.minecraft.world.GameMode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,41 +17,35 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-
-public class GameModeArgumentType implements ArgumentType<GameMode> {
+public class GlfwKeyNameArgumentType implements ArgumentType<GlfwKeyName> {
 
     private final static DynamicCommandExceptionType NOT_EXISTING = new DynamicCommandExceptionType(
-            name -> Text.literal("No game mode with the name or id " + name + " has been found!")
+            name -> Text.literal("No glfw key with the name " + name + " has been found!")
     );
 
     private final List<String> names;
 
-    public GameModeArgumentType() {
+    public GlfwKeyNameArgumentType() {
         this.names = new ArrayList<>();
-        this.names.addAll(Arrays.stream(GameMode.values()).map(GameMode::getName).toList());
-        this.names.addAll(Arrays.stream(GameMode.values()).map(gameMode -> Integer.toString(gameMode.getId())).toList());
+        this.names.addAll(
+                Arrays.stream(
+                        GlfwKeyName.values()).map(
+                        keyName -> keyName.normalName().replace(" ", "-")
+                ).toList()
+        );
     }
 
-    public static GameModeArgumentType create() {
-        return new GameModeArgumentType();
+    public static GlfwKeyNameArgumentType create() {
+        return new GlfwKeyNameArgumentType();
     }
 
-    public static GameMode get(final CommandContext<?> context) {
-        return context.getArgument("gamemode", GameMode.class);
+    public static GlfwKeyName get(final CommandContext<?> context) {
+        return context.getArgument("glfwkeyname", GlfwKeyName.class);
     }
 
     @Override
-    public GameMode parse(final StringReader reader) throws CommandSyntaxException {
-        final String argument = reader.readString();
-        GameMode gameMode = GameMode.byName(argument, null);
-        if (gameMode == null) {
-            try {
-                gameMode = GameMode.byId(Integer.parseInt(argument));
-            } catch (final NumberFormatException ignored) {
-            }
-        }
-        if (gameMode == null) throw NOT_EXISTING.create(argument);
-        return gameMode;
+    public GlfwKeyName parse(final StringReader reader) throws CommandSyntaxException {
+        return GlfwKeyName.getGlfwKeyNameByName(reader.readString().replace("-", " "));
     }
 
     @Override

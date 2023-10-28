@@ -4,8 +4,11 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
+import de.vandalismdevelopment.vandalism.feature.impl.command.arguments.GlfwKeyNameArgumentType;
 import de.vandalismdevelopment.vandalism.feature.impl.command.arguments.ScriptArgumentType;
+import de.vandalismdevelopment.vandalism.feature.impl.script.Script;
 import de.vandalismdevelopment.vandalism.util.ChatUtils;
+import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
 import net.minecraft.command.CommandSource;
 
 public class ScriptCommand extends Command {
@@ -13,7 +16,7 @@ public class ScriptCommand extends Command {
     public ScriptCommand() {
         super(
                 "Script",
-                "Lets you execute and reload scripts.",
+                "Lets you execute, reload and bind scripts.",
                 FeatureCategory.MISC,
                 false,
                 "script"
@@ -29,10 +32,23 @@ public class ScriptCommand extends Command {
                 })
         ));
         builder.then(literal("reload").executes(context -> {
+            ChatUtils.infoChatMessage("Loading scripts...");
             Vandalism.getInstance().getScriptRegistry().load();
             ChatUtils.infoChatMessage("Loaded " + Vandalism.getInstance().getScriptRegistry().getScripts().size() + " script/s.");
             return SINGLE_SUCCESS;
         }));
+        builder.then(literal("bind").then(argument("script", ScriptArgumentType.create())
+                .then(argument("glfwkeyname", GlfwKeyNameArgumentType.create())
+                        .executes(context -> {
+                            final Script script = ScriptArgumentType.get(context);
+                            final GlfwKeyName glfwKeyName = GlfwKeyNameArgumentType.get(context);
+                            script.setKeyBind(glfwKeyName);
+                            ChatUtils.infoChatMessage(
+                                    "Bound script " + script.getName() + " to key " + glfwKeyName.normalName() + "."
+                            );
+                            return SINGLE_SUCCESS;
+                        })
+                )));
     }
 
 }

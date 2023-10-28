@@ -42,6 +42,11 @@ public enum ScriptCommand {
                 throw new RuntimeException("The command needs at least one argument");
             }
         }
+    }, exampleBuilder -> {
+        exampleBuilder.append("This command can run the mods own command system like this \"run <mod_command>\".");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("For example \"run say Hello World!\" which would say \"Hello World!\" in the chat.");
+        return exampleBuilder;
     }),
     ADD_CHAT_MESSAGE((scriptName, lineNumber, code, execute) -> {
         final String[] args = code.split("( )+");
@@ -56,6 +61,11 @@ public enum ScriptCommand {
                     .append(Text.literal(ScriptParser.applyCodeReplacements(code)))
             );
         }
+    }, exampleBuilder -> {
+        exampleBuilder.append("This command can add a chat message to the chat like this \"add_chat_message <message>\".");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("For example \"add_chat_message Hello World!\" which would add \"Hello World!\" to the chat.");
+        return exampleBuilder;
     }),
     JUMP((scriptName, lineNumber, code, execute) -> {
         if (execute) {
@@ -80,6 +90,13 @@ public enum ScriptCommand {
                 else scriptCommand.check(scriptName, lineNumber, parsedCode);
             } else throw new RuntimeException("Unknown script command after jump command '" + command + "'");
         }
+    }, exampleBuilder -> {
+        exampleBuilder.append("This command can make the player jump like this \"jump\".");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("You can also run multiple commands after the jump command like this \"jump <command>\".");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("For example \"jump set_speed 0.5\" which would make the player jump and set the speed of the player to 0.5.");
+        return exampleBuilder;
     }),
     SET_SPEED((scriptName, lineNumber, code, execute) -> {
         final String[] args = code.split("( )+");
@@ -113,6 +130,15 @@ public enum ScriptCommand {
                 else scriptCommand.check(scriptName, lineNumber, parsedCode);
             } else throw new RuntimeException("Unknown script command after set speed command '" + command + "'");
         }
+    }, exampleBuilder -> {
+        exampleBuilder.append("This command can set the speed of the player like this \"set_speed <speed>\".");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("For example \"set_speed 0.5\" which would set the speed to 0.5.");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("You can also run multiple commands after the set speed command like this \"set_speed <speed> <command>\".");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("For example \"set_speed 0.5 set_yaw 100\" which would set the speed to 0.5 and set the yaw of player to 100.");
+        return exampleBuilder;
     }),
     SET_YAW((scriptName, lineNumber, code, execute) -> {
         final String[] args = code.split("( )+");
@@ -146,6 +172,16 @@ public enum ScriptCommand {
                 else scriptCommand.check(scriptName, lineNumber, parsedCode);
             } else throw new RuntimeException("Unknown script command after set yaw command '" + command + "'");
         }
+    }, exampleBuilder -> {
+        exampleBuilder.append("This command can set the yaw of the player like this \"set_yaw <yaw>\".");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("For example \"set_yaw 100\" which would set the yaw of the player to 100.");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("You can also run multiple commands after the set yaw command like this \"set_yaw <yaw> <command>\".");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("For example \"set_yaw 100 set_pitch 50\" which would set the yaw" +
+                " of the player to 100 and set the pitch of the player to 50.");
+        return exampleBuilder;
     }),
     SET_PITCH((scriptName, lineNumber, code, execute) -> {
         final String[] args = code.split("( )+");
@@ -179,6 +215,16 @@ public enum ScriptCommand {
                 else scriptCommand.check(scriptName, lineNumber, parsedCode);
             } else throw new RuntimeException("Unknown script command after set pitch command '" + command + "'");
         }
+    }, exampleBuilder -> {
+        exampleBuilder.append("This command can set the pitch of the player like this \"set_pitch <pitch>\".");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("For example \"set_pitch 50\" which would set the pitch of the player to 50.");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("You can also run multiple commands after the set pitch command like this \"set_pitch <pitch> <command>\".");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("For example \"set_pitch 50 set_yaw 100\" which would set the pitch of the" +
+                " player to 50 and set the yaw of the player to 100.");
+        return exampleBuilder;
     }),
     SET_VELOCITY_X((scriptName, lineNumber, code, execute) -> {
         final String[] args = code.split("( )+");
@@ -213,6 +259,16 @@ public enum ScriptCommand {
                 else scriptCommand.check(scriptName, lineNumber, parsedCode);
             } else throw new RuntimeException("Unknown script command after set velocity x command '" + command + "'");
         }
+    }, exampleBuilder -> {
+        exampleBuilder.append("This command can set the x velocity of the player like this \"set_velocity_x <x_velocity>\".");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("For example \"set_velocity_x 0.5\" which would set the x velocity of the player to 0.5.");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("You can also run multiple commands after the set velocity x command like this \"set_velocity_x <x_velocity> <command>\".");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("For example \"set_velocity_x 0.5 set_velocity_y 0.5\" which would set" +
+                " the x velocity of the player to 0.5 and set the y velocity of the player to 0.5.");
+        return exampleBuilder;
     }),
     SET_VELOCITY_Y((scriptName, lineNumber, code, execute) -> {
         final String[] args = code.split("( )+");
@@ -247,6 +303,16 @@ public enum ScriptCommand {
                 else scriptCommand.check(scriptName, lineNumber, parsedCode);
             } else throw new RuntimeException("Unknown script command after set velocity y command '" + command + "'");
         }
+    }, exampleBuilder -> {
+        exampleBuilder.append("This command can set the y velocity of the player like this \"set_velocity_y <y_velocity>\".");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("For example \"set_velocity_y 0.5\" which would set the y velocity of the player to 0.5.");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("You can also run multiple commands after the set velocity y command like this \"set_velocity_y <y_velocity> <command>\".");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("For example \"set_velocity_y 0.5 set_velocity_z 0.5\" which would set the y velocity" +
+                " of the player to 0.5 and set the z velocity of the player to 0.5.");
+        return exampleBuilder;
     }),
     SET_VELOCITY_Z((scriptName, lineNumber, code, execute) -> {
         final String[] args = code.split("( )+");
@@ -281,6 +347,16 @@ public enum ScriptCommand {
                 else scriptCommand.check(scriptName, lineNumber, parsedCode);
             } else throw new RuntimeException("Unknown script command after set velocity z command '" + command + "'");
         }
+    }, exampleBuilder -> {
+        exampleBuilder.append("This command can set the z velocity of the player like this \"set_velocity_z <z_velocity>\".");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("For example \"set_velocity_z 0.5\" which would set the z velocity of the player to 0.5.");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("You can also run multiple commands after the set velocity z command like this \"set_velocity_z <z_velocity> <command>\".");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("For example \"set_velocity_z 0.5 set_velocity_x 0.5\" which would set the z velocity" +
+                " of the player to 0.5 and set the x velocity of the player to 0.5.");
+        return exampleBuilder;
     }),
     WAIT((scriptName, lineNumber, code, execute) -> {
         final String[] args = code.split("( )+");
@@ -312,6 +388,15 @@ public enum ScriptCommand {
                 else scriptCommand.check(scriptName, lineNumber, parsedCode);
             } else throw new RuntimeException("Unknown script command after wait command '" + command + "'");
         }
+    }, exampleBuilder -> {
+        exampleBuilder.append("This command lets the script wait for a specific amount of time like this \"wait <delay>\".");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("For example \"wait 1000\" which would let the script wait for 1000 milliseconds.");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("You can also run multiple commands after the wait command like this \"wait <delay> <command>\".");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("For example \"wait 1000 jump\" which would let the script wait for 1000 milliseconds and make the player jump.");
+        return exampleBuilder;
     }),
     TIMES((scriptName, lineNumber, code, execute) -> {
         final String[] args = code.split("( )+");
@@ -345,12 +430,21 @@ public enum ScriptCommand {
                 else scriptCommand.check(scriptName, lineNumber, parsedCode);
             } else throw new RuntimeException("Unknown script command after times command '" + command + "'");
         }
+    }, exampleBuilder -> {
+        exampleBuilder.append("This command lets the script run a command a specific amount of time like this \"times <amount> <command>\".");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("For example \"times 5 jump\" which would make the player jump 5 times.");
+        exampleBuilder.append('\n');
+        exampleBuilder.append("You can also run multiple commands after the times command like this \"times <amount> <command> <command>\".");
+        return exampleBuilder;
     });
 
     private final ScriptCommandExecution scriptCommandExecution;
+    private final ScriptCommandExample scriptCommandExample;
 
-    ScriptCommand(final ScriptCommandExecution scriptCommandExecution) {
+    ScriptCommand(final ScriptCommandExecution scriptCommandExecution, final ScriptCommandExample scriptCommandExample) {
         this.scriptCommandExecution = scriptCommandExecution;
+        this.scriptCommandExample = scriptCommandExample;
     }
 
     public void check(final String scriptName, final int lineNumber, final String code) throws Exception {
@@ -359,6 +453,10 @@ public enum ScriptCommand {
 
     public void execute(final String scriptName, final int lineNumber, final String code) throws Exception {
         this.scriptCommandExecution.execute(scriptName, lineNumber, code, true);
+    }
+
+    public String getExample() {
+        return this.scriptCommandExample.getExample(new StringBuilder()).toString();
     }
 
 }
