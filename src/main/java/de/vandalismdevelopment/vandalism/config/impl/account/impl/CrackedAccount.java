@@ -10,6 +10,8 @@ import java.util.UUID;
 
 public class CrackedAccount extends Account {
 
+    public final static String ACCESSTOKEN = "FabricMC";
+
     public CrackedAccount(final String username, final UUID uuid) {
         super("cracked", username, uuid);
     }
@@ -19,7 +21,7 @@ public class CrackedAccount extends Account {
         SessionUtil.setSession(new Session(
                 this.getUsername(),
                 this.getUuid(),
-                "FabricMC",
+                ACCESSTOKEN,
                 Optional.empty(),
                 Optional.empty(),
                 Session.AccountType.LEGACY

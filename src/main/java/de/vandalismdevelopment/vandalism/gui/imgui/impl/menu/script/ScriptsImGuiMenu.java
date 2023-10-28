@@ -151,7 +151,7 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
                                             case MODIFICATION_DATE -> {
                                                 ImGui.textWrapped(MODIFICATION_DATE_FORMAT.format(new Date(script.getFile().lastModified())));
                                             }
-                                            case QUICK_ACTIONS -> {
+                                            case ACTIONS -> {
                                                 ImGui.spacing();
                                                 ImGui.button("...##scriptsmoreactions" + script.getName());
                                                 if (ImGui.beginPopupContextItem("##scriptsmoreactionspopup" + script.getName(),
