@@ -40,7 +40,7 @@ public abstract class Module extends Feature implements IValue {
                 "Whether this module is enabled.",
                 this,
                 isDefaultEnabled
-        ).valueChangedConsumer(this::setState);
+        ).valueChangedConsumer(this::applyState);
         this.showInModuleList = new BooleanValue(
                 "Show in Module List",
                 "Whether this module should be shown in the module list.",
@@ -77,20 +77,24 @@ public abstract class Module extends Feature implements IValue {
     public void setState(final boolean state) {
         if (this.enabled.getValue() != state) {
             this.enabled.setValue(state);
-            if (player() != null) {
-                ChatUtils.infoChatMessage(this.getName() + " has been " + (state ? "enabled" : "disabled") + ".");
-            }
-            final ModuleRegistry moduleRegistry = Vandalism.getInstance().getModuleRegistry();
-            if (moduleRegistry != null && moduleRegistry.isDone()) {
-                final HeadUpDisplayModule headUpDisplayModule = moduleRegistry.getHeadUpDisplayModule();
-                if (headUpDisplayModule != null) {
-                    headUpDisplayModule.sortEnabledModules();
-                }
-            }
-            if (state) this.onEnable();
-            else this.onDisable();
-            this.recursiveModeEnable(state, this.values);
+            applyState(state);
         }
+    }
+
+    private void applyState(final boolean state) {
+        if (player() != null) {
+            ChatUtils.infoChatMessage(this.getName() + " has been " + (state ? "enabled" : "disabled") + ".");
+        }
+        final ModuleRegistry moduleRegistry = Vandalism.getInstance().getModuleRegistry();
+        if (moduleRegistry != null && moduleRegistry.isDone()) {
+            final HeadUpDisplayModule headUpDisplayModule = moduleRegistry.getHeadUpDisplayModule();
+            if (headUpDisplayModule != null) {
+                headUpDisplayModule.sortEnabledModules();
+            }
+        }
+        if (state) this.onEnable();
+        else this.onDisable();
+        this.recursiveModeEnable(state, this.values);
     }
 
     private void recursiveModeEnable(final boolean state, final List<Value<?>> values) {
