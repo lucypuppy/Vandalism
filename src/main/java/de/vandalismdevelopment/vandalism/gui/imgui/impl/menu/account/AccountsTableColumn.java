@@ -1,14 +1,14 @@
-package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.script;
+package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.account;
 
 import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
 
-public enum ScriptsTableColumn implements EnumNameNormalizer {
+public enum AccountsTableColumn implements EnumNameNormalizer {
 
-    NAME, VERSION, AUTHOR, DESCRIPTION, CATEGORY, EXPERIMENTAL, MODIFICATION_DATE, ACTIONS;
+    USERNAME, UUID, TYPE, ACTIONS;
 
     private final String normalName;
 
-    ScriptsTableColumn() {
+    AccountsTableColumn() {
         this.normalName = this.normalizeName(this.name());
     }
 
