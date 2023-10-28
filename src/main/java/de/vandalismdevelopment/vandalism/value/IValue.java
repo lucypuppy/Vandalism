@@ -23,16 +23,21 @@ public interface IValue {
 
     default void renderValues() {
         for (final Value<?> value : this.getValues()) {
-            if (value.isVisible() != null && !value.isVisible().getAsBoolean())
-                continue;
+            renderValue(value);
+        }
+    }
 
-            value.render();
+    default void renderValue(final Value<?> value) {
+        if (value.isVisible() != null && !value.isVisible().getAsBoolean()) {
+            return;
+        }
 
-            if (ImGui.isItemHovered()) {
-                ImGui.beginTooltip();
-                ImGui.text(value.getDescription());
-                ImGui.endTooltip();
-            }
+        value.render();
+
+        if (ImGui.isItemHovered()) {
+            ImGui.beginTooltip();
+            ImGui.text(value.getDescription());
+            ImGui.endTooltip();
         }
     }
 
