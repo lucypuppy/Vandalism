@@ -21,7 +21,7 @@ public class ModulesImGuiMenu extends ImGuiMenu {
     @Override
     public void render() {
         if (ImGui.begin("Modules", ImGuiWindowFlags.NoCollapse)) {
-            if (ImGui.beginTabBar("modulesTabBar")) {
+            if (ImGui.beginTabBar("modulesTabBar##modulestabbar")) {
                 final FeatureList<Module> modules = Vandalism.getInstance().getModuleRegistry().getModules();
                 if (!modules.isEmpty()) {
                     for (final FeatureCategory featureCategory : FeatureCategory.values()) {
