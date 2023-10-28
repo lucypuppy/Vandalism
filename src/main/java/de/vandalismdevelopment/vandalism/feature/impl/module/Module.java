@@ -40,13 +40,21 @@ public abstract class Module extends Feature implements IValue {
                 "Whether this module is enabled.",
                 this,
                 isDefaultEnabled
-        ).valueChangedConsumer(this::applyState);
+        ).valueChangedConsumer(state -> {
+            if (player() != null) {
+                ChatUtils.infoChatMessage(this.getName() + " has been " + (state ? "enabled" : "disabled") + ".");
+            }
+            this.syncHUD();
+            if (state) this.onEnable();
+            else this.onDisable();
+            this.recursiveSetState(state, this.values);
+        });
         this.showInModuleList = new BooleanValue(
                 "Show in Module List",
                 "Whether this module should be shown in the module list.",
                 this,
                 !(this instanceof HeadUpDisplayModule)
-        );
+        ).valueChangedConsumer(state -> this.syncHUD());
         this.keyBind = new KeyInputValue(
                 "Key Bind",
                 "The key bind of this module.",
@@ -77,14 +85,10 @@ public abstract class Module extends Feature implements IValue {
     public void setState(final boolean state) {
         if (this.enabled.getValue() != state) {
             this.enabled.setValue(state);
-            applyState(state);
         }
     }
 
-    private void applyState(final boolean state) {
-        if (player() != null) {
-            ChatUtils.infoChatMessage(this.getName() + " has been " + (state ? "enabled" : "disabled") + ".");
-        }
+    private void syncHUD() {
         final ModuleRegistry moduleRegistry = Vandalism.getInstance().getModuleRegistry();
         if (moduleRegistry != null && moduleRegistry.isDone()) {
             final HeadUpDisplayModule headUpDisplayModule = moduleRegistry.getHeadUpDisplayModule();
@@ -92,16 +96,13 @@ public abstract class Module extends Feature implements IValue {
                 headUpDisplayModule.sortEnabledModules();
             }
         }
-        if (state) this.onEnable();
-        else this.onDisable();
-        this.recursiveModeEnable(state, this.values);
     }
 
-    private void recursiveModeEnable(final boolean state, final List<Value<?>> values) {
+    private void recursiveSetState(final boolean state, final List<Value<?>> values) {
         if (values == null) return;
         for (final Value<?> value : values) {
             if (value instanceof final ValueCategory valueCategory) {
-                recursiveModeEnable(state, valueCategory.getValues());
+                recursiveSetState(state, valueCategory.getValues());
             } else if (value instanceof final ModuleModeValue<?> moduleModeValue) {
                 if (state) {
                     moduleModeValue.getSelectedMode().onEnable();
