@@ -14,7 +14,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -62,11 +61,6 @@ public class SoundArgumentType implements ArgumentType<SoundEvent> {
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
         return CommandSource.suggestMatching(this.ids, builder);
-    }
-
-    @Override
-    public Collection<String> getExamples() {
-        return this.ids.subList(0, 2);
     }
 
 }

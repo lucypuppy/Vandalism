@@ -13,9 +13,7 @@ import de.vandalismdevelopment.vandalism.feature.impl.script.Script;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.Text;
 
-import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 
 public class ScriptArgumentType implements ArgumentType<Script> {
@@ -23,12 +21,6 @@ public class ScriptArgumentType implements ArgumentType<Script> {
     private final static DynamicCommandExceptionType NOT_EXISTING = new DynamicCommandExceptionType(name -> {
         return Text.literal("No script with the name " + name + " has been found!");
     });
-
-    private final static Collection<String> EXAMPLES = Vandalism.getInstance().getScriptRegistry().getScripts()
-            .stream()
-            .limit(3)
-            .map(Script::getName)
-            .collect(Collectors.toList());
 
     public static ScriptArgumentType create() {
         return new ScriptArgumentType();
@@ -49,11 +41,6 @@ public class ScriptArgumentType implements ArgumentType<Script> {
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
         return CommandSource.suggestMatching(Vandalism.getInstance().getScriptRegistry().getScripts().stream().map(Feature::getName), builder);
-    }
-
-    @Override
-    public Collection<String> getExamples() {
-        return EXAMPLES;
     }
 
 }

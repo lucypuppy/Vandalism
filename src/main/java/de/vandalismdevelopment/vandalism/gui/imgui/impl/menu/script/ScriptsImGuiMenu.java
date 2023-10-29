@@ -125,11 +125,6 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
                             }
                             ImGui.tableHeadersRow();
                             for (final Script script : scripts) {
-                                if (!script.getFile().exists()) {
-                                    scripts.remove(script);
-                                    Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getScriptConfig());
-                                    continue;
-                                }
                                 ImGui.tableNextRow();
                                 final File scriptFile = script.getFile();
                                 if (scriptFile != null && scriptFile.exists()) {
@@ -153,7 +148,13 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
                                             }
                                             case ACTIONS -> {
                                                 ImGui.spacing();
-                                                ImGui.button("...##scriptsmoreactions" + script.getName());
+                                                for (final Value<?> scriptValue : script.getValues()) {
+                                                    scriptValue.render();
+                                                }
+                                                if (ImGui.getWindowWidth() >= 1122) {
+                                                    ImGui.sameLine();
+                                                }
+                                                ImGui.button("...##scriptsmoreactions" + script.getName(), 0, 25);
                                                 if (ImGui.beginPopupContextItem("##scriptsmoreactionspopup" + script.getName(),
                                                         ImGuiPopupFlags.MouseButtonLeft
                                                 )) {
@@ -217,15 +218,10 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
                                                         if (!script.getFile().delete()) {
                                                             Vandalism.getInstance().getLogger().error("Failed to delete script: " + script.getName());
                                                         } else {
-                                                            scripts.remove(script);
                                                             Vandalism.getInstance().getLogger().info("Deleted script: " + script.getName());
                                                         }
                                                     }
                                                     ImGui.endPopup();
-                                                }
-                                                ImGui.sameLine();
-                                                for (final Value<?> scriptValue : script.getValues()) {
-                                                    scriptValue.render();
                                                 }
                                                 ImGui.spacing();
                                             }

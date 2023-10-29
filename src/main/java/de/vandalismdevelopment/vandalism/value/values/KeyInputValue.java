@@ -11,10 +11,11 @@ import org.lwjgl.glfw.GLFW;
 
 public class KeyInputValue extends Value<GlfwKeyName> implements KeyboardListener {
 
-    private boolean listen = false;
+    private boolean listen;
 
     public KeyInputValue(final String name, final String description, final IValue parent, final GlfwKeyName defaultValue) {
         super(name, description, parent, "key input", defaultValue);
+        this.listen = false;
     }
 
     @Override
@@ -33,7 +34,7 @@ public class KeyInputValue extends Value<GlfwKeyName> implements KeyboardListene
     @Override
     public void render() {
         if (!this.listen) {
-            if (ImGui.button(this.getValue().normalName() + "##" + this.getName() + this.getSaveIdentifier())) {
+            if (ImGui.button(this.getValue().normalName() + "##" + this.getName() + this.getSaveIdentifier(), 0, 25)) {
                 this.listen = true;
                 DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
             }
