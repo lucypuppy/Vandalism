@@ -4,7 +4,7 @@ import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
 
 public enum FeatureCategory implements EnumNameNormalizer {
 
-    DEVELOPMENT, COMBAT, EXPLOIT, MOVEMENT, MISC, RENDER;
+    DEVELOPMENT, COMBAT, EXPLOIT, MOVEMENT, RENDER, MISC;
 
     private final String normalName;
 
