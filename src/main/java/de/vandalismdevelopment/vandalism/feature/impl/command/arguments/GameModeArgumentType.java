@@ -13,7 +13,6 @@ import net.minecraft.world.GameMode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -57,11 +56,6 @@ public class GameModeArgumentType implements ArgumentType<GameMode> {
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
         return CommandSource.suggestMatching(this.names, builder);
-    }
-
-    @Override
-    public Collection<String> getExamples() {
-        return this.names.subList(0, 2);
     }
 
 }

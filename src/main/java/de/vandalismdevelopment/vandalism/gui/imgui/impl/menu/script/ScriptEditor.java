@@ -142,7 +142,7 @@ public class ScriptEditor {
         //this.textEditor.setImGuiChildIgnored(true); TODO: Add injection or pushStyle to hide the horizontal scrollbar instead of using this.
         this.originalScriptName = StringUtils.replaceLast(scriptFile.getName(), ScriptParser.SCRIPT_FILE_EXTENSION, "");
         this.scriptName = new ImString(this.originalScriptName, Math.max(this.originalScriptName.length(), 50));
-        this.infoTextField = new ImString(100);
+        this.infoTextField = new ImString();
         this.rename = rename;
         this.closed = false;
     }
@@ -211,10 +211,9 @@ public class ScriptEditor {
             final String[] lines = this.textEditor.getTextLines();
             for (final String line : lines) printerWriter.println(line);
             printerWriter.close();
-            Vandalism.getInstance().getScriptRegistry().loadScriptFromFile(this.scriptFile);
+            Vandalism.getInstance().getScriptRegistry().loadScriptFromFile(this.scriptFile, true);
             this.lastScriptFileModification = this.scriptFile.lastModified();
             this.textEditor.setTextLines(lines);
-            Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getScriptConfig());
         } catch (final Throwable throwable) {
             Vandalism.getInstance().getLogger().error("Error while saving script file: " + this.scriptFile.getName(), throwable);
         }
@@ -356,6 +355,26 @@ public class ScriptEditor {
                         buttonHeight
                 )) {
                     this.save();
+                }
+                if (this.textEditor.canUndo()) {
+                    ImGui.sameLine();
+                    if (ImGui.button(
+                            "Undo##scriptsundoin" + this.originalScriptName + "editor",
+                            buttonWidth,
+                            buttonHeight
+                    )) {
+                        this.textEditor.undo(1);
+                    }
+                }
+                if (this.textEditor.canRedo()) {
+                    ImGui.sameLine();
+                    if (ImGui.button(
+                            "Redo##scriptsredoin" + this.originalScriptName + "editor",
+                            buttonWidth,
+                            buttonHeight
+                    )) {
+                        this.textEditor.redo(1);
+                    }
                 }
             }
             ImGui.sameLine();

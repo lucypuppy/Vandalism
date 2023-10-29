@@ -8,14 +8,11 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.feature.Feature;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.Text;
 
-import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 
 public class ModuleArgumentType implements ArgumentType<Module> {
@@ -23,12 +20,6 @@ public class ModuleArgumentType implements ArgumentType<Module> {
     private final static DynamicCommandExceptionType NOT_EXISTING = new DynamicCommandExceptionType(
             name -> Text.literal("No module with the name " + name + " has been found!")
     );
-
-    private final static Collection<String> EXAMPLES = Vandalism.getInstance().getModuleRegistry().getModules()
-            .stream()
-            .limit(3)
-            .map(Feature::getName)
-            .collect(Collectors.toList());
 
     public static ModuleArgumentType create() {
         return new ModuleArgumentType();
@@ -50,15 +41,12 @@ public class ModuleArgumentType implements ArgumentType<Module> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
-        return CommandSource.suggestMatching(Vandalism.getInstance().getModuleRegistry().getModules().stream().map(
-                        feature -> feature.getName().replace(" ", "-")),
+        return CommandSource.suggestMatching(
+                Vandalism.getInstance().getModuleRegistry().getModules().stream().map(
+                        feature -> feature.getName().replace(" ", "-")
+                ),
                 builder
         );
-    }
-
-    @Override
-    public Collection<String> getExamples() {
-        return EXAMPLES;
     }
 
 }

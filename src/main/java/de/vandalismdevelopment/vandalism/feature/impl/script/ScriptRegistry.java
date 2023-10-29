@@ -3,6 +3,7 @@ package de.vandalismdevelopment.vandalism.feature.impl.script;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.event.KeyboardListener;
+import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureList;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.ScriptParser;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.command.ScriptCommand;
@@ -15,7 +16,7 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ScriptRegistry implements KeyboardListener {
+public class ScriptRegistry implements KeyboardListener, TickListener {
 
     private final File directory;
 
@@ -29,6 +30,7 @@ public class ScriptRegistry implements KeyboardListener {
         this.load();
         this.runningScripts = new ConcurrentHashMap<>();
         DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
+        DietrichEvents2.global().subscribe(TickEvent.ID, this);
     }
 
     public void load() {
@@ -46,7 +48,7 @@ public class ScriptRegistry implements KeyboardListener {
                 final File[] files = this.directory.listFiles();
                 if (files != null) {
                     for (final File file : files) {
-                        this.loadScriptFromFile(file);
+                        this.loadScriptFromFile(file, false);
                     }
                 }
             }
@@ -56,7 +58,7 @@ public class ScriptRegistry implements KeyboardListener {
         else Vandalism.getInstance().getLogger().info("Loaded " + scriptListSize + " script/s.");
     }
 
-    public void loadScriptFromFile(final File file) {
+    public void loadScriptFromFile(final File file, final boolean save) {
         try {
             if (!file.exists() || !file.isFile() || file.length() < 1 || !file.getName().endsWith(ScriptParser.SCRIPT_FILE_EXTENSION) || file.getName().contains(" ")) {
                 return;
@@ -68,6 +70,9 @@ public class ScriptRegistry implements KeyboardListener {
                 this.scripts.remove(existingScript);
             }
             this.scripts.add(script);
+            if (save) {
+                Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getScriptConfig());
+            }
             Vandalism.getInstance().getLogger().info("Script '" + script + "' has been loaded.");
         } catch (final Exception e) {
             Vandalism.getInstance().getLogger().error("Failed to load script from file '" + file.getName() + "'", e);
@@ -167,8 +172,9 @@ public class ScriptRegistry implements KeyboardListener {
                         else Vandalism.getInstance().getLogger().info(executedMessage);
                     }
                 } catch (final Exception e) {
-                    if (inGame)
+                    if (inGame) {
                         ChatUtils.errorChatMessage("Failed to execute script '" + scriptName + "' due to: " + e);
+                    }
                     else Vandalism.getInstance().getLogger().error("Failed to execute script", e);
                 }
             }, "script-execution-" + (getRunningScriptsCount() + 1) + "-" + scriptName);
@@ -177,6 +183,17 @@ public class ScriptRegistry implements KeyboardListener {
         } catch (final Exception e) {
             if (inGame) ChatUtils.errorChatMessage("Invalid script file: " + e);
             else Vandalism.getInstance().getLogger().error("Invalid script file", e);
+        }
+    }
+
+    @Override
+    public void onTick() {
+        for (final Script script : this.scripts) {
+            if (!script.getFile().exists()) {
+                this.scripts.remove(script);
+                Vandalism.getInstance().getLogger().info("Script '" + script + "' has been unloaded because the file does not exist anymore.");
+                Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getScriptConfig());
+            }
         }
     }
 

@@ -51,7 +51,7 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
         this.crackedUsername = new ImString(16);
         this.crackedUUID = new ImString();
         this.status = new ImString(200);
-        this.currentAccountData = new ImString(100);
+        this.currentAccountData = new ImString();
         this.resetStatus();
         this.executor = Executors.newSingleThreadExecutor();
     }

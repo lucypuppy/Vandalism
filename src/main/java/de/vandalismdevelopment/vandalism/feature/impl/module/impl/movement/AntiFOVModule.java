@@ -62,6 +62,13 @@ public class AntiFOVModule extends Module implements TickListener {
             true
     );
 
+    private final Value<Boolean> useSneakFromTarget = new BooleanValue(
+            "Use Sneak From Target",
+            "Makes you sneak if the target is sneaking.",
+            this,
+            true
+    );
+
     private final Value<Boolean> alwaysFOV = new BooleanValue(
             "Always FOV",
             "This will always teleport you into the fov of the target.",
@@ -104,9 +111,14 @@ public class AntiFOVModule extends Module implements TickListener {
                 ) * Math.PI / 180.0F;
                 if (this.useYawFromTarget.getValue()) {
                     player().setYaw(target.getHeadYaw());
+                    player().setBodyYaw(target.getBodyYaw());
+                    player().setHeadYaw(target.getHeadYaw());
                 }
                 if (this.usePitchFromTarget.getValue()) {
                     player().setPitch(target.getPitch());
+                }
+                if (this.useSneakFromTarget.getValue()) {
+                    player().setSneaking(target.isSneaking());
                 }
                 final double
                         hOffset = this.targetHPosOffset.getValue(),
@@ -120,11 +132,7 @@ public class AntiFOVModule extends Module implements TickListener {
                     x -= xOffset;
                     z += zOffset;
                 }
-                player().setPos(
-                        x,
-                        entity.getY() + this.targetYPosOffset.getValue(),
-                        z
-                );
+                player().setPos(x, entity.getY() + this.targetYPosOffset.getValue(), z);
                 break;
             }
         }

@@ -7,14 +7,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.StringNbtReader;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 import static net.minecraft.nbt.StringNbtReader.EXPECTED_VALUE;
 
 public class NbtCompoundArgumentType implements ArgumentType<NbtCompound> {
-
-    private final static Collection<String> EXAMPLES = Arrays.asList("{foo:bar}", "{foo:[aa, bb],bar:15}");
 
     public static NbtCompoundArgumentType create() {
         return new NbtCompoundArgumentType();
@@ -46,11 +41,6 @@ public class NbtCompoundArgumentType implements ArgumentType<NbtCompound> {
                 .replace("$", "\u00a7")
                 .replace("\u00a7\u00a7", "$")
         );
-    }
-
-    @Override
-    public Collection<String> getExamples() {
-        return EXAMPLES;
     }
 
 }
