@@ -61,9 +61,32 @@ public class Vandalism {
         );
     }
 
+    private final static String[] ASCII_ART = {
+            " ██▒   █▓ ▄▄▄       ███▄    █ ▓█████▄  ▄▄▄       ██▓     ██▓  ██████  ███▄ ▄███▓",
+            "▓██░   █▒▒████▄     ██ ▀█   █ ▒██▀ ██▌▒████▄    ▓██▒    ▓██▒▒██    ▒ ▓██▒▀█▀ ██▒",
+            " ▓██  █▒░▒██  ▀█▄  ▓██  ▀█ ██▒░██   █▌▒██  ▀█▄  ▒██░    ▒██▒░ ▓██▄   ▓██    ▓██░",
+            "  ▒██ █░░░██▄▄▄▄██ ▓██▒  ▐▌██▒░▓█▄   ▌░██▄▄▄▄██ ▒██░    ░██░  ▒   ██▒▒██    ▒██ ",
+            "   ▒▀█░   ▓█   ▓██▒▒██░   ▓██░░▒████▓  ▓█   ▓██▒░██████▒░██░▒██████▒▒▒██▒   ░██▒",
+            "   ░ ▐░   ▒▒   ▓▒█░░ ▒░   ▒ ▒  ▒▒▓  ▒  ▒▒   ▓▒█░░ ▒░▓  ░░▓  ▒ ▒▓▒ ▒ ░░ ▒░   ░  ░",
+            "   ░ ░░    ▒   ▒▒ ░░ ░░   ░ ▒░ ░ ▒  ▒   ▒   ▒▒ ░░ ░ ▒  ░ ▒ ░░ ░▒  ░ ░░  ░      ░",
+            "     ░░    ░   ▒      ░   ░ ░  ░ ░  ░   ░   ▒     ░ ░    ▒ ░░  ░  ░  ░      ░   ",
+            "      ░        ░  ░         ░    ░          ░  ░    ░  ░ ░        ░         ░   ",
+            "     ░                         ░                                                "
+    };
+
+    private void printAsciiArtTrimLine() {
+        this.logger.info("=".repeat(ASCII_ART[0].length() + 15));
+    }
+
     public void start(final MinecraftClient mc) {
-        mc.getWindow().setTitle(String.format("Starting %s ...", this.windowTitle));
-        this.logger.info("Starting {} ...", this.windowTitle);
+        this.logger.info("");
+        this.printAsciiArtTrimLine();
+        for (final String line : ASCII_ART) this.logger.info(line);
+        this.logger.info(this.windowTitle.replaceFirst(this.name, " ".repeat(25)));
+        this.printAsciiArtTrimLine();
+        this.logger.info("");
+        this.logger.info("Starting...");
+        mc.getWindow().setTitle(String.format("Starting %s...", this.windowTitle));
         this.dir = new File(mc.runDirectory, this.id);
         this.dir.mkdirs();
         this.creativeTabRegistry = new CreativeTabRegistry();
@@ -75,13 +98,15 @@ public class Vandalism {
         this.commandRegistry = new CommandRegistry();
         this.configManager.load();
         Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
-        this.logger.info("Done!");
         mc.getWindow().setTitle(this.windowTitle);
+        this.logger.info("Done!");
+        this.logger.info("");
     }
 
     private void stop() {
         this.logger.info("Stopping...");
         this.configManager.save();
+        this.logger.info("");
     }
 
     public String getId() {
