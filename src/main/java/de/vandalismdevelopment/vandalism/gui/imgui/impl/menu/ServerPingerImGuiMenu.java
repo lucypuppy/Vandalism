@@ -1,9 +1,9 @@
 package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu;
 
+import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiMenu;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.widget.ServerInfoWidget;
-import de.vandalismdevelopment.vandalism.util.timer.impl.ms.MsTimer;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImInt;
@@ -22,7 +22,7 @@ public class ServerPingerImGuiMenu extends ImGuiMenu {
 
     private final ImString hostname;
     private final ImInt port, queryPort, protocol, autoPingTime;
-    private final MsTimer autoPingTimer;
+    private final MSTimer autoPingTimer;
     private State currentState, queryState;
     private boolean autoPing;
     private final ServerInfoWidget serverInfoWidget;
@@ -34,7 +34,7 @@ public class ServerPingerImGuiMenu extends ImGuiMenu {
         this.queryPort = new ImInt(25565);
         this.protocol = new ImInt(SharedConstants.getProtocolVersion());
         this.autoPingTime = new ImInt(8000);
-        this.autoPingTimer = new MsTimer();
+        this.autoPingTimer = new MSTimer();
         this.currentState = State.WAITING_INPUT;
         this.queryState = State.WAITING_INPUT;
         this.autoPing = false;
@@ -75,7 +75,7 @@ public class ServerPingerImGuiMenu extends ImGuiMenu {
             }
             if (this.autoPing && !this.hostname.get().isBlank()) {
                 if (this.currentState != State.WAITING_RESPONSE) {
-                    ImGui.text("Pinging in " + (this.autoPingTime.get() - this.autoPingTimer.getElapsedTime()) + "ms");
+                    ImGui.text("Pinging in " + (this.autoPingTime.get() - this.autoPingTimer.getDelta()) + "ms");
                     if (this.autoPingTimer.hasReached(this.autoPingTime.get(), true)) {
                         this.ping();
                     }

@@ -33,10 +33,8 @@ public class ImGuiRenderer {
         this.imGuiImplGl3 = new ImGuiImplGl3();
         this.imGuiImplGlfw = new ImGuiImplGlfw();
         this.renderInterfaces = new ArrayList<>();
-        // Create context
         ImGui.createContext();
         ImPlot.createContext();
-        //Default settings
         final ImGuiIO imGuiIO = ImGui.getIO();
         imGuiIO.setConfigFlags(ImGuiConfigFlags.DockingEnable);
         imGuiIO.setFontGlobalScale(1f);
@@ -47,7 +45,6 @@ public class ImGuiRenderer {
         this.imGuiImplGl3.init();
     }
 
-    // Sets the style for ImGui. It's a bit autistic but yeah.
     private void setStyle() {
         final ImGuiStyle style = ImGui.getStyle();
         style.setWindowPadding(15, 15);
@@ -156,21 +153,16 @@ public class ImGuiRenderer {
         } else {
             this.hasSyncedStates = false;
         }
-        //Setup rendering
-        this.imGuiImplGlfw.newFrame(); // Handle keyboard and mouse interactions
+        this.imGuiImplGlfw.newFrame();
         ImGui.newFrame();
-        //Render
         final ImGuiIO imGuiIO = ImGui.getIO();
         for (final RenderInterface renderInterface : this.renderInterfaces) {
             renderInterface.render(imGuiIO);
         }
-        //Clear render stuff and end frame
         this.renderInterfaces.clear();
         ImGui.endFrame();
-        //Render
         ImGui.render();
         this.imGuiImplGl3.renderDrawData(ImGui.getDrawData());
-        //Viewport
         if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
             final long pointer = GLFW.glfwGetCurrentContext();
             ImGui.updatePlatformWindows();

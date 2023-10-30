@@ -1,10 +1,10 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module.impl.misc;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.util.timer.impl.ms.MsTimer;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.values.BooleanValue;
 import de.vandalismdevelopment.vandalism.value.values.number.slider.SliderIntegerValue;
@@ -34,7 +34,7 @@ public class AutoRespawnModule extends Module implements TickListener {
             true
     );
 
-    private final MsTimer delayTimer = new MsTimer();
+    private final MSTimer delayTimer = new MSTimer();
 
     public AutoRespawnModule() {
         super(

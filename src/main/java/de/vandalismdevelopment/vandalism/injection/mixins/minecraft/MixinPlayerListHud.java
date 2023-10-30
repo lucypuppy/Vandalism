@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.injection.mixins.minecraft;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.render.BetterTabListModule;
-import de.vandalismdevelopment.vandalism.util.render.ColorUtils;
+import de.vandalismdevelopment.vandalism.util.render.ColorUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -88,7 +88,7 @@ public abstract class MixinPlayerListHud {
                     text,
                     (int) (x / scale) + (int) (width / scale) - MinecraftClient.getInstance().textRenderer.getWidth(text),
                     (int) (y / scale),
-                    ColorUtils.interpolate(betterTabListModule.lowPingColor.getValue(), betterTabListModule.averagePingColor.getValue(),
+                    ColorUtil.interpolate(betterTabListModule.lowPingColor.getValue(), betterTabListModule.averagePingColor.getValue(),
                             betterTabListModule.highPingColor.getValue(), Math.min((float) latency / betterTabListModule.highPing.getValue(), 1.0f))
             );
             context.getMatrices().pop();

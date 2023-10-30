@@ -1,16 +1,16 @@
 package de.vandalismdevelopment.vandalism.util;
 
-import de.vandalismdevelopment.vandalism.util.timer.impl.ms.MsTimer;
+import de.florianmichael.rclasses.math.integration.MSTimer;
 
 public class ParticleTracker {
 
     private final String particleId;
-    private final MsTimer timer;
+    private final MSTimer timer;
     private int count;
 
     public ParticleTracker(final String particleId) {
         this.particleId = particleId;
-        this.timer = new MsTimer();
+        this.timer = new MSTimer();
         this.count = 1;
     }
 
@@ -26,7 +26,7 @@ public class ParticleTracker {
         this.count = 1;
     }
 
-    public MsTimer getTimer() {
+    public MSTimer getTimer() {
         return this.timer;
     }
 

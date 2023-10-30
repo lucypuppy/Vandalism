@@ -7,7 +7,7 @@ import de.vandalismdevelopment.vandalism.feature.FeatureList;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.feature.impl.script.Script;
-import de.vandalismdevelopment.vandalism.util.ChatUtils;
+import de.vandalismdevelopment.vandalism.util.ChatUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.Formatting;
 
@@ -66,7 +66,7 @@ public class FeaturesCommand extends Command {
         final FeatureList<Command> commands = Vandalism.getInstance().getCommandRegistry().getCommands();
         final int commandSize = commands.size();
         if (commandSize - 1 < 1) {
-            ChatUtils.errorChatMessage("No commands are registered!");
+            ChatUtil.errorChatMessage("No commands are registered!");
             return;
         }
         final StringBuilder commandStringBuilder = new StringBuilder()
@@ -111,14 +111,14 @@ public class FeaturesCommand extends Command {
                     )
                     .append(Formatting.RESET);
         }
-        ChatUtils.emptyChatMessage();
-        ChatUtils.infoChatMessage(commandStringBuilder.toString());
+        ChatUtil.emptyChatMessage();
+        ChatUtil.infoChatMessage(commandStringBuilder.toString());
     }
 
     private void displayModules() {
         final FeatureList<Module> modules = Vandalism.getInstance().getModuleRegistry().getModules();
         if (modules.isEmpty()) {
-            ChatUtils.errorChatMessage("No modules are registered!");
+            ChatUtil.errorChatMessage("No modules are registered!");
             return;
         }
         final int moduleSize = modules.size();
@@ -152,14 +152,14 @@ public class FeaturesCommand extends Command {
                     .append(module.getDescription())
                     .append(Formatting.RESET);
         }
-        ChatUtils.emptyChatMessage();
-        ChatUtils.infoChatMessage(moduleStringBuilder.toString());
+        ChatUtil.emptyChatMessage();
+        ChatUtil.infoChatMessage(moduleStringBuilder.toString());
     }
 
     private void displayScripts() {
         final FeatureList<Script> scripts = Vandalism.getInstance().getScriptRegistry().getScripts();
         if (scripts.isEmpty()) {
-            ChatUtils.errorChatMessage("No scripts are loaded!");
+            ChatUtil.errorChatMessage("No scripts are loaded!");
             return;
         }
         final int scriptSize = scripts.size();
@@ -201,8 +201,8 @@ public class FeaturesCommand extends Command {
                     .append(script.getDescription())
                     .append(Formatting.RESET);
         }
-        ChatUtils.emptyChatMessage();
-        ChatUtils.infoChatMessage(scriptStringBuilder.toString());
+        ChatUtil.emptyChatMessage();
+        ChatUtil.infoChatMessage(scriptStringBuilder.toString());
     }
 
 }

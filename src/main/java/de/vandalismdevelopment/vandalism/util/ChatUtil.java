@@ -9,7 +9,7 @@ import net.minecraft.util.Formatting;
 
 import java.awt.*;
 
-public class ChatUtils {
+public class ChatUtil {
 
     private enum Type implements EnumNameNormalizer {
 

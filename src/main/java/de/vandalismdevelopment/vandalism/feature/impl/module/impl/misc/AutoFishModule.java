@@ -1,10 +1,10 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module.impl.misc;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.util.timer.impl.ms.MsTimer;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.values.number.slider.SliderIntegerValue;
 import net.minecraft.entity.projectile.FishingBobberEntity;
@@ -13,7 +13,7 @@ import net.minecraft.util.Hand;
 
 public class AutoFishModule extends Module implements TickListener {
 
-    private final MsTimer retractDelayTimer = new MsTimer(), throwDelayTimer = new MsTimer();
+    private final MSTimer retractDelayTimer = new MSTimer(), throwDelayTimer = new MSTimer();
 
     private boolean hasFish = false;
 

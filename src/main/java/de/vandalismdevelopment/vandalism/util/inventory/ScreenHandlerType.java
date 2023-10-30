@@ -1,14 +1,12 @@
 package de.vandalismdevelopment.vandalism.util.inventory;
 
-import net.minecraft.screen.ScreenHandlerType;
-
 import java.util.HashMap;
 
-public class ScreenHandlerTypes {
+public class ScreenHandlerType {
 
     private final static HashMap<Integer, String> SCREEN_HANDLER_TYPE_ID_MAP = new HashMap<>();
 
-    public static String getId(final ScreenHandlerType<?> screenHandlerType) {
+    public static String getId(final net.minecraft.screen.ScreenHandlerType<?> screenHandlerType) {
         if (screenHandlerType != null) {
             final int hashCode = screenHandlerType.hashCode();
             if (SCREEN_HANDLER_TYPE_ID_MAP.containsKey(hashCode)) {
@@ -18,7 +16,7 @@ public class ScreenHandlerTypes {
         return "";
     }
 
-    public static void registerType(final ScreenHandlerType<?> screenHandlerType, final String id) {
+    public static void registerType(final net.minecraft.screen.ScreenHandlerType<?> screenHandlerType, final String id) {
         SCREEN_HANDLER_TYPE_ID_MAP.put(screenHandlerType.hashCode(), id);
     }
 

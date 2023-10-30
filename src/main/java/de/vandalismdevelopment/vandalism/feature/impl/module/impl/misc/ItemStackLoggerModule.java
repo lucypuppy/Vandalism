@@ -10,8 +10,8 @@ import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.impl.misc.NBTCommand;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.util.ChatUtils;
-import de.vandalismdevelopment.vandalism.util.ServerUtils;
+import de.vandalismdevelopment.vandalism.util.ChatUtil;
+import de.vandalismdevelopment.vandalism.util.ServerUtil;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.values.BooleanValue;
 import net.minecraft.block.Block;
@@ -120,7 +120,7 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                 displayNbt = NbtHelper.toPrettyPrintedText(copy).getString();
             }
             final String giveCommand = Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.commandPrefix.getValue() + "give " + item + nbt + " " + count,
-                    server = "Server: " + (ServerUtils.lastServerExists() ? ServerUtils.getLastServerInfo().address : "single player"),
+                    server = "Server: " + (ServerUtil.lastServerExists() ? ServerUtil.getLastServerInfo().address : "single player"),
                     position = "Position: " + entity.getBlockPos().toShortString(),
                     damageString = "Damage: " + damage,
                     countString = "Count: " + count,
@@ -208,10 +208,10 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                     );
                     text.append(displayNBTButton);
                 }
-                ChatUtils.infoChatMessage(Text.literal("Item Stack Logger").formatted(Formatting.AQUA));
-                ChatUtils.chatMessage(Text.literal("Found a " + itemFromText + ".").formatted(Formatting.DARK_AQUA), false);
-                ChatUtils.chatMessage(Text.literal(normalWithoutNBT).formatted(Formatting.LIGHT_PURPLE), false);
-                ChatUtils.chatMessage(text.formatted(Formatting.DARK_GREEN), false);
+                ChatUtil.infoChatMessage(Text.literal("Item Stack Logger").formatted(Formatting.AQUA));
+                ChatUtil.chatMessage(Text.literal("Found a " + itemFromText + ".").formatted(Formatting.DARK_AQUA), false);
+                ChatUtil.chatMessage(Text.literal(normalWithoutNBT).formatted(Formatting.LIGHT_PURPLE), false);
+                ChatUtil.chatMessage(text.formatted(Formatting.DARK_GREEN), false);
             }
         } catch (final Throwable throwable) {
             Vandalism.getInstance().getLogger().error("Failed to log stack!", throwable);

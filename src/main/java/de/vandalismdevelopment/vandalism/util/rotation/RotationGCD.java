@@ -1,17 +1,13 @@
 package de.vandalismdevelopment.vandalism.util.rotation;
 
 import com.mojang.datafixers.util.Function4;
-import de.florianmichael.rclasses.pattern.functional.IName;
-import de.vandalismdevelopment.vandalism.util.rotation.rotationtypes.Rotation;
+import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
 import net.minecraft.util.math.MathHelper;
 
-public enum RotationGCD implements IName {
+public enum RotationGCD implements EnumNameNormalizer {
 
-    NONE("None", (rotation, lastRotation, multiplier, iterations) -> rotation),
-
-
-    //Credits to https://github.com/DietrichPaul/Clientbase/tree/master
-    REAL("Real", (rotation, lastRotation, multiplier, iterations) -> {
+    NONE((rotation, lastRotation, multiplier, iterations) -> rotation),
+    REAL((rotation, lastRotation, multiplier, iterations) -> {
         float yaw = rotation.getYaw(), pitch = rotation.getPitch(),
                 lastYaw = lastRotation.getYaw(), lastPitch = lastRotation.getPitch(),
                 deltaYaw = MathHelper.subtractAngles(lastYaw, yaw),
@@ -29,17 +25,17 @@ public enum RotationGCD implements IName {
         double partialDeltaX = 0, partialDeltaY = 0;
 
         for (int i = 0; i < iterations; i++) {
-            final double sollDeltaX = cursorDeltaX / iterations,
-                    sollDeltaY = cursorDeltaY / iterations;
+            final double nextDeltaX = cursorDeltaX / iterations,
+                    nextDeltaY = cursorDeltaY / iterations;
 
-            final int istDeltaX = (int) Math.round(sollDeltaX + partialDeltaX),
-                    istDeltaY = (int) Math.round(sollDeltaY + partialDeltaY);
+            final int currentDeltaX = (int) Math.round(nextDeltaX + partialDeltaX),
+                    currentDeltaY = (int) Math.round(nextDeltaY + partialDeltaY);
 
-            partialDeltaX += sollDeltaX - istDeltaX;
-            partialDeltaY += sollDeltaY - istDeltaY;
+            partialDeltaX += nextDeltaX - currentDeltaX;
+            partialDeltaY += nextDeltaY - currentDeltaY;
 
-            final double newCursorDeltaX = istDeltaX * multiplier,
-                    newCursorDeltaY = istDeltaY * multiplier;
+            final double newCursorDeltaX = currentDeltaX * multiplier,
+                    newCursorDeltaY = currentDeltaY * multiplier;
 
             yaw += (float) newCursorDeltaX * 0.15F;
             pitch += (float) newCursorDeltaY * 0.15F;
@@ -48,11 +44,11 @@ public enum RotationGCD implements IName {
         return new Rotation(yaw, pitch);
     });
 
-    private final String name;
+    private final String normalName;
     private final Function4<Rotation, Rotation, Double, Integer, Rotation> lambda;
 
-    RotationGCD(final String name, final Function4<Rotation, Rotation, Double, Integer, Rotation> lambda) {
-        this.name = name;
+    RotationGCD(final Function4<Rotation, Rotation, Double, Integer, Rotation> lambda) {
+        this.normalName = this.normalizeName(this.name());
         this.lambda = lambda;
     }
 
@@ -61,8 +57,8 @@ public enum RotationGCD implements IName {
     }
 
     @Override
-    public String getName() {
-        return name;
+    public String normalName() {
+        return this.normalName;
     }
 
 }

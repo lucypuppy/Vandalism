@@ -1,9 +1,9 @@
-package de.vandalismdevelopment.vandalism.util.click.clickers;
+package de.vandalismdevelopment.vandalism.util.clicker.impl;
 
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
-import de.vandalismdevelopment.vandalism.util.click.ClickGenerator;
+import de.vandalismdevelopment.vandalism.util.clicker.Clicker;
 
-public class CooldownClicker extends ClickGenerator implements MinecraftWrapper {
+public class CooldownClicker extends Clicker implements MinecraftWrapper {
 
     @Override
     public void update() {

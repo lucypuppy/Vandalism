@@ -4,7 +4,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
-import de.vandalismdevelopment.vandalism.util.ChatUtils;
+import de.vandalismdevelopment.vandalism.util.ChatUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.item.ItemStack;
@@ -33,7 +33,7 @@ public class GiveCommand extends Command {
             try {
                 this.giveItem(ItemStackArgumentType.getItemStackArgument(context, "item").createStack(1, false));
             } catch (final Throwable throwable) {
-                ChatUtils.errorChatMessage("Failed to give item cause of: " + throwable);
+                ChatUtil.errorChatMessage("Failed to give item cause of: " + throwable);
             }
             return SINGLE_SUCCESS;
         }).then(argument("number", IntegerArgumentType.integer()).executes(context -> {
@@ -42,7 +42,7 @@ public class GiveCommand extends Command {
                         IntegerArgumentType.getInteger(context, "number"), false)
                 );
             } catch (final Throwable throwable) {
-                ChatUtils.errorChatMessage("Failed to give item cause of: " + throwable);
+                ChatUtil.errorChatMessage("Failed to give item cause of: " + throwable);
             }
             return SINGLE_SUCCESS;
         })));

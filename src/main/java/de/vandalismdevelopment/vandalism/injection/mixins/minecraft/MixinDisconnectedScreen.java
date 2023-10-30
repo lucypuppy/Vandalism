@@ -1,6 +1,6 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.minecraft;
 
-import de.vandalismdevelopment.vandalism.util.ServerUtils;
+import de.vandalismdevelopment.vandalism.util.ServerUtil;
 import net.minecraft.client.gui.screen.DisconnectedScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.*;
@@ -20,9 +20,9 @@ public abstract class MixinDisconnectedScreen extends Screen {
     private <T extends Widget> T redirectInit(final DirectionalLayoutWidget instance, final T widget) {
         instance.add(widget);
         final Positioner positioner = instance.getMainPositioner().copy().marginTop(-8);
-        instance.add(ButtonWidget.builder(Text.literal("Reconnect"), button -> ServerUtils.connectToLastServer()).build(), positioner);
+        instance.add(ButtonWidget.builder(Text.literal("Reconnect"), button -> ServerUtil.connectToLastServer()).build(), positioner);
         instance.add(ButtonWidget.builder(Text.literal("Copy Text"), button -> {
-            final StringBuilder textBuilder = new StringBuilder(ServerUtils.lastServerExists() ? "Disconnect Message from " + ServerUtils.getLastServerInfo().address : "");
+            final StringBuilder textBuilder = new StringBuilder(ServerUtil.lastServerExists() ? "Disconnect Message from " + ServerUtil.getLastServerInfo().address : "");
             final String emptyLine = "\n\n";
             textBuilder.append(emptyLine);
             instance.forEachElement(w -> {

@@ -4,7 +4,7 @@ import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.ScriptParser;
-import de.vandalismdevelopment.vandalism.util.ChatUtils;
+import de.vandalismdevelopment.vandalism.util.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.MovementUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -52,7 +52,7 @@ public enum ScriptCommand {
         final String[] args = code.split("( )+");
         if (args.length < 1) throw new RuntimeException("AddChatMessage command needs at least one argument");
         if (execute) {
-            ChatUtils.chatMessage(Text.empty()
+            ChatUtil.chatMessage(Text.empty()
                     .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
                     .append("[")
                     .append(Text.literal(scriptName)

@@ -31,7 +31,7 @@ public abstract class Value<V> {
     }
 
     public void setValue(final V value) {
-        if (this.value == value && !(this instanceof BooleanValue)) { //@Todo this is a small badfix find a better solution _FooFieOwO
+        if (this.value == value && !(this instanceof BooleanValue)) { //TODO: Find a better solution to fix this.
             return;
         }
 

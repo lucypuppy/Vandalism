@@ -6,7 +6,7 @@ import de.vandalismdevelopment.vandalism.feature.Feature;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.FeatureType;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.render.HeadUpDisplayModule;
-import de.vandalismdevelopment.vandalism.util.ChatUtils;
+import de.vandalismdevelopment.vandalism.util.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
 import de.vandalismdevelopment.vandalism.value.IValue;
 import de.vandalismdevelopment.vandalism.value.Value;
@@ -42,7 +42,7 @@ public abstract class Module extends Feature implements IValue {
                 isDefaultEnabled
         ).valueChangedConsumer(state -> {
             if (player() != null) {
-                ChatUtils.infoChatMessage(this.getName() + " has been " + (state ? "enabled" : "disabled") + ".");
+                ChatUtil.infoChatMessage(this.getName() + " has been " + (state ? "enabled" : "disabled") + ".");
             }
             this.syncHUD();
             if (state) this.onEnable();

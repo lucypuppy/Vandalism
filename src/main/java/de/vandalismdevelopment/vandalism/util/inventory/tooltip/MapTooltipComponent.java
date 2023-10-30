@@ -44,8 +44,6 @@ public class MapTooltipComponent implements TooltipComponent, ITooltipData {
 
     @Override
     public void drawItems(final TextRenderer textRenderer, final int x, final int y, final DrawContext context) {
-
-        // Background
         final MatrixStack matrices = context.getMatrices();
         matrices.push();
         matrices.translate(x, y, 0);
@@ -56,12 +54,12 @@ public class MapTooltipComponent implements TooltipComponent, ITooltipData {
         context.drawTexture(TEXTURE_MAP_BACKGROUND, 0, 0, 0, 0, 0, 64, 64, 64, 64);
         matrices.pop();
 
-        // Contents
         final VertexConsumerProvider.Immediate consumer = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
         final MapState mapState = FilledMapItem.getMapState(this.mapId, MinecraftClient.getInstance().world);
 
-        if (mapState == null)
+        if (mapState == null) {
             return;
+        }
 
         matrices.push();
         matrices.translate(x, y, 0);
@@ -70,7 +68,6 @@ public class MapTooltipComponent implements TooltipComponent, ITooltipData {
         MinecraftClient.getInstance().gameRenderer.getMapRenderer().draw(matrices, consumer, this.mapId, mapState, false, 0xF000F0);
         consumer.draw();
         matrices.pop();
-
     }
 
 }

@@ -1,26 +1,26 @@
-package de.vandalismdevelopment.vandalism.util.click.clickers;
+package de.vandalismdevelopment.vandalism.util.clicker.impl;
 
 import de.florianmichael.rclasses.common.RandomUtils;
 import de.florianmichael.rclasses.math.integration.BoxMullerTransform;
+import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.florianmichael.rclasses.pattern.evicting.EvictingList;
 import de.vandalismdevelopment.vandalism.util.MathUtil;
-import de.vandalismdevelopment.vandalism.util.click.ClickGenerator;
-import de.vandalismdevelopment.vandalism.util.timer.impl.ms.MsTimer;
+import de.vandalismdevelopment.vandalism.util.clicker.Clicker;
 import net.minecraft.util.Pair;
 
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class BoxMuellerClicker extends ClickGenerator {
+public class BoxMuellerClicker extends Clicker {
 
-    private final MsTimer timer;
+    private final MSTimer timer;
     private long nextClick;
     private int cps, updatePossibility;
     private float mean, std;
     private final EvictingList<Pair<Long, Integer>> delays;
 
     public BoxMuellerClicker() {
-        this.timer = new MsTimer();
+        this.timer = new MSTimer();
         this.delays = new EvictingList<>(new ArrayList<>(), 100);
         this.cps = RandomUtils.randomInt(8, 14);
         this.nextClick = MathUtil.cpsToMs(this.cps);

@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.util.rotation.rotationtypes;
+package de.vandalismdevelopment.vandalism.util.rotation;
 
 import de.vandalismdevelopment.vandalism.util.RaytraceUtil;
 import net.minecraft.client.MinecraftClient;
@@ -12,7 +12,7 @@ public class Rotation {
 
     private float yaw, pitch;
 
-    public Rotation(float yaw, float pitch) {
+    public Rotation(final float yaw, final float pitch) {
         this.yaw = yaw;
         this.pitch = pitch;
     }
@@ -34,31 +34,37 @@ public class Rotation {
     }
 
     public Vec3d getVector() {
-        final float f = pitch * (float) (Math.PI / 180.0);
-        final float g = -yaw * (float) (Math.PI / 180.0);
-        final float h = MathHelper.cos(g);
-        final float i = MathHelper.sin(g);
-        final float j = MathHelper.cos(f);
-        final float k = MathHelper.sin(f);
+        final float f = pitch * (float) (Math.PI / 180.0),
+                g = -yaw * (float) (Math.PI / 180.0),
+                h = MathHelper.cos(g),
+                i = MathHelper.sin(g),
+                j = MathHelper.cos(f),
+                k = MathHelper.sin(f);
         return new Vec3d(i * j, -k, h * j);
     }
 
     @Override
     public String toString() {
-        return "Rotation{" + "yaw=" + yaw + ", pitch=" + pitch + '}';
+        return "Rotation{" +
+                "yaw=" + this.yaw +
+                ", pitch=" + this.pitch +
+                '}';
     }
 
     public static class Builder {
 
         public static Rotation build(final Entity entity, final boolean bestHitVec, final double range, final double precision) {
             final PlayerEntity player = MinecraftClient.getInstance().player;
-            final Vec3d eyePos = player.getEyePos();
+            if (player == null) return null;
             final Box box = entity.getBoundingBox();
-            final Vec3d getEntityVector = bestHitVec ? getNearestPoint(entity, box, player) : new Vec3d(entity.getX(), entity.getY(), entity.getZ());
+            final Vec3d
+                    eyePos = player.getEyePos(),
+                    getEntityVector = bestHitVec ? getNearestPoint(entity, box, player) : new Vec3d(entity.getX(), entity.getY(), entity.getZ());
 
             Rotation normalRotations = build(getEntityVector, eyePos);
-            if (RaytraceUtil.rayTraceBlock(normalRotations.getVector(), range))
+            if (RaytraceUtil.rayTraceBlock(normalRotations.getVector(), range)) {
                 return normalRotations;
+            }
 
             normalRotations = null;
             Vec3d currentVector = null;
@@ -70,13 +76,15 @@ public class Rotation {
                                 box.minY + (box.maxY - box.minY) * y,
                                 box.minZ + (box.maxZ - box.minZ) * z);
 
-                        if (eyePos.distanceTo(vector) > range)
+                        if (eyePos.distanceTo(vector) > range) {
                             continue;
+                        }
 
                         final Rotation parsedRotation = build(vector, eyePos);
 
-                        if (!RaytraceUtil.rayTraceBlock(parsedRotation.getVector(), range))
+                        if (!RaytraceUtil.rayTraceBlock(parsedRotation.getVector(), range)) {
                             continue;
+                        }
 
                         if (!bestHitVec) {
                             return parsedRotation;
@@ -102,14 +110,16 @@ public class Rotation {
         }
 
         private static Vec3d getNearestPoint(final Entity entity, final Box box, final PlayerEntity player) {
-            final double nearestX = MathHelper.clamp(entity.getX(), box.minX, box.maxX);
-            final double nearestZ = MathHelper.clamp(entity.getZ(), box.minZ, box.maxZ);
+            final double
+                    nearestX = MathHelper.clamp(entity.getX(), box.minX, box.maxX),
+                    nearestZ = MathHelper.clamp(entity.getZ(), box.minZ, box.maxZ);
 
             //TODO: Find a better way to calculate this!
-            final double entityY = entity.getY();
-            final double playerY = player.getY() + player.getEyeHeight(player.getPose());
-            final double boxHeight = (box.maxY - box.minY) * 0.9;
-            final double nearestY = entityY + MathHelper.clamp(playerY - entityY, 0, boxHeight);
+            final double
+                    entityY = entity.getY(),
+                    playerY = player.getY() + player.getEyeHeight(player.getPose()),
+                    boxHeight = (box.maxY - box.minY) * 0.9,
+                    nearestY = entityY + MathHelper.clamp(playerY - entityY, 0, boxHeight);
 
             return new Vec3d(nearestX, nearestY, nearestZ);
         }

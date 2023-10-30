@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.feature.impl.command.impl.development;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
-import de.vandalismdevelopment.vandalism.util.ChatUtils;
+import de.vandalismdevelopment.vandalism.util.ChatUtil;
 import net.minecraft.command.CommandSource;
 
 public class TestCommand extends Command {
@@ -21,7 +21,7 @@ public class TestCommand extends Command {
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
-            ChatUtils.infoChatMessage("Executed Test Command.");
+            ChatUtil.infoChatMessage("Executed Test Command.");
             return SINGLE_SUCCESS;
         });
     }

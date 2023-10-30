@@ -2,11 +2,11 @@ package de.vandalismdevelopment.vandalism.util.rotation;
 
 public enum RotationPriority {
 
-    LOWEST(0), //only for fun modules like spin or derp.
+    LOWEST(0),
     LOW(1),
     NORMAL(2),
-    HIGH(3), //Modules like aimbot or scaffold.
-    HIGHEST(4); //Modules like killaura.
+    HIGH(3),
+    HIGHEST(4);
 
     private final int priority;
 

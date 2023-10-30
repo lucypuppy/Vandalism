@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.injection.mixins.minecraft;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.event.ChatListener;
-import de.vandalismdevelopment.vandalism.util.render.ColorUtils;
+import de.vandalismdevelopment.vandalism.util.render.ColorUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatScreen;
@@ -72,7 +72,7 @@ public abstract class MixinChatScreen {
                     text,
                     this.chatField.getX() + this.chatField.getWidth() - MinecraftClient.getInstance().textRenderer.getWidth(text) - 2,
                     this.chatField.getY() - MinecraftClient.getInstance().textRenderer.fontHeight - 2,
-                    ColorUtils.interpolate(Color.GREEN, Color.YELLOW, Color.RED, Math.min((float) current / this.realMaxLength, 1.0f)),
+                    ColorUtil.interpolate(Color.GREEN, Color.YELLOW, Color.RED, Math.min((float) current / this.realMaxLength, 1.0f)),
                     true
             );
         }

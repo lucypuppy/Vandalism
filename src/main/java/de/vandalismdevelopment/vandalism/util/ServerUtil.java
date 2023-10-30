@@ -8,7 +8,7 @@ import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
 
-public class ServerUtils {
+public class ServerUtil {
 
     private static ServerInfo LAST_SERVER_INFO = null;
 

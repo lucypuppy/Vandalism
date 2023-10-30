@@ -54,7 +54,7 @@ public class NBTEditWidget implements ImNbtDrawer {
     }
 
     public void show() {
-        //TODO: Remove this **** fix by creating a screen for this widget.
+        //TODO: Remove this fix by creating a screen for this widget.
         if (MinecraftClient.getInstance().player != null && MinecraftClient.getInstance().mouse.isCursorLocked()) {
             MinecraftClient.getInstance().execute(() -> MinecraftClient.getInstance().setScreen(new ChatScreen("")));
         }

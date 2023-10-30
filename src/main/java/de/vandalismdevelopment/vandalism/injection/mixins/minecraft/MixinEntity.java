@@ -5,7 +5,7 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.event.EntityListener;
 import de.vandalismdevelopment.vandalism.event.FluidListener;
 import de.vandalismdevelopment.vandalism.event.StepListener;
-import de.vandalismdevelopment.vandalism.util.rotation.rotationtypes.Rotation;
+import de.vandalismdevelopment.vandalism.util.rotation.Rotation;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
