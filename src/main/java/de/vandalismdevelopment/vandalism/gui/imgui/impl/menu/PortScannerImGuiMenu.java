@@ -93,7 +93,6 @@ public class PortScannerImGuiMenu extends ImGuiMenu {
                     if (ImGui.inputInt("Threads##portscannerthreads", this.threads, 1)) {
                         this.threads.set(Math.max(1, Math.min(this.threads.get(), 1000)));
                     }
-                    //this button will reset the values but only if they were changed
                     if (this.minPort.get() != 1 || this.maxPort.get() != 65535 || this.threads.get() != 500) {
                         if (ImGui.button("Reset Values##portscannerresetvalues")) {
                             this.minPort.set(1);
