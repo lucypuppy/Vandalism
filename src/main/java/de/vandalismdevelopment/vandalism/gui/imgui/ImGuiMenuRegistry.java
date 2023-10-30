@@ -21,6 +21,7 @@ public class ImGuiMenuRegistry {
                 //TODO: Finish this -> new MacrosImGuiMenu(),
                 new ScriptsImGuiMenu(),
                 new AccountManagerImGuiMenu(),
+                new PortScannerImGuiMenu(),
                 new NameHistoryImGuiMenu(),
                 new ServerPingerImGuiMenu(),
                 new ServerAddressResolverImGuiMenu(),
