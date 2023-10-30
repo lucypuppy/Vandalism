@@ -35,14 +35,18 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
         @Override
         public void accept(final ImGuiInputTextCallbackData imGuiInputTextCallbackData) {
             if (imGuiInputTextCallbackData.getEventChar() == 0) return;
-            if (!Character.isLetterOrDigit(imGuiInputTextCallbackData.getEventChar()) && imGuiInputTextCallbackData.getEventChar() != '_' && imGuiInputTextCallbackData.getEventChar() != '§') {
+            if (
+                    !Character.isLetterOrDigit(imGuiInputTextCallbackData.getEventChar()) &&
+                            imGuiInputTextCallbackData.getEventChar() != '_' &&
+                            imGuiInputTextCallbackData.getEventChar() != '§'
+            ) {
                 imGuiInputTextCallbackData.setEventChar((char) 0);
             }
         }
 
     };
 
-    private final ImString crackedUsername, crackedUUID, status, currentAccountData;
+    private final ImString crackedUsername, crackedUUID, state, currentAccountData;
 
     private final ExecutorService executor;
 
@@ -50,22 +54,22 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
         super("Account Manager");
         this.crackedUsername = new ImString(16);
         this.crackedUUID = new ImString();
-        this.status = new ImString(200);
+        this.state = new ImString(200);
         this.currentAccountData = new ImString();
-        this.resetStatus();
+        this.resetState();
         this.executor = Executors.newSingleThreadExecutor();
     }
 
-    private void resetStatus() {
-        this.status.set("Waiting for input...");
+    private void resetState() {
+        this.state.set("Waiting for input...");
     }
 
-    private void delayedResetStatus() {
+    private void delayedResetState() {
         try {
             Thread.sleep(10000);
         } catch (final InterruptedException ignored) {
         }
-        this.resetStatus();
+        this.resetState();
     }
 
     @Override
@@ -111,15 +115,18 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                                     this.executor.submit(() -> {
                                         try {
                                             account.login();
-                                            this.status.set("Successfully logged into the " + account.getType() + " account: " + account.getUsername());
+                                            this.state.set("Successfully logged into the " + account.getType() + " account: " + account.getUsername());
                                         } catch (final Throwable throwable) {
                                             Vandalism.getInstance().getLogger().error(
                                                     "Failed to log into the " + account.getType() + " account: " + account.getUsername(),
                                                     throwable
                                             );
-                                            this.status.set("Failed to log into the " + account.getType() + " account: " + account.getUsername() + "\n" + throwable);
+                                            this.state.set(
+                                                    "Failed to log into the " + account.getType() + " account: " + account.getUsername() + "\n" +
+                                                            throwable
+                                            );
                                         }
-                                        this.delayedResetStatus();
+                                        this.delayedResetState();
                                     });
                                 ImGui.sameLine();
                                 if (ImGui.button("remove##" + account.getUsername() + account.getUuid().toString(), buttonWidth, buttonHeight)) {
@@ -166,11 +173,11 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                             Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getAccountConfig());
                             this.crackedUsername.clear();
                             this.crackedUUID.clear();
-                            this.status.set("Successfully added the cracked account to your account list: " + usernameValue);
+                            this.state.set("Successfully added the cracked account to your account list: " + usernameValue);
                         } else {
-                            this.status.set("Failed to add the cracked account to your account list because the UUID is invalid or already in use.");
+                            this.state.set("Failed to add the cracked account to your account list because the UUID is invalid or already in use.");
                         }
-                        this.delayedResetStatus();
+                        this.delayedResetState();
                     });
                 }
                 ImGui.sameLine();
@@ -182,7 +189,7 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                                 httpClient,
                                 new StepMsaDeviceCode.MsaDeviceCodeCallback(
                                         msaDeviceCode -> {
-                                            this.status.set("Please enter the code " + msaDeviceCode.userCode() + " at " + msaDeviceCode.verificationUri() +
+                                            this.state.set("Please enter the code " + msaDeviceCode.userCode() + " at " + msaDeviceCode.verificationUri() +
                                                     "\nThe code has been copied to your clipboard and the login page has been opened."
                                             );
                                             Util.getOperatingSystem().open(msaDeviceCode.verificationUri());
@@ -198,17 +205,17 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                                 )
                         );
                         Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getAccountConfig());
-                        this.status.set("Successfully added the microsoft account to your account list: " + mcProfile.name());
+                        this.state.set("Successfully added the microsoft account to your account list: " + mcProfile.name());
                     } catch (final Throwable throwable) {
                         Vandalism.getInstance().getLogger().error("Failed to log into a microsoft account.", throwable);
-                        this.status.set("Failed to add the microsoft account to your account list.\n" + throwable);
+                        this.state.set("Failed to add the microsoft account to your account list.\n" + throwable);
                     }
-                    this.delayedResetStatus();
+                    this.delayedResetState();
                 });
             }
             ImGui.separator();
-            ImGui.text("Status");
-            ImGui.inputTextMultiline("##currentAccountLoginStatus", this.status, -1, -1, ImGuiInputTextFlags.ReadOnly);
+            ImGui.text("State");
+            ImGui.inputTextMultiline("##currentAccountLoginState", this.state, -1, -1, ImGuiInputTextFlags.ReadOnly);
             ImGui.end();
         }
     }
