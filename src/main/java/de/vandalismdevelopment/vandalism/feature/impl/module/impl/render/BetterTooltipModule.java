@@ -5,7 +5,7 @@ import de.vandalismdevelopment.vandalism.event.TooltipListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.util.inventory.tooltip.*;
-import de.vandalismdevelopment.vandalism.util.render.ColorUtils;
+import de.vandalismdevelopment.vandalism.util.render.ColorUtil;
 import net.minecraft.block.entity.BannerPattern;
 import net.minecraft.block.entity.BannerPatterns;
 import net.minecraft.client.item.TooltipData;
@@ -85,7 +85,7 @@ public class BetterTooltipModule extends Module implements TooltipListener {
 
             float[] color = new float[]{1f, 1f, 1f};
             if (itemId.endsWith("shulker_box")) {
-                color = ColorUtils.getShulkerColor(itemStack);
+                color = ColorUtil.getShulkerColor(itemStack);
             }
 
             final DefaultedList<ItemStack> itemStacks = DefaultedList.ofSize(27, ItemStack.EMPTY);
@@ -96,7 +96,7 @@ public class BetterTooltipModule extends Module implements TooltipListener {
                             .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
                             .asOrderedText())
             );
-            tooltipData.add(new ContainerTooltipComponent(itemStacks, ColorUtils.withAlpha(color, 1f)));
+            tooltipData.add(new ContainerTooltipComponent(itemStacks, ColorUtil.withAlpha(color, 1f)));
         }
     }
 

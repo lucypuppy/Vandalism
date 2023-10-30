@@ -4,7 +4,7 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.event.LivingEntityListener;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.render.TrueSightModule;
-import de.vandalismdevelopment.vandalism.util.rotation.rotationtypes.Rotation;
+import de.vandalismdevelopment.vandalism.util.rotation.Rotation;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;

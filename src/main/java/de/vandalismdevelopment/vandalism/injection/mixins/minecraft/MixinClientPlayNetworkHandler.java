@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.injection.mixins.minecraft;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.util.ChatUtils;
+import de.vandalismdevelopment.vandalism.util.ChatUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,7 +20,7 @@ public abstract class MixinClientPlayNetworkHandler {
             try {
                 Vandalism.getInstance().getCommandRegistry().execute(message.substring(prefix.length()));
             } catch (final CommandSyntaxException e) {
-                ChatUtils.errorChatMessage(e.getMessage());
+                ChatUtil.errorChatMessage(e.getMessage());
             }
             MinecraftClient.getInstance().inGameHud.getChatHud().addToMessageHistory(message);
             ci.cancel();

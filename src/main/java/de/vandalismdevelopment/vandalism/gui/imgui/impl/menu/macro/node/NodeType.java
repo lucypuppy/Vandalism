@@ -2,13 +2,13 @@ package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.macro.node;
 
 import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
 
-public enum NodeTypes implements EnumNameNormalizer {
+public enum NodeType implements EnumNameNormalizer {
 
     ON_ENABLE, ON_DISABLE, SEND_CHAT_MESSAGE;
 
     private final String normalName;
 
-    NodeTypes() {
+    NodeType() {
         this.normalName = this.normalizeName(this.name());
     }
 

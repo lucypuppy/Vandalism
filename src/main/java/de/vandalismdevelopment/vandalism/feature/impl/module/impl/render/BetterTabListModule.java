@@ -4,7 +4,7 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.event.KeyboardListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.util.render.ColorUtils;
+import de.vandalismdevelopment.vandalism.util.render.ColorUtil;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.values.BooleanValue;
 import de.vandalismdevelopment.vandalism.value.values.ColorValue;
@@ -36,7 +36,7 @@ public class BetterTabListModule extends Module implements KeyboardListener {
             "Self Color",
             "The color to highlight your name with.",
             this,
-            ColorUtils.withAlpha(Color.GREEN, 100)
+            ColorUtil.withAlpha(Color.GREEN, 100)
     ).visibleConsumer(this.self::getValue);
 
     public final Value<Boolean> accurateLatency = new BooleanValue(

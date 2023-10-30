@@ -1,6 +1,6 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.minecraft;
 
-import de.vandalismdevelopment.vandalism.util.ServerUtils;
+import de.vandalismdevelopment.vandalism.util.ServerUtil;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
@@ -43,9 +43,9 @@ public abstract class MixinGameMenuScreen extends Screen {
             final ButtonWidget button = ButtonWidget.builder(
                     Text.literal("Reconnect"),
                     b -> {
-                        if (ServerUtils.lastServerExists()) {
+						if (ServerUtil.lastServerExists()) {
                             this.disconnect();
-                            ServerUtils.connectToLastServer();
+							ServerUtil.connectToLastServer();
                         }
                     }
             ).width(98).build();

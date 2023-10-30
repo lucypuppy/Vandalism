@@ -8,7 +8,7 @@ import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
 import de.vandalismdevelopment.vandalism.feature.impl.command.arguments.NbtCompoundArgumentType;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.widget.NBTEditWidget;
-import de.vandalismdevelopment.vandalism.util.ChatUtils;
+import de.vandalismdevelopment.vandalism.util.ChatUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.NbtPathArgumentType;
 import net.minecraft.item.ItemStack;
@@ -54,7 +54,7 @@ public class NBTCommand extends Command {
                         source.copyFrom(tag);
                         this.setStack(stack);
                     } else {
-                        ChatUtils.errorChatMessage(
+                        ChatUtil.errorChatMessage(
                                 "Some of the NBT data could not be found, try using: " +
                                         Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.commandPrefix.getValue() + "nbt set {nbt}"
                         );
@@ -86,7 +86,7 @@ public class NBTCommand extends Command {
             if (player() != null) {
                 final ItemStack stack = player().getInventory().getMainHandStack();
                 if (stack == null) {
-                    ChatUtils.errorChatMessage("You must hold an item in your main hand.");
+                    ChatUtil.errorChatMessage("You must hold an item in your main hand.");
                 } else {
                     final NbtCompound tag = stack.getNbt();
                     final MutableText copyButton = Text.literal("NBT");
@@ -103,7 +103,7 @@ public class NBTCommand extends Command {
                     text.append(copyButton);
                     if (tag == null) text.append("{}");
                     else text.append(" ").append(NbtHelper.toPrettyPrintedText(tag));
-                    ChatUtils.infoChatMessage(text);
+                    ChatUtil.infoChatMessage(text);
                 }
             }
             return SINGLE_SUCCESS;
@@ -112,11 +112,11 @@ public class NBTCommand extends Command {
             if (player() != null) {
                 final ItemStack stack = player().getInventory().getMainHandStack();
                 if (stack == null) {
-                    ChatUtils.errorChatMessage("You must hold an item in your main hand.");
+                    ChatUtil.errorChatMessage("You must hold an item in your main hand.");
                 } else {
                     final NbtCompound tag = stack.getOrCreateNbt();
                     keyboard().setClipboard(tag.toString());
-                    ChatUtils.infoChatMessage("NBT copied into the Clipboard.");
+                    ChatUtil.infoChatMessage("NBT copied into the Clipboard.");
                 }
             }
             return SINGLE_SUCCESS;
@@ -138,7 +138,7 @@ public class NBTCommand extends Command {
                     final int count = IntegerArgumentType.getInteger(context, "count");
                     stack.setCount(count);
                     this.setStack(stack);
-                    ChatUtils.infoChatMessage("Set main hand stack count to " + count + ".");
+                    ChatUtil.infoChatMessage("Set main hand stack count to " + count + ".");
                 }
             }
             return SINGLE_SUCCESS;
@@ -147,7 +147,7 @@ public class NBTCommand extends Command {
             if (player() != null) {
                 final ItemStack stack = player().getInventory().getMainHandStack();
                 if (stack == null) {
-                    ChatUtils.errorChatMessage("You must hold an item in your main hand.");
+                    ChatUtil.errorChatMessage("You must hold an item in your main hand.");
                 } else {
                     try {
                         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -194,11 +194,11 @@ public class NBTCommand extends Command {
     private boolean validBasic(final ItemStack stack) {
         if (player() == null) return false;
         if (!player().getAbilities().creativeMode) {
-            ChatUtils.errorChatMessage("Creative mode only.");
+            ChatUtil.errorChatMessage("Creative mode only.");
             return false;
         }
         if (stack == null || stack.isEmpty()) {
-            ChatUtils.errorChatMessage("You must hold an item in your main hand.");
+            ChatUtil.errorChatMessage("You must hold an item in your main hand.");
             return false;
         }
         return true;

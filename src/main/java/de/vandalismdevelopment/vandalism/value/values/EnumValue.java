@@ -1,15 +1,16 @@
 package de.vandalismdevelopment.vandalism.value.values;
 
 import com.google.gson.JsonObject;
-import de.florianmichael.rclasses.pattern.functional.IName;
+import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
 import de.vandalismdevelopment.vandalism.value.IValue;
 import de.vandalismdevelopment.vandalism.value.Value;
 import imgui.ImGui;
 
-public class EnumValue<T extends IName> extends Value<T> {
+public class EnumValue<T extends EnumNameNormalizer> extends Value<T> {
 
     private final T[] values;
 
+    @SafeVarargs
     public EnumValue(final String name, final String description, final IValue parent, final T... values) {
         super(name, description, parent, "enum", values[0]);
         this.values = values;
@@ -18,7 +19,7 @@ public class EnumValue<T extends IName> extends Value<T> {
     @Override
     public void onConfigLoad(final JsonObject valueObject) {
         for (final T value : this.values) {
-            if (value.getName().equals(valueObject.get("value").getAsString())) {
+            if (value.normalName().equals(valueObject.get("value").getAsString())) {
                 this.setValue(value);
                 return;
             }
@@ -27,16 +28,16 @@ public class EnumValue<T extends IName> extends Value<T> {
 
     @Override
     public void onConfigSave(final JsonObject valueObject) {
-        valueObject.addProperty("value", getValue().getName());
+        valueObject.addProperty("value", getValue().normalName());
     }
 
     @Override
     public void render() {
-        final String selectedName = this.getValue().getName();
+        final String selectedName = this.getValue().normalName();
 
         if (ImGui.beginCombo(this.getName() + "##" + this.getSaveIdentifier(), selectedName)) {
             for (final T mode : this.values) {
-                final String name = mode.getName();
+                final String name = mode.normalName();
 
                 if (ImGui.selectable(name, name.equals(selectedName))) {
                     this.setValue(mode);

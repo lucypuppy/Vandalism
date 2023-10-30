@@ -126,7 +126,7 @@ public enum GlfwKeyName implements EnumNameNormalizer {
     F24(GLFW.GLFW_KEY_F24),
     F25(GLFW.GLFW_KEY_F25),
 
-    //TODO: Add support for all of the keys below.
+    //TODO: Add support for all the keys below.
     MOUSE_BUTTON_1(GLFW.GLFW_MOUSE_BUTTON_1),
     MOUSE_BUTTON_2(GLFW.GLFW_MOUSE_BUTTON_2),
     MOUSE_BUTTON_3(GLFW.GLFW_MOUSE_BUTTON_3),

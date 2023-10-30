@@ -1,6 +1,6 @@
-package de.vandalismdevelopment.vandalism.util.click;
+package de.vandalismdevelopment.vandalism.util.clicker;
 
-public abstract class ClickGenerator {
+public abstract class Clicker {
 
     protected Runnable clickAction = () -> {
     };

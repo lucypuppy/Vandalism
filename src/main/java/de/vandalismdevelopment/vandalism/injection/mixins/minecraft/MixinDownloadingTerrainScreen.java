@@ -1,6 +1,6 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.minecraft;
 
-import de.vandalismdevelopment.vandalism.util.ServerUtils;
+import de.vandalismdevelopment.vandalism.util.ServerUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.DownloadingTerrainScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -30,7 +30,7 @@ public abstract class MixinDownloadingTerrainScreen extends Screen {
     @Override
     public boolean keyPressed(final int keyCode, final int scanCode, final int modifiers) {
         if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-            ServerUtils.disconnect();
+            ServerUtil.disconnect();
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);

@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.injection.mixins.minecraft;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.minecraft.CustomResourcePackConfirmScreen;
-import de.vandalismdevelopment.vandalism.util.ServerUtils;
+import de.vandalismdevelopment.vandalism.util.ServerUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.ServerResourcePackProvider;
 import net.minecraft.client.util.NetworkUtils;
@@ -85,7 +85,7 @@ public abstract class MixinServerResourcePackProvider {
     @Redirect(method = "method_4634", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resource/ServerResourcePackProvider;loadServerPack(Ljava/io/File;Lnet/minecraft/resource/ResourcePackSource;)Ljava/util/concurrent/CompletableFuture;"))
     private CompletableFuture<Void> injectLoadServerPacket(final ServerResourcePackProvider instance, final File file, final ResourcePackSource packSource) {
         if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.moreResourcePackOptions.getValue() && CustomResourcePackConfirmScreen.dump) {
-            final File resourcePackFile = new File(MinecraftClient.getInstance().getResourcePackDir().toFile(), ServerUtils.getLastServerInfo().address + "-server-resource-pack-" + file.getName());
+            final File resourcePackFile = new File(MinecraftClient.getInstance().getResourcePackDir().toFile(), ServerUtil.getLastServerInfo().address + "-server-resource-pack-" + file.getName());
             try {
                 Files.move(file.toPath(), resourcePackFile.toPath());
                 final File tempDir = new File(resourcePackFile.getParentFile(), resourcePackFile.getName() + "-temp");

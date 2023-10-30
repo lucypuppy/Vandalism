@@ -3,8 +3,8 @@ package de.vandalismdevelopment.vandalism.feature.impl.command.impl.misc;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
-import de.vandalismdevelopment.vandalism.util.ChatUtils;
-import de.vandalismdevelopment.vandalism.util.ServerUtils;
+import de.vandalismdevelopment.vandalism.util.ChatUtil;
+import de.vandalismdevelopment.vandalism.util.ServerUtil;
 import net.minecraft.command.CommandSource;
 
 public class CopyServerIPCommand extends Command {
@@ -26,10 +26,10 @@ public class CopyServerIPCommand extends Command {
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
             keyboard().setClipboard(
-                    ServerUtils.getLastServerInfo().address + " | " +
+                    ServerUtil.getLastServerInfo().address + " | " +
                             networkHandler().getConnection().getAddress().toString()
             );
-            ChatUtils.infoChatMessage("Server IP copied into the Clipboard.");
+            ChatUtil.infoChatMessage("Server IP copied into the Clipboard.");
             return SINGLE_SUCCESS;
         });
     }

@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.util.render;
 
 import org.lwjgl.glfw.GLFW;
 
-public class RenderUtils {
+public class RenderUtil {
 
     private static double fps, prevGLTime = Double.NaN;
 
@@ -11,8 +11,9 @@ public class RenderUtils {
             prevGLTime = GLFW.glfwGetTime();
             return;
         }
-        double time = GLFW.glfwGetTime();
-        double delta = time - prevGLTime;
+        double
+                time = GLFW.glfwGetTime(),
+                delta = time - prevGLTime;
         fps = 1.0 / delta;
         prevGLTime = time;
     }

@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.macro;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiMenu;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.macro.node.InputNode;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.macro.node.Node;
-import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.macro.node.NodeTypes;
+import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.macro.node.NodeType;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.macro.node.OutputNode;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.macro.node.impl.OnDisableNode;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.macro.node.impl.OnEnableNode;
@@ -149,7 +149,7 @@ public class MacrosImGuiMenu extends ImGuiMenu {
         }
 
         if (ImGui.beginPopup("node_editor_context_" + id)) {
-            for (final NodeTypes nodeType : NodeTypes.values()) {
+            for (final NodeType nodeType : NodeType.values()) {
                 if (ImGui.button("Create New " + nodeType.normalName() + " Node##" + id)) {
                     Node node = null;
                     switch (nodeType) {

@@ -6,7 +6,7 @@ import net.minecraft.util.DyeColor;
 
 import java.awt.*;
 
-public class ColorUtils {
+public class ColorUtil {
 
     public static int interpolate(final Color minColor, final Color maxColor, final double percent) {
         final double inverse_percent = 1.0 - percent;

@@ -33,11 +33,18 @@ public class InventoryUtil {
     public static <T extends ScreenHandler> void quickMoveInventory(final HandledScreen<T> screen, final int from, final int to) {
         for (int i = from; i < to; i++) {
             final T handler = screen.getScreenHandler();
-            if (handler.slots.size() <= i || MinecraftClient.getInstance().currentScreen == null || MinecraftClient.getInstance().interactionManager == null)
+            if (handler.slots.size() <= i || MinecraftClient.getInstance().currentScreen == null || MinecraftClient.getInstance().interactionManager == null) {
                 break;
+            }
             final Slot slot = handler.slots.get(i);
             if (slot.getStack().isEmpty()) continue;
-            MinecraftClient.getInstance().interactionManager.clickSlot(handler.syncId, slot.id, 0, SlotActionType.QUICK_MOVE, MinecraftClient.getInstance().player);
+            MinecraftClient.getInstance().interactionManager.clickSlot(
+                    handler.syncId,
+                    slot.id,
+                    0,
+                    SlotActionType.QUICK_MOVE,
+                    MinecraftClient.getInstance().player
+            );
         }
     }
 

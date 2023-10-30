@@ -13,13 +13,18 @@ public class FramebufferUtil {
         return checkFramebuffer(framebuffer, displayWidth, displayHeight, useDepth, getError);
     }
 
-    public static Framebuffer checkFramebuffer(final Framebuffer framebuffer, final int width, final int height, final boolean useDepth, final boolean getError) {
+    public static Framebuffer checkFramebuffer(
+            final Framebuffer framebuffer,
+            final int width,
+            final int height,
+            final boolean useDepth,
+            final boolean getError
+    ) {
         if (framebuffer == null) {
             return new SimpleFramebuffer(width, height, useDepth, getError);
         } else if (framebuffer.viewportWidth != width || framebuffer.viewportHeight != height) {
             framebuffer.resize(width, height, getError);
         }
-
         return framebuffer;
     }
 

@@ -4,7 +4,7 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.event.LivingEntityListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.util.render.ColorUtils;
+import de.vandalismdevelopment.vandalism.util.render.ColorUtil;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.values.BooleanValue;
 import de.vandalismdevelopment.vandalism.value.values.ColorValue;
@@ -38,7 +38,7 @@ public class TrueSightModule extends Module implements LivingEntityListener {
             "Entity Color",
             "The color of invisible entities.",
             this,
-            ColorUtils.withAlpha(Color.WHITE, 100)
+            ColorUtil.withAlpha(Color.WHITE, 100)
     ).visibleConsumer(this.entities::getValue);
 
     public TrueSightModule() {

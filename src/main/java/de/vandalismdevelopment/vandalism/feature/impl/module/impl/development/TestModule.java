@@ -6,10 +6,10 @@ import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.util.click.ClickGenerator;
-import de.vandalismdevelopment.vandalism.util.click.clickers.BoxMuellerClicker;
+import de.vandalismdevelopment.vandalism.util.clicker.Clicker;
+import de.vandalismdevelopment.vandalism.util.clicker.impl.BoxMuellerClicker;
+import de.vandalismdevelopment.vandalism.util.rotation.Rotation;
 import de.vandalismdevelopment.vandalism.util.rotation.RotationPriority;
-import de.vandalismdevelopment.vandalism.util.rotation.rotationtypes.Rotation;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.values.number.slider.SliderFloatValue;
 import de.vandalismdevelopment.vandalism.value.values.number.slider.SliderIntegerValue;
@@ -25,7 +25,7 @@ import java.util.List;
 
 public class TestModule extends Module implements TickListener, RenderListener {
 
-    private final ClickGenerator clickGenerator;
+    private final Clicker clicker;
 
     private final Value<Float> mean = new SliderFloatValue(
             "Mean",
@@ -61,7 +61,7 @@ public class TestModule extends Module implements TickListener, RenderListener {
                 true,
                 false
         );
-        this.clickGenerator = new BoxMuellerClicker();
+        this.clicker = new BoxMuellerClicker();
     }
 
     @Override
@@ -99,21 +99,21 @@ public class TestModule extends Module implements TickListener, RenderListener {
             Vandalism.getInstance().getRotationListener().setRotation(rotation, new Vec2f(20, 30), RotationPriority.HIGH);
         }
 
-        if (this.clickGenerator instanceof final BoxMuellerClicker clicker) {
+        if (this.clicker instanceof final BoxMuellerClicker clicker) {
             clicker.setMean(this.mean.getValue());
             clicker.setStd(this.std.getValue());
             clicker.setUpdatePossibility(this.updatePossibility.getValue());
         }
 
-        this.clickGenerator.setClickAction(mc()::doAttack);
-        this.clickGenerator.update();
+        this.clicker.setClickAction(mc()::doAttack);
+        this.clicker.update();
     }
 
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
         Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
             if (ImGui.begin("Graph")) {
-                if (this.clickGenerator instanceof final BoxMuellerClicker clicker) {
+                if (this.clicker instanceof final BoxMuellerClicker clicker) {
                     final int size = clicker.getDelays().getNormalList().size();
 
                     if(size > 5) {

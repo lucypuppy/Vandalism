@@ -184,7 +184,6 @@ public class HeadUpDisplayModule extends Module implements RenderListener {
             return;
         }
 
-        // sort enabled modules
         if (this.sort) {
             this.sort = false;
             this.enabledModules.clear();

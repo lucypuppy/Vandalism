@@ -7,7 +7,7 @@ import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureList;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.ScriptParser;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.command.ScriptCommand;
-import de.vandalismdevelopment.vandalism.util.ChatUtils;
+import de.vandalismdevelopment.vandalism.util.ChatUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Pair;
 import org.lwjgl.glfw.GLFW;
@@ -144,7 +144,7 @@ public class ScriptRegistry implements KeyboardListener, TickListener {
                                     .menuCategory.scriptExecutionLogging.getValue();
                     if (executionLogging) {
                         final String executingMessage = "Executing script " + scriptName + " ...";
-                        if (inGame) ChatUtils.infoChatMessage(executingMessage);
+                        if (inGame) ChatUtil.infoChatMessage(executingMessage);
                         else Vandalism.getInstance().getLogger().info(executingMessage);
                     }
                     final List<Pair<ScriptCommand, Pair<Integer, String>>> code = ScriptParser.parseCodeFromScriptFile(file);
@@ -168,12 +168,12 @@ public class ScriptRegistry implements KeyboardListener, TickListener {
                     if (executionLogging) {
                         Thread.sleep(100);
                         final String executedMessage = "Executed script " + scriptName + ".";
-                        if (inGame) ChatUtils.infoChatMessage(executedMessage);
+                        if (inGame) ChatUtil.infoChatMessage(executedMessage);
                         else Vandalism.getInstance().getLogger().info(executedMessage);
                     }
                 } catch (final Exception e) {
                     if (inGame) {
-                        ChatUtils.errorChatMessage("Failed to execute script '" + scriptName + "' due to: " + e);
+                        ChatUtil.errorChatMessage("Failed to execute script '" + scriptName + "' due to: " + e);
                     }
                     else Vandalism.getInstance().getLogger().error("Failed to execute script", e);
                 }
@@ -181,7 +181,7 @@ public class ScriptRegistry implements KeyboardListener, TickListener {
             this.runningScripts.put(file, scriptThread);
             scriptThread.start();
         } catch (final Exception e) {
-            if (inGame) ChatUtils.errorChatMessage("Invalid script file: " + e);
+            if (inGame) ChatUtil.errorChatMessage("Invalid script file: " + e);
             else Vandalism.getInstance().getLogger().error("Invalid script file", e);
         }
     }

@@ -7,7 +7,7 @@ import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.event.WorldListener;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.misc.FastUseModule;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.render.ESPModule;
-import de.vandalismdevelopment.vandalism.util.render.RenderUtils;
+import de.vandalismdevelopment.vandalism.util.render.RenderUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -77,7 +77,7 @@ public abstract class MixinMinecraftClient {
 
     @Inject(method = "render", at = @At("HEAD"))
     public void onRender(boolean tick, CallbackInfo ci) {
-        RenderUtils.drawFrame();
+        RenderUtil.drawFrame();
     }
 
 }
