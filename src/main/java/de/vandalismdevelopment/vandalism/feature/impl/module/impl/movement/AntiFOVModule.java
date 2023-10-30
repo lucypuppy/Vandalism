@@ -97,6 +97,7 @@ public class AntiFOVModule extends Module implements TickListener {
     }
 
     //TODO: Add an option to be always centered to the camera if always fov is enabled.
+    //TODO: Add an option to switch between targets via. the numpad or something.
 
     @Override
     public void onTick() {
@@ -118,7 +119,7 @@ public class AntiFOVModule extends Module implements TickListener {
                     player().setPitch(target.getPitch());
                 }
                 if (this.useSneakFromTarget.getValue()) {
-                    player().setSneaking(target.isSneaking());
+                    options().sneakKey.setPressed(target.isSneaking());
                 }
                 final double
                         hOffset = this.targetHPosOffset.getValue(),
