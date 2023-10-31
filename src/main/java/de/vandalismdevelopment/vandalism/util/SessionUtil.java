@@ -17,6 +17,7 @@ import net.minecraft.client.session.report.ReporterEnvironment;
 public class SessionUtil {
 
     public static void setSession(final Session session) throws RuntimeException {
+
         // Set account session
         MinecraftClient.getInstance().session = session;
 
@@ -44,11 +45,13 @@ public class SessionUtil {
                 MinecraftClient.getInstance(),
                 userApiService
         );
+
         MinecraftClient.getInstance().profileKeys = ProfileKeys.create(
                 userApiService,
                 session,
                 MinecraftClient.getInstance().runDirectory.toPath()
         );
+
         if (MinecraftClient.getInstance().abuseReportContext == null) {
             MinecraftClient.getInstance().abuseReportContext = AbuseReportContext.create(
                     ReporterEnvironment.ofIntegratedServer(),
@@ -62,10 +65,12 @@ public class SessionUtil {
         }
 
         // Refresh realms
-        final RealmsClient realmsClient = RealmsClient.createRealmsClient(MinecraftClient.getInstance());
-        MinecraftClient.getInstance().realmsPeriodicCheckers = new RealmsPeriodicCheckers(realmsClient);
+        MinecraftClient.getInstance().realmsPeriodicCheckers = new RealmsPeriodicCheckers(
+                RealmsClient.createRealmsClient(MinecraftClient.getInstance())
+        );
 
         Vandalism.getInstance().getLogger().info("Logged in as: " + session.getUsername());
+
     }
 
 }
