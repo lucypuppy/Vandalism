@@ -12,6 +12,9 @@ import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.world.ClientWorld;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.LocalDate;
+import java.time.Month;
+
 public interface MinecraftWrapper {
 
     default MinecraftClient mc() {
@@ -56,6 +59,18 @@ public interface MinecraftWrapper {
 
     default Mouse mouse() {
         return MinecraftClient.getInstance().mouse;
+    }
+
+    default boolean isTrollTime() {
+        return Math.random() < 0.02;
+    }
+
+    default boolean isHalloween() {
+        return LocalDate.now().getMonth() == Month.OCTOBER && LocalDate.now().getDayOfMonth() == 31;
+    }
+
+    default boolean isAprilFools() {
+        return LocalDate.now().getMonth() == Month.APRIL && LocalDate.now().getDayOfMonth() == 1;
     }
 
 }
