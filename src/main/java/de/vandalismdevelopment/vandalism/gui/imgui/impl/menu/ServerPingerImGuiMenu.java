@@ -3,8 +3,13 @@ package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu;
 import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiMenu;
-import de.vandalismdevelopment.vandalism.gui.imgui.impl.widget.ServerInfoWidget;
+import de.vandalismdevelopment.vandalism.gui.imgui.impl.widget.serverinfo.ServerInfoWidget;
+import de.vandalismdevelopment.vandalism.gui.imgui.impl.widget.serverinfo.ServerInfosTableColumn;
 import imgui.ImGui;
+import imgui.ImGuiInputTextCallbackData;
+import imgui.callback.ImGuiInputTextCallback;
+import imgui.flag.ImGuiInputTextFlags;
+import imgui.flag.ImGuiTableFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImInt;
 import imgui.type.ImString;
@@ -20,10 +25,26 @@ import java.net.UnknownHostException;
 
 public class ServerPingerImGuiMenu extends ImGuiMenu {
 
+    private final static ImGuiInputTextCallback HOSTNAME_FILTER = new ImGuiInputTextCallback() {
+
+        @Override
+        public void accept(final ImGuiInputTextCallbackData imGuiInputTextCallbackData) {
+            if (imGuiInputTextCallbackData.getEventChar() == 0) return;
+            if (
+                    !Character.isLetterOrDigit(imGuiInputTextCallbackData.getEventChar()) &&
+                            imGuiInputTextCallbackData.getEventChar() != '.' &&
+                            imGuiInputTextCallbackData.getEventChar() != '-'
+            ) {
+                imGuiInputTextCallbackData.setEventChar((char) 0);
+            }
+        }
+
+    };
+
     private final ImString hostname;
     private final ImInt port, queryPort, protocol, autoPingTime;
     private final MSTimer autoPingTimer;
-    private State currentState, queryState;
+    private State currentState, currentQueryState;
     private boolean autoPing;
     private final ServerInfoWidget serverInfoWidget;
 
@@ -36,70 +57,98 @@ public class ServerPingerImGuiMenu extends ImGuiMenu {
         this.autoPingTime = new ImInt(8000);
         this.autoPingTimer = new MSTimer();
         this.currentState = State.WAITING_INPUT;
-        this.queryState = State.WAITING_INPUT;
+        this.currentQueryState = State.WAITING_INPUT;
         this.autoPing = false;
         this.serverInfoWidget = new ServerInfoWidget();
     }
 
     @Override
     public void render() {
-        if (ImGui.begin("Server Pinger", ImGuiWindowFlags.NoCollapse)) {
+        if (ImGui.begin("Server Pinger ", ImGuiWindowFlags.NoCollapse)) {
             ImGui.text("State: " + this.currentState.getMessage());
-            ImGui.text("Query State: " + this.queryState.getMessage());
-            ImGui.inputText("Hostname##serverpinger", this.hostname);
-            ImGui.sameLine();
-            if (ImGui.button("Clear##Hostnameserverpinger")) {
-                this.hostname.clear();
-            }
-            if (ImGui.inputInt("Port##serverpinger", this.port, 1)) {
-                this.port.set(Math.max(1, Math.min(this.port.get(), 65535)));
-            }
-            ImGui.sameLine();
-            if (ImGui.button("Reset##Portserverpinger")) {
-                this.port.set(25565);
-            }
-            if (ImGui.inputInt("Query Port##serverpinger", this.queryPort, 1)) {
-                this.queryPort.set(Math.max(1, Math.min(this.queryPort.get(), 65535)));
-            }
-            ImGui.sameLine();
-            if (ImGui.button("Reset##QueryPortserverpinger")) {
-                this.queryPort.set(25565);
-            }
-            ImGui.inputInt("Protocol##serverpinger", this.protocol, 1);
-            ImGui.sameLine();
-            if (ImGui.button("Reset##Protocolserverpinger")) {
-                this.protocol.set(SharedConstants.getProtocolVersion());
-            }
-            if (ImGui.inputInt("Auto Ping Time##serverpinger", this.autoPingTime, 1)) {
-                this.autoPingTime.set(Math.max(1000, Math.min(this.autoPingTime.get(), 60000)));
-            }
-            if (this.autoPing && !this.hostname.get().isBlank()) {
-                if (this.currentState != State.WAITING_RESPONSE) {
-                    ImGui.text("Pinging in " + (this.autoPingTime.get() - this.autoPingTimer.getDelta()) + "ms");
-                    if (this.autoPingTimer.hasReached(this.autoPingTime.get(), true)) {
-                        this.ping();
-                    }
-                } else ImGui.text("Pinging...");
-            }
-            if (!this.hostname.get().isBlank() && this.currentState != State.WAITING_RESPONSE) {
-                if (ImGui.button("Auto Ping: " + (this.autoPing ? "Disable" : "Enable") + "##serverpinger")) {
-                    this.autoPing = !this.autoPing;
-                }
-                if (!this.autoPing) {
-                    ImGui.sameLine();
-                    if (ImGui.button("Ping##serverpinger")) {
-                        this.ping();
-                    }
-                }
-            }
-            if (this.serverInfoWidget.getMcPingResponse() != null) {
+            ImGui.text("Query State: " + this.currentQueryState.getMessage());
+            ImGui.inputText(
+                    "Hostname##serverpingerhostname",
+                    this.hostname,
+                    ImGuiInputTextFlags.CallbackCharFilter,
+                    HOSTNAME_FILTER
+            );
+            if (
+                    !this.hostname.get().isBlank() &&
+                            this.hostname.get().length() >= 4 &&
+                            this.hostname.get().contains(".") &&
+                            this.hostname.get().indexOf(".") < this.hostname.get().length() - 2
+            ) {
                 ImGui.sameLine();
-                if (ImGui.button("Clear##serverpinger")) {
-                    this.clear();
+                if (ImGui.button("Clear Hostname##clearhostnameserverpinger")) {
+                    this.hostname.clear();
+                }
+                if (ImGui.inputInt("Port##portserverpinger", this.port, 1)) {
+                    this.port.set(Math.max(1, Math.min(this.port.get(), 65535)));
+                }
+                ImGui.sameLine();
+                if (ImGui.button("Reset Port##portresetserverpinger")) {
+                    this.port.set(25565);
+                }
+                if (ImGui.inputInt("Query Port##queryportserverpinger", this.queryPort, 1)) {
+                    this.queryPort.set(Math.max(1, Math.min(this.queryPort.get(), 65535)));
+                }
+                ImGui.sameLine();
+                if (ImGui.button("Reset Query Port##queryresetserverpinger")) {
+                    this.queryPort.set(25565);
+                }
+                ImGui.inputInt("Protocol##protocolserverpinger", this.protocol, 1);
+                ImGui.sameLine();
+                if (ImGui.button("Reset Protocol##protocolresetserverpinger")) {
+                    this.protocol.set(SharedConstants.getProtocolVersion());
+                }
+                if (ImGui.inputInt("Auto Ping Time##autopingtimeserverpinger", this.autoPingTime, 1)) {
+                    this.autoPingTime.set(Math.max(1000, Math.min(this.autoPingTime.get(), 60000)));
+                }
+                if (this.autoPing && !this.hostname.get().isBlank()) {
+                    if (this.currentState != State.WAITING_RESPONSE) {
+                        ImGui.text("Pinging in " + (this.autoPingTime.get() - this.autoPingTimer.getDelta()) + "ms");
+                        if (this.autoPingTimer.hasReached(this.autoPingTime.get(), true)) {
+                            this.ping();
+                        }
+                    } else ImGui.text("Pinging...");
+                }
+                if (!this.hostname.get().isBlank() && this.currentState != State.WAITING_RESPONSE) {
+                    if (ImGui.button("Auto Ping: " + (this.autoPing ? "Disable" : "Enable") + "##autopingerverpinger")) {
+                        this.autoPing = !this.autoPing;
+                    }
+                    if (!this.autoPing) {
+                        ImGui.sameLine();
+                        if (ImGui.button("Ping##pingserverpinger")) {
+                            this.ping();
+                        }
+                    }
+                }
+                if (this.serverInfoWidget.getMcPingResponse() != null) {
+                    if (ImGui.button("Clear##clearserverpinger")) {
+                        this.clear();
+                    }
+                    final ServerInfosTableColumn[] serverInfosTableColumns = ServerInfosTableColumn.values();
+                    final int maxServerInfosTableColumns = serverInfosTableColumns.length;
+                    if (ImGui.beginTable("serverinfos##serverinfostableserverpinger", maxServerInfosTableColumns,
+                            ImGuiTableFlags.Borders |
+                                    ImGuiTableFlags.Resizable |
+                                    ImGuiTableFlags.RowBg |
+                                    ImGuiTableFlags.ContextMenuInBody
+                    )) {
+                        for (final ServerInfosTableColumn serverInfosTableColumn : serverInfosTableColumns) {
+                            ImGui.tableSetupColumn(serverInfosTableColumn.normalName());
+                        }
+                        ImGui.tableHeadersRow();
+                        this.serverInfoWidget.renderTableEntry(true);
+                        ImGui.endTable();
+                    }
                 }
             }
-            this.serverInfoWidget.render();
             ImGui.end();
+        }
+        if (this.serverInfoWidget.getMcPingResponse() != null) {
+            this.serverInfoWidget.renderSubData();
         }
     }
 
@@ -107,14 +156,15 @@ public class ServerPingerImGuiMenu extends ImGuiMenu {
         this.serverInfoWidget.setMcPingResponse(null);
         this.serverInfoWidget.setQueryPingResponse(null);
         this.currentState = State.WAITING_INPUT;
-        this.queryState = State.WAITING_INPUT;
+        this.currentQueryState = State.WAITING_INPUT;
     }
 
     private void ping() {
         if (!this.hostname.get().isBlank()) {
             this.clear();
+            this.serverInfoWidget.setHostname(this.hostname.get());
             this.currentState = State.WAITING_RESPONSE;
-            this.queryState = State.WAITING_RESPONSE;
+            this.currentQueryState = State.WAITING_RESPONSE;
             MCPing.pingModern(this.protocol.get())
                     .address(this.hostname.get(), this.port.get())
                     .timeout(5000, 5000)
@@ -144,31 +194,32 @@ public class ServerPingerImGuiMenu extends ImGuiMenu {
                     .timeout(5000, 5000)
                     .exceptionHandler(t -> {
                         if (t instanceof BindException) {
-                            this.queryState = State.BIND_FAILED;
+                            this.currentQueryState = State.BIND_FAILED;
                         } else if (t instanceof UnknownHostException) {
-                            this.queryState = State.UNKNOWN_HOST;
+                            this.currentQueryState = State.UNKNOWN_HOST;
                         } else if (t instanceof ConnectionRefusedException) {
-                            this.queryState = State.CONNECTION_REFUSED;
+                            this.currentQueryState = State.CONNECTION_REFUSED;
                         } else if (t instanceof ConnectTimeoutException) {
-                            this.queryState = State.CONNECTION_TIMED_OUT;
+                            this.currentQueryState = State.CONNECTION_TIMED_OUT;
                         } else if (t instanceof DataReadException) {
-                            this.queryState = State.DATA_READ_FAILED;
+                            this.currentQueryState = State.DATA_READ_FAILED;
                         } else if (t instanceof PacketReadException) {
-                            this.queryState = State.PACKET_READ_FAILED;
+                            this.currentQueryState = State.PACKET_READ_FAILED;
                         } else {
-                            this.queryState = State.FAILED;
+                            this.currentQueryState = State.FAILED;
                             Vandalism.getInstance().getLogger().error("Failed to ping query " + this.hostname.get() + ":" + this.queryPort.get(), t);
                         }
                     })
                     .finishHandler(response -> {
                         this.serverInfoWidget.setQueryPingResponse(response);
-                        this.queryState = State.SUCCESS;
+                        this.currentQueryState = State.SUCCESS;
                     })
                     .getAsync();
         } else this.currentState = State.WAITING_INPUT;
     }
 
     private enum State {
+
         FAILED("There was an error fetching the server info."),
         BIND_FAILED("Cannot assign requested address."),
         UNKNOWN_HOST("Unknown Host."),

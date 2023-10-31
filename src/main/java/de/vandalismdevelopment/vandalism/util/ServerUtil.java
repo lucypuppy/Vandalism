@@ -14,6 +14,9 @@ public class ServerUtil {
 
     public static void connectToLastServer() {
         if (LAST_SERVER_INFO == null) return;
+        if (MinecraftClient.getInstance().world != null) {
+            disconnect();
+        }
         ConnectScreen.connect(
               new MultiplayerScreen(new TitleScreen()),
               MinecraftClient.getInstance(),
@@ -38,4 +41,5 @@ public class ServerUtil {
     public static void disconnect() {
         new GameMenuScreen(true).disconnect();
     }
+
 }

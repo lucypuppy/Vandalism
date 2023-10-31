@@ -83,7 +83,7 @@ public class CommandRegistry {
         }
         final int commandListSize = this.commands.size();
         if (commandListSize < 1) Vandalism.getInstance().getLogger().info("No commands found!");
-        else Vandalism.getInstance().getLogger().info("Registered " + commandListSize + " command/s.");
+        else Vandalism.getInstance().getLogger().info("Registered " + commandListSize + " commands.");
     }
 
     public void execute(final String message) throws CommandSyntaxException {

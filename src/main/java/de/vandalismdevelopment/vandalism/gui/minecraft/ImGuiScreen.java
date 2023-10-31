@@ -21,7 +21,7 @@ public class ImGuiScreen extends Screen {
         Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
             if (ImGui.beginMainMenuBar()) {
                 for (final ImGuiMenu imGuiMenu : Vandalism.getInstance().getImGuiHandler().getImGuiMenuRegistry().getImGuiMenus()) {
-                    if (ImGui.button(imGuiMenu.getName() + "##barbutton")) {
+                    if (ImGui.button(imGuiMenu.getName() + "##barbutton" + imGuiMenu.getName())) {
                         imGuiMenu.toggle();
                     }
                 }

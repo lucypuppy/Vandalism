@@ -55,7 +55,7 @@ public class ScriptRegistry implements KeyboardListener, TickListener {
         }
         final int scriptListSize = this.scripts.size();
         if (scriptListSize < 1) Vandalism.getInstance().getLogger().info("No scripts loaded!");
-        else Vandalism.getInstance().getLogger().info("Loaded " + scriptListSize + " script/s.");
+        else Vandalism.getInstance().getLogger().info("Loaded " + scriptListSize + " scripts.");
     }
 
     public void loadScriptFromFile(final File file, final boolean save) {

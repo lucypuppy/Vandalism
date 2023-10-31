@@ -1,14 +1,14 @@
-package de.vandalismdevelopment.vandalism.feature;
+package de.vandalismdevelopment.vandalism.gui.imgui.impl.widget.serverinfo;
 
 import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
 
-public enum FeatureType implements EnumNameNormalizer {
+public enum ModsTableColumn implements EnumNameNormalizer {
 
-    COMMAND, MODULE, SCRIPT;
+    MOD_ID, MOD_VERSION, ACTIONS;
 
     private final String normalName;
 
-    FeatureType() {
+    ModsTableColumn() {
         this.normalName = this.normalizeName(this.name());
     }
 
