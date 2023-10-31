@@ -5,7 +5,8 @@ import de.vandalismdevelopment.vandalism.feature.impl.script.parse.ScriptParser;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
 import java.util.concurrent.ThreadLocalRandom;
 
 public enum ScriptVariable {
@@ -66,31 +67,31 @@ public enum ScriptVariable {
         descriptionBuilder.append("Your current Pitch.");
         return descriptionBuilder;
     }),
-    DAY(() -> String.valueOf(new Date().getDay()), descriptionBuilder -> {
+    DAY(() -> String.valueOf(LocalDateTime.now().getDayOfMonth()), descriptionBuilder -> {
         descriptionBuilder.append("The current day of the month.");
         return descriptionBuilder;
     }),
-    MONTH(() -> String.valueOf(new Date().getMonth()), descriptionBuilder -> {
+    MONTH(() -> String.valueOf(LocalDateTime.now().getMonth()), descriptionBuilder -> {
         descriptionBuilder.append("The current month.");
         return descriptionBuilder;
     }),
-    YEAR(() -> String.valueOf(new Date().getYear()), descriptionBuilder -> {
+    YEAR(() -> String.valueOf(LocalDateTime.now().getYear()), descriptionBuilder -> {
         descriptionBuilder.append("The current year.");
         return descriptionBuilder;
     }),
-    HOURS(() -> String.valueOf(new Date().getHours()), descriptionBuilder -> {
+    HOURS(() -> String.valueOf(LocalDateTime.now().getHour()), descriptionBuilder -> {
         descriptionBuilder.append("The current hour.");
         return descriptionBuilder;
     }),
-    MINUTES(() -> String.valueOf(new Date().getMinutes()), descriptionBuilder -> {
+    MINUTES(() -> String.valueOf(LocalDateTime.now().getMinute()), descriptionBuilder -> {
         descriptionBuilder.append("The current minute.");
         return descriptionBuilder;
     }),
-    SECONDS(() -> String.valueOf(new Date().getSeconds()), descriptionBuilder -> {
+    SECONDS(() -> String.valueOf(LocalDateTime.now().getSecond()), descriptionBuilder -> {
         descriptionBuilder.append("The current second.");
         return descriptionBuilder;
     }),
-    MILLISECONDS(() -> String.valueOf(new Date().getTime()), descriptionBuilder -> {
+    MILLISECONDS(() -> String.valueOf(LocalDateTime.now().getLong(ChronoField.MILLI_OF_SECOND)), descriptionBuilder -> {
         descriptionBuilder.append("The current millisecond.");
         return descriptionBuilder;
     }),
