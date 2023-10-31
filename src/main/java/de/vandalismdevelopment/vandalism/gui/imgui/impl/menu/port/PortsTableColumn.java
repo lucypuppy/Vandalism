@@ -1,14 +1,14 @@
-package de.vandalismdevelopment.vandalism.feature;
+package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.port;
 
 import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
 
-public enum FeatureType implements EnumNameNormalizer {
+public enum PortsTableColumn implements EnumNameNormalizer {
 
-    COMMAND, MODULE, SCRIPT;
+    PORT, STATE, QUERY_STATE, ACTIONS;
 
     private final String normalName;
 
-    FeatureType() {
+    PortsTableColumn() {
         this.normalName = this.normalizeName(this.name());
     }
 

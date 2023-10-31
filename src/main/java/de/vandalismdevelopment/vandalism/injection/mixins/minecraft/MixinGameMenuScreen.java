@@ -25,7 +25,7 @@ public abstract class MixinGameMenuScreen extends Screen {
 	private static Text REPORT_BUGS_TEXT;
 
 	@Shadow
-	protected abstract void disconnect();
+    public abstract void disconnect();
 
 	protected MixinGameMenuScreen(final Text ignored) {
 		super(ignored);
@@ -42,12 +42,7 @@ public abstract class MixinGameMenuScreen extends Screen {
         } else if (text == REPORT_BUGS_TEXT && !client.isInSingleplayer()) {
             final ButtonWidget button = ButtonWidget.builder(
                     Text.literal("Reconnect"),
-                    b -> {
-						if (ServerUtil.lastServerExists()) {
-                            this.disconnect();
-							ServerUtil.connectToLastServer();
-                        }
-                    }
+                    b -> ServerUtil.connectToLastServer()
             ).width(98).build();
             cir.setReturnValue(button);
 		}

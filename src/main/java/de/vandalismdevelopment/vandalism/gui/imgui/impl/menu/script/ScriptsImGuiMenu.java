@@ -85,7 +85,7 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
                 }
                 if (Vandalism.getInstance().getScriptRegistry().getRunningScriptsCount() > 0) {
                     if (ImGui.button("Kill " + Vandalism.getInstance().getScriptRegistry().getRunningScriptsCount() +
-                            " running script/s##scriptskill")
+                            " running scripts##scriptskill")
                     ) {
                         Vandalism.getInstance().getScriptRegistry().killAllRunningScripts();
                     }

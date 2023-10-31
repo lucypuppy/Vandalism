@@ -3,6 +3,7 @@ package de.vandalismdevelopment.vandalism.gui.imgui;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.*;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.account.AccountManagerImGuiMenu;
+import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.port.PortScannerImGuiMenu;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.script.ScriptsImGuiMenu;
 
 import java.util.ArrayList;
@@ -21,10 +22,10 @@ public class ImGuiMenuRegistry {
                 //TODO: Finish this -> new MacrosImGuiMenu(),
                 new ScriptsImGuiMenu(),
                 new AccountManagerImGuiMenu(),
-                new PortScannerImGuiMenu(),
-                new NameHistoryImGuiMenu(),
                 new ServerPingerImGuiMenu(),
+                new PortScannerImGuiMenu(),
                 new ServerAddressResolverImGuiMenu(),
+                new NameHistoryImGuiMenu(),
                 new BugScraperImGuiMenu()
         );
     }
@@ -41,7 +42,7 @@ public class ImGuiMenuRegistry {
         }
         final int imGuiMenuListSize = this.imGuiMenus.size();
         if (imGuiMenuListSize < 1) Vandalism.getInstance().getLogger().info("No imgui menus found!");
-        else Vandalism.getInstance().getLogger().info("Registered " + imGuiMenuListSize + " imGui menu/s.");
+        else Vandalism.getInstance().getLogger().info("Registered " + imGuiMenuListSize + " imGui menus.");
     }
 
     public List<ImGuiMenu> getImGuiMenus() {

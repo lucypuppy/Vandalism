@@ -296,7 +296,7 @@ public class ModuleRegistry implements KeyboardListener {
         }
         final int moduleListSize = this.modules.size();
         if (moduleListSize < 1) Vandalism.getInstance().getLogger().info("No modules found!");
-        else Vandalism.getInstance().getLogger().info("Registered " + moduleListSize + " module/s.");
+        else Vandalism.getInstance().getLogger().info("Registered " + moduleListSize + " modules.");
     }
 
     public FeatureList<Module> getModules() {

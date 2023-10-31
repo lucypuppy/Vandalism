@@ -9,7 +9,7 @@ public abstract class Feature implements MinecraftWrapper {
     private VersionRange supportedVersions = null;
 
     private String name = "Example Feature", description = "This is a Feature.";
-    private FeatureType type = FeatureType.NONE;
+    private FeatureType type = FeatureType.values()[0];
     private FeatureCategory category = FeatureCategory.MISC;
     private boolean experimental = false;
 
