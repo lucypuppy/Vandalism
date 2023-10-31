@@ -228,7 +228,10 @@ public class ServerInfoWidget implements MinecraftWrapper {
                 ImGui.end();
             }
         }
-        if (this.showMods && this.mcPingResponse != null && ((this.mcPingResponse.modinfo != null && this.mcPingResponse.modinfo.modList.length > 0) || (this.mcPingResponse.forgeData != null && this.mcPingResponse.forgeData.mods.length > 0))) {
+        if (
+                this.showMods && this.mcPingResponse != null && ((this.mcPingResponse.modinfo != null && this.mcPingResponse.modinfo.modList.length > 0) ||
+                        (this.mcPingResponse.forgeData != null && this.mcPingResponse.forgeData.mods.length > 0))
+        ) {
             if (ImGui.begin("Mods of " + this.mcPingResponse.server.ip + ":" + this.mcPingResponse.server.port + uniqueId, ImGuiWindowFlags.NoCollapse)) {
                 final ModsTableColumn[] modsTableColumns = ModsTableColumn.values();
                 final int maxModTableColumns = modsTableColumns.length;

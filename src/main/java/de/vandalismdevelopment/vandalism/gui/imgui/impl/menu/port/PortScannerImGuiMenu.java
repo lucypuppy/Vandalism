@@ -68,6 +68,9 @@ public class PortScannerImGuiMenu extends ImGuiMenu {
 
     @Override
     public void render() {
+        for (final PortResult portResult : this.ports.values()) {
+            portResult.renderSubData();
+        }
         if (ImGui.begin("Port Scanner", ImGuiWindowFlags.NoCollapse)) {
             ImGui.textWrapped("Current State:");
             ImGui.textWrapped(this.state.get());
@@ -213,9 +216,6 @@ public class PortScannerImGuiMenu extends ImGuiMenu {
                 }
             }
             ImGui.end();
-        }
-        for (final PortResult portResult : this.ports.values()) {
-            portResult.renderSubData();
         }
     }
 
