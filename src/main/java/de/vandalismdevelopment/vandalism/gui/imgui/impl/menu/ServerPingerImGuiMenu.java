@@ -64,6 +64,7 @@ public class ServerPingerImGuiMenu extends ImGuiMenu {
 
     @Override
     public void render() {
+        this.serverInfoWidget.renderSubData();
         if (ImGui.begin("Server Pinger ", ImGuiWindowFlags.NoCollapse)) {
             ImGui.text("State: " + this.currentState.getMessage());
             ImGui.text("Query State: " + this.currentQueryState.getMessage());
@@ -146,9 +147,6 @@ public class ServerPingerImGuiMenu extends ImGuiMenu {
                 }
             }
             ImGui.end();
-        }
-        if (this.serverInfoWidget.getMcPingResponse() != null) {
-            this.serverInfoWidget.renderSubData();
         }
     }
 
