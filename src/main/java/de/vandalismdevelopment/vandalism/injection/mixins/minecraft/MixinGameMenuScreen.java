@@ -24,9 +24,6 @@ public abstract class MixinGameMenuScreen extends Screen {
 	@Final
 	private static Text REPORT_BUGS_TEXT;
 
-	@Shadow
-    public abstract void disconnect();
-
 	protected MixinGameMenuScreen(final Text ignored) {
 		super(ignored);
 	}
