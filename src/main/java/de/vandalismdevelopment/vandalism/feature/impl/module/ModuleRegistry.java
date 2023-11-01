@@ -4,6 +4,7 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.event.KeyboardListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureList;
+import de.vandalismdevelopment.vandalism.feature.impl.module.impl.combat.BowSpammerModule;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.development.DebugModule;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.development.TestModule;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.exploit.*;
@@ -231,10 +232,16 @@ public class ModuleRegistry implements KeyboardListener {
         return this.antiFOVModule;
     }
 
-    private InteractionSpammModule interactionSpammModule;
+    private InteractionSpammerModule interactionSpammerModule;
 
-    public InteractionSpammModule getInteractionSpammModule() {
-        return this.interactionSpammModule;
+    public InteractionSpammerModule getInteractionSpammerModule() {
+        return this.interactionSpammerModule;
+    }
+
+    private BowSpammerModule bowSpammerModule;
+
+    public BowSpammerModule getBowSpammerModule() {
+        return this.bowSpammerModule;
     }
 
     private boolean done;
@@ -286,7 +293,8 @@ public class ModuleRegistry implements KeyboardListener {
                 this.illegalBlockPlaceModule = new IllegalBlockPlaceModule(),
                 this.autoRespawnModule = new AutoRespawnModule(),
                 this.antiFOVModule = new AntiFOVModule(),
-                this.interactionSpammModule = new InteractionSpammModule(),
+                this.interactionSpammerModule = new InteractionSpammerModule(),
+                this.bowSpammerModule = new BowSpammerModule(),
                 this.headUpDisplayModule = new HeadUpDisplayModule()
         );
     }

@@ -17,7 +17,7 @@ import net.minecraft.util.hit.HitResult;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class InteractionSpammModule extends Module implements TickListener {
+public class InteractionSpammerModule extends Module implements TickListener {
 
     private final Value<Integer> maxXReach = new SliderIntegerValue(
             "Max X Reach",
@@ -70,9 +70,9 @@ public class InteractionSpammModule extends Module implements TickListener {
 
     private CopyOnWriteArrayList<BlockHitResult> blockHitResults;
 
-    public InteractionSpammModule() {
+    public InteractionSpammerModule() {
         super(
-                "Interaction Spamm",
+                "Interaction Spammer",
                 "Lets you spam interactions.",
                 FeatureCategory.MISC,
                 false,
