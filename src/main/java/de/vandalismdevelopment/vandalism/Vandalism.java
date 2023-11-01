@@ -11,6 +11,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +45,8 @@ public class Vandalism {
     private ConfigManager configManager;
 
     private RotationListener rotationListener;
+
+    private Identifier logo;
 
     public Vandalism() {
         this.id = "vandalism";
@@ -97,6 +100,7 @@ public class Vandalism {
         this.moduleRegistry = new ModuleRegistry();
         this.commandRegistry = new CommandRegistry();
         this.configManager.load();
+        this.logo = new Identifier(this.id, "textures/logo.png");
         Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
         mc.getWindow().setTitle(this.windowTitle);
         this.logger.info("Done!");
@@ -159,6 +163,10 @@ public class Vandalism {
 
     public RotationListener getRotationListener() {
         return this.rotationListener;
+    }
+
+    public Identifier getLogo() {
+        return this.logo;
     }
 
 }
