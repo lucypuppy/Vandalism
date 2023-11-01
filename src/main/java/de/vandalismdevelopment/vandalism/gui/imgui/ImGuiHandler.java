@@ -8,6 +8,8 @@ import de.vandalismdevelopment.vandalism.gui.imgui.impl.widget.NBTEditWidget;
 import de.vandalismdevelopment.vandalism.gui.minecraft.ImGuiScreen;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.ConnectScreen;
+import net.minecraft.client.gui.screen.LevelLoadingScreen;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
@@ -43,6 +45,7 @@ public class ImGuiHandler implements KeyboardListener, RenderListener, Minecraft
     @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN) return;
+        if (currentScreen() instanceof ConnectScreen || currentScreen() instanceof LevelLoadingScreen) return;
         if (key == Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.menuKey.getValue().getKeyCode()) {
             if (currentScreen() instanceof ImGuiScreen) currentScreen().close();
             else setScreen(new ImGuiScreen(currentScreen()));

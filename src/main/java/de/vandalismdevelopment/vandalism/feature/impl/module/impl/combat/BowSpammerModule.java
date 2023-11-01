@@ -68,7 +68,7 @@ public class BowSpammerModule extends Module implements TickListener {
             return;
         }
         if (this.shootTimer.hasReached(this.shootDelay.getValue(), true)) {
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < this.maxPacketsPerTick.getValue(); i++) {
                 interactionManager().interactItem(player(), Hand.MAIN_HAND);
             }
         }
