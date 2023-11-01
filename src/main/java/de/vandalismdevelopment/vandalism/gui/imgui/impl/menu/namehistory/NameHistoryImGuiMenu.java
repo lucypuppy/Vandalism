@@ -187,47 +187,47 @@ public class NameHistoryImGuiMenu extends ImGuiMenu {
                 if (ImGui.button("Clear##namehistoryclear")) {
                     this.clear();
                 }
-            }
-            ImGui.separator();
-            ImGui.text("Name History");
-            final NamesTableColumn[] namesTableColumns = NamesTableColumn.values();
-            final int maxTableColumns = namesTableColumns.length;
-            if (ImGui.beginTable("names##namestable", maxTableColumns,
-                    ImGuiTableFlags.Borders |
-                            ImGuiTableFlags.Resizable |
-                            ImGuiTableFlags.RowBg |
-                            ImGuiTableFlags.ContextMenuInBody
-            )) {
-                for (final NamesTableColumn namesTableColumn : namesTableColumns) {
-                    ImGui.tableSetupColumn(namesTableColumn.normalName());
-                }
-                ImGui.tableHeadersRow();
-                for (final Name name : this.names) {
-                    ImGui.tableNextRow();
-                    for (int i = 0; i < maxTableColumns; i++) {
-                        ImGui.tableSetColumnIndex(i);
-                        final NamesTableColumn accountsTableColumn = namesTableColumns[i];
-                        switch (accountsTableColumn) {
-                            case USERNAME -> ImGui.textWrapped(name.username());
-                            case DATE -> ImGui.textWrapped(name.date());
-                            case ACCURATE -> ImGui.textWrapped(name.accurate());
-                            case ACTIONS -> {
-                                ImGui.spacing();
-                                if (ImGui.button("Copy Data##namehistorycopydata" + name.username(), 0, 28)) {
-                                    keyboard().setClipboard(
-                                            "Username: " + name.username() +
-                                                    " | Date: " + name.date() +
-                                                    " | Accurate: " + name.accurate()
-                                    );
+                ImGui.separator();
+                ImGui.text("Name History");
+                final NamesTableColumn[] namesTableColumns = NamesTableColumn.values();
+                final int maxTableColumns = namesTableColumns.length;
+                if (ImGui.beginTable("names##namestable", maxTableColumns,
+                        ImGuiTableFlags.Borders |
+                                ImGuiTableFlags.Resizable |
+                                ImGuiTableFlags.RowBg |
+                                ImGuiTableFlags.ContextMenuInBody
+                )) {
+                    for (final NamesTableColumn namesTableColumn : namesTableColumns) {
+                        ImGui.tableSetupColumn(namesTableColumn.normalName());
+                    }
+                    ImGui.tableHeadersRow();
+                    for (final Name name : this.names) {
+                        ImGui.tableNextRow();
+                        for (int i = 0; i < maxTableColumns; i++) {
+                            ImGui.tableSetColumnIndex(i);
+                            final NamesTableColumn accountsTableColumn = namesTableColumns[i];
+                            switch (accountsTableColumn) {
+                                case USERNAME -> ImGui.textWrapped(name.username());
+                                case DATE -> ImGui.textWrapped(name.date());
+                                case ACCURATE -> ImGui.textWrapped(name.accurate());
+                                case ACTIONS -> {
+                                    ImGui.spacing();
+                                    if (ImGui.button("Copy Data##namehistorycopydata" + name.username(), 0, 28)) {
+                                        keyboard().setClipboard(
+                                                "Username: " + name.username() +
+                                                        " | Date: " + name.date() +
+                                                        " | Accurate: " + name.accurate()
+                                        );
+                                    }
+                                    ImGui.spacing();
                                 }
-                                ImGui.spacing();
-                            }
-                            default -> {
+                                default -> {
+                                }
                             }
                         }
                     }
+                    ImGui.endTable();
                 }
-                ImGui.endTable();
             }
             ImGui.end();
         }
