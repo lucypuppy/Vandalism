@@ -1,0 +1,169 @@
+package de.vandalismdevelopment.vandalism.feature.impl.module.impl.misc;
+
+import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.florianmichael.rclasses.math.integration.MSTimer;
+import de.vandalismdevelopment.vandalism.event.TickListener;
+import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
+import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
+import de.vandalismdevelopment.vandalism.value.Value;
+import de.vandalismdevelopment.vandalism.value.values.number.slider.SliderIntegerValue;
+import net.minecraft.block.AirBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.FluidBlock;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
+
+import java.util.concurrent.CopyOnWriteArrayList;
+
+public class InteractionSpammModule extends Module implements TickListener {
+
+    private final Value<Integer> maxXReach = new SliderIntegerValue(
+            "Max X Reach",
+            "The max y reach.",
+            this,
+            3,
+            0,
+            5
+    );
+
+    private final Value<Integer> maxZReach = new SliderIntegerValue(
+            "Max Z Reach",
+            "The max z reach.",
+            this,
+            3,
+            0,
+            5
+    );
+
+    private final Value<Integer> maxYReach = new SliderIntegerValue(
+            "Max Y Reach",
+            "The max y reach.",
+            this,
+            3,
+            0,
+            5
+    );
+
+    private final Value<Integer> interactionListsDelay = new SliderIntegerValue(
+            "Interaction Lists Delay",
+            "The delay between interaction lists.",
+            this,
+            1000,
+            0,
+            2000
+    );
+
+    private final Value<Integer> interactionDelay = new SliderIntegerValue(
+            "Interaction Delay",
+            "The delay between interactions.",
+            this,
+            100,
+            0,
+            2000
+    );
+
+    private final CopyOnWriteArrayList<CopyOnWriteArrayList<BlockHitResult>> queue;
+
+    private final MSTimer interactionListsTimer, interactionTimer;
+
+    private CopyOnWriteArrayList<BlockHitResult> blockHitResults;
+
+    public InteractionSpammModule() {
+        super(
+                "Interaction Spamm",
+                "Lets you spam interactions.",
+                FeatureCategory.MISC,
+                false,
+                false
+        );
+        this.queue = new CopyOnWriteArrayList<>();
+        this.interactionListsTimer = new MSTimer();
+        this.interactionTimer = new MSTimer();
+        this.blockHitResults = new CopyOnWriteArrayList<>();
+    }
+
+    private void clear() {
+        this.queue.clear();
+        this.blockHitResults.clear();
+    }
+
+    @Override
+    protected void onEnable() {
+        this.clear();
+        DietrichEvents2.global().subscribe(TickEvent.ID, this);
+    }
+
+    @Override
+    protected void onDisable() {
+        DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
+        this.clear();
+    }
+
+    @Override
+    public void onTick() {
+        final Entity cameraEntity = mc().getCameraEntity();
+        if (player() == null || world() == null || interactionManager() == null || cameraEntity == null) {
+            this.clear();
+            return;
+        }
+        if (this.blockHitResults.isEmpty()) {
+            if (!this.queue.isEmpty()) {
+                if (this.interactionListsTimer.hasReached(this.interactionListsDelay.getValue(), true)) {
+                    this.blockHitResults = this.queue.get(0);
+                    this.queue.remove(this.blockHitResults);
+                }
+            }
+        } else {
+            for (final BlockHitResult blockHitResult : this.blockHitResults) {
+                if (this.interactionTimer.hasReached(this.interactionDelay.getValue(), true)) {
+                    interactionManager().interactBlock(player(), Hand.MAIN_HAND, blockHitResult);
+                    this.blockHitResults.remove(blockHitResult);
+                }
+            }
+        }
+        final HitResult hitResult = cameraEntity.raycast(interactionManager().getReachDistance(), 0, false);
+        if (!(hitResult instanceof final BlockHitResult blockHitResult)) return;
+        final Block block = world().getBlockState(blockHitResult.getBlockPos()).getBlock();
+        if (!(block instanceof AirBlock || block instanceof FluidBlock)) {
+            if (options().useKey.isPressed()) {
+                this.interactionListsTimer.reset();
+                this.interactionTimer.reset();
+                final CopyOnWriteArrayList<BlockHitResult> blockHitResults = new CopyOnWriteArrayList<>();
+                for (int y = 0; y < this.maxYReach.getValue(); y++) {
+                    for (int x = 0; x < this.maxXReach.getValue(); x++) {
+                        for (int z = 0; z < this.maxZReach.getValue(); z++) {
+                            blockHitResults.add(new BlockHitResult(
+                                    blockHitResult.getPos().add(-x, y, z),
+                                    blockHitResult.getSide(),
+                                    blockHitResult.getBlockPos().add(-x, y, z),
+                                    blockHitResult.isInsideBlock()
+                            ));
+                            blockHitResults.add(new BlockHitResult(
+                                    blockHitResult.getPos().add(x, y, -z),
+                                    blockHitResult.getSide(),
+                                    blockHitResult.getBlockPos().add(x, y, -z),
+                                    blockHitResult.isInsideBlock()
+                            ));
+                            blockHitResults.add(new BlockHitResult(
+                                    blockHitResult.getPos().add(x, y, z),
+                                    blockHitResult.getSide(),
+                                    blockHitResult.getBlockPos().add(x, y, z),
+                                    blockHitResult.isInsideBlock()
+                            ));
+                            blockHitResults.add(new BlockHitResult(
+                                    blockHitResult.getPos().add(-x, y, -z),
+                                    blockHitResult.getSide(),
+                                    blockHitResult.getBlockPos().add(-x, y, -z),
+                                    blockHitResult.isInsideBlock()
+                            ));
+                        }
+                    }
+                }
+                this.queue.add(blockHitResults);
+            }
+        }
+    }
+
+}
