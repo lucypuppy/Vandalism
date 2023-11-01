@@ -14,6 +14,7 @@ import imgui.type.ImString;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
 
 public class PortScannerImGuiMenu extends ImGuiMenu {
 
@@ -120,7 +121,7 @@ public class PortScannerImGuiMenu extends ImGuiMenu {
                         this.reset();
                         this.state.set(State.RUNNING.getMessage());
                         for (int i = 0; i < this.threads.get(); i++) {
-                            new Thread(() -> {
+                            Executors.newSingleThreadExecutor().submit(() -> {
                                 try {
                                     while (this.isRunning() && this.currentPort < this.maxPort.get()) {
                                         this.currentPort++;
@@ -144,7 +145,7 @@ public class PortScannerImGuiMenu extends ImGuiMenu {
                                 } catch (final Exception e) {
                                     this.state.set(State.FAILED.getMessage() + e.getClass().getSimpleName() + ": " + e.getMessage());
                                 }
-                            }).start();
+                            });
                         }
                     }
                 }
