@@ -231,6 +231,12 @@ public class ModuleRegistry implements KeyboardListener {
         return this.antiFOVModule;
     }
 
+    private InteractionSpammModule interactionSpammModule;
+
+    public InteractionSpammModule getInteractionSpammModule() {
+        return this.interactionSpammModule;
+    }
+
     private boolean done;
 
     private final FeatureList<Module> modules;
@@ -280,6 +286,7 @@ public class ModuleRegistry implements KeyboardListener {
                 this.illegalBlockPlaceModule = new IllegalBlockPlaceModule(),
                 this.autoRespawnModule = new AutoRespawnModule(),
                 this.antiFOVModule = new AntiFOVModule(),
+                this.interactionSpammModule = new InteractionSpammModule(),
                 this.headUpDisplayModule = new HeadUpDisplayModule()
         );
     }
