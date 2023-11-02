@@ -190,6 +190,9 @@ public class ServerInfoWidget implements MinecraftWrapper {
             if (ImGui.begin("Player List of " + this.mcPingResponse.server.ip + ":" + this.mcPingResponse.server.port + uniqueId,
                     ImGuiWindowFlags.NoCollapse
             )) {
+                if (ImGui.button("Close Player List" + uniqueId)) {
+                    this.showPlayerList = false;
+                }
                 final PlayersTableColumn[] playersTableColumns = PlayersTableColumn.values();
                 final int maxPlayerTableColumns = playersTableColumns.length;
                 if (ImGui.beginTable("players" + uniqueId, maxPlayerTableColumns,
@@ -233,6 +236,9 @@ public class ServerInfoWidget implements MinecraftWrapper {
                         (this.mcPingResponse.forgeData != null && this.mcPingResponse.forgeData.mods.length > 0))
         ) {
             if (ImGui.begin("Mods of " + this.mcPingResponse.server.ip + ":" + this.mcPingResponse.server.port + uniqueId, ImGuiWindowFlags.NoCollapse)) {
+                if (ImGui.button("Close Mods" + uniqueId)) {
+                    this.showMods = false;
+                }
                 final ModsTableColumn[] modsTableColumns = ModsTableColumn.values();
                 final int maxModTableColumns = modsTableColumns.length;
                 if (ImGui.beginTable("mods" + uniqueId, maxModTableColumns,
@@ -310,6 +316,9 @@ public class ServerInfoWidget implements MinecraftWrapper {
         }
         if (this.showPlugins && this.queryPingResponse != null && this.queryPingResponse.plugins.sample.length > 0) {
             if (ImGui.begin("Plugins of " + this.queryPingResponse.server.ip + ":" + this.queryPingResponse.server.port + uniqueId, ImGuiWindowFlags.NoCollapse)) {
+                if (ImGui.button("Close Plugins" + uniqueId)) {
+                    this.showPlugins = false;
+                }
                 final PluginsTableColumn[] pluginsTableColumns = PluginsTableColumn.values();
                 final int maxPluginTableColumns = pluginsTableColumns.length;
                 if (ImGui.beginTable("plugins" + uniqueId, maxPluginTableColumns,

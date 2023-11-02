@@ -9,6 +9,7 @@ import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.values.BooleanValue;
 import imgui.ImGui;
+import imgui.flag.ImGuiWindowFlags;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.Ownable;
@@ -72,7 +73,7 @@ public class DebugModule extends Module implements RenderListener, PacketListene
             if (player() != null) {
                 if (world() != null) {
                     if (this.showEntitiesInRange.getValue()) {
-                        if (ImGui.begin("Entities in Range##debugModuleEntitiesInRange")) {
+                        if (ImGui.begin("Entities in Range##debugModuleEntitiesInRange", ImGuiWindowFlags.NoCollapse)) {
                             int i = 0;
                             for (final Entity entity : world().getEntities()) {
                                 final String entityUUID = entity.getUuidAsString();
@@ -99,7 +100,7 @@ public class DebugModule extends Module implements RenderListener, PacketListene
                         }
                     }
                     if (this.showOpenCustomPayloadChannels.getValue()) {
-                        if (ImGui.begin("Open Custom Payload Channels##debugModuleShowOpenCustomPayloadChannels")) {
+                        if (ImGui.begin("Open Custom Payload Channels##debugModuleShowOpenCustomPayloadChannels", ImGuiWindowFlags.NoCollapse)) {
                             for (final String channel : this.openCustomPayloadChannels) {
                                 ImGui.text(channel);
                             }

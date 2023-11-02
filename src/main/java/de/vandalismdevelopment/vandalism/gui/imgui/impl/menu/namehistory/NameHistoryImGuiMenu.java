@@ -13,6 +13,7 @@ import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiTableFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
+import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.util.Uuids;
 
 import java.util.ArrayList;
@@ -100,61 +101,73 @@ public class NameHistoryImGuiMenu extends ImGuiMenu {
                     this.lastUsername = usernameValue;
                     this.executor.submit(() -> {
                         try {
-                            this.state.set("Getting uuid by username...");
+                            this.state.set("Getting uuid by username from mojang api...");
                             final String mojangApiContent = WebUtils.DEFAULT.get("https://api.mojang.com/users/profiles/minecraft/" + this.lastUsername);
                             if (!mojangApiContent.isBlank()) {
                                 this.lastUUID = mojangApiContent.split("\"id\" : \"")[1].split("\",")[0].replaceFirst(
                                         "(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)",
                                         "$1-$2-$3-$4-$5"
                                 );
-                                if (!this.lastUUID.isBlank()) {
-                                    this.state.set("Got uuid by username.");
-                                    this.state.set("Getting name history by uuid...");
-                                    final String labyNetApiContent = WebUtils.DEFAULT.get("https://laby.net/api/v2/user/" + this.lastUUID + "/get-profile");
-                                    if (!labyNetApiContent.isBlank()) {
-                                        final JsonObject jsonObject = this.gson.fromJson(labyNetApiContent, JsonObject.class);
-                                        if (jsonObject.has("username_history")) {
-                                            final JsonArray usernameHistory = jsonObject.getAsJsonArray("username_history");
-                                            for (final JsonElement element : usernameHistory) {
-                                                final JsonObject usernameObject = element.getAsJsonObject();
-                                                String date =
-                                                        usernameObject.get("changed_at").isJsonNull() ? "" :
-                                                                usernameObject.get("changed_at").getAsString();
-                                                if (!date.isBlank()) {
-                                                    date = date.replaceFirst(
-                                                            "(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2}):(\\d{2})(.*)",
-                                                            "$3.$2.$1 $4:$5:$6"
-                                                    );
-                                                } else date = "Unknown";
-                                                String accurate = usernameObject.get("accurate").getAsString();
-                                                if (accurate.equals("true")) accurate = "Yes";
-                                                else if (accurate.equals("false")) accurate = "No";
-                                                else accurate = "Unknown";
-                                                this.names.add(new Name(
-                                                        usernameObject.get("username").getAsString(),
-                                                        date,
-                                                        accurate
-                                                ));
-                                            }
-                                            if (this.names.isEmpty()) {
-                                                this.state.set("No name history found for " + this.lastUsername + ".");
-                                                this.clear();
-                                            } else this.state.set("Got name history.");
-                                        }
-                                    } else {
-                                        this.state.set("Invalid response for the name history from the laby.net api (Content is blank).");
-                                        this.clear();
-                                    }
-                                } else {
-                                    this.state.set("Invalid response for the uuid from the mojang api (UUID is blank).");
-                                    this.clear();
-                                }
                             } else {
                                 this.state.set("Invalid response for the uuid from the mojang api (Content is blank).");
                                 this.clear();
                             }
                         } catch (final Exception e) {
-                            this.state.set("Error while getting name history: " + e.getMessage());
+                            this.state.set("Error while getting uuid from mojang api: " + e);
+                        }
+                        if (this.lastUUID.isBlank() && player() != null) {
+                            this.state.set("Fallback: Trying to get the uuid from the user on the server...");
+                            for (final PlayerListEntry entry : networkHandler().getPlayerList()) {
+                                if (entry.getProfile().getName().equalsIgnoreCase(this.lastUsername)) {
+                                    this.lastUUID = entry.getProfile().getId().toString();
+                                    break;
+                                }
+                            }
+                        }
+                        if (!this.lastUUID.isBlank()) {
+                            try {
+                                this.state.set("Getting name history by uuid...");
+                                final String labyNetApiContent = WebUtils.DEFAULT.get("https://laby.net/api/v2/user/" + this.lastUUID + "/get-profile");
+                                if (!labyNetApiContent.isBlank()) {
+                                    final JsonObject jsonObject = this.gson.fromJson(labyNetApiContent, JsonObject.class);
+                                    if (jsonObject.has("username_history")) {
+                                        final JsonArray usernameHistory = jsonObject.getAsJsonArray("username_history");
+                                        for (final JsonElement element : usernameHistory) {
+                                            final JsonObject usernameObject = element.getAsJsonObject();
+                                            String date =
+                                                    usernameObject.get("changed_at").isJsonNull() ? "" :
+                                                            usernameObject.get("changed_at").getAsString();
+                                            if (!date.isBlank()) {
+                                                date = date.replaceFirst(
+                                                        "(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2}):(\\d{2})(.*)",
+                                                        "$3.$2.$1 $4:$5:$6"
+                                                );
+                                            } else date = "Unknown";
+                                            String accurate = usernameObject.get("accurate").getAsString();
+                                            if (accurate.equals("true")) accurate = "Yes";
+                                            else if (accurate.equals("false")) accurate = "No";
+                                            else accurate = "Unknown";
+                                            this.names.add(new Name(
+                                                    usernameObject.get("username").getAsString(),
+                                                    date,
+                                                    accurate
+                                            ));
+                                        }
+                                        if (this.names.isEmpty()) {
+                                            this.state.set("No name history found for " + this.lastUsername + ".");
+                                            this.clear();
+                                        } else this.state.set("Got name history.");
+                                    }
+                                } else {
+                                    this.state.set("Invalid response for the name history from the laby.net api (Content is blank).");
+                                    this.clear();
+                                }
+                            } catch (final Exception e) {
+                                this.state.set("Error while getting name history from mojang api: " + e);
+                                this.clear();
+                            }
+                        } else {
+                            this.state.set("Invalid uuid.");
                             this.clear();
                         }
                         this.delayedResetState();
