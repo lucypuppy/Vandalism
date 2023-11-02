@@ -3,12 +3,7 @@ package de.vandalismdevelopment.vandalism.creativetab;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemStackSet;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -41,47 +36,6 @@ public abstract class CreativeTab {
 
     public Collection<ItemStack> entries() {
         return ItemStackSet.create();
-    }
-
-    public ItemStack createItem(final ItemStack stack, final Text name, @Nullable final Text... description) {
-        return createItem(stack, name, false, null, description);
-    }
-
-    public ItemStack createItem(final ItemStack stack, final Text name, @Nullable final String author, @Nullable final Text... description) {
-        return createItem(stack, name, false, author, description);
-    }
-
-    public ItemStack createItem(final ItemStack stack, final Text name, final boolean glint) {
-        return createItem(stack, name, glint, null);
-    }
-
-    public ItemStack createItem(final ItemStack stack, final Text name, final boolean glint, @Nullable final String author, @Nullable final Text... description) {
-        final NbtCompound base = stack.getOrCreateNbt();
-        base.put(CreativeTabRegistry.CLIENTSIDE_NAME, new NbtCompound());
-        if (glint) base.put(CreativeTabRegistry.CLIENTSIDE_GLINT, new NbtCompound());
-        stack.setCustomName(name);
-        if (description != null || author != null) {
-            final NbtList lore = new NbtList();
-            if (author != null) {
-                lore.add(NbtString.of(Text.Serializer.toJson(Text.of(Formatting.AQUA + Formatting.BOLD.toString() + "Author" + Formatting.DARK_GRAY + ": " + Formatting.GOLD + Formatting.BOLD + author))));
-            }
-            if (description != null) {
-                for (final Text text : description) {
-                    if (text != null) lore.add(NbtString.of(Text.Serializer.toJson(text)));
-                }
-            }
-            stack.getOrCreateSubNbt(ItemStack.DISPLAY_KEY).put(ItemStack.LORE_KEY, lore);
-        }
-        return stack;
-    }
-
-    public NbtCompound createEffect(final String id, final int duration, final int amplifier, final boolean showParticles) {
-        final NbtCompound effect = new NbtCompound();
-        effect.putString("id", "minecraft:" + id);
-        effect.putByte("show_particles", showParticles ? (byte) 1 : (byte) 0);
-        effect.putInt("duration", duration);
-        effect.putByte("amplifier", (byte) amplifier);
-        return effect;
     }
 
 }

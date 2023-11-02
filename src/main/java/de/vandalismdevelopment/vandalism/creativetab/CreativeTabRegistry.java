@@ -39,6 +39,7 @@ public class CreativeTabRegistry implements PacketListener, MinecraftWrapper {
                 new GriefItemsCreativeTab(),
                 new TrollItemsCreativeTab()
         );
+        DietrichEvents2.global().subscribe(PacketEvent.ID, this, Priorities.HIGH);
     }
 
     private void registerCreativeTabs(final CreativeTab... creativeTabs) {
@@ -59,7 +60,6 @@ public class CreativeTabRegistry implements PacketListener, MinecraftWrapper {
                 );
             }
         }
-        DietrichEvents2.global().subscribe(PacketEvent.ID, this, Priorities.HIGH);
     }
 
     @Override
