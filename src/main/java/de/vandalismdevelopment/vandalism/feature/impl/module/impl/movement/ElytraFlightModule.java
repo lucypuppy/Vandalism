@@ -49,7 +49,7 @@ public class ElytraFlightModule extends Module implements TickListener {
         final ItemStack itemStack = player().getEquippedStack(EquipmentSlot.CHEST);
         if (itemStack.getItem() != Items.ELYTRA || !ElytraItem.isUsable(itemStack)) {
             ChatUtil.errorChatMessage(Text.literal("You need to equip an elytra to fly."));
-            this.setState(false);
+            this.disable();
         }
     }
 
