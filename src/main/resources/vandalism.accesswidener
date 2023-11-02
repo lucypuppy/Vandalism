@@ -67,3 +67,7 @@ accessible class net/minecraft/client/texture/PlayerSkinProvider$Key
 accessible method net/minecraft/client/texture/PlayerSkinProvider getTextureEntry (Lcom/mojang/authlib/GameProfile;)Lcom/mojang/authlib/properties/Property;
 accessible method net/minecraft/client/gui/screen/GameMenuScreen disconnect ()V
 accessible method net/minecraft/client/network/ClientPlayerInteractionManager syncSelectedSlot ()V
+accessible field net/minecraft/network/packet/c2s/play/ClickSlotC2SPacket actionType Lnet/minecraft/screen/slot/SlotActionType;
+mutable field net/minecraft/network/packet/c2s/play/ClickSlotC2SPacket actionType Lnet/minecraft/screen/slot/SlotActionType;
+accessible field net/minecraft/network/packet/c2s/play/ClickSlotC2SPacket button I
+mutable field net/minecraft/network/packet/c2s/play/ClickSlotC2SPacket button I

@@ -62,7 +62,8 @@ public class CommandRegistry {
                 new ServerBrandCommand(),
                 new SkriptDupeCommand(),
                 new NavigateXCommand(),
-                new ScriptCommand()
+                new ScriptCommand(),
+                new ArmorCarryCommand()
         );
     }
 
