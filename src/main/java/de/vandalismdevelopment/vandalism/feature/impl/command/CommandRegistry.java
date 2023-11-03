@@ -12,9 +12,11 @@ import de.vandalismdevelopment.vandalism.feature.impl.command.impl.development.T
 import de.vandalismdevelopment.vandalism.feature.impl.command.impl.exploit.*;
 import de.vandalismdevelopment.vandalism.feature.impl.command.impl.misc.*;
 import de.vandalismdevelopment.vandalism.feature.impl.command.impl.movement.ClipCommand;
+import de.vandalismdevelopment.vandalism.feature.impl.command.impl.movement.FlipCommand;
 import de.vandalismdevelopment.vandalism.feature.impl.command.impl.movement.HClipCommand;
 import de.vandalismdevelopment.vandalism.feature.impl.command.impl.movement.VClipCommand;
 import de.vandalismdevelopment.vandalism.feature.impl.command.impl.render.ClientsideGameModeCommand;
+import de.vandalismdevelopment.vandalism.feature.impl.command.impl.render.ClientsideInventoryClearCommand;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommandSource;
 import net.minecraft.command.CommandSource;
@@ -63,7 +65,14 @@ public class CommandRegistry {
                 new SkriptDupeCommand(),
                 new NavigateXCommand(),
                 new ScriptCommand(),
-                new ArmorCarryCommand()
+                new ArmorCarryCommand(),
+                new InventoryClearCommand(),
+                new CopyInvisibleCharCommand(),
+                new CopyUsernameCommand(),
+                new CreativeItemControlCommand(),
+                new EnchantCommand(),
+                new FlipCommand(),
+                new ClientsideInventoryClearCommand()
         );
     }
 

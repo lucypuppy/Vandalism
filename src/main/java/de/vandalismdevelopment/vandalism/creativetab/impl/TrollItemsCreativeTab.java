@@ -2,13 +2,16 @@ package de.vandalismdevelopment.vandalism.creativetab.impl;
 
 import de.vandalismdevelopment.vandalism.creativetab.CreativeTab;
 import de.vandalismdevelopment.vandalism.util.ItemUtil;
+import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,6 +28,12 @@ public class TrollItemsCreativeTab extends CreativeTab {
     @Override
     public Collection<ItemStack> entries() {
         final Collection<ItemStack> current = super.entries();
+        for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
+            current.add(ItemUtil.createItemStack(
+                    this.createTrollPotion(new ItemStack(item)),
+                    Text.literal(Formatting.GOLD + "Troll Potion")
+            ));
+        }
         for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
             current.add(ItemUtil.createItemStack(
                     this.createKillPotion(new ItemStack(item)),
@@ -55,21 +64,23 @@ public class TrollItemsCreativeTab extends CreativeTab {
         return current;
     }
 
-    private ItemStack createStargazer() {
-        final ItemStack item = new ItemStack(Items.COW_SPAWN_EGG);
+    private ItemStack createTrollPotion(final ItemStack origin) {
         final NbtCompound base = new NbtCompound();
-        final NbtCompound entityTag = new NbtCompound();
-        entityTag.putInt("Steps", Integer.MIN_VALUE);
-        entityTag.putString("id", "minecraft:shulker_bullet");
-        entityTag.putString(
-                "CustomName",
-                Text.Serializer.toJson(Text.literal("*").formatted(Formatting.YELLOW, Formatting.BOLD))
-        );
-        entityTag.putByte("CustomNameVisible", (byte) 1);
-        entityTag.putByte("NoGravity", (byte) 1);
-        base.put("EntityTag", entityTag);
-        item.setNbt(base);
-        return item;
+        final NbtList customPotionEffects = new NbtList();
+        for (final StatusEffect statusEffect : Registries.STATUS_EFFECT) {
+            final Identifier id = Registries.STATUS_EFFECT.getId(statusEffect);
+            if (id != null && id.getNamespace().equals("minecraft")) {
+                customPotionEffects.add(ItemUtil.createEffectNBT(
+                        id.getPath(),
+                        10000,
+                        255,
+                        false
+                ));
+            }
+        }
+        base.put("custom_potion_effects", customPotionEffects);
+        origin.setNbt(base);
+        return origin;
     }
 
     private ItemStack createKillPotion(final ItemStack origin) {
@@ -151,6 +162,23 @@ public class TrollItemsCreativeTab extends CreativeTab {
         entityTag.putInt("ReapplicationDelay", 40);
         entityTag.putString("Particle", "item air");
         entityTag.putString("id", "minecraft:area_effect_cloud");
+        base.put("EntityTag", entityTag);
+        item.setNbt(base);
+        return item;
+    }
+
+    private ItemStack createStargazer() {
+        final ItemStack item = new ItemStack(Items.COW_SPAWN_EGG);
+        final NbtCompound base = new NbtCompound();
+        final NbtCompound entityTag = new NbtCompound();
+        entityTag.putInt("Steps", Integer.MIN_VALUE);
+        entityTag.putString("id", "minecraft:shulker_bullet");
+        entityTag.putString(
+                "CustomName",
+                Text.Serializer.toJson(Text.literal("*").formatted(Formatting.YELLOW, Formatting.BOLD))
+        );
+        entityTag.putByte("CustomNameVisible", (byte) 1);
+        entityTag.putByte("NoGravity", (byte) 1);
         base.put("EntityTag", entityTag);
         item.setNbt(base);
         return item;

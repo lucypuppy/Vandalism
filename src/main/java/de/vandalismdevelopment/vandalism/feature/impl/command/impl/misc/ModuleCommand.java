@@ -41,7 +41,8 @@ public class ModuleCommand extends Command {
                             );
                             return SINGLE_SUCCESS;
                         })
-                )));
+                ))
+        );
     }
 
 }
