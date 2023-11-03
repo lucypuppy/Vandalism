@@ -6,6 +6,7 @@ import de.vandalismdevelopment.vandalism.event.KeyboardListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureList;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.combat.BowSpammerModule;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.development.DebugModule;
+import de.vandalismdevelopment.vandalism.feature.impl.module.impl.development.PacketLoggerModule;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.development.TestModule;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.exploit.*;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.misc.*;

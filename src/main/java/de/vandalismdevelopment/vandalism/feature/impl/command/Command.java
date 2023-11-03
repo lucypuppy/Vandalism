@@ -3,7 +3,6 @@ package de.vandalismdevelopment.vandalism.feature.impl.command;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import de.vandalismdevelopment.vandalism.feature.Feature;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.FeatureType;
@@ -11,7 +10,6 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.registry.BuiltinRegistries;
 import net.minecraft.server.command.CommandManager;
-import net.minecraft.text.Text;
 
 import java.util.Arrays;
 
@@ -19,10 +17,6 @@ public abstract class Command extends Feature {
 
     protected final static int SINGLE_SUCCESS = com.mojang.brigadier.Command.SINGLE_SUCCESS;
     protected final static CommandRegistryAccess REGISTRY_ACCESS = CommandManager.createRegistryAccess(BuiltinRegistries.createWrapperLookup());
-
-    protected final static SimpleCommandExceptionType
-            NOT_IN_CREATIVE_MODE = new SimpleCommandExceptionType(Text.literal("You must be in creative mode to use this.")),
-            NOT_SPACE_IN_HOT_BAR = new SimpleCommandExceptionType(Text.literal("No space in hot bar."));
 
     private final String[] aliases;
     private final String aliasesString;

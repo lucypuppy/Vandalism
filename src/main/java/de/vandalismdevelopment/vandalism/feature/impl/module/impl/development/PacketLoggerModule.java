@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.feature.impl.module.impl.misc;
+package de.vandalismdevelopment.vandalism.feature.impl.module.impl.development;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.dietrichevents2.Priorities;
@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.network.packet.c2s.play.ClickSlotC2SPacket;
+import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 import net.minecraft.network.packet.c2s.play.RequestCommandCompletionsC2SPacket;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 import net.minecraft.network.packet.s2c.play.OpenScreenS2CPacket;
@@ -41,6 +42,13 @@ public class PacketLoggerModule extends Module implements PacketListener {
             false
     );
 
+    private final Value<Boolean> creativeInventoryActionC2SPacket = new BooleanValue(
+            "Creative Inventory Action C2S Packet",
+            "Logs creative inventory action packets into the Chat.",
+            this,
+            false
+    );
+
     private final Value<Boolean> openScreenS2CPacket = new BooleanValue(
             "Open Screen S2C Packet",
             "Logs open screen packets into the Chat.",
@@ -52,7 +60,7 @@ public class PacketLoggerModule extends Module implements PacketListener {
         super(
                 "Packet Logger",
                 "Logs game packets and their data into the chat.",
-                FeatureCategory.MISC,
+                FeatureCategory.DEVELOPMENT,
                 true,
                 false
         );
@@ -98,6 +106,13 @@ public class PacketLoggerModule extends Module implements PacketListener {
                                 "Action Type: " + c2SPacket.getActionType().name() + " | " +
                                 "Stack: " + c2SPacket.getStack().getName().getString() + " | " +
                                 "Modified Stacks: " + modifiedStacks
+                );
+            }
+        } else if (packet instanceof final CreativeInventoryActionC2SPacket c2SPacket) {
+            if (this.creativeInventoryActionC2SPacket.getValue()) {
+                ChatUtil.infoChatMessage(
+                        "Outgoing creative inventory action packet > Slot: " + c2SPacket.getSlot() + " | " +
+                                "Stack: " + c2SPacket.getStack().getName().getString()
                 );
             }
         } else if (packet instanceof final CustomPayloadS2CPacket s2CPacket) {
