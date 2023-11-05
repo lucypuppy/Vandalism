@@ -29,34 +29,34 @@ public class TrollItemsCreativeTab extends CreativeTab {
     public Collection<ItemStack> entries() {
         final Collection<ItemStack> current = super.entries();
         for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
-            current.add(ItemUtil.createItemStack(
+            current.add(ItemUtil.appendClientSideInfoToItemStack(
                     this.createTrollPotion(new ItemStack(item)),
                     Text.literal(Formatting.GOLD + "Troll Potion")
             ));
         }
         for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
-            current.add(ItemUtil.createItemStack(
+            current.add(ItemUtil.appendClientSideInfoToItemStack(
                     this.createKillPotion(new ItemStack(item)),
                     Text.literal(Formatting.RED + "Kill Potion")
             ));
         }
-        current.add(ItemUtil.createItemStack(
+        current.add(ItemUtil.appendClientSideInfoToItemStack(
                 this.createKillArea(),
                 Text.literal(Formatting.RED + "Kill Area")
         ));
-        current.add(ItemUtil.createItemStack(
+        current.add(ItemUtil.appendClientSideInfoToItemStack(
                 this.createWhiteHole(),
                 Text.literal(Formatting.WHITE + Formatting.BOLD.toString() + "White Hole")
         ));
-        current.add(ItemUtil.createItemStack(
+        current.add(ItemUtil.appendClientSideInfoToItemStack(
                 this.createBlackHole(),
                 Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Black Hole")
         ));
-        current.add(ItemUtil.createItemStack(
+        current.add(ItemUtil.appendClientSideInfoToItemStack(
                 this.createEventHorizonArea(),
                 Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area")
         ));
-        current.add(ItemUtil.createItemStack(
+        current.add(ItemUtil.appendClientSideInfoToItemStack(
                 this.createStargazer(),
                 Text.literal(Formatting.YELLOW + Formatting.BOLD.toString() + "Stargazer"),
                 true

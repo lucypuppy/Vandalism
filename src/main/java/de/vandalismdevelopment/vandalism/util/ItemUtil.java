@@ -1,7 +1,10 @@
 package de.vandalismdevelopment.vandalism.util;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.creativetab.CreativeTabRegistry;
+import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -9,7 +12,9 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.SpawnEggItem;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
@@ -23,11 +28,11 @@ public class ItemUtil {
             NOT_IN_GAME = new SimpleCommandExceptionType(Text.literal("You need to be in-game to get items!")),
             NOT_IN_CREATIVE_MODE = new SimpleCommandExceptionType(Text.literal("You must be in creative mode to use this."));
 
-    public static ItemStack addEnchantment(final ItemStack stack, final Enchantment enchantment, final int level) {
-        return addEnchantment(stack, EnchantmentHelper.getEnchantmentId(enchantment), level);
+    public static ItemStack appendEnchantmentToItemStack(final ItemStack stack, final Enchantment enchantment, final int level) {
+        return appendEnchantmentToItemStack(stack, EnchantmentHelper.getEnchantmentId(enchantment), level);
     }
 
-    public static ItemStack addEnchantment(final ItemStack stack, final Identifier enchantmentId, final int level) {
+    public static ItemStack appendEnchantmentToItemStack(final ItemStack stack, final Identifier enchantmentId, final int level) {
         final NbtCompound tag = stack.getOrCreateNbt();
         if (!tag.contains(ItemStack.ENCHANTMENTS_KEY, 9)) tag.put(ItemStack.ENCHANTMENTS_KEY, new NbtList());
         final NbtList nbtList = tag.getList(ItemStack.ENCHANTMENTS_KEY, 10);
@@ -36,11 +41,11 @@ public class ItemUtil {
         return stack;
     }
 
-    public static ItemStack createSpawnEggItemStack(final Item origin, final String id) {
-        final ItemStack item = new ItemStack(origin);
+    public static ItemStack createSpawnEggItemStack(final SpawnEggItem originSpawnEgg, final String spawnEggID) {
+        final ItemStack item = new ItemStack(originSpawnEgg);
         final NbtCompound base = new NbtCompound();
         final NbtCompound entityTag = new NbtCompound();
-        entityTag.putString("id", id);
+        entityTag.putString("id", spawnEggID);
         base.put("EntityTag", entityTag);
         item.setNbt(base);
         return item;
@@ -55,11 +60,43 @@ public class ItemUtil {
         return effect;
     }
 
-    public static ItemStack createItemStack(final ItemStack stack, final Text name, @Nullable final Text... description) {
-        return createItemStack(stack, name, false, description);
+    public static ItemStack createItemStack(final Item item, final String nbt) {
+        return createItemStack(item, 1, nbt);
     }
 
-    public static ItemStack createItemStack(final ItemStack stack, final Text name, final boolean glint, @Nullable final Text... description) {
+    public static ItemStack createItemStack(final Item item, final int count, final String nbt) {
+        final ItemStack stack = new ItemStack(item, count);
+        try {
+            if (!nbt.isBlank()) {
+                stack.setNbt(NbtHelper.fromNbtProviderString(nbt));
+            }
+        } catch (final CommandSyntaxException e) {
+            Vandalism.getInstance().getLogger().error("Failed to create item stack with nbt: " + nbt, e);
+        }
+        return stack;
+    }
+
+    public static ItemStack createItemStack(final Block block, final String nbt) {
+        return createItemStack(block, 1, nbt);
+    }
+
+    public static ItemStack createItemStack(final Block block, final int count, final String nbt) {
+        final ItemStack stack = new ItemStack(block, count);
+        try {
+            if (!nbt.isBlank()) {
+                stack.setNbt(NbtHelper.fromNbtProviderString(nbt));
+            }
+        } catch (final CommandSyntaxException e) {
+            Vandalism.getInstance().getLogger().error("Failed to create block item stack with nbt: " + nbt, e);
+        }
+        return stack;
+    }
+
+    public static ItemStack appendClientSideInfoToItemStack(final ItemStack stack, final Text name, @Nullable final Text... description) {
+        return appendClientSideInfoToItemStack(stack, name, false, description);
+    }
+
+    public static ItemStack appendClientSideInfoToItemStack(final ItemStack stack, final Text name, final boolean glint, @Nullable final Text... description) {
         final NbtCompound base = stack.getOrCreateNbt();
         base.put(CreativeTabRegistry.CLIENTSIDE_NAME, new NbtCompound());
         if (glint) base.put(CreativeTabRegistry.CLIENTSIDE_GLINT, new NbtCompound());
@@ -74,8 +111,8 @@ public class ItemUtil {
         return stack;
     }
 
-    public static boolean giveItemStack(final ItemStack itemStack) {
-        return giveItemStack(itemStack, true);
+    public static void giveItemStack(final ItemStack itemStack) {
+        giveItemStack(itemStack, true);
     }
 
     public static boolean giveItemStack(final ItemStack itemStack, final boolean receiveMessage) {

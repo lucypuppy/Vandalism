@@ -4,6 +4,7 @@ import de.vandalismdevelopment.vandalism.creativetab.CreativeTab;
 import de.vandalismdevelopment.vandalism.util.ItemUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.SpawnEggItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -22,21 +23,21 @@ public class GriefItemsCreativeTab extends CreativeTab {
     @Override
     public Collection<ItemStack> entries() {
         final Collection<ItemStack> current = super.entries();
-        current.add(ItemUtil.createItemStack(
+        current.add(ItemUtil.appendClientSideInfoToItemStack(
                 this.createGriefCreeper(),
                 Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Grief Creeper")
         ));
-        current.add(ItemUtil.createItemStack(
+        current.add(ItemUtil.appendClientSideInfoToItemStack(
                 this.createPoweredGriefCreeper(),
                 Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Powered " + Formatting.RED + Formatting.BOLD + "Grief Creeper"),
                 true
         ));
-        current.add(ItemUtil.createItemStack(
-                ItemUtil.createSpawnEggItemStack(Items.SHEEP_SPAWN_EGG, "minecraft:ender_dragon"),
+        current.add(ItemUtil.appendClientSideInfoToItemStack(
+                ItemUtil.createSpawnEggItemStack((SpawnEggItem) Items.SHEEP_SPAWN_EGG, "minecraft:ender_dragon"),
                 Text.literal(Formatting.LIGHT_PURPLE + Formatting.BOLD.toString() + "Ender Dragon")
         ));
-        current.add(ItemUtil.createItemStack(
-                ItemUtil.createSpawnEggItemStack(Items.COW_SPAWN_EGG, "minecraft:wither"),
+        current.add(ItemUtil.appendClientSideInfoToItemStack(
+                ItemUtil.createSpawnEggItemStack((SpawnEggItem) Items.COW_SPAWN_EGG, "minecraft:wither"),
                 Text.literal(Formatting.WHITE + Formatting.BOLD.toString() + "Wither")
         ));
         return current;
