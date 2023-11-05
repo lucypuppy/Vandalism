@@ -24,15 +24,15 @@ public class KickItemsCreativeTab extends CreativeTab {
     @Override
     public Collection<ItemStack> entries() {
         final Collection<ItemStack> current = super.entries();
-        current.add(ItemUtil.createItemStack(
+        current.add(ItemUtil.appendClientSideInfoToItemStack(
                 this.createKickHead(),
                 Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Head")
         ));
-        current.add(ItemUtil.createItemStack(
+        current.add(ItemUtil.appendClientSideInfoToItemStack(
                 this.createKickHeadV2(),
                 Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Head V2")
         ));
-        current.add(ItemUtil.createItemStack(
+        current.add(ItemUtil.appendClientSideInfoToItemStack(
                 this.createKickStand(),
                 Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Stand")
         ));

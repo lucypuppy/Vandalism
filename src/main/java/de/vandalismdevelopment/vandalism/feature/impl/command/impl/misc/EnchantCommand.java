@@ -41,7 +41,7 @@ public class EnchantCommand extends Command {
     private void enchantItem(final Enchantment enchantment, final int level) {
         final ItemStack stack = player().getInventory().getMainHandStack();
         if (stack != null && !stack.isEmpty()) {
-            if (ItemUtil.giveItemStack(ItemUtil.addEnchantment(stack, enchantment, level), false)) {
+            if (ItemUtil.giveItemStack(ItemUtil.appendEnchantmentToItemStack(stack, enchantment, level), false)) {
                 ChatUtil.infoChatMessage("Enchanted the item in your main hand.");
             } else ChatUtil.errorChatMessage("Failed to enchant the item in your main hand.");
         } else ChatUtil.errorChatMessage("You must hold an item in your main hand.");

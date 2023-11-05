@@ -26,44 +26,44 @@ public class CrashItemsCreativeTab extends CreativeTab {
     public Collection<ItemStack> entries() {
         final Collection<ItemStack> current = super.entries();
         final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleRegistry().getExploitFixerModule();
-        current.add(ItemUtil.createItemStack(
+        current.add(ItemUtil.appendClientSideInfoToItemStack(
                 this.createCrashSkull("ewogICJ0aW1lc3RhbXAiIDogMTY4ODYwNjcyODYzNywKICAicHJvZmlsZUlkIiA6ICJhNDAxNDkxYTAwZTI0OGVmYTZmZjcxMjI2Y2ZhNzU1NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlZDBjaW5VIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICIiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="),
                 Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head")
         ));
-        current.add(ItemUtil.createItemStack(
+        current.add(ItemUtil.appendClientSideInfoToItemStack(
                 this.createCrashSkull("ewogICJ0aW1lc3RhbXAiIDogMTY4ODYwNjcyODYzNywKICAicHJvZmlsZUlkIiA6ICJhNDAxNDkxYTAwZTI0OGVmYTZmZjcxMjI2Y2ZhNzU1NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlZDBjaW5VIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICIgLm1pbmVjcmFmdC5uZXQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="),
                 Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head V2")
         ));
-        current.add(ItemUtil.createItemStack(
+        current.add(ItemUtil.appendClientSideInfoToItemStack(
                 this.createCrashSign("translation.test.invalid"),
                 Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign")
         ));
-        current.add(ItemUtil.createItemStack(
+        current.add(ItemUtil.appendClientSideInfoToItemStack(
                 this.createCrashSign("translation.test.invalid2"),
                 Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign V2")
         ));
-        current.add(ItemUtil.createItemStack(
+        current.add(ItemUtil.appendClientSideInfoToItemStack(
                 this.createCrashBook("translation.test.invalid"),
                 Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book")
         ));
-        current.add(ItemUtil.createItemStack(
+        current.add(ItemUtil.appendClientSideInfoToItemStack(
                 this.createCrashBook("translation.test.invalid2"),
                 Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book V2")
         ));
-        current.add(ItemUtil.createItemStack(
+        current.add(ItemUtil.appendClientSideInfoToItemStack(
                 this.createClientCrashExperience(),
                 Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Client Crash Experience")
         ));
-        current.add(ItemUtil.createItemStack(
+        current.add(ItemUtil.appendClientSideInfoToItemStack(
                 this.createClientCrashArea(),
                 Text.literal(Formatting.RED + "Client Crash Area")
         ));
-        current.add(ItemUtil.createItemStack(
+        current.add(ItemUtil.appendClientSideInfoToItemStack(
                 this.createSodiumClientFreezeEntity(),
                 Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Sodium Freeze Entity")
         ));
         if (exploitFixerModule.isEnabled() && exploitFixerModule.blockInvalidIdentifierCrash.getValue()) {
-            current.add(ItemUtil.createItemStack(
+            current.add(ItemUtil.appendClientSideInfoToItemStack(
                     this.createClientInstantCrashPot(),
                     Text.literal(
                             Formatting.DARK_RED +
@@ -72,11 +72,11 @@ public class CrashItemsCreativeTab extends CreativeTab {
                     )
             ));
         }
-        current.add(ItemUtil.createItemStack(
+        current.add(ItemUtil.appendClientSideInfoToItemStack(
                 this.createServerCrashEntity(),
                 Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Crash Entity")
         ));
-        current.add(ItemUtil.createItemStack(
+        current.add(ItemUtil.appendClientSideInfoToItemStack(
                 this.createInstantCrashSculkItem(),
                 Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Instant Crash Block")
         ));
