@@ -45,7 +45,7 @@ public class Rotation {
 
     @Override
     public String toString() {
-        return "Rotation{" +
+        return "{" +
                 "yaw=" + this.yaw +
                 ", pitch=" + this.pitch +
                 '}';
