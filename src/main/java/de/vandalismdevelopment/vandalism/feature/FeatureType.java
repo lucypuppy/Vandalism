@@ -4,7 +4,7 @@ import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
 
 public enum FeatureType implements EnumNameNormalizer {
 
-    COMMAND, MODULE, SCRIPT;
+    SCRIPT, COMMAND, MODULE;
 
     private final String normalName;
 
