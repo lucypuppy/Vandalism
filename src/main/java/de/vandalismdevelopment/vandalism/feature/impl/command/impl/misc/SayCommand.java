@@ -5,13 +5,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
 import net.minecraft.command.CommandSource;
-import net.minecraft.network.encryption.NetworkEncryptionUtils;
-import net.minecraft.network.message.LastSeenMessagesCollector;
-import net.minecraft.network.message.MessageBody;
-import net.minecraft.network.message.MessageSignatureData;
-import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
-
-import java.time.Instant;
 
 public class SayCommand extends Command {
 
@@ -29,15 +22,8 @@ public class SayCommand extends Command {
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.then(argument("message", StringArgumentType.greedyString()).executes(context -> {
             final String message = context.getArgument("message", String.class);
-            final Instant instant = Instant.now();
-            final long l = NetworkEncryptionUtils.SecureRandomUtil.nextLong();
-            if (networkHandler() != null) {
-                final LastSeenMessagesCollector.LastSeenMessages lastSeenMessages = networkHandler().lastSeenMessagesCollector.collect();
-                final MessageSignatureData messageSignatureData = networkHandler().messagePacker.pack(
-                        new MessageBody(message, instant, l, lastSeenMessages.lastSeen())
-                );
-                networkHandler().sendPacket(new ChatMessageC2SPacket(message, instant, l, messageSignatureData, lastSeenMessages.update()));
-            }
+            if (message.startsWith("/")) networkHandler().sendChatCommand(message);
+            else networkHandler().sendChatMessage(message);
             return SINGLE_SUCCESS;
         }));
     }
