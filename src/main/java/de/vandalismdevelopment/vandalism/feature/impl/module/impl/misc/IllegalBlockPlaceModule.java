@@ -11,8 +11,6 @@ import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.entity.Entity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.SpawnEggItem;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -54,11 +52,8 @@ public class IllegalBlockPlaceModule extends Module implements TickListener {
             return;
         }
         final HitResult hitResult = cameraEntity.raycast(interactionManager().getReachDistance(), 0, false);
-        if (
-                !(hitResult instanceof final BlockHitResult blockHitResult) ||
-                        !(player().getMainHandStack().getItem() instanceof BlockItem) &&
-                                !(player().getMainHandStack().getItem() instanceof SpawnEggItem)
-        ) return;
+        if (!(hitResult instanceof final BlockHitResult blockHitResult) || player().getMainHandStack().isEmpty())
+            return;
         final Block block = world().getBlockState(blockHitResult.getBlockPos()).getBlock();
         if (block instanceof AirBlock || block instanceof FluidBlock) {
             if (options().useKey.isPressed()) {
