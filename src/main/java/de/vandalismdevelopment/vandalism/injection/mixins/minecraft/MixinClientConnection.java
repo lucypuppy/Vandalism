@@ -7,13 +7,12 @@ import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.packet.Packet;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = ClientConnection.class)
+@Mixin(value = ClientConnection.class, priority = 9999)
 public abstract class MixinClientConnection {
 
     @Inject(
@@ -25,17 +24,19 @@ public abstract class MixinClientConnection {
             ),
             cancellable = true
     )
-    private void injectChannelRead0(final ChannelHandlerContext channelHandlerContext, final Packet<?> packet, final CallbackInfo ci) {
+    private void injectChannelRead0(final ChannelHandlerContext channelHandlerContext, Packet<?> packet, final CallbackInfo ci) {
         final PacketListener.PacketEvent packetEvent = new PacketListener.PacketEvent(packet);
         DietrichEvents2.global().postInternal(PacketListener.PacketEvent.ID, packetEvent);
         if (packetEvent.isCancelled()) ci.cancel();
+        else packet = packetEvent.packet;
     }
 
-    @Inject(method = "send(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/PacketCallbacks;)V", at = @At("HEAD"), cancellable = true)
-    private void injectSend(final Packet<?> packet, final @Nullable PacketCallbacks callback, final CallbackInfo ci) {
+    @Inject(method = "sendImmediately", at = @At("HEAD"), cancellable = true)
+    private void injectSend(Packet<?> packet, final PacketCallbacks callbacks, final boolean flush, final CallbackInfo ci) {
         final PacketListener.PacketEvent packetEvent = new PacketListener.PacketEvent(packet);
         DietrichEvents2.global().postInternal(PacketListener.PacketEvent.ID, packetEvent);
         if (packetEvent.isCancelled()) ci.cancel();
+        else packet = packetEvent.packet;
     }
 
     @Inject(method = "exceptionCaught", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;debug(Ljava/lang/String;Ljava/lang/Throwable;)V", ordinal = 1), cancellable = true)
