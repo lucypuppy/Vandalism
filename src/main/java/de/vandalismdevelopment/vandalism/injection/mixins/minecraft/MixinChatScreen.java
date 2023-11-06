@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.awt.*;
 
-@Mixin(value = ChatScreen.class, priority = 2000)
+@Mixin(value = ChatScreen.class, priority = 9999)
 public abstract class MixinChatScreen {
 
     @Shadow
