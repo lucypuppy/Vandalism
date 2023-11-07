@@ -17,12 +17,17 @@ repositories {
 
 	maven {
 		name = "Lenni0451"
-		url = "https://maven.lenni0451.net/everything"
+		url = "https://maven.lenni0451.net/everything/"
+	}
+
+	maven {
+		name = "Lenni0451"
+		url = "https://maven.lenni0451.net/releases/"
 	}
 
 	maven {
 		name = "TerraformersMC"
-		url = "https://maven.terraformersmc.com/releases"
+		url = "https://maven.terraformersmc.com/releases/"
 	}
 
 	maven {
@@ -32,12 +37,12 @@ repositories {
 
 	maven {
 		name = "ViaVersion"
-		url = "https://repo.viaversion.com"
+		url = "https://repo.viaversion.com/"
 	}
 
 	maven {
 		name = "Modrinth"
-		url = "https://api.modrinth.com/maven"
+		url = "https://api.modrinth.com/maven/"
 	}
 }
 
@@ -58,9 +63,10 @@ dependencies {
 	implementation "io.github.spair:imgui-java-natives-windows:${project.spair_imgui_version}"
 	implementation "io.github.spair:imgui-java-natives-linux:${project.spair_imgui_version}"
 
-	// Misc
+	// Mods
 	modImplementation "de.florianmichael:viafabricplus:${project.viafabricplus_version}"
-	implementation "de.florianmichael:DietrichEvents2:${project.dietrichevents2_version}"
+
+	// RClasses
 	implementation "de.florianmichael.rclasses:common:${project.rclasses_version}"
 	implementation "de.florianmichael.rclasses:functional:${project.rclasses_version}"
 	implementation "de.florianmichael.rclasses:io:${project.rclasses_version}"
@@ -68,9 +74,14 @@ dependencies {
 	implementation "de.florianmichael.rclasses:math:${project.rclasses_version}"
 	implementation "de.florianmichael.rclasses:pattern:${project.rclasses_version}"
 
+	// Class Transform
+	implementation "net.lenni0451.classtransform:core:${project.classtransform_version}"
+
+	// Misc
+	implementation "net.lenni0451:Reflect:${project.reflect_version}"
+	implementation "de.florianmichael:DietrichEvents2:${project.dietrichevents2_version}"
 	implementation "net.lenni0451:ImNbt:${project.imnbt_version}"
 	implementation "net.lenni0451:MCPing:${project.mc_ping_version}"
-
 	implementation "net.raphimc:MinecraftAuth:${project.minecraftauth_version}"
 	implementation "com.github.kwhat:jnativehook:${project.jnativehook_version}"
 	implementation "org.jsoup:jsoup:${project.jsoup_version}"

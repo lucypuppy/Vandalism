@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(PlayerListHud.class)
+@Mixin(value = PlayerListHud.class, priority = 9999)
 public abstract class MixinPlayerListHud {
 
     @Shadow
