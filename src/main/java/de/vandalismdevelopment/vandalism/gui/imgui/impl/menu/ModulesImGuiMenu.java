@@ -60,6 +60,11 @@ public class ModulesImGuiMenu extends ImGuiMenu {
                             if (ImGui.button(module.getName() + moduleIdentifier + "togglebutton", -1, 25)) {
                                 module.toggle();
                             }
+                            if (ImGui.isItemHovered()) {
+                                ImGui.beginTooltip();
+                                this.renderModuleDescription(module);
+                                ImGui.endTooltip();
+                            }
                             if (moduleEnabled) {
                                 ImGui.popStyleColor(3);
                             }
@@ -68,29 +73,7 @@ public class ModulesImGuiMenu extends ImGuiMenu {
                                 ImGui.separator();
                                 ImGui.spacing();
                                 final List<Value<?>> values = module.getValues();
-                                final String description = module.getDescription();
-                                if (!description.isBlank()) {
-                                    final List<String> descriptionLines = new ArrayList<>();
-                                    final String[] descriptionWords = description.split(" ");
-                                    if (descriptionWords.length > 10) {
-                                        StringBuilder currentLine = new StringBuilder();
-                                        for (final String descriptionWord : descriptionWords) {
-                                            if (currentLine.length() + descriptionWord.length() > 50) {
-                                                descriptionLines.add(currentLine.toString());
-                                                currentLine = new StringBuilder();
-                                            }
-                                            currentLine.append(descriptionWord).append(" ");
-                                        }
-                                        descriptionLines.add(currentLine.toString());
-                                    } else {
-                                        descriptionLines.add(description);
-                                    }
-                                    for (final String descriptionLine : descriptionLines) {
-                                        ImGui.text(descriptionLine);
-                                    }
-                                } else {
-                                    ImGui.text("No description found.");
-                                }
+                                this.renderModuleDescription(module);
                                 ImGui.spacing();
                                 if (module.isExperimental()) {
                                     ImGui.textColored(0.8f, 0.1f, 0.1f, 1f, "Warning this is a unstable experimental module!");
@@ -116,6 +99,32 @@ public class ModulesImGuiMenu extends ImGuiMenu {
                     ImGui.end();
                 }
             }
+        }
+    }
+
+    private void renderModuleDescription(final Module module) {
+        final String description = module.getDescription();
+        if (!description.isBlank()) {
+            final List<String> descriptionLines = new ArrayList<>();
+            final String[] descriptionWords = description.split(" ");
+            if (descriptionWords.length > 10) {
+                StringBuilder currentLine = new StringBuilder();
+                for (final String descriptionWord : descriptionWords) {
+                    if (currentLine.length() + descriptionWord.length() > 50) {
+                        descriptionLines.add(currentLine.toString());
+                        currentLine = new StringBuilder();
+                    }
+                    currentLine.append(descriptionWord).append(" ");
+                }
+                descriptionLines.add(currentLine.toString());
+            } else {
+                descriptionLines.add(description);
+            }
+            for (final String descriptionLine : descriptionLines) {
+                ImGui.text(descriptionLine);
+            }
+        } else {
+            ImGui.text("No description found.");
         }
     }
 
