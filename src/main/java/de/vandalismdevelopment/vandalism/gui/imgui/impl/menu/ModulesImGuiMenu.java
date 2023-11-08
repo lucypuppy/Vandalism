@@ -68,23 +68,28 @@ public class ModulesImGuiMenu extends ImGuiMenu {
                                 ImGui.separator();
                                 ImGui.spacing();
                                 final List<Value<?>> values = module.getValues();
-                                final List<String> descriptionLines = new ArrayList<>();
-                                final String[] descriptionWords = module.getDescription().split(" ");
-                                if (descriptionWords.length > 10) {
-                                    StringBuilder currentLine = new StringBuilder();
-                                    for (final String descriptionWord : descriptionWords) {
-                                        if (currentLine.length() + descriptionWord.length() > 50) {
-                                            descriptionLines.add(currentLine.toString());
-                                            currentLine = new StringBuilder();
+                                final String description = module.getDescription();
+                                if (!description.isBlank()) {
+                                    final List<String> descriptionLines = new ArrayList<>();
+                                    final String[] descriptionWords = description.split(" ");
+                                    if (descriptionWords.length > 10) {
+                                        StringBuilder currentLine = new StringBuilder();
+                                        for (final String descriptionWord : descriptionWords) {
+                                            if (currentLine.length() + descriptionWord.length() > 50) {
+                                                descriptionLines.add(currentLine.toString());
+                                                currentLine = new StringBuilder();
+                                            }
+                                            currentLine.append(descriptionWord).append(" ");
                                         }
-                                        currentLine.append(descriptionWord).append(" ");
+                                        descriptionLines.add(currentLine.toString());
+                                    } else {
+                                        descriptionLines.add(description);
                                     }
-                                    descriptionLines.add(currentLine.toString());
+                                    for (final String descriptionLine : descriptionLines) {
+                                        ImGui.text(descriptionLine);
+                                    }
                                 } else {
-                                    descriptionLines.add(module.getDescription());
-                                }
-                                for (final String descriptionLine : descriptionLines) {
-                                    ImGui.text(descriptionLine);
+                                    ImGui.text("No description found.");
                                 }
                                 ImGui.spacing();
                                 if (module.isExperimental()) {
