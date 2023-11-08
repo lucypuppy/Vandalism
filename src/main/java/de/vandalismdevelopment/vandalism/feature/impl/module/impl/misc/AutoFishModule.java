@@ -38,7 +38,7 @@ public class AutoFishModule extends Module implements TickListener {
     public AutoFishModule() {
         super(
                 "Auto Fish",
-                "",
+                "Automatically fishes for you.",
                 FeatureCategory.MISC,
                 false,
                 false
