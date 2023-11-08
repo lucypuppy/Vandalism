@@ -20,41 +20,33 @@ public class ModulesImGuiMenu extends ImGuiMenu {
 
     @Override
     public void render() {
-        if (ImGui.begin("Modules", ImGuiWindowFlags.NoCollapse)) {
-            if (ImGui.beginTabBar("modulesTabBar##modulestabbar")) {
-                final FeatureList<Module> modules = Vandalism.getInstance().getModuleRegistry().getModules();
-                if (!modules.isEmpty()) {
-                    for (final FeatureCategory featureCategory : FeatureCategory.values()) {
-                        final FeatureList<Module> modulesByCategory = modules.get(featureCategory);
-                        if (modulesByCategory.isEmpty()) continue;
-                        if (ImGui.beginTabItem(featureCategory.normalName() + " Modules##modulesfeaturecategory")) {
-                            //TODO: Make performance improvement to this code with something like caching.
-                            final List<Module> enabledModules = new ArrayList<>(), disabledModules = new ArrayList<>();
-                            for (final Module module : modulesByCategory) {
-                                if (module.isEnabled()) enabledModules.add(module);
-                                else disabledModules.add(module);
-                            }
-                            if (!enabledModules.isEmpty()) {
-                                ImGui.newLine();
-                                ImGui.text("Enabled Modules (" + enabledModules.size() + ")");
-                                for (final Module module : enabledModules) {
-                                    this.renderModule(module);
-                                }
-                            }
-                            if (!disabledModules.isEmpty()) {
-                                ImGui.newLine();
-                                ImGui.text("Disabled Modules (" + disabledModules.size() + ")");
-                                for (final Module module : disabledModules) {
-                                    this.renderModule(module);
-                                }
-                            }
-                            ImGui.endTabItem();
+        final FeatureList<Module> modules = Vandalism.getInstance().getModuleRegistry().getModules();
+        if (!modules.isEmpty()) {
+            for (final FeatureCategory featureCategory : FeatureCategory.values()) {
+                final FeatureList<Module> modulesByCategory = modules.get(featureCategory);
+                if (modulesByCategory.isEmpty()) continue;
+                if (ImGui.begin(featureCategory.normalName() + " Modules##modulesfeaturecategory", ImGuiWindowFlags.NoCollapse)) {
+                    //TODO: Make performance improvement to this code with something like caching.
+                    final List<Module> enabledModules = new ArrayList<>(), disabledModules = new ArrayList<>();
+                    for (final Module module : modulesByCategory) {
+                        if (module.isEnabled()) enabledModules.add(module);
+                        else disabledModules.add(module);
+                    }
+                    if (!enabledModules.isEmpty()) {
+                        ImGui.text("Enabled Modules (" + enabledModules.size() + ")");
+                        for (final Module module : enabledModules) {
+                            this.renderModule(module);
                         }
                     }
+                    if (!disabledModules.isEmpty()) {
+                        ImGui.text("Disabled Modules (" + disabledModules.size() + ")");
+                        for (final Module module : disabledModules) {
+                            this.renderModule(module);
+                        }
+                    }
+                    ImGui.end();
                 }
-                ImGui.endTabBar();
             }
-            ImGui.end();
         }
     }
 
