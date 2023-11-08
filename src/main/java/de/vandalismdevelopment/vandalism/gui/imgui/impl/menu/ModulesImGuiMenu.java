@@ -28,7 +28,7 @@ public class ModulesImGuiMenu extends ImGuiMenu {
                 final FeatureList<Module> modulesByCategory = modules.get(featureCategory);
                 if (modulesByCategory.isEmpty()) continue;
                 final String featureCategoryIdentifier = "##" + featureCategory.normalName() + "modulesfeaturecategory";
-                final float width = 185, height = 415;
+                final float width = 185, height = 415; //TODO: Make this customizable or use calculations.
                 ImGui.setNextWindowSizeConstraints(width, height, width, height);
                 if (ImGui.begin(featureCategory.normalName() + " Modules" + featureCategoryIdentifier,
                         ImGuiWindowFlags.NoCollapse |
