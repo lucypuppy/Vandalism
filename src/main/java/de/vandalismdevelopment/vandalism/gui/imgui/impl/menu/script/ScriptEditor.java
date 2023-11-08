@@ -139,7 +139,6 @@ public class ScriptEditor {
         this.textEditor.setLanguageDefinition(languageDefinition);
         this.textEditor.setText(code);
         this.textEditor.setShowWhitespaces(false);
-        //this.textEditor.setImGuiChildIgnored(true); TODO: Add injection or pushStyle to hide the horizontal scrollbar instead of using this.
         this.originalScriptName = StringUtils.replaceLast(scriptFile.getName(), ScriptParser.SCRIPT_FILE_EXTENSION, "");
         this.scriptName = new ImString(this.originalScriptName, Math.max(this.originalScriptName.length(), 50));
         this.infoTextField = new ImString();
