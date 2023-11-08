@@ -23,7 +23,9 @@ public class CustomResourcePackConfirmScreen extends ConfirmScreen {
             if (client != null && client.getNetworkHandler() != null) {
                 client.getNetworkHandler().sendPacket(new ResourcePackStatusC2SPacket(ResourcePackStatusC2SPacket.Status.ACCEPTED));
                 client.getNetworkHandler().sendPacket(new ResourcePackStatusC2SPacket(ResourcePackStatusC2SPacket.Status.SUCCESSFULLY_LOADED));
-                client.setScreen(null);
+                if (client.inGameHud != null) {
+                    client.setScreen(null);
+                }
             }
         }).dimensions(this.width / 2 - 155, y + 22, 150, 20).build());
         this.addButton(ButtonWidget.builder(Text.literal("Spoof Download"), (button) -> {
@@ -34,9 +36,11 @@ public class CustomResourcePackConfirmScreen extends ConfirmScreen {
             dump = true;
             this.callback.accept(true);
         }).dimensions(this.width / 2 - 155, y + 44, 150, 20).build());
-        this.addButton(ButtonWidget.builder(Text.literal("Close Screen"), (button) -> {
-            if (client != null) client.setScreen(null);
-        }).dimensions(this.width / 2 - 155 + 160, y + 44, 150, 20).build());
+        if (client != null && client.inGameHud != null) {
+            this.addButton(ButtonWidget.builder(Text.literal("Close Screen"), (button) -> {
+                client.setScreen(null);
+            }).dimensions(this.width / 2 - 155 + 160, y + 44, 150, 20).build());
+        }
     }
 
 }
