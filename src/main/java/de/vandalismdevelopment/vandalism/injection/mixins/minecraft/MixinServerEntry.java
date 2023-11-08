@@ -50,7 +50,6 @@ public abstract class MixinServerEntry {
             final int textX = x + this.client.textRenderer.getWidth(text) + 22;
             String versionName = this.server.version.getString();
             final int maxServerVersionLength = Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.maxServerVersionLength.getValue();
-            //TODO: Improve this, because the performance could drop from the substring method!
             if (versionName.length() > maxServerVersionLength) {
                 versionName = versionName.substring(0, maxServerVersionLength);
             }

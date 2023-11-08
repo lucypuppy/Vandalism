@@ -18,7 +18,7 @@ public abstract class Node {
         return this.name;
     }
 
-    public String getDescription() { //TODO: Implement this.
+    public String getDescription() {
         return this.description;
     }
 

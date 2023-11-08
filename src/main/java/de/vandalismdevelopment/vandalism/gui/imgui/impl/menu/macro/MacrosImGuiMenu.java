@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-//TODO: Finish this.
 public class MacrosImGuiMenu extends ImGuiMenu {
 
     private final NodeEditorContext context;
