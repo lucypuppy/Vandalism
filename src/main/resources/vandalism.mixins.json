@@ -25,6 +25,7 @@
     "minecraft.MixinClientPlayNetworkAddon",
     "minecraft.MixinClientPlayNetworkHandler",
     "minecraft.MixinClientWorld",
+    "minecraft.MixinCommandDispatcher",
     "minecraft.MixinConnectScreen",
     "minecraft.MixinDisconnectedScreen",
     "minecraft.MixinDownloadingTerrainScreen",
