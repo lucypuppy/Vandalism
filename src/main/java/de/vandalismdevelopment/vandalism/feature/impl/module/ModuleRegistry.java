@@ -161,10 +161,10 @@ public class ModuleRegistry implements KeyboardListener {
         return this.espModule;
     }
 
-    private BetterTooltipModule betterTooltipModule;
+    private BetterTooltipsModule betterTooltipsModule;
 
-    public BetterTooltipModule getBetterTooltipModule() {
-        return this.betterTooltipModule;
+    public BetterTooltipsModule getBetterTooltipsModule() {
+        return this.betterTooltipsModule;
     }
 
     private PhaseModule phaseModule;
@@ -282,7 +282,7 @@ public class ModuleRegistry implements KeyboardListener {
                 this.cameraNoClipModule = new CameraNoClipModule(),
                 this.joinLeaveModule = new JoinLeaveModule(),
                 this.espModule = new ESPModule(),
-                this.betterTooltipModule = new BetterTooltipModule(),
+                this.betterTooltipsModule = new BetterTooltipsModule(),
                 this.phaseModule = new PhaseModule(),
                 this.velocityModule = new VelocityModule(),
                 this.autoFishModule = new AutoFishModule(),
