@@ -29,7 +29,8 @@ public class IntegerValue extends StepNumberValue<Integer> {
     @Override
     public void render() {
         final ImInt imInt = new ImInt(getValue());
-        if (ImGui.inputInt(this.getName() + "##" + this.getSaveIdentifier(), imInt, this.getStep())) {
+        ImGui.text(this.getName());
+        if (ImGui.inputInt("##" + this.getSaveIdentifier(), imInt, this.getStep())) {
             this.setValue(imInt.get());
         }
     }

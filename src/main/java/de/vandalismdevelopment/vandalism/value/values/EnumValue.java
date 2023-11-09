@@ -34,16 +34,14 @@ public class EnumValue<T extends EnumNameNormalizer> extends Value<T> {
     @Override
     public void render() {
         final String selectedName = this.getValue().normalName();
-
-        if (ImGui.beginCombo(this.getName() + "##" + this.getSaveIdentifier(), selectedName)) {
+        ImGui.text(selectedName);
+        if (ImGui.beginCombo("##" + this.getSaveIdentifier(), selectedName)) {
             for (final T mode : this.values) {
                 final String name = mode.normalName();
-
                 if (ImGui.selectable(name, name.equals(selectedName))) {
                     this.setValue(mode);
                 }
             }
-
             ImGui.endCombo();
         }
     }

@@ -44,7 +44,8 @@ public class ListValue extends Value<String> {
 
     @Override
     public void render() {
-        if (ImGui.beginCombo(this.getName() + "##" + this.getSaveIdentifier(), getValue())) {
+        ImGui.text(this.getName());
+        if (ImGui.beginCombo("##" + this.getSaveIdentifier(), getValue())) {
             for (final String mode : this.values) {
                 if (ImGui.selectable(mode, mode.equals(getValue()))) {
                     this.setValue(mode);

@@ -33,13 +33,13 @@ public class MultiselectionValue extends Value<List<String>> {
 
     @Override
     public void render() {
-        final String displayString = getValue().toString().substring(1, getValue().toString().length() - 1);
-        if (ImGui.beginCombo(this.getName() + "##" + this.getSaveIdentifier(), displayString)) {
+        ImGui.text(this.getName());
+        if (ImGui.beginCombo("##" + this.getSaveIdentifier(), this.getValue().toString().substring(1, getValue().toString().length() - 1))) {
             for (final String value : this.existingValues) {
-                final boolean isSelected = isSelected(value);
+                final boolean isSelected = this.isSelected(value);
                 if (ImGui.selectable(value, isSelected)) {
-                    if (isSelected) getValue().remove(value);
-                    else getValue().add(value);
+                    if (isSelected) this.getValue().remove(value);
+                    else this.getValue().add(value);
                 }
             }
             ImGui.endCombo();
