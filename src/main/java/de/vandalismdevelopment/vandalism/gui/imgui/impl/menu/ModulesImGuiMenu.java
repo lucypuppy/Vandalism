@@ -125,7 +125,12 @@ public class ModulesImGuiMenu extends ImGuiMenu {
                         value.resetValue();
                     }
                 }
-                module.renderValues();
+                ImGui.pushStyleColor(ImGuiCol.ChildBg, 0.0f, 0.0f, 0.0f, 0.15f);
+                if (ImGui.beginChild("##" + moduleIdentifier + "configscrolllist", -1, 300, true)) { //TODO: Make the height customizable or use calculations.
+                    module.renderValues();
+                    ImGui.endChild();
+                }
+                ImGui.popStyleColor();
                 ImGui.separator();
             }
             ImGui.endPopup();

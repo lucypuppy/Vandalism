@@ -26,7 +26,8 @@ public class StringValue extends Value<String> {
     @Override
     public void render() {
         final ImString imString = new ImString(this.getValue());
-        if (ImGui.inputText(this.getName() + "##" + this.getSaveIdentifier(), imString, ImGuiInputTextFlags.CallbackResize)) {
+        ImGui.text(this.getValue());
+        if (ImGui.inputText("##" + this.getSaveIdentifier(), imString, ImGuiInputTextFlags.CallbackResize)) {
             this.setValue(imString.get());
         }
     }

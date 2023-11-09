@@ -34,12 +34,11 @@ public class KeyInputValue extends Value<GlfwKeyName> implements KeyboardListene
     @Override
     public void render() {
         if (!this.listen) {
-            if (ImGui.button(this.getValue().normalName() + "##" + this.getName() + this.getSaveIdentifier(), 0, 25)) {
+            ImGui.text(this.getName());
+            if (ImGui.button(this.getValue().normalName() + "##" + this.getSaveIdentifier(), 0, 25)) {
                 this.listen = true;
                 DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
             }
-            ImGui.sameLine();
-            ImGui.textWrapped(this.getName());
         } else {
             ImGui.textWrapped("Listening for key input...");
             if (ImGui.button("Cancel##" + this.getName() + this.getSaveIdentifier())) {

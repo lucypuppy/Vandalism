@@ -29,7 +29,8 @@ public class FloatValue extends StepNumberValue<Float> {
     @Override
     public void render() {
         final ImFloat imFloat = new ImFloat(getValue());
-        if (ImGui.inputFloat(this.getName() + "##" + this.getSaveIdentifier(), imFloat, getStep())) {
+        ImGui.text(this.getName());
+        if (ImGui.inputFloat("##" + this.getSaveIdentifier(), imFloat, getStep())) {
             this.setValue(imFloat.get());
         }
     }
