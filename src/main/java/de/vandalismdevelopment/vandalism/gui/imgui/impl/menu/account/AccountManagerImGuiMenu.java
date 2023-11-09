@@ -74,7 +74,9 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
 
     @Override
     public void render() {
-        if (ImGui.begin("Account Manager", ImGuiWindowFlags.NoCollapse)) {
+        final float width = 520, height = 630;
+        ImGui.setNextWindowSizeConstraints(width, height, width, height);
+        if (ImGui.begin("Account Manager", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoDocking)) {
             final Session session = MinecraftClient.getInstance().getSession();
             ImGui.text("Current Account");
             ImGui.inputTextMultiline("##currentAccountData", this.currentAccountData, -1, 60, ImGuiInputTextFlags.ReadOnly);
@@ -87,6 +89,7 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
             final List<Account> accounts = Vandalism.getInstance().getConfigManager().getAccountConfig().getAccounts();
             final AccountsTableColumn[] accountsTableColumns = AccountsTableColumn.values();
             final int maxTableColumns = accountsTableColumns.length;
+            ImGui.beginChild("##accountstablechild", -1, 200, true);
             if (ImGui.beginTable("accounts##accountstable", maxTableColumns,
                     ImGuiTableFlags.Borders |
                             ImGuiTableFlags.Resizable |
@@ -111,7 +114,8 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                             case ACTIONS -> {
                                 ImGui.spacing();
                                 final int buttonWidth = 0, buttonHeight = 28;
-                                if (ImGui.button("login##" + account.getUsername() + account.getUuid().toString(), buttonWidth, buttonHeight))
+                                final String identifier = "##" + account.getUsername() + account.getUuid().toString() + i;
+                                if (ImGui.button("login" + identifier + "login", buttonWidth, buttonHeight))
                                     this.executor.submit(() -> {
                                         try {
                                             account.login();
@@ -129,7 +133,7 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                                         this.delayedResetState();
                                     });
                                 ImGui.sameLine();
-                                if (ImGui.button("remove##" + account.getUsername() + account.getUuid().toString(), buttonWidth, buttonHeight)) {
+                                if (ImGui.button("remove" + identifier + "remove", buttonWidth, buttonHeight)) {
                                     accounts.remove(account);
                                     Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getAccountConfig());
                                 }
@@ -142,6 +146,7 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                 }
                 ImGui.endTable();
             }
+            ImGui.endChild();
             ImGui.newLine();
             ImGui.separator();
             ImGui.text("Add Account");
@@ -153,34 +158,34 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
             ImGui.setNextItemWidth(-300);
             ImGui.inputText("Cracked UUID##accountmanagercrackeduuid", this.crackedUUID);
             final String usernameValue = this.crackedUsername.get();
-            if (!usernameValue.isBlank() && usernameValue.length() > 2) {
-                if (ImGui.button("Add Cracked Account##accountmanageraddcrackedaccount")) {
-                    this.executor.submit(() -> {
-                        boolean contains = false;
-                        String uuidValue = this.crackedUUID.get();
-                        if (uuidValue.isBlank()) {
-                            uuidValue = Uuids.getOfflinePlayerUuid(usernameValue).toString();
+            if (!usernameValue.isBlank() && usernameValue.length() > 2 && usernameValue.length() < 17) {
+                final String originUUID = this.crackedUUID.get(), uuidValue;
+                if (originUUID.isBlank()) {
+                    uuidValue = Uuids.getOfflinePlayerUuid(usernameValue).toString();
+                } else uuidValue = originUUID;
+                if (ObjectTypeChecker.isUUID(uuidValue)) {
+                    boolean contains = false;
+                    for (final Account account : accounts) {
+                        if (account.getUuid().toString().equalsIgnoreCase(uuidValue)) {
+                            contains = true;
+                            break;
                         }
-                        for (final Account account : accounts) {
-                            if (account instanceof final CrackedAccount crackedAccount && crackedAccount.getUuid().toString().equals(uuidValue)) {
-                                contains = true;
-                                break;
-                            }
+                    }
+                    if (!contains) {
+                        if (ImGui.button("Add Cracked Account##accountmanageraddcrackedaccount")) {
+                            this.executor.submit(() -> {
+                                final UUID realUUID = UUID.fromString(uuidValue);
+                                accounts.add(new CrackedAccount(usernameValue, realUUID));
+                                Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getAccountConfig());
+                                this.crackedUsername.clear();
+                                this.crackedUUID.clear();
+                                this.state.set("Successfully added the cracked account to your account list: " + usernameValue);
+                                this.delayedResetState();
+                            });
                         }
-                        if (!contains && ObjectTypeChecker.isUUID(uuidValue)) {
-                            final UUID realUUID = UUID.fromString(uuidValue);
-                            accounts.add(new CrackedAccount(usernameValue, realUUID));
-                            Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getAccountConfig());
-                            this.crackedUsername.clear();
-                            this.crackedUUID.clear();
-                            this.state.set("Successfully added the cracked account to your account list: " + usernameValue);
-                        } else {
-                            this.state.set("Failed to add the cracked account to your account list because the UUID is invalid or already in use.");
-                        }
-                        this.delayedResetState();
-                    });
+                        ImGui.sameLine();
+                    }
                 }
-                ImGui.sameLine();
             }
             if (ImGui.button("Add Microsoft Account##accountmanageraddmicrosoftaccount")) {
                 this.executor.submit(() -> {
@@ -215,7 +220,7 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
             }
             ImGui.separator();
             ImGui.text("State");
-            ImGui.inputTextMultiline("##currentAccountLoginState", this.state, -1, -1, ImGuiInputTextFlags.ReadOnly);
+            ImGui.inputTextMultiline("##currentAccountLoginState", this.state, -1, 50, ImGuiInputTextFlags.ReadOnly);
             ImGui.end();
         }
     }

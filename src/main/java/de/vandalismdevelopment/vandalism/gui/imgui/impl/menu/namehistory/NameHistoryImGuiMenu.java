@@ -95,7 +95,7 @@ public class NameHistoryImGuiMenu extends ImGuiMenu {
                     USERNAME_NAME_FILTER
             );
             final String usernameValue = this.username.get();
-            if (!usernameValue.isBlank() && usernameValue.length() > 2) {
+            if (!usernameValue.isBlank() && usernameValue.length() > 2 && usernameValue.length() < 17) {
                 if (ImGui.button("Get##namehistoryget")) {
                     this.clear();
                     this.lastUsername = usernameValue;
