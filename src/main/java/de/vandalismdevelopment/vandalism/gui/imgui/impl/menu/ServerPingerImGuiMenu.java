@@ -80,28 +80,30 @@ public class ServerPingerImGuiMenu extends ImGuiMenu {
                             this.hostname.get().contains(".") &&
                             this.hostname.get().indexOf(".") < this.hostname.get().length() - 2
             ) {
-                ImGui.sameLine();
                 if (ImGui.button("Clear Hostname##clearhostnameserverpinger")) {
                     this.hostname.clear();
                 }
                 if (ImGui.inputInt("Port##portserverpinger", this.port, 1)) {
                     this.port.set(Math.max(1, Math.min(this.port.get(), 65535)));
                 }
-                ImGui.sameLine();
-                if (ImGui.button("Reset Port##portresetserverpinger")) {
-                    this.port.set(25565);
+                if (this.port.get() != 25565) {
+                    if (ImGui.button("Reset Port##portresetserverpinger")) {
+                        this.port.set(25565);
+                    }
                 }
                 if (ImGui.inputInt("Query Port##queryportserverpinger", this.queryPort, 1)) {
                     this.queryPort.set(Math.max(1, Math.min(this.queryPort.get(), 65535)));
                 }
-                ImGui.sameLine();
-                if (ImGui.button("Reset Query Port##queryresetserverpinger")) {
-                    this.queryPort.set(25565);
+                if (this.queryPort.get() != 25565) {
+                    if (ImGui.button("Reset Query Port##queryresetserverpinger")) {
+                        this.queryPort.set(25565);
+                    }
                 }
                 ImGui.inputInt("Protocol##protocolserverpinger", this.protocol, 1);
-                ImGui.sameLine();
-                if (ImGui.button("Reset Protocol##protocolresetserverpinger")) {
-                    this.protocol.set(SharedConstants.getProtocolVersion());
+                if (this.protocol.get() != SharedConstants.getProtocolVersion()) {
+                    if (ImGui.button("Reset Protocol##protocolresetserverpinger")) {
+                        this.protocol.set(SharedConstants.getProtocolVersion());
+                    }
                 }
                 if (ImGui.inputInt("Auto Ping Time##autopingtimeserverpinger", this.autoPingTime, 1)) {
                     this.autoPingTime.set(Math.max(1000, Math.min(this.autoPingTime.get(), 60000)));
