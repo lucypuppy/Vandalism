@@ -33,7 +33,6 @@ public class EnumValue<T extends EnumNameNormalizer> extends Value<T> {
 
     @Override
     public void render() {
-        ImGui.text(this.getName());
         final String selectedName = this.getValue().normalName();
         if (ImGui.beginCombo("##" + this.getSaveIdentifier(), selectedName)) {
             for (final T mode : this.values) {

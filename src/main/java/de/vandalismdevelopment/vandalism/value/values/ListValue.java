@@ -39,15 +39,14 @@ public class ListValue extends Value<String> {
 
     @Override
     public void onConfigSave(final JsonObject valueObject) {
-        valueObject.addProperty("value", getValue());
+        valueObject.addProperty("value", this.getValue());
     }
 
     @Override
     public void render() {
-        ImGui.text(this.getName());
-        if (ImGui.beginCombo("##" + this.getSaveIdentifier(), getValue())) {
+        if (ImGui.beginCombo("##" + this.getSaveIdentifier(), this.getValue())) {
             for (final String mode : this.values) {
-                if (ImGui.selectable(mode, mode.equals(getValue()))) {
+                if (ImGui.selectable(mode, mode.equals(this.getValue()))) {
                     this.setValue(mode);
                 }
             }

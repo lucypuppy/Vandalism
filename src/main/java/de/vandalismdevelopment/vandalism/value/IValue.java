@@ -32,13 +32,15 @@ public interface IValue {
             return;
         }
 
-        value.render();
+        ImGui.text(value.getName());
 
         if (ImGui.isItemHovered()) {
             ImGui.beginTooltip();
             ImGui.text(value.getDescription());
             ImGui.endTooltip();
         }
+
+        value.render();
     }
 
     String getValueName();

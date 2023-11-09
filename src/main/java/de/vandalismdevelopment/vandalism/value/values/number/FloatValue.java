@@ -23,14 +23,13 @@ public class FloatValue extends StepNumberValue<Float> {
 
     @Override
     public void onConfigSave(final JsonObject valueObject) {
-        valueObject.addProperty("value", getValue());
+        valueObject.addProperty("value", this.getValue());
     }
 
     @Override
     public void render() {
-        final ImFloat imFloat = new ImFloat(getValue());
-        ImGui.text(this.getName());
-        if (ImGui.inputFloat("##" + this.getSaveIdentifier(), imFloat, getStep())) {
+        final ImFloat imFloat = new ImFloat(this.getValue());
+        if (ImGui.inputFloat("##" + this.getSaveIdentifier(), imFloat, this.getStep())) {
             this.setValue(imFloat.get());
         }
     }

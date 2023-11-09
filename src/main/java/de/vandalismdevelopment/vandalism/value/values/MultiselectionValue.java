@@ -33,7 +33,6 @@ public class MultiselectionValue extends Value<List<String>> {
 
     @Override
     public void render() {
-        ImGui.text(this.getName());
         if (ImGui.beginCombo("##" + this.getSaveIdentifier(), this.getValue().toString().substring(1, getValue().toString().length() - 1))) {
             for (final String value : this.existingValues) {
                 final boolean isSelected = this.isSelected(value);
