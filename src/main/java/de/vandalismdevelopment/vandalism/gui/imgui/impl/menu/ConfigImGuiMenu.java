@@ -34,7 +34,9 @@ public class ConfigImGuiMenu extends ImGuiMenu {
                                 }
                             }
                             ImGui.separator();
+                            ImGui.beginChild("##configvalues" + valueCategory.getName());
                             valueCategory.renderValues();
+                            ImGui.endChild();
                             ImGui.endTabItem();
                         }
                     } else {
