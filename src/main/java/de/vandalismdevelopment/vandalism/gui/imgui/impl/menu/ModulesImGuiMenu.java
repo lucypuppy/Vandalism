@@ -41,20 +41,19 @@ public class ModulesImGuiMenu extends ImGuiMenu {
                 ImGui.setNextItemWidth(-1);
                 ImGui.inputText("##modulessearchinput", this.searchInput);
                 ImGui.separator();
+                ImGui.beginChild("##modulessearchscrolllist", -1, -1, true);
                 if (!this.searchInput.get().isBlank()) {
-                    if (ImGui.beginChild("##modulessearchscrolllist", -1, -1, true)) {
-                        for (final Module module : Vandalism.getInstance().getModuleRegistry().getModules()) {
-                            if (
-                                    StringUtils.contains(module.getName(), this.searchInput.get()) ||
-                                            StringUtils.contains(module.getDescription(), this.searchInput.get())
-                            ) {
-                                this.renderModule(module, "search");
-                            }
+                    for (final Module module : Vandalism.getInstance().getModuleRegistry().getModules()) {
+                        if (
+                                StringUtils.contains(module.getName(), this.searchInput.get()) ||
+                                        StringUtils.contains(module.getDescription(), this.searchInput.get())
+                        ) {
+                            this.renderModule(module, "search");
                         }
-                        ImGui.endChild();
                     }
-                    ImGui.separator();
                 }
+                ImGui.endChild();
+                ImGui.separator();
                 ImGui.end();
             }
             for (final FeatureCategory featureCategory : FeatureCategory.values()) {
@@ -64,12 +63,11 @@ public class ModulesImGuiMenu extends ImGuiMenu {
                 ImGui.setNextWindowSizeConstraints(width, height, width, height);
                 if (ImGui.begin(featureCategory.normalName() + " Modules" + featureCategoryIdentifier, windowFlags)) {
                     ImGui.separator();
-                    if (ImGui.beginChild(featureCategoryIdentifier + "scrolllist", -1, -1, true)) {
-                        for (final Module module : modulesByCategory) {
-                            this.renderModule(module, "category");
-                        }
-                        ImGui.endChild();
+                    ImGui.beginChild(featureCategoryIdentifier + "scrolllist", -1, -1, true);
+                    for (final Module module : modulesByCategory) {
+                        this.renderModule(module, "category");
                     }
+                    ImGui.endChild();
                     ImGui.separator();
                     ImGui.end();
                 }
@@ -126,10 +124,9 @@ public class ModulesImGuiMenu extends ImGuiMenu {
                     }
                 }
                 ImGui.pushStyleColor(ImGuiCol.ChildBg, 0.0f, 0.0f, 0.0f, 0.15f);
-                if (ImGui.beginChild("##" + moduleIdentifier + "configscrolllist", -1, 300, true)) { //TODO: Make the height customizable or use calculations.
-                    module.renderValues();
-                    ImGui.endChild();
-                }
+                ImGui.beginChild("##" + moduleIdentifier + "configscrolllist", -1, 300, true); //TODO: Make the height customizable or use calculations.
+                module.renderValues();
+                ImGui.endChild();
                 ImGui.popStyleColor();
                 ImGui.separator();
             }
