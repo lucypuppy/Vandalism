@@ -109,6 +109,7 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
                     ImGui.spacing();
                     ImGui.textWrapped("Scripts");
                     ImGui.separator();
+                    ImGui.beginChild("##scriptstablechild", -1, -1, true);
                     if (scripts.isEmpty()) {
                         ImGui.textWrapped("No scripts loaded!");
                     } else {
@@ -151,9 +152,7 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
                                                 for (final Value<?> scriptValue : script.getValues()) {
                                                     scriptValue.render();
                                                 }
-                                                if (ImGui.getWindowWidth() >= 1122) {
-                                                    ImGui.sameLine();
-                                                }
+                                                ImGui.sameLine();
                                                 ImGui.button("...##scriptsmoreactions" + script.getName(), 0, 25);
                                                 if (ImGui.beginPopupContextItem("##scriptsmoreactionspopup" + script.getName(),
                                                         ImGuiPopupFlags.MouseButtonLeft
@@ -234,6 +233,7 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
                             ImGui.endTable();
                         }
                     }
+                    ImGui.endChild();
                     ImGui.endTabItem();
                 }
                 for (final ScriptEditor scriptEditor : this.scriptEditors.values()) {
