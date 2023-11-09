@@ -29,13 +29,12 @@ public class ModulesImGuiMenu extends ImGuiMenu {
     public void render() {
         final FeatureList<Module> modules = Vandalism.getInstance().getModuleRegistry().getModules();
         if (!modules.isEmpty()) {
-            final float width = 185, height = 415; //TODO: Make this customizable or use calculations.
+            final float width = 185, minHeight = 140, maxHeight = 415;
             final int windowFlags = ImGuiWindowFlags.NoCollapse |
-                    ImGuiWindowFlags.NoResize |
                     ImGuiWindowFlags.NoScrollbar |
                     ImGuiWindowFlags.NoScrollWithMouse |
                     ImGuiWindowFlags.NoDocking;
-            ImGui.setNextWindowSizeConstraints(width, height, width, height);
+            ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
             if (ImGui.begin("Search##modulessearch", windowFlags)) {
                 ImGui.separator();
                 ImGui.setNextItemWidth(-1);
@@ -56,7 +55,7 @@ public class ModulesImGuiMenu extends ImGuiMenu {
                 ImGui.separator();
                 ImGui.end();
             }
-            ImGui.setNextWindowSizeConstraints(width, height, width, height);
+            ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
             if (ImGui.begin("Favorites##modulesfavorites", windowFlags)) {
                 ImGui.separator();
                 ImGui.beginChild("##modulesfavoritesscrolllist", -1, -1, true);
@@ -73,7 +72,7 @@ public class ModulesImGuiMenu extends ImGuiMenu {
                 final FeatureList<Module> modulesByCategory = modules.get(featureCategory);
                 if (modulesByCategory.isEmpty()) continue;
                 final String featureCategoryIdentifier = "##" + featureCategory.normalName() + "modulesfeaturecategory";
-                ImGui.setNextWindowSizeConstraints(width, height, width, height);
+                ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
                 if (ImGui.begin(featureCategory.normalName() + " Modules" + featureCategoryIdentifier, windowFlags)) {
                     ImGui.separator();
                     ImGui.beginChild(featureCategoryIdentifier + "scrolllist", -1, -1, true);
