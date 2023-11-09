@@ -12,13 +12,33 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinKeyboard {
 
     @Inject(method = "onKey", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;", shift = At.Shift.BEFORE, ordinal = 0))
-    private void injectKeyboardKey(final long window, final int key, final int scanCode, final int action, final int modifiers, final CallbackInfo callbackInfo) {
-        DietrichEvents2.global().postInternal(KeyboardListener.KeyboardEvent.ID, new KeyboardListener.KeyboardEvent(KeyboardListener.KeyboardEventType.KEY, window, key, -1, scanCode, action, modifiers));
+    private void injectOnKey(final long window, final int key, final int scanCode, final int action, final int modifiers, final CallbackInfo callbackInfo) {
+        DietrichEvents2.global().postInternal(KeyboardListener.KeyboardEvent.ID,
+                new KeyboardListener.KeyboardEvent(
+                        KeyboardListener.KeyboardEventType.KEY,
+                        window,
+                        key,
+                        -1,
+                        scanCode,
+                        action,
+                        modifiers
+                )
+        );
     }
 
     @Inject(method = "onChar", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;", shift = At.Shift.BEFORE))
-    private void injectKeyboardChar(final long window, final int codePoint, final int modifiers, final CallbackInfo callbackInfo) {
-        DietrichEvents2.global().postInternal(KeyboardListener.KeyboardEvent.ID, new KeyboardListener.KeyboardEvent(KeyboardListener.KeyboardEventType.CHAR, window, -1, codePoint, -1, -1, modifiers));
+    private void injectOnChar(final long window, final int codePoint, final int modifiers, final CallbackInfo callbackInfo) {
+        DietrichEvents2.global().postInternal(KeyboardListener.KeyboardEvent.ID,
+                new KeyboardListener.KeyboardEvent(
+                        KeyboardListener.KeyboardEventType.CHAR,
+                        window,
+                        -1,
+                        codePoint,
+                        -1,
+                        -1,
+                        modifiers
+                )
+        );
     }
 
 }

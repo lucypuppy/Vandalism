@@ -8,7 +8,7 @@ import de.florianmichael.dietrichevents2.Priorities;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
-import de.vandalismdevelopment.vandalism.feature.impl.command.impl.misc.NBTCommand;
+import de.vandalismdevelopment.vandalism.feature.impl.command.impl.misc.NbtCommand;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.util.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.ServerUtil;
@@ -116,7 +116,7 @@ public class ItemStackLoggerModule extends Module implements TickListener {
             } else {
                 nbt = NbtHelper.toPrettyPrintedText(base).getString();
                 final NbtCompound copy = base.copy();
-                copy.putString(NBTCommand.DISPLAY_TITLE_NBT_KEY, itemFromText);
+                copy.putString(NbtCommand.DISPLAY_TITLE_NBT_KEY, itemFromText);
                 displayNbt = NbtHelper.toPrettyPrintedText(copy).getString();
             }
             final String giveCommand = Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.commandPrefix.getValue() + "give " + item + nbt + " " + count,

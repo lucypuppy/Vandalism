@@ -4,6 +4,7 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.*;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.account.AccountManagerImGuiMenu;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.namehistory.NameHistoryImGuiMenu;
+import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.nbteditor.NbtEditortImGuiMenu;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.port.PortScannerImGuiMenu;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.script.ScriptsImGuiMenu;
 
@@ -27,7 +28,8 @@ public class ImGuiMenuRegistry {
                 new PortScannerImGuiMenu(),
                 new ServerAddressResolverImGuiMenu(),
                 new NameHistoryImGuiMenu(),
-                new BugScraperImGuiMenu()
+                new BugScraperImGuiMenu(),
+                new NbtEditortImGuiMenu()
         );
     }
 

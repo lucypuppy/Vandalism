@@ -7,7 +7,7 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
 import de.vandalismdevelopment.vandalism.feature.impl.command.arguments.NbtCompoundArgumentType;
-import de.vandalismdevelopment.vandalism.gui.imgui.impl.widget.NBTEditWidget;
+import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.nbteditor.NbtEditortImGuiMenu;
 import de.vandalismdevelopment.vandalism.util.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.ItemUtil;
 import net.minecraft.command.CommandSource;
@@ -15,26 +15,21 @@ import net.minecraft.command.argument.NbtPathArgumentType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
-import net.minecraft.nbt.NbtIo;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.IOException;
 import java.util.UUID;
 
-public class NBTCommand extends Command {
+public class NbtCommand extends Command {
 
     public final static String DISPLAY_TITLE_NBT_KEY = UUID.randomUUID().toString();
 
-    public NBTCommand() {
+    public NbtCommand() {
         super(
-                "NBT",
+                "Nbt",
                 "Allows you to view and modify the nbt data from an item stack.",
                 FeatureCategory.MISC,
                 false,
@@ -129,37 +124,27 @@ public class NBTCommand extends Command {
         builder.then(literal("gui").executes(context -> {
             final ItemStack stack = player().getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
-                try {
-                    final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    final DataOutputStream out = new DataOutputStream(stream);
-                    NbtIo.write(stack.getOrCreateNbt(), out);
-                    final NBTEditWidget nbtEditWidget = Vandalism.getInstance().getImGuiHandler().getNbtEditWidget();
-                    nbtEditWidget.getMainWindow().dragAndDrop(new File(stack.getName().getString()), stream.toByteArray());
-                    nbtEditWidget.show();
-                } catch (final IOException io) {
-                    Vandalism.getInstance().getLogger().error("Failed to open ImNbt Gui.", io);
-                }
+                Vandalism.getInstance().getImGuiHandler()
+                        .getImGuiMenuRegistry()
+                        .getImGuiMenuByClass(NbtEditortImGuiMenu.class)
+                        .displayNbt(stack.getName().getString(), stack.getNbt());
             }
             return SINGLE_SUCCESS;
         }));
         builder.then(literal("displaynbt").then(argument("nbt", NbtCompoundArgumentType.create())
                 .executes(context -> {
-                            try {
-                                final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                final DataOutputStream out = new DataOutputStream(stream);
-                                final NbtCompound nbt = NbtCompoundArgumentType.get(context);
-                                final String displayTitle;
-                                if (nbt.contains(DISPLAY_TITLE_NBT_KEY)) {
-                                    displayTitle = nbt.getString(DISPLAY_TITLE_NBT_KEY);
-                                    nbt.remove(DISPLAY_TITLE_NBT_KEY);
-                                } else displayTitle = "NBT";
-                                NbtIo.write(nbt, out);
-                                final NBTEditWidget nbtEditWidget = Vandalism.getInstance().getImGuiHandler().getNbtEditWidget();
-                                nbtEditWidget.getMainWindow().dragAndDrop(new File(displayTitle), stream.toByteArray());
-                                nbtEditWidget.show();
-                            } catch (final IOException io) {
-                                Vandalism.getInstance().getLogger().error("Failed to open ImNbt Gui.", io);
+                    final NbtCompound nbt = NbtCompoundArgumentType.get(context);
+                    final String displayTitle;
+                    if (nbt.contains(DISPLAY_TITLE_NBT_KEY)) {
+                        displayTitle = nbt.getString(DISPLAY_TITLE_NBT_KEY);
+                        nbt.remove(DISPLAY_TITLE_NBT_KEY);
+                    } else {
+                        displayTitle = "Nbt";
                             }
+                    Vandalism.getInstance().getImGuiHandler()
+                            .getImGuiMenuRegistry()
+                            .getImGuiMenuByClass(NbtEditortImGuiMenu.class)
+                            .displayNbt(displayTitle, nbt);
                     return SINGLE_SUCCESS;
                         }
                 )));

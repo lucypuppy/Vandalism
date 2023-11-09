@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.injection.mixins.libs;
+package de.vandalismdevelopment.vandalism.injection.mixins.libs.imgui;
 
 import de.vandalismdevelopment.vandalism.gui.minecraft.ImGuiScreen;
 import de.vandalismdevelopment.vandalism.injection.access.IImGuiImplGlfw;

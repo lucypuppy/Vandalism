@@ -4,12 +4,14 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.event.KeyboardListener;
 import de.vandalismdevelopment.vandalism.event.RenderListener;
-import de.vandalismdevelopment.vandalism.gui.imgui.impl.widget.NBTEditWidget;
 import de.vandalismdevelopment.vandalism.gui.minecraft.ImGuiScreen;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConnectScreen;
 import net.minecraft.client.gui.screen.LevelLoadingScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
@@ -20,22 +22,15 @@ public class ImGuiHandler implements KeyboardListener, RenderListener, Minecraft
 
     private final ImGuiMenuRegistry imGuiMenuRegistry;
 
-    private final NBTEditWidget nbtEditWidget;
-
     public ImGuiHandler(final File dir) {
         this.imGuiRenderer = new ImGuiRenderer(dir);
         this.imGuiMenuRegistry = new ImGuiMenuRegistry();
-        this.nbtEditWidget = new NBTEditWidget();
         DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
         DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
     }
 
     public ImGuiRenderer getImGuiRenderer() {
         return this.imGuiRenderer;
-    }
-
-    public NBTEditWidget getNbtEditWidget() {
-        return this.nbtEditWidget;
     }
 
     public ImGuiMenuRegistry getImGuiMenuRegistry() {
@@ -47,9 +42,20 @@ public class ImGuiHandler implements KeyboardListener, RenderListener, Minecraft
         if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN) return;
         if (currentScreen() instanceof ConnectScreen || currentScreen() instanceof LevelLoadingScreen) return;
         if (key == Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.menuKey.getValue().getKeyCode()) {
-            if (currentScreen() instanceof ImGuiScreen) currentScreen().close();
-            else setScreen(new ImGuiScreen(currentScreen()));
+            this.toggleScreen();
         }
+    }
+
+    public void toggleScreen() {
+        Screen screen = currentScreen();
+        if (screen != null) {
+            if (screen instanceof ImGuiScreen) {
+                screen.close();
+            } else if (screen instanceof HandledScreen<?> && !(screen instanceof InventoryScreen)) {
+                screen = null;
+            }
+        }
+        setScreen(new ImGuiScreen(screen));
     }
 
     @Override
@@ -64,7 +70,6 @@ public class ImGuiHandler implements KeyboardListener, RenderListener, Minecraft
 
     private void render() {
         this.imGuiRenderer.render();
-        this.nbtEditWidget.render();
     }
 
 }
