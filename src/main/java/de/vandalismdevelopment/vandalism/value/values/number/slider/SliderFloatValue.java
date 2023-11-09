@@ -25,13 +25,12 @@ public class SliderFloatValue extends SliderNumberValue<Float> {
 
     @Override
     public void onConfigSave(final JsonObject valueObject) {
-        valueObject.addProperty("value", getValue());
+        valueObject.addProperty("value", this.getValue());
     }
 
     @Override
     public void render() {
-        final ImFloat imFloat = new ImFloat(getValue());
-        ImGui.text(this.getName());
+        final ImFloat imFloat = new ImFloat(this.getValue());
         if (ImGui.sliderScalar("##" + this.getSaveIdentifier(), ImGuiDataType.Float, imFloat, this.getMin(), this.getMax(), this.getFormat())) {
             this.setValue(imFloat.get());
         }

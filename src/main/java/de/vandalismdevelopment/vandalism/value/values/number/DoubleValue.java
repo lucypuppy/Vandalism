@@ -28,9 +28,8 @@ public class DoubleValue extends StepNumberValue<Double> {
 
     @Override
     public void render() {
-        final ImDouble imDouble = new ImDouble(getValue());
-        ImGui.text(this.getName());
-        if (ImGui.inputDouble("##" + this.getSaveIdentifier(), imDouble, getStep())) {
+        final ImDouble imDouble = new ImDouble(this.getValue());
+        if (ImGui.inputDouble("##" + this.getSaveIdentifier(), imDouble, this.getStep())) {
             this.setValue(imDouble.get());
         }
     }
