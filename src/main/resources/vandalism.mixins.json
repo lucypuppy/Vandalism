@@ -4,7 +4,9 @@
   "package": "de.vandalismdevelopment.vandalism.injection.mixins",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "libs.MixinImGuiImplGlfw",
+    "libs.imgui.MixinImGuiImplGlfw",
+    "libs.imnbt.MixinContextMenu",
+    "libs.imnbt.MixinMainWindow",
     "minecraft.MixinAbstractBlockState",
     "minecraft.MixinAbstractSignEditScreen",
     "minecraft.MixinAccessibilityOnboardingScreen",

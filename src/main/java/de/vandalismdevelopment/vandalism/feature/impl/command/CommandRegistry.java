@@ -49,7 +49,7 @@ public class CommandRegistry {
                 new ModuleCommand(),
                 new ClientsideGameModeCommand(),
                 new SayCommand(),
-                new NBTCommand(),
+                new NbtCommand(),
                 new CommandBlockStateCommand(),
                 new PluginsCommand(),
                 new GiveCommand(),
