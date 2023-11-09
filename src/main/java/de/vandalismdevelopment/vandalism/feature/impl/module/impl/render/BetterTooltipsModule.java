@@ -1,12 +1,12 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module.impl.render;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.florianmichael.rclasses.common.StringUtils;
 import de.florianmichael.rclasses.io.model.ByteCountDataOutput;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.event.TooltipListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.util.MathUtil;
 import de.vandalismdevelopment.vandalism.util.inventory.tooltip.*;
 import de.vandalismdevelopment.vandalism.util.render.ColorUtil;
 import net.minecraft.block.entity.BannerPattern;
@@ -100,9 +100,11 @@ public class BetterTooltipsModule extends Module implements TooltipListener {
             event.itemStack.writeNbt(new NbtCompound()).write(ByteCountDataOutput.INSTANCE);
             final int byteCount = ByteCountDataOutput.INSTANCE.getCount();
             ByteCountDataOutput.INSTANCE.reset();
-            tooltipData.add(new TextTooltipComponent(Text.literal(
-                    MathUtil.addFormatToByteCount(byteCount)
-            ).formatted(Formatting.GRAY).asOrderedText()));
+            tooltipData.add(new TextTooltipComponent(
+                    Text
+                            .literal(StringUtils.formatBytes(byteCount))
+                            .formatted(Formatting.GRAY).asOrderedText()
+            ));
         } catch (final IOException e) {
             Vandalism.getInstance().getLogger().error("Failed to write item stack to nbt.", e);
         }
