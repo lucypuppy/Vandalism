@@ -56,6 +56,19 @@ public class ModulesImGuiMenu extends ImGuiMenu {
                 ImGui.separator();
                 ImGui.end();
             }
+            ImGui.setNextWindowSizeConstraints(width, height, width, height);
+            if (ImGui.begin("Favorites##modulesfavorites", windowFlags)) {
+                ImGui.separator();
+                ImGui.beginChild("##modulesfavoritesscrolllist", -1, -1, true);
+                for (final Module module : Vandalism.getInstance().getModuleRegistry().getModules()) {
+                    if (module.isFavorite()) {
+                        this.renderModule(module, "favorites");
+                    }
+                }
+                ImGui.endChild();
+                ImGui.separator();
+                ImGui.end();
+            }
             for (final FeatureCategory featureCategory : FeatureCategory.values()) {
                 final FeatureList<Module> modulesByCategory = modules.get(featureCategory);
                 if (modulesByCategory.isEmpty()) continue;

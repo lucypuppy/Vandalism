@@ -21,7 +21,7 @@ import java.util.List;
 public abstract class Module extends Feature implements IValue {
 
     private final List<Value<?>> values;
-    private final BooleanValue enabled, showInModuleList;
+    private final BooleanValue favorite, enabled, showInModuleList;
     private final KeyInputValue keyBind;
 
     public Module(final String name, final String description, final FeatureCategory category, final boolean isExperimental, final boolean isDefaultEnabled) {
@@ -35,6 +35,12 @@ public abstract class Module extends Feature implements IValue {
         this.setCategory(category);
         this.setExperimental(isExperimental);
         this.values = new ArrayList<>();
+        this.favorite = new BooleanValue(
+                "Favorite",
+                "Whether this module is a favorite.",
+                this,
+                false
+        );
         this.enabled = new BooleanValue(
                 "Enabled",
                 "Whether this module is enabled.",
@@ -111,6 +117,10 @@ public abstract class Module extends Feature implements IValue {
                 }
             }
         }
+    }
+
+    public boolean isFavorite() {
+        return this.favorite.getValue();
     }
 
     public boolean isEnabled() {
