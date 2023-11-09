@@ -48,7 +48,7 @@ public class ModulesImGuiMenu extends ImGuiMenu {
                                     StringUtils.contains(module.getName(), this.searchInput.get()) ||
                                             StringUtils.contains(module.getDescription(), this.searchInput.get())
                             ) {
-                                this.renderModule(module);
+                                this.renderModule(module, "search");
                             }
                         }
                         ImGui.endChild();
@@ -66,7 +66,7 @@ public class ModulesImGuiMenu extends ImGuiMenu {
                     ImGui.separator();
                     if (ImGui.beginChild(featureCategoryIdentifier + "scrolllist", -1, -1, true)) {
                         for (final Module module : modulesByCategory) {
-                            this.renderModule(module);
+                            this.renderModule(module, "category");
                         }
                         ImGui.endChild();
                     }
@@ -77,7 +77,7 @@ public class ModulesImGuiMenu extends ImGuiMenu {
         }
     }
 
-    private void renderModule(final Module module) {
+    private void renderModule(final Module module, final String id) {
         final float[] color;
         if (module.isEnabled()) {
             color = new float[]{
@@ -94,7 +94,7 @@ public class ModulesImGuiMenu extends ImGuiMenu {
             ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], color[3] - 0.1f);
             ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
         }
-        final String moduleIdentifier = "##" + module.getName() + module.getCategory().normalName() + "module" + module.getName();
+        final String moduleIdentifier = "##" + id + module.getName() + module.getCategory().normalName() + "module" + module.getName();
         if (ImGui.button(module.getName() + moduleIdentifier + "togglebutton", -1, 25)) {
             module.toggle();
         }
