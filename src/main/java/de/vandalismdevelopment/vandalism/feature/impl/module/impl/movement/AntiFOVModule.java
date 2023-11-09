@@ -78,7 +78,7 @@ public class AntiFOVModule extends Module implements TickListener {
 
     public AntiFOVModule() {
         super(
-                "AntiFOV",
+                "Anti FOV",
                 "Teleports you behind the nearest entity.",
                 FeatureCategory.MOVEMENT,
                 false,
