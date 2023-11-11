@@ -8,7 +8,7 @@ import de.vandalismdevelopment.vandalism.feature.FeatureType;
 import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
 import de.vandalismdevelopment.vandalism.value.IValue;
 import de.vandalismdevelopment.vandalism.value.Value;
-import de.vandalismdevelopment.vandalism.value.values.KeyInputValue;
+import de.vandalismdevelopment.vandalism.value.impl.KeyInputValue;
 
 import java.io.File;
 import java.util.ArrayList;

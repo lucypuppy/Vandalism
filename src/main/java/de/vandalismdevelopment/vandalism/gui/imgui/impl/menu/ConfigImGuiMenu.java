@@ -6,7 +6,6 @@ import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiMenu;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
 import imgui.ImGui;
-import imgui.flag.ImGuiWindowFlags;
 
 public class ConfigImGuiMenu extends ImGuiMenu {
 
@@ -16,7 +15,10 @@ public class ConfigImGuiMenu extends ImGuiMenu {
 
     @Override
     public void render() {
-        if (ImGui.begin("Config", ImGuiWindowFlags.NoCollapse)) {
+        if (ImGui.begin(
+                "Config##config",
+                Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
+        )) {
             final MainConfig mainConfigValues = Vandalism.getInstance().getConfigManager().getMainConfig();
             if (ImGui.beginTabBar("configTabBar##configtabbar")) {
                 for (final Value<?> value : mainConfigValues.getValues()) {

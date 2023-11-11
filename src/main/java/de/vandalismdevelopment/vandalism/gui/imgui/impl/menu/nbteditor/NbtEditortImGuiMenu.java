@@ -28,7 +28,11 @@ public class NbtEditortImGuiMenu extends ImGuiMenu {
     public void render() {
         final Window nbtRendererWindow = this.nbtManager.getWindow();
         if (nbtRendererWindow != null) {
-            if (ImGui.begin("Nbt Editor", ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoCollapse)) {
+            if (ImGui.begin(
+                    "Nbt Editor##nbteditor",
+                    Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags() |
+                            ImGuiWindowFlags.MenuBar
+            )) {
                 nbtRendererWindow.render();
                 ImGui.end();
             }

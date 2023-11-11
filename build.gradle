@@ -21,11 +21,6 @@ repositories {
 	}
 
 	maven {
-		name = "Lenni0451"
-		url = "https://maven.lenni0451.net/releases/"
-	}
-
-	maven {
 		name = "TerraformersMC"
 		url = "https://maven.terraformersmc.com/releases/"
 	}
@@ -83,6 +78,7 @@ dependencies {
 	implementation "net.lenni0451:ImNbt:${project.imnbt_version}"
 	implementation "net.lenni0451:MCPing:${project.mc_ping_version}"
 	implementation "net.raphimc:MinecraftAuth:${project.minecraftauth_version}"
+    implementation "net.raphimc:NoteBlockLib:${project.noteblocklib_version}"
 	implementation "com.github.kwhat:jnativehook:${project.jnativehook_version}"
 	implementation "org.jsoup:jsoup:${project.jsoup_version}"
 }

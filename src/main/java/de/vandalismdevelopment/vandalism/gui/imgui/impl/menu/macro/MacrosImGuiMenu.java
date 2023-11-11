@@ -1,5 +1,6 @@
 package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.macro;
 
+import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiMenu;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.macro.node.InputNode;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.macro.node.Node;
@@ -14,7 +15,6 @@ import imgui.extension.nodeditor.NodeEditorConfig;
 import imgui.extension.nodeditor.NodeEditorContext;
 import imgui.extension.nodeditor.flag.NodeEditorPinKind;
 import imgui.flag.ImGuiCond;
-import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImLong;
 
 import java.util.ArrayList;
@@ -39,8 +39,11 @@ public class MacrosImGuiMenu extends ImGuiMenu {
 
     @Override
     public void render() {
-        if (ImGui.begin("Macros", ImGuiWindowFlags.NoCollapse)) {
-            if (ImGui.beginTabBar("configTabBar")) {
+        if (ImGui.begin(
+                "Macros##macros",
+                Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
+        )) {
+            if (ImGui.beginTabBar("macrosConfigTabBar")) {
                 for (final Macro macro : this.macros) {
                     if (ImGui.beginTabItem(macro.getName() + "##macrostabitem")) {
                         ImGui.separator();

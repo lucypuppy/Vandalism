@@ -1,11 +1,11 @@
 package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu;
 
+import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiMenu;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
 import imgui.flag.ImGuiInputTextFlags;
-import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import net.lenni0451.mcping.ServerAddress;
 
@@ -39,7 +39,10 @@ public class ServerAddressResolverImGuiMenu extends ImGuiMenu {
 
     @Override
     public void render() {
-        if (ImGui.begin("Server Address Resolver", ImGuiWindowFlags.NoCollapse)) {
+        if (ImGui.begin(
+                "Server Address Resolver##serveraddressresolver",
+                Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
+        )) {
             ImGui.inputText(
                     "Hostname##serveraddressresolverhostname",
                     this.hostname,

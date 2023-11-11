@@ -11,8 +11,8 @@ import de.vandalismdevelopment.vandalism.util.clicker.impl.BoxMuellerClicker;
 import de.vandalismdevelopment.vandalism.util.rotation.Rotation;
 import de.vandalismdevelopment.vandalism.util.rotation.RotationPriority;
 import de.vandalismdevelopment.vandalism.value.Value;
-import de.vandalismdevelopment.vandalism.value.values.number.slider.SliderFloatValue;
-import de.vandalismdevelopment.vandalism.value.values.number.slider.SliderIntegerValue;
+import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderFloatValue;
+import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderIntegerValue;
 import imgui.ImGui;
 import imgui.extension.implot.ImPlot;
 import net.minecraft.client.gui.DrawContext;
@@ -112,7 +112,10 @@ public class TestModule extends Module implements TickListener, RenderListener {
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
         Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
-            if (ImGui.begin("Graph")) {
+            if (ImGui.begin(
+                    "Graph##testmodule",
+                    Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
+            )) {
                 if (this.clicker instanceof final BoxMuellerClicker clicker) {
                     final int size = clicker.getDelays().getNormalList().size();
 

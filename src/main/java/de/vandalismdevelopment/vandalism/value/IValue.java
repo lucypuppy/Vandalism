@@ -31,15 +31,22 @@ public interface IValue {
         if (value.isVisible() != null && !value.isVisible().getAsBoolean()) {
             return;
         }
-        ImGui.text(value.getName());
-        ImGui.sameLine();
+        if (!value.doesRenderInfo()) {
+            ImGui.text(value.getName());
+            ImGui.sameLine();
+            this.renderValueDescription(value);
+        }
+        value.render();
+    }
+
+    default void renderValueDescription(final Value<?> value) {
+        if (value.getDescription().isBlank()) return;
         ImGui.textDisabled("(?)");
         if (ImGui.isItemHovered()) {
             ImGui.beginTooltip();
             ImGui.text(value.getDescription());
             ImGui.endTooltip();
         }
-        value.render();
     }
 
     String getValueName();

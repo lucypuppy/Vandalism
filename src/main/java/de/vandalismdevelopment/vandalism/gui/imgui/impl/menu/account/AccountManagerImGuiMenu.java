@@ -11,7 +11,6 @@ import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiTableFlags;
-import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.session.Session;
@@ -74,9 +73,12 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
 
     @Override
     public void render() {
-        final float width = 520, height = 630;
-        ImGui.setNextWindowSizeConstraints(width, height, width, height);
-        if (ImGui.begin("Account Manager", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoDocking)) {
+        final float width = 1220, height = 630;
+        ImGui.setNextWindowSizeConstraints(width - 700, height, width, height);
+        if (ImGui.begin(
+                "Account Manager##accountmanager",
+                Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
+        )) {
             final Session session = MinecraftClient.getInstance().getSession();
             ImGui.text("Current Account");
             ImGui.inputTextMultiline("##currentAccountData", this.currentAccountData, -1, 60, ImGuiInputTextFlags.ReadOnly);

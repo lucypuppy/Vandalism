@@ -3,9 +3,9 @@ package de.vandalismdevelopment.vandalism.config.impl.main;
 import de.vandalismdevelopment.vandalism.config.impl.MainConfig;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
-import de.vandalismdevelopment.vandalism.value.values.BooleanValue;
-import de.vandalismdevelopment.vandalism.value.values.StringValue;
-import de.vandalismdevelopment.vandalism.value.values.number.slider.SliderIntegerValue;
+import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
+import de.vandalismdevelopment.vandalism.value.impl.StringValue;
+import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderIntegerValue;
 
 public class ChatCategory extends ValueCategory {
     

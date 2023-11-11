@@ -13,7 +13,7 @@ import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.util.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.ServerUtil;
 import de.vandalismdevelopment.vandalism.value.Value;
-import de.vandalismdevelopment.vandalism.value.values.BooleanValue;
+import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;

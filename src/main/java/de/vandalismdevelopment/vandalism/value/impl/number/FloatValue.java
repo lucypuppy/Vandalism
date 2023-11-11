@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.value.values.number;
+package de.vandalismdevelopment.vandalism.value.impl.number;
 
 import com.google.gson.JsonObject;
 import de.vandalismdevelopment.vandalism.value.IValue;

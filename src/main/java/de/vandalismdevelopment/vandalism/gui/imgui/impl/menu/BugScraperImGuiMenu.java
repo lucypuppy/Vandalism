@@ -9,7 +9,6 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiMenu;
 import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
 import imgui.ImGui;
-import imgui.flag.ImGuiWindowFlags;
 import net.minecraft.util.Util;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -43,9 +42,12 @@ public class BugScraperImGuiMenu extends ImGuiMenu {
 
     @Override
     public void render() {
-        if (ImGui.begin("Bug Scraper", ImGuiWindowFlags.NoCollapse)) {
+        if (ImGui.begin(
+                "Bug Scraper##bugscraper",
+                Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
+        )) {
             ImGui.text("State: " + this.currentState.getMessage());
-            if (ImGui.beginCombo("Filter##bugscraper", this.currentFilter.normalName())) {
+            if (ImGui.beginCombo("Filter##bugscraperfilter", this.currentFilter.normalName())) {
                 for (final Filter filter : Filter.values()) {
                     if (ImGui.selectable(filter.normalName(), filter.normalName().equals(this.currentFilter.normalName()))) {
                         this.currentFilter = filter;
@@ -53,7 +55,7 @@ public class BugScraperImGuiMenu extends ImGuiMenu {
                 }
                 ImGui.endCombo();
             }
-            if (ImGui.button("Scrape##bugscraper")) {
+            if (ImGui.button("Scrape##bugscraperscrape")) {
                 this.currentData.clear();
                 Executors.newSingleThreadExecutor().submit(() -> {
                     this.currentState = State.SENDING_REQUEST;
@@ -113,18 +115,18 @@ public class BugScraperImGuiMenu extends ImGuiMenu {
                 });
             }
             if (!this.currentData.isEmpty()) {
-                if (ImGui.button("Clear##bugscraper")) {
+                if (ImGui.button("Clear##bugscraperclear")) {
                     this.currentData.clear();
                     this.currentState = State.WAITING_INPUT;
                 }
                 ImGui.text("Bugs: " + this.currentData.size());
-                if (ImGui.beginListBox("##bugscraper", 730, 620)) {
+                if (ImGui.beginListBox("##bugscraperbugs", 730, 620)) {
                     for (final Bug bug : this.currentData) {
                         final String key = bug.key();
                         if (ImGui.beginListBox("##bugscraper" + key, 705, 50)) {
                             ImGui.text("[" + bug.status() + "] > " + key);
                             ImGui.sameLine();
-                            if (ImGui.button("Open##bugscraper" + key)) {
+                            if (ImGui.button("Open##bugscraperopen" + key)) {
                                 final String link = this.url + key;
                                 try {
                                     Util.getOperatingSystem().open(new URI(link));

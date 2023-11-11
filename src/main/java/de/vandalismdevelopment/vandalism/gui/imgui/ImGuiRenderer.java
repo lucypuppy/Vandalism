@@ -7,6 +7,7 @@ import imgui.*;
 import imgui.extension.implot.ImPlot;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiConfigFlags;
+import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import net.fabricmc.loader.api.FabricLoader;
@@ -36,7 +37,6 @@ public class ImGuiRenderer {
         ImGui.createContext();
         ImPlot.createContext();
         final ImGuiIO imGuiIO = ImGui.getIO();
-        imGuiIO.setConfigFlags(ImGuiConfigFlags.DockingEnable);
         imGuiIO.setFontGlobalScale(1f);
         imGuiIO.setIniFilename(dir.getName() + "/imgui.ini");
         this.loadFonts(imGuiIO);
@@ -163,7 +163,7 @@ public class ImGuiRenderer {
         ImGui.endFrame();
         ImGui.render();
         this.imGuiImplGl3.renderDrawData(ImGui.getDrawData());
-        if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
+        if (imGuiIO.hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
             final long pointer = GLFW.glfwGetCurrentContext();
             ImGui.updatePlatformWindows();
             ImGui.renderPlatformWindowsDefault();
@@ -171,8 +171,12 @@ public class ImGuiRenderer {
         }
     }
 
-    public void addRenderInterface(final RenderInterface renderInterface) {
-        this.renderInterfaces.add(renderInterface);
+    public void addRenderInterface(final RenderInterface isWidget) {
+        this.renderInterfaces.add(isWidget);
+    }
+
+    public int getGlobalWindowFlags() {
+        return ImGuiWindowFlags.NoCollapse;
     }
 
 }

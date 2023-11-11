@@ -6,7 +6,7 @@ import de.vandalismdevelopment.vandalism.event.PacketListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.value.Value;
-import de.vandalismdevelopment.vandalism.value.values.number.slider.SliderIntegerValue;
+import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderIntegerValue;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 
 public class AmbienceModule extends Module implements PacketListener {

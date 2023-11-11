@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.value;
 
 import com.google.gson.JsonObject;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.value.values.BooleanValue;
+import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
@@ -11,21 +11,24 @@ public abstract class Value<V> {
 
     private final String name, description;
     private final V defaultValue;
-    private V value;
-    private BooleanSupplier visible;
-    private Consumer<V> valueChangeConsumer, valueChangedConsumer;
     private final String saveIdentifier;
     private final IValue parent;
+    private final boolean doesRenderInfo;
+    private V value;
+    private Consumer<V> valueChangeConsumer, valueChangedConsumer;
+    private BooleanSupplier visible;
 
     public Value(final String name, final String description, final IValue parent, final String dataType, final V defaultValue) {
+        this(name, description, parent, dataType, false, defaultValue);
+    }
+
+    public Value(final String name, final String description, final IValue parent, final String dataType, final boolean doesRenderInfo, final V defaultValue) {
         this.name = name;
         this.description = description;
-
         this.saveIdentifier = name + " (" + dataType + ")" + " [" + parent.getValueName().hashCode() + "]";
-
+        this.doesRenderInfo = doesRenderInfo;
         this.defaultValue = defaultValue;
         this.setValue(defaultValue);
-
         this.parent = parent;
         parent.getValues().add(this);
     }
@@ -34,22 +37,17 @@ public abstract class Value<V> {
         if (this.value == value && !(this instanceof BooleanValue)) { //TODO: Find a better solution to fix this.
             return;
         }
-
         if (this.valueChangeConsumer != null) {
             this.valueChangeConsumer.accept(value);
         }
-
         this.value = value;
-
         if (this.valueChangedConsumer != null) {
             this.valueChangedConsumer.accept(value);
         }
-
         if (Vandalism.getInstance().getConfigManager() != null && this.parent != null) {
             if (this.parent.getConfig() == null) {
                 throw new IllegalStateException("Value config for the parent " + this.parent.getValueName() + " is null!");
             }
-
             Vandalism.getInstance().getConfigManager().save(this.parent.getConfig());
         }
     }
@@ -95,6 +93,10 @@ public abstract class Value<V> {
 
     public String getSaveIdentifier() {
         return this.saveIdentifier;
+    }
+
+    public boolean doesRenderInfo() {
+        return this.doesRenderInfo;
     }
 
     public IValue getParent() {
