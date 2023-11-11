@@ -1,11 +1,11 @@
 package de.vandalismdevelopment.vandalism.gui.imgui.impl.widget.serverinfo;
 
 import com.google.gson.JsonSyntaxException;
+import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import imgui.ImGui;
 import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiTableFlags;
-import imgui.flag.ImGuiWindowFlags;
 import net.lenni0451.mcping.responses.MCPingResponse;
 import net.lenni0451.mcping.responses.QueryPingResponse;
 import net.minecraft.text.MutableText;
@@ -187,8 +187,9 @@ public class ServerInfoWidget implements MinecraftWrapper {
         if (this.mcPingResponse == null) return;
         final String uniqueId = "##" + this.mcPingResponse.server.ip + ":" + this.mcPingResponse.server.port + "serverinfo";
         if (this.showPlayerList && this.mcPingResponse.players.sample.length > 0) {
-            if (ImGui.begin("Player List of " + this.mcPingResponse.server.ip + ":" + this.mcPingResponse.server.port + uniqueId,
-                    ImGuiWindowFlags.NoCollapse
+            if (ImGui.begin(
+                    "Player List of " + this.mcPingResponse.server.ip + ":" + this.mcPingResponse.server.port + uniqueId,
+                    Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
             )) {
                 if (ImGui.button("Close Player List" + uniqueId)) {
                     this.showPlayerList = false;
@@ -235,7 +236,10 @@ public class ServerInfoWidget implements MinecraftWrapper {
                 this.showMods && this.mcPingResponse != null && ((this.mcPingResponse.modinfo != null && this.mcPingResponse.modinfo.modList.length > 0) ||
                         (this.mcPingResponse.forgeData != null && this.mcPingResponse.forgeData.mods.length > 0))
         ) {
-            if (ImGui.begin("Mods of " + this.mcPingResponse.server.ip + ":" + this.mcPingResponse.server.port + uniqueId, ImGuiWindowFlags.NoCollapse)) {
+            if (ImGui.begin(
+                    "Mods of " + this.mcPingResponse.server.ip + ":" + this.mcPingResponse.server.port + uniqueId,
+                    Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
+            )) {
                 if (ImGui.button("Close Mods" + uniqueId)) {
                     this.showMods = false;
                 }
@@ -315,7 +319,10 @@ public class ServerInfoWidget implements MinecraftWrapper {
             }
         }
         if (this.showPlugins && this.queryPingResponse != null && this.queryPingResponse.plugins.sample.length > 0) {
-            if (ImGui.begin("Plugins of " + this.queryPingResponse.server.ip + ":" + this.queryPingResponse.server.port + uniqueId, ImGuiWindowFlags.NoCollapse)) {
+            if (ImGui.begin(
+                    "Plugins of " + this.queryPingResponse.server.ip + ":" + this.queryPingResponse.server.port + uniqueId,
+                    Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
+            )) {
                 if (ImGui.button("Close Plugins" + uniqueId)) {
                     this.showPlugins = false;
                 }

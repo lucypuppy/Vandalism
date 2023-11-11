@@ -3,9 +3,9 @@ package de.vandalismdevelopment.vandalism.config.impl.main;
 import de.vandalismdevelopment.vandalism.config.impl.MainConfig;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
-import de.vandalismdevelopment.vandalism.value.values.BooleanValue;
-import de.vandalismdevelopment.vandalism.value.values.ListValue;
-import de.vandalismdevelopment.vandalism.value.values.number.slider.SliderFloatValue;
+import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
+import de.vandalismdevelopment.vandalism.value.impl.ListValue;
+import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderFloatValue;
 import org.apache.commons.lang3.RandomStringUtils;
 
 public class VisualCategory extends ValueCategory {

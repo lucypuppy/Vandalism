@@ -1,9 +1,9 @@
-package de.vandalismdevelopment.vandalism.value.values.list;
+package de.vandalismdevelopment.vandalism.value.impl.list;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.feature.impl.module.ModuleMode;
-import de.vandalismdevelopment.vandalism.value.values.ListValue;
+import de.vandalismdevelopment.vandalism.value.impl.ListValue;
 
 import java.util.Arrays;
 import java.util.List;

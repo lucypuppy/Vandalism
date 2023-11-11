@@ -1,5 +1,6 @@
 package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.port;
 
+import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiMenu;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.widget.serverinfo.ServerInfosTableColumn;
 import imgui.ImGui;
@@ -7,7 +8,6 @@ import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiTableFlags;
-import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImInt;
 import imgui.type.ImString;
 
@@ -72,14 +72,17 @@ public class PortScannerImGuiMenu extends ImGuiMenu {
         for (final PortResult portResult : this.ports.values()) {
             portResult.renderSubData();
         }
-        if (ImGui.begin("Port Scanner", ImGuiWindowFlags.NoCollapse)) {
-            ImGui.textWrapped("Current State:");
-            ImGui.textWrapped(this.state.get());
+        if (ImGui.begin(
+                "Port Scanner##portscanner",
+                Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
+        )) {
+            ImGui.text("Current State:");
+            ImGui.text(this.state.get());
             ImGui.separator();
             if (this.isRunning()) {
-                ImGui.textWrapped("Progress");
+                ImGui.text("Progress");
                 ImGui.progressBar((float) this.checkedPort / (float) this.maxPort.get());
-                ImGui.textWrapped(this.checkedPort + " / " + this.maxPort.get());
+                ImGui.text(this.checkedPort + " / " + this.maxPort.get());
                 ImGui.separator();
             } else {
                 ImGui.inputText(
@@ -157,7 +160,7 @@ public class PortScannerImGuiMenu extends ImGuiMenu {
             }
             if (!this.ports.isEmpty()) {
                 ImGui.separator();
-                ImGui.textWrapped("Ports");
+                ImGui.text("Ports");
                 final PortsTableColumn[] portsTableColumns = PortsTableColumn.values();
                 final int maxPortsTableColumns = portsTableColumns.length;
                 if (ImGui.beginTable("ports##portstable", maxPortsTableColumns,
@@ -197,7 +200,7 @@ public class PortScannerImGuiMenu extends ImGuiMenu {
                     ImGui.endTable();
                 }
                 ImGui.separator();
-                ImGui.textWrapped("Server Infos");
+                ImGui.text("Server Infos");
                 final ServerInfosTableColumn[] serverInfosTableColumns = ServerInfosTableColumn.values();
                 final int maxServerInfosTableColumns = serverInfosTableColumns.length;
                 if (ImGui.beginTable("serverinfos##serverinfostableportscanner", maxServerInfosTableColumns,

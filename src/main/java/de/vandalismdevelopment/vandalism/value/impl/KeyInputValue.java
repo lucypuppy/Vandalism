@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.value.values;
+package de.vandalismdevelopment.vandalism.value.impl;
 
 import com.google.gson.JsonObject;
 import de.florianmichael.dietrichevents2.DietrichEvents2;

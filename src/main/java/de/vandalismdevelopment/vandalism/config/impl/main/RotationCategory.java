@@ -4,8 +4,8 @@ import de.vandalismdevelopment.vandalism.config.impl.MainConfig;
 import de.vandalismdevelopment.vandalism.util.rotation.RotationGCD;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
-import de.vandalismdevelopment.vandalism.value.values.BooleanValue;
-import de.vandalismdevelopment.vandalism.value.values.EnumValue;
+import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
+import de.vandalismdevelopment.vandalism.value.impl.EnumValue;
 
 public class RotationCategory extends ValueCategory {
 

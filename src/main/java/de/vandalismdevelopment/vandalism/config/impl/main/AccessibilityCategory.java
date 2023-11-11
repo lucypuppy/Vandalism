@@ -8,7 +8,7 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.config.impl.MainConfig;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
-import de.vandalismdevelopment.vandalism.value.values.BooleanValue;
+import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
 import net.minecraft.text.Text;
 
 public class AccessibilityCategory extends ValueCategory {

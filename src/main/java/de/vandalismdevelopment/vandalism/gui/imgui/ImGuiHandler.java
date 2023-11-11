@@ -50,7 +50,7 @@ public class ImGuiHandler implements KeyboardListener, RenderListener, Minecraft
         Screen screen = currentScreen();
         if (screen != null) {
             if (screen instanceof ImGuiScreen) {
-                screen.close();
+                return;
             } else if (screen instanceof HandledScreen<?> && !(screen instanceof InventoryScreen)) {
                 screen = null;
             }

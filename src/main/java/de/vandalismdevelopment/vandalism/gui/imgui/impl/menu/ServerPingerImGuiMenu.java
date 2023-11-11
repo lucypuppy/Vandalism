@@ -10,7 +10,6 @@ import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiTableFlags;
-import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImInt;
 import imgui.type.ImString;
 import net.lenni0451.mcping.MCPing;
@@ -65,7 +64,10 @@ public class ServerPingerImGuiMenu extends ImGuiMenu {
     @Override
     public void render() {
         this.serverInfoWidget.renderSubData();
-        if (ImGui.begin("Server Pinger ", ImGuiWindowFlags.NoCollapse)) {
+        if (ImGui.begin(
+                "Server Pinger##serverpinger",
+                Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
+        )) {
             ImGui.text("State: " + this.currentState.getMessage());
             ImGui.text("Query State: " + this.currentQueryState.getMessage());
             ImGui.inputText(

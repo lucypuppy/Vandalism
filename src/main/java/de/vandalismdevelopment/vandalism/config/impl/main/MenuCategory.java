@@ -4,9 +4,9 @@ import de.vandalismdevelopment.vandalism.config.impl.MainConfig;
 import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
-import de.vandalismdevelopment.vandalism.value.values.BooleanValue;
-import de.vandalismdevelopment.vandalism.value.values.KeyInputValue;
-import de.vandalismdevelopment.vandalism.value.values.number.slider.SliderIntegerValue;
+import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
+import de.vandalismdevelopment.vandalism.value.impl.KeyInputValue;
+import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderIntegerValue;
 
 public class MenuCategory extends ValueCategory {
     

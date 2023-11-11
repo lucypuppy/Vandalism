@@ -6,7 +6,7 @@ import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.value.Value;
-import de.vandalismdevelopment.vandalism.value.values.BooleanValue;
+import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.FluidBlock;
@@ -52,8 +52,9 @@ public class IllegalBlockPlaceModule extends Module implements TickListener {
             return;
         }
         final HitResult hitResult = cameraEntity.raycast(interactionManager().getReachDistance(), 0, false);
-        if (!(hitResult instanceof final BlockHitResult blockHitResult) || player().getMainHandStack().isEmpty())
+        if (!(hitResult instanceof final BlockHitResult blockHitResult) || player().getMainHandStack().isEmpty()) {
             return;
+        }
         final Block block = world().getBlockState(blockHitResult.getBlockPos()).getBlock();
         if (block instanceof AirBlock || block instanceof FluidBlock) {
             if (options().useKey.isPressed()) {

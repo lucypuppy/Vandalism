@@ -48,7 +48,11 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
         for (final Map.Entry<File, ScriptEditor> entry : this.scriptEditors.entrySet()) {
             if (entry.getValue().isClosed()) this.scriptEditors.remove(entry.getKey());
         }
-        if (ImGui.begin("Scripts", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.MenuBar)) {
+        if (ImGui.begin(
+                "Scripts##scripts",
+                Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags() |
+                        ImGuiWindowFlags.MenuBar
+        )) {
             if (ImGui.beginMenuBar()) {
                 if (ImGui.button("Open directory##scriptsopendir")) {
                     Util.getOperatingSystem().open(Vandalism.getInstance().getScriptRegistry().getDirectory());

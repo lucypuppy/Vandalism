@@ -4,7 +4,7 @@ import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.util.render.ColorUtil;
 import de.vandalismdevelopment.vandalism.value.Value;
-import de.vandalismdevelopment.vandalism.value.values.ColorValue;
+import de.vandalismdevelopment.vandalism.value.impl.ColorValue;
 
 import java.awt.*;
 

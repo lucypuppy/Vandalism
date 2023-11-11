@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.value.values.number.slider;
+package de.vandalismdevelopment.vandalism.value.impl.number.slider;
 
 import com.google.gson.JsonObject;
 import de.vandalismdevelopment.vandalism.value.IValue;

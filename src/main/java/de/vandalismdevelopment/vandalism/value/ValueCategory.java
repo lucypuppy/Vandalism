@@ -11,7 +11,7 @@ import java.util.List;
 public class ValueCategory extends Value<List<Value<?>>> implements IValue, MinecraftWrapper {
 
     public ValueCategory(final String name, final String description, final IValue parent) {
-        super(name, description, parent, "category", new ArrayList<>());
+        super(name, description, parent, "category", true, new ArrayList<>());
     }
 
     @Override
@@ -24,7 +24,8 @@ public class ValueCategory extends Value<List<Value<?>>> implements IValue, Mine
 
     @Override
     public void render() {
-        if (ImGui.treeNodeEx("##" + this.getSaveIdentifier())) {
+        this.renderValueDescription(this);
+        if (ImGui.treeNodeEx(this.getName() + "##" + this.getSaveIdentifier())) {
             this.renderValues();
             ImGui.treePop();
         }

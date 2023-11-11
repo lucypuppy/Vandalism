@@ -5,13 +5,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.florianmichael.rclasses.io.WebUtils;
+import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiMenu;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiTableFlags;
-import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.util.Uuids;
@@ -83,7 +83,10 @@ public class NameHistoryImGuiMenu extends ImGuiMenu {
 
     @Override
     public void render() {
-        if (ImGui.begin("Name History", ImGuiWindowFlags.NoCollapse)) {
+        if (ImGui.begin(
+                "Name History##namehistory",
+                Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
+        )) {
             ImGui.text("State");
             ImGui.setNextItemWidth(-1);
             ImGui.inputText("##namehistorystate", this.state, ImGuiInputTextFlags.ReadOnly);

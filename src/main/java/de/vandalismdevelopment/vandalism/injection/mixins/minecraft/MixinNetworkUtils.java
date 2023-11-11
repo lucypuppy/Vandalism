@@ -14,7 +14,7 @@ import java.io.InputStream;
 @Mixin(NetworkUtils.class)
 public abstract class MixinNetworkUtils {
 
-    @Redirect(method = "method_15303", at = @At(value = "INVOKE", target = "Ljava/io/InputStream;read([B)I"))
+    @Redirect(method = "method_15303", at = @At(value = "INVOKE", target = "Ljava/io/InputStream;read([B)I"), remap = false)
     private static int redirectByteWriting(final InputStream inputStream, final byte[] bs) throws IOException {
         if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.moreResourcePackOptions.getValue() &&
                 CustomResourcePackConfirmScreen.skipDownload
@@ -24,7 +24,7 @@ public abstract class MixinNetworkUtils {
         return inputStream.read(bs);
     }
 
-    @Redirect(method = "method_15303", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;)V", ordinal = 0))
+    @Redirect(method = "method_15303", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;)V", ordinal = 0), remap = false)
     private static void redirectThreadInterruption(final Logger instance, final String s) {
         instance.error("The resource pack download thread has been interrupted!");
     }
