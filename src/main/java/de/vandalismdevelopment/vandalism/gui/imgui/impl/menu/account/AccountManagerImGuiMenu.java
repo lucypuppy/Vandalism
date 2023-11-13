@@ -65,10 +65,26 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
 
     private void delayedResetState() {
         try {
-            Thread.sleep(10000);
+            Thread.sleep(5000);
         } catch (final InterruptedException ignored) {
         }
         this.resetState();
+    }
+
+    private void login(final Account account) {
+        try {
+            account.login();
+            this.state.set("Successfully logged into the " + account.getType() + " account: " + account.getUsername());
+        } catch (final Throwable throwable) {
+            Vandalism.getInstance().getLogger().error(
+                    "Failed to log into the " + account.getType() + " account: " + account.getUsername(),
+                    throwable
+            );
+            this.state.set(
+                    "Failed to log into the " + account.getType() + " account: " + account.getUsername() + "\n" +
+                            throwable
+            );
+        }
     }
 
     @Override
@@ -117,23 +133,16 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                                 ImGui.spacing();
                                 final int buttonWidth = 0, buttonHeight = 28;
                                 final String identifier = "##" + account.getUsername() + account.getUuid().toString() + i;
-                                if (ImGui.button("login" + identifier + "login", buttonWidth, buttonHeight))
-                                    this.executor.submit(() -> {
-                                        try {
-                                            account.login();
-                                            this.state.set("Successfully logged into the " + account.getType() + " account: " + account.getUsername());
-                                        } catch (final Throwable throwable) {
-                                            Vandalism.getInstance().getLogger().error(
-                                                    "Failed to log into the " + account.getType() + " account: " + account.getUsername(),
-                                                    throwable
-                                            );
-                                            this.state.set(
-                                                    "Failed to log into the " + account.getType() + " account: " + account.getUsername() + "\n" +
-                                                            throwable
-                                            );
-                                        }
-                                        this.delayedResetState();
-                                    });
+                                if (ImGui.button("login" + identifier + "login", buttonWidth, buttonHeight)) {
+                                    if (account instanceof CrackedAccount) {
+                                        this.login(account);
+                                    } else {
+                                        this.executor.submit(() -> {
+                                            this.login(account);
+                                            this.delayedResetState();
+                                        });
+                                    }
+                                }
                                 ImGui.sameLine();
                                 if (ImGui.button("remove" + identifier + "remove", buttonWidth, buttonHeight)) {
                                     accounts.remove(account);
@@ -175,15 +184,11 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                     }
                     if (!contains) {
                         if (ImGui.button("Add Cracked Account##accountmanageraddcrackedaccount")) {
-                            this.executor.submit(() -> {
-                                final UUID realUUID = UUID.fromString(uuidValue);
-                                accounts.add(new CrackedAccount(usernameValue, realUUID));
-                                Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getAccountConfig());
-                                this.crackedUsername.clear();
-                                this.crackedUUID.clear();
-                                this.state.set("Successfully added the cracked account to your account list: " + usernameValue);
-                                this.delayedResetState();
-                            });
+                            final UUID realUUID = UUID.fromString(uuidValue);
+                            accounts.add(new CrackedAccount(usernameValue, realUUID));
+                            Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getAccountConfig());
+                            this.crackedUsername.clear();
+                            this.crackedUUID.clear();
                         }
                         ImGui.sameLine();
                     }

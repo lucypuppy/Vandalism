@@ -44,7 +44,6 @@ public class CommandRegistry {
     private void register() {
         this.registerCommands(
                 new TestCommand(),
-                new FeaturesCommand(),
                 new ChatClearCommand(),
                 new ModuleCommand(),
                 new ClientsideGameModeCommand(),
