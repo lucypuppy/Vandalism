@@ -21,6 +21,13 @@ public class MenuCategory extends ValueCategory {
             GlfwKeyName.RIGHT_SHIFT
     );
 
+    public final Value<Boolean> moduleStateLogging = new BooleanValue(
+            "Module State Logging",
+            "Enables/Disables the logging for the module state.",
+            this,
+            true
+    );
+
     public final Value<Boolean> scriptExecutionLogging = new BooleanValue(
             "Script Execution Logging",
             "Enables/Disables the logging for the script execution.",

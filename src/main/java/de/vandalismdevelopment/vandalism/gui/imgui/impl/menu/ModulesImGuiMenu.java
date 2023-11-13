@@ -12,6 +12,7 @@ import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
+import net.raphimc.vialoader.util.VersionRange;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,15 +36,16 @@ public class ModulesImGuiMenu extends ImGuiMenu {
                             ImGuiWindowFlags.NoScrollbar |
                             ImGuiWindowFlags.NoScrollWithMouse;
             ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
+            final String modulesIdentifier = "##modules", modulesSearchIdentifier = modulesIdentifier + "search";
             if (ImGui.begin(
-                    "Search##modulessearch",
+                    "Search" + modulesSearchIdentifier,
                     windowFlags
             )) {
                 ImGui.separator();
                 ImGui.setNextItemWidth(-1);
-                ImGui.inputText("##modulessearchinput", this.searchInput);
+                ImGui.inputText(modulesSearchIdentifier + "input", this.searchInput);
                 ImGui.separator();
-                ImGui.beginChild("##modulessearchscrolllist", -1, -1, true);
+                ImGui.beginChild(modulesSearchIdentifier + "scrolllist", -1, -1, true);
                 if (!this.searchInput.get().isBlank()) {
                     for (final Module module : Vandalism.getInstance().getModuleRegistry().getModules()) {
                         if (
@@ -59,12 +61,13 @@ public class ModulesImGuiMenu extends ImGuiMenu {
                 ImGui.end();
             }
             ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
+            final String modulesFavoritesIdentifier = modulesIdentifier + "favorites";
             if (ImGui.begin(
-                    "Favorites##modulesfavorites",
+                    "Favorites" + modulesFavoritesIdentifier,
                     windowFlags
             )) {
                 ImGui.separator();
-                ImGui.beginChild("##modulesfavoritesscrolllist", -1, -1, true);
+                ImGui.beginChild(modulesFavoritesIdentifier + "scrolllist", -1, -1, true);
                 for (final Module module : Vandalism.getInstance().getModuleRegistry().getModules()) {
                     if (module.isFavorite()) {
                         this.renderModule(module, "favorites");
@@ -120,7 +123,7 @@ public class ModulesImGuiMenu extends ImGuiMenu {
         }
         if (ImGui.isItemHovered()) {
             ImGui.beginTooltip();
-            this.renderModuleDescription(module);
+            this.renderModuleInfo(module);
             ImGui.endTooltip();
         }
         if (moduleEnabled) {
@@ -130,13 +133,9 @@ public class ModulesImGuiMenu extends ImGuiMenu {
             ImGui.text(module.getName() + " Module");
             ImGui.separator();
             ImGui.spacing();
-            final List<Value<?>> values = module.getValues();
-            this.renderModuleDescription(module);
-            ImGui.spacing();
-            if (module.isExperimental()) {
-                ImGui.textColored(0.8f, 0.1f, 0.1f, 1f, "Warning this is a unstable experimental module!");
-            }
+            this.renderModuleInfo(module);
             ImGui.separator();
+            final List<Value<?>> values = module.getValues();
             if (!values.isEmpty()) {
                 ImGui.text("Config");
                 ImGui.separator();
@@ -147,7 +146,7 @@ public class ModulesImGuiMenu extends ImGuiMenu {
                 }
                 ImGui.pushStyleColor(ImGuiCol.ChildBg, 0.0f, 0.0f, 0.0f, 0.15f);
                 ImGui.beginChild(
-                        "##" + moduleIdentifier + "configscrolllist",
+                        moduleIdentifier + "configscrolllist",
                         //TODO: Make the width and height customizable or use calculations.
                         400,
                         300,
@@ -163,7 +162,7 @@ public class ModulesImGuiMenu extends ImGuiMenu {
         }
     }
 
-    private void renderModuleDescription(final Module module) {
+    private void renderModuleInfo(final Module module) {
         final String description = module.getDescription();
         if (!description.isBlank()) {
             final List<String> descriptionLines = new ArrayList<>();
@@ -186,6 +185,16 @@ public class ModulesImGuiMenu extends ImGuiMenu {
             }
         } else {
             ImGui.text("No description found.");
+        }
+        if (module.isExperimental()) {
+            ImGui.spacing();
+            ImGui.textColored(0.8f, 0.1f, 0.1f, 1f, "Warning this is a unstable experimental module!");
+        }
+        final VersionRange supportedVersions = module.getSupportedVersions();
+        if (supportedVersions != null) {
+            ImGui.spacing();
+            ImGui.text("Supported Versions:");
+            ImGui.text(supportedVersions.toString());
         }
     }
 

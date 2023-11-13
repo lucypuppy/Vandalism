@@ -3,6 +3,7 @@ package de.vandalismdevelopment.vandalism.feature.impl.module.impl.combat;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.vandalismdevelopment.vandalism.event.TickListener;
+import de.vandalismdevelopment.vandalism.event.WorldListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.value.Value;
@@ -10,8 +11,10 @@ import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderIntegerV
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
+import net.raphimc.vialoader.util.VersionEnum;
+import net.raphimc.vialoader.util.VersionRange;
 
-public class BowSpammerModule extends Module implements TickListener {
+public class BowSpammerModule extends Module implements TickListener, WorldListener {
 
     private final Value<Integer> maxPacketsPerTick = new SliderIntegerValue(
             "Max Packets Per Tick",
@@ -39,6 +42,7 @@ public class BowSpammerModule extends Module implements TickListener {
                 "Lets you spam arrows with a bow.",
                 FeatureCategory.COMBAT,
                 false,
+                VersionRange.andOlder(VersionEnum.r1_8),
                 false
         );
         this.shootTimer = new MSTimer();
@@ -47,16 +51,23 @@ public class BowSpammerModule extends Module implements TickListener {
     @Override
     protected void onEnable() {
         DietrichEvents2.global().subscribe(TickEvent.ID, this);
+        DietrichEvents2.global().subscribe(WorldLoadEvent.ID, this);
     }
 
     @Override
     protected void onDisable() {
         DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(WorldLoadEvent.ID, this);
+    }
+
+    @Override
+    public void onPreWorldLoad() {
+        this.disable();
     }
 
     @Override
     public void onTick() {
-        if (player() == null || world() == null || interactionManager() == null) {
+        if (player() == null || interactionManager() == null) {
             return;
         }
         final ItemStack mainHandStack = player().getMainHandStack();

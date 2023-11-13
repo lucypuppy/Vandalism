@@ -14,6 +14,7 @@ import de.vandalismdevelopment.vandalism.value.ValueCategory;
 import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
 import de.vandalismdevelopment.vandalism.value.impl.KeyInputValue;
 import de.vandalismdevelopment.vandalism.value.impl.list.ModuleModeValue;
+import net.raphimc.vialoader.util.VersionRange;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,15 +26,20 @@ public abstract class Module extends Feature implements IValue {
     private final KeyInputValue keyBind;
 
     public Module(final String name, final String description, final FeatureCategory category, final boolean isExperimental, final boolean isDefaultEnabled) {
-        this(name, description, category, isExperimental, isDefaultEnabled, GlfwKeyName.UNKNOWN);
+        this(name, description, category, isExperimental, null, isDefaultEnabled, GlfwKeyName.UNKNOWN);
     }
 
-    public Module(final String name, final String description, final FeatureCategory category, final boolean isExperimental, final boolean isDefaultEnabled, final GlfwKeyName keyBind) {
+    public Module(final String name, final String description, final FeatureCategory category, final boolean isExperimental, final VersionRange supportedVersions, final boolean isDefaultEnabled) {
+        this(name, description, category, isExperimental, supportedVersions, isDefaultEnabled, GlfwKeyName.UNKNOWN);
+    }
+
+    public Module(final String name, final String description, final FeatureCategory category, final boolean isExperimental, final VersionRange supportedVersions, final boolean isDefaultEnabled, final GlfwKeyName keyBind) {
         this.setName(name);
         this.setDescription(description);
         this.setType(FeatureType.MODULE);
         this.setCategory(category);
         this.setExperimental(isExperimental);
+        this.setSupportedVersions(supportedVersions);
         this.values = new ArrayList<>();
         this.favorite = new BooleanValue(
                 "Favorite",
@@ -47,8 +53,10 @@ public abstract class Module extends Feature implements IValue {
                 this,
                 isDefaultEnabled
         ).valueChangedConsumer(state -> {
-            if (player() != null) {
-                ChatUtil.infoChatMessage(this.getName() + " has been " + (state ? "enabled" : "disabled") + ".");
+            if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.moduleStateLogging.getValue()) {
+                if (player() != null) {
+                    ChatUtil.infoChatMessage(this.getName() + " has been " + (state ? "enabled" : "disabled") + ".");
+                }
             }
             this.syncHUD();
             if (state) this.onEnable();

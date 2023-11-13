@@ -6,12 +6,11 @@ import net.raphimc.vialoader.util.VersionRange;
 
 public abstract class Feature implements MinecraftWrapper {
 
-    private VersionRange supportedVersions = null;
-
     private String name = "Example Feature", description = "This is a Feature.";
     private FeatureType type = FeatureType.values()[0];
     private FeatureCategory category = FeatureCategory.MISC;
     private boolean experimental = false;
+    private VersionRange supportedVersions = null;
 
     public String getName() {
         return this.name;
@@ -45,19 +44,23 @@ public abstract class Feature implements MinecraftWrapper {
         this.category = category;
     }
 
-    public void setExperimental(final boolean experimental) {
-        this.experimental = experimental;
-    }
-
     public boolean isExperimental() {
         return this.experimental;
     }
 
-    public void setSupportedVersions(final VersionRange versionRange) {
-        this.supportedVersions = versionRange;
+    public void setExperimental(final boolean experimental) {
+        this.experimental = experimental;
     }
 
-    public boolean isSupported(final VersionEnum version) {
+    public VersionRange getSupportedVersions() {
+        return this.supportedVersions;
+    }
+
+    public void setSupportedVersions(final VersionRange supportedVersions) {
+        this.supportedVersions = supportedVersions;
+    }
+
+    public boolean isSupportedVersion(final VersionEnum version) {
         if (this.supportedVersions == null) return true;
         return this.supportedVersions.contains(version);
     }

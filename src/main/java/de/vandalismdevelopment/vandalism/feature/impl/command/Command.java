@@ -10,6 +10,7 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.registry.BuiltinRegistries;
 import net.minecraft.server.command.CommandManager;
+import net.raphimc.vialoader.util.VersionRange;
 
 import java.util.Arrays;
 
@@ -22,11 +23,16 @@ public abstract class Command extends Feature {
     private final String aliasesString;
 
     public Command(final String name, final String description, final FeatureCategory category, final boolean isExperimental, final String... aliases) {
+        this(name, description, category, isExperimental, null, aliases);
+    }
+
+    public Command(final String name, final String description, final FeatureCategory category, final boolean isExperimental, final VersionRange supportedVersions, final String... aliases) {
         this.setName(name);
         this.setDescription(description);
         this.setType(FeatureType.COMMAND);
         this.setCategory(category);
         this.setExperimental(isExperimental);
+        this.setSupportedVersions(supportedVersions);
         this.aliases = aliases;
         this.aliasesString = Arrays.toString(this.aliases);
     }

@@ -21,15 +21,7 @@ public class Script extends Feature implements IValue {
     private final List<Value<?>> values;
     private final KeyInputValue keyBind;
 
-    public Script(
-            final File file,
-            final String name,
-            final String version,
-            final String author,
-            final String description,
-            final FeatureCategory category,
-            final boolean experimental
-    ) {
+    public Script(final File file, final String name, final String version, final String author, final String description, final FeatureCategory category, final boolean experimental) {
         this.setName(name);
         this.setDescription(description);
         this.setType(FeatureType.SCRIPT);
@@ -39,12 +31,7 @@ public class Script extends Feature implements IValue {
         this.version = version;
         this.author = author;
         this.values = new ArrayList<>();
-        this.keyBind = new KeyInputValue(
-                "Key Bind",
-                "The key bind of this script.",
-                this,
-                GlfwKeyName.UNKNOWN
-        );
+        this.keyBind = new KeyInputValue("Key Bind", "The key bind of this script.", this, GlfwKeyName.UNKNOWN);
     }
 
     public File getFile() {
@@ -69,15 +56,7 @@ public class Script extends Feature implements IValue {
 
     @Override
     public String toString() {
-        return '{' +
-                "name=" + this.getName() +
-                ", category=" + this.getCategory().normalName() +
-                ", experimental=" + this.isExperimental() +
-                ", file=" + this.file.getName() +
-                ", version='" + this.version + '\'' +
-                ", author='" + this.author + '\'' +
-                ", keyBind=" + this.keyBind.getValue().normalName() +
-                '}';
+        return '{' + "name=" + this.getName() + ", category=" + this.getCategory().normalName() + ", experimental=" + this.isExperimental() + ", file=" + this.file.getName() + ", version='" + this.version + '\'' + ", author='" + this.author + '\'' + ", keyBind=" + this.keyBind.getValue().normalName() + '}';
     }
 
     @Override
