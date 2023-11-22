@@ -18,7 +18,9 @@ public class CopyServerIPCommand extends Command {
                 "copyserverip",
                 "serveripcopy",
                 "copyserveraddress",
-                "serveraddresscopy"
+                "serveraddresscopy",
+                "copyip",
+                "copyserverip"
         );
     }
 
