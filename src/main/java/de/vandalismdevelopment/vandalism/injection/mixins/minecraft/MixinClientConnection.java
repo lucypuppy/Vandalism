@@ -39,7 +39,7 @@ public abstract class MixinClientConnection {
         else packet = packetEvent.packet;
     }
 
-    @Inject(method = "exceptionCaught", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;debug(Ljava/lang/String;Ljava/lang/Throwable;)V", ordinal = 1), cancellable = true)
+    @Inject(method = "exceptionCaught", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;debug(Ljava/lang/String;Ljava/lang/Throwable;)V", remap = false, ordinal = 1), cancellable = true)
     private void redirectExceptionCaughtTimeoutDisconnect(final ChannelHandlerContext context, final Throwable ex, final CallbackInfo ci) {
         if (!Vandalism.getInstance().getConfigManager().getMainConfig().accessibilityCategory.antiTimeoutKick.getValue()) {
             ci.cancel();

@@ -8,6 +8,7 @@ import net.minecraft.client.resource.ServerResourcePackProvider;
 import net.minecraft.client.util.NetworkUtils;
 import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.util.ProgressListener;
+import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -67,21 +68,6 @@ public abstract class MixinServerResourcePackProvider {
         }
     }
 
-    @Unique
-    private void deleteResourcePackTempDir(final File file) {
-        if (file.exists()) {
-            if (file.isDirectory()) {
-                final File[] files = file.listFiles();
-                if (files != null) {
-                    for (final File subFile : files) {
-                        this.deleteResourcePackTempDir(subFile);
-                    }
-                }
-            }
-            file.delete();
-        }
-    }
-
     @Redirect(method = "method_4634", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resource/ServerResourcePackProvider;loadServerPack(Ljava/io/File;Lnet/minecraft/resource/ResourcePackSource;)Ljava/util/concurrent/CompletableFuture;"))
     private CompletableFuture<Void> injectLoadServerPacket(final ServerResourcePackProvider instance, final File file, final ResourcePackSource packSource) {
         if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.moreResourcePackOptions.getValue() && CustomResourcePackConfirmScreen.dump) {
@@ -120,7 +106,7 @@ public abstract class MixinServerResourcePackProvider {
                         Vandalism.getInstance().getLogger().error("Failed to finish conversion of server resource pack into a resource pack zip!", ioException);
                     }
                 } else Vandalism.getInstance().getLogger().error("Empty server resource pack zip!");
-                this.deleteResourcePackTempDir(tempDir);
+                FileUtils.deleteDirectory(tempDir);
             } catch (final IOException ioException) {
                 Vandalism.getInstance().getLogger().error("Failed to convert the server resource pack into a resource pack zip!", ioException);
             }
