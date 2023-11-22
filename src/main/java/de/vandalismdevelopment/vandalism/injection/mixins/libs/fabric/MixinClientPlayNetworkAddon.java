@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.injection.mixins.minecraft;
+package de.vandalismdevelopment.vandalism.injection.mixins.libs.fabric;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.misc.ModPacketBlockerModule;

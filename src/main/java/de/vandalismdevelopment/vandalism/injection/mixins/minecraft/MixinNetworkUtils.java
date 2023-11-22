@@ -13,7 +13,7 @@ import java.io.InputStream;
 @Mixin(NetworkUtils.class)
 public abstract class MixinNetworkUtils {
 
-    @Redirect(method = "method_15303", at = @At(value = "INVOKE", target = "Ljava/io/InputStream;read([B)I"), remap = false)
+    @Redirect(method = "method_15303", at = @At(value = "INVOKE", target = "Ljava/io/InputStream;read([B)I"))
     private static int redirectByteWriting(final InputStream inputStream, final byte[] bs) throws IOException {
         if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.moreResourcePackOptions.getValue() &&
                 CustomResourcePackConfirmScreen.skipDownload
