@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.injection.mixins.minecraft;
+package de.vandalismdevelopment.vandalism.injection.mixins.libs.brigadier;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.LiteralMessage;
@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.Collections;
 
-@Mixin(CommandDispatcher.class)
+@Mixin(value = CommandDispatcher.class, remap = false)
 public abstract class MixinCommandDispatcher<S> {
 
     @Unique

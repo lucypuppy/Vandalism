@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(ContextMenu.class)
+@Mixin(value = ContextMenu.class, remap = false)
 public abstract class MixinContextMenu {
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Limgui/ImGui;beginMenu(Ljava/lang/String;)Z"))

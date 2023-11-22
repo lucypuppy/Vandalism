@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Mixin(MainWindow.class)
+@Mixin(value = MainWindow.class, remap = false)
 public abstract class MixinMainWindow {
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Limgui/ImGui;menuItem(Ljava/lang/String;)Z"))

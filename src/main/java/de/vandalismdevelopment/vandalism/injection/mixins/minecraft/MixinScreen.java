@@ -25,7 +25,7 @@ public abstract class MixinScreen {
     @Nullable
     protected MinecraftClient client;
 
-    @Inject(method = "handleTextClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/SharedConstants;stripInvalidChars(Ljava/lang/String;)Ljava/lang/String;", ordinal = 1, remap = false), cancellable = true)
+    @Inject(method = "handleTextClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/SharedConstants;stripInvalidChars(Ljava/lang/String;)Ljava/lang/String;", ordinal = 1), cancellable = true)
     private void injectHandleTextClick(final Style style, final CallbackInfoReturnable<Boolean> cir) {
         final ClickEvent clickEvent = style.getClickEvent();
         if (clickEvent != null) {

@@ -44,8 +44,7 @@ public abstract class MixinChatInputSuggestor {
             method = "refresh",
             at = @At(
                     value = "INVOKE",
-                    target = "Lcom/mojang/brigadier/StringReader;canRead()Z",
-                    remap = false
+                    target = "Lcom/mojang/brigadier/StringReader;canRead()Z"
             ),
             cancellable = true,
             locals = LocalCapture.CAPTURE_FAILHARD

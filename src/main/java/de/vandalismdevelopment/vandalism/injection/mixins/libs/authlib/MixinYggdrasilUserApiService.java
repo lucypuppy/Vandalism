@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.injection.mixins.minecraft;
+package de.vandalismdevelopment.vandalism.injection.mixins.libs.authlib;
 
 import com.mojang.authlib.minecraft.TelemetrySession;
 import com.mojang.authlib.yggdrasil.YggdrasilUserApiService;

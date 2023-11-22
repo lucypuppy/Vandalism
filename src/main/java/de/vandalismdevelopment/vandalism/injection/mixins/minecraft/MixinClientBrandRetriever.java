@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(value = ClientBrandRetriever.class, priority = 9999)
 public abstract class MixinClientBrandRetriever {
 
-    @Inject(method = "getClientModName", at = @At("HEAD"), cancellable = true, remap = false)
+    @Inject(method = "getClientModName", at = @At("HEAD"), cancellable = true)
     private static void injectGetClientModName(final CallbackInfoReturnable<String> cir) {
         if (Vandalism.getInstance() != null && Vandalism.getInstance().getModuleRegistry() != null) {
             final ClientBrandChangerModule clientBrandChangerModule = Vandalism.getInstance().getModuleRegistry().getClientBrandChangerModule();
