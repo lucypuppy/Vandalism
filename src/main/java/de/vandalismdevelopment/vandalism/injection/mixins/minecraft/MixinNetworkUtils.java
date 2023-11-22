@@ -3,7 +3,6 @@ package de.vandalismdevelopment.vandalism.injection.mixins.minecraft;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.minecraft.CustomResourcePackConfirmScreen;
 import net.minecraft.client.util.NetworkUtils;
-import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -22,11 +21,6 @@ public abstract class MixinNetworkUtils {
             return -1;
         }
         return inputStream.read(bs);
-    }
-
-    @Redirect(method = "method_15303", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;)V", ordinal = 0), remap = false)
-    private static void redirectThreadInterruption(final Logger instance, final String s) {
-        instance.error("The resource pack download thread has been interrupted!");
     }
 
 }
