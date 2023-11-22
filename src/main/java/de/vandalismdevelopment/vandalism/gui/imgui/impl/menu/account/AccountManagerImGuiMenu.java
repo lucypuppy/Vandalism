@@ -16,10 +16,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.session.Session;
 import net.minecraft.util.Util;
 import net.minecraft.util.Uuids;
-import net.raphimc.mcauth.MinecraftAuth;
-import net.raphimc.mcauth.step.java.StepMCProfile;
-import net.raphimc.mcauth.step.msa.StepMsaDeviceCode;
-import net.raphimc.mcauth.util.MicrosoftConstants;
+import net.raphimc.minecraftauth.MinecraftAuth;
+import net.raphimc.minecraftauth.step.java.session.StepFullJavaSession;
+import net.raphimc.minecraftauth.step.msa.StepMsaDeviceCode;
+import net.raphimc.minecraftauth.util.MicrosoftConstants;
 import org.apache.http.impl.client.CloseableHttpClient;
 
 import java.util.List;
@@ -197,27 +197,27 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
             if (ImGui.button("Add Microsoft Account##accountmanageraddmicrosoftaccount")) {
                 this.executor.submit(() -> {
                     try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
-                        final StepMCProfile.MCProfile mcProfile = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.getFromInput(
+                        final StepFullJavaSession.FullJavaSession  mcProfile = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.getFromInput(
                                 httpClient,
                                 new StepMsaDeviceCode.MsaDeviceCodeCallback(
                                         msaDeviceCode -> {
-                                            this.state.set("Please enter the code " + msaDeviceCode.userCode() + " at " + msaDeviceCode.verificationUri() +
+                                            this.state.set("Please enter the code " + msaDeviceCode.getUserCode() + " at " + msaDeviceCode.getVerificationUri() +
                                                     "\nThe code has been copied to your clipboard and the login page has been opened."
                                             );
-                                            Util.getOperatingSystem().open(msaDeviceCode.verificationUri());
-                                            keyboard().setClipboard(msaDeviceCode.userCode());
+                                            Util.getOperatingSystem().open(msaDeviceCode.getVerificationUri());
+                                            keyboard().setClipboard(msaDeviceCode.getUserCode());
                                         }
                                 )
                         );
                         accounts.add(
                                 new MicrosoftAccount(
-                                        mcProfile.toJson().toString(),
-                                        mcProfile.id(),
-                                        mcProfile.name()
+                                        MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.toJson(mcProfile).toString(),
+                                        mcProfile.getMcProfile().getId(),
+                                        mcProfile.getMcProfile().getName()
                                 )
                         );
                         Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getAccountConfig());
-                        this.state.set("Successfully added the microsoft account to your account list: " + mcProfile.name());
+                        this.state.set("Successfully added the microsoft account to your account list: " + mcProfile.getMcProfile().getName());
                     } catch (final Throwable throwable) {
                         Vandalism.getInstance().getLogger().error("Failed to log into a microsoft account.", throwable);
                         this.state.set("Failed to add the microsoft account to your account list.\n" + throwable);

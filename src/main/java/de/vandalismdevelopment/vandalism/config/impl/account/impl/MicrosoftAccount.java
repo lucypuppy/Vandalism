@@ -7,9 +7,9 @@ import de.vandalismdevelopment.vandalism.config.impl.account.Account;
 import de.vandalismdevelopment.vandalism.util.AES;
 import de.vandalismdevelopment.vandalism.util.SessionUtil;
 import net.minecraft.client.session.Session;
-import net.raphimc.mcauth.MinecraftAuth;
-import net.raphimc.mcauth.step.java.StepMCProfile;
-import net.raphimc.mcauth.util.MicrosoftConstants;
+import net.raphimc.minecraftauth.MinecraftAuth;
+import net.raphimc.minecraftauth.step.java.session.StepFullJavaSession;
+import net.raphimc.minecraftauth.util.MicrosoftConstants;
 import org.apache.http.impl.client.CloseableHttpClient;
 
 import javax.crypto.SecretKey;
@@ -29,18 +29,18 @@ public class MicrosoftAccount extends Account {
     public void login() throws Throwable {
         try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
             JsonObject jsonObject = JsonParser.parseString(this.data).getAsJsonObject();
-            final StepMCProfile.MCProfile mcProfile = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.refresh(
+            final StepFullJavaSession.FullJavaSession mcProfile = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.refresh(
                     httpClient,
                     MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.fromJson(jsonObject)
             );
-            jsonObject = mcProfile.toJson();
+            jsonObject = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.toJson(mcProfile);
             this.data = jsonObject.toString();
-            this.setUsername(mcProfile.name());
-            this.setUuid(mcProfile.id());
+            this.setUsername(mcProfile.getMcProfile().getName());
+            this.setUuid(mcProfile.getMcProfile().getId());
             SessionUtil.setSession(new Session(
                     this.getUsername(),
                     this.getUuid(),
-                    mcProfile.prevResult().prevResult().access_token(),
+                    mcProfile.getMcProfile().getMcToken().getAccessToken(),
                     Optional.empty(),
                     Optional.empty(),
                     Session.AccountType.MSA
