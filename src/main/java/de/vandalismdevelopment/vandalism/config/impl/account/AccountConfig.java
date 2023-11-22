@@ -11,8 +11,8 @@ import de.vandalismdevelopment.vandalism.config.impl.account.impl.MicrosoftAccou
 import de.vandalismdevelopment.vandalism.util.AES;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Uuids;
-import net.raphimc.mcauth.MinecraftAuth;
-import net.raphimc.mcauth.util.logging.ILogger;
+import net.raphimc.minecraftauth.MinecraftAuth;
+import net.raphimc.minecraftauth.util.logging.ILogger;
 
 import java.io.File;
 import java.io.IOException;
