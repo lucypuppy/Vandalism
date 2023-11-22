@@ -42,7 +42,7 @@ public class BowSpammerModule extends Module implements TickListener, WorldListe
                 "Lets you spam arrows with a bow.",
                 FeatureCategory.COMBAT,
                 false,
-                VersionRange.andOlder(VersionEnum.r1_8),
+                VersionRange.single(VersionEnum.r1_8),
                 false
         );
         this.shootTimer = new MSTimer();

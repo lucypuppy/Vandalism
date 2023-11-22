@@ -12,9 +12,11 @@ public interface PacketListener {
         public final static int ID = 2;
 
         public Packet<?> packet;
+        public final boolean sent;
 
-        public PacketEvent(final Packet<?> packet) {
+        public PacketEvent(final Packet<?> packet, final boolean sent) {
             this.packet = packet;
+            this.sent = sent;
         }
 
         @Override

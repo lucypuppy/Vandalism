@@ -25,7 +25,7 @@ public abstract class MixinClientConnection {
             cancellable = true
     )
     private void injectChannelRead0(final ChannelHandlerContext channelHandlerContext, Packet<?> packet, final CallbackInfo ci) {
-        final PacketListener.PacketEvent packetEvent = new PacketListener.PacketEvent(packet);
+        final PacketListener.PacketEvent packetEvent = new PacketListener.PacketEvent(packet, false);
         DietrichEvents2.global().postInternal(PacketListener.PacketEvent.ID, packetEvent);
         if (packetEvent.isCancelled()) ci.cancel();
         else packet = packetEvent.packet;
@@ -33,7 +33,7 @@ public abstract class MixinClientConnection {
 
     @Inject(method = "sendImmediately", at = @At("HEAD"), cancellable = true)
     private void injectSend(Packet<?> packet, final PacketCallbacks callbacks, final boolean flush, final CallbackInfo ci) {
-        final PacketListener.PacketEvent packetEvent = new PacketListener.PacketEvent(packet);
+        final PacketListener.PacketEvent packetEvent = new PacketListener.PacketEvent(packet, true);
         DietrichEvents2.global().postInternal(PacketListener.PacketEvent.ID, packetEvent);
         if (packetEvent.isCancelled()) ci.cancel();
         else packet = packetEvent.packet;
