@@ -26,7 +26,7 @@ public abstract class MixinInGameHud {
     @Final
     private DebugHud debugHud;
 
-    @Inject(method = "render(Lnet/minecraft/client/gui/DrawContext;F)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;enableBlend()V", ordinal = 3))
+    @Inject(method = "render(Lnet/minecraft/client/gui/DrawContext;F)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;enableBlend()V", ordinal = 3, remap = false))
     private void onRender(final DrawContext context, final float tickDelta, final CallbackInfo ci) {
         if (this.debugHud.shouldShowDebugHud()) return;
         context.getMatrices().push();
