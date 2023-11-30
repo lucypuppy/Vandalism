@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.config.impl;
 import com.google.gson.JsonObject;
 import de.vandalismdevelopment.vandalism.config.ValueableConfig;
 import de.vandalismdevelopment.vandalism.config.impl.main.*;
-import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +18,7 @@ public class MainConfig extends ValueableConfig implements MinecraftWrapper {
 
     public final ChatCategory chatCategory = new ChatCategory(this);
 
-    public final AccessibilityCategory accessibilityCategory = new AccessibilityCategory(this);
+    public final NetworkingCategory networkingCategory = new NetworkingCategory(this);
 
     public final VisualCategory visualCategory = new VisualCategory(this);
 

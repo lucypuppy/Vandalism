@@ -21,8 +21,8 @@ public class SendChatMessageNode extends RunnableNode {
 
     @Override
     public void run() {
-        if (networkHandler() != null) {
-            networkHandler().sendChatMessage(this.message.get());
+        if (this.networkHandler() != null) {
+            this.networkHandler().sendChatMessage(this.message.get());
         }
     }
 

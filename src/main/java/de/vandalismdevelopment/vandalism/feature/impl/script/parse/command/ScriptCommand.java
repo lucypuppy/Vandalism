@@ -4,11 +4,11 @@ import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.ScriptParser;
-import de.vandalismdevelopment.vandalism.util.ChatUtil;
-import de.vandalismdevelopment.vandalism.util.MovementUtil;
+import de.vandalismdevelopment.vandalism.feature.impl.script.parse.ScriptVariable;
+import de.vandalismdevelopment.vandalism.util.PlayerUtil;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandSource;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
@@ -27,7 +27,7 @@ public enum ScriptCommand {
             throw new RuntimeException("This script can't run itself because this would cause a stack overflow");
         }
         if (execute) {
-            Vandalism.getInstance().getCommandRegistry().execute(ScriptParser.applyCodeReplacements(code));
+            Vandalism.getInstance().getCommandRegistry().execute(ScriptVariable.applyReplacements(code));
         } else {
             final ParseResults<CommandSource> parse = Vandalism.getInstance().getCommandRegistry().parse(code);
             if (parse.getReader().canRead()) {
@@ -47,42 +47,34 @@ public enum ScriptCommand {
         exampleBuilder.append('\n');
         exampleBuilder.append("For example \"run say Hello World!\" which would say \"Hello World!\" in the chat.");
         return exampleBuilder;
-    }),
-    ADD_CHAT_MESSAGE((scriptName, lineNumber, code, execute) -> {
+    }), ADD_CHAT_MESSAGE((scriptName, lineNumber, code, execute) -> {
         final String[] args = code.split("( )+");
         if (args.length < 1) throw new RuntimeException("AddChatMessage command needs at least one argument");
         if (execute) {
-            ChatUtil.chatMessage(Text.empty()
-                    .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
-                    .append("[")
-                    .append(Text.literal(scriptName)
-                            .setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Color.CYAN.getRGB()))))
-                    .append("] ")
-                    .append(Text.literal(ScriptParser.applyCodeReplacements(code)))
-            );
+            final MutableText text = Text.empty();
+            text.setStyle(Style.EMPTY.withFormatting(Formatting.GRAY));
+            text.append("[");
+            text.append(Text.literal(scriptName));
+            text.setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Color.CYAN.getRGB())));
+            text.append("] ");
+            text.append(Text.literal(ScriptVariable.applyReplacements(code)));
+            PlayerUtil.chatMessage(text);
         }
     }, exampleBuilder -> {
         exampleBuilder.append("This command can add a chat message to the chat like this \"add_chat_message <message>\".");
         exampleBuilder.append('\n');
         exampleBuilder.append("For example \"add_chat_message Hello World!\" which would add \"Hello World!\" to the chat.");
         return exampleBuilder;
-    }),
-    JUMP((scriptName, lineNumber, code, execute) -> {
+    }), JUMP((scriptName, lineNumber, code, execute) -> {
         if (execute) {
-            final ClientPlayerEntity player = MinecraftClient.getInstance().player;
-            if (player != null) player.jump();
+            if (MinecraftClient.getInstance().player != null) {
+                MinecraftClient.getInstance().player.jump();
+            }
         }
         if (code.isBlank()) return;
         if (code.split("( )+").length >= 1) {
-            final String
-                    commandWithCode = ScriptParser.CODE_CHAR + code,
-                    command = commandWithCode.replaceFirst(ScriptParser.CODE_CHAR, "");
-            final Pair<ScriptCommand, Pair<Integer, String>> parsedCodeObject = ScriptParser.parseCodeFromScriptLine(
-                    scriptName,
-                    commandWithCode,
-                    lineNumber,
-                    execute
-            );
+            final String commandWithCode = ScriptParser.CODE_CHAR + code, command = commandWithCode.replaceFirst(ScriptParser.CODE_CHAR, "");
+            final Pair<ScriptCommand, Pair<Integer, String>> parsedCodeObject = ScriptParser.parseCodeFromScriptLine(scriptName, commandWithCode, lineNumber, execute);
             if (parsedCodeObject != null) {
                 final String parsedCode = parsedCodeObject.getRight().getRight();
                 final ScriptCommand scriptCommand = parsedCodeObject.getLeft();
@@ -97,13 +89,10 @@ public enum ScriptCommand {
         exampleBuilder.append('\n');
         exampleBuilder.append("For example \"jump set_speed 0.5\" which would make the player jump and set the speed of the player to 0.5.");
         return exampleBuilder;
-    }),
-    SET_SPEED((scriptName, lineNumber, code, execute) -> {
+    }), SET_SPEED((scriptName, lineNumber, code, execute) -> {
         final String[] args = code.split("( )+");
         if (args.length < 1) throw new RuntimeException("SetSpeed command needs at least one argument");
-        final String
-                commandWithCode = ScriptParser.CODE_CHAR + code.substring(code.indexOf(" ") + 1),
-                command = commandWithCode.replaceFirst(ScriptParser.CODE_CHAR, "");
+        final String commandWithCode = ScriptParser.CODE_CHAR + code.substring(code.indexOf(" ") + 1), command = commandWithCode.replaceFirst(ScriptParser.CODE_CHAR, "");
         final double speed;
         try {
             speed = Double.parseDouble(args[0].trim());
@@ -111,18 +100,12 @@ public enum ScriptCommand {
             throw new RuntimeException("Invalid double value '" + args[0] + "' for speed argument after SetSpeed command");
         }
         if (execute) {
-            final ClientPlayerEntity player = MinecraftClient.getInstance().player;
-            if (player != null) {
-                MovementUtil.setSpeed(speed);
+            if (MinecraftClient.getInstance().player != null) {
+                PlayerUtil.setSpeed(speed);
             }
         }
         if (args.length > 1) {
-            final Pair<ScriptCommand, Pair<Integer, String>> parsedCodeObject = ScriptParser.parseCodeFromScriptLine(
-                    scriptName,
-                    commandWithCode,
-                    lineNumber,
-                    execute
-            );
+            final Pair<ScriptCommand, Pair<Integer, String>> parsedCodeObject = ScriptParser.parseCodeFromScriptLine(scriptName, commandWithCode, lineNumber, execute);
             if (parsedCodeObject != null) {
                 final String parsedCode = parsedCodeObject.getRight().getRight();
                 final ScriptCommand scriptCommand = parsedCodeObject.getLeft();
@@ -139,13 +122,10 @@ public enum ScriptCommand {
         exampleBuilder.append('\n');
         exampleBuilder.append("For example \"set_speed 0.5 set_yaw 100\" which would set the speed to 0.5 and set the yaw of player to 100.");
         return exampleBuilder;
-    }),
-    SET_YAW((scriptName, lineNumber, code, execute) -> {
+    }), SET_YAW((scriptName, lineNumber, code, execute) -> {
         final String[] args = code.split("( )+");
         if (args.length < 1) throw new RuntimeException("SetVelocityYaw command needs at least one argument");
-        final String
-                commandWithCode = ScriptParser.CODE_CHAR + code.substring(code.indexOf(" ") + 1),
-                command = commandWithCode.replaceFirst(ScriptParser.CODE_CHAR, "");
+        final String commandWithCode = ScriptParser.CODE_CHAR + code.substring(code.indexOf(" ") + 1), command = commandWithCode.replaceFirst(ScriptParser.CODE_CHAR, "");
         final float yaw;
         try {
             yaw = Float.parseFloat(args[0].trim());
@@ -153,18 +133,12 @@ public enum ScriptCommand {
             throw new RuntimeException("Invalid float value '" + args[0] + "' for yaw argument after SetYaw command");
         }
         if (execute) {
-            final ClientPlayerEntity player = MinecraftClient.getInstance().player;
-            if (player != null) {
-                player.setYaw(yaw);
+            if (MinecraftClient.getInstance().player != null) {
+                MinecraftClient.getInstance().player.setYaw(yaw);
             }
         }
         if (args.length > 1) {
-            final Pair<ScriptCommand, Pair<Integer, String>> parsedCodeObject = ScriptParser.parseCodeFromScriptLine(
-                    scriptName,
-                    commandWithCode,
-                    lineNumber,
-                    execute
-            );
+            final Pair<ScriptCommand, Pair<Integer, String>> parsedCodeObject = ScriptParser.parseCodeFromScriptLine(scriptName, commandWithCode, lineNumber, execute);
             if (parsedCodeObject != null) {
                 final String parsedCode = parsedCodeObject.getRight().getRight();
                 final ScriptCommand scriptCommand = parsedCodeObject.getLeft();
@@ -179,16 +153,12 @@ public enum ScriptCommand {
         exampleBuilder.append('\n');
         exampleBuilder.append("You can also run multiple commands after the set yaw command like this \"set_yaw <yaw> <command>\".");
         exampleBuilder.append('\n');
-        exampleBuilder.append("For example \"set_yaw 100 set_pitch 50\" which would set the yaw" +
-                " of the player to 100 and set the pitch of the player to 50.");
+        exampleBuilder.append("For example \"set_yaw 100 set_pitch 50\" which would set the yaw" + " of the player to 100 and set the pitch of the player to 50.");
         return exampleBuilder;
-    }),
-    SET_PITCH((scriptName, lineNumber, code, execute) -> {
+    }), SET_PITCH((scriptName, lineNumber, code, execute) -> {
         final String[] args = code.split("( )+");
         if (args.length < 1) throw new RuntimeException("SetVelocityPitch command needs at least one argument");
-        final String
-                commandWithCode = ScriptParser.CODE_CHAR + code.substring(code.indexOf(" ") + 1),
-                command = commandWithCode.replaceFirst(ScriptParser.CODE_CHAR, "");
+        final String commandWithCode = ScriptParser.CODE_CHAR + code.substring(code.indexOf(" ") + 1), command = commandWithCode.replaceFirst(ScriptParser.CODE_CHAR, "");
         final float pitch;
         try {
             pitch = Float.parseFloat(args[0].trim());
@@ -196,18 +166,12 @@ public enum ScriptCommand {
             throw new RuntimeException("Invalid float value '" + args[0] + "' for pitch argument after SetYaw command");
         }
         if (execute) {
-            final ClientPlayerEntity player = MinecraftClient.getInstance().player;
-            if (player != null) {
-                player.setPitch(pitch);
+            if (MinecraftClient.getInstance().player != null) {
+                MinecraftClient.getInstance().player.setPitch(pitch);
             }
         }
         if (args.length > 1) {
-            final Pair<ScriptCommand, Pair<Integer, String>> parsedCodeObject = ScriptParser.parseCodeFromScriptLine(
-                    scriptName,
-                    commandWithCode,
-                    lineNumber,
-                    execute
-            );
+            final Pair<ScriptCommand, Pair<Integer, String>> parsedCodeObject = ScriptParser.parseCodeFromScriptLine(scriptName, commandWithCode, lineNumber, execute);
             if (parsedCodeObject != null) {
                 final String parsedCode = parsedCodeObject.getRight().getRight();
                 final ScriptCommand scriptCommand = parsedCodeObject.getLeft();
@@ -222,16 +186,12 @@ public enum ScriptCommand {
         exampleBuilder.append('\n');
         exampleBuilder.append("You can also run multiple commands after the set pitch command like this \"set_pitch <pitch> <command>\".");
         exampleBuilder.append('\n');
-        exampleBuilder.append("For example \"set_pitch 50 set_yaw 100\" which would set the pitch of the" +
-                " player to 50 and set the yaw of the player to 100.");
+        exampleBuilder.append("For example \"set_pitch 50 set_yaw 100\" which would set the pitch of the" + " player to 50 and set the yaw of the player to 100.");
         return exampleBuilder;
-    }),
-    SET_VELOCITY_X((scriptName, lineNumber, code, execute) -> {
+    }), SET_VELOCITY_X((scriptName, lineNumber, code, execute) -> {
         final String[] args = code.split("( )+");
         if (args.length < 1) throw new RuntimeException("SetVelocityX command needs at least one argument");
-        final String
-                commandWithCode = ScriptParser.CODE_CHAR + code.substring(code.indexOf(" ") + 1),
-                command = commandWithCode.replaceFirst(ScriptParser.CODE_CHAR, "");
+        final String commandWithCode = ScriptParser.CODE_CHAR + code.substring(code.indexOf(" ") + 1), command = commandWithCode.replaceFirst(ScriptParser.CODE_CHAR, "");
         final double xVelocity;
         try {
             xVelocity = Double.parseDouble(args[0].trim());
@@ -239,19 +199,13 @@ public enum ScriptCommand {
             throw new RuntimeException("Invalid double value '" + args[0] + "' for xVelocity argument after SetVelocityX command");
         }
         if (execute) {
-            final ClientPlayerEntity player = MinecraftClient.getInstance().player;
-            if (player != null) {
-                final Vec3d velocity = player.getVelocity();
-                player.setVelocity(xVelocity, velocity.y, velocity.z);
+            if (MinecraftClient.getInstance().player != null) {
+                final Vec3d velocity = MinecraftClient.getInstance().player.getVelocity();
+                MinecraftClient.getInstance().player.setVelocity(xVelocity, velocity.y, velocity.z);
             }
         }
         if (args.length > 1) {
-            final Pair<ScriptCommand, Pair<Integer, String>> parsedCodeObject = ScriptParser.parseCodeFromScriptLine(
-                    scriptName,
-                    commandWithCode,
-                    lineNumber,
-                    execute
-            );
+            final Pair<ScriptCommand, Pair<Integer, String>> parsedCodeObject = ScriptParser.parseCodeFromScriptLine(scriptName, commandWithCode, lineNumber, execute);
             if (parsedCodeObject != null) {
                 final String parsedCode = parsedCodeObject.getRight().getRight();
                 final ScriptCommand scriptCommand = parsedCodeObject.getLeft();
@@ -266,16 +220,12 @@ public enum ScriptCommand {
         exampleBuilder.append('\n');
         exampleBuilder.append("You can also run multiple commands after the set velocity x command like this \"set_velocity_x <x_velocity> <command>\".");
         exampleBuilder.append('\n');
-        exampleBuilder.append("For example \"set_velocity_x 0.5 set_velocity_y 0.5\" which would set" +
-                " the x velocity of the player to 0.5 and set the y velocity of the player to 0.5.");
+        exampleBuilder.append("For example \"set_velocity_x 0.5 set_velocity_y 0.5\" which would set" + " the x velocity of the player to 0.5 and set the y velocity of the player to 0.5.");
         return exampleBuilder;
-    }),
-    SET_VELOCITY_Y((scriptName, lineNumber, code, execute) -> {
+    }), SET_VELOCITY_Y((scriptName, lineNumber, code, execute) -> {
         final String[] args = code.split("( )+");
         if (args.length < 1) throw new RuntimeException("SetVelocityY command needs at least one argument");
-        final String
-                commandWithCode = ScriptParser.CODE_CHAR + code.substring(code.indexOf(" ") + 1),
-                command = commandWithCode.replaceFirst(ScriptParser.CODE_CHAR, "");
+        final String commandWithCode = ScriptParser.CODE_CHAR + code.substring(code.indexOf(" ") + 1), command = commandWithCode.replaceFirst(ScriptParser.CODE_CHAR, "");
         final double yVelocity;
         try {
             yVelocity = Double.parseDouble(args[0].trim());
@@ -283,19 +233,13 @@ public enum ScriptCommand {
             throw new RuntimeException("Invalid double value '" + args[0] + "' for yVelocity argument after SetVelocityY command");
         }
         if (execute) {
-            final ClientPlayerEntity player = MinecraftClient.getInstance().player;
-            if (player != null) {
-                final Vec3d velocity = player.getVelocity();
-                player.setVelocity(velocity.x, yVelocity, velocity.z);
+            if (MinecraftClient.getInstance().player != null) {
+                final Vec3d velocity = MinecraftClient.getInstance().player.getVelocity();
+                MinecraftClient.getInstance().player.setVelocity(velocity.x, yVelocity, velocity.z);
             }
         }
         if (args.length > 1) {
-            final Pair<ScriptCommand, Pair<Integer, String>> parsedCodeObject = ScriptParser.parseCodeFromScriptLine(
-                    scriptName,
-                    commandWithCode,
-                    lineNumber,
-                    execute
-            );
+            final Pair<ScriptCommand, Pair<Integer, String>> parsedCodeObject = ScriptParser.parseCodeFromScriptLine(scriptName, commandWithCode, lineNumber, execute);
             if (parsedCodeObject != null) {
                 final String parsedCode = parsedCodeObject.getRight().getRight();
                 final ScriptCommand scriptCommand = parsedCodeObject.getLeft();
@@ -310,16 +254,12 @@ public enum ScriptCommand {
         exampleBuilder.append('\n');
         exampleBuilder.append("You can also run multiple commands after the set velocity y command like this \"set_velocity_y <y_velocity> <command>\".");
         exampleBuilder.append('\n');
-        exampleBuilder.append("For example \"set_velocity_y 0.5 set_velocity_z 0.5\" which would set the y velocity" +
-                " of the player to 0.5 and set the z velocity of the player to 0.5.");
+        exampleBuilder.append("For example \"set_velocity_y 0.5 set_velocity_z 0.5\" which would set the y velocity" + " of the player to 0.5 and set the z velocity of the player to 0.5.");
         return exampleBuilder;
-    }),
-    SET_VELOCITY_Z((scriptName, lineNumber, code, execute) -> {
+    }), SET_VELOCITY_Z((scriptName, lineNumber, code, execute) -> {
         final String[] args = code.split("( )+");
         if (args.length < 1) throw new RuntimeException("SetVelocityZ command needs at least one argument");
-        final String
-                commandWithCode = ScriptParser.CODE_CHAR + code.substring(code.indexOf(" ") + 1),
-                command = commandWithCode.replaceFirst(ScriptParser.CODE_CHAR, "");
+        final String commandWithCode = ScriptParser.CODE_CHAR + code.substring(code.indexOf(" ") + 1), command = commandWithCode.replaceFirst(ScriptParser.CODE_CHAR, "");
         final double zVelocity;
         try {
             zVelocity = Double.parseDouble(args[0].trim());
@@ -327,19 +267,13 @@ public enum ScriptCommand {
             throw new RuntimeException("Invalid double value '" + args[0] + "' for zVelocity argument after SetVelocityZ command");
         }
         if (execute) {
-            final ClientPlayerEntity player = MinecraftClient.getInstance().player;
-            if (player != null) {
-                final Vec3d velocity = player.getVelocity();
-                player.setVelocity(velocity.x, velocity.y, zVelocity);
+            if (MinecraftClient.getInstance().player != null) {
+                final Vec3d velocity = MinecraftClient.getInstance().player.getVelocity();
+                MinecraftClient.getInstance().player.setVelocity(velocity.x, velocity.y, zVelocity);
             }
         }
         if (args.length > 1) {
-            final Pair<ScriptCommand, Pair<Integer, String>> parsedCodeObject = ScriptParser.parseCodeFromScriptLine(
-                    scriptName,
-                    commandWithCode,
-                    lineNumber,
-                    execute
-            );
+            final Pair<ScriptCommand, Pair<Integer, String>> parsedCodeObject = ScriptParser.parseCodeFromScriptLine(scriptName, commandWithCode, lineNumber, execute);
             if (parsedCodeObject != null) {
                 final String parsedCode = parsedCodeObject.getRight().getRight();
                 final ScriptCommand scriptCommand = parsedCodeObject.getLeft();
@@ -354,16 +288,12 @@ public enum ScriptCommand {
         exampleBuilder.append('\n');
         exampleBuilder.append("You can also run multiple commands after the set velocity z command like this \"set_velocity_z <z_velocity> <command>\".");
         exampleBuilder.append('\n');
-        exampleBuilder.append("For example \"set_velocity_z 0.5 set_velocity_x 0.5\" which would set the z velocity" +
-                " of the player to 0.5 and set the x velocity of the player to 0.5.");
+        exampleBuilder.append("For example \"set_velocity_z 0.5 set_velocity_x 0.5\" which would set the z velocity" + " of the player to 0.5 and set the x velocity of the player to 0.5.");
         return exampleBuilder;
-    }),
-    WAIT((scriptName, lineNumber, code, execute) -> {
+    }), WAIT((scriptName, lineNumber, code, execute) -> {
         final String[] args = code.split("( )+");
         if (args.length < 1) throw new RuntimeException("Wait command needs at least one argument");
-        final String
-                commandWithCode = ScriptParser.CODE_CHAR + code.substring(code.indexOf(" ") + 1),
-                command = commandWithCode.replaceFirst(ScriptParser.CODE_CHAR, "");
+        final String commandWithCode = ScriptParser.CODE_CHAR + code.substring(code.indexOf(" ") + 1), command = commandWithCode.replaceFirst(ScriptParser.CODE_CHAR, "");
         final long delay;
         try {
             delay = Long.parseLong(args[0].trim());
@@ -373,14 +303,14 @@ public enum ScriptCommand {
         if (delay < 1) {
             throw new RuntimeException("Delay '" + args[0] + "' after wait command must be greater than 0");
         }
-        if (execute) Thread.sleep(delay);
+        if (execute) {
+            try {
+                Thread.sleep(delay);
+            } catch (final InterruptedException ignored) {
+            }
+        }
         if (args.length > 1) {
-            final Pair<ScriptCommand, Pair<Integer, String>> parsedCodeObject = ScriptParser.parseCodeFromScriptLine(
-                    scriptName,
-                    commandWithCode,
-                    lineNumber,
-                    execute
-            );
+            final Pair<ScriptCommand, Pair<Integer, String>> parsedCodeObject = ScriptParser.parseCodeFromScriptLine(scriptName, commandWithCode, lineNumber, execute);
             if (parsedCodeObject != null) {
                 final String parsedCode = parsedCodeObject.getRight().getRight();
                 final ScriptCommand scriptCommand = parsedCodeObject.getLeft();
@@ -397,13 +327,10 @@ public enum ScriptCommand {
         exampleBuilder.append('\n');
         exampleBuilder.append("For example \"wait 1000 jump\" which would let the script wait for 1000 milliseconds and make the player jump.");
         return exampleBuilder;
-    }),
-    TIMES((scriptName, lineNumber, code, execute) -> {
+    }), TIMES((scriptName, lineNumber, code, execute) -> {
         final String[] args = code.split("( )+");
         if (args.length < 1) throw new RuntimeException("Times command needs at least one argument");
-        final String
-                commandWithCode = ScriptParser.CODE_CHAR + code.substring(code.indexOf(" ") + 1),
-                command = commandWithCode.replaceFirst(ScriptParser.CODE_CHAR, "");
+        final String commandWithCode = ScriptParser.CODE_CHAR + code.substring(code.indexOf(" ") + 1), command = commandWithCode.replaceFirst(ScriptParser.CODE_CHAR, "");
         int amount;
         try {
             amount = Integer.parseInt(args[0].trim());
@@ -417,12 +344,7 @@ public enum ScriptCommand {
             throw new RuntimeException("Times command needs at least two arguments '" + args[0] + "'");
         }
         for (int i = 0; i < amount; i++) {
-            final Pair<ScriptCommand, Pair<Integer, String>> parsedCodeObject = ScriptParser.parseCodeFromScriptLine(
-                    scriptName,
-                    commandWithCode,
-                    lineNumber,
-                    execute
-            );
+            final Pair<ScriptCommand, Pair<Integer, String>> parsedCodeObject = ScriptParser.parseCodeFromScriptLine(scriptName, commandWithCode, lineNumber, execute);
             if (parsedCodeObject != null) {
                 final String parsedCode = parsedCodeObject.getRight().getRight();
                 final ScriptCommand scriptCommand = parsedCodeObject.getLeft();

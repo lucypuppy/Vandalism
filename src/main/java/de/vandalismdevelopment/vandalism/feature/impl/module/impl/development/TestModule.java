@@ -17,7 +17,6 @@ import imgui.ImGui;
 import imgui.extension.implot.ImPlot;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec2f;
 
 import java.util.ArrayList;
@@ -27,40 +26,14 @@ public class TestModule extends Module implements TickListener, RenderListener {
 
     private final Clicker clicker;
 
-    private final Value<Float> mean = new SliderFloatValue(
-            "Mean",
-            "mean",
-            this,
-            15.0F,
-            0.0F,
-            20.0F
-    );
-    private final Value<Float> std = new SliderFloatValue(
-            "std",
-            "std",
-            this,
-            2.0F,
-            0.0F,
-            10.0F
-    );
+    private final Value<Float> mean = new SliderFloatValue("Mean", "mean", this, 15.0F, 0.0F, 20.0F);
 
-    private final Value<Integer> updatePossibility = new SliderIntegerValue(
-            "updatePossibility",
-            "updatePossibility",
-            this,
-            50,
-            0,
-            100
-    );
+    private final Value<Float> std = new SliderFloatValue("std", "std", this, 2.0F, 0.0F, 10.0F);
+
+    private final Value<Integer> updatePossibility = new SliderIntegerValue("updatePossibility", "updatePossibility", this, 50, 0, 100);
 
     public TestModule() {
-        super(
-                "Test",
-                "Just for development purposes.",
-                FeatureCategory.DEVELOPMENT,
-                true,
-                false
-        );
+        super("Test", "Just for development purposes.", FeatureCategory.DEVELOPMENT, true, false);
         this.clicker = new BoxMuellerClicker();
     }
 
@@ -80,10 +53,10 @@ public class TestModule extends Module implements TickListener, RenderListener {
 
     @Override
     public void onTick() {
-        if (world() == null || player() == null) return;
+        if (this.world() == null || this.player() == null) return;
         final List<Entity> entities = new ArrayList<>();
-        world().getEntities().forEach(entity -> {
-            if (entity instanceof PlayerEntity && player().distanceTo(entity) < 6 && entity != player()) {
+        this.world().getEntities().forEach(entity -> {
+            if (this.player().distanceTo(entity) < 6 && entity != this.player()) {
                 entities.add(entity);
             }
         });
@@ -92,44 +65,34 @@ public class TestModule extends Module implements TickListener, RenderListener {
             return;
         }
         final Entity target = entities.get(0);
-
         final Rotation rotation = Rotation.Builder.build(target, true, 3.5f, 0.1D);
-
         if (rotation != null) {
             Vandalism.getInstance().getRotationListener().setRotation(rotation, new Vec2f(20, 30), RotationPriority.HIGH);
         }
-
         if (this.clicker instanceof final BoxMuellerClicker clicker) {
             clicker.setMean(this.mean.getValue());
             clicker.setStd(this.std.getValue());
             clicker.setUpdatePossibility(this.updatePossibility.getValue());
         }
-
-        this.clicker.setClickAction(mc()::doAttack);
+        this.clicker.setClickAction(this.mc()::doAttack);
         this.clicker.update();
     }
 
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
         Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
-            if (ImGui.begin(
-                    "Graph##testmodule",
-                    Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
-            )) {
+            if (ImGui.begin("Graph##testmodule", Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags())) {
                 if (this.clicker instanceof final BoxMuellerClicker clicker) {
                     final int size = clicker.getDelays().getNormalList().size();
-
-                    if(size > 5) {
+                    if (size > 5) {
                         final Long[] xAxis = new Long[size];
                         final Long[] yAxis = new Long[size];
                         final Long[] yAxis2 = new Long[size];
-
                         for (int i = 0; i < size; i++) {
                             xAxis[i] = (long) i;
                             yAxis[i] = clicker.getDelays().getNormalList().get(i).getLeft();
                             yAxis2[i] = clicker.getDelays().getNormalList().get(i).getRight().longValue() * 20L;
                         }
-
                         if (ImPlot.beginPlot("CPSGraph")) {
                             ImPlot.plotLine("Delay", xAxis, yAxis);
                             ImPlot.plotLine("CPS", xAxis, yAxis2);
@@ -137,7 +100,6 @@ public class TestModule extends Module implements TickListener, RenderListener {
                         }
                     }
                 }
-
                 ImGui.end();
             }
         });

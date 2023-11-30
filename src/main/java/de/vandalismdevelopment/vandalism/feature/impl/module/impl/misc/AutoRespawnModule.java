@@ -11,39 +11,14 @@ import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderIntegerV
 
 public class AutoRespawnModule extends Module implements TickListener {
 
-    private final Value<Boolean> instantRespawn = new BooleanValue(
-            "Instant Respawn",
-            "Instantly respawns you when you die.",
-            this,
-            false
-    );
-
-    private final Value<Integer> delay = new SliderIntegerValue(
-            "Delay",
-            "The delay in ticks before respawning.",
-            this,
-            2000,
-            0,
-            10000
-    ).visibleConsumer(() -> !this.instantRespawn.getValue());
-
-    private final Value<Boolean> autoBack = new BooleanValue(
-            "Auto Back",
-            "Automatically uses the back command when you die.",
-            this,
-            true
-    );
+    private final Value<Boolean> instantRespawn = new BooleanValue("Instant Respawn", "Instantly respawns you when you die.", this, false);
+    private final Value<Integer> delay = new SliderIntegerValue("Delay", "The delay in ticks before respawning.", this, 2000, 0, 10000).visibleConsumer(() -> !this.instantRespawn.getValue());
+    private final Value<Boolean> autoBack = new BooleanValue("Auto Back", "Automatically uses the back command when you die.", this, true);
 
     private final MSTimer delayTimer = new MSTimer();
 
     public AutoRespawnModule() {
-        super(
-                "Auto Respawn",
-                "Automatically respawns you when you die.",
-                FeatureCategory.MISC,
-                false,
-                false
-        );
+        super("Auto Respawn", "Automatically respawns you when you die.", FeatureCategory.MISC, false, false);
     }
 
     @Override
@@ -58,13 +33,13 @@ public class AutoRespawnModule extends Module implements TickListener {
 
     @Override
     public void onTick() {
-        if (world() == null || !player().isDead()) return;
+        if (this.world() == null || !this.player().isDead()) return;
         if (!this.instantRespawn.getValue() && !this.delayTimer.hasReached(this.delay.getValue(), true)) {
             return;
         }
-        player().requestRespawn();
+        this.player().requestRespawn();
         if (this.autoBack.getValue()) {
-            networkHandler().sendChatCommand("back");
+            this.networkHandler().sendChatCommand("back");
         }
     }
 

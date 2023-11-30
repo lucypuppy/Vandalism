@@ -1,6 +1,6 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module;
 
-import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
 
 public abstract class ModuleMode<T extends Module> implements MinecraftWrapper {
 

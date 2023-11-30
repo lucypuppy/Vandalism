@@ -6,7 +6,6 @@ import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.script.Script;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.command.ScriptCommand;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.ScriptInfo;
-import de.vandalismdevelopment.vandalism.feature.impl.script.parse.variable.ScriptVariable;
 import net.minecraft.util.Pair;
 
 import java.io.File;
@@ -20,18 +19,7 @@ public class ScriptParser {
 
     public final static String INFO_CHAR = "@", CODE_CHAR = "!", VARIABLE_CHAR = "%";
 
-    public static String applyCodeReplacements(String code) {
-        if (!code.contains(VARIABLE_CHAR)) return code;
-        for (final ScriptVariable variable : ScriptVariable.values()) code = variable.replaceCode(code);
-        return code;
-    }
-
-    public static Pair<ScriptCommand, Pair<Integer, String>> parseCodeFromScriptLine(
-            final String scriptName,
-            String line,
-            final int lineNumber,
-            final boolean advancedErrors
-    ) throws RuntimeException {
+    public static Pair<ScriptCommand, Pair<Integer, String>> parseCodeFromScriptLine(final String scriptName, String line, final int lineNumber, final boolean advancedErrors) throws RuntimeException {
         if (line.startsWith(CODE_CHAR)) {
             if (line.startsWith(CODE_CHAR + CODE_CHAR)) line = line.replaceFirst(CODE_CHAR + CODE_CHAR, CODE_CHAR);
             for (final ScriptCommand scriptCommand : ScriptCommand.values()) {
@@ -45,9 +33,7 @@ public class ScriptParser {
                     } else if (commandCodePair.length == 1) {
                         code = "";
                     } else {
-                        throw new RuntimeException(
-                                "Invalid script command '" + line + "' " + (advancedErrors ? "in script '" + scriptName + "' at line " + lineNumber : "")
-                        );
+                        throw new RuntimeException("Invalid script command '" + line + "' " + (advancedErrors ? "in script '" + scriptName + "' at line " + lineNumber : ""));
                     }
                     try {
                         scriptCommand.check(scriptName, lineNumber, code);
@@ -84,28 +70,19 @@ public class ScriptParser {
         }
     }
 
-    public static Object parseInfoFromScriptLine(
-            final String scriptName, String line,
-            final int lineNumber,
-            final boolean advancedErrors
-    ) throws RuntimeException {
+    public static Object parseInfoFromScriptLine(final String scriptName, String line, final int lineNumber, final boolean advancedErrors) throws RuntimeException {
         if (line.startsWith(INFO_CHAR)) {
             if (line.startsWith(INFO_CHAR + INFO_CHAR)) line = line.replaceFirst(INFO_CHAR + INFO_CHAR, INFO_CHAR);
             for (final ScriptInfo info : ScriptInfo.values()) {
                 if (line.split("( )+")[0].equals(INFO_CHAR + info.getTag())) {
                     final String[] split = line.substring(info.getTag().length() - 1).trim().split(" ", 2);
                     if (split.length != 2) {
-                        throw new RuntimeException(
-                                "Invalid script info '" + line + "' " + (advancedErrors ? "in script '" + scriptName + "' at line " + lineNumber : "")
-                        );
+                        throw new RuntimeException("Invalid script info '" + line + "' " + (advancedErrors ? "in script '" + scriptName + "' at line " + lineNumber : ""));
                     }
                     try {
                         return info.parseValue(split[1]);
                     } catch (final Exception exception) {
-                        throw new RuntimeException(
-                                "Failed to parse script info '" + line + "' " + (advancedErrors ? "in script '" + scriptName + "' at line " + lineNumber : "") +
-                                        " due to an exception: " + exception.getMessage()
-                        );
+                        throw new RuntimeException("Failed to parse script info '" + line + "' " + (advancedErrors ? "in script '" + scriptName + "' at line " + lineNumber : "") + " due to an exception: " + exception.getMessage());
                     }
                 }
             }
@@ -116,9 +93,7 @@ public class ScriptParser {
     public static Script parseScriptObjectFromFile(final File file) throws RuntimeException {
         final String name = StringUtils.replaceLast(file.getName(), SCRIPT_FILE_EXTENSION, "");
         int lineNumber = 0;
-        String version = ScriptInfo.VERSION.getDefaultValue(),
-                author = ScriptInfo.AUTHOR.getDefaultValue(),
-                description = ScriptInfo.DESCRIPTION.getDefaultValue();
+        String version = ScriptInfo.VERSION.getDefaultValue(), author = ScriptInfo.AUTHOR.getDefaultValue(), description = ScriptInfo.DESCRIPTION.getDefaultValue();
         FeatureCategory category = ScriptInfo.CATEGORY.getDefaultValue();
         boolean experimental = ScriptInfo.EXPERIMENTAL.getDefaultValue();
         try {

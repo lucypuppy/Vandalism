@@ -1,6 +1,6 @@
 package de.vandalismdevelopment.vandalism.feature;
 
-import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
+import de.vandalismdevelopment.vandalism.util.interfaces.EnumNameNormalizer;
 
 public enum FeatureCategory implements EnumNameNormalizer {
 

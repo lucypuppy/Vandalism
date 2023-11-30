@@ -11,4 +11,8 @@ public abstract class Clicker {
 
     public abstract void update();
 
+    public long cpsToMs(final int cps) {
+        return 1000L / cps;
+    }
+
 }

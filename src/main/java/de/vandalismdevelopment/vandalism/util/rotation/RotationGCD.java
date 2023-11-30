@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.util.rotation;
 
 import com.mojang.datafixers.util.Function4;
-import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
+import de.vandalismdevelopment.vandalism.util.interfaces.EnumNameNormalizer;
 import net.minecraft.util.math.MathHelper;
 
 public enum RotationGCD implements EnumNameNormalizer {

@@ -118,9 +118,9 @@ public class NameHistoryImGuiMenu extends ImGuiMenu {
                         } catch (final Exception e) {
                             this.state.set("Error while getting uuid from mojang api: " + e);
                         }
-                        if (this.lastUUID.isBlank() && player() != null) {
+                        if (this.lastUUID.isBlank() && this.player() != null) {
                             this.state.set("Fallback: Trying to get the uuid from the user on the server...");
-                            for (final PlayerListEntry entry : networkHandler().getPlayerList()) {
+                            for (final PlayerListEntry entry : this.networkHandler().getPlayerList()) {
                                 if (entry.getProfile().getName().equalsIgnoreCase(this.lastUsername)) {
                                     this.lastUUID = entry.getProfile().getId().toString();
                                     break;
@@ -180,7 +180,7 @@ public class NameHistoryImGuiMenu extends ImGuiMenu {
             }
             if (!this.lastUsername.isBlank() && !this.lastUUID.isBlank()) {
                 if (ImGui.button("Copy UUID##namehistorycopyuuid")) {
-                    keyboard().setClipboard(this.lastUUID + " | " + Arrays.toString(Uuids.toIntArray(UUID.fromString(this.lastUUID))));
+                    this.keyboard().setClipboard(this.lastUUID + " | " + Arrays.toString(Uuids.toIntArray(UUID.fromString(this.lastUUID))));
                 }
                 ImGui.sameLine();
                 if (ImGui.button("Copy Data##namehistorycopydata")) {
@@ -195,7 +195,7 @@ public class NameHistoryImGuiMenu extends ImGuiMenu {
                         dataBuilder.append(" | Date: ").append(name.date());
                         dataBuilder.append(" | Accurate: ").append(name.accurate()).append("\n");
                     }
-                    keyboard().setClipboard(dataBuilder.toString());
+                    this.keyboard().setClipboard(dataBuilder.toString());
                 }
             }
             if (!this.names.isEmpty()) {
@@ -229,7 +229,7 @@ public class NameHistoryImGuiMenu extends ImGuiMenu {
                                 case ACTIONS -> {
                                     ImGui.spacing();
                                     if (ImGui.button("Copy Data##namehistorycopydata" + name.username(), 0, 28)) {
-                                        keyboard().setClipboard(
+                                        this.keyboard().setClipboard(
                                                 "Username: " + name.username() +
                                                         " | Date: " + name.date() +
                                                         " | Accurate: " + name.accurate()

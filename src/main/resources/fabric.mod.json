@@ -3,11 +3,9 @@
   "id": "vandalism",
   "version": "${version}",
   "name": "Vandalism",
-  "description": "Vandalism is a mod for Minecraft designed to train server administrators.",
+  "description": "A mod for Minecraft designed to train server administrators.",
   "authors": [
-    "NekosAreKawaii"
-  ],
-  "contributors": [
+    "NekosAreKawaii",
     "FooFieOwO"
   ],
   "environment": "client",
@@ -16,10 +14,10 @@
     "vandalism.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.14.24",
+    "fabricloader": "0.14.25",
     "minecraft": "~1.20.2",
     "java": ">=17",
-    "fabric-api": ">=0.90.4",
+    "fabric-api": "0.91.1",
     "viafabricplus": "*"
   }
 }

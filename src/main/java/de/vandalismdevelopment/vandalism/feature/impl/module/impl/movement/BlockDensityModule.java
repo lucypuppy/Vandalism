@@ -4,18 +4,31 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.event.BlockListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.FluidBlock;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.shape.VoxelShapes;
 
+import java.util.List;
+
 public class BlockDensityModule extends Module implements BlockListener {
+
+    private final static List<Block> BLOCKS = List.of(
+            Blocks.CACTUS,
+            Blocks.SWEET_BERRY_BUSH,
+            Blocks.POWDER_SNOW,
+            Blocks.MAGMA_BLOCK,
+            Blocks.COBWEB
+    );
 
     public BlockDensityModule() {
         super(
                 "Block Density",
-                "Prevents you and your vehicles from clipping into fluid blocks, cactus blocks, sweet berry bush blocks, powder snow blocks, magma blocks and cobweb blocks.",
+                "Prevents you and your vehicles from clipping into blocks that can change your movement or damage you.",
                 FeatureCategory.MOVEMENT,
                 false,
                 false
@@ -34,20 +47,22 @@ public class BlockDensityModule extends Module implements BlockListener {
 
     @Override
     public void onCollisionShapeGet(final BlockEvent event) {
-        if (player() == null) return;
+        if (this.player() == null) return;
         final BlockState state = event.state;
         final Block block = state.getBlock();
-        final boolean isFluidBlock = event.pos.getY() < player().getY() && (block instanceof FluidBlock || !block.getFluidState(state).isEmpty());
+        final boolean isFluidBlock = event.pos.getY() < this.player().getY() && (block instanceof FluidBlock || !block.getFluidState(state).isEmpty());
         if (isFluidBlock) {
-            if (options().useKey.isPressed()) {
-                final ItemStack mainHandStack = player().getMainHandStack();
+            if (this.options().useKey.isPressed()) {
+                final ItemStack mainHandStack = this.player().getMainHandStack();
                 if (mainHandStack.getItem() == Items.TRIDENT && EnchantmentHelper.getRiptide(mainHandStack) > 0) {
                     return;
                 }
             }
-            if (player().isUsingRiptide()) return;
+            if (this.player().isUsingRiptide()) {
+                return;
+            }
         }
-        if (isFluidBlock || block instanceof CactusBlock || block instanceof SweetBerryBushBlock || block instanceof PowderSnowBlock || block instanceof MagmaBlock || block instanceof CobwebBlock) {
+        if (isFluidBlock || BLOCKS.contains(block)) {
             event.shape = VoxelShapes.fullCube();
             event.shouldUpdate = true;
         }

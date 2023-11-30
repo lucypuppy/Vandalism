@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.feature.impl.command.impl.misc;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
-import de.vandalismdevelopment.vandalism.util.ChatUtil;
+import de.vandalismdevelopment.vandalism.util.PlayerUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
@@ -13,50 +13,32 @@ import net.minecraft.util.collection.DefaultedList;
 public class InventoryClearCommand extends Command {
 
     public InventoryClearCommand() {
-        super(
-                "Inventory Clear",
-                "Clears your inventory.",
-                FeatureCategory.MISC,
-                false,
-                "inventoryclear",
-                "clearinventory",
-                "invclear",
-                "clearinv"
-        );
+        super("Inventory Clear", "Clears your inventory.", FeatureCategory.MISC, false, "inventoryclear", "clearinventory", "invclear", "clearinv");
     }
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
-            final DefaultedList<ItemStack> mainInventory = player().getInventory().main;
+            final DefaultedList<ItemStack> mainInventory = this.player().getInventory().main;
             for (int i = 0; i < mainInventory.size(); ++i) {
                 if (mainInventory.get(i).isEmpty()) continue;
                 this.clearSlot(i);
             }
             for (int i = 36; i < 46; i++) this.clearSlot(i);
-            ChatUtil.infoChatMessage("Your inventory has been cleared.");
+            PlayerUtil.infoChatMessage("Your inventory has been cleared.");
             return SINGLE_SUCCESS;
         });
     }
 
     private void clearSlot(final int id) {
-        switch (interactionManager().getCurrentGameMode()) {
+        switch (this.interactionManager().getCurrentGameMode()) {
             case CREATIVE: {
-                networkHandler().sendPacket(new CreativeInventoryActionC2SPacket(
-                        id,
-                        ItemStack.EMPTY
-                ));
+                this.networkHandler().sendPacket(new CreativeInventoryActionC2SPacket(id, ItemStack.EMPTY));
                 break;
             }
             case SURVIVAL:
             case ADVENTURE: {
-                interactionManager().clickSlot(
-                        player().currentScreenHandler.syncId,
-                        id,
-                        -999,
-                        SlotActionType.THROW,
-                        player()
-                );
+                this.interactionManager().clickSlot(this.player().currentScreenHandler.syncId, id, -999, SlotActionType.THROW, this.player());
             }
             default: {
                 break;

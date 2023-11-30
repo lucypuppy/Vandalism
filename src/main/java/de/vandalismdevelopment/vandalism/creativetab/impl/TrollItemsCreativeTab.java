@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.creativetab.impl;
 
 import de.vandalismdevelopment.vandalism.creativetab.CreativeTab;
-import de.vandalismdevelopment.vandalism.util.ItemUtil;
+import de.vandalismdevelopment.vandalism.util.PlayerUtil;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -14,68 +14,32 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.Arrays;
-import java.util.Collection;
 
 public class TrollItemsCreativeTab extends CreativeTab {
 
     public TrollItemsCreativeTab() {
-        super(
-                Text.literal("Troll Items"),
-                new ItemStack(Items.END_CRYSTAL)
-        );
+        super(Text.literal("Troll Items"), new ItemStack(Items.END_CRYSTAL), entries -> {
+            for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
+                entries.add(PlayerUtil.appendClientSideInfoToItemStack(createTrollPotion(new ItemStack(item)), Text.literal(Formatting.GOLD + "Troll Potion")));
+            }
+            for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
+                entries.add(PlayerUtil.appendClientSideInfoToItemStack(createKillPotion(new ItemStack(item)), Text.literal(Formatting.RED + "Kill Potion")));
+            }
+            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createKillArea(), Text.literal(Formatting.RED + "Kill Area")));
+            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createWhiteHole(), Text.literal(Formatting.WHITE + Formatting.BOLD.toString() + "White Hole")));
+            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createBlackHole(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Black Hole")));
+            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createEventHorizonArea(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area")));
+            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createStargazer(), Text.literal(Formatting.YELLOW + Formatting.BOLD.toString() + "Stargazer"), true));
+        });
     }
 
-    @Override
-    public Collection<ItemStack> entries() {
-        final Collection<ItemStack> current = super.entries();
-        for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
-            current.add(ItemUtil.appendClientSideInfoToItemStack(
-                    this.createTrollPotion(new ItemStack(item)),
-                    Text.literal(Formatting.GOLD + "Troll Potion")
-            ));
-        }
-        for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
-            current.add(ItemUtil.appendClientSideInfoToItemStack(
-                    this.createKillPotion(new ItemStack(item)),
-                    Text.literal(Formatting.RED + "Kill Potion")
-            ));
-        }
-        current.add(ItemUtil.appendClientSideInfoToItemStack(
-                this.createKillArea(),
-                Text.literal(Formatting.RED + "Kill Area")
-        ));
-        current.add(ItemUtil.appendClientSideInfoToItemStack(
-                this.createWhiteHole(),
-                Text.literal(Formatting.WHITE + Formatting.BOLD.toString() + "White Hole")
-        ));
-        current.add(ItemUtil.appendClientSideInfoToItemStack(
-                this.createBlackHole(),
-                Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Black Hole")
-        ));
-        current.add(ItemUtil.appendClientSideInfoToItemStack(
-                this.createEventHorizonArea(),
-                Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area")
-        ));
-        current.add(ItemUtil.appendClientSideInfoToItemStack(
-                this.createStargazer(),
-                Text.literal(Formatting.YELLOW + Formatting.BOLD.toString() + "Stargazer"),
-                true
-        ));
-        return current;
-    }
-
-    private ItemStack createTrollPotion(final ItemStack origin) {
+    private static ItemStack createTrollPotion(final ItemStack origin) {
         final NbtCompound base = new NbtCompound();
         final NbtList customPotionEffects = new NbtList();
         for (final StatusEffect statusEffect : Registries.STATUS_EFFECT) {
             final Identifier id = Registries.STATUS_EFFECT.getId(statusEffect);
             if (id != null && id.getNamespace().equals("minecraft")) {
-                customPotionEffects.add(ItemUtil.createEffectNBT(
-                        id.getPath(),
-                        10000,
-                        255,
-                        false
-                ));
+                customPotionEffects.add(PlayerUtil.createEffectNBT(id.getPath(), 10000, 255, false));
             }
         }
         base.put("custom_potion_effects", customPotionEffects);
@@ -83,21 +47,21 @@ public class TrollItemsCreativeTab extends CreativeTab {
         return origin;
     }
 
-    private ItemStack createKillPotion(final ItemStack origin) {
+    private static ItemStack createKillPotion(final ItemStack origin) {
         final NbtCompound base = new NbtCompound();
         final NbtList customPotionEffects = new NbtList();
-        customPotionEffects.add(ItemUtil.createEffectNBT("instant_health", 2000, 125, false));
+        customPotionEffects.add(PlayerUtil.createEffectNBT("instant_health", 2000, 125, false));
         base.put("custom_potion_effects", customPotionEffects);
         origin.setNbt(base);
         return origin;
     }
 
-    private ItemStack createKillArea() {
+    private static ItemStack createKillArea() {
         final ItemStack item = new ItemStack(Items.SALMON_SPAWN_EGG);
         final NbtCompound base = new NbtCompound();
         final NbtCompound entityTag = new NbtCompound();
         final NbtList effects = new NbtList();
-        effects.add(ItemUtil.createEffectNBT("instant_health", 20, 125, false));
+        effects.add(PlayerUtil.createEffectNBT("instant_health", 20, 125, false));
         entityTag.put("effects", effects);
         entityTag.putFloat("RadiusOnUse", 0.1f);
         entityTag.putFloat("RadiusPerTick", 0.01f);
@@ -111,7 +75,7 @@ public class TrollItemsCreativeTab extends CreativeTab {
         return item;
     }
 
-    private ItemStack createWhiteHole() {
+    private static ItemStack createWhiteHole() {
         final ItemStack item = new ItemStack(Items.PANDA_SPAWN_EGG);
         final NbtCompound base = new NbtCompound();
         final NbtCompound entityTag = new NbtCompound();
@@ -127,7 +91,7 @@ public class TrollItemsCreativeTab extends CreativeTab {
         return item;
     }
 
-    private ItemStack createBlackHole() {
+    private static ItemStack createBlackHole() {
         final ItemStack item = new ItemStack(Items.BAT_SPAWN_EGG);
         final NbtCompound base = new NbtCompound();
         final NbtCompound entityTag = new NbtCompound();
@@ -141,19 +105,19 @@ public class TrollItemsCreativeTab extends CreativeTab {
         return item;
     }
 
-    private ItemStack createEventHorizonArea() {
+    private static ItemStack createEventHorizonArea() {
         final ItemStack item = new ItemStack(Items.BAT_SPAWN_EGG);
         final NbtCompound base = new NbtCompound();
         final NbtCompound entityTag = new NbtCompound();
         final NbtList effects = new NbtList();
-        effects.add(ItemUtil.createEffectNBT("slowness", 170, 125, false));
-        effects.add(ItemUtil.createEffectNBT("mining_fatigue", 150, 125, false));
-        effects.add(ItemUtil.createEffectNBT("resistance ", 170, 125, false));
-        effects.add(ItemUtil.createEffectNBT("invisibility", 130, 1, false));
-        effects.add(ItemUtil.createEffectNBT("weakness", 170, 125, false));
-        effects.add(ItemUtil.createEffectNBT("wither", 160, 1, false));
-        effects.add(ItemUtil.createEffectNBT("levitation", 19, 125, false));
-        effects.add(ItemUtil.createEffectNBT("darkness", 170, 125, false));
+        effects.add(PlayerUtil.createEffectNBT("slowness", 170, 125, false));
+        effects.add(PlayerUtil.createEffectNBT("mining_fatigue", 150, 125, false));
+        effects.add(PlayerUtil.createEffectNBT("resistance ", 170, 125, false));
+        effects.add(PlayerUtil.createEffectNBT("invisibility", 130, 1, false));
+        effects.add(PlayerUtil.createEffectNBT("weakness", 170, 125, false));
+        effects.add(PlayerUtil.createEffectNBT("wither", 160, 1, false));
+        effects.add(PlayerUtil.createEffectNBT("levitation", 19, 125, false));
+        effects.add(PlayerUtil.createEffectNBT("darkness", 170, 125, false));
         entityTag.put("effects", effects);
         entityTag.putFloat("RadiusOnUse", 0.1f);
         entityTag.putFloat("RadiusPerTick", 0.01f);
@@ -167,16 +131,13 @@ public class TrollItemsCreativeTab extends CreativeTab {
         return item;
     }
 
-    private ItemStack createStargazer() {
+    private static ItemStack createStargazer() {
         final ItemStack item = new ItemStack(Items.COW_SPAWN_EGG);
         final NbtCompound base = new NbtCompound();
         final NbtCompound entityTag = new NbtCompound();
         entityTag.putInt("Steps", Integer.MIN_VALUE);
         entityTag.putString("id", "minecraft:shulker_bullet");
-        entityTag.putString(
-                "CustomName",
-                Text.Serializer.toJson(Text.literal("*").formatted(Formatting.YELLOW, Formatting.BOLD))
-        );
+        entityTag.putString("CustomName", Text.Serializer.toJson(Text.literal("*").formatted(Formatting.YELLOW, Formatting.BOLD)));
         entityTag.putByte("CustomNameVisible", (byte) 1);
         entityTag.putByte("NoGravity", (byte) 1);
         base.put("EntityTag", entityTag);

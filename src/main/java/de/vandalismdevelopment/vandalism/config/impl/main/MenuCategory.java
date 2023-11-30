@@ -35,9 +35,44 @@ public class MenuCategory extends ValueCategory {
             false
     );
 
+    public final Value<Boolean> alwaysDisplayCreativeTab = new BooleanValue(
+            "Always Display Creative Tab",
+            "Always displays the creative tab.",
+            this,
+            true
+    );
+
     public final Value<Boolean> manageContainerButtons = new BooleanValue(
             "Manage Container Buttons",
             "Adds the store/steal buttons to containers.",
+            this,
+            true
+    );
+
+    public final Value<Boolean> replaceGameMenuScreenButtons = new BooleanValue(
+            "Replaces Game Menu Screen Buttons",
+            "Adds a multiplayer and a reconnect button to the game menu screen.",
+            this,
+            true
+    );
+
+    public final Value<Boolean> downloadingTerrainScreenEscaping = new BooleanValue(
+            "Downloading Terrain Screen Escaping",
+            "Allows you to escape the downloading terrain screen by pressing the escape key.",
+            this,
+            true
+    );
+
+    public final Value<Boolean> disconnectedScreenEscaping = new BooleanValue(
+            "Disconnected Screen Escaping",
+            "Allows you to escape the disconnected screen by pressing the escape key.",
+            this,
+            true
+    );
+
+    public final Value<Boolean> moreDisconnectedScreenButtons = new BooleanValue(
+            "More Disconnected Buttons",
+            "Adds more buttons to the disconnected screen.",
             this,
             true
     );

@@ -1,16 +1,26 @@
 package de.vandalismdevelopment.vandalism.feature;
 
-import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
 import net.raphimc.vialoader.util.VersionEnum;
 import net.raphimc.vialoader.util.VersionRange;
 
 public abstract class Feature implements MinecraftWrapper {
 
-    private String name = "Example Feature", description = "This is a Feature.";
-    private FeatureType type = FeatureType.values()[0];
-    private FeatureCategory category = FeatureCategory.MISC;
-    private boolean experimental = false;
-    private VersionRange supportedVersions = null;
+    private String name;
+    private String description;
+    private FeatureType type;
+    private FeatureCategory category;
+    private boolean experimental;
+    private VersionRange supportedVersions;
+
+    protected Feature() {
+        this.name = "Example Feature";
+        this.description = "This is a Feature.";
+        this.type = FeatureType.NONE;
+        this.category = FeatureCategory.MISC;
+        this.experimental = false;
+        this.supportedVersions = null;
+    }
 
     public String getName() {
         return this.name;

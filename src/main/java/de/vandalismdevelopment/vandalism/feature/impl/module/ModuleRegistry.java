@@ -12,237 +12,90 @@ import de.vandalismdevelopment.vandalism.feature.impl.module.impl.exploit.*;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.misc.*;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement.*;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.render.*;
-import net.minecraft.client.MinecraftClient;
+import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
 import org.lwjgl.glfw.GLFW;
 
-public class ModuleRegistry implements KeyboardListener {
+public class ModuleRegistry implements MinecraftWrapper, KeyboardListener {
 
-    private HeadUpDisplayModule headUpDisplayModule;
-
-    public HeadUpDisplayModule getHeadUpDisplayModule() {
-        return this.headUpDisplayModule;
-    }
-
-    private TestModule testModule;
-
-    public TestModule getTestModule() {
-        return this.testModule;
-    }
-
-    private DebugModule debugModule;
-
-    public DebugModule getDebugModule() {
-        return this.debugModule;
-    }
-
-    private ExploitFixerModule exploitFixerModule;
-
-    public ExploitFixerModule getExploitFixerModule() {
-        return this.exploitFixerModule;
-    }
-
-    private ClientBrandChangerModule clientBrandChangerModule;
-
-    public ClientBrandChangerModule getClientBrandChangerModule() {
-        return this.clientBrandChangerModule;
-    }
-
-    private TrueSightModule trueSightModule;
-
-    public TrueSightModule getTrueSightModule() {
-        return this.trueSightModule;
-    }
-
+    private AmbienceModule ambienceModule;
+    private AntiFOVModule antiFOVModule;
+    private AutoFishModule autoFishModule;
+    private AutoRespawnModule autoRespawnModule;
     private BetterTabListModule betterTabListModule;
+    private BetterTooltipsModule betterTooltipsModule;
+    private BlockDensityModule blockDensityModule;
+    private BowSpammerModule bowSpammerModule;
+    private BungeeCordSpooferModule bungeeCordSpooferModule;
+    private CameraNoClipModule cameraNoClipModule;
+    private CraftCarryModule craftCarryModule;
+    private ConsoleSpammerModule consoleSpammerModule;
+    private DebugModule debugModule;
+    private DeutschMacherModule deutschMacherModule;
+    private ESPModule espModule;
+    private ElytraFlightModule elytraFlightModule;
+    private ExploitFixerModule exploitFixerModule;
+    private FastUseModule fastUseModule;
+    private FlightModule flightModule;
+    private GodModeModule godModeModule;
+    private HUDModule hudModule;
+    private IllegalBlockPlaceModule illegalBlockPlaceModule;
+    private InteractionSpammerModule interactionSpammerModule;
+    private ItemStackLoggerModule itemStackLoggerModule;
+    private JoinLeaveModule joinLeaveModule;
+    private MessageEncryptorModule messageEncryptorModule;
+    private ModPacketBlockerModule modPacketBlockerModule;
+    private NoFallModule noFallModule;
+    private NoteBlockPlayerModule noteBlockPlayerModule;
+    private PacketLoggerModule packetLoggerModule;
+    private PhaseModule phaseModule;
+    private PushVelocityModule pushVelocityModule;
+    private ProtectorModule protectorModule;
+    private ServerCrasherModule serverCrasherModule;
+    private SpeedModule speedModule;
+    private StepModule stepModule;
+    private TestModule testModule;
+    private TrueSightModule trueSightModule;
+    private VelocityModule velocityModule;
+    private VisualThrottleModule visualThrottleModule;
 
     public BetterTabListModule getBetterTabListModule() {
         return this.betterTabListModule;
     }
 
-    private PacketLoggerModule packetLoggerModule;
-
-    public PacketLoggerModule getPacketLoggerModule() {
-        return this.packetLoggerModule;
+    public ESPModule getEspModule() {
+        return this.espModule;
     }
 
-    private ModPacketBlockerModule modPacketBlockerModule;
-
-    public ModPacketBlockerModule getModPacketBlockerModule() {
-        return this.modPacketBlockerModule;
+    public ExploitFixerModule getExploitFixerModule() {
+        return this.exploitFixerModule;
     }
-
-    private FlightModule flightModule;
-
-    public FlightModule getFlightModule() {
-        return this.flightModule;
-    }
-
-    private BungeeCordSpooferModule bungeeCordSpooferModule;
-
-    public BungeeCordSpooferModule getBungeeCordSpooferModule() {
-        return this.bungeeCordSpooferModule;
-    }
-
-    private GodModeModule godModeModule;
-
-    public GodModeModule getGodModeModule() {
-        return this.godModeModule;
-    }
-
-    private SpeedModule speedModule;
-
-    public SpeedModule getSpeedModule() {
-        return this.speedModule;
-    }
-
-    private ServerCrasherModule serverCrasherModule;
-
-    public ServerCrasherModule getServerCrasherModule() {
-        return this.serverCrasherModule;
-    }
-
-    private CraftCarryModule craftCarryModule;
-
-    public CraftCarryModule getCraftCarryModule() {
-        return this.craftCarryModule;
-    }
-
-    private ConsoleSpammerModule consoleSpammerModule;
-
-    public ConsoleSpammerModule getConsoleSpammerModule() {
-        return this.consoleSpammerModule;
-    }
-
-    private ItemStackLoggerModule itemStackLoggerModule;
-
-    public ItemStackLoggerModule getItemStackLoggerModule() {
-        return this.itemStackLoggerModule;
-    }
-
-    private FastUseModule fastUseModule;
 
     public FastUseModule getFastUseModule() {
         return this.fastUseModule;
     }
 
-    private PushVelocityModule pushVelocityModule;
-
-    public PushVelocityModule getPushVelocityModule() {
-        return this.pushVelocityModule;
+    public HUDModule getHudModule() {
+        return this.hudModule;
     }
-
-    private StepModule stepModule;
-
-    public StepModule getStepModule() {
-        return this.stepModule;
-    }
-
-    private NoFallModule noFallModule;
-
-    public NoFallModule getNoFallModule() {
-        return this.noFallModule;
-    }
-
-    private CameraNoClipModule cameraNoClipModule;
-
-    public CameraNoClipModule getCameraNoClipModule() {
-        return this.cameraNoClipModule;
-    }
-
-    private JoinLeaveModule joinLeaveModule;
-
-    public JoinLeaveModule getJoinLeaveModule() {
-        return this.joinLeaveModule;
-    }
-
-    private ESPModule espModule;
-
-    public ESPModule getEspModule() {
-        return this.espModule;
-    }
-
-    private BetterTooltipsModule betterTooltipsModule;
-
-    public BetterTooltipsModule getBetterTooltipsModule() {
-        return this.betterTooltipsModule;
-    }
-
-    private PhaseModule phaseModule;
-
-    public PhaseModule getPhaseModule() {
-        return this.phaseModule;
-    }
-
-    private VelocityModule velocityModule;
-
-    public VelocityModule getVelocityModule() {
-        return this.velocityModule;
-    }
-
-    private AutoFishModule autoFishModule;
-
-    public AutoFishModule getAutoFishModule() {
-        return this.autoFishModule;
-    }
-
-    private BlockDensityModule blockDensityModule;
-
-    public BlockDensityModule getBlockDensityModule() {
-        return this.blockDensityModule;
-    }
-
-    private VisualThrottleModule visualThrottleModule;
-
-    public VisualThrottleModule getVisualThrottleModule() {
-        return this.visualThrottleModule;
-    }
-
-    private ElytraFlightModule elytraFlightModule;
-
-    public ElytraFlightModule getElytraFlightModule() {
-        return this.elytraFlightModule;
-    }
-
-    private AmbienceModule ambienceModule;
-
-    public AmbienceModule getAmbienceModule() {
-        return this.ambienceModule;
-    }
-
-    private MessageEncryptorModule messageEncryptorModule;
-
-    public MessageEncryptorModule getMessageEncryptorModule() {
-        return this.messageEncryptorModule;
-    }
-
-    private IllegalBlockPlaceModule illegalBlockPlaceModule;
 
     public IllegalBlockPlaceModule getIllegalBlockPlaceModule() {
         return this.illegalBlockPlaceModule;
     }
 
-    private AutoRespawnModule autoRespawnModule;
-
-    public AutoRespawnModule getAutoRespawnModule() {
-        return this.autoRespawnModule;
+    public MessageEncryptorModule getMessageEncryptorModule() {
+        return this.messageEncryptorModule;
     }
 
-    private AntiFOVModule antiFOVModule;
-
-    public AntiFOVModule getAntiFOVModule() {
-        return this.antiFOVModule;
+    public ModPacketBlockerModule getModPacketBlockerModule() {
+        return this.modPacketBlockerModule;
     }
 
-    private InteractionSpammerModule interactionSpammerModule;
-
-    public InteractionSpammerModule getInteractionSpammerModule() {
-        return this.interactionSpammerModule;
+    public TrueSightModule getTrueSightModule() {
+        return this.trueSightModule;
     }
 
-    private BowSpammerModule bowSpammerModule;
-
-    public BowSpammerModule getBowSpammerModule() {
-        return this.bowSpammerModule;
+    public VisualThrottleModule getVisualThrottleModule() {
+        return this.visualThrottleModule;
     }
 
     private boolean done;
@@ -259,44 +112,46 @@ public class ModuleRegistry implements KeyboardListener {
 
     private void register() {
         this.registerModules(
-                this.testModule = new TestModule(),
-                this.exploitFixerModule = new ExploitFixerModule(),
-                this.clientBrandChangerModule = new ClientBrandChangerModule(),
-                this.debugModule = new DebugModule(),
-                this.trueSightModule = new TrueSightModule(),
+                this.ambienceModule = new AmbienceModule(),
+                this.antiFOVModule = new AntiFOVModule(),
+                this.autoFishModule = new AutoFishModule(),
+                this.autoRespawnModule = new AutoRespawnModule(),
                 this.betterTabListModule = new BetterTabListModule(),
-                this.packetLoggerModule = new PacketLoggerModule(),
-                this.modPacketBlockerModule = new ModPacketBlockerModule(),
-                this.flightModule = new FlightModule(),
+                this.betterTooltipsModule = new BetterTooltipsModule(),
+                this.blockDensityModule = new BlockDensityModule(),
+                this.bowSpammerModule = new BowSpammerModule(),
                 this.bungeeCordSpooferModule = new BungeeCordSpooferModule(),
-                this.godModeModule = new GodModeModule(),
-                this.speedModule = new SpeedModule(),
-                this.serverCrasherModule = new ServerCrasherModule(),
+                this.cameraNoClipModule = new CameraNoClipModule(),
                 this.craftCarryModule = new CraftCarryModule(),
                 this.consoleSpammerModule = new ConsoleSpammerModule(),
-                this.itemStackLoggerModule = new ItemStackLoggerModule(),
-                this.fastUseModule = new FastUseModule(),
-                this.pushVelocityModule = new PushVelocityModule(),
-                this.stepModule = new StepModule(),
-                this.noFallModule = new NoFallModule(),
-                this.cameraNoClipModule = new CameraNoClipModule(),
-                this.joinLeaveModule = new JoinLeaveModule(),
+                this.debugModule = new DebugModule(),
+                this.deutschMacherModule = new DeutschMacherModule(),
                 this.espModule = new ESPModule(),
-                this.betterTooltipsModule = new BetterTooltipsModule(),
-                this.phaseModule = new PhaseModule(),
-                this.velocityModule = new VelocityModule(),
-                this.autoFishModule = new AutoFishModule(),
-                this.blockDensityModule = new BlockDensityModule(),
-                this.visualThrottleModule = new VisualThrottleModule(),
                 this.elytraFlightModule = new ElytraFlightModule(),
-                this.ambienceModule = new AmbienceModule(),
-                this.messageEncryptorModule = new MessageEncryptorModule(),
+                this.exploitFixerModule = new ExploitFixerModule(),
+                this.fastUseModule = new FastUseModule(),
+                this.flightModule = new FlightModule(),
+                this.godModeModule = new GodModeModule(),
+                this.hudModule = new HUDModule(),
                 this.illegalBlockPlaceModule = new IllegalBlockPlaceModule(),
-                this.autoRespawnModule = new AutoRespawnModule(),
-                this.antiFOVModule = new AntiFOVModule(),
                 this.interactionSpammerModule = new InteractionSpammerModule(),
-                this.bowSpammerModule = new BowSpammerModule(),
-                this.headUpDisplayModule = new HeadUpDisplayModule()
+                this.itemStackLoggerModule = new ItemStackLoggerModule(),
+                this.joinLeaveModule = new JoinLeaveModule(),
+                this.messageEncryptorModule = new MessageEncryptorModule(),
+                this.modPacketBlockerModule = new ModPacketBlockerModule(),
+                this.noFallModule = new NoFallModule(),
+                this.noteBlockPlayerModule = new NoteBlockPlayerModule(),
+                this.packetLoggerModule = new PacketLoggerModule(),
+                this.phaseModule = new PhaseModule(),
+                this.pushVelocityModule = new PushVelocityModule(),
+                this.protectorModule = new ProtectorModule(),
+                this.serverCrasherModule = new ServerCrasherModule(),
+                this.speedModule = new SpeedModule(),
+                this.stepModule = new StepModule(),
+                this.testModule = new TestModule(),
+                this.trueSightModule = new TrueSightModule(),
+                this.velocityModule = new VelocityModule(),
+                this.visualThrottleModule = new VisualThrottleModule()
         );
     }
 
@@ -321,8 +176,9 @@ public class ModuleRegistry implements KeyboardListener {
 
     @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN || MinecraftClient.getInstance().player == null || MinecraftClient.getInstance().currentScreen != null)
+        if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN || this.player() == null || this.currentScreen() != null) {
             return;
+        }
         for (final Module module : Vandalism.getInstance().getModuleRegistry().getModules()) {
             if (module.getKeyBind().getKeyCode() == key) {
                 module.toggle();

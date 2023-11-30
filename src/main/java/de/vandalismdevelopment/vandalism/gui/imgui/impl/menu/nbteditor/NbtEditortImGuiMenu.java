@@ -67,7 +67,7 @@ public class NbtEditortImGuiMenu extends ImGuiMenu {
                     Thread.sleep(100);
                 } catch (final InterruptedException ignored) {
                 }
-                mc().execute(() -> Vandalism.getInstance().getImGuiHandler().toggleScreen());
+                this.mc().execute(() -> Vandalism.getInstance().getImGuiHandler().toggleScreen());
             });
         } catch (final IOException io) {
             Vandalism.getInstance().getLogger().error("Failed to display nbt.", io);

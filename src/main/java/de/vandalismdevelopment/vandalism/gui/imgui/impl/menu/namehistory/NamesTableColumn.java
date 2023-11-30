@@ -1,6 +1,6 @@
 package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.namehistory;
 
-import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
+import de.vandalismdevelopment.vandalism.util.interfaces.EnumNameNormalizer;
 
 public enum NamesTableColumn implements EnumNameNormalizer {
 

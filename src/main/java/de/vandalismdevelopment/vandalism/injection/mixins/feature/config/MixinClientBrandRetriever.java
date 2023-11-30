@@ -1,0 +1,20 @@
+package de.vandalismdevelopment.vandalism.injection.mixins.feature.config;
+
+import de.vandalismdevelopment.vandalism.Vandalism;
+import net.minecraft.client.ClientBrandRetriever;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+@Mixin(value = ClientBrandRetriever.class, priority = 9999)
+public abstract class MixinClientBrandRetriever {
+
+    @Inject(method = "getClientModName", at = @At("HEAD"), cancellable = true, remap = false)
+    private static void vandalism$changeBrand(final CallbackInfoReturnable<String> cir) {
+        if (Vandalism.getInstance() != null && Vandalism.getInstance().getConfigManager() != null && Vandalism.getInstance().getConfigManager().getMainConfig() != null && Vandalism.getInstance().getConfigManager().getMainConfig().networkingCategory.changeBrand.getValue()) {
+            cir.setReturnValue(Vandalism.getInstance().getConfigManager().getMainConfig().networkingCategory.brand.getValue());
+        }
+    }
+
+}

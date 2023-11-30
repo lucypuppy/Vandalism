@@ -5,8 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
 import de.vandalismdevelopment.vandalism.feature.impl.command.arguments.EnchantmentArgumentType;
-import de.vandalismdevelopment.vandalism.util.ChatUtil;
-import de.vandalismdevelopment.vandalism.util.ItemUtil;
+import de.vandalismdevelopment.vandalism.util.PlayerUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
@@ -39,12 +38,12 @@ public class EnchantCommand extends Command {
     }
 
     private void enchantItem(final Enchantment enchantment, final int level) {
-        final ItemStack stack = player().getInventory().getMainHandStack();
+        final ItemStack stack = this.player().getInventory().getMainHandStack();
         if (stack != null && !stack.isEmpty()) {
-            if (ItemUtil.giveItemStack(ItemUtil.appendEnchantmentToItemStack(stack, enchantment, level), false)) {
-                ChatUtil.infoChatMessage("Enchanted the item in your main hand.");
-            } else ChatUtil.errorChatMessage("Failed to enchant the item in your main hand.");
-        } else ChatUtil.errorChatMessage("You must hold an item in your main hand.");
+            if (PlayerUtil.giveItemStack(PlayerUtil.appendEnchantmentToItemStack(stack, enchantment, level), false)) {
+                PlayerUtil.infoChatMessage("Enchanted the item in your main hand.");
+            } else PlayerUtil.errorChatMessage("Failed to enchant the item in your main hand.");
+        } else PlayerUtil.errorChatMessage("You must hold an item in your main hand.");
     }
 
 }

@@ -17,7 +17,6 @@ public interface IValue {
                 return value;
             }
         }
-
         return null;
     }
 

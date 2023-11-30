@@ -8,8 +8,8 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.config.ValueableConfig;
 import de.vandalismdevelopment.vandalism.config.impl.account.impl.CrackedAccount;
 import de.vandalismdevelopment.vandalism.config.impl.account.impl.MicrosoftAccount;
-import de.vandalismdevelopment.vandalism.util.AES;
-import net.minecraft.client.MinecraftClient;
+import de.vandalismdevelopment.vandalism.util.EncryptionUtil;
+import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
 import net.minecraft.util.Uuids;
 import net.raphimc.minecraftauth.MinecraftAuth;
 import net.raphimc.minecraftauth.util.logging.ILogger;
@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class AccountConfig extends ValueableConfig {
+public class AccountConfig extends ValueableConfig implements MinecraftWrapper {
 
     private final static HashMap<String, String> LOG_FILTERS = new HashMap<>();
 
@@ -79,11 +79,8 @@ public class AccountConfig extends ValueableConfig {
             account.onConfigSave(accountObject);
             accountArray.add(accountObject);
         }
-        final UUID sessionUuid = MinecraftClient.getInstance().getSession().getUuidOrNull();
-        configObject.addProperty(
-                "lastSession",
-                (MinecraftClient.getInstance().getSession().getUsername() + (sessionUuid != null ? sessionUuid.toString() : "")).hashCode()
-        );
+        final UUID sessionUuid = this.mc().session.getUuidOrNull();
+        configObject.addProperty("lastSession", (this.mc().session.getUsername() + (sessionUuid != null ? sessionUuid.toString() : "")).hashCode());
         configObject.add("accounts", accountArray);
         return configObject;
     }
@@ -94,30 +91,18 @@ public class AccountConfig extends ValueableConfig {
         final int lastSession = jsonObject.get("lastSession").getAsInt();
         for (final JsonElement accountElement : accountArray) {
             final JsonObject accountObject = accountElement.getAsJsonObject();
-            final String
-                    username = accountObject.get("username").getAsString(),
-                    type = accountObject.get("type").getAsString(),
-                    uuid = accountObject.has("uuid") ? accountObject.get("uuid").getAsString() : null;
+            final String username = accountObject.get("username").getAsString(), type = accountObject.get("type").getAsString(), uuid = accountObject.has("uuid") ? accountObject.get("uuid").getAsString() : null;
             Account account = null;
             switch (type) {
                 case "microsoft" -> {
                     try {
-                        account = new MicrosoftAccount(
-                                AES.decrypt(
-                                        accountObject.get("data").getAsString(),
-                                        AES.getKeyFromPassword(username)
-                                ),
-                                uuid != null ? UUID.fromString(uuid) : null,
-                                username
-                        );
+                        account = new MicrosoftAccount(EncryptionUtil.decrypt(accountObject.get("data").getAsString(), EncryptionUtil.getKeyFromPassword(username)), uuid != null ? UUID.fromString(uuid) : null, username);
                     } catch (final Throwable throwable) {
                         Vandalism.getInstance().getLogger().error("Failed to log into a microsoft account.", throwable);
                     }
                 }
-                default -> account = new CrackedAccount(
-                        username,
-                        uuid == null ? Uuids.getOfflinePlayerUuid(username) : UUID.fromString(uuid)
-                );
+                default ->
+                        account = new CrackedAccount(username, uuid == null ? Uuids.getOfflinePlayerUuid(username) : UUID.fromString(uuid));
             }
             if (account == null) {
                 Vandalism.getInstance().getLogger().error("Failed to load account: " + username);
@@ -127,8 +112,7 @@ public class AccountConfig extends ValueableConfig {
             if (lastSession == (account.getUsername() + account.getUuid()).hashCode()) {
                 try {
                     account.login();
-                }
-                catch (final Throwable throwable) {
+                } catch (final Throwable throwable) {
                     Vandalism.getInstance().getLogger().error("Failed to log into the " + account.getType() + " account: " + account.getUsername(), throwable);
                 }
             }

@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.nbteditor;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.ui.types.Window;
@@ -135,7 +135,7 @@ public class NbtManager implements ImNbtDrawer, MinecraftWrapper {
 
     @Override
     public void setClipboard(final @NotNull NamedTag tag) {
-        keyboard().setClipboard(
+        this.keyboard().setClipboard(
                 tag.getName() +
                         ": " +
                         tag.getTag().toString()

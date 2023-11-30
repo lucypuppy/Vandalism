@@ -4,36 +4,23 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
-import de.vandalismdevelopment.vandalism.util.ItemUtil;
+import de.vandalismdevelopment.vandalism.util.PlayerUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.ItemStackArgumentType;
 
 public class GiveCommand extends Command {
 
     public GiveCommand() {
-        super(
-                "Give",
-                "Gives you items when you are in creative mode.",
-                FeatureCategory.MISC,
-                false,
-                "give",
-                "giveitem",
-                "itemgive",
-                "getitem",
-                "itemget",
-                "i"
-        );
+        super("Give", "Gives you items when you are in creative mode.", FeatureCategory.MISC, false, "give", "giveitem", "itemgive", "getitem", "itemget", "i");
     }
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.then(argument("item", ItemStackArgumentType.itemStack(REGISTRY_ACCESS)).executes(context -> {
-            ItemUtil.giveItemStack(ItemStackArgumentType.getItemStackArgument(context, "item").createStack(1, false));
+            PlayerUtil.giveItemStack(ItemStackArgumentType.getItemStackArgument(context, "item").createStack(1, false));
             return SINGLE_SUCCESS;
         }).then(argument("number", IntegerArgumentType.integer()).executes(context -> {
-            ItemUtil.giveItemStack(ItemStackArgumentType.getItemStackArgument(context, "item").createStack(
-                    IntegerArgumentType.getInteger(context, "number"), false)
-            );
+            PlayerUtil.giveItemStack(ItemStackArgumentType.getItemStackArgument(context, "item").createStack(IntegerArgumentType.getInteger(context, "number"), false));
             return SINGLE_SUCCESS;
         })));
     }

@@ -103,8 +103,8 @@ public class InteractionSpammerModule extends Module implements TickListener {
 
     @Override
     public void onTick() {
-        final Entity cameraEntity = mc().getCameraEntity();
-        if (player() == null || world() == null || interactionManager() == null || cameraEntity == null) {
+        final Entity cameraEntity = this.mc().getCameraEntity();
+        if (this.player() == null || this.world() == null || this.interactionManager() == null || cameraEntity == null) {
             this.clear();
             return;
         }
@@ -118,16 +118,16 @@ public class InteractionSpammerModule extends Module implements TickListener {
         } else {
             for (final BlockHitResult blockHitResult : this.blockHitResults) {
                 if (this.interactionTimer.hasReached(this.interactionDelay.getValue(), true)) {
-                    interactionManager().interactBlock(player(), Hand.MAIN_HAND, blockHitResult);
+                    this.interactionManager().interactBlock(this.player(), Hand.MAIN_HAND, blockHitResult);
                     this.blockHitResults.remove(blockHitResult);
                 }
             }
         }
-        final HitResult hitResult = cameraEntity.raycast(interactionManager().getReachDistance(), 0, false);
+        final HitResult hitResult = cameraEntity.raycast(this.interactionManager().getReachDistance(), 0, false);
         if (!(hitResult instanceof final BlockHitResult blockHitResult)) return;
-        final Block block = world().getBlockState(blockHitResult.getBlockPos()).getBlock();
+        final Block block = this.world().getBlockState(blockHitResult.getBlockPos()).getBlock();
         if (!(block instanceof AirBlock || block instanceof FluidBlock)) {
-            if (options().useKey.isPressed()) {
+            if (this.options().useKey.isPressed()) {
                 this.interactionListsTimer.reset();
                 this.interactionTimer.reset();
                 final CopyOnWriteArrayList<BlockHitResult> blockHitResults = new CopyOnWriteArrayList<>();

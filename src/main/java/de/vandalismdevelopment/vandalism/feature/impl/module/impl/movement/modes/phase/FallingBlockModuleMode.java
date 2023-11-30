@@ -23,21 +23,21 @@ public class FallingBlockModuleMode extends ModuleMode<PhaseModule> implements T
 
     @Override
     public void onTick() {
-        if (player() == null || world() == null) return;
-        if (player().getBlockStateAtPos().isSolid() && world().getBlockState(player().getBlockPos().up(1)).isSolid()) {
+        if (this.player() == null || this.world() == null) return;
+        if (this.player().getBlockStateAtPos().isSolid() && this.world().getBlockState(this.player().getBlockPos().up(1)).isSolid()) {
             final double
-                    yaw = Math.toRadians(player().headYaw),
-                    horizontal = player().forwardSpeed > 0 ? 1 : player().forwardSpeed < 0 ? -1 : 0;
+                    yaw = Math.toRadians(this.player().headYaw),
+                    horizontal = this.player().forwardSpeed > 0 ? 1 : this.player().forwardSpeed < 0 ? -1 : 0;
             double vertical = 0;
-            if (options().sneakKey.isPressed()) {
+            if (this.options().sneakKey.isPressed()) {
                 vertical = -1;
-            } else if (options().jumpKey.isPressed() && player().fallDistance < 2.0f) {
+            } else if (this.options().jumpKey.isPressed() && this.player().fallDistance < 2.0f) {
                 vertical = 1;
             }
-            player().setPos(
-                    player().getX() - Math.sin(yaw) * horizontal,
-                    player().getY() + vertical,
-                    player().getZ() + Math.cos(yaw) * horizontal
+            this.player().setPos(
+                    this.player().getX() - Math.sin(yaw) * horizontal,
+                    this.player().getY() + vertical,
+                    this.player().getZ() + Math.cos(yaw) * horizontal
             );
         }
     }

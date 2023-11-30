@@ -7,7 +7,7 @@ import com.google.gson.JsonParser;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiMenu;
-import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
+import de.vandalismdevelopment.vandalism.util.interfaces.EnumNameNormalizer;
 import imgui.ImGui;
 import net.minecraft.util.Util;
 import org.jsoup.Jsoup;

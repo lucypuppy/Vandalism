@@ -1,10 +1,23 @@
 package de.vandalismdevelopment.vandalism.config.impl.account;
 
 import com.google.gson.JsonObject;
+import com.mojang.authlib.exceptions.AuthenticationException;
+import com.mojang.authlib.minecraft.UserApiService;
+import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
+import com.mojang.authlib.yggdrasil.YggdrasilEnvironment;
+import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
+import net.minecraft.client.network.SocialInteractionsManager;
+import net.minecraft.client.realms.RealmsClient;
+import net.minecraft.client.realms.RealmsPeriodicCheckers;
+import net.minecraft.client.session.ProfileKeys;
+import net.minecraft.client.session.Session;
+import net.minecraft.client.session.report.AbuseReportContext;
+import net.minecraft.client.session.report.ReporterEnvironment;
 
 import java.util.UUID;
 
-public abstract class Account {
+public abstract class Account implements MinecraftWrapper {
 
     private final String type;
     private String username;
@@ -39,5 +52,30 @@ public abstract class Account {
     public abstract void login() throws Throwable;
 
     public void onConfigSave(final JsonObject jsonObject) {}
+
+    public void setSession(final Session session) throws RuntimeException {
+        this.mc().session = session;
+        this.mc().getSplashTextLoader().session = session;
+        if (session.getAccountType().equals(Session.AccountType.LEGACY)) {
+            Vandalism.getInstance().getLogger().info("Logged in as: " + session.getUsername());
+            return;
+        }
+        final UserApiService userApiService;
+        try {
+            userApiService = new YggdrasilAuthenticationService(this.mc().getNetworkProxy(), YggdrasilEnvironment.PROD.getEnvironment()).createUserApiService(session.getAccessToken());
+        } catch (final AuthenticationException e) {
+            throw new RuntimeException(e);
+        }
+        this.mc().userApiService = userApiService;
+        this.mc().socialInteractionsManager = new SocialInteractionsManager(this.mc(), userApiService);
+        this.mc().profileKeys = ProfileKeys.create(userApiService, session, this.mc().runDirectory.toPath());
+        if (this.mc().abuseReportContext == null) {
+            this.mc().abuseReportContext = AbuseReportContext.create(ReporterEnvironment.ofIntegratedServer(), userApiService);
+        } else {
+            this.mc().abuseReportContext = AbuseReportContext.create(this.mc().abuseReportContext.environment, userApiService);
+        }
+        this.mc().realmsPeriodicCheckers = new RealmsPeriodicCheckers(RealmsClient.createRealmsClient(this.mc()));
+        Vandalism.getInstance().getLogger().info("Logged in as: " + session.getUsername());
+    }
 
 }

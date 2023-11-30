@@ -5,9 +5,9 @@ import de.vandalismdevelopment.vandalism.config.Config;
 import de.vandalismdevelopment.vandalism.feature.Feature;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.FeatureType;
-import de.vandalismdevelopment.vandalism.feature.impl.module.impl.render.HeadUpDisplayModule;
-import de.vandalismdevelopment.vandalism.util.ChatUtil;
+import de.vandalismdevelopment.vandalism.feature.impl.module.impl.render.HUDModule;
 import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
+import de.vandalismdevelopment.vandalism.util.PlayerUtil;
 import de.vandalismdevelopment.vandalism.value.IValue;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
@@ -41,21 +41,11 @@ public abstract class Module extends Feature implements IValue {
         this.setExperimental(isExperimental);
         this.setSupportedVersions(supportedVersions);
         this.values = new ArrayList<>();
-        this.favorite = new BooleanValue(
-                "Favorite",
-                "Whether this module is a favorite.",
-                this,
-                false
-        );
-        this.enabled = new BooleanValue(
-                "Enabled",
-                "Whether this module is enabled.",
-                this,
-                isDefaultEnabled
-        ).valueChangedConsumer(state -> {
+        this.favorite = new BooleanValue("Favorite", "Whether this module is a favorite.", this, false);
+        this.enabled = new BooleanValue("Enabled", "Whether this module is enabled.", this, isDefaultEnabled).valueChangedConsumer(state -> {
             if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.moduleStateLogging.getValue()) {
-                if (player() != null) {
-                    ChatUtil.infoChatMessage(this.getName() + " has been " + (state ? "enabled" : "disabled") + ".");
+                if (this.player() != null) {
+                    PlayerUtil.infoChatMessage(this.getName() + " has been " + (state ? "enabled" : "disabled") + ".");
                 }
             }
             this.syncHUD();
@@ -63,18 +53,8 @@ public abstract class Module extends Feature implements IValue {
             else this.onDisable();
             this.recursiveSetState(state, this.values);
         });
-        this.showInModuleList = new BooleanValue(
-                "Show in Module List",
-                "Whether this module should be shown in the module list.",
-                this,
-                !(this instanceof HeadUpDisplayModule)
-        ).valueChangedConsumer(state -> this.syncHUD());
-        this.keyBind = new KeyInputValue(
-                "Key Bind",
-                "The key bind of this module.",
-                this,
-                keyBind
-        );
+        this.showInModuleList = new BooleanValue("Show in Module List", "Whether this module should be shown in the module list.", this, !(this instanceof HUDModule)).valueChangedConsumer(state -> this.syncHUD());
+        this.keyBind = new KeyInputValue("Key Bind", "The key bind of this module.", this, keyBind);
         this.setState(isDefaultEnabled);
     }
 
@@ -105,9 +85,9 @@ public abstract class Module extends Feature implements IValue {
     private void syncHUD() {
         final ModuleRegistry moduleRegistry = Vandalism.getInstance().getModuleRegistry();
         if (moduleRegistry != null && moduleRegistry.isDone()) {
-            final HeadUpDisplayModule headUpDisplayModule = moduleRegistry.getHeadUpDisplayModule();
-            if (headUpDisplayModule != null) {
-                headUpDisplayModule.sortEnabledModules();
+            final HUDModule HUDModule = moduleRegistry.getHudModule();
+            if (HUDModule != null) {
+                HUDModule.sortEnabledModules();
             }
         }
     }
@@ -149,13 +129,7 @@ public abstract class Module extends Feature implements IValue {
 
     @Override
     public String toString() {
-        return '{' +
-                "name=" + this.getName() +
-                ", category=" + this.getCategory().normalName() +
-                ", enabled=" + this.enabled.getValue() +
-                ", experimental=" + this.isExperimental() +
-                ", keyBind=" + this.keyBind.getValue().normalName() +
-                '}';
+        return '{' + "name=" + this.getName() + ", category=" + this.getCategory().normalName() + ", enabled=" + this.enabled.getValue() + ", experimental=" + this.isExperimental() + ", keyBind=" + this.keyBind.getValue().normalName() + '}';
     }
 
     @Override
