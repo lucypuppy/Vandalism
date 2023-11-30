@@ -23,7 +23,7 @@ public class CrashItemsCreativeTab extends CreativeTab {
             entries.add(PlayerUtil.appendClientSideInfoToItemStack(createCrashBook("translation.test.invalid"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book")));
             entries.add(PlayerUtil.appendClientSideInfoToItemStack(createCrashBook("translation.test.invalid2"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book V2")));
             entries.add(PlayerUtil.appendClientSideInfoToItemStack(createClientCrashExperience(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Client Crash Experience")));
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createClientCrashArea(), Text.literal(Formatting.RED + "Client Crash Area")));
+            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createClientCrashArea(), Text.literal(Formatting.RED.toString() + Formatting.BOLD + "Client Crash Area")));
             entries.add(PlayerUtil.appendClientSideInfoToItemStack(createSodiumClientFreezeEntity(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Sodium Freeze Entity")));
             if (exploitFixerModule.isEnabled() && exploitFixerModule.blockInvalidIdentifierCrash.getValue()) {
                 entries.add(PlayerUtil.appendClientSideInfoToItemStack(createClientInstantCrashPot(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Pot")));
