@@ -13,36 +13,14 @@ import net.minecraft.util.Hand;
 
 public class AutoFishModule extends Module implements TickListener {
 
-    private final MSTimer retractDelayTimer = new MSTimer(), throwDelayTimer = new MSTimer();
+    public final Value<Integer> throwDelayValue = new SliderIntegerValue("Throw Delay", "Here you can input the custom throw delay value.", this, 1000, 0, 5000);
+    public final Value<Integer> retractDelayValue = new SliderIntegerValue("Retract Delay", "Here you can input the custom retract delay value.", this, 500, 0, 1000);
 
+    private final MSTimer retractDelayTimer = new MSTimer(), throwDelayTimer = new MSTimer();
     private boolean hasFish = false;
 
-    public final Value<Integer> throwDelayValue = new SliderIntegerValue(
-            "Throw Delay",
-            "Here you can input the custom throw delay value.",
-            this,
-            1000,
-            0,
-            5000
-    );
-
-    public final Value<Integer> retractDelayValue = new SliderIntegerValue(
-            "Retract Delay",
-            "Here you can input the custom retract delay value.",
-            this,
-            500,
-            0,
-            1000
-    );
-
     public AutoFishModule() {
-        super(
-                "Auto Fish",
-                "Automatically fishes for you.",
-                FeatureCategory.MISC,
-                false,
-                false
-        );
+        super("Auto Fish", "Automatically fishes for you.", FeatureCategory.MISC, false, false);
     }
 
     @Override
@@ -57,19 +35,19 @@ public class AutoFishModule extends Module implements TickListener {
 
     @Override
     public void onTick() {
-        if (player() == null || networkHandler() == null) return;
-        final FishingBobberEntity fishHook = player().fishHook;
+        if (this.player() == null || this.networkHandler() == null) return;
+        final FishingBobberEntity fishHook = this.player().fishHook;
         if (fishHook != null) {
             if (!this.hasFish && fishHook.caughtFish && fishHook.getVelocity().y < -0.2) {
                 this.hasFish = true;
                 this.retractDelayTimer.reset();
             }
             if (this.hasFish && this.retractDelayTimer.hasReached(this.retractDelayValue.getValue(), true)) {
-                networkHandler().sendPacket(new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, 0));
+                this.networkHandler().sendPacket(new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, 0));
                 this.throwDelayTimer.reset();
             }
         } else if (this.throwDelayTimer.hasReached(this.throwDelayValue.getValue(), true)) {
-            networkHandler().sendPacket(new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, 0));
+            this.networkHandler().sendPacket(new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, 0));
             this.hasFish = false;
         }
     }

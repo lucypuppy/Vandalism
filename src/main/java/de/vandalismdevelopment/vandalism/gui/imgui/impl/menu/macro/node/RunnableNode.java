@@ -1,6 +1,6 @@
 package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.macro.node;
 
-import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
 
 public abstract class RunnableNode extends Node implements InputNode, MinecraftWrapper {
 

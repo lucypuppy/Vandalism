@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.gui.imgui.impl.widget.serverinfo;
 
 import com.google.gson.JsonSyntaxException;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
 import imgui.ImGui;
 import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiTableFlags;
@@ -110,7 +110,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                         ImGui.separator();
                         ImGui.spacing();
                         if (ImGui.button("Copy Address" + uniqueId + "copyaddress", buttonWidth, buttonHeight)) {
-                            keyboard().setClipboard(address);
+                            this.keyboard().setClipboard(address);
                         }
                         if (ImGui.button("Copy Info" + uniqueId + "copyinfo", buttonWidth, buttonHeight)) {
                             final StringBuilder serverInfoBuilder = new StringBuilder();
@@ -156,7 +156,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                                     serverInfoBuilder.append(" - ").append(plugin).append('\n');
                                 }
                             }
-                            keyboard().setClipboard(serverInfoBuilder.toString());
+                            this.keyboard().setClipboard(serverInfoBuilder.toString());
                         }
                         if (this.mcPingResponse.players.sample.length > 0) {
                             if (ImGui.button("Player List: " + (this.showPlayerList ? "Disable" : "Enable") + uniqueId, buttonWidth, buttonHeight)) {
@@ -218,7 +218,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                                     ImGui.spacing();
                                     final int buttonWidth = 0, buttonHeight = 28;
                                     if (ImGui.button("Copy Data" + uniqueId + player.name, buttonWidth, buttonHeight)) {
-                                        keyboard().setClipboard(player.name + " (" + player.id + ")");
+                                        this.keyboard().setClipboard(player.name + " (" + player.id + ")");
                                     }
                                     ImGui.spacing();
                                 }
@@ -267,7 +267,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                                     ImGui.spacing();
                                     final int buttonWidth = 0, buttonHeight = 28;
                                     if (ImGui.button("Copy Data" + uniqueId + mod.modid, buttonWidth, buttonHeight)) {
-                                        keyboard().setClipboard(mod.modid + " (" + mod.version + ")");
+                                        this.keyboard().setClipboard(mod.modid + " (" + mod.version + ")");
                                     }
                                     ImGui.spacing();
                                 }
@@ -303,7 +303,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                                         ImGui.spacing();
                                         final int buttonWidth = 0, buttonHeight = 28;
                                         if (ImGui.button("Copy Data" + uniqueId + mod.modId, buttonWidth, buttonHeight)) {
-                                            keyboard().setClipboard(mod.modId + " (" + mod.modmarker + ")");
+                                            this.keyboard().setClipboard(mod.modId + " (" + mod.modmarker + ")");
                                         }
                                         ImGui.spacing();
                                     }
@@ -349,7 +349,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                                     ImGui.spacing();
                                     final int buttonWidth = 0, buttonHeight = 28;
                                     if (ImGui.button("Copy Data" + uniqueId + plugin, buttonWidth, buttonHeight)) {
-                                        keyboard().setClipboard(plugin);
+                                        this.keyboard().setClipboard(plugin);
                                     }
                                     ImGui.spacing();
                                 }

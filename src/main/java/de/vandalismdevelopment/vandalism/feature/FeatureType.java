@@ -1,10 +1,10 @@
 package de.vandalismdevelopment.vandalism.feature;
 
-import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
+import de.vandalismdevelopment.vandalism.util.interfaces.EnumNameNormalizer;
 
 public enum FeatureType implements EnumNameNormalizer {
 
-    SCRIPT, COMMAND, MODULE;
+    NONE, SCRIPT, COMMAND, MODULE;
 
     private final String normalName;
 

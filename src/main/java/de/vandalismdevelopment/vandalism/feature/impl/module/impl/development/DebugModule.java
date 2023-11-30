@@ -24,19 +24,8 @@ public class DebugModule extends Module implements RenderListener, PacketListene
 
     private final List<String> openCustomPayloadChannels;
 
-    private final Value<Boolean> showEntitiesInRange = new BooleanValue(
-            "Show Entities in Range",
-            "Shows entities in range and some infos from them.",
-            this,
-            true
-    );
-
-    private final Value<Boolean> showOpenCustomPayloadChannels = new BooleanValue(
-            "Show Open Custom Payload Channels",
-            "Shows open custom payload channels.",
-            this,
-            true
-    );
+    private final Value<Boolean> showEntitiesInRange = new BooleanValue("Show Entities in Range", "Shows entities in range and some infos from them.", this, true);
+    private final Value<Boolean> showOpenCustomPayloadChannels = new BooleanValue("Show Open Custom Payload Channels", "Shows open custom payload channels.", this, true);
 
     public DebugModule() {
         super("Debug", "Displays more infos about the game.", FeatureCategory.DEVELOPMENT, true, false);
@@ -69,17 +58,14 @@ public class DebugModule extends Module implements RenderListener, PacketListene
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
         Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
-            if (player() != null) {
-                if (world() != null) {
+            if (this.player() != null) {
+                if (this.world() != null) {
                     if (this.showEntitiesInRange.getValue()) {
-                        if (ImGui.begin(
-                                "Entities in Range##debugModuleEntitiesInRange",
-                                Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
-                        )) {
+                        if (ImGui.begin("Entities in Range##debugModuleEntitiesInRange", Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags())) {
                             int i = 0;
-                            for (final Entity entity : world().getEntities()) {
+                            for (final Entity entity : this.world().getEntities()) {
                                 final String entityUUID = entity.getUuidAsString();
-                                ImGui.textWrapped(entity.getName().getString() + " [" + entity.getClass().getSimpleName() + "] (" + player().distanceTo(entity) + ")");
+                                ImGui.textWrapped(entity.getName().getString() + " [" + entity.getClass().getSimpleName() + "] (" + this.player().distanceTo(entity) + ")");
                                 if (entity instanceof final Ownable ownableEntity) {
                                     final Entity owner = ownableEntity.getOwner();
                                     if (owner != null) {
@@ -88,13 +74,13 @@ public class DebugModule extends Module implements RenderListener, PacketListene
                                         ImGui.textWrapped(" (Owner: " + owner.getName().getString() + ")");
                                         ImGui.sameLine();
                                         if (ImGui.button("Copy Owner Entity UUID##copyOwnerEntityUUID" + i)) {
-                                            keyboard().setClipboard(ownerUUID + " | " + Arrays.toString(Uuids.toIntArray(UUID.fromString(ownerUUID))));
+                                            this.keyboard().setClipboard(ownerUUID + " | " + Arrays.toString(Uuids.toIntArray(UUID.fromString(ownerUUID))));
                                         }
                                     }
                                 }
                                 ImGui.sameLine();
                                 if (ImGui.button("Copy Entity UUID##copyEntityUUID" + i)) {
-                                    keyboard().setClipboard(entityUUID + " | " + Arrays.toString(Uuids.toIntArray(UUID.fromString(entityUUID))));
+                                    this.keyboard().setClipboard(entityUUID + " | " + Arrays.toString(Uuids.toIntArray(UUID.fromString(entityUUID))));
                                 }
                                 i++;
                             }
@@ -102,10 +88,7 @@ public class DebugModule extends Module implements RenderListener, PacketListene
                         }
                     }
                     if (this.showOpenCustomPayloadChannels.getValue()) {
-                        if (ImGui.begin(
-                                "Open Custom Payload Channels##debugModuleShowOpenCustomPayloadChannels",
-                                Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
-                        )) {
+                        if (ImGui.begin("Open Custom Payload Channels##debugModuleShowOpenCustomPayloadChannels", Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags())) {
                             for (final String channel : this.openCustomPayloadChannels) {
                                 ImGui.text(channel);
                             }

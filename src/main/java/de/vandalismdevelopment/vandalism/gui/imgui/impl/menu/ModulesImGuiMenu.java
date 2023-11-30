@@ -16,14 +16,20 @@ import net.raphimc.vialoader.util.VersionRange;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ModulesImGuiMenu extends ImGuiMenu {
 
-    private final ImString searchInput;
+    private final ImString searchInput, favoriteModulesSearchInput, enabledModulesSearchInput;
+
+    private final List<Module> openedModules;
 
     public ModulesImGuiMenu() {
         super("Modules");
         this.searchInput = new ImString();
+        this.favoriteModulesSearchInput = new ImString();
+        this.enabledModulesSearchInput = new ImString();
+        this.openedModules = new CopyOnWriteArrayList<>();
     }
 
     @Override
@@ -31,16 +37,10 @@ public class ModulesImGuiMenu extends ImGuiMenu {
         final FeatureList<Module> modules = Vandalism.getInstance().getModuleRegistry().getModules();
         if (!modules.isEmpty()) {
             final float width = 185, minHeight = 140, maxHeight = 415;
-            final int windowFlags =
-                    Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags() |
-                            ImGuiWindowFlags.NoScrollbar |
-                            ImGuiWindowFlags.NoScrollWithMouse;
+            final int windowFlags = Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags() | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse;
             ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
             final String modulesIdentifier = "##modules", modulesSearchIdentifier = modulesIdentifier + "search";
-            if (ImGui.begin(
-                    "Search" + modulesSearchIdentifier,
-                    windowFlags
-            )) {
+            if (ImGui.begin("Search Modules" + modulesSearchIdentifier, windowFlags)) {
                 ImGui.separator();
                 ImGui.setNextItemWidth(-1);
                 ImGui.inputText(modulesSearchIdentifier + "input", this.searchInput);
@@ -48,10 +48,7 @@ public class ModulesImGuiMenu extends ImGuiMenu {
                 ImGui.beginChild(modulesSearchIdentifier + "scrolllist", -1, -1, true);
                 if (!this.searchInput.get().isBlank()) {
                     for (final Module module : Vandalism.getInstance().getModuleRegistry().getModules()) {
-                        if (
-                                StringUtils.contains(module.getName(), this.searchInput.get()) ||
-                                        StringUtils.contains(module.getDescription(), this.searchInput.get())
-                        ) {
+                        if (StringUtils.contains(module.getName(), this.searchInput.get()) || StringUtils.contains(module.getDescription(), this.searchInput.get())) {
                             this.renderModule(module, "search");
                         }
                     }
@@ -62,15 +59,42 @@ public class ModulesImGuiMenu extends ImGuiMenu {
             }
             ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
             final String modulesFavoritesIdentifier = modulesIdentifier + "favorites";
-            if (ImGui.begin(
-                    "Favorites" + modulesFavoritesIdentifier,
-                    windowFlags
-            )) {
+            if (ImGui.begin("Favorite Modules" + modulesFavoritesIdentifier, windowFlags)) {
+                ImGui.separator();
+                ImGui.setNextItemWidth(-1);
+                ImGui.inputText(modulesFavoritesIdentifier + "input", this.favoriteModulesSearchInput);
                 ImGui.separator();
                 ImGui.beginChild(modulesFavoritesIdentifier + "scrolllist", -1, -1, true);
                 for (final Module module : Vandalism.getInstance().getModuleRegistry().getModules()) {
                     if (module.isFavorite()) {
+                        if (!this.favoriteModulesSearchInput.get().isBlank()) {
+                            if (!(StringUtils.contains(module.getName(), this.favoriteModulesSearchInput.get()) || StringUtils.contains(module.getDescription(), this.favoriteModulesSearchInput.get()))) {
+                                continue;
+                            }
+                        }
                         this.renderModule(module, "favorites");
+                    }
+                }
+                ImGui.endChild();
+                ImGui.separator();
+                ImGui.end();
+            }
+            ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
+            final String modulesEnabledIdentifier = modulesIdentifier + "enabled";
+            if (ImGui.begin("Enabled Modules" + modulesEnabledIdentifier, windowFlags)) {
+                ImGui.separator();
+                ImGui.setNextItemWidth(-1);
+                ImGui.inputText(modulesEnabledIdentifier + "input", this.enabledModulesSearchInput);
+                ImGui.separator();
+                ImGui.beginChild(modulesEnabledIdentifier + "scrolllist", -1, -1, true);
+                for (final Module module : Vandalism.getInstance().getModuleRegistry().getModules()) {
+                    if (module.isEnabled()) {
+                        if (!this.enabledModulesSearchInput.get().isBlank()) {
+                            if (!(StringUtils.contains(module.getName(), this.enabledModulesSearchInput.get()) || StringUtils.contains(module.getDescription(), this.enabledModulesSearchInput.get()))) {
+                                continue;
+                            }
+                        }
+                        this.renderModule(module, "enabled");
                     }
                 }
                 ImGui.endChild();
@@ -82,11 +106,7 @@ public class ModulesImGuiMenu extends ImGuiMenu {
                 if (modulesByCategory.isEmpty()) continue;
                 final String featureCategoryIdentifier = "##" + featureCategory.normalName() + "modulesfeaturecategory";
                 ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
-                if (ImGui.begin(
-                        featureCategory.normalName() + " Modules" +
-                                featureCategoryIdentifier,
-                        windowFlags
-                )) {
+                if (ImGui.begin(featureCategory.normalName() + " Modules" + featureCategoryIdentifier, windowFlags)) {
                     ImGui.separator();
                     ImGui.beginChild(featureCategoryIdentifier + "scrolllist", -1, -1, true);
                     for (final Module module : modulesByCategory) {
@@ -97,19 +117,23 @@ public class ModulesImGuiMenu extends ImGuiMenu {
                     ImGui.end();
                 }
             }
+            for (final Module module : this.openedModules) {
+                final String id = "##opened" + module.getCategory().normalName() + "module" + module.getName();
+                if (ImGui.begin(module.getName() + " Config" + id, windowFlags)) {
+                    this.renderModuleData(module, id, -1, -1);
+                    ImGui.end();
+                }
+            }
         }
     }
 
     private void renderModule(final Module module, final String id) {
+        final String moduleId = "##" + id + module.getCategory().normalName() + "module" + module.getName();
         final float[] color;
         if (module.isEnabled()) {
-            color = new float[]{
-                    0.1f, 0.8f, 0.1f, 0.45f
-            };
+            color = new float[]{0.1f, 0.8f, 0.1f, 0.45f};
         } else {
-            color = new float[]{
-                    0.8f, 0.1f, 0.1f, 0.45f
-            };
+            color = new float[]{0.8f, 0.1f, 0.1f, 0.45f};
         }
         final boolean moduleEnabled = module.isEnabled();
         if (moduleEnabled) {
@@ -117,8 +141,7 @@ public class ModulesImGuiMenu extends ImGuiMenu {
             ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], color[3] - 0.1f);
             ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
         }
-        final String moduleIdentifier = "##" + id + module.getName() + module.getCategory().normalName() + "module" + module.getName();
-        if (ImGui.button(module.getName() + moduleIdentifier + "togglebutton", -1, 25)) {
+        if (ImGui.button(module.getName() + moduleId + "togglebutton", -1, 25)) {
             module.toggle();
         }
         if (ImGui.isItemHovered()) {
@@ -129,36 +152,41 @@ public class ModulesImGuiMenu extends ImGuiMenu {
         if (moduleEnabled) {
             ImGui.popStyleColor(3);
         }
-        if (ImGui.beginPopupContextItem(moduleIdentifier + "configmenu", ImGuiPopupFlags.MouseButtonRight)) {
+        if (ImGui.beginPopupContextItem(moduleId + "configmenu", ImGuiPopupFlags.MouseButtonRight)) {
             ImGui.text(module.getName() + " Module");
-            ImGui.separator();
-            ImGui.spacing();
-            this.renderModuleInfo(module);
-            ImGui.separator();
-            final List<Value<?>> values = module.getValues();
-            if (!values.isEmpty()) {
-                ImGui.text("Config");
-                ImGui.separator();
-                if (ImGui.button("Reset config" + moduleIdentifier + "resetconfigbutton")) {
-                    for (final Value<?> value : values) {
-                        value.resetValue();
-                    }
-                }
-                ImGui.pushStyleColor(ImGuiCol.ChildBg, 0.0f, 0.0f, 0.0f, 0.15f);
-                ImGui.beginChild(
-                        moduleIdentifier + "configscrolllist",
-                        //TODO: Make the width and height customizable or use calculations.
-                        400,
-                        300,
-                        true,
-                        ImGuiWindowFlags.HorizontalScrollbar
-                );
-                module.renderValues();
-                ImGui.endChild();
-                ImGui.popStyleColor();
-                ImGui.separator();
-            }
+            //TODO: Make the width and height customizable or use calculations.
+            this.renderModuleData(module, moduleId, 400, 300);
             ImGui.endPopup();
+        }
+    }
+
+    private void renderModuleData(final Module module, final String id, final int width, final int height) {
+        ImGui.separator();
+        ImGui.spacing();
+        this.renderModuleInfo(module);
+        ImGui.separator();
+        final List<Value<?>> values = module.getValues();
+        if (!values.isEmpty()) {
+            ImGui.text("Config");
+            ImGui.separator();
+            if (ImGui.button("Reset config" + id + "resetconfigbutton")) {
+                for (final Value<?> value : values) {
+                    value.resetValue();
+                }
+            }
+            if (ImGui.button((this.openedModules.contains(module) ? "Close" : "Open") + " config window" + id + "toggleconfigwindowbutton")) {
+                if (this.openedModules.contains(module)) {
+                    this.openedModules.remove(module);
+                } else {
+                    this.openedModules.add(module);
+                }
+            }
+            ImGui.pushStyleColor(ImGuiCol.ChildBg, 0.0f, 0.0f, 0.0f, 0.15f);
+            ImGui.beginChild(id + "configscrolllist", width, height, true, ImGuiWindowFlags.HorizontalScrollbar);
+            module.renderValues();
+            ImGui.endChild();
+            ImGui.popStyleColor();
+            ImGui.separator();
         }
     }
 
@@ -170,7 +198,7 @@ public class ModulesImGuiMenu extends ImGuiMenu {
             if (descriptionWords.length > 10) {
                 StringBuilder currentLine = new StringBuilder();
                 for (final String descriptionWord : descriptionWords) {
-                    if (currentLine.length() + descriptionWord.length() > 50) {
+                    if (currentLine.length() + descriptionWord.length() > 60) {
                         descriptionLines.add(currentLine.toString());
                         currentLine = new StringBuilder();
                     }

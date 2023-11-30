@@ -17,6 +17,7 @@ import de.vandalismdevelopment.vandalism.feature.impl.command.impl.movement.HCli
 import de.vandalismdevelopment.vandalism.feature.impl.command.impl.movement.VClipCommand;
 import de.vandalismdevelopment.vandalism.feature.impl.command.impl.render.ClientsideGameModeCommand;
 import de.vandalismdevelopment.vandalism.feature.impl.command.impl.render.ClientsideInventoryClearCommand;
+import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommandSource;
 import net.minecraft.command.CommandSource;
@@ -25,13 +26,12 @@ import net.minecraft.text.ClickEvent;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public class CommandRegistry {
+public class CommandRegistry implements MinecraftWrapper {
 
     public final static String COMMAND_SECRET = UUID.randomUUID().toString();
 
     private final CommandDispatcher<CommandSource> commandDispatcher;
     private final CommandSource commandSource;
-
     private final FeatureList<Command> commands;
 
     public CommandRegistry() {

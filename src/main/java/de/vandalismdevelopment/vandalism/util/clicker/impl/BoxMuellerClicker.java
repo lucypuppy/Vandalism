@@ -4,7 +4,6 @@ import de.florianmichael.rclasses.common.RandomUtils;
 import de.florianmichael.rclasses.math.integration.BoxMullerTransform;
 import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.florianmichael.rclasses.pattern.evicting.EvictingList;
-import de.vandalismdevelopment.vandalism.util.MathUtil;
 import de.vandalismdevelopment.vandalism.util.clicker.Clicker;
 import net.minecraft.util.Pair;
 
@@ -23,7 +22,7 @@ public class BoxMuellerClicker extends Clicker {
         this.timer = new MSTimer();
         this.delays = new EvictingList<>(new ArrayList<>(), 100);
         this.cps = RandomUtils.randomInt(8, 14);
-        this.nextClick = MathUtil.cpsToMs(this.cps);
+        this.nextClick = this.cpsToMs(this.cps);
     }
 
     //TODO: Fix tick bug (cps is not accurate)
@@ -33,10 +32,8 @@ public class BoxMuellerClicker extends Clicker {
             if (this.updatePossibility == 100 || (Math.random() * 100) >= (100 - this.updatePossibility)) {
                 this.cps = (int) BoxMullerTransform.distribution(ThreadLocalRandom.current(), 1, 20, this.mean, this.std);
             }
-
-            this.nextClick = MathUtil.cpsToMs(this.cps);
+            this.nextClick = this.cpsToMs(this.cps);
             this.delays.add(new Pair<>(this.nextClick, this.cps));
-
             this.clickAction.run();
         }
     }

@@ -14,76 +14,17 @@ import net.minecraft.entity.player.PlayerEntity;
 
 public class AntiFOVModule extends Module implements TickListener {
 
-    private final Value<Float> maxDistance = new SliderFloatValue(
-            "Max Distance",
-            "The maximum distance to find targets.",
-            this,
-            5,
-            2,
-            10
-    );
-
-    private final Value<Double> targetYPosOffset = new SliderDoubleValue(
-            "Target Y Pos Offset",
-            "The offset for the y position you will be teleported to.",
-            this,
-            0,
-            -5,
-            5
-    );
-
-    private final Value<Double> targetHPosOffset = new SliderDoubleValue(
-            "Target H Pos Offset",
-            "The offset for the horizontal position you will be teleported to.",
-            this,
-            2,
-            -5,
-            5
-    );
-
-    private final Value<Boolean> onlyPlayers = new BooleanValue(
-            "Only Players",
-            "Only teleport you behind players.",
-            this,
-            true
-    );
-
-    private final Value<Boolean> useYawFromTarget = new BooleanValue(
-            "Use Yaw From Target",
-            "Uses the yaw from the target.",
-            this,
-            true
-    );
-
-    private final Value<Boolean> usePitchFromTarget = new BooleanValue(
-            "Use Pitch From Target",
-            "Uses the pitch from the target.",
-            this,
-            true
-    );
-
-    private final Value<Boolean> useSneakFromTarget = new BooleanValue(
-            "Use Sneak From Target",
-            "Makes you sneak if the target is sneaking.",
-            this,
-            true
-    );
-
-    private final Value<Boolean> alwaysFOV = new BooleanValue(
-            "Always FOV",
-            "This will always teleport you into the fov of the target.",
-            this,
-            false
-    );
+    private final Value<Float> maxDistance = new SliderFloatValue("Max Distance", "The maximum distance to find targets.", this, 5, 2, 10);
+    private final Value<Double> targetYPosOffset = new SliderDoubleValue("Target Y Pos Offset", "The offset for the y position you will be teleported to.", this, 0, -5, 5);
+    private final Value<Double> targetHPosOffset = new SliderDoubleValue("Target H Pos Offset", "The offset for the horizontal position you will be teleported to.", this, 2, -5, 5);
+    private final Value<Boolean> onlyPlayers = new BooleanValue("Only Players", "Only teleport you behind players.", this, true);
+    private final Value<Boolean> useYawFromTarget = new BooleanValue("Use Yaw From Target", "Uses the yaw from the target.", this, true);
+    private final Value<Boolean> usePitchFromTarget = new BooleanValue("Use Pitch From Target", "Uses the pitch from the target.", this, true);
+    private final Value<Boolean> useSneakFromTarget = new BooleanValue("Use Sneak From Target", "Makes you sneak if the target is sneaking.", this, true);
+    private final Value<Boolean> alwaysFOV = new BooleanValue("Always FOV", "This will always teleport you into the fov of the target.", this, false);
 
     public AntiFOVModule() {
-        super(
-                "Anti FOV",
-                "Teleports you behind the nearest entity.",
-                FeatureCategory.MOVEMENT,
-                false,
-                false
-        );
+        super("Anti FOV", "Teleports you behind the nearest entity.", FeatureCategory.MOVEMENT, false, false);
     }
 
     @Override
@@ -101,30 +42,25 @@ public class AntiFOVModule extends Module implements TickListener {
 
     @Override
     public void onTick() {
-        if (world() == null || player() == null) return;
-        for (final Entity entity : world().getEntities()) {
-            if (entity == player() || player().distanceTo(entity) > this.maxDistance.getValue()) continue;
+        if (this.world() == null || this.player() == null) return;
+        for (final Entity entity : this.world().getEntities()) {
+            if (entity == this.player() || this.player().distanceTo(entity) > this.maxDistance.getValue())
+                continue;
             if (entity instanceof final LivingEntity target) {
                 if (this.onlyPlayers.getValue() && !(target instanceof PlayerEntity)) continue;
-                final double direction = (
-                        Math.atan2(target.forwardSpeed, target.sidewaysSpeed) /
-                                Math.PI * 180.0F + target.getYaw()
-                ) * Math.PI / 180.0F;
+                final double direction = (Math.atan2(target.forwardSpeed, target.sidewaysSpeed) / Math.PI * 180.0F + target.getYaw()) * Math.PI / 180.0F;
                 if (this.useYawFromTarget.getValue()) {
-                    player().setYaw(target.getHeadYaw());
-                    player().setBodyYaw(target.getBodyYaw());
-                    player().setHeadYaw(target.getHeadYaw());
+                    this.player().setYaw(target.getHeadYaw());
+                    this.player().setBodyYaw(target.getBodyYaw());
+                    this.player().setHeadYaw(target.getHeadYaw());
                 }
                 if (this.usePitchFromTarget.getValue()) {
-                    player().setPitch(target.getPitch());
+                    this.player().setPitch(target.getPitch());
                 }
                 if (this.useSneakFromTarget.getValue()) {
-                    options().sneakKey.setPressed(target.isSneaking());
+                    this.options().sneakKey.setPressed(target.isSneaking());
                 }
-                final double
-                        hOffset = this.targetHPosOffset.getValue(),
-                        xOffset = Math.sin(direction) * hOffset,
-                        zOffset = Math.cos(direction) * hOffset;
+                final double hOffset = this.targetHPosOffset.getValue(), xOffset = Math.sin(direction) * hOffset, zOffset = Math.cos(direction) * hOffset;
                 double x = entity.getX(), z = entity.getZ();
                 if (!this.alwaysFOV.getValue()) {
                     x += xOffset;
@@ -133,7 +69,7 @@ public class AntiFOVModule extends Module implements TickListener {
                     x -= xOffset;
                     z += zOffset;
                 }
-                player().setPos(x, entity.getY() + this.targetYPosOffset.getValue(), z);
+                this.player().setPos(x, entity.getY() + this.targetYPosOffset.getValue(), z);
                 break;
             }
         }

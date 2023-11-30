@@ -1,7 +1,6 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module.impl.misc;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.florianmichael.viafabricplus.protocolhack.ProtocolHack;
 import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
@@ -14,7 +13,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
-import net.raphimc.vialoader.util.VersionEnum;
 
 public class IllegalBlockPlaceModule extends Module implements TickListener {
 
@@ -23,7 +21,7 @@ public class IllegalBlockPlaceModule extends Module implements TickListener {
             "Allows you to place blocks inside your-self on versions lower than 1.13 on servers that are using the plugin ViaVersion.",
             this,
             true
-    ).visibleConsumer(() -> ProtocolHack.getTargetVersion().isOlderThanOrEqualTo(VersionEnum.r1_12_2));
+    );
 
     public IllegalBlockPlaceModule() {
         super(
@@ -47,18 +45,18 @@ public class IllegalBlockPlaceModule extends Module implements TickListener {
 
     @Override
     public void onTick() {
-        final Entity cameraEntity = mc().getCameraEntity();
-        if (player() == null || interactionManager() == null || cameraEntity == null) {
+        final Entity cameraEntity = this.mc().getCameraEntity();
+        if (this.player() == null || this.interactionManager() == null || cameraEntity == null) {
             return;
         }
-        final HitResult hitResult = cameraEntity.raycast(interactionManager().getReachDistance(), 0, false);
-        if (!(hitResult instanceof final BlockHitResult blockHitResult) || player().getMainHandStack().isEmpty()) {
+        final HitResult hitResult = cameraEntity.raycast(this.interactionManager().getReachDistance(), 0, false);
+        if (!(hitResult instanceof final BlockHitResult blockHitResult) || this.player().getMainHandStack().isEmpty()) {
             return;
         }
-        final Block block = world().getBlockState(blockHitResult.getBlockPos()).getBlock();
+        final Block block = this.world().getBlockState(blockHitResult.getBlockPos()).getBlock();
         if (block instanceof AirBlock || block instanceof FluidBlock) {
-            if (options().useKey.isPressed()) {
-                interactionManager().interactBlock(player(), Hand.MAIN_HAND, blockHitResult);
+            if (this.options().useKey.isPressed()) {
+                this.interactionManager().interactBlock(this.player(), Hand.MAIN_HAND, blockHitResult);
             }
         }
     }

@@ -3,6 +3,7 @@ package de.vandalismdevelopment.vandalism.gui.imgui;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.minecraft.ImGuiScreen;
 import de.vandalismdevelopment.vandalism.injection.access.IImGuiImplGlfw;
+import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
 import imgui.*;
 import imgui.extension.implot.ImPlot;
 import imgui.flag.ImGuiCol;
@@ -12,7 +13,6 @@ import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.client.MinecraftClient;
 import org.apache.commons.compress.utils.IOUtils;
 import org.lwjgl.glfw.GLFW;
 
@@ -24,13 +24,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ImGuiRenderer {
+public class ImGuiRenderer implements MinecraftWrapper {
 
     private final ImGuiImplGl3 imGuiImplGl3;
     private final ImGuiImplGlfw imGuiImplGlfw;
     private final List<RenderInterface> renderInterfaces;
 
-    public ImGuiRenderer(final File dir) {
+    public ImGuiRenderer(final long handle, final File dir) {
         this.imGuiImplGl3 = new ImGuiImplGl3();
         this.imGuiImplGlfw = new ImGuiImplGlfw();
         this.renderInterfaces = new ArrayList<>();
@@ -41,7 +41,7 @@ public class ImGuiRenderer {
         imGuiIO.setIniFilename(dir.getName() + "/imgui.ini");
         this.loadFonts(imGuiIO);
         this.setStyle();
-        this.imGuiImplGlfw.init(MinecraftClient.getInstance().getWindow().getHandle(), true);
+        this.imGuiImplGlfw.init(handle, true);
         this.imGuiImplGl3.init();
     }
 
@@ -141,11 +141,11 @@ public class ImGuiRenderer {
 
     public void render() {
         if (this.renderInterfaces.isEmpty()) {
-            if (!this.hasSyncedStates && !(MinecraftClient.getInstance().currentScreen instanceof ImGuiScreen)) {
-                ((IImGuiImplGlfw) this.imGuiImplGlfw).forceUpdateMouseCursor();
-                if (MinecraftClient.getInstance().player != null && MinecraftClient.getInstance().currentScreen == null) {
-                    MinecraftClient.getInstance().mouse.unlockCursor();
-                    MinecraftClient.getInstance().mouse.lockCursor();
+            if (!this.hasSyncedStates && !(this.mc().currentScreen instanceof ImGuiScreen)) {
+                ((IImGuiImplGlfw) this.imGuiImplGlfw).vandalism$forceUpdateMouseCursor();
+                if (this.player() != null && this.mc().currentScreen == null) {
+                    this.mouse().unlockCursor();
+                    this.mouse().lockCursor();
                 }
                 this.hasSyncedStates = true;
             }

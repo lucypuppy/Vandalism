@@ -5,7 +5,7 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.event.KeyboardListener;
 import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.gui.minecraft.ImGuiScreen;
-import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConnectScreen;
 import net.minecraft.client.gui.screen.LevelLoadingScreen;
@@ -22,8 +22,8 @@ public class ImGuiHandler implements KeyboardListener, RenderListener, Minecraft
 
     private final ImGuiMenuRegistry imGuiMenuRegistry;
 
-    public ImGuiHandler(final File dir) {
-        this.imGuiRenderer = new ImGuiRenderer(dir);
+    public ImGuiHandler(final long handle, final File dir) {
+        this.imGuiRenderer = new ImGuiRenderer(handle, dir);
         this.imGuiMenuRegistry = new ImGuiMenuRegistry();
         DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
         DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
@@ -40,14 +40,14 @@ public class ImGuiHandler implements KeyboardListener, RenderListener, Minecraft
     @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN) return;
-        if (currentScreen() instanceof ConnectScreen || currentScreen() instanceof LevelLoadingScreen) return;
+        if (this.currentScreen() instanceof ConnectScreen || this.currentScreen() instanceof LevelLoadingScreen) return;
         if (key == Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.menuKey.getValue().getKeyCode()) {
             this.toggleScreen();
         }
     }
 
     public void toggleScreen() {
-        Screen screen = currentScreen();
+        Screen screen = this.currentScreen();
         if (screen != null) {
             if (screen instanceof ImGuiScreen) {
                 return;
@@ -55,7 +55,7 @@ public class ImGuiHandler implements KeyboardListener, RenderListener, Minecraft
                 screen = null;
             }
         }
-        setScreen(new ImGuiScreen(screen));
+        this.setScreen(new ImGuiScreen(screen));
     }
 
     @Override

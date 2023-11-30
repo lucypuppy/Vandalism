@@ -23,9 +23,9 @@ public class SayCommand extends Command {
         builder.then(argument("message", StringArgumentType.greedyString()).executes(context -> {
             final String message = context.getArgument("message", String.class);
             if (message.startsWith("/") && message.length() > 1) {
-                networkHandler().sendChatCommand(message.substring(1));
+                this.networkHandler().sendChatCommand(message.substring(1));
             } else {
-                networkHandler().sendChatMessage(message);
+                this.networkHandler().sendChatMessage(message);
             }
             return SINGLE_SUCCESS;
         }));

@@ -4,7 +4,7 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.impl.module.ModuleMode;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement.SpeedModule;
-import de.vandalismdevelopment.vandalism.util.MovementUtil;
+import de.vandalismdevelopment.vandalism.util.PlayerUtil;
 
 public class LongHopModuleMode extends ModuleMode<SpeedModule> implements TickListener {
 
@@ -24,10 +24,10 @@ public class LongHopModuleMode extends ModuleMode<SpeedModule> implements TickLi
 
     @Override
     public void onTick() {
-        if (player() == null) return;
-        if (player().forwardSpeed != 0 || player().sidewaysSpeed != 0) {
-            if (player().isOnGround()) player().jump();
-            MovementUtil.setSpeed(1.5);
+        if (this.player() == null) return;
+        if (this.player().forwardSpeed != 0 || this.player().sidewaysSpeed != 0) {
+            if (this.player().isOnGround()) this.player().jump();
+            PlayerUtil.setSpeed(1.5);
         }
     }
 

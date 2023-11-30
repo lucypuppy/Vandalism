@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface TooltipListener {
 
-    void onTooltipData(final TooltipEvent event);
+    void onTooltipDraw(final TooltipDrawEvent event);
 
-    class TooltipEvent extends AbstractEvent<TooltipListener> {
+    class TooltipDrawEvent extends AbstractEvent<TooltipListener> {
 
         public final static int ID = 12;
 
@@ -18,14 +18,14 @@ public interface TooltipListener {
 
         public final List<TooltipData> tooltipData;
 
-        public TooltipEvent(final ItemStack itemStack, final List<TooltipData> tooltipData) {
+        public TooltipDrawEvent(final ItemStack itemStack, final List<TooltipData> tooltipData) {
             this.itemStack = itemStack;
             this.tooltipData = tooltipData;
         }
 
         @Override
         public void call(final TooltipListener listener) {
-            listener.onTooltipData(this);
+            listener.onTooltipDraw(this);
         }
 
     }

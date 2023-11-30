@@ -20,15 +20,14 @@ public class KeyInputValue extends Value<GlfwKeyName> implements KeyboardListene
 
     @Override
     public void onConfigLoad(final JsonObject valueObject) {
-        final JsonObject pairContainer = valueObject.get("value").getAsJsonObject();
-        this.setValue(GlfwKeyName.getGlfwKeyNameByKeyCode(pairContainer.get("keyCode").getAsInt()));
+        this.setValue(GlfwKeyName.getGlfwKeyNameByKeyCode(valueObject.get("value").getAsJsonObject().get("keyCode").getAsInt()));
     }
 
     @Override
     public void onConfigSave(final JsonObject valueObject) {
-        final JsonObject pairContainer = new JsonObject();
-        pairContainer.addProperty("keyCode", this.getValue().getKeyCode());
-        valueObject.add("value", pairContainer);
+        final JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("keyCode", this.getValue().getKeyCode());
+        valueObject.add("value", jsonObject);
     }
 
     @Override
@@ -53,13 +52,15 @@ public class KeyInputValue extends Value<GlfwKeyName> implements KeyboardListene
 
     @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        if (action == GLFW.GLFW_PRESS) this.setValueByKeyCode(key);
+        if (action == GLFW.GLFW_PRESS) {
+            this.setValueByKeyCode(key);
+        }
     }
 
     private void notListeningAnymore() {
         if (!this.listen) return;
-        DietrichEvents2.global().unsubscribe(KeyboardEvent.ID, this);
         this.listen = false;
+        DietrichEvents2.global().unsubscribe(KeyboardEvent.ID, this);
     }
 
     public void setValueByKeyCode(final int key) {

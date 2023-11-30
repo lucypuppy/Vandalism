@@ -12,7 +12,6 @@ import imgui.callback.ImGuiInputTextCallback;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiTableFlags;
 import imgui.type.ImString;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.session.Session;
 import net.minecraft.util.Util;
 import net.minecraft.util.Uuids;
@@ -95,12 +94,12 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                 "Account Manager##accountmanager",
                 Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
         )) {
-            final Session session = MinecraftClient.getInstance().getSession();
+            final Session session = this.mc().session;
             ImGui.text("Current Account");
             ImGui.inputTextMultiline("##currentAccountData", this.currentAccountData, -1, 60, ImGuiInputTextFlags.ReadOnly);
             this.currentAccountData.set("Username: " + session.getUsername() + "\n" +
                     (session.getUuidOrNull() != null ? "UUID: " + session.getUuidOrNull() + "\n" : "") +
-                    "Type: " + (session.getAccessToken().equals(CrackedAccount.ACCESSTOKEN) ? "Cracked" : "Premium")
+                    "Type: " + (session.getAccessToken().equals(CrackedAccount.TOKEN) ? "Cracked" : "Premium")
             );
             ImGui.separator();
             ImGui.text("Accounts");
@@ -201,11 +200,8 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                                 httpClient,
                                 new StepMsaDeviceCode.MsaDeviceCodeCallback(
                                         msaDeviceCode -> {
-                                            this.state.set("Please enter the code " + msaDeviceCode.getUserCode() + " at " + msaDeviceCode.getVerificationUri() +
-                                                    "\nThe code has been copied to your clipboard and the login page has been opened."
-                                            );
-                                            Util.getOperatingSystem().open(msaDeviceCode.getVerificationUri());
-                                            keyboard().setClipboard(msaDeviceCode.getUserCode());
+                                            this.state.set("Please open the url " + msaDeviceCode.getDirectVerificationUri());
+                                            Util.getOperatingSystem().open(msaDeviceCode.getDirectVerificationUri());
                                         }
                                 )
                         );
