@@ -25,7 +25,6 @@ public class Vandalism {
     private final Logger logger;
 
     private File dir;
-    private CreativeTabRegistry creativeTabRegistry;
     private ImGuiHandler imGuiHandler;
     private ScriptRegistry scriptRegistry;
     private ModuleRegistry moduleRegistry;
@@ -71,7 +70,7 @@ public class Vandalism {
         window.setTitle(String.format("Starting %s...", this.windowTitle));
         this.dir = new File(runDirectory, this.id);
         this.dir.mkdirs();
-        this.creativeTabRegistry = new CreativeTabRegistry();
+        CreativeTabRegistry.getInstance().register();
         this.imGuiHandler = new ImGuiHandler(window.getHandle(), this.dir);
         this.configManager = new ConfigManager(this.dir);
         this.scriptRegistry = new ScriptRegistry(this.dir);
@@ -115,10 +114,6 @@ public class Vandalism {
     public File getDir() {
         return this.dir;
     }
-
-    /*public CreativeTabRegistry getCreativeTabRegistry() {
-        return this.creativeTabRegistry;
-    }*/
 
     public ImGuiHandler getImGuiHandler() {
         return this.imGuiHandler;

@@ -22,7 +22,13 @@ public class CreativeTabRegistry implements PacketListener {
     public final static String CLIENTSIDE_NAME = UUID.randomUUID().toString();
     public final static String CLIENTSIDE_GLINT = UUID.randomUUID().toString();
 
-    public CreativeTabRegistry() {
+    private final static CreativeTabRegistry INSTANCE = new CreativeTabRegistry();
+
+    public static CreativeTabRegistry getInstance() {
+        return INSTANCE;
+    }
+
+    public void register() {
         this.registerCreativeTabs(
                 new CrashItemsCreativeTab(),
                 new KickItemsCreativeTab(),
