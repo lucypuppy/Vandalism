@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.feature.impl.command.impl.misc;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
-import de.vandalismdevelopment.vandalism.util.PlayerUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import net.minecraft.command.CommandSource;
 
 public class CopyInvisibleCharCommand extends Command {
@@ -23,7 +23,7 @@ public class CopyInvisibleCharCommand extends Command {
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
             this.keyboard().setClipboard("\uF802");
-            PlayerUtil.infoChatMessage("Invisible character copied into the Clipboard.");
+            ChatUtil.infoChatMessage("Invisible character copied into the Clipboard.");
             return SINGLE_SUCCESS;
         });
     }

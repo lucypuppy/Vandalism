@@ -7,8 +7,8 @@ import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureList;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.ScriptParser;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.command.ScriptCommand;
-import de.vandalismdevelopment.vandalism.util.PlayerUtil;
-import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import net.minecraft.util.Pair;
 import org.lwjgl.glfw.GLFW;
 
@@ -141,7 +141,7 @@ public class ScriptRegistry implements KeyboardListener, TickListener, Minecraft
                     final boolean executionLogging = Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.scriptExecutionLogging.getValue();
                     if (executionLogging) {
                         final String executingMessage = "Executing script " + scriptName + " ...";
-                        if (inGame) PlayerUtil.infoChatMessage(executingMessage);
+                        if (inGame) ChatUtil.infoChatMessage(executingMessage);
                         else Vandalism.getInstance().getLogger().info(executingMessage);
                     }
                     final List<Pair<ScriptCommand, Pair<Integer, String>>> code = ScriptParser.parseCodeFromScriptFile(file);
@@ -161,19 +161,19 @@ public class ScriptRegistry implements KeyboardListener, TickListener, Minecraft
                     if (executionLogging) {
                         Thread.sleep(100);
                         final String executedMessage = "Executed script " + scriptName + ".";
-                        if (inGame) PlayerUtil.infoChatMessage(executedMessage);
+                        if (inGame) ChatUtil.infoChatMessage(executedMessage);
                         else Vandalism.getInstance().getLogger().info(executedMessage);
                     }
                 } catch (final Exception e) {
                     if (inGame) {
-                        PlayerUtil.errorChatMessage("Failed to execute script '" + scriptName + "' due to: " + e);
+                        ChatUtil.errorChatMessage("Failed to execute script '" + scriptName + "' due to: " + e);
                     } else Vandalism.getInstance().getLogger().error("Failed to execute script", e);
                 }
             }, "script-execution-" + (getRunningScriptsCount() + 1) + "-" + scriptName);
             this.runningScripts.put(file, scriptThread);
             scriptThread.start();
         } catch (final Exception e) {
-            if (inGame) PlayerUtil.errorChatMessage("Invalid script file: " + e);
+            if (inGame) ChatUtil.errorChatMessage("Invalid script file: " + e);
             else Vandalism.getInstance().getLogger().error("Invalid script file", e);
         }
     }

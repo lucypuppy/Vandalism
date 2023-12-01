@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.gui.imgui.impl.widget.serverinfo;
 
 import com.google.gson.JsonSyntaxException;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import imgui.ImGui;
 import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiTableFlags;

@@ -1,6 +1,6 @@
-package de.vandalismdevelopment.vandalism.util.rotation;
+package de.vandalismdevelopment.vandalism.util.minecraft.impl.rotation;
 
-import de.vandalismdevelopment.vandalism.util.PlayerUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.WorldUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -57,7 +57,7 @@ public class Rotation {
             final Box box = entity.getBoundingBox();
             final Vec3d eyePos = mc().player.getEyePos(), getEntityVector = bestHitVec ? getNearestPoint(entity, box, mc().player) : new Vec3d(entity.getX(), entity.getY(), entity.getZ());
             Rotation normalRotations = build(getEntityVector, eyePos);
-            if (PlayerUtil.rayTraceBlock(normalRotations.getVector(), range)) {
+            if (WorldUtil.rayTraceBlock(normalRotations.getVector(), range)) {
                 return normalRotations;
             }
             normalRotations = null;
@@ -70,7 +70,7 @@ public class Rotation {
                             continue;
                         }
                         final Rotation parsedRotation = build(vector, eyePos);
-                        if (!PlayerUtil.rayTraceBlock(parsedRotation.getVector(), range)) {
+                        if (!WorldUtil.rayTraceBlock(parsedRotation.getVector(), range)) {
                             continue;
                         }
                         if (!bestHitVec) {

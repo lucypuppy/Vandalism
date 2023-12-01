@@ -5,7 +5,7 @@ import de.vandalismdevelopment.vandalism.event.EntityListener;
 import de.vandalismdevelopment.vandalism.event.FluidListener;
 import de.vandalismdevelopment.vandalism.event.MovementListener;
 import de.vandalismdevelopment.vandalism.event.StepListener;
-import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.registry.tag.TagKey;

@@ -7,7 +7,7 @@ import de.vandalismdevelopment.vandalism.feature.impl.command.arguments.GlfwKeyN
 import de.vandalismdevelopment.vandalism.feature.impl.command.arguments.ModuleArgumentType;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
-import de.vandalismdevelopment.vandalism.util.PlayerUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import net.minecraft.command.CommandSource;
 
 public class ModuleCommand extends Command {
@@ -26,7 +26,7 @@ public class ModuleCommand extends Command {
             final Module module = ModuleArgumentType.get(context);
             final GlfwKeyName glfwKeyName = GlfwKeyNameArgumentType.get(context);
             module.setKeyBind(glfwKeyName);
-            PlayerUtil.infoChatMessage("Bound module " + module.getName() + " to key " + glfwKeyName.normalName() + ".");
+            ChatUtil.infoChatMessage("Bound module " + module.getName() + " to key " + glfwKeyName.normalName() + ".");
             return SINGLE_SUCCESS;
         }))));
     }

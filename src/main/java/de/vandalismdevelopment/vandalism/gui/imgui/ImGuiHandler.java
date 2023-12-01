@@ -5,7 +5,7 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.event.KeyboardListener;
 import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.gui.minecraft.ImGuiScreen;
-import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.ConnectScreen;

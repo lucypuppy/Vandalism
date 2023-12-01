@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.creativetab.impl;
 
 import de.vandalismdevelopment.vandalism.creativetab.CreativeTab;
-import de.vandalismdevelopment.vandalism.util.PlayerUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ItemStackUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.SpawnEggItem;
@@ -13,10 +13,10 @@ public class GriefItemsCreativeTab extends CreativeTab {
 
     public GriefItemsCreativeTab() {
         super(Text.literal("Grief Items"), new ItemStack(Items.TNT), entries -> {
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createGriefCreeper(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Grief Creeper")));
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createPoweredGriefCreeper(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Powered " + Formatting.RED + Formatting.BOLD + "Grief Creeper"), true));
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(PlayerUtil.createSpawnEggItemStack((SpawnEggItem) Items.SHEEP_SPAWN_EGG, "minecraft:ender_dragon"), Text.literal(Formatting.LIGHT_PURPLE + Formatting.BOLD.toString() + "Ender Dragon")));
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(PlayerUtil.createSpawnEggItemStack((SpawnEggItem) Items.COW_SPAWN_EGG, "minecraft:wither"), Text.literal(Formatting.WHITE + Formatting.BOLD.toString() + "Wither")));
+            entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createGriefCreeper(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Grief Creeper")));
+            entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createPoweredGriefCreeper(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Powered " + Formatting.RED + Formatting.BOLD + "Grief Creeper"), true));
+            entries.add(ItemStackUtil.appendClientSideInfoToItemStack(ItemStackUtil.createSpawnEggItemStack((SpawnEggItem) Items.SHEEP_SPAWN_EGG, "minecraft:ender_dragon"), Text.literal(Formatting.LIGHT_PURPLE + Formatting.BOLD.toString() + "Ender Dragon")));
+            entries.add(ItemStackUtil.appendClientSideInfoToItemStack(ItemStackUtil.createSpawnEggItemStack((SpawnEggItem) Items.COW_SPAWN_EGG, "minecraft:wither"), Text.literal(Formatting.WHITE + Formatting.BOLD.toString() + "Wither")));
         });
     }
 

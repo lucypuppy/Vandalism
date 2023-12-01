@@ -1,7 +1,7 @@
-package de.vandalismdevelopment.vandalism.util.tooltip;
+package de.vandalismdevelopment.vandalism.util.minecraft.impl.tooltip;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;

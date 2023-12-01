@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.config.impl;
 import com.google.gson.JsonObject;
 import de.vandalismdevelopment.vandalism.config.ValueableConfig;
 import de.vandalismdevelopment.vandalism.config.impl.main.*;
-import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 
 import java.io.File;
 import java.io.IOException;

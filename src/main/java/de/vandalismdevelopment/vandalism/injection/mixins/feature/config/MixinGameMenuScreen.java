@@ -1,8 +1,8 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.feature.config;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.util.PlayerUtil;
-import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ServerUtil;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
@@ -38,7 +38,7 @@ public abstract class MixinGameMenuScreen extends Screen implements MinecraftWra
         if (text == SEND_FEEDBACK_TEXT) {
             cir.setReturnValue(ButtonWidget.builder(Text.translatable("menu.multiplayer"), b -> this.setScreen(new MultiplayerScreen(this))).width(98).build());
         } else if (text == REPORT_BUGS_TEXT && !this.mc().isInSingleplayer()) {
-            final ButtonWidget button = ButtonWidget.builder(Text.literal("Reconnect"), b -> PlayerUtil.connectToLastServer()).width(98).build();
+            final ButtonWidget button = ButtonWidget.builder(Text.literal("Reconnect"), b -> ServerUtil.connectToLastServer()).width(98).build();
             cir.setReturnValue(button);
         }
     }

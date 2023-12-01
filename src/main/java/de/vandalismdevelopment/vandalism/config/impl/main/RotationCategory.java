@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.config.impl.main;
 
 import de.vandalismdevelopment.vandalism.config.impl.MainConfig;
-import de.vandalismdevelopment.vandalism.util.rotation.RotationGCD;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.rotation.RotationGCD;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
 import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;

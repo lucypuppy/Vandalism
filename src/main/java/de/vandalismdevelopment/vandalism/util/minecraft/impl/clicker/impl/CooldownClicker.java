@@ -1,7 +1,7 @@
-package de.vandalismdevelopment.vandalism.util.clicker.impl;
+package de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.impl;
 
-import de.vandalismdevelopment.vandalism.util.clicker.Clicker;
-import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.Clicker;
 
 public class CooldownClicker extends Clicker implements MinecraftWrapper {
 

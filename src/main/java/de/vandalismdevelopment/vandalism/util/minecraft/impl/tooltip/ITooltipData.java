@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.util.tooltip;
+package de.vandalismdevelopment.vandalism.util.minecraft.impl.tooltip;
 
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.item.TooltipData;

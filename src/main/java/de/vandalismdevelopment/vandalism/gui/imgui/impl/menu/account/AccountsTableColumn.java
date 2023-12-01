@@ -1,6 +1,6 @@
 package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.account;
 
-import de.vandalismdevelopment.vandalism.util.interfaces.EnumNameNormalizer;
+import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
 
 public enum AccountsTableColumn implements EnumNameNormalizer {
 

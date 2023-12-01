@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.util.rotation;
+package de.vandalismdevelopment.vandalism.util.minecraft.impl.rotation;
 
 public enum RotationPriority {
 

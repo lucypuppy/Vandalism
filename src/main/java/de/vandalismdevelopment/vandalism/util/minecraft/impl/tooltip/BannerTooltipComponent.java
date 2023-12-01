@@ -1,6 +1,6 @@
-package de.vandalismdevelopment.vandalism.util.tooltip;
+package de.vandalismdevelopment.vandalism.util.minecraft.impl.tooltip;
 
-import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import net.minecraft.block.entity.BannerBlockEntity;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;

@@ -8,7 +8,7 @@ import de.vandalismdevelopment.vandalism.feature.FeatureList;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.gui.minecraft.ImGuiScreen;
 import de.vandalismdevelopment.vandalism.util.GLStateTracker;
-import de.vandalismdevelopment.vandalism.util.PlayerUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.WorldUtil;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
 import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
@@ -149,8 +149,8 @@ public class HUDModule extends Module implements RenderListener {
                 y += this.textRenderer().fontHeight;
             }
             if (this.dimensionalPosition.getValue()) {
-                final PlayerUtil.Dimension dimension = PlayerUtil.getDimension();
-                if (dimension != PlayerUtil.Dimension.END) {
+                final WorldUtil.Dimension dimension = WorldUtil.getDimension();
+                if (dimension != WorldUtil.Dimension.END) {
                     final int positionDecimalPlacesRawValue = this.positionDecimalPlaces.getValue();
                     if (positionDecimalPlacesRawValue < 1) this.positionDecimalPlaces.setValue(1);
                     else if (positionDecimalPlacesRawValue > 15) this.positionDecimalPlaces.setValue(15);

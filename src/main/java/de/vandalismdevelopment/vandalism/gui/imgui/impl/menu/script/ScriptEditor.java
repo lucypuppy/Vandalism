@@ -10,7 +10,7 @@ import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.ScriptIn
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.impl.BooleanScriptInfo;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.impl.CategoryScriptInfo;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.impl.StringScriptInfo;
-import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;

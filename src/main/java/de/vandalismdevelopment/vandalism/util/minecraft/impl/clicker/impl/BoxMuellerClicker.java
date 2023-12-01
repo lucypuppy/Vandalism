@@ -1,10 +1,10 @@
-package de.vandalismdevelopment.vandalism.util.clicker.impl;
+package de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.impl;
 
 import de.florianmichael.rclasses.common.RandomUtils;
 import de.florianmichael.rclasses.math.integration.BoxMullerTransform;
 import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.florianmichael.rclasses.pattern.evicting.EvictingList;
-import de.vandalismdevelopment.vandalism.util.clicker.Clicker;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.Clicker;
 import net.minecraft.util.Pair;
 
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package de.vandalismdevelopment.vandalism.gui.imgui;
 
-import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 
 public abstract class ImGuiMenu implements MinecraftWrapper {
 

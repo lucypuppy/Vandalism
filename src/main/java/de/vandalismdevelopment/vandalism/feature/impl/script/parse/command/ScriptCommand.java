@@ -5,8 +5,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.ScriptParser;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.ScriptVariable;
-import de.vandalismdevelopment.vandalism.util.MovementUtil;
-import de.vandalismdevelopment.vandalism.util.PlayerUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.MovementUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.MutableText;
@@ -59,7 +59,7 @@ public enum ScriptCommand {
             text.setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Color.CYAN.getRGB())));
             text.append("] ");
             text.append(Text.literal(ScriptVariable.applyReplacements(code)));
-            PlayerUtil.chatMessage(text);
+            ChatUtil.chatMessage(text);
         }
     }, exampleBuilder -> {
         exampleBuilder.append("This command can add a chat message to the chat like this \"add_chat_message <message>\".");

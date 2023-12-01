@@ -9,7 +9,7 @@ import de.vandalismdevelopment.vandalism.config.ValueableConfig;
 import de.vandalismdevelopment.vandalism.config.impl.account.impl.CrackedAccount;
 import de.vandalismdevelopment.vandalism.config.impl.account.impl.MicrosoftAccount;
 import de.vandalismdevelopment.vandalism.util.EncryptionUtil;
-import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import net.minecraft.util.Uuids;
 import net.raphimc.minecraftauth.MinecraftAuth;
 import net.raphimc.minecraftauth.util.logging.ILogger;

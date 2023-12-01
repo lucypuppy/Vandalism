@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.creativetab.impl;
 
 import de.vandalismdevelopment.vandalism.creativetab.CreativeTab;
-import de.vandalismdevelopment.vandalism.util.PlayerUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ItemStackUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -14,9 +14,9 @@ public class KickItemsCreativeTab extends CreativeTab {
 
     public KickItemsCreativeTab() {
         super(Text.literal("Kick Items"), new ItemStack(Items.FIREWORK_ROCKET), entries -> {
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createKickHead(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Head")));
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createKickHeadV2(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Head V2")));
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createKickStand(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Stand")));
+            entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createKickHead(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Head")));
+            entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createKickHeadV2(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Head V2")));
+            entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createKickStand(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Stand")));
         });
     }
 

@@ -8,7 +8,7 @@ import de.vandalismdevelopment.vandalism.feature.impl.command.arguments.GlfwKeyN
 import de.vandalismdevelopment.vandalism.feature.impl.command.arguments.ScriptArgumentType;
 import de.vandalismdevelopment.vandalism.feature.impl.script.Script;
 import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
-import de.vandalismdevelopment.vandalism.util.PlayerUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import net.minecraft.command.CommandSource;
 
 public class ScriptCommand extends Command {
@@ -32,9 +32,9 @@ public class ScriptCommand extends Command {
                 })
         ));
         builder.then(literal("reload").executes(context -> {
-            PlayerUtil.infoChatMessage("Loading scripts...");
+            ChatUtil.infoChatMessage("Loading scripts...");
             Vandalism.getInstance().getScriptRegistry().load();
-            PlayerUtil.infoChatMessage("Loaded " + Vandalism.getInstance().getScriptRegistry().getScripts().size() + " scripts.");
+            ChatUtil.infoChatMessage("Loaded " + Vandalism.getInstance().getScriptRegistry().getScripts().size() + " scripts.");
             return SINGLE_SUCCESS;
         }));
         builder.then(literal("bind").then(argument("script", ScriptArgumentType.create())
@@ -43,7 +43,7 @@ public class ScriptCommand extends Command {
                             final Script script = ScriptArgumentType.get(context);
                             final GlfwKeyName glfwKeyName = GlfwKeyNameArgumentType.get(context);
                             script.setKeyBind(glfwKeyName);
-                            PlayerUtil.infoChatMessage(
+                            ChatUtil.infoChatMessage(
                                     "Bound script " + script.getName() + " to key " + glfwKeyName.normalName() + "."
                             );
                             return SINGLE_SUCCESS;

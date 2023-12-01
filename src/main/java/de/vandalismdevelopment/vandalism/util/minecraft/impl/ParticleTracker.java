@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.util;
+package de.vandalismdevelopment.vandalism.util.minecraft.impl;
 
 import de.florianmichael.rclasses.math.integration.MSTimer;
 
