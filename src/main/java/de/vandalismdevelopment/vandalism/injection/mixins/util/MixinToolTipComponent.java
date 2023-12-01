@@ -1,6 +1,6 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.util;
 
-import de.vandalismdevelopment.vandalism.util.tooltip.ITooltipData;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.tooltip.ITooltipData;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.item.TooltipData;
 import org.spongepowered.asm.mixin.Mixin;

@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.injection.mixins.feature.module;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.render.BetterTabListModule;
 import de.vandalismdevelopment.vandalism.util.RenderUtil;
-import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.PlayerListHud;

@@ -1,22 +1,8 @@
-package de.vandalismdevelopment.vandalism.util;
+package de.vandalismdevelopment.vandalism.util.minecraft.impl;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
+import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftUtil;
 
-public class MovementUtil {
-
-    private static MinecraftClient mc() {
-        return MinecraftClient.getInstance();
-    }
-
-    private static ClientPlayerEntity player() {
-        return mc().player;
-    }
-
-    private static ClientWorld world() {
-        return mc().world;
-    }
+public class MovementUtil extends MinecraftUtil {
 
     public static double getDirection() {
         if (player() == null) return 0;

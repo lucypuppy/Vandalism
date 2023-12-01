@@ -1,6 +1,5 @@
 package de.vandalismdevelopment.vandalism.util;
 
-import de.vandalismdevelopment.vandalism.util.interfaces.EnumNameNormalizer;
 import org.lwjgl.glfw.GLFW;
 
 public enum GlfwKeyName implements EnumNameNormalizer {

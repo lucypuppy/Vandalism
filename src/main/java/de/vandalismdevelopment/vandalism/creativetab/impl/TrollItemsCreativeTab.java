@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.creativetab.impl;
 
 import de.vandalismdevelopment.vandalism.creativetab.CreativeTab;
-import de.vandalismdevelopment.vandalism.util.PlayerUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ItemStackUtil;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -20,16 +20,16 @@ public class TrollItemsCreativeTab extends CreativeTab {
     public TrollItemsCreativeTab() {
         super(Text.literal("Troll Items"), new ItemStack(Items.END_CRYSTAL), entries -> {
             for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
-                entries.add(PlayerUtil.appendClientSideInfoToItemStack(createTrollPotion(new ItemStack(item)), Text.literal(Formatting.GOLD + "Troll Potion")));
+                entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createTrollPotion(new ItemStack(item)), Text.literal(Formatting.GOLD + "Troll Potion")));
             }
             for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
-                entries.add(PlayerUtil.appendClientSideInfoToItemStack(createKillPotion(new ItemStack(item)), Text.literal(Formatting.RED + "Kill Potion")));
+                entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createKillPotion(new ItemStack(item)), Text.literal(Formatting.RED + "Kill Potion")));
             }
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createKillArea(), Text.literal(Formatting.RED + "Kill Area")));
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createWhiteHole(), Text.literal(Formatting.WHITE + Formatting.BOLD.toString() + "White Hole")));
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createBlackHole(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Black Hole")));
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createEventHorizonArea(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area")));
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createStargazer(), Text.literal(Formatting.YELLOW + Formatting.BOLD.toString() + "Stargazer"), true));
+            entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createKillArea(), Text.literal(Formatting.RED + "Kill Area")));
+            entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createWhiteHole(), Text.literal(Formatting.WHITE + Formatting.BOLD.toString() + "White Hole")));
+            entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createBlackHole(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Black Hole")));
+            entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createEventHorizonArea(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area")));
+            entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createStargazer(), Text.literal(Formatting.YELLOW + Formatting.BOLD.toString() + "Stargazer"), true));
         });
     }
 
@@ -39,7 +39,7 @@ public class TrollItemsCreativeTab extends CreativeTab {
         for (final StatusEffect statusEffect : Registries.STATUS_EFFECT) {
             final Identifier id = Registries.STATUS_EFFECT.getId(statusEffect);
             if (id != null && id.getNamespace().equals("minecraft")) {
-                customPotionEffects.add(PlayerUtil.createEffectNBT(id.getPath(), 10000, 255, false));
+                customPotionEffects.add(ItemStackUtil.createEffectNBT(id.getPath(), 10000, 255, false));
             }
         }
         base.put("custom_potion_effects", customPotionEffects);
@@ -50,7 +50,7 @@ public class TrollItemsCreativeTab extends CreativeTab {
     private static ItemStack createKillPotion(final ItemStack origin) {
         final NbtCompound base = new NbtCompound();
         final NbtList customPotionEffects = new NbtList();
-        customPotionEffects.add(PlayerUtil.createEffectNBT("instant_health", 2000, 125, false));
+        customPotionEffects.add(ItemStackUtil.createEffectNBT("instant_health", 2000, 125, false));
         base.put("custom_potion_effects", customPotionEffects);
         origin.setNbt(base);
         return origin;
@@ -61,7 +61,7 @@ public class TrollItemsCreativeTab extends CreativeTab {
         final NbtCompound base = new NbtCompound();
         final NbtCompound entityTag = new NbtCompound();
         final NbtList effects = new NbtList();
-        effects.add(PlayerUtil.createEffectNBT("instant_health", 20, 125, false));
+        effects.add(ItemStackUtil.createEffectNBT("instant_health", 20, 125, false));
         entityTag.put("effects", effects);
         entityTag.putFloat("RadiusOnUse", 0.1f);
         entityTag.putFloat("RadiusPerTick", 0.01f);
@@ -110,14 +110,14 @@ public class TrollItemsCreativeTab extends CreativeTab {
         final NbtCompound base = new NbtCompound();
         final NbtCompound entityTag = new NbtCompound();
         final NbtList effects = new NbtList();
-        effects.add(PlayerUtil.createEffectNBT("slowness", 170, 125, false));
-        effects.add(PlayerUtil.createEffectNBT("mining_fatigue", 150, 125, false));
-        effects.add(PlayerUtil.createEffectNBT("resistance ", 170, 125, false));
-        effects.add(PlayerUtil.createEffectNBT("invisibility", 130, 1, false));
-        effects.add(PlayerUtil.createEffectNBT("weakness", 170, 125, false));
-        effects.add(PlayerUtil.createEffectNBT("wither", 160, 1, false));
-        effects.add(PlayerUtil.createEffectNBT("levitation", 19, 125, false));
-        effects.add(PlayerUtil.createEffectNBT("darkness", 170, 125, false));
+        effects.add(ItemStackUtil.createEffectNBT("slowness", 170, 125, false));
+        effects.add(ItemStackUtil.createEffectNBT("mining_fatigue", 150, 125, false));
+        effects.add(ItemStackUtil.createEffectNBT("resistance ", 170, 125, false));
+        effects.add(ItemStackUtil.createEffectNBT("invisibility", 130, 1, false));
+        effects.add(ItemStackUtil.createEffectNBT("weakness", 170, 125, false));
+        effects.add(ItemStackUtil.createEffectNBT("wither", 160, 1, false));
+        effects.add(ItemStackUtil.createEffectNBT("levitation", 19, 125, false));
+        effects.add(ItemStackUtil.createEffectNBT("darkness", 170, 125, false));
         entityTag.put("effects", effects);
         entityTag.putFloat("RadiusOnUse", 0.1f);
         entityTag.putFloat("RadiusPerTick", 0.01f);

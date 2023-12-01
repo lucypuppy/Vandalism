@@ -7,7 +7,7 @@ import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.FeatureType;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.render.HUDModule;
 import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
-import de.vandalismdevelopment.vandalism.util.PlayerUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import de.vandalismdevelopment.vandalism.value.IValue;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
@@ -45,7 +45,7 @@ public abstract class Module extends Feature implements IValue {
         this.enabled = new BooleanValue("Enabled", "Whether this module is enabled.", this, isDefaultEnabled).valueChangedConsumer(state -> {
             if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.moduleStateLogging.getValue()) {
                 if (this.player() != null) {
-                    PlayerUtil.infoChatMessage(this.getName() + " has been " + (state ? "enabled" : "disabled") + ".");
+                    ChatUtil.infoChatMessage(this.getName() + " has been " + (state ? "enabled" : "disabled") + ".");
                 }
             }
             this.syncHUD();

@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.feature.impl.command.impl.misc;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
-import de.vandalismdevelopment.vandalism.util.PlayerUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
@@ -25,7 +25,7 @@ public class InventoryClearCommand extends Command {
                 this.clearSlot(i);
             }
             for (int i = 36; i < 46; i++) this.clearSlot(i);
-            PlayerUtil.infoChatMessage("Your inventory has been cleared.");
+            ChatUtil.infoChatMessage("Your inventory has been cleared.");
             return SINGLE_SUCCESS;
         });
     }

@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.creativetab.impl;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.creativetab.CreativeTab;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.exploit.ExploitFixerModule;
-import de.vandalismdevelopment.vandalism.util.PlayerUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ItemStackUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.*;
@@ -16,20 +16,20 @@ public class CrashItemsCreativeTab extends CreativeTab {
     public CrashItemsCreativeTab() {
         super(Text.literal("Crash Items"), new ItemStack(Items.BARRIER), entries -> {
             final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleRegistry().getExploitFixerModule();
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createCrashSkull("ewogICJ0aW1lc3RhbXAiIDogMTY4ODYwNjcyODYzNywKICAicHJvZmlsZUlkIiA6ICJhNDAxNDkxYTAwZTI0OGVmYTZmZjcxMjI2Y2ZhNzU1NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlZDBjaW5VIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICIiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head")));
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createCrashSkull("ewogICJ0aW1lc3RhbXAiIDogMTY4ODYwNjcyODYzNywKICAicHJvZmlsZUlkIiA6ICJhNDAxNDkxYTAwZTI0OGVmYTZmZjcxMjI2Y2ZhNzU1NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlZDBjaW5VIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICIgLm1pbmVjcmFmdC5uZXQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head V2")));
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createCrashSign("translation.test.invalid"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign")));
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createCrashSign("translation.test.invalid2"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign V2")));
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createCrashBook("translation.test.invalid"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book")));
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createCrashBook("translation.test.invalid2"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book V2")));
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createClientCrashExperience(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Client Crash Experience")));
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createClientCrashArea(), Text.literal(Formatting.RED.toString() + Formatting.BOLD + "Client Crash Area")));
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createSodiumClientFreezeEntity(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Sodium Freeze Entity")));
+            entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createCrashSkull("ewogICJ0aW1lc3RhbXAiIDogMTY4ODYwNjcyODYzNywKICAicHJvZmlsZUlkIiA6ICJhNDAxNDkxYTAwZTI0OGVmYTZmZjcxMjI2Y2ZhNzU1NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlZDBjaW5VIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICIiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head")));
+            entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createCrashSkull("ewogICJ0aW1lc3RhbXAiIDogMTY4ODYwNjcyODYzNywKICAicHJvZmlsZUlkIiA6ICJhNDAxNDkxYTAwZTI0OGVmYTZmZjcxMjI2Y2ZhNzU1NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlZDBjaW5VIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICIgLm1pbmVjcmFmdC5uZXQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head V2")));
+            entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createCrashSign("translation.test.invalid"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign")));
+            entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createCrashSign("translation.test.invalid2"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign V2")));
+            entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createCrashBook("translation.test.invalid"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book")));
+            entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createCrashBook("translation.test.invalid2"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book V2")));
+            entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createClientCrashExperience(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Client Crash Experience")));
+            entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createClientCrashArea(), Text.literal(Formatting.RED.toString() + Formatting.BOLD + "Client Crash Area")));
+            entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createSodiumClientFreezeEntity(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Sodium Freeze Entity")));
             if (exploitFixerModule.isEnabled() && exploitFixerModule.blockInvalidIdentifierCrash.getValue()) {
-                entries.add(PlayerUtil.appendClientSideInfoToItemStack(createClientInstantCrashPot(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Pot")));
+                entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createClientInstantCrashPot(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Pot")));
             }
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createServerCrashEntity(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Crash Entity")));
-            entries.add(PlayerUtil.appendClientSideInfoToItemStack(createInstantCrashSculkItem(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Instant Crash Block")));
+            entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createServerCrashEntity(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Crash Entity")));
+            entries.add(ItemStackUtil.appendClientSideInfoToItemStack(createInstantCrashSculkItem(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Instant Crash Block")));
         });
     }
 

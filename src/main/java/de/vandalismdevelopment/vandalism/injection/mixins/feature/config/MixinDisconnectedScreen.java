@@ -1,8 +1,8 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.feature.config;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.util.PlayerUtil;
-import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ServerUtil;
 import net.minecraft.client.gui.screen.DisconnectedScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.*;
@@ -40,9 +40,9 @@ public abstract class MixinDisconnectedScreen extends Screen implements Minecraf
         instance.add(widget);
         if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.moreDisconnectedScreenButtons.getValue()) {
             final Positioner positioner = instance.getMainPositioner().copy().marginTop(-8);
-            instance.add(ButtonWidget.builder(Text.literal("Reconnect"), button -> PlayerUtil.connectToLastServer()).build(), positioner);
+            instance.add(ButtonWidget.builder(Text.literal("Reconnect"), button -> ServerUtil.connectToLastServer()).build(), positioner);
             instance.add(ButtonWidget.builder(Text.literal("Copy Message"), button -> {
-                final StringBuilder textBuilder = new StringBuilder(PlayerUtil.lastServerExists() ? "Disconnect Message from " + PlayerUtil.getLastServerInfo().address : "");
+                final StringBuilder textBuilder = new StringBuilder(ServerUtil.lastServerExists() ? "Disconnect Message from " + ServerUtil.getLastServerInfo().address : "");
                 final String emptyLine = "\n\n";
                 textBuilder.append(emptyLine);
                 instance.forEachElement(w -> {

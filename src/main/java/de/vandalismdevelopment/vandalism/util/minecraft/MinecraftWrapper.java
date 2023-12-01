@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.util.interfaces;
+package de.vandalismdevelopment.vandalism.util.minecraft;
 
 import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;

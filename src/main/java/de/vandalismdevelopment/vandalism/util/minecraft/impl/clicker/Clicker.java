@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.util.clicker;
+package de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker;
 
 public abstract class Clicker {
 

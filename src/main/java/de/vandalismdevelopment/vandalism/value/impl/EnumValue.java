@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.value.impl;
 
 import com.google.gson.JsonObject;
-import de.vandalismdevelopment.vandalism.util.interfaces.EnumNameNormalizer;
+import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
 import de.vandalismdevelopment.vandalism.value.IValue;
 import de.vandalismdevelopment.vandalism.value.Value;
 import imgui.ImGui;

@@ -8,7 +8,8 @@ import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
 import de.vandalismdevelopment.vandalism.feature.impl.command.arguments.NbtCompoundArgumentType;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.nbteditor.NbtEditortImGuiMenu;
-import de.vandalismdevelopment.vandalism.util.PlayerUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ItemStackUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.NbtPathArgumentType;
 import net.minecraft.item.ItemStack;
@@ -39,9 +40,9 @@ public class NbtCommand extends Command {
                 final NbtCompound source = stack.getOrCreateNbt();
                 if (tag != null) {
                     source.copyFrom(tag);
-                    PlayerUtil.giveItemStack(stack);
+                    ItemStackUtil.giveItemStack(stack);
                 } else {
-                    PlayerUtil.errorChatMessage("Some of the NBT data could not be found, try using: " + Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.commandPrefix.getValue() + "nbt set {nbt}");
+                    ChatUtil.errorChatMessage("Some of the NBT data could not be found, try using: " + Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.commandPrefix.getValue() + "nbt set {nbt}");
                 }
             }
             return SINGLE_SUCCESS;
@@ -50,7 +51,7 @@ public class NbtCommand extends Command {
             final ItemStack stack = this.player().getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
                 stack.setNbt(NbtCompoundArgumentType.get(context));
-                PlayerUtil.giveItemStack(stack);
+                ItemStackUtil.giveItemStack(stack);
             }
             return SINGLE_SUCCESS;
         })));
@@ -58,7 +59,7 @@ public class NbtCommand extends Command {
             final ItemStack stack = this.player().getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
                 context.getArgument("nbt_path", NbtPathArgumentType.NbtPath.class).remove(stack.getNbt());
-                PlayerUtil.giveItemStack(stack);
+                ItemStackUtil.giveItemStack(stack);
             }
             return SINGLE_SUCCESS;
         })));
@@ -72,7 +73,7 @@ public class NbtCommand extends Command {
                 text.append(copyButton);
                 if (tag == null) text.append("{}");
                 else text.append(" ").append(NbtHelper.toPrettyPrintedText(tag));
-                PlayerUtil.infoChatMessage(text);
+                ChatUtil.infoChatMessage(text);
             }
             return SINGLE_SUCCESS;
         }));
@@ -81,7 +82,7 @@ public class NbtCommand extends Command {
             if (this.validBasic(stack)) {
                 final NbtCompound tag = stack.getOrCreateNbt();
                 this.keyboard().setClipboard(tag.toString());
-                PlayerUtil.infoChatMessage("NBT copied into the Clipboard.");
+                ChatUtil.infoChatMessage("NBT copied into the Clipboard.");
             }
             return SINGLE_SUCCESS;
         }));
@@ -89,7 +90,7 @@ public class NbtCommand extends Command {
             final ItemStack stack = this.player().getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
                 stack.setNbt(new NbtCompoundArgumentType().parse(new StringReader(this.keyboard().getClipboard())));
-                PlayerUtil.giveItemStack(stack);
+                ItemStackUtil.giveItemStack(stack);
             }
             return SINGLE_SUCCESS;
         }));
@@ -98,8 +99,8 @@ public class NbtCommand extends Command {
             if (this.validBasic(stack)) {
                 final int count = IntegerArgumentType.getInteger(context, "count");
                 stack.setCount(count);
-                PlayerUtil.giveItemStack(stack);
-                PlayerUtil.infoChatMessage("Set main hand stack count to " + count + ".");
+                ItemStackUtil.giveItemStack(stack);
+                ChatUtil.infoChatMessage("Set main hand stack count to " + count + ".");
             }
             return SINGLE_SUCCESS;
         })));
@@ -126,7 +127,7 @@ public class NbtCommand extends Command {
 
     private boolean validBasic(final ItemStack stack) {
         if (stack == null || stack.isEmpty()) {
-            PlayerUtil.errorChatMessage("You must hold an item in your main hand.");
+            ChatUtil.errorChatMessage("You must hold an item in your main hand.");
             return false;
         }
         return true;

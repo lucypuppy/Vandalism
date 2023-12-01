@@ -9,7 +9,7 @@ import de.vandalismdevelopment.vandalism.event.WorldListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.gui.imgui.RenderInterface;
-import de.vandalismdevelopment.vandalism.util.interfaces.EnumNameNormalizer;
+import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.impl.EnumValue;
 import de.vandalismdevelopment.vandalism.value.impl.RenderingValue;

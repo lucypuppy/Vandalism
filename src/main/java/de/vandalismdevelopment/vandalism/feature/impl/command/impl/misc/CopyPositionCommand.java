@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.feature.impl.command.impl.misc;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
-import de.vandalismdevelopment.vandalism.util.PlayerUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import net.minecraft.command.CommandSource;
 
 public class CopyPositionCommand extends Command {
@@ -24,7 +24,7 @@ public class CopyPositionCommand extends Command {
         builder.executes(context -> {
             if (this.player() != null) {
                 this.keyboard().setClipboard(this.player().getBlockPos().toShortString());
-                PlayerUtil.infoChatMessage("Position copied into the Clipboard.");
+                ChatUtil.infoChatMessage("Position copied into the Clipboard.");
             }
             return SINGLE_SUCCESS;
         });

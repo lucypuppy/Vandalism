@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.util.tooltip;
+package de.vandalismdevelopment.vandalism.util.minecraft.impl.tooltip;
 
 import com.google.common.collect.Lists;
 import net.minecraft.client.font.TextRenderer;

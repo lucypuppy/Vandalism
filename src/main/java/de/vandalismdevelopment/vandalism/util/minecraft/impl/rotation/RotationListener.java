@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.util.rotation;
+package de.vandalismdevelopment.vandalism.util.minecraft.impl.rotation;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.common.RandomUtils;
@@ -6,7 +6,7 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.event.PacketListener;
 import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.util.RenderUtil;
-import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.MathHelper;

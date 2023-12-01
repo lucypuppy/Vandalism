@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.util.interfaces;
+package de.vandalismdevelopment.vandalism.util;
 
 import de.florianmichael.rclasses.common.StringUtils;
 

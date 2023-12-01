@@ -1,8 +1,8 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.util.rotation;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
-import de.vandalismdevelopment.vandalism.util.rotation.Rotation;
+import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.rotation.Rotation;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;

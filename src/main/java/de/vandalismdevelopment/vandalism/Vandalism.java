@@ -6,7 +6,7 @@ import de.vandalismdevelopment.vandalism.feature.impl.command.CommandRegistry;
 import de.vandalismdevelopment.vandalism.feature.impl.module.ModuleRegistry;
 import de.vandalismdevelopment.vandalism.feature.impl.script.ScriptRegistry;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiHandler;
-import de.vandalismdevelopment.vandalism.util.rotation.RotationListener;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.rotation.RotationListener;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.fabricmc.loader.api.metadata.Person;

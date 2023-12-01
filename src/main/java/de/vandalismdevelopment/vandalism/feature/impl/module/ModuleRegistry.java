@@ -12,7 +12,7 @@ import de.vandalismdevelopment.vandalism.feature.impl.module.impl.exploit.*;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.misc.*;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement.*;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.render.*;
-import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import org.lwjgl.glfw.GLFW;
 
 public class ModuleRegistry implements MinecraftWrapper, KeyboardListener {

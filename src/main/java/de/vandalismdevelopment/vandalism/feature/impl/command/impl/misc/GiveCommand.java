@@ -4,7 +4,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
-import de.vandalismdevelopment.vandalism.util.PlayerUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ItemStackUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.ItemStackArgumentType;
 
@@ -17,10 +17,10 @@ public class GiveCommand extends Command {
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.then(argument("item", ItemStackArgumentType.itemStack(REGISTRY_ACCESS)).executes(context -> {
-            PlayerUtil.giveItemStack(ItemStackArgumentType.getItemStackArgument(context, "item").createStack(1, false));
+            ItemStackUtil.giveItemStack(ItemStackArgumentType.getItemStackArgument(context, "item").createStack(1, false));
             return SINGLE_SUCCESS;
         }).then(argument("number", IntegerArgumentType.integer()).executes(context -> {
-            PlayerUtil.giveItemStack(ItemStackArgumentType.getItemStackArgument(context, "item").createStack(IntegerArgumentType.getInteger(context, "number"), false));
+            ItemStackUtil.giveItemStack(ItemStackArgumentType.getItemStackArgument(context, "item").createStack(IntegerArgumentType.getInteger(context, "number"), false));
             return SINGLE_SUCCESS;
         })));
     }

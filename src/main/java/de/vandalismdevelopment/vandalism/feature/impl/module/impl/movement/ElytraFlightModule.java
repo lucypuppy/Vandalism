@@ -5,7 +5,7 @@ import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement.modes.elytraflight.CreativeModuleMode;
-import de.vandalismdevelopment.vandalism.util.PlayerUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.impl.list.ModuleModeValue;
 import net.minecraft.entity.EquipmentSlot;
@@ -48,7 +48,7 @@ public class ElytraFlightModule extends Module implements TickListener {
         if (this.player() == null) return;
         final ItemStack itemStack = this.player().getEquippedStack(EquipmentSlot.CHEST);
         if (itemStack.getItem() != Items.ELYTRA || !ElytraItem.isUsable(itemStack)) {
-            PlayerUtil.errorChatMessage(Text.literal("You need to equip an elytra to fly."));
+            ChatUtil.errorChatMessage(Text.literal("You need to equip an elytra to fly."));
             this.disable();
         }
     }
