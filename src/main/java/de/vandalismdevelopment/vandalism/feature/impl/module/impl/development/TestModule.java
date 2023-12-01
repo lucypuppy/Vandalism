@@ -7,7 +7,6 @@ import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.util.PlayerUtil;
 import de.vandalismdevelopment.vandalism.util.clicker.Clicker;
 import de.vandalismdevelopment.vandalism.util.clicker.impl.BoxMuellerClicker;
 import de.vandalismdevelopment.vandalism.util.rotation.Rotation;
@@ -17,7 +16,9 @@ import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderFloatVal
 import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderIntegerValue;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,7 +116,44 @@ public class TestModule extends Module implements TickListener, RenderListener, 
 
     @Override
     public void onMoveInput(final MoveInputEvent event) {
-       // PlayerUtil.chatMessage("Forward="+ event.forwardSpeed);
+        final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
+        if (rotation == null) return;
+        float deltaYaw = player().getYaw() - rotation.getYaw();
+
+        float x = event.movementSideways;
+        float z = event.movementForward;
+
+        float newX = x * MathHelper.cos(deltaYaw * 0.017453292f) - z * MathHelper.sin(deltaYaw * 0.017453292f);
+        float newZ = z * MathHelper.cos(deltaYaw * 0.017453292f) + x * MathHelper.sin(deltaYaw * 0.017453292f);
+
+        event.movementSideways = Math.round(newX);
+        event.movementForward = Math.round(newZ);
+
+        if (event.slowDown) {
+            event.movementSideways *= 0.3F;
+            event.movementForward *= 0.3F;
+        }
+    }
+
+    @Override
+    public void onStrafe(final StrafeEvent event) {
+        final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
+        if (rotation == null) return;
+
+        final float yaw = rotation.getYaw();
+        final double d = event.movementInput.lengthSquared();
+
+        if (d < 1.0E-7) {
+            event.velocity = Vec3d.ZERO;
+        } else {
+            Vec3d vec3d = (d > 1.0 ? event.movementInput.normalize() : event.movementInput);
+            vec3d = vec3d.multiply(event.speed);
+
+            final float f = MathHelper.sin(yaw * 0.017453292f);
+            final float g = MathHelper.cos(yaw * 0.017453292f);
+
+            event.velocity = new Vec3d(vec3d.x * g - vec3d.z * f, vec3d.y, vec3d.z * g + vec3d.x * f);
+        }
     }
 
 }
