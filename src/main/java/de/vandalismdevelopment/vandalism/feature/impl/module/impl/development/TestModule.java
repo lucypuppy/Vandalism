@@ -7,6 +7,7 @@ import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
+import de.vandalismdevelopment.vandalism.util.PlayerUtil;
 import de.vandalismdevelopment.vandalism.util.clicker.Clicker;
 import de.vandalismdevelopment.vandalism.util.clicker.impl.BoxMuellerClicker;
 import de.vandalismdevelopment.vandalism.util.rotation.Rotation;
@@ -114,8 +115,7 @@ public class TestModule extends Module implements TickListener, RenderListener, 
 
     @Override
     public void onMoveInput(final MoveInputEvent event) {
-        event.forwardSpeed = 1;
-        event.sidewaysSpeed = 0;
+       // PlayerUtil.chatMessage("Forward="+ event.forwardSpeed);
     }
 
 }
