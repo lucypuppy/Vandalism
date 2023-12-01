@@ -13,6 +13,7 @@
     "event.MixinCamera",
     "event.MixinChatScreen",
     "event.MixinClientConnection",
+    "event.MixinClientPlayerEntity",
     "event.MixinEntity",
     "event.MixinInGameHud",
     "event.MixinItemStack",
