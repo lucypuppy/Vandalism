@@ -5,6 +5,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.ScriptParser;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.ScriptVariable;
+import de.vandalismdevelopment.vandalism.util.MovementUtil;
 import de.vandalismdevelopment.vandalism.util.PlayerUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandSource;
@@ -101,7 +102,7 @@ public enum ScriptCommand {
         }
         if (execute) {
             if (MinecraftClient.getInstance().player != null) {
-                PlayerUtil.setSpeed(speed);
+                MovementUtil.setSpeed(speed);
             }
         }
         if (args.length > 1) {
