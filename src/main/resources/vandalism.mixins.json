@@ -38,6 +38,7 @@
     "feature.config.MixinGameRenderer",
     "feature.config.MixinGenericContainerScreen",
     "feature.config.MixinInGameHud",
+    "feature.config.MixinItemGroup",
     "feature.config.MixinNetworkUtils",
     "feature.config.MixinPlayerEntity",
     "feature.config.MixinServerEntry",
@@ -76,7 +77,7 @@
     "util.MixinDrawContext",
     "util.MixinMinecraftClient",
     "util.MixinToolTipComponent",
-    "util.rotation.MixinClientPlayer",
+    "util.rotation.MixinClientPlayerEntity",
     "util.rotation.MixinEntity",
     "util.rotation.MixinLivingEntity",
     "util.rotation.MixinLivingEntityRenderer",
@@ -84,8 +85,5 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "mixins": [
-    "feature.config.MixinItemGroup"
-  ]
+  }
 }

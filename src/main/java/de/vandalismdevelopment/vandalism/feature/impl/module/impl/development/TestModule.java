@@ -2,8 +2,8 @@ package de.vandalismdevelopment.vandalism.feature.impl.module.impl.development;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.event.MovementListener;
 import de.vandalismdevelopment.vandalism.event.RenderListener;
-import de.vandalismdevelopment.vandalism.event.SprintListener;
 import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
@@ -14,8 +14,6 @@ import de.vandalismdevelopment.vandalism.util.rotation.RotationPriority;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderFloatValue;
 import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderIntegerValue;
-import imgui.ImGui;
-import imgui.extension.implot.ImPlot;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec2f;
@@ -23,7 +21,7 @@ import net.minecraft.util.math.Vec2f;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestModule extends Module implements TickListener, RenderListener, SprintListener {
+public class TestModule extends Module implements TickListener, RenderListener, MovementListener {
 
     private final Clicker clicker;
 
@@ -43,6 +41,7 @@ public class TestModule extends Module implements TickListener, RenderListener, 
         DietrichEvents2.global().subscribe(TickEvent.ID, this);
         DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
         DietrichEvents2.global().subscribe(SprintEvent.ID, this);
+        DietrichEvents2.global().subscribe(MoveInputEvent.ID, this);
     }
 
     @Override
@@ -50,6 +49,7 @@ public class TestModule extends Module implements TickListener, RenderListener, 
         DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
         DietrichEvents2.global().unsubscribe(Render2DEvent.ID, this);
         DietrichEvents2.global().unsubscribe(SprintEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(MoveInputEvent.ID, this);
         Vandalism.getInstance().getRotationListener().resetRotation();
     }
 
@@ -82,7 +82,7 @@ public class TestModule extends Module implements TickListener, RenderListener, 
 
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
-        Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
+        /*Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
             if (ImGui.begin("Graph##testmodule", Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags())) {
                 if (this.clicker instanceof final BoxMuellerClicker clicker) {
                     final int size = clicker.getDelays().getNormalList().size();
@@ -104,12 +104,18 @@ public class TestModule extends Module implements TickListener, RenderListener, 
                 }
                 ImGui.end();
             }
-        });
+        });*/
     }
 
     @Override
     public void onSprint(final SprintEvent event) {
         event.sprinting = true;
+    }
+
+    @Override
+    public void onMoveInput(final MoveInputEvent event) {
+        event.forwardSpeed = 1;
+        event.sidewaysSpeed = 0;
     }
 
 }
