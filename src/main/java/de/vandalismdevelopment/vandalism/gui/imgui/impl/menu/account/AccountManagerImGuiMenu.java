@@ -158,7 +158,9 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                     if (!contains) {
                         if (ImGui.button("Add Cracked Account##accountmanageraddcrackedaccount")) {
                             final UUID realUUID = UUID.fromString(uuidValue);
-                            accounts.add(new CrackedAccount(usernameValue, realUUID));
+                            final CrackedAccount crackedAccount = new CrackedAccount(usernameValue, realUUID);
+                            accounts.add(crackedAccount);
+                            this.login(crackedAccount);
                             Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getAccountConfig());
                             this.crackedUsername.clear();
                             this.crackedUUID.clear();
