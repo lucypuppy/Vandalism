@@ -33,11 +33,7 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
         @Override
         public void accept(final ImGuiInputTextCallbackData imGuiInputTextCallbackData) {
             if (imGuiInputTextCallbackData.getEventChar() == 0) return;
-            if (
-                    !Character.isLetterOrDigit(imGuiInputTextCallbackData.getEventChar()) &&
-                            imGuiInputTextCallbackData.getEventChar() != '_' &&
-                            imGuiInputTextCallbackData.getEventChar() != '§'
-            ) {
+            if (!Character.isLetterOrDigit(imGuiInputTextCallbackData.getEventChar()) && imGuiInputTextCallbackData.getEventChar() != '_' && imGuiInputTextCallbackData.getEventChar() != '§') {
                 imGuiInputTextCallbackData.setEventChar((char) 0);
             }
         }
@@ -75,44 +71,25 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
             account.login();
             this.state.set("Successfully logged into the " + account.getType() + " account: " + account.getUsername());
         } catch (final Throwable throwable) {
-            Vandalism.getInstance().getLogger().error(
-                    "Failed to log into the " + account.getType() + " account: " + account.getUsername(),
-                    throwable
-            );
-            this.state.set(
-                    "Failed to log into the " + account.getType() + " account: " + account.getUsername() + "\n" +
-                            throwable
-            );
+            Vandalism.getInstance().getLogger().error("Failed to log into the " + account.getType() + " account: " + account.getUsername(), throwable);
+            this.state.set("Failed to log into the " + account.getType() + " account: " + account.getUsername() + "\n" + throwable);
         }
     }
 
     @Override
     public void render() {
-        final float width = 1220, height = 630;
-        ImGui.setNextWindowSizeConstraints(width - 700, height, width, height);
-        if (ImGui.begin(
-                "Account Manager##accountmanager",
-                Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
-        )) {
+        if (ImGui.begin("Account Manager##accountmanager", Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags())) {
             final Session session = this.mc().session;
             ImGui.text("Current Account");
             ImGui.inputTextMultiline("##currentAccountData", this.currentAccountData, -1, 60, ImGuiInputTextFlags.ReadOnly);
-            this.currentAccountData.set("Username: " + session.getUsername() + "\n" +
-                    (session.getUuidOrNull() != null ? "UUID: " + session.getUuidOrNull() + "\n" : "") +
-                    "Type: " + (session.getAccessToken().equals(CrackedAccount.TOKEN) ? "Cracked" : "Premium")
-            );
+            this.currentAccountData.set("Username: " + session.getUsername() + "\n" + (session.getUuidOrNull() != null ? "UUID: " + session.getUuidOrNull() + "\n" : "") + "Type: " + (session.getAccessToken().equals(CrackedAccount.TOKEN) ? "Cracked" : "Premium"));
             ImGui.separator();
             ImGui.text("Accounts");
             final List<Account> accounts = Vandalism.getInstance().getConfigManager().getAccountConfig().getAccounts();
             final AccountsTableColumn[] accountsTableColumns = AccountsTableColumn.values();
             final int maxTableColumns = accountsTableColumns.length;
             ImGui.beginChild("##accountstablechild", -1, 200, true);
-            if (ImGui.beginTable("accounts##accountstable", maxTableColumns,
-                    ImGuiTableFlags.Borders |
-                            ImGuiTableFlags.Resizable |
-                            ImGuiTableFlags.RowBg |
-                            ImGuiTableFlags.ContextMenuInBody
-            )) {
+            if (ImGui.beginTable("accounts##accountstable", maxTableColumns, ImGuiTableFlags.Borders | ImGuiTableFlags.Resizable | ImGuiTableFlags.RowBg | ImGuiTableFlags.ContextMenuInBody)) {
                 for (final AccountsTableColumn accountsTableColumn : accountsTableColumns) {
                     ImGui.tableSetupColumn(accountsTableColumn.normalName());
                 }
@@ -161,10 +138,7 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
             ImGui.separator();
             ImGui.text("Add Account");
             ImGui.setNextItemWidth(-300);
-            ImGui.inputText("Cracked Username##accountmanagercrackedusername", this.crackedUsername,
-                    ImGuiInputTextFlags.CallbackCharFilter,
-                    USERNAME_NAME_FILTER
-            );
+            ImGui.inputText("Cracked Username##accountmanagercrackedusername", this.crackedUsername, ImGuiInputTextFlags.CallbackCharFilter, USERNAME_NAME_FILTER);
             ImGui.setNextItemWidth(-300);
             ImGui.inputText("Cracked UUID##accountmanagercrackeduuid", this.crackedUUID);
             final String usernameValue = this.crackedUsername.get();
@@ -196,22 +170,13 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
             if (ImGui.button("Add Microsoft Account##accountmanageraddmicrosoftaccount")) {
                 this.executor.submit(() -> {
                     try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
-                        final StepFullJavaSession.FullJavaSession  mcProfile = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.getFromInput(
-                                httpClient,
-                                new StepMsaDeviceCode.MsaDeviceCodeCallback(
-                                        msaDeviceCode -> {
-                                            this.state.set("Please open the url " + msaDeviceCode.getDirectVerificationUri());
-                                            Util.getOperatingSystem().open(msaDeviceCode.getDirectVerificationUri());
-                                        }
-                                )
-                        );
-                        accounts.add(
-                                new MicrosoftAccount(
-                                        MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.toJson(mcProfile).toString(),
-                                        mcProfile.getMcProfile().getId(),
-                                        mcProfile.getMcProfile().getName()
-                                )
-                        );
+                        final StepFullJavaSession.FullJavaSession mcProfile = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.getFromInput(httpClient, new StepMsaDeviceCode.MsaDeviceCodeCallback(msaDeviceCode -> {
+                            this.state.set("Please open the url " + msaDeviceCode.getDirectVerificationUri());
+                            Util.getOperatingSystem().open(msaDeviceCode.getDirectVerificationUri());
+                        }));
+                        final MicrosoftAccount microsoftAccount = new MicrosoftAccount(MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.toJson(mcProfile).toString(), mcProfile.getMcProfile().getId(), mcProfile.getMcProfile().getName());
+                        accounts.add(microsoftAccount);
+                        this.login(microsoftAccount);
                         Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getAccountConfig());
                         this.state.set("Successfully added the microsoft account to your account list: " + mcProfile.getMcProfile().getName());
                     } catch (final Throwable throwable) {
