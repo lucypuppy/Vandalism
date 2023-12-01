@@ -7,6 +7,7 @@ import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.gui.minecraft.ImGuiScreen;
 import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.ConnectScreen;
 import net.minecraft.client.gui.screen.LevelLoadingScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -49,7 +50,7 @@ public class ImGuiHandler implements KeyboardListener, RenderListener, Minecraft
     public void toggleScreen() {
         Screen screen = this.currentScreen();
         if (screen != null) {
-            if (screen instanceof ImGuiScreen) {
+            if (screen instanceof ChatScreen || screen instanceof ImGuiScreen) {
                 return;
             } else if (screen instanceof HandledScreen<?> && !(screen instanceof InventoryScreen)) {
                 screen = null;
