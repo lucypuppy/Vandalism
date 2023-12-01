@@ -15,14 +15,14 @@ public abstract class MixinClientPlayerEntity {
     private boolean vandalism$callSprintEvent1(final KeyBinding instance) {
         final MovementListener.SprintEvent sprintEvent = new MovementListener.SprintEvent(instance.isPressed());
         DietrichEvents2.global().postInternal(MovementListener.SprintEvent.ID, sprintEvent);
-        return sprintEvent.sprinting;
+        return !instance.isPressed() && sprintEvent.sprinting;
     }
 
     @Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z", ordinal = 1))
     private boolean vandalism$callSprintEvent2(final KeyBinding instance) {
         final MovementListener.SprintEvent sprintEvent = new MovementListener.SprintEvent(instance.isPressed());
         DietrichEvents2.global().postInternal(MovementListener.SprintEvent.ID, sprintEvent);
-        return sprintEvent.sprinting;
+        return instance.isPressed() && sprintEvent.sprinting;
     }
 
     @Redirect(method = "tickNewAi", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getYaw()F"))
