@@ -3,6 +3,7 @@ package de.vandalismdevelopment.vandalism.feature.impl.module.impl.development;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.event.RenderListener;
+import de.vandalismdevelopment.vandalism.event.SprintListener;
 import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
@@ -22,7 +23,7 @@ import net.minecraft.util.math.Vec2f;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestModule extends Module implements TickListener, RenderListener {
+public class TestModule extends Module implements TickListener, RenderListener, SprintListener {
 
     private final Clicker clicker;
 
@@ -41,13 +42,14 @@ public class TestModule extends Module implements TickListener, RenderListener {
     protected void onEnable() {
         DietrichEvents2.global().subscribe(TickEvent.ID, this);
         DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
+        DietrichEvents2.global().subscribe(SprintEvent.ID, this);
     }
 
     @Override
     protected void onDisable() {
         DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
         DietrichEvents2.global().unsubscribe(Render2DEvent.ID, this);
-
+        DietrichEvents2.global().unsubscribe(SprintEvent.ID, this);
         Vandalism.getInstance().getRotationListener().resetRotation();
     }
 
@@ -103,6 +105,11 @@ public class TestModule extends Module implements TickListener, RenderListener {
                 ImGui.end();
             }
         });
+    }
+
+    @Override
+    public void onSprint(final SprintEvent event) {
+        event.sprinting = true;
     }
 
 }
