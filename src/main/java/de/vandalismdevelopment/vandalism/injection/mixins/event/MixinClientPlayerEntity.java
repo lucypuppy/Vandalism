@@ -25,13 +25,4 @@ public abstract class MixinClientPlayerEntity {
         return instance.isPressed() && sprintEvent.sprinting;
     }
 
-    @Redirect(method = "tickNewAi", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getYaw()F"))
-    private float vandalism$callMoveInputEvent(final ClientPlayerEntity instance) {
-        final MovementListener.MoveInputEvent moveInputEvent = new MovementListener.MoveInputEvent(instance.forwardSpeed, instance.sidewaysSpeed);
-        DietrichEvents2.global().postInternal(MovementListener.MoveInputEvent.ID, moveInputEvent);
-        instance.forwardSpeed = moveInputEvent.forwardSpeed;
-        instance.sidewaysSpeed = moveInputEvent.sidewaysSpeed;
-        return instance.getYaw();
-    }
-
 }

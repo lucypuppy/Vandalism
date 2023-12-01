@@ -18,6 +18,7 @@
     "event.MixinInGameHud",
     "event.MixinItemStack",
     "event.MixinKeyboard",
+    "event.MixinKeyboardInput",
     "event.MixinLivingEntityRenderer",
     "event.MixinMinecraftClient",
     "event.MixinScreen",

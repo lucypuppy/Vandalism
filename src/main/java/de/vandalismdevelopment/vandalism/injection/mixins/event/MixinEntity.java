@@ -3,12 +3,15 @@ package de.vandalismdevelopment.vandalism.injection.mixins.event;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.event.EntityListener;
 import de.vandalismdevelopment.vandalism.event.FluidListener;
+import de.vandalismdevelopment.vandalism.event.MovementListener;
 import de.vandalismdevelopment.vandalism.event.StepListener;
 import de.vandalismdevelopment.vandalism.util.interfaces.MinecraftWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
@@ -16,6 +19,11 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(Entity.class)
 public abstract class MixinEntity implements MinecraftWrapper {
+
+    @Shadow
+    private static Vec3d movementInputToVelocity(Vec3d movementInput, float speed, float yaw) {
+        return null;
+    }
 
     @ModifyConstant(constant = @Constant(doubleValue = 0.05000000074505806), method = "pushAwayFrom")
     private double vandalism$callEntityPushEvent(final double constant) {
@@ -58,6 +66,16 @@ public abstract class MixinEntity implements MinecraftWrapper {
             return stepEvent.stepHeight;
         }
         return entity.getStepHeight();
+    }
+
+    @Redirect(method = "updateVelocity", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;movementInputToVelocity(Lnet/minecraft/util/math/Vec3d;FF)Lnet/minecraft/util/math/Vec3d;"))
+    public Vec3d hookVelocity(Vec3d movementInput, float speed, float yaw) {
+        if (this.player() == ((Entity) (Object) this)) {
+            final MovementListener.StrafeEvent strafeEvent = new MovementListener.StrafeEvent(movementInput, speed, yaw, movementInputToVelocity(movementInput, speed, yaw));
+            DietrichEvents2.global().postInternal(MovementListener.StrafeEvent.ID, strafeEvent);
+            return strafeEvent.velocity;
+        }
+        return movementInputToVelocity(movementInput, speed, yaw);
     }
 
 }
