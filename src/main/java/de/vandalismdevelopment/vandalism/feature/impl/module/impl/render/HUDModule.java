@@ -4,28 +4,16 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
-import de.vandalismdevelopment.vandalism.feature.FeatureList;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.gui.minecraft.ImGuiScreen;
 import de.vandalismdevelopment.vandalism.util.GLStateTracker;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.WorldUtil;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
 import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
-import de.vandalismdevelopment.vandalism.value.impl.ListValue;
 import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderIntegerValue;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ChatScreen;
-import net.minecraft.client.gui.screen.GameMenuScreen;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class HUDModule extends Module implements RenderListener {
-
-    private final Value<Boolean> inventoryScreenBringToFront = new BooleanValue("Inventory Screen bring to front", "Renders the hud over inventory screens.", this, false);
-    private final Value<Boolean> gameMenuScreenBringToFront = new BooleanValue("Game Menu Screen bring to front", "Renders the hud over the game menu screen.", this, false);
 
     private final Value<Boolean> watermark = new BooleanValue("Watermark", "Shows the watermark.", this, true);
 
@@ -60,26 +48,6 @@ public class HUDModule extends Module implements RenderListener {
 
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
-        if (this.currentScreen() == null) this.render(context);
-    }
-
-    @Override
-    public void onRender2DOutGamePre(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        if (this.currentScreen() instanceof ImGuiScreen) render(context);
-    }
-
-    @Override
-    public void onRender2DOutGamePost(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        if (this.mc().inGameHud != null && this.mc().inGameHud.getDebugHud().shouldShowDebugHud()) return;
-        if (this.currentScreen() instanceof ChatScreen || (this.currentScreen() instanceof InventoryScreen && this.inventoryScreenBringToFront.getValue()) || (this.currentScreen() instanceof GameMenuScreen && this.gameMenuScreenBringToFront.getValue())) {
-            render(context);
-        }
-    }
-
-    private void render(final DrawContext context) {
-        if (this.player() == null || this.world() == null) {
-            return;
-        }
         int color = -1, x = 0, y = 2;
         boolean shadow = false;
         if (this.watermark.getValue()) {
@@ -154,7 +122,6 @@ public class HUDModule extends Module implements RenderListener {
                 context.drawText(this.textRenderer(), "Permissions Level: " + this.player().getPermissionLevel(), x, y, color, shadow);
             }
         }
-
     }
 
 }
