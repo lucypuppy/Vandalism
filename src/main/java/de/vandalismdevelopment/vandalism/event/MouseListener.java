@@ -19,7 +19,7 @@ public interface MouseListener {
 
     class MouseEvent extends AbstractEvent<MouseListener> {
 
-        public final static int ID = 16;
+        public final static int ID = 20;
         private final MouseEventType type;
         public int button, action, mods;
         public double horizontal, vertical;
