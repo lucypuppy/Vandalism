@@ -7,6 +7,7 @@ import imgui.ImGui;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
 
 public class ImGuiScreen extends Screen implements MinecraftWrapper {
@@ -22,6 +23,14 @@ public class ImGuiScreen extends Screen implements MinecraftWrapper {
 
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        context.drawText(mc().textRenderer,
+                Formatting.YELLOW + "Hide MenuBar by holding key " + Formatting.DARK_AQUA +
+                        Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.hideMenuBarKey.getValue().normalName()
+                        + Formatting.YELLOW + ".",
+                3, (window().getScaledHeight() - 3) - mc().textRenderer.fontHeight,
+                -1,
+                true);
+
         Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
             if (!this.hideMenuBar) {
                 if (ImGui.beginMainMenuBar()) {
