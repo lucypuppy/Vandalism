@@ -4,6 +4,7 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.FeatureList;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.gui.ingame.Element;
+import de.vandalismdevelopment.vandalism.gui.ingame.ElementAlignment;
 import net.minecraft.client.gui.DrawContext;
 
 import java.util.ArrayList;
@@ -13,10 +14,10 @@ public class ModuleListElement extends Element {
 
     private final List<String> enabledModules;
 
-    private boolean sort;
+    private boolean sort, fixPosition;
 
     public ModuleListElement() {
-        super("Test");
+        super("Module List");
         this.enabledModules = new ArrayList<>();
     }
 
@@ -44,12 +45,17 @@ public class ModuleListElement extends Element {
         }
 
         height = yShift;
+
+        if (this.fixPosition) {
+            this.fixPosition = false;
+            this.calculatePosition();
+        }
     }
 
     @Override
     public void calculateAlignment() {
         super.calculateAlignment();
-        sortEnabledModules();
+        this.sort = true;
     }
 
     private void sort() {
@@ -81,8 +87,12 @@ public class ModuleListElement extends Element {
         }
     }
 
-    public void sortEnabledModules() {
+    public void onModuleToggle() {
         this.sort = true;
+
+        if (this.alignmentY == ElementAlignment.BOTTOM) { //This fixes the position bug when toggling a module
+            this.fixPosition = true;
+        }
     }
 
 }
