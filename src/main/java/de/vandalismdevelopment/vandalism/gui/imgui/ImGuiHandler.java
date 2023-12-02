@@ -62,20 +62,15 @@ public class ImGuiHandler implements KeyboardListener, RenderListener, Minecraft
 
     @Override
     public void onRender2DOutGamePost(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        this.render(context);
+        this.render();
     }
 
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
-        this.render(context);
+        this.render();
     }
 
-    private void render(final DrawContext context) {
-        context.drawText(mc().textRenderer,
-                Formatting.YELLOW + "Hide MenuBar by holding key " + Formatting.DARK_AQUA + Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.hideMenuBarKey.getValue().normalName() + Formatting.YELLOW + ".",
-                3, (window().getScaledHeight() - 3) - mc().textRenderer.fontHeight,
-                -1,
-                true);
+    private void render() {
         this.imGuiRenderer.render();
     }
 
