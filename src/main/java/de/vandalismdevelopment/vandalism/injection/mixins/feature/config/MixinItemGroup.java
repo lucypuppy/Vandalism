@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ItemGroup.class)
-public class MixinItemGroup {
+public abstract class MixinItemGroup {
 
     @Inject(method = "shouldDisplay", at = @At("HEAD"), cancellable = true)
     private void vandalism$alwaysDisplayCreativeTab(final CallbackInfoReturnable<Boolean> cir) {
