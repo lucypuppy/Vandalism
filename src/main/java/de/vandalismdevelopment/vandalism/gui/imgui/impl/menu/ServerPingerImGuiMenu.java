@@ -18,6 +18,7 @@ import net.lenni0451.mcping.exception.ConnectionRefusedException;
 import net.lenni0451.mcping.exception.DataReadException;
 import net.lenni0451.mcping.exception.PacketReadException;
 import net.minecraft.SharedConstants;
+import net.minecraft.client.gui.DrawContext;
 
 import java.net.BindException;
 import java.net.UnknownHostException;
@@ -62,7 +63,7 @@ public class ServerPingerImGuiMenu extends ImGuiMenu {
     }
 
     @Override
-    public void render() {
+    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         this.serverInfoWidget.renderSubData();
         if (ImGui.begin(
                 "Server Pinger##serverpinger",

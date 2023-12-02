@@ -21,6 +21,7 @@
     "event.MixinKeyboardInput",
     "event.MixinLivingEntityRenderer",
     "event.MixinMinecraftClient",
+    "event.MixinMouse",
     "event.MixinScreen",
     "event.MixinTextVisitFactory",
     "feature.command.MixinChatInputSuggestor",

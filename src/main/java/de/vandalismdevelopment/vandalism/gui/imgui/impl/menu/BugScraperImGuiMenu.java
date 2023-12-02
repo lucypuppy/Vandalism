@@ -9,6 +9,7 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiMenu;
 import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
 import imgui.ImGui;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Util;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -41,7 +42,7 @@ public class BugScraperImGuiMenu extends ImGuiMenu {
     }
 
     @Override
-    public void render() {
+    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         if (ImGui.begin(
                 "Bug Scraper##bugscraper",
                 Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()

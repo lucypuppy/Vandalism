@@ -12,6 +12,7 @@ import imgui.callback.ImGuiInputTextCallback;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiTableFlags;
 import imgui.type.ImString;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.session.Session;
 import net.minecraft.util.Util;
 import net.minecraft.util.Uuids;
@@ -77,7 +78,7 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
     }
 
     @Override
-    public void render() {
+    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         if (ImGui.begin("Account Manager##accountmanager", Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags())) {
             final Session session = this.mc().session;
             ImGui.text("Current Account");

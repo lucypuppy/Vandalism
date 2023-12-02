@@ -16,6 +16,7 @@ import imgui.extension.nodeditor.NodeEditorContext;
 import imgui.extension.nodeditor.flag.NodeEditorPinKind;
 import imgui.flag.ImGuiCond;
 import imgui.type.ImLong;
+import net.minecraft.client.gui.DrawContext;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,7 +39,7 @@ public class MacrosImGuiMenu extends ImGuiMenu {
     }
 
     @Override
-    public void render() {
+    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         if (ImGui.begin(
                 "Macros##macros",
                 Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()

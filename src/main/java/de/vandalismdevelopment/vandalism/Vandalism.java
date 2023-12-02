@@ -6,6 +6,7 @@ import de.vandalismdevelopment.vandalism.feature.impl.command.CommandRegistry;
 import de.vandalismdevelopment.vandalism.feature.impl.module.ModuleRegistry;
 import de.vandalismdevelopment.vandalism.feature.impl.script.ScriptRegistry;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiHandler;
+import de.vandalismdevelopment.vandalism.gui.ingame.CustomHUDSystem;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.rotation.RotationListener;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
@@ -16,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.Optional;
 
 public class Vandalism {
 
@@ -31,6 +33,8 @@ public class Vandalism {
     private CommandRegistry commandRegistry;
     private ConfigManager configManager;
     private RotationListener rotationListener;
+    private CustomHUDSystem customHUDSystem;
+
     private Identifier logo;
 
     public Vandalism() {
@@ -77,6 +81,7 @@ public class Vandalism {
         this.rotationListener = new RotationListener();
         this.moduleRegistry = new ModuleRegistry();
         this.commandRegistry = new CommandRegistry();
+        this.customHUDSystem = new CustomHUDSystem();
         this.configManager.load();
         this.logo = new Identifier(this.id, "textures/logo.png");
         Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
@@ -137,6 +142,10 @@ public class Vandalism {
 
     public RotationListener getRotationListener() {
         return this.rotationListener;
+    }
+
+    public CustomHUDSystem getCustomHUDSystem() {
+        return this.customHUDSystem;
     }
 
     public Identifier getLogo() {

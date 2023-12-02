@@ -13,6 +13,7 @@ import net.minecraft.client.gui.screen.LevelLoadingScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
@@ -61,15 +62,20 @@ public class ImGuiHandler implements KeyboardListener, RenderListener, Minecraft
 
     @Override
     public void onRender2DOutGamePost(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        this.render();
+        this.render(context);
     }
 
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
-        this.render();
+        this.render(context);
     }
 
-    private void render() {
+    private void render(final DrawContext context) {
+        context.drawText(mc().textRenderer,
+                Formatting.YELLOW + "Hide MenuBar by holding key " + Formatting.DARK_AQUA + Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.hideMenuBarKey.getValue().normalName() + Formatting.YELLOW + ".",
+                3, (window().getScaledHeight() - 3) - mc().textRenderer.fontHeight,
+                -1,
+                true);
         this.imGuiRenderer.render();
     }
 
