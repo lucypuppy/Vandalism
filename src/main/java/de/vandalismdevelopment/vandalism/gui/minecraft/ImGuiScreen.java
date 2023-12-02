@@ -23,13 +23,15 @@ public class ImGuiScreen extends Screen implements MinecraftWrapper {
 
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        context.drawText(mc().textRenderer,
-                Formatting.YELLOW + "Hide MenuBar by holding key " + Formatting.DARK_AQUA +
-                        Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.hideMenuBarKey.getValue().normalName()
-                        + Formatting.YELLOW + ".",
-                3, (window().getScaledHeight() - 3) - mc().textRenderer.fontHeight,
+        context.drawText(
+                textRenderer,
+                Formatting.YELLOW + "Hide MenuBar by holding key " + Formatting.DARK_AQUA + Vandalism.getInstance().
+                        getConfigManager().getMainConfig().menuCategory.hideMenuBarKey.getValue().normalName() + Formatting.YELLOW + ".",
+                3,
+                (this.window().getScaledHeight() - 3) - textRenderer.fontHeight,
                 -1,
-                true);
+                true
+        );
 
         Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
             if (!this.hideMenuBar) {
