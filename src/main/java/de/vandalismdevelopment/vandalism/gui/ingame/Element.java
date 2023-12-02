@@ -18,33 +18,46 @@ public abstract class Element implements IName, IValue, MinecraftWrapper {
     public double absoluteX, absoluteY;
     public boolean dragged;
     private final List<Value<?>> values;
+    public ElementAlignment alignmentX, alignmentY;
 
     protected Element(final String name) {
         this.name = name;
         this.values = new ArrayList<>();
+        this.alignmentX = ElementAlignment.LEFT;
+        this.alignmentY = ElementAlignment.TOP;
     }
 
     public abstract void render(final DrawContext context, final float delta);
 
-    public void calculatePosition() {
+    public void calculateAlignment() {
         if (absoluteX > 0.66) {
-            final float width = this.window().getScaledWidth() - this.width; //Right
-            x = (int) (absoluteX * width);
+            alignmentX = ElementAlignment.RIGHT;
         } else if (absoluteX > 0.33) {
-            final float width = this.window().getScaledWidth() - this.width / 2.0f; //Middle
-            x = (int) (absoluteX * width);
+            alignmentX = ElementAlignment.MIDDLE;
         } else {
-            x = (int) (absoluteX * this.window().getScaledWidth()); //Left
+            alignmentX = ElementAlignment.LEFT;
         }
 
         if (absoluteY > 0.66) {
-            final float height = this.window().getScaledHeight() - this.height; //Right
-            y = (int) (absoluteY * height);
+            alignmentY = ElementAlignment.BOTTOM;
         } else if (absoluteY > 0.33) {
-            final float height = this.window().getScaledHeight() - this.height / 2.0f; //Middle
-            y = (int) (absoluteY * height);
+            alignmentY = ElementAlignment.MIDDLE;
         } else {
-            y = (int) (absoluteY * this.window().getScaledHeight()); //Left
+            alignmentY = ElementAlignment.TOP;
+        }
+    }
+
+    public void calculatePosition() {
+        switch (alignmentX) {
+            default -> x = (int) (absoluteX * this.window().getScaledWidth()); //Left
+            case MIDDLE -> x = (int) (absoluteX * (this.window().getScaledWidth() - this.width / 2.0f)); //Middle
+            case RIGHT -> x = (int) (absoluteX * (this.window().getScaledWidth() - this.width)); //Right
+        }
+
+        switch (alignmentY) {
+            default -> y = (int) (absoluteY * this.window().getScaledHeight()); //Up
+            case MIDDLE -> y = (int) (absoluteY * (this.window().getScaledHeight() - this.height / 2.0f)); //Middle
+            case BOTTOM -> y = (int) (absoluteY * (this.window().getScaledHeight() - this.height)); //Down
         }
     }
 

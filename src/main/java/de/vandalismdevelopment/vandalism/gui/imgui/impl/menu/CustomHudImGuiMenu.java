@@ -78,6 +78,7 @@ public class CustomHudImGuiMenu extends ImGuiMenu {
                         element.absoluteY = absoluteY;
                         element.x = x;
                         element.y = y;
+                        element.calculateAlignment();
                         // Vandalism.getInstance().getConfigManager().save(element.getConfig());
                     }
                 }
