@@ -3,12 +3,11 @@ package de.vandalismdevelopment.vandalism.gui.ingame;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.event.ScreenListener;
-import de.vandalismdevelopment.vandalism.gui.ingame.elements.TestElement;
+import de.vandalismdevelopment.vandalism.gui.ingame.elements.ModuleListElement;
 import de.vandalismdevelopment.vandalism.gui.ingame.elements.TestElement2;
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +16,8 @@ public class CustomHUDSystem implements RenderListener, ScreenListener, Minecraf
     private final List<Element> elements;
     private final List<Element> addedElements;
 
+    private final ModuleListElement moduleListElement;
+
     public CustomHUDSystem() {
         DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
         DietrichEvents2.global().subscribe(ScreenEvent.ID, this);
@@ -24,7 +25,7 @@ public class CustomHUDSystem implements RenderListener, ScreenListener, Minecraf
         this.elements = new ArrayList<>();
         this.addedElements = new ArrayList<>();
 
-        this.elements.add(new TestElement());
+        this.elements.add(this.moduleListElement = new ModuleListElement());
         this.elements.add(new TestElement2());
     }
 
@@ -43,11 +44,15 @@ public class CustomHUDSystem implements RenderListener, ScreenListener, Minecraf
     }
 
     public List<Element> getAddedElements() {
-        return addedElements;
+        return this.addedElements;
     }
 
     public List<Element> getElements() {
-        return elements;
+        return this.elements;
+    }
+
+    public ModuleListElement getModuleListElement() {
+        return this.moduleListElement;
     }
 
 }

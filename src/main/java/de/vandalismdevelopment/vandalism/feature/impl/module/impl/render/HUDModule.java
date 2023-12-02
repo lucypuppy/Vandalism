@@ -27,10 +27,6 @@ public class HUDModule extends Module implements RenderListener {
     private final Value<Boolean> inventoryScreenBringToFront = new BooleanValue("Inventory Screen bring to front", "Renders the hud over inventory screens.", this, false);
     private final Value<Boolean> gameMenuScreenBringToFront = new BooleanValue("Game Menu Screen bring to front", "Renders the hud over the game menu screen.", this, false);
 
-    private final Value<Boolean> enabledModulesList = new BooleanValue("Enabled Modules List", "Displays all enabled modules.", this, true);
-
-    private final Value<String> enabledModulesListSortDirection = new ListValue("Enabled Modules List Sort Direction", "Change the direction which the enabled modules are sorted to.", this, "Up", "Down").visibleConsumer(this.enabledModulesList::getValue).valueChangeConsumer((newValue) -> this.sortEnabledModules());
-
     private final Value<Boolean> watermark = new BooleanValue("Watermark", "Shows the watermark.", this, true);
 
     private final Value<Boolean> infos = new BooleanValue("Infos", "Shows general infos.", this, true);
@@ -48,14 +44,8 @@ public class HUDModule extends Module implements RenderListener {
     private final Value<Boolean> difficulty = new BooleanValue("Difficulty", "Shows the current world difficulty.", this.infoElements, true).visibleConsumer(this.infos::getValue);
     private final Value<Boolean> permissionsLevel = new BooleanValue("Permissions Level", "Shows the current permissions level.", this.infoElements, true).visibleConsumer(this.infos::getValue);
 
-    private final List<String> enabledModules;
-
-    private boolean sort;
-
     public HUDModule() {
         super("HUD", "Shows various infos from the game and the mod in game.", FeatureCategory.RENDER, false, false);
-        this.enabledModules = new ArrayList<>();
-        this.sort = false;
     }
 
     @Override
@@ -86,34 +76,9 @@ public class HUDModule extends Module implements RenderListener {
         }
     }
 
-    public void sortEnabledModules() {
-        this.sort = true;
-    }
-
     private void render(final DrawContext context) {
         if (this.player() == null || this.world() == null) {
             return;
-        }
-        if (this.sort) {
-            this.sort = false;
-            this.enabledModules.clear();
-            final FeatureList<Module> modules = Vandalism.getInstance().getModuleRegistry().getModules();
-            for (final Module module : modules) {
-                if (module.isEnabled() && module.isShowInModuleList()) {
-                    this.enabledModules.add(module.getName());
-                }
-            }
-            this.enabledModules.sort((s1, s2) -> {
-                final int compare;
-                switch (this.enabledModulesListSortDirection.getValue()) {
-                    case "Up" ->
-                            compare = Float.compare(this.textRenderer().getWidth(s2), this.textRenderer().getWidth(s1));
-                    case "Down" ->
-                            compare = Float.compare(this.textRenderer().getWidth(s1), this.textRenderer().getWidth(s2));
-                    default -> compare = 0;
-                }
-                return compare;
-            });
         }
         int color = -1, x = 0, y = 2;
         boolean shadow = false;
@@ -124,11 +89,6 @@ public class HUDModule extends Module implements RenderListener {
             context.drawTexture(Vandalism.getInstance().getLogo(), x, y, 0, 0, width, height, width, height);
             GLStateTracker.BLEND.revert();
             y += height;
-        }
-        x += 5;
-        for (final String enabledModule : this.enabledModules) {
-            context.drawText(this.textRenderer(), enabledModule, x, y, color, shadow);
-            y += this.textRenderer().fontHeight;
         }
         if (this.infos.getValue()) {
             y += 10;

@@ -6,6 +6,7 @@ import de.vandalismdevelopment.vandalism.feature.Feature;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.FeatureType;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.render.HUDModule;
+import de.vandalismdevelopment.vandalism.gui.ingame.elements.ModuleListElement;
 import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import de.vandalismdevelopment.vandalism.value.IValue;
@@ -83,13 +84,7 @@ public abstract class Module extends Feature implements IValue {
     }
 
     private void syncHUD() {
-        final ModuleRegistry moduleRegistry = Vandalism.getInstance().getModuleRegistry();
-        if (moduleRegistry != null && moduleRegistry.isDone()) {
-            final HUDModule HUDModule = moduleRegistry.getHudModule();
-            if (HUDModule != null) {
-                HUDModule.sortEnabledModules();
-            }
-        }
+        Vandalism.getInstance().getCustomHUDSystem().getModuleListElement().sortEnabledModules();
     }
 
     private void recursiveSetState(final boolean state, final List<Value<?>> values) {
