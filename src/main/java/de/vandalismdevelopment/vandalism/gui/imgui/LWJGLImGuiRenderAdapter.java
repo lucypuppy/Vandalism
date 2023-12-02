@@ -24,7 +24,7 @@ public class LWJGLImGuiRenderAdapter implements MinecraftWrapper {
     }
 
     private Framebuffer checkFramebuffer(final Framebuffer framebuffer, final boolean useDepth, final boolean getError) {
-        final Window window = this.mc().getWindow();
+        final Window window = this.window();
         final int displayWidth = window.getWidth(), displayHeight = window.getHeight();
         return checkFramebuffer(framebuffer, displayWidth, displayHeight, useDepth, getError);
     }

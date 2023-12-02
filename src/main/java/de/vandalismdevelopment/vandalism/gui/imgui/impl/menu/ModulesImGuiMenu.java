@@ -12,6 +12,7 @@ import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
+import net.minecraft.client.gui.DrawContext;
 import net.raphimc.vialoader.util.VersionRange;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class ModulesImGuiMenu extends ImGuiMenu {
     }
 
     @Override
-    public void render() {
+    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         final FeatureList<Module> modules = Vandalism.getInstance().getModuleRegistry().getModules();
         if (!modules.isEmpty()) {
             final float width = 185, minHeight = 140, maxHeight = 415;

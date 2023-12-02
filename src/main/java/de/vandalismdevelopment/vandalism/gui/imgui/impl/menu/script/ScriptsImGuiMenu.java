@@ -13,6 +13,7 @@ import imgui.flag.ImGuiTabBarFlags;
 import imgui.flag.ImGuiTableFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Util;
 
 import java.io.File;
@@ -39,7 +40,7 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
     }
 
     @Override
-    public void render() {
+    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         final FeatureList<Script> scripts = Vandalism.getInstance().getScriptRegistry().getScripts();
         for (final Map.Entry<File, ScriptEditor> entry : this.scriptEditors.entrySet()) {
             if (entry.getValue().isClosed()) this.scriptEditors.remove(entry.getKey());

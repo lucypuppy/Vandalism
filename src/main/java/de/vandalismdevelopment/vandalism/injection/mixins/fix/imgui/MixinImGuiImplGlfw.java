@@ -29,7 +29,7 @@ public abstract class MixinImGuiImplGlfw implements IImGuiImplGlfw, MinecraftWra
 
     @Override
     public void vandalism$forceUpdateMouseCursor() {
-        final long handle = this.mc().getWindow().getHandle();
+        final long handle = this.window().getHandle();
         GLFW.glfwSetCursor(handle, this.mouseCursors[ImGuiMouseCursor.Arrow]);
         GLFW.glfwSetInputMode(handle, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
     }

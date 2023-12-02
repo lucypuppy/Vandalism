@@ -1,6 +1,7 @@
 package de.vandalismdevelopment.vandalism.gui.imgui;
 
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import net.minecraft.client.gui.DrawContext;
 
 public abstract class ImGuiMenu implements MinecraftWrapper {
 
@@ -38,7 +39,11 @@ public abstract class ImGuiMenu implements MinecraftWrapper {
     protected void close() {
     }
 
-    public abstract void render();
+    public abstract void render(final DrawContext context, final int mouseX, final int mouseY, final float delta);
+
+    public void onMouseButton(final double mouseX, final double mouseY, final int button, final boolean release) {
+
+    }
 
     @Override
     public String toString() {

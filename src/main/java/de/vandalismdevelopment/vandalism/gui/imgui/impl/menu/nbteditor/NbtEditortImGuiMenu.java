@@ -6,6 +6,7 @@ import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.ui.types.Window;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
 
@@ -25,7 +26,7 @@ public class NbtEditortImGuiMenu extends ImGuiMenu {
     }
 
     @Override
-    public void render() {
+    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         final Window nbtRendererWindow = this.nbtManager.getWindow();
         if (nbtRendererWindow != null) {
             if (ImGui.begin(

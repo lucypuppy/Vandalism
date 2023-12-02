@@ -13,6 +13,7 @@ import imgui.callback.ImGuiInputTextCallback;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiTableFlags;
 import imgui.type.ImString;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.util.Uuids;
 
@@ -82,7 +83,7 @@ public class NameHistoryImGuiMenu extends ImGuiMenu {
     }
 
     @Override
-    public void render() {
+    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         if (ImGui.begin(
                 "Name History##namehistory",
                 Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()

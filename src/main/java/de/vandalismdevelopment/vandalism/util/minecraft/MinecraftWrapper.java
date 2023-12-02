@@ -9,9 +9,11 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.time.LocalDate;
 import java.time.Month;
 
@@ -89,6 +91,13 @@ public interface MinecraftWrapper {
             return null;
         }
         return this.mc().mouse;
+    }
+
+    default Window window() {
+        if (this.mc() == null) {
+            return null;
+        }
+        return this.mc().getWindow();
     }
 
     default boolean isTrollTime() {

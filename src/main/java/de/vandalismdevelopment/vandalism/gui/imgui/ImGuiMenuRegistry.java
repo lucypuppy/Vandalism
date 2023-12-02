@@ -23,6 +23,7 @@ public class ImGuiMenuRegistry {
                 new ModulesImGuiMenu(),
                 //TODO: Finish this -> new MacrosImGuiMenu(),
                 new ScriptsImGuiMenu(),
+                new CustomHudImGuiMenu(),
                 new AccountManagerImGuiMenu(),
                 new ServerPingerImGuiMenu(),
                 new PortScannerImGuiMenu(),

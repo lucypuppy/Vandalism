@@ -22,8 +22,8 @@ public abstract class MixinMinecraftClient {
 
     @Inject(method = "setScreen", at = @At(value = "HEAD"), cancellable = true)
     private void vandalism$callOpenScreenEvent(Screen screen, final CallbackInfo ci) {
-        final ScreenListener.OpenScreenEvent openScreenEvent = new ScreenListener.OpenScreenEvent(screen);
-        DietrichEvents2.global().postInternal(ScreenListener.OpenScreenEvent.ID, openScreenEvent);
+        final ScreenListener.ScreenEvent openScreenEvent = new ScreenListener.ScreenEvent(screen);
+        DietrichEvents2.global().postInternal(ScreenListener.ScreenEvent.ID, openScreenEvent);
         if (openScreenEvent.isCancelled()) ci.cancel();
         else screen = openScreenEvent.screen;
     }
@@ -36,6 +36,11 @@ public abstract class MixinMinecraftClient {
     @Inject(method = "setWorld", at = @At("RETURN"))
     private void vandalism$callPostWorldLoadEvent(final ClientWorld world, final CallbackInfo ci) {
         DietrichEvents2.global().postInternal(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent(WorldListener.State.POST));
+    }
+
+    @Inject(method = "onResolutionChanged", at = @At("RETURN"))
+    public void vandalism$callScreenEvent(final CallbackInfo ci) {
+        DietrichEvents2.global().postInternal(ScreenListener.ScreenEvent.ID, new ScreenListener.ScreenEvent());
     }
 
 }

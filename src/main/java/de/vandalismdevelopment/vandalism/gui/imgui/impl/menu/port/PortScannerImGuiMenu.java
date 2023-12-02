@@ -10,6 +10,7 @@ import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiTableFlags;
 import imgui.type.ImInt;
 import imgui.type.ImString;
+import net.minecraft.client.gui.DrawContext;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -68,7 +69,7 @@ public class PortScannerImGuiMenu extends ImGuiMenu {
     }
 
     @Override
-    public void render() {
+    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         for (final PortResult portResult : this.ports.values()) {
             portResult.renderSubData();
         }

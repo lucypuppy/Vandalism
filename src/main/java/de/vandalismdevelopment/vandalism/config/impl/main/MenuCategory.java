@@ -21,6 +21,13 @@ public class MenuCategory extends ValueCategory {
             GlfwKeyName.RIGHT_SHIFT
     );
 
+    public final Value<GlfwKeyName> hideMenuBarKey = new KeyInputValue(
+            "Hide Menu Bar Key",
+            "Hide the menu bar.",
+            this,
+            GlfwKeyName.M
+    );
+
     public final Value<Boolean> moduleStateLogging = new BooleanValue(
             "Module State Logging",
             "Enables/Disables the logging for the module state.",
