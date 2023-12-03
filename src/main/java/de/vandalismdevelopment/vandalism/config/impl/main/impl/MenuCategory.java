@@ -1,6 +1,6 @@
-package de.vandalismdevelopment.vandalism.config.impl.main;
+package de.vandalismdevelopment.vandalism.config.impl.main.impl;
 
-import de.vandalismdevelopment.vandalism.config.impl.MainConfig;
+import de.vandalismdevelopment.vandalism.config.impl.main.MainConfig;
 import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
@@ -19,13 +19,6 @@ public class MenuCategory extends ValueCategory {
             "Change the key to open the Menu.",
             this,
             GlfwKeyName.RIGHT_SHIFT
-    );
-
-    public final Value<GlfwKeyName> hideMenuBarKey = new KeyInputValue(
-            "Hide Menu Bar Key",
-            "Hide the menu bar.",
-            this,
-            GlfwKeyName.M
     );
 
     public final Value<Boolean> moduleStateLogging = new BooleanValue(

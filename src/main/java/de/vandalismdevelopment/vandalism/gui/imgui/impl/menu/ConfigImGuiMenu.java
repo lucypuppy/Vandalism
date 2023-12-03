@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.config.impl.MainConfig;
+import de.vandalismdevelopment.vandalism.config.impl.main.MainConfig;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiMenu;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;

@@ -42,7 +42,9 @@ public abstract class ImGuiMenu implements MinecraftWrapper {
     public abstract void render(final DrawContext context, final int mouseX, final int mouseY, final float delta);
 
     public void onMouseButton(final double mouseX, final double mouseY, final int button, final boolean release) {
+    }
 
+    public void onKey(final int key, final int scanCode, final int action, final int modifiers) {
     }
 
     @Override

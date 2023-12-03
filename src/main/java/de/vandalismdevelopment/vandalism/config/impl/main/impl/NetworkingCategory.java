@@ -1,11 +1,11 @@
-package de.vandalismdevelopment.vandalism.config.impl.main;
+package de.vandalismdevelopment.vandalism.config.impl.main.impl;
 
 import com.github.kwhat.jnativehook.GlobalScreen;
 import com.github.kwhat.jnativehook.NativeHookException;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.config.impl.MainConfig;
+import de.vandalismdevelopment.vandalism.config.impl.main.MainConfig;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
 import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;

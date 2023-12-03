@@ -22,30 +22,43 @@ public class ModuleListElement extends Element {
     }
 
     @Override
-    public void render(DrawContext context, float delta) {
-        sort();
-
-        int yShift = 0;
+    public void render(final DrawContext context, final float delta) {
+        this.sort();
+        int yOffset = 0;
+        final boolean shadow = false;
         for (final String enabledModule : this.enabledModules) {
             final int textWidth = this.textRenderer().getWidth(enabledModule);
             switch (this.alignmentX) {
-                case MIDDLE -> {
-                    context.drawText(this.textRenderer(), enabledModule, (x + width / 2) - (textWidth / 2), y + yShift, -1, true);
-                }
-                case RIGHT -> {
-                    context.drawText(this.textRenderer(), enabledModule, (x + width) - textWidth, y + yShift, -1, true);
-                }
-                default -> {
-                    context.drawText(this.textRenderer(), enabledModule, x, y + yShift, -1, true);
-                }
+                case MIDDLE -> context.drawText(
+                        this.textRenderer(),
+                        enabledModule,
+                        (this.x + this.width / 2) - (textWidth / 2),
+                        this.y + yOffset,
+                        -1,
+                        shadow
+                );
+                case RIGHT -> context.drawText(
+                        this.textRenderer(),
+                        enabledModule,
+                        (this.x + this.width) - textWidth,
+                        this.y + yOffset,
+                        -1,
+                        shadow
+                );
+                default -> context.drawText(
+                        this.textRenderer(),
+                        enabledModule,
+                        this.x,
+                        this.y + yOffset,
+                        -1,
+                        shadow
+                );
             }
 
-            width = Math.max(width, textWidth);
-            yShift += this.textRenderer().fontHeight;
+            this.width = Math.max(this.width, textWidth);
+            yOffset += this.textRenderer().fontHeight;
         }
-
-        height = yShift;
-
+        this.height = yOffset;
         if (this.fixPosition) {
             this.fixPosition = false;
             this.calculatePosition();
@@ -62,18 +75,14 @@ public class ModuleListElement extends Element {
         if (this.sort) {
             this.sort = false;
             this.enabledModules.clear();
-
             final FeatureList<Module> modules = Vandalism.getInstance().getModuleRegistry().getModules();
-
             for (final Module module : modules) {
                 if (module.isEnabled() && module.isShowInModuleList()) {
                     this.enabledModules.add(module.getName());
                 }
             }
-
             this.enabledModules.sort((s1, s2) -> {
                 final int compare;
-
                 switch (this.alignmentY) {
                     case TOP ->
                             compare = Integer.compare(this.textRenderer().getWidth(s2), this.textRenderer().getWidth(s1));
@@ -81,7 +90,6 @@ public class ModuleListElement extends Element {
                             compare = Integer.compare(this.textRenderer().getWidth(s1), this.textRenderer().getWidth(s2));
                     default -> compare = 0;
                 }
-
                 return compare;
             });
         }
@@ -89,8 +97,7 @@ public class ModuleListElement extends Element {
 
     public void onModuleToggle() {
         this.sort = true;
-
-        if (this.alignmentY == ElementAlignment.BOTTOM) { //This fixes the position bug when toggling a module
+        if (this.alignmentY == ElementAlignment.BOTTOM) {
             this.fixPosition = true;
         }
     }

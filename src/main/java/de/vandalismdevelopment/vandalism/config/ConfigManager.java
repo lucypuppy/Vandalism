@@ -4,10 +4,11 @@ import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.config.impl.MainConfig;
+import de.vandalismdevelopment.vandalism.config.impl.CustomHUDConfig;
 import de.vandalismdevelopment.vandalism.config.impl.ModulesConfig;
 import de.vandalismdevelopment.vandalism.config.impl.ScriptConfig;
 import de.vandalismdevelopment.vandalism.config.impl.account.AccountConfig;
+import de.vandalismdevelopment.vandalism.config.impl.main.MainConfig;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -17,28 +18,31 @@ public class ConfigManager {
 
     private final Gson gson;
     private final List<Config> configs;
-    private final MainConfig mainConfig;
 
+    private final MainConfig mainConfig;
     public MainConfig getMainConfig() {
         return this.mainConfig;
     }
 
     private final ModulesConfig modulesConfig;
-
     public ModulesConfig getModulesConfig() {
         return this.modulesConfig;
     }
 
     private final AccountConfig accountConfig;
-
     public AccountConfig getAccountConfig() {
         return this.accountConfig;
     }
 
     private final ScriptConfig scriptConfig;
-
     public ScriptConfig getScriptConfig() {
         return this.scriptConfig;
+    }
+
+    private final CustomHUDConfig customHUDConfig;
+
+    public CustomHUDConfig getCustomHUDConfig() {
+        return this.customHUDConfig;
     }
 
     public ConfigManager(final File dir) {
@@ -48,7 +52,8 @@ public class ConfigManager {
                 this.mainConfig = new MainConfig(dir),
                 this.modulesConfig = new ModulesConfig(dir),
                 this.accountConfig = new AccountConfig(dir),
-                this.scriptConfig = new ScriptConfig(dir)
+                this.scriptConfig = new ScriptConfig(dir),
+                this.customHUDConfig = new CustomHUDConfig(dir)
         );
     }
 

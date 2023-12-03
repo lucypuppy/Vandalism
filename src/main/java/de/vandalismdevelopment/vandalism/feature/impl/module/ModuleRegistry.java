@@ -37,7 +37,6 @@ public class ModuleRegistry implements MinecraftWrapper, KeyboardListener {
     private FastUseModule fastUseModule;
     private FlightModule flightModule;
     private GodModeModule godModeModule;
-    private HUDModule hudModule;
     private IllegalBlockPlaceModule illegalBlockPlaceModule;
     private InteractionSpammerModule interactionSpammerModule;
     private ItemStackLoggerModule itemStackLoggerModule;
@@ -61,39 +60,27 @@ public class ModuleRegistry implements MinecraftWrapper, KeyboardListener {
     public BetterTabListModule getBetterTabListModule() {
         return this.betterTabListModule;
     }
-
     public ESPModule getEspModule() {
         return this.espModule;
     }
-
     public ExploitFixerModule getExploitFixerModule() {
         return this.exploitFixerModule;
     }
-
     public FastUseModule getFastUseModule() {
         return this.fastUseModule;
     }
-
-    public HUDModule getHudModule() {
-        return this.hudModule;
-    }
-
     public IllegalBlockPlaceModule getIllegalBlockPlaceModule() {
         return this.illegalBlockPlaceModule;
     }
-
     public MessageEncryptorModule getMessageEncryptorModule() {
         return this.messageEncryptorModule;
     }
-
     public ModPacketBlockerModule getModPacketBlockerModule() {
         return this.modPacketBlockerModule;
     }
-
     public TrueSightModule getTrueSightModule() {
         return this.trueSightModule;
     }
-
     public VisualThrottleModule getVisualThrottleModule() {
         return this.visualThrottleModule;
     }
@@ -132,7 +119,6 @@ public class ModuleRegistry implements MinecraftWrapper, KeyboardListener {
                 this.fastUseModule = new FastUseModule(),
                 this.flightModule = new FlightModule(),
                 this.godModeModule = new GodModeModule(),
-                this.hudModule = new HUDModule(),
                 this.illegalBlockPlaceModule = new IllegalBlockPlaceModule(),
                 this.interactionSpammerModule = new InteractionSpammerModule(),
                 this.itemStackLoggerModule = new ItemStackLoggerModule(),
