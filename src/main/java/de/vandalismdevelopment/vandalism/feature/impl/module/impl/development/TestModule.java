@@ -128,11 +128,6 @@ public class TestModule extends Module implements TickListener, RenderListener, 
 
         event.movementSideways = Math.round(newX);
         event.movementForward = Math.round(newZ);
-
-        if (event.slowDown) {
-            event.movementSideways *= 0.3F;
-            event.movementForward *= 0.3F;
-        }
     }
 
     @Override

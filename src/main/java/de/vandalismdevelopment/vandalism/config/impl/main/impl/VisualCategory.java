@@ -1,6 +1,6 @@
-package de.vandalismdevelopment.vandalism.config.impl.main;
+package de.vandalismdevelopment.vandalism.config.impl.main.impl;
 
-import de.vandalismdevelopment.vandalism.config.impl.MainConfig;
+import de.vandalismdevelopment.vandalism.config.impl.main.MainConfig;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
 import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;

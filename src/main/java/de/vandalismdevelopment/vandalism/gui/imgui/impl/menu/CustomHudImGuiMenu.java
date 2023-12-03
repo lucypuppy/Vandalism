@@ -13,12 +13,13 @@ import java.awt.*;
 
 public class CustomHudImGuiMenu extends ImGuiMenu {
 
-    private boolean mouseDown = false;
+    private boolean mouseDown;
     private double lastMouseX;
     private double lastMouseY;
 
     public CustomHudImGuiMenu() {
         super("Custom HUD");
+        this.mouseDown = false;
     }
 
     @Override
@@ -26,24 +27,28 @@ public class CustomHudImGuiMenu extends ImGuiMenu {
         final CustomHUDSystem customHUDSystem = Vandalism.getInstance().getCustomHUDSystem();
         final double deltaX = mouseX - this.lastMouseX;
         final double deltaY = mouseY - this.lastMouseY;
-
-        if (ImGui.begin("Custom HUD")) {
-            for (final Element element : customHUDSystem.getElements()) {
-                final boolean active = customHUDSystem.getAddedElements().contains(element);
-
-                if (ImGui.checkbox(element.getName(), active)) {
-                    if (active) {
-                        customHUDSystem.getAddedElements().remove(element);
-                    } else {
-                        customHUDSystem.getAddedElements().add(element);
+        if (ImGui.begin("Custom HUD##customhud")) {
+            if (ImGui.button("Close Custom HUD Config##closecustomhud")) {
+                this.toggle();
+            }
+            if (ImGui.beginTabBar("customhudtabbar")) {
+                for (final Element element : customHUDSystem.getElements()) {
+                    final boolean active = customHUDSystem.getAddedElements().contains(element);
+                    if (ImGui.beginTabItem(element.getName() + "##customhudelemt")) {
+                        if (ImGui.button((active ? "Remove" : "Add") + "##customhudaddremove")) {
+                            if (active) {
+                                customHUDSystem.getAddedElements().remove(element);
+                            } else {
+                                customHUDSystem.getAddedElements().add(element);
+                            }
+                        }
+                        ImGui.endTabItem();
                     }
-
-                    //Vandalism.getInstance().getConfigManager().save(element.getConfig());
                 }
+                ImGui.endTabBar();
             }
         }
         ImGui.end();
-
         for (final Element element : customHUDSystem.getAddedElements()) {
             final boolean mouseOver = MouseUtils.isHovered(mouseX,
                     mouseY,
@@ -52,12 +57,10 @@ public class CustomHudImGuiMenu extends ImGuiMenu {
                     element.width + 4,
                     element.height + 3
             );
-
-            if (mouseDown) {
+            if (this.mouseDown) {
                 if (mouseOver) {
                     element.dragged = true;
                 }
-
                 if (element.dragged) {
                     final Window window = this.window();
                     final double
@@ -70,7 +73,6 @@ public class CustomHudImGuiMenu extends ImGuiMenu {
                     final int
                             x = (int) (absoluteX * remainingWidth),
                             y = (int) (absoluteY * remainingHeight);
-
                     if (x + element.width < scaledWindowWidth
                             && y + element.height < scaledWindowHeight
                             && x > 0 && y > 0) {
@@ -79,21 +81,24 @@ public class CustomHudImGuiMenu extends ImGuiMenu {
                         element.x = x;
                         element.y = y;
                         element.calculateAlignment();
-                        // Vandalism.getInstance().getConfigManager().save(element.getConfig());
                     }
                 }
             } else {
                 element.dragged = false;
             }
-
-            context.drawBorder(element.x - 2,
+            final boolean hoveredOrDragged = mouseOver || element.dragged;
+            context.drawBorder(
+                    element.x - 2,
                     element.y - 2,
                     element.width + 4,
                     element.height + 3,
-                    (mouseOver || element.dragged) ? Color.RED.getRGB() : Color.WHITE.getRGB());
+                    hoveredOrDragged ? Color.RED.getRGB() : Color.WHITE.getRGB()
+            );
             element.render(context, delta);
-        }
+            if (hoveredOrDragged) {
 
+            }
+        }
         this.lastMouseX = mouseX;
         this.lastMouseY = mouseY;
     }
@@ -101,7 +106,7 @@ public class CustomHudImGuiMenu extends ImGuiMenu {
     @Override
     public void onMouseButton(double mouseX, double mouseY, int button, boolean release) {
         if (button == 0) {
-            mouseDown = !release;
+            this.mouseDown = !release;
         }
     }
 

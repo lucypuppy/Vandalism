@@ -5,8 +5,6 @@ import de.vandalismdevelopment.vandalism.config.Config;
 import de.vandalismdevelopment.vandalism.feature.Feature;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.FeatureType;
-import de.vandalismdevelopment.vandalism.feature.impl.module.impl.render.HUDModule;
-import de.vandalismdevelopment.vandalism.gui.ingame.elements.ModuleListElement;
 import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import de.vandalismdevelopment.vandalism.value.IValue;
@@ -42,8 +40,18 @@ public abstract class Module extends Feature implements IValue {
         this.setExperimental(isExperimental);
         this.setSupportedVersions(supportedVersions);
         this.values = new ArrayList<>();
-        this.favorite = new BooleanValue("Favorite", "Whether this module is a favorite.", this, false);
-        this.enabled = new BooleanValue("Enabled", "Whether this module is enabled.", this, isDefaultEnabled).valueChangedConsumer(state -> {
+        this.favorite = new BooleanValue(
+                "Favorite",
+                "Whether this module is a favorite.",
+                this,
+                false
+        );
+        this.enabled = new BooleanValue(
+                "Enabled",
+                "Whether this module is enabled.",
+                this,
+                isDefaultEnabled
+        ).valueChangedConsumer(state -> {
             if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.moduleStateLogging.getValue()) {
                 if (this.player() != null) {
                     ChatUtil.infoChatMessage(this.getName() + " has been " + (state ? "enabled" : "disabled") + ".");
@@ -54,7 +62,12 @@ public abstract class Module extends Feature implements IValue {
             else this.onDisable();
             this.recursiveSetState(state, this.values);
         });
-        this.showInModuleList = new BooleanValue("Show in Module List", "Whether this module should be shown in the module list.", this, !(this instanceof HUDModule)).valueChangedConsumer(state -> this.syncHUD());
+        this.showInModuleList = new BooleanValue(
+                "Show in Module List",
+                "Whether this module should be shown in the module list.",
+                this,
+                true
+        ).valueChangedConsumer(state -> this.syncHUD());
         this.keyBind = new KeyInputValue("Key Bind", "The key bind of this module.", this, keyBind);
         this.setState(isDefaultEnabled);
     }

@@ -14,10 +14,10 @@ import java.util.List;
 public abstract class Element implements IName, IValue, MinecraftWrapper {
 
     private final String name;
+    private final List<Value<?>> values;
     public int x, y, width, height;
     public double absoluteX, absoluteY;
     public boolean dragged;
-    private final List<Value<?>> values;
     public ElementAlignment alignmentX, alignmentY;
 
     protected Element(final String name) {
@@ -30,34 +30,34 @@ public abstract class Element implements IName, IValue, MinecraftWrapper {
     public abstract void render(final DrawContext context, final float delta);
 
     public void calculateAlignment() {
-        if (absoluteX > 0.66) {
-            alignmentX = ElementAlignment.RIGHT;
-        } else if (absoluteX > 0.33) {
-            alignmentX = ElementAlignment.MIDDLE;
+        if (this.absoluteX > 0.66) {
+            this.alignmentX = ElementAlignment.RIGHT;
+        } else if (this.absoluteX > 0.33) {
+            this.alignmentX = ElementAlignment.MIDDLE;
         } else {
-            alignmentX = ElementAlignment.LEFT;
+            this.alignmentX = ElementAlignment.LEFT;
         }
-
-        if (absoluteY > 0.66) {
-            alignmentY = ElementAlignment.BOTTOM;
-        } else if (absoluteY > 0.33) {
-            alignmentY = ElementAlignment.MIDDLE;
+        if (this.absoluteY > 0.66) {
+            this.alignmentY = ElementAlignment.BOTTOM;
+        } else if (this.absoluteY > 0.33) {
+            this.alignmentY = ElementAlignment.MIDDLE;
         } else {
-            alignmentY = ElementAlignment.TOP;
+            this.alignmentY = ElementAlignment.TOP;
         }
     }
 
     public void calculatePosition() {
-        switch (alignmentX) {
-            default -> x = (int) (absoluteX * this.window().getScaledWidth()); //Left
-            case MIDDLE -> x = (int) (absoluteX * (this.window().getScaledWidth() - this.width / 2.0f)); //Middle
-            case RIGHT -> x = (int) (absoluteX * (this.window().getScaledWidth() - this.width)); //Right
+        switch (this.alignmentX) {
+            default -> this.x = (int) (this.absoluteX * this.window().getScaledWidth()); //Left
+            case MIDDLE ->
+                    this.x = (int) (this.absoluteX * (this.window().getScaledWidth() - this.width / 2.0f)); //Middle
+            case RIGHT -> this.x = (int) (this.absoluteX * (this.window().getScaledWidth() - this.width)); //Right
         }
-
-        switch (alignmentY) {
-            default -> y = (int) (absoluteY * this.window().getScaledHeight()); //Up
-            case MIDDLE -> y = (int) (absoluteY * (this.window().getScaledHeight() - this.height / 2.0f)); //Middle
-            case BOTTOM -> y = (int) (absoluteY * (this.window().getScaledHeight() - this.height)); //Down
+        switch (this.alignmentY) {
+            default -> this.y = (int) (this.absoluteY * this.window().getScaledHeight()); //Up
+            case MIDDLE ->
+                    this.y = (int) (this.absoluteY * (this.window().getScaledHeight() - this.height / 2.0f)); //Middle
+            case BOTTOM -> this.y = (int) (this.absoluteY * (this.window().getScaledHeight() - this.height)); //Down
         }
     }
 
@@ -68,17 +68,17 @@ public abstract class Element implements IName, IValue, MinecraftWrapper {
 
     @Override
     public Config getConfig() {
-        return null;// Vandalism.getInstance().getConfigManager().getHudConfig();
+        return Vandalism.getInstance().getConfigManager().getCustomHUDConfig();
     }
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @Override
     public String getValueName() {
-        return getName();
+        return this.getName();
     }
 
 }
