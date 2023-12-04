@@ -16,22 +16,13 @@ public class ConfigImGuiMenu extends ImGuiMenu {
 
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        if (ImGui.begin(
-                "Config##config",
-                Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
-        )) {
+        if (ImGui.begin("Config##config", Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags())) {
             final MainConfig mainConfigValues = Vandalism.getInstance().getConfigManager().getMainConfig();
             if (ImGui.beginTabBar("configTabBar##configtabbar")) {
                 for (final Value<?> value : mainConfigValues.getValues()) {
                     if (value instanceof final ValueCategory valueCategory) {
-                        if (ImGui.beginTabItem(
-                                valueCategory.getValueName() + "##configvaluecategory" +
-                                        valueCategory.getName()
-                        )) {
-                            if (ImGui.button(
-                                    "Reset " + valueCategory.getName() + " Config##configresetbutton" +
-                                            valueCategory.getName()
-                            )) {
+                        if (ImGui.beginTabItem(valueCategory.getValueName() + "##configvaluecategory" + valueCategory.getName())) {
+                            if (ImGui.button("Reset " + valueCategory.getName() + " Config##configresetbutton" + valueCategory.getName())) {
                                 for (final Value<?> valueCategoryValue : valueCategory.getValues()) {
                                     valueCategoryValue.resetValue();
                                 }

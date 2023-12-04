@@ -6,7 +6,7 @@ import de.vandalismdevelopment.vandalism.feature.impl.command.CommandRegistry;
 import de.vandalismdevelopment.vandalism.feature.impl.module.ModuleRegistry;
 import de.vandalismdevelopment.vandalism.feature.impl.script.ScriptRegistry;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiHandler;
-import de.vandalismdevelopment.vandalism.gui.ingame.CustomHUDSystem;
+import de.vandalismdevelopment.vandalism.gui.ingame.CustomHUDRenderer;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.rotation.RotationListener;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
@@ -32,7 +32,7 @@ public class Vandalism {
     private CommandRegistry commandRegistry;
     private ConfigManager configManager;
     private RotationListener rotationListener;
-    private CustomHUDSystem customHUDSystem;
+    private CustomHUDRenderer customHUDRenderer;
 
     private Identifier logo;
 
@@ -80,7 +80,7 @@ public class Vandalism {
         this.rotationListener = new RotationListener();
         this.moduleRegistry = new ModuleRegistry();
         this.commandRegistry = new CommandRegistry();
-        this.customHUDSystem = new CustomHUDSystem();
+        this.customHUDRenderer = new CustomHUDRenderer();
         this.configManager.load();
         this.logo = new Identifier(this.id, "textures/logo.png");
         Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
@@ -143,8 +143,8 @@ public class Vandalism {
         return this.rotationListener;
     }
 
-    public CustomHUDSystem getCustomHUDSystem() {
-        return this.customHUDSystem;
+    public CustomHUDRenderer getCustomHUDRenderer() {
+        return this.customHUDRenderer;
     }
 
     public Identifier getLogo() {

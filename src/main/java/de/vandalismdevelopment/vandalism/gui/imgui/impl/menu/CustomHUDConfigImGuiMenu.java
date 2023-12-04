@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiMenu;
-import de.vandalismdevelopment.vandalism.gui.ingame.CustomHUDSystem;
+import de.vandalismdevelopment.vandalism.gui.ingame.CustomHUDRenderer;
 import de.vandalismdevelopment.vandalism.gui.ingame.Element;
 import de.vandalismdevelopment.vandalism.util.MouseUtils;
 import imgui.ImGui;
@@ -12,27 +12,48 @@ import net.minecraft.client.util.Window;
 
 import java.awt.*;
 
-public class CustomHUDImGuiMenu extends ImGuiMenu {
+public class CustomHUDConfigImGuiMenu extends ImGuiMenu {
 
     private boolean mouseDown;
     private double lastMouseX, lastMouseY;
 
-    public CustomHUDImGuiMenu() {
-        super("Custom HUD");
+    public CustomHUDConfigImGuiMenu() {
+        super("Custom HUD Config");
         this.mouseDown = false;
     }
 
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        final CustomHUDSystem customHUDSystem = Vandalism.getInstance().getCustomHUDSystem();
+        final CustomHUDRenderer customHUDRenderer = Vandalism.getInstance().getCustomHUDRenderer();
         final double deltaX = mouseX - this.lastMouseX, deltaY = mouseY - this.lastMouseY;
-        ImGui.begin("Custom HUD##customhud");
-        if (ImGui.button("Close Custom HUD Config##closecustomhud")) {
-            this.toggle();
+        if (ImGui.begin("Custom HUD Config##customhudconfig", Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags())) {
+            if (ImGui.button("Close Custom HUD Config##closecustomhudconfig")) {
+                this.toggle();
+            }
+            if (ImGui.button("Reset Custom HUD Config##resetcustomhudconfig")) {
+                for (final Element element : Vandalism.getInstance().getCustomHUDRenderer().getElements()) {
+                    element.reset();
+                }
+            }
+            ImGui.separator();
+            for (final Element element : Vandalism.getInstance().getCustomHUDRenderer().getElements()) {
+                if (ImGui.treeNodeEx(element.getName() + "##" + element.getName() + "customhudconfig")) {
+                    if (ImGui.button("Reset##reset" + element.getName() + "customhudconfig")) {
+                        element.reset();
+                    }
+                    ImGui.spacing();
+                    element.renderValues();
+                    ImGui.treePop();
+                }
+            }
+            ImGui.separator();
+            ImGui.spacing();
+            ImGui.end();
         }
-        ImGui.end();
-        for (final Element element : customHUDSystem.getElements()) {
-            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        for (final Element element : customHUDRenderer.getElements()) {
+            if (!element.isEnabled()) {
+                RenderSystem.setShaderColor(0.5F, 0.5F, 0.5F, 0.9F);
+            }
             final boolean mouseOver = MouseUtils.isHovered(mouseX,
                     mouseY,
                     element.x - 2,
@@ -74,9 +95,7 @@ public class CustomHUDImGuiMenu extends ImGuiMenu {
                     mouseOver || element.dragged ? Color.RED.getRGB() : Color.WHITE.getRGB()
             );
             element.render(context, delta);
-            if (!element.isEnabled()) {
-                RenderSystem.setShaderColor(0.5F, 0.5F, 0.5F, 0.5F);
-            }
+            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         }
         this.lastMouseX = mouseX;
         this.lastMouseY = mouseY;
