@@ -9,19 +9,19 @@ import de.vandalismdevelopment.vandalism.gui.ingame.elements.WatermarkElement;
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-public class CustomHUDSystem implements RenderListener, ScreenListener, MinecraftWrapper {
+public class CustomHUDRenderer implements RenderListener, ScreenListener, MinecraftWrapper {
 
     private final List<Element> elements;
     private final ModuleListElement moduleListElement;
 
-    public CustomHUDSystem() {
+    public CustomHUDRenderer() {
         DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
         DietrichEvents2.global().subscribe(ScreenEvent.ID, this);
-        this.elements = new ArrayList<>();
+        this.elements = new CopyOnWriteArrayList<>();
         this.elements.addAll(Arrays.asList(
                 new WatermarkElement(),
                 this.moduleListElement = new ModuleListElement(),

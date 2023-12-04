@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.gui.minecraft;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiMenu;
-import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.CustomHUDImGuiMenu;
+import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.CustomHUDConfigImGuiMenu;
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import imgui.ImGui;
 import net.minecraft.client.gui.DrawContext;
@@ -21,10 +21,10 @@ public class ImGuiScreen extends Screen implements MinecraftWrapper {
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
-            final CustomHUDImGuiMenu customHudImGuiMenu = Vandalism.getInstance()
+            final CustomHUDConfigImGuiMenu customHudConfigImGuiMenu = Vandalism.getInstance()
                     .getImGuiHandler().getImGuiMenuRegistry()
-                    .getImGuiMenuByClass(CustomHUDImGuiMenu.class);
-            if (!customHudImGuiMenu.getState()) {
+                    .getImGuiMenuByClass(CustomHUDConfigImGuiMenu.class);
+            if (!customHudConfigImGuiMenu.getState()) {
                 if (ImGui.beginMainMenuBar()) {
                     for (final ImGuiMenu imGuiMenu : Vandalism.getInstance().getImGuiHandler().getImGuiMenuRegistry().getImGuiMenus()) {
                         if (ImGui.button(imGuiMenu.getName() + "##barbutton" + imGuiMenu.getName())) {
@@ -39,7 +39,7 @@ public class ImGuiScreen extends Screen implements MinecraftWrapper {
                     }
                 }
             } else {
-                customHudImGuiMenu.render(context, mouseX, mouseY, delta);
+                customHudConfigImGuiMenu.render(context, mouseX, mouseY, delta);
             }
         });
         super.render(context, mouseX, mouseY, delta);

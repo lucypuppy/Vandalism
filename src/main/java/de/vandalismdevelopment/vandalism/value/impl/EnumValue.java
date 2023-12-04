@@ -28,7 +28,7 @@ public class EnumValue<T extends EnumNameNormalizer> extends Value<T> {
 
     @Override
     public void onConfigSave(final JsonObject valueObject) {
-        valueObject.addProperty("value", getValue().normalName());
+        valueObject.addProperty("value", this.getValue().normalName());
     }
 
     @Override
