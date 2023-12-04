@@ -18,7 +18,7 @@ public class CustomHUDConfig extends ValueableConfig {
     @Override
     public JsonObject save() throws IOException {
         final JsonObject elementsObject = new JsonObject();
-        for (final Element element : Vandalism.getInstance().getCustomHUDSystem().getAddedElements()) {
+        for (final Element element : Vandalism.getInstance().getCustomHUDSystem().getElements()) {
             final JsonObject elementObject = new JsonObject();
             if (!element.getValues().isEmpty()) {
                 final JsonObject valuesObject = new JsonObject();
@@ -32,7 +32,7 @@ public class CustomHUDConfig extends ValueableConfig {
 
     @Override
     public void load(final JsonObject jsonObject) throws IOException {
-        for (final Element element : Vandalism.getInstance().getCustomHUDSystem().getAddedElements()) {
+        for (final Element element : Vandalism.getInstance().getCustomHUDSystem().getElements()) {
             final JsonObject elementObject = jsonObject.getAsJsonObject(element.getName());
             if (elementObject != null) {
                 final JsonElement valuesElement = elementObject.get("values");

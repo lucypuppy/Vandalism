@@ -105,8 +105,8 @@ public enum ScriptVariable {
         descriptionBuilder.append("The version of this mod.");
         return descriptionBuilder;
     }),
-    MOD_AUTHOR(() -> Vandalism.getInstance().getAuthor(), descriptionBuilder -> {
-        descriptionBuilder.append("The author of this mod.");
+    MOD_AUTHORS(() -> Vandalism.getInstance().getAuthors(), descriptionBuilder -> {
+        descriptionBuilder.append("The authors of this mod.");
         return descriptionBuilder;
     });
 

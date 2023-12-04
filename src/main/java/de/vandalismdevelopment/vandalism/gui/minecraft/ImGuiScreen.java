@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.gui.minecraft;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiMenu;
-import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.CustomHudImGuiMenu;
+import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.CustomHUDImGuiMenu;
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import imgui.ImGui;
 import net.minecraft.client.gui.DrawContext;
@@ -21,9 +21,9 @@ public class ImGuiScreen extends Screen implements MinecraftWrapper {
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
-            final CustomHudImGuiMenu customHudImGuiMenu = Vandalism.getInstance()
+            final CustomHUDImGuiMenu customHudImGuiMenu = Vandalism.getInstance()
                     .getImGuiHandler().getImGuiMenuRegistry()
-                    .getImGuiMenuByClass(CustomHudImGuiMenu.class);
+                    .getImGuiMenuByClass(CustomHUDImGuiMenu.class);
             if (!customHudImGuiMenu.getState()) {
                 if (ImGui.beginMainMenuBar()) {
                     for (final ImGuiMenu imGuiMenu : Vandalism.getInstance().getImGuiHandler().getImGuiMenuRegistry().getImGuiMenus()) {
@@ -49,7 +49,7 @@ public class ImGuiScreen extends Screen implements MinecraftWrapper {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         for (final ImGuiMenu imGuiMenu : Vandalism.getInstance().getImGuiHandler().getImGuiMenuRegistry().getImGuiMenus()) {
             if (imGuiMenu.getState()) {
-                imGuiMenu.onMouseButton(mouseX, mouseY, button, false);
+                imGuiMenu.mouseClick(mouseX, mouseY, button, false);
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
@@ -59,10 +59,30 @@ public class ImGuiScreen extends Screen implements MinecraftWrapper {
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         for (final ImGuiMenu imGuiMenu : Vandalism.getInstance().getImGuiHandler().getImGuiMenuRegistry().getImGuiMenus()) {
             if (imGuiMenu.getState()) {
-                imGuiMenu.onMouseButton(mouseX, mouseY, button, true);
+                imGuiMenu.mouseClick(mouseX, mouseY, button, true);
             }
         }
         return super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean keyPressed(final int keyCode, final int scanCode, final int modifiers) {
+        for (final ImGuiMenu imGuiMenu : Vandalism.getInstance().getImGuiHandler().getImGuiMenuRegistry().getImGuiMenus()) {
+            if (imGuiMenu.getState()) {
+                imGuiMenu.keyPress(keyCode, scanCode, modifiers, false);
+            }
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean keyReleased(final int keyCode, final int scanCode, final int modifiers) {
+        for (final ImGuiMenu imGuiMenu : Vandalism.getInstance().getImGuiHandler().getImGuiMenuRegistry().getImGuiMenus()) {
+            if (imGuiMenu.getState()) {
+                imGuiMenu.keyPress(keyCode, scanCode, modifiers, true);
+            }
+        }
+        return super.keyReleased(keyCode, scanCode, modifiers);
     }
 
     @Override

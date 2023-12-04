@@ -15,42 +15,36 @@ import java.util.List;
 
 public class CustomHUDSystem implements RenderListener, ScreenListener, MinecraftWrapper {
 
-    private final List<Element> elements, addedElements;
+    private final List<Element> elements;
     private final ModuleListElement moduleListElement;
 
     public CustomHUDSystem() {
         DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
         DietrichEvents2.global().subscribe(ScreenEvent.ID, this);
         this.elements = new ArrayList<>();
-        this.addedElements = new ArrayList<>();
-        this.registerElements(
+        this.elements.addAll(Arrays.asList(
                 new WatermarkElement(),
                 this.moduleListElement = new ModuleListElement(),
                 new InfoElement()
-        );
-    }
-
-    private void registerElements(final Element... elements) {
-        this.elements.addAll(Arrays.asList(elements));
+        ));
     }
 
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
-        for (final Element element : this.addedElements) {
+        for (final Element element : this.elements) {
+            if (!element.isEnabled()) continue;
             element.render(context, delta);
         }
     }
 
     @Override
     public void onResizeScreen(final ScreenEvent event) {
-        for (final Element element : this.addedElements) {
+        for (final Element element : this.elements) {
+            if (!element.isEnabled()) continue;
             element.calculatePosition();
         }
     }
 
-    public List<Element> getAddedElements() {
-        return this.addedElements;
-    }
     public List<Element> getElements() {
         return this.elements;
     }

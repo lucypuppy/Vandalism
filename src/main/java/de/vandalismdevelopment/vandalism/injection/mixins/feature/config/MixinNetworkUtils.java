@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.feature.config;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.gui.minecraft.CustomResourcePackConfirmScreen;
+import de.vandalismdevelopment.vandalism.gui.minecraft.CustomRPConfirmScreen;
 import net.minecraft.client.util.NetworkUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,7 +15,7 @@ public abstract class MixinNetworkUtils {
 
     @Redirect(method = "method_15303", at = @At(value = "INVOKE", target = "Ljava/io/InputStream;read([B)I"))
     private static int vandalism$moreResourcePacketOptionsSkipDownload(final InputStream inputStream, final byte[] bs) throws IOException {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.moreResourcePackOptions.getValue() && CustomResourcePackConfirmScreen.skipDownload) {
+        if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.moreResourcePackOptions.getValue() && CustomRPConfirmScreen.skipDownload) {
             return -1;
         }
         return inputStream.read(bs);
