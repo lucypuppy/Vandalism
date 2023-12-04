@@ -13,7 +13,7 @@ public class AutoRespawnModule extends Module implements TickListener {
 
     private final Value<Boolean> instantRespawn = new BooleanValue("Instant Respawn", "Instantly respawns you when you die.", this, false);
     private final Value<Integer> delay = new SliderIntegerValue("Delay", "The delay in ticks before respawning.", this, 2000, 0, 10000).visibleConsumer(() -> !this.instantRespawn.getValue());
-    private final Value<Boolean> autoBack = new BooleanValue("Auto Back", "Automatically uses the back command when you die.", this, true);
+    private final Value<Boolean> autoBack = new BooleanValue("Auto Back", "Automatically uses the back command when you die.", this, false);
 
     private final MSTimer delayTimer = new MSTimer();
 
