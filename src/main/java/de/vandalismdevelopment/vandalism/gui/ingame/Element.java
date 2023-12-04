@@ -6,6 +6,7 @@ import de.vandalismdevelopment.vandalism.config.Config;
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import de.vandalismdevelopment.vandalism.value.IValue;
 import de.vandalismdevelopment.vandalism.value.Value;
+import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
 import net.minecraft.client.gui.DrawContext;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ public abstract class Element implements IName, IValue, MinecraftWrapper {
 
     private final String name;
     private final List<Value<?>> values;
+    private final BooleanValue enabled;
     public int x, y, width, height;
     public double absoluteX, absoluteY;
     public boolean dragged;
@@ -23,6 +25,12 @@ public abstract class Element implements IName, IValue, MinecraftWrapper {
     protected Element(final String name) {
         this.name = name;
         this.values = new ArrayList<>();
+        this.enabled = new BooleanValue(
+                "Enabled",
+                "Whether this element is enabled.",
+                this,
+                false
+        );
         this.alignmentX = ElementAlignment.LEFT;
         this.alignmentY = ElementAlignment.TOP;
     }
@@ -59,6 +67,10 @@ public abstract class Element implements IName, IValue, MinecraftWrapper {
                     this.y = (int) (this.absoluteY * (this.window().getScaledHeight() - this.height / 2.0f)); //Middle
             case BOTTOM -> this.y = (int) (this.absoluteY * (this.window().getScaledHeight() - this.height)); //Down
         }
+    }
+
+    public boolean isEnabled() {
+        return this.enabled.getValue();
     }
 
     @Override

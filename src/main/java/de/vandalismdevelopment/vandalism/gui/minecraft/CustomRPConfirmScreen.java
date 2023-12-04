@@ -7,11 +7,11 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.network.packet.c2s.common.ResourcePackStatusC2SPacket;
 import net.minecraft.text.Text;
 
-public class CustomResourcePackConfirmScreen extends ConfirmScreen implements MinecraftWrapper {
+public class CustomRPConfirmScreen extends ConfirmScreen implements MinecraftWrapper {
 
     public static boolean skipDownload = false, dump = false;
 
-    public CustomResourcePackConfirmScreen(final BooleanConsumer callback, final Text title, final Text message) {
+    public CustomRPConfirmScreen(final BooleanConsumer callback, final Text title, final Text message) {
         super(callback, title, message);
         skipDownload = false;
         dump = false;

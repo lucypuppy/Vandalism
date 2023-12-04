@@ -17,13 +17,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.Optional;
 
 public class Vandalism {
 
     private final static Vandalism INSTANCE = new Vandalism();
 
-    private final String id, name, version, windowTitle, author;
+    private final String id, name, version, windowTitle, authors;
     private final Logger logger;
 
     private File dir;
@@ -40,10 +39,10 @@ public class Vandalism {
     public Vandalism() {
         final ModMetadata data = FabricLoader.getInstance().getModContainer(this.id = "vandalism").get().getMetadata();
         this.name = data.getName();
-        this.author = String.join(", ", data.getAuthors().stream().map(Person::getName).toArray(String[]::new));
+        this.authors = String.join(", ", data.getAuthors().stream().map(Person::getName).toArray(String[]::new));
         this.version = data.getVersion().getFriendlyString();
         this.logger = LoggerFactory.getLogger(this.name);
-        this.windowTitle = String.format("%s v%s made by %s", this.name, this.version, this.author);
+        this.windowTitle = String.format("%s v%s made by %s", this.name, this.version, this.authors);
     }
 
     private final static String[] ASCII_ART = {
@@ -108,8 +107,8 @@ public class Vandalism {
         return this.version;
     }
 
-    public String getAuthor() {
-        return this.author;
+    public String getAuthors() {
+        return this.authors;
     }
 
     public Logger getLogger() {
