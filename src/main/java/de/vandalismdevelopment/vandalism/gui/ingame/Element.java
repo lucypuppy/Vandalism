@@ -29,10 +29,9 @@ public abstract class Element implements IName, IValue, MinecraftWrapper {
                 "Enabled",
                 "Whether this element is enabled.",
                 this,
-                false
+                true
         );
-        this.alignmentX = ElementAlignment.LEFT;
-        this.alignmentY = ElementAlignment.TOP;
+        this.resetPosition();
     }
 
     public abstract void render(final DrawContext context, final float delta);
@@ -66,6 +65,19 @@ public abstract class Element implements IName, IValue, MinecraftWrapper {
             case MIDDLE ->
                     this.y = (int) (this.absoluteY * (this.window().getScaledHeight() - this.height / 2.0f)); //Middle
             case BOTTOM -> this.y = (int) (this.absoluteY * (this.window().getScaledHeight() - this.height)); //Down
+        }
+    }
+
+    protected void resetPosition() {
+        this.alignmentX = ElementAlignment.LEFT;
+        this.alignmentY = ElementAlignment.TOP;
+        this.calculatePosition();
+    }
+
+    public void reset() {
+        this.resetPosition();
+        for (final Value<?> value : this.getValues()) {
+            value.resetValue();
         }
     }
 

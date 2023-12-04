@@ -71,6 +71,15 @@ public class InfoElement extends Element {
     }
 
     @Override
+    protected void resetPosition() {
+        super.resetPosition();
+        this.x = 0;
+        this.y = 60;
+        this.absoluteX = 0;
+        this.absoluteY = 60;
+    }
+
+    @Override
     public void render(final DrawContext context, final float delta) {
         int color = -1;
         boolean shadow = false;
@@ -86,13 +95,23 @@ public class InfoElement extends Element {
             }
         }
         if (this.username.getValue()) {
-            final String text = "Username: " + this.player().getGameProfile().getName();
+            final String text = "Username: " + this.mc().session.getUsername();
             context.drawText(this.textRenderer(), text, x, this.y + height, color, shadow);
             height += fontHeight;
             final int textWidth = this.textRenderer().getWidth(text);
             if (textWidth > width) {
                 width = textWidth;
             }
+        }
+        final double posX, posY, posZ;
+        if (this.player() != null) {
+            posX = this.player().getX();
+            posY = this.player().getY();
+            posZ = this.player().getZ();
+        } else {
+            posX = 0D;
+            posY = 0D;
+            posZ = 0D;
         }
         if (this.position.getValue()) {
             final int positionDecimalPlacesRawValue = this.positionDecimalPlaces.getValue();
@@ -101,9 +120,9 @@ public class InfoElement extends Element {
             final String positionDecimalPlaces = "%." + this.positionDecimalPlaces.getValue() + "f";
             final String text = "Position: " + String.format(
                     positionDecimalPlaces + ", " + positionDecimalPlaces + ", " + positionDecimalPlaces,
-                    this.player().getX(),
-                    this.player().getY(),
-                    this.player().getZ()
+                    posX,
+                    posY,
+                    posZ
             );
             context.drawText(this.textRenderer(), text, x, this.y + height, color, shadow);
             height += fontHeight;
@@ -121,47 +140,27 @@ public class InfoElement extends Element {
                 final int decimalPlaces = this.positionDecimalPlaces.getValue();
                 final String positionFormat = "%." + decimalPlaces + "f";
                 String text = "";
-                double posX = this.player().getX(), posY = this.player().getY(), posZ = this.player().getZ();
+                double correctedX = posX, correctedZ = posZ;
                 switch (dimension) {
                     case NETHER -> {
                         text = "Overworld Position: ";
-                        posX *= 8;
-                        posZ *= 8;
+                        correctedX = posX * 8;
+                        correctedZ = posZ * 8;
                     }
                     case OVERWORLD -> {
                         text = "Nether Position: ";
-                        posX /= 8;
-                        posZ /= 8;
+                        correctedX = posX / 8;
+                        correctedZ = posZ / 8;
                     }
                     default -> {
                     }
                 }
-                if (!text.isBlank()) {
-                    context.drawText(
-                            this.textRenderer(),
-                            text + String.format(
-                                    positionFormat + ", " + positionFormat + ", " + positionFormat,
-                                    posX,
-                                    posY,
-                                    posZ
-                            ),
-                            x,
-                            this.y + height,
-                            color,
-                            shadow
-                    );
-                    height += fontHeight;
-                    final int textWidth = this.textRenderer().getWidth(text);
-                    if (textWidth > width) {
-                        width = textWidth;
-                    }
-                }
-            }
-        }
-        if (this.serverBrand.getValue()) {
-            final String serverBrand = this.networkHandler().getBrand();
-            if (serverBrand != null) {
-                final String text = "Server Brand: " + serverBrand.replaceFirst("\\(.*?\\) ", "");
+                text += String.format(
+                        positionFormat + ", " + positionFormat + ", " + positionFormat,
+                        correctedX,
+                        posY,
+                        correctedZ
+                );
                 context.drawText(this.textRenderer(), text, x, this.y + height, color, shadow);
                 height += fontHeight;
                 final int textWidth = this.textRenderer().getWidth(text);
@@ -170,8 +169,25 @@ public class InfoElement extends Element {
                 }
             }
         }
+        if (this.serverBrand.getValue()) {
+            String text = "Server Brand: ";
+            String value = "unknown";
+            if (this.networkHandler() != null) {
+                final String brand = this.networkHandler().getBrand();
+                if (brand != null) {
+                    value = brand.replaceFirst("\\(.*?\\) ", "");
+                }
+            }
+            text += value;
+            context.drawText(this.textRenderer(), text, x, this.y + height, color, shadow);
+            height += fontHeight;
+            final int textWidth = this.textRenderer().getWidth(text);
+            if (textWidth > width) {
+                width = textWidth;
+            }
+        }
         if (this.difficulty.getValue()) {
-            final String text = "Difficulty: " + this.world().getDifficulty().getName();
+            final String text = "Difficulty: " + (this.world() != null ? this.world().getDifficulty().getName() : "unknown");
             context.drawText(this.textRenderer(), text, x, this.y + height, color, shadow);
             height += fontHeight;
             final int textWidth = this.textRenderer().getWidth(text);
@@ -180,7 +196,7 @@ public class InfoElement extends Element {
             }
         }
         if (this.permissionsLevel.getValue()) {
-            final String text = "Permissions Level: " + this.player().getPermissionLevel();
+            final String text = "Permissions Level: " + (this.player() != null ? this.player().getPermissionLevel() : "unknown");
             context.drawText(this.textRenderer(), text, x, this.y + height, color, shadow);
             height += fontHeight;
             final int textWidth = this.textRenderer().getWidth(text);
