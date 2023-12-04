@@ -75,4 +75,26 @@ public interface MovementListener {
 
     }
 
+    default void onMoveFlying(final MoveFlyingEvent event) {
+    }
+
+    class MoveFlyingEvent extends AbstractEvent<MovementListener> {
+
+        public final static int ID = 21;
+
+        public double velocityX, velocityY, velocityZ;
+
+        public MoveFlyingEvent(final double velocityX, final double velocityY, final double velocityZ) {
+            this.velocityX = velocityX;
+            this.velocityY = velocityY;
+            this.velocityZ = velocityZ;
+        }
+
+        @Override
+        public void call(final MovementListener listener) {
+            listener.onMoveFlying(this);
+        }
+
+    }
+
 }
