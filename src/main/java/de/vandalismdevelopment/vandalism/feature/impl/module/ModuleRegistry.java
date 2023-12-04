@@ -57,30 +57,40 @@ public class ModuleRegistry implements MinecraftWrapper, KeyboardListener {
     private VelocityModule velocityModule;
     private VisualThrottleModule visualThrottleModule;
 
+    private SprintModule sprintModule;
+
     public BetterTabListModule getBetterTabListModule() {
         return this.betterTabListModule;
     }
+
     public ESPModule getEspModule() {
         return this.espModule;
     }
+
     public ExploitFixerModule getExploitFixerModule() {
         return this.exploitFixerModule;
     }
+
     public FastUseModule getFastUseModule() {
         return this.fastUseModule;
     }
+
     public IllegalBlockPlaceModule getIllegalBlockPlaceModule() {
         return this.illegalBlockPlaceModule;
     }
+
     public MessageEncryptorModule getMessageEncryptorModule() {
         return this.messageEncryptorModule;
     }
+
     public ModPacketBlockerModule getModPacketBlockerModule() {
         return this.modPacketBlockerModule;
     }
+
     public TrueSightModule getTrueSightModule() {
         return this.trueSightModule;
     }
+
     public VisualThrottleModule getVisualThrottleModule() {
         return this.visualThrottleModule;
     }
@@ -99,6 +109,7 @@ public class ModuleRegistry implements MinecraftWrapper, KeyboardListener {
 
     private void register() {
         this.registerModules(
+                this.sprintModule = new SprintModule(),
                 this.ambienceModule = new AmbienceModule(),
                 this.antiFOVModule = new AntiFOVModule(),
                 this.autoFishModule = new AutoFishModule(),
