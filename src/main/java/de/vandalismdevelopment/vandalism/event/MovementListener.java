@@ -12,10 +12,11 @@ public interface MovementListener {
 
         public final static int ID = 17;
 
-        public boolean sprinting;
+        public boolean sprinting, bypass;
 
         public SprintEvent(final boolean sprinting) {
             this.sprinting = sprinting;
+            this.bypass = false;
         }
 
         @Override
