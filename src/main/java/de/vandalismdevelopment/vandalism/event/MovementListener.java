@@ -57,15 +57,13 @@ public interface MovementListener {
 
         public final static int ID = 19;
 
-        public final Vec3d movementInput;
-        public final float speed, yaw;
-        public Vec3d velocity;
+        public Vec3d movementInput;
+        public float speed, yaw;
 
-        public StrafeEvent(final Vec3d movementInput, final float speed, final float yaw, final Vec3d movementInputAsVelocity) {
+        public StrafeEvent(final Vec3d movementInput, final float speed, final float yaw) {
             this.movementInput = movementInput;
             this.speed = speed;
             this.yaw = yaw;
-            this.velocity = movementInputAsVelocity;
         }
 
         @Override
@@ -82,12 +80,12 @@ public interface MovementListener {
 
         public final static int ID = 21;
 
-        public double velocityX, velocityY, velocityZ;
+        public double sidewaysSpeed, upwardSpeed, forwardSpeed;
 
-        public MoveFlyingEvent(final double velocityX, final double velocityY, final double velocityZ) {
-            this.velocityX = velocityX;
-            this.velocityY = velocityY;
-            this.velocityZ = velocityZ;
+        public MoveFlyingEvent(final double sidewaysSpeed, final double upwardSpeed, final double forwardSpeed) {
+            this.sidewaysSpeed = sidewaysSpeed;
+            this.upwardSpeed = upwardSpeed;
+            this.forwardSpeed = forwardSpeed;
         }
 
         @Override
