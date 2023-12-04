@@ -23,7 +23,7 @@ public class DoubleValue extends StepNumberValue<Double> {
 
     @Override
     public void onConfigSave(final JsonObject valueObject) {
-        valueObject.addProperty("value", getValue());
+        valueObject.addProperty("value", this.getValue());
     }
 
     @Override

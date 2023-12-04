@@ -12,6 +12,15 @@ public class WatermarkElement extends Element {
     }
 
     @Override
+    protected void resetPosition() {
+        super.resetPosition();
+        this.x = 0;
+        this.y = 0;
+        this.absoluteX = 0;
+        this.absoluteY = 0;
+    }
+
+    @Override
     public void render(final DrawContext context, final float delta) {
         final int imageWidth = 156, imageHeight = 44;
         this.mc().getTextureManager().getTexture(Vandalism.getInstance().getLogo()).setFilter(true, true);

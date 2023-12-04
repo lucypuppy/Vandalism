@@ -7,8 +7,8 @@ import de.vandalismdevelopment.vandalism.gui.ingame.Element;
 import de.vandalismdevelopment.vandalism.gui.ingame.ElementAlignment;
 import net.minecraft.client.gui.DrawContext;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ModuleListElement extends Element {
 
@@ -18,7 +18,17 @@ public class ModuleListElement extends Element {
 
     public ModuleListElement() {
         super("Module List");
-        this.enabledModules = new ArrayList<>();
+        this.enabledModules = new CopyOnWriteArrayList<>();
+    }
+
+    @Override
+    protected void resetPosition() {
+        super.resetPosition();
+        this.x = 0;
+        this.y = 140;
+        this.absoluteX = 0;
+        this.absoluteY = 140;
+        this.sort = true;
     }
 
     @Override
