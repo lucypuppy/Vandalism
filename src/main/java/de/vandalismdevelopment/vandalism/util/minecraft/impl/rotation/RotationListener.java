@@ -70,6 +70,7 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
     }
 
     public void resetRotation() {
+        this.rotation = null;
         this.targetRotation = null;
     }
 
@@ -114,6 +115,10 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
 
     public Rotation getRotation() {
         return this.rotation;
+    }
+
+    public Rotation getTargetRotation() {
+        return this.targetRotation;
     }
 
 }

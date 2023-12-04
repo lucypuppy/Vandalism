@@ -7,16 +7,21 @@ import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.MovementUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.Clicker;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.impl.BoxMuellerClicker;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.rotation.Rotation;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.rotation.RotationListener;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.rotation.RotationPriority;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderFloatValue;
 import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderIntegerValue;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +44,7 @@ public class TestModule extends Module implements TickListener, RenderListener, 
     @Override
     protected void onEnable() {
         DietrichEvents2.global().subscribe(TickEvent.ID, this);
+        DietrichEvents2.global().subscribe(StrafeEvent.ID, this);
         DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
         DietrichEvents2.global().subscribe(SprintEvent.ID, this);
         DietrichEvents2.global().subscribe(MoveInputEvent.ID, this);
@@ -48,6 +54,7 @@ public class TestModule extends Module implements TickListener, RenderListener, 
     @Override
     protected void onDisable() {
         DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(StrafeEvent.ID, this);
         DietrichEvents2.global().unsubscribe(Render2DEvent.ID, this);
         DietrichEvents2.global().unsubscribe(SprintEvent.ID, this);
         DietrichEvents2.global().unsubscribe(MoveInputEvent.ID, this);
@@ -132,30 +139,22 @@ public class TestModule extends Module implements TickListener, RenderListener, 
 
     @Override
     public void onStrafe(final StrafeEvent event) {
-        /*final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
-        if (rotation == null) return;
+        final RotationListener rotation = Vandalism.getInstance().getRotationListener();
+        if (rotation.getRotation() == null || rotation.getTargetRotation() == null) return;
+        final float yaw = rotation.getRotation().getYaw();
+        event.yaw = yaw;
 
-        final float yaw = rotation.getYaw();
-        final double d = event.movementInput.lengthSquared();
-
-        if (d < 1.0E-7) {
-            event.velocity = Vec3d.ZERO;
-        } else {
-            Vec3d vec3d = (d > 1.0 ? event.movementInput.normalize() : event.movementInput);
-            vec3d = vec3d.multiply(event.speed);
-
-            final float f = MathHelper.sin(yaw * 0.017453292f);
-            final float g = MathHelper.cos(yaw * 0.017453292f);
-
-            event.velocity = new Vec3d(vec3d.x * g - vec3d.z * f, vec3d.y, vec3d.z * g + vec3d.x * f);
-        }*/
+        float[] INPUTS = MovementUtil.getFixedMoveInputs(event.yaw, event.speed);
+        if (INPUTS[0] == 0f && INPUTS[1] == 0f) {
+            return;
+        }
+       // ChatUtil.chatMessage("" + INPUTS[0] + " -> " + player().forwardSpeed + " / " + INPUTS[1] + " -> " + player().sidewaysSpeed);
+        event.movementInput = new Vec3d(INPUTS[0], player().upwardSpeed, INPUTS[1]);
     }
 
     @Override
     public void onMoveFlying(final MoveFlyingEvent event) {
-        event.velocityX = 1;
-        event.velocityY = 0;
-        event.velocityZ = 0;
+
     }
 
 }
