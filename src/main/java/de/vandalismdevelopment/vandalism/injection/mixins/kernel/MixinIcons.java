@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.injection.mixins;
+package de.vandalismdevelopment.vandalism.injection.mixins.kernel;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
 import net.minecraft.client.main.Main;

@@ -4,7 +4,7 @@ Vandalism is a mod for Minecraft designed to train server administrators.
 
 ## Memes
 
-### ed0cinU Memes
+### Eduard Memes
 
 - **SchnauzeVoll Client**
 

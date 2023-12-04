@@ -16,9 +16,7 @@ import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderFloatVal
 import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderIntegerValue;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +42,7 @@ public class TestModule extends Module implements TickListener, RenderListener, 
         DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
         DietrichEvents2.global().subscribe(SprintEvent.ID, this);
         DietrichEvents2.global().subscribe(MoveInputEvent.ID, this);
+        DietrichEvents2.global().subscribe(MoveFlyingEvent.ID, this);
     }
 
     @Override
@@ -52,6 +51,7 @@ public class TestModule extends Module implements TickListener, RenderListener, 
         DietrichEvents2.global().unsubscribe(Render2DEvent.ID, this);
         DietrichEvents2.global().unsubscribe(SprintEvent.ID, this);
         DietrichEvents2.global().unsubscribe(MoveInputEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(MoveFlyingEvent.ID, this);
         Vandalism.getInstance().getRotationListener().resetRotation();
     }
 
@@ -116,7 +116,7 @@ public class TestModule extends Module implements TickListener, RenderListener, 
 
     @Override
     public void onMoveInput(final MoveInputEvent event) {
-        final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
+        /*final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
         if (rotation == null) return;
         float deltaYaw = player().getYaw() - rotation.getYaw();
 
@@ -127,12 +127,12 @@ public class TestModule extends Module implements TickListener, RenderListener, 
         float newZ = z * MathHelper.cos(deltaYaw * 0.017453292f) + x * MathHelper.sin(deltaYaw * 0.017453292f);
 
         event.movementSideways = Math.round(newX);
-        event.movementForward = Math.round(newZ);
+        event.movementForward = Math.round(newZ);*/
     }
 
     @Override
     public void onStrafe(final StrafeEvent event) {
-        final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
+        /*final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
         if (rotation == null) return;
 
         final float yaw = rotation.getYaw();
@@ -148,7 +148,14 @@ public class TestModule extends Module implements TickListener, RenderListener, 
             final float g = MathHelper.cos(yaw * 0.017453292f);
 
             event.velocity = new Vec3d(vec3d.x * g - vec3d.z * f, vec3d.y, vec3d.z * g + vec3d.x * f);
-        }
+        }*/
+    }
+
+    @Override
+    public void onMoveFlying(final MoveFlyingEvent event) {
+        event.velocityX = 1;
+        event.velocityY = 0;
+        event.velocityZ = 0;
     }
 
 }
