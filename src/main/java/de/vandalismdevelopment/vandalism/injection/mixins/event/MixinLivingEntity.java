@@ -13,12 +13,12 @@ public abstract class MixinLivingEntity {
 
     @ModifyArgs(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Vec3d;<init>(DDD)V"))
     private void vandalism$callMoveFlyingEvent(final Args args) {
-        final double velocityX = args.get(0), velocityY = args.get(1), velocityZ = args.get(2);
-        final MovementListener.MoveFlyingEvent moveFlyingEvent = new MovementListener.MoveFlyingEvent(velocityX, velocityY, velocityZ);
+        final double sidewaysSpeed = args.get(0), upwardSpeed = args.get(1), forwardSpeed = args.get(2);
+        final MovementListener.MoveFlyingEvent moveFlyingEvent = new MovementListener.MoveFlyingEvent(sidewaysSpeed, upwardSpeed, forwardSpeed);
         DietrichEvents2.global().postInternal(MovementListener.MoveFlyingEvent.ID, moveFlyingEvent);
-        args.set(0, moveFlyingEvent.velocityX);
-        args.set(1, moveFlyingEvent.velocityY);
-        args.set(2, moveFlyingEvent.velocityZ);
+        args.set(0, moveFlyingEvent.sidewaysSpeed);
+        args.set(1, moveFlyingEvent.upwardSpeed);
+        args.set(2, moveFlyingEvent.forwardSpeed);
     }
 
 }
