@@ -7,6 +7,7 @@ import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
+import de.vandalismdevelopment.vandalism.util.MathUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.MovementUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.Clicker;
@@ -78,7 +79,7 @@ public class TestModule extends Module implements TickListener, RenderListener, 
         final Entity target = entities.get(0);
         final Rotation rotation = Rotation.Builder.build(target, true, 3.5f, 0.1D);
         if (rotation != null) {
-            Vandalism.getInstance().getRotationListener().setRotation(rotation, new Vec2f(20, 30), RotationPriority.HIGH);
+            Vandalism.getInstance().getRotationListener().setRotation(rotation, new Vec2f(179, 180), RotationPriority.HIGH);
         }
         if (this.clicker instanceof final BoxMuellerClicker clicker) {
             clicker.setMean(this.mean.getValue());
@@ -118,7 +119,7 @@ public class TestModule extends Module implements TickListener, RenderListener, 
 
     @Override
     public void onSprint(final SprintEvent event) {
-        event.sprinting = true;
+
     }
 
     @Override
@@ -141,14 +142,12 @@ public class TestModule extends Module implements TickListener, RenderListener, 
     public void onStrafe(final StrafeEvent event) {
         final RotationListener rotation = Vandalism.getInstance().getRotationListener();
         if (rotation.getRotation() == null || rotation.getTargetRotation() == null) return;
-        final float yaw = rotation.getRotation().getYaw();
-        event.yaw = yaw;
+        event.yaw = rotation.getRotation().getYaw();
 
         float[] INPUTS = MovementUtil.getFixedMoveInputs(event.yaw, event.speed);
         if (INPUTS[0] == 0f && INPUTS[1] == 0f) {
             return;
         }
-       // ChatUtil.chatMessage("" + INPUTS[0] + " -> " + player().forwardSpeed + " / " + INPUTS[1] + " -> " + player().sidewaysSpeed);
         event.movementInput = new Vec3d(INPUTS[0], player().upwardSpeed, INPUTS[1]);
     }
 

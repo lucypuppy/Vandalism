@@ -1,9 +1,12 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.florianmichael.rclasses.common.RandomUtils;
 import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
+import de.vandalismdevelopment.vandalism.util.MathUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
 import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderDoubleValue;
@@ -60,7 +63,42 @@ public class AntiFOVModule extends Module implements TickListener {
                 if (this.useSneakFromTarget.getValue()) {
                     this.options().sneakKey.setPressed(target.isSneaking());
                 }
-                final double hOffset = this.targetHPosOffset.getValue(), xOffset = Math.sin(direction) * hOffset, zOffset = Math.cos(direction) * hOffset;
+                double diffZ = (entity.getZ() - entity.prevZ);
+                double diffX = (entity.getX() - entity.prevX);
+                float targetPitch = entity.getPitch();
+                double nervNetY = Math.abs((targetPitch < 0) ? targetPitch / entity.getEyePos().y : 0);
+                if(nervNetY > 0) {
+                    double abfuckY = RandomUtils.randomFloat(- (float) (nervNetY * entity.getStandingEyeHeight()), (float) (nervNetY * entity.getStandingEyeHeight()));
+
+                   // ChatUtil.chatMessage("" + (float) (nervNetY / (entity.getStandingEyeHeight() * 2f)));
+                    //ChatUtil.chatMessage("wtf " + (float) (nervNetY / (entity.getStandingEyeHeight())));
+                    nervNetY += abfuckY * 0.6;
+                }
+                if(!this.alwaysFOV.getValue()){
+                    nervNetY = 0;
+                }
+                double motion = Math.hypot(diffX, diffZ);
+                float strafe = 0;
+                float forward = 0;
+                if (diffZ != 0 || diffX != 0){
+                    float yaw = (float) Math.toDegrees(Math.atan2(diffZ, diffX));
+                    float yawDiff = MathUtil.wrapAngleTo180_float(yaw - entity.getYaw() - 90F);
+
+                    if (yawDiff >= -67.5F && yawDiff <= 67.5F){
+                        ++forward;
+                    }
+                    if (yawDiff <= -112.5F || yawDiff >= 112.5){
+                        --forward;
+                    }
+                    if (yawDiff >= 22.5F && yawDiff <= 157.5F){
+                        --strafe;
+                    }
+                    if (yawDiff >= -157.5F && yawDiff <= -22.5F){
+                        ++strafe;
+                    }
+                }
+
+                final double hOffset = this.targetHPosOffset.getValue(), xOffset = Math.sin(direction) * this.targetHPosOffset.getValue(), zOffset = Math.cos(direction) * this.targetHPosOffset.getValue();
                 double x = entity.getX(), z = entity.getZ();
                 if (!this.alwaysFOV.getValue()) {
                     x += xOffset;
@@ -68,8 +106,26 @@ public class AntiFOVModule extends Module implements TickListener {
                 } else {
                     x -= xOffset;
                     z += zOffset;
+                    if(forward > 0){
+                       // ChatUtil.chatMessage("stf");
+                        if(strafe != 0){
+                            diffX /= 1.2f;
+                            diffZ /= 1.2f;
+                        }
+                        x += diffX * 11;
+                        z += diffZ * 11;
+                    }else{
+                        if(strafe != 0){
+                            diffX *= 3;
+                            diffZ *= 3;
+                        }
+                        x += (diffX * 1.5);
+                        z += (diffZ * 1.5);
+                    }
+                 //   x += (entity.getX() - entity.prevX) * 10;
+                 //   z += (entity.getZ() - entity.prevZ) * 10;
                 }
-                this.player().setPos(x, entity.getY() + this.targetYPosOffset.getValue(), z);
+                this.player().setPos(x, entity.getY() + this.targetYPosOffset.getValue() + nervNetY, z);
                 break;
             }
         }
