@@ -1,5 +1,6 @@
 package de.vandalismdevelopment.vandalism.util.minecraft.impl.rotation;
 
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.WorldUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
@@ -7,6 +8,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+
+import java.util.ArrayList;
 
 public class Rotation {
 
@@ -94,7 +97,8 @@ public class Rotation {
         }
 
         private static Vec3d getNearestPoint(final Entity entity, final Box box, final PlayerEntity player) {
-            final double nearestX = MathHelper.clamp(entity.getX(), box.minX, box.maxX), nearestZ = MathHelper.clamp(entity.getZ(), box.minZ, box.maxZ);
+            final double nearestX = MathHelper.clamp(entity.getX(), box.minX, box.maxX);
+            final double nearestZ = MathHelper.clamp(entity.getZ(), box.minZ, box.maxZ);
             //TODO: Find a better way to calculate this!
             final double entityY = entity.getY();
             final double playerY = player.getY() + player.getEyeHeight(player.getPose());
@@ -103,6 +107,26 @@ public class Rotation {
             return new Vec3d(nearestX, nearestY, nearestZ);
         }
 
+    }
+
+    private static ArrayList<Character> getVisibleHitBoxSides(Entity e, final PlayerEntity player) {
+        final ArrayList<Character> sides = new ArrayList<>();
+        //TODO: check if anything has changed in 1.20.2 regarding hitbox position offsetting
+        final float width = (e.getWidth() + 0.2f) / 2f;
+        final float height = e.getHeight() + 0.2f;
+        final double eposY = e.getY() - 0.1;
+
+        if (player.getZ() < e.getZ() - width || player.getZ() > e.getZ() + width) {
+            sides.add('x');
+        }
+        if (player.getX() < e.getX() - width || player.getX() > e.getX() + width) {
+            sides.add('z');
+        }
+        if (player.getY() + player.getEyeHeight(player.getPose()) < eposY || player.getY() + player.getEyeHeight(player.getPose()) > eposY + height) {
+            sides.add('y');
+        }
+
+        return sides;
     }
 
 }
