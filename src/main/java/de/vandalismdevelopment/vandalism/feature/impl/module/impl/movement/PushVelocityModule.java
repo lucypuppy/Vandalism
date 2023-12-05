@@ -1,8 +1,7 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.event.EntityListener;
-import de.vandalismdevelopment.vandalism.event.FluidListener;
+import de.vandalismdevelopment.vandalism.event.MovementListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.value.Value;
@@ -12,7 +11,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
-public class PushVelocityModule extends Module implements EntityListener, FluidListener {
+public class PushVelocityModule extends Module implements MovementListener {
 
     private final Value<Boolean> modifyEntityPush = new BooleanValue(
             "Modify Entity Push",

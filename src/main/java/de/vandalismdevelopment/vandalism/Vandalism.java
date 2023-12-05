@@ -66,7 +66,7 @@ public class Vandalism {
         this.logger.info("");
         this.printAsciiArtTrimLine();
         for (final String line : ASCII_ART) this.logger.info(line);
-        this.logger.info(this.windowTitle.replaceFirst(this.name, " ".repeat(25)));
+        this.logger.info(this.windowTitle.replaceFirst(this.name, " ".repeat(15)));
         this.printAsciiArtTrimLine();
         this.logger.info("");
         this.logger.info("Starting...");

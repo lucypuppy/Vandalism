@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.feature.impl.script;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.event.KeyboardListener;
+import de.vandalismdevelopment.vandalism.event.InputListener;
 import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureList;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.ScriptParser;
@@ -16,7 +16,7 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ScriptRegistry implements KeyboardListener, TickListener, MinecraftWrapper {
+public class ScriptRegistry implements TickListener, InputListener, MinecraftWrapper {
 
     private final File directory;
     private final FeatureList<Script> scripts;

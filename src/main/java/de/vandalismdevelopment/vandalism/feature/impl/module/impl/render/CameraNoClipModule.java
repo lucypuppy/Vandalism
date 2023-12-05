@@ -1,11 +1,11 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module.impl.render;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.event.CameraClipRaytraceListener;
+import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 
-public class CameraNoClipModule extends Module implements CameraClipRaytraceListener {
+public class CameraNoClipModule extends Module implements RenderListener {
 
     public CameraNoClipModule() {
         super(

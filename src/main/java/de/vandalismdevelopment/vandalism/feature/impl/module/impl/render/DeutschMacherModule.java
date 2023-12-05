@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module.impl.render;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.event.TextRendererListener;
+import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import net.minecraft.util.Formatting;
@@ -11,7 +11,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeutschMacherModule extends Module implements TextRendererListener {
+public class DeutschMacherModule extends Module implements RenderListener {
 
     private final static String[] SUFFIX = new String[]{
             "", "tausend",

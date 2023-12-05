@@ -7,8 +7,6 @@ import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.util.MathUtil;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.MovementUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.Clicker;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.impl.BoxMuellerClicker;
@@ -24,8 +22,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
@@ -36,14 +32,41 @@ public class TestModule extends Module implements TickListener, RenderListener, 
 
     private final Clicker clicker;
 
-    private final Value<Float> mean = new SliderFloatValue("Mean", "mean", this, 15.0F, 0.0F, 20.0F);
+    private final Value<Float> mean = new SliderFloatValue(
+            "Mean",
+            "mean",
+            this,
+            15.0F,
+            0.0F,
+            20.0F
+    );
 
-    private final Value<Float> std = new SliderFloatValue("std", "std", this, 2.0F, 0.0F, 10.0F);
+    private final Value<Float> std = new SliderFloatValue(
+            "std",
+            "std",
+            this,
+            2.0F,
+            0.0F,
+            10.0F
+    );
 
-    private final Value<Integer> updatePossibility = new SliderIntegerValue("updatePossibility", "updatePossibility", this, 50, 0, 100);
+    private final Value<Integer> updatePossibility = new SliderIntegerValue(
+            "updatePossibility",
+            "updatePossibility",
+            this,
+            50,
+            0,
+            100
+    );
 
     public TestModule() {
-        super("Test", "Just for development purposes.", FeatureCategory.DEVELOPMENT, true, false);
+        super(
+                "Test",
+                "Just for development purposes.",
+                FeatureCategory.DEVELOPMENT,
+                true,
+                false
+        );
         this.clicker = new BoxMuellerClicker();
     }
 
@@ -151,7 +174,6 @@ public class TestModule extends Module implements TickListener, RenderListener, 
 
     @Override
     public void onSprint(final SprintEvent event) {
-
     }
 
     @Override
@@ -175,8 +197,7 @@ public class TestModule extends Module implements TickListener, RenderListener, 
         final RotationListener rotation = Vandalism.getInstance().getRotationListener();
         if (rotation.getRotation() == null || rotation.getTargetRotation() == null) return;
         event.yaw = rotation.getRotation().getYaw();
-
-        float[] INPUTS = MovementUtil.getFixedMoveInputs(event.yaw, event.speed);
+        float[] INPUTS = MovementUtil.getFixedMoveInputs(event.yaw);
         if (INPUTS[0] == 0f && INPUTS[1] == 0f) {
             return;
         }
@@ -185,7 +206,6 @@ public class TestModule extends Module implements TickListener, RenderListener, 
 
     @Override
     public void onMoveFlying(final MoveFlyingEvent event) {
-
     }
 
 }

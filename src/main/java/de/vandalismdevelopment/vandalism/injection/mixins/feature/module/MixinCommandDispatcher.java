@@ -23,7 +23,9 @@ import java.util.Collections;
 public abstract class MixinCommandDispatcher<S> {
 
     @Unique
-    private final static SimpleCommandExceptionType STACK_OVERFLOW_EXCEPTION = new SimpleCommandExceptionType(new LiteralMessage("Stack overflow error while parsing command"));
+    private final static SimpleCommandExceptionType VANDALISM_STACK_OVERFLOW_EXCEPTION = new SimpleCommandExceptionType(
+            new LiteralMessage("Stack overflow error while parsing command")
+    );
 
     @Shadow
     protected abstract ParseResults<S> parseNodes(final CommandNode<S> node, final StringReader originalReader, final CommandContextBuilder<S> contextSoFar);
@@ -39,7 +41,9 @@ public abstract class MixinCommandDispatcher<S> {
             try {
                 return this.parseNodes(this.root, command, context);
             } catch (final StackOverflowError ignored) {
-                return new ParseResults<>(context, command, Collections.singletonMap(this.root, STACK_OVERFLOW_EXCEPTION.createWithContext(command)));
+                return new ParseResults<>(context, command, Collections.singletonMap(
+                        this.root, VANDALISM_STACK_OVERFLOW_EXCEPTION.createWithContext(command))
+                );
             }
         }
         return this.parseNodes(this.root, command, context);

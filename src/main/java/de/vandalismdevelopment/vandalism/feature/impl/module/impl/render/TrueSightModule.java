@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module.impl.render;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.event.LivingEntityListener;
+import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.util.RenderUtil;
@@ -11,7 +11,7 @@ import de.vandalismdevelopment.vandalism.value.impl.ColorValue;
 
 import java.awt.*;
 
-public class TrueSightModule extends Module implements LivingEntityListener {
+public class TrueSightModule extends Module implements RenderListener {
 
     public final Value<Boolean> blocks = new BooleanValue(
             "Blocks",

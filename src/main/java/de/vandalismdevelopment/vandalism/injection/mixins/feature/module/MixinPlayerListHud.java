@@ -41,12 +41,12 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
     }
 
     @Unique
-    private final static float SCALE = 0.5f;
+    private final static float VANDALISM_SCALE = 0.5f;
 
     @ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Ljava/lang/Math;min(II)I"), index = 0)
     private int vandalism$betterTabListMoreInfoScale(final int width) {
         final BetterTabListModule betterTabListModule = Vandalism.getInstance().getModuleRegistry().getBetterTabListModule();
-        return betterTabListModule.isEnabled() && betterTabListModule.moreInfo.getValue() ? (int) (width + (SCALE * 30)) : width;
+        return betterTabListModule.isEnabled() && betterTabListModule.moreInfo.getValue() ? (int) (width + (VANDALISM_SCALE * 30)) : width;
     }
 
     @Inject(method = "renderLatencyIcon", at = @At("HEAD"), cancellable = true)
@@ -63,11 +63,11 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
         context.fill(w, y, w + width - a, y + (moreInfo ? 9 : 8), color);
         context.drawTextWithShadow(this.textRenderer(), this.getPlayerName(entry), w, y, entry.getGameMode() == GameMode.SPECTATOR ? -1862270977 : -1);
         if (moreInfo) {
-            final int pingY = (int) (y / SCALE);
-            final int infoX = (int) (x / SCALE) + (int) (width / SCALE);
+            final int pingY = (int) (y / VANDALISM_SCALE);
+            final int infoX = (int) (x / VANDALISM_SCALE) + (int) (width / VANDALISM_SCALE);
             final int latency = entry.getLatency();
             final int gameModeId = entry.getGameMode().getId();
-            final int gameModeY = (int) ((y + (this.textRenderer().fontHeight / 2f)) / SCALE);
+            final int gameModeY = (int) ((y + (this.textRenderer().fontHeight / 2f)) / VANDALISM_SCALE);
             final double pingPercent = Math.min((float) latency / betterTabListModule.highPing.getValue(), 1.0f);
             final Color lowPingColor = betterTabListModule.lowPingColor.getValue();
             final Color averagePingColor = betterTabListModule.averagePingColor.getValue();
@@ -75,7 +75,7 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
             final int pingColor = RenderUtil.interpolateColor(lowPingColor, averagePingColor, highPingColor, pingPercent);
             final String ping = latency + " ms", gameMode = gameModeId + " gm";
             context.getMatrices().push();
-            context.getMatrices().scale(SCALE, SCALE, 1.0f);
+            context.getMatrices().scale(VANDALISM_SCALE, VANDALISM_SCALE, 1.0f);
             context.drawTextWithShadow(this.textRenderer(), ping, infoX - this.textRenderer().getWidth(ping), pingY, pingColor);
             context.drawTextWithShadow(this.textRenderer(), gameMode, infoX - this.textRenderer().getWidth(gameMode), gameModeY, betterTabListModule.getColorFromGameMode(gameModeId));
             context.getMatrices().pop();

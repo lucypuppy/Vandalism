@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.feature.impl.module.impl.render;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.common.StringUtils;
-import de.vandalismdevelopment.vandalism.event.KeyboardListener;
+import de.vandalismdevelopment.vandalism.event.InputListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.util.RenderUtil;
@@ -17,7 +17,7 @@ import org.lwjgl.glfw.GLFW;
 import java.awt.*;
 import java.util.HashMap;
 
-public class BetterTabListModule extends Module implements KeyboardListener {
+public class BetterTabListModule extends Module implements InputListener {
 
     public final Value<Boolean> toggleable = new BooleanValue("Toggleable Tab List", "Makes the Tab List toggleable.", this, false);
 

@@ -1,13 +1,13 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.event.StepListener;
+import de.vandalismdevelopment.vandalism.event.MovementListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderFloatValue;
 
-public class StepModule extends Module implements StepListener {
+public class StepModule extends Module implements MovementListener {
 
     private final Value<Float> stepHeight = new SliderFloatValue(
             "Step Height",

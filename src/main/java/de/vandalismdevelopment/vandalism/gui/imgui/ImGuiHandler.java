@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.gui.imgui;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.event.KeyboardListener;
+import de.vandalismdevelopment.vandalism.event.InputListener;
 import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.gui.minecraft.ImGuiScreen;
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
@@ -17,7 +17,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
 
-public class ImGuiHandler implements KeyboardListener, RenderListener, MinecraftWrapper {
+public class ImGuiHandler implements RenderListener, InputListener, MinecraftWrapper {
 
     private final ImGuiRenderer imGuiRenderer;
 

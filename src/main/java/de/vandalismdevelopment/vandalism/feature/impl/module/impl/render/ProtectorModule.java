@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module.impl.render;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.event.TextRendererListener;
+import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.value.Value;
@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.UUID;
 
-public class ProtectorModule extends Module implements TextRendererListener {
+public class ProtectorModule extends Module implements RenderListener {
 
     private final Value<Boolean> protectUsername = new BooleanValue(
             "Protect Username",

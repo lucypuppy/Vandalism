@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinDownloadingTerrainScreen extends Screen {
 
     @Unique
-    private final static String CANCEL_MESSAGE = "Press [ESC] to cancel.";
+    private final static String VANDALISM_CANCEL_MESSAGE = "Press [ESC] to cancel.";
 
     @Shadow
     public abstract void close();
@@ -30,7 +30,7 @@ public abstract class MixinDownloadingTerrainScreen extends Screen {
     @Inject(method = "render", at = @At("RETURN"))
     private void vandalism$renderEscapingText(final DrawContext context, final int mouseX, final int mouseY, final float delta, final CallbackInfo ci) {
         if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.downloadingTerrainScreenEscaping.getValue()) {
-            context.drawCenteredTextWithShadow(this.textRenderer, CANCEL_MESSAGE, this.width / 2, this.height / 2 - 50 + this.textRenderer.fontHeight, 0xFFFFFF);
+            context.drawCenteredTextWithShadow(this.textRenderer, VANDALISM_CANCEL_MESSAGE, this.width / 2, this.height / 2 - 50 + this.textRenderer.fontHeight, 0xFFFFFF);
         }
     }
 

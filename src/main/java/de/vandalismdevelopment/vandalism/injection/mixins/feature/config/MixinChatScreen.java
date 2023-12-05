@@ -27,11 +27,11 @@ public abstract class MixinChatScreen implements MinecraftWrapper {
     protected TextFieldWidget chatField;
 
     @Unique
-    private int realMaxLength = 0;
+    private int vandalism_realMaxLength = 0;
 
     @Inject(method = "init", at = @At(value = "RETURN"))
     private void vandalism$modifyChatFieldMaxLength(final CallbackInfo ci) {
-        this.realMaxLength = this.chatField.getMaxLength();
+        this.vandalism_realMaxLength = this.chatField.getMaxLength();
         if (Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.customChatLength.getValue()) {
             this.chatField.setMaxLength(Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.maxChatLength.getValue());
         }
@@ -42,11 +42,11 @@ public abstract class MixinChatScreen implements MinecraftWrapper {
         if (Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.displayTypedChars.getValue()) {
             final int current = this.chatField.getText().length();
             final MutableText text = Text.literal(Formatting.RESET.toString() + current + Formatting.DARK_GRAY + " / ");
-            text.append(Text.literal(String.valueOf(this.realMaxLength)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Color.RED.getRGB()))));
+            text.append(Text.literal(String.valueOf(this.vandalism_realMaxLength)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Color.RED.getRGB()))));
             text.append(Text.literal(Formatting.DARK_GRAY + " (" + Formatting.DARK_RED + this.chatField.getMaxLength() + Formatting.DARK_GRAY + ")"));
             final int x = this.chatField.getX() + this.chatField.getWidth() - this.textRenderer().getWidth(text) - 2;
             final int y = this.chatField.getY() - this.textRenderer().fontHeight - 2;
-            final int color = RenderUtil.interpolateColor(Color.GREEN, Color.YELLOW, Color.RED, Math.min((float) current / this.realMaxLength, 1.0f));
+            final int color = RenderUtil.interpolateColor(Color.GREEN, Color.YELLOW, Color.RED, Math.min((float) current / this.vandalism_realMaxLength, 1.0f));
             context.drawText(this.textRenderer(), text, x, y, color, true);
         }
     }

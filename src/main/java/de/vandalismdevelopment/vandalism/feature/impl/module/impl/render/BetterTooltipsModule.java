@@ -4,7 +4,7 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.florianmichael.rclasses.io.model.ByteCountDataOutput;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.event.TooltipListener;
+import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.util.RenderUtil;
@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-public class BetterTooltipsModule extends Module implements TooltipListener {
+public class BetterTooltipsModule extends Module implements RenderListener {
 
     public BetterTooltipsModule() {
         super("Better Tooltips", "Improves item tooltips from the game.", FeatureCategory.RENDER, false, false);

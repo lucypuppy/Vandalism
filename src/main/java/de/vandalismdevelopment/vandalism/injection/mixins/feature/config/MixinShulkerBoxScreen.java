@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.Unique;
 public abstract class MixinShulkerBoxScreen extends HandledScreen<ShulkerBoxScreenHandler> implements ScreenHandlerProvider<ShulkerBoxScreenHandler> {
 
     @Unique
-    private final int rows = 3;
+    private final static int VANDALISM_ROWS = 3;
 
     public MixinShulkerBoxScreen(final ShulkerBoxScreenHandler handler, final PlayerInventory inventory, final Text title) {
         super(handler, inventory, title);
@@ -26,8 +26,8 @@ public abstract class MixinShulkerBoxScreen extends HandledScreen<ShulkerBoxScre
     protected void init() {
         super.init();
         if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.manageContainerButtons.getValue()) {
-            this.addDrawableChild(ButtonWidget.builder(Text.literal("Steal"), b -> InventoryUtil.quickMoveInventory(this, 0, this.rows * 9)).dimensions(this.x + this.backgroundWidth - 108, this.y - 14, 50, 12).build());
-            this.addDrawableChild(ButtonWidget.builder(Text.literal("Store"), b -> InventoryUtil.quickMoveInventory(this, this.rows * 9, this.rows * 9 + 44)).dimensions(this.x + this.backgroundWidth - 56, this.y - 14, 50, 12).build());
+            this.addDrawableChild(ButtonWidget.builder(Text.literal("Steal"), b -> InventoryUtil.quickMoveInventory(this, 0, VANDALISM_ROWS * 9)).dimensions(this.x + this.backgroundWidth - 108, this.y - 14, 50, 12).build());
+            this.addDrawableChild(ButtonWidget.builder(Text.literal("Store"), b -> InventoryUtil.quickMoveInventory(this, VANDALISM_ROWS * 9, this.VANDALISM_ROWS * 9 + 44)).dimensions(this.x + this.backgroundWidth - 56, this.y - 14, 50, 12).build());
         }
     }
 
