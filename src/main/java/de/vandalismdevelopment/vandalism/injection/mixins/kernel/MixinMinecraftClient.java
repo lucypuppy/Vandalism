@@ -34,12 +34,12 @@ public abstract class MixinMinecraftClient {
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;onResolutionChanged()V"))
     private void vandalism$startMod(final CallbackInfo ci) {
-        Vandalism.getInstance().start(this.window, this.runDirectory);
+        Vandalism.getInstance().preStart(this.window, this.runDirectory);
     }
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
     private void vandalism$startTimeCalculation2(final CallbackInfo ci) {
-        Vandalism.getInstance().initEnd();
+        Vandalism.getInstance().postStart();
 
         Vandalism.getInstance().getLogger().info("");
         Vandalism.getInstance().getLogger().info("Minecraft loading took ~" + (System.currentTimeMillis() - vandalism_startTime) + "ms.");
