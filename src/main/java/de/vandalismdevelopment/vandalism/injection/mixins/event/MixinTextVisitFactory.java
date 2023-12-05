@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.event;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.event.TextRendererListener;
+import de.vandalismdevelopment.vandalism.event.RenderListener;
 import net.minecraft.text.TextVisitFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -12,8 +12,8 @@ public abstract class MixinTextVisitFactory {
 
     @ModifyArg(method = {"visitFormatted(Ljava/lang/String;ILnet/minecraft/text/Style;Lnet/minecraft/text/CharacterVisitor;)Z"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/text/TextVisitFactory;visitFormatted(Ljava/lang/String;ILnet/minecraft/text/Style;Lnet/minecraft/text/Style;Lnet/minecraft/text/CharacterVisitor;)Z", ordinal = 0), index = 0)
     private static String vandalism$callTextDrawEvent(final String text) {
-        final TextRendererListener.TextDrawEvent textDrawEvent = new TextRendererListener.TextDrawEvent(text);
-        DietrichEvents2.global().postInternal(TextRendererListener.TextDrawEvent.ID, textDrawEvent);
+        final RenderListener.TextDrawEvent textDrawEvent = new RenderListener.TextDrawEvent(text);
+        DietrichEvents2.global().postInternal(RenderListener.TextDrawEvent.ID, textDrawEvent);
         return textDrawEvent.text;
     }
 

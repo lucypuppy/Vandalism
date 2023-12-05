@@ -1,13 +1,15 @@
 package de.vandalismdevelopment.vandalism.util.minecraft.impl;
 
-import de.vandalismdevelopment.vandalism.util.MathUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftUtil;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class MovementUtil extends MinecraftUtil {
 
-    private static float[] INPUTS = new float[2];
+    private final static float DEG_TO_RAD = 0.01745329238f;
+
+    private final static float[] POSSIBLE_MOVEMENTS = new float[]{-1F, 0.0F, 1F};
+
     public static double getDirection() {
         if (player() == null) return 0;
         return (Math.atan2(player().forwardSpeed, player().sidewaysSpeed) / Math.PI * 180.0F + player().getYaw()) * Math.PI / 180.0F;
@@ -25,13 +27,13 @@ public class MovementUtil extends MinecraftUtil {
         player().setPos(player().getX() - Math.sin(direction) * horizontal, player().getY() + vertical, player().getZ() + Math.cos(direction) * horizontal);
     }
 
-    public static float[] getFixedMoveInputs(float rotationYaw, float speed){
-        INPUTS = new float[2];
+    public static float[] getFixedMoveInputs(final float yaw) {
+        final float[] INPUTS = new float[2];
         if (Math.abs(player().forwardSpeed) > 0F || Math.abs(player().sidewaysSpeed) > 0F) {
             final float wantedYaw = getInputAngle(player().getYaw());
-            Vec3d movementInput = new Vec3d(player().forwardSpeed, player().upwardSpeed, player().sidewaysSpeed);
-            final float currentDX = MathHelper.sin(rotationYaw * MathUtil.DEG_TO_RAD);
-            final float currentDZ = MathHelper.cos(rotationYaw * MathUtil.DEG_TO_RAD);
+            Vec3d movementInput;
+            final float currentDX = MathHelper.sin(yaw * DEG_TO_RAD);
+            final float currentDZ = MathHelper.cos(yaw * DEG_TO_RAD);
             // .. as seen here
             float currentBestForward = 1.0F;
             float currentBestStrafing = 0.0F;
@@ -43,14 +45,13 @@ public class MovementUtil extends MinecraftUtil {
             // is also dependent on whether the player is sneaking or using an item
             float mag = Math.max(Math.abs(player().forwardSpeed), Math.abs(player().sidewaysSpeed));
             // loop through all possible combinations of player.moveForward and player.moveStrafing
-            for (float forward : MathUtil.POSSIBLE_MOVEMENTS) {
-                for (float strafing : MathUtil.POSSIBLE_MOVEMENTS) {
+            for (float forward : POSSIBLE_MOVEMENTS) {
+                for (float strafing : POSSIBLE_MOVEMENTS) {
                     // don't do anything when the combination would make the player stand still
                     // (this would fuck up sin and cos)
                     if (forward == 0.0F && strafing == 0.0F) continue;
-
                     movementInput = new Vec3d(forward, player().upwardSpeed, strafing);
-                   // Vec3d vec3d = (d > 1.0 ? movementInput.normalize() : movementInput).multiply((double)speed);
+                    // Vec3d vec3d = (d > 1.0 ? movementInput.normalize() : movementInput).multiply((double)speed);
                     // motionX and motionZ the player would have with
                     // the current combination of moveForward and moveStrafing
                     //vec3d.x * (double)g - vec3d.z * (double)f
@@ -62,7 +63,7 @@ public class MovementUtil extends MinecraftUtil {
                     //   mc.thePlayer.addChatMessage(new ChatComponentText("" + (180.0 / Math.PI)));
                     final float angle = (float) (Math.atan2(mZ, mX) * 180.0D / Math.PI - 90.0F);
                     // ... and the difference of it to the wanted yaw relative to the player
-                    final float diff = Math.abs(MathUtil.wrapAngleTo180_float(angle - wantedYaw));
+                    final float diff = Math.abs(MathHelper.wrapDegrees(angle - wantedYaw));
                     // set combination, if signed distance between
                     // wantedYaw and angle is lower then the last best difference
                     if (diff < currentBestDiff) {
@@ -77,9 +78,10 @@ public class MovementUtil extends MinecraftUtil {
         }
         return INPUTS;
     }
-    public static float getInputAngle(float yaw) {
-        float vertical = player().forwardSpeed;
-        float horizontal = player().sidewaysSpeed;
+
+    public static float getInputAngle(final float yaw) {
+        final float vertical = player().forwardSpeed;
+        final float horizontal = player().sidewaysSpeed;
         if (vertical > 0) {
             if (horizontal > 0) return yaw - 45F;
             else if (horizontal < 0) return yaw + 45F;
@@ -87,7 +89,7 @@ public class MovementUtil extends MinecraftUtil {
         } else if (vertical < 0) {
             if (horizontal > 0) return yaw - 135F;
             else if (horizontal < 0) return yaw + 135F;
-            else return MathUtil.wrapAngleTo180_float(yaw - 180f);
+            else return MathHelper.wrapDegrees(yaw - 180f);
         }
         if (horizontal > 0) return yaw - 90f;
         else if (horizontal < 0) return yaw + 90f;

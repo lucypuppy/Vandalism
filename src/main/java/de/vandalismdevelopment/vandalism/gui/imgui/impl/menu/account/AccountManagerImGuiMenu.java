@@ -24,8 +24,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class AccountManagerImGuiMenu extends ImGuiMenu {
 
@@ -43,7 +41,7 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
 
     private final ImString crackedUsername, crackedUUID, state, currentAccountData;
 
-    private final ExecutorService executor;
+    private Thread thread;
 
     public AccountManagerImGuiMenu() {
         super("Account Manager");
@@ -52,7 +50,6 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
         this.state = new ImString(200);
         this.currentAccountData = new ImString();
         this.resetState();
-        this.executor = Executors.newSingleThreadExecutor();
     }
 
     private void resetState() {
@@ -60,6 +57,10 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
     }
 
     private void delayedResetState() {
+        if (this.thread != null) {
+            this.thread.interrupt();
+            this.thread = null;
+        }
         try {
             Thread.sleep(5000);
         } catch (final InterruptedException ignored) {
@@ -114,10 +115,11 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                                     if (account instanceof CrackedAccount) {
                                         this.login(account);
                                     } else {
-                                        this.executor.submit(() -> {
+                                        this.thread = new Thread(() -> {
                                             this.login(account);
                                             this.delayedResetState();
                                         });
+                                        this.thread.start();
                                     }
                                 }
                                 ImGui.sameLine();
@@ -171,7 +173,7 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                 }
             }
             if (ImGui.button("Add Microsoft Account##accountmanageraddmicrosoftaccount")) {
-                this.executor.submit(() -> {
+                this.thread = new Thread(() -> {
                     try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
                         final StepFullJavaSession.FullJavaSession mcProfile = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.getFromInput(httpClient, new StepMsaDeviceCode.MsaDeviceCodeCallback(msaDeviceCode -> {
                             this.state.set("Please open the url " + msaDeviceCode.getDirectVerificationUri());
@@ -188,6 +190,7 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                     }
                     this.delayedResetState();
                 });
+                this.thread.start();
             }
             ImGui.separator();
             ImGui.text("State");

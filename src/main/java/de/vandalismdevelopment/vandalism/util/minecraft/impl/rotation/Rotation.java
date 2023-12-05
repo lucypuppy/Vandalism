@@ -1,8 +1,7 @@
 package de.vandalismdevelopment.vandalism.util.minecraft.impl.rotation;
 
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.WorldUtil;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Box;
@@ -10,12 +9,9 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class Rotation {
-
-    private static MinecraftClient mc() {
-        return MinecraftClient.getInstance();
-    }
+public class Rotation extends MinecraftUtil {
 
     private float yaw, pitch;
 
@@ -56,9 +52,9 @@ public class Rotation {
     public static class Builder {
 
         public static Rotation build(final Entity entity, final boolean bestHitVec, final double range, final double precision) {
-            if (mc().player == null) return null;
+            if (player() == null) return null;
             final Box box = entity.getBoundingBox();
-            final Vec3d eyePos = mc().player.getEyePos(), getEntityVector = bestHitVec ? getNearestPoint(entity, box, mc().player) : new Vec3d(entity.getX(), entity.getY(), entity.getZ());
+            final Vec3d eyePos = player().getEyePos(), getEntityVector = bestHitVec ? getNearestPoint(entity, box, player()) : new Vec3d(entity.getX(), entity.getY(), entity.getZ());
             Rotation normalRotations = build(getEntityVector, eyePos);
             if (WorldUtil.rayTraceBlock(normalRotations.getVector(), range)) {
                 return normalRotations;
@@ -109,23 +105,22 @@ public class Rotation {
 
     }
 
-    private static ArrayList<Character> getVisibleHitBoxSides(Entity e, final PlayerEntity player) {
-        final ArrayList<Character> sides = new ArrayList<>();
+    //TODO: Does this make sense? Because why should someone create an entire list of characters?
+    private static List<Character> getVisibleHitBoxSides(final Entity entity, final PlayerEntity player) {
+        final List<Character> sides = new ArrayList<>();
         //TODO: check if anything has changed in 1.20.2 regarding hitbox position offsetting
-        final float width = (e.getWidth() + 0.2f) / 2f;
-        final float height = e.getHeight() + 0.2f;
-        final double eposY = e.getY() - 0.1;
-
-        if (player.getZ() < e.getZ() - width || player.getZ() > e.getZ() + width) {
+        final float width = (entity.getWidth() + 0.2f) / 2f;
+        final float height = entity.getHeight() + 0.2f;
+        final double eyePosY = entity.getY() - 0.1;
+        if (player.getZ() < entity.getZ() - width || player.getZ() > entity.getZ() + width) {
             sides.add('x');
         }
-        if (player.getX() < e.getX() - width || player.getX() > e.getX() + width) {
+        if (player.getX() < entity.getX() - width || player.getX() > entity.getX() + width) {
             sides.add('z');
         }
-        if (player.getY() + player.getEyeHeight(player.getPose()) < eposY || player.getY() + player.getEyeHeight(player.getPose()) > eposY + height) {
+        if (player.getY() + player.getEyeHeight(player.getPose()) < eyePosY || player.getY() + player.getEyeHeight(player.getPose()) > eyePosY + height) {
             sides.add('y');
         }
-
         return sides;
     }
 

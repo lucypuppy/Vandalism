@@ -25,11 +25,11 @@ public abstract class MixinMinecraftClient {
     public File runDirectory;
 
     @Unique
-    private long startTime = 0L;
+    private long vandalism_startTime = 0L;
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/io/File;toPath()Ljava/nio/file/Path;", ordinal = 0))
     private void vandalism$startTimeCalculation1(final CallbackInfo ci) {
-        startTime = System.currentTimeMillis();
+        vandalism_startTime = System.currentTimeMillis();
     }
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;onResolutionChanged()V"))
@@ -40,7 +40,7 @@ public abstract class MixinMinecraftClient {
     @Inject(method = "<init>", at = @At(value = "RETURN"))
     private void vandalism$startTimeCalculation2(final CallbackInfo ci) {
         Vandalism.getInstance().getLogger().info("");
-        Vandalism.getInstance().getLogger().info("Minecraft loading took " + (System.currentTimeMillis() - startTime) + "ms.");
+        Vandalism.getInstance().getLogger().info("Minecraft loading took ~" + (System.currentTimeMillis() - vandalism_startTime) + "ms.");
         Vandalism.getInstance().getLogger().info("");
     }
 

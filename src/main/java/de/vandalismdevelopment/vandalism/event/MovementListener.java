@@ -1,6 +1,7 @@
 package de.vandalismdevelopment.vandalism.event;
 
 import de.florianmichael.dietrichevents2.AbstractEvent;
+import de.florianmichael.dietrichevents2.CancellableEvent;
 import net.minecraft.util.math.Vec3d;
 
 public interface MovementListener {
@@ -12,11 +13,12 @@ public interface MovementListener {
 
         public final static int ID = 17;
 
-        public boolean sprinting, bypass;
+        public boolean sprinting;
+        public boolean force;
 
         public SprintEvent(final boolean sprinting) {
             this.sprinting = sprinting;
-            this.bypass = false;
+            this.force = false;
         }
 
         @Override
@@ -92,6 +94,88 @@ public interface MovementListener {
         @Override
         public void call(final MovementListener listener) {
             listener.onMoveFlying(this);
+        }
+
+    }
+
+    default void onEntityPush(final EntityPushEvent event) {
+    }
+
+    class EntityPushEvent extends CancellableEvent<MovementListener> {
+
+        public final static int ID = 8;
+
+        public double value;
+
+        public EntityPushEvent(final double value) {
+            this.value = value;
+        }
+
+        @Override
+        public void call(final MovementListener listener) {
+            listener.onEntityPush(this);
+        }
+
+    }
+
+    default void onFluidPush(final FluidPushEvent event) {
+    }
+
+    class FluidPushEvent extends CancellableEvent<MovementListener> {
+
+        public final static int ID = 9;
+
+        public double speed;
+
+        public FluidPushEvent(final double speed) {
+            this.speed = speed;
+        }
+
+        @Override
+        public void call(final MovementListener listener) {
+            listener.onFluidPush(this);
+        }
+
+    }
+
+    default void onStep(final StepEvent event) {
+    }
+
+    class StepEvent extends AbstractEvent<MovementListener> {
+
+        public final static int ID = 10;
+
+        public float stepHeight;
+
+        public StepEvent(final float stepHeight) {
+            this.stepHeight = stepHeight;
+        }
+
+        @Override
+        public void call(final MovementListener listener) {
+            listener.onStep(this);
+        }
+
+    }
+
+    default void onStepSuccess(final StepSuccessEvent event) {
+    }
+
+    class StepSuccessEvent extends AbstractEvent<MovementListener> {
+
+        public final static int ID = 22;
+
+        public final Vec3d movement;
+        public Vec3d adjustMovementForCollisions;
+
+        public StepSuccessEvent(final Vec3d movement, final Vec3d adjustMovementForCollisions) {
+            this.movement = movement;
+            this.adjustMovementForCollisions = adjustMovementForCollisions;
+        }
+
+        @Override
+        public void call(final MovementListener listener) {
+            listener.onStepSuccess(this);
         }
 
     }

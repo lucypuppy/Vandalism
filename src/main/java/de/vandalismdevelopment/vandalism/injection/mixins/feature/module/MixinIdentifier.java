@@ -28,7 +28,7 @@ public abstract class MixinIdentifier {
         final Vandalism instance = Vandalism.getInstance();
         if (instance != null) {
             final ModuleRegistry moduleRegistry = instance.getModuleRegistry();
-            if (moduleRegistry != null && moduleRegistry.isDone()) {
+            if (moduleRegistry != null) {
                 final ExploitFixerModule exploitFixerModule = moduleRegistry.getExploitFixerModule();
                 if (exploitFixerModule != null && exploitFixerModule.isEnabled() && exploitFixerModule.blockInvalidIdentifierCrash.getValue()) {
                     if (!isNamespaceValid(namespace)) {
@@ -44,7 +44,7 @@ public abstract class MixinIdentifier {
         final Vandalism instance = Vandalism.getInstance();
         if (instance != null) {
             final ModuleRegistry moduleRegistry = instance.getModuleRegistry();
-            if (moduleRegistry != null && moduleRegistry.isDone()) {
+            if (moduleRegistry != null) {
                 final ExploitFixerModule exploitFixerModule = moduleRegistry.getExploitFixerModule();
                 if (exploitFixerModule != null && exploitFixerModule.isEnabled() && exploitFixerModule.blockInvalidIdentifierCrash.getValue()) {
                     if (!isPathValid(namespace)) {

@@ -2,14 +2,14 @@ package de.vandalismdevelopment.vandalism.value.impl;
 
 import com.google.gson.JsonObject;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.event.KeyboardListener;
+import de.vandalismdevelopment.vandalism.event.InputListener;
 import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
 import de.vandalismdevelopment.vandalism.value.IValue;
 import de.vandalismdevelopment.vandalism.value.Value;
 import imgui.ImGui;
 import org.lwjgl.glfw.GLFW;
 
-public class KeyInputValue extends Value<GlfwKeyName> implements KeyboardListener {
+public class KeyInputValue extends Value<GlfwKeyName> implements InputListener {
 
     private boolean listen;
 

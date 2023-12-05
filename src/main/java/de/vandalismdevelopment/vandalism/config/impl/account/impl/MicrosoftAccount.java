@@ -11,7 +11,6 @@ import net.raphimc.minecraftauth.step.java.session.StepFullJavaSession;
 import net.raphimc.minecraftauth.util.MicrosoftConstants;
 import org.apache.http.impl.client.CloseableHttpClient;
 
-import javax.crypto.SecretKey;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,12 +27,22 @@ public class MicrosoftAccount extends Account {
     public void login() throws Throwable {
         try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
             JsonObject jsonObject = JsonParser.parseString(this.data).getAsJsonObject();
-            final StepFullJavaSession.FullJavaSession mcProfile = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.refresh(httpClient, MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.fromJson(jsonObject));
+            final StepFullJavaSession.FullJavaSession mcProfile = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.refresh(
+                    httpClient,
+                    MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.fromJson(jsonObject)
+            );
             jsonObject = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.toJson(mcProfile);
             this.data = jsonObject.toString();
             this.setUsername(mcProfile.getMcProfile().getName());
             this.setUuid(mcProfile.getMcProfile().getId());
-            this.setSession(new Session(this.getUsername(), this.getUuid(), mcProfile.getMcProfile().getMcToken().getAccessToken(), Optional.empty(), Optional.empty(), Session.AccountType.MSA));
+            this.setSession(new Session(
+                    this.getUsername(),
+                    this.getUuid(),
+                    mcProfile.getMcProfile().getMcToken().getAccessToken(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Session.AccountType.MSA
+            ));
         }
         Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getAccountConfig());
     }
@@ -41,8 +50,7 @@ public class MicrosoftAccount extends Account {
     @Override
     public void onConfigSave(final JsonObject jsonObject) {
         try {
-            final SecretKey secretKey = EncryptionUtil.getKeyFromPassword(this.getUsername());
-            jsonObject.addProperty("data", EncryptionUtil.encrypt(this.data, secretKey));
+            jsonObject.addProperty("data", EncryptionUtil.encrypt(this.data, EncryptionUtil.getKeyFromPassword(this.getUsername())));
         } catch (final Throwable throwable) {
             Vandalism.getInstance().getLogger().error("Failed to save a microsoft account: " + this.getUsername());
         }

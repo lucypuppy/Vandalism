@@ -9,6 +9,7 @@
     "event.MixinChatScreen",
     "event.MixinClientConnection",
     "event.MixinClientPlayerEntity",
+    "event.MixinClientWorld",
     "event.MixinEntity",
     "event.MixinInGameHud",
     "event.MixinItemStack",

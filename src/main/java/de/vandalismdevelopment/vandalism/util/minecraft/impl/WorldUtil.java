@@ -28,14 +28,25 @@ public class WorldUtil extends MinecraftUtil {
         }
         final Vec3d playerPosition = player().getEyePos();
         final Vec3d lookDirection = targetPosition.subtract(playerPosition).normalize();
-        final Vec3d currentPos = playerPosition.add(lookDirection.x * maxDistance, lookDirection.y * maxDistance, lookDirection.z * maxDistance);
-        final BlockHitResult rayTraceResult = world().raycast(new RaycastContext(playerPosition, currentPos, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, player()));
+        final Vec3d currentPos = playerPosition.add(
+                lookDirection.x * maxDistance,
+                lookDirection.y * maxDistance,
+                lookDirection.z * maxDistance
+        );
+        final BlockHitResult rayTraceResult = world().raycast(
+                new RaycastContext(
+                        playerPosition,
+                        currentPos,
+                        RaycastContext.ShapeType.OUTLINE,
+                        RaycastContext.FluidHandling.NONE,
+                        player()
+                )
+        );
         return rayTraceResult == null || rayTraceResult.getType() != HitResult.Type.BLOCK;
     }
 
-    public static double getPlayerEyeVectorDistance(PlayerEntity player, Vec3d rotationVector){
-        final Vec3d eyes = player.getEyePos();
-        return eyes.distanceTo(rotationVector);
+    public static double getPlayerEyeVectorDistance(final PlayerEntity player, final Vec3d rotationVector) {
+        return player.getEyePos().distanceTo(rotationVector);
     }
 
 }

@@ -44,7 +44,7 @@ public abstract class MixinServerResourcePackProvider implements MinecraftWrappe
     }
 
     @Unique
-    private void zipResourcePackFiles(final File folder, final String currentPath, final ZipOutputStream zos) throws IOException {
+    private void vandalism_zipResourcePackFiles(final File folder, final String currentPath, final ZipOutputStream zos) throws IOException {
         if (folder == null) return;
         final File[] files = folder.listFiles();
         if (files == null) return;
@@ -52,7 +52,7 @@ public abstract class MixinServerResourcePackProvider implements MinecraftWrappe
             String entryName = currentPath + file.getName();
             if (file.isDirectory()) {
                 entryName += "/";
-                zipResourcePackFiles(file, entryName, zos);
+                vandalism_zipResourcePackFiles(file, entryName, zos);
             } else {
                 try (final FileInputStream fis = new FileInputStream(file)) {
                     zos.putNextEntry(new ZipEntry(entryName));
@@ -102,7 +102,7 @@ public abstract class MixinServerResourcePackProvider implements MinecraftWrappe
                 final File[] dirFiles = tempDir.listFiles();
                 if (dirFiles != null && dirFiles.length > 0) {
                     try (final FileOutputStream fos = new FileOutputStream(new File(tempDir.getParentFile(), resourcePackFile.getName() + ".zip")); final ZipOutputStream zos = new ZipOutputStream(fos)) {
-                        this.zipResourcePackFiles(tempDir, "", zos);
+                        this.vandalism_zipResourcePackFiles(tempDir, "", zos);
                     } catch (final IOException ioException) {
                         Vandalism.getInstance().getLogger().error("Failed to finish conversion of server resource pack into a resource pack zip!", ioException);
                     }

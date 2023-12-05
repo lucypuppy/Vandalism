@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.feature.impl.module;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.event.KeyboardListener;
+import de.vandalismdevelopment.vandalism.event.InputListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureList;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.combat.BowSpammerModule;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.development.DebugModule;
@@ -15,141 +15,93 @@ import de.vandalismdevelopment.vandalism.feature.impl.module.impl.render.*;
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import org.lwjgl.glfw.GLFW;
 
-public class ModuleRegistry implements MinecraftWrapper, KeyboardListener {
+public class ModuleRegistry implements InputListener, MinecraftWrapper {
 
-    private AmbienceModule ambienceModule;
-    private AntiFOVModule antiFOVModule;
-    private AutoFishModule autoFishModule;
-    private AutoRespawnModule autoRespawnModule;
-    private BetterTabListModule betterTabListModule;
-    private BetterTooltipsModule betterTooltipsModule;
-    private BlockDensityModule blockDensityModule;
-    private BowSpammerModule bowSpammerModule;
-    private BungeeCordSpooferModule bungeeCordSpooferModule;
-    private CameraNoClipModule cameraNoClipModule;
-    private CraftCarryModule craftCarryModule;
-    private ConsoleSpammerModule consoleSpammerModule;
-    private DebugModule debugModule;
-    private DeutschMacherModule deutschMacherModule;
-    private ESPModule espModule;
-    private ElytraFlightModule elytraFlightModule;
-    private ExploitFixerModule exploitFixerModule;
-    private FastUseModule fastUseModule;
-    private FlightModule flightModule;
-    private GodModeModule godModeModule;
-    private IllegalBlockPlaceModule illegalBlockPlaceModule;
-    private InteractionSpammerModule interactionSpammerModule;
-    private ItemStackLoggerModule itemStackLoggerModule;
-    private JoinLeaveModule joinLeaveModule;
-    private MessageEncryptorModule messageEncryptorModule;
-    private ModPacketBlockerModule modPacketBlockerModule;
-    private NoFallModule noFallModule;
-    private NoteBlockPlayerModule noteBlockPlayerModule;
-    private PacketLoggerModule packetLoggerModule;
-    private PhaseModule phaseModule;
-    private PushVelocityModule pushVelocityModule;
-    private ProtectorModule protectorModule;
-    private ServerCrasherModule serverCrasherModule;
-    private SpeedModule speedModule;
-    private StepModule stepModule;
-    private TestModule testModule;
-    private TrueSightModule trueSightModule;
-    private VelocityModule velocityModule;
-    private VisualThrottleModule visualThrottleModule;
-
-    private SprintModule sprintModule;
+    private final BetterTabListModule betterTabListModule;
+    private final ESPModule espModule;
+    private final ExploitFixerModule exploitFixerModule;
+    private final FastUseModule fastUseModule;
+    private final IllegalBlockPlaceModule illegalBlockPlaceModule;
+    private final MessageEncryptorModule messageEncryptorModule;
+    private final ModPacketBlockerModule modPacketBlockerModule;
+    private final TrueSightModule trueSightModule;
+    private final VisualThrottleModule visualThrottleModule;
 
     public BetterTabListModule getBetterTabListModule() {
         return this.betterTabListModule;
     }
-
     public ESPModule getEspModule() {
         return this.espModule;
     }
-
     public ExploitFixerModule getExploitFixerModule() {
         return this.exploitFixerModule;
     }
-
     public FastUseModule getFastUseModule() {
         return this.fastUseModule;
     }
-
     public IllegalBlockPlaceModule getIllegalBlockPlaceModule() {
         return this.illegalBlockPlaceModule;
     }
-
     public MessageEncryptorModule getMessageEncryptorModule() {
         return this.messageEncryptorModule;
     }
-
     public ModPacketBlockerModule getModPacketBlockerModule() {
         return this.modPacketBlockerModule;
     }
-
     public TrueSightModule getTrueSightModule() {
         return this.trueSightModule;
     }
-
     public VisualThrottleModule getVisualThrottleModule() {
         return this.visualThrottleModule;
     }
 
-    private boolean done;
-
     private final FeatureList<Module> modules;
 
     public ModuleRegistry() {
-        this.done = false;
         this.modules = new FeatureList<>();
-        this.register();
-        DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
-        this.done = true;
-    }
-
-    private void register() {
         this.registerModules(
-                this.sprintModule = new SprintModule(),
-                this.ambienceModule = new AmbienceModule(),
-                this.antiFOVModule = new AntiFOVModule(),
-                this.autoFishModule = new AutoFishModule(),
-                this.autoRespawnModule = new AutoRespawnModule(),
-                this.betterTabListModule = new BetterTabListModule(),
-                this.betterTooltipsModule = new BetterTooltipsModule(),
-                this.blockDensityModule = new BlockDensityModule(),
-                this.bowSpammerModule = new BowSpammerModule(),
-                this.bungeeCordSpooferModule = new BungeeCordSpooferModule(),
-                this.cameraNoClipModule = new CameraNoClipModule(),
-                this.craftCarryModule = new CraftCarryModule(),
-                this.consoleSpammerModule = new ConsoleSpammerModule(),
-                this.debugModule = new DebugModule(),
-                this.deutschMacherModule = new DeutschMacherModule(),
-                this.espModule = new ESPModule(),
-                this.elytraFlightModule = new ElytraFlightModule(),
+                new BowSpammerModule(),
+                new DebugModule(),
+                new PacketLoggerModule(),
+                new TestModule(),
+                new BungeeCordSpooferModule(),
+                new ConsoleSpammerModule(),
+                new CraftCarryModule(),
                 this.exploitFixerModule = new ExploitFixerModule(),
+                new GodModeModule(),
+                new JoinLeaveModule(),
+                new ServerCrasherModule(),
+                new AutoFishModule(),
+                new AutoRespawnModule(),
                 this.fastUseModule = new FastUseModule(),
-                this.flightModule = new FlightModule(),
-                this.godModeModule = new GodModeModule(),
                 this.illegalBlockPlaceModule = new IllegalBlockPlaceModule(),
-                this.interactionSpammerModule = new InteractionSpammerModule(),
-                this.itemStackLoggerModule = new ItemStackLoggerModule(),
-                this.joinLeaveModule = new JoinLeaveModule(),
+                new InteractionSpammerModule(),
+                new ItemStackLoggerModule(),
                 this.messageEncryptorModule = new MessageEncryptorModule(),
                 this.modPacketBlockerModule = new ModPacketBlockerModule(),
-                this.noFallModule = new NoFallModule(),
-                this.noteBlockPlayerModule = new NoteBlockPlayerModule(),
-                this.packetLoggerModule = new PacketLoggerModule(),
-                this.phaseModule = new PhaseModule(),
-                this.pushVelocityModule = new PushVelocityModule(),
-                this.protectorModule = new ProtectorModule(),
-                this.serverCrasherModule = new ServerCrasherModule(),
-                this.speedModule = new SpeedModule(),
-                this.stepModule = new StepModule(),
-                this.testModule = new TestModule(),
+                new NoteBlockPlayerModule(),
+                new BlockDensityModule(),
+                new ElytraFlightModule(),
+                new FlightModule(),
+                new FOVFuckerModule(),
+                new NoFallModule(),
+                new PhaseModule(),
+                new PushVelocityModule(),
+                new SpeedModule(),
+                new SprintModule(),
+                new StepModule(),
+                new VelocityModule(),
+                new AmbienceModule(),
+                this.betterTabListModule = new BetterTabListModule(),
+                new BetterTooltipsModule(),
+                new CameraNoClipModule(),
+                new DeutschMacherModule(),
+                this.espModule = new ESPModule(),
+                new ProtectorModule(),
                 this.trueSightModule = new TrueSightModule(),
-                this.velocityModule = new VelocityModule(),
                 this.visualThrottleModule = new VisualThrottleModule()
         );
+        DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
     }
 
     private void registerModules(final Module... modules) {
@@ -181,10 +133,6 @@ public class ModuleRegistry implements MinecraftWrapper, KeyboardListener {
                 module.toggle();
             }
         }
-    }
-
-    public boolean isDone() {
-        return this.done;
     }
 
 }
