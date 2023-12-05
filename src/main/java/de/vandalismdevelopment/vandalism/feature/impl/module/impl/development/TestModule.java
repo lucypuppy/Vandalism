@@ -19,7 +19,12 @@ import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderFloatValue;
 import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderIntegerValue;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityGroup;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
@@ -77,17 +82,44 @@ public class TestModule extends Module implements TickListener, RenderListener, 
             return;
         }
         final Entity target = entities.get(0);
-        final Rotation rotation = Rotation.Builder.build(target, true, 3.5f, 0.1D);
-        if (rotation != null) {
-            Vandalism.getInstance().getRotationListener().setRotation(rotation, new Vec2f(179, 180), RotationPriority.HIGH);
+        final Rotation rotation = Rotation.Builder.build(target, true, 3f, 1D / 32);
+
+        // ChatUtil.chatMessage("" + h + " / " + g + " / " + f);
+        if (rotation == null) { //sanity check, crashes if you sneak and have your reach set to 3.0
+            return;
         }
-        if (this.clicker instanceof final BoxMuellerClicker clicker) {
-            clicker.setMean(this.mean.getValue());
-            clicker.setStd(this.std.getValue());
-            clicker.setUpdatePossibility(this.updatePossibility.getValue());
+        Vandalism.getInstance().getRotationListener().setRotation(rotation, new Vec2f(179, 180), RotationPriority.HIGH);
+        //this.player().setYaw(rotation.getYaw());
+        //this.player().setPitch(rotation.getPitch());
+        this.handleAttack(true, target);
+
+    }
+
+    //TODO: Make a proper util
+    private void handleAttack(final boolean legacyAttacking, Entity target) {
+        if (legacyAttacking) {
+            if (this.clicker instanceof final BoxMuellerClicker clicker) {
+                clicker.setMean(this.mean.getValue());
+                clicker.setStd(this.std.getValue());
+                clicker.setUpdatePossibility(this.updatePossibility.getValue());
+            }
+            this.clicker.setClickAction(this.mc()::doAttack);
+            this.clicker.update();
+        } else {
+            float baseAttackDamage = (float) player().getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+            float enchantmentBonus;
+            if (target instanceof LivingEntity) {
+                enchantmentBonus = EnchantmentHelper.getAttackDamage(player().getMainHandStack(), ((LivingEntity) target).getGroup());
+            } else {
+                enchantmentBonus = EnchantmentHelper.getAttackDamage(player().getMainHandStack(), EntityGroup.DEFAULT);
+            }
+            float attackCooldown = player().getAttackCooldownProgress(0.5F);
+            baseAttackDamage *= 0.2F + attackCooldown * attackCooldown * 0.8F;
+            enchantmentBonus *= attackCooldown;
+            if (baseAttackDamage >= 1) {
+                this.mc().doAttack();
+            }
         }
-        this.clicker.setClickAction(this.mc()::doAttack);
-        this.clicker.update();
     }
 
     @Override
