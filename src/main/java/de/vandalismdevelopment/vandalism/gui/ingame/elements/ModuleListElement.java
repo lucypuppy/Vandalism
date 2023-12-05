@@ -24,7 +24,7 @@ public class ModuleListElement extends Element {
     @Override
     protected void resetPosition() {
         super.resetPosition();
-        this.x = 0;
+        this.x = 2;
         this.y = 140;
         this.absoluteX = 0;
         this.absoluteY = 140;
