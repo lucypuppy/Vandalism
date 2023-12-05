@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiMenu;
 import de.vandalismdevelopment.vandalism.gui.ingame.CustomHUDRenderer;
-import de.vandalismdevelopment.vandalism.gui.ingame.Element;
+import de.vandalismdevelopment.vandalism.gui.ingame.HUDElement;
 import de.vandalismdevelopment.vandalism.util.MouseUtils;
 import imgui.ImGui;
 import net.minecraft.client.gui.DrawContext;
@@ -33,18 +33,18 @@ public class CustomHUDConfigImGuiMenu extends ImGuiMenu {
                 this.toggle();
             }
             if (ImGui.button("Reset Custom HUD Config##resetcustomhudconfig")) {
-                for (final Element element : Vandalism.getInstance().getCustomHUDRenderer().getElements()) {
-                    element.reset();
+                for (final HUDElement HUDElement : Vandalism.getInstance().getCustomHUDRenderer().getHudElements()) {
+                    HUDElement.reset();
                 }
             }
             ImGui.separator();
-            for (final Element element : Vandalism.getInstance().getCustomHUDRenderer().getElements()) {
-                if (ImGui.treeNodeEx(element.getName() + "##" + element.getName() + "customhudconfig")) {
-                    if (ImGui.button("Reset##reset" + element.getName() + "customhudconfig")) {
-                        element.reset();
+            for (final HUDElement HUDElement : Vandalism.getInstance().getCustomHUDRenderer().getHudElements()) {
+                if (ImGui.treeNodeEx(HUDElement.getName() + "##" + HUDElement.getName() + "customhudconfig")) {
+                    if (ImGui.button("Reset##reset" + HUDElement.getName() + "customhudconfig")) {
+                        HUDElement.reset();
                     }
                     ImGui.spacing();
-                    element.renderValues();
+                    HUDElement.renderValues();
                     ImGui.treePop();
                 }
             }
@@ -52,48 +52,48 @@ public class CustomHUDConfigImGuiMenu extends ImGuiMenu {
             ImGui.spacing();
             ImGui.end();
         }
-        for (final Element element : customHUDRenderer.getElements()) {
-            if (!element.isEnabled()) {
+        for (final HUDElement HUDElement : customHUDRenderer.getHudElements()) {
+            if (!HUDElement.isEnabled()) {
                 RenderSystem.setShaderColor(0.5F, 0.5F, 0.5F, 0.9F);
             }
             final boolean mouseOver = MouseUtils.isHovered(mouseX,
                     mouseY,
-                    element.x - 2,
-                    element.y - 2,
-                    element.width + 4,
-                    element.height + 3
+                    HUDElement.x - 2,
+                    HUDElement.y - 2,
+                    HUDElement.width + 4,
+                    HUDElement.height + 3
             );
             if (this.mouseDown) {
                 if (mouseOver) {
-                    element.dragged = true;
+                    HUDElement.dragged = true;
                 }
-                if (element.dragged) {
+                if (HUDElement.dragged) {
                     final Window window = this.window();
                     final double
-                            remainingWidth = scaledWidth - element.width,
-                            remainingHeight = scaledHeight - element.height,
-                            absoluteX = (element.x + deltaX) / remainingWidth,
-                            absoluteY = (element.y + deltaY) / remainingHeight;
+                            remainingWidth = scaledWidth - HUDElement.width,
+                            remainingHeight = scaledHeight - HUDElement.height,
+                            absoluteX = (HUDElement.x + deltaX) / remainingWidth,
+                            absoluteY = (HUDElement.y + deltaY) / remainingHeight;
                     final int x = (int) (absoluteX * remainingWidth);
                     final int y = (int) (absoluteY * remainingHeight);
-                    if (x + element.width < scaledWidth && y + element.height < scaledHeight && x > 0 && y > 0) {
-                        element.absoluteX = absoluteX;
-                        element.absoluteY = absoluteY;
-                        element.x = x;
-                        element.y = y;
-                        element.calculateAlignment();
+                    if (x + HUDElement.width < scaledWidth && y + HUDElement.height < scaledHeight && x > 0 && y > 0) {
+                        HUDElement.absoluteX = absoluteX;
+                        HUDElement.absoluteY = absoluteY;
+                        HUDElement.x = x;
+                        HUDElement.y = y;
+                        HUDElement.calculateAlignment();
                     }
                 }
             } else {
-                element.dragged = false;
+                HUDElement.dragged = false;
             }
 
             final int
-                    borderPosX = element.x - 2,
-                    borderPosY = element.y - 2,
-                    borderSizeX = element.width + 4,
-                    borderSizeY = element.height + 3;
-            final boolean show = mouseOver || element.dragged;
+                    borderPosX = HUDElement.x - 2,
+                    borderPosY = HUDElement.y - 2,
+                    borderSizeX = HUDElement.width + 4,
+                    borderSizeY = HUDElement.height + 3;
+            final boolean show = mouseOver || HUDElement.dragged;
 
             if (show) {
                 context.drawHorizontalLine(0, (int) scaledWidth, borderPosY, Color.CYAN.getRGB());
@@ -110,7 +110,7 @@ public class CustomHUDConfigImGuiMenu extends ImGuiMenu {
                     show ? Color.red.getRGB() : Color.WHITE.getRGB()
             );
 
-            element.render(context, delta);
+            HUDElement.render(context, delta);
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         }
 

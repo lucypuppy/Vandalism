@@ -1,6 +1,6 @@
-package de.vandalismdevelopment.vandalism.gui.ingame.elements;
+package de.vandalismdevelopment.vandalism.gui.ingame.hudelements;
 
-import de.vandalismdevelopment.vandalism.gui.ingame.Element;
+import de.vandalismdevelopment.vandalism.gui.ingame.HUDElement;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.WorldUtil;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
@@ -8,7 +8,7 @@ import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
 import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderIntegerValue;
 import net.minecraft.client.gui.DrawContext;
 
-public class InfoElement extends Element {
+public class InfoHUDElement extends HUDElement {
 
     private final Value<Boolean> fps = new BooleanValue(
             "FPS",
@@ -66,7 +66,7 @@ public class InfoElement extends Element {
             true
     );
 
-    public InfoElement() {
+    public InfoHUDElement() {
         super("Info");
     }
 

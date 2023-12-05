@@ -1,22 +1,22 @@
-package de.vandalismdevelopment.vandalism.gui.ingame.elements;
+package de.vandalismdevelopment.vandalism.gui.ingame.hudelements;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.FeatureList;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.gui.ingame.Element;
-import de.vandalismdevelopment.vandalism.gui.ingame.ElementAlignment;
+import de.vandalismdevelopment.vandalism.gui.ingame.HUDElement;
+import de.vandalismdevelopment.vandalism.gui.ingame.HUDElementAlignment;
 import net.minecraft.client.gui.DrawContext;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class ModuleListElement extends Element {
+public class ModuleListHUDElement extends HUDElement {
 
     private final List<String> enabledModules;
 
     private boolean sort, fixPosition;
 
-    public ModuleListElement() {
+    public ModuleListHUDElement() {
         super("Module List");
         this.enabledModules = new CopyOnWriteArrayList<>();
     }
@@ -104,7 +104,7 @@ public class ModuleListElement extends Element {
 
     public void onModuleToggle() {
         this.sort = true;
-        if (this.alignmentY == ElementAlignment.BOTTOM) {
+        if (this.alignmentY == HUDElementAlignment.BOTTOM) {
             this.fixPosition = true;
         }
     }

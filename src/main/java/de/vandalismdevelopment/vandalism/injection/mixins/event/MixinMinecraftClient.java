@@ -30,12 +30,12 @@ public abstract class MixinMinecraftClient {
 
     @Inject(method = "setWorld", at = @At("HEAD"))
     private void vandalism$callPreWorldLoadEvent(final ClientWorld world, final CallbackInfo ci) {
-        DietrichEvents2.global().postInternal(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent(WorldListener.State.PRE));
+        DietrichEvents2.global().postInternal(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent(WorldListener.WorldEventState.PRE));
     }
 
     @Inject(method = "setWorld", at = @At("RETURN"))
     private void vandalism$callPostWorldLoadEvent(final ClientWorld world, final CallbackInfo ci) {
-        DietrichEvents2.global().postInternal(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent(WorldListener.State.POST));
+        DietrichEvents2.global().postInternal(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent(WorldListener.WorldEventState.POST));
     }
 
     @Inject(method = "onResolutionChanged", at = @At("RETURN"))

@@ -128,7 +128,6 @@ public class ServerListManager {
             configObject.add("serverLists", serverListsArray);
             printWriter.println(GSON.toJson(configObject));
             printWriter.close();
-            Vandalism.getInstance().getLogger().info("Saved enhanced server list config.");
         } catch (final IOException e) {
             Vandalism.getInstance().getLogger().error("Failed to save enhanced server list config.", e);
         }

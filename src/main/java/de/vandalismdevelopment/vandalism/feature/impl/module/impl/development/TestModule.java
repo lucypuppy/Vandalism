@@ -7,6 +7,7 @@ import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.MovementUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.Clicker;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.impl.BoxMuellerClicker;
@@ -78,6 +79,7 @@ public class TestModule extends Module implements TickListener, RenderListener, 
         DietrichEvents2.global().subscribe(SprintEvent.ID, this);
         DietrichEvents2.global().subscribe(MoveInputEvent.ID, this);
         DietrichEvents2.global().subscribe(MoveFlyingEvent.ID, this);
+        DietrichEvents2.global().subscribe(MotionEvent.ID, this);
     }
 
     @Override
@@ -88,6 +90,7 @@ public class TestModule extends Module implements TickListener, RenderListener, 
         DietrichEvents2.global().unsubscribe(SprintEvent.ID, this);
         DietrichEvents2.global().unsubscribe(MoveInputEvent.ID, this);
         DietrichEvents2.global().unsubscribe(MoveFlyingEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(MotionEvent.ID, this);
         Vandalism.getInstance().getRotationListener().resetRotation();
     }
 
@@ -206,6 +209,16 @@ public class TestModule extends Module implements TickListener, RenderListener, 
 
     @Override
     public void onMoveFlying(final MoveFlyingEvent event) {
+    }
+
+    @Override
+    public void onPreMotion(final MotionEvent event) {
+        ChatUtil.infoChatMessage("pre");
+    }
+
+    @Override
+    public void onPostMotion(final MotionEvent event) {
+        ChatUtil.infoChatMessage("post");
     }
 
 }

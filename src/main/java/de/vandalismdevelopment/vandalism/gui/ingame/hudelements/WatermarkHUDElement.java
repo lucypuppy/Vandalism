@@ -1,13 +1,13 @@
-package de.vandalismdevelopment.vandalism.gui.ingame.elements;
+package de.vandalismdevelopment.vandalism.gui.ingame.hudelements;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.gui.ingame.Element;
+import de.vandalismdevelopment.vandalism.gui.ingame.HUDElement;
 import de.vandalismdevelopment.vandalism.util.GLStateTracker;
 import net.minecraft.client.gui.DrawContext;
 
-public class WatermarkElement extends Element {
+public class WatermarkHUDElement extends HUDElement {
 
-    public WatermarkElement() {
+    public WatermarkHUDElement() {
         super("Watermark");
     }
 
