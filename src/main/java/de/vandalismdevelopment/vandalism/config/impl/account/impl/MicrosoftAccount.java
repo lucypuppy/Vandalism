@@ -7,6 +7,7 @@ import de.vandalismdevelopment.vandalism.config.impl.account.Account;
 import de.vandalismdevelopment.vandalism.util.EncryptionUtil;
 import net.minecraft.client.session.Session;
 import net.raphimc.minecraftauth.MinecraftAuth;
+import net.raphimc.minecraftauth.step.AbstractStep;
 import net.raphimc.minecraftauth.step.java.session.StepFullJavaSession;
 import net.raphimc.minecraftauth.util.MicrosoftConstants;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -15,6 +16,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class MicrosoftAccount extends Account {
+
+    public static final AbstractStep<?, StepFullJavaSession.FullJavaSession> LOCAL_WEBSERVER_LOGIN = MinecraftAuth.builder()
+            .withClientId(MicrosoftConstants.JAVA_TITLE_ID).withScope(MicrosoftConstants.SCOPE_TITLE_AUTH)
+            .localWebServer()
+            .withDeviceToken("Win32")
+            .sisuTitleAuthentication(MicrosoftConstants.JAVA_XSTS_RELYING_PARTY)
+            .buildMinecraftJavaProfileStep(true);
 
     private String data;
 
@@ -27,11 +35,11 @@ public class MicrosoftAccount extends Account {
     public void login() throws Throwable {
         try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
             JsonObject jsonObject = JsonParser.parseString(this.data).getAsJsonObject();
-            final StepFullJavaSession.FullJavaSession mcProfile = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.refresh(
+            final StepFullJavaSession.FullJavaSession mcProfile = LOCAL_WEBSERVER_LOGIN.refresh(
                     httpClient,
-                    MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.fromJson(jsonObject)
+                    LOCAL_WEBSERVER_LOGIN.fromJson(jsonObject)
             );
-            jsonObject = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.toJson(mcProfile);
+            jsonObject = LOCAL_WEBSERVER_LOGIN.toJson(mcProfile);
             this.data = jsonObject.toString();
             this.setUsername(mcProfile.getMcProfile().getName());
             this.setUuid(mcProfile.getMcProfile().getId());
