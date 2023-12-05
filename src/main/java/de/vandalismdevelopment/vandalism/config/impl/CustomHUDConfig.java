@@ -22,8 +22,6 @@ public class CustomHUDConfig extends ValueableConfig {
             final JsonObject elementObject = new JsonObject();
             elementObject.addProperty("x", element.x);
             elementObject.addProperty("y", element.y);
-            elementObject.addProperty("absoluteX", element.absoluteX);
-            elementObject.addProperty("absoluteY", element.absoluteY);
             if (!element.getValues().isEmpty()) {
                 final JsonObject valuesObject = new JsonObject();
                 this.saveValues(valuesObject, element.getValues());
@@ -39,18 +37,8 @@ public class CustomHUDConfig extends ValueableConfig {
         for (final Element element : Vandalism.getInstance().getCustomHUDRenderer().getElements()) {
             final JsonObject elementObject = jsonObject.getAsJsonObject(element.getName());
             if (elementObject != null) {
-                if (elementObject.has("x")) {
-                    element.x = elementObject.get("x").getAsInt();
-                }
-                if (elementObject.has("y")) {
-                    element.y = elementObject.get("y").getAsInt();
-                }
-                if (elementObject.has("absoluteX")) {
-                    element.absoluteX = elementObject.get("absoluteX").getAsDouble();
-                }
-                if (elementObject.has("absoluteY")) {
-                    element.absoluteY = elementObject.get("absoluteY").getAsDouble();
-                }
+                element.x = elementObject.get("x").getAsInt();
+                element.y = elementObject.get("y").getAsInt();
                 element.calculateAlignment();
                 final JsonElement valuesElement = elementObject.get("values");
                 if (valuesElement != null) {
