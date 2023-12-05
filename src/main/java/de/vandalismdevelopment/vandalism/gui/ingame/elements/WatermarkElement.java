@@ -14,8 +14,7 @@ public class WatermarkElement extends Element {
     @Override
     protected void resetPosition() {
         super.resetPosition();
-        this.x = 0;
-        this.y = 0;
+        setScreenPosition(0, 0);
     }
 
     @Override

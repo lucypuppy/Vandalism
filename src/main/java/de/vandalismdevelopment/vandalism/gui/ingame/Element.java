@@ -8,6 +8,7 @@ import de.vandalismdevelopment.vandalism.value.IValue;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.util.Window;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,22 @@ public abstract class Element implements IName, IValue, MinecraftWrapper {
     }
 
     public abstract void render(final DrawContext context, final float delta);
+
+    public void setScreenPosition(final int x, final int y) {
+        final Window window = this.window();
+        final double
+                scaledWindowWidth = window.getScaledWidth(),
+                scaledWindowHeight = window.getScaledHeight(),
+                remainingWidth = scaledWindowWidth - width,
+                remainingHeight = scaledWindowHeight - height;
+
+        this.absoluteX = x / remainingWidth;
+        this.absoluteY = y / remainingHeight;
+        this.x = (int) (this.absoluteX * remainingWidth);
+        this.y = (int) (this.absoluteY * remainingHeight);
+
+        calculateAlignment();
+    }
 
     public void calculateAlignment() {
         if (this.absoluteX > 0.66) {
