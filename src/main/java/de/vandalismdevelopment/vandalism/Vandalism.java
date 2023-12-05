@@ -2,6 +2,7 @@ package de.vandalismdevelopment.vandalism;
 
 import de.vandalismdevelopment.vandalism.config.ConfigManager;
 import de.vandalismdevelopment.vandalism.creativetab.CreativeTabRegistry;
+import de.vandalismdevelopment.vandalism.enhancedserverlist.ServerListManager;
 import de.vandalismdevelopment.vandalism.feature.impl.command.CommandRegistry;
 import de.vandalismdevelopment.vandalism.feature.impl.module.ModuleRegistry;
 import de.vandalismdevelopment.vandalism.feature.impl.script.ScriptRegistry;
@@ -26,6 +27,8 @@ public class Vandalism {
     private final Logger logger;
 
     private File dir;
+    private Identifier logo;
+
     private ImGuiHandler imGuiHandler;
     private ScriptRegistry scriptRegistry;
     private ModuleRegistry moduleRegistry;
@@ -33,8 +36,7 @@ public class Vandalism {
     private ConfigManager configManager;
     private RotationListener rotationListener;
     private CustomHUDRenderer customHUDRenderer;
-
-    private Identifier logo;
+    private ServerListManager serverListManager;
 
     public Vandalism() {
         final ModMetadata data = FabricLoader.getInstance().getModContainer(this.id = "vandalism").get().getMetadata();
@@ -81,6 +83,8 @@ public class Vandalism {
         this.moduleRegistry = new ModuleRegistry();
         this.commandRegistry = new CommandRegistry();
         this.customHUDRenderer = new CustomHUDRenderer();
+        this.serverListManager = new ServerListManager(this.dir);
+        this.serverListManager.loadConfig();
         this.configManager.load();
         this.logo = new Identifier(this.id, "textures/logo.png");
         Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
@@ -93,6 +97,10 @@ public class Vandalism {
         this.logger.info("Stopping...");
         this.configManager.save();
         this.logger.info("");
+    }
+
+    public static Vandalism getInstance() {
+        return INSTANCE;
     }
 
     public String getId() {
@@ -117,6 +125,10 @@ public class Vandalism {
 
     public File getDir() {
         return this.dir;
+    }
+
+    public Identifier getLogo() {
+        return this.logo;
     }
 
     public ImGuiHandler getImGuiHandler() {
@@ -147,12 +159,8 @@ public class Vandalism {
         return this.customHUDRenderer;
     }
 
-    public Identifier getLogo() {
-        return this.logo;
-    }
-
-    public static Vandalism getInstance() {
-        return INSTANCE;
+    public ServerListManager getServerListManager() {
+        return this.serverListManager;
     }
 
 }
