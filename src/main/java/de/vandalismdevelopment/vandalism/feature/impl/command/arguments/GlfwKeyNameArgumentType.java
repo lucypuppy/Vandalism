@@ -38,7 +38,11 @@ public class GlfwKeyNameArgumentType implements ArgumentType<GlfwKeyName> {
 
     @Override
     public GlfwKeyName parse(final StringReader reader) throws CommandSyntaxException {
-        return GlfwKeyName.getGlfwKeyNameByName(reader.readString().replace("-", " "));
+        final String keyName = reader.readString().replace("-", " ");
+        if (keyName.equalsIgnoreCase("none")) {
+            return GlfwKeyName.UNKNOWN;
+        }
+        return GlfwKeyName.getGlfwKeyNameByName(keyName);
     }
 
     @Override
