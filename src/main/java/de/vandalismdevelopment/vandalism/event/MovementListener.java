@@ -180,4 +180,33 @@ public interface MovementListener {
 
     }
 
+    default void onPreMotion(final MotionEvent event) {
+    }
+
+    default void onPostMotion(final MotionEvent event) {
+    }
+
+    enum MotionEventState {
+        PRE, POST
+    }
+
+    class MotionEvent extends AbstractEvent<MovementListener> {
+
+        public final static int ID = 23;
+
+        public final MotionEventState state;
+
+        public MotionEvent(final MotionEventState state) {
+            this.state = state;
+        }
+
+        @Override
+        public void call(final MovementListener listener) {
+            if (this.state == MotionEventState.PRE) listener.onPreMotion(this);
+            else listener.onPostMotion(this);
+
+        }
+
+    }
+
 }

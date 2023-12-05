@@ -13,7 +13,7 @@ public interface WorldListener {
     default void onPostWorldLoad() {
     }
 
-    enum State {
+    enum WorldEventState {
         PRE, POST
     }
 
@@ -21,15 +21,15 @@ public interface WorldListener {
 
         public final static int ID = 7;
 
-        private final State state;
+        private final WorldEventState state;
 
-        public WorldLoadEvent(final State state) {
+        public WorldLoadEvent(final WorldEventState state) {
             this.state = state;
         }
 
         @Override
         public void call(final WorldListener listener) {
-            if (this.state == State.PRE) listener.onPreWorldLoad();
+            if (this.state == WorldEventState.PRE) listener.onPreWorldLoad();
             else listener.onPostWorldLoad();
         }
 

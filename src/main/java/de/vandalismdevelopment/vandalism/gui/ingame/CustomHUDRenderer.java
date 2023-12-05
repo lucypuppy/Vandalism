@@ -3,9 +3,9 @@ package de.vandalismdevelopment.vandalism.gui.ingame;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.event.ScreenListener;
-import de.vandalismdevelopment.vandalism.gui.ingame.elements.InfoElement;
-import de.vandalismdevelopment.vandalism.gui.ingame.elements.ModuleListElement;
-import de.vandalismdevelopment.vandalism.gui.ingame.elements.WatermarkElement;
+import de.vandalismdevelopment.vandalism.gui.ingame.hudelements.InfoHUDElement;
+import de.vandalismdevelopment.vandalism.gui.ingame.hudelements.ModuleListHUDElement;
+import de.vandalismdevelopment.vandalism.gui.ingame.hudelements.WatermarkHUDElement;
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 
@@ -15,42 +15,42 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class CustomHUDRenderer implements RenderListener, ScreenListener, MinecraftWrapper {
 
-    private final List<Element> elements;
-    private final ModuleListElement moduleListElement;
+    private final List<HUDElement> hudElements;
+    private final ModuleListHUDElement moduleListHUDElement;
 
     public CustomHUDRenderer() {
         DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
         DietrichEvents2.global().subscribe(ScreenEvent.ID, this);
-        this.elements = new CopyOnWriteArrayList<>();
-        this.elements.addAll(Arrays.asList(
-                new WatermarkElement(),
-                this.moduleListElement = new ModuleListElement(),
-                new InfoElement()
+        this.hudElements = new CopyOnWriteArrayList<>();
+        this.hudElements.addAll(Arrays.asList(
+                new WatermarkHUDElement(),
+                this.moduleListHUDElement = new ModuleListHUDElement(),
+                new InfoHUDElement()
         ));
     }
 
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
-        for (final Element element : this.elements) {
-            if (!element.isEnabled()) continue;
-            element.render(context, delta);
+        for (final HUDElement HUDElement : this.hudElements) {
+            if (!HUDElement.isEnabled()) continue;
+            HUDElement.render(context, delta);
         }
     }
 
     @Override
     public void onResizeScreen(final ScreenEvent event) {
-        for (final Element element : this.elements) {
-            if (!element.isEnabled()) continue;
-            element.calculatePosition();
+        for (final HUDElement HUDElement : this.hudElements) {
+            if (!HUDElement.isEnabled()) continue;
+            HUDElement.calculatePosition();
         }
     }
 
-    public List<Element> getElements() {
-        return this.elements;
+    public List<HUDElement> getHudElements() {
+        return this.hudElements;
     }
 
-    public ModuleListElement getModuleListElement() {
-        return this.moduleListElement;
+    public ModuleListHUDElement getModuleListHUDElement() {
+        return this.moduleListHUDElement;
     }
 
 }

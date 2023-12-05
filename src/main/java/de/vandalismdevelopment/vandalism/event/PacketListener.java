@@ -7,16 +7,20 @@ public interface PacketListener {
 
     void onPacket(final PacketEvent event);
 
+    enum PacketEventState {
+        SEND, RECEIVED
+    }
+
     class PacketEvent extends CancellableEvent<PacketListener> {
 
         public final static int ID = 2;
 
         public Packet<?> packet;
-        public final boolean sent;
+        public final PacketEventState state;
 
-        public PacketEvent(final Packet<?> packet, final boolean sent) {
+        public PacketEvent(final Packet<?> packet, final PacketEventState state) {
             this.packet = packet;
-            this.sent = sent;
+            this.state = state;
         }
 
         @Override

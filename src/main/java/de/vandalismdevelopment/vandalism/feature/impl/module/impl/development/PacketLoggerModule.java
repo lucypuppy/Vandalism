@@ -65,7 +65,7 @@ public class PacketLoggerModule extends Module implements PacketListener {
         for (final Value<?> value : this.getValues()) {
             if (value instanceof final MultiSelectionValue multiSelectionValue && multiSelectionValue.getValue().contains(packetName)) {
                 final StringBuilder text = new StringBuilder();
-                if (event.sent) {
+                if (event.state == PacketEventState.SEND) {
                     text.append("Outgoing packet: ");
                 } else {
                     text.append("Incoming packet: ");
