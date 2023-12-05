@@ -26,8 +26,6 @@ public class ModuleListElement extends Element {
         super.resetPosition();
         this.x = 2;
         this.y = 140;
-        this.absoluteX = 0;
-        this.absoluteY = 140;
         this.sort = true;
     }
 
