@@ -33,73 +33,81 @@ public class ModulesImGuiMenu extends ImGuiMenu {
         this.openedModules = new CopyOnWriteArrayList<>();
     }
 
-    //TODO: Fix module tabs display (no stacking).
-    //TODO: Add a function to enable / disable module tabs.
+    //TODO: Fix module tabs display (no stacking) when the mod starts the first time.
 
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         final FeatureList<Module> modules = Vandalism.getInstance().getModuleRegistry().getModules();
         if (!modules.isEmpty()) {
             final float width = 185, minHeight = 140, maxHeight = 415;
-            final int windowFlags = Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags() | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse;
+            final int windowFlags = ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse;
             ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
             final String modulesIdentifier = "##modules", modulesSearchIdentifier = modulesIdentifier + "search";
-            if (ImGui.begin("Search Modules" + modulesSearchIdentifier, windowFlags)) {
-                ImGui.separator();
-                ImGui.setNextItemWidth(-1);
-                ImGui.inputText(modulesSearchIdentifier + "input", this.searchInput);
-                ImGui.separator();
-                ImGui.beginChild(modulesSearchIdentifier + "scrolllist", -1, -1, true);
-                if (!this.searchInput.get().isBlank()) {
-                    for (final Module module : Vandalism.getInstance().getModuleRegistry().getModules()) {
-                        if (StringUtils.contains(module.getName(), this.searchInput.get()) || StringUtils.contains(module.getDescription(), this.searchInput.get())) {
-                            this.renderModule(module, "search");
-                        }
+            ImGui.begin("Search Modules" + modulesSearchIdentifier, windowFlags);
+            ImGui.separator();
+            ImGui.setNextItemWidth(-1);
+            ImGui.inputText(modulesSearchIdentifier + "input", this.searchInput);
+            ImGui.separator();
+            ImGui.beginChild(modulesSearchIdentifier + "scrolllist", -1, -1, true);
+            if (!this.searchInput.get().isBlank()) {
+                for (final Module module : Vandalism.getInstance().getModuleRegistry().getModules()) {
+                    if (StringUtils.contains(module.getName(), this.searchInput.get()) || StringUtils.contains(module.getDescription(), this.searchInput.get())) {
+                        this.renderModule(module, "search");
                     }
                 }
-                ImGui.endChild();
-                ImGui.separator();
-                ImGui.end();
             }
-            ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
-            final String modulesFavoritesIdentifier = modulesIdentifier + "favorites";
-            if (ImGui.begin("Favorite Modules" + modulesFavoritesIdentifier, windowFlags)) {
+            ImGui.endChild();
+            ImGui.separator();
+            ImGui.end();
+            final List<Module> favoriteModules = new ArrayList<>();
+            for (final Module module : modules) {
+                if (module.isFavorite()) {
+                    favoriteModules.add(module);
+                }
+            }
+            if (!favoriteModules.isEmpty()) {
+                ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
+                final String modulesFavoritesIdentifier = modulesIdentifier + "favorites";
+                ImGui.begin("Favorite Modules" + modulesFavoritesIdentifier, windowFlags);
                 ImGui.separator();
                 ImGui.setNextItemWidth(-1);
                 ImGui.inputText(modulesFavoritesIdentifier + "input", this.favoriteModulesSearchInput);
                 ImGui.separator();
                 ImGui.beginChild(modulesFavoritesIdentifier + "scrolllist", -1, -1, true);
-                for (final Module module : Vandalism.getInstance().getModuleRegistry().getModules()) {
-                    if (module.isFavorite()) {
-                        if (!this.favoriteModulesSearchInput.get().isBlank()) {
-                            if (!(StringUtils.contains(module.getName(), this.favoriteModulesSearchInput.get()) || StringUtils.contains(module.getDescription(), this.favoriteModulesSearchInput.get()))) {
-                                continue;
-                            }
+                for (final Module module : favoriteModules) {
+                    if (!this.favoriteModulesSearchInput.get().isBlank()) {
+                        if (!(StringUtils.contains(module.getName(), this.favoriteModulesSearchInput.get()) || StringUtils.contains(module.getDescription(), this.favoriteModulesSearchInput.get()))) {
+                            continue;
                         }
-                        this.renderModule(module, "favorites");
                     }
+                    this.renderModule(module, "favorites");
                 }
                 ImGui.endChild();
                 ImGui.separator();
                 ImGui.end();
             }
-            ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
-            final String modulesEnabledIdentifier = modulesIdentifier + "enabled";
-            if (ImGui.begin("Enabled Modules" + modulesEnabledIdentifier, windowFlags)) {
+            final List<Module> enabledModules = new ArrayList<>();
+            for (final Module module : modules) {
+                if (module.isEnabled()) {
+                    enabledModules.add(module);
+                }
+            }
+            if (!enabledModules.isEmpty()) {
+                ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
+                final String modulesEnabledIdentifier = modulesIdentifier + "enabled";
+                ImGui.begin("Enabled Modules" + modulesEnabledIdentifier, windowFlags);
                 ImGui.separator();
                 ImGui.setNextItemWidth(-1);
                 ImGui.inputText(modulesEnabledIdentifier + "input", this.enabledModulesSearchInput);
                 ImGui.separator();
                 ImGui.beginChild(modulesEnabledIdentifier + "scrolllist", -1, -1, true);
-                for (final Module module : Vandalism.getInstance().getModuleRegistry().getModules()) {
-                    if (module.isEnabled()) {
-                        if (!this.enabledModulesSearchInput.get().isBlank()) {
-                            if (!(StringUtils.contains(module.getName(), this.enabledModulesSearchInput.get()) || StringUtils.contains(module.getDescription(), this.enabledModulesSearchInput.get()))) {
-                                continue;
-                            }
+                for (final Module module : enabledModules) {
+                    if (!this.enabledModulesSearchInput.get().isBlank()) {
+                        if (!(StringUtils.contains(module.getName(), this.enabledModulesSearchInput.get()) || StringUtils.contains(module.getDescription(), this.enabledModulesSearchInput.get()))) {
+                            continue;
                         }
-                        this.renderModule(module, "enabled");
                     }
+                    this.renderModule(module, "enabled");
                 }
                 ImGui.endChild();
                 ImGui.separator();
@@ -110,23 +118,21 @@ public class ModulesImGuiMenu extends ImGuiMenu {
                 if (modulesByCategory.isEmpty()) continue;
                 final String featureCategoryIdentifier = "##" + featureCategory.normalName() + "modulesfeaturecategory";
                 ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
-                if (ImGui.begin(featureCategory.normalName() + " Modules" + featureCategoryIdentifier, windowFlags)) {
-                    ImGui.separator();
-                    ImGui.beginChild(featureCategoryIdentifier + "scrolllist", -1, -1, true);
-                    for (final Module module : modulesByCategory) {
-                        this.renderModule(module, "category");
-                    }
-                    ImGui.endChild();
-                    ImGui.separator();
-                    ImGui.end();
+                ImGui.begin(featureCategory.normalName() + " Modules" + featureCategoryIdentifier, windowFlags);
+                ImGui.separator();
+                ImGui.beginChild(featureCategoryIdentifier + "scrolllist", -1, -1, true);
+                for (final Module module : modulesByCategory) {
+                    this.renderModule(module, "category");
                 }
+                ImGui.endChild();
+                ImGui.separator();
+                ImGui.end();
             }
             for (final Module module : this.openedModules) {
                 final String id = "##opened" + module.getCategory().normalName() + "module" + module.getName();
-                if (ImGui.begin(module.getName() + " Config" + id, windowFlags)) {
-                    this.renderModuleData(module, id, -1, -1);
-                    ImGui.end();
-                }
+                ImGui.begin(module.getName() + " Config" + id, windowFlags);
+                this.renderModuleData(module, id, -1, -1);
+                ImGui.end();
             }
         }
     }
