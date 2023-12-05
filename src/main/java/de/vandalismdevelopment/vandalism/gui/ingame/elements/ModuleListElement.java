@@ -24,8 +24,7 @@ public class ModuleListElement extends Element {
     @Override
     protected void resetPosition() {
         super.resetPosition();
-        this.x = 2;
-        this.y = 140;
+        setScreenPosition(2, 140);
         this.sort = true;
     }
 

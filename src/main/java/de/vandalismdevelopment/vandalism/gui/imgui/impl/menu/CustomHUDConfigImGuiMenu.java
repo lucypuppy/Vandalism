@@ -26,6 +26,8 @@ public class CustomHUDConfigImGuiMenu extends ImGuiMenu {
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         final CustomHUDRenderer customHUDRenderer = Vandalism.getInstance().getCustomHUDRenderer();
         final double deltaX = mouseX - this.lastMouseX, deltaY = mouseY - this.lastMouseY;
+        final double scaledWidth = window().getScaledWidth(), scaledHeight = window().getScaledHeight();
+
         if (ImGui.begin("Custom HUD Config##customhudconfig", Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags())) {
             if (ImGui.button("Close Custom HUD Config##closecustomhudconfig")) {
                 this.toggle();
@@ -68,15 +70,13 @@ public class CustomHUDConfigImGuiMenu extends ImGuiMenu {
                 if (element.dragged) {
                     final Window window = this.window();
                     final double
-                            scaledWindowWidth = window.getScaledWidth(),
-                            scaledWindowHeight = window.getScaledHeight(),
-                            remainingWidth = scaledWindowWidth - element.width,
-                            remainingHeight = scaledWindowHeight - element.height,
+                            remainingWidth = scaledWidth - element.width,
+                            remainingHeight = scaledHeight - element.height,
                             absoluteX = (element.x + deltaX) / remainingWidth,
                             absoluteY = (element.y + deltaY) / remainingHeight;
                     final int x = (int) (absoluteX * remainingWidth);
                     final int y = (int) (absoluteY * remainingHeight);
-                    if (x + element.width < scaledWindowWidth && y + element.height < scaledWindowHeight && x > 0 && y > 0) {
+                    if (x + element.width < scaledWidth && y + element.height < scaledHeight && x > 0 && y > 0) {
                         element.absoluteX = absoluteX;
                         element.absoluteY = absoluteY;
                         element.x = x;
@@ -87,16 +87,39 @@ public class CustomHUDConfigImGuiMenu extends ImGuiMenu {
             } else {
                 element.dragged = false;
             }
+
+            final int
+                    borderPosX = element.x - 2,
+                    borderPosY = element.y - 2,
+                    borderSizeX = element.width + 4,
+                    borderSizeY = element.height + 3;
+            final boolean show = mouseOver || element.dragged;
+
+            if (show) {
+                context.drawHorizontalLine(0, (int) scaledWidth, borderPosY, Color.CYAN.getRGB());
+                context.drawHorizontalLine(0, (int) scaledWidth, borderPosY + borderSizeY - 1, Color.CYAN.getRGB());
+                context.drawVerticalLine(borderPosX, 0, (int) scaledHeight, Color.CYAN.getRGB());
+                context.drawVerticalLine(borderPosX + borderSizeX - 1, 0, (int) scaledHeight, Color.CYAN.getRGB());
+            }
+
             context.drawBorder(
-                    element.x - 2,
-                    element.y - 2,
-                    element.width + 4,
-                    element.height + 3,
-                    mouseOver || element.dragged ? Color.RED.getRGB() : Color.WHITE.getRGB()
+                    borderPosX,
+                    borderPosY,
+                    borderSizeX,
+                    borderSizeY,
+                    show ? Color.red.getRGB() : Color.WHITE.getRGB()
             );
+
             element.render(context, delta);
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         }
+
+        context.drawHorizontalLine(0, (int) scaledWidth, (int) (scaledHeight * 0.66), Color.green.getRGB());
+        context.drawHorizontalLine(0, (int) scaledWidth, (int) (scaledHeight * 0.33), Color.green.getRGB());
+
+        context.drawVerticalLine((int) (scaledWidth * 0.66), 0, (int) scaledHeight, Color.green.getRGB());
+        context.drawVerticalLine((int) (scaledWidth * 0.33), 0, (int) scaledHeight, Color.green.getRGB());
+
         this.lastMouseX = mouseX;
         this.lastMouseY = mouseY;
     }

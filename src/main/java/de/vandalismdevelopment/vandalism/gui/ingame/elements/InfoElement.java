@@ -73,8 +73,10 @@ public class InfoElement extends Element {
     @Override
     protected void resetPosition() {
         super.resetPosition();
-        this.x = 2;
-        this.y = 60;
+        //this.x = 2;
+        //this.y = 60;
+
+        setScreenPosition(2, 60);
     }
 
     @Override
