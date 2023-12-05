@@ -82,13 +82,16 @@ public class Vandalism {
         this.rotationListener = new RotationListener();
         this.moduleRegistry = new ModuleRegistry();
         this.commandRegistry = new CommandRegistry();
-        this.customHUDRenderer = new CustomHUDRenderer();
         this.serverListManager = new ServerListManager(this.dir);
         this.serverListManager.loadConfig();
-        this.configManager.load();
         this.logo = new Identifier(this.id, "textures/logo.png");
         Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
         window.setTitle(this.windowTitle);
+    }
+
+    public void initEnd() {
+        this.customHUDRenderer = new CustomHUDRenderer();
+        this.configManager.load();
         this.logger.info("Done!");
         this.logger.info("");
     }

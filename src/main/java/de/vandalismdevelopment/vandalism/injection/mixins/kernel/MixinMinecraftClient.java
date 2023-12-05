@@ -39,6 +39,8 @@ public abstract class MixinMinecraftClient {
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
     private void vandalism$startTimeCalculation2(final CallbackInfo ci) {
+        Vandalism.getInstance().initEnd();
+
         Vandalism.getInstance().getLogger().info("");
         Vandalism.getInstance().getLogger().info("Minecraft loading took ~" + (System.currentTimeMillis() - vandalism_startTime) + "ms.");
         Vandalism.getInstance().getLogger().info("");
