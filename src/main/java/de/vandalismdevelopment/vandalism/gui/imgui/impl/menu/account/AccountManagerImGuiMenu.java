@@ -16,7 +16,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.session.Session;
 import net.minecraft.util.Util;
 import net.minecraft.util.Uuids;
-import net.raphimc.minecraftauth.MinecraftAuth;
 import net.raphimc.minecraftauth.step.java.session.StepFullJavaSession;
 import net.raphimc.minecraftauth.step.msa.StepMsaDeviceCode;
 import net.raphimc.minecraftauth.util.MicrosoftConstants;
@@ -175,11 +174,11 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
             if (ImGui.button("Add Microsoft Account##accountmanageraddmicrosoftaccount")) {
                 this.thread = new Thread(() -> {
                     try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
-                        final StepFullJavaSession.FullJavaSession mcProfile = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.getFromInput(httpClient, new StepMsaDeviceCode.MsaDeviceCodeCallback(msaDeviceCode -> {
+                        final StepFullJavaSession.FullJavaSession mcProfile = MicrosoftAccount.LOCAL_WEBSERVER_LOGIN.getFromInput(httpClient, new StepMsaDeviceCode.MsaDeviceCodeCallback(msaDeviceCode -> {
                             this.state.set("Please open the url " + msaDeviceCode.getDirectVerificationUri());
                             Util.getOperatingSystem().open(msaDeviceCode.getDirectVerificationUri());
                         }));
-                        final MicrosoftAccount microsoftAccount = new MicrosoftAccount(MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.toJson(mcProfile).toString(), mcProfile.getMcProfile().getId(), mcProfile.getMcProfile().getName());
+                        final MicrosoftAccount microsoftAccount = new MicrosoftAccount(MicrosoftAccount.LOCAL_WEBSERVER_LOGIN.toJson(mcProfile).toString(), mcProfile.getMcProfile().getId(), mcProfile.getMcProfile().getName());
                         accounts.add(microsoftAccount);
                         this.login(microsoftAccount);
                         Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getAccountConfig());
