@@ -13,7 +13,7 @@ import net.minecraft.client.util.Window;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Element implements IName, IValue, MinecraftWrapper {
+public abstract class HUDElement implements IName, IValue, MinecraftWrapper {
 
     private final String name;
     private final List<Value<?>> values;
@@ -21,14 +21,14 @@ public abstract class Element implements IName, IValue, MinecraftWrapper {
     public int x, y, width, height;
     public double absoluteX, absoluteY;
     public boolean dragged;
-    public ElementAlignment alignmentX, alignmentY;
+    public HUDElementAlignment alignmentX, alignmentY;
 
-    protected Element(final String name) {
+    protected HUDElement(final String name) {
         this.name = name;
         this.values = new ArrayList<>();
         this.enabled = new BooleanValue(
                 "Enabled",
-                "Whether this element is enabled.",
+                "Whether this HUD element is enabled.",
                 this,
                 true
         );
@@ -49,24 +49,28 @@ public abstract class Element implements IName, IValue, MinecraftWrapper {
         this.absoluteY = y / remainingHeight;
         this.x = (int) (this.absoluteX * remainingWidth);
         this.y = (int) (this.absoluteY * remainingHeight);
-
-        calculateAlignment();
+        try {
+            Vandalism.getInstance().getConfigManager().getCustomHUDConfig().save();
+        } catch (final Throwable throwable) {
+            Vandalism.getInstance().getLogger().error("Failed to save custom hud config.", throwable);
+        }
+        this.calculateAlignment();
     }
 
     public void calculateAlignment() {
         if (this.absoluteX > 0.66) {
-            this.alignmentX = ElementAlignment.RIGHT;
+            this.alignmentX = HUDElementAlignment.RIGHT;
         } else if (this.absoluteX > 0.33) {
-            this.alignmentX = ElementAlignment.MIDDLE;
+            this.alignmentX = HUDElementAlignment.MIDDLE;
         } else {
-            this.alignmentX = ElementAlignment.LEFT;
+            this.alignmentX = HUDElementAlignment.LEFT;
         }
         if (this.absoluteY > 0.66) {
-            this.alignmentY = ElementAlignment.BOTTOM;
+            this.alignmentY = HUDElementAlignment.BOTTOM;
         } else if (this.absoluteY > 0.33) {
-            this.alignmentY = ElementAlignment.MIDDLE;
+            this.alignmentY = HUDElementAlignment.MIDDLE;
         } else {
-            this.alignmentY = ElementAlignment.TOP;
+            this.alignmentY = HUDElementAlignment.TOP;
         }
     }
 
@@ -86,8 +90,8 @@ public abstract class Element implements IName, IValue, MinecraftWrapper {
     }
 
     protected void resetPosition() {
-        this.alignmentX = ElementAlignment.LEFT;
-        this.alignmentY = ElementAlignment.TOP;
+        this.alignmentX = HUDElementAlignment.LEFT;
+        this.alignmentY = HUDElementAlignment.TOP;
         this.calculatePosition();
     }
 

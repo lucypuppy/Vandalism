@@ -26,7 +26,10 @@ public abstract class MixinServerEntry {
 
     @Inject(method = "protocolVersionMatches", at = @At(value = "RETURN"), cancellable = true)
     private void vandalism$forceProtocolVersionMatches(final CallbackInfoReturnable<Boolean> cir) {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.multiplayerScreenServerInformation.getValue()) {
+        if (!Vandalism.getInstance().getConfigManager().getMainConfig().enhancedServerListCategory.enhancedServerList.getValue()) {
+            return;
+        }
+        if (Vandalism.getInstance().getConfigManager().getMainConfig().enhancedServerListCategory.multiplayerScreenServerInformation.getValue()) {
             cir.setReturnValue(true);
         }
     }
@@ -43,17 +46,32 @@ public abstract class MixinServerEntry {
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;IIIZ)I"))
     private int vandalism$applyAdditionalServerInformation(final DrawContext instance, final TextRenderer textRenderer, final Text text, final int x, final int y, final int color, final boolean shadow) {
         instance.drawText(textRenderer, text, x, y, color, shadow);
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.multiplayerScreenServerInformation.getValue()) {
-            final int textX = x + textRenderer.getWidth(text) + 22;
-            String versionName = this.server.version.getString();
-            final int maxServerVersionLength = Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.maxServerVersionLength.getValue();
-            if (versionName.length() > maxServerVersionLength) {
-                versionName = versionName.substring(0, maxServerVersionLength);
-            }
-            instance.drawTextWithShadow(textRenderer, VANDALISM_VERSION_TEXT + versionName, textX, y, -1);
-            instance.drawTextWithShadow(textRenderer, VANDALISM_PROTOCOL_TEXT + this.server.protocolVersion, textX, y + textRenderer.fontHeight, -1);
-            if (this.server.protocolVersion != ProtocolHack.getTargetVersion().getVersion()) {
-                instance.drawTextWithShadow(textRenderer, VANDALISM_INCOMPATIBLE_PROTOCOL_TEXT, textX, y + (textRenderer.fontHeight * 2), -1);
+        if (Vandalism.getInstance().getConfigManager().getMainConfig().enhancedServerListCategory.enhancedServerList.getValue()) {
+            if (Vandalism.getInstance().getConfigManager().getMainConfig().enhancedServerListCategory.multiplayerScreenServerInformation.getValue()) {
+                final int textX = x + textRenderer.getWidth(text) + 22;
+                String versionName = this.server.version.getString();
+                final int maxServerVersionLength = Vandalism.getInstance().getConfigManager().getMainConfig()
+                        .enhancedServerListCategory.maxServerVersionLength.getValue();
+                if (versionName.length() > maxServerVersionLength) {
+                    versionName = versionName.substring(0, maxServerVersionLength);
+                }
+                instance.drawTextWithShadow(textRenderer, VANDALISM_VERSION_TEXT + versionName, textX, y, -1);
+                instance.drawTextWithShadow(
+                        textRenderer,
+                        VANDALISM_PROTOCOL_TEXT + this.server.protocolVersion,
+                        textX,
+                        y + textRenderer.fontHeight,
+                        -1
+                );
+                if (this.server.protocolVersion != ProtocolHack.getTargetVersion().getVersion()) {
+                    instance.drawTextWithShadow(
+                            textRenderer,
+                            VANDALISM_INCOMPATIBLE_PROTOCOL_TEXT,
+                            textX,
+                            y + (textRenderer.fontHeight * 2),
+                            -1
+                    );
+                }
             }
         }
         return x;

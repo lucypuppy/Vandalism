@@ -1,14 +1,11 @@
 package de.vandalismdevelopment.vandalism.config.impl.main.impl;
 
-import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.config.impl.main.MainConfig;
-import de.vandalismdevelopment.vandalism.enhancedserverlist.ServerList;
 import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
 import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
 import de.vandalismdevelopment.vandalism.value.impl.KeyInputValue;
-import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderIntegerValue;
 
 public class MenuCategory extends ValueCategory {
     
@@ -37,13 +34,6 @@ public class MenuCategory extends ValueCategory {
             false
     );
 
-    public final Value<Boolean> alwaysDisplayCreativeTab = new BooleanValue(
-            "Always Display Creative Tab",
-            "Always displays the creative tab.",
-            this,
-            true
-    );
-
     public final Value<Boolean> manageContainerButtons = new BooleanValue(
             "Manage Container Buttons",
             "Adds the store/steal buttons to containers.",
@@ -51,9 +41,23 @@ public class MenuCategory extends ValueCategory {
             true
     );
 
+    public final Value<Boolean> alwaysDisplayCreativeTab = new BooleanValue(
+            "Always Display Creative Tab",
+            "Always displays the creative tab.",
+            this,
+            true
+    );
+
     public final Value<Boolean> replaceGameMenuScreenButtons = new BooleanValue(
             "Replaces Game Menu Screen Buttons",
             "Adds a multiplayer and a reconnect button to the game menu screen.",
+            this,
+            true
+    );
+
+    public final Value<Boolean> moreResourcePackOptions = new BooleanValue(
+            "More Server Resource Pack Options",
+            "Shows more options in the Server Resource Pack Download Screen.",
             this,
             true
     );
@@ -75,40 +79,6 @@ public class MenuCategory extends ValueCategory {
     public final Value<Boolean> moreDisconnectedScreenButtons = new BooleanValue(
             "More Disconnected Buttons",
             "Adds more buttons to the disconnected screen.",
-            this,
-            true
-    );
-
-    public final Value<Boolean> enhancedServerList = new BooleanValue(
-            "Enhanced Server List",
-            "Enables/Disables the enhanced server list mode.",
-            this,
-            true
-    ).valueChangedConsumer(value -> {
-        if (!value) {
-            Vandalism.getInstance().getServerListManager().setSelectedServerList(ServerList.DEFAULT_SERVER_LIST_NAME);
-        }
-    });
-
-    public final Value<Boolean> multiplayerScreenServerInformation = new BooleanValue(
-            "Multiplayer Screen Server Information",
-            "If enabled the Game shows all necessary server information behind a server list entry.",
-            this,
-            true
-    );
-
-    public final Value<Integer> maxServerVersionLength = new SliderIntegerValue(
-            "Max Server Version Length",
-            "Sets the max display length of a server version that is being displayed in the multiplayer screen.",
-            this,
-            60,
-            6,
-            250
-    ).visibleConsumer(this.multiplayerScreenServerInformation::getValue);
-
-    public final Value<Boolean> moreResourcePackOptions = new BooleanValue(
-            "More Server Resource Pack Options",
-            "Shows more options in the Server Resource Pack Download Screen.",
             this,
             true
     );
