@@ -26,6 +26,8 @@ public class MainConfig extends ValueableConfig implements MinecraftWrapper {
 
     public final RotationCategory rotationCategory = new RotationCategory(this);
 
+    public final EnhancedServerListCategory enhancedServerListCategory = new EnhancedServerListCategory(this);
+
     @Override
     public JsonObject save() throws IOException {
         final JsonObject configObject = new JsonObject(), valuesArray = new JsonObject();
