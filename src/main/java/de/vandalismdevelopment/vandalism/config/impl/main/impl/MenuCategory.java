@@ -1,6 +1,8 @@
 package de.vandalismdevelopment.vandalism.config.impl.main.impl;
 
+import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.config.impl.main.MainConfig;
+import de.vandalismdevelopment.vandalism.enhancedserverlist.ServerList;
 import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.ValueCategory;
@@ -76,6 +78,17 @@ public class MenuCategory extends ValueCategory {
             this,
             true
     );
+
+    public final Value<Boolean> enhancedServerList = new BooleanValue(
+            "Enhanced Server List",
+            "Enables/Disables the enhanced server list mode.",
+            this,
+            true
+    ).valueChangedConsumer(value -> {
+        if (!value) {
+            Vandalism.getInstance().getServerListManager().setSelectedServerList(ServerList.DEFAULT_SERVER_LIST_NAME);
+        }
+    });
 
     public final Value<Boolean> multiplayerScreenServerInformation = new BooleanValue(
             "Multiplayer Screen Server Information",

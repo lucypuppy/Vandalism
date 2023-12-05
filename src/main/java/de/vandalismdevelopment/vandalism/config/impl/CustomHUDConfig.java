@@ -37,10 +37,14 @@ public class CustomHUDConfig extends ValueableConfig {
         for (final Element element : Vandalism.getInstance().getCustomHUDRenderer().getElements()) {
             final JsonObject elementObject = jsonObject.getAsJsonObject(element.getName());
             if (elementObject != null) {
-                element.absoluteX = elementObject.get("absoluteX").getAsInt();
-                element.absoluteY = elementObject.get("absoluteY").getAsInt();
-                element.calculateAlignment();
-                element.calculatePosition();
+                if (elementObject.has("absoluteX") && elementObject.has("absoluteY")) {
+                    element.absoluteX = elementObject.get("absoluteX").getAsInt();
+                    element.absoluteY = elementObject.get("absoluteY").getAsInt();
+                    element.calculateAlignment();
+                    element.calculatePosition();
+                } else {
+                    Vandalism.getInstance().getLogger().error("Element " + element.getName() + " has no absolute position in the config!");
+                }
                 final JsonElement valuesElement = elementObject.get("values");
                 if (valuesElement != null) {
                     this.loadValues(valuesElement.getAsJsonObject(), element.getValues());

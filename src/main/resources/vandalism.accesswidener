@@ -45,7 +45,6 @@ accessible field  net/minecraft/client/network/ClientPlayerEntity lastYaw F
 accessible field  net/minecraft/client/network/ClientPlayerEntity lastPitch F
 accessible method net/minecraft/client/MinecraftClient doItemUse ()V
 accessible method net/minecraft/client/render/block/entity/SignBlockEntityRenderer getColor (Lnet/minecraft/block/entity/SignText;)I
-accessible field net/minecraft/client/option/ServerList servers Ljava/util/List;
 accessible field net/minecraft/client/option/ServerList hiddenServers Ljava/util/List;
 accessible field net/minecraft/client/option/ServerList LOGGER Lorg/slf4j/Logger;
 accessible field net/minecraft/client/option/ServerList client Lnet/minecraft/client/MinecraftClient;
