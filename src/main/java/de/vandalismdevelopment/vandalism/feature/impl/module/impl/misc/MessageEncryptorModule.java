@@ -10,6 +10,8 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 
+//TODO: Add dhjihad mode.
+
 public class MessageEncryptorModule extends Module implements ChatListener {
 
     public final static MutableText ENCRYPTION_PREFIX = Text.empty()
@@ -68,16 +70,13 @@ public class MessageEncryptorModule extends Module implements ChatListener {
     public String decryptMessage(final String message) {
         final StringBuilder stringBuilder = new StringBuilder();
         boolean isEncrpyted = false, isOldCorona = true;
-
         for (final char c : message.toCharArray()) {
             final char decryptedChar = (char) ((c - OFFSET_CHAR) ^ 98);
-
             if (decryptedChar == CHECK_CHAR_2) {
                 isEncrpyted = !isEncrpyted;
                 isOldCorona = false;
                 continue;
             }
-
             if (c >= OFFSET_CHAR && c < CHECK_CHAR && (isEncrpyted || isOldCorona)) {
                 stringBuilder.append(decryptedChar);
                 continue;
@@ -85,7 +84,6 @@ public class MessageEncryptorModule extends Module implements ChatListener {
 
             stringBuilder.append(c);
         }
-
         return stringBuilder.toString();
     }
 
@@ -94,7 +92,6 @@ public class MessageEncryptorModule extends Module implements ChatListener {
             if (c >= OFFSET_CHAR && c < CHECK_CHAR)
                 return true;
         }
-
         return false;
     }
 

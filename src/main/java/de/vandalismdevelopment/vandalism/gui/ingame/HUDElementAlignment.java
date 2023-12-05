@@ -2,13 +2,13 @@ package de.vandalismdevelopment.vandalism.gui.ingame;
 
 import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
 
-public enum ElementAlignment implements EnumNameNormalizer {
+public enum HUDElementAlignment implements EnumNameNormalizer {
 
     LEFT, MIDDLE, RIGHT, TOP, BOTTOM;
 
     private final String normalName;
 
-    ElementAlignment() {
+    HUDElementAlignment() {
         this.normalName = this.normalizeName(this.name());
     }
 
@@ -17,8 +17,8 @@ public enum ElementAlignment implements EnumNameNormalizer {
         return this.normalName;
     }
 
-    public static ElementAlignment fromNormalName(final String normalName) {
-        for (final ElementAlignment value : values()) {
+    public static HUDElementAlignment fromNormalName(final String normalName) {
+        for (final HUDElementAlignment value : values()) {
             if (value.normalName().equals(normalName)) return value;
         }
         return null;

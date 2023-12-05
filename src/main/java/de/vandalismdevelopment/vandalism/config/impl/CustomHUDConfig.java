@@ -4,10 +4,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.config.ValueableConfig;
-import de.vandalismdevelopment.vandalism.gui.ingame.Element;
+import de.vandalismdevelopment.vandalism.gui.ingame.CustomHUDRenderer;
+import de.vandalismdevelopment.vandalism.gui.ingame.HUDElement;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class CustomHUDConfig extends ValueableConfig {
 
@@ -18,39 +20,47 @@ public class CustomHUDConfig extends ValueableConfig {
     @Override
     public JsonObject save() throws IOException {
         final JsonObject elementsObject = new JsonObject();
-        for (final Element element : Vandalism.getInstance().getCustomHUDRenderer().getElements()) {
+        final CustomHUDRenderer customHUDRenderer = Vandalism.getInstance().getCustomHUDRenderer();
+        if (customHUDRenderer == null) return elementsObject;
+        final List<HUDElement> hudElements = customHUDRenderer.getHudElements();
+        if (hudElements == null || hudElements.isEmpty()) return elementsObject;
+        for (final HUDElement hudElement : hudElements) {
             final JsonObject elementObject = new JsonObject();
-            elementObject.addProperty("absoluteX", element.absoluteX);
-            elementObject.addProperty("absoluteY", element.absoluteY);
-            if (!element.getValues().isEmpty()) {
+            elementObject.addProperty("absoluteX", hudElement.absoluteX);
+            elementObject.addProperty("absoluteY", hudElement.absoluteY);
+            if (!hudElement.getValues().isEmpty()) {
                 final JsonObject valuesObject = new JsonObject();
-                this.saveValues(valuesObject, element.getValues());
+                this.saveValues(valuesObject, hudElement.getValues());
                 elementObject.add("values", valuesObject);
             }
-            elementsObject.add(element.getName(), elementObject);
+            elementsObject.add(hudElement.getName(), elementObject);
         }
         return elementsObject;
     }
 
     @Override
     public void load(final JsonObject jsonObject) throws IOException {
-        for (final Element element : Vandalism.getInstance().getCustomHUDRenderer().getElements()) {
-            final JsonObject elementObject = jsonObject.getAsJsonObject(element.getName());
+        final CustomHUDRenderer customHUDRenderer = Vandalism.getInstance().getCustomHUDRenderer();
+        if (customHUDRenderer == null) return;
+        final List<HUDElement> hudElements = customHUDRenderer.getHudElements();
+        if (hudElements == null || hudElements.isEmpty()) return;
+        for (final HUDElement hudElement : hudElements) {
+            final JsonObject elementObject = jsonObject.getAsJsonObject(hudElement.getName());
             if (elementObject != null) {
                 if (elementObject.has("absoluteX") && elementObject.has("absoluteY")) {
-                    element.absoluteX = elementObject.get("absoluteX").getAsInt();
-                    element.absoluteY = elementObject.get("absoluteY").getAsInt();
-                    element.calculateAlignment();
-                    element.calculatePosition();
+                    hudElement.absoluteX = elementObject.get("absoluteX").getAsInt();
+                    hudElement.absoluteY = elementObject.get("absoluteY").getAsInt();
+                    hudElement.calculateAlignment();
+                    hudElement.calculatePosition();
                 } else {
-                    Vandalism.getInstance().getLogger().error("Element " + element.getName() + " has no absolute position in the config!");
+                    Vandalism.getInstance().getLogger().error("HUD Element " + hudElement.getName() + " has no absolute position in the config!");
                 }
                 final JsonElement valuesElement = elementObject.get("values");
                 if (valuesElement != null) {
-                    this.loadValues(valuesElement.getAsJsonObject(), element.getValues());
+                    this.loadValues(valuesElement.getAsJsonObject(), hudElement.getValues());
                 }
             } else {
-                Vandalism.getInstance().getLogger().error("Element " + element.getName() + " not found in config!");
+                Vandalism.getInstance().getLogger().error("HUD Element " + hudElement.getName() + " not found in config!");
             }
         }
     }
