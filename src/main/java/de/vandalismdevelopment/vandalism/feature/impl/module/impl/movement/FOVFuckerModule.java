@@ -107,11 +107,7 @@ public class FOVFuckerModule extends Module implements TickListener {
                     .findFirst().orElse(null);
             return;
         }
-        if (
-                this.target.isDead() ||
-                        this.world().getEntityById(this.target.getId()) == null ||
-                        this.player().distanceTo(this.target) > this.maxDistance.getValue()
-        ) {
+        if (this.target.isDead() || this.world().getEntityById(this.target.getId()) == null) {
             this.target = null;
             return;
         }
