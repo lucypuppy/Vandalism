@@ -16,8 +16,6 @@ public class WatermarkElement extends Element {
         super.resetPosition();
         this.x = 0;
         this.y = 0;
-        this.absoluteX = 0;
-        this.absoluteY = 0;
     }
 
     @Override

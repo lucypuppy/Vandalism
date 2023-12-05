@@ -75,8 +75,6 @@ public class InfoElement extends Element {
         super.resetPosition();
         this.x = 2;
         this.y = 60;
-        this.absoluteX = 0;
-        this.absoluteY = 60;
     }
 
     @Override
