@@ -7,7 +7,8 @@ import de.florianmichael.rclasses.common.StringUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.config.ValueableConfig;
 import de.vandalismdevelopment.vandalism.config.impl.account.impl.CrackedAccount;
-import de.vandalismdevelopment.vandalism.config.impl.account.impl.MicrosoftAccount;
+import de.vandalismdevelopment.vandalism.config.impl.account.impl.MicrosoftDeviceCodeAccount;
+import de.vandalismdevelopment.vandalism.config.impl.account.impl.MicrosoftLocalWebServerAccount;
 import de.vandalismdevelopment.vandalism.util.EncryptionUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import net.minecraft.util.Uuids;
@@ -70,14 +71,18 @@ public class AccountConfig extends ValueableConfig implements MinecraftWrapper {
         final JsonObject configObject = new JsonObject();
         final JsonArray accountArray = new JsonArray();
         for (final Account account : this.accounts) {
-            final JsonObject accountObject = new JsonObject();
-            accountObject.addProperty("username", account.getUsername());
-            accountObject.addProperty("type", account.getType());
-            if (account.getUuid() != null) {
-                accountObject.addProperty("uuid", account.getUuid().toString());
+            try {
+                final JsonObject accountObject = new JsonObject();
+                accountObject.addProperty("username", account.getUsername());
+                accountObject.addProperty("type", account.getType());
+                if (account.getUuid() != null) {
+                    accountObject.addProperty("uuid", account.getUuid().toString());
+                }
+                account.onConfigSave(accountObject);
+                accountArray.add(accountObject);
+            } catch (final Throwable throwable) {
+                Vandalism.getInstance().getLogger().error("Failed to save a " + account.getType() + " account: " + account.getUsername());
             }
-            account.onConfigSave(accountObject);
-            accountArray.add(accountObject);
         }
         final UUID sessionUuid = this.mc().session.getUuidOrNull();
         configObject.addProperty("lastSession", (this.mc().session.getUsername() + (sessionUuid != null ? sessionUuid.toString() : "")).hashCode());
@@ -91,30 +96,46 @@ public class AccountConfig extends ValueableConfig implements MinecraftWrapper {
         final int lastSession = jsonObject.get("lastSession").getAsInt();
         for (final JsonElement accountElement : accountArray) {
             final JsonObject accountObject = accountElement.getAsJsonObject();
-            final String username = accountObject.get("username").getAsString(), type = accountObject.get("type").getAsString(), uuid = accountObject.has("uuid") ? accountObject.get("uuid").getAsString() : null;
-            Account account = null;
-            switch (type) {
-                case "microsoft" -> {
+            final String usernameFromJson = accountObject.get("username").getAsString();
+            final String typeFromJson = accountObject.get("type").getAsString();
+            final String uuidFromJson = accountObject.has("uuid") ? accountObject.get("uuid").getAsString() : null;
+            try {
+                final UUID validUUID = uuidFromJson != null ? UUID.fromString(uuidFromJson) : null;
+                Account account = switch (typeFromJson) {
+                    case "microsoft-local-web-server" -> new MicrosoftLocalWebServerAccount(
+                            EncryptionUtil.decrypt(
+                                    accountObject.get("data").getAsString(),
+                                    EncryptionUtil.getKeyFromPassword(usernameFromJson)
+                            ),
+                            validUUID,
+                            usernameFromJson
+                    );
+                    case "microsoft-device-code" -> new MicrosoftDeviceCodeAccount(
+                            EncryptionUtil.decrypt(
+                                    accountObject.get("data").getAsString(),
+                                    EncryptionUtil.getKeyFromPassword(usernameFromJson)
+                            ),
+                            validUUID,
+                            usernameFromJson
+                    );
+                    default -> new CrackedAccount(
+                            usernameFromJson,
+                            uuidFromJson == null ? Uuids.getOfflinePlayerUuid(usernameFromJson) : UUID.fromString(uuidFromJson)
+                    );
+                };
+                this.accounts.add(account);
+                if (lastSession == (account.getUsername() + account.getUuid()).hashCode()) {
                     try {
-                        account = new MicrosoftAccount(EncryptionUtil.decrypt(accountObject.get("data").getAsString(), EncryptionUtil.getKeyFromPassword(username)), uuid != null ? UUID.fromString(uuid) : null, username);
+                        account.login();
                     } catch (final Throwable throwable) {
-                        Vandalism.getInstance().getLogger().error("Failed to log into a microsoft account.", throwable);
+                        Vandalism.getInstance().getLogger().error(
+                                "Failed to log into the " + account.getType() + " account: " + account.getUsername(),
+                                throwable
+                        );
                     }
                 }
-                default ->
-                        account = new CrackedAccount(username, uuid == null ? Uuids.getOfflinePlayerUuid(username) : UUID.fromString(uuid));
-            }
-            if (account == null) {
-                Vandalism.getInstance().getLogger().error("Failed to load account: " + username);
-                continue;
-            }
-            this.accounts.add(account);
-            if (lastSession == (account.getUsername() + account.getUuid()).hashCode()) {
-                try {
-                    account.login();
-                } catch (final Throwable throwable) {
-                    Vandalism.getInstance().getLogger().error("Failed to log into the " + account.getType() + " account: " + account.getUsername(), throwable);
-                }
+            } catch (final Throwable throwable) {
+                Vandalism.getInstance().getLogger().error("Failed to log create a " + typeFromJson + " account: " + usernameFromJson, throwable);
             }
         }
     }

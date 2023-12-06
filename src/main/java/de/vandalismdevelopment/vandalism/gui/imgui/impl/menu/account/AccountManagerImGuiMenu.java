@@ -4,7 +4,8 @@ import de.florianmichael.rclasses.common.object.ObjectTypeChecker;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.config.impl.account.Account;
 import de.vandalismdevelopment.vandalism.config.impl.account.impl.CrackedAccount;
-import de.vandalismdevelopment.vandalism.config.impl.account.impl.MicrosoftAccount;
+import de.vandalismdevelopment.vandalism.config.impl.account.impl.MicrosoftDeviceCodeAccount;
+import de.vandalismdevelopment.vandalism.config.impl.account.impl.MicrosoftLocalWebServerAccount;
 import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiMenu;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
@@ -16,7 +17,9 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.session.Session;
 import net.minecraft.util.Util;
 import net.minecraft.util.Uuids;
+import net.raphimc.minecraftauth.MinecraftAuth;
 import net.raphimc.minecraftauth.step.java.session.StepFullJavaSession;
+import net.raphimc.minecraftauth.step.msa.StepLocalWebServer;
 import net.raphimc.minecraftauth.step.msa.StepMsaDeviceCode;
 import net.raphimc.minecraftauth.util.MicrosoftConstants;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -51,15 +54,19 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
         this.resetState();
     }
 
+    private void killThread() {
+        if (this.thread != null) {
+            this.thread.interrupt();
+            this.thread = null;
+        }
+    }
+
     private void resetState() {
         this.state.set("Waiting for input...");
     }
 
     private void delayedResetState() {
-        if (this.thread != null) {
-            this.thread.interrupt();
-            this.thread = null;
-        }
+        this.killThread();
         try {
             Thread.sleep(5000);
         } catch (final InterruptedException ignored) {
@@ -83,7 +90,7 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
             final Session session = this.mc().session;
             ImGui.text("Current Account");
             ImGui.inputTextMultiline("##currentAccountData", this.currentAccountData, -1, 60, ImGuiInputTextFlags.ReadOnly);
-            this.currentAccountData.set("Username: " + session.getUsername() + "\n" + (session.getUuidOrNull() != null ? "UUID: " + session.getUuidOrNull() + "\n" : "") + "Type: " + (session.getAccessToken().equals(CrackedAccount.TOKEN) ? "Cracked" : "Premium"));
+            this.currentAccountData.set("Username: " + session.getUsername() + "\n" + (session.getUuidOrNull() != null ? "UUID: " + session.getUuidOrNull() + "\n" : "") + "Type: " + (session.getAccessToken().equals(CrackedAccount.TOKEN) ? "Cracked" : "Normal"));
             ImGui.separator();
             ImGui.text("Accounts");
             final List<Account> accounts = Vandalism.getInstance().getConfigManager().getAccountConfig().getAccounts();
@@ -138,6 +145,14 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
             ImGui.endChild();
             ImGui.newLine();
             ImGui.separator();
+            if (this.thread != null) {
+                ImGui.text("Extra Options");
+                if (ImGui.button("Kill Login Thread##accountmanagerkillloginthread")) {
+                    this.killThread();
+                }
+                ImGui.separator();
+                ImGui.spacing();
+            }
             ImGui.text("Add Account");
             ImGui.setNextItemWidth(-300);
             ImGui.inputText("Cracked Username##accountmanagercrackedusername", this.crackedUsername, ImGuiInputTextFlags.CallbackCharFilter, USERNAME_NAME_FILTER);
@@ -171,21 +186,66 @@ public class AccountManagerImGuiMenu extends ImGuiMenu {
                     }
                 }
             }
-            if (ImGui.button("Add Microsoft Account##accountmanageraddmicrosoftaccount")) {
+            if (ImGui.button("Add Microsoft Account (Device Code)##accountmanageradddevicecodemicrosoftaccount")) {
+                this.killThread();
                 this.thread = new Thread(() -> {
                     try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
-                        final StepFullJavaSession.FullJavaSession mcProfile = MicrosoftAccount.LOCAL_WEBSERVER_LOGIN.getFromInput(httpClient, new StepMsaDeviceCode.MsaDeviceCodeCallback(msaDeviceCode -> {
-                            this.state.set("Please open the url " + msaDeviceCode.getDirectVerificationUri());
-                            Util.getOperatingSystem().open(msaDeviceCode.getDirectVerificationUri());
-                        }));
-                        final MicrosoftAccount microsoftAccount = new MicrosoftAccount(MicrosoftAccount.LOCAL_WEBSERVER_LOGIN.toJson(mcProfile).toString(), mcProfile.getMcProfile().getId(), mcProfile.getMcProfile().getName());
-                        accounts.add(microsoftAccount);
-                        this.login(microsoftAccount);
+                        final StepFullJavaSession.FullJavaSession mcProfile = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.getFromInput(
+                                httpClient,
+                                new StepMsaDeviceCode.MsaDeviceCodeCallback(msaDeviceCode -> {
+                                    final String url = msaDeviceCode.getDirectVerificationUri();
+                                    this.state.set("Please open the url: " + url);
+                                    Util.getOperatingSystem().open(url);
+                                })
+                        );
+                        final MicrosoftDeviceCodeAccount microsoftDeviceCodeAccount = new MicrosoftDeviceCodeAccount(
+                                MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.toJson(mcProfile).toString(),
+                                mcProfile.getMcProfile().getId(),
+                                mcProfile.getMcProfile().getName()
+                        );
+                        accounts.add(microsoftDeviceCodeAccount);
+                        this.login(microsoftDeviceCodeAccount);
                         Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getAccountConfig());
-                        this.state.set("Successfully added the microsoft account to your account list: " + mcProfile.getMcProfile().getName());
                     } catch (final Throwable throwable) {
-                        Vandalism.getInstance().getLogger().error("Failed to log into a microsoft account.", throwable);
-                        this.state.set("Failed to add the microsoft account to your account list.\n" + throwable);
+                        if (throwable instanceof InterruptedException) {
+                            this.state.set("Login process for the microsoft device code account has been aborted.");
+                        } else {
+                            Vandalism.getInstance().getLogger().error("Failed to log into a microsoft device code account.", throwable);
+                            this.state.set("Failed to add the microsoft device code account to your account list.\n" + throwable);
+                        }
+                    }
+                    this.delayedResetState();
+                });
+                this.thread.start();
+            }
+            ImGui.sameLine();
+            if (ImGui.button("Add Microsoft Account (Local Web Server)##accountmanageraddlocalwebservermicrosoftaccount")) {
+                this.killThread();
+                this.thread = new Thread(() -> {
+                    try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
+                        final StepFullJavaSession.FullJavaSession mcProfile = MicrosoftLocalWebServerAccount.LOCAL_WEBSERVER_LOGIN.getFromInput(
+                                httpClient,
+                                new StepLocalWebServer.LocalWebServerCallback(msaLocalWebServer -> {
+                                    final String url = msaLocalWebServer.getAuthenticationUrl();
+                                    this.state.set("Please open the url: " + url);
+                                    Util.getOperatingSystem().open(url);
+                                })
+                        );
+                        final MicrosoftLocalWebServerAccount microsoftLocalWebServerAccount = new MicrosoftLocalWebServerAccount(
+                                MicrosoftLocalWebServerAccount.LOCAL_WEBSERVER_LOGIN.toJson(mcProfile).toString(),
+                                mcProfile.getMcProfile().getId(),
+                                mcProfile.getMcProfile().getName()
+                        );
+                        accounts.add(microsoftLocalWebServerAccount);
+                        this.login(microsoftLocalWebServerAccount);
+                        Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getAccountConfig());
+                    } catch (final Throwable throwable) {
+                        if (throwable instanceof InterruptedException) {
+                            this.state.set("Login process for the microsoft local web server account has been aborted.");
+                        } else {
+                            Vandalism.getInstance().getLogger().error("Failed to log into a local web server account.", throwable);
+                            this.state.set("Failed to add the microsoft local web server account to your account list.\n" + throwable);
+                        }
                     }
                     this.delayedResetState();
                 });
