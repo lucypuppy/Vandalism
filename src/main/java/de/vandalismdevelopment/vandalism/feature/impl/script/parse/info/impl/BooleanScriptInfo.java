@@ -1,6 +1,6 @@
 package de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.impl;
 
-import de.florianmichael.rclasses.common.object.ObjectTypeChecker;
+import de.florianmichael.rclasses.common.array.ObjectTypeChecker;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.IScriptInfo;
 
 public abstract class BooleanScriptInfo implements IScriptInfo<Boolean> {

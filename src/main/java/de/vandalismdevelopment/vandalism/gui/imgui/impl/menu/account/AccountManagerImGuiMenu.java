@@ -1,6 +1,6 @@
 package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.account;
 
-import de.florianmichael.rclasses.common.object.ObjectTypeChecker;
+import de.florianmichael.rclasses.common.array.ObjectTypeChecker;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.config.impl.account.Account;
 import de.vandalismdevelopment.vandalism.config.impl.account.impl.CrackedAccount;
