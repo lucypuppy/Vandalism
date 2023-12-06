@@ -69,3 +69,6 @@ accessible field net/minecraft/network/packet/c2s/play/ClickSlotC2SPacket action
 mutable field net/minecraft/network/packet/c2s/play/ClickSlotC2SPacket actionType Lnet/minecraft/screen/slot/SlotActionType;
 accessible field net/minecraft/network/packet/c2s/play/ClickSlotC2SPacket button I
 mutable field net/minecraft/network/packet/c2s/play/ClickSlotC2SPacket button I
+accessible method net/minecraft/entity/Entity getVelocityAffectingPos ()Lnet/minecraft/util/math/BlockPos;
+accessible method net/minecraft/entity/LivingEntity getMovementSpeed (F)F
+accessible method net/minecraft/entity/player/PlayerEntity getOffGroundSpeed ()F

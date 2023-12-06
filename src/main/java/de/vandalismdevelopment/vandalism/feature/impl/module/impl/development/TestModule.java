@@ -210,15 +210,4 @@ public class TestModule extends Module implements TickListener, RenderListener, 
     @Override
     public void onMoveFlying(final MoveFlyingEvent event) {
     }
-
-    @Override
-    public void onPreMotion(final MotionEvent event) {
-        ChatUtil.infoChatMessage("pre");
-    }
-
-    @Override
-    public void onPostMotion(final MotionEvent event) {
-        ChatUtil.infoChatMessage("post");
-    }
-
 }

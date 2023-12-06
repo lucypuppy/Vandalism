@@ -142,15 +142,15 @@ public class FOVFuckerModule extends Module implements TickListener {
                     diffX /= 1.2f;
                     diffZ /= 1.2f;
                 }
-                x += diffX * 11;
-                z += diffZ * 11;
+                x += diffX * 17;
+                z += diffZ * 21;
             } else {
                 if (strafe != 0) {
-                    diffX *= 3;
-                    diffZ *= 3;
+                    diffX *= 4;
+                    diffZ *= 4;
                 }
-                x += (diffX * 1.5);
-                z += (diffZ * 1.5);
+                x += (diffX * 1.75);
+                z += (diffZ * 1.75);
             }
         }
         this.x = x;

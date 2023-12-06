@@ -194,7 +194,7 @@ public interface MovementListener {
 
         public final static int ID = 23;
 
-        public final MotionEventState state;
+        private final MotionEventState state;
 
         public MotionEvent(final MotionEventState state) {
             this.state = state;

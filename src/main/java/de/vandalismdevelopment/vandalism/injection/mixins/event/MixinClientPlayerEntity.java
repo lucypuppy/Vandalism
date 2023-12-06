@@ -27,7 +27,7 @@ public abstract class MixinClientPlayerEntity {
         return sprintEvent.sprinting;
     }
 
-    @Inject(method = "sendMovementPackets()V", at = @At("HEAD"))
+    @Inject(method = "tick", at = @At("HEAD"))
     private void vandalism$callPreMotionEvent(final CallbackInfo ci) {
         final MovementListener.MotionEvent motionEvent = new MovementListener.MotionEvent(MovementListener.MotionEventState.PRE);
         DietrichEvents2.global().postInternal(MovementListener.MotionEvent.ID, motionEvent);
