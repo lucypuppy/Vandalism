@@ -7,7 +7,6 @@ import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.MovementUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.Clicker;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.impl.BoxMuellerClicker;
@@ -33,41 +32,14 @@ public class TestModule extends Module implements TickListener, RenderListener, 
 
     private final Clicker clicker;
 
-    private final Value<Float> mean = new SliderFloatValue(
-            "Mean",
-            "mean",
-            this,
-            15.0F,
-            0.0F,
-            20.0F
-    );
+    private final Value<Float> mean = new SliderFloatValue("Mean", "mean", this, 15.0F, 0.0F, 20.0F);
 
-    private final Value<Float> std = new SliderFloatValue(
-            "std",
-            "std",
-            this,
-            2.0F,
-            0.0F,
-            10.0F
-    );
+    private final Value<Float> std = new SliderFloatValue("std", "std", this, 2.0F, 0.0F, 10.0F);
 
-    private final Value<Integer> updatePossibility = new SliderIntegerValue(
-            "updatePossibility",
-            "updatePossibility",
-            this,
-            50,
-            0,
-            100
-    );
+    private final Value<Integer> updatePossibility = new SliderIntegerValue("updatePossibility", "updatePossibility", this, 50, 0, 100);
 
     public TestModule() {
-        super(
-                "Test",
-                "Just for development purposes.",
-                FeatureCategory.DEVELOPMENT,
-                true,
-                false
-        );
+        super("Test", "Just for development purposes.", FeatureCategory.DEVELOPMENT, true, false);
         this.clicker = new BoxMuellerClicker();
     }
 
@@ -76,10 +48,7 @@ public class TestModule extends Module implements TickListener, RenderListener, 
         DietrichEvents2.global().subscribe(TickEvent.ID, this);
         DietrichEvents2.global().subscribe(StrafeEvent.ID, this);
         DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
-        DietrichEvents2.global().subscribe(SprintEvent.ID, this);
         DietrichEvents2.global().subscribe(MoveInputEvent.ID, this);
-        DietrichEvents2.global().subscribe(MoveFlyingEvent.ID, this);
-        DietrichEvents2.global().subscribe(MotionEvent.ID, this);
     }
 
     @Override
@@ -87,10 +56,7 @@ public class TestModule extends Module implements TickListener, RenderListener, 
         DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
         DietrichEvents2.global().unsubscribe(StrafeEvent.ID, this);
         DietrichEvents2.global().unsubscribe(Render2DEvent.ID, this);
-        DietrichEvents2.global().unsubscribe(SprintEvent.ID, this);
         DietrichEvents2.global().unsubscribe(MoveInputEvent.ID, this);
-        DietrichEvents2.global().unsubscribe(MoveFlyingEvent.ID, this);
-        DietrichEvents2.global().unsubscribe(MotionEvent.ID, this);
         Vandalism.getInstance().getRotationListener().resetRotation();
     }
 
@@ -109,14 +75,10 @@ public class TestModule extends Module implements TickListener, RenderListener, 
         }
         final Entity target = entities.get(0);
         final Rotation rotation = Rotation.Builder.build(target, true, 3f, 1D / 32);
-
-        // ChatUtil.chatMessage("" + h + " / " + g + " / " + f);
         if (rotation == null) { //sanity check, crashes if you sneak and have your reach set to 3.0
             return;
         }
         Vandalism.getInstance().getRotationListener().setRotation(rotation, new Vec2f(179, 180), RotationPriority.HIGH);
-        //this.player().setYaw(rotation.getYaw());
-        //this.player().setPitch(rotation.getPitch());
         this.handleAttack(true, target);
 
     }
@@ -176,10 +138,6 @@ public class TestModule extends Module implements TickListener, RenderListener, 
     }
 
     @Override
-    public void onSprint(final SprintEvent event) {
-    }
-
-    @Override
     public void onMoveInput(final MoveInputEvent event) {
         /*final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
         if (rotation == null) return;
@@ -207,7 +165,4 @@ public class TestModule extends Module implements TickListener, RenderListener, 
         event.movementInput = new Vec3d(INPUTS[0], player().upwardSpeed, INPUTS[1]);
     }
 
-    @Override
-    public void onMoveFlying(final MoveFlyingEvent event) {
-    }
 }

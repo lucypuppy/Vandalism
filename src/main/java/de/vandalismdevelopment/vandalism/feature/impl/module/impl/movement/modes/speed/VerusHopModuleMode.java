@@ -23,21 +23,18 @@ public class VerusHopModuleMode extends ModuleMode<SpeedModule> implements Movem
     }
 
     @Override
-    public void onPreMotion(MotionEvent event) {
-
+    public void onPreMotion(final MotionEvent event) {
         //this.lastSpeed = MovementUtil.getSpeed();
-
     }
 
     @Override
-    public void onPostMotion(MotionEvent event) {
+    public void onPostMotion(final MotionEvent event) {
         if (this.player().forwardSpeed != 0 || this.player().sidewaysSpeed != 0) {
             if (this.player().isOnGround()) {
                 this.player().jump();
                 MovementUtil.setSpeed(MovementUtil.getBaseSpeed() * 1.525);
             } else {
                 MovementUtil.setSpeed(MovementUtil.getBaseSpeed() * 2.45);
-                player().setVelocity(player().getVelocity().getX(), player().getVelocity().getY() - 0.01, player().getVelocity().getZ());
             }
         }
     }
