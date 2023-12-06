@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.feature.impl.module.impl.render;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.common.StringUtils;
-import de.florianmichael.rclasses.io.model.ByteCountDataOutput;
+import de.florianmichael.rclasses.io.ByteCountDataOutput;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;

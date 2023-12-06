@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.impl;
 
 import de.florianmichael.rclasses.common.RandomUtils;
-import de.florianmichael.rclasses.math.integration.BoxMullerTransform;
+import de.florianmichael.rclasses.math.BoxMullerTransform;
 import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.florianmichael.rclasses.pattern.evicting.EvictingList;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.Clicker;
