@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Slice;
 public abstract class MixinLivingEntity implements MinecraftWrapper {
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getYaw()F"), slice = @Slice(to = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getYaw()F", ordinal = 1)))
-    private float vandalism$modifyRotationYaw(LivingEntity instance) {
+    private float vandalism$modifyRotationYaw(final LivingEntity instance) {
         if (this.player() == ((LivingEntity) (Object) this)) {
             if (Vandalism.getInstance().getRotationListener().getRotation() != null) {
                 return Vandalism.getInstance().getRotationListener().getRotation().getYaw();

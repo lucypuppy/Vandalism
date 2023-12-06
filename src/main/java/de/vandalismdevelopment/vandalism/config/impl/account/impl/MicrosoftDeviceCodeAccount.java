@@ -7,7 +7,6 @@ import de.vandalismdevelopment.vandalism.config.impl.account.Account;
 import de.vandalismdevelopment.vandalism.util.EncryptionUtil;
 import net.minecraft.client.session.Session;
 import net.raphimc.minecraftauth.MinecraftAuth;
-import net.raphimc.minecraftauth.step.AbstractStep;
 import net.raphimc.minecraftauth.step.java.session.StepFullJavaSession;
 import net.raphimc.minecraftauth.util.MicrosoftConstants;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -15,19 +14,12 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import java.util.Optional;
 import java.util.UUID;
 
-public class MicrosoftAccount extends Account {
-
-    public static final AbstractStep<?, StepFullJavaSession.FullJavaSession> LOCAL_WEBSERVER_LOGIN = MinecraftAuth.builder()
-            .withClientId(MicrosoftConstants.JAVA_TITLE_ID).withScope(MicrosoftConstants.SCOPE_TITLE_AUTH)
-            .localWebServer()
-            .withDeviceToken("Win32")
-            .sisuTitleAuthentication(MicrosoftConstants.JAVA_XSTS_RELYING_PARTY)
-            .buildMinecraftJavaProfileStep(true);
+public class MicrosoftDeviceCodeAccount extends Account {
 
     private String data;
 
-    public MicrosoftAccount(final String data, final UUID uuid, final String username) {
-        super("microsoft", username, uuid);
+    public MicrosoftDeviceCodeAccount(final String data, final UUID uuid, final String username) {
+        super("microsoft-device-code", username, uuid);
         this.data = data;
     }
 
@@ -35,11 +27,11 @@ public class MicrosoftAccount extends Account {
     public void login() throws Throwable {
         try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
             JsonObject jsonObject = JsonParser.parseString(this.data).getAsJsonObject();
-            final StepFullJavaSession.FullJavaSession mcProfile = LOCAL_WEBSERVER_LOGIN.refresh(
+            final StepFullJavaSession.FullJavaSession mcProfile = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.refresh(
                     httpClient,
-                    LOCAL_WEBSERVER_LOGIN.fromJson(jsonObject)
+                    MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.fromJson(jsonObject)
             );
-            jsonObject = LOCAL_WEBSERVER_LOGIN.toJson(mcProfile);
+            jsonObject = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.toJson(mcProfile);
             this.data = jsonObject.toString();
             this.setUsername(mcProfile.getMcProfile().getName());
             this.setUuid(mcProfile.getMcProfile().getId());
@@ -56,12 +48,8 @@ public class MicrosoftAccount extends Account {
     }
 
     @Override
-    public void onConfigSave(final JsonObject jsonObject) {
-        try {
-            jsonObject.addProperty("data", EncryptionUtil.encrypt(this.data, EncryptionUtil.getKeyFromPassword(this.getUsername())));
-        } catch (final Throwable throwable) {
-            Vandalism.getInstance().getLogger().error("Failed to save a microsoft account: " + this.getUsername());
-        }
+    public void onConfigSave(final JsonObject jsonObject) throws Throwable {
+        jsonObject.addProperty("data", EncryptionUtil.encrypt(this.data, EncryptionUtil.getKeyFromPassword(this.getUsername())));
     }
 
 }

@@ -51,7 +51,8 @@ public abstract class Account implements MinecraftWrapper {
 
     public abstract void login() throws Throwable;
 
-    public void onConfigSave(final JsonObject jsonObject) {}
+    public void onConfigSave(final JsonObject jsonObject) throws Throwable {
+    }
 
     public void setSession(final Session session) throws RuntimeException {
         this.mc().session = session;
