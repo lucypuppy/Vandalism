@@ -2,7 +2,6 @@ package de.vandalismdevelopment.vandalism.util.minecraft.impl;
 
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftUtil;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.potion.Potion;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -25,34 +24,31 @@ public class MovementUtil extends MinecraftUtil {
     }
 
     //LivingEntity, check everytime after update
-    public static Vec3d applyFriction(final Vec3d velocity, final int percentage){
+    public static Vec3d applyFriction(final Vec3d velocity, final int percentage) {
+        if (player() == null) return Vec3d.ZERO;
         final BlockPos blockPos = player().getVelocityAffectingPos();
         final float p = world().getBlockState(blockPos).getBlock().getSlipperiness();
         float f = player().isOnGround() ? p * 0.91F : 0.91F;
         f /= 100;
         f *= Math.min(100, percentage);
-        return velocity.multiply(f,1,f);
+        return velocity.multiply(f, 1, f);
     }
 
-    public static double getBaseSpeed(){
+    public static double getBaseSpeed() {
+        if (player() == null) return 0;
         double baseSpeed = 0.153D;
-        if(!player().isSprinting()){
+        if (!player().isSprinting()) {
             baseSpeed = 0.118D;
         }
-        if(player().hasStatusEffect(StatusEffects.SPEED)){
-            int amplifier = 1 + player().getStatusEffect(StatusEffects.SPEED).getAmplifier();
-            final double fixedSpeedMotion = 0.11D; //Potion.java#moveSpeed = (new Potion(
+        if (player().hasStatusEffect(StatusEffects.SPEED)) {
+            final int amplifier = 1 + player().getStatusEffect(StatusEffects.SPEED).getAmplifier();
+            final double fixedSpeedMotion = 0.11D;
             baseSpeed *= 1.0D + fixedSpeedMotion * (amplifier + 1);
         }
-
         return baseSpeed;
-        /*final BlockPos blockPos = player().getVelocityAffectingPos();
-        final float f = world().getBlockState(blockPos).getBlock().getSlipperiness();
-        return player().isOnGround() ? player().getMovementSpeed() * (0.21600002F / (f * f * f)) : player().getOffGroundSpeed();
-    */
     }
 
-    public static double getSpeed(){
+    public static double getSpeed() {
         if (player() == null) return 0;
         return Math.hypot(player().getVelocity().getX(), player().getVelocity().getZ());
     }
