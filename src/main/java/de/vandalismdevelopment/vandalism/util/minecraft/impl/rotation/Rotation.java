@@ -5,9 +5,11 @@ import de.vandalismdevelopment.vandalism.util.minecraft.impl.WorldUtil;
 import net.fabricmc.loader.impl.lib.sat4j.core.Vec;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Pair;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import org.joml.Vector3d;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,7 @@ public class Rotation extends MinecraftUtil {
     public void setYaw(float yaw) {
         this.yaw = yaw;
     }
+
     public float getYaw() {
         return this.yaw;
     }
@@ -33,6 +36,7 @@ public class Rotation extends MinecraftUtil {
     public void setPitch(float pitch) {
         this.pitch = pitch;
     }
+
     public float getPitch() {
         return this.pitch;
     }
@@ -40,6 +44,7 @@ public class Rotation extends MinecraftUtil {
     public void setTargetVector(Vec3d vector) {
         this.targetVector = vector;
     }
+
     public Vec3d getTargetVeector() {
         return this.targetVector;
     }
@@ -67,8 +72,8 @@ public class Rotation extends MinecraftUtil {
             final Vec3d eyePos = player().getEyePos(), getEntityVector = bestHitVec ? getNearestPoint(entity, box, player()) : new Vec3d(entity.getX(), entity.getY(), entity.getZ());
             Rotation normalRotations = build(getEntityVector, eyePos);
             //if (WorldUtil.rayTraceBlock(normalRotations.getVector(), range)) {
-           //     return normalRotations;
-           // }
+            //     return normalRotations;
+            // }
             normalRotations = null;
             Vec3d currentVector = null;
             for (double x = 0.00D; x < 1.00D; x += precision) {
@@ -79,13 +84,13 @@ public class Rotation extends MinecraftUtil {
                             continue;
                         }
                         final Rotation parsedRotation = build(vector, eyePos);
-                       // if (!WorldUtil.rayTraceBlock(parsedRotation.getVector(), range)) {
-                       //     continue;
-                       // }
+                        // if (!WorldUtil.rayTraceBlock(parsedRotation.getVector(), range)) {
+                        //     continue;
+                        // }
                         if (!bestHitVec) {
-                           // normalRotations.setTargetVector(vector);
+                            // normalRotations.setTargetVector(vector);
                             parsedRotation.setYaw(build(getEntityVector, eyePos).getYaw());
-                            parsedRotation.setPitch(build(getEntityVector.add(0,entity.getStandingEyeHeight(), 0), eyePos).getPitch());
+                            parsedRotation.setPitch(build(getEntityVector.add(0, entity.getStandingEyeHeight(), 0), eyePos).getPitch());
 
                             parsedRotation.setTargetVector(vector);
                             return parsedRotation;
@@ -121,23 +126,80 @@ public class Rotation extends MinecraftUtil {
 
     }
 
-    //TODO: Does this make sense? Because why should someone create an entire list of characters?
-    private static List<Character> getVisibleHitBoxSides(final Entity entity, final PlayerEntity player) {
-        final List<Character> sides = new ArrayList<>();
+    private Pair<Double, Double> generateRandomPointsInCircle3D(float radius) {
+        double u = Math.random();
+        double v = Math.random();
+        double theta = u * 2.0 * Math.PI;
+        double phi = Math.acos(2.0 * v - 1.0);
+        double r = Math.cbrt(Math.random()) * radius / 2;
+        double cosTheta = Math.cos(theta);
+        double sinPhi = Math.sin(phi);
+        double cosPhi = Math.cos(phi);
+        double x = r * sinPhi * cosTheta;
+        double z = r * cosPhi;
+
+        return new Pair<>(x, z);
+    }
+
+    private static List<Byte> getVisibleHitBoxSides(final Entity entity, final PlayerEntity player) {
+        final List<Byte> sides = new ArrayList<>();
         //TODO: check if anything has changed in 1.20.2 regarding hitbox position offsetting
         final float width = (entity.getWidth() + 0.2f) / 2f;
         final float height = entity.getHeight() + 0.2f;
         final double eyePosY = entity.getY() - 0.1;
         if (player.getZ() < entity.getZ() - width || player.getZ() > entity.getZ() + width) {
-            sides.add('x');
+            sides.add((byte) 0); //x
         }
         if (player.getX() < entity.getX() - width || player.getX() > entity.getX() + width) {
-            sides.add('z');
+            sides.add((byte) 1); //Z
         }
         if (player.getY() + player.getEyeHeight(player.getPose()) < eyePosY || player.getY() + player.getEyeHeight(player.getPose()) > eyePosY + height) {
-            sides.add('y');
+            sides.add((byte) 2); //y
         }
         return sides;
+    }
+
+    private List<Vec3d> computeHitboxAimPoints(final Entity e, final PlayerEntity player, int aimPoints) {
+        final List<Vec3d> points = new ArrayList<>();
+        final List<Byte> visibleSides = getVisibleHitBoxSides(e, player);
+        final double targetPosY = e.getY() - 0.1;
+        final double targetHeight = e.getHeight() + 0.2;
+        final double targetWidth = e.getWidth();
+        /*
+         * hitbox formula:
+         * visibleSides * width * height
+         * (points * points)
+         */
+        final double horDist = targetWidth / aimPoints;
+        final double vertDist = targetHeight / aimPoints;
+        if (visibleSides.contains((byte) 0)) { // x
+            for (double y = 0; y <= targetHeight; y += vertDist) {
+                for (double x = 0; x <= targetWidth; x += horDist) {
+                    double zOff = (player.getZ() > e.getZ() ? targetWidth / 2 : -targetWidth / 2);
+                    points.add(new Vec3d(e.getX() - targetWidth / 2 + x, targetPosY + y, e.getZ() + zOff));
+                }
+            }
+        }
+
+        if (visibleSides.contains((byte) 2)) { // y
+            for (double y = 0; y <= targetWidth; y += horDist) {
+                for (double x = 0; x <= targetWidth; x += horDist) {
+                    double yOff = (player.getEyeY() < targetPosY ? 0 : targetHeight);
+                    points.add(new Vec3d(e.getX() - targetWidth / 2 + x, targetPosY + yOff, e.getZ() - targetWidth / 2 + y));
+                }
+            }
+        }
+
+        if (visibleSides.contains((byte) 1)) { // z
+            for (double y = 0; y <= targetHeight; y += vertDist) {
+                for (double x = 0; x <= targetWidth; x += horDist) {
+                    double xOff = (player.getX() > e.getX() ? targetWidth / 2 : -targetWidth / 2);
+                    points.add(new Vec3d(e.getX() + xOff, targetPosY + y, e.getZ() - targetWidth / 2 + x));
+                }
+            }
+        }
+
+        return points;
     }
 
 }
