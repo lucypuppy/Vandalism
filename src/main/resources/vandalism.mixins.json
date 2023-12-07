@@ -64,6 +64,7 @@
     "feature.module.MixinMinecraftClient",
     "feature.module.MixinParticleManager",
     "feature.module.MixinPlayerListHud",
+    "feature.module.MixinRenderTickCounter",
     "feature.module.MixinSodiumWorldRenderer",
     "feature.module.MixinTextureUrlChecker",
     "feature.module.MixinWorldRenderer",
