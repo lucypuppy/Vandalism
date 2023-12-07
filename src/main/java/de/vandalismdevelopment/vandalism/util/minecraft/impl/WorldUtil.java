@@ -1,13 +1,17 @@
 package de.vandalismdevelopment.vandalism.util.minecraft.impl;
 
+import de.florianmichael.rclasses.math.geometry.Trigonometry;
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftUtil;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.RaycastContext;
 
@@ -24,6 +28,33 @@ public class WorldUtil extends MinecraftUtil {
             case "the_end" -> Dimension.END;
             default -> Dimension.OVERWORLD;
         };
+    }
+
+    public static double rayTraceRamge(float yaw, float pitch) {
+        Entity entity = player();
+        if (entity != null) {
+            double d = 3;
+            Vec3d vec3d = entity.getCameraPosVec(1);
+            Vec3d vec3d2 = getRotationVector(yaw, pitch);
+            Vec3d vec3d3 = vec3d.add(vec3d2.x * d, vec3d2.y * d, vec3d2.z * d);
+            Box box = entity.getBoundingBox().stretch(vec3d2.multiply(d)).expand(1.0, 1.0, 1.0);
+            EntityHitResult entityHitResult = ProjectileUtil.raycast(entity, vec3d, vec3d3, box, entityx -> !entityx.isSpectator() && entityx.canHit(), 999);
+            if (entityHitResult != null) {
+                Vec3d vec3d4 = entityHitResult.getPos();
+                return vec3d.distanceTo(vec3d4);
+            }
+        }
+        return -1;
+    }
+
+    public static Vec3d getRotationVector(float yaw, float pitch){
+        float f = pitch * (float) (Math.PI / 180.0);
+        float g = -yaw * (float) (Math.PI / 180.0);
+        float h = Trigonometry.TAYLOR.cos(g);
+        float i = Trigonometry.TAYLOR.sin(g);
+        float j = Trigonometry.TAYLOR.cos(f);
+        float k = Trigonometry.TAYLOR.sin(f);
+        return new Vec3d((double)(i * j), (double)(-k), (double)(h * j));
     }
 
     public static boolean rayTraceBlock(final Vec3d targetPosition, final double maxDistance) {
