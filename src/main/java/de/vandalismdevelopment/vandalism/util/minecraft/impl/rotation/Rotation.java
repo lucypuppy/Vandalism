@@ -2,6 +2,7 @@ package de.vandalismdevelopment.vandalism.util.minecraft.impl.rotation;
 
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.WorldUtil;
+import net.fabricmc.loader.impl.lib.sat4j.core.Vec;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Box;
@@ -14,6 +15,8 @@ import java.util.List;
 public class Rotation extends MinecraftUtil {
 
     private float yaw, pitch;
+
+    private Vec3d targetVector;
 
     public Rotation(final float yaw, final float pitch) {
         this.yaw = yaw;
@@ -32,6 +35,13 @@ public class Rotation extends MinecraftUtil {
     }
     public float getPitch() {
         return this.pitch;
+    }
+
+    public void setTargetVector(Vec3d vector) {
+        this.targetVector = vector;
+    }
+    public Vec3d getTargetVeector() {
+        return this.targetVector;
     }
 
     public Vec3d getVector() {
@@ -56,9 +66,9 @@ public class Rotation extends MinecraftUtil {
             final Box box = entity.getBoundingBox();
             final Vec3d eyePos = player().getEyePos(), getEntityVector = bestHitVec ? getNearestPoint(entity, box, player()) : new Vec3d(entity.getX(), entity.getY(), entity.getZ());
             Rotation normalRotations = build(getEntityVector, eyePos);
-            if (WorldUtil.rayTraceBlock(normalRotations.getVector(), range)) {
-                return normalRotations;
-            }
+            //if (WorldUtil.rayTraceBlock(normalRotations.getVector(), range)) {
+           //     return normalRotations;
+           // }
             normalRotations = null;
             Vec3d currentVector = null;
             for (double x = 0.00D; x < 1.00D; x += precision) {
@@ -69,14 +79,20 @@ public class Rotation extends MinecraftUtil {
                             continue;
                         }
                         final Rotation parsedRotation = build(vector, eyePos);
-                        if (!WorldUtil.rayTraceBlock(parsedRotation.getVector(), range)) {
-                            continue;
-                        }
+                       // if (!WorldUtil.rayTraceBlock(parsedRotation.getVector(), range)) {
+                       //     continue;
+                       // }
                         if (!bestHitVec) {
+                           // normalRotations.setTargetVector(vector);
+                            parsedRotation.setYaw(build(getEntityVector, eyePos).getYaw());
+                            parsedRotation.setPitch(build(getEntityVector.add(0,entity.getStandingEyeHeight(), 0), eyePos).getPitch());
+
+                            parsedRotation.setTargetVector(vector);
                             return parsedRotation;
                         } else if (currentVector == null || eyePos.distanceTo(vector) <= eyePos.distanceTo(currentVector)) {
                             currentVector = vector;
                             normalRotations = parsedRotation;
+                            normalRotations.setTargetVector(currentVector);
                         }
                     }
                 }

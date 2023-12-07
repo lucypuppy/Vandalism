@@ -13,24 +13,36 @@ public class MovementUtil extends MinecraftUtil {
     private final static float[] POSSIBLE_MOVEMENTS = new float[]{-1F, 0.0F, 1F};
 
     public static double getDirection() {
+        return getDirection(0);
+    }
+    public static double getDirection(final float directionOffset) {
         if (player() == null) return 0;
-        return (Math.atan2(player().forwardSpeed, player().sidewaysSpeed) / Math.PI * 180.0F + player().getYaw()) * Math.PI / 180.0F;
+        final float offset = (180.0F + directionOffset);
+        return (Math.atan2(player().forwardSpeed, player().sidewaysSpeed) / Math.PI * offset + player().getYaw()) * Math.PI / offset;
     }
 
-    public static void setSpeed(final double speed) {
-        if (player() == null) return;
-        final double direction = getDirection();
+    public static Vec3d setSpeed(final double speed) {
+        return setSpeed(speed, 0);
+    }
+
+    public static Vec3d setSpeed(final double speed, final float offset) {
+        if (player() == null) return null;
+        final double direction = getDirection(offset);
         player().setVelocity(Math.cos(direction) * speed, player().getVelocity().getY(), Math.sin(direction) * speed);
+        return player().getVelocity();
     }
 
     //LivingEntity, check everytime after update
-    public static Vec3d applyFriction(final Vec3d velocity, final int percentage) {
+    public static Vec3d applyFriction(final Vec3d velocity, final float percentage) {
         if (player() == null) return Vec3d.ZERO;
         final BlockPos blockPos = player().getVelocityAffectingPos();
         final float p = world().getBlockState(blockPos).getBlock().getSlipperiness();
-        float f = player().isOnGround() ? p * 0.91F : 0.91F;
-        f /= 100;
-        f *= Math.min(100, percentage);
+        float baseValue = 0.91F;
+        float percentageFactor = percentage / 100f;
+        float f = player().isOnGround()
+                ? 1.0F - percentageFactor * (1.0F - p)
+                : 1.0F - percentageFactor * (1.0F - baseValue);
+        ChatUtil.infoChatMessage(" " + f);
         return velocity.multiply(f, 1, f);
     }
 

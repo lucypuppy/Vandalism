@@ -7,6 +7,7 @@ import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.MovementUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.Clicker;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.impl.BoxMuellerClicker;
@@ -22,6 +23,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.message.SentMessage;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
@@ -37,6 +41,10 @@ public class TestModule extends Module implements TickListener, RenderListener, 
     private final Value<Float> std = new SliderFloatValue("std", "std", this, 2.0F, 0.0F, 10.0F);
 
     private final Value<Integer> updatePossibility = new SliderIntegerValue("updatePossibility", "updatePossibility", this, 50, 0, 100);
+
+    private PlayerEntity target;
+
+    private Vec3d rotationVector;
 
     public TestModule() {
         super("Test", "Just for development purposes.", FeatureCategory.DEVELOPMENT, true, false);
@@ -63,24 +71,21 @@ public class TestModule extends Module implements TickListener, RenderListener, 
     @Override
     public void onTick() {
         if (this.world() == null || this.player() == null) return;
-        final List<Entity> entities = new ArrayList<>();
-        this.world().getEntities().forEach(entity -> {
+        final List<PlayerEntity> entities = new ArrayList<>();
+        this.world().getPlayers().forEach(entity -> {
             if (this.player().distanceTo(entity) < 6 && entity != this.player()) {
                 entities.add(entity);
             }
         });
-        if (entities.isEmpty()) {
-            Vandalism.getInstance().getRotationListener().resetRotation();
-            return;
-        }
-        final Entity target = entities.get(0);
-        final Rotation rotation = Rotation.Builder.build(target, true, 3f, 1D / 32);
-        if (rotation == null) { //sanity check, crashes if you sneak and have your reach set to 3.0
-            return;
-        }
-        Vandalism.getInstance().getRotationListener().setRotation(rotation, new Vec2f(179, 180), RotationPriority.HIGH);
-        this.handleAttack(true, target);
 
+        if (entities.isEmpty()) {
+            return;
+        }
+        target = entities.get(0);
+        if(this.rotationVector != null) {
+            if (player().getEyePos().distanceTo(this.rotationVector) <= 2.8 && !target.isBlocking())
+                this.handleAttack(false, target);
+        }
     }
 
     //TODO: Make a proper util
@@ -101,10 +106,10 @@ public class TestModule extends Module implements TickListener, RenderListener, 
             } else {
                 enchantmentBonus = EnchantmentHelper.getAttackDamage(player().getMainHandStack(), EntityGroup.DEFAULT);
             }
-            float attackCooldown = player().getAttackCooldownProgress(0.5F);
+            float attackCooldown = player().getAttackCooldownProgress(0F);
             baseAttackDamage *= 0.2F + attackCooldown * attackCooldown * 0.8F;
             enchantmentBonus *= attackCooldown;
-            if (baseAttackDamage >= 1) {
+            if (baseAttackDamage >= 0.98) {
                 this.mc().doAttack();
             }
         }
@@ -112,6 +117,18 @@ public class TestModule extends Module implements TickListener, RenderListener, 
 
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
+        //ChatUtil.infoChatMessage(target.toString());
+        if(target != null) {
+            final Rotation rotation = Rotation.Builder.build(target, true, 6f, 1D / 32);
+            if (rotation == null) { //sanity check, crashes if you sneak and have your reach set to 3.0
+                this.rotationVector = null;
+                return;
+            }
+            //   Vandalism.getInstance().getRotationListener().setRotation(rotation, new Vec2f(179, 180), RotationPriority.HIGH);
+            player().setYaw(rotation.getYaw());
+            player().setPitch(rotation.getPitch());
+            this.rotationVector = rotation.getTargetVeector();
+        }
         /*Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
             if (ImGui.begin("Graph##testmodule", Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags())) {
                 if (this.clicker instanceof final BoxMuellerClicker clicker) {
