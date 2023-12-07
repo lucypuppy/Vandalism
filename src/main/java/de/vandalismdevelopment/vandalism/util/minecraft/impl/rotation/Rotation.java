@@ -1,6 +1,7 @@
 package de.vandalismdevelopment.vandalism.util.minecraft.impl.rotation;
 
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.WorldUtil;
 import net.fabricmc.loader.impl.lib.sat4j.core.Vec;
 import net.minecraft.entity.Entity;
@@ -9,9 +10,11 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.RaycastContext;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Rotation extends MinecraftUtil {
@@ -68,40 +71,29 @@ public class Rotation extends MinecraftUtil {
 
         public static Rotation build(final Entity entity, final boolean bestHitVec, final double range, final double precision) {
             if (player() == null) return null;
-            final Box box = entity.getBoundingBox();
-            final Vec3d eyePos = player().getEyePos(), getEntityVector = bestHitVec ? getNearestPoint(entity, box, player()) : new Vec3d(entity.getX(), entity.getY(), entity.getZ());
-            Rotation normalRotations = build(getEntityVector, eyePos);
-            //if (WorldUtil.rayTraceBlock(normalRotations.getVector(), range)) {
-            //     return normalRotations;
-            // }
-            normalRotations = null;
-            Vec3d currentVector = null;
-            for (double x = 0.00D; x < 1.00D; x += precision) {
-                for (double y = 0.00D; y < 1.00D; y += precision) {
-                    for (double z = 0.00D; z < 1.00D; z += precision) {
-                        final Vec3d vector = new Vec3d(box.minX + (box.maxX - box.minX) * x, box.minY + (box.maxY - box.minY) * y, box.minZ + (box.maxZ - box.minZ) * z);
-                        if (eyePos.distanceTo(vector) > range) {
-                            continue;
-                        }
-                        final Rotation parsedRotation = build(vector, eyePos);
-                        // if (!WorldUtil.rayTraceBlock(parsedRotation.getVector(), range)) {
-                        //     continue;
-                        // }
-                        if (!bestHitVec) {
-                            // normalRotations.setTargetVector(vector);
-                            parsedRotation.setYaw(build(getEntityVector, eyePos).getYaw());
-                            parsedRotation.setPitch(build(getEntityVector.add(0, entity.getStandingEyeHeight(), 0), eyePos).getPitch());
-
-                            parsedRotation.setTargetVector(vector);
-                            return parsedRotation;
-                        } else if (currentVector == null || eyePos.distanceTo(vector) <= eyePos.distanceTo(currentVector)) {
-                            currentVector = vector;
-                            normalRotations = parsedRotation;
-                            normalRotations.setTargetVector(currentVector);
-                        }
+            Rotation normalRotations = null;
+            final List<Vec3d> possibleHitBoxPoints = computeHitboxAimPoints(entity, player(), 48);
+            final List<Vec3d> hitAblePoints = new ArrayList<>();
+            double bestDistance = 99;
+            Vec3d bestHitBoxVector = null;
+            for (Vec3d hitboxVector : possibleHitBoxPoints) {
+                final float[] simulatedRotation = getRotationToPoint(hitboxVector, player());
+                final double hitBoxDistance = WorldUtil.rayTraceRamge(simulatedRotation[0], simulatedRotation[1]);
+                if (hitBoxDistance > 0 && hitBoxDistance < 3) {
+                    if (bestDistance > hitBoxDistance) {
+                        bestDistance = hitBoxDistance;
+                        bestHitBoxVector = hitboxVector;
                     }
+                    hitAblePoints.add(hitboxVector);
                 }
             }
+            possibleHitBoxPoints.clear();
+            if (bestHitBoxVector != null) {
+                final float[] rotations = getRotationToPoint(bestHitBoxVector, player());
+                normalRotations = new Rotation(rotations[0], rotations[1]);
+            }
+            hitAblePoints.clear();
+            //TODO: add more logic
             return normalRotations;
         }
 
@@ -159,7 +151,7 @@ public class Rotation extends MinecraftUtil {
         return sides;
     }
 
-    private List<Vec3d> computeHitboxAimPoints(final Entity e, final PlayerEntity player, int aimPoints) {
+    private static List<Vec3d> computeHitboxAimPoints(final Entity e, final PlayerEntity player, int aimPoints) {
         final List<Vec3d> points = new ArrayList<>();
         final List<Byte> visibleSides = getVisibleHitBoxSides(e, player);
         final double targetPosY = e.getY() - 0.1;
@@ -200,6 +192,19 @@ public class Rotation extends MinecraftUtil {
         }
 
         return points;
+    }
+
+    private static float[] getRotationToPoint(final Vec3d p, final PlayerEntity player) {
+        double deltaX = p.getX() - player.getX();
+        double deltaZ = p.getZ() - player.getZ();
+        double deltaY = p.getY() - player.getEyeY();
+
+
+        double horizontalDistance = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
+        double verticalDistance = deltaY;
+        float yaw = (float) (Math.atan2(deltaZ, deltaX) * 180D / Math.PI) - 90F;
+        float pitch = (float) -Math.toDegrees(Math.atan2(verticalDistance, horizontalDistance));
+        return new float[]{yaw, pitch};
     }
 
 }
