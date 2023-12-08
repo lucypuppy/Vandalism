@@ -33,8 +33,7 @@ public class ModPacketBlockerModule extends Module implements PacketListener {
                 false,
                 true
         );
-
-        for (String modId : Arrays.asList("journeymap", "roughlyenoughitems", "architectury")) {
+        for (final String modId : Arrays.asList("journeymap", "roughlyenoughitems", "architectury")) {
             this.platformSettings.put(modId,
                     new BooleanValue(
                             "Block " + modId + " Packets", "Blocks packets from " + modId + ".",
@@ -68,7 +67,7 @@ public class ModPacketBlockerModule extends Module implements PacketListener {
             return;
         }
 
-        for (Map.Entry<String, Value<Boolean>> entry : platformSettings.entrySet()) {
+        for (final Map.Entry<String, Value<Boolean>> entry : platformSettings.entrySet()) {
             if (entry.getValue().getValue() && channel.startsWith(entry.getKey())) {
                 event.cancel();
                 return;
