@@ -15,13 +15,12 @@ public class S2CSessionListItemPacket extends Packet {
     }
 
     @Override
-    public void read(PacketBuffer buffer) {
+    public void read(final PacketBuffer buffer) {
         final JsonObject object = buffer.readJson();
-
-        final Action action = (Action) IdentifiableEnum.getById(object.get("action").getAsInt(), Action.class);
 
         final UserProfile profile = new UserProfile(
                 object.get("name").getAsString(),
+                object.get("client").getAsString(),
                 (UserProfile.Rank) IdentifiableEnum.getById(object.get("rank").getAsInt(), UserProfile.Rank.class)
         );
 
@@ -31,7 +30,7 @@ public class S2CSessionListItemPacket extends Packet {
         if (object.has("minecraft_username"))
             profile.setMcUsername(object.get("minecraft_username").getAsString());
 
-        switch (action) {
+        switch ((Action) IdentifiableEnum.getById(object.get("action").getAsInt(), Action.class)) {
             case ADD_ENTRY -> {
                 if (!profile.getName().equalsIgnoreCase(ChatClient.getInstance().getSession().getProfile().getName()))
                     ChatClient.getInstance().getListeners().getProfileListener().onUserJoin(profile);
@@ -68,7 +67,7 @@ public class S2CSessionListItemPacket extends Packet {
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(final PacketBuffer buffer) {
     }
 
     // response codes lulz

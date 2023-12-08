@@ -1,6 +1,5 @@
 package re.catgirls.irc.packet.impl.shared;
 
-import re.catgirls.irc.ChatClient;
 import re.catgirls.packets.Packet;
 import re.catgirls.packets.buffer.PacketBuffer;
 
@@ -18,22 +17,19 @@ public class SharedKeyExchangePacket extends Packet {
     // @formatter:on
 
     @Override
-    public void read(PacketBuffer buffer) {
+    public void read(final PacketBuffer buffer) {
         int keyBytesLength = buffer.readInt();
         if (keyBytesLength > 0) {
             byte[] keyBytes = new byte[keyBytesLength];
             buffer.readBytes(keyBytes);
-
             key = reconstructPublicKey(keyBytes);
         }
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(final PacketBuffer buffer) {
         byte[] keyBytes = key.getEncoded();
-
         buffer.writeInt(keyBytes.length);
-
         if (keyBytes.length > 0)
             buffer.writeBytes(keyBytes);
     }

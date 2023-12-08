@@ -11,12 +11,12 @@ public class SharedKeepAlivePacket extends Packet {
 
 
     @Override
-    public void read(PacketBuffer buffer) {
+    public void read(final PacketBuffer buffer) {
 
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(final PacketBuffer buffer) {
 
     }
 }

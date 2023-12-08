@@ -20,7 +20,8 @@ public class EventRegistry {
             for (RegisteredPacketSubscriber subscriber : subscribers) {
                 subscriber.invoke(packet, ctx);
             }
-        } catch (InvocationTargetException | IllegalAccessException ignored) {}
+        } catch (InvocationTargetException | IllegalAccessException ignored) {
+        }
     }
 
 }

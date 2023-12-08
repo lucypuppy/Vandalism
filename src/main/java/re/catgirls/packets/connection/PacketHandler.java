@@ -21,7 +21,7 @@ public class PacketHandler extends SimpleChannelInboundHandler<Packet> {
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, Packet packet) throws Exception {
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, Packet packet) {
         eventRegistry.invoke(packet, this);
     }
 
@@ -39,10 +39,12 @@ public class PacketHandler extends SimpleChannelInboundHandler<Packet> {
         initializer.exceptionCaught(ctx, cause);
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public ChannelFuture send(Packet packet) {
         return channel.writeAndFlush(packet);
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public ChannelFuture close() {
         return channel.disconnect();
     }

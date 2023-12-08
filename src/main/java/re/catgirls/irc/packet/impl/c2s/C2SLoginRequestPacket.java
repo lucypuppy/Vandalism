@@ -10,29 +10,31 @@ import java.nio.charset.StandardCharsets;
 @SuppressWarnings("unused")
 public class C2SLoginRequestPacket extends Packet {
 
-    private String username;
-    private String password;
+    private final String username;
+    private final String password;
+    private final String client;
 
     // @formatter:off
     public C2SLoginRequestPacket() { throw new RuntimeException("Not implemented"); }
 
-    public C2SLoginRequestPacket(final String username, final String password) {
+    public C2SLoginRequestPacket(final String username, final String password, final String client) {
         this.username = username;
         this.password = password;
+        this.client = client;
     }
 
     // @formatter:on
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(final PacketBuffer buffer) {
         final JsonObject object = new JsonObject();
-        object.addProperty("username",  username);
+        object.addProperty("username", username);
         object.addProperty("password", Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString());
+        object.addProperty("client", client);
         buffer.writeJson(object);
     }
 
     @Override
-    public void read(PacketBuffer buffer) {
-
+    public void read(final PacketBuffer buffer) {
     }
 }

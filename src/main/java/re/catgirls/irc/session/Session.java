@@ -116,6 +116,7 @@ public class Session {
 
     /**
      * Send a packet to the server
+     *
      * @param packet the packet
      */
     public void send(final Packet packet) {
@@ -127,6 +128,7 @@ public class Session {
 
     /**
      * Send a message to the server
+     *
      * @param message the message
      */
     public void requestMessage(final String message) {

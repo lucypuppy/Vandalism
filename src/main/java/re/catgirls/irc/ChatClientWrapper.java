@@ -1,11 +1,8 @@
 package re.catgirls.irc;
 
-import de.vandalismdevelopment.vandalism.Vandalism;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import re.catgirls.irc.ChatClient;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -21,14 +18,20 @@ public class ChatClientWrapper {
         this.client = new ChatClient();
     }
 
-    public void connect(final InetSocketAddress address, final long reconnectInterval, final String username, final String password) throws IOException {
+    public void connect(
+            final InetSocketAddress address,
+            final long reconnectInterval,
+            final String username,
+            final String password,
+            final String client
+    ) {
         scheduler = Executors.newSingleThreadScheduledExecutor();
         scheduler.scheduleWithFixedDelay(() -> {
             // check if the session is null, if it isn't then we return because that means we're already connected...lol
-            if (client.getSession() != null) return;
+            if (this.client.getSession() != null) return;
 
             try {
-                client.connect(address, username, password, future -> ChatClient.getLogger().info("Successfully connected to server!"));
+                this.client.connect(address, username, password, client, future -> ChatClient.getLogger().info("Successfully connected to server!"));
             } catch (Exception e) {
                 ChatClient.getLogger().error("Reconnection attempt failed: " + e.getMessage());
             }
@@ -36,7 +39,7 @@ public class ChatClientWrapper {
     }
 
     public void disconnect() {
-        if(scheduler == null) return;
+        if (scheduler == null) return;
         if (client.getSession() != null) {
             client.getSession().getHandler().close();
             client.setSession(null);

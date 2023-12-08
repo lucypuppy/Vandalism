@@ -52,7 +52,7 @@ public class ChatClient {
 
     /* session & user credentials...(I should change this...ffs) */
     private Session session;
-    private String username, password;
+    private String username, password, client;
 
     /**
      * <h2>Creates a new IRC client</h2>
@@ -102,6 +102,7 @@ public class ChatClient {
      * @param address  the address
      * @param username the username
      * @param password the password
+     * @param client   the client
      * @param callback the callback when the client successfully connected
      * @throws IOException if an error occurs
      */
@@ -109,6 +110,7 @@ public class ChatClient {
             final InetSocketAddress address,
             final String username,
             final String password,
+            final String client,
             final Consumer<Future<? super Void>> callback
     ) throws IOException {
         // clear users
@@ -117,6 +119,7 @@ public class ChatClient {
         // set username & password to connect with
         this.username = username;
         this.password = password;
+        this.client = client;
 
         // connect to the server
         try {
@@ -184,6 +187,15 @@ public class ChatClient {
      */
     public String getPassword() {
         return password;
+    }
+
+    /**
+     * Get the client
+     *
+     * @return the client
+     */
+    public String getClient() {
+        return client;
     }
 
     /**

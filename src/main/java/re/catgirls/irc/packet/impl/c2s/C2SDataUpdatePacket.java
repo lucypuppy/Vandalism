@@ -6,9 +6,10 @@ import re.catgirls.packets.buffer.PacketBuffer;
 
 public class C2SDataUpdatePacket extends Packet {
 
-    private String mcServer, mcUsername;
+    private final String mcServer, mcUsername;
 
     public C2SDataUpdatePacket() {
+        throw new RuntimeException("Not supported");
     }
 
     public C2SDataUpdatePacket(final String mcServer, final String mcUsername) {
@@ -17,18 +18,15 @@ public class C2SDataUpdatePacket extends Packet {
     }
 
     @Override
-    public void read(PacketBuffer buffer) {
-        final JsonObject object = buffer.readJson();
-        this.mcServer = object.get("minecraft_server").getAsString();
-        this.mcUsername = object.get("minecraft_username").getAsString();
-    }
-
-    @Override
-    public void write(PacketBuffer buffer) {
+    public void write(final PacketBuffer buffer) {
         final JsonObject object = new JsonObject();
         object.addProperty("minecraft_server", mcServer);
         object.addProperty("minecraft_username", mcUsername);
         buffer.writeJson(object);
+    }
+
+    @Override
+    public void read(final PacketBuffer buffer) {
     }
 
     public String getMcServer() {

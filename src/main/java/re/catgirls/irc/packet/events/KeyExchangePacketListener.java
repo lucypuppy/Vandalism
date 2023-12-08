@@ -35,7 +35,11 @@ public class KeyExchangePacketListener {
         ctx.send(new SharedKeyExchangePacket(ChatClient.getInstance().getSession().getClientKeyPair().getPublic()));
         ChatClient.getInstance().getSession().setEncryptionReady(true);
 
-        ChatClient.getInstance().getSession().getHandler().send(new C2SLoginRequestPacket(ChatClient.getInstance().getUsername(), ChatClient.getInstance().getPassword()));
+        ChatClient.getInstance().getSession().getHandler().send(new C2SLoginRequestPacket(
+                ChatClient.getInstance().getUsername(),
+                ChatClient.getInstance().getPassword(),
+                ChatClient.getInstance().getClient()
+        ));
     }
 
 }
