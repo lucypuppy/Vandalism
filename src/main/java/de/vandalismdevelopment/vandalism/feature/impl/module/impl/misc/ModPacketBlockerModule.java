@@ -8,40 +8,22 @@ import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
-import net.minecraft.util.Identifier;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ModPacketBlockerModule extends Module implements PacketListener {
 
-    public final Value<Boolean> fabric = new BooleanValue(
-            "Block Fabric Packets",
-            "Blocks packets from Fabric.",
+    public final Value<Boolean> unloadFabricAPICallbacks = new BooleanValue(
+            "Unload Fabric API Callbacks",
+            "Unloads Fabric API callbacks.",
             this,
             true
     );
-
-    private final Value<Boolean> journeymap = new BooleanValue(
-            "Block JourneyMap Packets",
-            "Blocks packets from JourneyMap.",
-            this,
-            true
-    ).visibleConsumer(() -> FabricLoader.getInstance().isModLoaded("journeymap"));
-
-    private final Value<Boolean> roughlyEnoughItems = new BooleanValue(
-            "Block Roughly Enough Items Packets",
-            "Blocks packets from Roughly Enough Items.",
-            this,
-            true
-    ).visibleConsumer(() -> FabricLoader.getInstance().isModLoaded("roughlyenoughitems"));
-
-    private final Value<Boolean> architectury = new BooleanValue(
-            "Block Architectury Packets",
-            "Blocks packets from Architectury.",
-            this,
-            true
-    ).visibleConsumer(() -> FabricLoader.getInstance().isModLoaded("architectury"));
+    private final Map<String, Value<Boolean>> platformSettings = new HashMap<>();
 
     public ModPacketBlockerModule() {
         super(
@@ -51,6 +33,15 @@ public class ModPacketBlockerModule extends Module implements PacketListener {
                 false,
                 true
         );
+
+        for (String modId : Arrays.asList("journeymap", "roughlyenoughitems", "architectury")) {
+            this.platformSettings.put(modId,
+                    new BooleanValue(
+                            "Block " + modId + " Packets", "Blocks packets from " + modId + ".",
+                            this,
+                            true)
+                            .visibleConsumer(() -> FabricLoader.getInstance().isModLoaded(modId)));
+        }
     }
 
     @Override
@@ -66,50 +57,21 @@ public class ModPacketBlockerModule extends Module implements PacketListener {
 
     @Override
     public void onPacket(final PacketEvent event) {
-        final Packet<?> packet = event.packet;
-        if (packet instanceof final CustomPayloadC2SPacket customPayloadC2SPacket) {
-            final Identifier channel = customPayloadC2SPacket.payload().id();
-            final String channelName = channel.getNamespace();
-            switch (channelName) {
-                case "journeymap" -> {
-                    if (this.journeymap.getValue()) {
-                        event.cancel();
-                    }
-                }
-                case "roughlyenoughitems" -> {
-                    if (this.roughlyEnoughItems.getValue()) {
-                        event.cancel();
-                    }
-                }
-                case "architectury" -> {
-                    if (this.architectury.getValue()) {
-                        event.cancel();
-                    }
-                }
-                default -> {
-                }
-            }
-        } else if (packet instanceof final CustomPayloadS2CPacket customPayloadS2CPacket) {
-            final Identifier channel = customPayloadS2CPacket.payload().id();
-            final String channelName = channel.getNamespace();
-            switch (channelName) {
-                case "journeymap" -> {
-                    if (this.journeymap.getValue()) {
-                        event.cancel();
-                    }
-                }
-                case "roughlyenoughitems" -> {
-                    if (this.roughlyEnoughItems.getValue()) {
-                        event.cancel();
-                    }
-                }
-                case "architectury" -> {
-                    if (this.architectury.getValue()) {
-                        event.cancel();
-                    }
-                }
-                default -> {
-                }
+        String channel;
+
+        // This just shows how bad java is, we'll have to wait for Java 22 to improve this using destructuring.
+        if (event.packet instanceof final CustomPayloadC2SPacket customPayloadPacket) {
+            channel = customPayloadPacket.payload().id().getNamespace();
+        } else if (event.packet instanceof final CustomPayloadS2CPacket customPayloadPacket) {
+            channel = customPayloadPacket.payload().id().getNamespace();
+        } else {
+            return;
+        }
+
+        for (Map.Entry<String, Value<Boolean>> entry : platformSettings.entrySet()) {
+            if (entry.getValue().getValue() && channel.startsWith(entry.getKey())) {
+                event.cancel();
+                return;
             }
         }
     }

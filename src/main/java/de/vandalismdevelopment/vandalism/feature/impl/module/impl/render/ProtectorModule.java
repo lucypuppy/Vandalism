@@ -69,19 +69,15 @@ public class ProtectorModule extends Module implements RenderListener {
 
     @Override
     public void onTextDraw(final TextDrawEvent event) {
-        String text = event.text;
         final Session session = this.mc().session;
-        if (this.protectUsername.getValue()) {
-            text = StringUtils.replace(text, session.getUsername(), this.username.getValue());
-        }
+        if (this.protectUsername.getValue()) event.text = StringUtils.replace(event.text, session.getUsername(), this.username.getValue());
         if (this.protectUUID.getValue()) {
             final UUID uuid = session.getUuidOrNull();
             if (uuid != null) {
-                text = StringUtils.replace(text, uuid.toString(), this.uuid.getValue());
-                text = StringUtils.replace(text, uuid.toString().replace("-", ""), this.uuid.getValue());
+                event.text = StringUtils.replace(event.text, uuid.toString(), this.uuid.getValue());
+                event.text = StringUtils.replace(event.text, uuid.toString().replace("-", ""), this.uuid.getValue());
             }
         }
-        event.text = text;
     }
 
 }

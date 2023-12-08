@@ -47,6 +47,7 @@ public class NbtCommand extends Command {
             }
             return SINGLE_SUCCESS;
         })));
+
         builder.then(literal("set").then(argument("nbt", NbtCompoundArgumentType.create()).executes(context -> {
             final ItemStack stack = this.player().getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
@@ -55,6 +56,7 @@ public class NbtCommand extends Command {
             }
             return SINGLE_SUCCESS;
         })));
+
         builder.then(literal("remove").then(argument("nbt_path", NbtPathArgumentType.nbtPath()).executes(context -> {
             final ItemStack stack = this.player().getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
@@ -63,6 +65,7 @@ public class NbtCommand extends Command {
             }
             return SINGLE_SUCCESS;
         })));
+
         builder.then(literal("view").executes(context -> {
             final ItemStack stack = this.player().getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
@@ -77,6 +80,7 @@ public class NbtCommand extends Command {
             }
             return SINGLE_SUCCESS;
         }));
+
         builder.then(literal("copy").executes(context -> {
             final ItemStack stack = this.player().getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
@@ -86,6 +90,7 @@ public class NbtCommand extends Command {
             }
             return SINGLE_SUCCESS;
         }));
+
         builder.then(literal("paste").executes(context -> {
             final ItemStack stack = this.player().getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
@@ -94,6 +99,7 @@ public class NbtCommand extends Command {
             }
             return SINGLE_SUCCESS;
         }));
+
         builder.then(literal("count").then(argument("count", IntegerArgumentType.integer(-127, 127)).executes(context -> {
             final ItemStack stack = this.player().getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
@@ -104,22 +110,21 @@ public class NbtCommand extends Command {
             }
             return SINGLE_SUCCESS;
         })));
+
         builder.then(literal("gui").executes(context -> {
             final ItemStack stack = this.player().getInventory().getMainHandStack();
-            if (this.validBasic(stack)) {
+            if (this.validBasic(stack))
                 Vandalism.getInstance().getImGuiHandler().getImGuiMenuRegistry().getImGuiMenuByClass(NbtEditortImGuiMenu.class).displayNbt(stack.getName().getString(), stack.getNbt());
-            }
             return SINGLE_SUCCESS;
         }));
+
         builder.then(literal("displaynbt").then(argument("nbt", NbtCompoundArgumentType.create()).executes(context -> {
             final NbtCompound nbt = NbtCompoundArgumentType.get(context);
             final String displayTitle;
             if (nbt.contains(DISPLAY_TITLE_NBT_KEY)) {
                 displayTitle = nbt.getString(DISPLAY_TITLE_NBT_KEY);
                 nbt.remove(DISPLAY_TITLE_NBT_KEY);
-            } else {
-                displayTitle = "Nbt";
-            }
+            } else displayTitle = "Nbt";
             Vandalism.getInstance().getImGuiHandler().getImGuiMenuRegistry().getImGuiMenuByClass(NbtEditortImGuiMenu.class).displayNbt(displayTitle, nbt);
             return SINGLE_SUCCESS;
         })));

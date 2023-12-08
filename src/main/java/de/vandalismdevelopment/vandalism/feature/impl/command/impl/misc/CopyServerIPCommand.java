@@ -20,6 +20,7 @@ public class CopyServerIPCommand extends Command {
             this.copyAddress(false);
             return SINGLE_SUCCESS;
         });
+
         builder.then(argument("entire-address", BoolArgumentType.bool())
                 .executes(context -> {
                     this.copyAddress(BoolArgumentType.getBool(context, "entire-address"));
@@ -33,6 +34,7 @@ public class CopyServerIPCommand extends Command {
             ChatUtil.errorChatMessage("You are in Single-player.");
             return;
         }
+
         this.keyboard().setClipboard(ServerUtil.getLastServerInfo().address + (entireAddress ? " | " + this.networkHandler().getConnection().getAddress().toString() : ""));
         ChatUtil.infoChatMessage("Server IP copied into the Clipboard.");
     }

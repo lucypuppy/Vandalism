@@ -108,6 +108,7 @@ public class InteractionSpammerModule extends Module implements TickListener {
             this.clear();
             return;
         }
+
         if (this.blockHitResults.isEmpty()) {
             if (!this.queue.isEmpty()) {
                 if (this.interactionListsTimer.hasReached(this.interactionListsDelay.getValue(), true)) {
@@ -123,13 +124,16 @@ public class InteractionSpammerModule extends Module implements TickListener {
                 }
             }
         }
+
         final HitResult hitResult = cameraEntity.raycast(this.interactionManager().getReachDistance(), 0, false);
         if (!(hitResult instanceof final BlockHitResult blockHitResult)) return;
+
         final Block block = this.world().getBlockState(blockHitResult.getBlockPos()).getBlock();
         if (!(block instanceof AirBlock || block instanceof FluidBlock)) {
             if (this.options().useKey.isPressed()) {
                 this.interactionListsTimer.reset();
                 this.interactionTimer.reset();
+
                 final CopyOnWriteArrayList<BlockHitResult> blockHitResults = new CopyOnWriteArrayList<>();
                 for (int y = 0; y < this.maxYReach.getValue(); y++) {
                     for (int x = 0; x < this.maxXReach.getValue(); x++) {
@@ -140,18 +144,21 @@ public class InteractionSpammerModule extends Module implements TickListener {
                                     blockHitResult.getBlockPos().add(-x, y, z),
                                     blockHitResult.isInsideBlock()
                             ));
+
                             blockHitResults.add(new BlockHitResult(
                                     blockHitResult.getPos().add(x, y, -z),
                                     blockHitResult.getSide(),
                                     blockHitResult.getBlockPos().add(x, y, -z),
                                     blockHitResult.isInsideBlock()
                             ));
+
                             blockHitResults.add(new BlockHitResult(
                                     blockHitResult.getPos().add(x, y, z),
                                     blockHitResult.getSide(),
                                     blockHitResult.getBlockPos().add(x, y, z),
                                     blockHitResult.isInsideBlock()
                             ));
+
                             blockHitResults.add(new BlockHitResult(
                                     blockHitResult.getPos().add(-x, y, -z),
                                     blockHitResult.getSide(),
@@ -161,6 +168,7 @@ public class InteractionSpammerModule extends Module implements TickListener {
                         }
                     }
                 }
+
                 this.queue.add(blockHitResults);
             }
         }

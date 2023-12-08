@@ -15,12 +15,18 @@ public class ClipCommand extends Command {
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
-        builder.then(argument("vertical-offset", DoubleArgumentType.doubleArg(-10.0, 10.0)).then(argument("horizontal-offset", DoubleArgumentType.doubleArg(-10.0, 10.0)).executes(context -> {
-            if (this.player() != null) {
-                MovementUtil.clip(context.getArgument("vertical-offset", Double.class), context.getArgument("horizontal-offset", Double.class));
-            }
-            return SINGLE_SUCCESS;
-        })));
+        builder.
+                then(argument("vertical-offset", DoubleArgumentType.doubleArg(-10.0, 10.0)).
+                        then(argument("horizontal-offset", DoubleArgumentType.doubleArg(-10.0, 10.0)).
+                                executes(context -> {
+                                    if (this.player() != null)
+                                        MovementUtil.clip(
+                                                DoubleArgumentType.getDouble(context, "vertical-offset"),
+                                                DoubleArgumentType.getDouble(context, "horizontal-offset")
+                                        );
+
+                                    return SINGLE_SUCCESS;
+                                })));
     }
 
 }

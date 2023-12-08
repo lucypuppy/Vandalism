@@ -46,6 +46,7 @@ public class ElytraFlightModule extends Module implements TickListener {
     @Override
     public void onTick() {
         if (this.player() == null) return;
+
         final ItemStack itemStack = this.player().getEquippedStack(EquipmentSlot.CHEST);
         if (itemStack.getItem() != Items.ELYTRA || !ElytraItem.isUsable(itemStack)) {
             ChatUtil.errorChatMessage(Text.literal("You need to equip an elytra to fly."));

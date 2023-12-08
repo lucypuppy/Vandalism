@@ -25,6 +25,7 @@ public class ServerBrandCommand extends Command {
             ChatUtil.infoChatMessage("Server Brand: " + this.networkHandler().getBrand());
             return SINGLE_SUCCESS;
         }));
+
         builder.then(literal("copy").executes(context -> {
             this.keyboard().setClipboard(this.networkHandler().getBrand());
             ChatUtil.infoChatMessage("Server Brand copied into the Clipboard.");

@@ -32,9 +32,8 @@ public class AmbienceModule extends Module implements PacketListener {
 
     @Override
     public void onPacket(final PacketEvent event) {
-        if (event.packet instanceof final WorldTimeUpdateS2CPacket worldTimeUpdateS2CPacket) {
-            worldTimeUpdateS2CPacket.timeOfDay = this.worldTime.getValue();
-        }
+        if (event.packet instanceof final WorldTimeUpdateS2CPacket worldTimePacket)
+            worldTimePacket.timeOfDay = this.worldTime.getValue();
     }
 
     @Override
