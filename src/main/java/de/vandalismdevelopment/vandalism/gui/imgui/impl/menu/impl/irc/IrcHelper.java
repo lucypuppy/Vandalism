@@ -86,7 +86,7 @@ public class IrcHelper {
                             message
                     );
 
-                    ChatUtil.chatMessage(msg, false);
+                    ChatUtil.chatMessage(msg);
                     messages.add(message);
                     return;
                 }
@@ -117,8 +117,7 @@ public class IrcHelper {
                                 Formatting.GRAY.toString(),
                                 Formatting.WHITE.toString(),
                                 Formatting.GRAY.toString(),
-                                msg),
-                        false);
+                                msg));
             });
 
             /* Add profile listener */

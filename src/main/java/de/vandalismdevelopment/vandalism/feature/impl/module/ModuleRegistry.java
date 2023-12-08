@@ -100,7 +100,8 @@ public class ModuleRegistry implements InputListener, MinecraftWrapper {
                 this.espModule = new ESPModule(),
                 new ProtectorModule(),
                 this.trueSightModule = new TrueSightModule(),
-                this.visualThrottleModule = new VisualThrottleModule()
+                this.visualThrottleModule = new VisualThrottleModule(),
+                new VehicleOneHitModule()
         );
         DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
     }
