@@ -37,7 +37,7 @@ public class ImGuiScreen extends Screen implements MinecraftWrapper {
                     for (final ImGuiMenuCategory imGuiMenuCategory : imGuiMenuCategories) {
                         if (ImGui.beginMenu(imGuiMenuCategory.getName() + "##barmenu" + imGuiMenuCategory.getName())) {
                             for (final ImGuiMenu imGuiMenu : imGuiMenuCategory.getImGuiMenus()) {
-                                if (ImGui.menuItem(imGuiMenu.getName() + "##barbutton" + imGuiMenu.getName())) {
+                                if (ImGui.checkbox(imGuiMenu.getName() + "##barcheckbox" + imGuiMenu.getName(), imGuiMenu.getState())) {
                                     imGuiMenu.toggle();
                                 }
                             }
