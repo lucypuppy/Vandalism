@@ -78,7 +78,9 @@ public class ItemStackLoggerModule extends Module implements TickListener {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void logStack(final Entity entity, final ItemStack stack) {
         final Item item = stack.getItem();
-        if (item.equals(Items.AIR)) return;
+        if (item.equals(Items.AIR)) {
+            return;
+        }
 
         final String rawItemName = item.toString().replace("_", " ");
         final StringBuilder itemName = new StringBuilder(rawItemName);
@@ -92,8 +94,9 @@ public class ItemStackLoggerModule extends Module implements TickListener {
 
         final NbtCompound nbt = stack.getOrCreateNbt();
         final int damage = stack.getDamage(), nbtCount = nbt.getKeys().size(), count = stack.getCount();
-        if ((nbtCount == 1 && nbt.contains("Damage")) || (damage == 0 && nbtCount == 0))
+        if ((nbtCount == 1 && nbt.contains("Damage")) || (damage == 0 && nbtCount == 0)) {
             return;
+        }
 
         final String itemNameString = itemName.toString();
         final boolean entityIsPlayer = entity instanceof PlayerEntity;

@@ -16,13 +16,35 @@ import net.raphimc.vialoader.util.VersionRange;
 
 public class BowSpammerModule extends Module implements TickListener, WorldListener {
 
-    private final Value<Integer> maxPacketsPerTick = new SliderIntegerValue("Max Packets Per Tick", "The maximum amount of packets sent per tick.", this, 10, 5, 100);
-    private final Value<Integer> shootDelay = new SliderIntegerValue("Shoot Delay", "The delay between shots.", this, 100, 0, 2000);
+    private final Value<Integer> maxPacketsPerTick = new SliderIntegerValue(
+            "Max Packets Per Tick",
+            "The maximum amount of packets sent per tick.",
+            this,
+            10,
+            5,
+            100
+    );
+
+    private final Value<Integer> shootDelay = new SliderIntegerValue(
+            "Shoot Delay",
+            "The delay between shots.",
+            this,
+            100,
+            0,
+            2000
+    );
 
     private final MSTimer shootTimer;
 
     public BowSpammerModule() {
-        super("Bow Spammer", "Lets you spam arrows with a bow.", FeatureCategory.COMBAT, false, VersionRange.single(VersionEnum.r1_8), false);
+        super(
+                "Bow Spammer",
+                "Lets you spam arrows with a bow.",
+                FeatureCategory.COMBAT,
+                false,
+                VersionRange.single(VersionEnum.r1_8),
+                false
+        );
         this.shootTimer = new MSTimer();
     }
 
@@ -45,17 +67,19 @@ public class BowSpammerModule extends Module implements TickListener, WorldListe
 
     @Override
     public void onTick() {
-        if (this.player() == null || this.interactionManager() == null)
+        if (this.player() == null || this.interactionManager() == null) {
             return;
+        }
 
         final ItemStack mainHandStack = this.player().getMainHandStack();
-        if (mainHandStack.isEmpty() || mainHandStack.getItem() == null
-                || mainHandStack.getItem() != Items.BOW)
+        if (mainHandStack.isEmpty() || mainHandStack.getItem() == null || mainHandStack.getItem() != Items.BOW) {
             return;
+        }
 
         if (this.shootTimer.hasReached(this.shootDelay.getValue(), true)) {
-            for (int i = 0; i < this.maxPacketsPerTick.getValue(); i++)
+            for (int i = 0; i < this.maxPacketsPerTick.getValue(); i++) {
                 this.interactionManager().interactItem(this.player(), Hand.MAIN_HAND);
+            }
         }
     }
 
