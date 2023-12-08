@@ -23,6 +23,7 @@ public class ModPacketBlockerModule extends Module implements PacketListener {
             this,
             true
     );
+
     private final Map<String, Value<Boolean>> platformSettings = new HashMap<>();
 
     public ModPacketBlockerModule() {
@@ -34,12 +35,15 @@ public class ModPacketBlockerModule extends Module implements PacketListener {
                 true
         );
         for (final String modId : Arrays.asList("journeymap", "roughlyenoughitems", "architectury")) {
-            this.platformSettings.put(modId,
+            this.platformSettings.put(
+                    modId,
                     new BooleanValue(
-                            "Block " + modId + " Packets", "Blocks packets from " + modId + ".",
+                            "Block " + modId + " Packets",
+                            "Blocks packets from " + modId + ".",
                             this,
-                            true)
-                            .visibleConsumer(() -> FabricLoader.getInstance().isModLoaded(modId)));
+                            true
+                    ).visibleConsumer(() -> FabricLoader.getInstance().isModLoaded(modId))
+            );
         }
     }
 
@@ -57,7 +61,6 @@ public class ModPacketBlockerModule extends Module implements PacketListener {
     @Override
     public void onPacket(final PacketEvent event) {
         String channel;
-
         // This just shows how bad java is, we'll have to wait for Java 22 to improve this using destructuring.
         if (event.packet instanceof final CustomPayloadC2SPacket customPayloadPacket) {
             channel = customPayloadPacket.payload().id().getNamespace();
@@ -66,7 +69,6 @@ public class ModPacketBlockerModule extends Module implements PacketListener {
         } else {
             return;
         }
-
         for (final Map.Entry<String, Value<Boolean>> entry : platformSettings.entrySet()) {
             if (entry.getValue().getValue() && channel.startsWith(entry.getKey())) {
                 event.cancel();
