@@ -69,7 +69,7 @@ public class ModPacketBlockerModule extends Module implements PacketListener {
         } else {
             return;
         }
-        for (final Map.Entry<String, Value<Boolean>> entry : platformSettings.entrySet()) {
+        for (final Map.Entry<String, Value<Boolean>> entry : this.platformSettings.entrySet()) {
             if (entry.getValue().getValue() && channel.startsWith(entry.getKey())) {
                 event.cancel();
                 return;
