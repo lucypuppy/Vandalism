@@ -10,6 +10,7 @@ base {
 
 repositories {
 	mavenCentral()
+
 	maven {
 		name = "Jitpack"
 		url = "https://jitpack.io/"
@@ -39,6 +40,7 @@ repositories {
 		name = "Modrinth"
 		url = "https://api.modrinth.com/maven/"
 	}
+
 }
 
 loom {
@@ -48,32 +50,40 @@ loom {
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings_version}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	modImplementation "de.florianmichael:viafabricplus:${project.viafabricplus_version}"
-	implementation "io.github.spair:imgui-java-binding:${project.spair_imgui_version}"
-	implementation "io.github.spair:imgui-java-lwjgl3:${project.spair_imgui_version}"
-	implementation "io.github.spair:imgui-java-natives-windows:${project.spair_imgui_version}"
-	implementation "io.github.spair:imgui-java-natives-linux:${project.spair_imgui_version}"
-	implementation "de.florianmichael.rclasses:common:${project.rclasses_version}"
-	implementation "de.florianmichael.rclasses:functional:${project.rclasses_version}"
-	implementation "de.florianmichael.rclasses:io:${project.rclasses_version}"
-	implementation "de.florianmichael.rclasses:mappings:${project.rclasses_version}"
-	implementation "de.florianmichael.rclasses:math:${project.rclasses_version}"
-	implementation "de.florianmichael.rclasses:pattern:${project.rclasses_version}"
-	implementation "net.lenni0451.classtransform:core:${project.classtransform_version}"
-	implementation "net.lenni0451:Reflect:${project.reflect_version}"
-	implementation "de.florianmichael:DietrichEvents2:${project.dietrichevents2_version}"
-	implementation "net.lenni0451:ImNbt:${project.imnbt_version}"
-	implementation "net.lenni0451:MCPing:${project.mc_ping_version}"
-    implementation "net.raphimc:NoteBlockLib:${project.noteblocklib_version}"
-	implementation "com.github.kwhat:jnativehook:${project.jnativehook_version}"
-	implementation "org.jsoup:jsoup:${project.jsoup_version}"
+
+	// Fabric API & ViaFabricPlus
+	modImplementation("net.fabricmc:fabric-loader:${project.loader_version}")
+	modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
+	modImplementation("de.florianmichael:viafabricplus:${project.viafabricplus_version}")
+
+	// SpaiR's ImGui
+	implementation("io.github.spair:imgui-java-binding:${project.spair_imgui_version}")
+	implementation("io.github.spair:imgui-java-lwjgl3:${project.spair_imgui_version}")
+	implementation("io.github.spair:imgui-java-natives-windows:${project.spair_imgui_version}")
+	implementation("io.github.spair:imgui-java-natives-linux:${project.spair_imgui_version}")
+
+	// RClasses & DietrichEvents2
+	implementation("de.florianmichael.rclasses:all:${project.rclasses_version}") {
+		exclude module: "kotlin-support"
+	}
+
+	implementation("de.florianmichael:DietrichEvents2:${project.dietrichevents2_version}")
+
+	// Lenni0451's Class-transform, Reflect, ImNbt & MCPing
+	implementation("net.lenni0451.classtransform:core:${project.classtransform_version}")
+	implementation("net.lenni0451:Reflect:${project.reflect_version}")
+	implementation("net.lenni0451:ImNbt:${project.imnbt_version}")
+	implementation("net.lenni0451:MCPing:${project.mc_ping_version}")
+
+	// RaphiMC's NoteBlockLib
+    implementation("net.raphimc:NoteBlockLib:${project.noteblocklib_version}")
+
+	implementation("com.github.kwhat:jnativehook:${project.jnativehook_version}")
+	implementation("org.jsoup:jsoup:${project.jsoup_version}")
 }
 
 processResources {
 	inputs.property "version", project.version
-
 	filesMatching("fabric.mod.json") {
 		expand "version": project.version
 	}

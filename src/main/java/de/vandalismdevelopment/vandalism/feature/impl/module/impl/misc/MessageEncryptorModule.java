@@ -77,6 +77,7 @@ public class MessageEncryptorModule extends Module implements ChatListener {
                 isOldCorona = false;
                 continue;
             }
+
             if (c >= OFFSET_CHAR && c < CHECK_CHAR && (isEncrpyted || isOldCorona)) {
                 stringBuilder.append(decryptedChar);
                 continue;

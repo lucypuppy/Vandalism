@@ -26,6 +26,7 @@ public class CopyPositionCommand extends Command {
                 this.keyboard().setClipboard(this.player().getBlockPos().toShortString());
                 ChatUtil.infoChatMessage("Position copied into the Clipboard.");
             }
+
             return SINGLE_SUCCESS;
         });
     }

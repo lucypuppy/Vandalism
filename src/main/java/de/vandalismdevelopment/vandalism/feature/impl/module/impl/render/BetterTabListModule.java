@@ -69,9 +69,11 @@ public class BetterTabListModule extends Module implements InputListener {
 
     @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        if (this.toggleable.getValue() && this.currentScreen() == null && action == GLFW.GLFW_PRESS && key == this.options().playerListKey.boundKey.getCode()) {
+        if (this.toggleable.getValue()
+                && this.currentScreen() == null
+                && action == GLFW.GLFW_PRESS
+                && key == this.options().playerListKey.boundKey.getCode())
             this.toggleState = !this.toggleState;
-        }
     }
 
     public int getColorFromGameMode(final int id) {

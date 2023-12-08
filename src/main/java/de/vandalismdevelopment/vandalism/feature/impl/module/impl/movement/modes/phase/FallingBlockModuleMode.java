@@ -28,12 +28,13 @@ public class FallingBlockModuleMode extends ModuleMode<PhaseModule> implements T
             final double
                     yaw = Math.toRadians(this.player().headYaw),
                     horizontal = this.player().forwardSpeed > 0 ? 1 : this.player().forwardSpeed < 0 ? -1 : 0;
+
             double vertical = 0;
-            if (this.options().sneakKey.isPressed()) {
+            if (this.options().sneakKey.isPressed())
                 vertical = -1;
-            } else if (this.options().jumpKey.isPressed() && this.player().fallDistance < 2.0f) {
+             else if (this.options().jumpKey.isPressed() && this.player().fallDistance < 2.0f)
                 vertical = 1;
-            }
+
             this.player().setPos(
                     this.player().getX() - Math.sin(yaw) * horizontal,
                     this.player().getY() + vertical,

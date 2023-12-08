@@ -23,6 +23,7 @@ public class ClientsideGameModeCommand extends Command {
                 this.interactionManager().setGameMode(gameMode);
                 ChatUtil.infoChatMessage(Formatting.GREEN + "Your Clientside Game Mode has been set to" + Formatting.DARK_GRAY + ": " + Formatting.GOLD + gameMode.name() + " " + Formatting.DARK_GRAY + "(" + Formatting.DARK_AQUA + gameMode.getId() + Formatting.DARK_GRAY + ")");
             }
+
             return SINGLE_SUCCESS;
         }));
     }

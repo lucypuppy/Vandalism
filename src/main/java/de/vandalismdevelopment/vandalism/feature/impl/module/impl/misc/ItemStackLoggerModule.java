@@ -69,56 +69,70 @@ public class ItemStackLoggerModule extends Module implements TickListener {
             if (entity instanceof final ItemEntity itemEntity) {
                 this.logStack(entity, itemEntity.getStack());
             } else {
-                for (final ItemStack stack : entity.getItemsEquipped()) {
+                for (final ItemStack stack : entity.getItemsEquipped())
                     this.logStack(entity, stack);
-                }
             }
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void logStack(final Entity entity, final ItemStack stack) {
         final Item item = stack.getItem();
         if (item.equals(Items.AIR)) return;
+
         final String rawItemName = item.toString().replace("_", " ");
         final StringBuilder itemName = new StringBuilder(rawItemName);
+
         final boolean isItem = Block.getBlockFromItem(item) == Blocks.AIR;
+
         if (!rawItemName.contains("block") && !rawItemName.contains("item")) {
             if (isItem) itemName.append(" item");
             else itemName.append(" block");
         }
+
         final NbtCompound nbt = stack.getOrCreateNbt();
         final int damage = stack.getDamage(), nbtCount = nbt.getKeys().size(), count = stack.getCount();
-        if ((nbtCount == 1 && nbt.contains("Damage")) || (damage == 0 && nbtCount == 0)) {
+        if ((nbtCount == 1 && nbt.contains("Damage")) || (damage == 0 && nbtCount == 0))
             return;
-        }
+
         final String itemNameString = itemName.toString();
         final boolean entityIsPlayer = entity instanceof PlayerEntity;
         final String entityName = (entityIsPlayer ? ((PlayerEntity) entity).getGameProfile().getName() : entity.getName().getString());
         final String entityType = (entityIsPlayer ? "Player" : entity.getType().getName().getString());
         final String itemFromText = itemNameString + " from " + entityType + " " + entityName;
         final String position = entity.getBlockPos().toShortString();
+
         LOGGED_ITEMS_DIR.mkdirs();
         if (!LOGGED_ITEMS_DIR.exists()) return;
+
         final File serverDir = new File(LOGGED_ITEMS_DIR, ServerUtil.lastServerExists() ? ServerUtil.getLastServerInfo().address : "single player");
         serverDir.mkdirs();
         if (!serverDir.exists()) return;
+
         final File playerOrEntityDir = new File(serverDir, entityType);
         playerOrEntityDir.mkdirs();
         if (!playerOrEntityDir.exists()) return;
+
         final File playerOrEntityNameDir = new File(playerOrEntityDir, entityName);
         playerOrEntityNameDir.mkdirs();
         if (!playerOrEntityNameDir.exists()) return;
+
         final File itemOrBlockDir = new File(playerOrEntityNameDir, isItem ? "item" : "block");
         itemOrBlockDir.mkdirs();
+
         if (!itemOrBlockDir.exists()) return;
         final File itemNameDir = new File(itemOrBlockDir, itemNameString.replace(" item", "").replace(" block", ""));
         itemNameDir.mkdirs();
+
         if (!itemNameDir.exists()) return;
         final File itemNbtFile = new File(itemNameDir, nbtCount + "-[" + String.valueOf(damage).hashCode() + nbt.hashCode() + "].nbt");
+
         if (itemNbtFile.exists()) return;
+
         this.executorService.submit(() -> {
             try {
                 itemNbtFile.createNewFile();
+
                 final NbtCompound itemNbt = new NbtCompound();
                 itemNbt.putString("At Date", this.formatter.format(new Date()));
                 itemNbt.putString("At Position", position);
@@ -127,6 +141,7 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                 itemNbt.putInt("NBT Count", nbtCount);
                 itemNbt.put("NBT", nbt);
                 NbtIo.write(itemNbt, itemNbtFile);
+
                 final String normalWithoutNBT = "Position: " + position + " | Damage: " + damage + " | Count: " + count + " | NBT Count: " + nbtCount;
                 if (this.notifyInChat.getValue()) {
                     final MutableText text = Text.literal("Options:");
@@ -150,11 +165,13 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                     style = style.withClickEvent(clickEvent);
                     displayNBTButton.setStyle(style);
                     text.append(displayNBTButton);
+
                     ChatUtil.infoChatMessage(Text.literal("Item Stack Logger").formatted(Formatting.AQUA));
                     ChatUtil.chatMessage(Text.literal("Found a " + itemFromText + ".").formatted(Formatting.DARK_AQUA), false);
                     ChatUtil.chatMessage(Text.literal(normalWithoutNBT).formatted(Formatting.LIGHT_PURPLE), false);
                     ChatUtil.chatMessage(text.formatted(Formatting.DARK_GREEN), false);
                 }
+
             } catch (final Throwable throwable) {
                 Vandalism.getInstance().getLogger().error("Failed to log stack!", throwable);
             }

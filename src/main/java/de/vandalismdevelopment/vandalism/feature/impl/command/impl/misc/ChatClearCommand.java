@@ -30,6 +30,7 @@ public class ChatClearCommand extends Command {
             this.mc().inGameHud.getChatHud().clear(false);
             return SINGLE_SUCCESS;
         });
+
         builder.then(argument("clear-sent-history", BoolArgumentType.bool())
                 .executes(context -> {
                     final boolean clearSentHistory = BoolArgumentType.getBool(context, "clear-sent-history");

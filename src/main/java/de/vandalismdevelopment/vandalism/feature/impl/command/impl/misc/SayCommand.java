@@ -21,12 +21,12 @@ public class SayCommand extends Command {
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.then(argument("message", StringArgumentType.greedyString()).executes(context -> {
-            final String message = context.getArgument("message", String.class);
+            final String message = StringArgumentType.getString(context, "message");
+
             if (message.startsWith("/") && message.length() > 1) {
                 this.networkHandler().sendChatCommand(message.substring(1));
-            } else {
-                this.networkHandler().sendChatMessage(message);
-            }
+            } else this.networkHandler().sendChatMessage(message);
+
             return SINGLE_SUCCESS;
         }));
     }

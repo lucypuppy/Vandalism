@@ -29,6 +29,7 @@ public class ClientsideInventoryClearCommand extends Command {
                 ChatUtil.errorChatMessage(Formatting.RED + "You can't clear your Clientside Inventory in Creative Mode.");
                 return SINGLE_SUCCESS;
             }
+
             this.player().getInventory().clear();
             ChatUtil.infoChatMessage(Formatting.GREEN + "Your Clientside Inventory has been cleared.");
             return SINGLE_SUCCESS;

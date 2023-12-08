@@ -16,9 +16,12 @@ public class HClipCommand extends Command {
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.then(argument("horizontal-offset", DoubleArgumentType.doubleArg(-10.0, 10.0)).executes(context -> {
-            if (this.player() != null) {
-                MovementUtil.clip(0.0, context.getArgument("horizontal-offset", Double.class));
-            }
+            if (this.player() != null)
+                MovementUtil.clip(
+                        0.0,
+                        DoubleArgumentType.getDouble(context, "horizontal-offset")
+                );
+
             return SINGLE_SUCCESS;
         }));
     }

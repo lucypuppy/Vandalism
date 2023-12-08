@@ -24,6 +24,7 @@ public class InventoryClearCommand extends Command {
                 if (mainInventory.get(i).isEmpty()) continue;
                 this.clearSlot(i);
             }
+
             for (int i = 36; i < 46; i++) this.clearSlot(i);
             ChatUtil.infoChatMessage("Your inventory has been cleared.");
             return SINGLE_SUCCESS;
@@ -32,17 +33,20 @@ public class InventoryClearCommand extends Command {
 
     private void clearSlot(final int id) {
         switch (this.interactionManager().getCurrentGameMode()) {
-            case CREATIVE: {
-                this.networkHandler().sendPacket(new CreativeInventoryActionC2SPacket(id, ItemStack.EMPTY));
-                break;
-            }
-            case SURVIVAL:
-            case ADVENTURE: {
-                this.interactionManager().clickSlot(this.player().currentScreenHandler.syncId, id, -999, SlotActionType.THROW, this.player());
-            }
-            default: {
-                break;
-            }
+            case CREATIVE ->
+                    this.networkHandler().sendPacket(new CreativeInventoryActionC2SPacket(
+                            id,
+                            ItemStack.EMPTY
+                    ));
+            case SURVIVAL, ADVENTURE ->
+                    this.interactionManager().clickSlot(
+                            this.player().currentScreenHandler.syncId,
+                            id,
+                            -999,
+                            SlotActionType.THROW,
+                            this.player()
+                    );
+            default -> {}
         }
     }
 

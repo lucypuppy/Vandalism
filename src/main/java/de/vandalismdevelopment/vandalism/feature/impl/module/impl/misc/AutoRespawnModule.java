@@ -18,7 +18,13 @@ public class AutoRespawnModule extends Module implements TickListener {
     private final MSTimer delayTimer = new MSTimer();
 
     public AutoRespawnModule() {
-        super("Auto Respawn", "Automatically respawns you when you die.", FeatureCategory.MISC, false, false);
+        super(
+                "Auto Respawn",
+                "Automatically respawns you when you die.",
+                FeatureCategory.MISC,
+                false,
+                false
+        );
     }
 
     @Override
@@ -34,13 +40,16 @@ public class AutoRespawnModule extends Module implements TickListener {
     @Override
     public void onTick() {
         if (this.world() == null || !this.player().isDead()) return;
-        if (!this.instantRespawn.getValue() && !this.delayTimer.hasReached(this.delay.getValue(), true)) {
+
+        // check if we should instantly respawn, if not check is the delay has passed
+        if (!this.instantRespawn.getValue() && !this.delayTimer.hasReached(this.delay.getValue(), true))
             return;
-        }
+
+        // request respawn from server
         this.player().requestRespawn();
-        if (this.autoBack.getValue()) {
-            this.networkHandler().sendChatCommand("back");
-        }
+
+        // automatically send /back if enabled
+        if (this.autoBack.getValue()) this.networkHandler().sendChatCommand("back");
     }
 
 }

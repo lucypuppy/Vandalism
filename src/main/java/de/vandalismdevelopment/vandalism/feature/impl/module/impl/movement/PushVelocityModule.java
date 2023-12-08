@@ -78,13 +78,15 @@ public class PushVelocityModule extends Module implements MovementListener {
     @Override
     public void onFluidPush(final FluidPushEvent fluidPushEvent) {
         if (!this.modifyFluidPush.getValue()) return;
+
         if (this.options().useKey.isPressed()) {
             final ItemStack mainHandStack = this.player().getMainHandStack();
-            if (mainHandStack.getItem() == Items.TRIDENT && EnchantmentHelper.getRiptide(mainHandStack) > 0) {
+            if (mainHandStack.getItem() == Items.TRIDENT && EnchantmentHelper.getRiptide(mainHandStack) > 0)
                 return;
-            }
         }
+
         if (this.player().isUsingRiptide()) return;
+
         final double speed = this.fluidPushSpeed.getValue();
         if (speed == 0.0d) fluidPushEvent.cancel();
         else fluidPushEvent.speed = speed;

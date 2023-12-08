@@ -45,17 +45,17 @@ public class BowSpammerModule extends Module implements TickListener, WorldListe
 
     @Override
     public void onTick() {
-        if (this.player() == null || this.interactionManager() == null) {
+        if (this.player() == null || this.interactionManager() == null)
             return;
-        }
+
         final ItemStack mainHandStack = this.player().getMainHandStack();
-        if (mainHandStack.isEmpty() || mainHandStack.getItem() == null || mainHandStack.getItem() != Items.BOW) {
+        if (mainHandStack.isEmpty() || mainHandStack.getItem() == null
+                || mainHandStack.getItem() != Items.BOW)
             return;
-        }
+
         if (this.shootTimer.hasReached(this.shootDelay.getValue(), true)) {
-            for (int i = 0; i < this.maxPacketsPerTick.getValue(); i++) {
+            for (int i = 0; i < this.maxPacketsPerTick.getValue(); i++)
                 this.interactionManager().interactItem(this.player(), Hand.MAIN_HAND);
-            }
         }
     }
 

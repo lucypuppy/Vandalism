@@ -31,12 +31,14 @@ public class ScriptCommand extends Command {
                     return SINGLE_SUCCESS;
                 })
         ));
+
         builder.then(literal("reload").executes(context -> {
             ChatUtil.infoChatMessage("Loading scripts...");
             Vandalism.getInstance().getScriptRegistry().load();
             ChatUtil.infoChatMessage("Loaded " + Vandalism.getInstance().getScriptRegistry().getScripts().size() + " scripts.");
             return SINGLE_SUCCESS;
         }));
+
         builder.then(literal("bind").then(argument("script", ScriptArgumentType.create())
                 .then(argument("glfwkeyname", GlfwKeyNameArgumentType.create())
                         .executes(context -> {

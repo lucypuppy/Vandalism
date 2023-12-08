@@ -4,9 +4,7 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.event.MovementListener;
 import de.vandalismdevelopment.vandalism.feature.impl.module.ModuleMode;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement.SpeedModule;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.MovementUtil;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class VerusHopModuleMode extends ModuleMode<SpeedModule> implements MovementListener {
@@ -30,11 +28,8 @@ public class VerusHopModuleMode extends ModuleMode<SpeedModule> implements Movem
 
     @Override
     public void onPreMotion(final MotionEvent event) {
-        if (this.player().forwardSpeed != 0 || this.player().sidewaysSpeed != 0) {
-            if (this.player().isOnGround()) {
-                this.player().jump();
-            }
-        }
+        if ((this.player().forwardSpeed != 0 || this.player().sidewaysSpeed != 0) && this.player().isOnGround())
+            this.player().jump();
     }
 
     @Override
@@ -45,9 +40,9 @@ public class VerusHopModuleMode extends ModuleMode<SpeedModule> implements Movem
                 this.moveSpeed = MovementUtil.getBaseSpeed() * 2.4;
                 this.offGroundTicks = 0;
             } else {
-                if(this.offGroundTicks == 0){
+                if (this.offGroundTicks == 0)
                     this.moveSpeed += 0.01f;
-                }
+
                 final Vec3d velocityVector = MovementUtil.setSpeed(this.moveSpeed, this.offGroundTicks <= 2 ? 0.0026f * 45 : 0.0026f);
                 final Vec3d adjustedVelocity = MovementUtil.applyFriction(velocityVector, (float) (Math.random() * 1E-5));
                 this.moveSpeed = Math.hypot(adjustedVelocity.getX(), adjustedVelocity.getZ());

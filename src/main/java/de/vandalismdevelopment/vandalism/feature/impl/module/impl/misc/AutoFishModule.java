@@ -42,6 +42,7 @@ public class AutoFishModule extends Module implements TickListener {
                 this.hasFish = true;
                 this.retractDelayTimer.reset();
             }
+
             if (this.hasFish && this.retractDelayTimer.hasReached(this.retractDelayValue.getValue(), true)) {
                 this.networkHandler().sendPacket(new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, 0));
                 this.throwDelayTimer.reset();

@@ -49,6 +49,7 @@ public class SprintModule extends Module implements MovementListener {
             event.force = true;
             return;
         }
+
         event.sprinting = true;
         event.force = this.forceSprint.getValue();
     }
