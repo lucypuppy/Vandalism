@@ -97,7 +97,7 @@ public abstract class Module extends Feature implements IValue {
     }
 
     private void syncHUD() {
-        Vandalism.getInstance().getCustomHUDRenderer().getModuleListHUDElement().onModuleToggle();
+        Vandalism.getInstance().getCustomHUDRenderer().getModuleListHUDElement().forceSort();
     }
 
     private void recursiveSetState(final boolean state, final List<Value<?>> values) {

@@ -15,22 +15,17 @@ public class MainConfig extends ValueableConfig implements MinecraftWrapper {
     }
 
     public final MenuCategory menuCategory = new MenuCategory(this);
-
     public final ChatCategory chatCategory = new ChatCategory(this);
-
     public final NetworkingCategory networkingCategory = new NetworkingCategory(this);
-
     public final VisualCategory visualCategory = new VisualCategory(this);
-
     public final MovementCategory movementCategory = new MovementCategory(this);
-
     public final RotationCategory rotationCategory = new RotationCategory(this);
-
     public final EnhancedServerListCategory enhancedServerListCategory = new EnhancedServerListCategory(this);
 
     @Override
     public JsonObject save() throws IOException {
-        final JsonObject configObject = new JsonObject(), valuesArray = new JsonObject();
+        final JsonObject configObject = new JsonObject();
+        final JsonObject valuesArray = new JsonObject();
         this.saveValues(valuesArray, this.getValues());
         configObject.add("values", valuesArray);
         return configObject;

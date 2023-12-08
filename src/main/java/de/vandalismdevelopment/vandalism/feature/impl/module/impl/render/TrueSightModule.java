@@ -11,6 +11,7 @@ import de.vandalismdevelopment.vandalism.value.impl.ColorValue;
 
 import java.awt.*;
 
+//TODO: Fix the entity layer rendering.
 public class TrueSightModule extends Module implements RenderListener {
 
     public final Value<Boolean> blocks = new BooleanValue(

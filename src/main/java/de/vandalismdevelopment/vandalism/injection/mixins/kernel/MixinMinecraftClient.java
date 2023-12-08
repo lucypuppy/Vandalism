@@ -29,13 +29,13 @@ public abstract class MixinMinecraftClient {
     private boolean vandalism_loadingDisplayed = false;
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;onResolutionChanged()V"))
-    private void vandalism$startModPre(final CallbackInfo ci) {
-        Vandalism.getInstance().preStart(this.window, this.runDirectory);
+    private void vandalism$startMod(final CallbackInfo ci) {
+        Vandalism.getInstance().start(this.window, this.runDirectory);
     }
 
-    @Inject(method = "<init>", at = @At(value = "RETURN"))
-    private void vandalism$startModPost(final CallbackInfo ci) {
-        Vandalism.getInstance().postStart();
+    @Inject(method = "close", at = @At(value = "HEAD"))
+    private void vandalism$stopMod(final CallbackInfo ci) {
+        Vandalism.getInstance().stop();
     }
 
     @Inject(method = "onFinishedLoading", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;collectLoadTimes(Lnet/minecraft/client/MinecraftClient$LoadingContext;)V", shift = At.Shift.AFTER))

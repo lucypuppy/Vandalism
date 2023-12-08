@@ -33,15 +33,12 @@ public abstract class ValueableConfig extends Config implements IValue {
     protected void saveValues(final JsonObject valuesArray, final List<Value<?>> values) {
         for (final Value<?> value : values) {
             if (value == null) continue;
-
             final JsonObject valueObject = new JsonObject();
-
-            if (value instanceof ValueCategory) {
-                this.saveValues(valueObject, ((ValueCategory) value).getValues());
+            if (value instanceof final ValueCategory valueCategory) {
+                this.saveValues(valueObject, valueCategory.getValues());
             } else {
                 value.onConfigSave(valueObject);
             }
-
             valuesArray.add(value.getSaveIdentifier(), valueObject);
         }
     }
@@ -49,14 +46,12 @@ public abstract class ValueableConfig extends Config implements IValue {
     protected void loadValues(final JsonObject valuesArray, final List<Value<?>> values) {
         for (final Value<?> value : values) {
             final JsonElement valueElement = valuesArray.get(value.getSaveIdentifier());
-
             if (valueElement == null) {
                 Vandalism.getInstance().getLogger().error("Value " + value.getSaveIdentifier() + " not found in config!");
                 continue;
             }
-
-            if (value instanceof ValueCategory) {
-                this.loadValues(valueElement.getAsJsonObject(), ((ValueCategory) value).getValues());
+            if (value instanceof final ValueCategory valueCategory) {
+                this.loadValues(valueElement.getAsJsonObject(), valueCategory.getValues());
             } else {
                 value.onConfigLoad(valueElement.getAsJsonObject());
             }

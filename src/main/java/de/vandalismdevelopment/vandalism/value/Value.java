@@ -1,7 +1,6 @@
 package de.vandalismdevelopment.vandalism.value;
 
 import com.google.gson.JsonObject;
-import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
 
 import java.util.function.BooleanSupplier;
@@ -34,7 +33,8 @@ public abstract class Value<V> {
     }
 
     public void setValue(final V value) {
-        if (this.value == value && !(this instanceof BooleanValue)) { //TODO: Find a better solution to fix this.
+        //TODO: Find a better solution to fix this.
+        if (this.value == value && !(this instanceof BooleanValue)) {
             return;
         }
         if (this.valueChangeConsumer != null) {
@@ -43,12 +43,6 @@ public abstract class Value<V> {
         this.value = value;
         if (this.valueChangedConsumer != null) {
             this.valueChangedConsumer.accept(value);
-        }
-        if (Vandalism.getInstance().getConfigManager() != null && this.parent != null) {
-            if (this.parent.getConfig() == null) {
-                throw new IllegalStateException("Value config for the parent " + this.parent.getValueName() + " is null!");
-            }
-            Vandalism.getInstance().getConfigManager().save(this.parent.getConfig());
         }
     }
 

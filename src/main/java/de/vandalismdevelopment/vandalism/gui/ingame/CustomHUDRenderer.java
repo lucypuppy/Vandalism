@@ -31,17 +31,17 @@ public class CustomHUDRenderer implements RenderListener, ScreenListener, Minecr
 
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
-        for (final HUDElement HUDElement : this.hudElements) {
-            if (!HUDElement.isEnabled()) continue;
-            HUDElement.render(context, delta);
+        for (final HUDElement hudElement : this.hudElements) {
+            if (!hudElement.isEnabled()) continue;
+            hudElement.onRender(context, delta);
         }
     }
 
     @Override
     public void onResizeScreen(final ScreenEvent event) {
-        for (final HUDElement HUDElement : this.hudElements) {
-            if (!HUDElement.isEnabled()) continue;
-            HUDElement.calculatePosition();
+        for (final HUDElement hudElement : this.hudElements) {
+            if (!hudElement.isEnabled()) continue;
+            hudElement.calculateAlignment();
         }
     }
 
