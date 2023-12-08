@@ -9,6 +9,7 @@ import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.MovementUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.impl.WorldUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.Clicker;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.impl.BoxMuellerClicker;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.rotation.Rotation;
@@ -68,6 +69,9 @@ public class TestModule extends Module implements TickListener, RenderListener, 
         Vandalism.getInstance().getRotationListener().resetRotation();
     }
 
+    //TODO mouse event -> attack
+    //TODO: frame event (entityrenderer set angles)-> rotate
+
     @Override
     public void onTick() {
         if (this.world() == null || this.player() == null) return;
@@ -82,10 +86,10 @@ public class TestModule extends Module implements TickListener, RenderListener, 
             return;
         }
         target = entities.get(0);
-        if(this.rotationVector != null) {
-            if (player().getEyePos().distanceTo(this.rotationVector) <= 2.8 && !target.isBlocking())
-                this.handleAttack(false, target);
-        }
+        //   if(this.rotationVector != null) {
+        if (!target.isBlocking() && this.rotationVector != null && WorldUtil.rayTraceRamge(player().getYaw(), player().getPitch()) <= 3)
+            this.handleAttack(false, target);
+        // }
     }
 
     //TODO: Make a proper util
@@ -118,7 +122,7 @@ public class TestModule extends Module implements TickListener, RenderListener, 
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
         //ChatUtil.infoChatMessage(target.toString());
-        if(target != null) {
+        if (target != null) {
             final Rotation rotation = Rotation.Builder.build(target, true, 6f, 1D / 32);
             if (rotation == null) { //sanity check, crashes if you sneak and have your reach set to 3.0
                 this.rotationVector = null;
@@ -127,7 +131,7 @@ public class TestModule extends Module implements TickListener, RenderListener, 
             //   Vandalism.getInstance().getRotationListener().setRotation(rotation, new Vec2f(179, 180), RotationPriority.HIGH);
             player().setYaw(rotation.getYaw());
             player().setPitch(rotation.getPitch());
-            this.rotationVector = rotation.getTargetVeector();
+            this.rotationVector = new Vec3d(1, 1, 1);
         }
         /*Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
             if (ImGui.begin("Graph##testmodule", Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags())) {

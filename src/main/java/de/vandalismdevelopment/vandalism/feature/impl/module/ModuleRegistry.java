@@ -88,6 +88,7 @@ public class ModuleRegistry implements InputListener, MinecraftWrapper {
                 new PhaseModule(),
                 new PushVelocityModule(),
                 new SpeedModule(),
+                new TimerModule(),
                 new SprintModule(),
                 new StepModule(),
                 new VelocityModule(),

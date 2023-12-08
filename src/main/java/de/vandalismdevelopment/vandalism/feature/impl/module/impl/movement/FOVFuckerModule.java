@@ -7,6 +7,7 @@ import de.vandalismdevelopment.vandalism.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.value.Value;
+import de.vandalismdevelopment.vandalism.value.ValueCategory;
 import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
 import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderDoubleValue;
 import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderFloatValue;
@@ -28,14 +29,16 @@ public class FOVFuckerModule extends Module implements TickListener {
     private final Value<Boolean> useYawFromTarget = new BooleanValue("Use Yaw From Target", "Uses the yaw from the target.", this, true);
     private final Value<Boolean> usePitchFromTarget = new BooleanValue("Use Pitch From Target", "Uses the pitch from the target.", this, true);
 
-    private final Value<Boolean> sneakSpamm = new BooleanValue("Sneak Spamm", "You are sus with the target.", this, true);
-
     private final Value<Boolean> alwaysFOV = new BooleanValue("Always FOV", "This will always teleport you into the fov of the target.", this, false);
 
-    private final Value<Integer> sneakSpammDelay = new SliderIntegerValue(
-            "Sneak Spamm Delay",
-            "The delay for the sneak spamm.",
-            this,
+    private final ValueCategory sneakCategory = new ValueCategory("Sneak Spam Configuration", "The settings for the sneak spam.", this);
+
+    private final Value<Boolean> sneakSpam = new BooleanValue("Sneak Spam", "You are sus with the target.", sneakCategory, true);
+
+    private final Value<Integer> sneakSpamDelay = new SliderIntegerValue(
+            "Sneak Spam Delay",
+            "The delay for the sneak spam.",
+            sneakCategory,
             250,
             0,
             1000
@@ -55,7 +58,7 @@ public class FOVFuckerModule extends Module implements TickListener {
     }
 
     public FOVFuckerModule() {
-        super("FOV Fucker", "Teleports you into the nearest player to mess up his fov.", FeatureCategory.MOVEMENT, false, false);
+        super("FOV Fucker", "Teleports you into the nearest player to mess up their fov.", FeatureCategory.MOVEMENT, false, false);
         this.reset();
     }
 
@@ -76,60 +79,73 @@ public class FOVFuckerModule extends Module implements TickListener {
     @Override
     public void onTick() {
         if (this.world() == null || this.player() == null) return;
+
         if (this.target == null) {
             final Stream<AbstractClientPlayerEntity> players = this.world().getPlayers().stream();
-            this.target = players.sorted(Comparator.comparingDouble(player -> this.player().distanceTo(player))).filter(player -> this.player() != player && this.player().distanceTo(player) <= this.maxDistance.getValue()).findFirst().orElse(null);
+
+            this.target = players.sorted(Comparator.comparingDouble(player -> this.player().distanceTo(player))).
+                    filter(player -> this.player() != player && this.player().distanceTo(player) <= this.maxDistance.getValue()).
+                    findFirst().
+                    orElse(null);
+
             return;
         }
+
         if (this.target.isDead() || this.world().getEntityById(this.target.getId()) == null) {
             this.reset();
             return;
         }
+
         final double direction = (Math.atan2(this.target.forwardSpeed, this.target.sidewaysSpeed) / Math.PI * 180.0F + this.target.getYaw()) * Math.PI / 180.0F;
+
         if (this.useYawFromTarget.getValue()) {
             this.player().setYaw(this.target.getHeadYaw());
             this.player().setBodyYaw(this.target.getBodyYaw());
             this.player().setHeadYaw(this.target.getHeadYaw());
         }
+
         if (this.usePitchFromTarget.getValue()) {
             this.player().setPitch(this.target.getPitch());
         }
-        if (this.sneakSpamm.getValue()) {
-            if (this.sneakTimer.hasReached(this.sneakSpammDelay.getValue(), true)) {
+
+        if (this.sneakSpam.getValue()) {
+            if (this.sneakTimer.hasReached(this.sneakSpamDelay.getValue(), true)) {
                 this.sneaking = !this.sneaking;
             }
+
             this.options().sneakKey.setPressed(this.sneaking);
         }
+
         double diffZ = (this.target.getZ() - this.target.prevZ);
         double diffX = (this.target.getX() - this.target.prevX);
+
         final float targetPitch = this.target.getPitch();
         double targetEyePosY = Math.abs((targetPitch < 0) ? targetPitch / this.target.getEyePos().y : 0);
         if (targetEyePosY > 0) {
             targetEyePosY += RandomUtils.randomFloat(-(float) (targetEyePosY * this.target.getStandingEyeHeight()), (float) (targetEyePosY * this.target.getStandingEyeHeight())) * 0.6;
         }
+
         if (!this.alwaysFOV.getValue()) {
             targetEyePosY = 0;
         }
+
         float strafe = 0, forward = 0;
         if (diffZ != 0 || diffX != 0) {
             final float yaw = (float) Math.toDegrees(Math.atan2(diffZ, diffX));
             final float yawDiff = MathHelper.wrapDegrees(yaw - this.target.getYaw() - 90F);
-            if (yawDiff >= -67.5F && yawDiff <= 67.5F) {
-                ++forward;
-            }
-            if (yawDiff <= -112.5F || yawDiff >= 112.5) {
-                --forward;
-            }
-            if (yawDiff >= 22.5F && yawDiff <= 157.5F) {
-                --strafe;
-            }
-            if (yawDiff >= -157.5F && yawDiff <= -22.5F) {
-                ++strafe;
-            }
+
+            if (yawDiff >= -67.5F && yawDiff <= 67.5F) ++forward;
+            if (yawDiff <= -112.5F || yawDiff >= 112.5) --forward;
+            if (yawDiff >= 22.5F && yawDiff <= 157.5F) --strafe;
+            if (yawDiff >= -157.5F && yawDiff <= -22.5F) ++strafe;
         }
+
+        // offsets
         final double hOffset = this.targetHPosOffset.getValue();
         final double xOffset = Math.sin(direction) * hOffset;
         final double zOffset = Math.cos(direction) * hOffset;
+
+        // positions
         double x = this.target.getX(), z = this.target.getZ();
         if (!this.alwaysFOV.getValue()) {
             x += xOffset;
@@ -153,9 +169,11 @@ public class FOVFuckerModule extends Module implements TickListener {
                 z += (diffZ * 1.75);
             }
         }
+
         this.x = x;
         this.y = this.target.getY() + this.targetYPosOffset.getValue() + targetEyePosY;
         this.z = z;
+
         this.player().setVelocity(new Vec3d(this.x, this.y, this.z).subtract(this.player().getPos()));
     }
 
