@@ -4,10 +4,7 @@ import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.config.impl.CustomHUDConfig;
-import de.vandalismdevelopment.vandalism.config.impl.MenusConfig;
-import de.vandalismdevelopment.vandalism.config.impl.ModulesConfig;
-import de.vandalismdevelopment.vandalism.config.impl.ScriptsConfig;
+import de.vandalismdevelopment.vandalism.config.impl.*;
 import de.vandalismdevelopment.vandalism.config.impl.account.AccountsConfig;
 import de.vandalismdevelopment.vandalism.config.impl.main.MainConfig;
 
@@ -43,6 +40,7 @@ public class ConfigManager {
     }
 
     private final CustomHUDConfig customHUDConfig;
+
     public CustomHUDConfig getCustomHUDConfig() {
         return this.customHUDConfig;
     }
@@ -51,6 +49,12 @@ public class ConfigManager {
 
     public MenusConfig getMenusConfig() {
         return this.menusConfig;
+    }
+
+    private final IrcConfig ircConfig;
+
+    public IrcConfig getIrcConfig() {
+        return this.ircConfig;
     }
 
     public ConfigManager(final File dir) {
@@ -62,7 +66,8 @@ public class ConfigManager {
                 this.accountsConfig = new AccountsConfig(dir),
                 this.scriptsConfig = new ScriptsConfig(dir),
                 this.customHUDConfig = new CustomHUDConfig(dir),
-                this.menusConfig = new MenusConfig(dir)
+                this.menusConfig = new MenusConfig(dir),
+                this.ircConfig = new IrcConfig(dir)
         );
     }
 
