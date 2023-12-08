@@ -3,6 +3,7 @@ package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.account.AccountManagerImGuiMenu;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.impl.*;
+import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.impl.irc.IrcImGuiMenu;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.impl.nbteditor.NbtEditortImGuiMenu;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.namehistory.NameHistoryImGuiMenu;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.port.PortScannerImGuiMenu;
@@ -24,7 +25,8 @@ public class ImGuiMenuCategoryRegistry {
                         new CustomHUDConfigImGuiMenu(),
                         new ModulesImGuiMenu(),
                         new ScriptsImGuiMenu(),
-                        new AccountManagerImGuiMenu()
+                        new AccountManagerImGuiMenu(),
+                        new IrcImGuiMenu()
                 ),
                 new ImGuiMenuCategory(
                         "Server Utils",
