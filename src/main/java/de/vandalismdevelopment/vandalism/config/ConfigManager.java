@@ -28,32 +28,28 @@ public class ConfigManager {
     }
 
     private final AccountsConfig accountsConfig;
-
     public AccountsConfig getAccountConfig() {
         return this.accountsConfig;
     }
 
     private final ScriptsConfig scriptsConfig;
-
     public ScriptsConfig getScriptsConfig() {
         return this.scriptsConfig;
     }
 
     private final CustomHUDConfig customHUDConfig;
-
     public CustomHUDConfig getCustomHUDConfig() {
         return this.customHUDConfig;
     }
 
     private final MenusConfig menusConfig;
-
     public MenusConfig getMenusConfig() {
         return this.menusConfig;
     }
 
-    private final IrcConfig ircConfig;
+    private final IRCConfig ircConfig;
 
-    public IrcConfig getIrcConfig() {
+    public IRCConfig getIrcConfig() {
         return this.ircConfig;
     }
 
@@ -67,7 +63,7 @@ public class ConfigManager {
                 this.scriptsConfig = new ScriptsConfig(dir),
                 this.customHUDConfig = new CustomHUDConfig(dir),
                 this.menusConfig = new MenusConfig(dir),
-                this.ircConfig = new IrcConfig(dir)
+                this.ircConfig = new IRCConfig(dir)
         );
     }
 
