@@ -4,14 +4,15 @@ import de.florianmichael.rclasses.math.geometry.Trigonometry;
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.RaycastContext;
 
@@ -91,12 +92,15 @@ public class WorldUtil extends MinecraftUtil {
     }
 
     private static BlockHitResult rayBlock(final Vec3d start, final Vec3d end) {
-        double d = MathHelper.lerp(-1.0E-7, end.x, start.x);
-        double e = MathHelper.lerp(-1.0E-7, end.y, start.y);
-        double f = MathHelper.lerp(-1.0E-7, end.z, start.z);
-        double g = MathHelper.lerp(-1.0E-7, start.x, end.x);
-        double h = MathHelper.lerp(-1.0E-7, start.y, end.y);
-        double i = MathHelper.lerp(-1.0E-7, start.z, end.z);
+        if (world() == null) {
+            return null;
+        }
+        final double d = MathHelper.lerp(-1.0E-7, end.x, start.x);
+        final double e = MathHelper.lerp(-1.0E-7, end.y, start.y);
+        final double f = MathHelper.lerp(-1.0E-7, end.z, start.z);
+        final double g = MathHelper.lerp(-1.0E-7, start.x, end.x);
+        final double h = MathHelper.lerp(-1.0E-7, start.y, end.y);
+        final double i = MathHelper.lerp(-1.0E-7, start.z, end.z);
         int j = MathHelper.floor(g);
         int k = MathHelper.floor(h);
         int l = MathHelper.floor(i);
@@ -108,15 +112,15 @@ public class WorldUtil extends MinecraftUtil {
         final BlockHitResult rayTraceResult = world().raycastBlock(start, end, blockPos, blockShape, blockState);
         if (rayTraceResult != null) return rayTraceResult;
 
-        double m = d - g;
-        double n = e - h;
-        double o = f - i;
-        int p = MathHelper.sign(m);
-        int q = MathHelper.sign(n);
-        int r = MathHelper.sign(o);
-        double s = p == 0 ? Double.MAX_VALUE : (double) p / m;
-        double t = q == 0 ? Double.MAX_VALUE : (double) q / n;
-        double u = r == 0 ? Double.MAX_VALUE : (double) r / o;
+        final double m = d - g;
+        final double n = e - h;
+        final double o = f - i;
+        final int p = MathHelper.sign(m);
+        final int q = MathHelper.sign(n);
+        final int r = MathHelper.sign(o);
+        final double s = p == 0 ? Double.MAX_VALUE : (double) p / m;
+        final double t = q == 0 ? Double.MAX_VALUE : (double) q / n;
+        final double u = r == 0 ? Double.MAX_VALUE : (double) r / o;
         double v = s * (p > 0 ? 1.0 - MathHelper.fractionalPart(g) : MathHelper.fractionalPart(g));
         double w = t * (q > 0 ? 1.0 - MathHelper.fractionalPart(h) : MathHelper.fractionalPart(h));
         double x = u * (r > 0 ? 1.0 - MathHelper.fractionalPart(i) : MathHelper.fractionalPart(i));

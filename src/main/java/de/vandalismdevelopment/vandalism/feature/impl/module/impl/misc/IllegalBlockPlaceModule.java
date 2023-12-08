@@ -46,17 +46,19 @@ public class IllegalBlockPlaceModule extends Module implements TickListener {
     @Override
     public void onTick() {
         final Entity cameraEntity = this.mc().getCameraEntity();
-        if (this.player() == null || this.interactionManager() == null || cameraEntity == null)
+        if (this.player() == null || this.interactionManager() == null || cameraEntity == null) {
             return;
+        }
 
         final HitResult hitResult = cameraEntity.raycast(this.interactionManager().getReachDistance(), 0, false);
-        if (!(hitResult instanceof final BlockHitResult blockHitResult)
-                || this.player().getMainHandStack().isEmpty())
+        if (!(hitResult instanceof final BlockHitResult blockHitResult) || this.player().getMainHandStack().isEmpty()) {
             return;
+        }
 
         final Block block = this.world().getBlockState(blockHitResult.getBlockPos()).getBlock();
-        if ((block instanceof AirBlock || block instanceof FluidBlock) && this.options().useKey.isPressed())
+        if ((block instanceof AirBlock || block instanceof FluidBlock) && this.options().useKey.isPressed()) {
             this.interactionManager().interactBlock(this.player(), Hand.MAIN_HAND, blockHitResult);
+        }
     }
 
 }

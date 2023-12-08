@@ -1,20 +1,15 @@
 package de.vandalismdevelopment.vandalism.util.minecraft.impl.rotation;
 
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftUtil;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.WorldUtil;
-import net.fabricmc.loader.impl.lib.sat4j.core.Vec;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RaycastContext;
-import org.joml.Vector3d;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class Rotation extends MinecraftUtil {
@@ -44,11 +39,11 @@ public class Rotation extends MinecraftUtil {
         return this.pitch;
     }
 
-    public void setTargetVector(Vec3d vector) {
+    public void setTargetVector(final Vec3d vector) {
         this.targetVector = vector;
     }
 
-    public Vec3d getTargetVeector() {
+    public Vec3d getTargetVector() {
         return this.targetVector;
     }
 
@@ -118,19 +113,16 @@ public class Rotation extends MinecraftUtil {
 
     }
 
-    private Pair<Double, Double> generateRandomPointsInCircle3D(float radius) {
-        double u = Math.random();
-        double v = Math.random();
-        double theta = u * 2.0 * Math.PI;
-        double phi = Math.acos(2.0 * v - 1.0);
-        double r = Math.cbrt(Math.random()) * radius / 2;
-        double cosTheta = Math.cos(theta);
-        double sinPhi = Math.sin(phi);
-        double cosPhi = Math.cos(phi);
-        double x = r * sinPhi * cosTheta;
-        double z = r * cosPhi;
-
-        return new Pair<>(x, z);
+    private Pair<Double, Double> generateRandomPointsInCircle3D(final float radius) {
+        final double u = Math.random();
+        final double v = Math.random();
+        final double theta = u * 2.0 * Math.PI;
+        final double phi = Math.acos(2.0 * v - 1.0);
+        final double r = Math.cbrt(Math.random()) * radius / 2;
+        final double cosTheta = Math.cos(theta);
+        final double sinPhi = Math.sin(phi);
+        final double cosPhi = Math.cos(phi);
+        return new Pair<>(r * sinPhi * cosTheta, r * cosPhi);
     }
 
     private static List<Byte> getVisibleHitBoxSides(final Entity entity, final PlayerEntity player) {
@@ -151,12 +143,12 @@ public class Rotation extends MinecraftUtil {
         return sides;
     }
 
-    private static List<Vec3d> computeHitboxAimPoints(final Entity e, final PlayerEntity player, int aimPoints) {
+    private static List<Vec3d> computeHitboxAimPoints(final Entity entity, final PlayerEntity player, final int aimPoints) {
         final List<Vec3d> points = new ArrayList<>();
-        final List<Byte> visibleSides = getVisibleHitBoxSides(e, player);
-        final double targetPosY = e.getY() - 0.1;
-        final double targetHeight = e.getHeight() + 0.2;
-        final double targetWidth = e.getWidth();
+        final List<Byte> visibleSides = getVisibleHitBoxSides(entity, player);
+        final double targetPosY = entity.getY() - 0.1;
+        final double targetHeight = entity.getHeight() + 0.2;
+        final double targetWidth = entity.getWidth();
         /*
          * hitbox formula:
          * visibleSides * width * height
@@ -167,8 +159,8 @@ public class Rotation extends MinecraftUtil {
         if (visibleSides.contains((byte) 0)) { // x
             for (double y = 0; y <= targetHeight; y += vertDist) {
                 for (double x = 0; x <= targetWidth; x += horDist) {
-                    double zOff = (player.getZ() > e.getZ() ? targetWidth / 2 : -targetWidth / 2);
-                    points.add(new Vec3d(e.getX() - targetWidth / 2 + x, targetPosY + y, e.getZ() + zOff));
+                    double zOff = (player.getZ() > entity.getZ() ? targetWidth / 2 : -targetWidth / 2);
+                    points.add(new Vec3d(entity.getX() - targetWidth / 2 + x, targetPosY + y, entity.getZ() + zOff));
                 }
             }
         }
@@ -177,7 +169,7 @@ public class Rotation extends MinecraftUtil {
             for (double y = 0; y <= targetWidth; y += horDist) {
                 for (double x = 0; x <= targetWidth; x += horDist) {
                     double yOff = (player.getEyeY() < targetPosY ? 0 : targetHeight);
-                    points.add(new Vec3d(e.getX() - targetWidth / 2 + x, targetPosY + yOff, e.getZ() - targetWidth / 2 + y));
+                    points.add(new Vec3d(entity.getX() - targetWidth / 2 + x, targetPosY + yOff, entity.getZ() - targetWidth / 2 + y));
                 }
             }
         }
@@ -185,8 +177,8 @@ public class Rotation extends MinecraftUtil {
         if (visibleSides.contains((byte) 1)) { // z
             for (double y = 0; y <= targetHeight; y += vertDist) {
                 for (double x = 0; x <= targetWidth; x += horDist) {
-                    double xOff = (player.getX() > e.getX() ? targetWidth / 2 : -targetWidth / 2);
-                    points.add(new Vec3d(e.getX() + xOff, targetPosY + y, e.getZ() - targetWidth / 2 + x));
+                    double xOff = (player.getX() > entity.getX() ? targetWidth / 2 : -targetWidth / 2);
+                    points.add(new Vec3d(entity.getX() + xOff, targetPosY + y, entity.getZ() - targetWidth / 2 + x));
                 }
             }
         }
@@ -195,15 +187,12 @@ public class Rotation extends MinecraftUtil {
     }
 
     private static float[] getRotationToPoint(final Vec3d p, final PlayerEntity player) {
-        double deltaX = p.getX() - player.getX();
-        double deltaZ = p.getZ() - player.getZ();
-        double deltaY = p.getY() - player.getEyeY();
-
-
-        double horizontalDistance = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
-        double verticalDistance = deltaY;
-        float yaw = (float) (Math.atan2(deltaZ, deltaX) * 180D / Math.PI) - 90F;
-        float pitch = (float) -Math.toDegrees(Math.atan2(verticalDistance, horizontalDistance));
+        final double deltaX = p.getX() - player.getX();
+        final double deltaZ = p.getZ() - player.getZ();
+        final double deltaY = p.getY() - player.getEyeY();
+        final double horizontalDistance = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
+        final float yaw = (float) (Math.atan2(deltaZ, deltaX) * 180D / Math.PI) - 90F;
+        final float pitch = (float) -Math.toDegrees(Math.atan2(deltaY, horizontalDistance));
         return new float[]{yaw, pitch};
     }
 
