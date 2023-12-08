@@ -30,7 +30,7 @@ public class AddServerListScreen extends Screen {
     public void tick() {
         super.tick();
         this.addBtn.active =
-                !this.nameField.getText().isEmpty() &&
+                this.nameField.getText().length() >= 3 &&
                         Vandalism.getInstance()
                                 .getServerListManager()
                                 .get(
