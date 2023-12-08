@@ -9,9 +9,9 @@ import de.vandalismdevelopment.vandalism.feature.impl.script.Script;
 import java.io.File;
 import java.io.IOException;
 
-public class ScriptConfig extends ValueableConfig {
+public class ScriptsConfig extends ValueableConfig {
 
-    public ScriptConfig(final File dir) {
+    public ScriptsConfig(final File dir) {
         super(dir, "scripts");
     }
 

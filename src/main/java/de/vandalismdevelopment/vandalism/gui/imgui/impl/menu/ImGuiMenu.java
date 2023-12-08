@@ -26,7 +26,7 @@ public abstract class ImGuiMenu implements MinecraftWrapper {
         this.setState(!this.state);
     }
 
-    private void setState(final boolean state) {
+    public void setState(final boolean state) {
         if (state == this.state) return;
         this.state = state;
         if (state) this.init();

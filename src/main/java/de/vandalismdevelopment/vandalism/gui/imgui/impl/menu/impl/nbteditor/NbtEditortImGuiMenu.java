@@ -61,9 +61,7 @@ public class NbtEditortImGuiMenu extends ImGuiMenu {
                     .getImGuiHandler()
                     .getImGuiMenuCategoryRegistry()
                     .getImGuiMenuByClass(NbtEditortImGuiMenu.class);
-            if (!nbtEditortImGuiMenu.getState()) {
-                nbtEditortImGuiMenu.toggle();
-            }
+            nbtEditortImGuiMenu.setState(true);
             Executors.newSingleThreadExecutor().submit(() -> {
                 try {
                     Thread.sleep(100);

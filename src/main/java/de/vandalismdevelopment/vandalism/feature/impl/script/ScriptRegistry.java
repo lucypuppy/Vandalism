@@ -69,7 +69,7 @@ public class ScriptRegistry implements TickListener, InputListener, MinecraftWra
             }
             this.scripts.add(script);
             if (save) {
-                Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getScriptConfig());
+                Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getScriptsConfig());
             }
             Vandalism.getInstance().getLogger().info("Script '" + script + "' has been loaded.");
         } catch (final Exception e) {
@@ -184,7 +184,7 @@ public class ScriptRegistry implements TickListener, InputListener, MinecraftWra
             if (!script.getFile().exists()) {
                 this.scripts.remove(script);
                 Vandalism.getInstance().getLogger().info("Script '" + script + "' has been unloaded because the file does not exist anymore.");
-                Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getScriptConfig());
+                Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getScriptsConfig());
             }
         }
     }

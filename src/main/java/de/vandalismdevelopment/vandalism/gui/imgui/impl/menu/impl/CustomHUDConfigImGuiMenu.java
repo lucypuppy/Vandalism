@@ -25,7 +25,7 @@ public class CustomHUDConfigImGuiMenu extends ImGuiMenu {
         final CustomHUDRenderer customHUDRenderer = Vandalism.getInstance().getCustomHUDRenderer();
         if (ImGui.begin("Custom HUD Config##customhudconfig", Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags())) {
             if (ImGui.button("Close Custom HUD Config##closecustomhudconfig")) {
-                this.toggle();
+                this.setState(false);
             }
             if (ImGui.button("Reset Custom HUD Config##resetcustomhudconfig")) {
                 for (final HUDElement hudElement : Vandalism.getInstance().getCustomHUDRenderer().getHudElements()) {
