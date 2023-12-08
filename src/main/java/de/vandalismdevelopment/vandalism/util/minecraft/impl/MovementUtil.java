@@ -42,7 +42,6 @@ public class MovementUtil extends MinecraftUtil {
         float f = player().isOnGround()
                 ? 1.0F - percentageFactor * (1.0F - p)
                 : 1.0F - percentageFactor * (1.0F - baseValue);
-        ChatUtil.infoChatMessage(" " + f);
         return velocity.multiply(f, 1, f);
     }
 
