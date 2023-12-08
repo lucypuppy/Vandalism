@@ -1,7 +1,6 @@
 package de.vandalismdevelopment.vandalism.gui.imgui;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.gui.minecraft.ImGuiScreen;
 import de.vandalismdevelopment.vandalism.injection.access.IImGuiImplGlfw;
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import imgui.*;

@@ -7,7 +7,7 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
 import de.vandalismdevelopment.vandalism.feature.impl.command.arguments.NbtCompoundArgumentType;
-import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.nbteditor.NbtEditortImGuiMenu;
+import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.impl.nbteditor.NbtEditortImGuiMenu;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.ItemStackUtil;
 import net.minecraft.command.CommandSource;
@@ -114,7 +114,7 @@ public class NbtCommand extends Command {
         builder.then(literal("gui").executes(context -> {
             final ItemStack stack = this.player().getInventory().getMainHandStack();
             if (this.validBasic(stack))
-                Vandalism.getInstance().getImGuiHandler().getImGuiMenuRegistry().getImGuiMenuByClass(NbtEditortImGuiMenu.class).displayNbt(stack.getName().getString(), stack.getNbt());
+                Vandalism.getInstance().getImGuiHandler().getImGuiMenuCategoryRegistry().getImGuiMenuByClass(NbtEditortImGuiMenu.class).displayNbt(stack.getName().getString(), stack.getNbt());
             return SINGLE_SUCCESS;
         }));
 
@@ -125,7 +125,7 @@ public class NbtCommand extends Command {
                 displayTitle = nbt.getString(DISPLAY_TITLE_NBT_KEY);
                 nbt.remove(DISPLAY_TITLE_NBT_KEY);
             } else displayTitle = "Nbt";
-            Vandalism.getInstance().getImGuiHandler().getImGuiMenuRegistry().getImGuiMenuByClass(NbtEditortImGuiMenu.class).displayNbt(displayTitle, nbt);
+            Vandalism.getInstance().getImGuiHandler().getImGuiMenuCategoryRegistry().getImGuiMenuByClass(NbtEditortImGuiMenu.class).displayNbt(displayTitle, nbt);
             return SINGLE_SUCCESS;
         })));
     }
