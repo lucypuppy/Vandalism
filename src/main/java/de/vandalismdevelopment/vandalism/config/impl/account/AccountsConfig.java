@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class AccountConfig extends ValueableConfig implements MinecraftWrapper {
+public class AccountsConfig extends ValueableConfig implements MinecraftWrapper {
 
     private final static HashMap<String, String> LOG_FILTERS = new HashMap<>();
 
@@ -42,7 +42,7 @@ public class AccountConfig extends ValueableConfig implements MinecraftWrapper {
 
     private final List<Account> accounts;
 
-    public AccountConfig(final File dir) {
+    public AccountsConfig(final File dir) {
         super(dir, "accounts");
         this.accounts = new CopyOnWriteArrayList<>();
         MinecraftAuth.LOGGER = new ILogger() {

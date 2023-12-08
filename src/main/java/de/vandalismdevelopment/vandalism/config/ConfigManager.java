@@ -5,9 +5,10 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.config.impl.CustomHUDConfig;
+import de.vandalismdevelopment.vandalism.config.impl.MenusConfig;
 import de.vandalismdevelopment.vandalism.config.impl.ModulesConfig;
-import de.vandalismdevelopment.vandalism.config.impl.ScriptConfig;
-import de.vandalismdevelopment.vandalism.config.impl.account.AccountConfig;
+import de.vandalismdevelopment.vandalism.config.impl.ScriptsConfig;
+import de.vandalismdevelopment.vandalism.config.impl.account.AccountsConfig;
 import de.vandalismdevelopment.vandalism.config.impl.main.MainConfig;
 
 import java.io.*;
@@ -29,19 +30,27 @@ public class ConfigManager {
         return this.modulesConfig;
     }
 
-    private final AccountConfig accountConfig;
-    public AccountConfig getAccountConfig() {
-        return this.accountConfig;
+    private final AccountsConfig accountsConfig;
+
+    public AccountsConfig getAccountConfig() {
+        return this.accountsConfig;
     }
 
-    private final ScriptConfig scriptConfig;
-    public ScriptConfig getScriptConfig() {
-        return this.scriptConfig;
+    private final ScriptsConfig scriptsConfig;
+
+    public ScriptsConfig getScriptsConfig() {
+        return this.scriptsConfig;
     }
 
     private final CustomHUDConfig customHUDConfig;
     public CustomHUDConfig getCustomHUDConfig() {
         return this.customHUDConfig;
+    }
+
+    private final MenusConfig menusConfig;
+
+    public MenusConfig getMenusConfig() {
+        return this.menusConfig;
     }
 
     public ConfigManager(final File dir) {
@@ -50,9 +59,10 @@ public class ConfigManager {
         this.addConfigs(
                 this.mainConfig = new MainConfig(dir),
                 this.modulesConfig = new ModulesConfig(dir),
-                this.accountConfig = new AccountConfig(dir),
-                this.scriptConfig = new ScriptConfig(dir),
-                this.customHUDConfig = new CustomHUDConfig(dir)
+                this.accountsConfig = new AccountsConfig(dir),
+                this.scriptsConfig = new ScriptsConfig(dir),
+                this.customHUDConfig = new CustomHUDConfig(dir),
+                this.menusConfig = new MenusConfig(dir)
         );
     }
 

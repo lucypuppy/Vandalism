@@ -66,7 +66,7 @@ public class Script extends Feature implements IValue {
 
     @Override
     public Config getConfig() {
-        return Vandalism.getInstance().getConfigManager().getScriptConfig();
+        return Vandalism.getInstance().getConfigManager().getScriptsConfig();
     }
 
     @Override
