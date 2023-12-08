@@ -23,15 +23,18 @@ public class S2CLoginResponsePacket extends Packet {
 
 
     @Override
-    public void read(final PacketBuffer buffer) throws Exception {
+    public void read(final PacketBuffer buffer) {
         final JsonObject object = buffer.readJson();
         result = Result.getById(object.get("result").getAsInt());
         switch (result) {
             case BANNED -> reason = object.get("reason").getAsString();
             case OK -> {
-                final UserProfile profile = new UserProfile(object.get("username").getAsString(), (UserProfile.Rank) IdentifiableEnum.getById(object.get("rank").getAsInt(), UserProfile.Rank.class));
+                final UserProfile profile = new UserProfile(
+                        object.get("username").getAsString(),
+                        object.get("client").getAsString(), /* we don't question this, I send the mc client in the login response too. */
+                        (UserProfile.Rank) IdentifiableEnum.getById(object.get("rank").getAsInt(), UserProfile.Rank.class)
+                );
                 profile.setJwt(object.get("jwt").getAsString());
-
                 this.profile = profile;
             }
         }

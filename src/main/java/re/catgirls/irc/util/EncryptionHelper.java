@@ -2,7 +2,6 @@ package re.catgirls.irc.util;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import re.catgirls.irc.ChatClient;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;

@@ -8,25 +8,28 @@ import re.catgirls.packets.buffer.PacketBuffer;
 import java.util.Base64;
 import java.util.zip.CRC32;
 
+@SuppressWarnings("unused")
 public class C2SChatMessagePacket extends Packet {
 
-    private String message;
-    private UserProfile profile;
+    private final String message;
+    private final UserProfile profile;
 
-    public C2SChatMessagePacket() {}
+    public C2SChatMessagePacket() {
+        throw new RuntimeException("Not supported");
+    }
 
-    public C2SChatMessagePacket(UserProfile profile, String message) {
+    public C2SChatMessagePacket(final UserProfile profile, final String message) {
         this.message = message;
         this.profile = profile;
     }
 
     @Override
-    public void read(PacketBuffer buffer) {
+    public void read(final PacketBuffer buffer) {
 
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(final PacketBuffer buffer) {
         final CRC32 checksum = new CRC32();
         checksum.update(message.getBytes());
 

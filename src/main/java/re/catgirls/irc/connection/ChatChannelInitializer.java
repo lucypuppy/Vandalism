@@ -15,7 +15,7 @@ import re.catgirls.packets.connection.PacketHandler;
 public class ChatChannelInitializer extends ChannelInitializer<Channel> {
 
     @Override
-    protected void initChannel(Channel channel) throws Exception {
+    protected void initChannel(Channel channel) {
         final PacketHandler chatPacketHandler = new PacketHandler(
                 this,
                 channel,

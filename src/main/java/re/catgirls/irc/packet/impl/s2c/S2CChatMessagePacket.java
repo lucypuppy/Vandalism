@@ -15,16 +15,16 @@ public class S2CChatMessagePacket extends Packet {
     public S2CChatMessagePacket() { }
 
     @Override
-    public void write(PacketBuffer buffer) {}
+    public void write(final PacketBuffer buffer) {}
 
     // @formatter:on
 
 
     @Override
-    public void read(final PacketBuffer buffer) throws Exception {
+    public void read(final PacketBuffer buffer) {
         object = buffer.readJson();
-        if(object.has("sender")) sender = object.getAsJsonObject("sender");
-        if(object.has("message")) message = object.getAsJsonObject("message");
+        if (object.has("sender")) sender = object.getAsJsonObject("sender");
+        if (object.has("message")) message = object.getAsJsonObject("message");
     }
 
     public JsonObject getMessage() {

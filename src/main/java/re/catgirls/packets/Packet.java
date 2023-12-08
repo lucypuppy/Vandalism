@@ -4,6 +4,7 @@ import re.catgirls.packets.buffer.PacketBuffer;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+@SuppressWarnings("RedundantThrows")
 public abstract class Packet {
 
     private long sessionId = ThreadLocalRandom.current().nextLong();

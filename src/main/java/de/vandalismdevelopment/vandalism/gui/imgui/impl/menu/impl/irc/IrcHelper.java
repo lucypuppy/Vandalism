@@ -147,7 +147,7 @@ public class IrcHelper {
             wrapper.connect(new InetSocketAddress(
                     address.split(":")[0],
                     Integer.parseInt(address.split(":")[1])
-            ), 5000, username, password);
+            ), 5000, username, password, "vandalism");
         } catch (Exception e) {
             ChatUtil.errorChatMessage(e.getMessage());
             messages.add(Formatting.RED + e.getMessage());

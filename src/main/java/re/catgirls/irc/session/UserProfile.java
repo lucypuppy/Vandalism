@@ -6,8 +6,10 @@ public class UserProfile {
 
     /* user data */
     private final String name;
-    private Rank rank;
-    private String mcUsername, mcServer;
+    private final Rank rank;
+    private String mcUsername;
+    private String mcServer;
+    private final String mcClient;
 
     /* json web token */
     private String jwt;
@@ -18,8 +20,9 @@ public class UserProfile {
      * @param name username
      * @param rank user rank
      */
-    public UserProfile(final String name, final Rank rank) {
+    public UserProfile(final String name, final String client, final Rank rank) {
         this.name = name;
+        this.mcClient = client;
         this.rank = rank;
     }
 
