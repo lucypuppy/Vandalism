@@ -156,6 +156,7 @@ public class IrcImGuiMenu extends ImGuiMenu {
 
             ImGui.pushItemWidth(ImGui.getWindowWidth() - (40 * 2));
 
+            // wtf
             if (ImGui.inputText(
                     "##gaysexomg",
                     messageField,
@@ -168,6 +169,7 @@ public class IrcImGuiMenu extends ImGuiMenu {
 
             ImGui.sameLine();
 
+            /* hhh */
             if (ImGui.button("Send")) {
                 sendMessage(messageField);
             }
@@ -183,7 +185,7 @@ public class IrcImGuiMenu extends ImGuiMenu {
      * @param message The message to send.
      */
     private void sendMessage(final ImString message) {
-        if (message.get().isEmpty()) {
+        if (message.get().isEmpty() || !helper.isConnected()) {
             return;
         }
 
