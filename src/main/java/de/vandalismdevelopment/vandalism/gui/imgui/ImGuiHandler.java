@@ -4,7 +4,7 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.event.InputListener;
 import de.vandalismdevelopment.vandalism.event.RenderListener;
-import de.vandalismdevelopment.vandalism.gui.minecraft.ImGuiScreen;
+import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.ImGuiMenuCategoryRegistry;
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatScreen;
@@ -20,12 +20,11 @@ import java.io.File;
 public class ImGuiHandler implements RenderListener, InputListener, MinecraftWrapper {
 
     private final ImGuiRenderer imGuiRenderer;
-
-    private final ImGuiMenuRegistry imGuiMenuRegistry;
+    private final ImGuiMenuCategoryRegistry imGuiMenuCategoryRegistry;
 
     public ImGuiHandler(final long handle, final File dir) {
         this.imGuiRenderer = new ImGuiRenderer(handle, dir);
-        this.imGuiMenuRegistry = new ImGuiMenuRegistry();
+        this.imGuiMenuCategoryRegistry = new ImGuiMenuCategoryRegistry();
         DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
         DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
     }
@@ -34,8 +33,8 @@ public class ImGuiHandler implements RenderListener, InputListener, MinecraftWra
         return this.imGuiRenderer;
     }
 
-    public ImGuiMenuRegistry getImGuiMenuRegistry() {
-        return this.imGuiMenuRegistry;
+    public ImGuiMenuCategoryRegistry getImGuiMenuCategoryRegistry() {
+        return this.imGuiMenuCategoryRegistry;
     }
 
     @Override

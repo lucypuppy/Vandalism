@@ -1,0 +1,227 @@
+package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.account;
+
+import de.florianmichael.rclasses.common.array.ObjectTypeChecker;
+import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.config.impl.account.Account;
+import de.vandalismdevelopment.vandalism.config.impl.account.impl.CrackedAccount;
+import de.vandalismdevelopment.vandalism.config.impl.account.impl.MicrosoftDeviceCodeAccount;
+import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.ImGuiMenu;
+import imgui.ImGui;
+import imgui.ImGuiInputTextCallbackData;
+import imgui.callback.ImGuiInputTextCallback;
+import imgui.flag.ImGuiInputTextFlags;
+import imgui.flag.ImGuiTableFlags;
+import imgui.type.ImString;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.util.Util;
+import net.minecraft.util.Uuids;
+import net.raphimc.minecraftauth.MinecraftAuth;
+import net.raphimc.minecraftauth.step.java.session.StepFullJavaSession;
+import net.raphimc.minecraftauth.step.msa.StepMsaDeviceCode;
+import net.raphimc.minecraftauth.util.MicrosoftConstants;
+import org.apache.http.impl.client.CloseableHttpClient;
+
+import java.util.List;
+import java.util.UUID;
+
+public class AccountManagerImGuiMenu extends ImGuiMenu {
+
+    private final static ImGuiInputTextCallback USERNAME_NAME_FILTER = new ImGuiInputTextCallback() {
+
+        @Override
+        public void accept(final ImGuiInputTextCallbackData imGuiInputTextCallbackData) {
+            if (imGuiInputTextCallbackData.getEventChar() == 0) return;
+            if (!Character.isLetterOrDigit(imGuiInputTextCallbackData.getEventChar()) && imGuiInputTextCallbackData.getEventChar() != '_' && imGuiInputTextCallbackData.getEventChar() != '§') {
+                imGuiInputTextCallbackData.setEventChar((char) 0);
+            }
+        }
+
+    };
+
+    private final ImString crackedUsername, crackedUUID, state, currentAccountData;
+
+    private Thread thread;
+
+    public AccountManagerImGuiMenu() {
+        super("Account Manager");
+        this.crackedUsername = new ImString(16);
+        this.crackedUUID = new ImString();
+        this.state = new ImString(200);
+        this.currentAccountData = new ImString();
+        this.resetState();
+    }
+
+    private void killThread(final boolean state) {
+        if (this.thread != null) {
+            this.thread.interrupt();
+            this.thread = null;
+        }
+        if (state) {
+            this.resetState();
+        }
+    }
+
+    private void resetState() {
+        this.state.set("Waiting for input...");
+    }
+
+    private void delayedResetState() {
+        this.killThread(false);
+        try {
+            Thread.sleep(5000);
+        } catch (final InterruptedException ignored) {
+        }
+        this.resetState();
+    }
+
+    private void login(final Account account) {
+        try {
+            account.login();
+            Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getAccountConfig());
+            this.state.set("Successfully logged into the " + account.getType() + " account: " + account.getUsername());
+        } catch (final Throwable throwable) {
+            Vandalism.getInstance().getLogger().error("Failed to log into the " + account.getType() + " account: " + account.getUsername(), throwable);
+            this.state.set("Failed to log into the " + account.getType() + " account: " + account.getUsername() + "\n" + throwable);
+        }
+    }
+
+    @Override
+    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        if (ImGui.begin("Account Manager##accountmanager", Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags())) {
+            ImGui.text("Current Account");
+            ImGui.inputTextMultiline("##currentAccountData", this.currentAccountData, -1, 60, ImGuiInputTextFlags.ReadOnly);
+            this.currentAccountData.set(
+                    "Username: " + this.mc().session.getUsername() + "\n" + (this.mc().session.getUuidOrNull() != null ?
+                            "UUID: " + this.mc().session.getUuidOrNull() + "\n" : "") +
+                            "Type: " + (this.mc().session.getAccessToken().equals(CrackedAccount.TOKEN) ? "Cracked" : "Normal")
+            );
+            ImGui.separator();
+            ImGui.text("Accounts");
+            final List<Account> accounts = Vandalism.getInstance().getConfigManager().getAccountConfig().getAccounts();
+            final AccountsTableColumn[] accountsTableColumns = AccountsTableColumn.values();
+            final int maxTableColumns = accountsTableColumns.length;
+            ImGui.beginChild("##accountstablechild", -1, 200, true);
+            if (ImGui.beginTable("accounts##accountstable", maxTableColumns, ImGuiTableFlags.Borders | ImGuiTableFlags.Resizable | ImGuiTableFlags.RowBg | ImGuiTableFlags.ContextMenuInBody)) {
+                for (final AccountsTableColumn accountsTableColumn : accountsTableColumns) {
+                    ImGui.tableSetupColumn(accountsTableColumn.normalName());
+                }
+                ImGui.tableHeadersRow();
+                for (final Account account : accounts) {
+                    ImGui.tableNextRow();
+                    for (int i = 0; i < maxTableColumns; i++) {
+                        ImGui.tableSetColumnIndex(i);
+                        final AccountsTableColumn accountsTableColumn = accountsTableColumns[i];
+                        switch (accountsTableColumn) {
+                            case USERNAME -> ImGui.textWrapped(account.getUsername());
+                            case UUID -> ImGui.textWrapped(account.getUuid().toString());
+                            case TYPE -> ImGui.textWrapped(account.getType());
+                            case ACTIONS -> {
+                                ImGui.spacing();
+                                final int buttonWidth = 0, buttonHeight = 28;
+                                final String identifier = "##" + account.getUsername() + account.getUuid().toString() + i;
+                                if (ImGui.button("login" + identifier + "login", buttonWidth, buttonHeight)) {
+                                    if (account instanceof CrackedAccount) {
+                                        this.login(account);
+                                    } else {
+                                        this.thread = new Thread(() -> {
+                                            this.login(account);
+                                            this.delayedResetState();
+                                        });
+                                        this.thread.start();
+                                    }
+                                }
+                                ImGui.sameLine();
+                                if (ImGui.button("remove" + identifier + "remove", buttonWidth, buttonHeight)) {
+                                    accounts.remove(account);
+                                    Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getAccountConfig());
+                                }
+                                ImGui.spacing();
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                }
+                ImGui.endTable();
+            }
+            ImGui.endChild();
+            ImGui.newLine();
+            ImGui.separator();
+            if (this.thread != null) {
+                ImGui.text("Extra Options");
+                if (ImGui.button("Kill Login Thread##accountmanagerkillloginthread")) {
+                    this.killThread(true);
+                }
+                ImGui.separator();
+                ImGui.spacing();
+            }
+            ImGui.text("Add Account");
+            ImGui.setNextItemWidth(-300);
+            ImGui.inputText("Cracked Username##accountmanagercrackedusername", this.crackedUsername, ImGuiInputTextFlags.CallbackCharFilter, USERNAME_NAME_FILTER);
+            ImGui.setNextItemWidth(-300);
+            ImGui.inputText("Cracked UUID##accountmanagercrackeduuid", this.crackedUUID);
+            final String usernameValue = this.crackedUsername.get();
+            if (!usernameValue.isBlank() && usernameValue.length() > 2 && usernameValue.length() < 17) {
+                final String originUUID = this.crackedUUID.get(), uuidValue;
+                if (originUUID.isBlank()) {
+                    uuidValue = Uuids.getOfflinePlayerUuid(usernameValue).toString();
+                } else uuidValue = originUUID;
+                if (ObjectTypeChecker.isUUID(uuidValue)) {
+                    boolean contains = false;
+                    for (final Account account : accounts) {
+                        if (account.getUuid().toString().equalsIgnoreCase(uuidValue)) {
+                            contains = true;
+                            break;
+                        }
+                    }
+                    if (!contains) {
+                        if (ImGui.button("Add Cracked Account##accountmanageraddcrackedaccount")) {
+                            final UUID realUUID = UUID.fromString(uuidValue);
+                            final CrackedAccount crackedAccount = new CrackedAccount(usernameValue, realUUID);
+                            accounts.add(crackedAccount);
+                            this.login(crackedAccount);
+                            this.crackedUsername.clear();
+                            this.crackedUUID.clear();
+                        }
+                        ImGui.sameLine();
+                    }
+                }
+            }
+            if (ImGui.button("Add Microsoft Account (Device Code)##accountmanageradddevicecodemicrosoftaccount")) {
+                this.killThread(true);
+                this.thread = new Thread(() -> {
+                    try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
+                        final StepFullJavaSession.FullJavaSession mcProfile = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.getFromInput(httpClient,
+                                new StepMsaDeviceCode.MsaDeviceCodeCallback(msaDeviceCode -> {
+                                    final String url = msaDeviceCode.getDirectVerificationUri();
+                                    this.state.set("Please open the url: " + url);
+                                    Util.getOperatingSystem().open(url);
+                                })
+                        );
+                        final MicrosoftDeviceCodeAccount microsoftDeviceCodeAccount = new MicrosoftDeviceCodeAccount(
+                                MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.toJson(mcProfile).toString(),
+                                mcProfile.getMcProfile().getId(),
+                                mcProfile.getMcProfile().getName()
+                        );
+                        accounts.add(microsoftDeviceCodeAccount);
+                        this.login(microsoftDeviceCodeAccount);
+                    } catch (final Throwable throwable) {
+                        if (throwable instanceof InterruptedException) {
+                            this.state.set("Login process for the microsoft device code account has been aborted.");
+                        } else {
+                            Vandalism.getInstance().getLogger().error("Failed to log into a microsoft device code account.", throwable);
+                            this.state.set("Failed to add the microsoft device code account to your account list.\n" + throwable);
+                        }
+                    }
+                    this.delayedResetState();
+                });
+                this.thread.start();
+            }
+            ImGui.separator();
+            ImGui.text("State");
+            ImGui.inputTextMultiline("##currentAccountLoginState", this.state, -1, 50, ImGuiInputTextFlags.ReadOnly);
+            ImGui.end();
+        }
+    }
+
+}
