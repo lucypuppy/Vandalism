@@ -40,7 +40,6 @@ public class ConfigManager {
     }
 
     private final CustomHUDConfig customHUDConfig;
-
     public CustomHUDConfig getCustomHUDConfig() {
         return this.customHUDConfig;
     }
@@ -97,6 +96,7 @@ public class ConfigManager {
             printWriter.println(this.gson.toJson(config.save()));
             printWriter.close();
             fileWriter.close();
+            Vandalism.getInstance().getLogger().info("Config " + config.getFile().getName() + " saved.");
         } catch (final IOException e) {
             Vandalism.getInstance().getLogger().error("Failed to save config: " + config.getFile().getName(), e);
         }

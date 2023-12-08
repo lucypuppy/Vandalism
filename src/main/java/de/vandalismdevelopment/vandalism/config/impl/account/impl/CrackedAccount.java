@@ -16,7 +16,14 @@ public class CrackedAccount extends Account {
 
     @Override
     public void login() {
-        this.setSession(new Session(this.getUsername(), this.getUuid(), TOKEN, Optional.empty(), Optional.empty(), Session.AccountType.LEGACY));
+        this.setSession(new Session(
+                this.getUsername(),
+                this.getUuid(),
+                TOKEN,
+                Optional.empty(),
+                Optional.empty(),
+                Session.AccountType.LEGACY
+        ));
     }
 
 }

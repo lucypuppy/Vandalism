@@ -67,20 +67,15 @@ public class InfoHUDElement extends HUDElement {
     );
 
     public InfoHUDElement() {
-        super("Info");
+        super(
+                "Info",
+                2,
+                60
+        );
     }
 
     @Override
-    protected void resetPosition() {
-        super.resetPosition();
-        //this.x = 2;
-        //this.y = 60;
-
-        setScreenPosition(2, 60);
-    }
-
-    @Override
-    public void render(final DrawContext context, final float delta) {
+    public void onRender(final DrawContext context, final float delta) {
         int color = -1;
         boolean shadow = false;
         int x = this.x, width = 0, height = 0;

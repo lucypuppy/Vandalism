@@ -8,7 +8,6 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.config.ValueableConfig;
 import de.vandalismdevelopment.vandalism.config.impl.account.impl.CrackedAccount;
 import de.vandalismdevelopment.vandalism.config.impl.account.impl.MicrosoftDeviceCodeAccount;
-import de.vandalismdevelopment.vandalism.config.impl.account.impl.MicrosoftLocalWebServerAccount;
 import de.vandalismdevelopment.vandalism.util.EncryptionUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import net.minecraft.util.Uuids;
@@ -102,14 +101,6 @@ public class AccountConfig extends ValueableConfig implements MinecraftWrapper {
             try {
                 final UUID validUUID = uuidFromJson != null ? UUID.fromString(uuidFromJson) : null;
                 Account account = switch (typeFromJson) {
-                    case "microsoft-local-web-server" -> new MicrosoftLocalWebServerAccount(
-                            EncryptionUtil.decrypt(
-                                    accountObject.get("data").getAsString(),
-                                    EncryptionUtil.getKeyFromPassword(usernameFromJson)
-                            ),
-                            validUUID,
-                            usernameFromJson
-                    );
                     case "microsoft-device-code" -> new MicrosoftDeviceCodeAccount(
                             EncryptionUtil.decrypt(
                                     accountObject.get("data").getAsString(),

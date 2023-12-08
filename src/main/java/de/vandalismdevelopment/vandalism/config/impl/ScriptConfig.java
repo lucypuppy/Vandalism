@@ -26,6 +26,7 @@ public class ScriptConfig extends ValueableConfig {
                 scriptObject.add("values", valuesObject);
             }
             scriptsObject.add(script.getName(), scriptObject);
+            Vandalism.getInstance().getLogger().info("Script " + script.getName() + " has been saved.");
         }
         return scriptsObject;
     }

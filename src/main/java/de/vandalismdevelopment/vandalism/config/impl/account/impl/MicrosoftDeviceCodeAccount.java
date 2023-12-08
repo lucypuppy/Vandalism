@@ -2,7 +2,6 @@ package de.vandalismdevelopment.vandalism.config.impl.account.impl;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.config.impl.account.Account;
 import de.vandalismdevelopment.vandalism.util.EncryptionUtil;
 import net.minecraft.client.session.Session;
@@ -44,7 +43,6 @@ public class MicrosoftDeviceCodeAccount extends Account {
                     Session.AccountType.MSA
             ));
         }
-        Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getAccountConfig());
     }
 
     @Override

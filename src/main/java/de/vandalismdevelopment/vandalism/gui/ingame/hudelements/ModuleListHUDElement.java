@@ -4,7 +4,6 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.FeatureList;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.gui.ingame.HUDElement;
-import de.vandalismdevelopment.vandalism.gui.ingame.HUDElementAlignment;
 import net.minecraft.client.gui.DrawContext;
 
 import java.util.List;
@@ -13,69 +12,44 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ModuleListHUDElement extends HUDElement {
 
     private final List<String> enabledModules;
-
-    private boolean sort, fixPosition;
+    private boolean sort;
 
     public ModuleListHUDElement() {
-        super("Module List");
+        super("Module List", 2, 140);
         this.enabledModules = new CopyOnWriteArrayList<>();
     }
 
     @Override
-    protected void resetPosition() {
-        super.resetPosition();
-        setScreenPosition(2, 140);
-        this.sort = true;
+    public void reset() {
+        super.reset();
+        this.forceSort();
     }
 
     @Override
-    public void render(final DrawContext context, final float delta) {
+    public void onRender(final DrawContext context, final float delta) {
         this.sort();
         int yOffset = 0;
         final boolean shadow = false;
         for (final String enabledModule : this.enabledModules) {
             final int textWidth = this.textRenderer().getWidth(enabledModule);
             switch (this.alignmentX) {
-                case MIDDLE -> context.drawText(
-                        this.textRenderer(),
-                        enabledModule,
-                        (this.x + this.width / 2) - (textWidth / 2),
-                        this.y + yOffset,
-                        -1,
-                        shadow
-                );
-                case RIGHT -> context.drawText(
-                        this.textRenderer(),
-                        enabledModule,
-                        (this.x + this.width) - textWidth,
-                        this.y + yOffset,
-                        -1,
-                        shadow
-                );
-                default -> context.drawText(
-                        this.textRenderer(),
-                        enabledModule,
-                        this.x,
-                        this.y + yOffset,
-                        -1,
-                        shadow
-                );
+                case MIDDLE ->
+                        context.drawText(this.textRenderer(), enabledModule, (this.x + this.width / 2) - (textWidth / 2), this.y + yOffset, -1, shadow);
+                case RIGHT ->
+                        context.drawText(this.textRenderer(), enabledModule, (this.x + this.width) - textWidth, this.y + yOffset, -1, shadow);
+                default -> context.drawText(this.textRenderer(), enabledModule, this.x, this.y + yOffset, -1, shadow);
             }
 
             this.width = Math.max(this.width, textWidth);
             yOffset += this.textRenderer().fontHeight;
         }
         this.height = yOffset;
-        if (this.fixPosition) {
-            this.fixPosition = false;
-            this.calculatePosition();
-        }
     }
 
     @Override
     public void calculateAlignment() {
         super.calculateAlignment();
-        this.sort = true;
+        this.forceSort();
     }
 
     private void sort() {
@@ -102,11 +76,8 @@ public class ModuleListHUDElement extends HUDElement {
         }
     }
 
-    public void onModuleToggle() {
+    public void forceSort() {
         this.sort = true;
-        if (this.alignmentY == HUDElementAlignment.BOTTOM) {
-            this.fixPosition = true;
-        }
     }
 
 }

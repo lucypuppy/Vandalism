@@ -26,6 +26,7 @@ public class ModulesConfig extends ValueableConfig {
                 moduleObject.add("values", valuesObject);
             }
             modulesObject.add(module.getName(), moduleObject);
+            Vandalism.getInstance().getLogger().info("Module " + module.getName() + " has been saved.");
         }
         return modulesObject;
     }

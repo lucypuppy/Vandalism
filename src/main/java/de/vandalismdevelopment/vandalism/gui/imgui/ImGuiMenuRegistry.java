@@ -46,7 +46,7 @@ public class ImGuiMenuRegistry {
         }
         final int imGuiMenuListSize = this.imGuiMenus.size();
         if (imGuiMenuListSize < 1) Vandalism.getInstance().getLogger().info("No imgui menus found!");
-        else Vandalism.getInstance().getLogger().info("Registered " + imGuiMenuListSize + " imGui menus.");
+        else Vandalism.getInstance().getLogger().info("Registered " + imGuiMenuListSize + " imgui menus.");
     }
 
     public List<ImGuiMenu> getImGuiMenus() {

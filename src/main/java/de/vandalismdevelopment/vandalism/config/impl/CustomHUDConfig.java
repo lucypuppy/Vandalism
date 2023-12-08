@@ -34,6 +34,7 @@ public class CustomHUDConfig extends ValueableConfig {
                 elementObject.add("values", valuesObject);
             }
             elementsObject.add(hudElement.getName(), elementObject);
+            Vandalism.getInstance().getLogger().info("HUD Element " + hudElement.getName() + " has been saved.");
         }
         return elementsObject;
     }
@@ -48,10 +49,10 @@ public class CustomHUDConfig extends ValueableConfig {
             final JsonObject elementObject = jsonObject.getAsJsonObject(hudElement.getName());
             if (elementObject != null) {
                 if (elementObject.has("absoluteX") && elementObject.has("absoluteY")) {
-                    hudElement.absoluteX = elementObject.get("absoluteX").getAsInt();
-                    hudElement.absoluteY = elementObject.get("absoluteY").getAsInt();
-                    hudElement.calculateAlignment();
-                    hudElement.calculatePosition();
+                    hudElement.updateScreenPosition(
+                            elementObject.get("absoluteX").getAsDouble(),
+                            elementObject.get("absoluteY").getAsDouble()
+                    );
                 } else {
                     Vandalism.getInstance().getLogger().error("HUD Element " + hudElement.getName() + " has no absolute position in the config!");
                 }
