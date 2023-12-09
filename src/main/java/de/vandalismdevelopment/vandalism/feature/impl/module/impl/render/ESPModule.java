@@ -1,5 +1,6 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module.impl.render;
 
+import de.florianmichael.rclasses.common.ColorUtils;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.util.RenderUtil;
@@ -14,7 +15,7 @@ public class ESPModule extends Module {
             "Color",
             "The color of the outline.",
             this,
-            RenderUtil.withAlpha(Color.MAGENTA, 200)
+            ColorUtils.withAlpha(Color.MAGENTA, 200)
     );
 
     public ESPModule() {

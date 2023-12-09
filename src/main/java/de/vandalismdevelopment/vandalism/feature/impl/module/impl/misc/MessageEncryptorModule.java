@@ -10,8 +10,6 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 
-//TODO: Add dhjihad mode.
-
 public class MessageEncryptorModule extends Module implements ChatListener {
 
     public final static MutableText ENCRYPTION_PREFIX = Text.empty()

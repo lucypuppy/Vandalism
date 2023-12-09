@@ -31,7 +31,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-//TODO: Improve Code and make it multi version compatible.
 @Mixin(ServerResourcePackProvider.class)
 public abstract class MixinServerResourcePackProvider implements MinecraftWrapper {
 

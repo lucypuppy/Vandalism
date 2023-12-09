@@ -33,7 +33,6 @@ public abstract class Value<V> {
     }
 
     public void setValue(final V value) {
-        //TODO: Find a better solution to fix this.
         if (this.value == value && !(this instanceof BooleanValue)) {
             return;
         }

@@ -18,7 +18,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.awt.*;
 
-//TODO: Improve this mixin because it contains code which is from the game itself and this could corrupt the game in the future.
 @Mixin(value = PlayerListHud.class, priority = 9999)
 public abstract class MixinPlayerListHud implements MinecraftWrapper {
 
@@ -72,11 +71,11 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
             final Color lowPingColor = betterTabListModule.lowPingColor.getValue();
             final Color averagePingColor = betterTabListModule.averagePingColor.getValue();
             final Color highPingColor = betterTabListModule.highPingColor.getValue();
-            final int pingColor = RenderUtil.interpolateColor(lowPingColor, averagePingColor, highPingColor, pingPercent);
+            final Color pingColor = RenderUtil.interpolateColor(lowPingColor, averagePingColor, highPingColor, pingPercent);
             final String ping = latency + " ms", gameMode = gameModeId + " gm";
             context.getMatrices().push();
             context.getMatrices().scale(VANDALISM_SCALE, VANDALISM_SCALE, 1.0f);
-            context.drawTextWithShadow(this.textRenderer(), ping, infoX - this.textRenderer().getWidth(ping), pingY, pingColor);
+            context.drawTextWithShadow(this.textRenderer(), ping, infoX - this.textRenderer().getWidth(ping), pingY, pingColor.getRGB());
             context.drawTextWithShadow(this.textRenderer(), gameMode, infoX - this.textRenderer().getWidth(gameMode), gameModeY, betterTabListModule.getColorFromGameMode(gameModeId));
             context.getMatrices().pop();
             ci.cancel();

@@ -25,7 +25,6 @@ public class BoxMuellerClicker extends Clicker {
         this.nextClick = this.cpsToMs(this.cps);
     }
 
-    //TODO: Fix tick bug (cps is not accurate)
     @Override
     public void update() {
         if (this.timer.hasReached(this.nextClick, true)) {

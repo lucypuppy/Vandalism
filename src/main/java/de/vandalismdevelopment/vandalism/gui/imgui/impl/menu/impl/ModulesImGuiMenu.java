@@ -33,8 +33,6 @@ public class ModulesImGuiMenu extends ImGuiMenu {
         this.openedModules = new CopyOnWriteArrayList<>();
     }
 
-    //TODO: Fix module tabs display (no stacking) when the mod starts the first time.
-
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         final FeatureList<Module> modules = Vandalism.getInstance().getModuleRegistry().getModules();

@@ -1,6 +1,7 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module.impl.render;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.florianmichael.rclasses.common.ColorUtils;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.vandalismdevelopment.vandalism.event.InputListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
@@ -24,7 +25,7 @@ public class BetterTabListModule extends Module implements InputListener {
     public final Value<Integer> tabSize = new SliderIntegerValue("Tab List Size", "How many players to display in the Tab List.", this, 100, 1, 1000);
 
     public final Value<Boolean> highlightSelf = new BooleanValue("Highlight Self", "Highlights yourself in the Tab List.", this, true);
-    public final ColorValue selfColor = new ColorValue("Self Color", "The color to highlight your name with.", this, RenderUtil.withAlpha(Color.GREEN, 100)).visibleConsumer(this.highlightSelf::getValue);
+    public final ColorValue selfColor = new ColorValue("Self Color", "The color to highlight your name with.", this, ColorUtils.withAlpha(Color.GREEN, 100)).visibleConsumer(this.highlightSelf::getValue);
 
     public final Value<Boolean> moreInfo = new BooleanValue("More Info", "Shows the the game mode and the accurate ping right after every username.", this, true);
     public final Value<Integer> highPing = new SliderIntegerValue("High Ping", "Sets the high ping value.", this, 500, 50, 1000).visibleConsumer(this.moreInfo::getValue);
