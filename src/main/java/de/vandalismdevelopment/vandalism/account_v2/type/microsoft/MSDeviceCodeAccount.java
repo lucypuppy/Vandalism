@@ -1,6 +1,7 @@
-package de.vandalismdevelopment.vandalism.account_v2.type;
+package de.vandalismdevelopment.vandalism.account_v2.type.microsoft;
 
 import de.vandalismdevelopment.vandalism.account_v2.AbstractAccount;
+import de.vandalismdevelopment.vandalism.account_v2.AccountFactory;
 import de.vandalismdevelopment.vandalism.account_v2.template.AbstractMicrosoftAccount;
 import imgui.ImGui;
 import net.minecraft.util.Util;
@@ -12,7 +13,7 @@ import net.raphimc.minecraftauth.util.MicrosoftConstants;
 import org.apache.http.impl.client.CloseableHttpClient;
 
 public class MSDeviceCodeAccount extends AbstractMicrosoftAccount {
-    private static final AccountFactory factory = new AccountFactory() {
+    private static final AccountFactory FACTORY = new AccountFactory() {
         private final MSDeviceCodeAccount account = new MSDeviceCodeAccount();
 
         private String state = "Click the button below to get a device code.";
@@ -32,8 +33,7 @@ public class MSDeviceCodeAccount extends AbstractMicrosoftAccount {
                         Util.getOperatingSystem().open(url);
                     }));
 
-                    account.setTokenChain(MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.toJson(javaSession).getAsString());
-                    account.logIn();
+                    account.updateSessionAndTokenChain(javaSession);
                 } catch (Throwable e) {
                     account.setStatus("Failed to login: " + e.getMessage());
                 }
@@ -44,11 +44,11 @@ public class MSDeviceCodeAccount extends AbstractMicrosoftAccount {
     };
 
     public MSDeviceCodeAccount() {
-        super("device-code", factory);
+        super("device-code", FACTORY);
     }
 
     public MSDeviceCodeAccount(String tokenChain) {
-        super("device-code", factory, tokenChain);
+        super("device-code", FACTORY, tokenChain);
     }
 
     @Override

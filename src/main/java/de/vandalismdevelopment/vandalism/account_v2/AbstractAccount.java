@@ -6,6 +6,7 @@ import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.UserApiService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilEnvironment;
+import de.florianmichael.rclasses.io.mappings.TimeFormatter;
 import de.florianmichael.rclasses.pattern.functional.IName;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.PlayerSkinRenderer;
@@ -27,6 +28,8 @@ public abstract class AbstractAccount implements IName {
     protected Session session;
     protected String status;
     protected PlayerSkinRenderer playerSkin;
+
+    private String lastLogin;
 
     public AbstractAccount(String name) {
         this.name = name;
@@ -50,12 +53,18 @@ public abstract class AbstractAccount implements IName {
 
             mainNode.add("session", sessionNode);
         }
+        if (lastLogin != null) {
+            mainNode.addProperty("lastLogin", lastLogin);
+        }
         save0(mainNode);
     }
 
     public void load(final JsonObject mainNode) throws Throwable {
         if (mainNode.has("session")) {
             updateSession(loadSession(mainNode.get("session").getAsJsonObject()));
+        }
+        if (mainNode.has("lastLogin")) {
+            lastLogin = mainNode.get("lastLogin").getAsString();
         }
         load0(mainNode);
     }
@@ -64,6 +73,10 @@ public abstract class AbstractAccount implements IName {
 
     public PlayerSkinRenderer getPlayerSkin() {
         return playerSkin;
+    }
+
+    public String getLastLogin() {
+        return lastLogin;
     }
 
     public String getStatus() {
@@ -91,29 +104,32 @@ public abstract class AbstractAccount implements IName {
     public void logIn() throws Throwable {
         final MinecraftClient mc = MinecraftClient.getInstance();
         logIn0();
+        lastLogin = TimeFormatter.currentDateTime();
+
         mc.session = session;
         mc.getSplashTextLoader().session = session;
+        mc.sessionService = new YggdrasilAuthenticationService(mc.getNetworkProxy(), getEnvironment()).createMinecraftSessionService();
 
-        if (session.getAccountType().equals(Session.AccountType.LEGACY)) {
-            Vandalism.getInstance().getLogger().info("Logged in as: " + session.getUsername());
-            return;
-        }
-        UserApiService userApiService;
-        try {
-            userApiService = new YggdrasilAuthenticationService(mc.getNetworkProxy(), getEnvironment()).createUserApiService(session.getAccessToken());
-        } catch (final AuthenticationException e) {
-            userApiService = UserApiService.OFFLINE;
-        }
-        mc.userApiService = userApiService;
-        mc.socialInteractionsManager = new SocialInteractionsManager(mc, userApiService);
-        mc.profileKeys = ProfileKeys.create(userApiService, session, mc.runDirectory.toPath());
-        mc.abuseReportContext = AbuseReportContext.create(mc.abuseReportContext != null ? mc.abuseReportContext.environment : ReporterEnvironment.ofIntegratedServer(), userApiService);
-        mc.realmsPeriodicCheckers = new RealmsPeriodicCheckers(RealmsClient.createRealmsClient(mc));
-
-        if (userApiService == UserApiService.OFFLINE) {
-            setStatus("Failed to update UserApiService");
-        } else {
+        if (!session.getAccountType().equals(Session.AccountType.MSA)) {
             setStatus("Updated session and logged in");
+        } else {
+            UserApiService userApiService;
+            try {
+                userApiService = new YggdrasilAuthenticationService(mc.getNetworkProxy(), getEnvironment()).createUserApiService(session.getAccessToken());
+            } catch (final AuthenticationException e) {
+                userApiService = UserApiService.OFFLINE;
+            }
+            mc.userApiService = userApiService;
+            mc.socialInteractionsManager = new SocialInteractionsManager(mc, userApiService);
+            mc.profileKeys = ProfileKeys.create(userApiService, session, mc.runDirectory.toPath());
+            mc.abuseReportContext = AbuseReportContext.create(mc.abuseReportContext != null ? mc.abuseReportContext.environment : ReporterEnvironment.ofIntegratedServer(), userApiService);
+            mc.realmsPeriodicCheckers = new RealmsPeriodicCheckers(RealmsClient.createRealmsClient(mc));
+
+            if (userApiService == UserApiService.OFFLINE) {
+                setStatus("Failed to update UserApiService");
+            } else {
+                setStatus("Updated session and logged in");
+            }
         }
     }
 
@@ -139,12 +155,4 @@ public abstract class AbstractAccount implements IName {
         return new Session(username, uuid == null ? null : UUID.fromString(uuid), accessToken, xuid, clientId, Session.AccountType.byName(accountType));
     }
 
-    public interface AccountFactory {
-        
-        void displayFactory();
-
-        AbstractAccount make() throws Throwable;
-
-    }
-    
 }

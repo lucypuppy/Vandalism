@@ -45,7 +45,7 @@ public class ImGuiRenderer implements MinecraftWrapper {
         this.imGuiImplGlfw.init(handle, true);
         this.imGuiImplGl3.init();
 
-        RStream.of(ImString.class).fields().by("DEFAULT_LENGTH").set(Short.MAX_VALUE);
+//        RStream.of(ImString.class).fields().by("DEFAULT_LENGTH").set(Short.MAX_VALUE);
     }
 
     private void setStyle() {

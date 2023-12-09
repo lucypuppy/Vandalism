@@ -8,7 +8,6 @@ import imgui.ImGui;
 import imgui.flag.ImGuiMouseButton;
 import imgui.flag.ImGuiWindowFlags;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.util.Util;
 
 public class AccountsImWindow extends ImGuiMenu {
     private static final float ACCOUNT_ENTRY_CONTENT_WIDTH = 64F;
@@ -20,26 +19,20 @@ public class AccountsImWindow extends ImGuiMenu {
 
     protected void renderMenuBar(final AccountManager accountManager) {
         if (ImGui.beginMenuBar()) {
-            if (ImGui.beginMenu("File")) {
-                ImGui.button("Import Accounts", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing());
-                ImGui.button("Export Accounts", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing());
-                ImGui.button("Cleanup", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing()); // Valid checker
-                ImGui.endMenu();
-            }
             if (ImGui.beginMenu("Add Account")) {
-                for (AbstractAccount type : AccountManager.ACCOUNT_TYPES) {
-                    if (ImGui.beginMenu(type.getName())) {
-                        type.factory().displayFactory();
+                AccountManager.ACCOUNT_TYPES.forEach((account, factory) -> {
+                    if (ImGui.beginMenu(account.getName())) {
+                        factory.displayFactory();
                         if (ImGui.button("Add", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                             try {
-                                accountManager.add(type.factory().make());
-                            } catch (Throwable e) {
+                                accountManager.add(factory.make());
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
                         ImGui.endMenu();
                     }
-                }
+                });
                 ImGui.endMenu();
             }
             if (ImGui.beginMenu("Current Account")) {
@@ -50,8 +43,24 @@ public class AccountsImWindow extends ImGuiMenu {
                     ImGui.text("Account UUID: " + currentAccount.getSession().getUuidOrNull());
                 }
                 if (ImGui.button("Copy", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                    final var name = currentAccount.getDisplayName();
+                    final var uuid = currentAccount.getSession().getUuidOrNull().toString();
+                    final var accessToken = currentAccount.getSession().getAccessToken();
+                    final var xuid = currentAccount.getSession().getXuid().orElse("");
+                    final var clientId = currentAccount.getSession().getClientId().orElse("");
+
+                    mc().keyboard.setClipboard("Name: " + name + "\n" +
+                            "UUID: " + uuid + "\n" +
+                            "Access Token: " + accessToken + "\n" +
+                            "XUID: " + xuid + "\n" +
+                            "Client ID: " + clientId + "\n");
                 }
                 if (ImGui.button("Logout", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                    try {
+                        accountManager.getFirstAccount().logIn();
+                    } catch (Throwable e) {
+                        e.printStackTrace();
+                    }
                 }
                 ImGui.endMenu();
             }
@@ -63,11 +72,13 @@ public class AccountsImWindow extends ImGuiMenu {
 
     protected void renderAccountPopup() {
         if (ImGui.beginPopupContextItem("account-popup")) {
-            ImGui.setNextItemWidth(400F);
+            ImGui.setNextItemWidth(400F); // Just some magic value to make the popup look good
             if (ImGui.button("Delete account", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                ImGui.closeCurrentPopup();
                 Vandalism.getInstance().getAccountManager().remove(hoveredAccount);
                 hoveredAccount = null;
-                ImGui.closeCurrentPopup();
+                ImGui.endPopup(); // We force cancel all rendering actions by pushing the endPopup call here
+                return;
             }
 
             if (ImGui.button("Copy Name", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
@@ -80,7 +91,9 @@ public class AccountsImWindow extends ImGuiMenu {
                 mc().keyboard.setClipboard(hoveredAccount.getSession().getAccessToken());
             }
             ImGui.text("Account type: " + hoveredAccount.getName());
-            ImGui.text("Creation date: <date>");
+            if (hoveredAccount.getLastLogin() != null) {
+                ImGui.text("Last login: " + hoveredAccount.getLastLogin());
+            }
             if (hoveredAccount.getSession().getUuidOrNull() != null) {
                 ImGui.text("Account UUID: " + hoveredAccount.getSession().getUuidOrNull());
             }
@@ -96,18 +109,18 @@ public class AccountsImWindow extends ImGuiMenu {
         renderMenuBar(accountManager);
 
         for (AbstractAccount account : accountManager.getList()) {
-            if (ImGui.imageButton(account.getPlayerSkin().getGlId(), ACCOUNT_ENTRY_CONTENT_WIDTH, ACCOUNT_ENTRY_CONTENT_HEIGHT)) {
+            if (account.getPlayerSkin() != null) {
+                ImGui.image(account.getPlayerSkin().getGlId(), ACCOUNT_ENTRY_CONTENT_WIDTH, ACCOUNT_ENTRY_CONTENT_HEIGHT);
+                ImGui.sameLine();
             }
-            ImGui.sameLine();
 
             if (ImGui.button(account.getDisplayName() + " (" + (account.getStatus() == null ? "IDLE" : account.getStatus()) + ")", ImGui.getColumnWidth(), ACCOUNT_ENTRY_CONTENT_HEIGHT + 10)) {
-                if (ImGui.isItemClicked(ImGuiMouseButton.Left)) {
-                    try {
-                        accountManager.logIn(account);
-                    } catch (Throwable throwable) {
-                        account.setStatus("Error: " + throwable.getMessage());
-                        throwable.printStackTrace();
-                    }
+                try {
+                    accountManager.logIn(account);
+                    account.setStatus("Logged in");
+                } catch (Throwable throwable) {
+                    account.setStatus("Error: " + throwable.getMessage());
+                    throwable.printStackTrace();
                 }
             }
             if (ImGui.isItemHovered() && ImGui.isItemClicked(ImGuiMouseButton.Right)) {
@@ -115,15 +128,6 @@ public class AccountsImWindow extends ImGuiMenu {
                 ImGui.openPopup("account-popup");
             }
         }
-        final long round = Util.getMeasuringTimeMs() / 300L % 4;
-        if (round == 0) {
-            ImGui.text("Loading");
-        } else if (round == 1) {
-            ImGui.text("Loading.");
-        } else {
-            ImGui.text("Loading..");
-        }
-
         renderAccountPopup();
         ImGui.end();
     }
