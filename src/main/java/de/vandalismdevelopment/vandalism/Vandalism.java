@@ -98,7 +98,7 @@ public class Vandalism {
         this.logger.info("=".repeat(ASCII_ART[0].length() + 15));
     }
 
-    public void start(final Window window, final File runDirectory) {
+    public void startPre(final Window window, final File runDirectory) {
         this.logger.info("");
         this.printAsciiArtTrimLine();
         for (final String line : ASCII_ART) this.logger.info(line);
@@ -120,11 +120,14 @@ public class Vandalism {
         this.serverListManager.loadConfig();
         this.accountManager = new AccountManager();
         this.accountManager.init();
+        window.setTitle(this.windowTitle);
+    }
+
+    public void startPost() {
         this.customHUDRenderer = new CustomHUDRenderer();
         this.configManager.load();
         this.logger.info("Done!");
         this.logger.info("");
-        window.setTitle(this.windowTitle);
     }
 
     public void stop() {

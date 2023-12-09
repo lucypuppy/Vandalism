@@ -3,6 +3,7 @@ package de.vandalismdevelopment.vandalism.gui.ingame;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.event.ScreenListener;
+import de.vandalismdevelopment.vandalism.gui.ingame.hudelements.DebugElement;
 import de.vandalismdevelopment.vandalism.gui.ingame.hudelements.InfoHUDElement;
 import de.vandalismdevelopment.vandalism.gui.ingame.hudelements.ModuleListHUDElement;
 import de.vandalismdevelopment.vandalism.gui.ingame.hudelements.WatermarkHUDElement;
@@ -25,7 +26,8 @@ public class CustomHUDRenderer implements RenderListener, ScreenListener, Minecr
         this.hudElements.addAll(Arrays.asList(
                 new WatermarkHUDElement(),
                 this.moduleListHUDElement = new ModuleListHUDElement(),
-                new InfoHUDElement()
+                new InfoHUDElement(),
+                new DebugElement()
         ));
     }
 
@@ -40,8 +42,8 @@ public class CustomHUDRenderer implements RenderListener, ScreenListener, Minecr
     @Override
     public void onResizeScreen(final ScreenEvent event) {
         for (final HUDElement hudElement : this.hudElements) {
-            if (!hudElement.isEnabled()) continue;
             hudElement.calculateAlignment();
+            hudElement.calculatePosition();
         }
     }
 

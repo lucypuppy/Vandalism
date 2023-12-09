@@ -15,6 +15,7 @@ public class MovementUtil extends MinecraftUtil {
     public static double getDirection() {
         return getDirection(0);
     }
+
     public static double getDirection(final float directionOffset) {
         if (player() == null) return 0;
         final float offset = (180.0F + directionOffset);

@@ -10,7 +10,6 @@ import de.vandalismdevelopment.vandalism.value.IValue;
 import de.vandalismdevelopment.vandalism.value.Value;
 import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.Window;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -21,12 +20,11 @@ public abstract class HUDElement implements IName, IValue, MinecraftWrapper {
     private final String name;
     private final List<Value<?>> values;
     private final BooleanValue enabled;
-    public double absoluteX;
-    public double absoluteY;
     public boolean shouldSave;
     private boolean dragged;
     private final int defaultX, defaultY;
-    protected int x, y, width, height;
+    protected int width, height;
+    public int x, y;
     protected HUDElementAlignment alignmentX, alignmentY;
 
     protected HUDElement(final String name, final int defaultX, final int defaultY) {
@@ -38,46 +36,50 @@ public abstract class HUDElement implements IName, IValue, MinecraftWrapper {
                 this,
                 true
         );
+
         this.defaultX = defaultX;
         this.defaultY = defaultY;
-        this.updateScreenPosition(this.defaultX, this.defaultY);
+        this.x = defaultX;
+        this.y = defaultY;
+        calculateAlignment();
     }
 
     public void reset() {
-        this.updateScreenPosition(this.defaultX, this.defaultY);
+        this.x = this.defaultX;
+        this.y = this.defaultY;
+        calculateAlignment();
+
         for (final Value<?> value : this.getValues()) {
             value.resetValue();
         }
     }
 
-    public void updateScreenPosition(final double x, final double y) {
-        final Window window = this.window();
-        final double scaledWindowWidth = window.getScaledWidth();
-        final double scaledWindowHeight = window.getScaledHeight();
-        final double remainingWidth = scaledWindowWidth - this.width;
-        final double remainingHeight = scaledWindowHeight - this.height;
-        this.absoluteX = x / remainingWidth;
-        this.absoluteY = y / remainingHeight;
-        this.x = (int) (this.absoluteX * remainingWidth);
-        this.y = (int) (this.absoluteY * remainingHeight);
-        this.calculateAlignment();
-    }
-
     public void calculateAlignment() {
-        if (this.absoluteX > 0.66) {
+        final int scaledWidth = this.window().getScaledWidth();
+        final int scaledHeight = this.window().getScaledHeight();
+
+        if (scaledWidth * 0.66 < x + width / 2.0) {
             this.alignmentX = HUDElementAlignment.RIGHT;
-        } else if (this.absoluteX > 0.33) {
+        } else if (scaledWidth * 0.33 < x + width / 2.0) {
             this.alignmentX = HUDElementAlignment.MIDDLE;
         } else {
             this.alignmentX = HUDElementAlignment.LEFT;
         }
-        if (this.absoluteY > 0.66) {
+
+        if (scaledHeight * 0.66 < y + height / 2.0) {
             this.alignmentY = HUDElementAlignment.BOTTOM;
-        } else if (this.absoluteY > 0.33) {
+        } else if (scaledHeight * 0.33 < y + height / 2.0) {
             this.alignmentY = HUDElementAlignment.MIDDLE;
         } else {
             this.alignmentY = HUDElementAlignment.TOP;
         }
+    }
+
+    public void calculatePosition() {
+        final int scaledWidth = this.window().getScaledWidth();
+        final int scaledHeight = this.window().getScaledHeight();
+
+        //Todo fix rescale
     }
 
     protected abstract void onRender(final DrawContext context, final float delta);
@@ -86,8 +88,8 @@ public abstract class HUDElement implements IName, IValue, MinecraftWrapper {
             final boolean mouseDown,
             final int mouseX,
             final int mouseY,
-            final double mouseDeltaX,
-            final double mouseDeltaY,
+            final int mouseDeltaX,
+            final int mouseDeltaY,
             final double scaledWidth,
             final double scaledHeight,
             final DrawContext context,
@@ -96,6 +98,7 @@ public abstract class HUDElement implements IName, IValue, MinecraftWrapper {
         if (!this.isEnabled()) {
             RenderSystem.setShaderColor(0.5F, 0.5F, 0.5F, 0.9F);
         }
+
         final boolean mouseOver = Boundings.isInBounds(
                 mouseX,
                 mouseY,
@@ -104,41 +107,39 @@ public abstract class HUDElement implements IName, IValue, MinecraftWrapper {
                 this.width + 4,
                 this.height + 3
         );
+
         if (mouseDown) {
             if (mouseOver) {
                 this.dragged = true;
             }
+
             if (this.dragged) {
-                final double
-                        remainingWidth = scaledWidth - this.width,
-                        remainingHeight = scaledHeight - this.height,
-                        absoluteX = (this.x + mouseDeltaX) / remainingWidth,
-                        absoluteY = (this.y + mouseDeltaY) / remainingHeight;
-                final int x = (int) (absoluteX * remainingWidth);
-                final int y = (int) (absoluteY * remainingHeight);
+                final int x = this.x + mouseDeltaX,
+                        y = this.y + mouseDeltaY;
                 if (x + this.width < scaledWidth && y + this.height < scaledHeight && x > 0 && y > 0) {
-                    this.absoluteX = absoluteX;
-                    this.absoluteY = absoluteY;
                     this.x = x;
                     this.y = y;
-                    this.calculateAlignment();
+                    calculateAlignment();
                     this.shouldSave = true;
                 }
             }
         } else {
             this.dragged = false;
         }
+
         final int borderPosX = this.x - 2;
         final int borderPosY = this.y - 2;
         final int borderSizeX = this.width + 4;
         final int borderSizeY = this.height + 3;
         final boolean show = mouseOver || this.dragged;
+
         if (show) {
             context.drawHorizontalLine(0, (int) scaledWidth, borderPosY, Color.CYAN.getRGB());
             context.drawHorizontalLine(0, (int) scaledWidth, borderPosY + borderSizeY - 1, Color.CYAN.getRGB());
             context.drawVerticalLine(borderPosX, 0, (int) scaledHeight, Color.CYAN.getRGB());
             context.drawVerticalLine(borderPosX + borderSizeX - 1, 0, (int) scaledHeight, Color.CYAN.getRGB());
         }
+
         context.drawBorder(
                 borderPosX,
                 borderPosY,
@@ -146,6 +147,7 @@ public abstract class HUDElement implements IName, IValue, MinecraftWrapper {
                 borderSizeY,
                 show ? Color.red.getRGB() : Color.WHITE.getRGB()
         );
+
         this.onRender(context, delta);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
     }
