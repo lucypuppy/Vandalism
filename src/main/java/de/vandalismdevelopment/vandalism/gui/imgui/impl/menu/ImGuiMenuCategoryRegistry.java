@@ -1,8 +1,8 @@
 package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.account.AccountManagerImGuiMenu;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.impl.*;
+import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.impl.account.AccountManagerImGuiMenu;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.impl.irc.IrcImGuiMenu;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.impl.nbteditor.NbtEditortImGuiMenu;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.namehistory.NameHistoryImGuiMenu;
