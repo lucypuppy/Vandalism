@@ -31,7 +31,7 @@ public class ChatUtil extends MinecraftUtil {
 
     }
 
-    private final static MutableText CHAT_PREFIX = Text.empty().setStyle(Style.EMPTY.withFormatting(Formatting.GRAY)).append("(").append(Text.literal(Vandalism.getInstance().getName()).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Color.WHITE.getRGB())))).append(") ");
+    private static final MutableText CHAT_PREFIX = Text.empty().setStyle(Style.EMPTY.withFormatting(Formatting.GRAY)).append("(").append(Text.literal(Vandalism.getInstance().getName()).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Color.WHITE.getRGB())))).append(") ");
 
     public static void infoChatMessage(final String message) {
         infoChatMessage(Text.literal(message));

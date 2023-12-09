@@ -1,6 +1,6 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.fix.imgui;
 
-import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiScreen;
+import de.vandalismdevelopment.vandalism.gui.ImGuiScreen;
 import de.vandalismdevelopment.vandalism.injection.access.IImGuiImplGlfw;
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import imgui.flag.ImGuiMouseCursor;

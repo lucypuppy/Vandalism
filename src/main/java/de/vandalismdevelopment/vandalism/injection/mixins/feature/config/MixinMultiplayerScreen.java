@@ -1,8 +1,8 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.feature.config;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.enhancedserverlist.ServerList;
-import de.vandalismdevelopment.vandalism.enhancedserverlist.gui.ConfigScreen;
+import de.vandalismdevelopment.vandalism.integration.serverlist.ServerList;
+import de.vandalismdevelopment.vandalism.integration.serverlist.gui.ConfigScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;

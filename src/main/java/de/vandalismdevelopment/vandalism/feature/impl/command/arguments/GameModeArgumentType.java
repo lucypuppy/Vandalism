@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class GameModeArgumentType implements ArgumentType<GameMode> {
 
-    private final static DynamicCommandExceptionType NOT_EXISTING = new DynamicCommandExceptionType(
+    private static final DynamicCommandExceptionType NOT_EXISTING = new DynamicCommandExceptionType(
             name -> Text.literal("No game mode with the name or id " + name + " has been found!")
     );
 

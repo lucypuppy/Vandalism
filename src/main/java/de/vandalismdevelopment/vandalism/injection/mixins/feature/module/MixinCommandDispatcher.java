@@ -23,7 +23,7 @@ import java.util.Collections;
 public abstract class MixinCommandDispatcher<S> {
 
     @Unique
-    private final static SimpleCommandExceptionType VANDALISM_STACK_OVERFLOW_EXCEPTION = new SimpleCommandExceptionType(
+    private static final SimpleCommandExceptionType VANDALISM_STACK_OVERFLOW_EXCEPTION = new SimpleCommandExceptionType(
             new LiteralMessage("Stack overflow error while parsing command")
     );
 

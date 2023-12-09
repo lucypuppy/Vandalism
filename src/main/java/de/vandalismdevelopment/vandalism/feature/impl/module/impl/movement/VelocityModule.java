@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.event.PacketListener;
+import de.vandalismdevelopment.vandalism.base.event.PacketListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;

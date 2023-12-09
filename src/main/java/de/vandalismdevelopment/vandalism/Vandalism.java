@@ -1,20 +1,19 @@
 package de.vandalismdevelopment.vandalism;
 
-import de.vandalismdevelopment.vandalism.account_v2.AccountManager;
-import de.vandalismdevelopment.vandalism.config.ConfigManager;
-import de.vandalismdevelopment.vandalism.creativetab.CreativeTabRegistry;
-import de.vandalismdevelopment.vandalism.enhancedserverlist.ServerListManager;
+import de.vandalismdevelopment.vandalism.base.FabricBootstrap;
+import de.vandalismdevelopment.vandalism.base.account.AccountManager;
+import de.vandalismdevelopment.vandalism.base.clientsettings.ClientSettings;
+import de.vandalismdevelopment.vandalism.base.config.ConfigManager;
+import de.vandalismdevelopment.vandalism.gui.ImGuiHandler;
+import de.vandalismdevelopment.vandalism.integration.serverlist.ServerListManager;
+import de.vandalismdevelopment.vandalism.base.event.game.MinecraftBoostrapListener;
+import de.vandalismdevelopment.vandalism.base.event.game.ShutdownProcessListener;
 import de.vandalismdevelopment.vandalism.feature.impl.command.CommandRegistry;
 import de.vandalismdevelopment.vandalism.feature.impl.module.ModuleRegistry;
 import de.vandalismdevelopment.vandalism.feature.impl.script.ScriptRegistry;
-import de.vandalismdevelopment.vandalism.gui.imgui.ImGuiHandler;
-import de.vandalismdevelopment.vandalism.gui.ingame.CustomHUDRenderer;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.rotation.RotationListener;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.metadata.ModMetadata;
-import net.fabricmc.loader.api.metadata.Person;
-import net.minecraft.client.util.Window;
-import net.minecraft.util.Identifier;
+import de.vandalismdevelopment.vandalism.integration.hud.HUDManager;
+import de.vandalismdevelopment.vandalism.integration.rotation.RotationListener;
+import net.minecraft.client.MinecraftClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,144 +51,141 @@ import java.io.File;
  *  - Add ImLoader, ImGuiExtensions and ImGuiFontHack
  *  - Add ImGui error handling redirectors (see ImGuiPlatformIO)
  */
-public class Vandalism {
+public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 
-    private final static Vandalism INSTANCE = new Vandalism();
+    private static final Vandalism instance = new Vandalism();
+    private final Logger logger = LoggerFactory.getLogger(FabricBootstrap.MOD_NAME);
+    private File runDirectory;
 
-    private final String id, name, authors, version, windowTitle;
-    private final Identifier logo;
-    private final Logger logger;
-
-    private File dir;
-    private ImGuiHandler imGuiHandler;
-    private ScriptRegistry scriptRegistry;
-    private ModuleRegistry moduleRegistry;
-    private CommandRegistry commandRegistry;
+    // Base handlers
     private ConfigManager configManager;
-    private RotationListener rotationListener;
-    private CustomHUDRenderer customHUDRenderer;
-    private ServerListManager serverListManager;
+    private ImGuiHandler imGuiHandler;
+    private ClientSettings clientSettings;
     private AccountManager accountManager;
 
-    public Vandalism() {
-        final ModMetadata data = FabricLoader.getInstance().getModContainer(this.id = "vandalism").get().getMetadata();
-        this.name = data.getName();
-        this.authors = String.join(", ", data.getAuthors().stream().map(Person::getName).toArray(String[]::new));
-        this.version = data.getVersion().getFriendlyString();
-        this.windowTitle = String.format("%s v%s made by %s", this.name, this.version, this.authors);
-        this.logo = new Identifier(this.id, "textures/logo.png");
-        this.logger = LoggerFactory.getLogger(this.name);
+    // Features
+    private ModuleRegistry moduleRegistry;
+    private CommandRegistry commandRegistry;
+    private ScriptRegistry scriptRegistry;
+
+    // Integration
+    private RotationListener rotationListener;
+    private ServerListManager serverListManager;
+    private HUDManager hudManager;
+
+    public void printStartup() {
+        final String[] ASCII_ART = {
+                " ██▒   █▓ ▄▄▄       ███▄    █ ▓█████▄  ▄▄▄       ██▓     ██▓  ██████  ███▄ ▄███▓",
+                "▓██░   █▒▒████▄     ██ ▀█   █ ▒██▀ ██▌▒████▄    ▓██▒    ▓██▒▒██    ▒ ▓██▒▀█▀ ██▒",
+                " ▓██  █▒░▒██  ▀█▄  ▓██  ▀█ ██▒░██   █▌▒██  ▀█▄  ▒██░    ▒██▒░ ▓██▄   ▓██    ▓██░",
+                "  ▒██ █░░░██▄▄▄▄██ ▓██▒  ▐▌██▒░▓█▄   ▌░██▄▄▄▄██ ▒██░    ░██░  ▒   ██▒▒██    ▒██ ",
+                "   ▒▀█░   ▓█   ▓██▒▒██░   ▓██░░▒████▓  ▓█   ▓██▒░██████▒░██░▒██████▒▒▒██▒   ░██▒",
+                "   ░ ▐░   ▒▒   ▓▒█░░ ▒░   ▒ ▒  ▒▒▓  ▒  ▒▒   ▓▒█░░ ▒░▓  ░░▓  ▒ ▒▓▒ ▒ ░░ ▒░   ░  ░",
+                "   ░ ░░    ▒   ▒▒ ░░ ░░   ░ ▒░ ░ ▒  ▒   ▒   ▒▒ ░░ ░ ▒  ░ ▒ ░░ ░▒  ░ ░░  ░      ░",
+                "     ░░    ░   ▒      ░   ░ ░  ░ ░  ░   ░   ▒     ░ ░    ▒ ░░  ░  ░  ░      ░   ",
+                "      ░        ░  ░         ░    ░          ░  ░    ░  ░ ░        ░         ░   ",
+                "     ░                         ░                                                "
+        };
+        final String spacer = "=".repeat(ASCII_ART[0].length() + 15);
+        this.logger.info("");
+        this.logger.info(spacer);
+
+        for (final String line : ASCII_ART) {
+            this.logger.info(line);
+        }
+        this.logger.info(FabricBootstrap.WINDOW_TITLE.replaceFirst(FabricBootstrap.MOD_NAME, " ".repeat(15)));
+
+        this.logger.info(spacer);
+        this.logger.info("");
     }
 
-    private final static String[] ASCII_ART = {
-            " ██▒   █▓ ▄▄▄       ███▄    █ ▓█████▄  ▄▄▄       ██▓     ██▓  ██████  ███▄ ▄███▓",
-            "▓██░   █▒▒████▄     ██ ▀█   █ ▒██▀ ██▌▒████▄    ▓██▒    ▓██▒▒██    ▒ ▓██▒▀█▀ ██▒",
-            " ▓██  █▒░▒██  ▀█▄  ▓██  ▀█ ██▒░██   █▌▒██  ▀█▄  ▒██░    ▒██▒░ ▓██▄   ▓██    ▓██░",
-            "  ▒██ █░░░██▄▄▄▄██ ▓██▒  ▐▌██▒░▓█▄   ▌░██▄▄▄▄██ ▒██░    ░██░  ▒   ██▒▒██    ▒██ ",
-            "   ▒▀█░   ▓█   ▓██▒▒██░   ▓██░░▒████▓  ▓█   ▓██▒░██████▒░██░▒██████▒▒▒██▒   ░██▒",
-            "   ░ ▐░   ▒▒   ▓▒█░░ ▒░   ▒ ▒  ▒▒▓  ▒  ▒▒   ▓▒█░░ ▒░▓  ░░▓  ▒ ▒▓▒ ▒ ░░ ▒░   ░  ░",
-            "   ░ ░░    ▒   ▒▒ ░░ ░░   ░ ▒░ ░ ▒  ▒   ▒   ▒▒ ░░ ░ ▒  ░ ▒ ░░ ░▒  ░ ░░  ░      ░",
-            "     ░░    ░   ▒      ░   ░ ░  ░ ░  ░   ░   ▒     ░ ░    ▒ ░░  ░  ░  ░      ░   ",
-            "      ░        ░  ░         ░    ░          ░  ░    ░  ░ ░        ░         ░   ",
-            "     ░                         ░                                                "
-    };
+    @Override
+    public void onBootstrapGame(MinecraftClient mc) {
+        printStartup();
+        this.logger.info("Salvete amicus, et vale! Quid agis?");
+        mc.getWindow().setTitle(String.format("Starting %s...", FabricBootstrap.WINDOW_TITLE));
 
-    private void printAsciiArtTrimLine() {
-        this.logger.info("=".repeat(ASCII_ART[0].length() + 15));
-    }
+        // Base handlers
+        this.runDirectory = new File(runDirectory, FabricBootstrap.MOD_ID);
+        this.runDirectory.mkdirs();
 
-    public void startPre(final Window window, final File runDirectory) {
-        this.logger.info("");
-        this.printAsciiArtTrimLine();
-        for (final String line : ASCII_ART) this.logger.info(line);
-        this.logger.info(this.windowTitle.replaceFirst(this.name, " ".repeat(15)));
-        this.printAsciiArtTrimLine();
-        this.logger.info("");
-        this.logger.info("Starting...");
-        window.setTitle(String.format("Starting %s...", this.windowTitle));
-        this.dir = new File(runDirectory, this.id);
-        this.dir.mkdirs();
-        CreativeTabRegistry.getInstance().register();
-        this.imGuiHandler = new ImGuiHandler(window.getHandle(), this.dir);
-        this.configManager = new ConfigManager(this.dir);
-        this.scriptRegistry = new ScriptRegistry(this.dir);
-        this.rotationListener = new RotationListener();
+        this.configManager = new ConfigManager();
+        this.imGuiHandler = new ImGuiHandler(mc.getWindow().getHandle(), this.runDirectory);
+        this.clientSettings = new ClientSettings(this.configManager);
+        this.accountManager = new AccountManager(this.configManager);
+        this.accountManager.init();
+        
+        // Features
         this.moduleRegistry = new ModuleRegistry();
         this.commandRegistry = new CommandRegistry();
-        this.serverListManager = new ServerListManager(this.dir);
+        this.scriptRegistry = new ScriptRegistry(this.runDirectory);
+
+        // Integration
+        this.rotationListener = new RotationListener();
+        this.serverListManager = new ServerListManager(this.runDirectory);
         this.serverListManager.loadConfig();
-        this.accountManager = new AccountManager();
-        this.accountManager.init();
-        window.setTitle(this.windowTitle);
+        this.hudManager = new HUDManager();
+
+        // We have to load the config files after all systems have been initialized
+        this.configManager.init();
+        mc.getWindow().setTitle(FabricBootstrap.WINDOW_TITLE);
     }
 
-    public void startPost() {
-        this.customHUDRenderer = new CustomHUDRenderer();
-        this.configManager.load();
-        this.logger.info("Done!");
-        this.logger.info("");
-    }
-
-    public void stop() {
-        this.logger.info("");
-        this.logger.info("Saving...");
+    @Override
+    public void onShutdownProcess() {
         this.configManager.save();
-        this.logger.info("Done!");
-        this.logger.info("");
     }
 
     public static Vandalism getInstance() {
-        return INSTANCE;
+        return instance;
     }
 
-    public String getId() {
-        return this.id;
-    }
-    public String getName() {
-        return this.name;
-    }
-    public String getVersion() {
-        return this.version;
-    }
-    public String getAuthors() {
-        return this.authors;
-    }
-
-    public Identifier getLogo() {
-        return this.logo;
-    }
     public Logger getLogger() {
-        return this.logger;
+        return logger;
     }
-    public File getDir() {
-        return this.dir;
+
+    public File getRunDirectory() {
+        return runDirectory;
     }
+
     public ImGuiHandler getImGuiHandler() {
-        return this.imGuiHandler;
+        return imGuiHandler;
     }
+
     public ScriptRegistry getScriptRegistry() {
-        return this.scriptRegistry;
+        return scriptRegistry;
     }
+
     public ModuleRegistry getModuleRegistry() {
-        return this.moduleRegistry;
+        return moduleRegistry;
     }
+
     public CommandRegistry getCommandRegistry() {
-        return this.commandRegistry;
+        return commandRegistry;
     }
+
     public ConfigManager getConfigManager() {
-        return this.configManager;
+        return configManager;
     }
+
     public RotationListener getRotationListener() {
-        return this.rotationListener;
+        return rotationListener;
     }
-    public CustomHUDRenderer getCustomHUDRenderer() {
-        return this.customHUDRenderer;
+
+    public HUDManager getCustomHUDRenderer() {
+        return hudManager;
     }
+
     public ServerListManager getServerListManager() {
-        return this.serverListManager;
+        return serverListManager;
     }
 
     public AccountManager getAccountManager() {
         return accountManager;
     }
+
+    public ClientSettings getClientSettings() {
+        return clientSettings;
+    }
+
 }

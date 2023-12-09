@@ -28,7 +28,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class CommandRegistry implements MinecraftWrapper {
 
-    public final static String COMMAND_SECRET = UUID.randomUUID().toString();
+    public static final String COMMAND_SECRET = UUID.randomUUID().toString();
 
     private final CommandDispatcher<CommandSource> commandDispatcher;
     private final CommandSource commandSource;

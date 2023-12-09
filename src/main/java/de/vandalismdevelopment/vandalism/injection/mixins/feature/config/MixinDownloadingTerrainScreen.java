@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinDownloadingTerrainScreen extends Screen {
 
     @Unique
-    private final static String VANDALISM_CANCEL_MESSAGE = "Press [ESC] to cancel.";
+    private static final String VANDALISM_CANCEL_MESSAGE = "Press [ESC] to cancel.";
 
     @Shadow
     public abstract void close();

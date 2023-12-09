@@ -8,6 +8,7 @@ import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
 import de.vandalismdevelopment.vandalism.feature.impl.command.arguments.NbtCompoundArgumentType;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.impl.nbteditor.NbtEditortImGuiMenu;
+import de.vandalismdevelopment.vandalism.gui.impl.menu.impl.nbteditor.NbtEditortImGuiMenu;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.ItemStackUtil;
 import net.minecraft.command.CommandSource;
@@ -25,7 +26,7 @@ import java.util.UUID;
 
 public class NbtCommand extends Command {
 
-    public final static String DISPLAY_TITLE_NBT_KEY = UUID.randomUUID().toString();
+    public static final String DISPLAY_TITLE_NBT_KEY = UUID.randomUUID().toString();
 
     public NbtCommand() {
         super("Nbt", "Allows you to view and modify the nbt data from an item stack.", FeatureCategory.MISC, false, "nbt");
@@ -42,7 +43,7 @@ public class NbtCommand extends Command {
                     source.copyFrom(tag);
                     ItemStackUtil.giveItemStack(stack);
                 } else {
-                    ChatUtil.errorChatMessage("Some of the NBT data could not be found, try using: " + Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.commandPrefix.getValue() + "nbt set {nbt}");
+                    ChatUtil.errorChatMessage("Some of the NBT data could not be found, try using: " + Vandalism.getInstance().getClientSettings().getChatSettings().commandPrefix.getValue() + "nbt set {nbt}");
                 }
             }
             return SINGLE_SUCCESS;
@@ -71,7 +72,7 @@ public class NbtCommand extends Command {
             if (this.validBasic(stack)) {
                 final NbtCompound tag = stack.getNbt();
                 final MutableText copyButton = Text.literal("NBT");
-                copyButton.setStyle(copyButton.getStyle().withFormatting(Formatting.UNDERLINE).withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.commandPrefix.getValue() + "nbt copy")).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Copy the NBT data to your clipboard."))));
+                copyButton.setStyle(copyButton.getStyle().withFormatting(Formatting.UNDERLINE).withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, Vandalism.getInstance().getClientSettings().getChatSettings().commandPrefix.getValue() + "nbt copy")).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Copy the NBT data to your clipboard."))));
                 final MutableText text = Text.literal("");
                 text.append(copyButton);
                 if (tag == null) text.append("{}");

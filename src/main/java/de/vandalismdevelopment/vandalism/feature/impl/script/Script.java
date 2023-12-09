@@ -1,14 +1,12 @@
 package de.vandalismdevelopment.vandalism.feature.impl.script;
 
-import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.config.Config;
 import de.vandalismdevelopment.vandalism.feature.Feature;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.FeatureType;
 import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
-import de.vandalismdevelopment.vandalism.value.IValue;
-import de.vandalismdevelopment.vandalism.value.Value;
-import de.vandalismdevelopment.vandalism.value.impl.KeyInputValue;
+import de.vandalismdevelopment.vandalism.base.value.IValue;
+import de.vandalismdevelopment.vandalism.base.value.Value;
+import de.vandalismdevelopment.vandalism.base.value.impl.KeyInputValue;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -62,11 +60,6 @@ public class Script extends Feature implements IValue {
     @Override
     public List<Value<?>> getValues() {
         return this.values;
-    }
-
-    @Override
-    public Config getConfig() {
-        return Vandalism.getInstance().getConfigManager().getScriptsConfig();
     }
 
     @Override

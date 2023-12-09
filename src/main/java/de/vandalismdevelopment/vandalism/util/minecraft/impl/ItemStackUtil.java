@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.util.minecraft.impl;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.creativetab.CreativeTabRegistry;
+import de.vandalismdevelopment.vandalism.integration.creativetab.CreativeTabManager;
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftUtil;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
@@ -22,8 +22,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class ItemStackUtil extends MinecraftUtil {
 
-    private final static SimpleCommandExceptionType NOT_IN_GAME = new SimpleCommandExceptionType(Text.literal("You need to be in-game to get items!"));
-    private final static SimpleCommandExceptionType NOT_IN_CREATIVE_MODE = new SimpleCommandExceptionType(Text.literal("You must be in creative mode to use this."));
+    private static final SimpleCommandExceptionType NOT_IN_GAME = new SimpleCommandExceptionType(Text.literal("You need to be in-game to get items!"));
+    private static final SimpleCommandExceptionType NOT_IN_CREATIVE_MODE = new SimpleCommandExceptionType(Text.literal("You must be in creative mode to use this."));
 
     public static ItemStack appendEnchantmentToItemStack(final ItemStack stack, final Enchantment enchantment, final int level) {
         return appendEnchantmentToItemStack(stack, EnchantmentHelper.getEnchantmentId(enchantment), level);
@@ -89,14 +89,14 @@ public class ItemStackUtil extends MinecraftUtil {
         return stack;
     }
 
-    public static ItemStack appendClientSideInfoToItemStack(final ItemStack stack, final Text name, @Nullable final Text... description) {
-        return appendClientSideInfoToItemStack(stack, name, false, description);
+    public static ItemStack withClientSide(final ItemStack stack, final Text name, @Nullable final Text... description) {
+        return withClientSide(stack, name, false, description);
     }
 
-    public static ItemStack appendClientSideInfoToItemStack(final ItemStack stack, final Text name, final boolean glint, @Nullable final Text... description) {
+    public static ItemStack withClientSide(final ItemStack stack, final Text name, final boolean glint, @Nullable final Text... description) {
         final NbtCompound base = stack.getOrCreateNbt();
-        base.put(CreativeTabRegistry.CLIENTSIDE_NAME, new NbtCompound());
-        if (glint) base.put(CreativeTabRegistry.CLIENTSIDE_GLINT, new NbtCompound());
+        base.put(CreativeTabManager.CLIENTSIDE_NAME, new NbtCompound());
+        if (glint) base.put(CreativeTabManager.CLIENTSIDE_GLINT, new NbtCompound());
         stack.setCustomName(name);
         if (description != null) {
             final NbtList lore = new NbtList();

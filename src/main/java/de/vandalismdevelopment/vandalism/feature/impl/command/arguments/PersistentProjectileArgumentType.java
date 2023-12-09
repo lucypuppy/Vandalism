@@ -18,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class PersistentProjectileArgumentType implements ArgumentType<PersistentProjectileArgumentType.PersistentProjectile> {
 
-    private final static DynamicCommandExceptionType NOT_EXISTING = new DynamicCommandExceptionType(
+    private static final DynamicCommandExceptionType NOT_EXISTING = new DynamicCommandExceptionType(
             name -> Text.literal("No persistent projectile with the name " + name + " has been found!")
     );
 

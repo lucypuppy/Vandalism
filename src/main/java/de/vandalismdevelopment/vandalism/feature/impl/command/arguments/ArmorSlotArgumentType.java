@@ -18,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class ArmorSlotArgumentType implements ArgumentType<ArmorSlotArgumentType.ArmorSlot> {
 
-    private final static DynamicCommandExceptionType NOT_EXISTING = new DynamicCommandExceptionType(
+    private static final DynamicCommandExceptionType NOT_EXISTING = new DynamicCommandExceptionType(
             name -> Text.literal("No armor slot with the name " + name + " has been found!")
     );
 

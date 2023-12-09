@@ -1,13 +1,13 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.event.PacketListener;
+import de.vandalismdevelopment.vandalism.base.event.PacketListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement.modes.flight.CreativeModuleMode;
-import de.vandalismdevelopment.vandalism.value.Value;
-import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
-import de.vandalismdevelopment.vandalism.value.impl.list.ModuleModeValue;
+import de.vandalismdevelopment.vandalism.base.value.Value;
+import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.list.ModuleModeValue;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
 public class FlightModule extends Module implements PacketListener {

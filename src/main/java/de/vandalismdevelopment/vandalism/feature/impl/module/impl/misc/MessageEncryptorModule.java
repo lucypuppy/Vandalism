@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module.impl.misc;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.event.ChatListener;
+import de.vandalismdevelopment.vandalism.base.event.ChatListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import net.minecraft.text.MutableText;
@@ -12,13 +12,13 @@ import net.minecraft.util.Formatting;
 
 public class MessageEncryptorModule extends Module implements ChatListener {
 
-    public final static MutableText ENCRYPTION_PREFIX = Text.empty()
+    public static final MutableText ENCRYPTION_PREFIX = Text.empty()
             .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
             .append(" [")
             .append(Text.literal("E").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xff2626))))
             .append("]");
 
-    private final static char OFFSET_CHAR = '\u3400', CHECK_CHAR = '\u3800', CHECK_CHAR_2 = '\u0025';
+    private static final char OFFSET_CHAR = '\u3400', CHECK_CHAR = '\u3800', CHECK_CHAR_2 = '\u0025';
 
     public MessageEncryptorModule() {
         super(

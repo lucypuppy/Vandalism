@@ -16,9 +16,9 @@ import java.awt.*;
 
 public class ContainerTooltipComponent implements TooltipComponent, ITooltipData, MinecraftWrapper {
 
-    private final static Identifier TEXTURE_CONTAINER_BACKGROUND = new Identifier(Vandalism.getInstance().getId(), "textures/hud/container.png");
+    private static final Identifier TEXTURE_CONTAINER_BACKGROUND = new Identifier(Vandalism.getInstance().getId(), "textures/hud/container.png");
 
-    private final static int WIDTH = 176, HEIGHT = 67;
+    private static final int WIDTH = 176, HEIGHT = 67;
 
     private final DefaultedList<ItemStack> items;
     private final Color color;

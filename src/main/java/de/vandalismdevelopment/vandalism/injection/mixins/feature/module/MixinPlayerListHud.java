@@ -40,7 +40,7 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
     }
 
     @Unique
-    private final static float VANDALISM_SCALE = 0.5f;
+    private static final float VANDALISM_SCALE = 0.5f;
 
     @ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Ljava/lang/Math;min(II)I"), index = 0)
     private int vandalism$betterTabListMoreInfoScale(final int width) {

@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.event;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.event.MovementListener;
+import de.vandalismdevelopment.vandalism.base.event.MovementListener;
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;

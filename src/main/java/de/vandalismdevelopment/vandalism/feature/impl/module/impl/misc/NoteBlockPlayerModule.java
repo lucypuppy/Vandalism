@@ -3,16 +3,15 @@ package de.vandalismdevelopment.vandalism.feature.impl.module.impl.misc;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.event.RenderListener;
-import de.vandalismdevelopment.vandalism.event.TickListener;
-import de.vandalismdevelopment.vandalism.event.WorldListener;
+import de.vandalismdevelopment.vandalism.base.event.RenderListener;
+import de.vandalismdevelopment.vandalism.base.event.TickListener;
+import de.vandalismdevelopment.vandalism.base.event.WorldListener;
+import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.gui.imgui.RenderInterface;
 import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
-import de.vandalismdevelopment.vandalism.value.Value;
-import de.vandalismdevelopment.vandalism.value.impl.EnumValue;
-import de.vandalismdevelopment.vandalism.value.impl.RenderingValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.EnumValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.RenderingValue;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
@@ -164,7 +163,7 @@ public class NoteBlockPlayerModule extends Module implements TickListener, Rende
     private SongPlayer songPlayer;
     private boolean play;
 
-    private final static File NOTE_BLOCK_SONGS_DIR = new File(Vandalism.getInstance().getDir(), "note-block-songs");
+    private static final File NOTE_BLOCK_SONGS_DIR = new File(Vandalism.getInstance().getRunDirectory(), "note-block-songs");
     private final ImString searchText = new ImString();
     private File searchFile;
 
@@ -243,7 +242,7 @@ public class NoteBlockPlayerModule extends Module implements TickListener, Rende
         }
     }
 
-    private final Value<RenderInterface> songSelector = new RenderingValue("Song Selector", "Select a song to play.", this, io -> {
+    private final Value<Runnable> songSelector = new RenderingValue("Song Selector", "Select a song to play.", this, () -> {
         if (NOTE_BLOCK_SONGS_DIR.exists()) {
             if (NOTE_BLOCK_SONGS_DIR.isFile()) {
                 NOTE_BLOCK_SONGS_DIR.delete();
@@ -397,7 +396,7 @@ public class NoteBlockPlayerModule extends Module implements TickListener, Rende
 
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
-        Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
+        Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(() -> {
             if (this.songPlayer != null && this.currentSongFile != null) {
                 int windowFlags = Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags() | ImGuiWindowFlags.AlwaysAutoResize;
                 if (this.currentScreen() == null) {
