@@ -1,6 +1,7 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module.impl.render;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.florianmichael.rclasses.common.ColorUtils;
 import de.vandalismdevelopment.vandalism.event.RenderListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
@@ -39,7 +40,7 @@ public class TrueSightModule extends Module implements RenderListener {
             "Entity Color",
             "The color of invisible entities.",
             this,
-            RenderUtil.withAlpha(Color.WHITE, 100)
+            ColorUtils.withAlpha(Color.WHITE, 100)
     ).visibleConsumer(this.entities::getValue);
 
     public TrueSightModule() {

@@ -10,8 +10,10 @@ import imgui.flag.ImGuiConfigFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
+import imgui.type.ImString;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.lenni0451.reflect.stream.RStream;
 import org.apache.commons.compress.utils.IOUtils;
 import org.lwjgl.glfw.GLFW;
 
@@ -42,6 +44,8 @@ public class ImGuiRenderer implements MinecraftWrapper {
         this.setStyle();
         this.imGuiImplGlfw.init(handle, true);
         this.imGuiImplGl3.init();
+
+        RStream.of(ImString.class).fields().by("DEFAULT_LENGTH").set(Short.MAX_VALUE);
     }
 
     private void setStyle() {

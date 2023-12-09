@@ -1,6 +1,7 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module.impl.render;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.florianmichael.rclasses.common.ColorUtils;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.florianmichael.rclasses.io.ByteCountDataOutput;
 import de.vandalismdevelopment.vandalism.Vandalism;
@@ -27,6 +28,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -91,20 +93,20 @@ public class BetterTooltipsModule extends Module implements RenderListener {
         } else {
             final NbtCompound compoundTag = itemStack.getSubNbt("BlockEntityTag");
             if (compoundTag != null && compoundTag.contains("Items", 9)) {
-                float[] color = new float[]{1f, 1f, 1f};
+                Color color = Color.WHITE;
                 if (itemId.endsWith("shulker_box")) {
                     final DyeColor dye = ((ShulkerBoxBlock) ShulkerBoxBlock.getBlockFromItem(item)).getColor();
                     if (dye != null) {
                         final float[] dyeColor = dye.getColorComponents();
                         if (dyeColor.length == 3) {
-                            color = new float[]{dyeColor[0], dyeColor[1], dyeColor[2]};
+                            color = new Color(dyeColor[0], dyeColor[1], dyeColor[2]);
                         }
                     }
                 }
                 final DefaultedList<ItemStack> itemStacks = DefaultedList.ofSize(27, ItemStack.EMPTY);
                 Inventories.readNbt(compoundTag, itemStacks);
                 tooltipData.add(new TextTooltipComponent(Text.literal("(Press alt + middle click to open inventory)").setStyle(Style.EMPTY.withFormatting(Formatting.GRAY)).asOrderedText()));
-                tooltipData.add(new ContainerTooltipComponent(itemStacks, RenderUtil.withAlpha(color, 1f)));
+                tooltipData.add(new ContainerTooltipComponent(itemStacks, ColorUtils.withAlpha(color, 1)));
             }
         }
         try {

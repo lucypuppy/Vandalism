@@ -1,10 +1,10 @@
 package de.vandalismdevelopment.vandalism.gui.ingame;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import de.florianmichael.rclasses.math.integration.Boundings;
 import de.florianmichael.rclasses.pattern.functional.IName;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.config.Config;
-import de.vandalismdevelopment.vandalism.util.MouseUtils;
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import de.vandalismdevelopment.vandalism.value.IValue;
 import de.vandalismdevelopment.vandalism.value.Value;
@@ -96,7 +96,7 @@ public abstract class HUDElement implements IName, IValue, MinecraftWrapper {
         if (!this.isEnabled()) {
             RenderSystem.setShaderColor(0.5F, 0.5F, 0.5F, 0.9F);
         }
-        final boolean mouseOver = MouseUtils.isHovered(
+        final boolean mouseOver = Boundings.isInBounds(
                 mouseX,
                 mouseY,
                 this.x - 2,

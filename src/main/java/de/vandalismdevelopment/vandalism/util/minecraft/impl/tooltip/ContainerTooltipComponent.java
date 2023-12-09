@@ -12,6 +12,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 
+import java.awt.*;
+
 public class ContainerTooltipComponent implements TooltipComponent, ITooltipData, MinecraftWrapper {
 
     private final static Identifier TEXTURE_CONTAINER_BACKGROUND = new Identifier(Vandalism.getInstance().getId(), "textures/hud/container.png");
@@ -19,9 +21,9 @@ public class ContainerTooltipComponent implements TooltipComponent, ITooltipData
     private final static int WIDTH = 176, HEIGHT = 67;
 
     private final DefaultedList<ItemStack> items;
-    private final float[] color;
+    private final Color color;
 
-    public ContainerTooltipComponent(final DefaultedList<ItemStack> items, final float[] color) {
+    public ContainerTooltipComponent(final DefaultedList<ItemStack> items, final Color color) {
         this.items = items;
         this.color = color;
     }
@@ -50,7 +52,7 @@ public class ContainerTooltipComponent implements TooltipComponent, ITooltipData
     public void drawItems(final TextRenderer textRenderer, final int x, final int y, final DrawContext context) {
         final MatrixStack matrixStack = context.getMatrices();
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        RenderSystem.setShaderColor(this.color[0], this.color[1], this.color[2], this.color[3]);
+        RenderSystem.setShaderColor(this.color.getRed() / 255F, this.color.getGreen() / 255F, this.color.getBlue() / 255F, this.color.getAlpha() / 255F);
         context.drawTexture(TEXTURE_CONTAINER_BACKGROUND, x, y, 0, 0, 0, WIDTH, HEIGHT, WIDTH, HEIGHT);
         RenderSystem.setShaderColor(1, 1, 1, 1);
         int row = 0;

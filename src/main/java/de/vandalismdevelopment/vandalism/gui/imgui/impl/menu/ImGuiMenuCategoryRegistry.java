@@ -1,6 +1,7 @@
 package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.account_v2.gui.AccountsImWindow;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.impl.*;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.impl.account.AccountManagerImGuiMenu;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.impl.irc.IrcImGuiMenu;
@@ -26,6 +27,7 @@ public class ImGuiMenuCategoryRegistry {
                         new ModulesImGuiMenu(),
                         new ScriptsImGuiMenu(),
                         new AccountManagerImGuiMenu(),
+                        new AccountsImWindow(),
                         new IrcImGuiMenu()
                 ),
                 new ImGuiMenuCategory(

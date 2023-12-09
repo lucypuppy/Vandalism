@@ -12,7 +12,6 @@ import net.minecraft.text.Text;
 
 import java.util.List;
 
-//TODO: Fix performance when scanning for menus.
 public class ImGuiScreen extends Screen implements MinecraftWrapper {
 
     private final Screen prevScreen;

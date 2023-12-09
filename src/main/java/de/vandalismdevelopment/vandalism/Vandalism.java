@@ -1,5 +1,6 @@
 package de.vandalismdevelopment.vandalism;
 
+import de.vandalismdevelopment.vandalism.account_v2.AccountManager;
 import de.vandalismdevelopment.vandalism.config.ConfigManager;
 import de.vandalismdevelopment.vandalism.creativetab.CreativeTabRegistry;
 import de.vandalismdevelopment.vandalism.enhancedserverlist.ServerListManager;
@@ -19,6 +20,38 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
+/**
+ * TODO
+ *  - Rewrite Config class file to support JsonElement type (e.g. JsonArray)
+ *  - Reload signature verifier, realms reloader and gameProfileFuture (see AbstractAccount)
+ *  - Delete GlfwKeyName and replace with InputUtil
+ *  - Clean packages to sort classes by system reference instead of type reference
+ *  - Get rid of ImGuiMenuCategoryRegistry
+ *  - Clean value system
+ *  - Clean event system package to prevent overusing listener classes
+ *  - Delete EncryptionUtil
+ *  - Delete MinecraftUtil and MinecraftWrapper
+ *  - Apply checkstyle.xml to all classes
+ *  - Rewrite Vandalism#start
+ *  - Delete HUDElementAlignment
+ *  - Fix tick bug (cps is not accurate) -> see BoxMuellerClicker#update
+ *  - Fix module tabs display (no stacking) when the mod starts the first time.
+ *  - Replace MixinServerResourcePackProvider
+ *  - MixinClientConnection is broken (recall method using boolean)
+ *  - Delete MixinClientPlayerEntity & MixinClientWorld
+ *  - Delete events which only have one usage
+ *  - Fix MixinMinecraftClient screen event
+ *  - Take a look into command system and deduplicate code
+ *  - Delete CustomRPConfirmScreen
+ *  - Delete MixinGameRenderer view bobbing -> use proper MixinExtras instead of copy-pasting game code
+ *  - Rewrite EnhancedServerList
+ *  - Delete MixinIdentifier as it breaks game code
+ *  - Delete MixinParticleManager
+ *  - Delete MixinSodiumWorldRenderer, Sodium has merged this fix into their codebase
+ *  - Update AuthLib array instead of MixinTextureUrlChecker
+ *  - Add ImLoader, ImGuiExtensions and ImGuiFontHack
+ *  - Add ImGui error handling redirectors (see ImGuiPlatformIO)
+ */
 public class Vandalism {
 
     private final static Vandalism INSTANCE = new Vandalism();
@@ -36,6 +69,7 @@ public class Vandalism {
     private RotationListener rotationListener;
     private CustomHUDRenderer customHUDRenderer;
     private ServerListManager serverListManager;
+    private AccountManager accountManager;
 
     public Vandalism() {
         final ModMetadata data = FabricLoader.getInstance().getModContainer(this.id = "vandalism").get().getMetadata();
@@ -84,6 +118,8 @@ public class Vandalism {
         this.commandRegistry = new CommandRegistry();
         this.serverListManager = new ServerListManager(this.dir);
         this.serverListManager.loadConfig();
+        this.accountManager = new AccountManager();
+        this.accountManager.init();
         this.customHUDRenderer = new CustomHUDRenderer();
         this.configManager.load();
         this.logger.info("Done!");
@@ -150,4 +186,7 @@ public class Vandalism {
         return this.serverListManager;
     }
 
+    public AccountManager getAccountManager() {
+        return accountManager;
+    }
 }
