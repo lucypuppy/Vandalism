@@ -29,8 +29,13 @@ public abstract class MixinMinecraftClient {
     private boolean vandalism_loadingDisplayed = false;
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;onResolutionChanged()V"))
-    private void vandalism$startMod(final CallbackInfo ci) {
-        Vandalism.getInstance().start(this.window, this.runDirectory);
+    private void vandalism$startModPre(final CallbackInfo ci) {
+        Vandalism.getInstance().startPre(this.window, this.runDirectory);
+    }
+
+    @Inject(method = "<init>", at = @At(value = "TAIL"))
+    private void vandalism$startModPost(final CallbackInfo ci) {
+        Vandalism.getInstance().startPost();
     }
 
     @Inject(method = "close", at = @At(value = "HEAD"))

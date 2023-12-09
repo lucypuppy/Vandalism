@@ -2,6 +2,7 @@ package de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement;
 
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
+import de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement.modes.speed.CubeCraftModuleMode;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement.modes.speed.LongHopModuleMode;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement.modes.speed.VerusHopModuleMode;
 import de.vandalismdevelopment.vandalism.value.Value;
@@ -14,7 +15,8 @@ public class SpeedModule extends Module {
             "The current speed mode.",
             this,
             new LongHopModuleMode(this),
-            new VerusHopModuleMode(this)
+            new VerusHopModuleMode(this),
+            new CubeCraftModuleMode(this)
     );
 
     public SpeedModule() {
