@@ -30,31 +30,41 @@ public class ModuleRegistry implements InputListener, MinecraftWrapper {
     public BetterTabListModule getBetterTabListModule() {
         return this.betterTabListModule;
     }
+
     public ESPModule getEspModule() {
         return this.espModule;
     }
+
     public ExploitFixerModule getExploitFixerModule() {
         return this.exploitFixerModule;
     }
+
     public FastUseModule getFastUseModule() {
         return this.fastUseModule;
     }
+
     public IllegalBlockPlaceModule getIllegalBlockPlaceModule() {
         return this.illegalBlockPlaceModule;
     }
+
     public MessageEncryptorModule getMessageEncryptorModule() {
         return this.messageEncryptorModule;
     }
+
     public ModPacketBlockerModule getModPacketBlockerModule() {
         return this.modPacketBlockerModule;
     }
+
     public TrueSightModule getTrueSightModule() {
         return this.trueSightModule;
     }
+
     public VisualThrottleModule getVisualThrottleModule() {
         return this.visualThrottleModule;
     }
+
     private final FeatureList<Module> modules;
+
     public ModuleRegistry() {
         this.modules = new FeatureList<>();
         this.registerModules(
