@@ -54,9 +54,7 @@ public class ModuleRegistry implements InputListener, MinecraftWrapper {
     public VisualThrottleModule getVisualThrottleModule() {
         return this.visualThrottleModule;
     }
-
     private final FeatureList<Module> modules;
-
     public ModuleRegistry() {
         this.modules = new FeatureList<>();
         this.registerModules(
@@ -101,7 +99,8 @@ public class ModuleRegistry implements InputListener, MinecraftWrapper {
                 new ProtectorModule(),
                 this.trueSightModule = new TrueSightModule(),
                 this.visualThrottleModule = new VisualThrottleModule(),
-                new VehicleOneHitModule()
+                new VehicleOneHitModule(),
+                new LongJumpModule()
         );
         DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
     }
