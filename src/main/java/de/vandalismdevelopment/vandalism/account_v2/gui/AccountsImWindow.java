@@ -31,7 +31,11 @@ public class AccountsImWindow extends ImGuiMenu {
                     if (ImGui.beginMenu(type.getName())) {
                         type.factory().displayFactory();
                         if (ImGui.button("Add", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
-                            accountManager.add(type.factory().make());
+                            try {
+                                accountManager.add(type.factory().make());
+                            } catch (Throwable e) {
+                                e.printStackTrace();
+                            }
                         }
                         ImGui.endMenu();
                     }
@@ -39,9 +43,12 @@ public class AccountsImWindow extends ImGuiMenu {
                 ImGui.endMenu();
             }
             if (ImGui.beginMenu("Current Account")) {
-                ImGui.text("Account type: Session");
-                ImGui.text("Account name: GommeHD");
-                ImGui.text("Account UUID: <uuid>");
+                final AbstractAccount currentAccount = accountManager.getCurrentAccount();
+                ImGui.text("Account type: " + currentAccount.getName());
+                ImGui.text("Account name: " + currentAccount.getDisplayName());
+                if (currentAccount.getSession().getUuidOrNull() != null) {
+                    ImGui.text("Account UUID: " + currentAccount.getSession().getUuidOrNull());
+                }
                 if (ImGui.button("Copy", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                 }
                 if (ImGui.button("Logout", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
@@ -52,9 +59,31 @@ public class AccountsImWindow extends ImGuiMenu {
         }
     }
 
+    private AbstractAccount hoveredAccount;
+
     protected void renderAccountPopup() {
         if (ImGui.beginPopupContextItem("account-popup")) {
-            ImGui.text("UWU GIRL");
+            ImGui.setNextItemWidth(400F);
+            if (ImGui.button("Delete account", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                Vandalism.getInstance().getAccountManager().remove(hoveredAccount);
+                hoveredAccount = null;
+                ImGui.closeCurrentPopup();
+            }
+
+            if (ImGui.button("Copy Name", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                mc().keyboard.setClipboard(hoveredAccount.getDisplayName());
+            }
+            if (hoveredAccount.getSession().getUuidOrNull() != null && ImGui.button("Copy UUID", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                mc().keyboard.setClipboard(hoveredAccount.getSession().getUuidOrNull().toString());
+            }
+            if (ImGui.button("Copy Access token", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                mc().keyboard.setClipboard(hoveredAccount.getSession().getAccessToken());
+            }
+            ImGui.text("Account type: " + hoveredAccount.getName());
+            ImGui.text("Creation date: <date>");
+            if (hoveredAccount.getSession().getUuidOrNull() != null) {
+                ImGui.text("Account UUID: " + hoveredAccount.getSession().getUuidOrNull());
+            }
             ImGui.endPopup();
         }
     }
@@ -70,9 +99,19 @@ public class AccountsImWindow extends ImGuiMenu {
             if (ImGui.imageButton(account.getPlayerSkin().getGlId(), ACCOUNT_ENTRY_CONTENT_WIDTH, ACCOUNT_ENTRY_CONTENT_HEIGHT)) {
             }
             ImGui.sameLine();
-            if (ImGui.button(account.getDisplayName(), ImGui.getColumnWidth(), ACCOUNT_ENTRY_CONTENT_HEIGHT + 10)) {
+
+            if (ImGui.button(account.getDisplayName() + " (" + (account.getStatus() == null ? "IDLE" : account.getStatus()) + ")", ImGui.getColumnWidth(), ACCOUNT_ENTRY_CONTENT_HEIGHT + 10)) {
+                if (ImGui.isItemClicked(ImGuiMouseButton.Left)) {
+                    try {
+                        accountManager.logIn(account);
+                    } catch (Throwable throwable) {
+                        account.setStatus("Error: " + throwable.getMessage());
+                        throwable.printStackTrace();
+                    }
+                }
             }
-            if (ImGui.isItemClicked(ImGuiMouseButton.Right)) {
+            if (ImGui.isItemHovered() && ImGui.isItemClicked(ImGuiMouseButton.Right)) {
+                hoveredAccount = account;
                 ImGui.openPopup("account-popup");
             }
         }

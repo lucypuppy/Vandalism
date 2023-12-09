@@ -1,6 +1,7 @@
 package de.vandalismdevelopment.vandalism.account_v2;
 
 import com.google.gson.JsonObject;
+import com.mojang.authlib.Environment;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.UserApiService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
@@ -33,12 +34,16 @@ public abstract class AbstractAccount implements IName {
 
     public abstract void logIn0() throws Throwable;
     
-    public abstract void save0(final JsonObject mainNode);
-    public abstract void load0(final JsonObject mainNode);
+    public abstract void save0(final JsonObject mainNode) throws Throwable;
+    public abstract void load0(final JsonObject mainNode) throws Throwable;
 
     public abstract String getDisplayName();
 
-    public void save(final JsonObject mainNode) {
+    public Environment getEnvironment() {
+        return YggdrasilEnvironment.PROD.getEnvironment();
+    }
+
+    public void save(final JsonObject mainNode) throws Throwable {
         if (session != null) {
             final JsonObject sessionNode = new JsonObject();
             saveSession(sessionNode, session);
@@ -48,7 +53,7 @@ public abstract class AbstractAccount implements IName {
         save0(mainNode);
     }
 
-    public void load(final JsonObject mainNode) {
+    public void load(final JsonObject mainNode) throws Throwable {
         if (mainNode.has("session")) {
             updateSession(loadSession(mainNode.get("session").getAsJsonObject()));
         }
@@ -67,6 +72,10 @@ public abstract class AbstractAccount implements IName {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Session getSession() {
+        return session;
     }
 
     public void updateSession(final Session session) {
@@ -91,7 +100,7 @@ public abstract class AbstractAccount implements IName {
         }
         UserApiService userApiService;
         try {
-            userApiService = new YggdrasilAuthenticationService(mc.getNetworkProxy(), YggdrasilEnvironment.PROD.getEnvironment()).createUserApiService(session.getAccessToken());
+            userApiService = new YggdrasilAuthenticationService(mc.getNetworkProxy(), getEnvironment()).createUserApiService(session.getAccessToken());
         } catch (final AuthenticationException e) {
             userApiService = UserApiService.OFFLINE;
         }
@@ -134,7 +143,7 @@ public abstract class AbstractAccount implements IName {
         
         void displayFactory();
 
-        AbstractAccount make();
+        AbstractAccount make() throws Throwable;
 
     }
     

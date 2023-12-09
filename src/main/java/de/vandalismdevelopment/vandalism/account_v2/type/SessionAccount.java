@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class SessionAccount extends AbstractAccount {
+
     private String name;
     private String uuid;
     private String accessToken;
