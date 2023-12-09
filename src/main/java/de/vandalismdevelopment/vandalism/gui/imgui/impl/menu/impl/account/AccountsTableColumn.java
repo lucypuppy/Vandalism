@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.account;
+package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.impl.account;
 
 import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
 
