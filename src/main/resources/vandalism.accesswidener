@@ -72,3 +72,5 @@ mutable field net/minecraft/network/packet/c2s/play/ClickSlotC2SPacket button I
 accessible method net/minecraft/entity/Entity getVelocityAffectingPos ()Lnet/minecraft/util/math/BlockPos;
 accessible method net/minecraft/entity/LivingEntity getMovementSpeed (F)F
 accessible method net/minecraft/entity/player/PlayerEntity getOffGroundSpeed ()F
+accessible field net/minecraft/client/MinecraftClient sessionService Lcom/mojang/authlib/minecraft/MinecraftSessionService;
+mutable field net/minecraft/client/MinecraftClient sessionService Lcom/mojang/authlib/minecraft/MinecraftSessionService;

@@ -3,6 +3,7 @@ package de.vandalismdevelopment.vandalism.account_v2.type;
 import com.google.gson.JsonObject;
 import de.florianmichael.rclasses.common.array.ObjectTypeChecker;
 import de.vandalismdevelopment.vandalism.account_v2.AbstractAccount;
+import de.vandalismdevelopment.vandalism.account_v2.AccountFactory;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
@@ -30,6 +31,7 @@ public class SessionAccount extends AbstractAccount {
         this.accessToken = accessToken;
         this.xuid = xuid;
         this.clientId = clientId;
+        System.out.println(this.name);
 
         logIn0();
     }
