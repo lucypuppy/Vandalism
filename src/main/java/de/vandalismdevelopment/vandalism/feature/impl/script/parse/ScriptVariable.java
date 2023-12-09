@@ -2,6 +2,7 @@ package de.vandalismdevelopment.vandalism.feature.impl.script.parse;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.base.FabricBootstrap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 
@@ -97,15 +98,15 @@ public enum ScriptVariable {
         descriptionBuilder.append("The current millisecond.");
         return descriptionBuilder;
     }),
-    MOD_NAME(() -> Vandalism.getInstance().getName(), descriptionBuilder -> {
+    MOD_NAME(() -> FabricBootstrap.MOD_NAME, descriptionBuilder -> {
         descriptionBuilder.append("The name of this mod.");
         return descriptionBuilder;
     }),
-    MOD_VERSION(() -> Vandalism.getInstance().getVersion(), descriptionBuilder -> {
+    MOD_VERSION(() -> FabricBootstrap.MOD_VERSION, descriptionBuilder -> {
         descriptionBuilder.append("The version of this mod.");
         return descriptionBuilder;
     }),
-    MOD_AUTHORS(() -> Vandalism.getInstance().getAuthors(), descriptionBuilder -> {
+    MOD_AUTHORS(() -> FabricBootstrap.MOD_AUTHORS, descriptionBuilder -> {
         descriptionBuilder.append("The authors of this mod.");
         return descriptionBuilder;
     });

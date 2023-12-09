@@ -3,8 +3,8 @@ package de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement.modes.nofall.VanillaModuleMode;
-import de.vandalismdevelopment.vandalism.value.Value;
-import de.vandalismdevelopment.vandalism.value.impl.list.ModuleModeValue;
+import de.vandalismdevelopment.vandalism.base.value.Value;
+import de.vandalismdevelopment.vandalism.base.value.impl.list.ModuleModeValue;
 
 public class NoFallModule extends Module {
 

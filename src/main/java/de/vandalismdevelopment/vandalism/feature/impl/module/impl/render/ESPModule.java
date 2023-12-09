@@ -4,8 +4,8 @@ import de.florianmichael.rclasses.common.ColorUtils;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.util.RenderUtil;
-import de.vandalismdevelopment.vandalism.value.Value;
-import de.vandalismdevelopment.vandalism.value.impl.ColorValue;
+import de.vandalismdevelopment.vandalism.base.value.Value;
+import de.vandalismdevelopment.vandalism.base.value.impl.ColorValue;
 
 import java.awt.*;
 

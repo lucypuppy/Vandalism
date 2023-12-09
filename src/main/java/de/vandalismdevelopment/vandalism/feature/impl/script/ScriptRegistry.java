@@ -2,8 +2,8 @@ package de.vandalismdevelopment.vandalism.feature.impl.script;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.event.InputListener;
-import de.vandalismdevelopment.vandalism.event.TickListener;
+import de.vandalismdevelopment.vandalism.base.event.InputListener;
+import de.vandalismdevelopment.vandalism.base.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureList;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.ScriptParser;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.command.ScriptCommand;
@@ -69,7 +69,7 @@ public class ScriptRegistry implements TickListener, InputListener, MinecraftWra
             }
             this.scripts.add(script);
             if (save) {
-                Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getScriptsConfig());
+                Vandalism.getInstance().getConfigManager().save(); // TODO |Only save this config
             }
             Vandalism.getInstance().getLogger().info("Script '" + script + "' has been loaded.");
         } catch (final Exception e) {
@@ -138,7 +138,7 @@ public class ScriptRegistry implements TickListener, InputListener, MinecraftWra
             final String scriptName = file.getName().replaceFirst(ScriptParser.SCRIPT_FILE_EXTENSION, "");
             final Thread scriptThread = new Thread(() -> {
                 try {
-                    final boolean executionLogging = Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.scriptExecutionLogging.getValue();
+                    final boolean executionLogging = Vandalism.getInstance().getClientSettings().getMenuSettings().scriptExecutionLogging.getValue();
                     if (executionLogging) {
                         final String executingMessage = "Executing script " + scriptName + " ...";
                         if (inGame) ChatUtil.infoChatMessage(executingMessage);
@@ -184,7 +184,7 @@ public class ScriptRegistry implements TickListener, InputListener, MinecraftWra
             if (!script.getFile().exists()) {
                 this.scripts.remove(script);
                 Vandalism.getInstance().getLogger().info("Script '" + script + "' has been unloaded because the file does not exist anymore.");
-                Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getScriptsConfig());
+                Vandalism.getInstance().getConfigManager().save(); // TODO |Only save this config
             }
         }
     }

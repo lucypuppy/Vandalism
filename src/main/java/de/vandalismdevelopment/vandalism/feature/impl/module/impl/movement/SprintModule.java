@@ -2,13 +2,13 @@ package de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.event.MovementListener;
+import de.vandalismdevelopment.vandalism.base.event.MovementListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.MovementUtil;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.rotation.RotationListener;
-import de.vandalismdevelopment.vandalism.value.Value;
-import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
+import de.vandalismdevelopment.vandalism.integration.rotation.RotationListener;
+import de.vandalismdevelopment.vandalism.base.value.Value;
+import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
 import net.minecraft.util.math.MathHelper;
 
 public class SprintModule extends Module implements MovementListener {

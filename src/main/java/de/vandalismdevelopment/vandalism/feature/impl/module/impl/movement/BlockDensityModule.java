@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.event.WorldListener;
+import de.vandalismdevelopment.vandalism.base.event.WorldListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import net.minecraft.block.Block;
@@ -17,7 +17,7 @@ import java.util.List;
 
 public class BlockDensityModule extends Module implements WorldListener {
 
-    private final static List<Block> BLOCKS = List.of(
+    private static final List<Block> BLOCKS = List.of(
             Blocks.CACTUS,
             Blocks.SWEET_BERRY_BUSH,
             Blocks.POWDER_SNOW,

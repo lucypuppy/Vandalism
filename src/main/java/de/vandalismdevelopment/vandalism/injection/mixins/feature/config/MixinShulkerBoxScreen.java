@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.Unique;
 public abstract class MixinShulkerBoxScreen extends HandledScreen<ShulkerBoxScreenHandler> implements ScreenHandlerProvider<ShulkerBoxScreenHandler> {
 
     @Unique
-    private final static int VANDALISM_ROWS = 3;
+    private static final int VANDALISM_ROWS = 3;
 
     public MixinShulkerBoxScreen(final ShulkerBoxScreenHandler handler, final PlayerInventory inventory, final Text title) {
         super(handler, inventory, title);

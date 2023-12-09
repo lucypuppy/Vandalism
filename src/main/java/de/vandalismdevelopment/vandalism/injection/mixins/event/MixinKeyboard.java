@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.event;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.event.InputListener;
+import de.vandalismdevelopment.vandalism.base.event.InputListener;
 import net.minecraft.client.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

@@ -3,14 +3,14 @@ package de.vandalismdevelopment.vandalism.feature.impl.module.impl.misc;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.dietrichevents2.Priorities;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.event.TickListener;
+import de.vandalismdevelopment.vandalism.base.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.impl.misc.NbtCommand;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.ServerUtil;
-import de.vandalismdevelopment.vandalism.value.Value;
-import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
+import de.vandalismdevelopment.vandalism.base.value.Value;
+import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -39,7 +39,7 @@ public class ItemStackLoggerModule extends Module implements TickListener {
 
     private final Value<Boolean> notifyInChat = new BooleanValue("Notify in Chat", "If enabled this module sends a notification into the chat to inform you about a newly found item.", this, true);
 
-    private final static File LOGGED_ITEMS_DIR = new File(Vandalism.getInstance().getDir(), "logged-items");
+    private static final File LOGGED_ITEMS_DIR = new File(Vandalism.getInstance().getRunDirectory(), "logged-items");
 
     private final DateFormat formatter;
 
@@ -151,7 +151,7 @@ public class ItemStackLoggerModule extends Module implements TickListener {
                     final MutableText copyButton = Text.literal(" (Copy Data)");
                     copyButton.setStyle(copyButton.getStyle().withFormatting(Formatting.GREEN).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, normalWithoutNBT + " | [NBT] " + nbt)));
                     final MutableText copyGiveCommandButton = Text.literal(" (Copy Give Command)");
-                    final String giveCommand = Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.commandPrefix.getValue() + "give " + item + nbt + " " + count;
+                    final String giveCommand = Vandalism.getInstance().getClientSettings().getChatSettings().commandPrefix.getValue() + "give " + item + nbt + " " + count;
                     copyGiveCommandButton.setStyle(copyGiveCommandButton.getStyle().withFormatting(Formatting.YELLOW).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, giveCommand)));
                     final MutableText openDirectoryButton = Text.literal(" (Open Directory)");
                     openDirectoryButton.setStyle(openDirectoryButton.getStyle().withFormatting(Formatting.GOLD).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, itemNbtFile.getParent())));

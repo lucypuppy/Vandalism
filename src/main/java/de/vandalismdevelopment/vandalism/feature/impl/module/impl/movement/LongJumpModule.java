@@ -1,16 +1,11 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.event.MovementListener;
-import de.vandalismdevelopment.vandalism.event.PacketListener;
-import de.vandalismdevelopment.vandalism.event.TickListener;
+import de.vandalismdevelopment.vandalism.base.event.MovementListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.MovementUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.TimerUtil;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
-import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 import net.minecraft.util.math.Vec3d;
 
 public class LongJumpModule extends Module implements MovementListener {

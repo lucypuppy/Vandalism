@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.util.rotation;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.rotation.Rotation;
+import de.vandalismdevelopment.vandalism.integration.rotation.Rotation;
 import net.minecraft.client.network.ClientPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

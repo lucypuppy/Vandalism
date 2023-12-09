@@ -2,6 +2,7 @@ package de.vandalismdevelopment.vandalism.feature.impl.script.parse;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.base.FabricBootstrap;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.script.Script;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.command.ScriptCommand;
@@ -15,9 +16,9 @@ import java.util.Scanner;
 
 public class ScriptParser {
 
-    public final static String SCRIPT_FILE_EXTENSION = "." + Vandalism.getInstance().getId() + "-script";
+    public static final String SCRIPT_FILE_EXTENSION = "." + FabricBootstrap.MOD_ID + "-script";
 
-    public final static String INFO_CHAR = "@", CODE_CHAR = "!", VARIABLE_CHAR = "%";
+    public static final String INFO_CHAR = "@", CODE_CHAR = "!", VARIABLE_CHAR = "%";
 
     public static Pair<ScriptCommand, Pair<Integer, String>> parseCodeFromScriptLine(final String scriptName, String line, final int lineNumber, final boolean advancedErrors) throws RuntimeException {
         if (line.startsWith(CODE_CHAR)) {

@@ -8,9 +8,9 @@ import net.minecraft.util.math.Vec3d;
 
 public class MovementUtil extends MinecraftUtil {
 
-    private final static float DEG_TO_RAD = 0.01745329238f;
+    private static final float DEG_TO_RAD = 0.01745329238f;
 
-    private final static float[] POSSIBLE_MOVEMENTS = new float[]{-1F, 0.0F, 1F};
+    private static final float[] POSSIBLE_MOVEMENTS = new float[]{-1F, 0.0F, 1F};
 
     public static double getDirection() {
         return getDirection(0);

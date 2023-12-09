@@ -18,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class ScriptArgumentType implements ArgumentType<Script> {
 
-    private final static DynamicCommandExceptionType NOT_EXISTING = new DynamicCommandExceptionType(name -> {
+    private static final DynamicCommandExceptionType NOT_EXISTING = new DynamicCommandExceptionType(name -> {
         return Text.literal("No script with the name " + name + " has been found!");
     });
 

@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement.modes.nofall;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.event.PacketListener;
+import de.vandalismdevelopment.vandalism.base.event.PacketListener;
 import de.vandalismdevelopment.vandalism.feature.impl.module.ModuleMode;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement.NoFallModule;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;

@@ -22,7 +22,7 @@ public abstract class MixinMainWindow {
     }
 
     @Unique
-    private final static ExecutorService VANDALISM_EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
+    private static final ExecutorService VANDALISM_EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/lenni0451/imnbt/ui/windows/MainWindow;chooseFile()V"))
     private void vandalism$chooseFileInANewThread(final MainWindow instance) {

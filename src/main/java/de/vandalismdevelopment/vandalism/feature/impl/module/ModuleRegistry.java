@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.feature.impl.module;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.event.InputListener;
+import de.vandalismdevelopment.vandalism.base.event.InputListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureList;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.combat.BowSpammerModule;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.development.DebugModule;

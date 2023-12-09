@@ -1,9 +1,9 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.event;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.event.ScreenListener;
-import de.vandalismdevelopment.vandalism.event.TickListener;
-import de.vandalismdevelopment.vandalism.event.WorldListener;
+import de.vandalismdevelopment.vandalism.base.event.ScreenListener;
+import de.vandalismdevelopment.vandalism.base.event.TickListener;
+import de.vandalismdevelopment.vandalism.base.event.WorldListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.world.ClientWorld;

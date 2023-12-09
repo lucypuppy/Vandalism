@@ -17,7 +17,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class ModuleArgumentType implements ArgumentType<Module> {
 
-    private final static DynamicCommandExceptionType NOT_EXISTING = new DynamicCommandExceptionType(
+    private static final DynamicCommandExceptionType NOT_EXISTING = new DynamicCommandExceptionType(
             name -> Text.literal("No module with the name " + name + " has been found!")
     );
 

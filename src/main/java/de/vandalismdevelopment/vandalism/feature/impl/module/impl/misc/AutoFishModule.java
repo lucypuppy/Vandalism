@@ -2,11 +2,11 @@ package de.vandalismdevelopment.vandalism.feature.impl.module.impl.misc;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.math.integration.MSTimer;
-import de.vandalismdevelopment.vandalism.event.TickListener;
+import de.vandalismdevelopment.vandalism.base.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.value.Value;
-import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderIntegerValue;
+import de.vandalismdevelopment.vandalism.base.value.Value;
+import de.vandalismdevelopment.vandalism.base.value.impl.number.slider.SliderIntegerValue;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
 import net.minecraft.util.Hand;

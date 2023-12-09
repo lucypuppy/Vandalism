@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.feature.config;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.gui.minecraft.CustomRPConfirmScreen;
+import de.vandalismdevelopment.vandalism.integration.CustomRPConfirmScreen;
 import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.ServerUtil;
 import net.minecraft.client.MinecraftClient;

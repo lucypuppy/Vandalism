@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class EnchantmentArgumentType implements ArgumentType<Enchantment> {
 
-    private final static DynamicCommandExceptionType notExisting = new DynamicCommandExceptionType(
+    private static final DynamicCommandExceptionType notExisting = new DynamicCommandExceptionType(
             id -> Text.literal("No enchantment with the id " + id + " has been found!")
     );
 

@@ -2,12 +2,12 @@ package de.vandalismdevelopment.vandalism.feature.impl.module.impl.development;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.event.PacketListener;
-import de.vandalismdevelopment.vandalism.event.RenderListener;
+import de.vandalismdevelopment.vandalism.base.event.PacketListener;
+import de.vandalismdevelopment.vandalism.base.event.RenderListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.value.Value;
-import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
+import de.vandalismdevelopment.vandalism.base.value.Value;
+import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
 import imgui.ImGui;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.Entity;

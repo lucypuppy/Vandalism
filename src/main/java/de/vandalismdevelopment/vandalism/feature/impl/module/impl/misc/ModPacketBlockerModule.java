@@ -2,11 +2,11 @@ package de.vandalismdevelopment.vandalism.feature.impl.module.impl.misc;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.dietrichevents2.Priorities;
-import de.vandalismdevelopment.vandalism.event.PacketListener;
+import de.vandalismdevelopment.vandalism.base.event.PacketListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.value.Value;
-import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
+import de.vandalismdevelopment.vandalism.base.value.Value;
+import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;

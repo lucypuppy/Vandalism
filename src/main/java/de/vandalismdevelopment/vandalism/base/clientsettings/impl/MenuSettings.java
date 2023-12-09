@@ -1,0 +1,86 @@
+package de.vandalismdevelopment.vandalism.base.clientsettings.impl;
+
+import de.vandalismdevelopment.vandalism.base.clientsettings.ClientSettings;
+import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
+import de.vandalismdevelopment.vandalism.base.value.Value;
+import de.vandalismdevelopment.vandalism.base.value.ValueCategory;
+import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.KeyInputValue;
+
+public class MenuSettings extends ValueCategory {
+    
+    public MenuSettings(final ClientSettings parent) {
+        super("Menu", "Menu related configs.", parent);
+    }
+
+    public final Value<GlfwKeyName> menuKey = new KeyInputValue(
+            "Menu Key",
+            "Change the key to open the Menu.",
+            this,
+            GlfwKeyName.RIGHT_SHIFT
+    );
+
+    public final Value<Boolean> moduleStateLogging = new BooleanValue(
+            "Module State Logging",
+            "Enables/Disables the logging for the module state.",
+            this,
+            true
+    );
+
+    public final Value<Boolean> scriptExecutionLogging = new BooleanValue(
+            "Script Execution Logging",
+            "Enables/Disables the logging for the script execution.",
+            this,
+            false
+    );
+
+    public final Value<Boolean> manageContainerButtons = new BooleanValue(
+            "Manage Container Buttons",
+            "Adds the store/steal buttons to containers.",
+            this,
+            true
+    );
+
+    public final Value<Boolean> alwaysDisplayCreativeTab = new BooleanValue(
+            "Always Display Creative Tab",
+            "Always displays the creative tab.",
+            this,
+            true
+    );
+
+    public final Value<Boolean> replaceGameMenuScreenButtons = new BooleanValue(
+            "Replaces Game Menu Screen Buttons",
+            "Adds a multiplayer and a reconnect button to the game menu screen.",
+            this,
+            true
+    );
+
+    public final Value<Boolean> moreResourcePackOptions = new BooleanValue(
+            "More Server Resource Pack Options",
+            "Shows more options in the Server Resource Pack Download Screen.",
+            this,
+            true
+    );
+
+    public final Value<Boolean> downloadingTerrainScreenEscaping = new BooleanValue(
+            "Downloading Terrain Screen Escaping",
+            "Allows you to escape the downloading terrain screen by pressing the escape key.",
+            this,
+            true
+    );
+
+    public final Value<Boolean> disconnectedScreenEscaping = new BooleanValue(
+            "Disconnected Screen Escaping",
+            "Allows you to escape the disconnected screen by pressing the escape key.",
+            this,
+            true
+    );
+
+    public final Value<Boolean> moreDisconnectedScreenButtons = new BooleanValue(
+            "More Disconnected Buttons",
+            "Adds more buttons to the disconnected screen.",
+            this,
+            true
+    );
+    
+}

@@ -1,13 +1,13 @@
 package de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.event.TickListener;
+import de.vandalismdevelopment.vandalism.base.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.TimerUtil;
-import de.vandalismdevelopment.vandalism.value.Value;
-import de.vandalismdevelopment.vandalism.value.impl.BooleanValue;
-import de.vandalismdevelopment.vandalism.value.impl.number.slider.SliderFloatValue;
+import de.vandalismdevelopment.vandalism.base.value.Value;
+import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.number.slider.SliderFloatValue;
 
 public class TimerModule extends Module implements TickListener {
 
