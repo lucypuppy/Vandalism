@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.feature.module;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.feature.impl.module.impl.render.VisualThrottleModule;
+import de.vandalismdevelopment.vandalism.feature.module.impl.render.VisualThrottleModule;
 import de.vandalismdevelopment.vandalism.util.ParticleTracker;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleFactory;

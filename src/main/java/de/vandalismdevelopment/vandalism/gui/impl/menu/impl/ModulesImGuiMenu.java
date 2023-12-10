@@ -2,9 +2,7 @@ package de.vandalismdevelopment.vandalism.gui.impl.menu.impl;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
-import de.vandalismdevelopment.vandalism.feature.FeatureList;
-import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
+import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.gui_v2.ImWindow;
 import imgui.ImGui;
@@ -23,7 +21,7 @@ public class ModulesImGuiMenu extends ImWindow {
 
     private final ImString searchInput, favoriteModulesSearchInput, enabledModulesSearchInput;
 
-    private final List<Module> openedModules;
+    private final List<AbstractModule> openedModules;
 
     public ModulesImGuiMenu() {
         super("Modules");
@@ -35,7 +33,7 @@ public class ModulesImGuiMenu extends ImWindow {
 
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        final FeatureList<Module> modules = Vandalism.getInstance().getModuleRegistry().getModules();
+        final FeatureList<AbstractModule> modules = Vandalism.getInstance().getModuleRegistry().getModules();
         if (!modules.isEmpty()) {
             final float width = 185, minHeight = 140, maxHeight = 415;
             final int windowFlags = ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse;
@@ -48,7 +46,7 @@ public class ModulesImGuiMenu extends ImWindow {
             ImGui.separator();
             ImGui.beginChild(modulesSearchIdentifier + "scrolllist", -1, -1, true);
             if (!this.searchInput.get().isBlank()) {
-                for (final Module module : Vandalism.getInstance().getModuleRegistry().getModules()) {
+                for (final AbstractModule module : Vandalism.getInstance().getModuleRegistry().getModules()) {
                     if (StringUtils.contains(module.getName(), this.searchInput.get()) || StringUtils.contains(module.getDescription(), this.searchInput.get())) {
                         this.renderModule(module, "search");
                     }
@@ -57,8 +55,8 @@ public class ModulesImGuiMenu extends ImWindow {
             ImGui.endChild();
             ImGui.separator();
             ImGui.end();
-            final List<Module> favoriteModules = new ArrayList<>();
-            for (final Module module : modules) {
+            final List<AbstractModule> favoriteModules = new ArrayList<>();
+            for (final AbstractModule module : modules) {
                 if (module.isFavorite()) {
                     favoriteModules.add(module);
                 }
@@ -72,7 +70,7 @@ public class ModulesImGuiMenu extends ImWindow {
                 ImGui.inputText(modulesFavoritesIdentifier + "input", this.favoriteModulesSearchInput);
                 ImGui.separator();
                 ImGui.beginChild(modulesFavoritesIdentifier + "scrolllist", -1, -1, true);
-                for (final Module module : favoriteModules) {
+                for (final AbstractModule module : favoriteModules) {
                     if (!this.favoriteModulesSearchInput.get().isBlank()) {
                         if (!(StringUtils.contains(module.getName(), this.favoriteModulesSearchInput.get()) || StringUtils.contains(module.getDescription(), this.favoriteModulesSearchInput.get()))) {
                             continue;
@@ -84,8 +82,8 @@ public class ModulesImGuiMenu extends ImWindow {
                 ImGui.separator();
                 ImGui.end();
             }
-            final List<Module> enabledModules = new ArrayList<>();
-            for (final Module module : modules) {
+            final List<AbstractModule> enabledModules = new ArrayList<>();
+            for (final AbstractModule module : modules) {
                 if (module.isEnabled()) {
                     enabledModules.add(module);
                 }
@@ -99,7 +97,7 @@ public class ModulesImGuiMenu extends ImWindow {
                 ImGui.inputText(modulesEnabledIdentifier + "input", this.enabledModulesSearchInput);
                 ImGui.separator();
                 ImGui.beginChild(modulesEnabledIdentifier + "scrolllist", -1, -1, true);
-                for (final Module module : enabledModules) {
+                for (final AbstractModule module : enabledModules) {
                     if (!this.enabledModulesSearchInput.get().isBlank()) {
                         if (!(StringUtils.contains(module.getName(), this.enabledModulesSearchInput.get()) || StringUtils.contains(module.getDescription(), this.enabledModulesSearchInput.get()))) {
                             continue;
@@ -112,21 +110,21 @@ public class ModulesImGuiMenu extends ImWindow {
                 ImGui.end();
             }
             for (final FeatureCategory featureCategory : FeatureCategory.values()) {
-                final FeatureList<Module> modulesByCategory = modules.get(featureCategory);
+                final FeatureList<AbstractModule> modulesByCategory = modules.get(featureCategory);
                 if (modulesByCategory.isEmpty()) continue;
                 final String featureCategoryIdentifier = "##" + featureCategory.normalName() + "modulesfeaturecategory";
                 ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
                 ImGui.begin(featureCategory.normalName() + " Modules" + featureCategoryIdentifier, windowFlags);
                 ImGui.separator();
                 ImGui.beginChild(featureCategoryIdentifier + "scrolllist", -1, -1, true);
-                for (final Module module : modulesByCategory) {
+                for (final AbstractModule module : modulesByCategory) {
                     this.renderModule(module, "category");
                 }
                 ImGui.endChild();
                 ImGui.separator();
                 ImGui.end();
             }
-            for (final Module module : this.openedModules) {
+            for (final AbstractModule module : this.openedModules) {
                 final String id = "##opened" + module.getCategory().normalName() + "module" + module.getName();
                 ImGui.begin(module.getName() + " Config" + id, windowFlags);
                 this.renderModuleData(module, id, -1, -1);
@@ -135,7 +133,7 @@ public class ModulesImGuiMenu extends ImWindow {
         }
     }
 
-    private void renderModule(final Module module, final String id) {
+    private void renderModule(final AbstractModule module, final String id) {
         final String moduleId = "##" + id + module.getCategory().normalName() + "module" + module.getName();
         final float[] color;
         if (module.isEnabled()) {
@@ -168,7 +166,7 @@ public class ModulesImGuiMenu extends ImWindow {
         }
     }
 
-    private void renderModuleData(final Module module, final String id, final int width, final int height) {
+    private void renderModuleData(final AbstractModule module, final String id, final int width, final int height) {
         ImGui.separator();
         ImGui.spacing();
         this.renderModuleInfo(module);
@@ -198,7 +196,7 @@ public class ModulesImGuiMenu extends ImWindow {
         }
     }
 
-    private void renderModuleInfo(final Module module) {
+    private void renderModuleInfo(final AbstractModule module) {
         final String description = module.getDescription();
         if (!description.isBlank()) {
             final List<String> descriptionLines = new ArrayList<>();

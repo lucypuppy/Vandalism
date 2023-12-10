@@ -2,8 +2,8 @@ package de.vandalismdevelopment.vandalism.integration.hud.gui;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui_v2.ImWindow;
-import de.vandalismdevelopment.vandalism.integration.hud.HUDManager;
 import de.vandalismdevelopment.vandalism.integration.hud.HUDElement;
+import de.vandalismdevelopment.vandalism.integration.hud.HUDManager;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import net.minecraft.client.gui.DrawContext;
@@ -13,12 +13,15 @@ import java.awt.*;
 
 public class HUDImWindow extends ImWindow {
 
-    private boolean mouseDown;
+    private final HUDManager hudManager;
+
+    private boolean mouseDown = false;
     private int lastMouseX, lastMouseY;
 
-    public HUDImWindow() {
+    public HUDImWindow(final HUDManager hudManager) {
         super("Custom HUD Config");
-        this.mouseDown = false;
+
+        this.hudManager = hudManager;
     }
 
     @Override
@@ -31,28 +34,20 @@ public class HUDImWindow extends ImWindow {
             }
 
             if (ImGui.button("Reset Custom HUD Config##resetcustomhudconfig")) {
-                for (final HUDElement hudElement : Vandalism.getInstance().getCustomHUDRenderer().getHudElements()) {
+                for (final HUDElement hudElement : this.hudManager.getList()) {
                     hudElement.reset();
                 }
 
-                try {
-                    Vandalism.getInstance().getConfigManager().getCustomHUDConfig().save();
-                } catch (final Exception e) {
-                    Vandalism.getInstance().getLogger().error("Failed to save custom hud config.", e);
-                }
+                Vandalism.getInstance().getConfigManager().save();
             }
 
             ImGui.separator();
 
-            for (final HUDElement hudElement : Vandalism.getInstance().getCustomHUDRenderer().getHudElements()) {
+            for (final HUDElement hudElement : hudManager.getList()) {
                 if (ImGui.treeNodeEx(hudElement.getName() + "##" + hudElement.getName() + "customhudconfig")) {
                     if (ImGui.button("Reset##reset" + hudElement.getName() + "customhudconfig")) {
                         hudElement.reset();
-                        try {
-                            Vandalism.getInstance().getConfigManager().getCustomHUDConfig().save();
-                        } catch (final Exception e) {
-                            Vandalism.getInstance().getLogger().error("Failed to save custom hud config.", e);
-                        }
+                        Vandalism.getInstance().getConfigManager().save();
                     }
 
                     ImGui.spacing();
@@ -69,7 +64,7 @@ public class HUDImWindow extends ImWindow {
         final Window window = this.mc.getWindow();
         final double scaledWidth = window.getScaledWidth(), scaledHeight = window.getScaledHeight();
 
-        for (final HUDElement hudElement : HUDManager.getHudElements()) {
+        for (final HUDElement hudElement : hudManager.getList()) {
             hudElement.render(
                     this.mouseDown,
                     mouseX,
@@ -93,14 +88,14 @@ public class HUDImWindow extends ImWindow {
     }
 
     @Override
-    public void mouseClick(final double mouseX, final double mouseY, final int button, final boolean release) {
+    public void mouseClicked(final double mouseX, final double mouseY, final int button, final boolean release) {
         if (button == 0) {
             this.mouseDown = !release;
 
             if (release) {
                 boolean save = false;
 
-                for (final HUDElement hudElement : Vandalism.getInstance().getCustomHUDRenderer().getHudElements()) {
+                for (final HUDElement hudElement : hudManager.getList()) {
                     if (hudElement.shouldSave) {
                         hudElement.shouldSave = false;
                         save = true;
@@ -108,11 +103,7 @@ public class HUDImWindow extends ImWindow {
                 }
 
                 if (save) {
-                    try {
-                        Vandalism.getInstance().getConfigManager().getCustomHUDConfig().save();
-                    } catch (final Exception e) {
-                        Vandalism.getInstance().getLogger().error("Failed to save custom hud config.", e);
-                    }
+                    Vandalism.getInstance().getConfigManager().save();
                 }
             }
         }

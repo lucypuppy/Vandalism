@@ -2,9 +2,8 @@ package de.vandalismdevelopment.vandalism.gui.impl.menu.impl.script;
 
 import de.florianmichael.rclasses.common.RandomUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.feature.FeatureList;
-import de.vandalismdevelopment.vandalism.feature.impl.script.Script;
-import de.vandalismdevelopment.vandalism.feature.impl.script.parse.ScriptParser;
+import de.vandalismdevelopment.vandalism.feature.script.Script;
+import de.vandalismdevelopment.vandalism.feature.script.parse.ScriptParser;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.ImGuiMenu;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import imgui.ImGui;

@@ -1,6 +1,5 @@
 package de.vandalismdevelopment.vandalism.gui.impl.menu.impl;
 
-import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui_v2.ImWindow;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
