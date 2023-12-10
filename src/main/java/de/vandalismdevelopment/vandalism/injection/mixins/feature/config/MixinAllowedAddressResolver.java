@@ -14,7 +14,7 @@ public abstract class MixinAllowedAddressResolver {
 
     @Redirect(method = "resolve", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/BlockListChecker;isAllowed(Lnet/minecraft/client/network/Address;)Z"))
     public boolean vandalism$antiServerBlockListAlwaysAllowAddressParsing(final BlockListChecker instance, final Address address) {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().networkingCategory.antiServerBlockList.getValue()) {
+        if (Vandalism.getInstance().getClientSettings().getNetworkingSettings().antiServerBlockList.getValue()) {
             return true;
         }
         return instance.isAllowed(address);
@@ -22,7 +22,7 @@ public abstract class MixinAllowedAddressResolver {
 
     @Redirect(method = "resolve", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/BlockListChecker;isAllowed(Lnet/minecraft/client/network/ServerAddress;)Z"))
     public boolean vandalism$antiServerBlockListAlwaysAllowServerAddressParsing(final BlockListChecker instance, final ServerAddress serverAddress) {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().networkingCategory.antiServerBlockList.getValue()) {
+        if (Vandalism.getInstance().getClientSettings().getNetworkingSettings().antiServerBlockList.getValue()) {
             return true;
         }
         return instance.isAllowed(serverAddress);

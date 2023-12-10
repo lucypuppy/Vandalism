@@ -7,10 +7,9 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
 import de.vandalismdevelopment.vandalism.feature.impl.command.arguments.NbtCompoundArgumentType;
-import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.impl.nbteditor.NbtEditortImGuiMenu;
 import de.vandalismdevelopment.vandalism.gui.impl.menu.impl.nbteditor.NbtEditortImGuiMenu;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ItemStackUtil;
+import de.vandalismdevelopment.vandalism.util.ChatUtil;
+import de.vandalismdevelopment.vandalism.util.ItemStackUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.NbtPathArgumentType;
 import net.minecraft.item.ItemStack;
@@ -35,7 +34,7 @@ public class NbtCommand extends Command {
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.then(literal("add").then(argument("nbt", NbtCompoundArgumentType.create()).executes(s -> {
-            final ItemStack stack = this.player().getInventory().getMainHandStack();
+            final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
                 final NbtCompound tag = NbtCompoundArgumentType.get(s);
                 final NbtCompound source = stack.getOrCreateNbt();
@@ -50,7 +49,7 @@ public class NbtCommand extends Command {
         })));
 
         builder.then(literal("set").then(argument("nbt", NbtCompoundArgumentType.create()).executes(context -> {
-            final ItemStack stack = this.player().getInventory().getMainHandStack();
+            final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
                 stack.setNbt(NbtCompoundArgumentType.get(context));
                 ItemStackUtil.giveItemStack(stack);
@@ -59,7 +58,7 @@ public class NbtCommand extends Command {
         })));
 
         builder.then(literal("remove").then(argument("nbt_path", NbtPathArgumentType.nbtPath()).executes(context -> {
-            final ItemStack stack = this.player().getInventory().getMainHandStack();
+            final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
                 context.getArgument("nbt_path", NbtPathArgumentType.NbtPath.class).remove(stack.getNbt());
                 ItemStackUtil.giveItemStack(stack);
@@ -68,7 +67,7 @@ public class NbtCommand extends Command {
         })));
 
         builder.then(literal("view").executes(context -> {
-            final ItemStack stack = this.player().getInventory().getMainHandStack();
+            final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
                 final NbtCompound tag = stack.getNbt();
                 final MutableText copyButton = Text.literal("NBT");
@@ -83,26 +82,26 @@ public class NbtCommand extends Command {
         }));
 
         builder.then(literal("copy").executes(context -> {
-            final ItemStack stack = this.player().getInventory().getMainHandStack();
+            final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
                 final NbtCompound tag = stack.getOrCreateNbt();
-                this.keyboard().setClipboard(tag.toString());
+                this.mc.keyboard.setClipboard(tag.toString());
                 ChatUtil.infoChatMessage("NBT copied into the Clipboard.");
             }
             return SINGLE_SUCCESS;
         }));
 
         builder.then(literal("paste").executes(context -> {
-            final ItemStack stack = this.player().getInventory().getMainHandStack();
+            final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
-                stack.setNbt(new NbtCompoundArgumentType().parse(new StringReader(this.keyboard().getClipboard())));
+                stack.setNbt(new NbtCompoundArgumentType().parse(new StringReader(this.mc.keyboard.getClipboard())));
                 ItemStackUtil.giveItemStack(stack);
             }
             return SINGLE_SUCCESS;
         }));
 
         builder.then(literal("count").then(argument("count", IntegerArgumentType.integer(-127, 127)).executes(context -> {
-            final ItemStack stack = this.player().getInventory().getMainHandStack();
+            final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
                 final int count = IntegerArgumentType.getInteger(context, "count");
                 stack.setCount(count);
@@ -113,9 +112,11 @@ public class NbtCommand extends Command {
         })));
 
         builder.then(literal("gui").executes(context -> {
-            final ItemStack stack = this.player().getInventory().getMainHandStack();
-            if (this.validBasic(stack))
-                Vandalism.getInstance().getImGuiHandler().getImGuiMenuCategoryRegistry().getImGuiMenuByClass(NbtEditortImGuiMenu.class).displayNbt(stack.getName().getString(), stack.getNbt());
+            final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
+//            if (this.validBasic(stack))
+//                Vandalism.getInstance().getImGuiHandler().getImGuiMenuCategoryRegistry().getImGuiMenuByClass(NbtEditortImGuiMenu.class).displayNbt(stack.getName().getString(), stack.getNbt());
+
+            // TODO | NBT Editor
             return SINGLE_SUCCESS;
         }));
 
@@ -126,7 +127,7 @@ public class NbtCommand extends Command {
                 displayTitle = nbt.getString(DISPLAY_TITLE_NBT_KEY);
                 nbt.remove(DISPLAY_TITLE_NBT_KEY);
             } else displayTitle = "Nbt";
-            Vandalism.getInstance().getImGuiHandler().getImGuiMenuCategoryRegistry().getImGuiMenuByClass(NbtEditortImGuiMenu.class).displayNbt(displayTitle, nbt);
+//            Vandalism.getInstance().getImGuiHandler().getImGuiMenuCategoryRegistry().getImGuiMenuByClass(NbtEditortImGuiMenu.class).displayNbt(displayTitle, nbt);
             return SINGLE_SUCCESS;
         })));
     }

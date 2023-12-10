@@ -1,8 +1,8 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.fix.imgui;
 
-import de.vandalismdevelopment.vandalism.gui.ImGuiScreen;
+import de.vandalismdevelopment.vandalism.gui_v2.base.ImGuiScreen;
 import de.vandalismdevelopment.vandalism.injection.access.IImGuiImplGlfw;
-import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import imgui.flag.ImGuiMouseCursor;
 import imgui.glfw.ImGuiImplGlfw;
 import org.lwjgl.glfw.GLFW;
@@ -22,14 +22,14 @@ public abstract class MixinImGuiImplGlfw implements IImGuiImplGlfw, MinecraftWra
 
     @Inject(method = "charCallback", at = @At(value = "INVOKE", target = "Limgui/ImGui;getIO()Limgui/ImGuiIO;", shift = At.Shift.BEFORE), cancellable = true)
     public void vandalism$cancelCharCallback(final long windowId, final int c, final CallbackInfo ci) {
-        if (!(this.currentScreen() instanceof ImGuiScreen)) {
+        if (!(this.mc.currentScreen instanceof ImGuiScreen)) {
             ci.cancel();
         }
     }
 
     @Override
     public void vandalism$forceUpdateMouseCursor() {
-        final long handle = this.window().getHandle();
+        final long handle = mc.getWindow().getHandle();
         GLFW.glfwSetCursor(handle, this.mouseCursors[ImGuiMouseCursor.Arrow]);
         GLFW.glfwSetInputMode(handle, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
     }

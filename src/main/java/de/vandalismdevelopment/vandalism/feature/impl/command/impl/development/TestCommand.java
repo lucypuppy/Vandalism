@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.feature.impl.command.impl.development;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
+import de.vandalismdevelopment.vandalism.util.ChatUtil;
 import net.minecraft.command.CommandSource;
 
 public class TestCommand extends Command {

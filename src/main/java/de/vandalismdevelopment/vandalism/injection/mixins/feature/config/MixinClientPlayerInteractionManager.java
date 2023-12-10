@@ -12,7 +12,7 @@ public abstract class MixinClientPlayerInteractionManager {
 
     @Inject(method = "hasLimitedAttackSpeed", at = @At("HEAD"), cancellable = true)
     public void vandalism$eliminateHitDelay(final CallbackInfoReturnable<Boolean> cir) {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().networkingCategory.eliminateHitDelay.getValue()) {
+        if (Vandalism.getInstance().getClientSettings().getNetworkingSettings().eliminateHitDelay.getValue()) {
             cir.setReturnValue(false);
         }
     }

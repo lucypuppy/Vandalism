@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.injection.mixins.event;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.base.event.RenderListener;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.tooltip.CompoundTooltipComponent;
+import de.vandalismdevelopment.vandalism.util.tooltip.CompoundTooltipComponent;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.item.TooltipData;
 import net.minecraft.item.ItemStack;

@@ -1,8 +1,8 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.feature.config;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ServerUtil;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.ServerUtil;
 import net.minecraft.client.gui.screen.DisconnectedScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.*;
@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(DisconnectedScreen.class)
-public abstract class MixinDisconnectedScreen extends Screen implements MinecraftWrapper {
+public abstract class MixinDisconnectedScreen extends Screen {
 
     @Shadow
     @Final
@@ -27,9 +27,9 @@ public abstract class MixinDisconnectedScreen extends Screen implements Minecraf
 
     @Override
     public boolean keyPressed(final int keyCode, final int scanCode, final int modifiers) {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.disconnectedScreenEscaping.getValue()) {
+        if (Vandalism.getInstance().getClientSettings().getMenuSettings().disconnectedScreenEscaping.getValue()) {
             if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-                this.setScreen(this.parent);
+                this.client.setScreen(this.parent);
             }
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
@@ -38,7 +38,7 @@ public abstract class MixinDisconnectedScreen extends Screen implements Minecraf
     @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/DirectionalLayoutWidget;add(Lnet/minecraft/client/gui/widget/Widget;)Lnet/minecraft/client/gui/widget/Widget;", ordinal = 2))
     private <T extends Widget> T vandalism$addMoreButtons(final DirectionalLayoutWidget instance, final T widget) {
         instance.add(widget);
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.moreDisconnectedScreenButtons.getValue()) {
+        if (Vandalism.getInstance().getClientSettings().getMenuSettings().moreDisconnectedScreenButtons.getValue()) {
             final Positioner positioner = instance.getMainPositioner().copy().marginTop(-8);
             instance.add(ButtonWidget.builder(Text.literal("Reconnect"), button -> ServerUtil.connectToLastServer()).build(), positioner);
             instance.add(ButtonWidget.builder(Text.literal("Copy Message"), button -> {
@@ -54,7 +54,7 @@ public abstract class MixinDisconnectedScreen extends Screen implements Minecraf
                 });
                 final String text = textBuilder.toString();
                 if (!text.isBlank()) {
-                    this.keyboard().setClipboard(text);
+                    this.client.keyboard.setClipboard(text);
                 }
             }).build(), positioner);
         }

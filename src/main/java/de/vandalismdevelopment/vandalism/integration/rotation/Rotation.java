@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.integration.rotation;
 
-import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftUtil;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.WorldUtil;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.WorldUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Pair;
@@ -12,7 +12,7 @@ import net.minecraft.util.math.Vec3d;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Rotation extends MinecraftUtil {
+public class Rotation implements MinecraftWrapper {
 
     private float yaw, pitch;
 
@@ -65,14 +65,14 @@ public class Rotation extends MinecraftUtil {
     public static class Builder {
 
         public static Rotation build(final Entity entity, final boolean bestHitVec, final double range, final double precision) {
-            if (player() == null) return null;
+            if (mc.player == null) return null;
             Rotation normalRotations = null;
-            final List<Vec3d> possibleHitBoxPoints = computeHitboxAimPoints(entity, player(), 48);
+            final List<Vec3d> possibleHitBoxPoints = computeHitboxAimPoints(entity, mc.player, 48);
             final List<Vec3d> hitAblePoints = new ArrayList<>();
             double bestDistance = 99;
             Vec3d bestHitBoxVector = null;
             for (Vec3d hitboxVector : possibleHitBoxPoints) {
-                final float[] simulatedRotation = getRotationToPoint(hitboxVector, player());
+                final float[] simulatedRotation = getRotationToPoint(hitboxVector, mc.player);
                 final double hitBoxDistance = WorldUtil.rayTraceRamge(simulatedRotation[0], simulatedRotation[1]);
                 if (hitBoxDistance > 0 && hitBoxDistance < 3) {
                     if (bestDistance > hitBoxDistance) {
@@ -84,7 +84,7 @@ public class Rotation extends MinecraftUtil {
             }
             possibleHitBoxPoints.clear();
             if (bestHitBoxVector != null) {
-                final float[] rotations = getRotationToPoint(bestHitBoxVector, player());
+                final float[] rotations = getRotationToPoint(bestHitBoxVector, mc.player);
                 normalRotations = new Rotation(rotations[0], rotations[1]);
             }
             hitAblePoints.clear();

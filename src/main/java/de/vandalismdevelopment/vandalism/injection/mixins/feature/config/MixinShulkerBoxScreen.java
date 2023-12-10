@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.feature.config;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.InventoryUtil;
+import de.vandalismdevelopment.vandalism.util.InventoryUtil;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.ScreenHandlerProvider;
 import net.minecraft.client.gui.screen.ingame.ShulkerBoxScreen;
@@ -25,9 +25,9 @@ public abstract class MixinShulkerBoxScreen extends HandledScreen<ShulkerBoxScre
     @Override
     protected void init() {
         super.init();
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.manageContainerButtons.getValue()) {
+        if (Vandalism.getInstance().getClientSettings().getMenuSettings().manageContainerButtons.getValue()) {
             this.addDrawableChild(ButtonWidget.builder(Text.literal("Steal"), b -> InventoryUtil.quickMoveInventory(this, 0, VANDALISM_ROWS * 9)).dimensions(this.x + this.backgroundWidth - 108, this.y - 14, 50, 12).build());
-            this.addDrawableChild(ButtonWidget.builder(Text.literal("Store"), b -> InventoryUtil.quickMoveInventory(this, VANDALISM_ROWS * 9, this.VANDALISM_ROWS * 9 + 44)).dimensions(this.x + this.backgroundWidth - 56, this.y - 14, 50, 12).build());
+            this.addDrawableChild(ButtonWidget.builder(Text.literal("Store"), b -> InventoryUtil.quickMoveInventory(this, VANDALISM_ROWS * 9, VANDALISM_ROWS * 9 + 44)).dimensions(this.x + this.backgroundWidth - 56, this.y - 14, 50, 12).build());
         }
     }
 

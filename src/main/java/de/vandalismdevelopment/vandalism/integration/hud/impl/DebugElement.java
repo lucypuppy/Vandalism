@@ -18,7 +18,7 @@ public class DebugElement extends HUDElement {
         final String text = alignmentX + " " + alignmentY;
 
         context.drawText(
-                mc().textRenderer,
+                mc.textRenderer,
                 text,
                 x,
                 y,
@@ -26,8 +26,8 @@ public class DebugElement extends HUDElement {
                 true
         );
 
-        this.width = mc().textRenderer.getWidth(text);
-        this.height = mc().textRenderer.fontHeight;
+        this.width = mc.textRenderer.getWidth(text);
+        this.height = mc.textRenderer.fontHeight;
     }
 
 }

@@ -12,7 +12,7 @@ public abstract class MixinStringHelper {
 
     @Inject(method = "truncateChat", at = @At(value = "HEAD"), cancellable = true)
     private static void vandalism$customChatLength(final String text, final CallbackInfoReturnable<String> cir) {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.customChatLength.getValue()) {
+        if (Vandalism.getInstance().getClientSettings().getChatSettings().customChatLength.getValue()) {
             cir.setReturnValue(text);
         }
     }

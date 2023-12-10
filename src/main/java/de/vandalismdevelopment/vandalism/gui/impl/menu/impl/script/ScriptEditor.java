@@ -10,7 +10,7 @@ import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.ScriptIn
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.impl.BooleanScriptInfo;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.impl.CategoryScriptInfo;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.info.impl.StringScriptInfo;
-import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
@@ -271,7 +271,7 @@ public class ScriptEditor implements MinecraftWrapper {
             int buttonWidth = 0, buttonHeight = 27;
             ImGui.setNextItemWidth(-300);
             ImGui.inputText("##scriptsinfotextfield" + this.originalScriptName + "editor", this.infoTextField, ImGuiInputTextFlags.ReadOnly);
-            if (Vandalism.getInstance().getScriptRegistry().isScriptRunning(this.scriptFile) || (!this.canBeSaved() && this.scriptFile.exists() && this.scriptFile.length() > 0 && this.player() != null)) {
+            if (Vandalism.getInstance().getScriptRegistry().isScriptRunning(this.scriptFile) || (!this.canBeSaved() && this.scriptFile.exists() && this.scriptFile.length() > 0 && this.mc.player != null)) {
                 ImGui.sameLine();
                 if (ImGui.button((Vandalism.getInstance().getScriptRegistry().isScriptRunning(this.scriptFile) ? "Kill" : "Execute") + "##scriptsexecuteorkillin" + this.originalScriptName + "editor", buttonWidth, buttonHeight)) {
                     if (Vandalism.getInstance().getScriptRegistry().isScriptRunning(this.scriptFile)) {

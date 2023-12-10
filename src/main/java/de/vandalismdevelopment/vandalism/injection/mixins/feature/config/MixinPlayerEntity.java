@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.feature.config;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,8 +13,8 @@ public abstract class MixinPlayerEntity implements MinecraftWrapper {
 
     @Inject(method = "isCreativeLevelTwoOp", at = @At("RETURN"), cancellable = true)
     private void vandalism$spoofIsCreativeLevelTwoOp(final CallbackInfoReturnable<Boolean> cir) {
-        if (this.player() == ((PlayerEntity) (Object) this)) {
-            if (Vandalism.getInstance().getConfigManager().getMainConfig().networkingCategory.spoofIsCreativeLevelTwoOp.getValue()) {
+        if (this.mc.player == ((PlayerEntity) (Object) this)) {
+            if (Vandalism.getInstance().getClientSettings().getNetworkingSettings().spoofIsCreativeLevelTwoOp.getValue()) {
                 cir.setReturnValue(true);
             }
         }

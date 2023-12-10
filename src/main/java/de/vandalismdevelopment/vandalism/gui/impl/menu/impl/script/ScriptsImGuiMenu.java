@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.script;
+package de.vandalismdevelopment.vandalism.gui.impl.menu.impl.script;
 
 import de.florianmichael.rclasses.common.RandomUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
@@ -138,7 +138,7 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
                                                     ImGui.text(script.getName());
                                                     ImGui.separator();
                                                     ImGui.spacing();
-                                                    if (this.player() != null) {
+                                                    if (this.mc.player != null) {
                                                         if (ImGui.button((Vandalism.getInstance().getScriptRegistry().isScriptRunning(scriptFile) ? "Kill" : "Execute") + "##scriptsexecuteorkill" + script.getName(), buttonWidth, buttonHeight)) {
                                                             if (Vandalism.getInstance().getScriptRegistry().isScriptRunning(scriptFile)) {
                                                                 Vandalism.getInstance().getScriptRegistry().killRunningScriptByScriptFile(scriptFile);

@@ -47,20 +47,20 @@ public class BlockDensityModule extends Module implements WorldListener {
 
     @Override
     public void onCollisionShapeGet(final BlockEvent event) {
-        if (this.player() == null) return;
+        if (this.mc.player == null) return;
 
         final BlockState state = event.state;
         final Block block = state.getBlock();
 
-        final boolean isFluidBlock = event.pos.getY() < this.player().getY() && (block instanceof FluidBlock || !block.getFluidState(state).isEmpty());
+        final boolean isFluidBlock = event.pos.getY() < this.mc.player.getY() && (block instanceof FluidBlock || !block.getFluidState(state).isEmpty());
         if (isFluidBlock) {
-            if (this.options().useKey.isPressed()) {
-                final ItemStack mainHandStack = this.player().getMainHandStack();
+            if (this.mc.options.useKey.isPressed()) {
+                final ItemStack mainHandStack = this.mc.player.getMainHandStack();
                 if (mainHandStack.getItem() == Items.TRIDENT && EnchantmentHelper.getRiptide(mainHandStack) > 0)
                     return;
             }
 
-            if (this.player().isUsingRiptide())
+            if (this.mc.player.isUsingRiptide())
                 return;
         }
 

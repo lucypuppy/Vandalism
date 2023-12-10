@@ -12,7 +12,7 @@ public abstract class MixinItemGroup {
 
     @Inject(method = "shouldDisplay", at = @At("HEAD"), cancellable = true)
     private void vandalism$alwaysDisplayCreativeTab(final CallbackInfoReturnable<Boolean> cir) {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.alwaysDisplayCreativeTab.getValue()) {
+        if (Vandalism.getInstance().getClientSettings().getMenuSettings().alwaysDisplayCreativeTab.getValue()) {
             cir.setReturnValue(true);
         }
     }

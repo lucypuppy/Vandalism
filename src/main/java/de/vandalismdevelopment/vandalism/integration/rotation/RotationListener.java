@@ -6,7 +6,7 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.base.event.PacketListener;
 import de.vandalismdevelopment.vandalism.base.event.RenderListener;
 import de.vandalismdevelopment.vandalism.util.RenderUtil;
-import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.MathHelper;
@@ -38,7 +38,7 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
 
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
-        this.lastRotation = new Rotation(this.player().lastYaw, this.player().lastPitch);
+        this.lastRotation = new Rotation(this.mc.player.lastYaw, this.mc.player.lastPitch);
         if (this.targetRotation != null) {
             this.rotation = this.applyGCDFix(rotationDistribution(this.targetRotation, this.lastRotation), delta);
             return;
@@ -46,15 +46,15 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
         if (this.rotation == null) {
             return;
         }
-        final float yaw = MathHelper.wrapDegrees(this.player().getYaw());
-        final float pitch = this.player().getPitch();
+        final float yaw = MathHelper.wrapDegrees(this.mc.player.getYaw());
+        final float pitch = this.mc.player.getPitch();
         final float yawDiff = Math.abs(yaw - this.rotation.getYaw());
         final float pitchDiff = Math.abs(pitch - this.rotation.getPitch());
         if (yawDiff <= 0.5 && pitchDiff <= 0.5) {
             this.rotation = null;
             return;
         }
-        if (!Vandalism.getInstance().getConfigManager().getMainConfig().rotationCategory.rotateBack.getValue()) {
+        if (!Vandalism.getInstance().getClientSettings().getRotationSettings().rotateBack.getValue()) {
             this.rotation = this.applyGCDFix(new Rotation(yaw, pitch), delta);
             return;
         }
@@ -75,14 +75,14 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
     }
 
     private Rotation applyGCDFix(final Rotation rotation, final float partialTicks) {
-        final double f = this.options().getMouseSensitivity().getValue() * 0.6F + 0.2F;
+        final double f = this.mc.options.getMouseSensitivity().getValue() * 0.6F + 0.2F;
         final double g = f * f * f;
         final double gcd = g * 8.0;
-        final boolean disallowGCD = this.options().getPerspective().isFirstPerson() && this.player().isUsingSpyglass();
+        final boolean disallowGCD = this.mc.options.getPerspective().isFirstPerson() && this.mc.player.isUsingSpyglass();
         final double iterationsNeeded = (RenderUtil.getFps() / 20.0) * partialTicks;
         final int iterations = MathHelper.floor(iterationsNeeded + this.partialIterations);
         this.partialIterations += iterationsNeeded - iterations;
-        final RotationGCD gcdMode = Vandalism.getInstance().getConfigManager().getMainConfig().rotationCategory.gcdMode.getValue();
+        final RotationGCD gcdMode = Vandalism.getInstance().getClientSettings().getRotationSettings().gcdMode.getValue();
         final Rotation fixedRotation = gcdMode.getLambda().apply(rotation, this.lastRotation, disallowGCD ? g : gcd, iterations);
         fixedRotation.setYaw(this.lastRotation.getYaw() + MathHelper.wrapDegrees(fixedRotation.getYaw() - this.lastRotation.getYaw()));
         fixedRotation.setPitch(MathHelper.clamp(fixedRotation.getPitch(), -90.0F, 90.0F));

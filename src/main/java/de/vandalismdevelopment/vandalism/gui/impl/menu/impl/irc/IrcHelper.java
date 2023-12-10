@@ -1,7 +1,7 @@
-package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.impl.irc;
+package de.vandalismdevelopment.vandalism.gui.impl.menu.impl.irc;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
+import de.vandalismdevelopment.vandalism.util.ChatUtil;
 import net.minecraft.util.Formatting;
 import re.catgirls.irc.ChatClientWrapper;
 import re.catgirls.irc.listeners.impl.ProfileListener;
@@ -59,7 +59,7 @@ public class IrcHelper {
                                         wrapper.getClient().getSession().getProfile().getName()
                                 ));
 
-                        Vandalism.getInstance().getConfigManager().save(Vandalism.getInstance().getConfigManager().getIrcConfig());
+                        Vandalism.getInstance().getConfigManager().save();
                     }
                 }
             });

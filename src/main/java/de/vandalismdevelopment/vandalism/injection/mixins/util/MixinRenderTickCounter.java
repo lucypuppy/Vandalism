@@ -1,6 +1,6 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.util;
 
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.TimerUtil;
+import de.vandalismdevelopment.vandalism.util.TimerUtil;
 import net.minecraft.client.render.RenderTickCounter;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;

@@ -7,7 +7,7 @@ import de.vandalismdevelopment.vandalism.integration.hud.impl.DebugElement;
 import de.vandalismdevelopment.vandalism.integration.hud.impl.InfoHUDElement;
 import de.vandalismdevelopment.vandalism.integration.hud.impl.ModuleListHUDElement;
 import de.vandalismdevelopment.vandalism.integration.hud.impl.WatermarkHUDElement;
-import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 
 import java.util.Arrays;

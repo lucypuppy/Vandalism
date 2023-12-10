@@ -5,14 +5,13 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.base.event.InputListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureList;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.combat.BowSpammerModule;
-import de.vandalismdevelopment.vandalism.feature.impl.module.impl.development.DebugModule;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.development.PacketLoggerModule;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.development.TestModule;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.exploit.*;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.misc.*;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement.*;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.render.*;
-import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import org.lwjgl.glfw.GLFW;
 
 public class ModuleRegistry implements InputListener, MinecraftWrapper {
@@ -69,7 +68,6 @@ public class ModuleRegistry implements InputListener, MinecraftWrapper {
         this.modules = new FeatureList<>();
         this.registerModules(
                 new BowSpammerModule(),
-                new DebugModule(),
                 new PacketLoggerModule(),
                 new TestModule(),
                 new BungeeCordSpooferModule(),
@@ -87,7 +85,6 @@ public class ModuleRegistry implements InputListener, MinecraftWrapper {
                 new ItemStackLoggerModule(),
                 this.messageEncryptorModule = new MessageEncryptorModule(),
                 this.modPacketBlockerModule = new ModPacketBlockerModule(),
-                new NoteBlockPlayerModule(),
                 new BlockDensityModule(),
                 new ElytraFlightModule(),
                 new FlightModule(),
@@ -136,7 +133,7 @@ public class ModuleRegistry implements InputListener, MinecraftWrapper {
 
     @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN || this.player() == null || this.currentScreen() != null) {
+        if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN || this.mc.player == null || this.mc.currentScreen != null) {
             return;
         }
         for (final Module module : Vandalism.getInstance().getModuleRegistry().getModules()) {

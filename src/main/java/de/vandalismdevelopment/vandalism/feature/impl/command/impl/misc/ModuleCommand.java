@@ -7,8 +7,8 @@ import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
 import de.vandalismdevelopment.vandalism.feature.impl.command.arguments.GlfwKeyNameArgumentType;
 import de.vandalismdevelopment.vandalism.feature.impl.command.arguments.ModuleArgumentType;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
+import de.vandalismdevelopment.vandalism.util.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import net.minecraft.command.CommandSource;
 
 public class ModuleCommand extends Command {

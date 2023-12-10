@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.util.rotation;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import de.vandalismdevelopment.vandalism.integration.rotation.Rotation;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;
@@ -33,7 +33,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
     private void vandalism$initRenderedModRotationPitch(final T livingEntity, final float yaw, final float tickDelta, final MatrixStack matrixStack, final VertexConsumerProvider vertexConsumerProvider, final int light, final CallbackInfo ci) {
         this.vandalism_rotationPitch = Float.NaN;
         final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
-        if (livingEntity != this.player() || rotation == null) return;
+        if (livingEntity != this.mc.player || rotation == null) return;
         this.vandalism_rotationPitch = rotation.getPitch();
     }
 

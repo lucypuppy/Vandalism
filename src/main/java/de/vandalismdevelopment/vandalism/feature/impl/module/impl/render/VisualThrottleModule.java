@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.feature.impl.module.impl.render;
 
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ParticleTracker;
+import de.vandalismdevelopment.vandalism.util.ParticleTracker;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
 import de.vandalismdevelopment.vandalism.base.value.impl.number.slider.SliderIntegerValue;

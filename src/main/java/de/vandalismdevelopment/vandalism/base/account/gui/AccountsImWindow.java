@@ -3,18 +3,24 @@ package de.vandalismdevelopment.vandalism.base.account.gui;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.base.account.AbstractAccount;
 import de.vandalismdevelopment.vandalism.base.account.AccountManager;
-import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.ImGuiMenu;
+import de.vandalismdevelopment.vandalism.gui_v2.ImWindow;
 import imgui.ImGui;
 import imgui.flag.ImGuiMouseButton;
 import imgui.flag.ImGuiWindowFlags;
 import net.minecraft.client.gui.DrawContext;
 
-public class AccountsImWindow extends ImGuiMenu {
+import static de.vandalismdevelopment.vandalism.gui_v2.loader.ImUtils.subButton;
+
+public class AccountsImWindow extends ImWindow {
     private static final float ACCOUNT_ENTRY_CONTENT_WIDTH = 64F;
     private static final float ACCOUNT_ENTRY_CONTENT_HEIGHT = 64F;
 
-    public AccountsImWindow() {
+    private final AccountManager accountManager;
+
+    public AccountsImWindow(final AccountManager accountManager) {
         super("Accounts");
+
+        this.accountManager = accountManager;
     }
 
     protected void renderMenuBar(final AccountManager accountManager) {
@@ -49,13 +55,13 @@ public class AccountsImWindow extends ImGuiMenu {
                     final var xuid = currentAccount.getSession().getXuid().orElse("");
                     final var clientId = currentAccount.getSession().getClientId().orElse("");
 
-                    mc().keyboard.setClipboard("Name: " + name + "\n" +
+                    mc.keyboard.setClipboard("Name: " + name + "\n" +
                             "UUID: " + uuid + "\n" +
                             "Access Token: " + accessToken + "\n" +
                             "XUID: " + xuid + "\n" +
                             "Client ID: " + clientId + "\n");
                 }
-                if (ImGui.button("Logout", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                if (subButton("Logout")) {
                     try {
                         accountManager.getFirstAccount().logIn();
                     } catch (Throwable e) {
@@ -73,7 +79,7 @@ public class AccountsImWindow extends ImGuiMenu {
     protected void renderAccountPopup() {
         if (ImGui.beginPopupContextItem("account-popup")) {
             ImGui.setNextItemWidth(400F); // Just some magic value to make the popup look good
-            if (ImGui.button("Delete account", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+            if (subButton("Delete account")) {
                 ImGui.closeCurrentPopup();
                 Vandalism.getInstance().getAccountManager().remove(hoveredAccount);
                 hoveredAccount = null;
@@ -81,14 +87,14 @@ public class AccountsImWindow extends ImGuiMenu {
                 return;
             }
 
-            if (ImGui.button("Copy Name", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
-                mc().keyboard.setClipboard(hoveredAccount.getDisplayName());
+            if (subButton("Copy Name")) {
+                mc.keyboard.setClipboard(hoveredAccount.getDisplayName());
             }
             if (hoveredAccount.getSession().getUuidOrNull() != null && ImGui.button("Copy UUID", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
-                mc().keyboard.setClipboard(hoveredAccount.getSession().getUuidOrNull().toString());
+                mc.keyboard.setClipboard(hoveredAccount.getSession().getUuidOrNull().toString());
             }
-            if (ImGui.button("Copy Access token", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
-                mc().keyboard.setClipboard(hoveredAccount.getSession().getAccessToken());
+            if (subButton("Copy Access token")) {
+                mc.keyboard.setClipboard(hoveredAccount.getSession().getAccessToken());
             }
             ImGui.text("Account type: " + hoveredAccount.getName());
             if (hoveredAccount.getLastLogin() != null) {
@@ -103,8 +109,6 @@ public class AccountsImWindow extends ImGuiMenu {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        final AccountManager accountManager = Vandalism.getInstance().getAccountManager();
-
         ImGui.begin(getName(), ImGuiWindowFlags.MenuBar);
         renderMenuBar(accountManager);
 

@@ -1,6 +1,7 @@
 package de.vandalismdevelopment.vandalism.integration.hud.impl;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.base.FabricBootstrap;
 import de.vandalismdevelopment.vandalism.integration.hud.HUDElement;
 import de.vandalismdevelopment.vandalism.util.GLStateTracker;
 import net.minecraft.client.gui.DrawContext;
@@ -18,13 +19,13 @@ public class WatermarkHUDElement extends HUDElement {
     @Override
     public void onRender(final DrawContext context, final float delta) {
         final int imageWidth = 156, imageHeight = 44;
-        this.mc().getTextureManager().getTexture(Vandalism.getInstance().getLogo()).setFilter(
+        this.mc.getTextureManager().getTexture(FabricBootstrap.MOD_ICON).setFilter(
                 true,
                 true
         );
         GLStateTracker.BLEND.save(true);
         context.drawTexture(
-                Vandalism.getInstance().getLogo(),
+                FabricBootstrap.MOD_ICON,
                 this.x,
                 this.y,
                 0,

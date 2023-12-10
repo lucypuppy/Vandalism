@@ -17,7 +17,7 @@ import de.vandalismdevelopment.vandalism.feature.impl.command.impl.movement.HCli
 import de.vandalismdevelopment.vandalism.feature.impl.command.impl.movement.VClipCommand;
 import de.vandalismdevelopment.vandalism.feature.impl.command.impl.render.ClientsideGameModeCommand;
 import de.vandalismdevelopment.vandalism.feature.impl.command.impl.render.ClientsideInventoryClearCommand;
-import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommandSource;
 import net.minecraft.command.CommandSource;

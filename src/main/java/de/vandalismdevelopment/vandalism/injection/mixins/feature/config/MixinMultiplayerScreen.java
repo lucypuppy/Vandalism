@@ -36,7 +36,7 @@ public abstract class MixinMultiplayerScreen extends Screen {
 
     @Inject(method = "init", at = @At("RETURN"))
     private void vandalism$enhancedServerListAddConfigButton(final CallbackInfo ci) {
-        if (!Vandalism.getInstance().getConfigManager().getMainConfig().enhancedServerListCategory.enhancedServerList.getValue()) {
+        if (!Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().enhancedServerList.getValue()) {
             return;
         }
         this.addDrawableChild(ButtonWidget.builder(Text.literal("Server Lists"), button -> {
@@ -55,7 +55,7 @@ public abstract class MixinMultiplayerScreen extends Screen {
 
     @ModifyArgs(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawCenteredTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;III)V"))
     private void vandalism$enhancedServerListModifyTitle(final Args args) {
-        if (!Vandalism.getInstance().getConfigManager().getMainConfig().enhancedServerListCategory.enhancedServerList.getValue()) {
+        if (!Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().enhancedServerList.getValue()) {
             return;
         }
         final ServerList selectedServerList = Vandalism.getInstance().getServerListManager().getSelectedServerList();
@@ -67,10 +67,10 @@ public abstract class MixinMultiplayerScreen extends Screen {
 
     @Override
     public boolean keyPressed(final int keyCode, final int scanCode, final int modifiers) {
-        if (this.client == null || !Vandalism.getInstance().getConfigManager().getMainConfig().enhancedServerListCategory.enhancedServerList.getValue()) {
+        if (this.client == null || !Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().enhancedServerList.getValue()) {
             return true;
         }
-        if (keyCode == Vandalism.getInstance().getConfigManager().getMainConfig().enhancedServerListCategory.pasteServerKey.getValue().getKeyCode()) {
+        if (keyCode == Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().pasteServerKey.getValue().getKeyCode()) {
             final String clipboard = this.client.keyboard.getClipboard();
             if (clipboard != null && !clipboard.isBlank()) {
                 final ServerInfo serverInfo = new ServerInfo(
@@ -86,10 +86,10 @@ public abstract class MixinMultiplayerScreen extends Screen {
         final MultiplayerServerListWidget.Entry selectedEntry = this.serverListWidget.getSelectedOrNull();
         if (selectedEntry instanceof final MultiplayerServerListWidget.ServerEntry selectedServerEntry) {
             final ServerInfo serverInfo = selectedServerEntry.getServer();
-            if (keyCode == Vandalism.getInstance().getConfigManager().getMainConfig().enhancedServerListCategory.copyServerKey.getValue().getKeyCode()) {
+            if (keyCode == Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().copyServerKey.getValue().getKeyCode()) {
                 this.client.keyboard.setClipboard(serverInfo.address);
             }
-            if (keyCode == Vandalism.getInstance().getConfigManager().getMainConfig().enhancedServerListCategory.deleteServerKey.getValue().getKeyCode()) {
+            if (keyCode == Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().deleteServerKey.getValue().getKeyCode()) {
                 this.serverList.remove(serverInfo);
                 this.serverList.saveFile();
                 this.refresh();

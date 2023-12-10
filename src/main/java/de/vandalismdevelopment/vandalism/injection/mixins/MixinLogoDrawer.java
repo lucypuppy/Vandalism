@@ -1,6 +1,6 @@
 package de.vandalismdevelopment.vandalism.injection.mixins;
 
-import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.base.FabricBootstrap;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.LogoDrawer;
 import net.minecraft.util.Identifier;
@@ -29,7 +29,7 @@ public abstract class MixinLogoDrawer {
     private void vandalism$forceModLogo(final DrawContext instance, final Identifier texture, final int x, final int y, final float u, final float v, final int width, final int height, final int textureWidth, final int textureHeight) {
         final Identifier newTexture;
         if (texture.equals(LOGO_TEXTURE) || texture.equals(MINCERAFT_TEXTURE)) {
-            newTexture = Vandalism.getInstance().getLogo();
+            newTexture = FabricBootstrap.MOD_ICON;
         }
         else if (texture.equals(EDITION_TEXTURE)) return;
         else newTexture = texture;

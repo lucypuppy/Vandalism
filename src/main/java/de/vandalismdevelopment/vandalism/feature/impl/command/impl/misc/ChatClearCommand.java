@@ -27,7 +27,7 @@ public class ChatClearCommand extends Command {
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
-            this.mc().inGameHud.getChatHud().clear(false);
+            this.mc.inGameHud.getChatHud().clear(false);
             return SINGLE_SUCCESS;
         });
 
@@ -35,7 +35,7 @@ public class ChatClearCommand extends Command {
                 .executes(context -> {
                     final boolean clearSentHistory = BoolArgumentType.getBool(context, "clear-sent-history");
                     if (clearSentHistory) {
-                        final File commandHistoryFile = new File(this.mc().runDirectory, "command_history.txt");
+                        final File commandHistoryFile = new File(this.mc.runDirectory, "command_history.txt");
                         if (commandHistoryFile.exists()) {
                             if (!commandHistoryFile.delete()) {
                                 Vandalism.getInstance().getLogger().error("Failed to delete command history file.");
@@ -50,7 +50,7 @@ public class ChatClearCommand extends Command {
                             }
                         }
                     }
-                    this.mc().inGameHud.getChatHud().clear(clearSentHistory);
+                    this.mc.inGameHud.getChatHud().clear(clearSentHistory);
                     return SINGLE_SUCCESS;
                 })
         );

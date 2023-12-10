@@ -2,8 +2,8 @@ package de.vandalismdevelopment.vandalism.injection.mixins.feature.config;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.integration.CustomRPConfirmScreen;
-import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ServerUtil;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.ServerUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.ServerResourcePackProvider;
 import net.minecraft.client.util.NetworkUtils;
@@ -36,7 +36,7 @@ public abstract class MixinServerResourcePackProvider implements MinecraftWrappe
 
     @Redirect(method = "method_4634", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;execute(Ljava/lang/Runnable;)V"))
     private void vandalism$moreResourcePackOptionsDump1(final MinecraftClient instance, final Runnable runnable) {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.moreResourcePackOptions.getValue() && CustomRPConfirmScreen.dump) {
+        if (Vandalism.getInstance().getClientSettings().getMenuSettings().moreResourcePackOptions.getValue() && CustomRPConfirmScreen.dump) {
             return;
         }
         instance.execute(runnable);
@@ -70,8 +70,8 @@ public abstract class MixinServerResourcePackProvider implements MinecraftWrappe
 
     @Redirect(method = "method_4634", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resource/ServerResourcePackProvider;loadServerPack(Ljava/io/File;Lnet/minecraft/resource/ResourcePackSource;)Ljava/util/concurrent/CompletableFuture;"))
     private CompletableFuture<Void> vandalism$moreResourcePackOptionsDump2(final ServerResourcePackProvider instance, final File file, final ResourcePackSource packSource) {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.moreResourcePackOptions.getValue() && CustomRPConfirmScreen.dump) {
-            final File resourcePackFile = new File(this.mc().getResourcePackDir().toFile(), ServerUtil.getLastServerInfo().address + "-server-resource-pack-" + file.getName());
+        if (Vandalism.getInstance().getClientSettings().getMenuSettings().moreResourcePackOptions.getValue() && CustomRPConfirmScreen.dump) {
+            final File resourcePackFile = new File(this.mc.getResourcePackDir().toFile(), ServerUtil.getLastServerInfo().address + "-server-resource-pack-" + file.getName());
             try {
                 Files.move(file.toPath(), resourcePackFile.toPath());
                 final File tempDir = new File(resourcePackFile.getParentFile(), resourcePackFile.getName() + "-temp");
@@ -117,13 +117,13 @@ public abstract class MixinServerResourcePackProvider implements MinecraftWrappe
 
     @Redirect(method = "download", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/NetworkUtils;downloadResourcePack(Ljava/io/File;Ljava/net/URL;Ljava/util/Map;ILnet/minecraft/util/ProgressListener;Ljava/net/Proxy;)Ljava/util/concurrent/CompletableFuture;"))
     private CompletableFuture<?> vandalism$moreResourcePackOptionsSkipDownload1(final File file, final URL url, final Map<String, String> headers, final int maxFileSize, final @Nullable ProgressListener progressListener, final Proxy proxy) {
-        final boolean cancelProgressListener = Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.moreResourcePackOptions.getValue() && CustomRPConfirmScreen.skipDownload;
+        final boolean cancelProgressListener = Vandalism.getInstance().getClientSettings().getMenuSettings().moreResourcePackOptions.getValue() && CustomRPConfirmScreen.skipDownload;
         return NetworkUtils.downloadResourcePack(file, url, headers, maxFileSize, cancelProgressListener ? null : progressListener, proxy);
     }
 
     @Inject(method = "verifyFile", at = @At("HEAD"), cancellable = true)
     private void vandalism$moreResourcePackOptionsSkipDownload2(final String expectedSha1, final File file, final CallbackInfoReturnable<Boolean> cir) {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().menuCategory.moreResourcePackOptions.getValue() && CustomRPConfirmScreen.skipDownload) {
+        if (Vandalism.getInstance().getClientSettings().getMenuSettings().moreResourcePackOptions.getValue() && CustomRPConfirmScreen.skipDownload) {
             cir.setReturnValue(true);
         }
     }

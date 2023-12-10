@@ -6,7 +6,7 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.base.event.PacketListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
+import de.vandalismdevelopment.vandalism.util.ChatUtil;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.base.value.impl.MultiSelectionValue;
 import net.minecraft.network.NetworkSide;
@@ -71,7 +71,7 @@ public class PacketLoggerModule extends Module implements PacketListener {
                     text.append("Incoming packet: ");
                 }
                 text.append(packetName);
-                if (this.mc().inGameHud != null) {
+                if (this.mc.inGameHud != null) {
                     ChatUtil.infoChatMessage(text.toString());
                 } else {
                     Vandalism.getInstance().getLogger().info(text.toString());

@@ -4,8 +4,8 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.Feature;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.FeatureType;
+import de.vandalismdevelopment.vandalism.util.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import de.vandalismdevelopment.vandalism.base.value.IValue;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.base.value.ValueCategory;
@@ -52,7 +52,7 @@ public abstract class Module extends Feature implements IValue {
                 isDefaultEnabled
         ).valueChangedConsumer(state -> {
             if (Vandalism.getInstance().getClientSettings().getMenuSettings().moduleStateLogging.getValue()) {
-                if (this.player() != null) {
+                if (this.mc.player != null) {
                     ChatUtil.infoChatMessage(this.getName() + " has been " + (state ? "enabled" : "disabled") + ".");
                 }
             }

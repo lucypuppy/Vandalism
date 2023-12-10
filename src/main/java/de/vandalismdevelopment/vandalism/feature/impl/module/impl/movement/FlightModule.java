@@ -49,7 +49,7 @@ public class FlightModule extends Module implements PacketListener {
     public void onPacket(final PacketEvent event) {
         if (event.packet instanceof final PlayerMoveC2SPacket playerMoveC2SPacket
                 && this.antiKick.getValue())
-            playerMoveC2SPacket.y += Math.sin(this.player().age) * 0.2;
+            playerMoveC2SPacket.y += Math.sin(this.mc.player.age) * 0.2;
     }
 
 }

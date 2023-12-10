@@ -5,10 +5,10 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.base.event.MovementListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.MovementUtil;
 import de.vandalismdevelopment.vandalism.integration.rotation.RotationListener;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
+import de.vandalismdevelopment.vandalism.util.MovementUtil;
 import net.minecraft.util.math.MathHelper;
 
 public class SprintModule extends Module implements MovementListener {
@@ -44,7 +44,7 @@ public class SprintModule extends Module implements MovementListener {
     public void onSprint(final SprintEvent event) {
         final RotationListener rotation = Vandalism.getInstance().getRotationListener();
         final boolean useSpoofedRotation = rotation.getRotation() != null;
-        if (Math.abs(MathHelper.wrapDegrees((useSpoofedRotation ? rotation.getRotation().getYaw() : player().getYaw()) - MovementUtil.getInputAngle(player().getYaw()))) > 45D) {
+        if (Math.abs(MathHelper.wrapDegrees((useSpoofedRotation ? rotation.getRotation().getYaw() : mc.player.getYaw()) - MovementUtil.getInputAngle(mc.player.getYaw()))) > 45D) {
             event.sprinting = false;
             event.force = true;
             return;

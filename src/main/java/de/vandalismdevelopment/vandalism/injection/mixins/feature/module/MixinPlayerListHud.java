@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.injection.mixins.feature.module;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.render.BetterTabListModule;
 import de.vandalismdevelopment.vandalism.util.RenderUtil;
-import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.PlayerListHud;
@@ -50,23 +50,23 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
 
     @Inject(method = "renderLatencyIcon", at = @At("HEAD"), cancellable = true)
     private void vandalism$betterTabListApplyAdditionalInfo(final DrawContext context, final int width, final int x, final int y, final PlayerListEntry entry, final CallbackInfo ci) {
-        final int a = this.mc().isInSingleplayer() || (this.networkHandler() != null && this.networkHandler().getConnection().isEncrypted()) ? 9 : 0, w = x + a;
+        final int a = this.mc.isInSingleplayer() || (this.mc.getNetworkHandler() != null && this.mc.getNetworkHandler().getConnection().isEncrypted()) ? 9 : 0, w = x + a;
         final BetterTabListModule betterTabListModule = Vandalism.getInstance().getModuleRegistry().getBetterTabListModule();
         final int color;
-        if (betterTabListModule.isEnabled() && betterTabListModule.highlightSelf.getValue() && this.player() != null && entry.getProfile().getId().equals(this.player().getGameProfile().getId())) {
+        if (betterTabListModule.isEnabled() && betterTabListModule.highlightSelf.getValue() && this.mc.player != null && entry.getProfile().getId().equals(this.mc.player.getGameProfile().getId())) {
             color = betterTabListModule.selfColor.getValue().getRGB();
         } else {
-            color = this.options().getTextBackgroundColor(0x20FFFFFF);
+            color = this.mc.options.getTextBackgroundColor(0x20FFFFFF);
         }
         final boolean moreInfo = betterTabListModule.isEnabled() && betterTabListModule.moreInfo.getValue();
         context.fill(w, y, w + width - a, y + (moreInfo ? 9 : 8), color);
-        context.drawTextWithShadow(this.textRenderer(), this.getPlayerName(entry), w, y, entry.getGameMode() == GameMode.SPECTATOR ? -1862270977 : -1);
+        context.drawTextWithShadow(this.mc.textRenderer, this.getPlayerName(entry), w, y, entry.getGameMode() == GameMode.SPECTATOR ? -1862270977 : -1);
         if (moreInfo) {
             final int pingY = (int) (y / VANDALISM_SCALE);
             final int infoX = (int) (x / VANDALISM_SCALE) + (int) (width / VANDALISM_SCALE);
             final int latency = entry.getLatency();
             final int gameModeId = entry.getGameMode().getId();
-            final int gameModeY = (int) ((y + (this.textRenderer().fontHeight / 2f)) / VANDALISM_SCALE);
+            final int gameModeY = (int) ((y + (this.mc.textRenderer.fontHeight / 2f)) / VANDALISM_SCALE);
             final double pingPercent = Math.min((float) latency / betterTabListModule.highPing.getValue(), 1.0f);
             final Color lowPingColor = betterTabListModule.lowPingColor.getValue();
             final Color averagePingColor = betterTabListModule.averagePingColor.getValue();
@@ -75,8 +75,8 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
             final String ping = latency + " ms", gameMode = gameModeId + " gm";
             context.getMatrices().push();
             context.getMatrices().scale(VANDALISM_SCALE, VANDALISM_SCALE, 1.0f);
-            context.drawTextWithShadow(this.textRenderer(), ping, infoX - this.textRenderer().getWidth(ping), pingY, pingColor.getRGB());
-            context.drawTextWithShadow(this.textRenderer(), gameMode, infoX - this.textRenderer().getWidth(gameMode), gameModeY, betterTabListModule.getColorFromGameMode(gameModeId));
+            context.drawTextWithShadow(this.mc.textRenderer, ping, infoX - this.mc.textRenderer.getWidth(ping), pingY, pingColor.getRGB());
+            context.drawTextWithShadow(this.mc.textRenderer, gameMode, infoX - this.mc.textRenderer.getWidth(gameMode), gameModeY, betterTabListModule.getColorFromGameMode(gameModeId));
             context.getMatrices().pop();
             ci.cancel();
         }

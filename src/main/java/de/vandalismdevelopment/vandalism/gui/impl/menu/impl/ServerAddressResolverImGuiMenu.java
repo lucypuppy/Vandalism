@@ -1,18 +1,19 @@
-package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.impl;
+package de.vandalismdevelopment.vandalism.gui.impl.menu.impl;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.ImGuiMenu;
+import de.vandalismdevelopment.vandalism.gui_v2.ImWindow;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
 import imgui.flag.ImGuiInputTextFlags;
+import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import net.lenni0451.mcping.ServerAddress;
 import net.minecraft.client.gui.DrawContext;
 
 import java.util.concurrent.Executors;
 
-public class ServerAddressResolverImGuiMenu extends ImGuiMenu {
+public class ServerAddressResolverImGuiMenu extends ImWindow {
 
     private static final ImGuiInputTextCallback HOSTNAME_FILTER = new ImGuiInputTextCallback() {
 
@@ -42,7 +43,7 @@ public class ServerAddressResolverImGuiMenu extends ImGuiMenu {
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         if (ImGui.begin(
                 "Server Address Resolver##serveraddressresolver",
-                Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
+                ImGuiWindowFlags.NoCollapse
         )) {
             ImGui.inputText(
                     "Hostname##serveraddressresolverhostname",

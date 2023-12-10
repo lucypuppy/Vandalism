@@ -1,11 +1,12 @@
-package de.vandalismdevelopment.vandalism.gui.imgui.impl.widget.impl.serverinfo;
+package de.vandalismdevelopment.vandalism.gui.impl.widget.impl.serverinfo;
 
 import com.google.gson.JsonSyntaxException;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import imgui.ImGui;
 import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiTableFlags;
+import imgui.flag.ImGuiWindowFlags;
 import net.lenni0451.mcping.responses.MCPingResponse;
 import net.lenni0451.mcping.responses.QueryPingResponse;
 import net.minecraft.text.MutableText;
@@ -110,7 +111,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                         ImGui.separator();
                         ImGui.spacing();
                         if (ImGui.button("Copy Address" + uniqueId + "copyaddress", buttonWidth, buttonHeight)) {
-                            this.keyboard().setClipboard(address);
+                            this.mc.keyboard.setClipboard(address);
                         }
                         if (ImGui.button("Copy Info" + uniqueId + "copyinfo", buttonWidth, buttonHeight)) {
                             final StringBuilder serverInfoBuilder = new StringBuilder();
@@ -156,7 +157,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                                     serverInfoBuilder.append(" - ").append(plugin).append('\n');
                                 }
                             }
-                            this.keyboard().setClipboard(serverInfoBuilder.toString());
+                            this.mc.keyboard.setClipboard(serverInfoBuilder.toString());
                         }
                         if (this.mcPingResponse.players.sample.length > 0) {
                             if (ImGui.button("Player List: " + (this.showPlayerList ? "Disable" : "Enable") + uniqueId, buttonWidth, buttonHeight)) {
@@ -189,7 +190,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
         if (this.showPlayerList && this.mcPingResponse.players.sample.length > 0) {
             if (ImGui.begin(
                     "Player List of " + this.mcPingResponse.server.ip + ":" + this.mcPingResponse.server.port + uniqueId,
-                    Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
+                    ImGuiWindowFlags.NoCollapse
             )) {
                 if (ImGui.button("Close Player List" + uniqueId)) {
                     this.showPlayerList = false;
@@ -218,7 +219,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                                     ImGui.spacing();
                                     final int buttonWidth = 0, buttonHeight = 28;
                                     if (ImGui.button("Copy Data" + uniqueId + player.name, buttonWidth, buttonHeight)) {
-                                        this.keyboard().setClipboard(player.name + " (" + player.id + ")");
+                                        this.mc.keyboard.setClipboard(player.name + " (" + player.id + ")");
                                     }
                                     ImGui.spacing();
                                 }
@@ -238,7 +239,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
         ) {
             if (ImGui.begin(
                     "Mods of " + this.mcPingResponse.server.ip + ":" + this.mcPingResponse.server.port + uniqueId,
-                    Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
+                    ImGuiWindowFlags.NoCollapse
             )) {
                 if (ImGui.button("Close Mods" + uniqueId)) {
                     this.showMods = false;
@@ -267,7 +268,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                                     ImGui.spacing();
                                     final int buttonWidth = 0, buttonHeight = 28;
                                     if (ImGui.button("Copy Data" + uniqueId + mod.modid, buttonWidth, buttonHeight)) {
-                                        this.keyboard().setClipboard(mod.modid + " (" + mod.version + ")");
+                                        this.mc.keyboard.setClipboard(mod.modid + " (" + mod.version + ")");
                                     }
                                     ImGui.spacing();
                                 }
@@ -303,7 +304,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                                         ImGui.spacing();
                                         final int buttonWidth = 0, buttonHeight = 28;
                                         if (ImGui.button("Copy Data" + uniqueId + mod.modId, buttonWidth, buttonHeight)) {
-                                            this.keyboard().setClipboard(mod.modId + " (" + mod.modmarker + ")");
+                                            this.mc.keyboard.setClipboard(mod.modId + " (" + mod.modmarker + ")");
                                         }
                                         ImGui.spacing();
                                     }
@@ -321,7 +322,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
         if (this.showPlugins && this.queryPingResponse != null && this.queryPingResponse.plugins.sample.length > 0) {
             if (ImGui.begin(
                     "Plugins of " + this.queryPingResponse.server.ip + ":" + this.queryPingResponse.server.port + uniqueId,
-                    Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
+                    ImGuiWindowFlags.NoCollapse
             )) {
                 if (ImGui.button("Close Plugins" + uniqueId)) {
                     this.showPlugins = false;
@@ -349,7 +350,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                                     ImGui.spacing();
                                     final int buttonWidth = 0, buttonHeight = 28;
                                     if (ImGui.button("Copy Data" + uniqueId + plugin, buttonWidth, buttonHeight)) {
-                                        this.keyboard().setClipboard(plugin);
+                                        this.mc.keyboard.setClipboard(plugin);
                                     }
                                     ImGui.spacing();
                                 }

@@ -4,8 +4,8 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ServerUtil;
+import de.vandalismdevelopment.vandalism.util.ChatUtil;
+import de.vandalismdevelopment.vandalism.util.ServerUtil;
 import net.minecraft.command.CommandSource;
 
 public class CopyServerIPCommand extends Command {
@@ -30,12 +30,12 @@ public class CopyServerIPCommand extends Command {
     }
 
     private void copyAddress(final boolean entireAddress) {
-        if (this.mc().isInSingleplayer()) {
+        if (this.mc.isInSingleplayer()) {
             ChatUtil.errorChatMessage("You are in Single-player.");
             return;
         }
 
-        this.keyboard().setClipboard(ServerUtil.getLastServerInfo().address + (entireAddress ? " | " + this.networkHandler().getConnection().getAddress().toString() : ""));
+        this.mc.keyboard.setClipboard(ServerUtil.getLastServerInfo().address + (entireAddress ? " | " + this.mc.getNetworkHandler().getConnection().getAddress().toString() : ""));
         ChatUtil.infoChatMessage("Server IP copied into the Clipboard.");
     }
 

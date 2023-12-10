@@ -11,7 +11,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.List;
 
-import static de.vandalismdevelopment.vandalism.util.minecraft.impl.ItemStackUtil.withClientSide;
+import static de.vandalismdevelopment.vandalism.util.ItemStackUtil.withClientSide;
 
 public class CrashItemsCreativeTab extends AbstractCreativeTab {
 
