@@ -1,21 +1,21 @@
 package de.vandalismdevelopment.vandalism.base.value.impl.list;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.feature.impl.module.ModuleMode;
+import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
+import de.vandalismdevelopment.vandalism.feature.module.template.ModuleMulti;
 import de.vandalismdevelopment.vandalism.base.value.impl.ListValue;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class ModuleModeValue<T extends Module> extends ListValue {
+public class ModuleModeValue<T extends AbstractModule> extends ListValue {
 
-    private final List<ModuleMode<T>> moduleModes;
-    private ModuleMode<T> selectedMode;
+    private final List<ModuleMulti<T>> moduleModes;
+    private ModuleMulti<T> selectedMode;
 
     @SafeVarargs
-    public ModuleModeValue(final String name, final String description, final Module parent, final ModuleMode<T>... moduleModes) {
-        super(name, description, parent, "module mode", Arrays.stream(moduleModes).map(ModuleMode::getName).toArray(String[]::new));
+    public ModuleModeValue(final String name, final String description, final AbstractModule parent, final ModuleMulti<T>... moduleModes) {
+        super(name, description, parent, "module mode", Arrays.stream(moduleModes).map(ModuleMulti::getName).toArray(String[]::new));
 
         this.selectedMode = moduleModes[0];
         this.moduleModes = Arrays.asList(moduleModes);
@@ -27,8 +27,8 @@ public class ModuleModeValue<T extends Module> extends ListValue {
         });
     }
 
-    private ModuleMode<T> getValue(final String name) {
-        for (final ModuleMode<T> value : this.moduleModes) {
+    private ModuleMulti<T> getValue(final String name) {
+        for (final ModuleMulti<T> value : this.moduleModes) {
             if (value.getName().equals(name)) {
                 return value;
             }
@@ -39,7 +39,7 @@ public class ModuleModeValue<T extends Module> extends ListValue {
         return this.getValue(this.getDefaultValue());
     }
 
-    public ModuleMode<T> getSelectedMode() {
+    public ModuleMulti<T> getSelectedMode() {
         return this.selectedMode;
     }
 

@@ -1,8 +1,13 @@
 package de.vandalismdevelopment.vandalism.integration.hud;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.florianmichael.rclasses.pattern.storage.Storage;
+import de.vandalismdevelopment.vandalism.base.config.ConfigManager;
 import de.vandalismdevelopment.vandalism.base.event.RenderListener;
 import de.vandalismdevelopment.vandalism.base.event.ScreenListener;
+import de.vandalismdevelopment.vandalism.gui_v2.ImGuiManager;
+import de.vandalismdevelopment.vandalism.integration.hud.config.HUDConfig;
+import de.vandalismdevelopment.vandalism.integration.hud.gui.HUDImWindow;
 import de.vandalismdevelopment.vandalism.integration.hud.impl.DebugElement;
 import de.vandalismdevelopment.vandalism.integration.hud.impl.InfoHUDElement;
 import de.vandalismdevelopment.vandalism.integration.hud.impl.ModuleListHUDElement;
@@ -14,45 +19,43 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class HUDManager implements RenderListener, ScreenListener, MinecraftWrapper {
+public class HUDManager extends Storage<HUDElement> implements RenderListener, ScreenListener, MinecraftWrapper {
 
-    private final List<HUDElement> hudElements;
-    private final ModuleListHUDElement moduleListHUDElement;
+    public ModuleListHUDElement moduleListHUDElement;
 
-    public HUDManager() {
+    public HUDManager(final ConfigManager configManager, final ImGuiManager imGuiManager) {
         DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
         DietrichEvents2.global().subscribe(ScreenEvent.ID, this);
-        this.hudElements = new CopyOnWriteArrayList<>();
-        this.hudElements.addAll(Arrays.asList(
+
+        configManager.add(new HUDConfig(this));
+        imGuiManager.add(new HUDImWindow(this));
+    }
+
+    @Override
+    public void init() {
+        this.add(
                 new WatermarkHUDElement(),
                 this.moduleListHUDElement = new ModuleListHUDElement(),
                 new InfoHUDElement(),
                 new DebugElement()
-        ));
+        );
     }
 
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
-        for (final HUDElement hudElement : this.hudElements) {
-            if (!hudElement.isEnabled()) continue;
+        for (final HUDElement hudElement : this.getList()) {
+            if (!hudElement.isEnabled()) {
+                continue;
+            }
             hudElement.onRender(context, delta);
         }
     }
 
     @Override
     public void onResizeScreen(final ScreenEvent event) {
-        for (final HUDElement hudElement : this.hudElements) {
+        for (final HUDElement hudElement : this.getList()) {
             hudElement.calculateAlignment();
             hudElement.calculatePosition();
         }
     }
-
-    public List<HUDElement> getHudElements() {
-        return this.hudElements;
-    }
-
-    public ModuleListHUDElement getModuleListHUDElement() {
-        return this.moduleListHUDElement;
-    }
-
 }

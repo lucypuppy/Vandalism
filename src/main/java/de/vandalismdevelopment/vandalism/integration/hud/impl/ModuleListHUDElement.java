@@ -1,8 +1,7 @@
 package de.vandalismdevelopment.vandalism.integration.hud.impl;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.feature.FeatureList;
-import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
+import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.integration.hud.HUDElement;
 import net.minecraft.client.gui.DrawContext;
 
@@ -56,8 +55,8 @@ public class ModuleListHUDElement extends HUDElement {
         if (this.sort) {
             this.sort = false;
             this.enabledModules.clear();
-            final FeatureList<Module> modules = Vandalism.getInstance().getModuleRegistry().getModules();
-            for (final Module module : modules) {
+            final FeatureList<AbstractModule> modules = Vandalism.getInstance().getModuleRegistry().getModules();
+            for (final AbstractModule module : modules) {
                 if (module.isEnabled() && module.isShowInModuleList()) {
                     this.enabledModules.add(module.getName());
                 }

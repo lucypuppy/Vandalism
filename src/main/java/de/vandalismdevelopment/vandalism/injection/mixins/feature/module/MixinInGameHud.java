@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.feature.module;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.feature.impl.module.impl.render.BetterTabListModule;
+import de.vandalismdevelopment.vandalism.feature.module.impl.render.BetterTabListModule;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.option.KeyBinding;
 import org.spongepowered.asm.mixin.Mixin;

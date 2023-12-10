@@ -1,7 +1,5 @@
 package de.vandalismdevelopment.vandalism.gui.impl.widget.impl.serverinfo;
 
-import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
-
 public enum PluginsTableColumn implements EnumNameNormalizer {
 
     NAME, ACTIONS;

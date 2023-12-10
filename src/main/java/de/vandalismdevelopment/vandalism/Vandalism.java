@@ -5,13 +5,12 @@ import de.vandalismdevelopment.vandalism.base.account.AccountManager;
 import de.vandalismdevelopment.vandalism.base.clientsettings.ClientSettings;
 import de.vandalismdevelopment.vandalism.base.config.ConfigManager;
 import de.vandalismdevelopment.vandalism.gui_v2.ImGuiManager;
-import de.vandalismdevelopment.vandalism.gui_v2.loader.ImLoader;
 import de.vandalismdevelopment.vandalism.integration.serverlist.ServerListManager;
 import de.vandalismdevelopment.vandalism.base.event.game.MinecraftBoostrapListener;
 import de.vandalismdevelopment.vandalism.base.event.game.ShutdownProcessListener;
-import de.vandalismdevelopment.vandalism.feature.impl.command.CommandRegistry;
-import de.vandalismdevelopment.vandalism.feature.impl.module.ModuleRegistry;
-import de.vandalismdevelopment.vandalism.feature.impl.script.ScriptRegistry;
+import de.vandalismdevelopment.vandalism.feature.command.CommandManager;
+import de.vandalismdevelopment.vandalism.feature.module.ModuleManager;
+import de.vandalismdevelopment.vandalism.feature.script.ScriptManager;
 import de.vandalismdevelopment.vandalism.integration.hud.HUDManager;
 import de.vandalismdevelopment.vandalism.integration.rotation.RotationListener;
 import net.minecraft.client.MinecraftClient;
@@ -41,6 +40,7 @@ import java.io.File;
  *  - Delete MixinSodiumWorldRenderer, Sodium has merged this fix into their codebase
  *  - Update AuthLib array instead of MixinTextureUrlChecker
  *  - Readd DebugModule as ImWindow
+ *  - Fix forceSort by creating a module toggle event
  */
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 
@@ -55,9 +55,9 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     private AccountManager accountManager;
 
     // Features
-    private ModuleRegistry moduleRegistry;
-    private CommandRegistry commandRegistry;
-    private ScriptRegistry scriptRegistry;
+    private ModuleManager moduleManager;
+    private CommandManager commandManager;
+    private ScriptManager scriptManager;
 
     // Integration
     private RotationListener rotationListener;
@@ -107,15 +107,16 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.accountManager.init();
         
         // Features
-        this.moduleRegistry = new ModuleRegistry();
-        this.commandRegistry = new CommandRegistry();
-        this.scriptRegistry = new ScriptRegistry(this.runDirectory);
+        this.moduleManager = new ModuleManager();
+        this.commandManager = new CommandManager();
+        this.scriptManager = new ScriptManager(this.runDirectory);
 
         // Integration
         this.rotationListener = new RotationListener();
         this.serverListManager = new ServerListManager(this.runDirectory);
         this.serverListManager.loadConfig();
-        this.hudManager = new HUDManager();
+        this.hudManager = new HUDManager(this.configManager, this.imGuiManager);
+        this.hudManager.init();
 
         // We have to load the config files after all systems have been initialized
         this.configManager.init();
@@ -143,16 +144,16 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         return imGuiManager;
     }
 
-    public ScriptRegistry getScriptRegistry() {
-        return scriptRegistry;
+    public ScriptManager getScriptRegistry() {
+        return scriptManager;
     }
 
-    public ModuleRegistry getModuleRegistry() {
-        return moduleRegistry;
+    public ModuleManager getModuleRegistry() {
+        return moduleManager;
     }
 
-    public CommandRegistry getCommandRegistry() {
-        return commandRegistry;
+    public CommandManager getCommandRegistry() {
+        return commandManager;
     }
 
     public ConfigManager getConfigManager() {

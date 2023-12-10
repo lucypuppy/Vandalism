@@ -1,7 +1,5 @@
 package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.script;
 
-import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
-
 public enum ScriptsTableColumn implements EnumNameNormalizer {
 
     NAME, VERSION, AUTHOR, DESCRIPTION, CATEGORY, EXPERIMENTAL, MODIFICATION_DATE, ACTIONS;

@@ -3,6 +3,7 @@ package de.vandalismdevelopment.vandalism.base.value;
 import com.google.gson.JsonObject;
 import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
 
+import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
@@ -14,7 +15,7 @@ public abstract class Value<V> {
     private final IValue parent;
     private final boolean doesRenderInfo;
     private V value;
-    private Consumer<V> valueChangeConsumer, valueChangedConsumer;
+    private BiConsumer<V, V> valueChangeConsumer;
     private BooleanSupplier visible;
 
     public Value(final String name, final String description, final IValue parent, final String dataType, final V defaultValue) {
@@ -33,25 +34,15 @@ public abstract class Value<V> {
     }
 
     public void setValue(final V value) {
-        if (this.value == value && !(this instanceof BooleanValue)) {
-            return;
-        }
-        if (this.valueChangeConsumer != null) {
-            this.valueChangeConsumer.accept(value);
-        }
+        final V oldValue = value;
         this.value = value;
-        if (this.valueChangedConsumer != null) {
-            this.valueChangedConsumer.accept(value);
+        if (this.valueChangeConsumer != null) {
+            this.valueChangeConsumer.accept(oldValue, value);
         }
     }
 
-    public <S extends Value<V>> S valueChangeConsumer(final Consumer<V> valueChangeConsumer) {
+    public <S extends Value<V>> S valueChangeConsumer(final BiConsumer<V, V> valueChangeConsumer) {
         this.valueChangeConsumer = valueChangeConsumer;
-        return (S) this;
-    }
-
-    public <S extends Value<V>> S valueChangedConsumer(final Consumer<V> valueChangedConsumer) {
-        this.valueChangedConsumer = valueChangedConsumer;
         return (S) this;
     }
 

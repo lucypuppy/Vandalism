@@ -1,8 +1,8 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.feature.module;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.feature.impl.module.ModuleRegistry;
-import de.vandalismdevelopment.vandalism.feature.impl.module.impl.misc.MessageEncryptorModule;
+import de.vandalismdevelopment.vandalism.feature.module.ModuleManager;
+import de.vandalismdevelopment.vandalism.feature.module.impl.misc.MessageEncryptorModule;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
@@ -17,9 +17,9 @@ public abstract class MixinChatHud {
 
     @ModifyArg(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;ILnet/minecraft/client/gui/hud/MessageIndicator;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/ChatMessages;breakRenderedChatMessageLines(Lnet/minecraft/text/StringVisitable;ILnet/minecraft/client/font/TextRenderer;)Ljava/util/List;"))
     public StringVisitable vandalism$messageEncryptorModifyMessage(final StringVisitable content) {
-        final ModuleRegistry moduleRegistry = Vandalism.getInstance().getModuleRegistry();
-        if (moduleRegistry != null) {
-            final MessageEncryptorModule messageEncryptorModule = moduleRegistry.getMessageEncryptorModule();
+        final ModuleManager moduleManager = Vandalism.getInstance().getModuleRegistry();
+        if (moduleManager != null) {
+            final MessageEncryptorModule messageEncryptorModule = moduleManager.getMessageEncryptorModule();
             if (messageEncryptorModule.isEnabled()) {
                 final MutableText text = (MutableText) content;
                 final String stringTest = text.getString();

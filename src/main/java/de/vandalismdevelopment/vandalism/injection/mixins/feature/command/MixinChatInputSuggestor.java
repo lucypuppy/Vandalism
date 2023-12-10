@@ -4,7 +4,7 @@ import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.suggestion.Suggestions;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.feature.impl.command.CommandRegistry;
+import de.vandalismdevelopment.vandalism.feature.command.CommandManager;
 import net.minecraft.client.gui.screen.ChatInputSuggestor;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.command.CommandSource;
@@ -42,15 +42,15 @@ public abstract class MixinChatInputSuggestor {
 
     @Inject(method = "refresh", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/StringReader;canRead()Z"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     public void vandalism$suggestModCommands(final CallbackInfo ci, final String string, final StringReader reader) {
-        final CommandRegistry commandRegistry = Vandalism.getInstance().getCommandRegistry();
+        final CommandManager commandManager = Vandalism.getInstance().getCommandRegistry();
         final String prefix = Vandalism.getInstance().getClientSettings().getChatSettings().commandPrefix.getValue();
         final int length = prefix.length();
         if (reader.canRead(length) && reader.getString().startsWith(prefix, reader.getCursor())) {
             reader.setCursor(reader.getCursor() + length);
-            if (this.parse == null) this.parse = commandRegistry.parse(reader);
+            if (this.parse == null) this.parse = commandManager.parse(reader);
             final int cursor = this.textField.getCursor();
             if (cursor >= 1 && (this.window == null || !this.completingSuggestions)) {
-                this.pendingSuggestions = commandRegistry.getCompletionSuggestions(this.parse, cursor);
+                this.pendingSuggestions = commandManager.getCompletionSuggestions(this.parse, cursor);
                 this.pendingSuggestions.thenRun(() -> {
                     if (this.pendingSuggestions.isDone()) this.showCommandSuggestions();
                 });

@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.injection.mixins.feature.module;
 
 import de.florianmichael.viafabricplus.protocolhack.ProtocolHack;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.feature.impl.module.impl.misc.IllegalBlockPlaceModule;
+import de.vandalismdevelopment.vandalism.feature.module.impl.misc.IllegalBlockPlaceModule;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;

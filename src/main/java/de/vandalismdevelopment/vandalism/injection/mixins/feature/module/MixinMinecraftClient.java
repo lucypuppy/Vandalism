@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.feature.module;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.feature.impl.module.impl.misc.FastUseModule;
+import de.vandalismdevelopment.vandalism.feature.module.impl.misc.FastUseModule;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;

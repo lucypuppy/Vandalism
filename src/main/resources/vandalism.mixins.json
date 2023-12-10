@@ -58,7 +58,6 @@
     "feature.module.MixinCommandDispatcher",
     "feature.module.MixinEntityRenderer",
     "feature.module.MixinFeatureRenderer",
-    "feature.module.MixinIdentifier",
     "feature.module.MixinIllusionerEntityRenderer",
     "feature.module.MixinInGameHud",
     "feature.module.MixinLivingEntityRenderer",

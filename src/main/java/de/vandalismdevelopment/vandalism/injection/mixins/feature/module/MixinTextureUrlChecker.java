@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.injection.mixins.feature.module;
 import com.mojang.authlib.yggdrasil.TextureUrlChecker;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.feature.impl.module.impl.exploit.ExploitFixerModule;
+import de.vandalismdevelopment.vandalism.feature.module.impl.exploit.ExploitFixerModule;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
