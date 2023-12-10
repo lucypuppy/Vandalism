@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.integration.creativetab.impl;
 
 import de.vandalismdevelopment.vandalism.integration.creativetab.AbstractCreativeTab;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ItemStackUtil;
+import de.vandalismdevelopment.vandalism.util.ItemStackUtil;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -16,6 +16,8 @@ import net.minecraft.util.Identifier;
 import java.util.Arrays;
 import java.util.List;
 
+import static de.vandalismdevelopment.vandalism.util.ItemStackUtil.withClientSide;
+
 public class TrollItemsCreativeTab extends AbstractCreativeTab {
 
     public TrollItemsCreativeTab() {
@@ -25,16 +27,16 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
     @Override
     public void exposeItems(List<ItemStack> items) {
         for (Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
-            items.add(ItemStackUtil.withClientSide(createTrollPotion(new ItemStack(item)), Text.literal(Formatting.GOLD + "Troll Potion")));
+            items.add(withClientSide(createTrollPotion(new ItemStack(item)), Text.literal(Formatting.GOLD + "Troll Potion")));
         }
         for (Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
-            items.add(ItemStackUtil.withClientSide(createKillPotion(new ItemStack(item)), Text.literal(Formatting.RED + "Kill Potion")));
+            items.add(withClientSide(createKillPotion(new ItemStack(item)), Text.literal(Formatting.RED + "Kill Potion")));
         }
-        items.add(ItemStackUtil.withClientSide(createKillArea(), Text.literal(Formatting.RED + "Kill Area")));
-        items.add(ItemStackUtil.withClientSide(createWhiteHole(), Text.literal(Formatting.WHITE + Formatting.BOLD.toString() + "White Hole")));
-        items.add(ItemStackUtil.withClientSide(createBlackHole(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Black Hole")));
-        items.add(ItemStackUtil.withClientSide(createEventHorizonArea(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area")));
-        items.add(ItemStackUtil.withClientSide(createStargazer(), Text.literal(Formatting.YELLOW + Formatting.BOLD.toString() + "Stargazer"), true));
+        items.add(withClientSide(createKillArea(), Text.literal(Formatting.RED + "Kill Area")));
+        items.add(withClientSide(createWhiteHole(), Text.literal(Formatting.WHITE + Formatting.BOLD.toString() + "White Hole")));
+        items.add(withClientSide(createBlackHole(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Black Hole")));
+        items.add(withClientSide(createEventHorizonArea(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area")));
+        items.add(withClientSide(createStargazer(), Text.literal(Formatting.YELLOW + Formatting.BOLD.toString() + "Stargazer"), true));
     }
 
     private static ItemStack createTrollPotion(final ItemStack origin) {

@@ -19,16 +19,16 @@ public class CreativeModuleMode extends ModuleMode<FlightModule> implements Tick
     @Override
     public void onDisable() {
         DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
-        if (this.player() == null) return;
-        this.player().getAbilities().flying = false;
-        this.player().getAbilities().allowFlying = this.player().getAbilities().creativeMode;
+        if (this.mc.player == null) return;
+        this.mc.player.getAbilities().flying = false;
+        this.mc.player.getAbilities().allowFlying = this.mc.player.getAbilities().creativeMode;
     }
 
     @Override
     public void onTick() {
-        if (this.player() == null) return;
-        this.player().getAbilities().flying = true;
-        this.player().getAbilities().allowFlying = true;
+        if (this.mc.player == null) return;
+        this.mc.player.getAbilities().flying = true;
+        this.mc.player.getAbilities().allowFlying = true;
     }
 
 }

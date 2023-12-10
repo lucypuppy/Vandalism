@@ -1,10 +1,12 @@
 package de.vandalismdevelopment.vandalism.base.clientsettings;
 
+import de.vandalismdevelopment.vandalism.base.clientsettings.gui.ConfigImWindow;
 import de.vandalismdevelopment.vandalism.base.clientsettings.impl.*;
 import de.vandalismdevelopment.vandalism.base.config.ConfigManager;
 import de.vandalismdevelopment.vandalism.base.config.template.ConfigWithValues;
 import de.vandalismdevelopment.vandalism.base.value.IValue;
 import de.vandalismdevelopment.vandalism.base.value.Value;
+import de.vandalismdevelopment.vandalism.gui_v2.ImGuiManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +23,9 @@ public class ClientSettings implements IValue {
     private final RotationSettings rotationSettings = new RotationSettings(this);
     private final EnhancedServerListSettings enhancedServerListSettings = new EnhancedServerListSettings(this);
 
-    public ClientSettings(final ConfigManager configManager) {
+    public ClientSettings(final ConfigManager configManager, final ImGuiManager imGuiManager) {
         configManager.add(new ConfigWithValues("clientsettings", getValues().stream().map(value -> (IValue) value).toList()));
+        imGuiManager.add(new ConfigImWindow(this));
     }
 
     public MenuSettings getMenuSettings() {

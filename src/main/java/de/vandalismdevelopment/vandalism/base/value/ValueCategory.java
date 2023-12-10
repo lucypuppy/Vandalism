@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.base.value;
 
 import com.google.gson.JsonObject;
-import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import imgui.ImGui;
 
 import java.util.ArrayList;

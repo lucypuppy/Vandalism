@@ -1,6 +1,6 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.fix.minecraft;
 
-import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
@@ -24,7 +24,7 @@ public abstract class MixinMultiplayerScreen extends Screen implements Minecraft
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void vandalism$fixInvalidParentScreen(final CallbackInfo ci) {
-        if (this.parent instanceof GameMenuScreen && this.player() == null) {
+        if (this.parent instanceof GameMenuScreen && this.mc.player == null) {
             this.parent = new TitleScreen();
         }
     }

@@ -1,7 +1,6 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.util;
 
-
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ServerUtil;
+import de.vandalismdevelopment.vandalism.util.ServerUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConnectScreen;
 import net.minecraft.client.gui.screen.Screen;

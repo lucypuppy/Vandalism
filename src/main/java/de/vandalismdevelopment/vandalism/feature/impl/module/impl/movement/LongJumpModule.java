@@ -4,8 +4,8 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.base.event.MovementListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.MovementUtil;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.TimerUtil;
+import de.vandalismdevelopment.vandalism.util.MovementUtil;
+import de.vandalismdevelopment.vandalism.util.TimerUtil;
 import net.minecraft.util.math.Vec3d;
 
 public class LongJumpModule extends Module implements MovementListener {
@@ -22,10 +22,10 @@ public class LongJumpModule extends Module implements MovementListener {
     @Override
     public void onEnable() {
         DietrichEvents2.global().subscribe(MotionEvent.ID, this);
-        if (this.networkHandler() != null) {
+        if (this.mc.getNetworkHandler() != null) {
             MovementUtil.clip(3.5, 0);
             MovementUtil.setSpeed(0.01);
-            this.lastPosY = player().getY();
+            this.lastPosY = mc.player.getY();
             this.moveSpeed = MovementUtil.getBaseSpeed() * 4;
         }
     }
@@ -42,21 +42,21 @@ public class LongJumpModule extends Module implements MovementListener {
 
     @Override
     public void onPostMotion(final MotionEvent event) {
-        if (this.player().hurtTime > 0) {
+        if (this.mc.player.hurtTime > 0) {
             this.waitTicks++;
             if (this.waitTicks >= 4) {
                 this.canLongJump = true;
             }
         }
         if (this.canLongJump) {
-            if (this.player().isOnGround()) {
-                this.player().setVelocity(this.player().getVelocity().add(0, 1, 0));
+            if (this.mc.player.isOnGround()) {
+                this.mc.player.setVelocity(this.mc.player.getVelocity().add(0, 1, 0));
             } else {
-                final Vec3d moveVelocity = this.player().getVelocity();
+                final Vec3d moveVelocity = this.mc.player.getVelocity();
 
-                if (this.player().fallDistance > 0.2f && this.moveTicks <= 2) {
-                    this.player().setVelocity(new Vec3d(moveVelocity.getX(), 0, moveVelocity.getZ()));
-                    this.player().setVelocity(player().getVelocity().add(0, 0.01, 0));
+                if (this.mc.player.fallDistance > 0.2f && this.moveTicks <= 2) {
+                    this.mc.player.setVelocity(new Vec3d(moveVelocity.getX(), 0, moveVelocity.getZ()));
+                    this.mc.player.setVelocity(mc.player.getVelocity().add(0, 0.01, 0));
                     this.moveTicks = 5;
                     TimerUtil.setSpeed(0.8f);
                     return;
@@ -64,12 +64,12 @@ public class LongJumpModule extends Module implements MovementListener {
                     TimerUtil.setSpeed(1.3f);
                 }
 
-                if (Math.abs(this.player().getY() - this.lastPosY) > 1) {
+                if (Math.abs(this.mc.player.getY() - this.lastPosY) > 1) {
                     MovementUtil.setSpeed(-0.01);
-                    this.player().fallDistance = 0;
-                    this.player().setVelocity(new Vec3d(moveVelocity.getX(), 0, moveVelocity.getZ()));
-                    this.player().setPos(this.player().getX(), this.lastPosY, this.player().getZ());
-                    this.lastPosY = this.player().getY();
+                    this.mc.player.fallDistance = 0;
+                    this.mc.player.setVelocity(new Vec3d(moveVelocity.getX(), 0, moveVelocity.getZ()));
+                    this.mc.player.setPos(this.mc.player.getX(), this.lastPosY, this.mc.player.getZ());
+                    this.lastPosY = this.mc.player.getY();
                     return;
                 }
                 final Vec3d velocityVector = MovementUtil.setSpeed(this.moveSpeed, 0.0026f);
@@ -77,7 +77,7 @@ public class LongJumpModule extends Module implements MovementListener {
                     this.moveSpeed = 0.27f;
                     return;
                 }
-                if (this.player().hurtTime == 0) {
+                if (this.mc.player.hurtTime == 0) {
                     this.moveSpeed -= 0.1f;
                 }
                 final Vec3d adjustedVelocity = MovementUtil.applyFriction(velocityVector, 40);

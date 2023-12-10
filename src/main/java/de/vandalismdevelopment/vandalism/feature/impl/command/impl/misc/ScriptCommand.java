@@ -7,8 +7,8 @@ import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
 import de.vandalismdevelopment.vandalism.feature.impl.command.arguments.GlfwKeyNameArgumentType;
 import de.vandalismdevelopment.vandalism.feature.impl.command.arguments.ScriptArgumentType;
 import de.vandalismdevelopment.vandalism.feature.impl.script.Script;
+import de.vandalismdevelopment.vandalism.util.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
 import net.minecraft.command.CommandSource;
 
 public class ScriptCommand extends Command {

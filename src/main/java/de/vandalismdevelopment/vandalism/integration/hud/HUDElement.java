@@ -4,8 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import de.florianmichael.rclasses.math.geometry.Alignment;
 import de.florianmichael.rclasses.math.integration.Boundings;
 import de.florianmichael.rclasses.pattern.functional.IName;
-import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import de.vandalismdevelopment.vandalism.base.value.IValue;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
@@ -55,8 +54,8 @@ public abstract class HUDElement implements IName, IValue, MinecraftWrapper {
     }
 
     public void calculateAlignment() {
-        final int scaledWidth = this.window().getScaledWidth();
-        final int scaledHeight = this.window().getScaledHeight();
+        final int scaledWidth = this.mc.getWindow().getScaledWidth();
+        final int scaledHeight = this.mc.getWindow().getScaledHeight();
 
         if (scaledWidth * 0.66 < x + width / 2.0) {
             this.alignmentX = Alignment.RIGHT;
@@ -76,8 +75,8 @@ public abstract class HUDElement implements IName, IValue, MinecraftWrapper {
     }
 
     public void calculatePosition() {
-        final int scaledWidth = this.window().getScaledWidth();
-        final int scaledHeight = this.window().getScaledHeight();
+        final int scaledWidth = this.mc.getWindow().getScaledWidth();
+        final int scaledHeight = this.mc.getWindow().getScaledHeight();
 
         //Todo fix rescale
     }

@@ -4,7 +4,7 @@ import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.MovementUtil;
+import de.vandalismdevelopment.vandalism.util.MovementUtil;
 import net.minecraft.command.CommandSource;
 
 public class ClipCommand extends Command {
@@ -19,7 +19,7 @@ public class ClipCommand extends Command {
                 then(argument("vertical-offset", DoubleArgumentType.doubleArg(-10.0, 10.0)).
                         then(argument("horizontal-offset", DoubleArgumentType.doubleArg(-10.0, 10.0)).
                                 executes(context -> {
-                                    if (this.player() != null)
+                                    if (this.mc.player != null)
                                         MovementUtil.clip(
                                                 DoubleArgumentType.getDouble(context, "vertical-offset"),
                                                 DoubleArgumentType.getDouble(context, "horizontal-offset")

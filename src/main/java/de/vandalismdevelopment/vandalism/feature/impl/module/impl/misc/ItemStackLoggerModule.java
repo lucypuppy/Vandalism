@@ -7,10 +7,10 @@ import de.vandalismdevelopment.vandalism.base.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.impl.misc.NbtCommand;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ServerUtil;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
+import de.vandalismdevelopment.vandalism.util.ChatUtil;
+import de.vandalismdevelopment.vandalism.util.ServerUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -63,9 +63,9 @@ public class ItemStackLoggerModule extends Module implements TickListener {
 
     @Override
     public void onTick() {
-        if (this.world() == null) return;
-        for (final Entity entity : this.world().getEntities()) {
-            if (entity == this.player()) continue;
+        if (this.mc.world == null) return;
+        for (final Entity entity : this.mc.world.getEntities()) {
+            if (entity == this.mc.player) continue;
             if (entity instanceof final ItemEntity itemEntity) {
                 this.logStack(entity, itemEntity.getStack());
             } else {

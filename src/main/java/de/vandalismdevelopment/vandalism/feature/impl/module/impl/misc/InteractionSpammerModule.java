@@ -103,8 +103,8 @@ public class InteractionSpammerModule extends Module implements TickListener {
 
     @Override
     public void onTick() {
-        final Entity cameraEntity = this.mc().getCameraEntity();
-        if (this.player() == null || this.world() == null || this.interactionManager() == null || cameraEntity == null) {
+        final Entity cameraEntity = this.mc.getCameraEntity();
+        if (this.mc.player == null || this.mc.world == null || this.mc.interactionManager == null || cameraEntity == null) {
             this.clear();
             return;
         }
@@ -119,18 +119,18 @@ public class InteractionSpammerModule extends Module implements TickListener {
         } else {
             for (final BlockHitResult blockHitResult : this.blockHitResults) {
                 if (this.interactionTimer.hasReached(this.interactionDelay.getValue(), true)) {
-                    this.interactionManager().interactBlock(this.player(), Hand.MAIN_HAND, blockHitResult);
+                    this.mc.interactionManager.interactBlock(this.mc.player, Hand.MAIN_HAND, blockHitResult);
                     this.blockHitResults.remove(blockHitResult);
                 }
             }
         }
 
-        final HitResult hitResult = cameraEntity.raycast(this.interactionManager().getReachDistance(), 0, false);
+        final HitResult hitResult = cameraEntity.raycast(this.mc.interactionManager.getReachDistance(), 0, false);
         if (!(hitResult instanceof final BlockHitResult blockHitResult)) return;
 
-        final Block block = this.world().getBlockState(blockHitResult.getBlockPos()).getBlock();
+        final Block block = this.mc.world.getBlockState(blockHitResult.getBlockPos()).getBlock();
         if (!(block instanceof AirBlock || block instanceof FluidBlock)) {
-            if (this.options().useKey.isPressed()) {
+            if (this.mc.options.useKey.isPressed()) {
                 this.interactionListsTimer.reset();
                 this.interactionTimer.reset();
 

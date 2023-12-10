@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.feature.config;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,13 +17,13 @@ public abstract class MixinGameRenderer implements MinecraftWrapper {
 
     @Inject(method = "bobView", at = @At("HEAD"), cancellable = true)
     private void vandalism$customBobView(final MatrixStack matrixStack, final float f, final CallbackInfo callbackInfo) {
-        if (!Vandalism.getInstance().getConfigManager().getMainConfig().visualCategory.customBobView.getValue()) {
+        if (!Vandalism.getInstance().getClientSettings().getVisualSettings().customBobView.getValue()) {
             return;
         }
-        if (!(this.mc().getCameraEntity() instanceof PlayerEntity playerEntity)) {
+        if (!(this.mc.getCameraEntity() instanceof PlayerEntity playerEntity)) {
             return;
         }
-        final float additionalBobbing = Vandalism.getInstance().getConfigManager().getMainConfig().visualCategory.customBobViewValue.getValue();
+        final float additionalBobbing = Vandalism.getInstance().getClientSettings().getVisualSettings().customBobViewValue.getValue();
         if (additionalBobbing <= 0f) {
             callbackInfo.cancel();
             return;

@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.injection.mixins.feature.config;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.util.RenderUtil;
-import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -32,22 +32,22 @@ public abstract class MixinChatScreen implements MinecraftWrapper {
     @Inject(method = "init", at = @At(value = "RETURN"))
     private void vandalism$modifyChatFieldMaxLength(final CallbackInfo ci) {
         this.vandalism_realMaxLength = this.chatField.getMaxLength();
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.customChatLength.getValue()) {
-            this.chatField.setMaxLength(Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.maxChatLength.getValue());
+        if (Vandalism.getInstance().getClientSettings().getChatSettings().customChatLength.getValue()) {
+            this.chatField.setMaxLength(Vandalism.getInstance().getClientSettings().getChatSettings().maxChatLength.getValue());
         }
     }
 
     @Inject(method = "render", at = @At(value = "HEAD"))
     private void vandalism$renderTypedCharCounter(final DrawContext context, final int mouseX, final int mouseY, final float delta, final CallbackInfo ci) {
-        if (Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.displayTypedChars.getValue()) {
+        if (Vandalism.getInstance().getClientSettings().getChatSettings().displayTypedChars.getValue()) {
             final int current = this.chatField.getText().length();
             final MutableText text = Text.literal(Formatting.RESET.toString() + current + Formatting.DARK_GRAY + " / ");
             text.append(Text.literal(String.valueOf(this.vandalism_realMaxLength)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Color.RED.getRGB()))));
             text.append(Text.literal(Formatting.DARK_GRAY + " (" + Formatting.DARK_RED + this.chatField.getMaxLength() + Formatting.DARK_GRAY + ")"));
-            final int x = this.chatField.getX() + this.chatField.getWidth() - this.textRenderer().getWidth(text) - 2;
-            final int y = this.chatField.getY() - this.textRenderer().fontHeight - 2;
+            final int x = this.chatField.getX() + this.chatField.getWidth() - this.mc.textRenderer.getWidth(text) - 2;
+            final int y = this.chatField.getY() - this.mc.textRenderer.fontHeight - 2;
             final Color color = RenderUtil.interpolateColor(Color.GREEN, Color.YELLOW, Color.RED, Math.min((float) current / this.vandalism_realMaxLength, 1.0f));
-            context.drawText(this.textRenderer(), text, x, y, color.getRGB(), true);
+            context.drawText(this.mc.textRenderer, text, x, y, color.getRGB(), true);
         }
     }
 

@@ -35,8 +35,8 @@ public class AutoFishModule extends Module implements TickListener {
 
     @Override
     public void onTick() {
-        if (this.player() == null || this.networkHandler() == null) return;
-        final FishingBobberEntity fishHook = this.player().fishHook;
+        if (this.mc.player == null || this.mc.getNetworkHandler() == null) return;
+        final FishingBobberEntity fishHook = this.mc.player.fishHook;
         if (fishHook != null) {
             if (!this.hasFish && fishHook.caughtFish && fishHook.getVelocity().y < -0.2) {
                 this.hasFish = true;
@@ -44,11 +44,11 @@ public class AutoFishModule extends Module implements TickListener {
             }
 
             if (this.hasFish && this.retractDelayTimer.hasReached(this.retractDelayValue.getValue(), true)) {
-                this.networkHandler().sendPacket(new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, 0));
+                this.mc.getNetworkHandler().sendPacket(new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, 0));
                 this.throwDelayTimer.reset();
             }
         } else if (this.throwDelayTimer.hasReached(this.throwDelayValue.getValue(), true)) {
-            this.networkHandler().sendPacket(new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, 0));
+            this.mc.getNetworkHandler().sendPacket(new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, 0));
             this.hasFish = false;
         }
     }

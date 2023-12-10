@@ -4,7 +4,7 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.base.event.MovementListener;
 import de.vandalismdevelopment.vandalism.feature.impl.module.ModuleMode;
 import de.vandalismdevelopment.vandalism.feature.impl.module.impl.movement.SpeedModule;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.MovementUtil;
+import de.vandalismdevelopment.vandalism.util.MovementUtil;
 import net.minecraft.util.math.Vec3d;
 
 public class CubeCraftModuleMode extends ModuleMode<SpeedModule> implements MovementListener {
@@ -28,14 +28,14 @@ public class CubeCraftModuleMode extends ModuleMode<SpeedModule> implements Move
 
     @Override
     public void onPreMotion(final MotionEvent event) {
-        if ((this.player().forwardSpeed != 0 || this.player().sidewaysSpeed != 0) && this.player().isOnGround())
-            this.player().jump();
+        if ((this.mc.player.forwardSpeed != 0 || this.mc.player.sidewaysSpeed != 0) && this.mc.player.isOnGround())
+            this.mc.player.jump();
     }
 
     @Override
     public void onPostMotion(final MotionEvent event) {
-        if (this.player().forwardSpeed != 0 || this.player().sidewaysSpeed != 0) {
-            if (this.player().isOnGround()) {
+        if (this.mc.player.forwardSpeed != 0 || this.mc.player.sidewaysSpeed != 0) {
+            if (this.mc.player.isOnGround()) {
                 MovementUtil.setSpeed(MovementUtil.getBaseSpeed() * 1.525);
                 this.moveSpeed = MovementUtil.getBaseSpeed() * 2.4;
                 this.offGroundTicks = 0;

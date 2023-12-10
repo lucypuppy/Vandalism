@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.gui.imgui.impl.widget.impl.serverinfo;
+package de.vandalismdevelopment.vandalism.gui.impl.widget.impl.serverinfo;
 
 import de.vandalismdevelopment.vandalism.util.EnumNameNormalizer;
 

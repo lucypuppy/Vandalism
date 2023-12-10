@@ -31,17 +31,17 @@ public class ModuleListHUDElement extends HUDElement {
         int yOffset = 0;
         final boolean shadow = false;
         for (final String enabledModule : this.enabledModules) {
-            final int textWidth = this.textRenderer().getWidth(enabledModule);
+            final int textWidth = this.mc.textRenderer.getWidth(enabledModule);
             switch (this.alignmentX) {
                 case MIDDLE ->
-                        context.drawText(this.textRenderer(), enabledModule, (this.x + this.width / 2) - (textWidth / 2), this.y + yOffset, -1, shadow);
+                        context.drawText(this.mc.textRenderer, enabledModule, (this.x + this.width / 2) - (textWidth / 2), this.y + yOffset, -1, shadow);
                 case RIGHT ->
-                        context.drawText(this.textRenderer(), enabledModule, (this.x + this.width) - textWidth, this.y + yOffset, -1, shadow);
-                default -> context.drawText(this.textRenderer(), enabledModule, this.x, this.y + yOffset, -1, shadow);
+                        context.drawText(this.mc.textRenderer, enabledModule, (this.x + this.width) - textWidth, this.y + yOffset, -1, shadow);
+                default -> context.drawText(this.mc.textRenderer, enabledModule, this.x, this.y + yOffset, -1, shadow);
             }
 
             this.width = Math.max(this.width, textWidth);
-            yOffset += this.textRenderer().fontHeight;
+            yOffset += this.mc.textRenderer.fontHeight;
         }
         this.height = yOffset;
     }
@@ -66,9 +66,9 @@ public class ModuleListHUDElement extends HUDElement {
                 final int compare;
                 switch (this.alignmentY) {
                     case TOP ->
-                            compare = Integer.compare(this.textRenderer().getWidth(s2), this.textRenderer().getWidth(s1));
+                            compare = Integer.compare(this.mc.textRenderer.getWidth(s2), this.mc.textRenderer.getWidth(s1));
                     case BOTTOM ->
-                            compare = Integer.compare(this.textRenderer().getWidth(s1), this.textRenderer().getWidth(s2));
+                            compare = Integer.compare(this.mc.textRenderer.getWidth(s1), this.mc.textRenderer.getWidth(s2));
                     default -> compare = 0;
                 }
                 return compare;

@@ -4,10 +4,10 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.base.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.TimerUtil;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
 import de.vandalismdevelopment.vandalism.base.value.impl.number.slider.SliderFloatValue;
+import de.vandalismdevelopment.vandalism.util.TimerUtil;
 
 public class TimerModule extends Module implements TickListener {
 
@@ -39,7 +39,7 @@ public class TimerModule extends Module implements TickListener {
 
     @Override
     public void onTick() {
-        if (!this.screen.getValue() && currentScreen() != null) {
+        if (!this.screen.getValue() && mc.currentScreen != null) {
             TimerUtil.setSpeed(1.f);
             return;
         }

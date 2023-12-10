@@ -43,7 +43,7 @@ public abstract class MixinChatInputSuggestor {
     @Inject(method = "refresh", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/StringReader;canRead()Z"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     public void vandalism$suggestModCommands(final CallbackInfo ci, final String string, final StringReader reader) {
         final CommandRegistry commandRegistry = Vandalism.getInstance().getCommandRegistry();
-        final String prefix = Vandalism.getInstance().getConfigManager().getMainConfig().chatCategory.commandPrefix.getValue();
+        final String prefix = Vandalism.getInstance().getClientSettings().getChatSettings().commandPrefix.getValue();
         final int length = prefix.length();
         if (reader.canRead(length) && reader.getString().startsWith(prefix, reader.getCursor())) {
             reader.setCursor(reader.getCursor() + length);

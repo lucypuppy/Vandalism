@@ -25,8 +25,8 @@ public class NetworkingSettings extends ValueCategory {
                 public void nativeKeyPressed(final NativeKeyEvent nativeEvent) {
                     if (Vandalism.getInstance().getClientSettings().getNetworkingSettings().forceDisconnectKeybind.getValue()) {
                         if (nativeEvent.getKeyCode() == 3663) {
-                            if (NetworkingSettings.this.networkHandler() != null) {
-                                NetworkingSettings.this.networkHandler().getConnection().disconnect(Text.literal("Manual force disconnect."));
+                            if (NetworkingSettings.this.mc.getNetworkHandler() != null) {
+                                NetworkingSettings.this.mc.getNetworkHandler().getConnection().disconnect(Text.literal("Manual force disconnect."));
                             }
                         }
                     }

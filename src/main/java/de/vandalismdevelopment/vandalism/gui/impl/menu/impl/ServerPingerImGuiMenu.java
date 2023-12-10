@@ -1,15 +1,16 @@
-package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.impl;
+package de.vandalismdevelopment.vandalism.gui.impl.menu.impl;
 
 import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.ImGuiMenu;
-import de.vandalismdevelopment.vandalism.gui.imgui.impl.widget.impl.serverinfo.ServerInfoWidget;
-import de.vandalismdevelopment.vandalism.gui.imgui.impl.widget.impl.serverinfo.ServerInfosTableColumn;
+import de.vandalismdevelopment.vandalism.gui.impl.widget.impl.serverinfo.ServerInfoWidget;
+import de.vandalismdevelopment.vandalism.gui.impl.widget.impl.serverinfo.ServerInfosTableColumn;
+import de.vandalismdevelopment.vandalism.gui_v2.ImWindow;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiTableFlags;
+import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImInt;
 import imgui.type.ImString;
 import net.lenni0451.mcping.MCPing;
@@ -23,7 +24,7 @@ import net.minecraft.client.gui.DrawContext;
 import java.net.BindException;
 import java.net.UnknownHostException;
 
-public class ServerPingerImGuiMenu extends ImGuiMenu {
+public class ServerPingerImGuiMenu extends ImWindow {
 
     private static final ImGuiInputTextCallback HOSTNAME_FILTER = new ImGuiInputTextCallback() {
 
@@ -67,7 +68,7 @@ public class ServerPingerImGuiMenu extends ImGuiMenu {
         this.serverInfoWidget.renderSubData();
         if (ImGui.begin(
                 "Server Pinger##serverpinger",
-                Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
+                ImGuiWindowFlags.NoCollapse
         )) {
             ImGui.text("State: " + this.currentState.getMessage());
             ImGui.text("Query State: " + this.currentQueryState.getMessage());

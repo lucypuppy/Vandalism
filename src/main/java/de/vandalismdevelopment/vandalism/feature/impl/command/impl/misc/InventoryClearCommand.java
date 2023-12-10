@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.feature.impl.command.impl.misc;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.impl.command.Command;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
+import de.vandalismdevelopment.vandalism.util.ChatUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
@@ -19,7 +19,7 @@ public class InventoryClearCommand extends Command {
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
-            final DefaultedList<ItemStack> mainInventory = this.player().getInventory().main;
+            final DefaultedList<ItemStack> mainInventory = this.mc.player.getInventory().main;
             for (int i = 0; i < mainInventory.size(); ++i) {
                 if (mainInventory.get(i).isEmpty()) continue;
                 this.clearSlot(i);
@@ -32,19 +32,19 @@ public class InventoryClearCommand extends Command {
     }
 
     private void clearSlot(final int id) {
-        switch (this.interactionManager().getCurrentGameMode()) {
+        switch (this.mc.interactionManager.getCurrentGameMode()) {
             case CREATIVE ->
-                    this.networkHandler().sendPacket(new CreativeInventoryActionC2SPacket(
+                    this.mc.getNetworkHandler().sendPacket(new CreativeInventoryActionC2SPacket(
                             id,
                             ItemStack.EMPTY
                     ));
             case SURVIVAL, ADVENTURE ->
-                    this.interactionManager().clickSlot(
-                            this.player().currentScreenHandler.syncId,
+                    this.mc.interactionManager.clickSlot(
+                            this.mc.player.currentScreenHandler.syncId,
                             id,
                             -999,
                             SlotActionType.THROW,
-                            this.player()
+                            this.mc.player
                     );
             default -> {}
         }

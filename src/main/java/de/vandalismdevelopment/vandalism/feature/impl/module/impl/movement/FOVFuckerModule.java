@@ -130,20 +130,20 @@ public class FOVFuckerModule extends Module implements TickListener {
 
     @Override
     public void onTick() {
-        if (this.world() == null || this.player() == null) return;
+        if (this.mc.world == null || this.mc.player == null) return;
 
         if (this.target == null) {
-            final Stream<AbstractClientPlayerEntity> players = this.world().getPlayers().stream();
+            final Stream<AbstractClientPlayerEntity> players = this.mc.world.getPlayers().stream();
 
-            this.target = players.sorted(Comparator.comparingDouble(player -> this.player().distanceTo(player))).
-                    filter(player -> this.player() != player && this.player().distanceTo(player) <= this.maxDistance.getValue()).
+            this.target = players.sorted(Comparator.comparingDouble(player -> this.mc.player.distanceTo(player))).
+                    filter(player -> this.mc.player != player && this.mc.player.distanceTo(player) <= this.maxDistance.getValue()).
                     findFirst().
                     orElse(null);
 
             return;
         }
 
-        if (this.target.isDead() || this.world().getEntityById(this.target.getId()) == null) {
+        if (this.target.isDead() || this.mc.world.getEntityById(this.target.getId()) == null) {
             this.reset();
             return;
         }
@@ -154,13 +154,13 @@ public class FOVFuckerModule extends Module implements TickListener {
         ) / Math.PI * 180.0F + this.target.getYaw()) * Math.PI / 180.0F;
 
         if (this.useYawFromTarget.getValue()) {
-            this.player().setYaw(this.target.getHeadYaw());
-            this.player().setBodyYaw(this.target.getBodyYaw());
-            this.player().setHeadYaw(this.target.getHeadYaw());
+            this.mc.player.setYaw(this.target.getHeadYaw());
+            this.mc.player.setBodyYaw(this.target.getBodyYaw());
+            this.mc.player.setHeadYaw(this.target.getHeadYaw());
         }
 
         if (this.usePitchFromTarget.getValue()) {
-            this.player().setPitch(this.target.getPitch());
+            this.mc.player.setPitch(this.target.getPitch());
         }
 
         if (this.sneakSpam.getValue()) {
@@ -168,7 +168,7 @@ public class FOVFuckerModule extends Module implements TickListener {
                 this.sneaking = !this.sneaking;
             }
 
-            this.options().sneakKey.setPressed(this.sneaking);
+            this.mc.options.sneakKey.setPressed(this.sneaking);
         }
 
         double diffZ = (this.target.getZ() - this.target.prevZ);
@@ -232,7 +232,7 @@ public class FOVFuckerModule extends Module implements TickListener {
         this.y = this.target.getY() + this.targetYPosOffset.getValue() + targetEyePosY;
         this.z = z;
 
-        this.player().setVelocity(new Vec3d(this.x, this.y, this.z).subtract(this.player().getPos()));
+        this.mc.player.setVelocity(new Vec3d(this.x, this.y, this.z).subtract(this.mc.player.getPos()));
     }
 
 }

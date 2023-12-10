@@ -1,11 +1,11 @@
 package de.vandalismdevelopment.vandalism.integration.hud.impl;
 
 import de.vandalismdevelopment.vandalism.integration.hud.HUDElement;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.WorldUtil;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.base.value.ValueCategory;
 import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
 import de.vandalismdevelopment.vandalism.base.value.impl.number.slider.SliderIntegerValue;
+import de.vandalismdevelopment.vandalism.util.WorldUtil;
 import net.minecraft.client.gui.DrawContext;
 
 public class InfoHUDElement extends HUDElement {
@@ -79,30 +79,30 @@ public class InfoHUDElement extends HUDElement {
         int color = -1;
         boolean shadow = false;
         int x = this.x, width = 0, height = 0;
-        final int fontHeight = this.textRenderer().fontHeight;
+        final int fontHeight = this.mc.textRenderer.fontHeight;
         if (this.fps.getValue()) {
-            final String text = "FPS: " + this.mc().getCurrentFps();
-            context.drawText(this.textRenderer(), text, x, this.y + height, color, shadow);
+            final String text = "FPS: " + this.mc.getCurrentFps();
+            context.drawText(this.mc.textRenderer, text, x, this.y + height, color, shadow);
             height += fontHeight;
-            final int textWidth = this.textRenderer().getWidth(text);
+            final int textWidth = this.mc.textRenderer.getWidth(text);
             if (textWidth > width) {
                 width = textWidth;
             }
         }
         if (this.username.getValue()) {
-            final String text = "Username: " + this.mc().session.getUsername();
-            context.drawText(this.textRenderer(), text, x, this.y + height, color, shadow);
+            final String text = "Username: " + this.mc.session.getUsername();
+            context.drawText(this.mc.textRenderer, text, x, this.y + height, color, shadow);
             height += fontHeight;
-            final int textWidth = this.textRenderer().getWidth(text);
+            final int textWidth = this.mc.textRenderer.getWidth(text);
             if (textWidth > width) {
                 width = textWidth;
             }
         }
         final double posX, posY, posZ;
-        if (this.player() != null) {
-            posX = this.player().getX();
-            posY = this.player().getY();
-            posZ = this.player().getZ();
+        if (this.mc.player != null) {
+            posX = this.mc.player.getX();
+            posY = this.mc.player.getY();
+            posZ = this.mc.player.getZ();
         } else {
             posX = 0D;
             posY = 0D;
@@ -119,9 +119,9 @@ public class InfoHUDElement extends HUDElement {
                     posY,
                     posZ
             );
-            context.drawText(this.textRenderer(), text, x, this.y + height, color, shadow);
+            context.drawText(this.mc.textRenderer, text, x, this.y + height, color, shadow);
             height += fontHeight;
-            final int textWidth = this.textRenderer().getWidth(text);
+            final int textWidth = this.mc.textRenderer.getWidth(text);
             if (textWidth > width) {
                 width = textWidth;
             }
@@ -156,9 +156,9 @@ public class InfoHUDElement extends HUDElement {
                         posY,
                         correctedZ
                 );
-                context.drawText(this.textRenderer(), text, x, this.y + height, color, shadow);
+                context.drawText(this.mc.textRenderer, text, x, this.y + height, color, shadow);
                 height += fontHeight;
-                final int textWidth = this.textRenderer().getWidth(text);
+                final int textWidth = this.mc.textRenderer.getWidth(text);
                 if (textWidth > width) {
                     width = textWidth;
                 }
@@ -167,34 +167,34 @@ public class InfoHUDElement extends HUDElement {
         if (this.serverBrand.getValue()) {
             String text = "Server Brand: ";
             String value = "unknown";
-            if (this.networkHandler() != null) {
-                final String brand = this.networkHandler().getBrand();
+            if (this.mc.getNetworkHandler() != null) {
+                final String brand = this.mc.getNetworkHandler().getBrand();
                 if (brand != null) {
                     value = brand.replaceFirst("\\(.*?\\) ", "");
                 }
             }
             text += value;
-            context.drawText(this.textRenderer(), text, x, this.y + height, color, shadow);
+            context.drawText(this.mc.textRenderer, text, x, this.y + height, color, shadow);
             height += fontHeight;
-            final int textWidth = this.textRenderer().getWidth(text);
+            final int textWidth = this.mc.textRenderer.getWidth(text);
             if (textWidth > width) {
                 width = textWidth;
             }
         }
         if (this.difficulty.getValue()) {
-            final String text = "Difficulty: " + (this.world() != null ? this.world().getDifficulty().getName() : "unknown");
-            context.drawText(this.textRenderer(), text, x, this.y + height, color, shadow);
+            final String text = "Difficulty: " + (this.mc.world != null ? this.mc.world.getDifficulty().getName() : "unknown");
+            context.drawText(this.mc.textRenderer, text, x, this.y + height, color, shadow);
             height += fontHeight;
-            final int textWidth = this.textRenderer().getWidth(text);
+            final int textWidth = this.mc.textRenderer.getWidth(text);
             if (textWidth > width) {
                 width = textWidth;
             }
         }
         if (this.permissionsLevel.getValue()) {
-            final String text = "Permissions Level: " + (this.player() != null ? this.player().getPermissionLevel() : "unknown");
-            context.drawText(this.textRenderer(), text, x, this.y + height, color, shadow);
+            final String text = "Permissions Level: " + (this.mc.player != null ? this.mc.player.getPermissionLevel() : "unknown");
+            context.drawText(this.mc.textRenderer, text, x, this.y + height, color, shadow);
             height += fontHeight;
-            final int textWidth = this.textRenderer().getWidth(text);
+            final int textWidth = this.mc.textRenderer.getWidth(text);
             if (textWidth > width) {
                 width = textWidth;
             }

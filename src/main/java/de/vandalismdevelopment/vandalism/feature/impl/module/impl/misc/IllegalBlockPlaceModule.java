@@ -45,19 +45,19 @@ public class IllegalBlockPlaceModule extends Module implements TickListener {
 
     @Override
     public void onTick() {
-        final Entity cameraEntity = this.mc().getCameraEntity();
-        if (this.player() == null || this.interactionManager() == null || cameraEntity == null) {
+        final Entity cameraEntity = this.mc.getCameraEntity();
+        if (this.mc.player == null || this.mc.interactionManager == null || cameraEntity == null) {
             return;
         }
 
-        final HitResult hitResult = cameraEntity.raycast(this.interactionManager().getReachDistance(), 0, false);
-        if (!(hitResult instanceof final BlockHitResult blockHitResult) || this.player().getMainHandStack().isEmpty()) {
+        final HitResult hitResult = cameraEntity.raycast(this.mc.interactionManager.getReachDistance(), 0, false);
+        if (!(hitResult instanceof final BlockHitResult blockHitResult) || this.mc.player.getMainHandStack().isEmpty()) {
             return;
         }
 
-        final Block block = this.world().getBlockState(blockHitResult.getBlockPos()).getBlock();
-        if ((block instanceof AirBlock || block instanceof FluidBlock) && this.options().useKey.isPressed()) {
-            this.interactionManager().interactBlock(this.player(), Hand.MAIN_HAND, blockHitResult);
+        final Block block = this.mc.world.getBlockState(blockHitResult.getBlockPos()).getBlock();
+        if ((block instanceof AirBlock || block instanceof FluidBlock) && this.mc.options.useKey.isPressed()) {
+            this.mc.interactionManager.interactBlock(this.mc.player, Hand.MAIN_HAND, blockHitResult);
         }
     }
 

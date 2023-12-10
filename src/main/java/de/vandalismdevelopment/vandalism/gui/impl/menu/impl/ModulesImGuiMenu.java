@@ -1,12 +1,12 @@
-package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.impl;
+package de.vandalismdevelopment.vandalism.gui.impl.menu.impl;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.FeatureCategory;
 import de.vandalismdevelopment.vandalism.feature.FeatureList;
 import de.vandalismdevelopment.vandalism.feature.impl.module.Module;
-import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.ImGuiMenu;
 import de.vandalismdevelopment.vandalism.base.value.Value;
+import de.vandalismdevelopment.vandalism.gui_v2.ImWindow;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiPopupFlags;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class ModulesImGuiMenu extends ImGuiMenu {
+public class ModulesImGuiMenu extends ImWindow {
 
     private final ImString searchInput, favoriteModulesSearchInput, enabledModulesSearchInput;
 

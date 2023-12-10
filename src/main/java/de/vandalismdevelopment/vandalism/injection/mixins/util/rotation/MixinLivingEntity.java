@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.util.rotation;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,7 +13,7 @@ public abstract class MixinLivingEntity implements MinecraftWrapper {
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getYaw()F"), slice = @Slice(to = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getYaw()F", ordinal = 1)))
     private float vandalism$modifyRotationYaw(final LivingEntity instance) {
-        if (this.player() == ((LivingEntity) (Object) this)) {
+        if (this.mc.player == ((LivingEntity) (Object) this)) {
             if (Vandalism.getInstance().getRotationListener().getRotation() != null) {
                 return Vandalism.getInstance().getRotationListener().getRotation().getYaw();
             }
@@ -23,7 +23,7 @@ public abstract class MixinLivingEntity implements MinecraftWrapper {
 
     @Redirect(method = "turnHead", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getYaw()F"))
     private float vandalism$modifyRotationHeadYaw(final LivingEntity instance) {
-        if (this.player() == ((LivingEntity) (Object) this)) {
+        if (this.mc.player == ((LivingEntity) (Object) this)) {
             if (Vandalism.getInstance().getRotationListener().getRotation() != null) {
                 return Vandalism.getInstance().getRotationListener().getRotation().getYaw();
             }
@@ -33,7 +33,7 @@ public abstract class MixinLivingEntity implements MinecraftWrapper {
 
     @Redirect(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getPitch()F"))
     private float vandalism$modifyRotationPitch(final LivingEntity instance) {
-        if (this.player() == ((LivingEntity) (Object) this)) {
+        if (this.mc.player == ((LivingEntity) (Object) this)) {
             if (Vandalism.getInstance().getRotationListener().getRotation() != null) {
                 return Vandalism.getInstance().getRotationListener().getRotation().getPitch();
             }

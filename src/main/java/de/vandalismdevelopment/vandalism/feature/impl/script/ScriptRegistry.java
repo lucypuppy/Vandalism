@@ -7,8 +7,8 @@ import de.vandalismdevelopment.vandalism.base.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.FeatureList;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.ScriptParser;
 import de.vandalismdevelopment.vandalism.feature.impl.script.parse.command.ScriptCommand;
-import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
+import de.vandalismdevelopment.vandalism.util.ChatUtil;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.util.Pair;
 import org.lwjgl.glfw.GLFW;
 
@@ -87,7 +87,7 @@ public class ScriptRegistry implements TickListener, InputListener, MinecraftWra
 
     @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN || this.player() == null || this.currentScreen() != null) {
+        if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN || this.mc.player == null || this.mc.currentScreen != null) {
             return;
         }
         for (final Script script : Vandalism.getInstance().getScriptRegistry().getScripts()) {
@@ -127,7 +127,7 @@ public class ScriptRegistry implements TickListener, InputListener, MinecraftWra
     }
 
     public void executeScriptByScriptFile(final File file) {
-        final boolean inGame = this.player() != null;
+        final boolean inGame = this.mc.player != null;
         try {
             if (isScriptRunning(file)) {
                 throw new RuntimeException("Failed to execute script '" + file.getName() + "' because it is already running");

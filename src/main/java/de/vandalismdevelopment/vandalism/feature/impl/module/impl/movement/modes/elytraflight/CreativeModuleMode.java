@@ -20,20 +20,20 @@ public class CreativeModuleMode extends ModuleMode<ElytraFlightModule> implement
     @Override
     public void onDisable() {
         DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
-        if (this.player() == null) return;
-        this.player().getAbilities().flying = false;
-        this.player().getAbilities().allowFlying = this.player().getAbilities().creativeMode;
+        if (this.mc.player == null) return;
+        this.mc.player.getAbilities().flying = false;
+        this.mc.player.getAbilities().allowFlying = this.mc.player.getAbilities().creativeMode;
     }
 
     @Override
     public void onTick() {
-        if (this.player() == null) return;
-        if (!this.player().isFallFlying()) {
-            this.networkHandler().sendPacket(new ClientCommandC2SPacket(this.player(), ClientCommandC2SPacket.Mode.START_FALL_FLYING));
+        if (this.mc.player == null) return;
+        if (!this.mc.player.isFallFlying()) {
+            this.mc.getNetworkHandler().sendPacket(new ClientCommandC2SPacket(this.mc.player, ClientCommandC2SPacket.Mode.START_FALL_FLYING));
             return;
         }
-        this.player().getAbilities().flying = true;
-        this.player().getAbilities().allowFlying = true;
+        this.mc.player.getAbilities().flying = true;
+        this.mc.player.getAbilities().allowFlying = true;
     }
 
 }

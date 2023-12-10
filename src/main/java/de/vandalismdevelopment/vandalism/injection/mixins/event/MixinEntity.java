@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.injection.mixins.event;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.base.event.MovementListener;
-import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.registry.tag.TagKey;
@@ -22,7 +22,7 @@ public abstract class MixinEntity implements MinecraftWrapper {
 
     @ModifyConstant(constant = @Constant(doubleValue = 0.05000000074505806), method = "pushAwayFrom")
     private double vandalism$callEntityPushEvent(final double constant) {
-        if (this.player() == ((Entity) (Object) this)) {
+        if (this.mc.player == ((Entity) (Object) this)) {
             final MovementListener.EntityPushEvent entityPushEvent = new MovementListener.EntityPushEvent(constant);
             DietrichEvents2.global().postInternal(MovementListener.EntityPushEvent.ID, entityPushEvent);
             if (entityPushEvent.isCancelled()) return 0;
@@ -33,7 +33,7 @@ public abstract class MixinEntity implements MinecraftWrapper {
 
     @Redirect(method = "updateWaterState", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;updateMovementInFluid(Lnet/minecraft/registry/tag/TagKey;D)Z"))
     private boolean vandalism$callFluidPushEvent1(final Entity instance, final TagKey<Fluid> tag, final double speed) {
-        if (this.player() == ((Entity) (Object) this)) {
+        if (this.mc.player == ((Entity) (Object) this)) {
             final MovementListener.FluidPushEvent fluidPushEvent = new MovementListener.FluidPushEvent(speed);
             DietrichEvents2.global().postInternal(MovementListener.FluidPushEvent.ID, fluidPushEvent);
             if (fluidPushEvent.isCancelled()) return false;
@@ -44,7 +44,7 @@ public abstract class MixinEntity implements MinecraftWrapper {
 
     @Redirect(method = "checkWaterState", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;updateMovementInFluid(Lnet/minecraft/registry/tag/TagKey;D)Z"))
     private boolean vandalism$callFluidPushEvent2(final Entity instance, final TagKey<Fluid> tag, final double speed) {
-        if (this.player() == ((Entity) (Object) this)) {
+        if (this.mc.player == ((Entity) (Object) this)) {
             final MovementListener.FluidPushEvent fluidPushEvent = new MovementListener.FluidPushEvent(speed);
             DietrichEvents2.global().postInternal(MovementListener.FluidPushEvent.ID, fluidPushEvent);
             if (fluidPushEvent.isCancelled()) return false;
@@ -55,7 +55,7 @@ public abstract class MixinEntity implements MinecraftWrapper {
 
     @Redirect(method = "adjustMovementForCollisions(Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/Vec3d;", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getStepHeight()F"))
     private float vandalism$callStepEvent(final Entity instance) {
-        if (this.player() == ((Entity) (Object) this)) {
+        if (this.mc.player == ((Entity) (Object) this)) {
             final MovementListener.StepEvent stepEvent = new MovementListener.StepEvent(instance.getStepHeight());
             DietrichEvents2.global().postInternal(MovementListener.StepEvent.ID, stepEvent);
             return stepEvent.stepHeight;
@@ -65,7 +65,7 @@ public abstract class MixinEntity implements MinecraftWrapper {
 
     @Inject(method = "adjustMovementForCollisions(Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/Vec3d;", at = @At(value = "RETURN", ordinal = 0), cancellable = true)
     private void vandalism$callStepSuccessEvent(final Vec3d movement, final CallbackInfoReturnable<Vec3d> cir) {
-        if (this.player() != ((Entity) (Object) this)) {
+        if (this.mc.player != ((Entity) (Object) this)) {
             return;
         }
         final MovementListener.StepSuccessEvent stepSuccessEvent = new MovementListener.StepSuccessEvent(movement, cir.getReturnValue());
@@ -75,7 +75,7 @@ public abstract class MixinEntity implements MinecraftWrapper {
 
     @Redirect(method = "updateVelocity", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;movementInputToVelocity(Lnet/minecraft/util/math/Vec3d;FF)Lnet/minecraft/util/math/Vec3d;"))
     public Vec3d vandalism$callStrafeEvent(final Vec3d movementInput, final float speed, final float yaw) {
-        if (this.player() == ((Entity) (Object) this)) {
+        if (this.mc.player == ((Entity) (Object) this)) {
             final MovementListener.StrafeEvent strafeEvent = new MovementListener.StrafeEvent(movementInput, speed, yaw);
             DietrichEvents2.global().postInternal(MovementListener.StrafeEvent.ID, strafeEvent);
             return movementInputToVelocity(strafeEvent.movementInput, strafeEvent.speed, strafeEvent.yaw);

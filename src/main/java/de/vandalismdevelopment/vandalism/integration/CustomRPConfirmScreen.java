@@ -1,6 +1,6 @@
 package de.vandalismdevelopment.vandalism.integration;
 
-import de.vandalismdevelopment.vandalism.util.minecraft.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -21,11 +21,11 @@ public class CustomRPConfirmScreen extends ConfirmScreen implements MinecraftWra
     protected void addButtons(final int y) {
         super.addButtons(y);
         this.addButton(ButtonWidget.builder(Text.literal("Spoof"), (button) -> {
-            if (this.networkHandler() != null) {
-                this.networkHandler().sendPacket(new ResourcePackStatusC2SPacket(ResourcePackStatusC2SPacket.Status.ACCEPTED));
-                this.networkHandler().sendPacket(new ResourcePackStatusC2SPacket(ResourcePackStatusC2SPacket.Status.SUCCESSFULLY_LOADED));
-                if (this.mc().inGameHud != null) {
-                    this.setScreen(null);
+            if (this.mc.getNetworkHandler() != null) {
+                this.mc.getNetworkHandler().sendPacket(new ResourcePackStatusC2SPacket(ResourcePackStatusC2SPacket.Status.ACCEPTED));
+                this.mc.getNetworkHandler().sendPacket(new ResourcePackStatusC2SPacket(ResourcePackStatusC2SPacket.Status.SUCCESSFULLY_LOADED));
+                if (this.mc.inGameHud != null) {
+                    client.setScreen(null);
                 }
             }
         }).dimensions(this.width / 2 - 155, y + 22, 150, 20).build());
@@ -37,8 +37,8 @@ public class CustomRPConfirmScreen extends ConfirmScreen implements MinecraftWra
             dump = true;
             this.callback.accept(true);
         }).dimensions(this.width / 2 - 155, y + 44, 150, 20).build());
-        if (this.mc().inGameHud != null) {
-            this.addButton(ButtonWidget.builder(Text.literal("Close Screen"), (button) -> this.setScreen(null)).dimensions(this.width / 2 - 155 + 160, y + 44, 150, 20).build());
+        if (this.mc.inGameHud != null) {
+            this.addButton(ButtonWidget.builder(Text.literal("Close Screen"), (button) -> client.setScreen(null)).dimensions(this.width / 2 - 155 + 160, y + 44, 150, 20).build());
         }
     }
 

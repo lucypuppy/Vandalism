@@ -58,7 +58,7 @@ public class AutoRespawnModule extends Module implements TickListener {
 
     @Override
     public void onTick() {
-        if (this.world() == null || !this.player().isDead()) return;
+        if (this.mc.world == null || !this.mc.player.isDead()) return;
 
         // check if we should instantly respawn, if not check is the delay has passed
         if (!this.instantRespawn.getValue() && !this.delayTimer.hasReached(this.delay.getValue(), true)) {
@@ -66,10 +66,10 @@ public class AutoRespawnModule extends Module implements TickListener {
         }
 
         // request respawn from server
-        this.player().requestRespawn();
+        this.mc.player.requestRespawn();
 
         // automatically send /back if enabled
-        if (this.autoBack.getValue()) this.networkHandler().sendChatCommand("back");
+        if (this.autoBack.getValue()) this.mc.getNetworkHandler().sendChatCommand("back");
     }
 
 }

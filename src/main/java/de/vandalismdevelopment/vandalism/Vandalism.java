@@ -4,7 +4,8 @@ import de.vandalismdevelopment.vandalism.base.FabricBootstrap;
 import de.vandalismdevelopment.vandalism.base.account.AccountManager;
 import de.vandalismdevelopment.vandalism.base.clientsettings.ClientSettings;
 import de.vandalismdevelopment.vandalism.base.config.ConfigManager;
-import de.vandalismdevelopment.vandalism.gui.ImGuiHandler;
+import de.vandalismdevelopment.vandalism.gui_v2.ImGuiManager;
+import de.vandalismdevelopment.vandalism.gui_v2.loader.ImLoader;
 import de.vandalismdevelopment.vandalism.integration.serverlist.ServerListManager;
 import de.vandalismdevelopment.vandalism.base.event.game.MinecraftBoostrapListener;
 import de.vandalismdevelopment.vandalism.base.event.game.ShutdownProcessListener;
@@ -21,18 +22,9 @@ import java.io.File;
 
 /**
  * TODO
- *  - Rewrite Config class file to support JsonElement type (e.g. JsonArray)
- *  - Reload signature verifier, realms reloader and gameProfileFuture (see AbstractAccount)
  *  - Delete GlfwKeyName and replace with InputUtil
- *  - Clean packages to sort classes by system reference instead of type reference
- *  - Get rid of ImGuiMenuCategoryRegistry
- *  - Clean value system
  *  - Clean event system package to prevent overusing listener classes
- *  - Delete EncryptionUtil
- *  - Delete MinecraftUtil and MinecraftWrapper
  *  - Apply checkstyle.xml to all classes
- *  - Rewrite Vandalism#start
- *  - Delete HUDElementAlignment
  *  - Fix tick bug (cps is not accurate) -> see BoxMuellerClicker#update
  *  - Fix module tabs display (no stacking) when the mod starts the first time.
  *  - Replace MixinServerResourcePackProvider
@@ -48,8 +40,7 @@ import java.io.File;
  *  - Delete MixinParticleManager
  *  - Delete MixinSodiumWorldRenderer, Sodium has merged this fix into their codebase
  *  - Update AuthLib array instead of MixinTextureUrlChecker
- *  - Add ImLoader, ImGuiExtensions and ImGuiFontHack
- *  - Add ImGui error handling redirectors (see ImGuiPlatformIO)
+ *  - Readd DebugModule as ImWindow
  */
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 
@@ -59,7 +50,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
     // Base handlers
     private ConfigManager configManager;
-    private ImGuiHandler imGuiHandler;
+    private ImGuiManager imGuiManager;
     private ClientSettings clientSettings;
     private AccountManager accountManager;
 
@@ -110,8 +101,8 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.runDirectory.mkdirs();
 
         this.configManager = new ConfigManager();
-        this.imGuiHandler = new ImGuiHandler(mc.getWindow().getHandle(), this.runDirectory);
-        this.clientSettings = new ClientSettings(this.configManager);
+        this.imGuiManager = new ImGuiManager(this.runDirectory);
+        this.clientSettings = new ClientSettings(this.configManager, this.imGuiManager);
         this.accountManager = new AccountManager(this.configManager);
         this.accountManager.init();
         
@@ -148,8 +139,8 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         return runDirectory;
     }
 
-    public ImGuiHandler getImGuiHandler() {
-        return imGuiHandler;
+    public ImGuiManager getImGuiManager() {
+        return imGuiManager;
     }
 
     public ScriptRegistry getScriptRegistry() {
