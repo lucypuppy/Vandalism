@@ -1,6 +1,8 @@
-package de.vandalismdevelopment.vandalism.util;
+package de.vandalismdevelopment.vandalism.util.minecraft;
 
+import de.florianmichael.rclasses.common.StringUtils;
 import de.vandalismdevelopment.vandalism.base.FabricBootstrap;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -11,14 +13,14 @@ import java.awt.*;
 
 public class ChatUtil implements MinecraftWrapper {
 
-    private enum Type implements EnumNameNormalizer {
+    private enum Type {
 
         INFO(Color.GREEN), WARNING(Color.ORANGE), ERROR(Color.RED);
 
         private final MutableText prefix;
 
         Type(final Color color) {
-            this.prefix = Text.empty().setStyle(Style.EMPTY.withFormatting(Formatting.GRAY)).append("[").append(Text.literal(this.normalizeName(this.name())).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(color.getRGB())))).append("] ");
+            this.prefix = Text.empty().setStyle(Style.EMPTY.withFormatting(Formatting.GRAY)).append("[").append(Text.literal(StringUtils.normalizeEnumName(this.name())).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(color.getRGB())))).append("] ");
         }
 
         public MutableText getPrefix() {

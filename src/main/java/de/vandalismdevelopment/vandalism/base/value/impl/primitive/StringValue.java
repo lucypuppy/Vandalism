@@ -1,0 +1,34 @@
+package de.vandalismdevelopment.vandalism.base.value.impl.primitive;
+
+import com.google.gson.JsonObject;
+import de.vandalismdevelopment.vandalism.base.value.ValueParent;
+import de.vandalismdevelopment.vandalism.base.value.Value;
+import imgui.ImGui;
+import imgui.flag.ImGuiInputTextFlags;
+import imgui.type.ImString;
+
+public class StringValue extends Value<String> {
+
+    public StringValue(ValueParent parent, String name, String description, String defaultValue) {
+        super(parent, name, description, defaultValue);
+    }
+
+    @Override
+    public void load(final JsonObject mainNode) {
+        this.setValue(mainNode.get(getName()).getAsString());
+    }
+
+    @Override
+    public void save(final JsonObject mainNode) {
+        mainNode.addProperty(getName(), getValue());
+    }
+
+    @Override
+    public void render() {
+        final ImString input = new ImString(this.getValue());
+        if (ImGui.inputText("##" + this.getName(), input, ImGuiInputTextFlags.CallbackResize)) {
+            this.setValue(input.get());
+        }
+    }
+
+}

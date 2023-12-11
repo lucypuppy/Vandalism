@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.integration.creativetab.impl;
 
 import de.vandalismdevelopment.vandalism.integration.creativetab.AbstractCreativeTab;
-import de.vandalismdevelopment.vandalism.util.ItemStackUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.ItemStackUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.SpawnEggItem;
@@ -11,7 +11,7 @@ import net.minecraft.util.Formatting;
 
 import java.util.List;
 
-import static de.vandalismdevelopment.vandalism.util.ItemStackUtil.withClientSide;
+import static de.vandalismdevelopment.vandalism.util.minecraft.ItemStackUtil.withClientSide;
 
 public class GriefItemsCreativeTab extends AbstractCreativeTab {
 

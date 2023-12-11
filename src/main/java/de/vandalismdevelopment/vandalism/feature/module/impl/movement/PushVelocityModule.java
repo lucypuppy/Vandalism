@@ -4,8 +4,8 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.base.event.MovementListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
-import de.vandalismdevelopment.vandalism.base.value.impl.number.slider.SliderDoubleValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.primitive.BooleanValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.number.DoubleValue;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -19,14 +19,14 @@ public class PushVelocityModule extends AbstractModule implements MovementListen
             true
     );
 
-    private final Value<Double> entityPushMultiplier = new SliderDoubleValue(
+    private final Value<Double> entityPushMultiplier = new DoubleValue(
             "Entity Push Multiplier",
             "Which multiplier of velocity should a entity push apply to you.",
             this,
             0.0d,
             -2.0d,
             2.0d
-    ).visibleConsumer(this.modifyEntityPush::getValue);
+    ).visibleCondition(this.modifyEntityPush::getValue);
 
     private final Value<Boolean> modifyFluidPush = new BooleanValue(
             "Modify Fluid Push",
@@ -35,14 +35,14 @@ public class PushVelocityModule extends AbstractModule implements MovementListen
             true
     );
 
-    private final Value<Double> fluidPushSpeed = new SliderDoubleValue(
+    private final Value<Double> fluidPushSpeed = new DoubleValue(
             "Fluid Push Value",
             "Which value of speed should a fluid push apply to you.",
             this,
             0.0d,
             -2.0d,
             2.0d
-    ).visibleConsumer(this.modifyFluidPush::getValue);
+    ).visibleCondition(this.modifyFluidPush::getValue);
 
     public PushVelocityModule() {
         super(
@@ -55,13 +55,13 @@ public class PushVelocityModule extends AbstractModule implements MovementListen
     }
 
     @Override
-    protected void onEnable() {
+    public void onEnable() {
         DietrichEvents2.global().subscribe(EntityPushEvent.ID, this);
         DietrichEvents2.global().subscribe(FluidPushEvent.ID, this);
     }
 
     @Override
-    protected void onDisable() {
+    public void onDisable() {
         DietrichEvents2.global().unsubscribe(EntityPushEvent.ID, this);
         DietrichEvents2.global().unsubscribe(FluidPushEvent.ID, this);
     }

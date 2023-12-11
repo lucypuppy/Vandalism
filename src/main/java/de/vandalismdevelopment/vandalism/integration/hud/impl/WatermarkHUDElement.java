@@ -1,9 +1,8 @@
 package de.vandalismdevelopment.vandalism.integration.hud.impl;
 
-import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.base.FabricBootstrap;
 import de.vandalismdevelopment.vandalism.integration.hud.HUDElement;
-import de.vandalismdevelopment.vandalism.util.GLStateTracker;
+import de.vandalismdevelopment.vandalism.util.render.GLStateTracker;
 import net.minecraft.client.gui.DrawContext;
 
 public class WatermarkHUDElement extends HUDElement {

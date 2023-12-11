@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.impl;
+package de.vandalismdevelopment.vandalism.util.clicker.impl;
 
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.Clicker;

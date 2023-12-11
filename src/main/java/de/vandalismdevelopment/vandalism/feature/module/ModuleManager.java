@@ -2,6 +2,7 @@ package de.vandalismdevelopment.vandalism.feature.module;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.pattern.storage.Storage;
+import de.florianmichael.rclasses.pattern.storage.named.NamedStorage;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.base.event.InputListener;
 import de.vandalismdevelopment.vandalism.feature.module.impl.combat.BowSpammerModule;
@@ -14,7 +15,7 @@ import de.vandalismdevelopment.vandalism.feature.module.impl.render.*;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import org.lwjgl.glfw.GLFW;
 
-public class ModuleManager extends Storage<AbstractModule> implements InputListener, MinecraftWrapper {
+public class ModuleManager extends NamedStorage<AbstractModule> implements InputListener, MinecraftWrapper {
 
     private BetterTabListModule betterTabListModule;
     private ESPModule espModule;
@@ -83,7 +84,7 @@ public class ModuleManager extends Storage<AbstractModule> implements InputListe
             return;
         }
         for (final AbstractModule module : Vandalism.getInstance().getModuleRegistry().getList()) {
-            if (module.getKeyBind().getKeyCode() == key) {
+            if (module.getKeyBind().isPressed()) {
                 module.toggle();
             }
         }

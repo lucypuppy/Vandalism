@@ -5,12 +5,12 @@ import de.florianmichael.dietrichevents2.Priorities;
 import de.vandalismdevelopment.vandalism.base.event.PacketListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.impl.number.slider.SliderIntegerValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.number.IntegerValue;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 
 public class AmbienceModule extends AbstractModule implements PacketListener {
 
-    private final Value<Integer> worldTime = new SliderIntegerValue(
+    private final Value<Integer> worldTime = new IntegerValue(
             "World time",
             "Time of the world.",
             this,
@@ -30,12 +30,12 @@ public class AmbienceModule extends AbstractModule implements PacketListener {
     }
 
     @Override
-    protected void onEnable() {
+    public void onEnable() {
         DietrichEvents2.global().subscribe(PacketEvent.ID, this, Priorities.LOW);
     }
 
     @Override
-    protected void onDisable() {
+    public void onDisable() {
         DietrichEvents2.global().unsubscribe(PacketEvent.ID, this);
     }
 

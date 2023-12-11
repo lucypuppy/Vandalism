@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.util;
+package de.vandalismdevelopment.vandalism.util.render;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.MinecraftClient;

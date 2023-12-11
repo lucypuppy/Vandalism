@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.base.clientsettings.gui;
 
 import de.vandalismdevelopment.vandalism.base.clientsettings.ClientSettings;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.ValueCategory;
+import de.vandalismdevelopment.vandalism.base.value.template.ValueGroup;
 import de.vandalismdevelopment.vandalism.gui_v2.ImWindow;
 import imgui.ImGui;
 import net.minecraft.client.gui.DrawContext;
@@ -22,16 +22,16 @@ public class ConfigImWindow extends ImWindow {
         ImGui.begin(getName());
         if (ImGui.beginTabBar("config-value-categories")) {
             for (final Value<?> value : clientSettings.getValues()) {
-                if (value instanceof final ValueCategory valueCategory) {
-                    if (ImGui.beginTabItem(valueCategory.getValueName())) {
-                        if (ImGui.button("Reset " + valueCategory.getName() + " Config")) {
-                            for (final Value<?> valueCategoryValue : valueCategory.getValues()) {
+                if (value instanceof final ValueGroup valueGroup) {
+                    if (ImGui.beginTabItem(valueGroup.getName())) {
+                        if (ImGui.button("Reset " + valueGroup.getName() + " Config")) {
+                            for (final Value<?> valueCategoryValue : valueGroup.getValues()) {
                                 valueCategoryValue.resetValue();
                             }
                         }
                         ImGui.separator();
-                        ImGui.beginChild("##configvalues" + valueCategory.getName());
-                        valueCategory.renderValues();
+                        ImGui.beginChild("##configvalues" + valueGroup.getName());
+                        valueGroup.renderValues();
                         ImGui.endChild();
                         ImGui.endTabItem();
                     }

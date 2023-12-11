@@ -7,9 +7,9 @@ import de.vandalismdevelopment.vandalism.base.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.command.impl.misc.NbtCommand;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
-import de.vandalismdevelopment.vandalism.util.ChatUtil;
-import de.vandalismdevelopment.vandalism.util.ServerUtil;
+import de.vandalismdevelopment.vandalism.base.value.impl.primitive.BooleanValue;
+import de.vandalismdevelopment.vandalism.util.minecraft.ChatUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.ServerUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -51,12 +51,12 @@ public class ItemStackLoggerModule extends AbstractModule implements TickListene
     }
 
     @Override
-    protected void onEnable() {
+    public void onEnable() {
         DietrichEvents2.global().subscribe(TickEvent.ID, this, Priorities.HIGH);
     }
 
     @Override
-    protected void onDisable() {
+    public void onDisable() {
         DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
     }
 

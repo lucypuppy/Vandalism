@@ -3,8 +3,8 @@ package de.vandalismdevelopment.vandalism.feature.module.impl.movement;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.base.event.MovementListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
-import de.vandalismdevelopment.vandalism.util.MovementUtil;
-import de.vandalismdevelopment.vandalism.util.TimerUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.MovementUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.TimerUtil;
 import net.minecraft.util.math.Vec3d;
 
 public class LongJumpModule extends AbstractModule implements MovementListener {

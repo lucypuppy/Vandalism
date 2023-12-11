@@ -31,12 +31,12 @@ public class MessageEncryptorModule extends AbstractModule implements ChatListen
     }
 
     @Override
-    protected void onEnable() {
+    public void onEnable() {
         DietrichEvents2.global().subscribe(ChatSendEvent.ID, this);
     }
 
     @Override
-    protected void onDisable() {
+    public void onDisable() {
         DietrichEvents2.global().unsubscribe(ChatSendEvent.ID, this);
     }
 

@@ -6,11 +6,11 @@ import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.vandalismdevelopment.vandalism.base.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.ValueCategory;
-import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
-import de.vandalismdevelopment.vandalism.base.value.impl.number.slider.SliderDoubleValue;
-import de.vandalismdevelopment.vandalism.base.value.impl.number.slider.SliderFloatValue;
-import de.vandalismdevelopment.vandalism.base.value.impl.number.slider.SliderIntegerValue;
+import de.vandalismdevelopment.vandalism.base.value.template.ValueGroup;
+import de.vandalismdevelopment.vandalism.base.value.impl.primitive.BooleanValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.number.DoubleValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.number.FloatValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.number.IntegerValue;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 
 public class FOVFuckerModule extends AbstractModule implements TickListener {
 
-    private final Value<Float> maxDistance = new SliderFloatValue(
+    private final Value<Float> maxDistance = new FloatValue(
             "Max Distance",
             "The maximum distance to find targets.",
             this,
@@ -29,7 +29,7 @@ public class FOVFuckerModule extends AbstractModule implements TickListener {
             10
     );
 
-    private final Value<Double> targetYPosOffset = new SliderDoubleValue(
+    private final Value<Double> targetYPosOffset = new DoubleValue(
             "Target Y Pos Offset",
             "The offset for the y position you will be teleported to.",
             this,
@@ -37,7 +37,7 @@ public class FOVFuckerModule extends AbstractModule implements TickListener {
             -5,
             5
     );
-    private final Value<Double> targetHPosOffset = new SliderDoubleValue(
+    private final Value<Double> targetHPosOffset = new DoubleValue(
             "Target H Pos Offset",
             "The offset for the horizontal position you will be teleported to.",
             this,
@@ -67,7 +67,7 @@ public class FOVFuckerModule extends AbstractModule implements TickListener {
             false
     );
 
-    private final ValueCategory sneakCategory = new ValueCategory(
+    private final ValueGroup sneakCategory = new ValueGroup(
             "Sneak Spam Configuration",
             "The settings for the sneak spam.",
             this
@@ -80,7 +80,7 @@ public class FOVFuckerModule extends AbstractModule implements TickListener {
             true
     );
 
-    private final Value<Integer> sneakSpamDelay = new SliderIntegerValue(
+    private final Value<Integer> sneakSpamDelay = new IntegerValue(
             "Sneak Spam Delay",
             "The delay for the sneak spam.",
             this.sneakCategory,

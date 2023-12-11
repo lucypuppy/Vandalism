@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.feature.command.impl.misc;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.vandalismdevelopment.vandalism.feature.command.AbstractCommand;
-import de.vandalismdevelopment.vandalism.util.ItemStackUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.ItemStackUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.ItemStackArgumentType;
 

@@ -4,14 +4,14 @@ import de.vandalismdevelopment.vandalism.base.clientsettings.gui.ConfigImWindow;
 import de.vandalismdevelopment.vandalism.base.clientsettings.impl.*;
 import de.vandalismdevelopment.vandalism.base.config.ConfigManager;
 import de.vandalismdevelopment.vandalism.base.config.template.ConfigWithValues;
-import de.vandalismdevelopment.vandalism.base.value.IValue;
+import de.vandalismdevelopment.vandalism.base.value.ValueParent;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.gui_v2.ImGuiManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClientSettings implements IValue {
+public class ClientSettings implements ValueParent {
 
     private final List<Value<?>> values = new ArrayList<>();
 
@@ -24,7 +24,7 @@ public class ClientSettings implements IValue {
     private final EnhancedServerListSettings enhancedServerListSettings = new EnhancedServerListSettings(this);
 
     public ClientSettings(final ConfigManager configManager, final ImGuiManager imGuiManager) {
-        configManager.add(new ConfigWithValues("clientsettings", getValues().stream().map(value -> (IValue) value).toList()));
+        configManager.add(new ConfigWithValues("clientsettings", getValues().stream().map(value -> (ValueParent) value).toList()));
         imGuiManager.add(new ConfigImWindow(this));
     }
 
@@ -62,7 +62,7 @@ public class ClientSettings implements IValue {
     }
 
     @Override
-    public String getValueName() {
+    public String getName() {
         return "Client Settings";
     }
 

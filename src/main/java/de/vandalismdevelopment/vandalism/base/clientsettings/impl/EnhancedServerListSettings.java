@@ -2,72 +2,66 @@ package de.vandalismdevelopment.vandalism.base.clientsettings.impl;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.base.clientsettings.ClientSettings;
-import de.vandalismdevelopment.vandalism.integration.serverlist.ServerList;
-import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.ValueCategory;
-import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
-import de.vandalismdevelopment.vandalism.base.value.impl.KeyInputValue;
-import de.vandalismdevelopment.vandalism.base.value.impl.number.slider.SliderIntegerValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.awt.KeyBindValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.number.IntegerValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.primitive.BooleanValue;
+import de.vandalismdevelopment.vandalism.base.value.template.ValueGroup;
+import de.vandalismdevelopment.vandalism.integration.serverlist.ServerList;
+import org.lwjgl.glfw.GLFW;
 
-public class EnhancedServerListSettings extends ValueCategory {
+public class EnhancedServerListSettings extends ValueGroup {
 
     public EnhancedServerListSettings(final ClientSettings parent) {
-        super(
-                "Enhanced Server List",
-                "Enhanced Server List related configs.",
-                parent
-        );
+        super(parent, "Enhanced Server List", "Enhanced Server List related configs.");
     }
 
-    public final Value<Boolean> enhancedServerList = new BooleanValue(
+    public final BooleanValue enhancedServerList = new BooleanValue(
+            this,
             "Enhanced Server List",
             "Enables/Disables the enhanced server list mode.",
-            this,
-            true
-    ).valueChangedConsumer(value -> {
-        if (!value) {
-            Vandalism.getInstance().getServerListManager().setSelectedServerList(
-                    ServerList.DEFAULT_SERVER_LIST_NAME
-            );
-        }
-    });
+            true).
+            onValueChange((oldValue, newValue) -> {
+                if (!newValue) {
+                    Vandalism.getInstance().getServerListManager().setSelectedServerList(ServerList.DEFAULT_SERVER_LIST_NAME);
+                }
+            });
 
-    public final Value<GlfwKeyName> pasteServerKey = new KeyInputValue(
+    public final KeyBindValue pasteServerKey = new KeyBindValue(
+            this,
             "Paste Server Key",
             "Change the key to paste a server from your clipboard.",
-            this,
-            GlfwKeyName.INSERT
-    ).visibleConsumer(this.enhancedServerList::getValue);
+            GLFW.GLFW_KEY_INSERT
+    ).visibleCondition(this.enhancedServerList::getValue);
 
-    public final Value<GlfwKeyName> copyServerKey = new KeyInputValue(
+    public final KeyBindValue copyServerKey = new KeyBindValue(
+            this,
             "Copy Server Key",
             "Change the key to copy a server to your clipboard.",
-            this,
-            GlfwKeyName.PAGE_DOWN
-    ).visibleConsumer(this.enhancedServerList::getValue);
+            GLFW.GLFW_KEY_PAGE_DOWN
+    ).visibleCondition(this.enhancedServerList::getValue);
 
-    public final Value<GlfwKeyName> deleteServerKey = new KeyInputValue(
+    public final KeyBindValue deleteServerKey = new KeyBindValue(
+            this,
             "Delete Server Key",
             "Change the key to delete a server from the server list.",
-            this,
-            GlfwKeyName.DELETE
-    ).visibleConsumer(this.enhancedServerList::getValue);
+            GLFW.GLFW_KEY_DELETE
+    ).visibleCondition(this.enhancedServerList::getValue);
 
     public final Value<Boolean> multiplayerScreenServerInformation = new BooleanValue(
+            this,
             "Multiplayer Screen Server Information",
             "If enabled the Game shows all necessary server information behind a server list entry.",
-            this,
             true
-    ).visibleConsumer(this.enhancedServerList::getValue);
+    ).visibleCondition(this.enhancedServerList::getValue);
 
-    public final Value<Integer> maxServerVersionLength = new SliderIntegerValue(
+    public final Value<Integer> maxServerVersionLength = new IntegerValue(
+            this,
             "Max Server Version Length",
             "Sets the max display length of a server version that is being displayed in the multiplayer screen.",
-            this,
             60,
             6,
             250
-    ).visibleConsumer(() -> this.enhancedServerList.getValue() && this.multiplayerScreenServerInformation.getValue());
+    ).visibleCondition(() -> this.enhancedServerList.getValue() && this.multiplayerScreenServerInformation.getValue());
 
 }

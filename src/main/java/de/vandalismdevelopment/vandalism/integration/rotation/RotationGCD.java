@@ -1,9 +1,11 @@
 package de.vandalismdevelopment.vandalism.integration.rotation;
 
 import com.mojang.datafixers.util.Function4;
+import de.florianmichael.rclasses.common.StringUtils;
+import de.florianmichael.rclasses.pattern.functional.IName;
 import net.minecraft.util.math.MathHelper;
 
-public enum RotationGCD implements EnumNameNormalizer {
+public enum RotationGCD implements IName {
 
     NONE((rotation, lastRotation, multiplier, iterations) -> rotation),
     REAL((rotation, lastRotation, multiplier, iterations) -> {
@@ -43,11 +45,11 @@ public enum RotationGCD implements EnumNameNormalizer {
         return new Rotation(yaw, pitch);
     });
 
-    private final String normalName;
+    private final String name;
     private final Function4<Rotation, Rotation, Double, Integer, Rotation> lambda;
 
     RotationGCD(final Function4<Rotation, Rotation, Double, Integer, Rotation> lambda) {
-        this.normalName = this.normalizeName(this.name());
+        this.name = StringUtils.normalizeEnumName(this.name());
         this.lambda = lambda;
     }
 
@@ -56,8 +58,8 @@ public enum RotationGCD implements EnumNameNormalizer {
     }
 
     @Override
-    public String normalName() {
-        return this.normalName;
+    public String getName() {
+        return this.name;
     }
 
 }

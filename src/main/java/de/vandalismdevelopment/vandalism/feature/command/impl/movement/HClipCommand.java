@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.feature.command.impl.movement;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.vandalismdevelopment.vandalism.feature.command.AbstractCommand;
-import de.vandalismdevelopment.vandalism.util.MovementUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.MovementUtil;
 import net.minecraft.command.CommandSource;
 
 public class HClipCommand extends AbstractCommand {

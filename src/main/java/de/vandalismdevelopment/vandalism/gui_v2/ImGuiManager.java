@@ -12,7 +12,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.ConnectScreen;
 import net.minecraft.client.gui.screen.LevelLoadingScreen;
-import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
 
@@ -30,10 +29,7 @@ public class ImGuiManager extends Storage<ImWindow> implements RenderListener, I
 
     @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN) return;
-        if (this.mc.currentScreen instanceof ConnectScreen || this.mc.currentScreen instanceof LevelLoadingScreen) return;
-
-        if (key == Vandalism.getInstance().getClientSettings().getMenuSettings().menuKey.getValue().getKeyCode()) {
+        if (Vandalism.getInstance().getClientSettings().getMenuSettings().menuKey.isPressed()) {
             final var screen = MinecraftClient.getInstance().currentScreen;
             if (screen instanceof ChatScreen || screen instanceof ConnectScreen || screen instanceof LevelLoadingScreen || screen instanceof ImGuiScreen) {
                 return;

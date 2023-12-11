@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.util;
+package de.vandalismdevelopment.vandalism.util.minecraft;
 
 public class TimerUtil {
 

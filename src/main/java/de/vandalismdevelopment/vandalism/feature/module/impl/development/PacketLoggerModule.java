@@ -5,9 +5,9 @@ import de.florianmichael.dietrichevents2.Priorities;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.base.event.PacketListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
-import de.vandalismdevelopment.vandalism.util.ChatUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.ChatUtil;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.impl.MultiSelectionValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.selection.MultiModeValue;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.NetworkState;
 import net.minecraft.network.packet.Packet;
@@ -28,12 +28,12 @@ public class PacketLoggerModule extends AbstractModule implements PacketListener
                 serverPackets.add(packetClass.getSimpleName());
             }
         }
-        new MultiSelectionValue("Server Packets",
+        new MultiModeValue("Server Packets",
                 "Incoming packets",
                 this,
                 serverPackets.toArray(new String[0])
         );
-        new MultiSelectionValue("Client Packets",
+        new MultiModeValue("Client Packets",
                 "Outgoing packets",
                 this,
                 clientPackets.toArray(new String[0])
@@ -41,12 +41,12 @@ public class PacketLoggerModule extends AbstractModule implements PacketListener
     }
 
     @Override
-    protected void onEnable() {
+    public void onEnable() {
         DietrichEvents2.global().subscribe(PacketEvent.ID, this, Priorities.LOW);
     }
 
     @Override
-    protected void onDisable() {
+    public void onDisable() {
         DietrichEvents2.global().unsubscribe(PacketEvent.ID, this);
     }
 
@@ -56,7 +56,7 @@ public class PacketLoggerModule extends AbstractModule implements PacketListener
         final Class<?> packetClass = packet.getClass();
         final String packetName = packetClass.getSimpleName();
         for (final Value<?> value : this.getValues()) {
-            if (value instanceof final MultiSelectionValue multiSelectionValue && multiSelectionValue.getValue().contains(packetName)) {
+            if (value instanceof final MultiModeValue multiModeValue && multiModeValue.getValue().contains(packetName)) {
                 final StringBuilder text = new StringBuilder();
                 if (event.state == PacketEventState.SEND) {
                     text.append("Outgoing packet: ");

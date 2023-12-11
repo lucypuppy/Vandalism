@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.injection.mixins.feature.config;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.integration.CustomRPConfirmScreen;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
-import de.vandalismdevelopment.vandalism.util.ServerUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.ServerUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.ServerResourcePackProvider;
 import net.minecraft.client.util.NetworkUtils;

@@ -32,7 +32,7 @@ public class ModuleArgumentType implements ArgumentType<AbstractModule> {
     @Override
     public AbstractModule parse(final StringReader reader) throws CommandSyntaxException {
         final String argument = reader.readString().replace("-", " ");
-        final AbstractModule module = Vandalism.getInstance().getModuleRegistry().getModules().get(argument);
+        final AbstractModule module = Vandalism.getInstance().getModuleRegistry().getList().get(argument);
         if (module == null) {
             throw NOT_EXISTING.create(argument);
         }

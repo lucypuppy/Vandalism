@@ -1,11 +1,12 @@
 package de.vandalismdevelopment.vandalism.feature;
 
 import de.florianmichael.rclasses.common.StringUtils;
+import de.florianmichael.rclasses.pattern.functional.IName;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.raphimc.vialoader.util.VersionEnum;
 import net.raphimc.vialoader.util.VersionRange;
 
-public abstract class Feature implements MinecraftWrapper {
+public abstract class Feature implements IName, MinecraftWrapper {
 
     private final String name;
     private final String description;
@@ -33,6 +34,7 @@ public abstract class Feature implements MinecraftWrapper {
         }
     }
 
+    @Override
     public String getName() {
         return name;
     }

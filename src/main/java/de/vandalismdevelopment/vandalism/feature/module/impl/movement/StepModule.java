@@ -4,11 +4,11 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.base.event.MovementListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.impl.number.slider.SliderFloatValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.number.FloatValue;
 
 public class StepModule extends AbstractModule implements MovementListener {
 
-    private final Value<Float> stepHeight = new SliderFloatValue(
+    private final Value<Float> stepHeight = new FloatValue(
             "Step Height",
             "Allows you to customize the step height.",
             this,
@@ -28,12 +28,12 @@ public class StepModule extends AbstractModule implements MovementListener {
     }
 
     @Override
-    protected void onEnable() {
+    public void onEnable() {
         DietrichEvents2.global().subscribe(StepEvent.ID, this);
     }
 
     @Override
-    protected void onDisable() {
+    public void onDisable() {
         DietrichEvents2.global().unsubscribe(StepEvent.ID, this);
     }
 

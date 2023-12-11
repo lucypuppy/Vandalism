@@ -6,15 +6,15 @@ import de.vandalismdevelopment.vandalism.base.event.MovementListener;
 import de.vandalismdevelopment.vandalism.base.event.RenderListener;
 import de.vandalismdevelopment.vandalism.base.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
-import de.vandalismdevelopment.vandalism.util.MovementUtil;
-import de.vandalismdevelopment.vandalism.util.WorldUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.MovementUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.WorldUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.Clicker;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.impl.BoxMuellerClicker;
 import de.vandalismdevelopment.vandalism.integration.rotation.Rotation;
 import de.vandalismdevelopment.vandalism.integration.rotation.RotationListener;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.impl.number.slider.SliderFloatValue;
-import de.vandalismdevelopment.vandalism.base.value.impl.number.slider.SliderIntegerValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.number.FloatValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.number.IntegerValue;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -31,9 +31,9 @@ public class TestModule extends AbstractModule implements TickListener, RenderLi
 
     private final Clicker clicker = new BoxMuellerClicker();
 
-    private final Value<Float> mean = new SliderFloatValue("Mean", "mean", this, 15.0F, 0.0F, 20.0F);
-    private final Value<Float> std = new SliderFloatValue("std", "std", this, 2.0F, 0.0F, 10.0F);
-    private final Value<Integer> updatePossibility = new SliderIntegerValue("updatePossibility", "updatePossibility", this, 50, 0, 100);
+    private final Value<Float> mean = new FloatValue("Mean", "mean", this, 15.0F, 0.0F, 20.0F);
+    private final Value<Float> std = new FloatValue("std", "std", this, 2.0F, 0.0F, 10.0F);
+    private final Value<Integer> updatePossibility = new IntegerValue("updatePossibility", "updatePossibility", this, 50, 0, 100);
 
     private PlayerEntity target;
     private Vec3d rotationVector;
@@ -44,7 +44,7 @@ public class TestModule extends AbstractModule implements TickListener, RenderLi
     }
 
     @Override
-    protected void onEnable() {
+    public void onEnable() {
         DietrichEvents2.global().subscribe(TickEvent.ID, this);
         DietrichEvents2.global().subscribe(StrafeEvent.ID, this);
         DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
@@ -52,7 +52,7 @@ public class TestModule extends AbstractModule implements TickListener, RenderLi
     }
 
     @Override
-    protected void onDisable() {
+    public void onDisable() {
         DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
         DietrichEvents2.global().unsubscribe(StrafeEvent.ID, this);
         DietrichEvents2.global().unsubscribe(Render2DEvent.ID, this);

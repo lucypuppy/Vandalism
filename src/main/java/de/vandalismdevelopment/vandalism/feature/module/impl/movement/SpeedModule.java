@@ -5,7 +5,7 @@ import de.vandalismdevelopment.vandalism.feature.module.impl.movement.modes.spee
 import de.vandalismdevelopment.vandalism.feature.module.impl.movement.modes.speed.LongHopModuleMode;
 import de.vandalismdevelopment.vandalism.feature.module.impl.movement.modes.speed.VerusHopModuleMode;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.impl.list.ModuleModeValue;
+import de.vandalismdevelopment.vandalism.feature.module.value.ModuleModeValue;
 
 public class SpeedModule extends AbstractModule {
 

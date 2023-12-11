@@ -4,8 +4,8 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.base.event.RenderListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
-import de.vandalismdevelopment.vandalism.base.value.impl.StringValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.primitive.BooleanValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.primitive.StringValue;
 import net.minecraft.client.session.Session;
 import org.apache.commons.lang3.StringUtils;
 
@@ -25,7 +25,7 @@ public class ProtectorModule extends AbstractModule implements RenderListener {
             "The replacement for your username.",
             this,
             "<censored-username>"
-    ).visibleConsumer(this.protectUsername::getValue);
+    ).visibleCondition(this.protectUsername::getValue);
 
     private final Value<Boolean> protectUUID = new BooleanValue(
             "Protect UUID",
@@ -39,7 +39,7 @@ public class ProtectorModule extends AbstractModule implements RenderListener {
             "The replacement for your uuid.",
             this,
             "<censored-uuid>"
-    ).visibleConsumer(this.protectUUID::getValue);
+    ).visibleCondition(this.protectUUID::getValue);
 
     public ProtectorModule() {
         super(
@@ -52,12 +52,12 @@ public class ProtectorModule extends AbstractModule implements RenderListener {
     }
 
     @Override
-    protected void onEnable() {
+    public void onEnable() {
         DietrichEvents2.global().subscribe(TextDrawEvent.ID, this);
     }
 
     @Override
-    protected void onDisable() {
+    public void onDisable() {
         DietrichEvents2.global().unsubscribe(TextDrawEvent.ID, this);
     }
 

@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.feature.module.impl.render;
 import de.florianmichael.rclasses.common.ColorUtils;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.impl.ColorValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.awt.ColorValue;
 
 import java.awt.*;
 

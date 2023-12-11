@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.util;
+package de.vandalismdevelopment.vandalism.util.render;
 
 import org.lwjgl.opengl.GL11C;
 

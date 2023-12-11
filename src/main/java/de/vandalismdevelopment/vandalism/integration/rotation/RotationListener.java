@@ -5,7 +5,7 @@ import de.florianmichael.rclasses.common.RandomUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.base.event.PacketListener;
 import de.vandalismdevelopment.vandalism.base.event.RenderListener;
-import de.vandalismdevelopment.vandalism.util.RenderUtil;
+import de.vandalismdevelopment.vandalism.util.render.RenderUtil;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;

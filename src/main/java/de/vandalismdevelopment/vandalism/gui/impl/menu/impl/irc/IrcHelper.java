@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.gui.impl.menu.impl.irc;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.util.ChatUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.ChatUtil;
 import net.minecraft.util.Formatting;
 import re.catgirls.irc.ChatClientWrapper;
 import re.catgirls.irc.listeners.impl.ProfileListener;

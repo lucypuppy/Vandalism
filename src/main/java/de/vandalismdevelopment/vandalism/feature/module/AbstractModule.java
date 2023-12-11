@@ -1,28 +1,27 @@
 package de.vandalismdevelopment.vandalism.feature.module;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.base.value.IValue;
+import de.vandalismdevelopment.vandalism.base.value.ValueParent;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.ValueCategory;
-import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
-import de.vandalismdevelopment.vandalism.base.value.impl.KeyInputValue;
-import de.vandalismdevelopment.vandalism.base.value.impl.list.ModuleModeValue;
+import de.vandalismdevelopment.vandalism.base.value.template.ValueGroup;
+import de.vandalismdevelopment.vandalism.base.value.impl.primitive.BooleanValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.awt.KeyBindValue;
+import de.vandalismdevelopment.vandalism.feature.module.value.ModuleModeValue;
 import de.vandalismdevelopment.vandalism.feature.Feature;
-import de.vandalismdevelopment.vandalism.util.ChatUtil;
-import de.vandalismdevelopment.vandalism.util.GlfwKeyName;
+import de.vandalismdevelopment.vandalism.util.minecraft.ChatUtil;
 import net.raphimc.vialoader.util.VersionRange;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractModule extends Feature implements IValue {
+public abstract class AbstractModule extends Feature implements ValueParent {
 
     private final List<Value<?>> values = new ArrayList<>();
 
     private final BooleanValue active;
     private final BooleanValue favorite;
     private final BooleanValue showInHUD;
-    private final KeyInputValue keyBind;
+    private final KeyBindValue keyBind;
 
     private boolean disableOnQuit;
     private boolean disableOnShutdown;
@@ -34,8 +33,8 @@ public abstract class AbstractModule extends Feature implements IValue {
     public AbstractModule(String name, String description, Category category, VersionRange supportedVersions) {
         super(name, description, category, supportedVersions);
 
-        this.active = new BooleanValue("Active", "Whether this module is active.", this, false).
-                valueChangeConsumer((oldValue, newValue) -> {
+        this.active = new BooleanValue(this, "Active", "Whether this module is active.", false).
+                onValueChange((oldValue, newValue) -> {
             if (Vandalism.getInstance().getClientSettings().getMenuSettings().moduleStateLogging.getValue()) {
                 if (this.mc.player != null) {
                     ChatUtil.infoChatMessage(this.getName() + " has been " + (newValue ? "enabled" : "disabled") + ".");
@@ -48,9 +47,9 @@ public abstract class AbstractModule extends Feature implements IValue {
             }
             recursiveUpdateActiveState(newValue, this.values);
         });
-        this.favorite = new BooleanValue("Favorite", "Whether this module is a favorite.", this, false);
-        this.showInHUD = new BooleanValue("Show in HUD", "Whether this module should be shown in the HUD.", this, true);
-        this.keyBind = new KeyInputValue("Key Bind", "The key bind of this module.", this, GlfwKeyName.UNKNOWN);
+        this.favorite = new BooleanValue(this, "Favorite", "Whether this module is a favorite.", false);
+        this.showInHUD = new BooleanValue(this, "Show in HUD", "Whether this module should be shown in the HUD.", true);
+        this.keyBind = new KeyBindValue(this, "Key Bind", "The key bind of this module.");
     }
 
     public void enableDefault() {
@@ -70,10 +69,10 @@ public abstract class AbstractModule extends Feature implements IValue {
         this.disableOnShutdown = true;
     }
 
-    protected void onEnable() {
+    public void onEnable() {
     }
 
-    protected void onDisable() {
+    public void onDisable() {
     }
 
     public boolean isActive() {
@@ -100,12 +99,8 @@ public abstract class AbstractModule extends Feature implements IValue {
         this.showInHUD.setValue(showInHUD);
     }
 
-    public GlfwKeyName getKeyBind() {
-        return this.keyBind.getValue();
-    }
-
-    public void setKeyBind(final GlfwKeyName keyBind) {
-        this.keyBind.setValue(keyBind);
+    public KeyBindValue getKeyBind() {
+        return keyBind;
     }
 
     /**
@@ -117,21 +112,16 @@ public abstract class AbstractModule extends Feature implements IValue {
     private void recursiveUpdateActiveState(final boolean active, final List<Value<?>> values) {
         if (values == null) return;
         for (final Value<?> value : values) {
-            if (value instanceof final ValueCategory valueCategory) {
-                recursiveUpdateActiveState(active, valueCategory.getValues());
+            if (value instanceof final ValueGroup valueGroup) {
+                recursiveUpdateActiveState(active, valueGroup.getValues());
             } else if (value instanceof final ModuleModeValue<?> moduleModeValue) {
                 if (active) {
-                    moduleModeValue.getSelectedMode().onEnable();
+                    moduleModeValue.getValue().onEnable();
                 } else {
-                    moduleModeValue.getSelectedMode().onDisable();
+                    moduleModeValue.getValue().onDisable();
                 }
             }
         }
-    }
-
-    @Override
-    public String getValueName() {
-        return this.getName();
     }
 
     @Override

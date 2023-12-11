@@ -1,36 +1,33 @@
 package de.vandalismdevelopment.vandalism.base.value.impl.number;
 
 import com.google.gson.JsonObject;
-import de.vandalismdevelopment.vandalism.base.value.IValue;
-import de.vandalismdevelopment.vandalism.base.value.StepNumberValue;
+import de.vandalismdevelopment.vandalism.base.value.ValueParent;
+import de.vandalismdevelopment.vandalism.base.value.template.ValueNumber;
 import imgui.ImGui;
+import imgui.flag.ImGuiDataType;
 import imgui.type.ImInt;
 
-public class IntegerValue extends StepNumberValue<Integer> {
+public class IntegerValue extends ValueNumber<Integer> {
 
-    public IntegerValue(final String name, final String description, final IValue parent, final int defaultValue) {
-        this(name, description, parent, defaultValue, 1);
-    }
-
-    public IntegerValue(final String name, final String description, final IValue parent, final int defaultValue, final int step) {
-        super(name, description, parent, "integer", defaultValue, step);
+    public IntegerValue(ValueParent parent, String name, String description, Integer minValue, Integer defaultValue, Integer maxValue) {
+        super(parent, name, description, minValue, defaultValue, maxValue);
     }
 
     @Override
-    public void onConfigLoad(final JsonObject valueObject) {
-        this.setValue(valueObject.get("value").getAsInt());
+    public void load(final JsonObject mainNode) {
+        this.setValue(mainNode.get(getName()).getAsInt());
     }
 
     @Override
-    public void onConfigSave(final JsonObject valueObject) {
-        valueObject.addProperty("value", this.getValue());
+    public void save(final JsonObject mainNode) {
+        mainNode.addProperty(getName(), this.getValue());
     }
 
     @Override
     public void render() {
-        final ImInt imInt = new ImInt(this.getValue());
-        if (ImGui.inputInt("##" + this.getSaveIdentifier(), imInt, this.getStep())) {
-            this.setValue(imInt.get());
+        final ImInt nextValue = new ImInt(this.getValue());
+        if (ImGui.sliderScalar("##" + this.getName(), ImGuiDataType.S32, nextValue, this.getMinValue(), this.getMaxValue())) {
+            this.setValue(nextValue.get());
         }
     }
 

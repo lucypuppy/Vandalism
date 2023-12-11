@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.integration.creativetab.impl;
 
 import de.vandalismdevelopment.vandalism.integration.creativetab.AbstractCreativeTab;
-import de.vandalismdevelopment.vandalism.util.ItemStackUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.ItemStackUtil;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -16,7 +16,7 @@ import net.minecraft.util.Identifier;
 import java.util.Arrays;
 import java.util.List;
 
-import static de.vandalismdevelopment.vandalism.util.ItemStackUtil.withClientSide;
+import static de.vandalismdevelopment.vandalism.util.minecraft.ItemStackUtil.withClientSide;
 
 public class TrollItemsCreativeTab extends AbstractCreativeTab {
 

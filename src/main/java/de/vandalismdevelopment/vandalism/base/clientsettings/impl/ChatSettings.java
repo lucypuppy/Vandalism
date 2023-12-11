@@ -2,59 +2,59 @@ package de.vandalismdevelopment.vandalism.base.clientsettings.impl;
 
 import de.vandalismdevelopment.vandalism.base.clientsettings.ClientSettings;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.ValueCategory;
-import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
-import de.vandalismdevelopment.vandalism.base.value.impl.StringValue;
-import de.vandalismdevelopment.vandalism.base.value.impl.number.slider.SliderIntegerValue;
+import de.vandalismdevelopment.vandalism.base.value.template.ValueGroup;
+import de.vandalismdevelopment.vandalism.base.value.impl.primitive.BooleanValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.primitive.StringValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.number.IntegerValue;
 
-public class ChatSettings extends ValueCategory {
+public class ChatSettings extends ValueGroup {
     
     public ChatSettings(final ClientSettings parent) {
-        super("Chat", "Chat related configs.", parent);
+        super(parent, "Chat", "Chat related configs.");
     }
 
     public final Value<String> commandPrefix = new StringValue(
+            this,
             "Command Prefix",
             "Change the prefix to run the commands of the Mod.",
-            this,
             "."
     );
 
     public final Value<Boolean> displayTypedChars = new BooleanValue(
+            this,
             "Display Typed Chars",
             "Displays the current char count of the chat input field.",
-            this,
             true
     );
 
     public final Value<Boolean> allowColorChar = new BooleanValue(
+            this,
             "Allow Color Char",
             "Disables the color char restrictions of the Game.",
-            this,
             true
     );
 
     public final Value<Boolean> dontClearChatHistory = new BooleanValue(
+            this,
             "Dont Clear Chat History",
             "Prevents the Game from clearing your chat history.",
-            this,
             true
     );
 
     public final Value<Boolean> customChatLength = new BooleanValue(
+            this,
             "Custom Chat Length",
             "Allows you to enable or disable a custom chat length.",
-            this,
             true
     );
 
-    public final Value<Integer> maxChatLength = new SliderIntegerValue(
+    public final Value<Integer> maxChatLength = new IntegerValue(
+            this,
             "Max Chat Length",
             "Set the Max Chat Length",
-            this,
             1000,
             1,
             10000
-    ).visibleConsumer(this.customChatLength::getValue);
+    ).visibleCondition(this.customChatLength::getValue);
     
 }

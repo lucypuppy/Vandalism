@@ -18,12 +18,12 @@ public class VelocityModule extends AbstractModule implements PacketListener {
     }
 
     @Override
-    protected void onEnable() {
+    public void onEnable() {
         DietrichEvents2.global().subscribe(PacketEvent.ID, this);
     }
 
     @Override
-    protected void onDisable() {
+    public void onDisable() {
         DietrichEvents2.global().unsubscribe(PacketEvent.ID, this);
     }
 

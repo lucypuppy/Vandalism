@@ -5,7 +5,7 @@ import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.vandalismdevelopment.vandalism.base.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.impl.number.slider.SliderIntegerValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.number.IntegerValue;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.FluidBlock;
@@ -18,7 +18,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class InteractionSpammerModule extends AbstractModule implements TickListener {
 
-    private final Value<Integer> maxXReach = new SliderIntegerValue(
+    private final Value<Integer> maxXReach = new IntegerValue(
             "Max X Reach",
             "The max y reach.",
             this,
@@ -27,7 +27,7 @@ public class InteractionSpammerModule extends AbstractModule implements TickList
             5
     );
 
-    private final Value<Integer> maxZReach = new SliderIntegerValue(
+    private final Value<Integer> maxZReach = new IntegerValue(
             "Max Z Reach",
             "The max z reach.",
             this,
@@ -36,7 +36,7 @@ public class InteractionSpammerModule extends AbstractModule implements TickList
             5
     );
 
-    private final Value<Integer> maxYReach = new SliderIntegerValue(
+    private final Value<Integer> maxYReach = new IntegerValue(
             "Max Y Reach",
             "The max y reach.",
             this,
@@ -45,7 +45,7 @@ public class InteractionSpammerModule extends AbstractModule implements TickList
             5
     );
 
-    private final Value<Integer> interactionListsDelay = new SliderIntegerValue(
+    private final Value<Integer> interactionListsDelay = new IntegerValue(
             "Interaction Lists Delay",
             "The delay between interaction lists.",
             this,
@@ -54,7 +54,7 @@ public class InteractionSpammerModule extends AbstractModule implements TickList
             2000
     );
 
-    private final Value<Integer> interactionDelay = new SliderIntegerValue(
+    private final Value<Integer> interactionDelay = new IntegerValue(
             "Interaction Delay",
             "The delay between interactions.",
             this,
@@ -89,13 +89,13 @@ public class InteractionSpammerModule extends AbstractModule implements TickList
     }
 
     @Override
-    protected void onEnable() {
+    public void onEnable() {
         this.clear();
         DietrichEvents2.global().subscribe(TickEvent.ID, this);
     }
 
     @Override
-    protected void onDisable() {
+    public void onDisable() {
         DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
         this.clear();
     }

@@ -1,36 +1,33 @@
 package de.vandalismdevelopment.vandalism.base.value.impl.number;
 
 import com.google.gson.JsonObject;
-import de.vandalismdevelopment.vandalism.base.value.IValue;
-import de.vandalismdevelopment.vandalism.base.value.StepNumberValue;
+import de.vandalismdevelopment.vandalism.base.value.ValueParent;
+import de.vandalismdevelopment.vandalism.base.value.template.ValueNumber;
 import imgui.ImGui;
+import imgui.flag.ImGuiDataType;
 import imgui.type.ImFloat;
 
-public class FloatValue extends StepNumberValue<Float> {
+public class FloatValue extends ValueNumber<Float> {
 
-    public FloatValue(final String name, final String description, final IValue parent, final float defaultValue, final float step) {
-        super(name, description, parent, "float", defaultValue, step);
-    }
-
-    public FloatValue(final String name, final String description, final IValue parent, final float defaultValue) {
-        this(name, description, parent, defaultValue, 1.0f);
+    public FloatValue(ValueParent parent, String name, String description, Float minValue, Float defaultValue, Float maxValue) {
+        super(parent, name, description, minValue, defaultValue, maxValue);
     }
 
     @Override
-    public void onConfigLoad(final JsonObject valueObject) {
-        this.setValue(valueObject.get("value").getAsFloat());
+    public void load(final JsonObject valueObject) {
+        this.setValue(valueObject.get(getName()).getAsFloat());
     }
 
     @Override
-    public void onConfigSave(final JsonObject valueObject) {
-        valueObject.addProperty("value", this.getValue());
+    public void save(final JsonObject valueObject) {
+        valueObject.addProperty(getName(), this.getValue());
     }
 
     @Override
     public void render() {
-        final ImFloat imFloat = new ImFloat(this.getValue());
-        if (ImGui.inputFloat("##" + this.getSaveIdentifier(), imFloat, this.getStep())) {
-            this.setValue(imFloat.get());
+        final ImFloat nextValue = new ImFloat(this.getValue());
+        if (ImGui.sliderScalar("##" + this.getName(), ImGuiDataType.Float, nextValue, this.getMinValue(), this.getMaxValue(), "%.1f")) {
+            this.setValue(nextValue.get());
         }
     }
 
