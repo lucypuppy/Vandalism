@@ -3,11 +3,9 @@ package de.vandalismdevelopment.vandalism.feature.module.impl.combat;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.vandalismdevelopment.vandalism.base.event.TickListener;
-import de.vandalismdevelopment.vandalism.base.event.WorldListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.impl.number.slider.SliderIntegerValue;
-import net.minecraft.item.ItemStack;
+import de.vandalismdevelopment.vandalism.base.value.impl.number.IntegerValue;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import net.raphimc.vialoader.util.VersionEnum;
@@ -15,19 +13,19 @@ import net.raphimc.vialoader.util.VersionRange;
 
 public class BowSpammerModule extends AbstractModule implements TickListener {
 
-    private final Value<Integer> maxPacketsPerTick = new SliderIntegerValue(
+    private final Value<Integer> maxPacketsPerTick = new IntegerValue(
+            this,
             "Max Packets Per Tick",
             "The maximum amount of packets sent per tick.",
-            this,
             10,
             5,
             100
     );
 
-    private final Value<Integer> shootDelay = new SliderIntegerValue(
+    private final Value<Integer> shootDelay = new IntegerValue(
+            this,
             "Shoot Delay",
             "The delay between shots.",
-            this,
             100,
             0,
             2000
@@ -42,12 +40,12 @@ public class BowSpammerModule extends AbstractModule implements TickListener {
     }
 
     @Override
-    protected void onEnable() {
+    public void onEnable() {
         DietrichEvents2.global().subscribe(TickEvent.ID, this);
     }
 
     @Override
-    protected void onDisable() {
+    public void onDisable() {
         DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
     }
 

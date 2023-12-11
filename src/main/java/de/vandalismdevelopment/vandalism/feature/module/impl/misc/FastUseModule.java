@@ -2,11 +2,11 @@ package de.vandalismdevelopment.vandalism.feature.module.impl.misc;
 
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.impl.number.slider.SliderIntegerValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.number.IntegerValue;
 
 public class FastUseModule extends AbstractModule {
 
-    public final Value<Integer> itemUseCooldown = new SliderIntegerValue(
+    public final Value<Integer> itemUseCooldown = new IntegerValue(
             "Item Use Cooldown",
             "Here you can input the custom use cooldown value.",
             this,

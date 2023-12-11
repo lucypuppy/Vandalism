@@ -5,8 +5,8 @@ import de.florianmichael.rclasses.common.ColorUtils;
 import de.vandalismdevelopment.vandalism.base.event.RenderListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
-import de.vandalismdevelopment.vandalism.base.value.impl.ColorValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.primitive.BooleanValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.awt.ColorValue;
 
 import java.awt.*;
 
@@ -32,14 +32,14 @@ public class TrueSightModule extends AbstractModule implements RenderListener {
             "Makes the illusioner entity visible.",
             this,
             true
-    ).visibleConsumer(this.entities::getValue);
+    ).visibleCondition(this.entities::getValue);
 
     private final Value<Color> entityColor = new ColorValue(
             "Entity Color",
             "The color of invisible entities.",
             this,
             ColorUtils.withAlpha(Color.WHITE, 100)
-    ).visibleConsumer(this.entities::getValue);
+    ).visibleCondition(this.entities::getValue);
 
     public TrueSightModule() {
         super(
@@ -52,12 +52,12 @@ public class TrueSightModule extends AbstractModule implements RenderListener {
     }
 
     @Override
-    protected void onEnable() {
+    public void onEnable() {
         DietrichEvents2.global().subscribe(LivingEntityRenderBottomLayerEvent.ID, this);
     }
 
     @Override
-    protected void onDisable() {
+    public void onDisable() {
         DietrichEvents2.global().unsubscribe(LivingEntityRenderBottomLayerEvent.ID, this);
     }
 

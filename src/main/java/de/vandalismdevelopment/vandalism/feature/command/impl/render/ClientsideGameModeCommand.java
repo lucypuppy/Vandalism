@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.feature.command.impl.render;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.vandalismdevelopment.vandalism.feature.command.AbstractCommand;
 import de.vandalismdevelopment.vandalism.feature.command.arguments.GameModeArgumentType;
-import de.vandalismdevelopment.vandalism.util.ChatUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.ChatUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.GameMode;

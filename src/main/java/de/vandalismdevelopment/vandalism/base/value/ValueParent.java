@@ -1,16 +1,17 @@
 package de.vandalismdevelopment.vandalism.base.value;
 
+import de.florianmichael.rclasses.pattern.functional.IName;
 import imgui.ImGui;
 
 import java.util.List;
 
-public interface IValue {
+public interface ValueParent extends IName {
 
     List<Value<?>> getValues();
 
-    default Value<?> getValue(final String name) {
+    default Value<?> byName(final String name) {
         for (final Value<?> value : this.getValues()) {
-            if (value.getSaveIdentifier().equals(name)) {
+            if (value.getName().equals(name)) {
                 return value;
             }
         }
@@ -24,27 +25,25 @@ public interface IValue {
     }
 
     default void renderValue(final Value<?> value) {
-        if (value.isVisible() != null && !value.isVisible().getAsBoolean()) {
-            return;
-        }
-        if (!value.doesRenderInfo()) {
+        if (value.isVisible() == null || value.isVisible().getAsBoolean()) {
             ImGui.text(value.getName());
             ImGui.sameLine();
             this.renderValueDescription(value);
+            value.render();
         }
-        value.render();
     }
 
     default void renderValueDescription(final Value<?> value) {
-        if (value.getDescription().isBlank()) return;
+        if (value.getDescription() == null) {
+            return;
+        }
         ImGui.textDisabled("(?)");
+
         if (ImGui.isItemHovered()) {
             ImGui.beginTooltip();
             ImGui.text(value.getDescription());
             ImGui.endTooltip();
         }
     }
-
-    String getValueName();
 
 }

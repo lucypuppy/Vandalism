@@ -1,5 +1,6 @@
-package de.vandalismdevelopment.vandalism.util;
+package de.vandalismdevelopment.vandalism.util.minecraft;
 
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.gui.screen.ConnectScreen;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.TitleScreen;

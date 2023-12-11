@@ -5,8 +5,8 @@ import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.vandalismdevelopment.vandalism.base.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
-import de.vandalismdevelopment.vandalism.base.value.impl.number.slider.SliderIntegerValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.primitive.BooleanValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.number.IntegerValue;
 
 public class AutoRespawnModule extends AbstractModule implements TickListener {
 
@@ -17,14 +17,14 @@ public class AutoRespawnModule extends AbstractModule implements TickListener {
             false
     );
 
-    private final Value<Integer> delay = new SliderIntegerValue(
+    private final Value<Integer> delay = new IntegerValue(
             "Delay",
             "The delay in ticks before respawning.",
             this,
             2000,
             0,
             10000
-    ).visibleConsumer(() -> !this.instantRespawn.getValue());
+    ).visibleCondition(() -> !this.instantRespawn.getValue());
 
     private final Value<Boolean> autoBack = new BooleanValue(
             "Auto Back",
@@ -46,12 +46,12 @@ public class AutoRespawnModule extends AbstractModule implements TickListener {
     }
 
     @Override
-    protected void onEnable() {
+    public void onEnable() {
         DietrichEvents2.global().subscribe(TickEvent.ID, this);
     }
 
     @Override
-    protected void onDisable() {
+    public void onDisable() {
         DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
     }
 

@@ -1,30 +1,32 @@
-package de.vandalismdevelopment.vandalism.base.value;
+package de.vandalismdevelopment.vandalism.base.value.template;
 
 import com.google.gson.JsonObject;
+import de.vandalismdevelopment.vandalism.base.value.Value;
+import de.vandalismdevelopment.vandalism.base.value.ValueParent;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import imgui.ImGui;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ValueCategory extends Value<List<Value<?>>> implements IValue, MinecraftWrapper {
+public class ValueGroup extends Value<List<Value<?>>> implements ValueParent, MinecraftWrapper {
 
-    public ValueCategory(final String name, final String description, final IValue parent) {
-        super(name, description, parent, "category", true, new ArrayList<>());
+    public ValueGroup(ValueParent parent, String name, String description) {
+        super(parent, name, description, new ArrayList<>());
     }
 
     @Override
-    public void onConfigLoad(final JsonObject valueObject) {
+    public void load(final JsonObject valueObject) {
     }
 
     @Override
-    public void onConfigSave(final JsonObject valueObject) {
+    public void save(final JsonObject valueObject) {
     }
 
     @Override
     public void render() {
         this.renderValueDescription(this);
-        if (ImGui.treeNodeEx(this.getName() + "##" + this.getSaveIdentifier())) {
+        if (ImGui.treeNodeEx(this.getName())) {
             this.renderValues();
             ImGui.treePop();
         }
@@ -40,11 +42,6 @@ public class ValueCategory extends Value<List<Value<?>>> implements IValue, Mine
         for (final Value<?> value : this.getValue()) {
             value.resetValue();
         }
-    }
-
-    @Override
-    public String getValueName() {
-        return this.getName();
     }
 
 }

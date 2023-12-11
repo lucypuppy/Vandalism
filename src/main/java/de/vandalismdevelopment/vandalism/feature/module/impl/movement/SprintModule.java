@@ -6,8 +6,8 @@ import de.vandalismdevelopment.vandalism.base.event.MovementListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.integration.rotation.RotationListener;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
-import de.vandalismdevelopment.vandalism.util.MovementUtil;
+import de.vandalismdevelopment.vandalism.base.value.impl.primitive.BooleanValue;
+import de.vandalismdevelopment.vandalism.util.minecraft.MovementUtil;
 import net.minecraft.util.math.MathHelper;
 
 public class SprintModule extends AbstractModule implements MovementListener {
@@ -30,12 +30,12 @@ public class SprintModule extends AbstractModule implements MovementListener {
     }
 
     @Override
-    protected void onEnable() {
+    public void onEnable() {
         DietrichEvents2.global().subscribe(SprintEvent.ID, this);
     }
 
     @Override
-    protected void onDisable() {
+    public void onDisable() {
         DietrichEvents2.global().unsubscribe(SprintEvent.ID, this);
     }
 

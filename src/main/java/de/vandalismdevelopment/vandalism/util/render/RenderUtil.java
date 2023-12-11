@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.util;
+package de.vandalismdevelopment.vandalism.util.render;
 
 import de.florianmichael.rclasses.common.ColorUtils;
 import net.minecraft.text.MutableText;

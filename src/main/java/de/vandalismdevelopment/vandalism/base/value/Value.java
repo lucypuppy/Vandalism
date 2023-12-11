@@ -1,56 +1,53 @@
 package de.vandalismdevelopment.vandalism.base.value;
 
 import com.google.gson.JsonObject;
-import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
+import de.florianmichael.rclasses.pattern.functional.IName;
 
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
 
-public abstract class Value<V> {
+public abstract class Value<V> implements IName {
 
-    private final String name, description;
+    private final ValueParent parent;
+    private final String name;
+    private final String description;
     private final V defaultValue;
-    private final String saveIdentifier;
-    private final IValue parent;
-    private final boolean doesRenderInfo;
+
     private V value;
     private BiConsumer<V, V> valueChangeConsumer;
-    private BooleanSupplier visible;
+    private BooleanSupplier visibleCondition;
 
-    public Value(final String name, final String description, final IValue parent, final String dataType, final V defaultValue) {
-        this(name, description, parent, dataType, false, defaultValue);
-    }
-
-    public Value(final String name, final String description, final IValue parent, final String dataType, final boolean doesRenderInfo, final V defaultValue) {
+    public Value(ValueParent parent, String name, String description, V defaultValue) {
+        this.parent = parent;
         this.name = name;
         this.description = description;
-        this.saveIdentifier = name + " (" + dataType + ")" + " [" + parent.getValueName().hashCode() + "]";
-        this.doesRenderInfo = doesRenderInfo;
         this.defaultValue = defaultValue;
-        this.setValue(defaultValue);
-        this.parent = parent;
+
+        this.value = defaultValue;
+
         parent.getValues().add(this);
     }
 
     public void setValue(final V value) {
         final V oldValue = value;
         this.value = value;
+
         if (this.valueChangeConsumer != null) {
             this.valueChangeConsumer.accept(oldValue, value);
         }
     }
 
-    public <S extends Value<V>> S valueChangeConsumer(final BiConsumer<V, V> valueChangeConsumer) {
+    public <S extends Value<V>> S onValueChange(final BiConsumer<V, V> valueChangeConsumer) {
         this.valueChangeConsumer = valueChangeConsumer;
         return (S) this;
     }
 
-    public <S extends Value<V>> S visibleConsumer(final BooleanSupplier visible) {
-        this.visible = visible;
+    public <S extends Value<V>> S visibleCondition(final BooleanSupplier visible) {
+        this.visibleCondition = visible;
         return (S) this;
     }
 
+    @Override
     public String getName() {
         return this.name;
     }
@@ -72,24 +69,15 @@ public abstract class Value<V> {
     }
 
     public BooleanSupplier isVisible() {
-        return this.visible;
+        return this.visibleCondition;
     }
 
-    public String getSaveIdentifier() {
-        return this.saveIdentifier;
-    }
-
-    public boolean doesRenderInfo() {
-        return this.doesRenderInfo;
-    }
-
-    public IValue getParent() {
+    public ValueParent getParent() {
         return this.parent;
     }
 
-    public abstract void onConfigLoad(final JsonObject valueObject);
-
-    public abstract void onConfigSave(final JsonObject valueObject);
+    public abstract void load(final JsonObject mainNode);
+    public abstract void save(final JsonObject mainNode);
 
     public abstract void render();
 

@@ -6,7 +6,7 @@ import de.vandalismdevelopment.vandalism.base.event.InputListener;
 import de.vandalismdevelopment.vandalism.base.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.script.parse.ScriptParser;
 import de.vandalismdevelopment.vandalism.feature.script.parse.command.ScriptCommand;
-import de.vandalismdevelopment.vandalism.util.ChatUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.util.Pair;
 import org.lwjgl.glfw.GLFW;

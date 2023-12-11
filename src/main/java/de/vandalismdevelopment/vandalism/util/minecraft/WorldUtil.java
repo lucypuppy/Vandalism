@@ -1,6 +1,7 @@
-package de.vandalismdevelopment.vandalism.util;
+package de.vandalismdevelopment.vandalism.util.minecraft;
 
 import de.florianmichael.rclasses.math.geometry.Trigonometry;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;

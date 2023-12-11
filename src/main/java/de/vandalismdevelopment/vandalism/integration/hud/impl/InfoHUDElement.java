@@ -2,10 +2,10 @@ package de.vandalismdevelopment.vandalism.integration.hud.impl;
 
 import de.vandalismdevelopment.vandalism.integration.hud.HUDElement;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.ValueCategory;
-import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
-import de.vandalismdevelopment.vandalism.base.value.impl.number.slider.SliderIntegerValue;
-import de.vandalismdevelopment.vandalism.util.WorldUtil;
+import de.vandalismdevelopment.vandalism.base.value.template.ValueGroup;
+import de.vandalismdevelopment.vandalism.base.value.impl.primitive.BooleanValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.number.IntegerValue;
+import de.vandalismdevelopment.vandalism.util.minecraft.WorldUtil;
 import net.minecraft.client.gui.DrawContext;
 
 public class InfoHUDElement extends HUDElement {
@@ -34,19 +34,19 @@ public class InfoHUDElement extends HUDElement {
             this,
             true
     );
-    private final ValueCategory positionElements = new ValueCategory(
+    private final ValueGroup positionElements = new ValueGroup(
             "Position Elements",
             "Elements that are shown in the position category.",
             this
-    ).visibleConsumer(this.position::getValue);
-    private final Value<Integer> positionDecimalPlaces = new SliderIntegerValue(
+    ).visibleCondition(this.position::getValue);
+    private final Value<Integer> positionDecimalPlaces = new IntegerValue(
             "Position Decimal Places",
             "Allows you to change the viewable amount of decimal places from the x/y/z position.",
             this.positionElements,
             2,
             1,
             15
-    ).visibleConsumer(this.position::getValue);
+    ).visibleCondition(this.position::getValue);
     private final Value<Boolean> serverBrand = new BooleanValue(
             "Server Brand",
             "Shows the current server brand.",

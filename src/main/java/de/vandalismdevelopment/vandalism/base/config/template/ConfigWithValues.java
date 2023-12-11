@@ -2,17 +2,17 @@ package de.vandalismdevelopment.vandalism.base.config.template;
 
 import com.google.gson.JsonObject;
 import de.vandalismdevelopment.vandalism.base.config.AbstractConfig;
-import de.vandalismdevelopment.vandalism.base.value.IValue;
+import de.vandalismdevelopment.vandalism.base.value.ValueParent;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.ValueCategory;
+import de.vandalismdevelopment.vandalism.base.value.template.ValueGroup;
 
 import java.util.List;
 
 public class ConfigWithValues extends AbstractConfig<JsonObject> {
 
-    private final List<? extends IValue> keys;
+    private final List<? extends ValueParent> keys;
 
-    public ConfigWithValues(String name, final List<? extends IValue> keys) {
+    public ConfigWithValues(String name, final List<? extends ValueParent> keys) {
         super(JsonObject.class, name);
 
         this.keys = keys;
@@ -21,19 +21,19 @@ public class ConfigWithValues extends AbstractConfig<JsonObject> {
     @Override
     public JsonObject save0() {
         final var mainNode = new JsonObject();
-        for (IValue key : this.keys) {
+        for (ValueParent key : this.keys) {
             final var keyNode = new JsonObject();
             saveValues(keyNode, key.getValues());
 
-            mainNode.add(key.getValueName(), keyNode);
+            mainNode.add(key.getName(), keyNode);
         }
         return mainNode;
     }
 
     @Override
     public void load0(JsonObject node) {
-        for (IValue key : this.keys) {
-            final var keyNode = node.getAsJsonObject(key.getValueName());
+        for (ValueParent key : this.keys) {
+            final var keyNode = node.getAsJsonObject(key.getName());
             if (keyNode != null) {
                 loadValues(keyNode, key.getValues());
             }
@@ -44,30 +44,30 @@ public class ConfigWithValues extends AbstractConfig<JsonObject> {
         for (final Value<?> value : values) {
             final var valueNode = new JsonObject();
 
-            if (value instanceof final ValueCategory valueCategory) {
+            if (value instanceof final ValueGroup valueGroup) {
                 // Save the values of the category recursively
-                saveValues(valueNode, valueCategory.getValues());
+                saveValues(valueNode, valueGroup.getValues());
             } else {
                 // Save the value
-                value.onConfigSave(valueNode);
+                value.save(valueNode);
             }
 
             // Add the value to the target node
-            targetNode.add(value.getSaveIdentifier(), valueNode);
+            targetNode.add(value.getName(), valueNode);
         }
     }
 
     public static void loadValues(final JsonObject targetNode, final List<Value<?>> values) {
         for (final Value<?> value : values) {
-            if (!targetNode.has(value.getSaveIdentifier())) {
+            if (!targetNode.has(value.getName())) {
                 continue;
             }
-            final JsonObject valueNode = targetNode.get(value.getSaveIdentifier()).getAsJsonObject();
+            final JsonObject valueNode = targetNode.get(value.getName()).getAsJsonObject();
 
-            if (value instanceof final ValueCategory valueCategory) {
-                loadValues(valueNode, valueCategory.getValues());
+            if (value instanceof final ValueGroup valueGroup) {
+                loadValues(valueNode, valueGroup.getValues());
             } else {
-                value.onConfigLoad(valueNode);
+                value.load(valueNode);
             }
         }
     }

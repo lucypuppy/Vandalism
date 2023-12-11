@@ -57,12 +57,12 @@ public class DeutschMacherModule extends AbstractModule implements RenderListene
     }
 
     @Override
-    protected void onEnable() {
+    public void onEnable() {
         DietrichEvents2.global().subscribe(TextDrawEvent.ID, this);
     }
 
     @Override
-    protected void onDisable() {
+    public void onDisable() {
         DietrichEvents2.global().unsubscribe(TextDrawEvent.ID, this);
     }
 

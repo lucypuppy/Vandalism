@@ -5,16 +5,16 @@ import de.florianmichael.rclasses.math.geometry.Alignment;
 import de.florianmichael.rclasses.math.integration.Boundings;
 import de.florianmichael.rclasses.pattern.functional.IName;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
-import de.vandalismdevelopment.vandalism.base.value.IValue;
+import de.vandalismdevelopment.vandalism.base.value.ValueParent;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.primitive.BooleanValue;
 import net.minecraft.client.gui.DrawContext;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class HUDElement implements IName, IValue, MinecraftWrapper {
+public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper {
 
     private final String name;
     private final List<Value<?>> values;

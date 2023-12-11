@@ -1,6 +1,7 @@
-package de.vandalismdevelopment.vandalism.util;
+package de.vandalismdevelopment.vandalism.util.minecraft;
 
 import com.google.common.collect.Lists;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;

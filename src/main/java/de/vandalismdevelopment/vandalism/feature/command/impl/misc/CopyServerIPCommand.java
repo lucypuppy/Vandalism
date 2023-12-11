@@ -3,8 +3,8 @@ package de.vandalismdevelopment.vandalism.feature.command.impl.misc;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.vandalismdevelopment.vandalism.feature.command.AbstractCommand;
-import de.vandalismdevelopment.vandalism.util.ChatUtil;
-import de.vandalismdevelopment.vandalism.util.ServerUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.ChatUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.ServerUtil;
 import net.minecraft.command.CommandSource;
 
 public class CopyServerIPCommand extends AbstractCommand {

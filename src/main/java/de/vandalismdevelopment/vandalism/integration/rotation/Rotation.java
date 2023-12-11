@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.integration.rotation;
 
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
-import de.vandalismdevelopment.vandalism.util.WorldUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.WorldUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Pair;

@@ -5,7 +5,7 @@ import de.florianmichael.dietrichevents2.Priorities;
 import de.vandalismdevelopment.vandalism.base.event.PacketListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.primitive.BooleanValue;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
@@ -41,18 +41,18 @@ public class ModPacketBlockerModule extends AbstractModule implements PacketList
                             "Blocks packets from " + modId + ".",
                             this,
                             true
-                    ).visibleConsumer(() -> FabricLoader.getInstance().isModLoaded(modId))
+                    ).visibleCondition(() -> FabricLoader.getInstance().isModLoaded(modId))
             );
         }
     }
 
     @Override
-    protected void onEnable() {
+    public void onEnable() {
         DietrichEvents2.global().subscribe(PacketEvent.ID, this, Priorities.HIGH);
     }
 
     @Override
-    protected void onDisable() {
+    public void onDisable() {
         DietrichEvents2.global().unsubscribe(PacketEvent.ID, this);
     }
 

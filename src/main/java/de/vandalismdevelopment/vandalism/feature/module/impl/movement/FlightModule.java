@@ -5,8 +5,8 @@ import de.vandalismdevelopment.vandalism.base.event.PacketListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.feature.module.impl.movement.modes.flight.CreativeModuleMode;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
-import de.vandalismdevelopment.vandalism.base.value.impl.list.ModuleModeValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.primitive.BooleanValue;
+import de.vandalismdevelopment.vandalism.feature.module.value.ModuleModeValue;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
 public class FlightModule extends AbstractModule implements PacketListener {
@@ -35,12 +35,12 @@ public class FlightModule extends AbstractModule implements PacketListener {
     }
 
     @Override
-    protected void onEnable() {
+    public void onEnable() {
         DietrichEvents2.global().subscribe(PacketEvent.ID, this);
     }
 
     @Override
-    protected void onDisable() {
+    public void onDisable() {
         DietrichEvents2.global().unsubscribe(PacketEvent.ID, this);
     }
 

@@ -4,7 +4,7 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.base.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.module.template.ModuleMulti;
 import de.vandalismdevelopment.vandalism.feature.module.impl.movement.SpeedModule;
-import de.vandalismdevelopment.vandalism.util.MovementUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.MovementUtil;
 
 public class LongHopModuleMode extends ModuleMulti<SpeedModule> implements TickListener {
 

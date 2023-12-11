@@ -8,7 +8,7 @@ import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilEnvironment;
 import de.florianmichael.rclasses.io.mappings.TimeFormatter;
 import de.florianmichael.rclasses.pattern.functional.IName;
-import de.vandalismdevelopment.vandalism.util.PlayerSkinRenderer;
+import de.vandalismdevelopment.vandalism.util.render.PlayerSkinRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.SocialInteractionsManager;
 import net.minecraft.client.realms.RealmsClient;

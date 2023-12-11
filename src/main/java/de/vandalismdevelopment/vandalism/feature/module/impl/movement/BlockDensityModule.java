@@ -35,12 +35,12 @@ public class BlockDensityModule extends AbstractModule implements WorldListener 
     }
 
     @Override
-    protected void onEnable() {
+    public void onEnable() {
         DietrichEvents2.global().subscribe(BlockEvent.ID, this);
     }
 
     @Override
-    protected void onDisable() {
+    public void onDisable() {
         DietrichEvents2.global().unsubscribe(BlockEvent.ID, this);
     }
 

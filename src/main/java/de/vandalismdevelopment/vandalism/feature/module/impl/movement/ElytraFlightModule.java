@@ -5,8 +5,8 @@ import de.vandalismdevelopment.vandalism.base.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.feature.module.impl.movement.modes.elytraflight.CreativeModuleMode;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.impl.list.ModuleModeValue;
-import de.vandalismdevelopment.vandalism.util.ChatUtil;
+import de.vandalismdevelopment.vandalism.feature.module.value.ModuleModeValue;
+import de.vandalismdevelopment.vandalism.util.minecraft.ChatUtil;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ElytraItem;
 import net.minecraft.item.ItemStack;
@@ -33,12 +33,12 @@ public class ElytraFlightModule extends AbstractModule implements TickListener {
     }
 
     @Override
-    protected void onEnable() {
+    public void onEnable() {
         DietrichEvents2.global().subscribe(TickEvent.ID, this);
     }
 
     @Override
-    protected void onDisable() {
+    public void onDisable() {
         DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
     }
 

@@ -17,12 +17,12 @@ public class CameraNoClipModule extends AbstractModule implements RenderListener
     }
 
     @Override
-    protected void onEnable() {
+    public void onEnable() {
         DietrichEvents2.global().subscribe(CameraClipRaytraceEvent.ID, this);
     }
 
     @Override
-    protected void onDisable() {
+    public void onDisable() {
         DietrichEvents2.global().unsubscribe(CameraClipRaytraceEvent.ID, this);
     }
 

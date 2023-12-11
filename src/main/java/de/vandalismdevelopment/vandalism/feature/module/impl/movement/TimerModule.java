@@ -4,9 +4,9 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.base.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.base.value.impl.BooleanValue;
-import de.vandalismdevelopment.vandalism.base.value.impl.number.slider.SliderFloatValue;
-import de.vandalismdevelopment.vandalism.util.TimerUtil;
+import de.vandalismdevelopment.vandalism.base.value.impl.primitive.BooleanValue;
+import de.vandalismdevelopment.vandalism.base.value.impl.number.FloatValue;
+import de.vandalismdevelopment.vandalism.util.minecraft.TimerUtil;
 
 public class TimerModule extends AbstractModule implements TickListener {
 
@@ -20,7 +20,7 @@ public class TimerModule extends AbstractModule implements TickListener {
         );
     }
 
-    private final Value<Float> timerModifier = new SliderFloatValue(
+    private final Value<Float> timerModifier = new FloatValue(
             "Timer Modifier",
             "Allows you to customize the timer speed.",
             this,
