@@ -5,6 +5,7 @@ import de.florianmichael.rclasses.pattern.storage.named.NamedStorage;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.base.config.ConfigManager;
 import de.vandalismdevelopment.vandalism.base.config.template.ConfigWithValues;
+import de.vandalismdevelopment.vandalism.base.event.game.KeyboardInputListener;
 import de.vandalismdevelopment.vandalism.base.event.game.MouseInputListener;
 import de.vandalismdevelopment.vandalism.feature.Feature;
 import de.vandalismdevelopment.vandalism.feature.module.gui.ModulesImWindow;
@@ -21,7 +22,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
-public class ModuleManager extends NamedStorage<AbstractModule> implements MouseInputListener, MinecraftWrapper {
+public class ModuleManager extends NamedStorage<AbstractModule> implements KeyboardInputListener, MinecraftWrapper {
 
     private final ConfigManager configManager;
 
@@ -39,7 +40,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Mouse
         this.configManager = configManager;
         imGuiManager.add(new ModulesImWindow());
 
-        DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
+        DietrichEvents2.global().subscribe(KeyboardInputEvent.ID, this);
     }
 
     @Override

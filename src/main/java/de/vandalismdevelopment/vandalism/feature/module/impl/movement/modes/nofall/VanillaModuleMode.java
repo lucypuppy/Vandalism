@@ -23,7 +23,7 @@ public class VanillaModuleMode extends ModuleMulti<NoFallModule> implements Inco
     }
 
     @Override
-    public void onPacket(final IncomingPacketEvent event) {
+    public void onIncomingPacket(final IncomingPacketEvent event) {
         if (event.packet instanceof final PlayerMoveC2SPacket playerPacket
                 && this.mc.player.fallDistance > 2.0f)
             playerPacket.onGround = true;

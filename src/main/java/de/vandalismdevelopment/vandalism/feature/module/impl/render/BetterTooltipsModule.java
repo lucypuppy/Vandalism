@@ -6,6 +6,7 @@ import de.florianmichael.rclasses.common.StringUtils;
 import de.florianmichael.rclasses.io.ByteCountDataOutput;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.base.event.render.CameraClipRaytraceListener;
+import de.vandalismdevelopment.vandalism.base.event.render.TooltipDrawListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.util.tooltip.*;
 import net.minecraft.block.ShulkerBoxBlock;
@@ -31,7 +32,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-public class BetterTooltipsModule extends AbstractModule implements CameraClipRaytraceListener {
+public class BetterTooltipsModule extends AbstractModule implements TooltipDrawListener {
 
     public BetterTooltipsModule() {
         super("Better Tooltips", "Improves item tooltips from the game.", Category.RENDER);

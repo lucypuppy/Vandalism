@@ -3,6 +3,7 @@ package de.vandalismdevelopment.vandalism.feature.module.impl.render;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.common.ColorUtils;
 import de.florianmichael.rclasses.common.StringUtils;
+import de.vandalismdevelopment.vandalism.base.event.game.KeyboardInputListener;
 import de.vandalismdevelopment.vandalism.base.event.game.MouseInputListener;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.base.value.impl.awt.ColorValue;
@@ -16,7 +17,7 @@ import org.lwjgl.glfw.GLFW;
 import java.awt.*;
 import java.util.HashMap;
 
-public class BetterTabListModule extends AbstractModule implements MouseInputListener {
+public class BetterTabListModule extends AbstractModule implements KeyboardInputListener {
 
     public final Value<Boolean> toggleable = new BooleanValue(this, "Toggleable Tab List", "Makes the Tab List toggleable.", false);
 
@@ -58,12 +59,12 @@ public class BetterTabListModule extends AbstractModule implements MouseInputLis
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
+        DietrichEvents2.global().subscribe(KeyboardInputEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(KeyboardEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(KeyboardInputEvent.ID, this);
     }
 
     @Override

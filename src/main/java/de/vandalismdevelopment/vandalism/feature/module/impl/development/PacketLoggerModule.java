@@ -4,6 +4,7 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.dietrichevents2.Priorities;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.base.event.network.IncomingPacketListener;
+import de.vandalismdevelopment.vandalism.base.event.network.OutgoingPacketListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.util.minecraft.ChatUtil;
 import de.vandalismdevelopment.vandalism.base.value.Value;
@@ -15,7 +16,7 @@ import net.minecraft.network.packet.Packet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PacketLoggerModule extends AbstractModule implements IncomingPacketListener {
+public class PacketLoggerModule extends AbstractModule implements IncomingPacketListener, OutgoingPacketListener {
 
     public PacketLoggerModule() {
         super("Packet Logger", "Logs packets and their data.", Category.DEVELOPMENT);
@@ -45,22 +46,22 @@ public class PacketLoggerModule extends AbstractModule implements IncomingPacket
     @Override
     public void onEnable() {
         DietrichEvents2.global().subscribe(IncomingPacketEvent.ID, this, Priorities.LOW);
+        DietrichEvents2.global().subscribe(OutgoingPacketEvent.ID, this, Priorities.LOW);
     }
 
     @Override
     public void onDisable() {
         DietrichEvents2.global().unsubscribe(IncomingPacketEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(OutgoingPacketEvent.ID, this);
     }
 
-    @Override
-    public void onPacket(final IncomingPacketEvent event) {
-        final Packet<?> packet = event.packet;
+    private void logPacket(final boolean outgoing, final Packet<?> packet) {
         final Class<?> packetClass = packet.getClass();
         final String packetName = packetClass.getSimpleName();
         for (final Value<?> value : this.getValues()) {
             if (value instanceof final MultiModeValue multiModeValue && multiModeValue.getValue().contains(packetName)) {
                 final StringBuilder text = new StringBuilder();
-                if (event.state == PacketEventState.SEND) {
+                if (outgoing) {
                     text.append("Outgoing packet: ");
                 } else {
                     text.append("Incoming packet: ");
@@ -75,4 +76,13 @@ public class PacketLoggerModule extends AbstractModule implements IncomingPacket
         }
     }
 
+    @Override
+    public void onIncomingPacket(final IncomingPacketEvent event) {
+        logPacket(false, event.packet);
+    }
+
+    @Override
+    public void onOutgoingPacket(OutgoingPacketEvent event) {
+        logPacket(true, event.packet);
+    }
 }

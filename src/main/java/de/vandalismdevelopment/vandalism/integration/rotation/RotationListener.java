@@ -5,6 +5,7 @@ import de.florianmichael.rclasses.common.RandomUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.base.event.network.IncomingPacketListener;
 import de.vandalismdevelopment.vandalism.base.event.render.CameraClipRaytraceListener;
+import de.vandalismdevelopment.vandalism.base.event.render.Render2DListener;
 import de.vandalismdevelopment.vandalism.util.render.RenderUtil;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
@@ -12,7 +13,7 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 
-public class RotationListener implements IncomingPacketListener, CameraClipRaytraceListener, MinecraftWrapper {
+public class RotationListener implements IncomingPacketListener, Render2DListener, MinecraftWrapper {
 
     private Rotation rotation, targetRotation, lastRotation;
     private double partialIterations;
@@ -26,7 +27,7 @@ public class RotationListener implements IncomingPacketListener, CameraClipRaytr
     }
 
     @Override
-    public void onPacket(final IncomingPacketEvent event) {
+    public void onIncomingPacket(final IncomingPacketEvent event) {
         if (event.packet instanceof final PlayerMoveC2SPacket packet) {
             if (this.rotation != null) {
                 packet.yaw = this.rotation.getYaw();

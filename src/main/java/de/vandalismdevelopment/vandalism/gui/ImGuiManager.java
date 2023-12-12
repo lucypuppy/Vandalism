@@ -3,8 +3,10 @@ package de.vandalismdevelopment.vandalism.gui;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.base.event.game.KeyboardInputListener;
 import de.vandalismdevelopment.vandalism.base.event.game.MouseInputListener;
 import de.vandalismdevelopment.vandalism.base.event.render.CameraClipRaytraceListener;
+import de.vandalismdevelopment.vandalism.base.event.render.Render2DListener;
 import de.vandalismdevelopment.vandalism.gui.base.ImGuiScreen;
 import de.vandalismdevelopment.vandalism.gui.impl.ServerAddressResolverImWindow;
 import de.vandalismdevelopment.vandalism.gui.impl.ServerPingerImWindow;
@@ -22,10 +24,10 @@ import net.minecraft.client.gui.screen.LevelLoadingScreen;
 import java.io.File;
 import java.util.List;
 
-public class ImGuiManager extends Storage<ImWindow> implements CameraClipRaytraceListener, MouseInputListener, MinecraftWrapper {
+public class ImGuiManager extends Storage<ImWindow> implements KeyboardInputListener, Render2DListener, MinecraftWrapper {
 
     public ImGuiManager(final File runDirectory) {
-        DietrichEvents2.global().subscribe(this, KeyboardEvent.ID, Render2DEvent.ID);
+        DietrichEvents2.global().subscribe(this, KeyboardInputEvent.ID, Render2DEvent.ID);
 
         ImLoader.init(runDirectory);
     }
@@ -59,7 +61,7 @@ public class ImGuiManager extends Storage<ImWindow> implements CameraClipRaytrac
     }
 
     public List<ImWindow> getByCategory(final ImWindow.Category category) {
-        return this.getList().stream().filter(imWindow -> imWindow.getCategory().equals(category)).toList();
+        return this.getList().stream().filter(imWindow -> imWindow.getCategory() == category).toList();
     }
 
     public List<ImWindow.Category> getCategories() {

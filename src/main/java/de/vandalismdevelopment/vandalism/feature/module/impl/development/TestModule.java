@@ -3,8 +3,11 @@ package de.vandalismdevelopment.vandalism.feature.module.impl.development;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.base.event.entity.MotionListener;
+import de.vandalismdevelopment.vandalism.base.event.player.MoveInputListener;
+import de.vandalismdevelopment.vandalism.base.event.player.StrafeListener;
 import de.vandalismdevelopment.vandalism.base.event.render.CameraClipRaytraceListener;
 import de.vandalismdevelopment.vandalism.base.event.game.TickGameListener;
+import de.vandalismdevelopment.vandalism.base.event.render.Render2DListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.util.clicker.impl.BoxMuellerClicker;
 import de.vandalismdevelopment.vandalism.util.minecraft.MovementUtil;
@@ -27,7 +30,7 @@ import net.minecraft.util.math.Vec3d;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestModule extends AbstractModule implements TickGameListener, CameraClipRaytraceListener, MotionListener {
+public class TestModule extends AbstractModule implements TickGameListener, StrafeListener, Render2DListener, MoveInputListener {
 
     private final Clicker clicker = new BoxMuellerClicker();
 

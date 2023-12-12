@@ -5,7 +5,7 @@ import net.minecraft.network.packet.Packet;
 
 public interface IncomingPacketListener {
 
-    void onPacket(final IncomingPacketEvent event);
+    void onIncomingPacket(final IncomingPacketEvent event);
 
     class IncomingPacketEvent extends CancellableEvent<IncomingPacketListener> {
 
@@ -19,7 +19,7 @@ public interface IncomingPacketListener {
 
         @Override
         public void call(final IncomingPacketListener listener) {
-            listener.onPacket(this);
+            listener.onIncomingPacket(this);
         }
 
     }

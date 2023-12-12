@@ -55,15 +55,15 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     private ClientSettings clientSettings;
     private AccountManager accountManager;
 
-    // Features
-    private ModuleManager moduleManager;
-    private CommandManager commandManager;
-    private ScriptManager scriptManager;
-
     // Integration
     private RotationListener rotationListener;
     private ServerListManager serverListManager;
     private HUDManager hudManager;
+
+    // Features
+    private ModuleManager moduleManager;
+    private CommandManager commandManager;
+    private ScriptManager scriptManager;
 
     public void printStartup() {
         final String[] ASCII_ART = {
@@ -108,10 +108,19 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         configManager.init();
 
         imGuiManager = new ImGuiManager(runDirectory);
+        imGuiManager.init();
+
         clientSettings = new ClientSettings(configManager, imGuiManager);
         accountManager = new AccountManager(configManager);
         accountManager.init();
-        
+
+        // Integration
+        rotationListener = new RotationListener();
+        serverListManager = new ServerListManager(runDirectory);
+        serverListManager.loadConfig();
+        hudManager = new HUDManager(configManager, imGuiManager);
+        hudManager.init();
+
         // Features
         moduleManager = new ModuleManager(configManager, imGuiManager);
         moduleManager.init();
@@ -121,13 +130,6 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
         scriptManager = new ScriptManager(configManager, imGuiManager, runDirectory);
         scriptManager.init();
-
-        // Integration
-        rotationListener = new RotationListener();
-        serverListManager = new ServerListManager(runDirectory);
-        serverListManager.loadConfig();
-        hudManager = new HUDManager(configManager, imGuiManager);
-        hudManager.init();
 
         // We have to load the config files after all systems have been initialized
         configManager.init();

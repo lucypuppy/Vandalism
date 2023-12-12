@@ -23,27 +23,27 @@ public class ImGuiScreen extends Screen {
 
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        super.render(context, mouseX, mouseY, delta);
         ImLoader.draw(() -> {
-            for (ImWindow window : this.imGuiManager.getList()) {
-                if (ImGui.beginMenuBar()) {
-                    for (ImWindow.Category category : this.imGuiManager.getCategories()) {
-                        if (ImGui.beginMenu(category.getName())) {
-                            for (ImWindow imWindow : this.imGuiManager.getByCategory(category)) {
-                                if (ImGui.checkbox(imWindow.getName(), imWindow.isActive())) {
-                                    imWindow.toggle();
-                                }
+            if (ImGui.beginMainMenuBar()) {
+                for (ImWindow.Category category : this.imGuiManager.getCategories()) {
+                    if (ImGui.beginMenu(category.getName())) {
+                        for (ImWindow imWindow : this.imGuiManager.getByCategory(category)) {
+                            if (ImGui.checkbox(imWindow.getName(), imWindow.isActive())) {
+                                imWindow.toggle();
                             }
-                            ImGui.endMenu();
                         }
+                        ImGui.endMenu();
                     }
-                    ImGui.endMenuBar();
                 }
+                ImGui.endMainMenuBar();
+            }
+            for (ImWindow window : this.imGuiManager.getList()) {
                 if (window.isActive()) {
                     window.render(context, mouseX, mouseY, delta);
                 }
             }
         });
-        super.render(context, mouseX, mouseY, delta);
     }
 
     @Override

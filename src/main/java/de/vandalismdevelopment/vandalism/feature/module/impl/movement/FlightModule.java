@@ -40,7 +40,7 @@ public class FlightModule extends AbstractModule implements IncomingPacketListen
     }
 
     @Override
-    public void onPacket(final IncomingPacketEvent event) {
+    public void onIncomingPacket(final IncomingPacketEvent event) {
         if (event.packet instanceof final PlayerMoveC2SPacket playerMoveC2SPacket && this.antiKick.getValue()) {
             playerMoveC2SPacket.y += Math.sin(this.mc.player.age) * 0.2;
         }
