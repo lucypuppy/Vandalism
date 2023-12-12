@@ -67,7 +67,7 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
 
     @Override
     public void load0(JsonObject mainNode) throws Throwable {
-        tokenChain = EncryptionUtils.aes(EncryptionUtils.fromString(getDisplayName())).decrypt(tokenChain);
+        tokenChain = EncryptionUtils.aes(EncryptionUtils.fromString(getDisplayName())).decrypt(mainNode.get("tokenChain").getAsString());
     }
 
     @Override
