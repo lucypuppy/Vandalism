@@ -1,6 +1,6 @@
-package de.vandalismdevelopment.vandalism.gui.impl.menu.impl.port;
+package de.vandalismdevelopment.vandalism.gui_v2.impl.port;
 
-import de.vandalismdevelopment.vandalism.gui.impl.widget.impl.serverinfo.ServerInfosTableColumn;
+import de.vandalismdevelopment.vandalism.gui_v2.widget.ServerInfosTableColumn;
 import de.vandalismdevelopment.vandalism.gui_v2.ImWindow;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;

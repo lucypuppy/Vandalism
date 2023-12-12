@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.gui.impl.menu.impl.namehistory;
+package de.vandalismdevelopment.vandalism.gui_v2.impl.namehistory;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;

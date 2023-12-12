@@ -1,10 +1,10 @@
-package de.vandalismdevelopment.vandalism.gui.impl.widget.impl.serverinfo;
+package de.vandalismdevelopment.vandalism.gui_v2.impl.port;
 
 import de.florianmichael.rclasses.common.StringUtils;
 
-public enum ModsTableColumn {
+public enum PortsTableColumn {
 
-    MOD_ID, MOD_VERSION, ACTIONS;
+    PORT, STATE, QUERY_STATE, ACTIONS;
 
     public String getName() {
         return StringUtils.normalizeEnumName(this.name());

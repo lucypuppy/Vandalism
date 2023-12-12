@@ -1,9 +1,9 @@
-package de.vandalismdevelopment.vandalism.gui.impl.menu.impl;
+package de.vandalismdevelopment.vandalism.gui_v2.impl;
 
 import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.gui.impl.widget.impl.serverinfo.ServerInfoWidget;
-import de.vandalismdevelopment.vandalism.gui.impl.widget.impl.serverinfo.ServerInfosTableColumn;
+import de.vandalismdevelopment.vandalism.gui_v2.widget.ServerInfoWidget;
+import de.vandalismdevelopment.vandalism.gui_v2.widget.ServerInfosTableColumn;
 import de.vandalismdevelopment.vandalism.gui_v2.ImWindow;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;

@@ -30,13 +30,17 @@ public class ImGuiManager extends Storage<ImWindow> implements RenderListener, I
     @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         if (Vandalism.getInstance().getClientSettings().getMenuSettings().menuKey.isPressed()) {
-            final var screen = MinecraftClient.getInstance().currentScreen;
-            if (screen instanceof ChatScreen || screen instanceof ConnectScreen || screen instanceof LevelLoadingScreen || screen instanceof ImGuiScreen) {
-                return;
-            }
-
-            MinecraftClient.getInstance().setScreen(new ImGuiScreen(screen));
+            openScreen();
         }
+    }
+
+    public void openScreen() {
+        final var screen = MinecraftClient.getInstance().currentScreen;
+        if (screen instanceof ChatScreen || screen instanceof ConnectScreen || screen instanceof LevelLoadingScreen || screen instanceof ImGuiScreen) {
+            return;
+        }
+
+        MinecraftClient.getInstance().setScreen(new ImGuiScreen(screen));
     }
 
 }

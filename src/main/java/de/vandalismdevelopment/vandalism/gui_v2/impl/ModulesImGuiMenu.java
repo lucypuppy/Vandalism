@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.gui.impl.menu.impl;
+package de.vandalismdevelopment.vandalism.gui_v2.impl;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
