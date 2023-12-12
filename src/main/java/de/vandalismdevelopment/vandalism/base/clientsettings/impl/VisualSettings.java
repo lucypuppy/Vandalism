@@ -8,10 +8,6 @@ import de.vandalismdevelopment.vandalism.base.value.impl.number.FloatValue;
 
 public class VisualSettings extends ValueGroup {
 
-    public VisualSettings(final ClientSettings parent) {
-        super(parent, "Visual", "Visual related configs.");
-    }
-
     public final BooleanValue customBobView = new BooleanValue(
             this,
             "Custom Bob View",
@@ -36,5 +32,9 @@ public class VisualSettings extends ValueGroup {
             0.1f,
             1.0f
     ).format("%.2f");
-    
+
+    public VisualSettings(final ClientSettings parent) {
+        super(parent, "Visual", "Visual related settings.");
+    }
+
 }

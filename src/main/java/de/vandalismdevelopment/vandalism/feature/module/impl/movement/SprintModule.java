@@ -13,7 +13,7 @@ import net.minecraft.util.math.MathHelper;
 
 public class SprintModule extends AbstractModule implements SprintListener {
 
-    private final Value<Boolean> forceSprint = new BooleanValue(
+    private final BooleanValue forceSprint = new BooleanValue(
             this,
             "Force Sprint",
             "Forces you to sprint even if you are not moving.",

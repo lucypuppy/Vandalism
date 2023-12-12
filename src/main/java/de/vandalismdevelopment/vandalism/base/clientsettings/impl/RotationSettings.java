@@ -9,11 +9,7 @@ import de.vandalismdevelopment.vandalism.base.value.impl.selection.EnumModeValue
 
 public class RotationSettings extends ValueGroup {
 
-    public RotationSettings(final ClientSettings parent) {
-        super(parent, "Rotation", "Rotation related configs.");
-    }
-
-    public final Value<Boolean> rotateBack = new BooleanValue(
+    public final BooleanValue rotateBack = new BooleanValue(
             this,
             "Rotate Back",
             "Enable / Disable smooth rotate back.",
@@ -27,5 +23,9 @@ public class RotationSettings extends ValueGroup {
             RotationGCD.REAL,
             RotationGCD.NONE
     );
-    
+
+    public RotationSettings(final ClientSettings parent) {
+        super(parent, "Rotation", "Rotation related settings.");
+    }
+
 }

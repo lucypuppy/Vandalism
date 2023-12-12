@@ -10,14 +10,14 @@ import de.vandalismdevelopment.vandalism.base.value.impl.number.IntegerValue;
 
 public class AutoRespawnModule extends AbstractModule implements TickGameListener {
 
-    private final Value<Boolean> instantRespawn = new BooleanValue(
+    private final BooleanValue instantRespawn = new BooleanValue(
             this,
             "Instant Respawn",
             "Instantly respawns you when you die.",
             false
     );
 
-    private final Value<Integer> delay = new IntegerValue(
+    private final IntegerValue delay = new IntegerValue(
             this,
             "Delay",
             "The delay in ticks before respawning.",
@@ -26,7 +26,7 @@ public class AutoRespawnModule extends AbstractModule implements TickGameListene
             10000
     ).visibleCondition(() -> !this.instantRespawn.getValue());
 
-    private final Value<Boolean> autoBack = new BooleanValue(
+    private final BooleanValue autoBack = new BooleanValue(
             this,
             "Auto Back",
             "Automatically uses the back command when you die.",

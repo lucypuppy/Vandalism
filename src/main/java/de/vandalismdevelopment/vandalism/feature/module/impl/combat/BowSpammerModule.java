@@ -13,7 +13,7 @@ import net.raphimc.vialoader.util.VersionRange;
 
 public class BowSpammerModule extends AbstractModule implements TickGameListener {
 
-    private final Value<Integer> maxPacketsPerTick = new IntegerValue(
+    private final IntegerValue maxPacketsPerTick = new IntegerValue(
             this,
             "Max Packets Per Tick",
             "The maximum amount of packets sent per tick.",
@@ -22,7 +22,7 @@ public class BowSpammerModule extends AbstractModule implements TickGameListener
             100
     );
 
-    private final Value<Integer> shootDelay = new IntegerValue(
+    private final IntegerValue shootDelay = new IntegerValue(
             this,
             "Shoot Delay",
             "The delay between shots.",

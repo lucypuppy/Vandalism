@@ -12,7 +12,7 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
 public class FlightModule extends AbstractModule implements IncomingPacketListener {
 
-    private final Value<Boolean> antiKick = new BooleanValue(
+    private final BooleanValue antiKick = new BooleanValue(
             this,
             "Anti Kick",
             "Bypasses the vanilla fly kick.",

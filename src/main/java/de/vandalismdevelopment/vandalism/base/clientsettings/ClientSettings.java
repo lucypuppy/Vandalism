@@ -1,6 +1,6 @@
 package de.vandalismdevelopment.vandalism.base.clientsettings;
 
-import de.vandalismdevelopment.vandalism.base.clientsettings.gui.ConfigImWindow;
+import de.vandalismdevelopment.vandalism.base.clientsettings.gui.ClientSettingsImWindow;
 import de.vandalismdevelopment.vandalism.base.clientsettings.impl.*;
 import de.vandalismdevelopment.vandalism.base.config.ConfigManager;
 import de.vandalismdevelopment.vandalism.base.config.template.ConfigWithValues;
@@ -24,8 +24,8 @@ public class ClientSettings implements ValueParent {
     private final EnhancedServerListSettings enhancedServerListSettings = new EnhancedServerListSettings(this);
 
     public ClientSettings(final ConfigManager configManager, final ImGuiManager imGuiManager) {
-        configManager.add(new ConfigWithValues("clientsettings", getValues().stream().map(value -> (ValueParent) value).toList()));
-        imGuiManager.add(new ConfigImWindow(this));
+        configManager.add(new ConfigWithValues("client-settings", getValues().stream().map(value -> (ValueParent) value).toList()));
+        imGuiManager.add(new ClientSettingsImWindow(this));
     }
 
     public MenuSettings getMenuSettings() {

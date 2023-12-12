@@ -10,7 +10,7 @@ import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 
 public class AmbienceModule extends AbstractModule implements IncomingPacketListener {
 
-    private final Value<Integer> worldTime = new IntegerValue(
+    private final IntegerValue worldTime = new IntegerValue(
             this,
             "World time",
             "Time of the world.",

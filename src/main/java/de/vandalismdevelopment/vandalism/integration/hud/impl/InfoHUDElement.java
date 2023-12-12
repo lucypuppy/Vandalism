@@ -10,28 +10,28 @@ import net.minecraft.client.gui.DrawContext;
 
 public class InfoHUDElement extends HUDElement {
 
-    private final Value<Boolean> fps = new BooleanValue(
+    private final BooleanValue fps = new BooleanValue(
             this,
             "FPS",
             "Shows the current fps.",
             true
     );
 
-    private final Value<Boolean> username = new BooleanValue(
+    private final BooleanValue username = new BooleanValue(
             this,
             "Username",
             "Shows the current username.",
             true
     );
 
-    private final Value<Boolean> position = new BooleanValue(
+    private final BooleanValue position = new BooleanValue(
             this,
             "Position",
             "Shows the current position.",
             true
     );
 
-    private final Value<Boolean> dimensionalPosition = new BooleanValue(
+    private final BooleanValue dimensionalPosition = new BooleanValue(
             this,
             "Dimensional Position",
             "Shows the current position of the dimension you are currently playing in.",
@@ -44,7 +44,7 @@ public class InfoHUDElement extends HUDElement {
             "Elements that are shown in the position category."
     ).visibleCondition(this.position::getValue);
 
-    private final Value<Integer> positionDecimalPlaces = new IntegerValue(
+    private final IntegerValue positionDecimalPlaces = new IntegerValue(
             this.positionElements,
             "Position Decimal Places",
             "Allows you to change the viewable amount of decimal places from the x/y/z position.",
@@ -53,21 +53,21 @@ public class InfoHUDElement extends HUDElement {
             15
     ).visibleCondition(this.position::getValue);
 
-    private final Value<Boolean> serverBrand = new BooleanValue(
+    private final BooleanValue serverBrand = new BooleanValue(
             this,
             "Server Brand",
             "Shows the current server brand.",
             true
     );
 
-    private final Value<Boolean> difficulty = new BooleanValue(
+    private final BooleanValue difficulty = new BooleanValue(
             this,
             "Difficulty",
             "Shows the current world difficulty.",
             true
     );
 
-    private final Value<Boolean> permissionsLevel = new BooleanValue(
+    private final BooleanValue permissionsLevel = new BooleanValue(
             this,
             "Permissions Level",
             "Shows the current permissions level.",

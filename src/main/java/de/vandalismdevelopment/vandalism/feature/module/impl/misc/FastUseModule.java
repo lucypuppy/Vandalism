@@ -6,7 +6,7 @@ import de.vandalismdevelopment.vandalism.base.value.impl.number.IntegerValue;
 
 public class FastUseModule extends AbstractModule {
 
-    public final Value<Integer> itemUseCooldown = new IntegerValue(
+    public final IntegerValue itemUseCooldown = new IntegerValue(
             this,
             "Item Use Cooldown",
             "Here you can input the custom use cooldown value.",

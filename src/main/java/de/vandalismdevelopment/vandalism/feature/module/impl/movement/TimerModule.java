@@ -19,7 +19,7 @@ public class TimerModule extends AbstractModule implements TickGameListener {
             20.f
     );
 
-    private final Value<Boolean> screen = new BooleanValue(
+    private final BooleanValue screen = new BooleanValue(
             this,
             "Screen",
             "Allows you to use the timer in screen(s).",

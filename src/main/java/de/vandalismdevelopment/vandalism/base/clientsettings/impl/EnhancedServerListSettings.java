@@ -12,10 +12,6 @@ import org.lwjgl.glfw.GLFW;
 
 public class EnhancedServerListSettings extends ValueGroup {
 
-    public EnhancedServerListSettings(final ClientSettings parent) {
-        super(parent, "Enhanced Server List", "Enhanced Server List related configs.");
-    }
-
     public final BooleanValue enhancedServerList = new BooleanValue(
             this,
             "Enhanced Server List",
@@ -48,14 +44,14 @@ public class EnhancedServerListSettings extends ValueGroup {
             GLFW.GLFW_KEY_DELETE
     ).visibleCondition(this.enhancedServerList::getValue);
 
-    public final Value<Boolean> multiplayerScreenServerInformation = new BooleanValue(
+    public final BooleanValue multiplayerScreenServerInformation = new BooleanValue(
             this,
             "Multiplayer Screen Server Information",
             "If enabled the Game shows all necessary server information behind a server list entry.",
             true
     ).visibleCondition(this.enhancedServerList::getValue);
 
-    public final Value<Integer> maxServerVersionLength = new IntegerValue(
+    public final IntegerValue maxServerVersionLength = new IntegerValue(
             this,
             "Max Server Version Length",
             "Sets the max display length of a server version that is being displayed in the multiplayer screen.",
@@ -63,5 +59,9 @@ public class EnhancedServerListSettings extends ValueGroup {
             6,
             250
     ).visibleCondition(() -> this.enhancedServerList.getValue() && this.multiplayerScreenServerInformation.getValue());
+
+    public EnhancedServerListSettings(final ClientSettings parent) {
+        super(parent, "Enhanced Server List", "Enhanced Server List related settings.");
+    }
 
 }

@@ -36,7 +36,7 @@ import java.util.concurrent.Executors;
 
 public class ItemStackLoggerModule extends AbstractModule implements TickGameListener {
 
-    private final Value<Boolean> notifyInChat = new BooleanValue(this, "Notify in Chat", "If enabled this module sends a notification into the chat to inform you about a newly found item.", true);
+    private final BooleanValue notifyInChat = new BooleanValue(this, "Notify in Chat", "If enabled this module sends a notification into the chat to inform you about a newly found item.", true);
 
     private static final File LOGGED_ITEMS_DIR = new File(Vandalism.getInstance().getRunDirectory(), "logged-items");
 
