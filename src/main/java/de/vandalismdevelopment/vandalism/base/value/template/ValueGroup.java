@@ -17,10 +17,21 @@ public class ValueGroup extends Value<List<Value<?>>> implements ValueParent, Mi
 
     @Override
     public void load(final JsonObject valueObject) {
+        final var valueNode = valueObject.getAsJsonObject(getName());
+
+        for (Value<?> value : getValues()) {
+            value.load(valueNode);
+        }
     }
 
     @Override
     public void save(final JsonObject valueObject) {
+        final var valueNode = new JsonObject();
+        for (Value<?> value : getValues()) {
+            value.save(valueNode);
+        }
+
+        valueObject.add(getName(), valueNode);
     }
 
     @Override

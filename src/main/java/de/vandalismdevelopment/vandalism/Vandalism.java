@@ -33,7 +33,7 @@ import java.io.File;
  *  - Re-implement im window state saving
  *  - Delete MixinParticleManager
  *  - Update AuthLib array instead of MixinTextureUrlChecker
- *  - Fix mixin injection names for the functions and the fields (change VANDALISM_... in every field to vandalism$... / remove vandalism$ for every function)
+ *  - Fix mixin injection names for the fields (remove vandalism$ for every function)
  *  - Replace MixinServerResourcePackProvider
  *  - Delete MixinClientPlayerEntity & MixinClientWorld
  *  - Delete events which only have one usage

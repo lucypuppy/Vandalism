@@ -22,16 +22,16 @@ public abstract class MixinMainWindow {
     }
 
     @Unique
-    private static final ExecutorService VANDALISM_EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
+    private static final ExecutorService vandalism$EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/lenni0451/imnbt/ui/windows/MainWindow;chooseFile()V"))
     private void vandalism$chooseFileInANewThread(final MainWindow instance) {
-        VANDALISM_EXECUTOR_SERVICE.submit(instance::chooseFile);
+        vandalism$EXECUTOR_SERVICE.submit(instance::chooseFile);
     }
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/lenni0451/imnbt/ui/windows/MainWindow;saveFile()V"))
     private void vandalism$saveFileInANewThread(final MainWindow instance) {
-        VANDALISM_EXECUTOR_SERVICE.submit(instance::saveFile);
+        vandalism$EXECUTOR_SERVICE.submit(instance::saveFile);
     }
 
 }

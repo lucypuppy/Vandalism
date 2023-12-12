@@ -29,7 +29,7 @@ public abstract class MixinMinecraftClient {
     public File runDirectory;
 
     @Unique
-    private boolean vandalism_loadingDisplayed = false;
+    private boolean vandalism$loadingDisplayed = false;
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;onResolutionChanged()V"))
     private void vandalism$callMinecraftBootstrapListener(final CallbackInfo ci) {
@@ -49,8 +49,8 @@ public abstract class MixinMinecraftClient {
 
     @Inject(method = "onFinishedLoading", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;collectLoadTimes(Lnet/minecraft/client/MinecraftClient$LoadingContext;)V", shift = At.Shift.AFTER))
     private void vandalism$displayLoadingTime(final CallbackInfo ci) {
-        if (!this.vandalism_loadingDisplayed) {
-            this.vandalism_loadingDisplayed = true;
+        if (!this.vandalism$loadingDisplayed) {
+            this.vandalism$loadingDisplayed = true;
             Vandalism.getInstance().getLogger().info("");
             Vandalism.getInstance().getLogger().info("Minecraft loading took ~" + ManagementFactory.getRuntimeMXBean().getUptime() + "ms.");
             Vandalism.getInstance().getLogger().info("");

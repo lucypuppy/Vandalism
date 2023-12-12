@@ -23,7 +23,7 @@ import java.util.Collections;
 public abstract class MixinCommandDispatcher<S> {
 
     @Unique
-    private static final SimpleCommandExceptionType VANDALISM_STACK_OVERFLOW_EXCEPTION = new SimpleCommandExceptionType(
+    private static final SimpleCommandExceptionType vandalism$STACK_OVERFLOW_EXCEPTION = new SimpleCommandExceptionType(
             new LiteralMessage("Stack overflow error while parsing command")
     );
 
@@ -42,7 +42,7 @@ public abstract class MixinCommandDispatcher<S> {
                 return this.parseNodes(this.root, command, context);
             } catch (final StackOverflowError ignored) {
                 return new ParseResults<>(context, command, Collections.singletonMap(
-                        this.root, VANDALISM_STACK_OVERFLOW_EXCEPTION.createWithContext(command))
+                        this.root, vandalism$STACK_OVERFLOW_EXCEPTION.createWithContext(command))
                 );
             }
         }
