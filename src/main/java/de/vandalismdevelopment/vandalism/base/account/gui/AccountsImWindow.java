@@ -3,13 +3,13 @@ package de.vandalismdevelopment.vandalism.base.account.gui;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.base.account.AbstractAccount;
 import de.vandalismdevelopment.vandalism.base.account.AccountManager;
-import de.vandalismdevelopment.vandalism.gui_v2.ImWindow;
+import de.vandalismdevelopment.vandalism.gui.ImWindow;
 import imgui.ImGui;
 import imgui.flag.ImGuiMouseButton;
 import imgui.flag.ImGuiWindowFlags;
 import net.minecraft.client.gui.DrawContext;
 
-import static de.vandalismdevelopment.vandalism.gui_v2.loader.ImUtils.subButton;
+import static de.vandalismdevelopment.vandalism.gui.loader.ImUtils.subButton;
 
 public class AccountsImWindow extends ImWindow {
     private static final float ACCOUNT_ENTRY_CONTENT_WIDTH = 64F;
