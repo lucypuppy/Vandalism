@@ -10,6 +10,7 @@ import de.vandalismdevelopment.vandalism.util.render.InputType;
 import net.minecraft.command.CommandSource;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 public class KeyNameArgumentType implements ArgumentType<Integer> {
@@ -28,7 +29,7 @@ public class KeyNameArgumentType implements ArgumentType<Integer> {
         if (keyName.equalsIgnoreCase("none")) {
             return GLFW.GLFW_KEY_UNKNOWN;
         } else {
-            return InputType.FIELD_NAMES.get(keyName);
+            return InputType.FIELD_NAMES.get(keyName.toUpperCase(Locale.ROOT));
         }
     }
 
