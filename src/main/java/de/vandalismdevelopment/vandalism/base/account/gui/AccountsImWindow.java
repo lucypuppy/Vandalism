@@ -63,7 +63,7 @@ public class AccountsImWindow extends ImWindow {
                 }
                 if (subButton("Logout")) {
                     try {
-                        accountManager.getFirstAccount().logIn();
+                        accountManager.logOut();
                     } catch (Throwable e) {
                         e.printStackTrace();
                     }
