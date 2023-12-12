@@ -111,7 +111,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         imGuiManager.init();
 
         clientSettings = new ClientSettings(configManager, imGuiManager);
-        accountManager = new AccountManager(configManager);
+        accountManager = new AccountManager(configManager, imGuiManager);
         accountManager.init();
 
         // Integration

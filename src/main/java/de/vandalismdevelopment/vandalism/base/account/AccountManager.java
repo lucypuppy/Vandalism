@@ -2,12 +2,14 @@ package de.vandalismdevelopment.vandalism.base.account;
 
 import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.vandalismdevelopment.vandalism.base.account.config.AccountsConfig;
+import de.vandalismdevelopment.vandalism.base.account.gui.AccountsImWindow;
 import de.vandalismdevelopment.vandalism.base.account.type.EasyMCAccount;
 import de.vandalismdevelopment.vandalism.base.account.type.microsoft.MSCredentialsAccount;
 import de.vandalismdevelopment.vandalism.base.account.type.microsoft.MSDeviceCodeAccount;
 import de.vandalismdevelopment.vandalism.base.account.type.SessionAccount;
 import de.vandalismdevelopment.vandalism.base.account.type.microsoft.MSLocalWebserverAccount;
 import de.vandalismdevelopment.vandalism.base.config.ConfigManager;
+import de.vandalismdevelopment.vandalism.gui.ImGuiManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.session.Session;
 
@@ -19,7 +21,7 @@ public class AccountManager extends Storage<AbstractAccount> {
 
     public static final Map<AbstractAccount, AccountFactory> ACCOUNT_TYPES = new HashMap<>();
 
-    public AccountManager(final ConfigManager configManager) {
+    public AccountManager(final ConfigManager configManager, final ImGuiManager imGuiManager) {
         Arrays.asList(
                 new MSDeviceCodeAccount(),
                 new MSLocalWebserverAccount(),
@@ -30,6 +32,7 @@ public class AccountManager extends Storage<AbstractAccount> {
         ).forEach(account -> ACCOUNT_TYPES.put(account, account.factory()));
 
         configManager.add(new AccountsConfig(this));
+        imGuiManager.add(new AccountsImWindow(this));
     }
 
     public AbstractAccount currentAccount;

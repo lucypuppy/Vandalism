@@ -12,11 +12,8 @@ public class InputType {
     public static final Map<String, Integer> FIELD_NAMES = new HashMap<>();
 
     static {
-        RStream.of(GLFW.class).fields().filter(field -> field.name().startsWith("GLFW_KEY_")).forEach(key -> {
+        RStream.of(InputUtil.class).fields().filter(field -> field.name().startsWith("GLFW_KEY_")).forEach(key -> {
             final int keyCode = key.get();
-            if (keyCode == GLFW.GLFW_KEY_UNKNOWN || keyCode == GLFW.GLFW_KEY_WORLD_2) {
-                return;
-            }
             FIELD_NAMES.put(getKeyName(keyCode), keyCode);
         });
     }
