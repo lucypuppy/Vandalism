@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.gui.impl.nbteditor;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.nbteditor.NbtManager;
-import de.vandalismdevelopment.vandalism.gui.ImWindow;
+import de.vandalismdevelopment.vandalism.gui.base.ImWindow;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import net.lenni0451.imnbt.ui.types.Popup;

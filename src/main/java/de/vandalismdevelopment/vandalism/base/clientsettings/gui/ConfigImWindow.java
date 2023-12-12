@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.base.clientsettings.gui;
 import de.vandalismdevelopment.vandalism.base.clientsettings.ClientSettings;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.base.value.template.ValueGroup;
-import de.vandalismdevelopment.vandalism.gui.ImWindow;
+import de.vandalismdevelopment.vandalism.gui.base.ImWindow;
 import imgui.ImGui;
 import net.minecraft.client.gui.DrawContext;
 

@@ -1,9 +1,7 @@
 package de.vandalismdevelopment.vandalism.gui.base;
 
 import de.vandalismdevelopment.vandalism.gui.ImGuiManager;
-import de.vandalismdevelopment.vandalism.gui.ImWindow;
 import de.vandalismdevelopment.vandalism.gui.loader.ImLoader;
-import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import imgui.ImGui;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
