@@ -36,13 +36,13 @@ public class SprintModule extends AbstractModule implements SprintListener {
 
     @Override
     public void onSprint(final SprintEvent event) {
-        final RotationListener rotation = Vandalism.getInstance().getRotationListener();
+      /*  final RotationListener rotation = Vandalism.getInstance().getRotationListener();
         final boolean useSpoofedRotation = rotation.getRotation() != null;
         if (Math.abs(MathHelper.wrapDegrees((useSpoofedRotation ? rotation.getRotation().getYaw() : mc.player.getYaw()) - MovementUtil.getInputAngle(mc.player.getYaw()))) > 45D) {
             event.sprinting = false;
             event.force = true;
             return;
-        }
+        }*/
 
         event.sprinting = true;
         event.force = this.forceSprint.getValue();

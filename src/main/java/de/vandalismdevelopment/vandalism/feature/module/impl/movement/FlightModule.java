@@ -6,6 +6,7 @@ import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.feature.module.impl.movement.modes.flight.CreativeModuleMode;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.base.value.impl.primitive.BooleanValue;
+import de.vandalismdevelopment.vandalism.feature.module.impl.movement.modes.flight.CubeCraftModuleMode;
 import de.vandalismdevelopment.vandalism.feature.module.value.ModuleModeValue;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
@@ -22,7 +23,8 @@ public class FlightModule extends AbstractModule implements IncomingPacketListen
             this,
             "Mode",
             "The current flight mode.",
-            new CreativeModuleMode(this)
+            new CreativeModuleMode(this),
+            new CubeCraftModuleMode(this)
     );
 
     public FlightModule() {

@@ -73,7 +73,7 @@ public class Rotation implements MinecraftWrapper {
             Vec3d bestHitBoxVector = null;
             for (Vec3d hitboxVector : possibleHitBoxPoints) {
                 final float[] simulatedRotation = getRotationToPoint(hitboxVector, mc.player);
-                final double hitBoxDistance = WorldUtil.rayTraceRamge(simulatedRotation[0], simulatedRotation[1]);
+                final double hitBoxDistance = WorldUtil.rayTraceRange(simulatedRotation[0], simulatedRotation[1]);
                 if (hitBoxDistance > 0 && hitBoxDistance < 3) {
                     if (bestDistance > hitBoxDistance) {
                         bestDistance = hitBoxDistance;

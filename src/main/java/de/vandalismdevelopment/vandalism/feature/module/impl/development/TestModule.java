@@ -2,15 +2,15 @@ package de.vandalismdevelopment.vandalism.feature.module.impl.development;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.base.event.entity.MotionListener;
 import de.vandalismdevelopment.vandalism.base.event.player.MoveInputListener;
 import de.vandalismdevelopment.vandalism.base.event.player.StrafeListener;
-import de.vandalismdevelopment.vandalism.base.event.render.CameraClipRaytraceListener;
 import de.vandalismdevelopment.vandalism.base.event.game.TickGameListener;
 import de.vandalismdevelopment.vandalism.base.event.render.Render2DListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
+import de.vandalismdevelopment.vandalism.integration.rotation.RotationPriority;
 import de.vandalismdevelopment.vandalism.util.clicker.impl.BoxMuellerClicker;
 import de.vandalismdevelopment.vandalism.util.minecraft.MovementUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.TimerHack;
 import de.vandalismdevelopment.vandalism.util.minecraft.WorldUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.Clicker;
 import de.vandalismdevelopment.vandalism.integration.rotation.Rotation;
@@ -25,6 +25,7 @@ import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
@@ -41,8 +42,11 @@ public class TestModule extends AbstractModule implements TickGameListener, Stra
     private PlayerEntity target;
     private Vec3d rotationVector;
 
+    private final RotationListener rotationListener;
+
     public TestModule() {
         super("Test", "Just for development purposes.", Category.DEVELOPMENT);
+        this.rotationListener = Vandalism.getInstance().getRotationListener();
         setExperimental(true);
     }
 
@@ -60,7 +64,7 @@ public class TestModule extends AbstractModule implements TickGameListener, Stra
         DietrichEvents2.global().unsubscribe(StrafeEvent.ID, this);
         DietrichEvents2.global().unsubscribe(Render2DEvent.ID, this);
         DietrichEvents2.global().unsubscribe(MoveInputEvent.ID, this);
-        Vandalism.getInstance().getRotationListener().resetRotation();
+        this.rotationListener.resetRotation();
     }
 
     //TODO mouse event -> attack
@@ -79,15 +83,24 @@ public class TestModule extends AbstractModule implements TickGameListener, Stra
         if (entities.isEmpty()) {
             return;
         }
-        target = entities.get(0);
-        //   if(this.rotationVector != null) {
-        if (!target.isBlocking() && this.rotationVector != null && WorldUtil.rayTraceRamge(mc.player.getYaw(), mc.player.getPitch()) <= 3)
-            this.handleAttack(false, target);
-        // }
+        this.target = entities.get(0);
+
+        if(this.rotationVector == null)
+            return;
+
+        double raytraceDistance = -1;
+        //TODO: need serverside yaw/pitch or move into proper events.
+        if(this.rotationListener.getTargetRotation() !=null){
+            if(Float.isNaN(this.rotationListener.getTargetRotation().getYaw()) || Float.isNaN(this.rotationListener.getTargetRotation().getPitch()))
+                return;
+            raytraceDistance = WorldUtil.rayTraceRange(this.rotationListener.getTargetRotation().getYaw(), this.rotationListener.getTargetRotation().getPitch());
+        }
+        if (!target.isBlocking() &&  raytraceDistance <= 2.96 && raytraceDistance > 0)
+            this.handleAttack(false);
     }
 
     //TODO: Make a proper util
-    private void handleAttack(final boolean legacyAttacking, Entity target) {
+    private void handleAttack(final boolean legacyAttacking) {
         if (legacyAttacking) {
             if (this.clicker instanceof final BoxMuellerClicker clicker) {
                 clicker.setMean(this.mean.getValue());
@@ -98,15 +111,19 @@ public class TestModule extends AbstractModule implements TickGameListener, Stra
             this.clicker.update();
         } else {
             float baseAttackDamage = (float) mc.player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
-            float enchantmentBonus;
+            /*float enchantmentBonus;
             if (target instanceof LivingEntity) {
                 enchantmentBonus = EnchantmentHelper.getAttackDamage(mc.player.getMainHandStack(), ((LivingEntity) target).getGroup());
             } else {
                 enchantmentBonus = EnchantmentHelper.getAttackDamage(mc.player.getMainHandStack(), EntityGroup.DEFAULT);
+            }*/
+            float additionalBaseDelayOffset = 0;
+            if(TimerHack.getSpeed() > 1){
+                additionalBaseDelayOffset = -(TimerHack.getSpeed() - 1);
             }
-            float attackCooldown = mc.player.getAttackCooldownProgress(0F);
+            float attackCooldown = mc.player.getAttackCooldownProgress(additionalBaseDelayOffset);
             baseAttackDamage *= 0.2F + attackCooldown * attackCooldown * 0.8F;
-            enchantmentBonus *= attackCooldown;
+           // enchantmentBonus *= attackCooldown;
             if (baseAttackDamage >= 0.98) {
                 this.mc.doAttack();
             }
@@ -115,17 +132,17 @@ public class TestModule extends AbstractModule implements TickGameListener, Stra
 
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
-        //ChatUtil.infoChatMessage(target.toString());
-        if (target != null) {
-            final Rotation rotation = Rotation.Builder.build(target, true, 6f, 1D / 32);
+        if (this.target != null) {
+            final Rotation rotation = Rotation.Builder.build(this.target, true, 6f, 1D / 32);
             if (rotation == null) { //sanity check, crashes if you sneak and have your reach set to 3.0
                 this.rotationVector = null;
+                this.rotationListener.resetRotation();
                 return;
             }
-            //   Vandalism.getInstance().getRotationListener().setRotation(rotation, new Vec2f(179, 180), RotationPriority.HIGH);
-            mc.player.setYaw(rotation.getYaw());
-            mc.player.setPitch(rotation.getPitch());
+            this.rotationListener.setRotation(rotation, new Vec2f(179, 180), RotationPriority.HIGH);
             this.rotationVector = new Vec3d(1, 1, 1);
+        }else{
+            this.rotationListener.resetRotation();
         }
         /*Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
             if (ImGui.begin("Graph##testmodule", Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags())) {
@@ -154,7 +171,7 @@ public class TestModule extends AbstractModule implements TickGameListener, Stra
 
     @Override
     public void onMoveInput(final MoveInputEvent event) {
-        /*final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
+        /*final Rotation rotation = this.rotationListener.getRotation();
         if (rotation == null) return;
         float deltaYaw = mc.player.getYaw() - rotation.getYaw();
 
@@ -170,14 +187,13 @@ public class TestModule extends AbstractModule implements TickGameListener, Stra
 
     @Override
     public void onStrafe(final StrafeEvent event) {
-        final RotationListener rotation = Vandalism.getInstance().getRotationListener();
-        if (rotation.getRotation() == null || rotation.getTargetRotation() == null) return;
-        event.yaw = rotation.getRotation().getYaw();
+       /* if (this.rotationListener.getRotation() == null || this.rotationListener.getTargetRotation() == null) return;
+        event.yaw = this.rotationListener.getRotation().getYaw();
         float[] INPUTS = MovementUtil.getFixedMoveInputs(event.yaw);
         if (INPUTS[0] == 0f && INPUTS[1] == 0f) {
             return;
         }
-        event.movementInput = new Vec3d(INPUTS[0], mc.player.upwardSpeed, INPUTS[1]);
+        event.movementInput = new Vec3d(INPUTS[0], mc.player.upwardSpeed, INPUTS[1]);*/
     }
 
 }

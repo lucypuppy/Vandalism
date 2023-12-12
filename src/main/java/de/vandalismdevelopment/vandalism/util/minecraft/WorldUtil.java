@@ -30,15 +30,15 @@ public class WorldUtil implements MinecraftWrapper {
         };
     }
 
-    public static double rayTraceRamge(float yaw, float pitch) {
+    public static double rayTraceRange(float yaw, float pitch) {
         Entity entity = mc.player;
         if (entity != null) {
-            double d = 3;
+            double d = 4.5; //use the calculation from mc & adjust it by the given range * 1.5
             Vec3d vec3d = entity.getCameraPosVec(1);
-            Vec3d vec3d2 = getRotationVector(yaw, pitch);
+            Vec3d vec3d2 = Vec3d.fromPolar(pitch, yaw);
             Vec3d vec3d3 = vec3d.add(vec3d2.x * d, vec3d2.y * d, vec3d2.z * d);
             Box box = entity.getBoundingBox().stretch(vec3d2.multiply(d)).expand(1.0, 1.0, 1.0);
-            EntityHitResult entityHitResult = ProjectileUtil.raycast(entity, vec3d, vec3d3, box, entityx -> !entityx.isSpectator() && entityx.canHit(), 999);
+            EntityHitResult entityHitResult = ProjectileUtil.raycast(entity, vec3d, vec3d3, box, entityx -> !entityx.isSpectator() && entityx.canHit(), 16);
             if (entityHitResult != null) {
                 Vec3d vec3d4 = entityHitResult.getPos();
                 return vec3d.distanceTo(vec3d4);
@@ -48,14 +48,14 @@ public class WorldUtil implements MinecraftWrapper {
     }
 
 
-    public static Vec3d getRotationVector(float yaw, float pitch){
+    public static Vec3d getRotationVector(float yaw, float pitch) {
         float f = pitch * (float) (Math.PI / 180.0);
         float g = -yaw * (float) (Math.PI / 180.0);
         float h = Trigonometry.TAYLOR.cos(g);
         float i = Trigonometry.TAYLOR.sin(g);
         float j = Trigonometry.TAYLOR.cos(f);
         float k = Trigonometry.TAYLOR.sin(f);
-        return new Vec3d((double)(i * j), (double)(-k), (double)(h * j));
+        return new Vec3d((double) (i * j), (double) (-k), (double) (h * j));
     }
 
     public static boolean rayTraceBlock(final Vec3d targetPosition, final double maxDistance) {
