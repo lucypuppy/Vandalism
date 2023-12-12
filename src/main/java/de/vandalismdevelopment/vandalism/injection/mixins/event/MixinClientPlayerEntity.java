@@ -1,6 +1,7 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.event;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.florianmichael.dietrichevents2.StateTypes;
 import de.vandalismdevelopment.vandalism.base.event.entity.MotionListener;
 import de.vandalismdevelopment.vandalism.base.event.player.SprintListener;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -30,13 +31,13 @@ public abstract class MixinClientPlayerEntity {
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void vandalism$callPreMotionEvent(final CallbackInfo ci) {
-        final MotionListener.MotionEvent motionEvent = new MotionListener.MotionEvent(MotionListener.MotionEventState.PRE);
+        final MotionListener.MotionEvent motionEvent = new MotionListener.MotionEvent(StateTypes.PRE);
         DietrichEvents2.global().postInternal(MotionListener.MotionEvent.ID, motionEvent);
     }
 
     @Inject(method = "sendMovementPackets()V", at = @At("TAIL"))
     private void vandalism$callPostMotionEvent(final CallbackInfo ci) {
-        final MotionListener.MotionEvent motionEvent = new MotionListener.MotionEvent(MotionListener.MotionEventState.POST);
+        final MotionListener.MotionEvent motionEvent = new MotionListener.MotionEvent(StateTypes.POST);
         DietrichEvents2.global().postInternal(MotionListener.MotionEvent.ID, motionEvent);
     }
 
