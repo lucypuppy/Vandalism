@@ -15,6 +15,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Objects;
+
 @Mixin(value = MinecraftClient.class)
 public abstract class MixinMinecraftClient {
 
@@ -39,7 +41,7 @@ public abstract class MixinMinecraftClient {
         if (openScreenEvent.isCancelled()) {
             ci.cancel();
         }
-        if (!screen.equals(openScreenEvent.screen)) {
+        if (!Objects.equals(screen, openScreenEvent.screen)) {
             this.vandalism$selfCall = true;
             this.setScreen(openScreenEvent.screen);
         }
