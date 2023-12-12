@@ -9,7 +9,7 @@ public interface AttackListener {
 
     class AttackSendEvent extends AbstractEvent<AttackListener> {
 
-        public static final int ID = 14;
+        public static final int ID = 15;
 
         public final Entity target;
 

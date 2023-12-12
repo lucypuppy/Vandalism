@@ -12,7 +12,7 @@ public interface LivingEntityRenderBottomLayerListener {
 
     class LivingEntityRenderBottomLayerEvent extends AbstractEvent<LivingEntityRenderBottomLayerListener> {
 
-        public static final int ID = 21;
+        public static final int ID = 22;
 
         public final LivingEntity livingEntity;
 

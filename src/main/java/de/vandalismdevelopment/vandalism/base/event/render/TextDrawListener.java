@@ -8,7 +8,7 @@ public interface TextDrawListener {
 
     class TextDrawEvent extends AbstractEvent<TextDrawListener> {
 
-        public static final int ID = 24;
+        public static final int ID = 25;
 
         public String text;
 

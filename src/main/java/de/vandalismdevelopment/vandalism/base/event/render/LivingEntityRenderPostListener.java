@@ -10,7 +10,7 @@ public interface LivingEntityRenderPostListener {
 
     class LivingEntityRenderPostEvent extends AbstractEvent<LivingEntityRenderPostListener> {
 
-        public static final int ID = 22;
+        public static final int ID = 23;
 
         public final LivingEntity livingEntity;
 

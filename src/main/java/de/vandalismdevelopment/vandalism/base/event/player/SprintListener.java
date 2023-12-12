@@ -8,7 +8,7 @@ public interface SprintListener {
 
     class SprintEvent extends AbstractEvent<SprintListener> {
 
-        public static final int ID = 18;
+        public static final int ID = 19;
 
         public boolean sprinting;
         public boolean force;

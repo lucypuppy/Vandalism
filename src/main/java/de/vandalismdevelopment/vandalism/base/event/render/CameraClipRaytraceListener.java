@@ -8,7 +8,7 @@ public interface CameraClipRaytraceListener {
 
     class CameraClipRaytraceEvent extends CancellableEvent<CameraClipRaytraceListener> {
 
-        public static final int ID = 20;
+        public static final int ID = 21;
 
         @Override
         public void call(final CameraClipRaytraceListener listener) {

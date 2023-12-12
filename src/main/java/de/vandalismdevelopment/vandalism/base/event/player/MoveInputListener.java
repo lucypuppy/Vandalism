@@ -8,7 +8,7 @@ public interface MoveInputListener {
 
     class MoveInputEvent extends AbstractEvent<MoveInputListener> {
 
-        public static final int ID = 17;
+        public static final int ID = 18;
 
         public float movementForward, movementSideways;
         public final boolean slowDown;
