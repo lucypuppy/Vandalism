@@ -35,7 +35,7 @@ public class CreativeTabManager extends Storage<AbstractCreativeTab> implements 
     }
 
     @Override
-    public void onPacket(final IncomingPacketEvent event) {
+    public void onIncomingPacket(final IncomingPacketEvent event) {
         if (event.packet instanceof final CreativeInventoryActionC2SPacket creativeInventoryActionC2SPacket) {
             final var itemStack = creativeInventoryActionC2SPacket.getStack();
             final var nbt = itemStack.getNbt();

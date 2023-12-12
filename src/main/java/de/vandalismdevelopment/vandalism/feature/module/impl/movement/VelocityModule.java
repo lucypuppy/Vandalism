@@ -22,7 +22,7 @@ public class VelocityModule extends AbstractModule implements IncomingPacketList
     }
 
     @Override
-    public void onPacket(final IncomingPacketEvent event) {
+    public void onIncomingPacket(final IncomingPacketEvent event) {
         if (event.packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket && velocityPacket.getId() == this.mc.player.getId()) {
             event.cancel();
         }

@@ -3,6 +3,7 @@ package de.vandalismdevelopment.vandalism.feature.module.impl.render;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.common.ColorUtils;
 import de.vandalismdevelopment.vandalism.base.event.render.CameraClipRaytraceListener;
+import de.vandalismdevelopment.vandalism.base.event.render.LivingEntityRenderBottomLayerListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.base.value.impl.primitive.BooleanValue;
@@ -11,7 +12,7 @@ import de.vandalismdevelopment.vandalism.base.value.impl.awt.ColorValue;
 import java.awt.*;
 
 //TODO: Fix the entity layer rendering.
-public class TrueSightModule extends AbstractModule implements CameraClipRaytraceListener {
+public class TrueSightModule extends AbstractModule implements LivingEntityRenderBottomLayerListener {
 
     public final Value<Boolean> blocks = new BooleanValue(
             this,

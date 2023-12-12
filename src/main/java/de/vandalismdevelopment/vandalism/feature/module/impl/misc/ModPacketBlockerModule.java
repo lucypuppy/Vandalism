@@ -53,7 +53,7 @@ public class ModPacketBlockerModule extends AbstractModule implements IncomingPa
 
 
     @Override
-    public void onPacket(final IncomingPacketEvent event) {
+    public void onIncomingPacket(final IncomingPacketEvent event) {
         String channel;
         // This just shows how bad java is, we'll have to wait for Java 22 to improve this using destructuring.
         if (event.packet instanceof final CustomPayloadC2SPacket customPayloadPacket) {

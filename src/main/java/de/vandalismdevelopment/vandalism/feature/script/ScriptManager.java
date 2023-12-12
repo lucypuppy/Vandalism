@@ -5,6 +5,7 @@ import de.florianmichael.rclasses.pattern.storage.named.NamedStorage;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.base.config.ConfigManager;
 import de.vandalismdevelopment.vandalism.base.config.template.ConfigWithValues;
+import de.vandalismdevelopment.vandalism.base.event.game.KeyboardInputListener;
 import de.vandalismdevelopment.vandalism.base.event.game.MouseInputListener;
 import de.vandalismdevelopment.vandalism.base.event.game.TickGameListener;
 import de.vandalismdevelopment.vandalism.feature.script.gui.ScriptsImWindow;
@@ -20,7 +21,7 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ScriptManager extends NamedStorage<Script> implements TickGameListener, MouseInputListener, MinecraftWrapper {
+public class ScriptManager extends NamedStorage<Script> implements TickGameListener, KeyboardInputListener, MinecraftWrapper {
 
     private final ConcurrentHashMap<File, Thread> runningScripts = new ConcurrentHashMap<>();
     private final File directory;
@@ -32,7 +33,7 @@ public class ScriptManager extends NamedStorage<Script> implements TickGameListe
         imGuiManager.add(new ScriptsImWindow());
         this.directory = new File(runDirectory, "scripts");
 
-        DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
+        DietrichEvents2.global().subscribe(KeyboardInputEvent.ID, this);
         DietrichEvents2.global().subscribe(TickGameEvent.ID, this);
     }
 

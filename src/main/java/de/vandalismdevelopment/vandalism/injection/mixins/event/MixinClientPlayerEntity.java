@@ -2,6 +2,7 @@ package de.vandalismdevelopment.vandalism.injection.mixins.event;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.base.event.entity.MotionListener;
+import de.vandalismdevelopment.vandalism.base.event.player.SprintListener;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,15 +16,15 @@ public abstract class MixinClientPlayerEntity {
 
     @Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z", ordinal = 0))
     private boolean vandalism$callSprintEvent1(final KeyBinding instance) {
-        final MotionListener.SprintEvent sprintEvent = new MotionListener.SprintEvent(instance.isPressed());
-        DietrichEvents2.global().postInternal(MotionListener.SprintEvent.ID, sprintEvent);
+        final var sprintEvent = new SprintListener.SprintEvent(instance.isPressed());
+        DietrichEvents2.global().postInternal(SprintListener.SprintEvent.ID, sprintEvent);
         return sprintEvent.sprinting;
     }
 
     @Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z", ordinal = 1))
     private boolean vandalism$callSprintEvent2(final KeyBinding instance) {
-        final MotionListener.SprintEvent sprintEvent = new MotionListener.SprintEvent(instance.isPressed());
-        DietrichEvents2.global().postInternal(MotionListener.SprintEvent.ID, sprintEvent);
+        final var sprintEvent = new SprintListener.SprintEvent(instance.isPressed());
+        DietrichEvents2.global().postInternal(SprintListener.SprintEvent.ID, sprintEvent);
         return sprintEvent.sprinting;
     }
 

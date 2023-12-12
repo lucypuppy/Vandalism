@@ -2,6 +2,7 @@ package de.vandalismdevelopment.vandalism.injection.mixins.event;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.base.event.entity.MotionListener;
+import de.vandalismdevelopment.vandalism.base.event.player.SprintListener;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
@@ -16,8 +17,8 @@ public abstract class MixinClientWorld implements MinecraftWrapper {
     @Inject(method = "tickEntity", at = @At(value = "HEAD"))
     private void vandalism$callSprintEvent(final Entity entity, final CallbackInfo ci) {
         if (this.mc.player != entity) return;
-        final MotionListener.SprintEvent sprintEvent = new MotionListener.SprintEvent(entity.isSprinting());
-        DietrichEvents2.global().postInternal(MotionListener.SprintEvent.ID, sprintEvent);
+        final SprintListener.SprintEvent sprintEvent = new SprintListener.SprintEvent(entity.isSprinting());
+        DietrichEvents2.global().postInternal(SprintListener.SprintEvent.ID, sprintEvent);
         if (sprintEvent.force) {
             entity.setSprinting(sprintEvent.sprinting);
         }

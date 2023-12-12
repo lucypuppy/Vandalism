@@ -2,14 +2,14 @@ package de.vandalismdevelopment.vandalism.base.value.impl.awt;
 
 import com.google.gson.JsonObject;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.base.event.game.MouseInputListener;
+import de.vandalismdevelopment.vandalism.base.event.game.KeyboardInputListener;
 import de.vandalismdevelopment.vandalism.base.value.ValueParent;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.util.render.InputType;
 import imgui.ImGui;
 import org.lwjgl.glfw.GLFW;
 
-public class KeyBindValue extends Value<Integer> implements MouseInputListener {
+public class KeyBindValue extends Value<Integer> implements KeyboardInputListener {
 
     public KeyBindValue(ValueParent parent, String name, String description) {
         this(parent, name, description, GLFW.GLFW_KEY_UNKNOWN);
@@ -36,7 +36,7 @@ public class KeyBindValue extends Value<Integer> implements MouseInputListener {
         if (!this.waitingForInput) {
             if (ImGui.button(InputType.getKeyName(this.getValue()) + "##" + this.getName(), 0, 25)) {
                 this.waitingForInput = true;
-                DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
+                DietrichEvents2.global().subscribe(KeyboardInputEvent.ID, this);
             }
         } else {
             ImGui.textWrapped("Listening for key input...");
@@ -53,7 +53,7 @@ public class KeyBindValue extends Value<Integer> implements MouseInputListener {
 
     private void finishInput() {
         this.waitingForInput = false;
-        DietrichEvents2.global().unsubscribe(KeyboardEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(KeyboardInputEvent.ID, this);
     }
 
     @Override
@@ -66,6 +66,9 @@ public class KeyBindValue extends Value<Integer> implements MouseInputListener {
     }
 
     public boolean isPressed() {
+        if (this.getValue() == GLFW.GLFW_KEY_UNKNOWN) {
+            return false;
+        }
         return InputType.isPressed(this.getValue());
     }
 
@@ -74,4 +77,3 @@ public class KeyBindValue extends Value<Integer> implements MouseInputListener {
     }
 
 }
-
