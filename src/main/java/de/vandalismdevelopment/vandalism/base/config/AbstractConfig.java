@@ -48,6 +48,6 @@ public abstract class AbstractConfig<T extends JsonElement> {
     }
 
     public abstract T save0();
-    public abstract void load0(final T node);
+    public abstract void load0(final T mainNode);
 
 }

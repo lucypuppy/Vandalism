@@ -31,9 +31,9 @@ public class ConfigWithValues extends AbstractConfig<JsonObject> {
     }
 
     @Override
-    public void load0(JsonObject node) {
+    public void load0(JsonObject mainNode) {
         for (ValueParent key : this.keys) {
-            final var keyNode = node.getAsJsonObject(key.getName());
+            final var keyNode = mainNode.getAsJsonObject(key.getName());
             if (keyNode != null) {
                 loadValues(keyNode, key.getValues());
             }
