@@ -52,8 +52,8 @@ public class AccountsImWindow extends ImWindow {
                     final var name = currentAccount.getDisplayName();
                     final var uuid = currentAccount.getSession().getUuidOrNull().toString();
                     final var accessToken = currentAccount.getSession().getAccessToken();
-                    final var xuid = currentAccount.getSession().getXuid().orElse("");
-                    final var clientId = currentAccount.getSession().getClientId().orElse("");
+                    final var xuid = currentAccount.getSession().getXuid().orElse("null");
+                    final var clientId = currentAccount.getSession().getClientId().orElse("null");
 
                     mc.keyboard.setClipboard("Name: " + name + "\n" +
                             "UUID: " + uuid + "\n" +

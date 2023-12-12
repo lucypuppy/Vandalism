@@ -56,6 +56,7 @@ import java.io.File;
  *  - Re-implement last session login for the account manager
  *  - Change skin texture to head texture in the account manager
  *  - Fix "Environment: Environment[...]" being duplicated when logging into an account in the account manager
+ *  - Fix account login when restarting the game
  *  - Make account manager multi threaded (to prevent the game from freezing)
  *  - Fix the sprint event (attacking is wrong when sprintEvent.force = true)
  */

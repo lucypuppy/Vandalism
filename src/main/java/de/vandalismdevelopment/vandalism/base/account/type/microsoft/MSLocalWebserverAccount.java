@@ -24,7 +24,8 @@ public class MSLocalWebserverAccount extends AbstractMicrosoftAccount {
     private static final AccountFactory FACTORY = new AccountFactory() {
         private final MSLocalWebserverAccount account = new MSLocalWebserverAccount();
 
-        private String state = "Click the button below to get a device code.";
+        private static final String DEFAULT_STATE = "Click the button below to get a device code.";
+        private String state = DEFAULT_STATE;
 
         @Override
         public void displayFactory() {
@@ -41,6 +42,7 @@ public class MSLocalWebserverAccount extends AbstractMicrosoftAccount {
                         Util.getOperatingSystem().open(url);
                     }));
 
+                    this.state = DEFAULT_STATE;
                     account.initWithExistingSession(javaSession);
                 } catch (Throwable e) {
                     account.setStatus("Failed to login: " + e.getMessage());
