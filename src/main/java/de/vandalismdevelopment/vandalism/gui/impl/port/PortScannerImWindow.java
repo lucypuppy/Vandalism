@@ -41,7 +41,7 @@ public class PortScannerImWindow extends ImWindow {
     private int currentPort, checkedPort;
 
     public PortScannerImWindow() {
-        super("Port Scanner");
+        super("Port Scanner", Category.SERVER_UTILS);
         this.hostname = new ImString(253);
         this.progress = new ImString(200);
         this.state = new ImString(100);

@@ -25,7 +25,6 @@ public class FabricBootstrap implements ClientModInitializer {
         });
 
         FabricBootstrap.WINDOW_TITLE = String.format("%s %s made by %s", FabricBootstrap.MOD_NAME, FabricBootstrap.MOD_VERSION, FabricBootstrap.MOD_AUTHORS);
-        FabricBootstrap.MOD_ICON = new Identifier(FabricBootstrap.MOD_ID, "textures/logo.png");
 
         DietrichEvents2.global().subscribe(Vandalism.getInstance(),
                 MinecraftBoostrapListener.MinecraftBootstrapEvent.ID,

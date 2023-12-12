@@ -19,7 +19,7 @@ public class HUDImWindow extends ImWindow {
     private int lastMouseX, lastMouseY;
 
     public HUDImWindow(final HUDManager hudManager) {
-        super("Custom HUD Config");
+        super("HUD Config", Category.CONFIGURATION);
 
         this.hudManager = hudManager;
     }

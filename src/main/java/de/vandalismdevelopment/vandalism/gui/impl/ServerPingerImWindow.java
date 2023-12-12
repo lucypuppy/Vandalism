@@ -50,7 +50,7 @@ public class ServerPingerImWindow extends ImWindow {
     private final ServerInfoWidget serverInfoWidget;
 
     public ServerPingerImWindow() {
-        super("Server Pinger");
+        super("Server Pinger", Category.SERVER_UTILS);
         this.hostname = new ImString(253);
         this.port = new ImInt(25565);
         this.queryPort = new ImInt(25565);

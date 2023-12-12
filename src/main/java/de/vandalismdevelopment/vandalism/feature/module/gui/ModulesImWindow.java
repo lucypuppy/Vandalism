@@ -27,7 +27,7 @@ public class ModulesImWindow extends ImWindow {
     private final ImString enabledModulesSearchInput = new ImString();
 
     public ModulesImWindow() {
-        super("Modules");
+        super("Modules", Category.CONFIGURATION);
     }
 
     @Override

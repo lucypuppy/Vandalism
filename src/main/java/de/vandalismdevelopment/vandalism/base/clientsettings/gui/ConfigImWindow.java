@@ -12,7 +12,7 @@ public class ConfigImWindow extends ImWindow {
     private final ClientSettings clientSettings;
 
     public ConfigImWindow(final ClientSettings clientSettings) {
-        super("Config");
+        super("Config", Category.CONFIGURATION);
 
         this.clientSettings = clientSettings;
     }

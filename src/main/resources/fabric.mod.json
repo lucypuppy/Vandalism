@@ -13,6 +13,11 @@
   ],
   "environment": "client",
   "icon": "assets/vandalism/textures/icon/icon_1024x1024.png",
+  "entrypoints": {
+    "client": [
+      "de.vandalismdevelopment.vandalism.base.FabricBootstrap"
+    ]
+  },
   "mixins": [
     "vandalism.mixins.json"
   ],
