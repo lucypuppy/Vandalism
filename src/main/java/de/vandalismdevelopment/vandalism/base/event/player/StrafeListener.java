@@ -9,7 +9,7 @@ public interface StrafeListener {
 
     class StrafeEvent extends AbstractEvent<StrafeListener> {
 
-        public static final int ID = 19;
+        public static final int ID = 20;
 
         public Vec3d movementInput;
         public float speed, yaw;

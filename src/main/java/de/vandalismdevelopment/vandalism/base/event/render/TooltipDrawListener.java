@@ -12,7 +12,7 @@ public interface TooltipDrawListener {
 
     class TooltipDrawEvent extends AbstractEvent<TooltipDrawListener> {
 
-        public static final int ID = 25;
+        public static final int ID = 26;
 
         public ItemStack itemStack;
 

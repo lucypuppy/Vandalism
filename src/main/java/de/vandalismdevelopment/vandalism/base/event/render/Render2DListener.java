@@ -21,7 +21,7 @@ public interface Render2DListener {
 
     class Render2DEvent extends AbstractEvent<Render2DListener> {
 
-        public static final int ID = 23;
+        public static final int ID = 24;
 
         private final Type type;
         private final DrawContext context;

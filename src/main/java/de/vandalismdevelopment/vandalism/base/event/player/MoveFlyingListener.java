@@ -8,7 +8,7 @@ public interface MoveFlyingListener {
 
     class MoveFlyingEvent extends AbstractEvent<MoveFlyingListener> {
 
-        public static final int ID = 16;
+        public static final int ID = 17;
 
         public double sidewaysSpeed, upwardSpeed, forwardSpeed;
 

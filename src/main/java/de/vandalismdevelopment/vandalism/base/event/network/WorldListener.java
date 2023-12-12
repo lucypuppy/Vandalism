@@ -19,7 +19,7 @@ public interface WorldListener {
 
     class WorldLoadEvent extends AbstractEvent<WorldListener> {
 
-        public static final int ID = 7;
+        public static final int ID = 13;
 
         private final WorldEventState state;
 
@@ -40,7 +40,7 @@ public interface WorldListener {
 
     class BlockEvent extends AbstractEvent<WorldListener> {
 
-        public static final int ID = 13;
+        public static final int ID = 14;
 
         public BlockState state;
         public BlockPos pos;

@@ -8,7 +8,7 @@ public interface ChatListener {
 
     class ChatSendEvent extends AbstractEvent<ChatListener> {
 
-        public static final int ID = 15;
+        public static final int ID = 16;
 
         public String message;
 
