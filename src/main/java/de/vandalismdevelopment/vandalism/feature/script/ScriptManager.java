@@ -79,7 +79,6 @@ public class ScriptManager extends NamedStorage<Script> implements TickGameListe
             if (save) {
                 Vandalism.getInstance().getConfigManager().save();
             }
-            Vandalism.getInstance().getLogger().info("Script '" + script + "' has been loaded.");
         } catch (final Exception e) {
             Vandalism.getInstance().getLogger().error("Failed to load script from file '" + file.getName() + "'", e);
         }
