@@ -14,7 +14,7 @@ import net.minecraft.item.Items;
 
 public class PushVelocityModule extends AbstractModule implements EntityPushListener, FluidPushListener {
 
-    private final Value<Boolean> modifyEntityPush = new BooleanValue(
+    private final BooleanValue modifyEntityPush = new BooleanValue(
             this,
             "Modify Entity Push",
             "If enabled you can modify the entity push velocity.",
@@ -30,7 +30,7 @@ public class PushVelocityModule extends AbstractModule implements EntityPushList
             2.0d
     ).visibleCondition(this.modifyEntityPush::getValue);
 
-    private final Value<Boolean> modifyFluidPush = new BooleanValue(
+    private final BooleanValue modifyFluidPush = new BooleanValue(
             this,
             "Modify Fluid Push",
             "If enabled you can modify the fluid push velocity.",

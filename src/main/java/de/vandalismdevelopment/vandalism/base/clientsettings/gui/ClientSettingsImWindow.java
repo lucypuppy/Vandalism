@@ -7,12 +7,12 @@ import de.vandalismdevelopment.vandalism.gui.base.ImWindow;
 import imgui.ImGui;
 import net.minecraft.client.gui.DrawContext;
 
-public class ConfigImWindow extends ImWindow {
+public class ClientSettingsImWindow extends ImWindow {
 
     private final ClientSettings clientSettings;
 
-    public ConfigImWindow(final ClientSettings clientSettings) {
-        super("Config", Category.CONFIGURATION);
+    public ClientSettingsImWindow(final ClientSettings clientSettings) {
+        super("Client Settings", Category.CONFIGURATION);
 
         this.clientSettings = clientSettings;
     }
@@ -20,19 +20,20 @@ public class ConfigImWindow extends ImWindow {
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         ImGui.begin(getName());
-        if (ImGui.beginTabBar("config-value-categories")) {
+        if (ImGui.beginTabBar("##config")) {
             for (final Value<?> value : clientSettings.getValues()) {
                 if (value instanceof final ValueGroup valueGroup) {
                     if (ImGui.beginTabItem(valueGroup.getName())) {
-                        if (ImGui.button("Reset " + valueGroup.getName() + " Config")) {
+                        if (ImGui.button("Reset " + valueGroup.getName())) {
                             for (final Value<?> valueCategoryValue : valueGroup.getValues()) {
                                 valueCategoryValue.resetValue();
                             }
                         }
                         ImGui.separator();
-                        ImGui.beginChild("##configvalues" + valueGroup.getName());
-                        valueGroup.renderValues();
-                        ImGui.endChild();
+                        if (ImGui.beginChild("##" + valueGroup.getName())) {
+                            valueGroup.renderValues();
+                            ImGui.endChild();
+                        }
                         ImGui.endTabItem();
                     }
                 } else {

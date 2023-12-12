@@ -37,7 +37,7 @@ public class TestModule extends AbstractModule implements TickGameListener, Stra
 
     private final Value<Float> mean = new FloatValue(this, "Mean", "mean", 15.0F, 0.0F, 20.0F);
     private final Value<Float> std = new FloatValue(this, "std", "std", 2.0F, 0.0F, 10.0F);
-    private final Value<Integer> updatePossibility = new IntegerValue(this, "updatePossibility", "updatePossibility", 50, 0, 100);
+    private final IntegerValue updatePossibility = new IntegerValue(this, "updatePossibility", "updatePossibility", 50, 0, 100);
 
     private PlayerEntity target;
     private Vec3d rotationVector;

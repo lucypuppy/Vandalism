@@ -13,21 +13,21 @@ import java.awt.*;
 
 public class TrueSightModule extends AbstractModule implements LivingEntityRenderBottomLayerListener {
 
-    public final Value<Boolean> blocks = new BooleanValue(
+    public final BooleanValue blocks = new BooleanValue(
             this,
             "Blocks",
             "Makes invisible blocks visible.",
             true
     );
 
-    private final Value<Boolean> entities = new BooleanValue(
+    private final BooleanValue entities = new BooleanValue(
             this,
             "Entities",
             "Makes invisible entities visible.",
             true
     );
 
-    public final Value<Boolean> showIllusionerEntity = new BooleanValue(
+    public final BooleanValue showIllusionerEntity = new BooleanValue(
             this,
             "Show Illusioner Entity",
             "Makes the illusioner entity visible.",

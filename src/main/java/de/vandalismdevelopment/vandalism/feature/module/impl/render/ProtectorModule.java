@@ -13,28 +13,28 @@ import java.util.UUID;
 
 public class ProtectorModule extends AbstractModule implements TextDrawListener {
 
-    private final Value<Boolean> protectUsername = new BooleanValue(
+    private final BooleanValue protectUsername = new BooleanValue(
             this,
             "Protect Username",
             "Protects your username from being leaked.",
             true
     );
 
-    private final Value<String> username = new StringValue(
+    private final StringValue username = new StringValue(
             this,
             "Username",
             "The replacement for your username.",
             "<censored-username>"
     ).visibleCondition(this.protectUsername::getValue);
 
-    private final Value<Boolean> protectUUID = new BooleanValue(
+    private final BooleanValue protectUUID = new BooleanValue(
             this,
             "Protect UUID",
             "Protects your uuid from being leaked.",
             true
     );
 
-    private final Value<String> uuid = new StringValue(
+    private final StringValue uuid = new StringValue(
             this,
             "UUID",
             "The replacement for your uuid.",

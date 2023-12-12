@@ -16,14 +16,14 @@ import java.util.Map;
 
 public class ModPacketBlockerModule extends AbstractModule implements IncomingPacketListener {
 
-    public final Value<Boolean> unloadFabricAPICallbacks = new BooleanValue(
+    public final BooleanValue unloadFabricAPICallbacks = new BooleanValue(
             this,
             "Unload Fabric API Callbacks",
             "Unloads Fabric API callbacks.",
             true
     );
 
-    private final Map<String, Value<Boolean>> platformSettings = new HashMap<>();
+    private final Map<String, BooleanValue> platformSettings = new HashMap<>();
 
     public ModPacketBlockerModule() {
         super("Mod Packet Blocker", "Blocks various packets from mods which could be detected by a server.", Category.MISC);
@@ -63,7 +63,7 @@ public class ModPacketBlockerModule extends AbstractModule implements IncomingPa
         } else {
             return;
         }
-        for (final Map.Entry<String, Value<Boolean>> entry : this.platformSettings.entrySet()) {
+        for (final Map.Entry<String, BooleanValue> entry : this.platformSettings.entrySet()) {
             if (entry.getValue().getValue() && channel.startsWith(entry.getKey())) {
                 event.cancel();
                 return;

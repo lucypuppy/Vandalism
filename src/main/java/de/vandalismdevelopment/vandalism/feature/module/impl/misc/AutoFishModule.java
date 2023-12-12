@@ -12,8 +12,8 @@ import net.minecraft.util.Hand;
 
 public class AutoFishModule extends AbstractModule implements TickGameListener {
 
-    public final Value<Integer> throwDelayValue = new IntegerValue(this, "Throw Delay", "Here you can input the custom throw delay value.", 1000, 0, 5000);
-    public final Value<Integer> retractDelayValue = new IntegerValue(this, "Retract Delay", "Here you can input the custom retract delay value.", 500, 0, 1000);
+    public final IntegerValue throwDelayValue = new IntegerValue(this, "Throw Delay", "Here you can input the custom throw delay value.", 1000, 0, 5000);
+    public final IntegerValue retractDelayValue = new IntegerValue(this, "Retract Delay", "Here you can input the custom retract delay value.", 500, 0, 1000);
 
     private final MSTimer retractDelayTimer = new MSTimer(), throwDelayTimer = new MSTimer();
     private boolean hasFish = false;

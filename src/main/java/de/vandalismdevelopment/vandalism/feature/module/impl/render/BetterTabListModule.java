@@ -19,15 +19,15 @@ import java.util.HashMap;
 
 public class BetterTabListModule extends AbstractModule implements KeyboardInputListener {
 
-    public final Value<Boolean> toggleable = new BooleanValue(this, "Toggleable Tab List", "Makes the Tab List toggleable.", false);
+    public final BooleanValue toggleable = new BooleanValue(this, "Toggleable Tab List", "Makes the Tab List toggleable.", false);
 
-    public final Value<Integer> tabSize = new IntegerValue(this, "Tab List Size", "How many players to display in the Tab List.", 100, 1, 1000);
+    public final IntegerValue tabSize = new IntegerValue(this, "Tab List Size", "How many players to display in the Tab List.", 100, 1, 1000);
 
-    public final Value<Boolean> highlightSelf = new BooleanValue(this, "Highlight Self", "Highlights yourself in the Tab List.", true);
+    public final BooleanValue highlightSelf = new BooleanValue(this, "Highlight Self", "Highlights yourself in the Tab List.", true);
     public final ColorValue selfColor = new ColorValue(this, "Self Color", "The color to highlight your name with.", ColorUtils.withAlpha(Color.GREEN, 100)).visibleCondition(this.highlightSelf::getValue);
 
-    public final Value<Boolean> moreInfo = new BooleanValue(this, "More Info", "Shows the the game mode and the accurate ping right after every username.", true);
-    public final Value<Integer> highPing = new IntegerValue(this, "High Ping", "Sets the high ping value.", 500, 50, 1000).visibleCondition(this.moreInfo::getValue);
+    public final BooleanValue moreInfo = new BooleanValue(this, "More Info", "Shows the the game mode and the accurate ping right after every username.", true);
+    public final IntegerValue highPing = new IntegerValue(this, "High Ping", "Sets the high ping value.", 500, 50, 1000).visibleCondition(this.moreInfo::getValue);
 
     private final ValueGroup pingColorCategory = new ValueGroup(this, "Ping Colors", "The colors to display the ping with.").visibleCondition(this.moreInfo::getValue);
     public final Value<Color> lowPingColor = new ColorValue(this.pingColorCategory, "Low Ping Color", "The color to display the minimum ping with.", Color.GREEN).visibleCondition(this.moreInfo::getValue);

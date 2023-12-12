@@ -15,8 +15,64 @@ import net.minecraft.text.Text;
 
 public class NetworkingSettings extends ValueGroup {
 
+    public final BooleanValue changeBrand = new BooleanValue(
+            this,
+            "Change Brand",
+            "Changes the Brand when connecting to a Server.",
+            true
+    );
+
+    public final StringValue brand = new StringValue(
+            this,
+            "Brand",
+            "The Brand that will used.",
+            ClientBrandRetriever.VANILLA
+    ).visibleCondition(this.changeBrand::getValue);
+
+    public final BooleanValue forceDisconnectKeybind = new BooleanValue(
+            this,
+            "Force Disconnect Keybind",
+            "Enables that you can disconnect with the key END even if the Game is frozen.",
+            true
+    );
+
+    public final BooleanValue spoofIsCreativeLevelTwoOp = new BooleanValue(
+            this,
+            "Spoof Is Creative Level Two Op",
+            "Makes the Game think you are a in Creative Mode and you have Level Two Op.",
+            true
+    );
+
+    public final BooleanValue antiTelemetry = new BooleanValue(
+            this,
+            "Anti Telemetry",
+            "Blocks the Telemetry of the Game.",
+            true
+    );
+
+    public final BooleanValue antiServerBlockList = new BooleanValue(
+            this,
+            "Anti Server Block List",
+            "Blocks the Server Block List from the Game.",
+            true
+    );
+
+    public final BooleanValue antiTimeoutKick = new BooleanValue(
+            this,
+            "Anti Timeout Kick",
+            "Prevents the Game from disconnecting if the server doesn't response for some time.",
+            true
+    );
+
+    public final BooleanValue eliminateHitDelay = new BooleanValue(
+            this,
+            "Eliminate Hit Delay",
+            "Eliminates the Hit Delay of the Game.",
+            false
+    );
+
     public NetworkingSettings(final ClientSettings parent) {
-        super(parent, "Networking", "Networking related configs.");
+        super(parent, "Networking", "Networking related settings.");
         try {
             GlobalScreen.registerNativeHook();
             GlobalScreen.addNativeKeyListener(new NativeKeyListener() {
@@ -38,60 +94,4 @@ public class NetworkingSettings extends ValueGroup {
         }
     }
 
-    public final Value<Boolean> changeBrand = new BooleanValue(
-            this,
-            "Change Brand",
-            "Changes the Brand when connecting to a Server.",
-            true
-    );
-
-    public final Value<String> brand = new StringValue(
-            this,
-            "Brand",
-            "The Brand that will used.",
-            ClientBrandRetriever.VANILLA
-    ).visibleCondition(this.changeBrand::getValue);
-
-    public final Value<Boolean> forceDisconnectKeybind = new BooleanValue(
-            this,
-            "Force Disconnect Keybind",
-            "Enables that you can disconnect with the key END even if the Game is frozen.",
-            true
-    );
-
-    public final Value<Boolean> spoofIsCreativeLevelTwoOp = new BooleanValue(
-            this,
-            "Spoof Is Creative Level Two Op",
-            "Makes the Game think you are a in Creative Mode and you have Level Two Op.",
-            true
-    );
-
-    public final Value<Boolean> antiTelemetry = new BooleanValue(
-            this,
-            "Anti Telemetry",
-            "Blocks the Telemetry of the Game.",
-            true
-    );
-
-    public final Value<Boolean> antiServerBlockList = new BooleanValue(
-            this,
-            "Anti Server Block List",
-            "Blocks the Server Block List from the Game.",
-            true
-    );
-
-    public final Value<Boolean> antiTimeoutKick = new BooleanValue(
-            this,
-            "Anti Timeout Kick",
-            "Prevents the Game from disconnecting if the server doesn't response for some time.",
-            true
-    );
-
-    public final Value<Boolean> eliminateHitDelay = new BooleanValue(
-            this,
-            "Eliminate Hit Delay",
-            "Eliminates the Hit Delay of the Game.",
-            false
-    );
-    
 }

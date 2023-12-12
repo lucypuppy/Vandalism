@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 public class VisualThrottleModule extends AbstractModule {
 
-    public final Value<Integer> minSodiumEntityAverageSideLength = new IntegerValue(
+    public final IntegerValue minSodiumEntityAverageSideLength = new IntegerValue(
             this,
             "Min sodium entity average side length",
             "How long should a average side from an entity be to get always rendered to prevent sodium crash.",
@@ -22,14 +22,14 @@ public class VisualThrottleModule extends AbstractModule {
 
     public final HashMap<String, ParticleTracker> particleTrackerMap = new HashMap<>();
 
-    public final Value<Boolean> blockTooManyParticles = new BooleanValue(
+    public final BooleanValue blockTooManyParticles = new BooleanValue(
             this,
             "Block too many particles",
             "Blocks particles when their count is too high.",
             false
     );
 
-    public final Value<Integer> countToBlockParticles = new IntegerValue(
+    public final IntegerValue countToBlockParticles = new IntegerValue(
             this,
             "Count to block particles",
             "Set the count to block the particles (per particle type).",
@@ -38,7 +38,7 @@ public class VisualThrottleModule extends AbstractModule {
             1000
     ).visibleCondition(this.blockTooManyParticles::getValue);
 
-    public final Value<Integer> particleBlockingCountResetDelay = new IntegerValue(
+    public final IntegerValue particleBlockingCountResetDelay = new IntegerValue(
             this,
             "Particle blocking reset delay",
             "Set the delay to reset the particle blocking count (per particle type).",
@@ -47,14 +47,14 @@ public class VisualThrottleModule extends AbstractModule {
             1000
     ).visibleCondition(this.blockTooManyParticles::getValue);
 
-    public final Value<Boolean> modifyDisplayNameLength = new BooleanValue(
+    public final BooleanValue modifyDisplayNameLength = new BooleanValue(
             this,
             "Modify display name length",
             "If enabled allows you to modify the max display name length.",
             true
     );
 
-    public final Value<Integer> maxDisplayNameLength = new IntegerValue(
+    public final IntegerValue maxDisplayNameLength = new IntegerValue(
             this,
             "Max display name length",
             "How long can a display name be.",

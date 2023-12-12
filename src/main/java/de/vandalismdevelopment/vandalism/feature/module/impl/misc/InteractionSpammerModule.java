@@ -18,7 +18,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class InteractionSpammerModule extends AbstractModule implements TickGameListener {
 
-    private final Value<Integer> maxXReach = new IntegerValue(
+    private final IntegerValue maxXReach = new IntegerValue(
             this,
             "Max X Reach",
             "The max y reach.",
@@ -27,7 +27,7 @@ public class InteractionSpammerModule extends AbstractModule implements TickGame
             5
     );
 
-    private final Value<Integer> maxZReach = new IntegerValue(
+    private final IntegerValue maxZReach = new IntegerValue(
             this,
             "Max Z Reach",
             "The max z reach.",
@@ -36,7 +36,7 @@ public class InteractionSpammerModule extends AbstractModule implements TickGame
             5
     );
 
-    private final Value<Integer> maxYReach = new IntegerValue(
+    private final IntegerValue maxYReach = new IntegerValue(
             this,
             "Max Y Reach",
             "The max y reach.",
@@ -45,7 +45,7 @@ public class InteractionSpammerModule extends AbstractModule implements TickGame
             5
     );
 
-    private final Value<Integer> interactionListsDelay = new IntegerValue(
+    private final IntegerValue interactionListsDelay = new IntegerValue(
             this,
             "Interaction Lists Delay",
             "The delay between interaction lists.",
@@ -54,7 +54,7 @@ public class InteractionSpammerModule extends AbstractModule implements TickGame
             2000
     );
 
-    private final Value<Integer> interactionDelay = new IntegerValue(
+    private final IntegerValue interactionDelay = new IntegerValue(
             this,
             "Interaction Delay",
             "The delay between interactions.",

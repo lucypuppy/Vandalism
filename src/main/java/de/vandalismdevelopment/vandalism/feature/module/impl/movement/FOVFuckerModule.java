@@ -46,21 +46,21 @@ public class FOVFuckerModule extends AbstractModule implements TickGameListener 
             5.0
     );
 
-    private final Value<Boolean> useYawFromTarget = new BooleanValue(
+    private final BooleanValue useYawFromTarget = new BooleanValue(
             this,
             "Use Yaw From Target",
             "Uses the yaw from the target.",
             true
     );
 
-    private final Value<Boolean> usePitchFromTarget = new BooleanValue(
+    private final BooleanValue usePitchFromTarget = new BooleanValue(
             this,
             "Use Pitch From Target",
             "Uses the pitch from the target.",
             true
     );
 
-    private final Value<Boolean> alwaysFOV = new BooleanValue(
+    private final BooleanValue alwaysFOV = new BooleanValue(
             this,
             "Always FOV",
             "This will always teleport you into the fov of the target.",
@@ -73,14 +73,14 @@ public class FOVFuckerModule extends AbstractModule implements TickGameListener 
             "The settings for the sneak spam."
     );
 
-    private final Value<Boolean> sneakSpam = new BooleanValue(
+    private final BooleanValue sneakSpam = new BooleanValue(
             this.sneakCategory,
             "Sneak Spam",
             "You are sus with the target.",
             true
     );
 
-    private final Value<Integer> sneakSpamDelay = new IntegerValue(
+    private final IntegerValue sneakSpamDelay = new IntegerValue(
             this.sneakCategory,
             "Sneak Spam Delay",
             "The delay for the sneak spam.",
