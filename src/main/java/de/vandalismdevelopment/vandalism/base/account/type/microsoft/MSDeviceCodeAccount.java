@@ -13,35 +13,33 @@ import net.raphimc.minecraftauth.util.MicrosoftConstants;
 import org.apache.http.impl.client.CloseableHttpClient;
 
 public class MSDeviceCodeAccount extends AbstractMicrosoftAccount {
-    private static final AccountFactory FACTORY = new AccountFactory() {
-        private final MSDeviceCodeAccount account = new MSDeviceCodeAccount();
 
-        private static final String DEFAULT_STATE = "Click the button below to get a device code.";
-        private String state = DEFAULT_STATE;
+    private static final AccountFactory FACTORY = new AccountFactory() {
+        private String state;
 
         @Override
         public void displayFactory() {
-            ImGui.text(state);
+            ImGui.text(this.state == null ? "Click the button below to get a device code." : state);
         }
 
         @Override
         public AbstractAccount make() {
-            if (account.getTokenChain() == null) {
-                try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
-                    final var javaSession = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.getFromInput(httpClient, new StepMsaDeviceCode.MsaDeviceCodeCallback(msaDeviceCode -> {
-                        final String url = msaDeviceCode.getDirectVerificationUri();
-                        this.state = "Please open the url: " + url;
-                        Util.getOperatingSystem().open(url);
-                    }));
+            try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
+                final var javaSession = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.getFromInput(httpClient, new StepMsaDeviceCode.MsaDeviceCodeCallback(msaDeviceCode -> {
+                    final String url = msaDeviceCode.getDirectVerificationUri();
+                    this.state = "Please open the url: " + url;
+                    Util.getOperatingSystem().open(url);
+                }));
 
-                    this.state = DEFAULT_STATE;
-                    account.initWithExistingSession(javaSession);
-                } catch (Throwable e) {
-                    account.setStatus("Failed to login: " + e.getMessage());
-                }
+                this.state = null;
+                final var account = new MSDeviceCodeAccount();
+                account.initWithExistingSession(javaSession);
+
+                return account;
+            } catch (Throwable e) {
+                this.state = "Failed to login: " + e.getMessage();
+                return null;
             }
-
-            return account;
         }
     };
 
@@ -57,4 +55,5 @@ public class MSDeviceCodeAccount extends AbstractMicrosoftAccount {
     public AbstractStep<?, StepFullJavaSession.FullJavaSession> getStep() {
         return MinecraftAuth.JAVA_DEVICE_CODE_LOGIN;
     }
+
 }
