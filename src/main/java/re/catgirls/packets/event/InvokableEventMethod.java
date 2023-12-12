@@ -13,7 +13,7 @@ public class InvokableEventMethod {
     private final Method method;
     private final Class<? extends Packet> packetClass;
 
-    public InvokableEventMethod(Object holder, Method method, Class<? extends Packet> packetClass) {
+    public InvokableEventMethod(final Object holder, final Method method, final Class<? extends Packet> packetClass) {
         this.holder = holder;
         this.method = method;
         this.packetClass = packetClass;
@@ -21,7 +21,15 @@ public class InvokableEventMethod {
         this.method.setAccessible(true);
     }
 
-    public void invoke(Packet packet, PacketHandler ctx) throws InvocationTargetException, IllegalAccessException {
+    /**
+     * Invoke the method
+     *
+     * @param packet packet
+     * @param ctx    packet handler
+     * @throws InvocationTargetException if there was an error while invoking the method
+     * @throws IllegalAccessException    if the method is inaccessible
+     */
+    public void invoke(final Packet packet, final PacketHandler ctx) throws InvocationTargetException, IllegalAccessException {
         if (!packetClass.equals(packet.getClass()))
             return;
 

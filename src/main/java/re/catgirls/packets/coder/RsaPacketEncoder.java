@@ -18,35 +18,56 @@ public class RsaPacketEncoder extends MessageToMessageEncoder<Packet> {
     private final Session session;
     private final IPacketRegistry packetRegistry;
 
-    public RsaPacketEncoder(IPacketRegistry packetRegistry, Session session) {
+    /**
+     * Create a new packet encoder
+     *
+     * @param packetRegistry packet registry
+     * @param session        session
+     */
+    public RsaPacketEncoder(final IPacketRegistry packetRegistry, final Session session) {
         this.packetRegistry = packetRegistry;
         this.session = session;
     }
 
+    /**
+     * Encode a packet to a byte buffer
+     *
+     * @param context channel handler context
+     * @param packet  packet to encode
+     * @param out     list to add the encoded packet to
+     * @throws Exception if the packet is invalid
+     */
     @Override
-    protected void encode(ChannelHandlerContext context, Packet packet, List<Object> out) throws Exception {
+    protected void encode(final ChannelHandlerContext context, final Packet packet, final List<Object> out) throws Exception {
         if (session.isEncryptionNotReady()) {
-            out.add(actuallyEncode(packet));
+            out.add(writePacket(packet));
             return;
         }
 
-        out.add(EncryptionHelper.encryptByteBuf(session.getServerPublicKey(), actuallyEncode(packet)));
+        out.add(EncryptionHelper.encryptByteBuf(session.getServerPublicKey(), writePacket(packet)));
     }
 
-    private ByteBuf actuallyEncode(Packet packet) throws Exception {
-        ByteBuf buf = Unpooled.buffer();
+    /**
+     * Encode a packet to a byte buffer
+     *
+     * @param packet packet to encode
+     * @return encoded packet
+     * @throws Exception if the packet is invalid
+     */
+    private ByteBuf writePacket(final Packet packet) throws Exception {
+        final ByteBuf buf = Unpooled.buffer();
 
         int packetId = packetRegistry.getPacketId(packet.getClass());
-        if (packetId < 0) {
-            throw new EncoderException("Returned PacketId by registry is < 0");
-        }
+        if (packetId < 0)
+            throw new EncoderException("packet id from class %s is <0".formatted(packet.getClass().getName()));
 
+        /* write packet */
         buf.writeInt(packetId);
 
         PacketBuffer buffer = new PacketBuffer();
         packet.write(buffer);
-
         buf.writeBytes(buffer);
+
         return buf;
     }
 }

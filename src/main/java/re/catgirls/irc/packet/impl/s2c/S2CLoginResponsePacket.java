@@ -17,7 +17,7 @@ public class S2CLoginResponsePacket extends Packet {
     public S2CLoginResponsePacket() { }
 
     @Override
-    public void write(PacketBuffer buffer) {}
+    public void write(final PacketBuffer buffer) {}
 
     // @formatter:on
 
@@ -34,6 +34,7 @@ public class S2CLoginResponsePacket extends Packet {
                         object.get("client").getAsString(), /* we don't question this, I send the mc client in the login response too. */
                         (UserProfile.Rank) IdentifiableEnum.getById(object.get("rank").getAsInt(), UserProfile.Rank.class)
                 );
+
                 profile.setJwt(object.get("jwt").getAsString());
                 this.profile = profile;
             }
