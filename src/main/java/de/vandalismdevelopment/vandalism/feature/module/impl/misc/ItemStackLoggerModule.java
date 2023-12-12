@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.feature.module.impl.misc;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.dietrichevents2.Priorities;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.base.event.TickListener;
+import de.vandalismdevelopment.vandalism.base.event.game.TickGameListener;
 import de.vandalismdevelopment.vandalism.feature.command.impl.misc.NbtCommand;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.base.value.Value;
@@ -34,7 +34,7 @@ import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ItemStackLoggerModule extends AbstractModule implements TickListener {
+public class ItemStackLoggerModule extends AbstractModule implements TickGameListener {
 
     private final Value<Boolean> notifyInChat = new BooleanValue(this, "Notify in Chat", "If enabled this module sends a notification into the chat to inform you about a newly found item.", true);
 
@@ -52,12 +52,12 @@ public class ItemStackLoggerModule extends AbstractModule implements TickListene
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(TickEvent.ID, this, Priorities.HIGH);
+        DietrichEvents2.global().subscribe(TickGameEvent.ID, this, Priorities.HIGH);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(TickGameEvent.ID, this);
     }
 
     @Override

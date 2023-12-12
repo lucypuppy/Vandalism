@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.feature.module.impl.render;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.common.ColorUtils;
 import de.florianmichael.rclasses.common.StringUtils;
-import de.vandalismdevelopment.vandalism.base.event.InputListener;
+import de.vandalismdevelopment.vandalism.base.event.game.MouseInputListener;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.base.value.impl.awt.ColorValue;
 import de.vandalismdevelopment.vandalism.base.value.impl.number.IntegerValue;
@@ -16,7 +16,7 @@ import org.lwjgl.glfw.GLFW;
 import java.awt.*;
 import java.util.HashMap;
 
-public class BetterTabListModule extends AbstractModule implements InputListener {
+public class BetterTabListModule extends AbstractModule implements MouseInputListener {
 
     public final Value<Boolean> toggleable = new BooleanValue(this, "Toggleable Tab List", "Makes the Tab List toggleable.", false);
 

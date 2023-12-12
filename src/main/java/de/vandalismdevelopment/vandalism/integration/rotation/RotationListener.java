@@ -3,8 +3,8 @@ package de.vandalismdevelopment.vandalism.integration.rotation;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.common.RandomUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.base.event.PacketListener;
-import de.vandalismdevelopment.vandalism.base.event.RenderListener;
+import de.vandalismdevelopment.vandalism.base.event.network.IncomingPacketListener;
+import de.vandalismdevelopment.vandalism.base.event.render.CameraClipRaytraceListener;
 import de.vandalismdevelopment.vandalism.util.render.RenderUtil;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
@@ -12,7 +12,7 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 
-public class RotationListener implements PacketListener, RenderListener, MinecraftWrapper {
+public class RotationListener implements IncomingPacketListener, CameraClipRaytraceListener, MinecraftWrapper {
 
     private Rotation rotation, targetRotation, lastRotation;
     private double partialIterations;
@@ -21,12 +21,12 @@ public class RotationListener implements PacketListener, RenderListener, Minecra
     private RotationPriority currentPriority;
 
     public RotationListener() {
-        DietrichEvents2.global().subscribe(PacketEvent.ID, this);
+        DietrichEvents2.global().subscribe(IncomingPacketEvent.ID, this);
         DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
     }
 
     @Override
-    public void onPacket(final PacketEvent event) {
+    public void onPacket(final IncomingPacketEvent event) {
         if (event.packet instanceof final PlayerMoveC2SPacket packet) {
             if (this.rotation != null) {
                 packet.yaw = this.rotation.getYaw();

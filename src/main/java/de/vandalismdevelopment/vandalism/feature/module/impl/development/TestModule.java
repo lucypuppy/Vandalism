@@ -2,9 +2,9 @@ package de.vandalismdevelopment.vandalism.feature.module.impl.development;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.base.event.MovementListener;
-import de.vandalismdevelopment.vandalism.base.event.RenderListener;
-import de.vandalismdevelopment.vandalism.base.event.TickListener;
+import de.vandalismdevelopment.vandalism.base.event.entity.MotionListener;
+import de.vandalismdevelopment.vandalism.base.event.render.CameraClipRaytraceListener;
+import de.vandalismdevelopment.vandalism.base.event.game.TickGameListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.util.clicker.impl.BoxMuellerClicker;
 import de.vandalismdevelopment.vandalism.util.minecraft.MovementUtil;
@@ -27,7 +27,7 @@ import net.minecraft.util.math.Vec3d;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestModule extends AbstractModule implements TickListener, RenderListener, MovementListener {
+public class TestModule extends AbstractModule implements TickGameListener, CameraClipRaytraceListener, MotionListener {
 
     private final Clicker clicker = new BoxMuellerClicker();
 
@@ -45,7 +45,7 @@ public class TestModule extends AbstractModule implements TickListener, RenderLi
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(TickEvent.ID, this);
+        DietrichEvents2.global().subscribe(TickGameEvent.ID, this);
         DietrichEvents2.global().subscribe(StrafeEvent.ID, this);
         DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
         DietrichEvents2.global().subscribe(MoveInputEvent.ID, this);
@@ -53,7 +53,7 @@ public class TestModule extends AbstractModule implements TickListener, RenderLi
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(TickGameEvent.ID, this);
         DietrichEvents2.global().unsubscribe(StrafeEvent.ID, this);
         DietrichEvents2.global().unsubscribe(Render2DEvent.ID, this);
         DietrichEvents2.global().unsubscribe(MoveInputEvent.ID, this);

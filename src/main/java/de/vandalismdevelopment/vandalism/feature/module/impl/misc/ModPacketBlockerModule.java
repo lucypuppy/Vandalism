@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.feature.module.impl.misc;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.dietrichevents2.Priorities;
-import de.vandalismdevelopment.vandalism.base.event.PacketListener;
+import de.vandalismdevelopment.vandalism.base.event.network.IncomingPacketListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.base.value.impl.primitive.BooleanValue;
@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ModPacketBlockerModule extends AbstractModule implements PacketListener {
+public class ModPacketBlockerModule extends AbstractModule implements IncomingPacketListener {
 
     public final Value<Boolean> unloadFabricAPICallbacks = new BooleanValue(
             this,
@@ -43,17 +43,17 @@ public class ModPacketBlockerModule extends AbstractModule implements PacketList
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(PacketEvent.ID, this, Priorities.HIGH);
+        DietrichEvents2.global().subscribe(IncomingPacketEvent.ID, this, Priorities.HIGH);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(PacketEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(IncomingPacketEvent.ID, this);
     }
 
 
     @Override
-    public void onPacket(final PacketEvent event) {
+    public void onPacket(final IncomingPacketEvent event) {
         String channel;
         // This just shows how bad java is, we'll have to wait for Java 22 to improve this using destructuring.
         if (event.packet instanceof final CustomPayloadC2SPacket customPayloadPacket) {

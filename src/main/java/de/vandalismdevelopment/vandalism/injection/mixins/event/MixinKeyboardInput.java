@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.event;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.base.event.MovementListener;
+import de.vandalismdevelopment.vandalism.base.event.entity.MotionListener;
 import net.minecraft.client.input.Input;
 import net.minecraft.client.input.KeyboardInput;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,13 +14,13 @@ public abstract class MixinKeyboardInput extends Input {
 
     @Inject(method = "tick", at = @At("RETURN"))
     private void vandalism$callMoveInputEvent(final boolean slowDown, final float slowDownFactor, final CallbackInfo ci) {
-        final MovementListener.MoveInputEvent moveInputEvent = new MovementListener.MoveInputEvent(
+        final MotionListener.MoveInputEvent moveInputEvent = new MotionListener.MoveInputEvent(
                 this.movementForward,
                 this.movementSideways,
                 slowDown,
                 slowDownFactor
         );
-        DietrichEvents2.global().postInternal(MovementListener.MoveInputEvent.ID, moveInputEvent);
+        DietrichEvents2.global().postInternal(MotionListener.MoveInputEvent.ID, moveInputEvent);
         this.movementForward = moveInputEvent.movementForward;
         this.movementSideways = moveInputEvent.movementSideways;
     }

@@ -1,11 +1,11 @@
 package de.vandalismdevelopment.vandalism.feature.module.impl.movement.modes.phase;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.base.event.TickListener;
+import de.vandalismdevelopment.vandalism.base.event.game.TickGameListener;
 import de.vandalismdevelopment.vandalism.feature.module.template.ModuleMulti;
 import de.vandalismdevelopment.vandalism.feature.module.impl.movement.PhaseModule;
 
-public class FallingBlockModuleMode extends ModuleMulti<PhaseModule> implements TickListener {
+public class FallingBlockModuleMode extends ModuleMulti<PhaseModule> implements TickGameListener {
 
     public FallingBlockModuleMode(final PhaseModule parent) {
         super("Falling Block", parent);
@@ -13,12 +13,12 @@ public class FallingBlockModuleMode extends ModuleMulti<PhaseModule> implements 
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(TickEvent.ID, this);
+        DietrichEvents2.global().subscribe(TickGameEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(TickGameEvent.ID, this);
     }
 
     @Override

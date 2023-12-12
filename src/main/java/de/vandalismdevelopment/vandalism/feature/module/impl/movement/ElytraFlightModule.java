@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.feature.module.impl.movement;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.base.event.TickListener;
+import de.vandalismdevelopment.vandalism.base.event.game.TickGameListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.feature.module.impl.movement.modes.elytraflight.CreativeModuleMode;
 import de.vandalismdevelopment.vandalism.feature.module.value.ModuleModeValue;
@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 
-public class ElytraFlightModule extends AbstractModule implements TickListener {
+public class ElytraFlightModule extends AbstractModule implements TickGameListener {
 
     private final ModuleModeValue<ElytraFlightModule> mode = new ModuleModeValue<>(
             this,
@@ -31,12 +31,12 @@ public class ElytraFlightModule extends AbstractModule implements TickListener {
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(TickEvent.ID, this);
+        DietrichEvents2.global().subscribe(TickGameEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(TickGameEvent.ID, this);
     }
 
     @Override

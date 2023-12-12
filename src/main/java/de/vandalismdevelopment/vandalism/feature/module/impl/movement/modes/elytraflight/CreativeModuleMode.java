@@ -1,12 +1,12 @@
 package de.vandalismdevelopment.vandalism.feature.module.impl.movement.modes.elytraflight;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.base.event.TickListener;
+import de.vandalismdevelopment.vandalism.base.event.game.TickGameListener;
 import de.vandalismdevelopment.vandalism.feature.module.template.ModuleMulti;
 import de.vandalismdevelopment.vandalism.feature.module.impl.movement.ElytraFlightModule;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
 
-public class CreativeModuleMode extends ModuleMulti<ElytraFlightModule> implements TickListener {
+public class CreativeModuleMode extends ModuleMulti<ElytraFlightModule> implements TickGameListener {
 
     public CreativeModuleMode(final ElytraFlightModule parent) {
         super("Creative", parent);
@@ -14,12 +14,12 @@ public class CreativeModuleMode extends ModuleMulti<ElytraFlightModule> implemen
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(TickEvent.ID, this);
+        DietrichEvents2.global().subscribe(TickGameEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(TickGameEvent.ID, this);
         if (this.mc.player == null) return;
         this.mc.player.getAbilities().flying = false;
         this.mc.player.getAbilities().allowFlying = this.mc.player.getAbilities().creativeMode;

@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.feature.module.impl.movement;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.base.event.WorldListener;
+import de.vandalismdevelopment.vandalism.base.event.network.WorldListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

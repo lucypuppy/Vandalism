@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.feature.module.impl.misc;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.math.integration.MSTimer;
-import de.vandalismdevelopment.vandalism.base.event.TickListener;
+import de.vandalismdevelopment.vandalism.base.event.game.TickGameListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.base.value.impl.number.IntegerValue;
@@ -10,7 +10,7 @@ import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
 import net.minecraft.util.Hand;
 
-public class AutoFishModule extends AbstractModule implements TickListener {
+public class AutoFishModule extends AbstractModule implements TickGameListener {
 
     public final Value<Integer> throwDelayValue = new IntegerValue(this, "Throw Delay", "Here you can input the custom throw delay value.", 1000, 0, 5000);
     public final Value<Integer> retractDelayValue = new IntegerValue(this, "Retract Delay", "Here you can input the custom retract delay value.", 500, 0, 1000);
@@ -24,12 +24,12 @@ public class AutoFishModule extends AbstractModule implements TickListener {
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(TickEvent.ID, this);
+        DietrichEvents2.global().subscribe(TickGameEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(TickGameEvent.ID, this);
     }
 
     @Override

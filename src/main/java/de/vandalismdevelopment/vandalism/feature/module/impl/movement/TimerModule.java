@@ -1,14 +1,14 @@
 package de.vandalismdevelopment.vandalism.feature.module.impl.movement;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.base.event.TickListener;
+import de.vandalismdevelopment.vandalism.base.event.game.TickGameListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.base.value.impl.primitive.BooleanValue;
 import de.vandalismdevelopment.vandalism.base.value.impl.number.FloatValue;
 import de.vandalismdevelopment.vandalism.util.minecraft.TimerHack;
 
-public class TimerModule extends AbstractModule implements TickListener {
+public class TimerModule extends AbstractModule implements TickGameListener {
 
     private final Value<Float> timerModifier = new FloatValue(
             this,
@@ -42,13 +42,13 @@ public class TimerModule extends AbstractModule implements TickListener {
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(TickEvent.ID, this);
+        DietrichEvents2.global().subscribe(TickGameEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
         TimerHack.reset();
-        DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(TickGameEvent.ID, this);
     }
 
 }

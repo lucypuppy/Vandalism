@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.event;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.base.event.MovementListener;
+import de.vandalismdevelopment.vandalism.base.event.entity.MotionListener;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,8 +16,8 @@ public abstract class MixinLivingEntity implements MinecraftWrapper {
     private void vandalism$callMoveFlyingEvent(final Args args) {
         if (this.mc.player != ((LivingEntity) (Object) this)) return;
         final double sidewaysSpeed = args.get(0), upwardSpeed = args.get(1), forwardSpeed = args.get(2);
-        final MovementListener.MoveFlyingEvent moveFlyingEvent = new MovementListener.MoveFlyingEvent(sidewaysSpeed, upwardSpeed, forwardSpeed);
-        DietrichEvents2.global().postInternal(MovementListener.MoveFlyingEvent.ID, moveFlyingEvent);
+        final MotionListener.MoveFlyingEvent moveFlyingEvent = new MotionListener.MoveFlyingEvent(sidewaysSpeed, upwardSpeed, forwardSpeed);
+        DietrichEvents2.global().postInternal(MotionListener.MoveFlyingEvent.ID, moveFlyingEvent);
         args.set(0, moveFlyingEvent.sidewaysSpeed);
         args.set(1, moveFlyingEvent.upwardSpeed);
         args.set(2, moveFlyingEvent.forwardSpeed);

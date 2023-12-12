@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.event;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.base.event.WorldListener;
+import de.vandalismdevelopment.vandalism.base.event.network.WorldListener;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.util.math.BlockPos;

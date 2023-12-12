@@ -3,7 +3,7 @@ package de.vandalismdevelopment.vandalism.feature.module.impl.development;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.dietrichevents2.Priorities;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.base.event.PacketListener;
+import de.vandalismdevelopment.vandalism.base.event.network.IncomingPacketListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.util.minecraft.ChatUtil;
 import de.vandalismdevelopment.vandalism.base.value.Value;
@@ -15,7 +15,7 @@ import net.minecraft.network.packet.Packet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PacketLoggerModule extends AbstractModule implements PacketListener {
+public class PacketLoggerModule extends AbstractModule implements IncomingPacketListener {
 
     public PacketLoggerModule() {
         super("Packet Logger", "Logs packets and their data.", Category.DEVELOPMENT);
@@ -44,16 +44,16 @@ public class PacketLoggerModule extends AbstractModule implements PacketListener
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(PacketEvent.ID, this, Priorities.LOW);
+        DietrichEvents2.global().subscribe(IncomingPacketEvent.ID, this, Priorities.LOW);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(PacketEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(IncomingPacketEvent.ID, this);
     }
 
     @Override
-    public void onPacket(final PacketEvent event) {
+    public void onPacket(final IncomingPacketEvent event) {
         final Packet<?> packet = event.packet;
         final Class<?> packetClass = packet.getClass();
         final String packetName = packetClass.getSimpleName();
