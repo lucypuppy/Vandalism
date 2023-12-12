@@ -21,19 +21,29 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 
 /**
- * TODO
- *  - Apply checkstyle.xml to all classes
- *  - Fix tick bug (cps is not accurate) -> see BoxMuellerClicker#update
- *  - Replace MixinServerResourcePackProvider
- *  - Delete MixinClientPlayerEntity & MixinClientWorld
- *  - Delete events which only have one usage
+ * TODO | Recode
  *  - Fix MixinMinecraftClient screen event
- *  - Delete CustomRPConfirmScreen
- *  - Delete MixinGameRenderer view bobbing -> use proper MixinExtras instead of copy-pasting game code
- *  - Rewrite EnhancedServerList
+ *  - When changing the module mode of speed/flight/nofall for example from the default mode to another mode it removes
+ *    the default mode from the list because of some reason
+ *  - Fix game crash when binding modules to keys -> KeyNameArgumentType.java:22 throws NullPointerException
+ *  - Make account manager multi threaded (to prevent the game from freezing)
+ *  - Fix module list hud element not syncing module states by creating a module toggle event
+ *  - Re-implement last session login for the account manager
+ *  - Re-add DebugModule as hud element
+ *  - Re-implement im window state saving
  *  - Delete MixinParticleManager
  *  - Update AuthLib array instead of MixinTextureUrlChecker
  *  - Fix mixin injection names for the functions and the fields (change VANDALISM_... in every field to vandalism$... / remove vandalism$ for every function)
+ *  - Replace MixinServerResourcePackProvider
+ *  - Delete MixinClientPlayerEntity & MixinClientWorld
+ *  - Delete events which only have one usage
+ *  - Delete CustomRPConfirmScreen
+ * <p>
+ * TODO | Common skill issues
+ *  - Apply checkstyle.xml to all classes
+ *  - Fix tick bug (cps is not accurate) -> see BoxMuellerClicker#update
+ *  - Delete MixinGameRenderer view bobbing -> use proper MixinExtras instead of copy-pasting game code
+ *  - Rewrite EnhancedServerList
  *  - Add anti vanish via. the player list hud
  *  - Add the dripping stone block to the block density module
  *  - Fix the entity layer rendering from the true sight module
@@ -46,20 +56,12 @@ import java.io.File;
  *      - Maybe use a chat event instead of a text draw event
  *  - Make NullPointerException crash fix for the particle tracking system from the visual throttle module
  *  - Add Proxy manager
- *  - Re-implement im window state saving
  *  - Make the width and height customizable or use calculations in the modules im window for the tabs
  *  - Fix ImGui#begin in every im window (remove No Collapse Flag and move the code out of the if)
  *  - Fix module tabs display (no stacking) when the mod starts the first time
- *  - Re-add DebugModule as hud element
  *  - Fix calculations for the custom hud
- *  - Fix module list hud element not syncing module states by creating a module toggle event
- *  - Re-implement last session login for the account manager
  *  - Change skin texture to head texture in the account manager
- *  - Make account manager multi threaded (to prevent the game from freezing)
  *  - Fix the sprint event (attacking is wrong when sprintEvent.force = true)
- *  - When changing the module mode of speed/flight/nofall for example from the default mode to another mode it removes
- *    the default mode from the list because of some reason
- *  - Fix game crash when binding modules to keys -> KeyNameArgumentType.java:22 throws NullPointerException
  */
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 
