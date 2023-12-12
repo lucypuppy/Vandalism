@@ -60,15 +60,11 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         if (key != GLFW.GLFW_KEY_UNKNOWN && action == GLFW.GLFW_PRESS) {
             this.finishInput();
-
             this.setValue(key);
         }
     }
 
     public boolean isPressed() {
-        if (this.getValue() == GLFW.GLFW_KEY_UNKNOWN) {
-            return false;
-        }
         return InputType.isPressed(this.getValue());
     }
 

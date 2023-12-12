@@ -22,7 +22,6 @@ import java.io.File;
 
 /**
  * TODO | Recode
- *  - Fix game crash when binding modules to keys -> KeyNameArgumentType.java:22 throws NullPointerException
  *  - Make account manager multi threaded (to prevent the game from freezing)
  *  - Fix module list hud element not syncing module states by creating a module toggle event
  *  - Re-implement last session login for the account manager

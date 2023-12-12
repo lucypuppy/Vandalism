@@ -23,6 +23,9 @@ public class InputType {
     }
 
     public static boolean isPressed(final int keyCode) {
+        if (keyCode == GLFW.GLFW_KEY_UNKNOWN) {
+            return false;
+        }
         final long handle = MinecraftClient.getInstance().getWindow().getHandle();
 
         return GLFW.glfwGetKey(handle, keyCode) == GLFW.GLFW_PRESS;

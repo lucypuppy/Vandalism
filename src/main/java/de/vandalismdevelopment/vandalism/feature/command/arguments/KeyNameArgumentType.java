@@ -18,8 +18,8 @@ public class KeyNameArgumentType implements ArgumentType<Integer> {
         return new KeyNameArgumentType();
     }
 
-    public static Integer get(final CommandContext<?> context) {
-        return context.getArgument("key-name", Integer.class);
+    public static int get(final CommandContext<?> context) {
+        return context.getArgument("key-name", int.class);
     }
 
     @Override
