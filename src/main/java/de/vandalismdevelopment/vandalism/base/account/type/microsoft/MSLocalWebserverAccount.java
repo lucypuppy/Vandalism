@@ -22,34 +22,31 @@ public class MSLocalWebserverAccount extends AbstractMicrosoftAccount {
             .buildMinecraftJavaProfileStep(true);
 
     private static final AccountFactory FACTORY = new AccountFactory() {
-        private final MSLocalWebserverAccount account = new MSLocalWebserverAccount();
-
-        private static final String DEFAULT_STATE = "Click the button below to get a device code.";
-        private String state = DEFAULT_STATE;
+        private String state;
 
         @Override
         public void displayFactory() {
-            ImGui.text(state);
+            ImGui.text(state == null ? "Click the button below to get a device code." : state);
         }
 
         @Override
         public AbstractAccount make() {
-            if (account.getTokenChain() == null) {
-                try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
-                    final var javaSession = JAVA_LOCAL_WEBSERVER_LOGIN.getFromInput(httpClient, new StepLocalWebServer.LocalWebServerCallback(localWebServer -> {
-                        final String url = localWebServer.getAuthenticationUrl();
-                        this.state = "Please open the url: " + url;
-                        Util.getOperatingSystem().open(url);
-                    }));
+            try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
+                final var javaSession = JAVA_LOCAL_WEBSERVER_LOGIN.getFromInput(httpClient, new StepLocalWebServer.LocalWebServerCallback(localWebServer -> {
+                    final String url = localWebServer.getAuthenticationUrl();
+                    this.state = "Please open the url: " + url;
+                    Util.getOperatingSystem().open(url);
+                }));
 
-                    this.state = DEFAULT_STATE;
-                    account.initWithExistingSession(javaSession);
-                } catch (Throwable e) {
-                    account.setStatus("Failed to login: " + e.getMessage());
-                }
+                this.state = null;
+                final var account = new MSLocalWebserverAccount();
+                account.initWithExistingSession(javaSession);
+
+                return account;
+            } catch (Throwable e) {
+                this.state = "Failed to login: " + e.getMessage();
+                return null;
             }
-
-            return account;
         }
     };
 
