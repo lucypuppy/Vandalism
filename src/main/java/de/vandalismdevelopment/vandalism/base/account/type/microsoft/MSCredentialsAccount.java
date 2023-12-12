@@ -15,31 +15,32 @@ import org.apache.http.impl.client.CloseableHttpClient;
 
 public class MSCredentialsAccount extends AbstractMicrosoftAccount {
     private static final AccountFactory FACTORY = new AccountFactory() {
-        private final MSCredentialsAccount account = new MSCredentialsAccount();
+        private String state;
 
         private final ImString email = new ImString();
         private final ImString password = new ImString();
 
         @Override
         public void displayFactory() {
+            ImGui.text(this.state == null ? "Please enter your credentials." : state);
+
             ImGui.inputText("Email", email, ImGuiInputTextFlags.CallbackResize);
             ImGui.inputText("Password", password, ImGuiInputTextFlags.CallbackResize);
         }
 
         @Override
         public AbstractAccount make() {
-            if (account.getTokenChain() == null) {
-                try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
-                    final var javaSession = MinecraftAuth.JAVA_CREDENTIALS_LOGIN.
-                            getFromInput(httpClient, new StepCredentialsMsaCode.MsaCredentials(this.email.get(), this.password.get()));
+            try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
+                final var javaSession = MinecraftAuth.JAVA_CREDENTIALS_LOGIN.getFromInput(httpClient, new StepCredentialsMsaCode.MsaCredentials(this.email.get(), this.password.get()));
 
-                    account.initWithExistingSession(javaSession);
-                } catch (Throwable e) {
-                    account.setStatus("Failed to login: " + e.getMessage());
-                }
+                final var account = new MSCredentialsAccount();
+                account.initWithExistingSession(javaSession);
+
+                return account;
+            } catch (Throwable e) {
+                this.state = "Failed to login: " + e.getMessage();
+                return null;
             }
-
-            return account;
         }
     };
 
@@ -55,4 +56,5 @@ public class MSCredentialsAccount extends AbstractMicrosoftAccount {
     public AbstractStep<?, StepFullJavaSession.FullJavaSession> getStep() {
         return MinecraftAuth.JAVA_CREDENTIALS_LOGIN;
     }
+
 }
