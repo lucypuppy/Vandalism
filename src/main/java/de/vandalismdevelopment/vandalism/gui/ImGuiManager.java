@@ -3,8 +3,8 @@ package de.vandalismdevelopment.vandalism.gui;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.base.event.InputListener;
-import de.vandalismdevelopment.vandalism.base.event.RenderListener;
+import de.vandalismdevelopment.vandalism.base.event.game.MouseInputListener;
+import de.vandalismdevelopment.vandalism.base.event.render.CameraClipRaytraceListener;
 import de.vandalismdevelopment.vandalism.gui.base.ImGuiScreen;
 import de.vandalismdevelopment.vandalism.gui.impl.ServerAddressResolverImWindow;
 import de.vandalismdevelopment.vandalism.gui.impl.ServerPingerImWindow;
@@ -22,7 +22,7 @@ import net.minecraft.client.gui.screen.LevelLoadingScreen;
 import java.io.File;
 import java.util.List;
 
-public class ImGuiManager extends Storage<ImWindow> implements RenderListener, InputListener, MinecraftWrapper {
+public class ImGuiManager extends Storage<ImWindow> implements CameraClipRaytraceListener, MouseInputListener, MinecraftWrapper {
 
     public ImGuiManager(final File runDirectory) {
         DietrichEvents2.global().subscribe(this, KeyboardEvent.ID, Render2DEvent.ID);

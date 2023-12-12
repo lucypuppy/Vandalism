@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.feature.module.impl.misc;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.base.event.ChatListener;
+import de.vandalismdevelopment.vandalism.base.event.player.ChatListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;

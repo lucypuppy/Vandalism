@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.event;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.base.event.InputListener;
+import de.vandalismdevelopment.vandalism.base.event.game.MouseInputListener;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.Mouse;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,21 +16,21 @@ public abstract class MixinMouse implements MinecraftWrapper {
     @Inject(method = "onMouseButton", at = @At("HEAD"))
     private void vandalism$callMouseEvent1(final long window, final int button, final int action, final int mods, final CallbackInfo ci) {
         if (this.mc.getWindow().getHandle() == window) {
-            DietrichEvents2.global().postInternal(InputListener.MouseEvent.ID, new InputListener.MouseEvent(button, action, mods));
+            DietrichEvents2.global().postInternal(MouseInputListener.MouseEvent.ID, new MouseInputListener.MouseEvent(button, action, mods));
         }
     }
 
     @Inject(method = "onMouseScroll", at = @At("HEAD"))
     private void vandalism$callMouseEvent2(final long window, final double horizontal, final double vertical, final CallbackInfo ci) {
         if (this.mc.getWindow().getHandle() == window) {
-            DietrichEvents2.global().postInternal(InputListener.MouseEvent.ID, new InputListener.MouseEvent(true, horizontal, vertical));
+            DietrichEvents2.global().postInternal(MouseInputListener.MouseEvent.ID, new MouseInputListener.MouseEvent(true, horizontal, vertical));
         }
     }
 
     @Inject(method = "onCursorPos", at = @At("HEAD"))
     private void vandalism$callMouseEvent3(final long window, final double x, final double y, final CallbackInfo ci) {
         if (this.mc.getWindow().getHandle() == window) {
-            DietrichEvents2.global().postInternal(InputListener.MouseEvent.ID, new InputListener.MouseEvent(false, x, y));
+            DietrichEvents2.global().postInternal(MouseInputListener.MouseEvent.ID, new MouseInputListener.MouseEvent(false, x, y));
         }
     }
 

@@ -2,14 +2,14 @@ package de.vandalismdevelopment.vandalism.base.value.impl.awt;
 
 import com.google.gson.JsonObject;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.base.event.InputListener;
+import de.vandalismdevelopment.vandalism.base.event.game.MouseInputListener;
 import de.vandalismdevelopment.vandalism.base.value.ValueParent;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.util.render.InputType;
 import imgui.ImGui;
 import org.lwjgl.glfw.GLFW;
 
-public class KeyBindValue extends Value<Integer> implements InputListener {
+public class KeyBindValue extends Value<Integer> implements MouseInputListener {
 
     public KeyBindValue(ValueParent parent, String name, String description) {
         this(parent, name, description, GLFW.GLFW_KEY_UNKNOWN);

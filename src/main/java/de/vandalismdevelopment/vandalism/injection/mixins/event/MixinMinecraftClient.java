@@ -1,9 +1,9 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.event;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.base.event.ScreenListener;
-import de.vandalismdevelopment.vandalism.base.event.TickListener;
-import de.vandalismdevelopment.vandalism.base.event.WorldListener;
+import de.vandalismdevelopment.vandalism.base.event.game.ScreenListener;
+import de.vandalismdevelopment.vandalism.base.event.game.TickGameListener;
+import de.vandalismdevelopment.vandalism.base.event.network.WorldListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.world.ClientWorld;
@@ -17,7 +17,7 @@ public abstract class MixinMinecraftClient {
 
     @Inject(method = "tick", at = @At(value = "HEAD"))
     private void vandalism$callTickEvent(final CallbackInfo ci) {
-        DietrichEvents2.global().postInternal(TickListener.TickEvent.ID, new TickListener.TickEvent());
+        DietrichEvents2.global().postInternal(TickGameListener.TickGameEvent.ID, new TickGameListener.TickGameEvent());
     }
 
     @Inject(method = "setScreen", at = @At(value = "HEAD"), cancellable = true)

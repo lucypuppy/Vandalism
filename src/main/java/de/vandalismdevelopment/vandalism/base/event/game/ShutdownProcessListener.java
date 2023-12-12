@@ -8,7 +8,7 @@ public interface ShutdownProcessListener {
 
     class ShutdownProcessEvent extends AbstractEvent<ShutdownProcessListener> {
 
-        public static final int ID = 1;
+        public static final int ID = 9;
 
         @Override
         public void call(ShutdownProcessListener listener) {

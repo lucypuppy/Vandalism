@@ -5,7 +5,7 @@ import de.florianmichael.rclasses.pattern.storage.named.NamedStorage;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.base.config.ConfigManager;
 import de.vandalismdevelopment.vandalism.base.config.template.ConfigWithValues;
-import de.vandalismdevelopment.vandalism.base.event.InputListener;
+import de.vandalismdevelopment.vandalism.base.event.game.MouseInputListener;
 import de.vandalismdevelopment.vandalism.feature.Feature;
 import de.vandalismdevelopment.vandalism.feature.module.gui.ModulesImWindow;
 import de.vandalismdevelopment.vandalism.feature.module.impl.combat.BowSpammerModule;
@@ -21,7 +21,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
-public class ModuleManager extends NamedStorage<AbstractModule> implements InputListener, MinecraftWrapper {
+public class ModuleManager extends NamedStorage<AbstractModule> implements MouseInputListener, MinecraftWrapper {
 
     private final ConfigManager configManager;
 

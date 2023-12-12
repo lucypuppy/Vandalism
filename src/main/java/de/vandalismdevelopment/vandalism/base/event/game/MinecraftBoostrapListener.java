@@ -9,7 +9,7 @@ public interface MinecraftBoostrapListener {
 
     class MinecraftBootstrapEvent extends AbstractEvent<MinecraftBoostrapListener> {
 
-        public static final int ID = 0;
+        public static final int ID = 6;
 
         private final MinecraftClient mc;
 

@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.event;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.base.event.RenderListener;
+import de.vandalismdevelopment.vandalism.base.event.render.CameraClipRaytraceListener;
 import de.vandalismdevelopment.vandalism.util.tooltip.CompoundTooltipComponent;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.item.TooltipData;
@@ -22,7 +22,7 @@ public abstract class MixinItemStack {
     private void vandalism$callTooltipDrawEvent(final CallbackInfoReturnable<Optional<TooltipData>> cir) {
         final List<TooltipData> tooltipData = new ArrayList<>();
         cir.getReturnValue().ifPresent(tooltipData::add);
-        DietrichEvents2.global().postInternal(RenderListener.TooltipDrawEvent.ID, new RenderListener.TooltipDrawEvent(
+        DietrichEvents2.global().postInternal(CameraClipRaytraceListener.TooltipDrawEvent.ID, new CameraClipRaytraceListener.TooltipDrawEvent(
                 (ItemStack) (Object) this, tooltipData)
         );
         if (tooltipData.size() == 1) {

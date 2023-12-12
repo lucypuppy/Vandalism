@@ -3,8 +3,8 @@ package de.vandalismdevelopment.vandalism.integration.hud;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.vandalismdevelopment.vandalism.base.config.ConfigManager;
-import de.vandalismdevelopment.vandalism.base.event.RenderListener;
-import de.vandalismdevelopment.vandalism.base.event.ScreenListener;
+import de.vandalismdevelopment.vandalism.base.event.render.CameraClipRaytraceListener;
+import de.vandalismdevelopment.vandalism.base.event.game.ScreenListener;
 import de.vandalismdevelopment.vandalism.gui.ImGuiManager;
 import de.vandalismdevelopment.vandalism.integration.hud.config.HUDConfig;
 import de.vandalismdevelopment.vandalism.integration.hud.gui.HUDImWindow;
@@ -15,7 +15,7 @@ import de.vandalismdevelopment.vandalism.integration.hud.impl.WatermarkHUDElemen
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 
-public class HUDManager extends Storage<HUDElement> implements RenderListener, ScreenListener, MinecraftWrapper {
+public class HUDManager extends Storage<HUDElement> implements CameraClipRaytraceListener, ScreenListener, MinecraftWrapper {
 
     public ModuleListHUDElement moduleListHUDElement;
 

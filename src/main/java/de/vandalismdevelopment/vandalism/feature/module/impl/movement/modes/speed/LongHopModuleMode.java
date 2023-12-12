@@ -1,12 +1,12 @@
 package de.vandalismdevelopment.vandalism.feature.module.impl.movement.modes.speed;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.base.event.TickListener;
+import de.vandalismdevelopment.vandalism.base.event.game.TickGameListener;
 import de.vandalismdevelopment.vandalism.feature.module.template.ModuleMulti;
 import de.vandalismdevelopment.vandalism.feature.module.impl.movement.SpeedModule;
 import de.vandalismdevelopment.vandalism.util.minecraft.MovementUtil;
 
-public class LongHopModuleMode extends ModuleMulti<SpeedModule> implements TickListener {
+public class LongHopModuleMode extends ModuleMulti<SpeedModule> implements TickGameListener {
 
     public LongHopModuleMode(final SpeedModule parent) {
         super("Long Hop", parent);
@@ -14,12 +14,12 @@ public class LongHopModuleMode extends ModuleMulti<SpeedModule> implements TickL
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(TickEvent.ID, this);
+        DietrichEvents2.global().subscribe(TickGameEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(TickEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(TickGameEvent.ID, this);
     }
 
     @Override

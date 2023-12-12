@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.feature.module.impl.render;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.base.event.RenderListener;
+import de.vandalismdevelopment.vandalism.base.event.render.CameraClipRaytraceListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import net.minecraft.util.Formatting;
 
@@ -10,7 +10,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeutschMacherModule extends AbstractModule implements RenderListener {
+public class DeutschMacherModule extends AbstractModule implements CameraClipRaytraceListener {
 
     private static final String[] SUFFIX = new String[]{
             "", "tausend",

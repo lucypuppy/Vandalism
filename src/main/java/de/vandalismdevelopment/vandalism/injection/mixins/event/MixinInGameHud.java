@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.event;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.base.event.RenderListener;
+import de.vandalismdevelopment.vandalism.base.event.render.CameraClipRaytraceListener;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.DebugHud;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -23,7 +23,7 @@ public abstract class MixinInGameHud {
     private void vandalism$callInGameRender2DEvent(final DrawContext context, final float tickDelta, final CallbackInfo ci) {
         if (this.debugHud.shouldShowDebugHud()) return;
         context.getMatrices().push();
-        DietrichEvents2.global().postInternal(RenderListener.Render2DEvent.ID, new RenderListener.Render2DEvent(context, tickDelta));
+        DietrichEvents2.global().postInternal(CameraClipRaytraceListener.Render2DEvent.ID, new CameraClipRaytraceListener.Render2DEvent(context, tickDelta));
         context.getMatrices().pop();
     }
 

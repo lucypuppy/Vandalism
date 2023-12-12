@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.feature.module.impl.render;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.base.event.RenderListener;
+import de.vandalismdevelopment.vandalism.base.event.render.CameraClipRaytraceListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.base.value.impl.primitive.BooleanValue;
@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.UUID;
 
-public class ProtectorModule extends AbstractModule implements RenderListener {
+public class ProtectorModule extends AbstractModule implements CameraClipRaytraceListener {
 
     private final Value<Boolean> protectUsername = new BooleanValue(
             this,
