@@ -8,8 +8,8 @@ import de.vandalismdevelopment.vandalism.feature.module.template.ModuleMulti;
 public class ModuleModeValue<T extends AbstractModule> extends ValueModeGeneric<ModuleMulti<T>> {
 
     @SafeVarargs
-    public ModuleModeValue(AbstractModule parent, String name, String description, ModuleMulti<T> defaultValue,  ModuleMulti<T>... options) {
-        super(parent, name, description, defaultValue, ModuleMulti::getName, s -> {
+    public ModuleModeValue(AbstractModule parent, String name, String description, ModuleMulti<T>... options) {
+        super(parent, name, description, ModuleMulti::getName, s -> {
             for (final ModuleMulti<T> module : options) {
                 if (module.getName().equals(s)) {
                     return module;
