@@ -17,7 +17,7 @@ import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 
-public class PortScannerImGuiMenu extends ImWindow {
+public class PortScannerImWindow extends ImWindow {
 
     private static final ImGuiInputTextCallback HOSTNAME_FILTER = new ImGuiInputTextCallback() {
 
@@ -40,7 +40,7 @@ public class PortScannerImGuiMenu extends ImWindow {
     private final ConcurrentHashMap<Integer, PortResult> ports;
     private int currentPort, checkedPort;
 
-    public PortScannerImGuiMenu() {
+    public PortScannerImWindow() {
         super("Port Scanner");
         this.hostname = new ImString(253);
         this.progress = new ImString(200);

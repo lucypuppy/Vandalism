@@ -24,7 +24,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class NameHistoryImGuiMenu extends ImWindow {
+public class NameHistoryImWindow extends ImWindow {
 
     private static final ImGuiInputTextCallback USERNAME_NAME_FILTER = new ImGuiInputTextCallback() {
 
@@ -52,7 +52,7 @@ public class NameHistoryImGuiMenu extends ImWindow {
 
     private String lastUsername, lastUUID;
 
-    public NameHistoryImGuiMenu() {
+    public NameHistoryImWindow() {
         super("Name History");
         this.username = new ImString(16);
         this.state = new ImString(200);

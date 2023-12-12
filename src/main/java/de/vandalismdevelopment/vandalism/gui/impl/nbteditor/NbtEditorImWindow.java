@@ -17,11 +17,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.Executors;
 
-public class NbtEditorImGuiMenu extends ImWindow {
+public class NbtEditorImWindow extends ImWindow {
 
     private final NbtManager nbtManager;
 
-    public NbtEditorImGuiMenu() {
+    public NbtEditorImWindow() {
         super("Nbt Editor");
         this.nbtManager = new NbtManager();
     }

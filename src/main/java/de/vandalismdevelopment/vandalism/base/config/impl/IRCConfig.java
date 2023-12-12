@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.base.config.impl;
 
 import com.google.gson.JsonObject;
 import de.vandalismdevelopment.vandalism.base.config.AbstractConfig;
-import de.vandalismdevelopment.vandalism.gui.impl.irc.IrcImGuiMenu;
+import de.vandalismdevelopment.vandalism.gui.impl.irc.IrcImWindow;
 import imgui.type.ImString;
 
 import java.util.HashMap;
@@ -14,9 +14,9 @@ public class IRCConfig extends AbstractConfig<JsonObject> {
     public IRCConfig() {
         super(JsonObject.class, "irc");
 
-        this.values.put("address", IrcImGuiMenu.ADDRESS);
-        this.values.put("username", IrcImGuiMenu.USERNAME);
-        this.values.put("password", IrcImGuiMenu.PASSWORD);
+        this.values.put("address", IrcImWindow.ADDRESS);
+        this.values.put("username", IrcImWindow.USERNAME);
+        this.values.put("password", IrcImWindow.PASSWORD);
     }
 
     @Override

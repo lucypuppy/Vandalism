@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.gui.impl.script;
+package de.vandalismdevelopment.vandalism.feature.script.gui;
 
 import de.florianmichael.rclasses.common.RandomUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ScriptsImGuiMenu extends ImWindow {
+public class ScriptsImWindow extends ImWindow {
 
     private static final SimpleDateFormat MODIFICATION_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss a");
 
@@ -33,7 +33,7 @@ public class ScriptsImGuiMenu extends ImWindow {
 
     private final ImBoolean hideHints;
 
-    public ScriptsImGuiMenu() {
+    public ScriptsImWindow() {
         super("Scripts");
         this.scriptEditors = new ConcurrentHashMap<>();
         this.hideHints = new ImBoolean(false);

@@ -12,7 +12,7 @@ import net.minecraft.client.gui.DrawContext;
 
 import java.util.concurrent.Executors;
 
-public class ServerAddressResolverImGuiMenu extends ImWindow {
+public class ServerAddressResolverImWindow extends ImWindow {
 
     private static final ImGuiInputTextCallback HOSTNAME_FILTER = new ImGuiInputTextCallback() {
 
@@ -32,7 +32,7 @@ public class ServerAddressResolverImGuiMenu extends ImWindow {
 
     private final ImString hostname, lastData;
 
-    public ServerAddressResolverImGuiMenu() {
+    public ServerAddressResolverImWindow() {
         super("Server Address Resolver");
         this.hostname = new ImString(253);
         this.lastData = new ImString();

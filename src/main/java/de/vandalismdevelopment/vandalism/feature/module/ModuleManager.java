@@ -1,13 +1,13 @@
 package de.vandalismdevelopment.vandalism.feature.module;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.florianmichael.rclasses.pattern.storage.named.NamedStorage;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.base.config.ConfigManager;
 import de.vandalismdevelopment.vandalism.base.config.template.ConfigWithValues;
 import de.vandalismdevelopment.vandalism.base.event.InputListener;
 import de.vandalismdevelopment.vandalism.feature.Feature;
+import de.vandalismdevelopment.vandalism.feature.module.gui.ModulesImWindow;
 import de.vandalismdevelopment.vandalism.feature.module.impl.combat.BowSpammerModule;
 import de.vandalismdevelopment.vandalism.feature.module.impl.development.PacketLoggerModule;
 import de.vandalismdevelopment.vandalism.feature.module.impl.development.TestModule;
@@ -15,6 +15,7 @@ import de.vandalismdevelopment.vandalism.feature.module.impl.exploit.*;
 import de.vandalismdevelopment.vandalism.feature.module.impl.misc.*;
 import de.vandalismdevelopment.vandalism.feature.module.impl.movement.*;
 import de.vandalismdevelopment.vandalism.feature.module.impl.render.*;
+import de.vandalismdevelopment.vandalism.gui.ImGuiManager;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import org.lwjgl.glfw.GLFW;
 
@@ -34,8 +35,9 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Input
     private TrueSightModule trueSightModule;
     private VisualThrottleModule visualThrottleModule;
 
-    public ModuleManager(final ConfigManager configManager) {
+    public ModuleManager(final ConfigManager configManager, final ImGuiManager imGuiManager) {
         this.configManager = configManager;
+        imGuiManager.add(new ModulesImWindow());
 
         DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
     }

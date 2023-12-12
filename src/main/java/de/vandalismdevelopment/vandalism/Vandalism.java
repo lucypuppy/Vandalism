@@ -78,54 +78,61 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
                 "     ░                         ░                                                "
         };
         final String spacer = "=".repeat(ASCII_ART[0].length() + 15);
-        this.logger.info("");
-        this.logger.info(spacer);
+        logger.info("");
+        logger.info(spacer);
 
         for (final String line : ASCII_ART) {
-            this.logger.info(line);
+            logger.info(line);
         }
-        this.logger.info(FabricBootstrap.WINDOW_TITLE.replaceFirst(FabricBootstrap.MOD_NAME, " ".repeat(15)));
+        logger.info(FabricBootstrap.WINDOW_TITLE.replaceFirst(FabricBootstrap.MOD_NAME, " ".repeat(15)));
 
-        this.logger.info(spacer);
-        this.logger.info("");
+        logger.info(spacer);
+        logger.info("");
     }
 
     @Override
     public void onBootstrapGame(MinecraftClient mc) {
         printStartup();
-        this.logger.info("Salvete amicus, et vale! Quid agis?");
+        logger.info("Schmuse Katze hasst diesen Trick!");
         mc.getWindow().setTitle(String.format("Starting %s...", FabricBootstrap.WINDOW_TITLE));
 
         // Base handlers
-        this.runDirectory = new File(runDirectory, FabricBootstrap.MOD_ID);
-        this.runDirectory.mkdirs();
+        runDirectory = new File(runDirectory, FabricBootstrap.MOD_ID);
+        runDirectory.mkdirs();
 
-        this.configManager = new ConfigManager();
-        this.imGuiManager = new ImGuiManager(this.runDirectory);
-        this.clientSettings = new ClientSettings(this.configManager, this.imGuiManager);
-        this.accountManager = new AccountManager(this.configManager);
-        this.accountManager.init();
+        configManager = new ConfigManager();
+        configManager.init();
+
+        imGuiManager = new ImGuiManager(runDirectory);
+        clientSettings = new ClientSettings(configManager, imGuiManager);
+        accountManager = new AccountManager(configManager);
+        accountManager.init();
         
         // Features
-        this.moduleManager = new ModuleManager(configManager);
-        this.commandManager = new CommandManager();
-        this.scriptManager = new ScriptManager(configManager, this.runDirectory);
+        moduleManager = new ModuleManager(configManager, imGuiManager);
+        moduleManager.init();
+
+        commandManager = new CommandManager();
+        commandManager.init();
+
+        scriptManager = new ScriptManager(configManager, imGuiManager, runDirectory);
+        scriptManager.init();
 
         // Integration
-        this.rotationListener = new RotationListener();
-        this.serverListManager = new ServerListManager(this.runDirectory);
-        this.serverListManager.loadConfig();
-        this.hudManager = new HUDManager(this.configManager, this.imGuiManager);
-        this.hudManager.init();
+        rotationListener = new RotationListener();
+        serverListManager = new ServerListManager(runDirectory);
+        serverListManager.loadConfig();
+        hudManager = new HUDManager(configManager, imGuiManager);
+        hudManager.init();
 
         // We have to load the config files after all systems have been initialized
-        this.configManager.init();
+        configManager.init();
         mc.getWindow().setTitle(FabricBootstrap.WINDOW_TITLE);
     }
 
     @Override
     public void onShutdownProcess() {
-        this.configManager.save();
+        configManager.save();
     }
 
     public static Vandalism getInstance() {

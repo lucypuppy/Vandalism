@@ -6,6 +6,12 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.base.event.InputListener;
 import de.vandalismdevelopment.vandalism.base.event.RenderListener;
 import de.vandalismdevelopment.vandalism.gui.base.ImGuiScreen;
+import de.vandalismdevelopment.vandalism.gui.impl.ServerAddressResolverImWindow;
+import de.vandalismdevelopment.vandalism.gui.impl.ServerPingerImWindow;
+import de.vandalismdevelopment.vandalism.gui.impl.irc.IrcImWindow;
+import de.vandalismdevelopment.vandalism.gui.impl.namehistory.NameHistoryImWindow;
+import de.vandalismdevelopment.vandalism.gui.impl.nbteditor.NbtEditorImWindow;
+import de.vandalismdevelopment.vandalism.gui.impl.port.PortScannerImWindow;
 import de.vandalismdevelopment.vandalism.gui.loader.ImLoader;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.MinecraftClient;
@@ -25,6 +31,14 @@ public class ImGuiManager extends Storage<ImWindow> implements RenderListener, I
 
     @Override
     public void init() {
+        this.add(
+                new IrcImWindow(),
+                new NameHistoryImWindow(),
+                new NbtEditorImWindow(),
+                new PortScannerImWindow(),
+                new ServerAddressResolverImWindow(),
+                new ServerPingerImWindow()
+        );
     }
 
     @Override
