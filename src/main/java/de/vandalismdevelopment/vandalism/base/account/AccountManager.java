@@ -35,8 +35,8 @@ public class AccountManager extends Storage<AbstractAccount> {
         imGuiManager.add(new AccountsImWindow(this));
     }
 
-    public AbstractAccount currentAccount;
     private AbstractAccount firstAccount;
+    private AbstractAccount currentAccount;
 
     @Override
     public void init() {

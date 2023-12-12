@@ -11,6 +11,7 @@ import imgui.type.ImString;
 import net.minecraft.client.session.Session;
 
 public abstract class AbstractTokenBasedAccount extends AbstractAccount {
+    private static final WebUtils JSON_REQUESTER = WebUtils.create().withHeader("Content-Type", "application/json");
 
     private final String redeemUrl;
     private String token;
@@ -64,21 +65,18 @@ public abstract class AbstractTokenBasedAccount extends AbstractAccount {
             updateSession(session); // If we are already logged in, we don't need to do anything except reloading the session
             return;
         }
-        final JsonObject request = new JsonObject();
-        request.addProperty("token", this.token);
 
-        WebUtils.DEFAULT.withHeader("Content-Type", "application/json");
-        final String response = WebUtils.DEFAULT.post(this.redeemUrl, request.toString());
+        final String response = JSON_REQUESTER.post(this.redeemUrl, "{\"token\":\" " + this.token + " \"}");
         updateSession(fromResponse(response));
     }
 
     @Override
-    public void save0(JsonObject mainNode) throws Throwable {
+    public void save0(JsonObject mainNode) {
         mainNode.addProperty("token", this.token);
     }
 
     @Override
-    public void load0(JsonObject mainNode) throws Throwable {
+    public void load0(JsonObject mainNode) {
         this.token = mainNode.get("token").getAsString();
     }
 

@@ -9,18 +9,32 @@ import java.util.Set;
 
 public class EventRegistry {
 
-    private final Set<RegisteredPacketSubscriber> subscribers = new HashSet<>();
+    /**
+     * Registered packet listeners
+     */
+    private final Set<PacketSubscriber> subscribers = new HashSet<>();
 
-    public void registerEvents(Object holder) {
-        subscribers.add(new RegisteredPacketSubscriber(holder));
+    /**
+     * Register a packet listener
+     *
+     * @param holder listener
+     */
+    public void registerEvents(final Object holder) {
+        subscribers.add(new PacketSubscriber(holder));
     }
 
-    public void invoke(Packet packet, PacketHandler ctx) {
+    /**
+     * Invoke a packet listener
+     *
+     * @param packet packet
+     * @param ctx    packet handler
+     */
+    public void invoke(final Packet packet, final PacketHandler ctx) {
         try {
-            for (RegisteredPacketSubscriber subscriber : subscribers) {
+            for (final PacketSubscriber subscriber : subscribers)
                 subscriber.invoke(packet, ctx);
-            }
-        } catch (InvocationTargetException | IllegalAccessException ignored) {
+        } catch (InvocationTargetException |
+                 IllegalAccessException ignored) {
         }
     }
 

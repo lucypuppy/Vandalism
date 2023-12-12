@@ -4,7 +4,7 @@ import re.catgirls.irc.ChatClient;
 import re.catgirls.irc.packet.impl.c2s.C2SLoginRequestPacket;
 import re.catgirls.irc.packet.impl.shared.SharedKeyExchangePacket;
 import re.catgirls.packets.connection.PacketHandler;
-import re.catgirls.packets.event.PacketSubscriber;
+import re.catgirls.packets.event.interfaces.IPacketSubscriber;
 
 /**
  * <h2>Handle incoming key exchange packets</h2>
@@ -28,8 +28,8 @@ public class KeyExchangePacketListener {
      * @param ctx    the packet handler
      * @see SharedKeyExchangePacket
      */
-    @PacketSubscriber
-    public void handleKeyExchange(SharedKeyExchangePacket packet, PacketHandler ctx) {
+    @IPacketSubscriber
+    public void handleKeyExchange(final SharedKeyExchangePacket packet, final PacketHandler ctx) {
         ChatClient.getInstance().getSession().setServerPublicKey(packet.getKey());
 
         ctx.send(new SharedKeyExchangePacket(ChatClient.getInstance().getSession().getClientKeyPair().getPublic()));

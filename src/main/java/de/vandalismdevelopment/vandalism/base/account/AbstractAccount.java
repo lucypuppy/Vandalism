@@ -8,8 +8,8 @@ import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilEnvironment;
 import de.florianmichael.rclasses.io.mappings.TimeFormatter;
 import de.florianmichael.rclasses.pattern.functional.IName;
+import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import de.vandalismdevelopment.vandalism.util.render.PlayerSkinRenderer;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.SocialInteractionsManager;
 import net.minecraft.client.realms.RealmsClient;
 import net.minecraft.client.realms.RealmsPeriodicCheckers;
@@ -21,7 +21,7 @@ import net.minecraft.client.session.report.ReporterEnvironment;
 import java.util.Optional;
 import java.util.UUID;
 
-public abstract class AbstractAccount implements IName {
+public abstract class AbstractAccount implements IName, MinecraftWrapper {
 
     private final String name;
     protected Session session;
@@ -93,7 +93,9 @@ public abstract class AbstractAccount implements IName {
 
     public void updateSession(final Session session) {
         this.session = session;
+
         playerSkin = new PlayerSkinRenderer(session.getUuidOrNull(), session.getUsername());
+        lastLogin = TimeFormatter.currentDateTime();
     }
 
     @Override
@@ -102,20 +104,24 @@ public abstract class AbstractAccount implements IName {
     }
 
     public void logIn() throws Throwable {
-        final MinecraftClient mc = MinecraftClient.getInstance();
-        logIn0();
-        lastLogin = TimeFormatter.currentDateTime();
-
-        mc.session = session;
-        mc.getSplashTextLoader().session = session;
-        mc.sessionService = new YggdrasilAuthenticationService(mc.getNetworkProxy(), getEnvironment()).createMinecraftSessionService();
-
-        if (!session.getAccountType().equals(Session.AccountType.MSA)) {
+        logIn0(); // Set the game session and reload the skins
+        if (reloadProfileKeys(session, getEnvironment())) {
             setStatus("Updated session and logged in");
         } else {
+            setStatus("Failed to update UserApiService");
+        }
+    }
+
+    public static boolean reloadProfileKeys(final Session session, final Environment environment) {
+        final var authenticationService = new YggdrasilAuthenticationService(mc.getNetworkProxy(), environment);
+        mc.session = session;
+        mc.getSplashTextLoader().session = session;
+        mc.sessionService = authenticationService.createMinecraftSessionService();
+
+        if (session.getAccountType().equals(Session.AccountType.MSA)) {
             UserApiService userApiService;
             try {
-                userApiService = new YggdrasilAuthenticationService(mc.getNetworkProxy(), getEnvironment()).createUserApiService(session.getAccessToken());
+                userApiService = authenticationService.createUserApiService(session.getAccessToken());
             } catch (final AuthenticationException e) {
                 userApiService = UserApiService.OFFLINE;
             }
@@ -125,11 +131,9 @@ public abstract class AbstractAccount implements IName {
             mc.abuseReportContext = AbuseReportContext.create(mc.abuseReportContext != null ? mc.abuseReportContext.environment : ReporterEnvironment.ofIntegratedServer(), userApiService);
             mc.realmsPeriodicCheckers = new RealmsPeriodicCheckers(RealmsClient.createRealmsClient(mc));
 
-            if (userApiService == UserApiService.OFFLINE) {
-                setStatus("Failed to update UserApiService");
-            } else {
-                setStatus("Updated session and logged in");
-            }
+            return userApiService != UserApiService.OFFLINE;
+        } else {
+            return true;
         }
     }
 
