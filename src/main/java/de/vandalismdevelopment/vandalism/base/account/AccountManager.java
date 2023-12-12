@@ -4,9 +4,9 @@ import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.vandalismdevelopment.vandalism.base.account.config.AccountsConfig;
 import de.vandalismdevelopment.vandalism.base.account.gui.AccountsImWindow;
 import de.vandalismdevelopment.vandalism.base.account.type.EasyMCAccount;
+import de.vandalismdevelopment.vandalism.base.account.type.SessionAccount;
 import de.vandalismdevelopment.vandalism.base.account.type.microsoft.MSCredentialsAccount;
 import de.vandalismdevelopment.vandalism.base.account.type.microsoft.MSDeviceCodeAccount;
-import de.vandalismdevelopment.vandalism.base.account.type.SessionAccount;
 import de.vandalismdevelopment.vandalism.base.account.type.microsoft.MSLocalWebserverAccount;
 import de.vandalismdevelopment.vandalism.base.config.ConfigManager;
 import de.vandalismdevelopment.vandalism.gui.ImGuiManager;
@@ -14,12 +14,12 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.session.Session;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class AccountManager extends Storage<AbstractAccount> {
 
-    public static final Map<AbstractAccount, AccountFactory> ACCOUNT_TYPES = new HashMap<>();
+    public static final Map<AbstractAccount, AccountFactory> ACCOUNT_TYPES = new LinkedHashMap<>();
 
     public AccountManager(final ConfigManager configManager, final ImGuiManager imGuiManager) {
         Arrays.asList(
