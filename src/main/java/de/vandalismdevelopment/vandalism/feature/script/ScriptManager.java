@@ -7,8 +7,10 @@ import de.vandalismdevelopment.vandalism.base.config.ConfigManager;
 import de.vandalismdevelopment.vandalism.base.config.template.ConfigWithValues;
 import de.vandalismdevelopment.vandalism.base.event.InputListener;
 import de.vandalismdevelopment.vandalism.base.event.TickListener;
+import de.vandalismdevelopment.vandalism.feature.script.gui.ScriptsImWindow;
 import de.vandalismdevelopment.vandalism.feature.script.parse.ScriptParser;
 import de.vandalismdevelopment.vandalism.feature.script.parse.command.ScriptCommand;
+import de.vandalismdevelopment.vandalism.gui.ImGuiManager;
 import de.vandalismdevelopment.vandalism.util.minecraft.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.util.Pair;
@@ -25,8 +27,9 @@ public class ScriptManager extends NamedStorage<Script> implements TickListener,
 
     private final ConfigManager configManager;
 
-    public ScriptManager(final ConfigManager configManager, final File runDirectory) {
+    public ScriptManager(final ConfigManager configManager, final ImGuiManager imGuiManager, final File runDirectory) {
         this.configManager = configManager;
+        imGuiManager.add(new ScriptsImWindow());
         this.directory = new File(runDirectory, "scripts");
 
         DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);

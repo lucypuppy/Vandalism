@@ -24,7 +24,7 @@ import net.minecraft.client.gui.DrawContext;
 import java.net.BindException;
 import java.net.UnknownHostException;
 
-public class ServerPingerImGuiMenu extends ImWindow {
+public class ServerPingerImWindow extends ImWindow {
 
     private static final ImGuiInputTextCallback HOSTNAME_FILTER = new ImGuiInputTextCallback() {
 
@@ -49,7 +49,7 @@ public class ServerPingerImGuiMenu extends ImWindow {
     private boolean autoPing;
     private final ServerInfoWidget serverInfoWidget;
 
-    public ServerPingerImGuiMenu() {
+    public ServerPingerImWindow() {
         super("Server Pinger");
         this.hostname = new ImString(253);
         this.port = new ImInt(25565);

@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.gui.impl.script;
+package de.vandalismdevelopment.vandalism.feature.script.gui;
 
 import de.florianmichael.rclasses.common.StringUtils;
 

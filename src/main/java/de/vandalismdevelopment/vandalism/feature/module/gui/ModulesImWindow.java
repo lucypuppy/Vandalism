@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.gui.impl;
+package de.vandalismdevelopment.vandalism.feature.module.gui;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
@@ -18,18 +18,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class ModulesImGuiMenu extends ImWindow {
+public class ModulesImWindow extends ImWindow {
 
-    private final ImString searchInput, favoriteModulesSearchInput, enabledModulesSearchInput;
+    private final List<AbstractModule> openedModules = new CopyOnWriteArrayList<>();
 
-    private final List<AbstractModule> openedModules;
+    private final ImString searchInput = new ImString();
+    private final ImString favoriteModulesSearchInput = new ImString();
+    private final ImString enabledModulesSearchInput = new ImString();
 
-    public ModulesImGuiMenu() {
+    public ModulesImWindow() {
         super("Modules");
-        this.searchInput = new ImString();
-        this.favoriteModulesSearchInput = new ImString();
-        this.enabledModulesSearchInput = new ImString();
-        this.openedModules = new CopyOnWriteArrayList<>();
     }
 
     @Override

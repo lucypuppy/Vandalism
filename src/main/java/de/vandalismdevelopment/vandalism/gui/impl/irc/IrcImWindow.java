@@ -18,9 +18,9 @@ import re.catgirls.irc.session.UserProfile;
  * The IRC menu.
  * WARNING: This is an experimental feature and may change a lot in the future.
  */
-public class IrcImGuiMenu extends ImWindow {
+public class IrcImWindow extends ImWindow {
 
-    public IrcImGuiMenu() {
+    public IrcImWindow() {
         super("IRC");
     }
 
