@@ -34,7 +34,7 @@ import java.util.Optional;
 public class BetterTooltipsModule extends AbstractModule implements RenderListener {
 
     public BetterTooltipsModule() {
-        super("Better Tooltips", "Improves item tooltips from the game.", FeatureCategory.RENDER, false, false);
+        super("Better Tooltips", "Improves item tooltips from the game.", Category.RENDER);
     }
 
     @Override

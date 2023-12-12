@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.namehistory;
+package de.vandalismdevelopment.vandalism.gui.impl.menu.impl.namehistory;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -6,12 +6,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.florianmichael.rclasses.io.WebUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.ImGuiMenu;
+import de.vandalismdevelopment.vandalism.gui_v2.ImWindow;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiTableFlags;
+import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.PlayerListEntry;
@@ -24,7 +25,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class NameHistoryImGuiMenu extends ImGuiMenu {
+public class NameHistoryImGuiMenu extends ImWindow {
 
     private static final ImGuiInputTextCallback USERNAME_NAME_FILTER = new ImGuiInputTextCallback() {
 
@@ -84,10 +85,7 @@ public class NameHistoryImGuiMenu extends ImGuiMenu {
 
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        if (ImGui.begin(
-                "Name History##namehistory",
-                Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
-        )) {
+        if (ImGui.begin("Name History##namehistory", ImGuiWindowFlags.NoCollapse)) {
             ImGui.text("State");
             ImGui.setNextItemWidth(-1);
             ImGui.inputText("##namehistorystate", this.state, ImGuiInputTextFlags.ReadOnly);
@@ -215,7 +213,7 @@ public class NameHistoryImGuiMenu extends ImGuiMenu {
                                 ImGuiTableFlags.ContextMenuInBody
                 )) {
                     for (final NamesTableColumn namesTableColumn : namesTableColumns) {
-                        ImGui.tableSetupColumn(namesTableColumn.normalName());
+                        ImGui.tableSetupColumn(namesTableColumn.getName());
                     }
                     ImGui.tableHeadersRow();
                     for (final Name name : this.names) {

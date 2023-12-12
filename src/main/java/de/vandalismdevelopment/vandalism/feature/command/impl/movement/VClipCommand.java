@@ -9,7 +9,7 @@ import net.minecraft.command.CommandSource;
 public class VClipCommand extends AbstractCommand {
 
     public VClipCommand() {
-        super("VClip", "Allows you to teleport yourself by vertical offset.", FeatureCategory.MOVEMENT, false, "vclip", "vtp", "verticalteleport");
+        super("Allows you to teleport yourself by vertical offset.", Category.MOVEMENT, "vclip", "vtp", "verticalteleport");
     }
 
     @Override

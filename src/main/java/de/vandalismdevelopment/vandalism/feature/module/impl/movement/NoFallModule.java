@@ -7,21 +7,15 @@ import de.vandalismdevelopment.vandalism.feature.module.value.ModuleModeValue;
 
 public class NoFallModule extends AbstractModule {
 
-    private final Value<String> mode = new ModuleModeValue<>(
+    private final ModuleModeValue<NoFallModule> mode = new ModuleModeValue<>(
+            this,
             "Mode",
             "The current no fall mode.",
-            this,
             new VanillaModuleMode(this)
     );
 
     public NoFallModule() {
-        super(
-                "No Fall",
-                "Prevents some or all of the fall damage you get.",
-                FeatureCategory.MOVEMENT,
-                false,
-                false
-        );
+        super("No Fall", "Prevents some or all of the fall damage you get.", Category.MOVEMENT);
     }
 
 }

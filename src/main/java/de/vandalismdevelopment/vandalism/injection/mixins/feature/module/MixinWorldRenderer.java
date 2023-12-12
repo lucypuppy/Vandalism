@@ -15,8 +15,8 @@ public abstract class MixinWorldRenderer {
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/OutlineVertexConsumerProvider;setColor(IIII)V"))
     private void vandalism$espOutlineColor(final OutlineVertexConsumerProvider instance, final int red, final int green, final int blue, final int alpha) {
-        final ESPModule espModule = Vandalism.getInstance().getModuleRegistry().getEspModule();
-        if (espModule.isEnabled()) {
+        final ESPModule espModule = Vandalism.getInstance().getModuleManager().getEspModule();
+        if (espModule.isActive()) {
             final Color color = espModule.outlineColor.getValue();
             instance.setColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
             return;

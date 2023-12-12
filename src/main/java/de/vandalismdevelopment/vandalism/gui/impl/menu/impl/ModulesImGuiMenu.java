@@ -2,6 +2,7 @@ package de.vandalismdevelopment.vandalism.gui.impl.menu.impl;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.feature.Feature;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.gui_v2.ImWindow;
@@ -33,8 +34,8 @@ public class ModulesImGuiMenu extends ImWindow {
 
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        final FeatureList<AbstractModule> modules = Vandalism.getInstance().getModuleRegistry().getModules();
-        if (!modules.isEmpty()) {
+        final var moduleManager = Vandalism.getInstance().getModuleManager();
+        if (!moduleManager.getList().isEmpty()) {
             final float width = 185, minHeight = 140, maxHeight = 415;
             final int windowFlags = ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse;
             ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
@@ -46,7 +47,7 @@ public class ModulesImGuiMenu extends ImWindow {
             ImGui.separator();
             ImGui.beginChild(modulesSearchIdentifier + "scrolllist", -1, -1, true);
             if (!this.searchInput.get().isBlank()) {
-                for (final AbstractModule module : Vandalism.getInstance().getModuleRegistry().getModules()) {
+                for (final AbstractModule module : moduleManager.getList()) {
                     if (StringUtils.contains(module.getName(), this.searchInput.get()) || StringUtils.contains(module.getDescription(), this.searchInput.get())) {
                         this.renderModule(module, "search");
                     }
@@ -56,7 +57,7 @@ public class ModulesImGuiMenu extends ImWindow {
             ImGui.separator();
             ImGui.end();
             final List<AbstractModule> favoriteModules = new ArrayList<>();
-            for (final AbstractModule module : modules) {
+            for (final AbstractModule module : moduleManager.getList()) {
                 if (module.isFavorite()) {
                     favoriteModules.add(module);
                 }
@@ -83,8 +84,8 @@ public class ModulesImGuiMenu extends ImWindow {
                 ImGui.end();
             }
             final List<AbstractModule> enabledModules = new ArrayList<>();
-            for (final AbstractModule module : modules) {
-                if (module.isEnabled()) {
+            for (final AbstractModule module : moduleManager.getList()) {
+                if (module.isActive()) {
                     enabledModules.add(module);
                 }
             }
@@ -109,12 +110,12 @@ public class ModulesImGuiMenu extends ImWindow {
                 ImGui.separator();
                 ImGui.end();
             }
-            for (final FeatureCategory featureCategory : FeatureCategory.values()) {
-                final FeatureList<AbstractModule> modulesByCategory = modules.get(featureCategory);
+            for (final Feature.Category featureCategory : Feature.Category.values()) {
+                final List<AbstractModule> modulesByCategory = moduleManager.getByCategory(featureCategory);
                 if (modulesByCategory.isEmpty()) continue;
-                final String featureCategoryIdentifier = "##" + featureCategory.normalName() + "modulesfeaturecategory";
+                final String featureCategoryIdentifier = "##" + featureCategory.getName() + "modulesfeaturecategory";
                 ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
-                ImGui.begin(featureCategory.normalName() + " Modules" + featureCategoryIdentifier, windowFlags);
+                ImGui.begin(featureCategory.getName() + " Modules" + featureCategoryIdentifier, windowFlags);
                 ImGui.separator();
                 ImGui.beginChild(featureCategoryIdentifier + "scrolllist", -1, -1, true);
                 for (final AbstractModule module : modulesByCategory) {
@@ -125,7 +126,7 @@ public class ModulesImGuiMenu extends ImWindow {
                 ImGui.end();
             }
             for (final AbstractModule module : this.openedModules) {
-                final String id = "##opened" + module.getCategory().normalName() + "module" + module.getName();
+                final String id = "##opened" + module.getCategory().getName() + "module" + module.getName();
                 ImGui.begin(module.getName() + " Config" + id, windowFlags);
                 this.renderModuleData(module, id, -1, -1);
                 ImGui.end();
@@ -134,14 +135,14 @@ public class ModulesImGuiMenu extends ImWindow {
     }
 
     private void renderModule(final AbstractModule module, final String id) {
-        final String moduleId = "##" + id + module.getCategory().normalName() + "module" + module.getName();
+        final String moduleId = "##" + id + module.getCategory().getName() + "module" + module.getName();
         final float[] color;
-        if (module.isEnabled()) {
+        if (module.isActive()) {
             color = new float[]{0.1f, 0.8f, 0.1f, 0.45f};
         } else {
             color = new float[]{0.8f, 0.1f, 0.1f, 0.45f};
         }
-        final boolean moduleEnabled = module.isEnabled();
+        final boolean moduleEnabled = module.isActive();
         if (moduleEnabled) {
             ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], color[3]);
             ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], color[3] - 0.1f);

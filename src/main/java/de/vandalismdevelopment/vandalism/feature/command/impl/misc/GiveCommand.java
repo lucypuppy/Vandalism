@@ -10,7 +10,7 @@ import net.minecraft.command.argument.ItemStackArgumentType;
 public class GiveCommand extends AbstractCommand {
 
     public GiveCommand() {
-        super("Give", "Gives you items when you are in creative mode.", FeatureCategory.MISC, false, "give", "giveitem", "itemgive", "getitem", "itemget", "i");
+        super("Gives you items when you are in creative mode.", Category.MISC, "give", "giveitem", "itemgive", "getitem", "itemget", "i");
     }
 
     @Override

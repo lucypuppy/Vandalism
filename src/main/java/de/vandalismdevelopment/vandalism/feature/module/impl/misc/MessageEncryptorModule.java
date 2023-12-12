@@ -17,17 +17,11 @@ public class MessageEncryptorModule extends AbstractModule implements ChatListen
             .append(Text.literal("E").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xff2626))))
             .append("]");
 
-    private static final char OFFSET_CHAR = '\u3400', CHECK_CHAR = '\u3800', CHECK_CHAR_2 = '\u0025';
+    private static final char OFFSET_CHAR = '㐀', CHECK_CHAR = '㠀', CHECK_CHAR_2 = '%';
 
     public MessageEncryptorModule() {
-        super(
-                "Message Encryptor",
-                "This module encrypts every message you sent that starts and ends with '%'" +
-                        " (e.g. Hello %1234% -> Hello {encrypted message} [E])",
-                FeatureCategory.MISC,
-                false,
-                false
-        );
+        super("Message Encryptor", "This module encrypts every message you sent that starts and ends with '%'" +
+                        " (e.g. Hello %1234% -> Hello {encrypted message} [E])", Category.MISC);
     }
 
     @Override

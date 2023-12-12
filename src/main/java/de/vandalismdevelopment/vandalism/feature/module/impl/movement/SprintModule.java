@@ -13,20 +13,14 @@ import net.minecraft.util.math.MathHelper;
 public class SprintModule extends AbstractModule implements MovementListener {
 
     private final Value<Boolean> forceSprint = new BooleanValue(
+            this,
             "Force Sprint",
             "Forces you to sprint even if you are not moving.",
-            this,
             false
     );
 
     public SprintModule() {
-        super(
-                "Sprint",
-                "Automatically let's you sprint!",
-                FeatureCategory.MOVEMENT,
-                false,
-                false
-        );
+        super("Sprint", "Automatically let's you sprint!", Category.MOVEMENT);
     }
 
     @Override

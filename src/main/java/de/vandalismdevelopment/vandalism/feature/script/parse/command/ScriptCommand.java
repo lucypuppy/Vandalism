@@ -3,6 +3,8 @@ package de.vandalismdevelopment.vandalism.feature.script.parse.command;
 import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.feature.command.AbstractCommand;
+import de.vandalismdevelopment.vandalism.feature.command.CommandManager;
 import de.vandalismdevelopment.vandalism.feature.script.parse.ScriptParser;
 import de.vandalismdevelopment.vandalism.feature.script.parse.ScriptVariable;
 import de.vandalismdevelopment.vandalism.util.minecraft.ChatUtil;
@@ -27,10 +29,11 @@ public enum ScriptCommand {
         if (args[0].equals("script") && args.length > 2 && args[1].equals("execute") && args[2].equals(scriptName)) {
             throw new RuntimeException("This script can't run itself because this would cause a stack overflow");
         }
+        final var dispatcher = Vandalism.getInstance().getCommandManager().getCommandDispatcher();
         if (execute) {
-            Vandalism.getInstance().getCommandRegistry().execute(ScriptVariable.applyReplacements(code));
+            dispatcher.execute(ScriptVariable.applyReplacements(code), AbstractCommand.COMMAND_SOURCE);
         } else {
-            final ParseResults<CommandSource> parse = Vandalism.getInstance().getCommandRegistry().parse(code);
+            final ParseResults<CommandSource> parse = dispatcher.parse(code, AbstractCommand.COMMAND_SOURCE);
             if (parse.getReader().canRead()) {
                 if (parse.getExceptions().size() == 1) {
                     throw parse.getExceptions().values().iterator().next();

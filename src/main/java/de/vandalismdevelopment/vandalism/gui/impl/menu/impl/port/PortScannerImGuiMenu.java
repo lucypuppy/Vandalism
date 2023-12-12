@@ -1,12 +1,13 @@
 package de.vandalismdevelopment.vandalism.gui.impl.menu.impl.port;
 
-import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.gui.imgui.impl.widget.impl.serverinfo.ServerInfosTableColumn;
+import de.vandalismdevelopment.vandalism.gui.impl.widget.impl.serverinfo.ServerInfosTableColumn;
+import de.vandalismdevelopment.vandalism.gui_v2.ImWindow;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiTableFlags;
+import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImInt;
 import imgui.type.ImString;
 import net.minecraft.client.gui.DrawContext;
@@ -16,7 +17,7 @@ import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 
-public class PortScannerImGuiMenu extends ImGuiMenu {
+public class PortScannerImGuiMenu extends ImWindow {
 
     private static final ImGuiInputTextCallback HOSTNAME_FILTER = new ImGuiInputTextCallback() {
 
@@ -72,10 +73,7 @@ public class PortScannerImGuiMenu extends ImGuiMenu {
         for (final PortResult portResult : this.ports.values()) {
             portResult.renderSubData();
         }
-        if (ImGui.begin(
-                "Port Scanner##portscanner",
-                Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags()
-        )) {
+        if (ImGui.begin("Port Scanner##portscanner", ImGuiWindowFlags.NoCollapse)) {
             ImGui.text("Current State:");
             ImGui.text(this.state.get());
             ImGui.separator();
@@ -170,7 +168,7 @@ public class PortScannerImGuiMenu extends ImGuiMenu {
                                 ImGuiTableFlags.ContextMenuInBody
                 )) {
                     for (final PortsTableColumn portsTableColumn : portsTableColumns) {
-                        ImGui.tableSetupColumn(portsTableColumn.normalName());
+                        ImGui.tableSetupColumn(portsTableColumn.getName());
                     }
                     ImGui.tableHeadersRow();
                     for (final PortResult portResult : this.ports.values()) {
@@ -210,7 +208,7 @@ public class PortScannerImGuiMenu extends ImGuiMenu {
                                 ImGuiTableFlags.ContextMenuInBody
                 )) {
                     for (final ServerInfosTableColumn serverInfosTableColumn : serverInfosTableColumns) {
-                        ImGui.tableSetupColumn(serverInfosTableColumn.normalName());
+                        ImGui.tableSetupColumn(serverInfosTableColumn.getName());
                     }
                     ImGui.tableHeadersRow();
                     for (final PortResult portResult : this.ports.values()) {

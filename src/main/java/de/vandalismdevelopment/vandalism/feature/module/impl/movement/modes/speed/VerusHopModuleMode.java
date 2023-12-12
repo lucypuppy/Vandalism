@@ -15,7 +15,7 @@ public class VerusHopModuleMode extends ModuleMulti<SpeedModule> implements Move
 
     private int offGroundTicks;
     private double moveSpeed;
-
+//#Toggle VerusFullDisabler
     @Override
     public void onEnable() {
         DietrichEvents2.global().subscribe(MotionEvent.ID, this);

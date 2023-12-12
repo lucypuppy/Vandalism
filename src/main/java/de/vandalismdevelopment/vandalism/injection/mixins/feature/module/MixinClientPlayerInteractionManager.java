@@ -19,8 +19,8 @@ public abstract class MixinClientPlayerInteractionManager {
     private ActionResult vandalism$illegalBlockPlaceViaVersionBug(final ItemStack instance, final ItemUsageContext context) {
         ActionResult actionResult = instance.useOnBlock(context);
         if (ProtocolHack.getTargetVersion().isOlderThanOrEqualTo(VersionEnum.r1_8)) {
-            final IllegalBlockPlaceModule illegalBlockPlaceModule = Vandalism.getInstance().getModuleRegistry().getIllegalBlockPlaceModule();
-            if (illegalBlockPlaceModule.isEnabled() && illegalBlockPlaceModule.viaVersionBug.getValue()) {
+            final IllegalBlockPlaceModule illegalBlockPlaceModule = Vandalism.getInstance().getModuleManager().getIllegalBlockPlaceModule();
+            if (illegalBlockPlaceModule.isActive() && illegalBlockPlaceModule.viaVersionBug.getValue()) {
                 if (actionResult == ActionResult.FAIL) {
                     actionResult = ActionResult.SUCCESS;
                 }

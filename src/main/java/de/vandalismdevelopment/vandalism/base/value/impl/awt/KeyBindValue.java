@@ -11,37 +11,22 @@ import org.lwjgl.glfw.GLFW;
 
 public class KeyBindValue extends Value<Integer> implements InputListener {
 
-    private InputType inputType;
-
     public KeyBindValue(ValueParent parent, String name, String description) {
-        this(parent, name, description, GLFW.GLFW_KEY_UNKNOWN, InputType.KEYBOARD);
+        this(parent, name, description, GLFW.GLFW_KEY_UNKNOWN);
     }
 
     public KeyBindValue(ValueParent parent, String name, String description, Integer defaultValue) {
-        this(parent, name, description, defaultValue, InputType.KEYBOARD);
-    }
-
-    public KeyBindValue(ValueParent parent, String name, String description, Integer defaultValue, final InputType inputType) {
         super(parent, name, description, defaultValue);
-
-        this.inputType = inputType;
     }
 
     @Override
     public void load(final JsonObject mainNode) {
-        final var valueNode = mainNode.get(getName()).getAsJsonObject();
-
-        this.setValue(valueNode.get("key").getAsInt());
-        this.inputType = InputType.valueOf(valueNode.get("inputType").getAsString());
+        this.setValue(mainNode.get(getName()).getAsInt());
     }
 
     @Override
     public void save(final JsonObject mainNode) {
-        final var valueNode = new JsonObject();
-        valueNode.addProperty("key", this.getValue());
-        valueNode.addProperty("inputType", this.inputType.name());
-
-        mainNode.add(getName(), valueNode);
+        mainNode.addProperty(getName(), getValue());
     }
 
     private boolean waitingForInput;
@@ -49,7 +34,7 @@ public class KeyBindValue extends Value<Integer> implements InputListener {
     @Override
     public void render() {
         if (!this.waitingForInput) {
-            if (ImGui.button(this.inputType.getKeyName(this.getValue()) + "##" + this.getName(), 0, 25)) {
+            if (ImGui.button(InputType.getKeyName(this.getValue()) + "##" + this.getName(), 0, 25)) {
                 this.waitingForInput = true;
                 DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
             }
@@ -77,12 +62,16 @@ public class KeyBindValue extends Value<Integer> implements InputListener {
             this.finishInput();
 
             this.setValue(key);
-            this.inputType = InputType.KEYBOARD;
         }
     }
 
     public boolean isPressed() {
-        return this.inputType.isPressed(this.getValue());
+        return InputType.isPressed(this.getValue());
+    }
+
+    public boolean isValid() {
+        return this.getValue() != GLFW.GLFW_KEY_UNKNOWN;
     }
 
 }
+

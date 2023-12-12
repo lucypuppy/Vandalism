@@ -6,10 +6,10 @@ import de.vandalismdevelopment.vandalism.base.event.MovementListener;
 import de.vandalismdevelopment.vandalism.base.event.RenderListener;
 import de.vandalismdevelopment.vandalism.base.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
+import de.vandalismdevelopment.vandalism.util.clicker.impl.BoxMuellerClicker;
 import de.vandalismdevelopment.vandalism.util.minecraft.MovementUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.WorldUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.Clicker;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.clicker.impl.BoxMuellerClicker;
 import de.vandalismdevelopment.vandalism.integration.rotation.Rotation;
 import de.vandalismdevelopment.vandalism.integration.rotation.RotationListener;
 import de.vandalismdevelopment.vandalism.base.value.Value;
@@ -31,9 +31,9 @@ public class TestModule extends AbstractModule implements TickListener, RenderLi
 
     private final Clicker clicker = new BoxMuellerClicker();
 
-    private final Value<Float> mean = new FloatValue("Mean", "mean", this, 15.0F, 0.0F, 20.0F);
-    private final Value<Float> std = new FloatValue("std", "std", this, 2.0F, 0.0F, 10.0F);
-    private final Value<Integer> updatePossibility = new IntegerValue("updatePossibility", "updatePossibility", this, 50, 0, 100);
+    private final Value<Float> mean = new FloatValue(this, "Mean", "mean", 15.0F, 0.0F, 20.0F);
+    private final Value<Float> std = new FloatValue(this, "std", "std", 2.0F, 0.0F, 10.0F);
+    private final Value<Integer> updatePossibility = new IntegerValue(this, "updatePossibility", "updatePossibility", 50, 0, 100);
 
     private PlayerEntity target;
     private Vec3d rotationVector;

@@ -9,10 +9,8 @@ public class CopyPositionCommand extends AbstractCommand {
 
     public CopyPositionCommand() {
         super(
-                "Copy Position",
                 "Copies your current position into your clipboard.",
-                FeatureCategory.MISC,
-                false,
+                Category.MISC,
                 "copyposition",
                 "copypos"
         );

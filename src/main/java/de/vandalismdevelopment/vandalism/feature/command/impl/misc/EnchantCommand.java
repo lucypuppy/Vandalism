@@ -14,10 +14,8 @@ public class EnchantCommand extends AbstractCommand {
 
     public EnchantCommand() {
         super(
-                "Enchant",
                 "Enchants the item in your main hand with the specified enchantment.",
-                FeatureCategory.MISC,
-                false,
+                Category.MISC,
                 "enchant",
                 "enchantitem",
                 "itemenchant"

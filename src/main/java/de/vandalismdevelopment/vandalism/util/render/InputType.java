@@ -1,40 +1,33 @@
 package de.vandalismdevelopment.vandalism.util.render;
 
+import de.florianmichael.rclasses.common.StringUtils;
+import net.lenni0451.reflect.stream.RStream;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
-public enum InputType {
+import java.util.HashMap;
+import java.util.Map;
 
-    KEYBOARD,
-    MOUSE;
+public class InputType {
+    public static final Map<String, Integer> FIELD_NAMES = new HashMap<>();
 
-    public InputUtil.Type toGame() {
-        return switch (this) {
-            case KEYBOARD -> InputUtil.Type.KEYSYM;
-            case MOUSE -> InputUtil.Type.MOUSE;
-        };
+    static {
+        RStream.of(GLFW.class).fields().filter(field -> field.name().startsWith("GLFW_KEY_")).forEach(key -> {
+            final int keyCode = key.get();
+
+            FIELD_NAMES.put(getKeyName(keyCode), keyCode);
+        });
     }
 
-    public String getKeyName(final int keyCode) {
-        return toGame().createFromCode(keyCode).getLocalizedText().getString();
+    public static String getKeyName(final int keyCode) {
+        return InputUtil.Type.KEYSYM.createFromCode(keyCode).getLocalizedText().getString();
     }
 
-    public boolean isPressed(final int keyCode) {
+    public static boolean isPressed(final int keyCode) {
         final long handle = MinecraftClient.getInstance().getWindow().getHandle();
 
-        if (this == KEYBOARD) {
-            return GLFW.glfwGetKey(handle, keyCode) == GLFW.GLFW_PRESS;
-        } else {
-            return GLFW.glfwGetMouseButton(handle, keyCode) == GLFW.GLFW_PRESS;
-        }
-    }
-
-    public static InputType fromGame(final InputUtil.Type type) {
-        return switch (type) {
-            case KEYSYM, SCANCODE -> KEYBOARD;
-            case MOUSE -> MOUSE;
-        };
+        return GLFW.glfwGetKey(handle, keyCode) == GLFW.GLFW_PRESS;
     }
 
 }

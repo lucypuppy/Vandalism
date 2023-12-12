@@ -3,13 +3,14 @@ package de.vandalismdevelopment.vandalism.feature.module.value;
 import de.vandalismdevelopment.vandalism.base.value.template.ValueModeGeneric;
 import de.vandalismdevelopment.vandalism.feature.Feature;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
+import de.vandalismdevelopment.vandalism.feature.module.template.ModuleMulti;
 
-public class ModuleModeValue<T extends AbstractModule> extends ValueModeGeneric<T> {
+public class ModuleModeValue<T extends AbstractModule> extends ValueModeGeneric<ModuleMulti<T>> {
 
     @SafeVarargs
-    public ModuleModeValue(AbstractModule parent, String name, String description, T defaultValue,  T... options) {
-        super(parent, name, description, defaultValue, Feature::getName, s -> {
-            for (final T module : options) {
+    public ModuleModeValue(AbstractModule parent, String name, String description, ModuleMulti<T> defaultValue,  ModuleMulti<T>... options) {
+        super(parent, name, description, defaultValue, ModuleMulti::getName, s -> {
+            for (final ModuleMulti<T> module : options) {
                 if (module.getName().equals(s)) {
                     return module;
                 }

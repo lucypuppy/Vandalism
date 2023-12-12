@@ -12,7 +12,7 @@ import net.minecraft.util.collection.DefaultedList;
 public class InventoryClearCommand extends AbstractCommand {
 
     public InventoryClearCommand() {
-        super("Inventory Clear", "Clears your inventory.", FeatureCategory.MISC, false, "inventoryclear", "clearinventory", "invclear", "clearinv");
+        super("Clears your inventory.", Category.MISC, "inventoryclear", "clearinventory", "invclear", "clearinv");
     }
 
     @Override

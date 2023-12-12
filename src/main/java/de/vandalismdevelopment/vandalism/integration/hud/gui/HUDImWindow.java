@@ -26,8 +26,6 @@ public class HUDImWindow extends ImWindow {
 
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        final HUDManager HUDManager = Vandalism.getInstance().getCustomHUDRenderer();
-
         if (ImGui.begin("Custom HUD Config##customhudconfig", ImGuiWindowFlags.NoCollapse)) {
             if (ImGui.button("Close Custom HUD Config##closecustomhudconfig")) {
                 this.setActive(false);

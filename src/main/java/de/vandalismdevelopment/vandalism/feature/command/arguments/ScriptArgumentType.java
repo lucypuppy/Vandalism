@@ -33,14 +33,14 @@ public class ScriptArgumentType implements ArgumentType<Script> {
     @Override
     public Script parse(final StringReader reader) throws CommandSyntaxException {
         final String argument = reader.readString();
-        final Script script = Vandalism.getInstance().getScriptRegistry().getScripts().get(argument);
+        final Script script = Vandalism.getInstance().getScriptManager().getByName(argument, true);
         if (script == null) throw NOT_EXISTING.create(argument);
         return script;
     }
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
-        return CommandSource.suggestMatching(Vandalism.getInstance().getScriptRegistry().getScripts().stream().map(Feature::getName), builder);
+        return CommandSource.suggestMatching(Vandalism.getInstance().getScriptManager().getList().stream().map(Feature::getName), builder);
     }
 
 }

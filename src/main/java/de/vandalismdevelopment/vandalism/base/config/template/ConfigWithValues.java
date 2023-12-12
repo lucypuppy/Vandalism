@@ -42,18 +42,13 @@ public class ConfigWithValues extends AbstractConfig<JsonObject> {
 
     public static void saveValues(final JsonObject targetNode, final List<Value<?>> values) {
         for (final Value<?> value : values) {
-            final var valueNode = new JsonObject();
-
             if (value instanceof final ValueGroup valueGroup) {
                 // Save the values of the category recursively
-                saveValues(valueNode, valueGroup.getValues());
+                saveValues(targetNode, valueGroup.getValues());
             } else {
                 // Save the value
-                value.save(valueNode);
+                value.save(targetNode);
             }
-
-            // Add the value to the target node
-            targetNode.add(value.getName(), valueNode);
         }
     }
 
@@ -62,12 +57,10 @@ public class ConfigWithValues extends AbstractConfig<JsonObject> {
             if (!targetNode.has(value.getName())) {
                 continue;
             }
-            final JsonObject valueNode = targetNode.get(value.getName()).getAsJsonObject();
-
             if (value instanceof final ValueGroup valueGroup) {
-                loadValues(valueNode, valueGroup.getValues());
+                loadValues(targetNode, valueGroup.getValues());
             } else {
-                value.load(valueNode);
+                value.load(targetNode);
             }
         }
     }

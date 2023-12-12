@@ -8,10 +8,8 @@ public class FlipCommand extends AbstractCommand {
 
     public FlipCommand() {
         super(
-                "Flip",
                 "Flips you.",
-                FeatureCategory.MISC,
-                false,
+                Category.MISC,
                 "flip",
                 "selfflip"
         );

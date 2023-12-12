@@ -10,10 +10,8 @@ public class ClientsideInventoryClearCommand extends AbstractCommand {
 
     public ClientsideInventoryClearCommand() {
         super(
-                "Clientside Inventory Clear",
                 "Clears your Clientside Inventory.",
-                FeatureCategory.RENDER,
-                false,
+                Category.RENDER,
                 "clientsideinventoryclear",
                 "clientsideinvclear",
                 "fakeinventoryclear",

@@ -14,41 +14,35 @@ import java.util.UUID;
 public class ProtectorModule extends AbstractModule implements RenderListener {
 
     private final Value<Boolean> protectUsername = new BooleanValue(
+            this,
             "Protect Username",
             "Protects your username from being leaked.",
-            this,
             true
     );
 
     private final Value<String> username = new StringValue(
+            this,
             "Username",
             "The replacement for your username.",
-            this,
             "<censored-username>"
     ).visibleCondition(this.protectUsername::getValue);
 
     private final Value<Boolean> protectUUID = new BooleanValue(
+            this,
             "Protect UUID",
             "Protects your uuid from being leaked.",
-            this,
             true
     );
 
     private final Value<String> uuid = new StringValue(
+            this,
             "UUID",
             "The replacement for your uuid.",
-            this,
             "<censored-uuid>"
     ).visibleCondition(this.protectUUID::getValue);
 
     public ProtectorModule() {
-        super(
-                "Protector",
-                "Protects information from being leaked.",
-                FeatureCategory.RENDER,
-                false,
-                false
-        );
+        super("Protector", "Protects information from being leaked.", Category.RENDER);
     }
 
     @Override

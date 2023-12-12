@@ -8,13 +8,8 @@ import net.minecraft.command.CommandSource;
 public class TestCommand extends AbstractCommand {
 
     public TestCommand() {
-        super(
-                "Test",
-                "Just for development purposes.",
-                FeatureCategory.DEVELOPMENT,
-                true,
-                "test"
-        );
+        super("Just for development purposes.", Category.DEVELOPMENT, "test");
+        setExperimental(true);
     }
 
     @Override

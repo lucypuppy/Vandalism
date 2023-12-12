@@ -8,13 +8,7 @@ import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 public class VelocityModule extends AbstractModule implements PacketListener {
 
     public VelocityModule() {
-        super(
-                "Velocity",
-                "Modifies the server and the damage source velocity you take.",
-                FeatureCategory.MOVEMENT,
-                false,
-                false
-        );
+        super("Velocity", "Modifies the server and the damage source velocity you take.", Category.MOVEMENT);
     }
 
     @Override
@@ -29,10 +23,9 @@ public class VelocityModule extends AbstractModule implements PacketListener {
 
     @Override
     public void onPacket(final PacketEvent event) {
-        if (this.mc.player == null) return;
-        if (event.packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket
-                && velocityPacket.getId() == this.mc.player.getId())
+        if (event.packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket && velocityPacket.getId() == this.mc.player.getId()) {
             event.cancel();
+        }
     }
 
 }

@@ -1,7 +1,10 @@
 package de.vandalismdevelopment.vandalism.feature.script;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.florianmichael.rclasses.pattern.storage.named.NamedStorage;
 import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.base.config.ConfigManager;
+import de.vandalismdevelopment.vandalism.base.config.template.ConfigWithValues;
 import de.vandalismdevelopment.vandalism.base.event.InputListener;
 import de.vandalismdevelopment.vandalism.base.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.script.parse.ScriptParser;
@@ -15,22 +18,23 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ScriptManager implements TickListener, InputListener, MinecraftWrapper {
+public class ScriptManager extends NamedStorage<Script> implements TickListener, InputListener, MinecraftWrapper {
 
+    private final ConcurrentHashMap<File, Thread> runningScripts = new ConcurrentHashMap<>();
     private final File directory;
-    private final FeatureList<Script> scripts;
-    private final ConcurrentHashMap<File, Thread> runningScripts;
 
-    public ScriptManager(final File dir) {
-        this.directory = new File(dir, "scripts");
-        this.scripts = new FeatureList<>();
-        this.load();
-        this.runningScripts = new ConcurrentHashMap<>();
+    private final ConfigManager configManager;
+
+    public ScriptManager(final ConfigManager configManager, final File runDirectory) {
+        this.configManager = configManager;
+        this.directory = new File(runDirectory, "scripts");
+
         DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
         DietrichEvents2.global().subscribe(TickEvent.ID, this);
     }
 
-    public void load() {
+    @Override
+    public void init() {
         Vandalism.getInstance().getLogger().info("Loading scripts...");
         if (this.directory.exists() && !this.directory.isDirectory()) {
             if (!this.directory.delete()) {
@@ -50,9 +54,11 @@ public class ScriptManager implements TickListener, InputListener, MinecraftWrap
                 }
             }
         }
-        final int scriptListSize = this.scripts.size();
+        final int scriptListSize = this.getList().size();
         if (scriptListSize < 1) Vandalism.getInstance().getLogger().info("No scripts loaded!");
         else Vandalism.getInstance().getLogger().info("Loaded " + scriptListSize + " scripts.");
+
+        configManager.add(new ConfigWithValues("scripts", getList()));
     }
 
     public void loadScriptFromFile(final File file, final boolean save) {
@@ -61,12 +67,12 @@ public class ScriptManager implements TickListener, InputListener, MinecraftWrap
                 return;
             }
             final Script script = ScriptParser.parseScriptObjectFromFile(file);
-            final Script existingScript = this.scripts.get(script.getName());
+            final Script existingScript = this.getByName(script.getName(), true);
             if (existingScript != null) {
-                script.setKeyBind(existingScript.getKeyBind());
-                this.scripts.remove(existingScript);
+                script.getKeyBind().setValue(existingScript.getKeyBind().getValue());
+                this.remove(existingScript);
             }
-            this.scripts.add(script);
+            this.add(script);
             if (save) {
                 Vandalism.getInstance().getConfigManager().save(); // TODO |Only save this config
             }
@@ -80,17 +86,13 @@ public class ScriptManager implements TickListener, InputListener, MinecraftWrap
         return this.directory;
     }
 
-    public FeatureList<Script> getScripts() {
-        return this.scripts;
-    }
-
     @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN || this.mc.player == null || this.mc.currentScreen != null) {
+        if (action != GLFW.GLFW_PRESS || this.mc.player == null || this.mc.currentScreen != null) {
             return;
         }
-        for (final Script script : Vandalism.getInstance().getScriptRegistry().getScripts()) {
-            if (script.getKeyBind().getKeyCode() == key) {
+        for (final Script script : getList()) {
+            if (script.getKeyBind().isPressed()) {
                 if (this.isScriptRunning(script.getFile())) {
                     this.killRunningScriptByScriptFile(script.getFile());
                 }
@@ -179,9 +181,9 @@ public class ScriptManager implements TickListener, InputListener, MinecraftWrap
 
     @Override
     public void onTick() {
-        for (final Script script : this.scripts) {
+        for (final Script script : this.getList()) {
             if (!script.getFile().exists()) {
-                this.scripts.remove(script);
+                this.remove(script);
                 Vandalism.getInstance().getLogger().info("Script '" + script + "' has been unloaded because the file does not exist anymore.");
                 Vandalism.getInstance().getConfigManager().save(); // TODO |Only save this config
             }

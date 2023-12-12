@@ -10,7 +10,7 @@ import net.minecraft.command.CommandSource;
 public class CopyServerIPCommand extends AbstractCommand {
 
     public CopyServerIPCommand() {
-        super("Copy Server IP", "Copies the ip address of the server your are currently connected to into your clipboard.", FeatureCategory.MISC, false, "copyserverip", "serveripcopy", "copyserveraddress", "serveraddresscopy", "copyip", "copyserverip");
+        super("Copies the ip address of the server your are currently connected to into your clipboard.", Category.MISC, "copyserverip", "serveripcopy", "copyserveraddress", "serveraddresscopy", "copyip", "copyserverip");
     }
 
     @Override

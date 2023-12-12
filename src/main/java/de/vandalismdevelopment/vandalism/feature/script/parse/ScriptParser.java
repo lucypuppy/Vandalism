@@ -2,6 +2,7 @@ package de.vandalismdevelopment.vandalism.feature.script.parse;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.vandalismdevelopment.vandalism.base.FabricBootstrap;
+import de.vandalismdevelopment.vandalism.feature.Feature;
 import de.vandalismdevelopment.vandalism.feature.script.Script;
 import de.vandalismdevelopment.vandalism.feature.script.parse.command.ScriptCommand;
 import de.vandalismdevelopment.vandalism.feature.script.parse.info.ScriptInfo;
@@ -93,7 +94,7 @@ public class ScriptParser {
         final String name = StringUtils.replaceLast(file.getName(), SCRIPT_FILE_EXTENSION, "");
         int lineNumber = 0;
         String version = ScriptInfo.VERSION.getDefaultValue(), author = ScriptInfo.AUTHOR.getDefaultValue(), description = ScriptInfo.DESCRIPTION.getDefaultValue();
-        FeatureCategory category = ScriptInfo.CATEGORY.getDefaultValue();
+        Feature.Category category = ScriptInfo.CATEGORY.getDefaultValue();
         boolean experimental = ScriptInfo.EXPERIMENTAL.getDefaultValue();
         try {
             final Scanner scanner = new Scanner(file);
@@ -106,7 +107,7 @@ public class ScriptParser {
                             case VERSION -> version = (String) value;
                             case AUTHOR -> author = (String) value;
                             case DESCRIPTION -> description = (String) value;
-                            case CATEGORY -> category = (FeatureCategory) value;
+                            case CATEGORY -> category = (Feature.Category) value;
                             case EXPERIMENTAL -> experimental = (Boolean) value;
                             default -> {
                             }
@@ -121,7 +122,11 @@ public class ScriptParser {
         } catch (final Exception e) {
             throw new RuntimeException("Failed to parse script info at line " + lineNumber + " due to an exception: " + e.getMessage());
         }
-        return new Script(file, name, version, author, description, category, experimental);
+
+        final var script = new Script(name, description, category, file, version, author);
+        script.setExperimental(experimental);
+
+        return script;
     }
 
 }

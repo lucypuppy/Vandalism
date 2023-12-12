@@ -1,18 +1,13 @@
 package de.vandalismdevelopment.vandalism.gui.impl.widget.impl.serverinfo;
 
-public enum ModsTableColumn implements EnumNameNormalizer {
+import de.florianmichael.rclasses.common.StringUtils;
+
+public enum ModsTableColumn {
 
     MOD_ID, MOD_VERSION, ACTIONS;
 
-    private final String normalName;
-
-    ModsTableColumn() {
-        this.normalName = this.normalizeName(this.name());
-    }
-
-    @Override
-    public String normalName() {
-        return this.normalName;
+    public String getName() {
+        return StringUtils.normalizeEnumName(this.name());
     }
 
 }

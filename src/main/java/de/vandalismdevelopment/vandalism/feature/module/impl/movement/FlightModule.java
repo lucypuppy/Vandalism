@@ -11,27 +11,22 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
 public class FlightModule extends AbstractModule implements PacketListener {
 
-    private final Value<Boolean> antiKick = new BooleanValue("Anti Kick",
-            "Bypasses the vanilla fly kick.",
+    private final Value<Boolean> antiKick = new BooleanValue(
             this,
+            "Anti Kick",
+            "Bypasses the vanilla fly kick.",
             false
     );
 
-    private final Value<String> mode = new ModuleModeValue<>(
+    private final ModuleModeValue<FlightModule> mode = new ModuleModeValue<>(
+            this,
             "Mode",
             "The current flight mode.",
-            this,
             new CreativeModuleMode(this)
     );
 
     public FlightModule() {
-        super(
-                "Flight",
-                "Allows you to fly (even in survival or adventure).",
-                FeatureCategory.MOVEMENT,
-                false,
-                false
-        );
+        super("Flight", "Allows you to fly (even in survival or adventure).", Category.MOVEMENT);
     }
 
     @Override
@@ -46,9 +41,9 @@ public class FlightModule extends AbstractModule implements PacketListener {
 
     @Override
     public void onPacket(final PacketEvent event) {
-        if (event.packet instanceof final PlayerMoveC2SPacket playerMoveC2SPacket
-                && this.antiKick.getValue())
+        if (event.packet instanceof final PlayerMoveC2SPacket playerMoveC2SPacket && this.antiKick.getValue()) {
             playerMoveC2SPacket.y += Math.sin(this.mc.player.age) * 0.2;
+        }
     }
 
 }

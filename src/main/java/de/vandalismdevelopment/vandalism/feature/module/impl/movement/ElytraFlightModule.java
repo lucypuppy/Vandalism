@@ -4,7 +4,6 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.base.event.TickListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.feature.module.impl.movement.modes.elytraflight.CreativeModuleMode;
-import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.feature.module.value.ModuleModeValue;
 import de.vandalismdevelopment.vandalism.util.minecraft.ChatUtil;
 import net.minecraft.entity.EquipmentSlot;
@@ -15,10 +14,10 @@ import net.minecraft.text.Text;
 
 public class ElytraFlightModule extends AbstractModule implements TickListener {
 
-    private final Value<String> mode = new ModuleModeValue<>(
+    private final ModuleModeValue<ElytraFlightModule> mode = new ModuleModeValue<>(
+            this,
             "Mode",
             "The current elytra flight mode.",
-            this,
             new CreativeModuleMode(this)
     );
 
@@ -26,9 +25,7 @@ public class ElytraFlightModule extends AbstractModule implements TickListener {
         super(
                 "Elytra Flight",
                 "Lets you take control when flying with an elytra.",
-                FeatureCategory.MOVEMENT,
-                false,
-                false
+                Category.MOVEMENT
         );
     }
 
@@ -49,7 +46,7 @@ public class ElytraFlightModule extends AbstractModule implements TickListener {
         final ItemStack itemStack = this.mc.player.getEquippedStack(EquipmentSlot.CHEST);
         if (itemStack.getItem() != Items.ELYTRA || !ElytraItem.isUsable(itemStack)) {
             ChatUtil.errorChatMessage(Text.literal("You need to equip an elytra to fly."));
-            this.disable();
+            this.toggle();
         }
     }
 

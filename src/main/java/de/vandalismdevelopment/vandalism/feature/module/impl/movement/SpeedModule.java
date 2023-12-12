@@ -9,23 +9,17 @@ import de.vandalismdevelopment.vandalism.feature.module.value.ModuleModeValue;
 
 public class SpeedModule extends AbstractModule {
 
-    private final Value<String> mode = new ModuleModeValue<>(
+    private final ModuleModeValue<SpeedModule> mode = new ModuleModeValue<>(
+            this,
             "Mode",
             "The current speed mode.",
-            this,
             new LongHopModuleMode(this),
             new VerusHopModuleMode(this),
             new CubeCraftModuleMode(this)
     );
 
     public SpeedModule() {
-        super(
-                "Speed",
-                "Makes your on-ground movement faster or better.",
-                FeatureCategory.MOVEMENT,
-                false,
-                false
-        );
+        super("Speed", "Makes your on-ground movement faster or better.", Category.MOVEMENT);
     }
 
 }

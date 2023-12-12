@@ -17,6 +17,10 @@ public class MultiModeValue extends Value<List<String>> {
 
     private final List<String> options;
 
+    public MultiModeValue(ValueParent parent, String name, String description, final String... options) {
+        this(parent, name, description, new ArrayList<>(), options);
+    }
+
     public MultiModeValue(ValueParent parent, String name, String description, List<String> defaultValue, final String... options) {
         super(parent, name, description, new ArrayList<>(defaultValue) /* Java's Arrays.asList() makes lists unmodifiable */);
 

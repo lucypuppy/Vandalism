@@ -1,18 +1,13 @@
 package de.vandalismdevelopment.vandalism.gui.impl.widget.impl.serverinfo;
 
-public enum ServerInfosTableColumn implements EnumNameNormalizer {
+import de.florianmichael.rclasses.common.StringUtils;
+
+public enum ServerInfosTableColumn {
 
     SERVER_ADDRESS, PORT, RESOLVED_SERVER_ADDRESS, PROTOCOL, VERSION, ONLINE_PLAYERS, MAX_PLAYERS, MOTD, ACTIONS;
 
-    private final String normalName;
-
-    ServerInfosTableColumn() {
-        this.normalName = this.normalizeName(this.name());
-    }
-
-    @Override
-    public String normalName() {
-        return this.normalName;
+    public String getName() {
+        return StringUtils.normalizeEnumName(this.name());
     }
 
 }

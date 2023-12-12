@@ -1,8 +1,8 @@
-package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.impl.irc;
+package de.vandalismdevelopment.vandalism.gui.impl.menu.impl.irc;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.ImGuiMenu;
-import de.vandalismdevelopment.vandalism.util.minecraft.impl.ChatUtil;
+import de.vandalismdevelopment.vandalism.gui_v2.ImWindow;
+import de.vandalismdevelopment.vandalism.util.minecraft.ChatUtil;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiPopupFlags;
@@ -19,7 +19,7 @@ import re.catgirls.irc.session.UserProfile;
  * The IRC menu.
  * WARNING: This is an experimental feature and may change a lot in the future.
  */
-public class IrcImGuiMenu extends ImGuiMenu {
+public class IrcImGuiMenu extends ImWindow {
 
     public IrcImGuiMenu() {
         super("IRC");
@@ -65,7 +65,7 @@ public class IrcImGuiMenu extends ImGuiMenu {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        if (ImGui.begin("IRC##irc", Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags() | ImGuiWindowFlags.MenuBar)) {
+        if (ImGui.begin("IRC##irc", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.MenuBar)) {
 
             if (ImGui.beginMenuBar()) {
                 if (ImGui.beginMenu("Connection")) {

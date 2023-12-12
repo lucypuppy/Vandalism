@@ -144,7 +144,7 @@ public class ServerPingerImGuiMenu extends ImWindow {
                                     ImGuiTableFlags.ContextMenuInBody
                     )) {
                         for (final ServerInfosTableColumn serverInfosTableColumn : serverInfosTableColumns) {
-                            ImGui.tableSetupColumn(serverInfosTableColumn.normalName());
+                            ImGui.tableSetupColumn(serverInfosTableColumn.getName());
                         }
                         ImGui.tableHeadersRow();
                         this.serverInfoWidget.renderTableEntry(true);

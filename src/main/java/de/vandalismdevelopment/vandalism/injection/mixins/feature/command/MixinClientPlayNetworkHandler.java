@@ -2,6 +2,7 @@ package de.vandalismdevelopment.vandalism.injection.mixins.feature.command;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.feature.command.AbstractCommand;
 import de.vandalismdevelopment.vandalism.util.minecraft.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -18,7 +19,7 @@ public abstract class MixinClientPlayNetworkHandler implements MinecraftWrapper 
         final String prefix = Vandalism.getInstance().getClientSettings().getChatSettings().commandPrefix.getValue();
         if (message.startsWith(prefix)) {
             try {
-                Vandalism.getInstance().getCommandRegistry().execute(message.substring(prefix.length()));
+                Vandalism.getInstance().getCommandManager().getCommandDispatcher().execute(message.substring(prefix.length()), AbstractCommand.COMMAND_SOURCE);
             } catch (CommandSyntaxException e) {
                 ChatUtil.errorChatMessage(e.getMessage());
             }

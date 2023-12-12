@@ -9,8 +9,8 @@ import imgui.type.ImInt;
 
 public class IntegerValue extends ValueNumber<Integer> {
 
-    public IntegerValue(ValueParent parent, String name, String description, Integer minValue, Integer defaultValue, Integer maxValue) {
-        super(parent, name, description, minValue, defaultValue, maxValue);
+    public IntegerValue(ValueParent parent, String name, String description, Integer defaultValue, Integer minValue, Integer maxValue) {
+        super(parent, name, description, defaultValue, minValue, maxValue);
     }
 
     @Override

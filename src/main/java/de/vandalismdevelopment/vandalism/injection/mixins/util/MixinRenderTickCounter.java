@@ -1,6 +1,6 @@
 package de.vandalismdevelopment.vandalism.injection.mixins.util;
 
-import de.vandalismdevelopment.vandalism.util.minecraft.TimerUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.TimerHack;
 import net.minecraft.client.render.RenderTickCounter;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,6 +17,6 @@ public abstract class MixinRenderTickCounter {
 
     @Inject(method = "beginRenderTick", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/RenderTickCounter;prevTimeMillis:J", opcode = Opcodes.PUTFIELD))
     private void vandalism$beginRenderTick(final long timeMillis, final CallbackInfoReturnable<Integer> info) {
-        this.lastFrameDuration *= TimerUtil.getSpeed();
+        this.lastFrameDuration *= TimerHack.getSpeed();
     }
 }

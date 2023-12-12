@@ -17,29 +17,24 @@ import java.util.Map;
 public class ModPacketBlockerModule extends AbstractModule implements PacketListener {
 
     public final Value<Boolean> unloadFabricAPICallbacks = new BooleanValue(
+            this,
             "Unload Fabric API Callbacks",
             "Unloads Fabric API callbacks.",
-            this,
             true
     );
 
     private final Map<String, Value<Boolean>> platformSettings = new HashMap<>();
 
     public ModPacketBlockerModule() {
-        super(
-                "Mod Packet Blocker",
-                "Blocks various packets from mods which could be detected by a server.",
-                FeatureCategory.MISC,
-                false,
-                true
-        );
+        super("Mod Packet Blocker", "Blocks various packets from mods which could be detected by a server.", Category.MISC);
+        enableDefault();
         for (final String modId : Arrays.asList("journeymap", "roughlyenoughitems", "architectury")) {
             this.platformSettings.put(
                     modId,
                     new BooleanValue(
+                            this,
                             "Block " + modId + " Packets",
                             "Blocks packets from " + modId + ".",
-                            this,
                             true
                     ).visibleCondition(() -> FabricLoader.getInstance().isModLoaded(modId))
             );

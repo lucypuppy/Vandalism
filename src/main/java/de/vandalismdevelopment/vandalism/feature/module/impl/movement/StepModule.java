@@ -9,22 +9,16 @@ import de.vandalismdevelopment.vandalism.base.value.impl.number.FloatValue;
 public class StepModule extends AbstractModule implements MovementListener {
 
     private final Value<Float> stepHeight = new FloatValue(
+            this,
             "Step Height",
             "Allows you to customize the step height.",
-            this,
             10.0f,
             0.7f,
             10.0f
     );
 
     public StepModule() {
-        super(
-                "Step",
-                "Changes your step height or step speed.",
-                FeatureCategory.MOVEMENT,
-                false,
-                false
-        );
+        super("Step", "Changes your step height or step speed.", Category.MOVEMENT);
     }
 
     @Override

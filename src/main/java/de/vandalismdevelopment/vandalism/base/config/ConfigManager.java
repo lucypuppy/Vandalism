@@ -18,9 +18,6 @@ public class ConfigManager extends Storage<AbstractConfig<?>> {
         this.add(
                 this.ircConfig = new IRCConfig()
         );
-        // TODO | Move this into systems
-        this.add(new ConfigWithValues("scripts", Vandalism.getInstance().getScriptRegistry().getScripts()));
-        this.add(new ConfigWithValues("modules", Vandalism.getInstance().getModuleRegistry().getModules()));
     }
 
     public void save() {
