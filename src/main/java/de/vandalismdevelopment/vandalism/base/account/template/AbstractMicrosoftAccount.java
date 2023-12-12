@@ -50,8 +50,7 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
                 final JsonObject tokenChainNode = JsonParser.parseString(this.tokenChain).getAsJsonObject();
 
                 // Refresh the token chain and get the new token chain
-                final StepFullJavaSession.FullJavaSession fullJavaSession = getStep().refresh(httpClient, getStep().fromJson(tokenChainNode));
-                initWithExistingSession(fullJavaSession);
+                initWithExistingSession(getStep().refresh(httpClient, getStep().fromJson(tokenChainNode)));
             }
         }
     }

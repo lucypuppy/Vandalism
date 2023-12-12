@@ -35,8 +35,8 @@ public class AccountsConfig extends AbstractConfig<JsonArray> {
     }
 
     @Override
-    public void load0(JsonArray node) {
-        node.asList().stream().map(JsonElement::getAsJsonObject).forEach(accountNode -> {
+    public void load0(JsonArray mainNode) {
+        mainNode.asList().stream().map(JsonElement::getAsJsonObject).forEach(accountNode -> {
             final String type = accountNode.get("type").getAsString();
 
             for (AbstractAccount accountType : AccountManager.ACCOUNT_TYPES.keySet()) {

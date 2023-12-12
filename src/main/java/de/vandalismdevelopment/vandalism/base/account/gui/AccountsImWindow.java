@@ -8,6 +8,7 @@ import imgui.ImGui;
 import imgui.flag.ImGuiMouseButton;
 import imgui.flag.ImGuiWindowFlags;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.session.Session;
 
 import static de.vandalismdevelopment.vandalism.gui.loader.ImUtils.subButton;
 
@@ -30,11 +31,7 @@ public class AccountsImWindow extends ImWindow {
                     if (ImGui.beginMenu(account.getName())) {
                         factory.displayFactory();
                         if (ImGui.button("Add", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
-                            try {
-                                accountManager.add(factory.make());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                            accountManager.add(factory.make());
                         }
                         ImGui.endMenu();
                     }
@@ -52,8 +49,8 @@ public class AccountsImWindow extends ImWindow {
                     final var name = currentAccount.getDisplayName();
                     final var uuid = currentAccount.getSession().getUuidOrNull().toString();
                     final var accessToken = currentAccount.getSession().getAccessToken();
-                    final var xuid = currentAccount.getSession().getXuid().orElse("null");
-                    final var clientId = currentAccount.getSession().getClientId().orElse("null");
+                    final var xuid = currentAccount.getSession().getXuid().orElse("Not available");
+                    final var clientId = currentAccount.getSession().getClientId().orElse("Not available");
 
                     mc.keyboard.setClipboard("Name: " + name + "\n" +
                             "UUID: " + uuid + "\n" +
@@ -64,8 +61,8 @@ public class AccountsImWindow extends ImWindow {
                 if (subButton("Logout")) {
                     try {
                         accountManager.logOut();
-                    } catch (Throwable e) {
-                        e.printStackTrace();
+                    } catch (Throwable t) {
+                        Vandalism.getInstance().getLogger().error("Failed to logout", t);
                     }
                 }
                 ImGui.endMenu();
@@ -90,19 +87,20 @@ public class AccountsImWindow extends ImWindow {
             if (subButton("Copy Name")) {
                 mc.keyboard.setClipboard(hoveredAccount.getDisplayName());
             }
-            if (hoveredAccount.getSession() != null) {
-                if (hoveredAccount.getSession().getUuidOrNull() != null && ImGui.button("Copy UUID", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
-                    mc.keyboard.setClipboard(hoveredAccount.getSession().getUuidOrNull().toString());
+            final Session session = hoveredAccount.getSession();
+            if (session != null) {
+                if (session.getUuidOrNull() != null && subButton("Copy UUID")) {
+                    mc.keyboard.setClipboard(session.getUuidOrNull().toString());
                 }
                 if (subButton("Copy Access token")) {
-                    mc.keyboard.setClipboard(hoveredAccount.getSession().getAccessToken());
+                    mc.keyboard.setClipboard(session.getAccessToken());
                 }
                 ImGui.text("Account type: " + hoveredAccount.getName());
                 if (hoveredAccount.getLastLogin() != null) {
                     ImGui.text("Last login: " + hoveredAccount.getLastLogin());
                 }
                 if (hoveredAccount.getSession().getUuidOrNull() != null) {
-                    ImGui.text("Account UUID: " + hoveredAccount.getSession().getUuidOrNull());
+                    ImGui.text("Account UUID: " + session.getUuidOrNull());
                 }
             }
             ImGui.endPopup();
@@ -126,7 +124,6 @@ public class AccountsImWindow extends ImWindow {
                     account.setStatus("Logged in");
                 } catch (Throwable throwable) {
                     account.setStatus("Error: " + throwable.getMessage());
-                    throwable.printStackTrace();
                 }
             }
             if (ImGui.isItemHovered() && ImGui.isItemClicked(ImGuiMouseButton.Right)) {

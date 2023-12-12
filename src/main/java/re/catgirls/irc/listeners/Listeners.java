@@ -24,6 +24,9 @@ public class Listeners {
      * @return the login listener
      */
     public LoginListener getLoginListener() {
+        if (loginListener == null)
+            throw new NullPointerException("login listener can not be null!");
+
         return loginListener;
     }
 
@@ -59,7 +62,7 @@ public class Listeners {
      *
      * @param loginListener the login listener
      */
-    public void setLoginListener(LoginListener loginListener) {
+    public void setLoginListener(final LoginListener loginListener) {
         this.loginListener = loginListener;
     }
 
@@ -68,7 +71,7 @@ public class Listeners {
      *
      * @param disconnectListener the disconnect listener
      */
-    public void setDisconnectListener(DisconnectListener disconnectListener) {
+    public void setDisconnectListener(final DisconnectListener disconnectListener) {
         this.disconnectListener = disconnectListener;
     }
 
@@ -77,7 +80,7 @@ public class Listeners {
      *
      * @param messageListener the message listener
      */
-    public void setMessageListener(MessageListener messageListener) {
+    public void setMessageListener(final MessageListener messageListener) {
         this.messageListener = messageListener;
     }
 
@@ -86,7 +89,7 @@ public class Listeners {
      *
      * @param profileListener the profile listener
      */
-    public void setProfileListener(ProfileListener profileListener) {
+    public void setProfileListener(final ProfileListener profileListener) {
         this.profileListener = profileListener;
     }
 }
