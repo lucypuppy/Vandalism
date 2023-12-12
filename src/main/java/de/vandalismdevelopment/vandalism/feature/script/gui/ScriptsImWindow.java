@@ -34,7 +34,7 @@ public class ScriptsImWindow extends ImWindow {
     private final ImBoolean hideHints;
 
     public ScriptsImWindow() {
-        super("Scripts");
+        super("Scripts", Category.CONFIGURATION);
         this.scriptEditors = new ConcurrentHashMap<>();
         this.hideHints = new ImBoolean(false);
     }

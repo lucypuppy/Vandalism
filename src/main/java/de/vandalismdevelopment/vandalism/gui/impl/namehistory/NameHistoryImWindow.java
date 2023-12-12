@@ -53,7 +53,7 @@ public class NameHistoryImWindow extends ImWindow {
     private String lastUsername, lastUUID;
 
     public NameHistoryImWindow() {
-        super("Name History");
+        super("Name History", Category.MISC_UTILS);
         this.username = new ImString(16);
         this.state = new ImString(200);
         this.resetState();

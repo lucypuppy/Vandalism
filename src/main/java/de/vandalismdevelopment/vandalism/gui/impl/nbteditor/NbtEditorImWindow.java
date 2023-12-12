@@ -22,7 +22,7 @@ public class NbtEditorImWindow extends ImWindow {
     private final NbtManager nbtManager;
 
     public NbtEditorImWindow() {
-        super("Nbt Editor");
+        super("Nbt Editor", Category.MISC_UTILS);
         this.nbtManager = new NbtManager();
     }
 

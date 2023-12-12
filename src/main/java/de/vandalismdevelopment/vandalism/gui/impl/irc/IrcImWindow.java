@@ -21,7 +21,7 @@ import re.catgirls.irc.session.UserProfile;
 public class IrcImWindow extends ImWindow {
 
     public IrcImWindow() {
-        super("IRC");
+        super("IRC", Category.CONFIGURATION);
     }
 
     public static final ImString ADDRESS = new ImString(64);

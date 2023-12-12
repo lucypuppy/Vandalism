@@ -18,7 +18,7 @@ public class AccountsImWindow extends ImWindow {
     private final AccountManager accountManager;
 
     public AccountsImWindow(final AccountManager accountManager) {
-        super("Accounts");
+        super("Accounts", Category.CONFIGURATION);
 
         this.accountManager = accountManager;
     }

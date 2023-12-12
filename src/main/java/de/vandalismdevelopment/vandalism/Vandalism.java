@@ -14,6 +14,7 @@ import de.vandalismdevelopment.vandalism.feature.script.ScriptManager;
 import de.vandalismdevelopment.vandalism.integration.hud.HUDManager;
 import de.vandalismdevelopment.vandalism.integration.rotation.RotationListener;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,10 +94,13 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     @Override
     public void onBootstrapGame(MinecraftClient mc) {
         printStartup();
-        logger.info("Schmuse Katze hasst diesen Trick!");
         mc.getWindow().setTitle(String.format("Starting %s...", FabricBootstrap.WINDOW_TITLE));
 
         // Base handlers
+        logger.info("Schmuse Katze hasst diesen Trick!");
+
+        FabricBootstrap.MOD_ICON = new Identifier(FabricBootstrap.MOD_ID, "textures/logo.png");
+
         runDirectory = new File(runDirectory, FabricBootstrap.MOD_ID);
         runDirectory.mkdirs();
 

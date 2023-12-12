@@ -33,7 +33,7 @@ public class ServerAddressResolverImWindow extends ImWindow {
     private final ImString hostname, lastData;
 
     public ServerAddressResolverImWindow() {
-        super("Server Address Resolver");
+        super("Server Address Resolver", Category.SERVER_UTILS);
         this.hostname = new ImString(253);
         this.lastData = new ImString();
     }
