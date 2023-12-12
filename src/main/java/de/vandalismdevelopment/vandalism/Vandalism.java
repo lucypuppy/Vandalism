@@ -33,13 +33,10 @@ import java.io.File;
  *  - Rewrite EnhancedServerList
  *  - Delete MixinParticleManager
  *  - Update AuthLib array instead of MixinTextureUrlChecker
- *  - Re-add DebugModule as hud element
  *  - Fix mixin injection names for the functions and the fields (change VANDALISM_... in every field to vandalism$... / remove vandalism$ for every function)
  *  - Add anti vanish via. the player list hud
  *  - Add the dripping stone block to the block density module
  *  - Fix the entity layer rendering from the true sight module
- *  - Make the width and height customizable or use calculations in the modules im window for the tabs
- *  - Fix module tabs display (no stacking) when the mod starts the first time
  *  - Fix offsets for the new "teleport" method in the fov fucker module
  *  - Fix spaces in the text rendering when using the "deutsch macher" module
  *  - Protector Module:
@@ -50,12 +47,17 @@ import java.io.File;
  *  - Make NullPointerException crash fix for the particle tracking system from the visual throttle module
  *  - Add Proxy manager
  *  - Re-implement im window state saving
+ *  - Make the width and height customizable or use calculations in the modules im window for the tabs
+ *  - Fix ImGui#begin in every im window (remove No Collapse Flag and move the code out of the if)
+ *  - Fix module tabs display (no stacking) when the mod starts the first time
+ *  - Re-add DebugModule as hud element
  *  - Fix calculations for the custom hud
  *  - Fix module list hud element not syncing module states by creating a module toggle event
  *  - Re-implement last session login for the account manager
  *  - Change skin texture to head texture in the account manager
  *  - Fix "Environment: Environment[...]" being duplicated when logging into an account in the account manager
  *  - Make account manager multi threaded (to prevent the game from freezing)
+ *  - Fix the sprint event (attacking is wrong when sprintEvent.force = true)
  */
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 
