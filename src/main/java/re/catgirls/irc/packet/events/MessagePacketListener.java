@@ -1,9 +1,10 @@
 package re.catgirls.irc.packet.events;
 
 import re.catgirls.irc.ChatClient;
+import re.catgirls.irc.listeners.impl.MessageListener;
 import re.catgirls.irc.packet.impl.s2c.S2CChatMessagePacket;
 import re.catgirls.packets.connection.PacketHandler;
-import re.catgirls.packets.event.PacketSubscriber;
+import re.catgirls.packets.event.interfaces.IPacketSubscriber;
 
 import java.util.Base64;
 import java.util.zip.CRC32;
@@ -29,8 +30,10 @@ public class MessagePacketListener {
      * @param ctx    the packet handler
      * @see S2CChatMessagePacket
      */
-    @PacketSubscriber
-    public void handleMessagePacket(S2CChatMessagePacket packet, PacketHandler ctx) {
+    @IPacketSubscriber
+    public void handleMessagePacket(final S2CChatMessagePacket packet, final PacketHandler ctx) {
+        final MessageListener listener = ChatClient.getInstance().getListeners().getMessageListener();
+
         try {
             final String message = new String(Base64.getDecoder().decode(packet.getMessage().get("message").getAsString()));
             final CRC32 checksum = new CRC32();
@@ -40,9 +43,9 @@ public class MessagePacketListener {
                 throw new RuntimeException("invalid checksum");
 
 
-            ChatClient.getInstance().getListeners().getMessageListener().onResponse(packet, message, null);
+            if (listener != null) listener.onResponse(packet, message, null);
         } catch (Exception e) {
-            ChatClient.getInstance().getListeners().getMessageListener().onResponse(packet, null, e);
+            if (listener != null) listener.onResponse(packet, null, e);
         }
     }
 }

@@ -1,9 +1,10 @@
 package re.catgirls.irc.packet.events;
 
 import re.catgirls.irc.ChatClient;
+import re.catgirls.irc.listeners.impl.LoginListener;
 import re.catgirls.irc.packet.impl.s2c.S2CLoginResponsePacket;
 import re.catgirls.packets.connection.PacketHandler;
-import re.catgirls.packets.event.PacketSubscriber;
+import re.catgirls.packets.event.interfaces.IPacketSubscriber;
 
 /**
  * <h2>Handle incoming login response packets</h2>
@@ -21,12 +22,13 @@ import re.catgirls.packets.event.PacketSubscriber;
  */
 public class LoginPacketListener {
 
-    @PacketSubscriber
-    public void onPacketReceive(S2CLoginResponsePacket packet, PacketHandler ctx) {
+    @IPacketSubscriber
+    public void onPacketReceive(final S2CLoginResponsePacket packet, final PacketHandler ctx) {
         if (packet.getResult() == S2CLoginResponsePacket.Result.OK)
             ChatClient.getInstance().getSession().setProfile(packet.getProfile());
 
-        ChatClient.getInstance().getListeners().getLoginListener().onResponse(packet);
+        final LoginListener listener = ChatClient.getInstance().getListeners().getLoginListener();
+        if (listener != null) listener.onResponse(packet);
     }
 
 }
