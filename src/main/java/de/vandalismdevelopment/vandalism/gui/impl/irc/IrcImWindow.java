@@ -121,7 +121,7 @@ public class IrcImWindow extends ImWindow {
 
                 if (ImGui.beginPopup("##" + value.getName())) {
                     if (ImGui.menuItem("Join %s's server".formatted(value.getName()))) {
-                        ChatUtil.chatMessage("gay sex! :3");
+                        ChatUtil.chatMessage(":3");
                     }
 
                     ImGui.endPopup();
@@ -157,7 +157,7 @@ public class IrcImWindow extends ImWindow {
 
             // wtf
             if (ImGui.inputText(
-                    "##gaysexomg",
+                    "##messagefield",
                     messageField,
                     ImGuiInputTextFlags.EnterReturnsTrue
             )) sendMessage(messageField);
