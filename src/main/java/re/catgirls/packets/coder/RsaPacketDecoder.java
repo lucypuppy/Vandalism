@@ -17,37 +17,54 @@ public class RsaPacketDecoder extends MessageToMessageDecoder<ByteBuf> {
     private final IPacketRegistry packetRegistry;
     private final Session session;
 
-    public RsaPacketDecoder(IPacketRegistry packetRegistry, Session session) {
+    /**
+     * Create a new packet decoder
+     *
+     * @param packetRegistry packet registry
+     * @param session        session
+     */
+    public RsaPacketDecoder(final IPacketRegistry packetRegistry, final Session session) {
         this.packetRegistry = packetRegistry;
         this.session = session;
     }
 
+    /**
+     * Decode a packet from a byte buffer
+     *
+     * @param channelHandlerContext channel handler context
+     * @param byteBuf               byte buffer to decode from
+     * @param list                  list to add the decoded packet to
+     * @throws Exception if the packet is invalid
+     */
     @Override
-    protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
-        int length = byteBuf.readInt();
-        list.add(actuallyDecode(length, session.isEncryptionNotReady() ? byteBuf : EncryptionHelper.decryptByteBuf(session.getClientKeyPair().getPrivate(), byteBuf)));
+    protected void decode(final ChannelHandlerContext channelHandlerContext, final ByteBuf byteBuf, final List<Object> list) throws Exception {
+        final int length = byteBuf.readInt();
+        if (length <= 0) return;
+
+        list.add(readPacket(length, session.isEncryptionNotReady() ?
+                byteBuf :
+                EncryptionHelper.decryptByteBuf(session.getClientKeyPair().getPrivate(), byteBuf)
+        ));
     }
 
-    private Packet actuallyDecode(int length, ByteBuf byteBuf) throws Exception {
-        if (length > 0) {
-            int packetId = byteBuf.readInt();
+    /**
+     * Decode a packet from a byte buffer
+     *
+     * @param length  length of the packet
+     * @param byteBuf byte buffer to decode from
+     * @return decoded packet
+     * @throws Exception if the packet is invalid
+     */
+    private Packet readPacket(final int length, final ByteBuf byteBuf) throws Exception {
+        final int packetId = byteBuf.readInt();
+        if (!packetRegistry.containsPacketId(packetId))
+            throw new DecoderException("received invalid packet id");
 
-            if (!packetRegistry.containsPacketId(packetId))
-                throw new DecoderException("Received invalid packet id");
+        /* create new packet buffer & read packet */
+        final PacketBuffer buffer = new PacketBuffer(byteBuf);
+        final Packet packet = packetRegistry.constructPacket(packetId);
+        packet.read(buffer);
 
-            PacketBuffer buffer = new PacketBuffer(byteBuf);
-
-            Packet packet = packetRegistry.constructPacket(packetId);
-            packet.read(buffer);
-
-            return packet;
-        }
-
-        return null;
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        super.exceptionCaught(ctx, cause);
+        return packet;
     }
 }

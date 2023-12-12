@@ -24,44 +24,60 @@ public class PacketBuffer extends ByteBuf {
 
     private final ByteBuf internalBuffer;
 
-    public PacketBuffer(ByteBuf internalBuffer) {
+    /**
+     * Creates a new packet buffer
+     *
+     * @param internalBuffer the internal buffer
+     */
+    public PacketBuffer(final ByteBuf internalBuffer) {
         this.internalBuffer = internalBuffer;
     }
 
+    /**
+     * Creates a new packet buffer
+     */
     public PacketBuffer() {
         this(Unpooled.buffer(2048));
     }
 
-    public void writeString(String string) {
+    /**
+     * Writes a string to the buffer
+     *
+     * @param string the string to write
+     */
+    public void writeString(final String string) {
         byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
         writeInt(bytes.length);
         writeBytes(bytes);
     }
 
+    /**
+     * Reads a string from the buffer
+     *
+     * @return the string
+     */
     public String readString() {
-        int len = readInt();
-        byte[] bytes = new byte[len];
+        byte[] bytes = new byte[readInt()];
         readBytes(bytes);
 
         return new String(bytes, StandardCharsets.UTF_8);
     }
 
 
+    /**
+     * Writes a json object to the buffer
+     *
+     * @param object the object to write
+     */
     public void writeJson(final JsonObject object) {
         writeString(new GsonBuilder().create().toJson(object));
     }
 
-    public String stringToHexString(String input) {
-        StringBuilder hexString = new StringBuilder();
-
-        for (char c : input.toCharArray()) {
-            String hex = Integer.toHexString(c);
-            hexString.append(hex);
-        }
-
-        return hexString.toString();
-    }
-
+    /**
+     * Reads a json object from the buffer
+     *
+     * @return the json object
+     */
     public JsonObject readJson() {
         return JsonParser.parseString(readString()).getAsJsonObject();
     }

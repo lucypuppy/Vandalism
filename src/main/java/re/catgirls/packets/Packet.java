@@ -2,22 +2,10 @@ package re.catgirls.packets;
 
 import re.catgirls.packets.buffer.PacketBuffer;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 @SuppressWarnings("RedundantThrows")
 public abstract class Packet {
 
-    private long sessionId = ThreadLocalRandom.current().nextLong();
+    public abstract void read(final PacketBuffer buffer) throws Exception;
 
-    public void setSessionId(long sessionId) {
-        this.sessionId = sessionId;
-    }
-
-    public long getSessionId() {
-        return sessionId;
-    }
-
-    public abstract void read(PacketBuffer buffer) throws Exception;
-
-    public abstract void write(PacketBuffer buffer) throws Exception;
+    public abstract void write(final PacketBuffer buffer) throws Exception;
 }

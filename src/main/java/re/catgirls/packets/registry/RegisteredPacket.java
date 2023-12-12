@@ -12,10 +12,10 @@ public class RegisteredPacket {
     private final Class<? extends Packet> packetClass;
     private final Constructor<? extends Packet> constructor;
 
-    public RegisteredPacket(Class<? extends Packet> packetClass) throws NoSuchMethodException {
+    public RegisteredPacket(final Class<? extends Packet> packetClass) throws NoSuchMethodException {
         this.packetClass = packetClass;
 
-        List<Constructor<?>> emptyConstructorList = Arrays.stream(packetClass.getConstructors())
+        final List<Constructor<?>> emptyConstructorList = Arrays.stream(packetClass.getConstructors())
                 .filter(constructor -> constructor.getParameterCount() == 0).toList();
 
         if (emptyConstructorList.isEmpty())
