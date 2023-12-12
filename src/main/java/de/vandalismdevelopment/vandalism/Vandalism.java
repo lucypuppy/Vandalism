@@ -4,7 +4,7 @@ import de.vandalismdevelopment.vandalism.base.FabricBootstrap;
 import de.vandalismdevelopment.vandalism.base.account.AccountManager;
 import de.vandalismdevelopment.vandalism.base.clientsettings.ClientSettings;
 import de.vandalismdevelopment.vandalism.base.config.ConfigManager;
-import de.vandalismdevelopment.vandalism.gui_v2.ImGuiManager;
+import de.vandalismdevelopment.vandalism.gui.ImGuiManager;
 import de.vandalismdevelopment.vandalism.integration.serverlist.ServerListManager;
 import de.vandalismdevelopment.vandalism.base.event.game.MinecraftBoostrapListener;
 import de.vandalismdevelopment.vandalism.base.event.game.ShutdownProcessListener;

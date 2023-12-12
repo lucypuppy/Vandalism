@@ -2,7 +2,7 @@ package de.vandalismdevelopment.vandalism.base.config.impl;
 
 import com.google.gson.JsonObject;
 import de.vandalismdevelopment.vandalism.base.config.AbstractConfig;
-import de.vandalismdevelopment.vandalism.gui_v2.impl.irc.IrcImGuiMenu;
+import de.vandalismdevelopment.vandalism.gui.impl.irc.IrcImGuiMenu;
 import imgui.type.ImString;
 
 import java.util.HashMap;

@@ -6,7 +6,7 @@ import de.vandalismdevelopment.vandalism.base.config.ConfigManager;
 import de.vandalismdevelopment.vandalism.base.config.template.ConfigWithValues;
 import de.vandalismdevelopment.vandalism.base.value.ValueParent;
 import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.gui_v2.ImGuiManager;
+import de.vandalismdevelopment.vandalism.gui.ImGuiManager;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,7 @@
 package de.vandalismdevelopment.vandalism.integration.hud.gui;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.gui_v2.ImWindow;
+import de.vandalismdevelopment.vandalism.gui.ImWindow;
 import de.vandalismdevelopment.vandalism.integration.hud.HUDElement;
 import de.vandalismdevelopment.vandalism.integration.hud.HUDManager;
 import imgui.ImGui;

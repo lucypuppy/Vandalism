@@ -5,7 +5,7 @@ import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.vandalismdevelopment.vandalism.base.config.ConfigManager;
 import de.vandalismdevelopment.vandalism.base.event.RenderListener;
 import de.vandalismdevelopment.vandalism.base.event.ScreenListener;
-import de.vandalismdevelopment.vandalism.gui_v2.ImGuiManager;
+import de.vandalismdevelopment.vandalism.gui.ImGuiManager;
 import de.vandalismdevelopment.vandalism.integration.hud.config.HUDConfig;
 import de.vandalismdevelopment.vandalism.integration.hud.gui.HUDImWindow;
 import de.vandalismdevelopment.vandalism.integration.hud.impl.DebugElement;
@@ -14,10 +14,6 @@ import de.vandalismdevelopment.vandalism.integration.hud.impl.ModuleListHUDEleme
 import de.vandalismdevelopment.vandalism.integration.hud.impl.WatermarkHUDElement;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class HUDManager extends Storage<HUDElement> implements RenderListener, ScreenListener, MinecraftWrapper {
 
