@@ -18,6 +18,7 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
 
     private final AccountFactory factory;
     private String tokenChain;
+    private StepFullJavaSession.FullJavaSession session;
 
     public AbstractMicrosoftAccount(String name, AccountFactory factory) {
         super("Microsoft (" + name + ")"); // Java is bad, but we are worse
@@ -35,21 +36,28 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
 
     @Override
     public void logIn0() throws Throwable {
-        try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
-            // Get the token chain as a json object
-            final JsonObject tokenChainNode = JsonParser.parseString(this.tokenChain).getAsJsonObject();
+        if (this.session != null) { // If we already got a session, we should use it right?
+            if (this.tokenChain == null) {
+                // Save the token chain if we don't have it yet
+                this.tokenChain = getStep().toJson(session).toString();
+            }
+            final StepMCProfile.MCProfile profile = session.getMcProfile();
+            updateSession(new Session(profile.getName(), profile.getId(), profile.getMcToken().getAccessToken(), Optional.empty(), Optional.empty(), Session.AccountType.MSA));
+        } else {
+            try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
+                // Get the token chain as a json object
+                final JsonObject tokenChainNode = JsonParser.parseString(this.tokenChain).getAsJsonObject();
 
-            // Refresh the token chain and get the new token chain
-            final StepFullJavaSession.FullJavaSession fullJavaSession = getStep().refresh(httpClient, getStep().fromJson(tokenChainNode));
-            updateSessionAndTokenChain(fullJavaSession);
+                // Refresh the token chain and get the new token chain
+                final StepFullJavaSession.FullJavaSession fullJavaSession = getStep().refresh(httpClient, getStep().fromJson(tokenChainNode));
+                initWithExistingSession(fullJavaSession);
+            }
         }
     }
 
-    // If we are adding the account, we already have the java session, so why not use it?
-    public void updateSessionAndTokenChain(final StepFullJavaSession.FullJavaSession session) {
-        this.tokenChain = getStep().toJson(session).getAsString();
-        final StepMCProfile.MCProfile profile = session.getMcProfile();
-        updateSession(new Session(profile.getName(), profile.getId(), profile.getMcToken().getAccessToken(), Optional.empty(), Optional.empty(), Session.AccountType.MSA));
+    public void initWithExistingSession(final StepFullJavaSession.FullJavaSession session) throws Throwable {
+        this.session = session;
+        logIn();
     }
 
     @Override

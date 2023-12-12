@@ -33,7 +33,7 @@ public class MSCredentialsAccount extends AbstractMicrosoftAccount {
                     final var javaSession = MinecraftAuth.JAVA_CREDENTIALS_LOGIN.
                             getFromInput(httpClient, new StepCredentialsMsaCode.MsaCredentials(this.email.get(), this.password.get()));
 
-                    account.updateSessionAndTokenChain(javaSession);
+                    account.initWithExistingSession(javaSession);
                 } catch (Throwable e) {
                     account.setStatus("Failed to login: " + e.getMessage());
                 }
