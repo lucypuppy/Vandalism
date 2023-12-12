@@ -2,8 +2,8 @@ package de.vandalismdevelopment.vandalism.feature.module.impl.movement.modes.spe
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.base.event.entity.MotionListener;
-import de.vandalismdevelopment.vandalism.feature.module.template.ModuleMulti;
 import de.vandalismdevelopment.vandalism.feature.module.impl.movement.SpeedModule;
+import de.vandalismdevelopment.vandalism.feature.module.template.ModuleMulti;
 import de.vandalismdevelopment.vandalism.util.minecraft.MovementUtil;
 import net.minecraft.util.math.Vec3d;
 
@@ -15,7 +15,7 @@ public class VerusHopModuleMode extends ModuleMulti<SpeedModule> implements Moti
 
     private int offGroundTicks;
     private double moveSpeed;
-//#Toggle VerusFullDisabler
+
     @Override
     public void onEnable() {
         DietrichEvents2.global().subscribe(MotionEvent.ID, this);
