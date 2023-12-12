@@ -49,6 +49,7 @@ import java.io.File;
  *      - Add protection for coords
  *      - Maybe use a chat event instead of a text draw event
  *  - Make NullPointerException crash fix for the particle tracking system from the visual throttle module
+ *  - Add Proxy manager 
  */
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 
