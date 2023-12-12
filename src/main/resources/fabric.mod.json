@@ -6,10 +6,10 @@
   "description": "A mod for Minecraft designed to train server administrators.",
   "authors": [
     "NekosAreKawaii",
-    "FooFieOwO",
     "Verschlxfene",
-    "keksbyte",
-    "Snow"
+    "FooFieOwO",
+    "Snow",
+    "keksbyte"
   ],
   "environment": "client",
   "icon": "assets/vandalism/textures/icon/icon_1024x1024.png",

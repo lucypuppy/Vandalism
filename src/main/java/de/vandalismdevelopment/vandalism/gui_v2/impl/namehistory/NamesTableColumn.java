@@ -1,10 +1,10 @@
-package de.vandalismdevelopment.vandalism.gui.impl.widget.impl.serverinfo;
+package de.vandalismdevelopment.vandalism.gui_v2.impl.namehistory;
 
 import de.florianmichael.rclasses.common.StringUtils;
 
-public enum PlayersTableColumn {
+public enum NamesTableColumn {
 
-    USERNAME, UUID, ACTIONS;
+    USERNAME, DATE, ACCURATE, ACTIONS;
 
     public String getName() {
         return StringUtils.normalizeEnumName(this.name());

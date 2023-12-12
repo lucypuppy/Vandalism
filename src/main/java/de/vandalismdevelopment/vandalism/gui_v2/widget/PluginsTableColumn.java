@@ -1,10 +1,10 @@
-package de.vandalismdevelopment.vandalism.gui.impl.menu.impl.port;
+package de.vandalismdevelopment.vandalism.gui_v2.widget;
 
 import de.florianmichael.rclasses.common.StringUtils;
 
-public enum PortsTableColumn {
+public enum PluginsTableColumn {
 
-    PORT, STATE, QUERY_STATE, ACTIONS;
+    NAME, ACTIONS;
 
     public String getName() {
         return StringUtils.normalizeEnumName(this.name());

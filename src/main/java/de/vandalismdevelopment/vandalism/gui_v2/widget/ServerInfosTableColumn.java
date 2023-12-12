@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.gui.impl.widget.impl.serverinfo;
+package de.vandalismdevelopment.vandalism.gui_v2.widget;
 
 import de.florianmichael.rclasses.common.StringUtils;
 

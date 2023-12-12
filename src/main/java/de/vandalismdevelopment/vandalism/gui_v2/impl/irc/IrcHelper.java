@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.gui.impl.menu.impl.irc;
+package de.vandalismdevelopment.vandalism.gui_v2.impl.irc;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.util.minecraft.ChatUtil;

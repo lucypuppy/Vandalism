@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.gui.impl.menu.impl.nbteditor;
+package de.vandalismdevelopment.vandalism.gui_v2.impl.nbteditor;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.nbteditor.NbtManager;
@@ -17,11 +17,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.Executors;
 
-public class NbtEditortImGuiMenu extends ImWindow {
+public class NbtEditorImGuiMenu extends ImWindow {
 
     private final NbtManager nbtManager;
 
-    public NbtEditortImGuiMenu() {
+    public NbtEditorImGuiMenu() {
         super("Nbt Editor");
         this.nbtManager = new NbtManager();
     }
@@ -52,18 +52,13 @@ public class NbtEditortImGuiMenu extends ImWindow {
             this.nbtManager.getMainWindow().dragAndDrop(new File(name), stream.toByteArray());
             out.close();
             stream.close();
-            final NbtEditortImGuiMenu nbtEditortImGuiMenu = Vandalism
-                    .getInstance()
-                    .getImGuiHandler()
-                    .getImGuiMenuCategoryRegistry()
-                    .getImGuiMenuByClass(NbtEditortImGuiMenu.class);
-            nbtEditortImGuiMenu.setState(true);
+            setActive(true);
             Executors.newSingleThreadExecutor().submit(() -> {
                 try {
                     Thread.sleep(100);
                 } catch (final InterruptedException ignored) {
                 }
-                this.mc.execute(() -> Vandalism.getInstance().getImGuiHandler().toggleScreen());
+                this.mc.execute(() -> Vandalism.getInstance().getImGuiManager().openScreen());
             });
         } catch (final IOException io) {
             Vandalism.getInstance().getLogger().error("Failed to display nbt.", io);

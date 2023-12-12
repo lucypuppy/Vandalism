@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.gui.impl.menu.impl;
+package de.vandalismdevelopment.vandalism.gui_v2.impl;
 
 import de.vandalismdevelopment.vandalism.gui_v2.ImWindow;
 import imgui.ImGui;
