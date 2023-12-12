@@ -30,10 +30,10 @@ public class IRCConfig extends AbstractConfig<JsonObject> {
     }
 
     @Override
-    public void load0(final JsonObject jsonObject) {
+    public void load0(final JsonObject mainNode) {
         this.values.forEach((key, value) -> {
-            if (jsonObject.has(key)) {
-                value.set(jsonObject.get(key).getAsString());
+            if (mainNode.has(key)) {
+                value.set(mainNode.get(key).getAsString());
             }
         });
     }
