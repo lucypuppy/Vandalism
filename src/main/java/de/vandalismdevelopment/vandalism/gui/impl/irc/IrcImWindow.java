@@ -1,6 +1,6 @@
 package de.vandalismdevelopment.vandalism.gui.impl.irc;
 
-import de.vandalismdevelopment.vandalism.gui.ImWindow;
+import de.vandalismdevelopment.vandalism.gui.base.ImWindow;
 import de.vandalismdevelopment.vandalism.util.minecraft.ChatUtil;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;

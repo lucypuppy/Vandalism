@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.gui;
+package de.vandalismdevelopment.vandalism.gui.base;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.florianmichael.rclasses.pattern.functional.IName;

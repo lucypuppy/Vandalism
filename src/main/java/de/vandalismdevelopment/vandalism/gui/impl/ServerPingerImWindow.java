@@ -4,7 +4,7 @@ import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.gui.widget.ServerInfoWidget;
 import de.vandalismdevelopment.vandalism.gui.widget.ServerInfosTableColumn;
-import de.vandalismdevelopment.vandalism.gui.ImWindow;
+import de.vandalismdevelopment.vandalism.gui.base.ImWindow;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
