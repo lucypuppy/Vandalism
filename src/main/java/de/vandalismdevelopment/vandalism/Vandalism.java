@@ -53,6 +53,8 @@ import java.io.File;
  *  - Re-implement im window state saving
  *  - Re-implement last session login for the account manager
  *  - Change skin texture to head texture in the account manager
+ *  - Fix calculations for the custom hud
+ *  - Fix module list hud element not syncing module states
  */
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 
