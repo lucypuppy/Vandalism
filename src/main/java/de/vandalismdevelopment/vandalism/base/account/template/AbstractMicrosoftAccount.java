@@ -3,6 +3,7 @@ package de.vandalismdevelopment.vandalism.base.account.template;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.florianmichael.rclasses.io.encryption.EncryptionUtils;
+import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.base.account.AbstractAccount;
 import de.vandalismdevelopment.vandalism.base.account.AccountFactory;
 import net.minecraft.client.session.Session;
@@ -57,7 +58,7 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
 
     public void initWithExistingSession(final StepFullJavaSession.FullJavaSession session) throws Throwable {
         this.session = session;
-        logIn();
+        Vandalism.getInstance().getAccountManager().logIn(this);
     }
 
     @Override

@@ -59,8 +59,8 @@ public class AccountManager extends Storage<AbstractAccount> {
         return currentAccount;
     }
 
-    public AbstractAccount getFirstAccount() {
-        return firstAccount;
+    public void logOut() throws Throwable {
+        logIn(firstAccount);
     }
 
 }
