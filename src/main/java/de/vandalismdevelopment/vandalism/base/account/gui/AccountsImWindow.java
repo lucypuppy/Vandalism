@@ -90,18 +90,20 @@ public class AccountsImWindow extends ImWindow {
             if (subButton("Copy Name")) {
                 mc.keyboard.setClipboard(hoveredAccount.getDisplayName());
             }
-            if (hoveredAccount.getSession().getUuidOrNull() != null && ImGui.button("Copy UUID", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
-                mc.keyboard.setClipboard(hoveredAccount.getSession().getUuidOrNull().toString());
-            }
-            if (subButton("Copy Access token")) {
-                mc.keyboard.setClipboard(hoveredAccount.getSession().getAccessToken());
-            }
-            ImGui.text("Account type: " + hoveredAccount.getName());
-            if (hoveredAccount.getLastLogin() != null) {
-                ImGui.text("Last login: " + hoveredAccount.getLastLogin());
-            }
-            if (hoveredAccount.getSession().getUuidOrNull() != null) {
-                ImGui.text("Account UUID: " + hoveredAccount.getSession().getUuidOrNull());
+            if (hoveredAccount.getSession() != null) {
+                if (hoveredAccount.getSession().getUuidOrNull() != null && ImGui.button("Copy UUID", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                    mc.keyboard.setClipboard(hoveredAccount.getSession().getUuidOrNull().toString());
+                }
+                if (subButton("Copy Access token")) {
+                    mc.keyboard.setClipboard(hoveredAccount.getSession().getAccessToken());
+                }
+                ImGui.text("Account type: " + hoveredAccount.getName());
+                if (hoveredAccount.getLastLogin() != null) {
+                    ImGui.text("Last login: " + hoveredAccount.getLastLogin());
+                }
+                if (hoveredAccount.getSession().getUuidOrNull() != null) {
+                    ImGui.text("Account UUID: " + hoveredAccount.getSession().getUuidOrNull());
+                }
             }
             ImGui.endPopup();
         }

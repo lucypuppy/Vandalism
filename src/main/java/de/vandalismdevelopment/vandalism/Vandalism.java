@@ -49,6 +49,9 @@ import java.io.File;
  *      - Add protection for coords
  *      - Maybe use a chat event instead of a text draw event
  *  - Make NullPointerException crash fix for the particle tracking system from the visual throttle module
+ *  - Re-implement im window state saving
+ *  - Re-implement last session login for the account manager
+ *  - Change skin texture to head texture in the account manager
  */
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 
