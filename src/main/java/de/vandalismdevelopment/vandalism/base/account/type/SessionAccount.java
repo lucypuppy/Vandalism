@@ -31,7 +31,6 @@ public class SessionAccount extends AbstractAccount {
         this.accessToken = accessToken;
         this.xuid = xuid;
         this.clientId = clientId;
-        System.out.println(this.name);
 
         logIn0();
     }
