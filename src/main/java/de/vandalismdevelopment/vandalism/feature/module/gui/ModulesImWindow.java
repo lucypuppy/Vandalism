@@ -2,9 +2,9 @@ package de.vandalismdevelopment.vandalism.feature.module.gui;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.feature.Feature;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
-import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.gui.base.ImWindow;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
@@ -159,7 +159,7 @@ public class ModulesImWindow extends ImWindow {
         }
         if (ImGui.beginPopupContextItem(moduleId + "configmenu", ImGuiPopupFlags.MouseButtonRight)) {
             ImGui.text(module.getName() + " Module");
-            //TODO: Make the width and height customizable or use calculations.
+
             this.renderModuleData(module, moduleId, 400, 300);
             ImGui.endPopup();
         }

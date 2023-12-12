@@ -27,7 +27,7 @@ public abstract class MixinParticleManager {
                 final ParticleTracker particleTracker = visualThrottleModule.particleTrackerMap.get(particleId);
                 particleTracker.increaseCount();
                 if (particleTracker.getCount() > visualThrottleModule.countToBlockParticles.getValue()) {
-                    return null; //TODO: Make NullPointerException crash fix!
+                    return null;
                 }
             } else visualThrottleModule.particleTrackerMap.put(particleId, new ParticleTracker(particleId));
         }

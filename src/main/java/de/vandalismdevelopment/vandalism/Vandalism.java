@@ -4,15 +4,15 @@ import de.vandalismdevelopment.vandalism.base.FabricBootstrap;
 import de.vandalismdevelopment.vandalism.base.account.AccountManager;
 import de.vandalismdevelopment.vandalism.base.clientsettings.ClientSettings;
 import de.vandalismdevelopment.vandalism.base.config.ConfigManager;
-import de.vandalismdevelopment.vandalism.gui.ImGuiManager;
-import de.vandalismdevelopment.vandalism.integration.serverlist.ServerListManager;
 import de.vandalismdevelopment.vandalism.base.event.game.MinecraftBoostrapListener;
 import de.vandalismdevelopment.vandalism.base.event.game.ShutdownProcessListener;
 import de.vandalismdevelopment.vandalism.feature.command.CommandManager;
 import de.vandalismdevelopment.vandalism.feature.module.ModuleManager;
 import de.vandalismdevelopment.vandalism.feature.script.ScriptManager;
+import de.vandalismdevelopment.vandalism.gui.ImGuiManager;
 import de.vandalismdevelopment.vandalism.integration.hud.HUDManager;
 import de.vandalismdevelopment.vandalism.integration.rotation.RotationListener;
+import de.vandalismdevelopment.vandalism.integration.serverlist.ServerListManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -22,26 +22,33 @@ import java.io.File;
 
 /**
  * TODO
- *  - Delete GlfwKeyName and replace with InputUtil
- *  - Clean event system package to prevent overusing listener classes
  *  - Apply checkstyle.xml to all classes
  *  - Fix tick bug (cps is not accurate) -> see BoxMuellerClicker#update
- *  - Fix module tabs display (no stacking) when the mod starts the first time.
+ *  - Fix module tabs display (no stacking) when the mod starts the first time
  *  - Replace MixinServerResourcePackProvider
- *  - MixinClientConnection is broken (recall method using boolean)
  *  - Delete MixinClientPlayerEntity & MixinClientWorld
  *  - Delete events which only have one usage
  *  - Fix MixinMinecraftClient screen event
- *  - Take a look into command system and deduplicate code
  *  - Delete CustomRPConfirmScreen
  *  - Delete MixinGameRenderer view bobbing -> use proper MixinExtras instead of copy-pasting game code
  *  - Rewrite EnhancedServerList
- *  - Delete MixinIdentifier as it breaks game code
  *  - Delete MixinParticleManager
- *  - Delete MixinSodiumWorldRenderer, Sodium has merged this fix into their codebase
  *  - Update AuthLib array instead of MixinTextureUrlChecker
- *  - Readd DebugModule as ImWindow
+ *  - Re-add DebugModule as hud element
  *  - Fix forceSort by creating a module toggle event
+ *  - Fix mixin injection names for the functions and the fields (change VANDALISM_... in every field to vandalism$... / remove vandalism$ for every function)
+ *  - Add anti vanish via. the player list hud
+ *  - Add the dripping stone block to the block density module
+ *  - Fix the entity layer rendering from the true sight module
+ *  - Make the width and height customizable or use calculations in the modules im window for the tabs
+ *  - Fix offsets for the new "teleport" method in the fov fucker module
+ *  - Fix spaces in the text rendering when using the "deutsch macher" module
+ *  - Protector Module:
+ *      - Add protection for custom rank prefixes
+ *      - Add protection for skins
+ *      - Add protection for coords
+ *      - Maybe use a chat event instead of a text draw event
+ *  - Make NullPointerException crash fix for the particle tracking system from the visual throttle module
  */
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 
