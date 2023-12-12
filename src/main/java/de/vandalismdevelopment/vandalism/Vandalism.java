@@ -55,8 +55,6 @@ import java.io.File;
  *  - Fix module list hud element not syncing module states by creating a module toggle event
  *  - Re-implement last session login for the account manager
  *  - Change skin texture to head texture in the account manager
- *  - Fix "Environment: Environment[...]" being duplicated when logging into an account in the account manager
- *  - Fix account login when restarting the game
  *  - Make account manager multi threaded (to prevent the game from freezing)
  *  - Fix the sprint event (attacking is wrong when sprintEvent.force = true)
  *  - When changing the module mode of speed/flight/nofall for example from the default mode to another mode it removes
@@ -125,7 +123,6 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         runDirectory.mkdirs();
 
         configManager = new ConfigManager();
-        configManager.init();
 
         imGuiManager = new ImGuiManager(runDirectory);
         imGuiManager.init();
