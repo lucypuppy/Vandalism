@@ -35,13 +35,13 @@ public abstract class MixinServerEntry {
     }
 
     @Unique
-    private static final String VANDALISM_VERSION_TEXT = Formatting.GOLD + Formatting.BOLD.toString() + "Version" + Formatting.DARK_GRAY + Formatting.BOLD + "> " + Formatting.GRAY;
+    private static final String vandalism$VERSION_TEXT = Formatting.GOLD + Formatting.BOLD.toString() + "Version" + Formatting.DARK_GRAY + Formatting.BOLD + "> " + Formatting.GRAY;
 
     @Unique
-    private static final String VANDALISM_PROTOCOL_TEXT = Formatting.DARK_AQUA + Formatting.BOLD.toString() + "Protocol" + Formatting.DARK_GRAY + Formatting.BOLD + "> " + Formatting.AQUA;
+    private static final String vandalism$PROTOCOL_TEXT = Formatting.DARK_AQUA + Formatting.BOLD.toString() + "Protocol" + Formatting.DARK_GRAY + Formatting.BOLD + "> " + Formatting.AQUA;
 
     @Unique
-    private static final String VANDALISM_INCOMPATIBLE_PROTOCOL_TEXT = Formatting.DARK_GRAY + Formatting.BOLD.toString() + "(" + Formatting.RED + Formatting.BOLD + "Incompatible Protocol!" + Formatting.DARK_GRAY + Formatting.BOLD + ")";
+    private static final String vandalism$INCOMPATIBLE_PROTOCOL_TEXT = Formatting.DARK_GRAY + Formatting.BOLD.toString() + "(" + Formatting.RED + Formatting.BOLD + "Incompatible Protocol!" + Formatting.DARK_GRAY + Formatting.BOLD + ")";
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;IIIZ)I"))
     private int vandalism$applyAdditionalServerInformation(final DrawContext instance, final TextRenderer textRenderer, final Text text, final int x, final int y, final int color, final boolean shadow) {
@@ -54,10 +54,10 @@ public abstract class MixinServerEntry {
                 if (versionName.length() > maxServerVersionLength) {
                     versionName = versionName.substring(0, maxServerVersionLength);
                 }
-                instance.drawTextWithShadow(textRenderer, VANDALISM_VERSION_TEXT + versionName, textX, y, -1);
+                instance.drawTextWithShadow(textRenderer, vandalism$VERSION_TEXT + versionName, textX, y, -1);
                 instance.drawTextWithShadow(
                         textRenderer,
-                        VANDALISM_PROTOCOL_TEXT + this.server.protocolVersion,
+                        vandalism$PROTOCOL_TEXT + this.server.protocolVersion,
                         textX,
                         y + textRenderer.fontHeight,
                         -1
@@ -65,7 +65,7 @@ public abstract class MixinServerEntry {
                 if (this.server.protocolVersion != ProtocolHack.getTargetVersion().getVersion()) {
                     instance.drawTextWithShadow(
                             textRenderer,
-                            VANDALISM_INCOMPATIBLE_PROTOCOL_TEXT,
+                            vandalism$INCOMPATIBLE_PROTOCOL_TEXT,
                             textX,
                             y + (textRenderer.fontHeight * 2),
                             -1
