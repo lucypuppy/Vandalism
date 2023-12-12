@@ -1,12 +1,11 @@
 package de.vandalismdevelopment.vandalism.feature.module.impl.render;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.vandalismdevelopment.vandalism.base.event.render.CameraClipRaytraceListener;
 import de.vandalismdevelopment.vandalism.base.event.render.TextDrawListener;
-import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.base.value.impl.primitive.BooleanValue;
 import de.vandalismdevelopment.vandalism.base.value.impl.primitive.StringValue;
+import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import net.minecraft.client.session.Session;
 import org.apache.commons.lang3.StringUtils;
 
@@ -55,11 +54,6 @@ public class ProtectorModule extends AbstractModule implements TextDrawListener 
     public void onDisable() {
         DietrichEvents2.global().unsubscribe(TextDrawEvent.ID, this);
     }
-
-    //TODO: Add protection for custom rank prefixes.
-    //TODO: Add protection for skins.
-    //TODO: Add protection for coords.
-    //TODO: Maybe use a chat event instead of a text draw event.
 
     @Override
     public void onTextDraw(final TextDrawEvent event) {

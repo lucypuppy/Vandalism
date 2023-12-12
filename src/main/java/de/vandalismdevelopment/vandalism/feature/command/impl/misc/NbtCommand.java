@@ -6,6 +6,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.command.AbstractCommand;
 import de.vandalismdevelopment.vandalism.feature.command.arguments.NbtCompoundArgumentType;
+import de.vandalismdevelopment.vandalism.gui.impl.nbteditor.NbtEditorImWindow;
 import de.vandalismdevelopment.vandalism.util.minecraft.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.minecraft.ItemStackUtil;
 import net.minecraft.command.CommandSource;
@@ -111,10 +112,9 @@ public class NbtCommand extends AbstractCommand {
 
         builder.then(literal("gui").executes(context -> {
             final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
-//            if (this.validBasic(stack))
-//                Vandalism.getInstance().getImGuiHandler().getImGuiMenuCategoryRegistry().getImGuiMenuByClass(NbtEditortImGuiMenu.class).displayNbt(stack.getName().getString(), stack.getNbt());
-
-            // TODO | NBT Editor
+            if (this.validBasic(stack)) {
+                Vandalism.getInstance().getImGuiManager().getByClass(NbtEditorImWindow.class).displayNbt(stack.getName().getString(), stack.getNbt());
+            }
             return SINGLE_SUCCESS;
         }));
 
@@ -125,7 +125,7 @@ public class NbtCommand extends AbstractCommand {
                 displayTitle = nbt.getString(DISPLAY_TITLE_NBT_KEY);
                 nbt.remove(DISPLAY_TITLE_NBT_KEY);
             } else displayTitle = "Nbt";
-//            Vandalism.getInstance().getImGuiHandler().getImGuiMenuCategoryRegistry().getImGuiMenuByClass(NbtEditortImGuiMenu.class).displayNbt(displayTitle, nbt);
+            Vandalism.getInstance().getImGuiManager().getByClass(NbtEditorImWindow.class).displayNbt(displayTitle, nbt);
             return SINGLE_SUCCESS;
         })));
     }

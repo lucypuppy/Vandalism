@@ -121,7 +121,7 @@ public class ServerListManager {
             for (final ServerList serverList : this.serverLists) {
                 final JsonObject serverListObject = new JsonObject();
                 serverListObject.addProperty("name", serverList.getName());
-                serverListObject.addProperty("size", serverList.getSize()); //TODO
+                serverListObject.addProperty("size", serverList.getSize());
                 serverListsArray.add(serverListObject);
             }
             configObject.addProperty("selectedServerList", this.selectedServerList.getName());

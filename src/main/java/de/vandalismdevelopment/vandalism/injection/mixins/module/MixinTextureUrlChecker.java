@@ -12,7 +12,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(value = TextureUrlChecker.class, remap = false)
 public abstract class MixinTextureUrlChecker {
 
-    //TODO: Make better fix since that this could cause issues.
     @Inject(method = "isAllowedTextureDomain", at = @At("HEAD"), cancellable = true)
     private static void vandalism$exploitFixerBlockInvalidTextureUrls(final String url, final CallbackInfoReturnable<Boolean> cir) {
         final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();

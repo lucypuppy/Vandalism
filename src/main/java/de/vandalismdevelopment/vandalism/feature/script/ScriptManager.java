@@ -6,14 +6,13 @@ import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.base.config.ConfigManager;
 import de.vandalismdevelopment.vandalism.base.config.template.ConfigWithValues;
 import de.vandalismdevelopment.vandalism.base.event.game.KeyboardInputListener;
-import de.vandalismdevelopment.vandalism.base.event.game.MouseInputListener;
 import de.vandalismdevelopment.vandalism.base.event.game.TickGameListener;
 import de.vandalismdevelopment.vandalism.feature.script.gui.ScriptsImWindow;
 import de.vandalismdevelopment.vandalism.feature.script.parse.ScriptParser;
 import de.vandalismdevelopment.vandalism.feature.script.parse.command.ScriptCommand;
 import de.vandalismdevelopment.vandalism.gui.ImGuiManager;
-import de.vandalismdevelopment.vandalism.util.minecraft.ChatUtil;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
+import de.vandalismdevelopment.vandalism.util.minecraft.ChatUtil;
 import net.minecraft.util.Pair;
 import org.lwjgl.glfw.GLFW;
 
@@ -78,7 +77,7 @@ public class ScriptManager extends NamedStorage<Script> implements TickGameListe
             }
             this.add(script);
             if (save) {
-                Vandalism.getInstance().getConfigManager().save(); // TODO |Only save this config
+                Vandalism.getInstance().getConfigManager().save();
             }
             Vandalism.getInstance().getLogger().info("Script '" + script + "' has been loaded.");
         } catch (final Exception e) {
@@ -189,7 +188,7 @@ public class ScriptManager extends NamedStorage<Script> implements TickGameListe
             if (!script.getFile().exists()) {
                 this.remove(script);
                 Vandalism.getInstance().getLogger().info("Script '" + script + "' has been unloaded because the file does not exist anymore.");
-                Vandalism.getInstance().getConfigManager().save(); // TODO |Only save this config
+                Vandalism.getInstance().getConfigManager().save();
             }
         }
     }
