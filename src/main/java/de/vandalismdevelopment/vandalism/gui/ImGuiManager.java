@@ -20,6 +20,7 @@ import net.minecraft.client.gui.screen.ConnectScreen;
 import net.minecraft.client.gui.screen.LevelLoadingScreen;
 
 import java.io.File;
+import java.util.List;
 
 public class ImGuiManager extends Storage<ImWindow> implements RenderListener, InputListener, MinecraftWrapper {
 
@@ -54,7 +55,15 @@ public class ImGuiManager extends Storage<ImWindow> implements RenderListener, I
             return;
         }
 
-        MinecraftClient.getInstance().setScreen(new ImGuiScreen(screen));
+        MinecraftClient.getInstance().setScreen(new ImGuiScreen(this, screen));
+    }
+
+    public List<ImWindow> getByCategory(final ImWindow.Category category) {
+        return this.getList().stream().filter(imWindow -> imWindow.getCategory().equals(category)).toList();
+    }
+
+    public List<ImWindow.Category> getCategories() {
+        return this.getList().stream().map(ImWindow::getCategory).distinct().toList();
     }
 
 }

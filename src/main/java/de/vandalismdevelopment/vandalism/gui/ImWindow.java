@@ -1,5 +1,6 @@
 package de.vandalismdevelopment.vandalism.gui;
 
+import de.florianmichael.rclasses.common.StringUtils;
 import de.florianmichael.rclasses.pattern.functional.IName;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
@@ -7,11 +8,13 @@ import net.minecraft.client.gui.DrawContext;
 public class ImWindow implements IName, MinecraftWrapper {
 
     private final String name;
+    private final Category category;
 
     private boolean active;
 
-    public ImWindow(String name) {
+    public ImWindow(String name, Category category) {
         this.name = name;
+        this.category = category;
     }
 
     protected void onEnable() {
@@ -49,10 +52,18 @@ public class ImWindow implements IName, MinecraftWrapper {
         return this.name;
     }
 
-    public enum Type {
+    public Category getCategory() {
+        return category;
+    }
+
+    public enum Category {
 
         CONFIGURATION,
         SERVER_UTILS,
-        MISC_UTILS
+        MISC_UTILS;
+
+        public String getName() {
+            return StringUtils.normalizeEnumName(this.name());
+        }
     }
 }
