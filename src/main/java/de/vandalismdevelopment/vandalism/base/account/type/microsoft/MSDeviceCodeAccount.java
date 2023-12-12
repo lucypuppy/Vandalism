@@ -33,7 +33,7 @@ public class MSDeviceCodeAccount extends AbstractMicrosoftAccount {
                         Util.getOperatingSystem().open(url);
                     }));
 
-                    account.updateSessionAndTokenChain(javaSession);
+                    account.initWithExistingSession(javaSession);
                 } catch (Throwable e) {
                     account.setStatus("Failed to login: " + e.getMessage());
                 }

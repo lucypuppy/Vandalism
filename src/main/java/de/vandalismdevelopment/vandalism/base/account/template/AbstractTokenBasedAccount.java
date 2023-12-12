@@ -1,6 +1,7 @@
 package de.vandalismdevelopment.vandalism.base.account.template;
 
 import com.google.gson.JsonObject;
+import com.mojang.authlib.yggdrasil.YggdrasilEnvironment;
 import de.florianmichael.rclasses.io.WebUtils;
 import de.vandalismdevelopment.vandalism.base.account.AbstractAccount;
 import de.vandalismdevelopment.vandalism.base.account.AccountFactory;
@@ -22,10 +23,10 @@ public abstract class AbstractTokenBasedAccount extends AbstractAccount {
     public AbstractTokenBasedAccount(String name, String redeemUrl, String token) {
         this(name, redeemUrl);
         this.token = token;
-//
-//        if (token != null && getEnvironment() == YggdrasilEnvironment.PROD.getEnvironment()) {
-//            throw new RuntimeException("You are using the production environment. This is not allowed.");
-//        }
+
+        if (token != null && getEnvironment() == YggdrasilEnvironment.PROD.getEnvironment()) {
+            throw new RuntimeException("You are using the production environment. This is not allowed.");
+        }
     }
 
     public abstract Session fromResponse(final String response);
@@ -59,11 +60,12 @@ public abstract class AbstractTokenBasedAccount extends AbstractAccount {
 
     @Override
     public void logIn0() throws Throwable {
-
+        if (this.session != null) {
+            updateSession(session); // If we are already logged in, we don't need to do anything except reloading the session
+            return;
+        }
         final JsonObject request = new JsonObject();
         request.addProperty("token", this.token);
-
-        System.out.println(request);
 
         WebUtils.DEFAULT.withHeader("Content-Type", "application/json");
         final String response = WebUtils.DEFAULT.post(this.redeemUrl, request.toString());
