@@ -30,9 +30,9 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
         this.name = name;
         this.values = new ArrayList<>();
         this.enabled = new BooleanValue(
+                this,
                 "Enabled",
                 "Whether this HUD element is enabled.",
-                this,
                 true
         );
 
@@ -163,11 +163,6 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
     @Override
     public String getName() {
         return this.name;
-    }
-
-    @Override
-    public String getValueName() {
-        return this.getName();
     }
 
 }

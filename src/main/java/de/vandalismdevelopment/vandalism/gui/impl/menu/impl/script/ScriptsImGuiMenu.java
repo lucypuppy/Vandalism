@@ -4,8 +4,8 @@ import de.florianmichael.rclasses.common.RandomUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
 import de.vandalismdevelopment.vandalism.feature.script.Script;
 import de.vandalismdevelopment.vandalism.feature.script.parse.ScriptParser;
-import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.ImGuiMenu;
 import de.vandalismdevelopment.vandalism.base.value.Value;
+import de.vandalismdevelopment.vandalism.gui_v2.ImWindow;
 import imgui.ImGui;
 import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiTabBarFlags;
@@ -18,11 +18,12 @@ import net.minecraft.util.Util;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ScriptsImGuiMenu extends ImGuiMenu {
+public class ScriptsImGuiMenu extends ImWindow {
 
     private static final SimpleDateFormat MODIFICATION_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss a");
 
@@ -40,26 +41,26 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
 
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        final FeatureList<Script> scripts = Vandalism.getInstance().getScriptRegistry().getScripts();
+        final List<Script> scripts = Vandalism.getInstance().getScriptManager().getList();
         for (final Map.Entry<File, ScriptEditor> entry : this.scriptEditors.entrySet()) {
             if (entry.getValue().isClosed()) this.scriptEditors.remove(entry.getKey());
         }
-        if (ImGui.begin("Scripts##scripts", Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags() | ImGuiWindowFlags.MenuBar)) {
+        if (ImGui.begin("Scripts##scripts", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.MenuBar)) {
             if (ImGui.beginMenuBar()) {
                 if (ImGui.button("Open directory##scriptsopendir")) {
-                    Util.getOperatingSystem().open(Vandalism.getInstance().getScriptRegistry().getDirectory());
+                    Util.getOperatingSystem().open(Vandalism.getInstance().getScriptManager().getDirectory());
                 }
                 if (ImGui.button("Reload##scriptsreload")) {
-                    Vandalism.getInstance().getScriptRegistry().load();
+                    Vandalism.getInstance().getScriptManager().init();
                 }
                 if (ImGui.button("Create new example script##scriptscreatenewexamplescript")) {
                     final String name = "Example#" + RandomUtils.randomInt(1000, 9999);
-                    final File scriptFile = new File(Vandalism.getInstance().getScriptRegistry().getDirectory(), name + ScriptParser.SCRIPT_FILE_EXTENSION);
+                    final File scriptFile = new File(Vandalism.getInstance().getScriptManager().getDirectory(), name + ScriptParser.SCRIPT_FILE_EXTENSION);
                     this.scriptEditors.put(scriptFile, new ScriptEditor(scriptFile, true));
                 }
                 if (ImGui.button("Create new script##scriptscreatenewscript")) {
                     final String name = "Template#" + RandomUtils.randomInt(1000, 9999);
-                    final File scriptFile = new File(Vandalism.getInstance().getScriptRegistry().getDirectory(), name + ScriptParser.SCRIPT_FILE_EXTENSION);
+                    final File scriptFile = new File(Vandalism.getInstance().getScriptManager().getDirectory(), name + ScriptParser.SCRIPT_FILE_EXTENSION);
                     this.scriptEditors.put(scriptFile, new ScriptEditor(scriptFile, false));
                 }
                 if (!this.scriptEditors.isEmpty()) {
@@ -69,9 +70,9 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
                         }
                     }
                 }
-                if (Vandalism.getInstance().getScriptRegistry().getRunningScriptsCount() > 0) {
-                    if (ImGui.button("Kill " + Vandalism.getInstance().getScriptRegistry().getRunningScriptsCount() + " running scripts##scriptskill")) {
-                        Vandalism.getInstance().getScriptRegistry().killAllRunningScripts();
+                if (Vandalism.getInstance().getScriptManager().getRunningScriptsCount() > 0) {
+                    if (ImGui.button("Kill " + Vandalism.getInstance().getScriptManager().getRunningScriptsCount() + " running scripts##scriptskill")) {
+                        Vandalism.getInstance().getScriptManager().killAllRunningScripts();
                     }
                 }
                 ImGui.endMenuBar();
@@ -101,7 +102,7 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
                         final int maxTableColumns = scriptsTableColumns.length;
                         if (ImGui.beginTable("scripts##scriptstable", maxTableColumns, ImGuiTableFlags.Borders | ImGuiTableFlags.Resizable | ImGuiTableFlags.RowBg | ImGuiTableFlags.ContextMenuInBody)) {
                             for (final ScriptsTableColumn scriptsTableColumn : scriptsTableColumns) {
-                                ImGui.tableSetupColumn(scriptsTableColumn.normalName());
+                                ImGui.tableSetupColumn(scriptsTableColumn.getName());
                             }
                             ImGui.tableHeadersRow();
                             for (final Script script : scripts) {
@@ -119,7 +120,7 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
                                             case VERSION -> ImGui.textWrapped(script.getVersion());
                                             case AUTHOR -> ImGui.textWrapped(script.getAuthor());
                                             case DESCRIPTION -> ImGui.textWrapped(script.getDescription());
-                                            case CATEGORY -> ImGui.textWrapped(script.getCategory().normalName());
+                                            case CATEGORY -> ImGui.textWrapped(script.getCategory().getName());
                                             case EXPERIMENTAL -> {
                                                 ImGui.textWrapped(script.isExperimental() ? "Yes" : "No");
                                             }
@@ -138,11 +139,11 @@ public class ScriptsImGuiMenu extends ImGuiMenu {
                                                     ImGui.separator();
                                                     ImGui.spacing();
                                                     if (this.mc.player != null) {
-                                                        if (ImGui.button((Vandalism.getInstance().getScriptRegistry().isScriptRunning(scriptFile) ? "Kill" : "Execute") + "##scriptsexecuteorkill" + script.getName(), buttonWidth, buttonHeight)) {
-                                                            if (Vandalism.getInstance().getScriptRegistry().isScriptRunning(scriptFile)) {
-                                                                Vandalism.getInstance().getScriptRegistry().killRunningScriptByScriptFile(scriptFile);
+                                                        if (ImGui.button((Vandalism.getInstance().getScriptManager().isScriptRunning(scriptFile) ? "Kill" : "Execute") + "##scriptsexecuteorkill" + script.getName(), buttonWidth, buttonHeight)) {
+                                                            if (Vandalism.getInstance().getScriptManager().isScriptRunning(scriptFile)) {
+                                                                Vandalism.getInstance().getScriptManager().killRunningScriptByScriptFile(scriptFile);
                                                             } else {
-                                                                Vandalism.getInstance().getScriptRegistry().executeScriptByScriptFile(scriptFile);
+                                                                Vandalism.getInstance().getScriptManager().executeScriptByScriptFile(scriptFile);
                                                             }
                                                         }
                                                     }

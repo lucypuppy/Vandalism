@@ -13,45 +13,39 @@ import net.minecraft.item.Items;
 public class PushVelocityModule extends AbstractModule implements MovementListener {
 
     private final Value<Boolean> modifyEntityPush = new BooleanValue(
+            this,
             "Modify Entity Push",
             "If enabled you can modify the entity push velocity.",
-            this,
             true
     );
 
     private final Value<Double> entityPushMultiplier = new DoubleValue(
+            this,
             "Entity Push Multiplier",
             "Which multiplier of velocity should a entity push apply to you.",
-            this,
             0.0d,
             -2.0d,
             2.0d
     ).visibleCondition(this.modifyEntityPush::getValue);
 
     private final Value<Boolean> modifyFluidPush = new BooleanValue(
+            this,
             "Modify Fluid Push",
             "If enabled you can modify the fluid push velocity.",
-            this,
             true
     );
 
     private final Value<Double> fluidPushSpeed = new DoubleValue(
+            this,
             "Fluid Push Value",
             "Which value of speed should a fluid push apply to you.",
-            this,
             0.0d,
             -2.0d,
             2.0d
     ).visibleCondition(this.modifyFluidPush::getValue);
 
     public PushVelocityModule() {
-        super(
-                "Push Velocity",
-                "Modifies the entity and the fluid push velocity you take.",
-                FeatureCategory.MOVEMENT,
-                false,
-                false
-        );
+        super("Push Velocity", "Modifies the entity and the fluid push velocity you take.", Category.MOVEMENT);
     }
 
     @Override

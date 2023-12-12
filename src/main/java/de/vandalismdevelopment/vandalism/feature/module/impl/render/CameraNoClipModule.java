@@ -7,13 +7,7 @@ import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 public class CameraNoClipModule extends AbstractModule implements RenderListener {
 
     public CameraNoClipModule() {
-        super(
-                "Camera No Clip",
-                "Disables camera block collision and lets you see trough blocks.",
-                FeatureCategory.RENDER,
-                false,
-                false
-        );
+        super("Camera No Clip", "Disables camera block collision and lets you see trough blocks.", Category.RENDER);
     }
 
     @Override

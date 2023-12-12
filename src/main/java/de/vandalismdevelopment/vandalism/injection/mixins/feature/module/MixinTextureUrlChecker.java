@@ -15,8 +15,8 @@ public abstract class MixinTextureUrlChecker {
     //TODO: Make better fix since that this could cause issues.
     @Inject(method = "isAllowedTextureDomain", at = @At("HEAD"), cancellable = true)
     private static void vandalism$exploitFixerBlockInvalidTextureUrls(final String url, final CallbackInfoReturnable<Boolean> cir) {
-        final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleRegistry().getExploitFixerModule();
-        if (exploitFixerModule.isEnabled() && exploitFixerModule.blockInvalidTextureUrls.getValue()) {
+        final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
+        if (exploitFixerModule.isActive() && exploitFixerModule.blockInvalidTextureUrls.getValue()) {
             final boolean startsWithUrl1 = StringUtils.startsWith(url, "https://" + ExploitFixerModule.CORRECT_TEXTURE_URL_START);
             final boolean startsWithUrl2 = StringUtils.startsWith(url, "http://" + ExploitFixerModule.CORRECT_TEXTURE_URL_START);
             if (!startsWithUrl1 && !startsWithUrl2) {

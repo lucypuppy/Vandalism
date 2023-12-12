@@ -9,10 +9,8 @@ public class CopyInvisibleCharCommand extends AbstractCommand {
 
     public CopyInvisibleCharCommand() {
         super(
-                "Copy Invisible Char",
                 "Copies an invisible character into your clipboard.",
-                FeatureCategory.MISC,
-                false,
+                Category.MISC,
                 "copyinvisiblechar",
                 "copyinvchar"
         );

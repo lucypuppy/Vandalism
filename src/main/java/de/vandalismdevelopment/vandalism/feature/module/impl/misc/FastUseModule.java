@@ -7,22 +7,16 @@ import de.vandalismdevelopment.vandalism.base.value.impl.number.IntegerValue;
 public class FastUseModule extends AbstractModule {
 
     public final Value<Integer> itemUseCooldown = new IntegerValue(
+            this,
             "Item Use Cooldown",
             "Here you can input the custom use cooldown value.",
-            this,
             0,
             0,
             3
     );
 
     public FastUseModule() {
-        super(
-                "Fast Use",
-                "Allows you to use items faster.",
-                FeatureCategory.MISC,
-                false,
-                false
-        );
+        super("Fast Use", "Allows you to use items faster.", Category.MISC);
     }
 
 }

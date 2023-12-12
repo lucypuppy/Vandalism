@@ -9,8 +9,8 @@ import imgui.type.ImDouble;
 
 public class DoubleValue extends ValueNumber<Double> {
 
-    public DoubleValue(ValueParent parent, String name, String description, Double minValue, Double defaultValue, Double maxValue) {
-        super(parent, name, description, minValue, defaultValue, maxValue);
+    public DoubleValue(ValueParent parent, String name, String description, Double defaultValue, Double minValue, Double maxValue) {
+        super(parent, name, description, defaultValue, minValue, maxValue);
     }
 
     @Override

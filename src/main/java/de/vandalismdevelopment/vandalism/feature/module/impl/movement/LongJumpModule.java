@@ -4,7 +4,7 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.base.event.MovementListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.util.minecraft.MovementUtil;
-import de.vandalismdevelopment.vandalism.util.minecraft.TimerUtil;
+import de.vandalismdevelopment.vandalism.util.minecraft.TimerHack;
 import net.minecraft.util.math.Vec3d;
 
 public class LongJumpModule extends AbstractModule implements MovementListener {
@@ -15,7 +15,9 @@ public class LongJumpModule extends AbstractModule implements MovementListener {
     private double moveSpeed;
 
     public LongJumpModule() {
-        super("Long Jump", "Let's you jump further from normal.", FeatureCategory.MOVEMENT, true, false);
+        super("Long Jump", "Let's you jump further from normal.", Category.MOVEMENT);
+
+        setExperimental(true);
     }
 
     @Override
@@ -35,7 +37,7 @@ public class LongJumpModule extends AbstractModule implements MovementListener {
         this.waitTicks = 0;
         this.moveTicks = 0;
         this.canLongJump = false;
-        TimerUtil.setSpeed(1);
+        TimerHack.setSpeed(1);
 
     }
 
@@ -57,10 +59,10 @@ public class LongJumpModule extends AbstractModule implements MovementListener {
                     this.mc.player.setVelocity(new Vec3d(moveVelocity.getX(), 0, moveVelocity.getZ()));
                     this.mc.player.setVelocity(mc.player.getVelocity().add(0, 0.01, 0));
                     this.moveTicks = 5;
-                    TimerUtil.setSpeed(0.8f);
+                    TimerHack.setSpeed(0.8f);
                     return;
                 } else {
-                    TimerUtil.setSpeed(1.3f);
+                    TimerHack.setSpeed(1.3f);
                 }
 
                 if (Math.abs(this.mc.player.getY() - this.lastPosY) > 1) {

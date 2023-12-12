@@ -21,69 +21,69 @@ import java.util.stream.Stream;
 public class FOVFuckerModule extends AbstractModule implements TickListener {
 
     private final Value<Float> maxDistance = new FloatValue(
+            this,
             "Max Distance",
             "The maximum distance to find targets.",
-            this,
-            5,
-            2,
-            10
+            5F,
+            2F,
+            10F
     );
 
     private final Value<Double> targetYPosOffset = new DoubleValue(
+            this,
             "Target Y Pos Offset",
             "The offset for the y position you will be teleported to.",
-            this,
             0.2,
-            -5,
-            5
+            -5.0,
+            5.0
     );
     private final Value<Double> targetHPosOffset = new DoubleValue(
+            this,
             "Target H Pos Offset",
             "The offset for the horizontal position you will be teleported to.",
-            this,
             0.5,
-            -5,
-            5
+            -5.0,
+            5.0
     );
 
     private final Value<Boolean> useYawFromTarget = new BooleanValue(
+            this,
             "Use Yaw From Target",
             "Uses the yaw from the target.",
-            this,
             true
     );
 
     private final Value<Boolean> usePitchFromTarget = new BooleanValue(
+            this,
             "Use Pitch From Target",
             "Uses the pitch from the target.",
-            this,
             true
     );
 
     private final Value<Boolean> alwaysFOV = new BooleanValue(
+            this,
             "Always FOV",
             "This will always teleport you into the fov of the target.",
-            this,
             false
     );
 
     private final ValueGroup sneakCategory = new ValueGroup(
+            this,
             "Sneak Spam Configuration",
-            "The settings for the sneak spam.",
-            this
+            "The settings for the sneak spam."
     );
 
     private final Value<Boolean> sneakSpam = new BooleanValue(
+            this.sneakCategory,
             "Sneak Spam",
             "You are sus with the target.",
-            this.sneakCategory,
             true
     );
 
     private final Value<Integer> sneakSpamDelay = new IntegerValue(
+            this.sneakCategory,
             "Sneak Spam Delay",
             "The delay for the sneak spam.",
-            this.sneakCategory,
             250,
             0,
             1000
@@ -103,13 +103,7 @@ public class FOVFuckerModule extends AbstractModule implements TickListener {
     }
 
     public FOVFuckerModule() {
-        super(
-                "FOV Fucker",
-                "Teleports you into the nearest player to mess up their fov.",
-                FeatureCategory.MOVEMENT,
-                false,
-                false
-        );
+        super("FOV Fucker", "Teleports you into the nearest player to mess up their fov.", Category.MOVEMENT);
         this.reset();
     }
 

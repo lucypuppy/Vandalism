@@ -9,10 +9,8 @@ public class CopyUsernameCommand extends AbstractCommand {
 
     public CopyUsernameCommand() {
         super(
-                "Copy Username",
                 "Copies your username into your clipboard.",
-                FeatureCategory.MISC,
-                false,
+                Category.MISC,
                 "copyusername",
                 "usernamecopy"
         );

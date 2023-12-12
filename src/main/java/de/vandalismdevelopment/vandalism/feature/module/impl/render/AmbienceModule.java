@@ -11,9 +11,9 @@ import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 public class AmbienceModule extends AbstractModule implements PacketListener {
 
     private final Value<Integer> worldTime = new IntegerValue(
+            this,
             "World time",
             "Time of the world.",
-            this,
             14000,
             0,
             20000
@@ -24,12 +24,6 @@ public class AmbienceModule extends AbstractModule implements PacketListener {
     }
 
     @Override
-    public void onPacket(final PacketEvent event) {
-        if (event.packet instanceof final WorldTimeUpdateS2CPacket worldTimePacket)
-            worldTimePacket.timeOfDay = this.worldTime.getValue();
-    }
-
-    @Override
     public void onEnable() {
         DietrichEvents2.global().subscribe(PacketEvent.ID, this, Priorities.LOW);
     }
@@ -37,6 +31,13 @@ public class AmbienceModule extends AbstractModule implements PacketListener {
     @Override
     public void onDisable() {
         DietrichEvents2.global().unsubscribe(PacketEvent.ID, this);
+    }
+
+    @Override
+    public void onPacket(final PacketEvent event) {
+        if (event.packet instanceof final WorldTimeUpdateS2CPacket worldTimePacket) {
+            worldTimePacket.timeOfDay = this.worldTime.getValue();
+        }
     }
 
 }

@@ -28,14 +28,16 @@ public class PacketLoggerModule extends AbstractModule implements PacketListener
                 serverPackets.add(packetClass.getSimpleName());
             }
         }
-        new MultiModeValue("Server Packets",
-                "Incoming packets",
+        new MultiModeValue(
                 this,
+                "Server Packets",
+                "Incoming packets",
                 serverPackets.toArray(new String[0])
         );
-        new MultiModeValue("Client Packets",
-                "Outgoing packets",
+        new MultiModeValue(
                 this,
+                "Client Packets",
+                "Outgoing packets",
                 clientPackets.toArray(new String[0])
         );
     }

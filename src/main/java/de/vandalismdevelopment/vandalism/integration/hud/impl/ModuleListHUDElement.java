@@ -55,9 +55,9 @@ public class ModuleListHUDElement extends HUDElement {
         if (this.sort) {
             this.sort = false;
             this.enabledModules.clear();
-            final FeatureList<AbstractModule> modules = Vandalism.getInstance().getModuleRegistry().getModules();
+            final List<AbstractModule> modules = Vandalism.getInstance().getModuleManager().getList();
             for (final AbstractModule module : modules) {
-                if (module.isEnabled() && module.isShowInModuleList()) {
+                if (module.isActive() && module.isShowInHUD()) {
                     this.enabledModules.add(module.getName());
                 }
             }

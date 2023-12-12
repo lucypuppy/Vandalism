@@ -1,18 +1,13 @@
-package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.namehistory;
+package de.vandalismdevelopment.vandalism.gui.impl.menu.impl.namehistory;
 
-public enum NamesTableColumn implements EnumNameNormalizer {
+import de.florianmichael.rclasses.common.StringUtils;
+
+public enum NamesTableColumn {
 
     USERNAME, DATE, ACCURATE, ACTIONS;
 
-    private final String normalName;
-
-    NamesTableColumn() {
-        this.normalName = this.normalizeName(this.name());
-    }
-
-    @Override
-    public String normalName() {
-        return this.normalName;
+    public String getName() {
+        return StringUtils.normalizeEnumName(this.name());
     }
 
 }

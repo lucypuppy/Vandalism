@@ -18,15 +18,15 @@ public abstract class MixinMinecraftClient implements MinecraftWrapper {
     @Inject(method = "hasOutline", at = @At("RETURN"), cancellable = true)
     private void vandalism$espForceOutline(final Entity entity, final CallbackInfoReturnable<Boolean> cir) {
         if (entity == this.mc.player) return;
-        if (Vandalism.getInstance().getModuleRegistry().getEspModule().isEnabled()) {
+        if (Vandalism.getInstance().getModuleManager().getEspModule().isActive()) {
             cir.setReturnValue(true);
         }
     }
 
     @ModifyConstant(method = "doItemUse", constant = @Constant(intValue = 4))
     private int vandalism$fastUseItemUseCooldown(final int value) {
-        final FastUseModule fastUseModule = Vandalism.getInstance().getModuleRegistry().getFastUseModule();
-        if (fastUseModule.isEnabled()) return fastUseModule.itemUseCooldown.getValue();
+        final FastUseModule fastUseModule = Vandalism.getInstance().getModuleManager().getFastUseModule();
+        if (fastUseModule.isActive()) return fastUseModule.itemUseCooldown.getValue();
         return value;
     }
 

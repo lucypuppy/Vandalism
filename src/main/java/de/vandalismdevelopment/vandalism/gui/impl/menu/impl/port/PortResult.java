@@ -1,8 +1,8 @@
-package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.port;
+package de.vandalismdevelopment.vandalism.gui.impl.menu.impl.port;
 
 import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.gui.imgui.impl.widget.impl.serverinfo.ServerInfoWidget;
+import de.vandalismdevelopment.vandalism.gui.impl.widget.impl.serverinfo.ServerInfoWidget;
 import net.lenni0451.mcping.MCPing;
 import net.lenni0451.mcping.exception.ConnectTimeoutException;
 import net.lenni0451.mcping.exception.ConnectionRefusedException;

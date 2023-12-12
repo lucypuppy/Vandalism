@@ -9,7 +9,7 @@ import net.minecraft.command.CommandSource;
 public class HClipCommand extends AbstractCommand {
 
     public HClipCommand() {
-        super("HClip", "Allows you to teleport yourself by horizontal offset.", FeatureCategory.MOVEMENT, false, "hclip", "htp", "horizontalteleport");
+        super("Allows you to teleport yourself by horizontal offset.", Category.MOVEMENT, "hclip", "htp", "horizontalteleport");
     }
 
     @Override

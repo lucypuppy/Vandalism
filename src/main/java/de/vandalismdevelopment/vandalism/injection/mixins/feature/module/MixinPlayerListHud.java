@@ -35,8 +35,8 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
 
     @ModifyConstant(constant = @Constant(longValue = 80L), method = "collectPlayerEntries")
     private long vandalism$betterTabListTabSize(final long count) {
-        final BetterTabListModule betterTabListModule = Vandalism.getInstance().getModuleRegistry().getBetterTabListModule();
-        return betterTabListModule.isEnabled() ? betterTabListModule.tabSize.getValue() : count;
+        final BetterTabListModule betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
+        return betterTabListModule.isActive() ? betterTabListModule.tabSize.getValue() : count;
     }
 
     @Unique
@@ -44,21 +44,21 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
 
     @ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Ljava/lang/Math;min(II)I"), index = 0)
     private int vandalism$betterTabListMoreInfoScale(final int width) {
-        final BetterTabListModule betterTabListModule = Vandalism.getInstance().getModuleRegistry().getBetterTabListModule();
-        return betterTabListModule.isEnabled() && betterTabListModule.moreInfo.getValue() ? (int) (width + (VANDALISM_SCALE * 30)) : width;
+        final BetterTabListModule betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
+        return betterTabListModule.isActive() && betterTabListModule.moreInfo.getValue() ? (int) (width + (VANDALISM_SCALE * 30)) : width;
     }
 
     @Inject(method = "renderLatencyIcon", at = @At("HEAD"), cancellable = true)
     private void vandalism$betterTabListApplyAdditionalInfo(final DrawContext context, final int width, final int x, final int y, final PlayerListEntry entry, final CallbackInfo ci) {
         final int a = this.mc.isInSingleplayer() || (this.mc.getNetworkHandler() != null && this.mc.getNetworkHandler().getConnection().isEncrypted()) ? 9 : 0, w = x + a;
-        final BetterTabListModule betterTabListModule = Vandalism.getInstance().getModuleRegistry().getBetterTabListModule();
+        final BetterTabListModule betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
         final int color;
-        if (betterTabListModule.isEnabled() && betterTabListModule.highlightSelf.getValue() && this.mc.player != null && entry.getProfile().getId().equals(this.mc.player.getGameProfile().getId())) {
+        if (betterTabListModule.isActive() && betterTabListModule.highlightSelf.getValue() && this.mc.player != null && entry.getProfile().getId().equals(this.mc.player.getGameProfile().getId())) {
             color = betterTabListModule.selfColor.getValue().getRGB();
         } else {
             color = this.mc.options.getTextBackgroundColor(0x20FFFFFF);
         }
-        final boolean moreInfo = betterTabListModule.isEnabled() && betterTabListModule.moreInfo.getValue();
+        final boolean moreInfo = betterTabListModule.isActive() && betterTabListModule.moreInfo.getValue();
         context.fill(w, y, w + width - a, y + (moreInfo ? 9 : 8), color);
         context.drawTextWithShadow(this.mc.textRenderer, this.getPlayerName(entry), w, y, entry.getGameMode() == GameMode.SPECTATOR ? -1862270977 : -1);
         if (moreInfo) {

@@ -4,7 +4,10 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.florianmichael.rclasses.pattern.storage.named.NamedStorage;
 import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.base.config.ConfigManager;
+import de.vandalismdevelopment.vandalism.base.config.template.ConfigWithValues;
 import de.vandalismdevelopment.vandalism.base.event.InputListener;
+import de.vandalismdevelopment.vandalism.feature.Feature;
 import de.vandalismdevelopment.vandalism.feature.module.impl.combat.BowSpammerModule;
 import de.vandalismdevelopment.vandalism.feature.module.impl.development.PacketLoggerModule;
 import de.vandalismdevelopment.vandalism.feature.module.impl.development.TestModule;
@@ -15,7 +18,11 @@ import de.vandalismdevelopment.vandalism.feature.module.impl.render.*;
 import de.vandalismdevelopment.vandalism.util.MinecraftWrapper;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.List;
+
 public class ModuleManager extends NamedStorage<AbstractModule> implements InputListener, MinecraftWrapper {
+
+    private final ConfigManager configManager;
 
     private BetterTabListModule betterTabListModule;
     private ESPModule espModule;
@@ -27,7 +34,9 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Input
     private TrueSightModule trueSightModule;
     private VisualThrottleModule visualThrottleModule;
 
-    public ModuleManager() {
+    public ModuleManager(final ConfigManager configManager) {
+        this.configManager = configManager;
+
         DietrichEvents2.global().subscribe(KeyboardEvent.ID, this);
     }
 
@@ -76,6 +85,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Input
                 new VehicleOneHitModule(),
                 new LongJumpModule()
         );
+
+        configManager.add(new ConfigWithValues("modules", getList()));
     }
 
     @Override
@@ -83,11 +94,15 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Input
         if (action != GLFW.GLFW_PRESS || this.mc.player == null || this.mc.currentScreen != null) {
             return;
         }
-        for (final AbstractModule module : Vandalism.getInstance().getModuleRegistry().getList()) {
+        for (final AbstractModule module : Vandalism.getInstance().getModuleManager().getList()) {
             if (module.getKeyBind().isPressed()) {
                 module.toggle();
             }
         }
+    }
+
+    public List<AbstractModule> getByCategory(final Feature.Category category) {
+        return this.getList().stream().filter(abstractModule -> abstractModule.getCategory() == category).toList();
     }
 
     public BetterTabListModule getBetterTabListModule() {

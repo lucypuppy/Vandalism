@@ -36,7 +36,7 @@ import java.util.concurrent.Executors;
 
 public class ItemStackLoggerModule extends AbstractModule implements TickListener {
 
-    private final Value<Boolean> notifyInChat = new BooleanValue("Notify in Chat", "If enabled this module sends a notification into the chat to inform you about a newly found item.", this, true);
+    private final Value<Boolean> notifyInChat = new BooleanValue(this, "Notify in Chat", "If enabled this module sends a notification into the chat to inform you about a newly found item.", true);
 
     private static final File LOGGED_ITEMS_DIR = new File(Vandalism.getInstance().getRunDirectory(), "logged-items");
 
@@ -45,7 +45,7 @@ public class ItemStackLoggerModule extends AbstractModule implements TickListene
     private final ExecutorService executorService;
 
     public ItemStackLoggerModule() {
-        super("Item Stack Logger", "Logs item stacks to '" + LOGGED_ITEMS_DIR.getAbsolutePath() + "'", FeatureCategory.MISC, false, false);
+        super("Item Stack Logger", "Logs item stacks to '" + LOGGED_ITEMS_DIR.getAbsolutePath() + "'", Category.MISC);
         this.formatter = new SimpleDateFormat("hh:mm:ss a, dd/MM/yyyy");
         this.executorService = Executors.newFixedThreadPool(4);
     }
@@ -163,7 +163,7 @@ public class ItemStackLoggerModule extends AbstractModule implements TickListene
                     final NbtCompound copy = nbt.copy();
                     copy.putString(NbtCommand.DISPLAY_TITLE_NBT_KEY, itemFromText);
                     final String command = "nbt displaynbt " + NbtHelper.toPrettyPrintedText(copy).getString();
-                    final ClickEvent clickEvent = Vandalism.getInstance().getCommandRegistry().generateClickEvent(command);
+                    final ClickEvent clickEvent = Vandalism.getInstance().getCommandManager().generateClickEvent(command);
                     style = style.withClickEvent(clickEvent);
                     displayNBTButton.setStyle(style);
                     text.append(displayNBTButton);

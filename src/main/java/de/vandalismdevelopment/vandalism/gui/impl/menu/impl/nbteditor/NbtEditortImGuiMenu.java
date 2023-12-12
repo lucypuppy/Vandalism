@@ -1,8 +1,8 @@
 package de.vandalismdevelopment.vandalism.gui.impl.menu.impl.nbteditor;
 
 import de.vandalismdevelopment.vandalism.Vandalism;
-import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.ImGuiMenu;
 import de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.nbteditor.NbtManager;
+import de.vandalismdevelopment.vandalism.gui_v2.ImWindow;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import net.lenni0451.imnbt.ui.types.Popup;
@@ -17,7 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.Executors;
 
-public class NbtEditortImGuiMenu extends ImGuiMenu {
+public class NbtEditortImGuiMenu extends ImWindow {
 
     private final NbtManager nbtManager;
 
@@ -30,11 +30,7 @@ public class NbtEditortImGuiMenu extends ImGuiMenu {
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         final Window nbtRendererWindow = this.nbtManager.getWindow();
         if (nbtRendererWindow != null) {
-            if (ImGui.begin(
-                    "Nbt Editor##nbteditor",
-                    Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags() |
-                            ImGuiWindowFlags.MenuBar
-            )) {
+            if (ImGui.begin("Nbt Editor##nbteditor", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.MenuBar)) {
                 nbtRendererWindow.render();
                 ImGui.end();
             }

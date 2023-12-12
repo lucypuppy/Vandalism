@@ -7,21 +7,10 @@ import de.vandalismdevelopment.vandalism.feature.module.value.ModuleModeValue;
 
 public class PhaseModule extends AbstractModule {
 
-    private final Value<String> mode = new ModuleModeValue<>(
-            "Mode",
-            "The current phase mode.",
-            this,
-            new FallingBlockModuleMode(this)
-    );
+    private final ModuleModeValue<PhaseModule> mode = new ModuleModeValue<>(this, "Mode", "The current phase mode.", new FallingBlockModuleMode(this));
 
     public PhaseModule() {
-        super(
-                "Phase",
-                "Lets you clip into or trough blocks.",
-                FeatureCategory.MOVEMENT,
-                false,
-                false
-        );
+        super("Phase", "Lets you clip into or trough blocks.", Category.MOVEMENT);
     }
 
 }

@@ -2,6 +2,7 @@ package de.vandalismdevelopment.vandalism.injection.mixins.feature.command;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.feature.command.AbstractCommand;
 import de.vandalismdevelopment.vandalism.feature.command.CommandManager;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.ClickEvent;
@@ -22,7 +23,7 @@ public abstract class MixinScreen {
                 final String value = clickEvent.getValue(), secret = CommandManager.COMMAND_SECRET;
                 if (value.startsWith(secret)) {
                     try {
-                        Vandalism.getInstance().getCommandRegistry().execute(value.replaceFirst(secret, ""));
+                        Vandalism.getInstance().getCommandManager().getCommandDispatcher().execute(value.replaceFirst(secret, ""), AbstractCommand.COMMAND_SOURCE);
                         cir.setReturnValue(true);
                     } catch (final CommandSyntaxException e) {
                         Vandalism.getInstance().getLogger().error("Failed to run command.", e);

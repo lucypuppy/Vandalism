@@ -17,8 +17,8 @@ public abstract class MixinEntityRenderer<T extends Entity> {
 
     @Redirect(method = "renderLabelIfPresent(Lnet/minecraft/entity/Entity;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I"))
     private int vandalism$visualThrottleModifyDisplayNameLength(final TextRenderer instance, Text text, final float x, final float y, final int color, final boolean shadow, final Matrix4f matrix, final VertexConsumerProvider vertexConsumers, final TextRenderer.TextLayerType layerType, final int backgroundColor, final int light) {
-        final VisualThrottleModule visualThrottleModule = Vandalism.getInstance().getModuleRegistry().getVisualThrottleModule();
-        if (visualThrottleModule.isEnabled() && visualThrottleModule.modifyDisplayNameLength.getValue()) {
+        final VisualThrottleModule visualThrottleModule = Vandalism.getInstance().getModuleManager().getVisualThrottleModule();
+        if (visualThrottleModule.isActive() && visualThrottleModule.modifyDisplayNameLength.getValue()) {
             final String oldTextString = text.getString();
             final int oldLength = oldTextString.length(), maxLength = visualThrottleModule.maxDisplayNameLength.getValue();
             if (oldLength > maxLength) {

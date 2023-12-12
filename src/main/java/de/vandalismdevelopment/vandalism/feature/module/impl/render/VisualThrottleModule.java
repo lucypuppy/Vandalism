@@ -12,9 +12,9 @@ import java.util.HashMap;
 public class VisualThrottleModule extends AbstractModule {
 
     public final Value<Integer> minSodiumEntityAverageSideLength = new IntegerValue(
+            this,
             "Min sodium entity average side length",
             "How long should a average side from an entity be to get always rendered to prevent sodium crash.",
-            this,
             10,
             10,
             1000
@@ -23,54 +23,50 @@ public class VisualThrottleModule extends AbstractModule {
     public final HashMap<String, ParticleTracker> particleTrackerMap = new HashMap<>();
 
     public final Value<Boolean> blockTooManyParticles = new BooleanValue(
+            this,
             "Block too many particles",
             "Blocks particles when their count is too high.",
-            this,
             false
     );
 
     public final Value<Integer> countToBlockParticles = new IntegerValue(
+            this,
             "Count to block particles",
             "Set the count to block the particles (per particle type).",
-            this,
             10,
             2,
             1000
     ).visibleCondition(this.blockTooManyParticles::getValue);
 
     public final Value<Integer> particleBlockingCountResetDelay = new IntegerValue(
+            this,
             "Particle blocking reset delay",
             "Set the delay to reset the particle blocking count (per particle type).",
-            this,
             100,
             1,
             1000
     ).visibleCondition(this.blockTooManyParticles::getValue);
 
     public final Value<Boolean> modifyDisplayNameLength = new BooleanValue(
+            this,
             "Modify display name length",
             "If enabled allows you to modify the max display name length.",
-            this,
             true
     );
 
     public final Value<Integer> maxDisplayNameLength = new IntegerValue(
+            this,
             "Max display name length",
             "How long can a display name be.",
-            this,
             250,
             3,
             500
     ).visibleCondition(this.modifyDisplayNameLength::getValue);
 
     public VisualThrottleModule() {
-        super(
-                "Visual Throttle",
-                "Limits the game rendering to enhance performance or even prevent crashes.",
-                FeatureCategory.RENDER,
-                true,
-                false
-        );
+        super("Visual Throttle", "Limits the game rendering to enhance performance or even prevent crashes.", Category.RENDER);
+
+        setExperimental(true);
     }
 
 }

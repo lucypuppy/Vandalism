@@ -53,7 +53,7 @@ public class DeutschMacherModule extends AbstractModule implements RenderListene
     };
 
     public DeutschMacherModule() {
-        super("Deutsch Macher", "Dieses Modul verwandelt die Modifikation in eine arische Modifikation.", FeatureCategory.RENDER, false, false);
+        super("Deutsch Macher", "Dieses Modul verwandelt die Modifikation in eine arische Modifikation.", Category.RENDER);
     }
 
     @Override

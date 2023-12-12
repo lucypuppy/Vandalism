@@ -70,7 +70,7 @@ public abstract class MixinMultiplayerScreen extends Screen {
         if (this.client == null || !Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().enhancedServerList.getValue()) {
             return true;
         }
-        if (keyCode == Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().pasteServerKey.getValue().getKeyCode()) {
+        if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().pasteServerKey.isPressed()) {
             final String clipboard = this.client.keyboard.getClipboard();
             if (clipboard != null && !clipboard.isBlank()) {
                 final ServerInfo serverInfo = new ServerInfo(
@@ -86,10 +86,10 @@ public abstract class MixinMultiplayerScreen extends Screen {
         final MultiplayerServerListWidget.Entry selectedEntry = this.serverListWidget.getSelectedOrNull();
         if (selectedEntry instanceof final MultiplayerServerListWidget.ServerEntry selectedServerEntry) {
             final ServerInfo serverInfo = selectedServerEntry.getServer();
-            if (keyCode == Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().copyServerKey.getValue().getKeyCode()) {
+            if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().copyServerKey.isPressed()) {
                 this.client.keyboard.setClipboard(serverInfo.address);
             }
-            if (keyCode == Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().deleteServerKey.getValue().getKeyCode()) {
+            if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().deleteServerKey.isPressed()) {
                 this.serverList.remove(serverInfo);
                 this.serverList.saveFile();
                 this.refresh();

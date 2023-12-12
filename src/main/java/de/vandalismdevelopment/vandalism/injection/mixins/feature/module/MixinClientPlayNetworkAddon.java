@@ -13,8 +13,8 @@ public abstract class MixinClientPlayNetworkAddon {
 
     @Inject(method = { "invokeRegisterEvent", "invokeUnregisterEvent", "handleRegistration", "handleUnregistration", "onServerReady" }, at = @At("HEAD"), cancellable = true)
     private void vandalism$modPacketBlockerFabric(final CallbackInfo ci) {
-        final ModPacketBlockerModule modPacketBlockerModule = Vandalism.getInstance().getModuleRegistry().getModPacketBlockerModule();
-        if (modPacketBlockerModule.isEnabled() && modPacketBlockerModule.unloadFabricAPICallbacks.getValue()) {
+        final ModPacketBlockerModule modPacketBlockerModule = Vandalism.getInstance().getModuleManager().getModPacketBlockerModule();
+        if (modPacketBlockerModule.isActive() && modPacketBlockerModule.unloadFabricAPICallbacks.getValue()) {
             ci.cancel();
         }
     }

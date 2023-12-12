@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.script;
+package de.vandalismdevelopment.vandalism.gui.impl.menu.impl.script;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.vandalismdevelopment.vandalism.Vandalism;
@@ -52,7 +52,7 @@ public class ScriptEditor implements MinecraftWrapper {
             if (iScriptInfo instanceof final StringScriptInfo stringScriptInfo) {
                 exampleInfoBuilder.append(stringScriptInfo.defaultValue());
             } else if (iScriptInfo instanceof final CategoryScriptInfo categoryScriptInfo) {
-                exampleInfoBuilder.append(categoryScriptInfo.defaultValue().normalName());
+                exampleInfoBuilder.append(categoryScriptInfo.defaultValue().getName());
             } else if (iScriptInfo instanceof final BooleanScriptInfo booleanScriptInfo) {
                 exampleInfoBuilder.append(booleanScriptInfo.defaultValue());
             }
@@ -144,7 +144,7 @@ public class ScriptEditor implements MinecraftWrapper {
         if (this.isReadOnly()) return false;
         if (!this.isUnsaved()) return false;
         if (this.rename) {
-            final File[] files = Vandalism.getInstance().getScriptRegistry().getDirectory().listFiles();
+            final File[] files = Vandalism.getInstance().getScriptManager().getDirectory().listFiles();
             if (files != null) {
                 for (final File file : files) {
                     if (this.scriptName.get().equalsIgnoreCase(StringUtils.replaceLast(file.getName(), ScriptParser.SCRIPT_FILE_EXTENSION, ""))) {
@@ -172,7 +172,7 @@ public class ScriptEditor implements MinecraftWrapper {
                         Vandalism.getInstance().getLogger().warn("Failed to delete old script file: " + this.scriptFile.getName());
                     }
                 }
-                this.scriptFile = new File(Vandalism.getInstance().getScriptRegistry().getDirectory(), this.scriptName.get() + ScriptParser.SCRIPT_FILE_EXTENSION);
+                this.scriptFile = new File(Vandalism.getInstance().getScriptManager().getDirectory(), this.scriptName.get() + ScriptParser.SCRIPT_FILE_EXTENSION);
                 this.originalScriptName = this.scriptName.get();
                 this.rename = false;
             }
@@ -184,7 +184,7 @@ public class ScriptEditor implements MinecraftWrapper {
             final String[] lines = this.textEditor.getTextLines();
             for (final String line : lines) printerWriter.println(line);
             printerWriter.close();
-            Vandalism.getInstance().getScriptRegistry().loadScriptFromFile(this.scriptFile, true);
+            Vandalism.getInstance().getScriptManager().loadScriptFromFile(this.scriptFile, true);
             this.lastScriptFileModification = this.scriptFile.lastModified();
             this.textEditor.setTextLines(lines);
         } catch (final Throwable throwable) {
@@ -271,12 +271,12 @@ public class ScriptEditor implements MinecraftWrapper {
             int buttonWidth = 0, buttonHeight = 27;
             ImGui.setNextItemWidth(-300);
             ImGui.inputText("##scriptsinfotextfield" + this.originalScriptName + "editor", this.infoTextField, ImGuiInputTextFlags.ReadOnly);
-            if (Vandalism.getInstance().getScriptRegistry().isScriptRunning(this.scriptFile) || (!this.canBeSaved() && this.scriptFile.exists() && this.scriptFile.length() > 0 && this.mc.player != null)) {
+            if (Vandalism.getInstance().getScriptManager().isScriptRunning(this.scriptFile) || (!this.canBeSaved() && this.scriptFile.exists() && this.scriptFile.length() > 0 && this.mc.player != null)) {
                 ImGui.sameLine();
-                if (ImGui.button((Vandalism.getInstance().getScriptRegistry().isScriptRunning(this.scriptFile) ? "Kill" : "Execute") + "##scriptsexecuteorkillin" + this.originalScriptName + "editor", buttonWidth, buttonHeight)) {
-                    if (Vandalism.getInstance().getScriptRegistry().isScriptRunning(this.scriptFile)) {
-                        Vandalism.getInstance().getScriptRegistry().killRunningScriptByScriptFile(this.scriptFile);
-                    } else Vandalism.getInstance().getScriptRegistry().executeScriptByScriptFile(this.scriptFile);
+                if (ImGui.button((Vandalism.getInstance().getScriptManager().isScriptRunning(this.scriptFile) ? "Kill" : "Execute") + "##scriptsexecuteorkillin" + this.originalScriptName + "editor", buttonWidth, buttonHeight)) {
+                    if (Vandalism.getInstance().getScriptManager().isScriptRunning(this.scriptFile)) {
+                        Vandalism.getInstance().getScriptManager().killRunningScriptByScriptFile(this.scriptFile);
+                    } else Vandalism.getInstance().getScriptManager().executeScriptByScriptFile(this.scriptFile);
                 }
             }
             if (!this.rename && !this.isReadOnly()) {

@@ -10,20 +10,14 @@ import java.awt.*;
 public class ESPModule extends AbstractModule {
 
     public final Value<Color> outlineColor = new ColorValue(
+            this,
             "Color",
             "The color of the outline.",
-            this,
             ColorUtils.withAlpha(Color.MAGENTA, 200)
     );
 
     public ESPModule() {
-        super(
-                "ESP",
-                "Lets you see blocks or entities trough blocks.",
-                FeatureCategory.RENDER,
-                false,
-                false
-        );
+        super("ESP", "Lets you see blocks or entities trough blocks.", Category.RENDER);
     }
 
 }

@@ -107,9 +107,9 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.accountManager.init();
         
         // Features
-        this.moduleManager = new ModuleManager();
+        this.moduleManager = new ModuleManager(configManager);
         this.commandManager = new CommandManager();
-        this.scriptManager = new ScriptManager(this.runDirectory);
+        this.scriptManager = new ScriptManager(configManager, this.runDirectory);
 
         // Integration
         this.rotationListener = new RotationListener();
@@ -140,44 +140,44 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         return runDirectory;
     }
 
-    public ImGuiManager getImGuiManager() {
-        return imGuiManager;
-    }
-
-    public ScriptManager getScriptRegistry() {
-        return scriptManager;
-    }
-
-    public ModuleManager getModuleRegistry() {
-        return moduleManager;
-    }
-
-    public CommandManager getCommandRegistry() {
-        return commandManager;
-    }
-
     public ConfigManager getConfigManager() {
         return configManager;
     }
 
-    public RotationListener getRotationListener() {
-        return rotationListener;
+    public ImGuiManager getImGuiManager() {
+        return imGuiManager;
     }
 
-    public HUDManager getCustomHUDRenderer() {
-        return hudManager;
-    }
-
-    public ServerListManager getServerListManager() {
-        return serverListManager;
+    public ClientSettings getClientSettings() {
+        return clientSettings;
     }
 
     public AccountManager getAccountManager() {
         return accountManager;
     }
 
-    public ClientSettings getClientSettings() {
-        return clientSettings;
+    public ModuleManager getModuleManager() {
+        return moduleManager;
+    }
+
+    public CommandManager getCommandManager() {
+        return commandManager;
+    }
+
+    public ScriptManager getScriptManager() {
+        return scriptManager;
+    }
+
+    public RotationListener getRotationListener() {
+        return rotationListener;
+    }
+
+    public ServerListManager getServerListManager() {
+        return serverListManager;
+    }
+
+    public HUDManager getHudManager() {
+        return hudManager;
     }
 
 }

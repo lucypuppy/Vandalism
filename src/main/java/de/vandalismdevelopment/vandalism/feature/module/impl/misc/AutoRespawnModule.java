@@ -11,38 +11,32 @@ import de.vandalismdevelopment.vandalism.base.value.impl.number.IntegerValue;
 public class AutoRespawnModule extends AbstractModule implements TickListener {
 
     private final Value<Boolean> instantRespawn = new BooleanValue(
+            this,
             "Instant Respawn",
             "Instantly respawns you when you die.",
-            this,
             false
     );
 
     private final Value<Integer> delay = new IntegerValue(
+            this,
             "Delay",
             "The delay in ticks before respawning.",
-            this,
             2000,
             0,
             10000
     ).visibleCondition(() -> !this.instantRespawn.getValue());
 
     private final Value<Boolean> autoBack = new BooleanValue(
+            this,
             "Auto Back",
             "Automatically uses the back command when you die.",
-            this,
             false
     );
 
     private final MSTimer delayTimer = new MSTimer();
 
     public AutoRespawnModule() {
-        super(
-                "Auto Respawn",
-                "Automatically respawns you when you die.",
-                FeatureCategory.MISC,
-                false,
-                false
-        );
+        super("Auto Respawn", "Automatically respawns you when you die.", Category.MISC);
     }
 
     @Override

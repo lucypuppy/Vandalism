@@ -13,8 +13,8 @@ public abstract class MixinFeatureRenderer {
 
     @Redirect(method = "render(Lnet/minecraft/client/render/entity/model/EntityModel;Lnet/minecraft/client/render/entity/model/EntityModel;Lnet/minecraft/util/Identifier;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/entity/LivingEntity;FFFFFFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isInvisible()Z"))
     private static boolean vandalism$trueSightForceVisibility(final LivingEntity instance) {
-        final TrueSightModule trueSightModule = Vandalism.getInstance().getModuleRegistry().getTrueSightModule();
-        if (trueSightModule.isEnabled()) return false;
+        final TrueSightModule trueSightModule = Vandalism.getInstance().getModuleManager().getTrueSightModule();
+        if (trueSightModule.isActive()) return false;
         return instance.isInvisible();
     }
 

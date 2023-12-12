@@ -19,45 +19,45 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class InteractionSpammerModule extends AbstractModule implements TickListener {
 
     private final Value<Integer> maxXReach = new IntegerValue(
+            this,
             "Max X Reach",
             "The max y reach.",
-            this,
             3,
             0,
             5
     );
 
     private final Value<Integer> maxZReach = new IntegerValue(
+            this,
             "Max Z Reach",
             "The max z reach.",
-            this,
             3,
             0,
             5
     );
 
     private final Value<Integer> maxYReach = new IntegerValue(
+            this,
             "Max Y Reach",
             "The max y reach.",
-            this,
             3,
             0,
             5
     );
 
     private final Value<Integer> interactionListsDelay = new IntegerValue(
+            this,
             "Interaction Lists Delay",
             "The delay between interaction lists.",
-            this,
             1000,
             0,
             2000
     );
 
     private final Value<Integer> interactionDelay = new IntegerValue(
+            this,
             "Interaction Delay",
             "The delay between interactions.",
-            this,
             100,
             0,
             2000
@@ -70,13 +70,7 @@ public class InteractionSpammerModule extends AbstractModule implements TickList
     private CopyOnWriteArrayList<BlockHitResult> blockHitResults;
 
     public InteractionSpammerModule() {
-        super(
-                "Interaction Spammer",
-                "Lets you spam interactions.",
-                FeatureCategory.MISC,
-                false,
-                false
-        );
+        super("Interaction Spammer", "Lets you spam interactions.", Category.MISC);
         this.queue = new CopyOnWriteArrayList<>();
         this.interactionListsTimer = new MSTimer();
         this.interactionTimer = new MSTimer();

@@ -204,7 +204,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                                 ImGuiTableFlags.ContextMenuInBody
                 )) {
                     for (final PlayersTableColumn playersTableColumn : playersTableColumns) {
-                        ImGui.tableSetupColumn(playersTableColumn.normalName());
+                        ImGui.tableSetupColumn(playersTableColumn.getName());
                     }
                     ImGui.tableHeadersRow();
                     for (final MCPingResponse.Players.Player player : this.mcPingResponse.players.sample) {
@@ -253,7 +253,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                                 ImGuiTableFlags.ContextMenuInBody
                 )) {
                     for (final ModsTableColumn modsTableColumn : modsTableColumns) {
-                        ImGui.tableSetupColumn(modsTableColumn.normalName());
+                        ImGui.tableSetupColumn(modsTableColumn.getName());
                     }
                     ImGui.tableHeadersRow();
                     for (final MCPingResponse.ModInfo.Mod mod : this.mcPingResponse.modinfo.modList) {
@@ -289,7 +289,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                                     ImGuiTableFlags.ContextMenuInBody
                     )) {
                         for (final ForgeDataModsTableColumn forgeDataModsTableColumn : forgeDataModsTableColumns) {
-                            ImGui.tableSetupColumn(forgeDataModsTableColumn.normalName());
+                            ImGui.tableSetupColumn(forgeDataModsTableColumn.getName());
                         }
                         ImGui.tableHeadersRow();
                         for (final MCPingResponse.ForgeData.Mod mod : this.mcPingResponse.forgeData.mods) {
@@ -336,7 +336,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                                 ImGuiTableFlags.ContextMenuInBody
                 )) {
                     for (final PluginsTableColumn pluginsTableColumn : pluginsTableColumns) {
-                        ImGui.tableSetupColumn(pluginsTableColumn.normalName());
+                        ImGui.tableSetupColumn(pluginsTableColumn.getName());
                     }
                     ImGui.tableHeadersRow();
                     for (final String plugin : this.queryPingResponse.plugins.sample) {

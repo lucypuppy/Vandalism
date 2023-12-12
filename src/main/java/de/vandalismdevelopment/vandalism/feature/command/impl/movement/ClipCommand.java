@@ -9,7 +9,7 @@ import net.minecraft.command.CommandSource;
 public class ClipCommand extends AbstractCommand {
 
     public ClipCommand() {
-        super("Clip", "Allows you to teleport yourself by vertical and horizontal offset.", FeatureCategory.MOVEMENT, false, "clip", "tp", "teleport");
+        super("Allows you to teleport yourself by vertical and horizontal offset.", Category.MOVEMENT, "clip", "tp", "teleport");
     }
 
     @Override

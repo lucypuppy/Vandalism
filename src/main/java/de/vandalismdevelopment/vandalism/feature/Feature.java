@@ -55,6 +55,10 @@ public abstract class Feature implements IName, MinecraftWrapper {
         this.experimental = experimental;
     }
 
+    public VersionRange getSupportedVersions() {
+        return supportedVersions;
+    }
+
     public boolean isSupportedVersion(final VersionEnum version) {
         if (this.supportedVersions == null) {
             return true;

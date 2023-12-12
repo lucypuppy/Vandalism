@@ -32,7 +32,7 @@ public class ModuleArgumentType implements ArgumentType<AbstractModule> {
     @Override
     public AbstractModule parse(final StringReader reader) throws CommandSyntaxException {
         final String argument = reader.readString().replace("-", " ");
-        final AbstractModule module = Vandalism.getInstance().getModuleRegistry().getList().get(argument);
+        final AbstractModule module = Vandalism.getInstance().getModuleManager().getByName(argument, true);
         if (module == null) {
             throw NOT_EXISTING.create(argument);
         }
@@ -42,7 +42,7 @@ public class ModuleArgumentType implements ArgumentType<AbstractModule> {
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
         return CommandSource.suggestMatching(
-                Vandalism.getInstance().getModuleRegistry().getModules().stream().map(
+                Vandalism.getInstance().getModuleManager().getList().stream().map(
                         feature -> feature.getName().replace(" ", "-")
                 ),
                 builder

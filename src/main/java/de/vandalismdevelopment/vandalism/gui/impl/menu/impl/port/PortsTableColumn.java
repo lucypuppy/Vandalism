@@ -1,18 +1,13 @@
-package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.port;
+package de.vandalismdevelopment.vandalism.gui.impl.menu.impl.port;
 
-public enum PortsTableColumn implements EnumNameNormalizer {
+import de.florianmichael.rclasses.common.StringUtils;
+
+public enum PortsTableColumn {
 
     PORT, STATE, QUERY_STATE, ACTIONS;
 
-    private final String normalName;
-
-    PortsTableColumn() {
-        this.normalName = this.normalizeName(this.name());
-    }
-
-    @Override
-    public String normalName() {
-        return this.normalName;
+    public String getName() {
+        return StringUtils.normalizeEnumName(this.name());
     }
 
 }

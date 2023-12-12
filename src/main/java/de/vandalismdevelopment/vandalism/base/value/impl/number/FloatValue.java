@@ -9,8 +9,8 @@ import imgui.type.ImFloat;
 
 public class FloatValue extends ValueNumber<Float> {
 
-    public FloatValue(ValueParent parent, String name, String description, Float minValue, Float defaultValue, Float maxValue) {
-        super(parent, name, description, minValue, defaultValue, maxValue);
+    public FloatValue(ValueParent parent, String name, String description, Float defaultValue, Float minValue, Float maxValue) {
+        super(parent, name, description, defaultValue, minValue, maxValue);
     }
 
     @Override

@@ -12,7 +12,7 @@ public abstract class ValueNumber<T extends Number> extends Value<T> {
 
     private String format = "%.1f";
 
-    public ValueNumber(ValueParent parent, String name, String description, T minValue, T defaultValue, T maxValue) {
+    public ValueNumber(ValueParent parent, String name, String description, T defaultValue, T minValue, T maxValue) {
         super(parent, name, description, defaultValue);
 
         this.minValue = minValue;

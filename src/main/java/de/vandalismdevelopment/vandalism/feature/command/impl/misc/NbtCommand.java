@@ -26,7 +26,7 @@ public class NbtCommand extends AbstractCommand {
     public static final String DISPLAY_TITLE_NBT_KEY = UUID.randomUUID().toString();
 
     public NbtCommand() {
-        super("Nbt", "Allows you to view and modify the nbt data from an item stack.", FeatureCategory.MISC, false, "nbt");
+        super("Allows you to view and modify the nbt data from an item stack.", Category.MISC, "nbt");
     }
 
     @Override

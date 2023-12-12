@@ -9,10 +9,8 @@ public class ServerBrandCommand extends AbstractCommand {
 
     public ServerBrandCommand() {
         super(
-                "Server Brand",
                 "Lets you view and copy the brand from the server you are currently connected to.",
-                FeatureCategory.MISC,
-                false,
+                Category.MISC,
                 "serverbrand",
                 "brand"
         );

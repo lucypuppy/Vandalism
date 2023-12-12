@@ -13,10 +13,8 @@ public class ChatClearCommand extends AbstractCommand {
 
     public ChatClearCommand() {
         super(
-                "Chat Clear",
                 "Clears your clientside chat (also allows you to clear your sent history).",
-                FeatureCategory.MISC,
-                false,
+                Category.MISC,
                 "chatclear",
                 "clearchat",
                 "cc"

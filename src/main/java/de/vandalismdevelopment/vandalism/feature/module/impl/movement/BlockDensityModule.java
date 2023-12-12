@@ -28,9 +28,7 @@ public class BlockDensityModule extends AbstractModule implements WorldListener 
         super(
                 "Block Density",
                 "Prevents you and your vehicles from clipping into blocks that can change your movement or damage you.",
-                FeatureCategory.MOVEMENT,
-                false,
-                false
+                Category.MOVEMENT
         );
     }
 

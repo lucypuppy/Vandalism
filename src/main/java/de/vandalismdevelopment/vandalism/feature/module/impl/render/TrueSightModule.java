@@ -14,41 +14,35 @@ import java.awt.*;
 public class TrueSightModule extends AbstractModule implements RenderListener {
 
     public final Value<Boolean> blocks = new BooleanValue(
+            this,
             "Blocks",
             "Makes invisible blocks visible.",
-            this,
             true
     );
 
     private final Value<Boolean> entities = new BooleanValue(
+            this,
             "Entities",
             "Makes invisible entities visible.",
-            this,
             true
     );
 
     public final Value<Boolean> showIllusionerEntity = new BooleanValue(
+            this,
             "Show Illusioner Entity",
             "Makes the illusioner entity visible.",
-            this,
             true
     ).visibleCondition(this.entities::getValue);
 
     private final Value<Color> entityColor = new ColorValue(
+            this,
             "Entity Color",
             "The color of invisible entities.",
-            this,
             ColorUtils.withAlpha(Color.WHITE, 100)
     ).visibleCondition(this.entities::getValue);
 
     public TrueSightModule() {
-        super(
-                "True Sight",
-                "Makes invisible blocks or entities visible.",
-                FeatureCategory.RENDER,
-                false,
-                false
-        );
+        super("True Sight", "Makes invisible blocks or entities visible.", Category.RENDER);
     }
 
     @Override

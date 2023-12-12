@@ -1,18 +1,13 @@
-package de.vandalismdevelopment.vandalism.gui.imgui.impl.menu.script;
+package de.vandalismdevelopment.vandalism.gui.impl.menu.impl.script;
 
-public enum ScriptsTableColumn implements EnumNameNormalizer {
+import de.florianmichael.rclasses.common.StringUtils;
+
+public enum ScriptsTableColumn {
 
     NAME, VERSION, AUTHOR, DESCRIPTION, CATEGORY, EXPERIMENTAL, MODIFICATION_DATE, ACTIONS;
 
-    private final String normalName;
-
-    ScriptsTableColumn() {
-        this.normalName = this.normalizeName(this.name());
-    }
-
-    @Override
-    public String normalName() {
-        return this.normalName;
+    public String getName() {
+        return StringUtils.normalizeEnumName(this.name());
     }
 
 }

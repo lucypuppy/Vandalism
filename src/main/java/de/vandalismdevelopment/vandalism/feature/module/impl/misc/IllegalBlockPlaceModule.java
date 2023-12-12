@@ -16,20 +16,14 @@ import net.minecraft.util.hit.HitResult;
 public class IllegalBlockPlaceModule extends AbstractModule implements TickListener {
 
     public Value<Boolean> viaVersionBug = new BooleanValue(
+            this,
             "ViaVersion Bug",
             "Allows you to place blocks inside your-self on versions lower than 1.9.0 on servers that are using the plugin ViaVersion.",
-            this,
             true
     );
 
     public IllegalBlockPlaceModule() {
-        super(
-                "Illegal Block Place",
-                "Lets you place blocks in air, liquids and your-self.",
-                FeatureCategory.MISC,
-                false,
-                false
-        );
+        super("Illegal Block Place", "Lets you place blocks in air, liquids and your-self.", Category.MISC);
     }
 
     @Override

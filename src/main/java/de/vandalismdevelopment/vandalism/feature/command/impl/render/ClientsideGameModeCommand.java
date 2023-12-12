@@ -11,7 +11,7 @@ import net.minecraft.world.GameMode;
 public class ClientsideGameModeCommand extends AbstractCommand {
 
     public ClientsideGameModeCommand() {
-        super("Clientside Game Mode", "Allows you to set your clientside game mode.", FeatureCategory.RENDER, false, "clientsidegamemode", "fakegamemode", "cgm", "fgm");
+        super("Allows you to set your clientside game mode.", Category.RENDER, "clientsidegamemode", "fakegamemode", "cgm", "fgm");
     }
 
     @Override
