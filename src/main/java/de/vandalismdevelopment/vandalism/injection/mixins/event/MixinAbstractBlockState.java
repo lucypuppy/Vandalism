@@ -4,6 +4,7 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.base.event.network.WorldListener;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.ShapeContext;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
@@ -17,7 +18,7 @@ public abstract class MixinAbstractBlockState {
 
     @Inject(method = "getCollisionShape(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;", at = @At("HEAD"), cancellable = true)
     public void vandalism$callBlockEvent(final BlockView world, final BlockPos pos, final ShapeContext context, final CallbackInfoReturnable<VoxelShape> callback) {
-        if (pos == null) {
+        if (pos == null || world == null || MinecraftClient.getInstance() == null || MinecraftClient.getInstance().player == null) {
             return;
         }
         final WorldListener.BlockEvent blockEvent = new WorldListener.BlockEvent(((AbstractBlock.AbstractBlockState) (Object) this).asBlockState(), pos, callback.getReturnValue());
