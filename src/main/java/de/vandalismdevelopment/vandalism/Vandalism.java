@@ -61,6 +61,7 @@ import java.io.File;
  *  - Fix the sprint event (attacking is wrong when sprintEvent.force = true)
  *  - When changing the module mode of speed/flight/nofall for example from the default mode to another mode it removes
  *    the default mode from the list because of some reason
+ *  - Fix game crash when binding modules to keys -> KeyNameArgumentType.java:22 throws NullPointerException
  */
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 
