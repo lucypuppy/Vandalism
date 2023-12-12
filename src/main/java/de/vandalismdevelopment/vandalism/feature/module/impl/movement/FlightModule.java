@@ -4,10 +4,9 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.base.event.network.IncomingPacketListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.feature.module.impl.movement.modes.flight.CreativeModuleMode;
-import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.base.value.impl.primitive.BooleanValue;
 import de.vandalismdevelopment.vandalism.feature.module.impl.movement.modes.flight.CubeCraftModuleMode;
-import de.vandalismdevelopment.vandalism.feature.module.value.ModuleModeValue;
+import de.vandalismdevelopment.vandalism.feature.module.template.ModuleModeValue;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
 public class FlightModule extends AbstractModule implements IncomingPacketListener {

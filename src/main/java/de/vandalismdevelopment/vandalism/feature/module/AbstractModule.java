@@ -6,7 +6,7 @@ import de.vandalismdevelopment.vandalism.base.value.Value;
 import de.vandalismdevelopment.vandalism.base.value.template.ValueGroup;
 import de.vandalismdevelopment.vandalism.base.value.impl.primitive.BooleanValue;
 import de.vandalismdevelopment.vandalism.base.value.impl.awt.KeyBindValue;
-import de.vandalismdevelopment.vandalism.feature.module.value.ModuleModeValue;
+import de.vandalismdevelopment.vandalism.feature.module.template.ModuleModeValue;
 import de.vandalismdevelopment.vandalism.feature.Feature;
 import de.vandalismdevelopment.vandalism.util.minecraft.ChatUtil;
 import net.raphimc.vialoader.util.VersionRange;

@@ -22,9 +22,6 @@ import java.io.File;
 
 /**
  * TODO | Recode
- *  - Fix MixinMinecraftClient screen event
- *  - When changing the module mode of speed/flight/nofall for example from the default mode to another mode it removes
- *    the default mode from the list because of some reason
  *  - Fix game crash when binding modules to keys -> KeyNameArgumentType.java:22 throws NullPointerException
  *  - Make account manager multi threaded (to prevent the game from freezing)
  *  - Fix module list hud element not syncing module states by creating a module toggle event
@@ -36,7 +33,6 @@ import java.io.File;
  *  - Fix mixin injection names for the fields (remove vandalism$ for every function)
  *  - Replace MixinServerResourcePackProvider
  *  - Delete MixinClientPlayerEntity & MixinClientWorld
- *  - Delete events which only have one usage
  *  - Delete CustomRPConfirmScreen
  * <p>
  * TODO | Common skill issues

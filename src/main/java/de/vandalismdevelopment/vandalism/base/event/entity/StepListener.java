@@ -4,7 +4,8 @@ import de.florianmichael.dietrichevents2.AbstractEvent;
 
 public interface StepListener {
 
-    default void onStep(final StepEvent event) {}
+    default void onStep(final StepEvent event) {
+    }
 
     class StepEvent extends AbstractEvent<StepListener> {
 

@@ -11,35 +11,34 @@ public interface ScreenListener {
     default void onResizeScreen(final ScreenEvent event) {
     }
 
-    enum EventType {
-        OPEN, RESIZE
-    }
-
     class ScreenEvent extends CancellableEvent<ScreenListener> {
 
         public static final int ID = 8;
 
-        public final EventType type;
+        public final Type type;
         public Screen screen;
 
         public ScreenEvent(final Screen screen) {
-            this.type = EventType.OPEN;
+            this.type = Type.OPEN;
             this.screen = screen;
         }
 
         public ScreenEvent() {
-            this.type = EventType.RESIZE;
+            this.type = Type.RESIZE;
         }
 
         @Override
         public void call(final ScreenListener listener) {
-            if (this.type == EventType.OPEN) {
+            if (this.type == Type.OPEN) {
                 listener.onOpenScreen(this);
             } else {
                 listener.onResizeScreen(this);
             }
         }
+    }
 
+    enum Type {
+        OPEN, RESIZE
     }
 
 }

@@ -4,7 +4,7 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.vandalismdevelopment.vandalism.base.event.game.TickGameListener;
 import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.feature.module.impl.movement.modes.elytraflight.CreativeModuleMode;
-import de.vandalismdevelopment.vandalism.feature.module.value.ModuleModeValue;
+import de.vandalismdevelopment.vandalism.feature.module.template.ModuleModeValue;
 import de.vandalismdevelopment.vandalism.util.minecraft.ChatUtil;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ElytraItem;

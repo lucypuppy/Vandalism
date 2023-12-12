@@ -24,22 +24,22 @@ public interface MouseInputListener {
 
         public MouseEvent(final int button, final int action, final int mods) {
             this.type = Type.BUTTON;
+
             this.button = button;
             this.action = action;
             this.mods = mods;
         }
 
         public MouseEvent(final boolean scroll, final double x, final double y) {
+            this.type = scroll ? Type.SCROLL : Type.POS;
+
             if (scroll) {
-                this.type = Type.SCROLL;
                 this.horizontal = x;
                 this.vertical = y;
-                return;
+            } else {
+                this.x = x;
+                this.y = y;
             }
-
-            this.type = Type.POS;
-            this.x = x;
-            this.y = y;
         }
 
         @Override

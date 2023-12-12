@@ -4,8 +4,7 @@ import de.vandalismdevelopment.vandalism.feature.module.AbstractModule;
 import de.vandalismdevelopment.vandalism.feature.module.impl.movement.modes.speed.CubeCraftModuleMode;
 import de.vandalismdevelopment.vandalism.feature.module.impl.movement.modes.speed.LongHopModuleMode;
 import de.vandalismdevelopment.vandalism.feature.module.impl.movement.modes.speed.VerusHopModuleMode;
-import de.vandalismdevelopment.vandalism.base.value.Value;
-import de.vandalismdevelopment.vandalism.feature.module.value.ModuleModeValue;
+import de.vandalismdevelopment.vandalism.feature.module.template.ModuleModeValue;
 
 public class SpeedModule extends AbstractModule {
 
