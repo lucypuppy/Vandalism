@@ -16,8 +16,8 @@ public class ValueModeGeneric<T> extends Value<T> {
     private final Function<String, T> fromString;
 
     @SafeVarargs
-    public ValueModeGeneric(ValueParent parent, String name, String description, T defaultValue, Function<T, String> toString, Function<String, T> fromString, final T... options) {
-        super(parent, name, description, defaultValue);
+    public ValueModeGeneric(ValueParent parent, String name, String description, Function<T, String> toString, Function<String, T> fromString, final T... options) {
+        super(parent, name, description, options[0]);
 
         this.toString = toString;
         this.fromString = fromString;

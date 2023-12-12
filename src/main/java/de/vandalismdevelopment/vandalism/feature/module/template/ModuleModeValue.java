@@ -1,4 +1,4 @@
-package de.vandalismdevelopment.vandalism.feature.module.value;
+package de.vandalismdevelopment.vandalism.feature.module.template;
 
 import de.vandalismdevelopment.vandalism.base.value.template.ValueModeGeneric;
 import de.vandalismdevelopment.vandalism.feature.Feature;
@@ -17,7 +17,6 @@ public class ModuleModeValue<T extends AbstractModule> extends ValueModeGeneric<
             }
             return null;
         }, options);
-
 
         this.onValueChange((oldValue, newValue) -> {
             if (parent.isActive()) {

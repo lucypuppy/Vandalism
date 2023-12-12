@@ -5,7 +5,8 @@ import net.minecraft.util.math.Vec3d;
 
 public interface StepSuccessListener {
 
-    default void onStepSuccess(final StepSuccessEvent event) {}
+    default void onStepSuccess(final StepSuccessEvent event) {
+    }
 
     class StepSuccessEvent extends AbstractEvent<StepSuccessListener> {
 
