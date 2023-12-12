@@ -16,29 +16,34 @@ public class InfoHUDElement extends HUDElement {
             "Shows the current fps.",
             true
     );
+
     private final Value<Boolean> username = new BooleanValue(
             this,
             "Username",
             "Shows the current username.",
             true
     );
+
     private final Value<Boolean> position = new BooleanValue(
             this,
             "Position",
             "Shows the current position.",
             true
     );
+
     private final Value<Boolean> dimensionalPosition = new BooleanValue(
             this,
             "Dimensional Position",
             "Shows the current position of the dimension you are currently playing in.",
             true
     );
+
     private final ValueGroup positionElements = new ValueGroup(
             this,
             "Position Elements",
             "Elements that are shown in the position category."
     ).visibleCondition(this.position::getValue);
+
     private final Value<Integer> positionDecimalPlaces = new IntegerValue(
             this.positionElements,
             "Position Decimal Places",
@@ -47,18 +52,21 @@ public class InfoHUDElement extends HUDElement {
             1,
             15
     ).visibleCondition(this.position::getValue);
+
     private final Value<Boolean> serverBrand = new BooleanValue(
             this,
             "Server Brand",
             "Shows the current server brand.",
             true
     );
+
     private final Value<Boolean> difficulty = new BooleanValue(
             this,
             "Difficulty",
             "Shows the current world difficulty.",
             true
     );
+
     private final Value<Boolean> permissionsLevel = new BooleanValue(
             this,
             "Permissions Level",
@@ -67,11 +75,7 @@ public class InfoHUDElement extends HUDElement {
     );
 
     public InfoHUDElement() {
-        super(
-                "Info",
-                2,
-                60
-        );
+        super("Info", 2, 60);
     }
 
     @Override
@@ -127,7 +131,7 @@ public class InfoHUDElement extends HUDElement {
             }
         }
         if (this.dimensionalPosition.getValue()) {
-            final WorldUtil.Dimension dimension = WorldUtil.getDimension();
+            final WorldUtil.Dimension dimension = mc.player == null ? WorldUtil.Dimension.OVERWORLD : WorldUtil.getDimension();
             if (dimension != WorldUtil.Dimension.END) {
                 final int positionDecimalPlacesRawValue = this.positionDecimalPlaces.getValue();
                 if (positionDecimalPlacesRawValue < 1) this.positionDecimalPlaces.setValue(1);
