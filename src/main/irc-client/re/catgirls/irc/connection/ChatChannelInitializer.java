@@ -1,13 +1,13 @@
 package re.catgirls.irc.connection;
 
+import re.catgirls.irc.packet.impl.shared.SharedKeyExchangePacket;
+import re.catgirls.irc.session.Session;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 import re.catgirls.irc.ChatClient;
-import re.catgirls.irc.packet.impl.shared.SharedKeyExchangePacket;
-import re.catgirls.irc.session.Session;
 import re.catgirls.packets.coder.RsaPacketDecoder;
 import re.catgirls.packets.coder.RsaPacketEncoder;
 import re.catgirls.packets.connection.PacketHandler;

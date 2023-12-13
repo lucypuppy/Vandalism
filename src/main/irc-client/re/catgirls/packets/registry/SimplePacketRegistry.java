@@ -1,11 +1,11 @@
 package re.catgirls.packets.registry;
 
 
+import re.catgirls.irc.packet.PacketRegistry;
+import re.catgirls.packets.Packet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
-import re.catgirls.irc.packet.PacketRegistry;
-import re.catgirls.packets.Packet;
 
 import java.lang.reflect.InvocationTargetException;
 

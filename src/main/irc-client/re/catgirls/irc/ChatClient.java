@@ -1,5 +1,12 @@
 package re.catgirls.irc;
 
+import re.catgirls.irc.connection.ChatChannelInitializer;
+import re.catgirls.irc.listeners.Listeners;
+import re.catgirls.irc.packet.PacketRegistry;
+import re.catgirls.irc.packet.impl.c2s.C2SDataUpdatePacket;
+import re.catgirls.irc.packet.impl.shared.SharedKeepAlivePacket;
+import re.catgirls.irc.session.Session;
+import re.catgirls.irc.session.UserProfile;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -10,13 +17,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import re.catgirls.irc.connection.ChatChannelInitializer;
-import re.catgirls.irc.listeners.Listeners;
-import re.catgirls.irc.packet.PacketRegistry;
-import re.catgirls.irc.packet.impl.c2s.C2SDataUpdatePacket;
-import re.catgirls.irc.packet.impl.shared.SharedKeepAlivePacket;
-import re.catgirls.irc.session.Session;
-import re.catgirls.irc.session.UserProfile;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
