@@ -3,8 +3,10 @@ package de.vandalismdevelopment.vandalism.gui;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.vandalismdevelopment.vandalism.Vandalism;
+import de.vandalismdevelopment.vandalism.base.config.ConfigManager;
 import de.vandalismdevelopment.vandalism.base.event.game.KeyboardInputListener;
 import de.vandalismdevelopment.vandalism.base.event.render.Render2DListener;
+import de.vandalismdevelopment.vandalism.gui.base.ImGuiConfig;
 import de.vandalismdevelopment.vandalism.gui.base.ImGuiScreen;
 import de.vandalismdevelopment.vandalism.gui.base.ImWindow;
 import de.vandalismdevelopment.vandalism.gui.impl.ServerAddressResolverImWindow;
@@ -25,7 +27,8 @@ import java.util.List;
 
 public class ImGuiManager extends Storage<ImWindow> implements KeyboardInputListener, Render2DListener, MinecraftWrapper {
 
-    public ImGuiManager(final File runDirectory) {
+    public ImGuiManager(final ConfigManager configManager, final File runDirectory) {
+        configManager.add(new ImGuiConfig(this));
         DietrichEvents2.global().subscribe(this, KeyboardInputEvent.ID, Render2DEvent.ID);
 
         ImLoader.init(runDirectory);
