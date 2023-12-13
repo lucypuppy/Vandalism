@@ -1,11 +1,11 @@
 package re.catgirls.packets.connection;
 
-import io.netty.channel.*;
-import re.catgirls.irc.ChatClient;
 import re.catgirls.irc.connection.ChatChannelInitializer;
 import re.catgirls.irc.listeners.impl.DisconnectListener;
 import re.catgirls.packets.Packet;
 import re.catgirls.packets.event.EventRegistry;
+import io.netty.channel.*;
+import re.catgirls.irc.ChatClient;
 
 import java.net.SocketAddress;
 
