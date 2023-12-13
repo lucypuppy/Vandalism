@@ -20,6 +20,7 @@ import net.minecraft.client.session.report.ReporterEnvironment;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public abstract class AbstractAccount implements IName, MinecraftWrapper {
 
@@ -49,7 +50,7 @@ public abstract class AbstractAccount implements IName, MinecraftWrapper {
         mainNode.addProperty("type", name); // We only need this to load the config files later
         if (session != null) {
             final JsonObject sessionNode = new JsonObject();
-            saveSession(sessionNode, session);
+            saveSession(sessionNode);
 
             mainNode.add("session", sessionNode);
         }
@@ -104,12 +105,18 @@ public abstract class AbstractAccount implements IName, MinecraftWrapper {
     }
 
     public void logIn() throws Throwable {
-        logIn0(); // Set the game session and reload the skins
-        if (reloadProfileKeys(session, getEnvironment())) {
-            setStatus("Updated session and logged in");
-        } else {
-            setStatus("Failed to update UserApiService");
-        }
+        CompletableFuture.runAsync(() -> {
+            try {
+                logIn0(); // Set the game session and reload the skins
+                if (reloadProfileKeys(session, getEnvironment())) {
+                    setStatus("Updated session and logged in");
+                } else {
+                    setStatus("Failed to update UserApiService");
+                }
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     public static boolean reloadProfileKeys(final Session session, final Environment environment) {
@@ -137,7 +144,7 @@ public abstract class AbstractAccount implements IName, MinecraftWrapper {
         }
     }
 
-    public void saveSession(final JsonObject node, final Session session) {
+    public void saveSession(final JsonObject node) {
         node.addProperty("username", session.getUsername());
         if (session.getUuidOrNull() != null) {
             node.addProperty("uuid", session.getUuidOrNull().toString());
