@@ -22,11 +22,8 @@ import java.io.File;
 
 /**
  * TODO | Recode
- *  - Make account manager multi threaded (to prevent the game from freezing)
  *  - Fix module list hud element not syncing module states by creating a module toggle event
- *  - Re-implement last session login for the account manager
  *  - Re-add DebugModule as hud element
- *  - Re-implement im window state saving
  *  - Delete MixinParticleManager
  *  - Update AuthLib array instead of MixinTextureUrlChecker
  *  - Fix mixin injection names for the fields (remove vandalism$ for every function)
@@ -121,7 +118,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
         configManager = new ConfigManager();
 
-        imGuiManager = new ImGuiManager(runDirectory);
+        imGuiManager = new ImGuiManager(configManager, runDirectory);
         imGuiManager.init();
 
         clientSettings = new ClientSettings(configManager, imGuiManager);
