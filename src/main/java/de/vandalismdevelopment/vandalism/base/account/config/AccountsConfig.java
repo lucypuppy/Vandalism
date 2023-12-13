@@ -8,52 +8,79 @@ import de.vandalismdevelopment.vandalism.base.account.AbstractAccount;
 import de.vandalismdevelopment.vandalism.base.account.AccountManager;
 import de.vandalismdevelopment.vandalism.base.config.AbstractConfig;
 
-public class AccountsConfig extends AbstractConfig<JsonArray> {
+public class AccountsConfig extends AbstractConfig<JsonObject> {
 
     private final AccountManager accountManager;
 
     public AccountsConfig(final AccountManager accountManager) {
-        super(JsonArray.class, "accounts");
+        super(JsonObject.class, "accounts");
 
         this.accountManager = accountManager;
     }
 
-    @Override
-    public JsonArray save0() {
-        final JsonArray array = new JsonArray();
-        for (AbstractAccount account : accountManager.getList()) {
-            final JsonObject accountNode = new JsonObject();
-            try {
-                account.save(accountNode);
-            } catch (Throwable e) {
-                Vandalism.getInstance().getLogger().error("Failed to save account " + account.getDisplayName(), e);
-            }
-
-            array.add(accountNode);
+    private void writeAccount(final JsonObject accountNode, final AbstractAccount account) {
+        try {
+            account.save(accountNode);
+        } catch (Throwable e) {
+            Vandalism.getInstance().getLogger().error("Failed to save account " + account.getDisplayName(), e);
         }
-        return array;
     }
 
     @Override
-    public void load0(JsonArray mainNode) {
-        mainNode.asList().stream().map(JsonElement::getAsJsonObject).forEach(accountNode -> {
-            final String type = accountNode.get("type").getAsString();
+    public JsonObject save0() {
+        final var mainNode = new JsonObject();
+        final var accountsNode = new JsonArray();
+        for (AbstractAccount account : accountManager.getList()) {
+            final var accountNode = new JsonObject();
+            writeAccount(accountNode, account);
 
-            for (AbstractAccount accountType : AccountManager.ACCOUNT_TYPES.keySet()) {
-                if (accountType.getName().equals(type)) {
-                    try {
-                        final AbstractAccount account = accountType.getClass().getDeclaredConstructor().newInstance();
-                        account.load(accountNode);
+            accountsNode.add(accountNode);
+        }
+        mainNode.add("accounts", accountsNode);
 
-                        accountManager.add(account);
-                    } catch (Throwable t) {
-                        Vandalism.getInstance().getLogger().error("Failed to load account " + type, t);
-                    }
+        final var account = accountManager.getCurrentAccount();
+        if (account != null) {
+            final var currentAccountNode = new JsonObject();
+            writeAccount(currentAccountNode, account);
 
-                    break;
+            mainNode.add("currentAccount", currentAccountNode);
+        }
+
+        return mainNode;
+    }
+
+    private AbstractAccount loadAccount(final JsonObject accountNode) {
+        final String type = accountNode.get("type").getAsString();
+
+        for (AbstractAccount accountType : AccountManager.ACCOUNT_TYPES.keySet()) {
+            if (accountType.getName().equals(type)) {
+                try {
+                    final AbstractAccount account = accountType.getClass().getDeclaredConstructor().newInstance();
+                    account.load(accountNode);
+
+                    return account;
+                } catch (Throwable t) {
+                    Vandalism.getInstance().getLogger().error("Failed to load account " + type, t);
                 }
             }
-        });
+        }
+        return null;
+    }
+
+    @Override
+    public void load0(JsonObject mainNode) {
+        final var accountsNode = mainNode.get("accounts").getAsJsonArray();
+        accountsNode.asList().stream().map(JsonElement::getAsJsonObject).forEach(accountNode -> accountManager.add(loadAccount(accountNode)));
+
+        if (mainNode.has("currentAccount")) {
+            final AbstractAccount account = loadAccount(mainNode.get("currentAccount").getAsJsonObject());
+
+            try {
+                account.logIn();
+            } catch (Throwable e) {
+                Vandalism.getInstance().getLogger().error("Failed to log in last account " + account.getDisplayName(), e);
+            }
+        }
     }
 
 }
