@@ -1,6 +1,8 @@
 package de.nekosarekawaii.vandalism.feature.module;
 
+import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.event.mod.ModuleToggleListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.KeyBindValue;
@@ -32,24 +34,54 @@ public abstract class AbstractModule extends Feature implements ValueParent {
 
     public AbstractModule(String name, String description, Category category, VersionRange supportedVersions) {
         super(name, description, category, supportedVersions);
-
-        this.active = new BooleanValue(this, "Active", "Whether this module is active.", false).
-                onValueChange((oldValue, newValue) -> {
-            if (Vandalism.getInstance().getClientSettings().getMenuSettings().moduleStateLogging.getValue()) {
-                if (this.mc.player != null) {
-                    ChatUtil.infoChatMessage(this.getName() + " has been " + (newValue ? "enabled" : "disabled") + ".");
+        this.active = new BooleanValue(
+                this,
+                "Active",
+                "Whether this module is active.",
+                false
+        ).onValueChange((oldValue, newValue) -> {
+            final ModuleToggleListener.ModuleToggleEvent moduleToggleEvent = new ModuleToggleListener.ModuleToggleEvent(
+                    this,
+                    oldValue,
+                    newValue
+            );
+            DietrichEvents2.global().postInternal(ModuleToggleListener.ModuleToggleEvent.ID, moduleToggleEvent);
+            if (moduleToggleEvent.isCancelled()) {
+                return false;
+            }
+            if (oldValue != newValue) {
+                if (newValue) {
+                    this.onEnable();
+                } else {
+                    this.onDisable();
                 }
+                if (Vandalism.getInstance().getClientSettings().getMenuSettings().moduleStateLogging.getValue()) {
+                    if (this.mc.player != null) {
+                        ChatUtil.infoChatMessage(this.getName() + " has been " + (newValue ? "enabled" : "disabled") + ".");
+                    }
+                }
+                this.recursiveUpdateActiveState(newValue, this.values);
+                return newValue;
             }
-            if (newValue) {
-                this.onEnable();
-            } else {
-                this.onDisable();
-            }
-            recursiveUpdateActiveState(newValue, this.values);
+            return oldValue;
         });
-        this.favorite = new BooleanValue(this, "Favorite", "Whether this module is a favorite.", false);
-        this.showInHUD = new BooleanValue(this, "Show in HUD", "Whether this module should be shown in the HUD.", true);
-        this.keyBind = new KeyBindValue(this, "Key Bind", "The key bind of this module.");
+        this.favorite = new BooleanValue(
+                this,
+                "Favorite",
+                "Whether this module is a favorite.",
+                false
+        );
+        this.showInHUD = new BooleanValue(
+                this,
+                "Show in HUD",
+                "Whether this module should be shown in the HUD.",
+                true
+        );
+        this.keyBind = new KeyBindValue(
+                this,
+                "Key Bind",
+                "The key bind of this module."
+        );
     }
 
     public void enableDefault() {

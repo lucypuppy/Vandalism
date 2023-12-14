@@ -3,7 +3,6 @@ package de.nekosarekawaii.vandalism.base.value;
 import com.google.gson.JsonObject;
 import de.florianmichael.rclasses.pattern.functional.IName;
 
-import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
 
 public abstract class Value<V> implements IName {
@@ -14,7 +13,7 @@ public abstract class Value<V> implements IName {
     private final V defaultValue;
 
     private V value;
-    private BiConsumer<V, V> valueChangeConsumer;
+    private ValueChangeConsumer<V, V> valueChangeConsumer;
     private BooleanSupplier visibleCondition;
 
     public Value(ValueParent parent, String name, String description, V defaultValue) {
@@ -30,14 +29,10 @@ public abstract class Value<V> implements IName {
 
     public void setValue(final V value) {
         final V oldValue = this.value;
-        this.value = value;
-
-        if (this.valueChangeConsumer != null) {
-            this.valueChangeConsumer.accept(oldValue, value);
-        }
+        this.value = this.valueChangeConsumer != null ? this.valueChangeConsumer.getNewValue(oldValue, value) : value;
     }
 
-    public <S extends Value<V>> S onValueChange(final BiConsumer<V, V> valueChangeConsumer) {
+    public <S extends Value<V>> S onValueChange(final ValueChangeConsumer<V, V> valueChangeConsumer) {
         this.valueChangeConsumer = valueChangeConsumer;
         return (S) this;
     }

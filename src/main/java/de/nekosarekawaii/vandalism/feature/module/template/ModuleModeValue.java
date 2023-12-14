@@ -21,6 +21,7 @@ public class ModuleModeValue<T extends AbstractModule> extends ValueModeGeneric<
                 oldValue.onDisable();
                 newValue.onEnable();
             }
+            return newValue;
         });
     }
 
