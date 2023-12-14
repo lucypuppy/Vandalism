@@ -29,7 +29,7 @@ public abstract class Value<V> implements IName {
     }
 
     public void setValue(final V value) {
-        final V oldValue = value;
+        final V oldValue = this.value;
         this.value = value;
 
         if (this.valueChangeConsumer != null) {
