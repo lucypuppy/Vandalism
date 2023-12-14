@@ -16,17 +16,19 @@ import de.nekosarekawaii.vandalism.gui.impl.namehistory.NameHistoryImWindow;
 import de.nekosarekawaii.vandalism.gui.impl.nbteditor.NbtEditorImWindow;
 import de.nekosarekawaii.vandalism.gui.impl.port.PortScannerImWindow;
 import de.nekosarekawaii.vandalism.gui.loader.ImLoader;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.ConnectScreen;
 import net.minecraft.client.gui.screen.LevelLoadingScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
 import java.util.List;
 
-public class ImGuiManager extends Storage<ImWindow> implements KeyboardInputListener, Render2DListener, MinecraftWrapper {
+public class ImGuiManager extends Storage<ImWindow> implements KeyboardInputListener, Render2DListener {
 
     public ImGuiManager(final ConfigManager configManager, final File runDirectory) {
         configManager.add(new ImWindowConfig(this));
@@ -49,17 +51,20 @@ public class ImGuiManager extends Storage<ImWindow> implements KeyboardInputList
 
     @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        if (action == GLFW.GLFW_PRESS && Vandalism.getInstance().getClientSettings().getMenuSettings().menuKey.getValue() == key) {
+        if (action == GLFW.GLFW_PRESS && Vandalism.getInstance().getClientSettings().getMenuSettings().menuKey.getValue() == key && !(MinecraftClient.getInstance().currentScreen instanceof ChatScreen)) {
             openScreen();
         }
     }
 
     public void openScreen() {
-        final var screen = MinecraftClient.getInstance().currentScreen;
-        if (screen instanceof ChatScreen || screen instanceof ConnectScreen || screen instanceof LevelLoadingScreen || screen instanceof ImGuiScreen) {
-            return;
+        Screen screen = MinecraftClient.getInstance().currentScreen;
+        if (screen != null) {
+            if (screen instanceof ConnectScreen || screen instanceof LevelLoadingScreen || screen instanceof ImGuiScreen) {
+                return;
+            } else if (screen instanceof ChatScreen || screen instanceof HandledScreen<?> && !(screen instanceof InventoryScreen)) {
+                screen = null;
+            }
         }
-
         MinecraftClient.getInstance().setScreen(new ImGuiScreen(this, screen));
     }
 
