@@ -65,11 +65,7 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
     }
 
     public boolean isPressed() {
-        return this.isPressed(this.getValue());
-    }
-
-    public boolean isPressed(final int value) {
-        return InputType.isPressed(value);
+        return InputType.isPressed(this.getValue());
     }
 
     public boolean isValid() {
