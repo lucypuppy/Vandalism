@@ -32,6 +32,7 @@ import java.io.File;
  *  - Delete CustomRPConfirmScreen
  *  - Fix Display NBT Button from Item Stack Logger Module
  *  - Fix account sessions being invalid after a restart
+ *  - Fix script keybinding not working
  * <p>
  * TODO | Common skill issues
  *  - Apply checkstyle.xml to all classes
