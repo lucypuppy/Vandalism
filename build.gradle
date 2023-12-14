@@ -103,7 +103,7 @@ java {
 sourceSets {
 	main {
 		java {
-			srcDir "src/main/irc-client"
+			srcDir "src/main/integration"
 		}
 	}
 }
