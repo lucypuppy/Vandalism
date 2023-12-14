@@ -30,7 +30,6 @@ import java.io.File;
  *  - Replace MixinServerResourcePackProvider
  *  - Delete MixinClientPlayerEntity & MixinClientWorld
  *  - Delete CustomRPConfirmScreen
- *  - Fix Display NBT Button from Item Stack Logger Module
  *  - Fix account sessions being invalid after a restart
  * <p>
  * TODO | Common skill issues
@@ -56,6 +55,7 @@ import java.io.File;
  *  - Fix calculations for the custom hud
  *  - Change skin texture to head texture in the account manager
  *  - Fix the sprint event (attacking is wrong when sprintEvent.force = true)
+ *  - Fix ImGuiScreen#close because it could break the entire game
  */
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 

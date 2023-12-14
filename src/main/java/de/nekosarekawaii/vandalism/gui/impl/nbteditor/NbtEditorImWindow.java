@@ -15,7 +15,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.Executors;
 
 public class NbtEditorImWindow extends ImWindow {
 
@@ -53,13 +52,7 @@ public class NbtEditorImWindow extends ImWindow {
             out.close();
             stream.close();
             setActive(true);
-            Executors.newSingleThreadExecutor().submit(() -> {
-                try {
-                    Thread.sleep(100);
-                } catch (final InterruptedException ignored) {
-                }
-                this.mc.execute(() -> Vandalism.getInstance().getImGuiManager().openScreen());
-            });
+            Vandalism.getInstance().getImGuiManager().openScreen();
         } catch (final IOException io) {
             Vandalism.getInstance().getLogger().error("Failed to display nbt.", io);
         }
