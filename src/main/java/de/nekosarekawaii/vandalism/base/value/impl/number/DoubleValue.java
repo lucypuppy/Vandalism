@@ -15,18 +15,18 @@ public class DoubleValue extends ValueNumber<Double> {
 
     @Override
     public void load(final JsonObject valueObject) {
-        this.setValue(valueObject.get(getName()).getAsDouble());
+        this.setValue(valueObject.get(this.getName()).getAsDouble());
     }
 
     @Override
     public void save(final JsonObject valueObject) {
-        valueObject.addProperty(getName(), this.getValue());
+        valueObject.addProperty(this.getName(), this.getValue());
     }
 
     @Override
     public void render() {
         final ImDouble nextValue = new ImDouble(this.getValue());
-        if (ImGui.sliderScalar("##" + this.getName(), ImGuiDataType.Double, nextValue, this.getMinValue(), this.getMaxValue(), "%.1f")) {
+        if (ImGui.sliderScalar("##" + this.getName() + this.getParent().getName(), ImGuiDataType.Double, nextValue, this.getMinValue(), this.getMaxValue(), "%.1f")) {
             this.setValue(nextValue.get());
         }
     }

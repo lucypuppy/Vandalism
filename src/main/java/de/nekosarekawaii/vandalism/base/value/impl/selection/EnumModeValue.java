@@ -30,12 +30,12 @@ public class EnumModeValue<T extends IName> extends Value<T> {
 
     @Override
     public void save(final JsonObject mainNode) {
-        mainNode.addProperty(getName(), this.getValue().getName());
+        mainNode.addProperty(this.getName(), this.getValue().getName());
     }
 
     @Override
     public void render() {
-        if (ImGui.beginCombo("##" + this.getName(), this.getValue().getName())) {
+        if (ImGui.beginCombo("##" + this.getName() + this.getParent().getName(), this.getValue().getName())) {
             for (final T mode : this.options) {
                 if (ImGui.selectable(mode.getName(), mode.getName().equals(this.getValue().getName()))) {
                     this.setValue(mode);

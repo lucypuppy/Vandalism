@@ -15,18 +15,18 @@ public class IntegerValue extends ValueNumber<Integer> {
 
     @Override
     public void load(final JsonObject mainNode) {
-        this.setValue(mainNode.get(getName()).getAsInt());
+        this.setValue(mainNode.get(this.getName()).getAsInt());
     }
 
     @Override
     public void save(final JsonObject mainNode) {
-        mainNode.addProperty(getName(), this.getValue());
+        mainNode.addProperty(this.getName(), this.getValue());
     }
 
     @Override
     public void render() {
         final ImInt nextValue = new ImInt(this.getValue());
-        if (ImGui.sliderScalar("##" + this.getName(), ImGuiDataType.S32, nextValue, this.getMinValue(), this.getMaxValue())) {
+        if (ImGui.sliderScalar("##" + this.getName() + this.getParent().getName(), ImGuiDataType.S32, nextValue, this.getMinValue(), this.getMaxValue())) {
             this.setValue(nextValue.get());
         }
     }

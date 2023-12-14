@@ -18,10 +18,8 @@ public class ValueModeGeneric<T> extends Value<T> {
     @SafeVarargs
     public ValueModeGeneric(ValueParent parent, String name, String description, Function<T, String> toString, Function<String, T> fromString, final T... options) {
         super(parent, name, description, options[0]);
-
         this.toString = toString;
         this.fromString = fromString;
-
         this.options = Arrays.stream(options).toList();
     }
 
@@ -32,19 +30,18 @@ public class ValueModeGeneric<T> extends Value<T> {
             this.setValue(this.getDefaultValue());
             return;
         }
-
         this.setValue(value);
     }
 
     @Override
     public void save(final JsonObject mainNode) {
-        mainNode.addProperty(getName(), toString.apply(this.getValue()));
+        mainNode.addProperty(this.getName(), toString.apply(this.getValue()));
     }
 
     @Override
     public void render() {
         final String selectedString = toString.apply(this.getValue());
-        if (ImGui.beginCombo("##" + this.getName(), selectedString)) {
+        if (ImGui.beginCombo("##" + this.getName() + this.getParent().getName(), selectedString)) {
             for (final T mode : this.options) {
                 final String modeString = toString.apply(mode);
                 if (ImGui.selectable(modeString, modeString.equals(selectedString))) {

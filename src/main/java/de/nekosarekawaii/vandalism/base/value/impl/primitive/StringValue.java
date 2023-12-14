@@ -15,18 +15,18 @@ public class StringValue extends Value<String> {
 
     @Override
     public void load(final JsonObject mainNode) {
-        this.setValue(mainNode.get(getName()).getAsString());
+        this.setValue(mainNode.get(this.getName()).getAsString());
     }
 
     @Override
     public void save(final JsonObject mainNode) {
-        mainNode.addProperty(getName(), getValue());
+        mainNode.addProperty(this.getName(), this.getValue());
     }
 
     @Override
     public void render() {
         final ImString input = new ImString(this.getValue());
-        if (ImGui.inputText("##" + this.getName(), input, ImGuiInputTextFlags.CallbackResize)) {
+        if (ImGui.inputText("##" + this.getName() + this.getParent().getName(), input, ImGuiInputTextFlags.CallbackResize)) {
             this.setValue(input.get());
         }
     }
