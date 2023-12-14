@@ -3,7 +3,7 @@ package de.nekosarekawaii.vandalism.integration.rotation;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.common.RandomUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.base.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.base.event.render.Render2DListener;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.RenderUtil;
@@ -12,7 +12,7 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 
-public class RotationListener implements IncomingPacketListener, Render2DListener, MinecraftWrapper {
+public class RotationListener implements OutgoingPacketListener, Render2DListener, MinecraftWrapper {
 
     private Rotation rotation, targetRotation, lastRotation;
     private double partialIterations;
@@ -21,12 +21,12 @@ public class RotationListener implements IncomingPacketListener, Render2DListene
     private RotationPriority currentPriority;
 
     public RotationListener() {
-        DietrichEvents2.global().subscribe(IncomingPacketEvent.ID, this);
+        DietrichEvents2.global().subscribe(OutgoingPacketEvent.ID, this);
         DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
     }
 
     @Override
-    public void onIncomingPacket(final IncomingPacketEvent event) {
+    public void onOutgoingPacket(final OutgoingPacketEvent event) {
         if (event.packet instanceof final PlayerMoveC2SPacket packet) {
             if (this.rotation != null) {
                 packet.yaw = this.rotation.getYaw();

@@ -1,7 +1,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.nekosarekawaii.vandalism.base.event.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.base.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.flight.CreativeModuleMode;
@@ -9,7 +9,7 @@ import de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.flight.Cub
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
-public class FlightModule extends AbstractModule implements IncomingPacketListener {
+public class FlightModule extends AbstractModule implements OutgoingPacketListener {
 
     private final BooleanValue antiKick = new BooleanValue(
             this,
@@ -32,16 +32,16 @@ public class FlightModule extends AbstractModule implements IncomingPacketListen
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(IncomingPacketEvent.ID, this);
+        DietrichEvents2.global().subscribe(OutgoingPacketEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(IncomingPacketEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(OutgoingPacketEvent.ID, this);
     }
 
     @Override
-    public void onIncomingPacket(final IncomingPacketEvent event) {
+    public void onOutgoingPacket(final OutgoingPacketEvent event) {
         if (event.packet instanceof final PlayerMoveC2SPacket playerMoveC2SPacket && this.antiKick.getValue()) {
             playerMoveC2SPacket.y += Math.sin(this.mc.player.age) * 0.2;
         }
