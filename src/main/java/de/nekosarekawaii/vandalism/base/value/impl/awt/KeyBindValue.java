@@ -21,12 +21,12 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
 
     @Override
     public void load(final JsonObject mainNode) {
-        this.setValue(mainNode.get(getName()).getAsInt());
+        this.setValue(mainNode.get(this.getName()).getAsInt());
     }
 
     @Override
     public void save(final JsonObject mainNode) {
-        mainNode.addProperty(getName(), getValue());
+        mainNode.addProperty(this.getName(), getValue());
     }
 
     private boolean waitingForInput;
@@ -34,17 +34,17 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
     @Override
     public void render() {
         if (!this.waitingForInput) {
-            if (ImGui.button(InputType.getKeyName(this.getValue()) + "##" + this.getName(), 0, 25)) {
+            if (ImGui.button(InputType.getKeyName(this.getValue()) + "##" + this.getName() + this.getParent().getName(), 0, 25)) {
                 this.waitingForInput = true;
                 DietrichEvents2.global().subscribe(KeyboardInputEvent.ID, this);
             }
         } else {
             ImGui.textWrapped("Listening for key input...");
-            if (ImGui.button("Cancel##" + this.getName())) {
+            if (ImGui.button("Cancel##" + this.getName() + this.getParent().getName())) {
                 this.finishInput();
             }
             ImGui.sameLine();
-            if (ImGui.button("Reset##" + this.getName())) {
+            if (ImGui.button("Reset##" + this.getName() + this.getParent().getName())) {
                 this.finishInput();
                 this.resetValue();
             }

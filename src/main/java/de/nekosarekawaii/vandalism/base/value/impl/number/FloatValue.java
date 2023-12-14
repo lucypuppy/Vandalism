@@ -15,18 +15,18 @@ public class FloatValue extends ValueNumber<Float> {
 
     @Override
     public void load(final JsonObject valueObject) {
-        this.setValue(valueObject.get(getName()).getAsFloat());
+        this.setValue(valueObject.get(this.getName()).getAsFloat());
     }
 
     @Override
     public void save(final JsonObject valueObject) {
-        valueObject.addProperty(getName(), this.getValue());
+        valueObject.addProperty(this.getName(), this.getValue());
     }
 
     @Override
     public void render() {
         final ImFloat nextValue = new ImFloat(this.getValue());
-        if (ImGui.sliderScalar("##" + this.getName(), ImGuiDataType.Float, nextValue, this.getMinValue(), this.getMaxValue(), "%.1f")) {
+        if (ImGui.sliderScalar("##" + this.getName() + this.getParent().getName(), ImGuiDataType.Float, nextValue, this.getMinValue(), this.getMaxValue(), "%.1f")) {
             this.setValue(nextValue.get());
         }
     }

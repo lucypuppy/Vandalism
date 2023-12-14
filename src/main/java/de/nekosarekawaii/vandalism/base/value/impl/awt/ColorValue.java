@@ -27,7 +27,7 @@ public class ColorValue extends Value<Color> {
     @Override
     public void render() {
         final float[] rgba = ColorUtils.rgba(this.getValue().getRGB());
-        if (ImGui.colorEdit4("##" + this.getName(), rgba)) {
+        if (ImGui.colorEdit4("##" + this.getName() + this.getParent().getName(), rgba)) {
             this.setValue(new Color(rgba[0], rgba[1], rgba[2], rgba[3]));
         }
     }

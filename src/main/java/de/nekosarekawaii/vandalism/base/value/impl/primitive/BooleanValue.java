@@ -14,17 +14,17 @@ public class BooleanValue extends Value<Boolean> {
 
     @Override
     public void load(final JsonObject mainNode) {
-        this.setValue(mainNode.get(getName()).getAsBoolean());
+        this.setValue(mainNode.get(this.getName()).getAsBoolean());
     }
 
     @Override
     public void save(final JsonObject mainNode) {
-        mainNode.addProperty(getName(), getValue());
+        mainNode.addProperty(this.getName(), this.getValue());
     }
 
     @Override
     public void render() {
-        if (ImGui.checkbox("##" + getName(), new ImBoolean(this.getValue()))) {
+        if (ImGui.checkbox("##" + this.getName() + this.getParent().getName(), new ImBoolean(this.getValue()))) {
             this.setValue(!this.getValue());
         }
     }

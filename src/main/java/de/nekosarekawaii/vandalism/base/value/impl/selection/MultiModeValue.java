@@ -23,14 +23,13 @@ public class MultiModeValue extends Value<List<String>> {
 
     public MultiModeValue(ValueParent parent, String name, String description, List<String> defaultValue, final String... options) {
         super(parent, name, description, new ArrayList<>(defaultValue) /* Java's Arrays.asList() makes lists unmodifiable */);
-
         this.options = Arrays.stream(options).toList();
     }
 
     @Override
     public void load(final JsonObject mainNode) {
         final var selectedOptionsNode = mainNode.get(getName()).getAsJsonArray();
-        for (JsonElement element : selectedOptionsNode) {
+        for (final JsonElement element : selectedOptionsNode) {
             this.getValue().add(element.getAsString());
         }
     }
@@ -41,7 +40,6 @@ public class MultiModeValue extends Value<List<String>> {
         for (final String value : this.getValue()) {
             selectedOptionsNode.add(value);
         }
-
         mainNode.add(getName(), selectedOptionsNode);
     }
 
@@ -49,8 +47,8 @@ public class MultiModeValue extends Value<List<String>> {
 
     @Override
     public void render() {
-        if (ImGui.beginCombo("##" + this.getName(), this.getValue().toString().substring(1, getValue().toString().length() - 1))) {
-            ImGui.inputText("##" + this.getName() + "search", this.searchInput);
+        if (ImGui.beginCombo("##" + this.getName() + this.getParent().getName(), this.getValue().toString().substring(1, this.getValue().toString().length() - 1))) {
+            ImGui.inputText("##" + this.getName() + this.getParent().getName() + "search", this.searchInput);
             for (final String value : this.options) {
                 if (this.searchInput.isNotEmpty() && !StringUtils.contains(value, this.searchInput.get())) {
                     continue;
