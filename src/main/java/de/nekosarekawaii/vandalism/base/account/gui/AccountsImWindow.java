@@ -32,6 +32,10 @@ public class AccountsImWindow extends ImWindow {
                         factory.displayFactory();
                         if (ImGui.button("Add", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                             factory.make().whenComplete((abstractAccount, throwable) -> {
+                                if (abstractAccount == null) {
+                                    Vandalism.getInstance().getLogger().error("Failed to create account");
+                                    return;
+                                }
                                 if (throwable != null) {
                                     Vandalism.getInstance().getLogger().error("Failed to create account", throwable);
                                 } else {
@@ -119,6 +123,8 @@ public class AccountsImWindow extends ImWindow {
         renderMenuBar(accountManager);
 
         for (AbstractAccount account : accountManager.getList()) {
+            if (account == null) continue;
+
             if (account.getPlayerSkin() != null) {
                 ImGui.image(account.getPlayerSkin().getGlId(), ACCOUNT_ENTRY_CONTENT_WIDTH, ACCOUNT_ENTRY_CONTENT_HEIGHT);
                 ImGui.sameLine();
