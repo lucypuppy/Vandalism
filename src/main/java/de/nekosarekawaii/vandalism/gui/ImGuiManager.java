@@ -6,9 +6,9 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.base.event.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.base.event.render.Render2DListener;
-import de.nekosarekawaii.vandalism.gui.base.ImGuiConfig;
 import de.nekosarekawaii.vandalism.gui.base.ImGuiScreen;
 import de.nekosarekawaii.vandalism.gui.base.ImWindow;
+import de.nekosarekawaii.vandalism.gui.base.ImWindowConfig;
 import de.nekosarekawaii.vandalism.gui.impl.ServerAddressResolverImWindow;
 import de.nekosarekawaii.vandalism.gui.impl.ServerPingerImWindow;
 import de.nekosarekawaii.vandalism.gui.impl.irc.IrcImWindow;
@@ -29,7 +29,7 @@ import java.util.List;
 public class ImGuiManager extends Storage<ImWindow> implements KeyboardInputListener, Render2DListener, MinecraftWrapper {
 
     public ImGuiManager(final ConfigManager configManager, final File runDirectory) {
-        configManager.add(new ImGuiConfig(this));
+        configManager.add(new ImWindowConfig(this));
         DietrichEvents2.global().subscribe(this, KeyboardInputEvent.ID, Render2DEvent.ID);
 
         ImLoader.init(runDirectory);
