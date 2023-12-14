@@ -4,12 +4,12 @@ import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.base.config.AbstractConfig;
 import de.nekosarekawaii.vandalism.gui.ImGuiManager;
 
-public class ImGuiConfig extends AbstractConfig<JsonObject> {
+public class ImWindowConfig extends AbstractConfig<JsonObject> {
 
     private final ImGuiManager imGuiManager;
 
-    public ImGuiConfig(final ImGuiManager imGuiManager) {
-        super(JsonObject.class, "imgui");
+    public ImWindowConfig(final ImGuiManager imGuiManager) {
+        super(JsonObject.class, "imwindow");
 
         this.imGuiManager = imGuiManager;
     }
