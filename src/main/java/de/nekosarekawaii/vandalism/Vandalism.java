@@ -31,6 +31,7 @@ import java.io.File;
  *  - Delete MixinClientPlayerEntity & MixinClientWorld
  *  - Delete CustomRPConfirmScreen
  *  - Fix account sessions being invalid after a restart
+ *  . Fix nbt gui command
  * <p>
  * TODO | Common skill issues
  *  - Apply checkstyle.xml to all classes
