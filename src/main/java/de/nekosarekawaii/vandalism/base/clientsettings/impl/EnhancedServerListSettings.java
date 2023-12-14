@@ -1,0 +1,66 @@
+package de.nekosarekawaii.vandalism.base.clientsettings.impl;
+
+import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
+import de.nekosarekawaii.vandalism.base.value.impl.awt.KeyBindValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
+import de.nekosarekawaii.vandalism.integration.serverlist.ServerList;
+import org.lwjgl.glfw.GLFW;
+
+public class EnhancedServerListSettings extends ValueGroup {
+
+    public final BooleanValue enhancedServerList = new BooleanValue(
+            this,
+            "Enhanced Server List",
+            "Enables/Disables the enhanced server list mode.",
+            true).
+            onValueChange((oldValue, newValue) -> {
+                if (!newValue) {
+                    Vandalism.getInstance().getServerListManager().setSelectedServerList(ServerList.DEFAULT_SERVER_LIST_NAME);
+                }
+            });
+
+    public final KeyBindValue pasteServerKey = new KeyBindValue(
+            this,
+            "Paste Server Key",
+            "Change the key to paste a server from your clipboard.",
+            GLFW.GLFW_KEY_INSERT
+    ).visibleCondition(this.enhancedServerList::getValue);
+
+    public final KeyBindValue copyServerKey = new KeyBindValue(
+            this,
+            "Copy Server Key",
+            "Change the key to copy a server to your clipboard.",
+            GLFW.GLFW_KEY_PAGE_DOWN
+    ).visibleCondition(this.enhancedServerList::getValue);
+
+    public final KeyBindValue deleteServerKey = new KeyBindValue(
+            this,
+            "Delete Server Key",
+            "Change the key to delete a server from the server list.",
+            GLFW.GLFW_KEY_DELETE
+    ).visibleCondition(this.enhancedServerList::getValue);
+
+    public final BooleanValue multiplayerScreenServerInformation = new BooleanValue(
+            this,
+            "Multiplayer Screen Server Information",
+            "If enabled the Game shows all necessary server information behind a server list entry.",
+            true
+    ).visibleCondition(this.enhancedServerList::getValue);
+
+    public final IntegerValue maxServerVersionLength = new IntegerValue(
+            this,
+            "Max Server Version Length",
+            "Sets the max display length of a server version that is being displayed in the multiplayer screen.",
+            60,
+            6,
+            250
+    ).visibleCondition(() -> this.enhancedServerList.getValue() && this.multiplayerScreenServerInformation.getValue());
+
+    public EnhancedServerListSettings(final ClientSettings parent) {
+        super(parent, "Enhanced Server List", "Enhanced Server List related settings.");
+    }
+
+}
