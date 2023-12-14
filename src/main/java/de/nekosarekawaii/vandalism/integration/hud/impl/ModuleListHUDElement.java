@@ -1,6 +1,8 @@
 package de.nekosarekawaii.vandalism.integration.hud.impl;
 
+import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.event.mod.ModuleToggleListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
 import net.minecraft.client.gui.DrawContext;
@@ -8,7 +10,7 @@ import net.minecraft.client.gui.DrawContext;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class ModuleListHUDElement extends HUDElement {
+public class ModuleListHUDElement extends HUDElement implements ModuleToggleListener {
 
     private final List<String> enabledModules;
     private boolean sort;
@@ -16,12 +18,18 @@ public class ModuleListHUDElement extends HUDElement {
     public ModuleListHUDElement() {
         super("Module List", 2, 140);
         this.enabledModules = new CopyOnWriteArrayList<>();
+        DietrichEvents2.global().subscribe(ModuleToggleListener.ModuleToggleEvent.ID, this);
+    }
+
+    @Override
+    public void onModuleToggle(final ModuleToggleEvent event) {
+        this.sort = true;
     }
 
     @Override
     public void reset() {
         super.reset();
-        this.forceSort();
+        this.sort = true;
     }
 
     @Override
@@ -48,7 +56,7 @@ public class ModuleListHUDElement extends HUDElement {
     @Override
     public void calculateAlignment() {
         super.calculateAlignment();
-        this.forceSort();
+        this.sort = true;
     }
 
     private void sort() {
@@ -73,10 +81,6 @@ public class ModuleListHUDElement extends HUDElement {
                 return compare;
             });
         }
-    }
-
-    public void forceSort() {
-        this.sort = true;
     }
 
 }

@@ -2,6 +2,7 @@ package de.nekosarekawaii.vandalism.gui.base;
 
 import de.nekosarekawaii.vandalism.gui.ImGuiManager;
 import de.nekosarekawaii.vandalism.gui.loader.ImLoader;
+import de.nekosarekawaii.vandalism.integration.hud.gui.HUDImWindow;
 import imgui.ImGui;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -14,7 +15,6 @@ public class ImGuiScreen extends Screen {
 
     public ImGuiScreen(final ImGuiManager imGuiManager, final Screen prevScreen) {
         super(Text.literal("ImGUI"));
-
         this.imGuiManager = imGuiManager;
         this.prevScreen = prevScreen;
     }
@@ -23,22 +23,27 @@ public class ImGuiScreen extends Screen {
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         super.render(context, mouseX, mouseY, delta);
         ImLoader.draw(() -> {
-            if (ImGui.beginMainMenuBar()) {
-                for (ImWindow.Category category : this.imGuiManager.getCategories()) {
-                    if (ImGui.beginMenu(category.getName())) {
-                        for (ImWindow imWindow : this.imGuiManager.getByCategory(category)) {
-                            if (ImGui.checkbox(imWindow.getName(), imWindow.isActive())) {
-                                imWindow.toggle();
+            final HUDImWindow hudImWindow = this.imGuiManager.getByClass(HUDImWindow.class);
+            if (hudImWindow.isActive()) {
+                hudImWindow.render(context, mouseX, mouseY, delta);
+            } else {
+                if (ImGui.beginMainMenuBar()) {
+                    for (final ImWindow.Category category : this.imGuiManager.getCategories()) {
+                        if (ImGui.beginMenu(category.getName())) {
+                            for (final ImWindow imWindow : this.imGuiManager.getByCategory(category)) {
+                                if (ImGui.checkbox(imWindow.getName(), imWindow.isActive())) {
+                                    imWindow.toggle();
+                                }
                             }
+                            ImGui.endMenu();
                         }
-                        ImGui.endMenu();
                     }
+                    ImGui.endMainMenuBar();
                 }
-                ImGui.endMainMenuBar();
-            }
-            for (ImWindow window : this.imGuiManager.getList()) {
-                if (window.isActive()) {
-                    window.render(context, mouseX, mouseY, delta);
+                for (final ImWindow window : this.imGuiManager.getList()) {
+                    if (window.isActive()) {
+                        window.render(context, mouseX, mouseY, delta);
+                    }
                 }
             }
         });
@@ -46,7 +51,7 @@ public class ImGuiScreen extends Screen {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        for (ImWindow window : this.imGuiManager.getList()) {
+        for (final ImWindow window : this.imGuiManager.getList()) {
             if (!window.isActive()) {
                 continue;
             }
@@ -57,7 +62,7 @@ public class ImGuiScreen extends Screen {
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        for (ImWindow window : this.imGuiManager.getList()) {
+        for (final ImWindow window : this.imGuiManager.getList()) {
             if (!window.isActive()) {
                 continue;
             }
@@ -68,7 +73,7 @@ public class ImGuiScreen extends Screen {
 
     @Override
     public boolean keyPressed(final int keyCode, final int scanCode, final int modifiers) {
-        for (ImWindow window : this.imGuiManager.getList()) {
+        for (final ImWindow window : this.imGuiManager.getList()) {
             if (!window.isActive()) {
                 continue;
             }
@@ -79,7 +84,7 @@ public class ImGuiScreen extends Screen {
 
     @Override
     public boolean keyReleased(final int keyCode, final int scanCode, final int modifiers) {
-        for (ImWindow window : this.imGuiManager.getList()) {
+        for (final ImWindow window : this.imGuiManager.getList()) {
             if (!window.isActive()) {
                 continue;
             }

@@ -22,7 +22,6 @@ import java.io.File;
 
 /**
  * TODO | Recode
- *  - Fix module list hud element not syncing module states by creating a module toggle event
  *  - Re-add DebugModule as hud element
  *  - Delete MixinParticleManager
  *  - Update AuthLib array instead of MixinTextureUrlChecker
