@@ -15,7 +15,7 @@
   "icon": "assets/vandalism/textures/icon/icon_1024x1024.png",
   "entrypoints": {
     "client": [
-      "de.vandalismdevelopment.vandalism.base.FabricBootstrap"
+      "de.nekosarekawaii.vandalism.base.FabricBootstrap"
     ]
   },
   "mixins": [

@@ -1,0 +1,13 @@
+package de.nekosarekawaii.vandalism.gui.widget;
+
+import de.florianmichael.rclasses.common.StringUtils;
+
+public enum PlayersTableColumn {
+
+    USERNAME, UUID, ACTIONS;
+
+    public String getName() {
+        return StringUtils.normalizeEnumName(this.name());
+    }
+
+}

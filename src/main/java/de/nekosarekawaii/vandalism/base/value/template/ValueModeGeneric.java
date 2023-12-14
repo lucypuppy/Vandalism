@@ -1,0 +1,62 @@
+package de.nekosarekawaii.vandalism.base.value.template;
+
+import com.google.gson.JsonObject;
+import de.nekosarekawaii.vandalism.base.value.Value;
+import de.nekosarekawaii.vandalism.base.value.ValueParent;
+import imgui.ImGui;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
+
+public class ValueModeGeneric<T> extends Value<T> {
+
+    private final List<T> options;
+    private final Function<T, String> toString;
+    private final Function<String, T> fromString;
+
+    @SafeVarargs
+    public ValueModeGeneric(ValueParent parent, String name, String description, Function<T, String> toString, Function<String, T> fromString, final T... options) {
+        super(parent, name, description, options[0]);
+
+        this.toString = toString;
+        this.fromString = fromString;
+
+        this.options = Arrays.stream(options).toList();
+    }
+
+    @Override
+    public void load(final JsonObject mainNode) {
+        final T value = fromString.apply(mainNode.get(getName()).getAsString());
+        if (!this.options.contains(value)) {
+            this.setValue(this.getDefaultValue());
+            return;
+        }
+
+        this.setValue(value);
+    }
+
+    @Override
+    public void save(final JsonObject mainNode) {
+        mainNode.addProperty(getName(), toString.apply(this.getValue()));
+    }
+
+    @Override
+    public void render() {
+        final String selectedString = toString.apply(this.getValue());
+        if (ImGui.beginCombo("##" + this.getName(), selectedString)) {
+            for (final T mode : this.options) {
+                final String modeString = toString.apply(mode);
+                if (ImGui.selectable(modeString, modeString.equals(selectedString))) {
+                    this.setValue(mode);
+                }
+            }
+            ImGui.endCombo();
+        }
+    }
+
+    public int getSelectedIndex() {
+        return this.options.indexOf(this.getValue());
+    }
+
+}
