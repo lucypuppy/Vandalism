@@ -21,6 +21,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.ConnectScreen;
 import net.minecraft.client.gui.screen.LevelLoadingScreen;
+import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
 import java.util.List;
@@ -48,7 +49,7 @@ public class ImGuiManager extends Storage<ImWindow> implements KeyboardInputList
 
     @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        if (Vandalism.getInstance().getClientSettings().getMenuSettings().menuKey.isPressed(key)) {
+        if (action == GLFW.GLFW_PRESS && Vandalism.getInstance().getClientSettings().getMenuSettings().menuKey.getValue() == key) {
             openScreen();
         }
     }

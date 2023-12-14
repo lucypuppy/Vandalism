@@ -16,6 +16,7 @@ public class InputType {
             final int keyCode = key.get();
             FIELD_NAMES.put(getKeyName(keyCode), keyCode);
         });
+        FIELD_NAMES.put("NONE", GLFW.GLFW_KEY_UNKNOWN);
     }
 
     public static String getKeyName(final int keyCode) {

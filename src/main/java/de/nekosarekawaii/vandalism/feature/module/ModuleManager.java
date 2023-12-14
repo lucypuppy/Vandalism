@@ -97,7 +97,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
             return;
         }
         for (final AbstractModule module : Vandalism.getInstance().getModuleManager().getList()) {
-            if (module.getKeyBind().isPressed(key)) {
+            if (module.getKeyBind().getValue() == key) {
                 module.toggle();
             }
         }

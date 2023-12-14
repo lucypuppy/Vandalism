@@ -94,7 +94,7 @@ public class ScriptManager extends NamedStorage<Script> implements TickGameListe
             return;
         }
         for (final Script script : getList()) {
-            if (script.getKeyBind().isPressed(key)) {
+            if (script.getKeyBind().getValue() == key) {
                 if (this.isScriptRunning(script.getFile())) {
                     this.killRunningScriptByScriptFile(script.getFile());
                 }
