@@ -28,12 +28,12 @@ public class BetterTabListModule extends AbstractModule implements KeyboardInput
     public final BooleanValue moreInfo = new BooleanValue(this, "More Info", "Shows the the game mode and the accurate ping right after every username.", true);
     public final IntegerValue highPing = new IntegerValue(this, "High Ping", "Sets the high ping value.", 500, 50, 1000).visibleCondition(this.moreInfo::getValue);
 
-    private final ValueGroup pingColorCategory = new ValueGroup(this, "Ping Colors", "The colors to display the ping with.").visibleCondition(this.moreInfo::getValue);
-    public final Value<Color> lowPingColor = new ColorValue(this.pingColorCategory, "Low Ping Color", "The color to display the minimum ping with.", Color.GREEN).visibleCondition(this.moreInfo::getValue);
-    public final Value<Color> averagePingColor = new ColorValue(this.pingColorCategory, "Average Ping Color", "The color to display the average ping with.", Color.YELLOW).visibleCondition(this.moreInfo::getValue);
-    public final Value<Color> highPingColor = new ColorValue(this.pingColorCategory, "High Ping Color", "The color to display the maximum ping with.", Color.RED).visibleCondition(this.moreInfo::getValue);
+    private final ValueGroup pingColorGroup = new ValueGroup(this, "Ping Colors", "The colors to display the ping with.").visibleCondition(this.moreInfo::getValue);
+    public final Value<Color> lowPingColor = new ColorValue(this.pingColorGroup, "Low Ping Color", "The color to display the minimum ping with.", Color.GREEN).visibleCondition(this.moreInfo::getValue);
+    public final Value<Color> averagePingColor = new ColorValue(this.pingColorGroup, "Average Ping Color", "The color to display the average ping with.", Color.YELLOW).visibleCondition(this.moreInfo::getValue);
+    public final Value<Color> highPingColor = new ColorValue(this.pingColorGroup, "High Ping Color", "The color to display the maximum ping with.", Color.RED).visibleCondition(this.moreInfo::getValue);
 
-    private final ValueGroup gameModeColorCategory = new ValueGroup(this, "Game Mode Colors", "The colors to display the game modes with.").visibleCondition(this.moreInfo::getValue);
+    private final ValueGroup gameModeColorGroup = new ValueGroup(this, "Game Mode Colors", "The colors to display the game modes with.").visibleCondition(this.moreInfo::getValue);
 
     private final HashMap<Integer, String> gameModeColorValues;
     public boolean toggleState = false;
@@ -51,7 +51,7 @@ public class BetterTabListModule extends AbstractModule implements KeyboardInput
                 default -> Color.WHITE;
             };
             final String gameMode = StringUtils.normalizeEnumName(value.name());
-            final ColorValue gameModeColor = new ColorValue(this.gameModeColorCategory, "Game Mode " + gameMode + " Color", "The color to display the game mode " + gameMode + " with.", defaultColor).visibleCondition(this.moreInfo::getValue);
+            final ColorValue gameModeColor = new ColorValue(this.gameModeColorGroup, "Game Mode " + gameMode + " Color", "The color to display the game mode " + gameMode + " with.", defaultColor).visibleCondition(this.moreInfo::getValue);
             this.gameModeColorValues.put(id, gameModeColor.getName());
         }
     }
@@ -76,7 +76,7 @@ public class BetterTabListModule extends AbstractModule implements KeyboardInput
     }
 
     public int getColorFromGameMode(final int id) {
-        final Value<?> value = this.gameModeColorCategory.byName(this.gameModeColorValues.get(id));
+        final Value<?> value = this.gameModeColorGroup.byName(this.gameModeColorValues.get(id));
         if (value instanceof ColorValue colorValue) {
             return colorValue.getValue().getRGB();
         }

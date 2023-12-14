@@ -25,8 +25,8 @@ public class ClientSettingsImWindow extends ImWindow {
                 if (value instanceof final ValueGroup valueGroup) {
                     if (ImGui.beginTabItem(valueGroup.getName())) {
                         if (ImGui.button("Reset " + valueGroup.getName())) {
-                            for (final Value<?> valueCategoryValue : valueGroup.getValues()) {
-                                valueCategoryValue.resetValue();
+                            for (final Value<?> valueGroupValue : valueGroup.getValues()) {
+                                valueGroupValue.resetValue();
                             }
                         }
                         ImGui.separator();

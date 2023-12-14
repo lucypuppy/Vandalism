@@ -67,21 +67,21 @@ public class FOVFuckerModule extends AbstractModule implements TickGameListener 
             false
     );
 
-    private final ValueGroup sneakCategory = new ValueGroup(
+    private final ValueGroup sneakGroup = new ValueGroup(
             this,
             "Sneak Spam Configuration",
             "The settings for the sneak spam."
     );
 
     private final BooleanValue sneakSpam = new BooleanValue(
-            this.sneakCategory,
+            this.sneakGroup,
             "Sneak Spam",
             "You are sus with the target.",
             true
     );
 
     private final IntegerValue sneakSpamDelay = new IntegerValue(
-            this.sneakCategory,
+            this.sneakGroup,
             "Sneak Spam Delay",
             "The delay for the sneak spam.",
             250,
