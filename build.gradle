@@ -62,7 +62,7 @@ dependencies {
 	implementation("io.github.spair:imgui-java-natives-linux:${project.spair_imgui_version}")
 
 	// FlorianMichael's RClasses, DietrichEvents2, ViaFabricPlus, WaybackAuthLib
-	for (module in project.rclasses_modules.split(", ")) {
+	for (module in ["common", "functional", "io", "math", "pattern"]) {
 		implementation("de.florianmichael.rclasses:$module:${project.rclasses_version}")
 	}
 	implementation("de.florianmichael:DietrichEvents2:${project.dietrichevents2_version}")
