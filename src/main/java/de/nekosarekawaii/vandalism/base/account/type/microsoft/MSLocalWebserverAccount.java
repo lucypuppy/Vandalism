@@ -12,6 +12,8 @@ import net.raphimc.minecraftauth.step.msa.StepLocalWebServer;
 import net.raphimc.minecraftauth.util.MicrosoftConstants;
 import org.apache.http.impl.client.CloseableHttpClient;
 
+import java.util.concurrent.CompletableFuture;
+
 public class MSLocalWebserverAccount extends AbstractMicrosoftAccount {
 
     public static final AbstractStep<?, StepFullJavaSession.FullJavaSession> JAVA_LOCAL_WEBSERVER_LOGIN = MinecraftAuth.builder()
@@ -30,23 +32,25 @@ public class MSLocalWebserverAccount extends AbstractMicrosoftAccount {
         }
 
         @Override
-        public AbstractAccount make() {
-            try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
-                final var javaSession = JAVA_LOCAL_WEBSERVER_LOGIN.getFromInput(httpClient, new StepLocalWebServer.LocalWebServerCallback(localWebServer -> {
-                    final String url = localWebServer.getAuthenticationUrl();
-                    this.state = "Please open the url: " + url;
-                    Util.getOperatingSystem().open(url);
-                }));
+        public CompletableFuture<AbstractAccount> make() {
+            return CompletableFuture.supplyAsync(() -> {
+                try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
+                    final var javaSession = JAVA_LOCAL_WEBSERVER_LOGIN.getFromInput(httpClient, new StepLocalWebServer.LocalWebServerCallback(localWebServer -> {
+                        final String url = localWebServer.getAuthenticationUrl();
+                        this.state = "Please open the url: " + url;
+                        Util.getOperatingSystem().open(url);
+                    }));
 
-                this.state = null;
-                final var account = new MSLocalWebserverAccount();
-                account.initWithExistingSession(javaSession);
+                    this.state = null;
+                    final var account = new MSLocalWebserverAccount();
+                    account.initWithExistingSession(javaSession);
 
-                return account;
-            } catch (Throwable e) {
-                this.state = "Failed to login: " + e.getMessage();
-                return null;
-            }
+                    return account;
+                } catch (Throwable e) {
+                    this.state = "Failed to login: " + e.getMessage();
+                    return null;
+                }
+            });
         }
     };
 

@@ -10,6 +10,8 @@ import de.florianmichael.rclasses.io.mappings.TimeFormatter;
 import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.PlayerSkinRenderer;
+import imgui.ImGuiInputTextCallbackData;
+import imgui.callback.ImGuiInputTextCallback;
 import net.minecraft.client.network.SocialInteractionsManager;
 import net.minecraft.client.realms.RealmsClient;
 import net.minecraft.client.realms.RealmsPeriodicCheckers;
@@ -23,6 +25,17 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class AbstractAccount implements IName, MinecraftWrapper {
+
+    private final static ImGuiInputTextCallback USERNAME_NAME_FILTER = new ImGuiInputTextCallback() {
+
+        @Override
+        public void accept(final ImGuiInputTextCallbackData callbackData) {
+            final var data = callbackData.getEventChar();
+            if (data != 0 && !Character.isLetterOrDigit(data) && data != '_' && data != '§') {
+                callbackData.setEventChar((char) 0);
+            }
+        }
+    };
 
     private final String name;
     protected Session session;
