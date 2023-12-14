@@ -30,6 +30,8 @@ import java.io.File;
  *  - Replace MixinServerResourcePackProvider
  *  - Delete MixinClientPlayerEntity & MixinClientWorld
  *  - Delete CustomRPConfirmScreen
+ *  - Fix Display NBT Button from Item Stack Logger Module
+ *  - Fix account sessions being invalid after a restart
  * <p>
  * TODO | Common skill issues
  *  - Apply checkstyle.xml to all classes
