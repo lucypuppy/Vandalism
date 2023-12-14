@@ -27,14 +27,13 @@ public abstract class AbstractCreativeTab {
     public abstract void exposeItems(final List<ItemStack> items);
 
     public void publish() {
-        final var itemGroup = FabricItemGroup.builder().icon(() -> icon).displayName(this.name).entries(((displayContext, entries) -> {
+        final var itemGroup = FabricItemGroup.builder().icon(() -> this.icon).displayName(this.name).entries(((displayContext, entries) -> {
             if (this.TEMP_ITEMS.isEmpty()) {
                 exposeItems(this.TEMP_ITEMS);
             }
             entries.addAll(this.TEMP_ITEMS);
         })).build();
-
-        Registry.register(Registries.ITEM_GROUP, new Identifier(FabricBootstrap.MOD_ID, name.getString()), itemGroup);
+        Registry.register(Registries.ITEM_GROUP, new Identifier(FabricBootstrap.MOD_ID, Integer.toString(this.name.hashCode())), itemGroup);
     }
 
 }

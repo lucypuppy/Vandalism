@@ -104,7 +104,6 @@ public class ServerListManager {
                         this.serverLists.add(new ServerList(name).setSize(size));
                     }
                     this.setSelectedServerList(configObject.get("selectedServerList").getAsString());
-                    Vandalism.getInstance().getLogger().info("Loaded enhanced server list config.");
                 }
             }
             jsonReader.close();
