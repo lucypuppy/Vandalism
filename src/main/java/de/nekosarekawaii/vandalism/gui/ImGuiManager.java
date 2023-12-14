@@ -8,7 +8,7 @@ import de.nekosarekawaii.vandalism.base.event.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.base.event.render.Render2DListener;
 import de.nekosarekawaii.vandalism.gui.base.ImGuiScreen;
 import de.nekosarekawaii.vandalism.gui.base.ImWindow;
-import de.nekosarekawaii.vandalism.gui.base.ImWindowConfig;
+import de.nekosarekawaii.vandalism.gui.config.impl.ImWindowConfig;
 import de.nekosarekawaii.vandalism.gui.impl.ServerAddressResolverImWindow;
 import de.nekosarekawaii.vandalism.gui.impl.ServerPingerImWindow;
 import de.nekosarekawaii.vandalism.gui.impl.irc.IrcImWindow;

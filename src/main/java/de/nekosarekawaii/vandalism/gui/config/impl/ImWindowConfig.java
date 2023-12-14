@@ -1,8 +1,9 @@
-package de.nekosarekawaii.vandalism.gui.base;
+package de.nekosarekawaii.vandalism.gui.config.impl;
 
 import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.base.config.AbstractConfig;
 import de.nekosarekawaii.vandalism.gui.ImGuiManager;
+import de.nekosarekawaii.vandalism.gui.base.ImWindow;
 
 public class ImWindowConfig extends AbstractConfig<JsonObject> {
 
