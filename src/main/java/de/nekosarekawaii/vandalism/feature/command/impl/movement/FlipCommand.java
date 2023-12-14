@@ -1,0 +1,26 @@
+package de.nekosarekawaii.vandalism.feature.command.impl.movement;
+
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import net.minecraft.command.CommandSource;
+
+public class FlipCommand extends AbstractCommand {
+
+    public FlipCommand() {
+        super(
+                "Flips you.",
+                Category.MISC,
+                "flip",
+                "selfflip"
+        );
+    }
+
+    @Override
+    public void build(final LiteralArgumentBuilder<CommandSource> builder) {
+        builder.executes(context -> {
+            this.mc.player.setYaw(this.mc.player.getYaw() + 180);
+            return SINGLE_SUCCESS;
+        });
+    }
+
+}
