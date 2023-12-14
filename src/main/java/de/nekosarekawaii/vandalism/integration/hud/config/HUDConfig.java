@@ -19,7 +19,7 @@ public class HUDConfig extends AbstractConfig<JsonObject> {
     @Override
     public JsonObject save0() {
         final var mainNode = new JsonObject();
-        for (final HUDElement hudElement : hudManager.getList()) {
+        for (final HUDElement hudElement : this.hudManager.getList()) {
             final JsonObject hudElementNode = new JsonObject();
 
             hudElementNode.addProperty("x", hudElement.x);
@@ -39,8 +39,8 @@ public class HUDConfig extends AbstractConfig<JsonObject> {
     }
 
     @Override
-    public void load0(JsonObject mainNode) {
-        for (final HUDElement hudElement : hudManager.getList()) {
+    public void load0(final JsonObject mainNode) {
+        for (final HUDElement hudElement : this.hudManager.getList()) {
             if (!mainNode.has(hudElement.getName())) {
                 continue;
             }

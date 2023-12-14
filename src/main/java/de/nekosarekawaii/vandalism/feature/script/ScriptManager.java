@@ -38,7 +38,6 @@ public class ScriptManager extends NamedStorage<Script> implements TickGameListe
 
     @Override
     public void init() {
-        Vandalism.getInstance().getLogger().info("Loading scripts...");
         if (this.directory.exists() && !this.directory.isDirectory()) {
             if (!this.directory.delete()) {
                 Vandalism.getInstance().getLogger().error("Failed to delete invalid scripts directory!");
@@ -57,10 +56,6 @@ public class ScriptManager extends NamedStorage<Script> implements TickGameListe
                 }
             }
         }
-        final int scriptListSize = this.getList().size();
-        if (scriptListSize < 1) Vandalism.getInstance().getLogger().info("No scripts loaded!");
-        else Vandalism.getInstance().getLogger().info("Loaded " + scriptListSize + " scripts.");
-
         configManager.add(new ConfigWithValues("scripts", getList()));
     }
 

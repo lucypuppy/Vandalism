@@ -10,6 +10,7 @@ import de.nekosarekawaii.vandalism.feature.command.CommandManager;
 import de.nekosarekawaii.vandalism.feature.module.ModuleManager;
 import de.nekosarekawaii.vandalism.feature.script.ScriptManager;
 import de.nekosarekawaii.vandalism.gui.ImGuiManager;
+import de.nekosarekawaii.vandalism.integration.creativetab.CreativeTabManager;
 import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationListener;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerListManager;
@@ -77,6 +78,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     private ModuleManager moduleManager;
     private CommandManager commandManager;
     private ScriptManager scriptManager;
+    private CreativeTabManager creativeTabManager;
 
     public void printStartup() {
         final String[] ASCII_ART = {
@@ -92,59 +94,61 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
                 "     ░                         ░                                                "
         };
         final String spacer = "=".repeat(ASCII_ART[0].length() + 15);
-        logger.info("");
-        logger.info(spacer);
-
+        this.logger.info("");
+        this.logger.info(spacer);
         for (final String line : ASCII_ART) {
-            logger.info(line);
+            this.logger.info(line);
         }
-        logger.info(FabricBootstrap.WINDOW_TITLE.replaceFirst(FabricBootstrap.MOD_NAME, " ".repeat(15)));
-
-        logger.info(spacer);
-        logger.info("");
+        this.logger.info(FabricBootstrap.WINDOW_TITLE.replaceFirst(FabricBootstrap.MOD_NAME, " ".repeat(15)));
+        this.logger.info(spacer);
+        this.logger.info("");
     }
 
     @Override
-    public void onBootstrapGame(MinecraftClient mc) {
-        printStartup();
+    public void onBootstrapGame(final MinecraftClient mc) {
+        this.printStartup();
         mc.getWindow().setTitle(String.format("Starting %s...", FabricBootstrap.WINDOW_TITLE));
 
         // Base handlers
-        logger.info("Schmuse Katze hasst diesen Trick!");
-
         FabricBootstrap.MOD_ICON = new Identifier(FabricBootstrap.MOD_ID, "textures/logo.png");
 
-        runDirectory = new File(runDirectory, FabricBootstrap.MOD_ID);
-        runDirectory.mkdirs();
+        this.runDirectory = new File(this.runDirectory, FabricBootstrap.MOD_ID);
+        this.runDirectory.mkdirs();
 
-        configManager = new ConfigManager();
+        this.configManager = new ConfigManager();
 
-        imGuiManager = new ImGuiManager(configManager, runDirectory);
-        imGuiManager.init();
+        this.imGuiManager = new ImGuiManager(this.configManager, this.runDirectory);
+        this.imGuiManager.init();
 
-        clientSettings = new ClientSettings(configManager, imGuiManager);
-        accountManager = new AccountManager(configManager, imGuiManager);
-        accountManager.init();
+        this.clientSettings = new ClientSettings(this.configManager, this.imGuiManager);
+        this.accountManager = new AccountManager(this.configManager, this.imGuiManager);
+        this.accountManager.init();
 
         // Integration
-        rotationListener = new RotationListener();
-        serverListManager = new ServerListManager(runDirectory);
-        serverListManager.loadConfig();
-        hudManager = new HUDManager(configManager, imGuiManager);
-        hudManager.init();
+        this.rotationListener = new RotationListener();
+
+        this.serverListManager = new ServerListManager(this.runDirectory);
+        this.serverListManager.loadConfig();
+
+        this.hudManager = new HUDManager(this.configManager, this.imGuiManager);
+        this.hudManager.init();
 
         // Features
-        moduleManager = new ModuleManager(configManager, imGuiManager);
-        moduleManager.init();
+        this.moduleManager = new ModuleManager(this.configManager, this.imGuiManager);
+        this.moduleManager.init();
 
-        commandManager = new CommandManager();
-        commandManager.init();
+        this.commandManager = new CommandManager();
+        this.commandManager.init();
 
-        scriptManager = new ScriptManager(configManager, imGuiManager, runDirectory);
-        scriptManager.init();
+        this.scriptManager = new ScriptManager(this.configManager, this.imGuiManager, this.runDirectory);
+        this.scriptManager.init();
+
+        this.creativeTabManager = new CreativeTabManager();
+        this.creativeTabManager.init();
 
         // We have to load the config files after all systems have been initialized
-        configManager.init();
+        this.configManager.init();
+
         mc.getWindow().setTitle(FabricBootstrap.WINDOW_TITLE);
     }
 
@@ -191,6 +195,10 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
     public ScriptManager getScriptManager() {
         return scriptManager;
+    }
+
+    public CreativeTabManager getCreativeTabManager() {
+        return creativeTabManager;
     }
 
     public RotationListener getRotationListener() {

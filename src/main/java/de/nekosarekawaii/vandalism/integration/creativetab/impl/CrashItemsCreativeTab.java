@@ -1,6 +1,5 @@
 package de.nekosarekawaii.vandalism.integration.creativetab.impl;
 
-import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.integration.creativetab.AbstractCreativeTab;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -20,9 +19,7 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
     }
 
     @Override
-    public void exposeItems(List<ItemStack> items) {
-        final var exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
-
+    public void exposeItems(final List<ItemStack> items) {
         items.add(withClientSide(createCrashSkull("ewogICJ0aW1lc3RhbXAiIDogMTY4ODYwNjcyODYzNywKICAicHJvZmlsZUlkIiA6ICJhNDAxNDkxYTAwZTI0OGVmYTZmZjcxMjI2Y2ZhNzU1NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlZDBjaW5VIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICIiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head")));
         items.add(withClientSide(createCrashSkull("ewogICJ0aW1lc3RhbXAiIDogMTY4ODYwNjcyODYzNywKICAicHJvZmlsZUlkIiA6ICJhNDAxNDkxYTAwZTI0OGVmYTZmZjcxMjI2Y2ZhNzU1NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlZDBjaW5VIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICIgLm1pbmVjcmFmdC5uZXQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head V2")));
         items.add(withClientSide(createCrashSign("translation.test.invalid"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign")));
