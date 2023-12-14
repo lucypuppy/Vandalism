@@ -58,9 +58,11 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
 
     @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        if (key != GLFW.GLFW_KEY_UNKNOWN && key != GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_PRESS) {
+        if (key != GLFW.GLFW_KEY_UNKNOWN && action == GLFW.GLFW_PRESS) {
             this.finishInput();
-            this.setValue(key);
+            if (key != GLFW.GLFW_KEY_ESCAPE) {
+                this.setValue(key);
+            }
         }
     }
 
