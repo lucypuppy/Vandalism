@@ -11,6 +11,7 @@ import net.minecraft.client.session.Session;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class SessionAccount extends AbstractAccount {
 
@@ -78,10 +79,9 @@ public class SessionAccount extends AbstractAccount {
             }
 
             @Override
-            public AbstractAccount make() {
-                return new SessionAccount(name.get(), uuid.get(), accessToken.get(), xuid.get(), clientId.get());
+            public CompletableFuture<AbstractAccount> make() {
+                return CompletableFuture.completedFuture(new SessionAccount(name.get(), uuid.get(), accessToken.get(), xuid.get(), clientId.get()));
             }
-
         };
     }
 

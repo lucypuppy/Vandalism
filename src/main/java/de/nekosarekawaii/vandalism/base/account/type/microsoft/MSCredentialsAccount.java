@@ -13,6 +13,8 @@ import net.raphimc.minecraftauth.step.msa.StepCredentialsMsaCode;
 import net.raphimc.minecraftauth.util.MicrosoftConstants;
 import org.apache.http.impl.client.CloseableHttpClient;
 
+import java.util.concurrent.CompletableFuture;
+
 public class MSCredentialsAccount extends AbstractMicrosoftAccount {
     private static final AccountFactory FACTORY = new AccountFactory() {
         private String state;
@@ -29,18 +31,20 @@ public class MSCredentialsAccount extends AbstractMicrosoftAccount {
         }
 
         @Override
-        public AbstractAccount make() {
-            try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
-                final var javaSession = MinecraftAuth.JAVA_CREDENTIALS_LOGIN.getFromInput(httpClient, new StepCredentialsMsaCode.MsaCredentials(this.email.get(), this.password.get()));
+        public CompletableFuture<AbstractAccount> make() {
+            return CompletableFuture.supplyAsync(() -> {
+                try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
+                    final var javaSession = MinecraftAuth.JAVA_CREDENTIALS_LOGIN.getFromInput(httpClient, new StepCredentialsMsaCode.MsaCredentials(this.email.get(), this.password.get()));
 
-                final var account = new MSCredentialsAccount();
-                account.initWithExistingSession(javaSession);
+                    final var account = new MSCredentialsAccount();
+                    account.initWithExistingSession(javaSession);
 
-                return account;
-            } catch (Throwable e) {
-                this.state = "Failed to login: " + e.getMessage();
-                return null;
-            }
+                    return account;
+                } catch (Throwable e) {
+                    this.state = "Failed to login: " + e.getMessage();
+                    return null;
+                }
+            });
         }
     };
 

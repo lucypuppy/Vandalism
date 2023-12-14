@@ -10,6 +10,8 @@ import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
 import net.minecraft.client.session.Session;
 
+import java.util.concurrent.CompletableFuture;
+
 public abstract class AbstractTokenBasedAccount extends AbstractAccount {
     private static final WebUtils JSON_REQUESTER = WebUtils.create().withHeader("Content-Type", "application/json");
 
@@ -53,8 +55,8 @@ public abstract class AbstractTokenBasedAccount extends AbstractAccount {
             }
 
             @Override
-            public AbstractAccount make() {
-                return create(token.get());
+            public CompletableFuture<AbstractAccount> make() {
+                return CompletableFuture.supplyAsync(() -> create(token.get()));
             }
         };
     }

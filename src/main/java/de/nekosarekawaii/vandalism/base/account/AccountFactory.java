@@ -1,5 +1,7 @@
 package de.nekosarekawaii.vandalism.base.account;
 
+import java.util.concurrent.CompletableFuture;
+
 /**
  * Creates a new account and displays the interface for it.
  */
@@ -15,6 +17,6 @@ public interface AccountFactory {
      *
      * @return The created account.
      */
-    AbstractAccount make();
+    CompletableFuture<AbstractAccount> make();
 
 }
