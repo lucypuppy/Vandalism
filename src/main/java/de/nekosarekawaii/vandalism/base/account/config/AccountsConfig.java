@@ -19,6 +19,7 @@ public class AccountsConfig extends AbstractConfig<JsonObject> {
     }
 
     private void writeAccount(final JsonObject accountNode, final AbstractAccount account) {
+        accountNode.addProperty("type", account.getName());
         try {
             account.save(accountNode);
         } catch (Throwable e) {
