@@ -7,7 +7,7 @@ import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.base.event.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.feature.Feature;
-import de.nekosarekawaii.vandalism.feature.module.gui.ModulesImWindow;
+import de.nekosarekawaii.vandalism.feature.module.gui.ModulesClientMenuWindow;
 import de.nekosarekawaii.vandalism.feature.module.impl.combat.BowSpammerModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.development.PacketLoggerModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.development.TestModule;
@@ -15,7 +15,7 @@ import de.nekosarekawaii.vandalism.feature.module.impl.exploit.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.render.*;
-import de.nekosarekawaii.vandalism.gui.ImGuiManager;
+import de.nekosarekawaii.vandalism.gui.ClientMenuManager;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import org.lwjgl.glfw.GLFW;
 
@@ -35,9 +35,9 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
     private TrueSightModule trueSightModule;
     private VisualThrottleModule visualThrottleModule;
 
-    public ModuleManager(final ConfigManager configManager, final ImGuiManager imGuiManager) {
+    public ModuleManager(final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
         this.configManager = configManager;
-        imGuiManager.add(new ModulesImWindow());
+        clientMenuManager.add(new ModulesClientMenuWindow());
 
         DietrichEvents2.global().subscribe(KeyboardInputEvent.ID, this);
     }

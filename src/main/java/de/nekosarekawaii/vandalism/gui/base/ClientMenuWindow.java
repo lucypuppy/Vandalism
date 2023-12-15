@@ -5,14 +5,14 @@ import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 
-public class ImWindow implements IName, MinecraftWrapper {
+public class ClientMenuWindow implements IName, MinecraftWrapper {
 
     private final String name;
     private final Category category;
 
     private boolean active;
 
-    public ImWindow(String name, Category category) {
+    public ClientMenuWindow(String name, Category category) {
         this.name = name;
         this.category = category;
     }

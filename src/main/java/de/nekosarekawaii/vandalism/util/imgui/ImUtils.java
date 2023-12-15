@@ -1,4 +1,4 @@
-package de.nekosarekawaii.vandalism.gui.loader;
+package de.nekosarekawaii.vandalism.util.imgui;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;

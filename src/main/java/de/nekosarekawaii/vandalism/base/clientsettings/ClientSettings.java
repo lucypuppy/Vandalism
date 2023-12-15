@@ -1,12 +1,12 @@
 package de.nekosarekawaii.vandalism.base.clientsettings;
 
-import de.nekosarekawaii.vandalism.base.clientsettings.gui.ClientSettingsImWindow;
+import de.nekosarekawaii.vandalism.base.clientsettings.gui.ClientSettingsClientMenuWindow;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.*;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
-import de.nekosarekawaii.vandalism.gui.ImGuiManager;
+import de.nekosarekawaii.vandalism.gui.ClientMenuManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +23,9 @@ public class ClientSettings implements ValueParent {
     private final RotationSettings rotationSettings = new RotationSettings(this);
     private final EnhancedServerListSettings enhancedServerListSettings = new EnhancedServerListSettings(this);
 
-    public ClientSettings(final ConfigManager configManager, final ImGuiManager imGuiManager) {
+    public ClientSettings(final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
         configManager.add(new ConfigWithValues("client-settings", getValues().stream().map(value -> (ValueParent) value).toList()));
-        imGuiManager.add(new ClientSettingsImWindow(this));
+        clientMenuManager.add(new ClientSettingsClientMenuWindow(this));
     }
 
     public MenuSettings getMenuSettings() {

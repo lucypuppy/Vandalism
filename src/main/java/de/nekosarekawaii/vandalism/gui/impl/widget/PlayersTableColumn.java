@@ -1,10 +1,10 @@
-package de.nekosarekawaii.vandalism.gui.widget;
+package de.nekosarekawaii.vandalism.gui.impl.widget;
 
 import de.florianmichael.rclasses.common.StringUtils;
 
-public enum PluginsTableColumn {
+public enum PlayersTableColumn {
 
-    NAME, ACTIONS;
+    USERNAME, UUID, ACTIONS;
 
     public String getName() {
         return StringUtils.normalizeEnumName(this.name());

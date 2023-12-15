@@ -1,21 +1,21 @@
 package de.nekosarekawaii.vandalism.gui.base;
 
-import de.nekosarekawaii.vandalism.gui.ImGuiManager;
-import de.nekosarekawaii.vandalism.gui.loader.ImLoader;
-import de.nekosarekawaii.vandalism.integration.hud.gui.HUDImWindow;
+import de.nekosarekawaii.vandalism.gui.ClientMenuManager;
+import de.nekosarekawaii.vandalism.util.imgui.ImLoader;
+import de.nekosarekawaii.vandalism.integration.hud.gui.HUDClientMenuWindow;
 import imgui.ImGui;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
-public class ImGuiScreen extends Screen {
+public class ClientMenuScreen extends Screen {
 
-    private final ImGuiManager imGuiManager;
+    private final ClientMenuManager clientMenuManager;
     private final Screen prevScreen;
 
-    public ImGuiScreen(final ImGuiManager imGuiManager, final Screen prevScreen) {
+    public ClientMenuScreen(final ClientMenuManager clientMenuManager, final Screen prevScreen) {
         super(Text.literal("ImGUI"));
-        this.imGuiManager = imGuiManager;
+        this.clientMenuManager = clientMenuManager;
         this.prevScreen = prevScreen;
     }
 
@@ -23,16 +23,16 @@ public class ImGuiScreen extends Screen {
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         super.render(context, mouseX, mouseY, delta);
         ImLoader.draw(() -> {
-            final HUDImWindow hudImWindow = this.imGuiManager.getByClass(HUDImWindow.class);
+            final HUDClientMenuWindow hudImWindow = this.clientMenuManager.getByClass(HUDClientMenuWindow.class);
             if (hudImWindow.isActive()) {
                 hudImWindow.render(context, mouseX, mouseY, delta);
             } else {
                 if (ImGui.beginMainMenuBar()) {
-                    for (final ImWindow.Category category : this.imGuiManager.getCategories()) {
+                    for (final ClientMenuWindow.Category category : this.clientMenuManager.getCategories()) {
                         if (ImGui.beginMenu(category.getName())) {
-                            for (final ImWindow imWindow : this.imGuiManager.getByCategory(category)) {
-                                if (ImGui.checkbox(imWindow.getName(), imWindow.isActive())) {
-                                    imWindow.toggle();
+                            for (final ClientMenuWindow clientMenuWindow : this.clientMenuManager.getByCategory(category)) {
+                                if (ImGui.checkbox(clientMenuWindow.getName(), clientMenuWindow.isActive())) {
+                                    clientMenuWindow.toggle();
                                 }
                             }
                             ImGui.endMenu();
@@ -40,7 +40,7 @@ public class ImGuiScreen extends Screen {
                     }
                     ImGui.endMainMenuBar();
                 }
-                for (final ImWindow window : this.imGuiManager.getList()) {
+                for (final ClientMenuWindow window : this.clientMenuManager.getList()) {
                     if (window.isActive()) {
                         window.render(context, mouseX, mouseY, delta);
                     }
@@ -51,7 +51,7 @@ public class ImGuiScreen extends Screen {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        for (final ImWindow window : this.imGuiManager.getList()) {
+        for (final ClientMenuWindow window : this.clientMenuManager.getList()) {
             if (!window.isActive()) {
                 continue;
             }
@@ -62,7 +62,7 @@ public class ImGuiScreen extends Screen {
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        for (final ImWindow window : this.imGuiManager.getList()) {
+        for (final ClientMenuWindow window : this.clientMenuManager.getList()) {
             if (!window.isActive()) {
                 continue;
             }
@@ -73,7 +73,7 @@ public class ImGuiScreen extends Screen {
 
     @Override
     public boolean keyPressed(final int keyCode, final int scanCode, final int modifiers) {
-        for (final ImWindow window : this.imGuiManager.getList()) {
+        for (final ClientMenuWindow window : this.clientMenuManager.getList()) {
             if (!window.isActive()) {
                 continue;
             }
@@ -84,7 +84,7 @@ public class ImGuiScreen extends Screen {
 
     @Override
     public boolean keyReleased(final int keyCode, final int scanCode, final int modifiers) {
-        for (final ImWindow window : this.imGuiManager.getList()) {
+        for (final ClientMenuWindow window : this.clientMenuManager.getList()) {
             if (!window.isActive()) {
                 continue;
             }

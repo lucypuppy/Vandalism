@@ -5,7 +5,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.gui.base.ImWindow;
+import de.nekosarekawaii.vandalism.gui.base.ClientMenuWindow;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiPopupFlags;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class ModulesImWindow extends ImWindow {
+public class ModulesClientMenuWindow extends ClientMenuWindow {
 
     private final List<AbstractModule> openedModules = new CopyOnWriteArrayList<>();
 
@@ -26,7 +26,7 @@ public class ModulesImWindow extends ImWindow {
     private final ImString favoriteModulesSearchInput = new ImString();
     private final ImString enabledModulesSearchInput = new ImString();
 
-    public ModulesImWindow() {
+    public ModulesClientMenuWindow() {
         super("Modules", Category.CONFIGURATION);
     }
 

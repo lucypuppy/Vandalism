@@ -5,7 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.florianmichael.rclasses.io.WebUtils;
-import de.nekosarekawaii.vandalism.gui.base.ImWindow;
+import de.nekosarekawaii.vandalism.gui.base.ClientMenuWindow;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
@@ -24,7 +24,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class NameHistoryImWindow extends ImWindow {
+public class NameHistoryClientMenuWindow extends ClientMenuWindow {
 
     private static final ImGuiInputTextCallback USERNAME_NAME_FILTER = new ImGuiInputTextCallback() {
 
@@ -52,7 +52,7 @@ public class NameHistoryImWindow extends ImWindow {
 
     private String lastUsername, lastUUID;
 
-    public NameHistoryImWindow() {
+    public NameHistoryClientMenuWindow() {
         super("Name History", Category.MISC_UTILS);
         this.username = new ImString(16);
         this.state = new ImString(200);

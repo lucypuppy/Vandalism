@@ -3,22 +3,22 @@ package de.nekosarekawaii.vandalism.base.account.gui;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountManager;
-import de.nekosarekawaii.vandalism.gui.base.ImWindow;
+import de.nekosarekawaii.vandalism.gui.base.ClientMenuWindow;
 import imgui.ImGui;
 import imgui.flag.ImGuiMouseButton;
 import imgui.flag.ImGuiWindowFlags;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.session.Session;
 
-import static de.nekosarekawaii.vandalism.gui.loader.ImUtils.subButton;
+import static de.nekosarekawaii.vandalism.util.imgui.ImUtils.subButton;
 
-public class AccountsImWindow extends ImWindow {
+public class AccountsClientMenuWindow extends ClientMenuWindow {
     private static final float ACCOUNT_ENTRY_CONTENT_WIDTH = 64F;
     private static final float ACCOUNT_ENTRY_CONTENT_HEIGHT = 64F;
 
     private final AccountManager accountManager;
 
-    public AccountsImWindow(final AccountManager accountManager) {
+    public AccountsClientMenuWindow(final AccountManager accountManager) {
         super("Accounts", Category.CONFIGURATION);
 
         this.accountManager = accountManager;

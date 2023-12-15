@@ -1,4 +1,4 @@
-package de.nekosarekawaii.vandalism.gui.widget;
+package de.nekosarekawaii.vandalism.gui.impl.widget;
 
 import com.google.gson.JsonSyntaxException;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;

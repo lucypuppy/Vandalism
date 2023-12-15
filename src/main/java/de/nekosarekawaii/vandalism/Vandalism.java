@@ -9,7 +9,7 @@ import de.nekosarekawaii.vandalism.base.event.game.ShutdownProcessListener;
 import de.nekosarekawaii.vandalism.feature.command.CommandManager;
 import de.nekosarekawaii.vandalism.feature.module.ModuleManager;
 import de.nekosarekawaii.vandalism.feature.script.ScriptManager;
-import de.nekosarekawaii.vandalism.gui.ImGuiManager;
+import de.nekosarekawaii.vandalism.gui.ClientMenuManager;
 import de.nekosarekawaii.vandalism.integration.creativetab.CreativeTabManager;
 import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationListener;
@@ -66,7 +66,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
     // Base handlers
     private ConfigManager configManager;
-    private ImGuiManager imGuiManager;
+    private ClientMenuManager clientMenuManager;
     private ClientSettings clientSettings;
     private AccountManager accountManager;
 
@@ -118,11 +118,11 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
         this.configManager = new ConfigManager();
 
-        this.imGuiManager = new ImGuiManager(this.configManager, this.runDirectory);
-        this.imGuiManager.init();
+        this.clientMenuManager = new ClientMenuManager(this.configManager, this.runDirectory);
+        this.clientMenuManager.init();
 
-        this.clientSettings = new ClientSettings(this.configManager, this.imGuiManager);
-        this.accountManager = new AccountManager(this.configManager, this.imGuiManager);
+        this.clientSettings = new ClientSettings(this.configManager, this.clientMenuManager);
+        this.accountManager = new AccountManager(this.configManager, this.clientMenuManager);
         this.accountManager.init();
 
         // Integration
@@ -131,17 +131,17 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.serverListManager = new ServerListManager(this.runDirectory);
         this.serverListManager.loadConfig();
 
-        this.hudManager = new HUDManager(this.configManager, this.imGuiManager);
+        this.hudManager = new HUDManager(this.configManager, this.clientMenuManager);
         this.hudManager.init();
 
         // Features
-        this.moduleManager = new ModuleManager(this.configManager, this.imGuiManager);
+        this.moduleManager = new ModuleManager(this.configManager, this.clientMenuManager);
         this.moduleManager.init();
 
         this.commandManager = new CommandManager();
         this.commandManager.init();
 
-        this.scriptManager = new ScriptManager(this.configManager, this.imGuiManager, this.runDirectory);
+        this.scriptManager = new ScriptManager(this.configManager, this.clientMenuManager, this.runDirectory);
         this.scriptManager.init();
 
         this.creativeTabManager = new CreativeTabManager();
@@ -174,8 +174,8 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         return configManager;
     }
 
-    public ImGuiManager getImGuiManager() {
-        return imGuiManager;
+    public ClientMenuManager getClientMenuManager() {
+        return clientMenuManager;
     }
 
     public ClientSettings getClientSettings() {
