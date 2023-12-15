@@ -6,8 +6,10 @@ import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.UserApiService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilEnvironment;
+import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.io.mappings.TimeFormatter;
 import de.florianmichael.rclasses.pattern.functional.IName;
+import de.nekosarekawaii.vandalism.base.event.internal.UpdateSessionListener;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.PlayerSkinRenderer;
 import imgui.ImGuiInputTextCallbackData;
@@ -105,8 +107,10 @@ public abstract class AbstractAccount implements IName, MinecraftWrapper {
         return session;
     }
 
-    public void updateSession(final Session session) {
-        this.session = session;
+    public void updateSession(Session session) {
+        final var event = new UpdateSessionListener.UpdateSessionEvent(this.session, session);
+        DietrichEvents2.global().subscribe(UpdateSessionListener.UpdateSessionEvent.ID, event);
+        this.session = event.newSession; // Allow the event to change the session
 
         playerSkin = new PlayerSkinRenderer(session.getUuidOrNull(), session.getUsername());
         lastLogin = TimeFormatter.currentDateTime();
@@ -117,7 +121,7 @@ public abstract class AbstractAccount implements IName, MinecraftWrapper {
         return name;
     }
 
-    public void logIn() throws Throwable {
+    public void logIn() {
         CompletableFuture.runAsync(() -> {
             try {
                 logIn0(); // Set the game session and reload the skins
@@ -134,8 +138,8 @@ public abstract class AbstractAccount implements IName, MinecraftWrapper {
 
     public static boolean reloadProfileKeys(final Session session, final Environment environment) {
         final var authenticationService = new YggdrasilAuthenticationService(mc.getNetworkProxy(), environment);
-        mc.session = session;
-        mc.getSplashTextLoader().session = session;
+        mc.session = session; // We already did that in normal cases, but for people who use this as API we need to do it again
+        mc.getSplashTextLoader().session = session; // We will never know, right?
         mc.sessionService = authenticationService.createMinecraftSessionService();
 
         if (session.getAccountType().equals(Session.AccountType.MSA)) {
@@ -143,7 +147,7 @@ public abstract class AbstractAccount implements IName, MinecraftWrapper {
             try {
                 userApiService = authenticationService.createUserApiService(session.getAccessToken());
             } catch (final AuthenticationException e) {
-                userApiService = UserApiService.OFFLINE;
+                userApiService = UserApiService.OFFLINE; // Technically trash, but whatever, Java is bad, Mojang is bad, everything is bad
             }
             mc.userApiService = userApiService;
             mc.socialInteractionsManager = new SocialInteractionsManager(mc, userApiService);
@@ -153,6 +157,8 @@ public abstract class AbstractAccount implements IName, MinecraftWrapper {
 
             return userApiService != UserApiService.OFFLINE;
         } else {
+            // Legacy account types doesn't need reloading the profile since we can't get the required fields (access token) for it
+            // So we just skip it
             return true;
         }
     }

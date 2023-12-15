@@ -1,4 +1,4 @@
-package de.nekosarekawaii.vandalism.base.event.mod;
+package de.nekosarekawaii.vandalism.base.event.internal;
 
 import de.florianmichael.dietrichevents2.AbstractEvent;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
