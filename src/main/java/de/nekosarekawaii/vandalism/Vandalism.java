@@ -6,11 +6,11 @@ import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.base.event.game.MinecraftBoostrapListener;
 import de.nekosarekawaii.vandalism.base.event.game.ShutdownProcessListener;
+import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.feature.command.CommandManager;
+import de.nekosarekawaii.vandalism.feature.creativetab.CreativeTabManager;
 import de.nekosarekawaii.vandalism.feature.module.ModuleManager;
 import de.nekosarekawaii.vandalism.feature.script.ScriptManager;
-import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
-import de.nekosarekawaii.vandalism.feature.creativetab.CreativeTabManager;
 import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationListener;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerListManager;
@@ -22,17 +22,16 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 
 /**
- * TODO | Recode
+ * TODO | Verschlxfene
  *  - Re-add DebugModule as hud element
+ *  - Apply checkstyle.xml to all classes
  *  - Delete MixinParticleManager
- *  - Update AuthLib array instead of MixinTextureUrlChecker
  *  - Replace MixinServerResourcePackProvider
  *  - Delete MixinClientPlayerEntity & MixinClientWorld
  *  - Delete CustomRPConfirmScreen
- *  - Implement disableOnQuit and disableOnShutdown for modules
+ *  - Add Proxy manager
  * <p>
- * TODO | Common skill issues
- *  - Apply checkstyle.xml to all classes
+ * TODO | Everyone else
  *  - Fix tick bug (cps is not accurate) -> see BoxMuellerClicker#update
  *  - Rewrite EnhancedServerList
  *  - Add anti vanish via. the player list hud
@@ -45,8 +44,6 @@ import java.io.File;
  *      - Add protection for skins
  *      - Add protection for coords
  *      - Maybe use a chat event instead of a text draw event
- *  - Make NullPointerException crash fix for the particle tracking system from the visual throttle module
- *  - Add Proxy manager
  *  - Make the width and height customizable or use calculations in the modules im window for the tabs
  *  - Fix ImGui#begin in every im window (remove No Collapse Flag and move the code out of the if)
  *  - Fix module tabs display (no stacking) when the mod starts the first time
