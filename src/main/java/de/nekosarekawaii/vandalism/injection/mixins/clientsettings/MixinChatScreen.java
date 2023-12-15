@@ -1,13 +1,11 @@
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.clientsettings.impl.ChatSettings;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.RenderUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
@@ -31,7 +29,7 @@ public abstract class MixinChatScreen implements MinecraftWrapper {
     private int vandalism$realMaxLength = 0;
 
     @Unique
-    private Style vandalism$redColoredStyle = Style.EMPTY.withColor(TextColor.fromRgb(Color.RED.getRGB()));
+    private static final Style vandalism$RED_COLORED_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(Color.RED.getRGB()));
 
     @Inject(method = "init", at = @At(value = "RETURN"))
     private void modifyChatFieldMaxLength(final CallbackInfo ci) {
@@ -49,7 +47,7 @@ public abstract class MixinChatScreen implements MinecraftWrapper {
             final int currentLength = this.chatField.getText().length();
 
             final var text = Text.literal("" + currentLength + Formatting.DARK_GRAY + " / ");
-            text.append(Text.literal("" + vandalism$realMaxLength).setStyle(vandalism$redColoredStyle));
+            text.append(Text.literal("" + vandalism$realMaxLength).setStyle(vandalism$RED_COLORED_STYLE));
             text.append(Text.literal(Formatting.DARK_GRAY + " (" + Formatting.DARK_RED + this.chatField.getMaxLength() + Formatting.DARK_GRAY + ")"));
 
             final int x = this.chatField.getX() + this.chatField.getWidth() - this.mc.textRenderer.getWidth(text) - 2;
