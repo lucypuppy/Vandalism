@@ -7,15 +7,15 @@ public class ConfigManager extends Storage<AbstractConfig<?>> {
 
     public IRCConfig ircConfig;
 
-    public ConfigManager() {
-        setAddConsumer(AbstractConfig::load);
-    }
-
     @Override
     public void init() {
         this.add(
                 this.ircConfig = new IRCConfig()
         );
+
+        for (final AbstractConfig<?> config : getList()) {
+            config.load();
+        }
     }
 
     public void save() {

@@ -40,7 +40,7 @@ public class HUDManager extends Storage<HUDElement> implements Render2DListener,
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
         for (final HUDElement hudElement : this.getList()) {
-            if (!hudElement.isEnabled()) {
+            if (!hudElement.isActive()) {
                 continue;
             }
             hudElement.onRender(context, delta);
