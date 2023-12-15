@@ -3,9 +3,9 @@ package de.nekosarekawaii.vandalism.feature.module.gui;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.Value;
+import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiPopupFlags;
@@ -167,7 +167,6 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
 
     private void renderModuleData(final AbstractModule module, final String id, final int width, final int height) {
         ImGui.separator();
-        ImGui.spacing();
         this.renderModuleInfo(module);
         ImGui.separator();
         final List<Value<?>> values = module.getValues();
@@ -198,23 +197,27 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
     private void renderModuleInfo(final AbstractModule module) {
         final String description = module.getDescription();
         if (!description.isBlank()) {
-            final List<String> descriptionLines = new ArrayList<>();
-            final String[] descriptionWords = description.split(" ");
-            if (descriptionWords.length > 10) {
-                StringBuilder currentLine = new StringBuilder();
-                for (final String descriptionWord : descriptionWords) {
-                    if (currentLine.length() + descriptionWord.length() > 60) {
-                        descriptionLines.add(currentLine.toString());
-                        currentLine = new StringBuilder();
+            if (description.contains(" ")) {
+                final List<String> descriptionLines = new ArrayList<>();
+                final String[] descriptionWords = description.split(" ");
+                if (descriptionWords.length > 10) {
+                    StringBuilder currentLine = new StringBuilder();
+                    for (final String descriptionWord : descriptionWords) {
+                        if (currentLine.length() + descriptionWord.length() > 60) {
+                            descriptionLines.add(currentLine.toString());
+                            currentLine = new StringBuilder();
+                        }
+                        currentLine.append(descriptionWord).append(" ");
                     }
-                    currentLine.append(descriptionWord).append(" ");
+                    descriptionLines.add(currentLine.toString());
+                } else {
+                    descriptionLines.add(description);
                 }
-                descriptionLines.add(currentLine.toString());
+                for (final String descriptionLine : descriptionLines) {
+                    ImGui.text(descriptionLine);
+                }
             } else {
-                descriptionLines.add(description);
-            }
-            for (final String descriptionLine : descriptionLines) {
-                ImGui.text(descriptionLine);
+                ImGui.text(description);
             }
         } else {
             ImGui.text("No description found.");
