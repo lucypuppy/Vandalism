@@ -2,7 +2,7 @@ package de.nekosarekawaii.vandalism.integration.hud.impl;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.mod.ModuleToggleListener;
+import de.nekosarekawaii.vandalism.base.event.internal.ModuleToggleListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
 import net.minecraft.client.gui.DrawContext;

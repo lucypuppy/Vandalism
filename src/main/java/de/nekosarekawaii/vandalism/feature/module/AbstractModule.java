@@ -2,7 +2,7 @@ package de.nekosarekawaii.vandalism.feature.module;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.mod.ModuleToggleListener;
+import de.nekosarekawaii.vandalism.base.event.internal.ModuleToggleListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.KeyBindValue;
