@@ -16,11 +16,10 @@ public class EnhancedServerListSettings extends ValueGroup {
             "Enhanced Server List",
             "Enables/Disables the enhanced server list mode.",
             true).onValueChange((oldValue, newValue) -> {
-                if (!newValue) {
-                    Vandalism.getInstance().getServerListManager().setSelectedServerList(ServerList.DEFAULT_SERVER_LIST_NAME);
-                }
-        return newValue;
-            });
+        if (!newValue) {
+            Vandalism.getInstance().getServerListManager().setSelectedServerList(ServerList.DEFAULT_SERVER_LIST_NAME);
+        }
+    });
 
     public final KeyBindValue pasteServerKey = new KeyBindValue(
             this,
