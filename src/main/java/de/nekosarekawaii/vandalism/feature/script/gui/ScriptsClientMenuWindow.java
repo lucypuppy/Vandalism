@@ -5,7 +5,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.feature.script.Script;
 import de.nekosarekawaii.vandalism.feature.script.parse.ScriptParser;
-import de.nekosarekawaii.vandalism.gui.base.ImWindow;
+import de.nekosarekawaii.vandalism.gui.base.ClientMenuWindow;
 import imgui.ImGui;
 import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiTabBarFlags;
@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ScriptsImWindow extends ImWindow {
+public class ScriptsClientMenuWindow extends ClientMenuWindow {
 
     private static final SimpleDateFormat MODIFICATION_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss a");
 
@@ -33,7 +33,7 @@ public class ScriptsImWindow extends ImWindow {
 
     private final ImBoolean hideHints;
 
-    public ScriptsImWindow() {
+    public ScriptsClientMenuWindow() {
         super("Scripts", Category.CONFIGURATION);
         this.scriptEditors = new ConcurrentHashMap<>();
         this.hideHints = new ImBoolean(false);

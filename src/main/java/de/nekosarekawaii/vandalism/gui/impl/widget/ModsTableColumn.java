@@ -1,10 +1,10 @@
-package de.nekosarekawaii.vandalism.gui.widget;
+package de.nekosarekawaii.vandalism.gui.impl.widget;
 
 import de.florianmichael.rclasses.common.StringUtils;
 
-public enum ForgeDataModsTableColumn {
+public enum ModsTableColumn {
 
-    MOD_ID, MOD_MARKER, ACTIONS;
+    MOD_ID, MOD_VERSION, ACTIONS;
 
     public String getName() {
         return StringUtils.normalizeEnumName(this.name());

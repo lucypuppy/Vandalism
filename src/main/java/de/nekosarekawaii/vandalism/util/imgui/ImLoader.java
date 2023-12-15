@@ -1,4 +1,4 @@
-package de.nekosarekawaii.vandalism.gui.loader;
+package de.nekosarekawaii.vandalism.util.imgui;
 
 import imgui.*;
 import imgui.extension.implot.ImPlot;

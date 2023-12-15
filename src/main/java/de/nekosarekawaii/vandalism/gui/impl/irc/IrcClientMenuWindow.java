@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.gui.impl.irc;
 
-import de.nekosarekawaii.vandalism.gui.base.ImWindow;
+import de.nekosarekawaii.vandalism.gui.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.util.minecraft.ChatUtil;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
@@ -18,9 +18,9 @@ import re.catgirls.irc.session.UserProfile;
  * The IRC menu.
  * WARNING: This is an experimental feature and may change a lot in the future.
  */
-public class IrcImWindow extends ImWindow {
+public class IrcClientMenuWindow extends ClientMenuWindow {
 
-    public IrcImWindow() {
+    public IrcClientMenuWindow() {
         super("IRC", Category.CONFIGURATION);
     }
 

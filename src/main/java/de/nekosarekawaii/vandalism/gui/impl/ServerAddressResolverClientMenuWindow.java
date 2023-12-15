@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.gui.impl;
 
-import de.nekosarekawaii.vandalism.gui.base.ImWindow;
+import de.nekosarekawaii.vandalism.gui.base.ClientMenuWindow;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
@@ -12,7 +12,7 @@ import net.minecraft.client.gui.DrawContext;
 
 import java.util.concurrent.Executors;
 
-public class ServerAddressResolverImWindow extends ImWindow {
+public class ServerAddressResolverClientMenuWindow extends ClientMenuWindow {
 
     private static final ImGuiInputTextCallback HOSTNAME_FILTER = new ImGuiInputTextCallback() {
 
@@ -32,7 +32,7 @@ public class ServerAddressResolverImWindow extends ImWindow {
 
     private final ImString hostname, lastData;
 
-    public ServerAddressResolverImWindow() {
+    public ServerAddressResolverClientMenuWindow() {
         super("Server Address Resolver", Category.SERVER_UTILS);
         this.hostname = new ImString(253);
         this.lastData = new ImString();

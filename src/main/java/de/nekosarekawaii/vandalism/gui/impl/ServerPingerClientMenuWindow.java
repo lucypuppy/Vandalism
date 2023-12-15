@@ -2,9 +2,9 @@ package de.nekosarekawaii.vandalism.gui.impl;
 
 import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.gui.base.ImWindow;
-import de.nekosarekawaii.vandalism.gui.widget.ServerInfoWidget;
-import de.nekosarekawaii.vandalism.gui.widget.ServerInfosTableColumn;
+import de.nekosarekawaii.vandalism.gui.base.ClientMenuWindow;
+import de.nekosarekawaii.vandalism.gui.impl.widget.ServerInfoWidget;
+import de.nekosarekawaii.vandalism.gui.impl.widget.ServerInfosTableColumn;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
@@ -24,7 +24,7 @@ import net.minecraft.client.gui.DrawContext;
 import java.net.BindException;
 import java.net.UnknownHostException;
 
-public class ServerPingerImWindow extends ImWindow {
+public class ServerPingerClientMenuWindow extends ClientMenuWindow {
 
     private static final ImGuiInputTextCallback HOSTNAME_FILTER = new ImGuiInputTextCallback() {
 
@@ -49,7 +49,7 @@ public class ServerPingerImWindow extends ImWindow {
     private boolean autoPing;
     private final ServerInfoWidget serverInfoWidget;
 
-    public ServerPingerImWindow() {
+    public ServerPingerClientMenuWindow() {
         super("Server Pinger", Category.SERVER_UTILS);
         this.hostname = new ImString(253);
         this.port = new ImInt(25565);

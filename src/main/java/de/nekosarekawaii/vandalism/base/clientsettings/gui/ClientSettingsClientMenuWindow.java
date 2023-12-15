@@ -3,15 +3,15 @@ package de.nekosarekawaii.vandalism.base.clientsettings.gui;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
-import de.nekosarekawaii.vandalism.gui.base.ImWindow;
+import de.nekosarekawaii.vandalism.gui.base.ClientMenuWindow;
 import imgui.ImGui;
 import net.minecraft.client.gui.DrawContext;
 
-public class ClientSettingsImWindow extends ImWindow {
+public class ClientSettingsClientMenuWindow extends ClientMenuWindow {
 
     private final ClientSettings clientSettings;
 
-    public ClientSettingsImWindow(final ClientSettings clientSettings) {
+    public ClientSettingsClientMenuWindow(final ClientSettings clientSettings) {
         super("Client Settings", Category.CONFIGURATION);
 
         this.clientSettings = clientSettings;

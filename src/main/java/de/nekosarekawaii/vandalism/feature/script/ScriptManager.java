@@ -7,10 +7,10 @@ import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.base.event.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
-import de.nekosarekawaii.vandalism.feature.script.gui.ScriptsImWindow;
+import de.nekosarekawaii.vandalism.feature.script.gui.ScriptsClientMenuWindow;
 import de.nekosarekawaii.vandalism.feature.script.parse.ScriptParser;
 import de.nekosarekawaii.vandalism.feature.script.parse.command.ScriptCommand;
-import de.nekosarekawaii.vandalism.gui.ImGuiManager;
+import de.nekosarekawaii.vandalism.gui.ClientMenuManager;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.minecraft.ChatUtil;
 import net.minecraft.util.Pair;
@@ -27,9 +27,9 @@ public class ScriptManager extends NamedStorage<Script> implements TickGameListe
 
     private final ConfigManager configManager;
 
-    public ScriptManager(final ConfigManager configManager, final ImGuiManager imGuiManager, final File runDirectory) {
+    public ScriptManager(final ConfigManager configManager, final ClientMenuManager clientMenuManager, final File runDirectory) {
         this.configManager = configManager;
-        imGuiManager.add(new ScriptsImWindow());
+        clientMenuManager.add(new ScriptsClientMenuWindow());
         this.directory = new File(runDirectory, "scripts");
 
         DietrichEvents2.global().subscribe(KeyboardInputEvent.ID, this);

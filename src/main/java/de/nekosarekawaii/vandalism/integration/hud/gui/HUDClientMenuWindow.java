@@ -1,7 +1,7 @@
 package de.nekosarekawaii.vandalism.integration.hud.gui;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.gui.base.ImWindow;
+import de.nekosarekawaii.vandalism.gui.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
 import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
 import imgui.ImGui;
@@ -11,14 +11,14 @@ import net.minecraft.client.util.Window;
 
 import java.awt.*;
 
-public class HUDImWindow extends ImWindow {
+public class HUDClientMenuWindow extends ClientMenuWindow {
 
     private final HUDManager hudManager;
 
     private boolean mouseDown = false;
     private int lastMouseX, lastMouseY;
 
-    public HUDImWindow(final HUDManager hudManager) {
+    public HUDClientMenuWindow(final HUDManager hudManager) {
         super("HUD Config", Category.CONFIGURATION);
 
         this.hudManager = hudManager;

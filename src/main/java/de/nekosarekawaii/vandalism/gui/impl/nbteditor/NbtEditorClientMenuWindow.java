@@ -1,7 +1,7 @@
 package de.nekosarekawaii.vandalism.gui.impl.nbteditor;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.gui.base.ImWindow;
+import de.nekosarekawaii.vandalism.gui.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.gui.imgui.impl.menu.nbteditor.NbtManager;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
@@ -16,11 +16,11 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 
-public class NbtEditorImWindow extends ImWindow {
+public class NbtEditorClientMenuWindow extends ClientMenuWindow {
 
     private final NbtManager nbtManager;
 
-    public NbtEditorImWindow() {
+    public NbtEditorClientMenuWindow() {
         super("Nbt Editor", Category.MISC_UTILS);
         this.nbtManager = new NbtManager();
     }
@@ -52,7 +52,7 @@ public class NbtEditorImWindow extends ImWindow {
             out.close();
             stream.close();
             setActive(true);
-            Vandalism.getInstance().getImGuiManager().openScreen();
+            Vandalism.getInstance().getClientMenuManager().openScreen();
         } catch (final IOException io) {
             Vandalism.getInstance().getLogger().error("Failed to display nbt.", io);
         }

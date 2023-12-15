@@ -1,7 +1,7 @@
 package de.nekosarekawaii.vandalism.gui.impl.port;
 
-import de.nekosarekawaii.vandalism.gui.base.ImWindow;
-import de.nekosarekawaii.vandalism.gui.widget.ServerInfosTableColumn;
+import de.nekosarekawaii.vandalism.gui.base.ClientMenuWindow;
+import de.nekosarekawaii.vandalism.gui.impl.widget.ServerInfosTableColumn;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
@@ -17,7 +17,7 @@ import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 
-public class PortScannerImWindow extends ImWindow {
+public class PortScannerClientMenuWindow extends ClientMenuWindow {
 
     private static final ImGuiInputTextCallback HOSTNAME_FILTER = new ImGuiInputTextCallback() {
 
@@ -40,7 +40,7 @@ public class PortScannerImWindow extends ImWindow {
     private final ConcurrentHashMap<Integer, PortResult> ports;
     private int currentPort, checkedPort;
 
-    public PortScannerImWindow() {
+    public PortScannerClientMenuWindow() {
         super("Port Scanner", Category.SERVER_UTILS);
         this.hostname = new ImString(253);
         this.progress = new ImString(200);
