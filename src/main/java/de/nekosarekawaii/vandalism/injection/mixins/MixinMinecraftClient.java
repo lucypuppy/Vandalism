@@ -5,28 +5,16 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.game.MinecraftBoostrapListener;
 import de.nekosarekawaii.vandalism.base.event.game.ShutdownProcessListener;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.Window;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.io.File;
 import java.lang.management.ManagementFactory;
 
 @Mixin(value = MinecraftClient.class)
 public abstract class MixinMinecraftClient {
-
-    @Shadow
-    @Final
-    private Window window;
-
-    @Shadow
-    @Final
-    public File runDirectory;
 
     @Unique
     private boolean vandalism$loadingDisplayed = false;
