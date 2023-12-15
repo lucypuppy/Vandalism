@@ -29,7 +29,6 @@ import java.io.File;
  *  - Replace MixinServerResourcePackProvider
  *  - Delete MixinClientPlayerEntity & MixinClientWorld
  *  - Delete CustomRPConfirmScreen
- *  - Fix account sessions being invalid after a restart
  *  - Fix nbt gui command
  *  - Implement disableOnQuit and disableOnShutdown for modules
  * <p>

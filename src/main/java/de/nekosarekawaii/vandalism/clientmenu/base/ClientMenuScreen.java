@@ -14,7 +14,7 @@ public class ClientMenuScreen extends Screen {
     private final Screen prevScreen;
 
     public ClientMenuScreen(final ClientMenuManager clientMenuManager, final Screen prevScreen) {
-        super(Text.literal("ImGUI"));
+        super(Text.literal("ClientMenu"));
         this.clientMenuManager = clientMenuManager;
         this.prevScreen = prevScreen;
     }

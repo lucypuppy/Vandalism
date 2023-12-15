@@ -62,7 +62,6 @@ public abstract class AbstractAccount implements IName, MinecraftWrapper {
     }
 
     public void save(final JsonObject mainNode) throws Throwable {
-        mainNode.addProperty("type", name); // We only need this to load the config files later
         if (session != null) {
             final JsonObject sessionNode = new JsonObject();
             saveSession(sessionNode);

@@ -2,10 +2,10 @@ package de.nekosarekawaii.vandalism.base.account.template;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import de.florianmichael.rclasses.io.encryption.EncryptionUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
+import de.nekosarekawaii.vandalism.util.StaticEncryptionUtil;
 import net.minecraft.client.session.Session;
 import net.raphimc.minecraftauth.step.AbstractStep;
 import net.raphimc.minecraftauth.step.java.StepMCProfile;
@@ -62,12 +62,12 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
 
     @Override
     public void save0(JsonObject mainNode) throws Throwable {
-        mainNode.addProperty("tokenChain", EncryptionUtils.aes(EncryptionUtils.fromString(getDisplayName())).encrypt(tokenChain));
+        mainNode.addProperty("tokenChain", StaticEncryptionUtil.encrypt(getDisplayName(), tokenChain));
     }
 
     @Override
     public void load0(JsonObject mainNode) throws Throwable {
-        tokenChain = EncryptionUtils.aes(EncryptionUtils.fromString(getDisplayName())).decrypt(mainNode.get("tokenChain").getAsString());
+        tokenChain = StaticEncryptionUtil.decrypt(getDisplayName(), mainNode.get("tokenChain").getAsString());
     }
 
     @Override
