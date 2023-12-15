@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinClientPlayerInteractionManager {
 
     @Inject(method = "attackEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;syncSelectedSlot()V", shift = At.Shift.AFTER))
-    private void hookAttack(final PlayerEntity player, final Entity target, final CallbackInfo ci) {
+    private void callAttackListener(final PlayerEntity player, final Entity target, final CallbackInfo ci) {
         DietrichEvents2.global().postInternal(AttackListener.AttackSendEvent.ID, new AttackListener.AttackSendEvent(target));
     }
 

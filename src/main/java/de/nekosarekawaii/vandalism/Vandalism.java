@@ -26,7 +26,6 @@ import java.io.File;
  *  - Re-add DebugModule as hud element
  *  - Delete MixinParticleManager
  *  - Update AuthLib array instead of MixinTextureUrlChecker
- *  - Fix mixin injection names for the fields (remove vandalism$ for every function)
  *  - Replace MixinServerResourcePackProvider
  *  - Delete MixinClientPlayerEntity & MixinClientWorld
  *  - Delete CustomRPConfirmScreen
@@ -37,7 +36,6 @@ import java.io.File;
  * TODO | Common skill issues
  *  - Apply checkstyle.xml to all classes
  *  - Fix tick bug (cps is not accurate) -> see BoxMuellerClicker#update
- *  - Delete MixinGameRenderer view bobbing -> use proper MixinExtras instead of copy-pasting game code
  *  - Rewrite EnhancedServerList
  *  - Add anti vanish via. the player list hud
  *  - Add the dripping stone block to the block density module

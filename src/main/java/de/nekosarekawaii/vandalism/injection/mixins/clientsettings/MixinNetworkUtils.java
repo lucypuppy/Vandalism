@@ -14,7 +14,7 @@ import java.io.InputStream;
 public abstract class MixinNetworkUtils {
 
     @Redirect(method = "method_15303", at = @At(value = "INVOKE", target = "Ljava/io/InputStream;read([B)I"))
-    private static int vandalism$moreResourcePacketOptionsSkipDownload(final InputStream inputStream, final byte[] bs) throws IOException {
+    private static int moreResourcePacketOptionsSkipDownload(final InputStream inputStream, final byte[] bs) throws IOException {
         if (Vandalism.getInstance().getClientSettings().getMenuSettings().moreResourcePackOptions.getValue() && CustomRPConfirmScreen.skipDownload) {
             return -1;
         }

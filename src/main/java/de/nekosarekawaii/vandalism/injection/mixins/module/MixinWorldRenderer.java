@@ -14,12 +14,15 @@ import java.awt.*;
 public abstract class MixinWorldRenderer {
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/OutlineVertexConsumerProvider;setColor(IIII)V"))
-    private void vandalism$espOutlineColor(final OutlineVertexConsumerProvider instance, final int red, final int green, final int blue, final int alpha) {
+    private void hookEsp(final OutlineVertexConsumerProvider instance, int red, int green, int blue, int alpha) {
         final ESPModule espModule = Vandalism.getInstance().getModuleManager().getEspModule();
         if (espModule.isActive()) {
-            final Color color = espModule.outlineColor.getValue();
-            instance.setColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-            return;
+            final var color = espModule.outlineColor.getValue();
+
+            red = color.getRed();
+            green = color.getGreen();
+            blue = color.getBlue();
+            alpha = color.getAlpha();
         }
         instance.setColor(red, green, blue, alpha);
     }

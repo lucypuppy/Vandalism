@@ -11,12 +11,12 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public abstract class MixinChatScreen {
 
     @Redirect(method = "sendMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ChatScreen;normalize(Ljava/lang/String;)Ljava/lang/String;"))
-    private String vandalism$callChatSendEvent(final ChatScreen instance, String chatText) {
+    private String callChatSendListener(final ChatScreen instance, String chatText) {
         chatText = instance.normalize(chatText);
         if (!chatText.isBlank()) {
-            final ChatListener.ChatSendEvent chatSendEvent = new ChatListener.ChatSendEvent(chatText);
-            DietrichEvents2.global().postInternal(ChatListener.ChatSendEvent.ID, chatSendEvent);
-            chatText = chatSendEvent.message;
+            final var event = new ChatListener.ChatSendEvent(chatText);
+            DietrichEvents2.global().postInternal(ChatListener.ChatSendEvent.ID, event);
+            chatText = event.message;
         }
         return chatText;
     }

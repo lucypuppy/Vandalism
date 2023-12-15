@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinClientPlayNetworkHandler implements MinecraftWrapper {
 
     @Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
-    private void vandalism$executeModCommands(final String message, final CallbackInfo ci) {
+    private void executeModCommands(final String message, final CallbackInfo ci) {
         final String prefix = Vandalism.getInstance().getClientSettings().getChatSettings().commandPrefix.getValue();
         if (message.startsWith(prefix)) {
             try {

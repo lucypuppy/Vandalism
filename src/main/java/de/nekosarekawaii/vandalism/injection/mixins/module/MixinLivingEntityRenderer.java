@@ -22,7 +22,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
     }
 
     @Inject(method = "getRenderLayer", at = @At("HEAD"), cancellable = true)
-    private void vandalism$trueSightForceTranslucentCullOnInvisibleEntities(final T entity, final boolean showBody, final boolean translucent, final boolean showOutline, final CallbackInfoReturnable<RenderLayer> cir) {
+    private void hookTrueSight(final T entity, final boolean showBody, final boolean translucent, final boolean showOutline, final CallbackInfoReturnable<RenderLayer> cir) {
         final TrueSightModule trueSightModule = Vandalism.getInstance().getModuleManager().getTrueSightModule();
         if (trueSightModule.isActive() && !showBody && !translucent && !showOutline) {
             cir.setReturnValue(RenderLayer.getItemEntityTranslucentCull(this.getTexture(entity)));

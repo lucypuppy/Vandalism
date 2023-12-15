@@ -14,7 +14,7 @@ import java.util.concurrent.Executor;
 public abstract class MixinYggdrasilUserApiService {
 
     @Inject(method = "newTelemetrySession", at = @At("RETURN"), cancellable = true)
-    private void vandalism$antiTelemetry(final Executor executor, final CallbackInfoReturnable<TelemetrySession> cir) {
+    private void antiTelemetry(final Executor executor, final CallbackInfoReturnable<TelemetrySession> cir) {
         if (Vandalism.getInstance().getClientSettings().getNetworkingSettings().antiTelemetry.getValue()) {
             cir.setReturnValue(TelemetrySession.DISABLED);
         }

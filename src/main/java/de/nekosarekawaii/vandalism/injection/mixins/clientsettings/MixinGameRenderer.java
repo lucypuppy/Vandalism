@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinGameRenderer implements MinecraftWrapper {
 
     @Inject(method = "bobView", at = @At("HEAD"), cancellable = true)
-    private void vandalism$customBobView(final MatrixStack matrixStack, final float f, final CallbackInfo callbackInfo) {
+    private void customBobView(final MatrixStack matrixStack, final float f, final CallbackInfo callbackInfo) {
         if (!Vandalism.getInstance().getClientSettings().getVisualSettings().customBobView.getValue()) {
             return;
         }

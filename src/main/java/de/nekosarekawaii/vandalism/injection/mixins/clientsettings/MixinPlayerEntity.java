@@ -12,8 +12,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinPlayerEntity implements MinecraftWrapper {
 
     @Inject(method = "isCreativeLevelTwoOp", at = @At("RETURN"), cancellable = true)
-    private void vandalism$spoofIsCreativeLevelTwoOp(final CallbackInfoReturnable<Boolean> cir) {
-        if (this.mc.player == ((PlayerEntity) (Object) this)) {
+    private void spoofIsCreativeLevelTwoOp(final CallbackInfoReturnable<Boolean> cir) {
+        if (this.mc.player == (Object) this) {
             if (Vandalism.getInstance().getClientSettings().getNetworkingSettings().spoofIsCreativeLevelTwoOp.getValue()) {
                 cir.setReturnValue(true);
             }

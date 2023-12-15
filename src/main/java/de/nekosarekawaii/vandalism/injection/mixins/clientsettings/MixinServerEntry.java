@@ -25,7 +25,7 @@ public abstract class MixinServerEntry {
     private ServerInfo server;
 
     @Inject(method = "protocolVersionMatches", at = @At(value = "RETURN"), cancellable = true)
-    private void vandalism$forceProtocolVersionMatches(final CallbackInfoReturnable<Boolean> cir) {
+    private void forceProtocolVersionMatches(final CallbackInfoReturnable<Boolean> cir) {
         if (!Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().enhancedServerList.getValue()) {
             return;
         }

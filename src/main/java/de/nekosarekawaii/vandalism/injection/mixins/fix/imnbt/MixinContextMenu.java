@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public abstract class MixinContextMenu {
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Limgui/ImGui;beginMenu(Ljava/lang/String;)Z"))
-    private boolean vandalism$cancelRenderTransformMenu(final String name) {
+    private boolean cancelRenderTransformMenu(final String name) {
         if (name.equals("Transform")) {
             return false;
         }
@@ -18,7 +18,7 @@ public abstract class MixinContextMenu {
     }
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Limgui/ImGui;menuItem(Ljava/lang/String;)Z"))
-    private boolean vandalism$cancelRenderPasteTagMenuItem(final String name) {
+    private boolean cancelRenderPasteTagMenuItem(final String name) {
         if (name.equals("Paste Tag")) {
             return false;
         }

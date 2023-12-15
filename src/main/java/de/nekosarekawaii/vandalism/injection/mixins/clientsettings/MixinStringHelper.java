@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinStringHelper {
 
     @Inject(method = "truncateChat", at = @At(value = "HEAD"), cancellable = true)
-    private static void vandalism$customChatLength(final String text, final CallbackInfoReturnable<String> cir) {
+    private static void customChatLength(final String text, final CallbackInfoReturnable<String> cir) {
         if (Vandalism.getInstance().getClientSettings().getChatSettings().customChatLength.getValue()) {
             cir.setReturnValue(text);
         }

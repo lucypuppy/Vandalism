@@ -12,10 +12,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinCamera {
 
     @Inject(method = "clipToSpace", at = @At("HEAD"), cancellable = true)
-    public void vandalism$callCameraClipRaytraceEvent(final double desiredCameraDistance, final CallbackInfoReturnable<Double> cir) {
-        final CameraClipRaytraceListener.CameraClipRaytraceEvent cameraClipRaytraceEvent = new CameraClipRaytraceListener.CameraClipRaytraceEvent();
-        DietrichEvents2.global().postInternal(CameraClipRaytraceListener.CameraClipRaytraceEvent.ID, cameraClipRaytraceEvent);
-        if (cameraClipRaytraceEvent.isCancelled()) cir.setReturnValue(desiredCameraDistance);
+    public void callCameraClipRaytraceListener(final double desiredCameraDistance, final CallbackInfoReturnable<Double> cir) {
+        final var event = new CameraClipRaytraceListener.CameraClipRaytraceEvent();
+        DietrichEvents2.global().postInternal(CameraClipRaytraceListener.CameraClipRaytraceEvent.ID, event);
+
+        if (event.isCancelled()) {
+            cir.setReturnValue(desiredCameraDistance);
+        }
     }
 
 }

@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinAccessibilityOnboardingScreen {
 
     @Inject(method = "tickNarratorPrompt", at = @At(value = "INVOKE", target = "Lcom/mojang/text2speech/Narrator;say(Ljava/lang/String;Z)V", remap = false), cancellable = true)
-    private void vandalism$cancelNarratorPrompt(final CallbackInfo ci) {
+    private void cancelNarratorPrompt(final CallbackInfo ci) {
         ci.cancel();
     }
 

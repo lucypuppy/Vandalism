@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinClientPlayerInteractionManager {
 
     @Inject(method = "hasLimitedAttackSpeed", at = @At("HEAD"), cancellable = true)
-    public void vandalism$eliminateHitDelay(final CallbackInfoReturnable<Boolean> cir) {
+    private void eliminateHitDelay(final CallbackInfoReturnable<Boolean> cir) {
         if (Vandalism.getInstance().getClientSettings().getNetworkingSettings().eliminateHitDelay.getValue()) {
             cir.setReturnValue(false);
         }

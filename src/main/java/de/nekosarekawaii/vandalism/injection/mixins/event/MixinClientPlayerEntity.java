@@ -16,27 +16,27 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinClientPlayerEntity {
 
     @Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z", ordinal = 0))
-    private boolean vandalism$callSprintEvent1(final KeyBinding instance) {
-        final var sprintEvent = new SprintListener.SprintEvent(instance.isPressed());
-        DietrichEvents2.global().postInternal(SprintListener.SprintEvent.ID, sprintEvent);
-        return sprintEvent.sprinting;
+    private boolean callSprintListener_at_1(final KeyBinding instance) {
+        final var event = new SprintListener.SprintEvent(instance.isPressed());
+        DietrichEvents2.global().postInternal(SprintListener.SprintEvent.ID, event);
+        return event.sprinting;
     }
 
     @Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z", ordinal = 1))
-    private boolean vandalism$callSprintEvent2(final KeyBinding instance) {
-        final var sprintEvent = new SprintListener.SprintEvent(instance.isPressed());
-        DietrichEvents2.global().postInternal(SprintListener.SprintEvent.ID, sprintEvent);
-        return sprintEvent.sprinting;
+    private boolean callSprintListener_at_2(final KeyBinding instance) {
+        final var event = new SprintListener.SprintEvent(instance.isPressed());
+        DietrichEvents2.global().postInternal(SprintListener.SprintEvent.ID, event);
+        return event.sprinting;
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
-    private void vandalism$callPreMotionEvent(final CallbackInfo ci) {
+    private void callMotionListener_pre(final CallbackInfo ci) {
         final MotionListener.MotionEvent motionEvent = new MotionListener.MotionEvent(StateTypes.PRE);
         DietrichEvents2.global().postInternal(MotionListener.MotionEvent.ID, motionEvent);
     }
 
     @Inject(method = "sendMovementPackets()V", at = @At("TAIL"))
-    private void vandalism$callPostMotionEvent(final CallbackInfo ci) {
+    private void callMotionListener_post(final CallbackInfo ci) {
         final MotionListener.MotionEvent motionEvent = new MotionListener.MotionEvent(StateTypes.POST);
         DietrichEvents2.global().postInternal(MotionListener.MotionEvent.ID, motionEvent);
     }

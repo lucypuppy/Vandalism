@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public abstract class MixinIllusionerEntityRenderer {
 
     @Redirect(method = "render(Lnet/minecraft/entity/mob/IllusionerEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/mob/IllusionerEntity;isInvisible()Z"))
-    private boolean vandalism$trueSightShowIllusionerEntity(final IllusionerEntity instance) {
+    private boolean hookTrueSight(final IllusionerEntity instance) {
         final TrueSightModule trueSightModule = Vandalism.getInstance().getModuleManager().getTrueSightModule();
         if (trueSightModule.isActive() && trueSightModule.showIllusionerEntity.getValue()) return false;
         return instance.isInvisible();

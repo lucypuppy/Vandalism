@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinTextureUrlChecker {
 
     @Inject(method = "isAllowedTextureDomain", at = @At("HEAD"), cancellable = true)
-    private static void vandalism$exploitFixerBlockInvalidTextureUrls(final String url, final CallbackInfoReturnable<Boolean> cir) {
+    private static void hookExploitFixer(final String url, final CallbackInfoReturnable<Boolean> cir) {
         final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
         if (exploitFixerModule.isActive() && exploitFixerModule.blockInvalidTextureUrls.getValue()) {
             final boolean startsWithUrl1 = StringUtils.startsWith(url, "https://" + ExploitFixerModule.CORRECT_TEXTURE_URL_START);

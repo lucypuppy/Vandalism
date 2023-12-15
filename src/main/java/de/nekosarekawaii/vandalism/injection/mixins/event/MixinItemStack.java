@@ -19,7 +19,7 @@ import java.util.Optional;
 public abstract class MixinItemStack {
 
     @Inject(method = "getTooltipData", at = @At("RETURN"), cancellable = true)
-    private void vandalism$callTooltipDrawEvent(final CallbackInfoReturnable<Optional<TooltipData>> cir) {
+    private void callTooltipDrawListener(final CallbackInfoReturnable<Optional<TooltipData>> cir) {
         final List<TooltipData> tooltipData = new ArrayList<>();
         cir.getReturnValue().ifPresent(tooltipData::add);
         DietrichEvents2.global().postInternal(TooltipDrawListener.TooltipDrawEvent.ID, new TooltipDrawListener.TooltipDrawEvent(

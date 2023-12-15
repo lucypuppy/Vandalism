@@ -35,7 +35,7 @@ public abstract class MixinMultiplayerScreen extends Screen {
     }
 
     @Inject(method = "init", at = @At("RETURN"))
-    private void vandalism$enhancedServerListAddConfigButton(final CallbackInfo ci) {
+    private void enhancedServerListAddConfigButton(final CallbackInfo ci) {
         if (!Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().enhancedServerList.getValue()) {
             return;
         }
@@ -47,14 +47,14 @@ public abstract class MixinMultiplayerScreen extends Screen {
     }
 
     @Inject(method = "tick", at = @At("RETURN"))
-    private void vandalism$enhancedServerListSyncServerList(final CallbackInfo ci) {
+    private void enhancedServerListSyncServerList(final CallbackInfo ci) {
         if (Vandalism.getInstance().getServerListManager().hasBeenChanged()) {
             this.refresh();
         }
     }
 
     @ModifyArgs(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawCenteredTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;III)V"))
-    private void vandalism$enhancedServerListModifyTitle(final Args args) {
+    private void enhancedServerListModifyTitle(final Args args) {
         if (!Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().enhancedServerList.getValue()) {
             return;
         }

@@ -20,11 +20,11 @@ public abstract class MixinInGameHud {
     private DebugHud debugHud;
 
     @Inject(method = "render(Lnet/minecraft/client/gui/DrawContext;F)V", at = @At(value = "TAIL"))
-    private void vandalism$callInGameRender2DEvent(final DrawContext context, final float tickDelta, final CallbackInfo ci) {
-        if (this.debugHud.shouldShowDebugHud()) return;
-        context.getMatrices().push();
+    private void callRender2DListener(final DrawContext context, final float tickDelta, final CallbackInfo ci) {
+        if (this.debugHud.shouldShowDebugHud()) { // We never want to render anything when this is true, so /shrug
+            return;
+        }
         DietrichEvents2.global().postInternal(Render2DListener.Render2DEvent.ID, new Render2DListener.Render2DEvent(context, tickDelta));
-        context.getMatrices().pop();
     }
 
 }

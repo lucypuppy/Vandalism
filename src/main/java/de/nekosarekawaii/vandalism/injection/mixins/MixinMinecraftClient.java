@@ -32,7 +32,7 @@ public abstract class MixinMinecraftClient {
     private boolean vandalism$loadingDisplayed = false;
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;onResolutionChanged()V"))
-    private void vandalism$callMinecraftBootstrapListener(final CallbackInfo ci) {
+    private void callMinecraftBootstrapListener(final CallbackInfo ci) {
         DietrichEvents2.global().postInternal(
                 MinecraftBoostrapListener.MinecraftBootstrapEvent.ID,
                 new MinecraftBoostrapListener.MinecraftBootstrapEvent((MinecraftClient) (Object) this)
@@ -40,7 +40,7 @@ public abstract class MixinMinecraftClient {
     }
 
     @Inject(method = "close", at = @At(value = "HEAD"))
-    private void vandalism$callShutdownProcessListener(final CallbackInfo ci) {
+    private void callShutdownProcessListener(final CallbackInfo ci) {
         DietrichEvents2.global().postInternal(
                 ShutdownProcessListener.ShutdownProcessEvent.ID,
                 new ShutdownProcessListener.ShutdownProcessEvent()
@@ -48,7 +48,7 @@ public abstract class MixinMinecraftClient {
     }
 
     @Inject(method = "onFinishedLoading", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;collectLoadTimes(Lnet/minecraft/client/MinecraftClient$LoadingContext;)V", shift = At.Shift.AFTER))
-    private void vandalism$displayLoadingTime(final CallbackInfo ci) {
+    private void displayLoadingTime(final CallbackInfo ci) {
         if (!this.vandalism$loadingDisplayed) {
             this.vandalism$loadingDisplayed = true;
             Vandalism.getInstance().getLogger().info("");
@@ -58,7 +58,7 @@ public abstract class MixinMinecraftClient {
     }
 
     @Inject(method = "updateWindowTitle", at = @At("HEAD"), cancellable = true)
-    private void vandalism$forceCancelWindowTitleUpdates(final CallbackInfo ci) {
+    private void forceCancelWindowTitleUpdates(final CallbackInfo ci) {
         ci.cancel();
     }
 

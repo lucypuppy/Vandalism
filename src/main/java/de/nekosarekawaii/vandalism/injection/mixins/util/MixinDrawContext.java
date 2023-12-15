@@ -15,7 +15,7 @@ import java.util.List;
 public abstract class MixinDrawContext {
 
     @Inject(method = "method_51442", at = @At(value = "HEAD"), cancellable = true)
-    private static void vandalism$modifyTooltipData(final List<TooltipComponent> list, final TooltipData data, final CallbackInfo ci) {
+    private static void modifyTooltipData(final List<TooltipComponent> list, final TooltipData data, final CallbackInfo ci) {
         if (data instanceof final ITooltipData tooltipData && !tooltipData.renderPre()) {
             list.add(TooltipComponent.of(data));
             ci.cancel();

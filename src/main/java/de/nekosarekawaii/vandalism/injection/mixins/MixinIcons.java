@@ -16,9 +16,10 @@ import java.io.InputStream;
 public abstract class MixinIcons {
 
     @Inject(method = "getIcon", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePack;openRoot([Ljava/lang/String;)Lnet/minecraft/resource/InputSupplier;"), cancellable = true)
-    private void vandalism$forceModIcon(final ResourcePack resourcePack, final String fileName, final CallbackInfoReturnable<InputSupplier<InputStream>> cir) {
-        if (!fileName.endsWith(".png")) return;
-        cir.setReturnValue(() -> Main.class.getClassLoader().getResourceAsStream("assets/" + FabricBootstrap.MOD_ID + "/textures/icon/" + fileName));
+    private void forceModIcon(final ResourcePack resourcePack, final String fileName, final CallbackInfoReturnable<InputSupplier<InputStream>> cir) {
+        if (fileName.endsWith(".png")) { // We just nope there aren't any other png files
+            cir.setReturnValue(() -> Main.class.getClassLoader().getResourceAsStream("assets/" + FabricBootstrap.MOD_ID + "/textures/icon/" + fileName));
+        }
     }
 
 }

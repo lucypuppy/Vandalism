@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public abstract class MixinInGameHud {
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z"))
-    public boolean vandalism$betterTabListToggleableTabList(final KeyBinding instance) {
+    private boolean hookBetterTabListModule(final KeyBinding instance) {
         final BetterTabListModule betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
         if (betterTabListModule.isActive() && betterTabListModule.toggleable.getValue()) {
             return betterTabListModule.toggleState;

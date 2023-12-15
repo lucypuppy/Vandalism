@@ -16,10 +16,10 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 public abstract class MixinChatHud {
 
     @ModifyArg(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;ILnet/minecraft/client/gui/hud/MessageIndicator;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/ChatMessages;breakRenderedChatMessageLines(Lnet/minecraft/text/StringVisitable;ILnet/minecraft/client/font/TextRenderer;)Ljava/util/List;"))
-    public StringVisitable vandalism$messageEncryptorModifyMessage(final StringVisitable content) {
-        final ModuleManager moduleManager = Vandalism.getInstance().getModuleManager();
+    public StringVisitable hookMessageEncryptor(final StringVisitable content) {
+        final var moduleManager = Vandalism.getInstance().getModuleManager();
         if (moduleManager != null) {
-            final MessageEncryptorModule messageEncryptorModule = moduleManager.getMessageEncryptorModule();
+            final var messageEncryptorModule = moduleManager.getMessageEncryptorModule();
             if (messageEncryptorModule.isActive()) {
                 final MutableText text = (MutableText) content;
                 final String stringTest = text.getString();

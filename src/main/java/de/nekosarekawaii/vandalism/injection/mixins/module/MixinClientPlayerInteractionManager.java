@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public abstract class MixinClientPlayerInteractionManager {
 
     @Redirect(method = "interactBlockInternal", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;useOnBlock(Lnet/minecraft/item/ItemUsageContext;)Lnet/minecraft/util/ActionResult;"))
-    private ActionResult vandalism$illegalBlockPlaceViaVersionBug(final ItemStack instance, final ItemUsageContext context) {
+    private ActionResult hookIllegalBlockPlace(final ItemStack instance, final ItemUsageContext context) {
         ActionResult actionResult = instance.useOnBlock(context);
         if (ProtocolHack.getTargetVersion().isOlderThanOrEqualTo(VersionEnum.r1_8)) {
             final IllegalBlockPlaceModule illegalBlockPlaceModule = Vandalism.getInstance().getModuleManager().getIllegalBlockPlaceModule();

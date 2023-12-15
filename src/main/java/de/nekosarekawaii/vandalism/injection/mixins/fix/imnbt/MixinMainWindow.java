@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 public abstract class MixinMainWindow {
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Limgui/ImGui;menuItem(Ljava/lang/String;)Z"))
-    private boolean vandalism$cancelRenderMenuItems(final String name) {
+    private boolean cancelRenderMenuItems(final String name) {
         if (name.equals("Exit") || name.equals("About")) {
             return false;
         }
@@ -25,12 +25,12 @@ public abstract class MixinMainWindow {
     private static final ExecutorService vandalism$EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/lenni0451/imnbt/ui/windows/MainWindow;chooseFile()V"))
-    private void vandalism$chooseFileInANewThread(final MainWindow instance) {
+    private void chooseFileInANewThread(final MainWindow instance) {
         vandalism$EXECUTOR_SERVICE.submit(instance::chooseFile);
     }
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/lenni0451/imnbt/ui/windows/MainWindow;saveFile()V"))
-    private void vandalism$saveFileInANewThread(final MainWindow instance) {
+    private void saveFileInANewThread(final MainWindow instance) {
         vandalism$EXECUTOR_SERVICE.submit(instance::saveFile);
     }
 
