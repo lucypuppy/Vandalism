@@ -15,7 +15,7 @@ import de.nekosarekawaii.vandalism.feature.module.impl.exploit.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.render.*;
-import de.nekosarekawaii.vandalism.gui.ClientMenuManager;
+import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import org.lwjgl.glfw.GLFW;
 

@@ -3,7 +3,7 @@ package de.nekosarekawaii.vandalism.util.minecraft;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.integration.creativetab.CreativeTabManager;
+import de.nekosarekawaii.vandalism.feature.creativetab.CreativeTabManager;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;

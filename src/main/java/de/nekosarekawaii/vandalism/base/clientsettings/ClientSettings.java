@@ -6,7 +6,7 @@ import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
-import de.nekosarekawaii.vandalism.gui.ClientMenuManager;
+import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 
 import java.util.ArrayList;
 import java.util.List;

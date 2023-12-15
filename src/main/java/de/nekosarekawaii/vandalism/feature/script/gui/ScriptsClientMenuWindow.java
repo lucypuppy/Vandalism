@@ -5,7 +5,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.feature.script.Script;
 import de.nekosarekawaii.vandalism.feature.script.parse.ScriptParser;
-import de.nekosarekawaii.vandalism.gui.base.ClientMenuWindow;
+import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import imgui.ImGui;
 import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiTabBarFlags;

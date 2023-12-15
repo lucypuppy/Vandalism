@@ -10,7 +10,7 @@ import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
 import de.nekosarekawaii.vandalism.feature.script.gui.ScriptsClientMenuWindow;
 import de.nekosarekawaii.vandalism.feature.script.parse.ScriptParser;
 import de.nekosarekawaii.vandalism.feature.script.parse.command.ScriptCommand;
-import de.nekosarekawaii.vandalism.gui.ClientMenuManager;
+import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.minecraft.ChatUtil;
 import net.minecraft.util.Pair;

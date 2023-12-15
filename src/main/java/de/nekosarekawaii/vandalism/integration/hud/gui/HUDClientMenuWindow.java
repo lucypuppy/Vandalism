@@ -1,7 +1,7 @@
 package de.nekosarekawaii.vandalism.integration.hud.gui;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.gui.base.ClientMenuWindow;
+import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
 import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
 import imgui.ImGui;

@@ -3,7 +3,7 @@ package de.nekosarekawaii.vandalism.base.account.gui;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountManager;
-import de.nekosarekawaii.vandalism.gui.base.ClientMenuWindow;
+import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import imgui.ImGui;
 import imgui.flag.ImGuiMouseButton;
 import imgui.flag.ImGuiWindowFlags;
