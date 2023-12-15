@@ -1,5 +1,6 @@
 package de.nekosarekawaii.vandalism.clientmenu;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.Vandalism;
@@ -15,6 +16,7 @@ import de.nekosarekawaii.vandalism.clientmenu.impl.irc.IrcClientMenuWindow;
 import de.nekosarekawaii.vandalism.clientmenu.impl.namehistory.NameHistoryClientMenuWindow;
 import de.nekosarekawaii.vandalism.clientmenu.impl.nbteditor.NbtEditorClientMenuWindow;
 import de.nekosarekawaii.vandalism.clientmenu.impl.port.PortScannerClientMenuWindow;
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.imgui.ImLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
@@ -28,7 +30,7 @@ import org.lwjgl.glfw.GLFW;
 import java.io.File;
 import java.util.List;
 
-public class ClientMenuManager extends Storage<ClientMenuWindow> implements KeyboardInputListener, Render2DListener {
+public class ClientMenuManager extends Storage<ClientMenuWindow> implements KeyboardInputListener, Render2DListener, MinecraftWrapper {
 
     public ClientMenuManager(final ConfigManager configManager, final File runDirectory) {
         configManager.add(new ClientMenuConfig(this));
@@ -57,15 +59,17 @@ public class ClientMenuManager extends Storage<ClientMenuWindow> implements Keyb
     }
 
     public void openScreen() {
-        Screen screen = MinecraftClient.getInstance().currentScreen;
-        if (screen != null) {
-            if (screen instanceof ConnectScreen || screen instanceof LevelLoadingScreen || screen instanceof ClientMenuScreen) {
-                return;
-            } else if (screen instanceof ChatScreen || screen instanceof HandledScreen<?> && !(screen instanceof InventoryScreen)) {
-                screen = null;
+        RenderSystem.recordRenderCall(() -> {
+            Screen screen = MinecraftClient.getInstance().currentScreen;
+            if (screen != null) {
+                if (screen instanceof ConnectScreen || screen instanceof LevelLoadingScreen || screen instanceof ClientMenuScreen) {
+                    return;
+                } else if (screen instanceof ChatScreen || screen instanceof HandledScreen<?> && !(screen instanceof InventoryScreen)) {
+                    screen = null;
+                }
             }
-        }
-        MinecraftClient.getInstance().setScreen(new ClientMenuScreen(this, screen));
+            mc.setScreen(new ClientMenuScreen(this, screen));
+        });
     }
 
     public List<ClientMenuWindow> getByCategory(final ClientMenuWindow.Category category) {

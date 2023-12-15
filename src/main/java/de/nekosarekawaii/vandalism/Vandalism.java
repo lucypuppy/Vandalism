@@ -29,7 +29,6 @@ import java.io.File;
  *  - Replace MixinServerResourcePackProvider
  *  - Delete MixinClientPlayerEntity & MixinClientWorld
  *  - Delete CustomRPConfirmScreen
- *  - Fix nbt gui command
  *  - Implement disableOnQuit and disableOnShutdown for modules
  * <p>
  * TODO | Common skill issues
