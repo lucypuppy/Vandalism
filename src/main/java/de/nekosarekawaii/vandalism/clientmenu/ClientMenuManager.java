@@ -43,11 +43,11 @@ public class ClientMenuManager extends Storage<ClientMenuWindow> implements Keyb
     public void init() {
         this.add(
                 new IrcClientMenuWindow(),
-                new NameHistoryClientMenuWindow(),
-                new NbtEditorClientMenuWindow(),
                 new PortScannerClientMenuWindow(),
                 new ServerAddressResolverClientMenuWindow(),
-                new ServerPingerClientMenuWindow()
+                new ServerPingerClientMenuWindow(),
+                new NameHistoryClientMenuWindow(),
+                new NbtEditorClientMenuWindow()
         );
     }
 
