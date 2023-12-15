@@ -42,9 +42,11 @@ public abstract class AbstractModule extends Feature implements ValueParent {
         ).onValueChange((oldValue, newValue) -> {
             final var event = new ModuleToggleListener.ModuleToggleEvent(this, newValue);
             DietrichEvents2.global().postInternal(ModuleToggleListener.ModuleToggleEvent.ID, event);
-            if (event.isDirty()) {
-                newValue = event.isActive();
-            }
+
+            // Allows the event to change the active state of the module
+            // It's important that people don't use the setActive method from the module itself in the event
+            // because that would cause an infinite loop
+            newValue = event.active;
 
             if (oldValue != newValue) {
                 if (newValue) {

@@ -12,30 +12,15 @@ public interface ModuleToggleListener {
         public static final int ID = 28;
 
         public final AbstractModule module;
-        private boolean active;
-
-        private boolean isDirty;
+        public boolean active;
 
         public ModuleToggleEvent(final AbstractModule module, final boolean active) {
             this.module = module;
             this.active = active;
         }
 
-        public boolean isActive() {
-            return active;
-        }
-
         public boolean wasActive() {
             return !active;
-        }
-
-        public void setActive(final boolean active) {
-            this.active = active;
-            this.isDirty = true;
-        }
-
-        public boolean isDirty() {
-            return isDirty;
         }
 
         @Override
