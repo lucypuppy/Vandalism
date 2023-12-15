@@ -1,23 +1,41 @@
 package de.nekosarekawaii.vandalism.base.event.mod;
 
-import de.florianmichael.dietrichevents2.CancellableEvent;
+import de.florianmichael.dietrichevents2.AbstractEvent;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 
 public interface ModuleToggleListener {
 
     void onModuleToggle(final ModuleToggleEvent event);
 
-    class ModuleToggleEvent extends CancellableEvent<ModuleToggleListener> {
+    class ModuleToggleEvent extends AbstractEvent<ModuleToggleListener> {
 
         public static final int ID = 28;
 
         public final AbstractModule module;
-        public final boolean wasActive, willBeActive;
+        private boolean active;
 
-        public ModuleToggleEvent(final AbstractModule module, final boolean wasActive, final boolean willBeActive) {
+        private boolean isDirty;
+
+        public ModuleToggleEvent(final AbstractModule module, final boolean active) {
             this.module = module;
-            this.wasActive = wasActive;
-            this.willBeActive = willBeActive;
+            this.active = active;
+        }
+
+        public boolean isActive() {
+            return active;
+        }
+
+        public boolean wasActive() {
+            return !active;
+        }
+
+        public void setActive(final boolean active) {
+            this.active = active;
+            this.isDirty = true;
+        }
+
+        public boolean isDirty() {
+            return isDirty;
         }
 
         @Override

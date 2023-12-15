@@ -40,30 +40,23 @@ public abstract class AbstractModule extends Feature implements ValueParent {
                 "Whether this module is active.",
                 false
         ).onValueChange((oldValue, newValue) -> {
-            final ModuleToggleListener.ModuleToggleEvent moduleToggleEvent = new ModuleToggleListener.ModuleToggleEvent(
-                    this,
-                    oldValue,
-                    newValue
-            );
-            DietrichEvents2.global().postInternal(ModuleToggleListener.ModuleToggleEvent.ID, moduleToggleEvent);
-            if (moduleToggleEvent.isCancelled()) {
-                return false;
+            final var event = new ModuleToggleListener.ModuleToggleEvent(this, newValue);
+            DietrichEvents2.global().postInternal(ModuleToggleListener.ModuleToggleEvent.ID, event);
+            if (event.isDirty()) {
+                newValue = event.isActive();
             }
+
             if (oldValue != newValue) {
                 if (newValue) {
                     this.onEnable();
                 } else {
                     this.onDisable();
                 }
-                if (Vandalism.getInstance().getClientSettings().getMenuSettings().moduleStateLogging.getValue()) {
-                    if (this.mc.player != null) {
-                        ChatUtil.infoChatMessage(this.getName() + " has been " + (newValue ? "enabled" : "disabled") + ".");
-                    }
+                if (Vandalism.getInstance().getClientSettings().getMenuSettings().moduleStateLogging.getValue() && this.mc.player != null) {
+                    ChatUtil.infoChatMessage(this.getName() + " has been " + (newValue ? "enabled" : "disabled") + ".");
                 }
                 this.recursiveUpdateActiveState(newValue, this.values);
-                return newValue;
             }
-            return oldValue;
         });
         this.favorite = new BooleanValue(
                 this,
