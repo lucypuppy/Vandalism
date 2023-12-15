@@ -130,6 +130,14 @@ public abstract class AbstractModule extends Feature implements ValueParent {
         return keyBind;
     }
 
+    public boolean isDisableOnQuit() {
+        return disableOnQuit;
+    }
+
+    public boolean isDisableOnShutdown() {
+        return disableOnShutdown;
+    }
+
     /**
      * Recursively updates the active state of all module modes and their values.
      *

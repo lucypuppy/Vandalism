@@ -6,6 +6,9 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.base.event.game.KeyboardInputListener;
+import de.nekosarekawaii.vandalism.base.event.game.ShutdownProcessListener;
+import de.nekosarekawaii.vandalism.base.event.network.DisconnectListener;
+import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.gui.ModulesClientMenuWindow;
 import de.nekosarekawaii.vandalism.feature.module.impl.combat.BowSpammerModule;
@@ -15,13 +18,15 @@ import de.nekosarekawaii.vandalism.feature.module.impl.exploit.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.render.*;
-import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import net.minecraft.network.ClientConnection;
+import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
+import java.util.Objects;
 
-public class ModuleManager extends NamedStorage<AbstractModule> implements KeyboardInputListener, MinecraftWrapper {
+public class ModuleManager extends NamedStorage<AbstractModule> implements KeyboardInputListener, ShutdownProcessListener, DisconnectListener, MinecraftWrapper {
 
     private final ConfigManager configManager;
 
@@ -40,6 +45,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
         clientMenuManager.add(new ModulesClientMenuWindow());
 
         DietrichEvents2.global().subscribe(KeyboardInputEvent.ID, this);
+        DietrichEvents2.global().subscribe(ShutdownProcessEvent.ID, this);
+        DietrichEvents2.global().subscribe(DisconnectEvent.ID, this);
     }
 
     @Override
@@ -99,6 +106,26 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
         for (final AbstractModule module : Vandalism.getInstance().getModuleManager().getList()) {
             if (module.getKeyBind().getValue() == key) {
                 module.toggle();
+            }
+        }
+    }
+
+    @Override
+    public void onShutdownProcess() {
+        for (AbstractModule module : getList()) {
+            if (module.isActive() && module.isDisableOnShutdown()) {
+                module.toggle();
+            }
+        }
+    }
+
+    @Override
+    public void onDisconnect(ClientConnection clientConnection, Text disconnectReason) {
+        if (Objects.equals(clientConnection, mc.getNetworkHandler().getConnection())) { // There is a thing called pinging a server
+            for (AbstractModule module : getList()) {
+                if (module.isActive() && module.isDisableOnQuit()) {
+                    module.toggle();
+                }
             }
         }
     }
