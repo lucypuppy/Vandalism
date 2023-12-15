@@ -18,7 +18,7 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
 
     private final String name;
     private final List<Value<?>> values;
-    private final BooleanValue enabled;
+    private final BooleanValue active;
     public boolean shouldSave;
     private boolean dragged;
     private final int defaultX, defaultY;
@@ -29,10 +29,10 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
     protected HUDElement(final String name, final int defaultX, final int defaultY) {
         this.name = name;
         this.values = new ArrayList<>();
-        this.enabled = new BooleanValue(
+        this.active = new BooleanValue(
                 this,
                 "Enabled",
-                "Whether this HUD element is enabled.",
+                "Whether this HUD element is active.",
                 true
         );
 
@@ -94,7 +94,7 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
             final DrawContext context,
             final float delta
     ) {
-        if (!this.isEnabled()) {
+        if (!this.isActive()) {
             RenderSystem.setShaderColor(0.5F, 0.5F, 0.5F, 0.9F);
         }
 
@@ -151,8 +151,8 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
     }
 
-    public boolean isEnabled() {
-        return this.enabled.getValue();
+    public boolean isActive() {
+        return this.active.getValue();
     }
 
     @Override
