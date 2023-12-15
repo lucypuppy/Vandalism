@@ -35,7 +35,7 @@ import java.util.zip.ZipOutputStream;
 public abstract class MixinServerResourcePackProvider implements MinecraftWrapper {
 
     @Redirect(method = "method_4634", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;execute(Ljava/lang/Runnable;)V"))
-    private void vandalism$moreResourcePackOptionsDump1(final MinecraftClient instance, final Runnable runnable) {
+    private void moreResourcePackOptionsDump1(final MinecraftClient instance, final Runnable runnable) {
         if (Vandalism.getInstance().getClientSettings().getMenuSettings().moreResourcePackOptions.getValue() && CustomRPConfirmScreen.dump) {
             return;
         }
@@ -122,7 +122,7 @@ public abstract class MixinServerResourcePackProvider implements MinecraftWrappe
     }
 
     @Inject(method = "verifyFile", at = @At("HEAD"), cancellable = true)
-    private void vandalism$moreResourcePackOptionsSkipDownload2(final String expectedSha1, final File file, final CallbackInfoReturnable<Boolean> cir) {
+    private void moreResourcePackOptionsSkipDownload2(final String expectedSha1, final File file, final CallbackInfoReturnable<Boolean> cir) {
         if (Vandalism.getInstance().getClientSettings().getMenuSettings().moreResourcePackOptions.getValue() && CustomRPConfirmScreen.skipDownload) {
             cir.setReturnValue(true);
         }

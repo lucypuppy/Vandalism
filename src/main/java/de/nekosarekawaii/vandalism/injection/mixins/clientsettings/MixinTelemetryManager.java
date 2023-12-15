@@ -25,14 +25,14 @@ public abstract class MixinTelemetryManager {
     private PropertyMap propertyMap;
 
     @Inject(method = "<init>", at = @At(value = "FIELD", target = "Lnet/minecraft/client/session/telemetry/TelemetryManager;propertyMap:Lnet/minecraft/client/session/telemetry/PropertyMap;"))
-    private void vandalism$antiTelemetry1(final MinecraftClient client, final UserApiService userApi, final Session session, final CallbackInfo ci) {
+    private void antiTelemetry(final MinecraftClient client, final UserApiService userApi, final Session session, final CallbackInfo ci) {
         if (Vandalism.getInstance().getClientSettings().getNetworkingSettings().antiTelemetry.getValue()) {
             this.propertyMap = PropertyMap.builder().build();
         }
     }
 
     @Inject(method = "getSender", at = @At("RETURN"), cancellable = true)
-    private void vandalism$antiTelemetry2(final CallbackInfoReturnable<TelemetrySender> cir) {
+    private void antiTelemetry(final CallbackInfoReturnable<TelemetrySender> cir) {
         if (Vandalism.getInstance().getClientSettings().getNetworkingSettings().antiTelemetry.getValue()) {
             cir.setReturnValue(TelemetrySender.NOOP);
         }

@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinSharedConstants {
 
     @Inject(method = "isValidChar", at = @At("RETURN"), cancellable = true)
-    private static void vandalism$allowColorChar(final char chr, final CallbackInfoReturnable<Boolean> cir) {
+    private static void allowColorChar(final char chr, final CallbackInfoReturnable<Boolean> cir) {
         if (Vandalism.getInstance().getClientSettings().getChatSettings().allowColorChar.getValue()) {
             if (chr == Formatting.FORMATTING_CODE_PREFIX) {
                 cir.setReturnValue(true);

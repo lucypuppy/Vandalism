@@ -28,7 +28,7 @@ public abstract class MixinDownloadingTerrainScreen extends Screen {
     }
 
     @Inject(method = "render", at = @At("RETURN"))
-    private void vandalism$renderEscapingText(final DrawContext context, final int mouseX, final int mouseY, final float delta, final CallbackInfo ci) {
+    private void renderEscapingText(final DrawContext context, final int mouseX, final int mouseY, final float delta, final CallbackInfo ci) {
         if (Vandalism.getInstance().getClientSettings().getMenuSettings().downloadingTerrainScreenEscaping.getValue()) {
             context.drawCenteredTextWithShadow(this.textRenderer, vandalism$CANCEL_MESSAGE, this.width / 2, this.height / 2 - 50 + this.textRenderer.fontHeight, 0xFFFFFF);
         }

@@ -26,12 +26,12 @@ public abstract class MixinMinecraftClient {
     private boolean vandalism$selfCall = false;
 
     @Inject(method = "tick", at = @At(value = "HEAD"))
-    private void vandalism$callTickEvent(final CallbackInfo ci) {
+    private void callTickGameListener(final CallbackInfo ci) {
         DietrichEvents2.global().postInternal(TickGameListener.TickGameEvent.ID, new TickGameListener.TickGameEvent());
     }
 
     @Inject(method = "setScreen", at = @At(value = "HEAD"), cancellable = true)
-    private void vandalism$callOpenScreenEvent(Screen screen, final CallbackInfo ci) {
+    private void callScreenListener(Screen screen, final CallbackInfo ci) {
         if (vandalism$selfCall) {
             vandalism$selfCall = false;
             return;
@@ -48,17 +48,17 @@ public abstract class MixinMinecraftClient {
     }
 
     @Inject(method = "setWorld", at = @At("HEAD"))
-    private void vandalism$callPreWorldLoadEvent(final ClientWorld world, final CallbackInfo ci) {
+    private void callWorldListener_Pre(final ClientWorld world, final CallbackInfo ci) {
         DietrichEvents2.global().postInternal(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent(WorldListener.WorldEventState.PRE));
     }
 
     @Inject(method = "setWorld", at = @At("RETURN"))
-    private void vandalism$callPostWorldLoadEvent(final ClientWorld world, final CallbackInfo ci) {
+    private void callWorldListener_Post(final ClientWorld world, final CallbackInfo ci) {
         DietrichEvents2.global().postInternal(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent(WorldListener.WorldEventState.POST));
     }
 
     @Inject(method = "onResolutionChanged", at = @At("RETURN"))
-    public void vandalism$callScreenEvent(final CallbackInfo ci) {
+    public void callScreenListener(final CallbackInfo ci) {
         DietrichEvents2.global().postInternal(ScreenListener.ScreenEvent.ID, new ScreenListener.ScreenEvent());
     }
 

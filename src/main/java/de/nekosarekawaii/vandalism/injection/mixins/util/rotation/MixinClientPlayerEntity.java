@@ -11,17 +11,23 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public abstract class MixinClientPlayerEntity {
 
     @Redirect(method = {"sendMovementPackets", "tick"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getYaw()F"))
-    private float vandalism$modifyRotationYaw(final ClientPlayerEntity instance) {
+    private float modifyRotationYaw(final ClientPlayerEntity instance) {
         final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
-        if (rotation != null) return rotation.getYaw();
-        return instance.getYaw();
+        if (rotation != null) {
+            return rotation.getYaw();
+        } else {
+            return instance.getYaw();
+        }
     }
 
     @Redirect(method = {"sendMovementPackets", "tick"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getPitch()F"))
-    private float vandalism$modifyRotationPitch(final ClientPlayerEntity instance) {
+    private float modifyRotationPitch(final ClientPlayerEntity instance) {
         final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
-        if (rotation != null) return rotation.getPitch();
-        return instance.getPitch();
+        if (rotation != null) {
+            return rotation.getPitch();
+        } else {
+            return instance.getPitch();
+        }
     }
 
 }

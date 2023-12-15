@@ -24,7 +24,7 @@ public abstract class MixinClientWorld {
     private static Set<Item> BLOCK_MARKER_ITEMS;
 
     @Inject(method = "getBlockParticle", at = @At(value = "HEAD"), cancellable = true)
-    private void vandalism$trueSightForceRenderMarkerBlocks1(final CallbackInfoReturnable<Block> cir) {
+    private void hookTrueSight(final CallbackInfoReturnable<Block> cir) {
         final TrueSightModule trueSightModule = Vandalism.getInstance().getModuleManager().getTrueSightModule();
         if (trueSightModule.isActive() && trueSightModule.blocks.getValue()) {
             cir.setReturnValue(null);
@@ -32,7 +32,7 @@ public abstract class MixinClientWorld {
     }
 
     @Redirect(method = "randomBlockDisplayTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;", ordinal = 1))
-    private Block vandalism$trueSightForceRenderMarkerBlocks2(final BlockState instance) {
+    private Block hookTrueSight(final BlockState instance) {
         final TrueSightModule trueSightModule = Vandalism.getInstance().getModuleManager().getTrueSightModule();
         if (trueSightModule.isActive() && trueSightModule.blocks.getValue()) {
             if (BLOCK_MARKER_ITEMS.contains(Item.fromBlock(instance.getBlock()))) {

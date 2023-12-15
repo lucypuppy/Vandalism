@@ -13,16 +13,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinKeyboardInput extends Input {
 
     @Inject(method = "tick", at = @At("RETURN"))
-    private void vandalism$callMoveInputEvent(final boolean slowDown, final float slowDownFactor, final CallbackInfo ci) {
-        final MoveInputListener.MoveInputEvent moveInputEvent = new MoveInputListener.MoveInputEvent(
-                this.movementForward,
-                this.movementSideways,
-                slowDown,
-                slowDownFactor
-        );
-        DietrichEvents2.global().postInternal(MoveInputListener.MoveInputEvent.ID, moveInputEvent);
-        this.movementForward = moveInputEvent.movementForward;
-        this.movementSideways = moveInputEvent.movementSideways;
+    private void callMoveInputListener(final boolean slowDown, final float slowDownFactor, final CallbackInfo ci) {
+        final var event = new MoveInputListener.MoveInputEvent(this.movementForward, this.movementSideways, slowDown, slowDownFactor);
+        DietrichEvents2.global().postInternal(MoveInputListener.MoveInputEvent.ID, event);
+
+        this.movementForward = event.movementForward;
+        this.movementSideways = event.movementSideways;
     }
 
 }

@@ -25,16 +25,16 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
     public abstract Text getPlayerName(final PlayerListEntry entry);
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V", ordinal = 2))
-    private void vandalism$cancelRenderFill(final DrawContext instance, final int x1, final int y1, final int x2, final int y2, final int color) {
+    private void cancelRenderFill(final DrawContext instance, final int x1, final int y1, final int x2, final int y2, final int color) {
     }
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;III)I"))
-    private int vandalism$cancelDrawTextWithShadow(final DrawContext instance, final TextRenderer textRenderer, final Text text, final int x, final int y, final int color) {
+    private int cancelDrawTextWithShadow(final DrawContext instance, final TextRenderer textRenderer, final Text text, final int x, final int y, final int color) {
         return x;
     }
 
     @ModifyConstant(constant = @Constant(longValue = 80L), method = "collectPlayerEntries")
-    private long vandalism$betterTabListTabSize(final long count) {
+    private long hookBetterTabListModule(final long count) {
         final BetterTabListModule betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
         return betterTabListModule.isActive() ? betterTabListModule.tabSize.getValue() : count;
     }
@@ -43,13 +43,13 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
     private static final float vandalism$SCALE = 0.5f;
 
     @ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Ljava/lang/Math;min(II)I"), index = 0)
-    private int vandalism$betterTabListMoreInfoScale(final int width) {
+    private int hookBetterTabListModule(final int width) {
         final BetterTabListModule betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
         return betterTabListModule.isActive() && betterTabListModule.moreInfo.getValue() ? (int) (width + (vandalism$SCALE * 30)) : width;
     }
 
     @Inject(method = "renderLatencyIcon", at = @At("HEAD"), cancellable = true)
-    private void vandalism$betterTabListApplyAdditionalInfo(final DrawContext context, final int width, final int x, final int y, final PlayerListEntry entry, final CallbackInfo ci) {
+    private void hookBetterTabListModule(final DrawContext context, final int width, final int x, final int y, final PlayerListEntry entry, final CallbackInfo ci) {
         final int a = this.mc.isInSingleplayer() || (this.mc.getNetworkHandler() != null && this.mc.getNetworkHandler().getConnection().isEncrypted()) ? 9 : 0, w = x + a;
         final BetterTabListModule betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
         final int color;

@@ -21,7 +21,7 @@ public abstract class MixinImGuiImplGlfw implements IImGuiImplGlfw, MinecraftWra
     private long[] mouseCursors;
 
     @Inject(method = "charCallback", at = @At(value = "INVOKE", target = "Limgui/ImGui;getIO()Limgui/ImGuiIO;", shift = At.Shift.BEFORE), cancellable = true)
-    public void vandalism$cancelCharCallback(final long windowId, final int c, final CallbackInfo ci) {
+    public void cancelCharCallback(final long windowId, final int c, final CallbackInfo ci) {
         if (!(this.mc.currentScreen instanceof ClientMenuScreen)) {
             ci.cancel();
         }

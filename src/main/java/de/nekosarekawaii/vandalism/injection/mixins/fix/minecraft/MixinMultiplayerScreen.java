@@ -23,7 +23,7 @@ public abstract class MixinMultiplayerScreen extends Screen implements Minecraft
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
-    private void vandalism$fixInvalidParentScreen(final CallbackInfo ci) {
+    private void fixInvalidParentScreen(final CallbackInfo ci) {
         if (this.parent instanceof GameMenuScreen && this.mc.player == null) {
             this.parent = new TitleScreen();
         }

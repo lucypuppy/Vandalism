@@ -35,7 +35,7 @@ public abstract class MixinCommandDispatcher<S> {
     private RootCommandNode<S> root;
 
     @Redirect(method = "parse(Lcom/mojang/brigadier/StringReader;Ljava/lang/Object;)Lcom/mojang/brigadier/ParseResults;", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;parseNodes(Lcom/mojang/brigadier/tree/CommandNode;Lcom/mojang/brigadier/StringReader;Lcom/mojang/brigadier/context/CommandContextBuilder;)Lcom/mojang/brigadier/ParseResults;"))
-    private ParseResults<S> vandalism$exploitFixerBlockBrigadierStackOverflowCrash(final CommandDispatcher<S> instance, final CommandNode<S> ex, final StringReader command, final CommandContextBuilder<S> context) {
+    private ParseResults<S> hookExploitFixer(final CommandDispatcher<S> instance, final CommandNode<S> ex, final StringReader command, final CommandContextBuilder<S> context) {
         final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
         if (exploitFixerModule.isActive() && exploitFixerModule.blockBrigadierStackOverflowCrash.getValue()) {
             try {

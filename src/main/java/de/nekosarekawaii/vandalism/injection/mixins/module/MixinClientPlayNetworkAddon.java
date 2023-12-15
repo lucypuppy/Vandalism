@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinClientPlayNetworkAddon {
 
     @Inject(method = { "invokeRegisterEvent", "invokeUnregisterEvent", "handleRegistration", "handleUnregistration", "onServerReady" }, at = @At("HEAD"), cancellable = true)
-    private void vandalism$modPacketBlockerFabric(final CallbackInfo ci) {
+    private void hookModPacketBlocker(final CallbackInfo ci) {
         final ModPacketBlockerModule modPacketBlockerModule = Vandalism.getInstance().getModuleManager().getModPacketBlockerModule();
         if (modPacketBlockerModule.isActive() && modPacketBlockerModule.unloadFabricAPICallbacks.getValue()) {
             ci.cancel();

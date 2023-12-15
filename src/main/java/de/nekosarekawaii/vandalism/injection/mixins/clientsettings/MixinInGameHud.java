@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class MixinInGameHud {
 
     @WrapWithCondition(method = "clear", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;clear(Z)V"))
-    private boolean vandalism$dontClearChatHistory(ChatHud instance, boolean clearHistory) {
+    private boolean dontClearChatHistory(ChatHud instance, boolean clearHistory) {
         return !Vandalism.getInstance().getClientSettings().getChatSettings().dontClearChatHistory.getValue();
     }
 

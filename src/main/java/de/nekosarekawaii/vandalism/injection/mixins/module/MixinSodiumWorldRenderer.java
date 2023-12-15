@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinSodiumWorldRenderer {
 
     @Inject(method = "isEntityVisible", at = @At(value = "INVOKE", target = "Lme/jellysquid/mods/sodium/client/render/SodiumWorldRenderer;isBoxVisible(DDDDDD)Z", shift = At.Shift.BEFORE), cancellable = true)
-    private void vandalism$visualThrottleFixSodiumCrash(final Entity entity, final CallbackInfoReturnable<Boolean> cir) {
+    private void hookVisualThrottle(final Entity entity, final CallbackInfoReturnable<Boolean> cir) {
         final VisualThrottleModule visualThrottleModule = Vandalism.getInstance().getModuleManager().getVisualThrottleModule();
         if (visualThrottleModule.isActive()) {
             if (entity.getVisibilityBoundingBox().getAverageSideLength() > visualThrottleModule.minSodiumEntityAverageSideLength.getValue()) {

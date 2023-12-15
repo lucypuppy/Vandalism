@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinConnectScreen {
 
     @Inject(method = "connect(Lnet/minecraft/client/gui/screen/Screen;Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/network/ServerAddress;Lnet/minecraft/client/network/ServerInfo;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ConnectScreen;connect(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/network/ServerAddress;Lnet/minecraft/client/network/ServerInfo;)V"))
-    private static void vandalism$syncLastServerInfo(final Screen screen, final MinecraftClient client, final ServerAddress address, final ServerInfo info, final boolean quickPlay, final CallbackInfo ci) {
+    private static void syncLastServerInfo(final Screen screen, final MinecraftClient client, final ServerAddress address, final ServerInfo info, final boolean quickPlay, final CallbackInfo ci) {
         ServerUtil.setLastServerInfo(info);
     }
 

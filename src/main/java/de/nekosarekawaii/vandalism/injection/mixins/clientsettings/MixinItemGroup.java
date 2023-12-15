@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinItemGroup {
 
     @Inject(method = "shouldDisplay", at = @At("HEAD"), cancellable = true)
-    private void vandalism$alwaysDisplayCreativeTab(final CallbackInfoReturnable<Boolean> cir) {
+    private void alwaysDisplayCreativeTab(final CallbackInfoReturnable<Boolean> cir) {
         if (Vandalism.getInstance().getClientSettings().getMenuSettings().alwaysDisplayCreativeTab.getValue()) {
             cir.setReturnValue(true);
         }

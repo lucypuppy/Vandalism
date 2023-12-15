@@ -13,17 +13,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinScreen {
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;renderBackground(Lnet/minecraft/client/gui/DrawContext;IIF)V", shift = At.Shift.BEFORE))
-    private void vandalism$callPreOutGameRender2DEvent(final DrawContext context, final int mouseX, final int mouseY, final float delta, final CallbackInfo ci) {
-        context.getMatrices().push();
+    private void callRender2DListener_Pre(final DrawContext context, final int mouseX, final int mouseY, final float delta, final CallbackInfo ci) {
         DietrichEvents2.global().postInternal(Render2DListener.Render2DEvent.ID, new Render2DListener.Render2DEvent(context, mouseX, mouseY, delta, false));
-        context.getMatrices().pop();
     }
 
     @Inject(method = "render", at = @At(value = "RETURN"))
-    private void vandalism$callPostOutGameRender2DEvent(final DrawContext context, final int mouseX, final int mouseY, final float delta, final CallbackInfo ci) {
-        context.getMatrices().push();
+    private void callRender2DListener_Post(final DrawContext context, final int mouseX, final int mouseY, final float delta, final CallbackInfo ci) {
         DietrichEvents2.global().postInternal(Render2DListener.Render2DEvent.ID, new Render2DListener.Render2DEvent(context, mouseX, mouseY, delta, true));
-        context.getMatrices().pop();
     }
 
 }

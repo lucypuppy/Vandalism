@@ -30,7 +30,7 @@ public abstract class MixinGameMenuScreen extends Screen {
     }
 
     @Inject(method = "createUrlButton", at = @At(value = "HEAD"), cancellable = true)
-    private void vandalism$addMoreButtons(final Text text, final String url, final CallbackInfoReturnable<ButtonWidget> cir) {
+    private void addMoreButtons(final Text text, final String url, final CallbackInfoReturnable<ButtonWidget> cir) {
         if (!Vandalism.getInstance().getClientSettings().getMenuSettings().replaceGameMenuScreenButtons.getValue()) {
             return;
         }

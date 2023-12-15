@@ -35,7 +35,7 @@ public abstract class MixinDisconnectedScreen extends Screen {
     }
 
     @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/DirectionalLayoutWidget;add(Lnet/minecraft/client/gui/widget/Widget;)Lnet/minecraft/client/gui/widget/Widget;", ordinal = 2))
-    private <T extends Widget> T vandalism$addMoreButtons(final DirectionalLayoutWidget instance, final T widget) {
+    private <T extends Widget> T addMoreButtons(final DirectionalLayoutWidget instance, final T widget) {
         instance.add(widget);
         if (Vandalism.getInstance().getClientSettings().getMenuSettings().moreDisconnectedScreenButtons.getValue()) {
             final Positioner positioner = instance.getMainPositioner().copy().marginTop(-8);

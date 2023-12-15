@@ -16,7 +16,8 @@ public abstract class MixinRenderTickCounter {
     public float lastFrameDuration;
 
     @Inject(method = "beginRenderTick", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/RenderTickCounter;prevTimeMillis:J", opcode = Opcodes.PUTFIELD))
-    private void vandalism$beginRenderTick(final long timeMillis, final CallbackInfoReturnable<Integer> info) {
+    private void beginRenderTick(final long timeMillis, final CallbackInfoReturnable<Integer> info) {
         this.lastFrameDuration *= TimerHack.getSpeed();
     }
+
 }

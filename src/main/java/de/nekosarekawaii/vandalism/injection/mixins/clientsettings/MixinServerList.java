@@ -22,6 +22,37 @@ public abstract class MixinServerList {
     @Final
     private List<ServerInfo> servers;
 
+    @Inject(method = "loadFile", at = @At(value = "RETURN"))
+    private void enhancedServerListSyncServerListSizeOnLoad(final CallbackInfo ci) {
+        this.vandalism$enhancedServerListSyncServerList();
+    }
+
+    @Inject(method = "saveFile", at = @At(value = "RETURN"))
+    private void enhancedServerListUpdateServerListSizeOnSave(final CallbackInfo ci) {
+        this.vandalism$enhancedServerListSyncServerList();
+    }
+
+    @ModifyArgs(method = "loadFile", at = @At(value = "INVOKE", target = "Ljava/io/File;<init>(Ljava/io/File;Ljava/lang/String;)V"))
+    private void enhancedServerListChangeLoadFileName(final Args args) {
+        args.set(1, this.vandalism$enhancedServerListGetSelectedServerListName() + ".dat");
+    }
+
+    @ModifyArgs(method = "saveFile", at = @At(value = "INVOKE", target = "Ljava/io/File;createTempFile(Ljava/lang/String;Ljava/lang/String;Ljava/io/File;)Ljava/io/File;"))
+    private void enhancedServerListChangeTempSaveFileName(final Args args) {
+        args.set(0, this.vandalism$enhancedServerListGetSelectedServerListName());
+    }
+
+    @ModifyArgs(method = "saveFile", at = @At(value = "INVOKE", target = "Ljava/io/File;<init>(Ljava/io/File;Ljava/lang/String;)V", ordinal = 0))
+    private void enhancedServerListChangeOldSaveFileName(final Args args) {
+        args.set(1, this.vandalism$enhancedServerListGetSelectedServerListName() + ".dat_old");
+    }
+
+    @ModifyArgs(method = "saveFile", at = @At(value = "INVOKE", target = "Ljava/io/File;<init>(Ljava/io/File;Ljava/lang/String;)V", ordinal = 1))
+    private void enhancedServerListChangeSaveFileName(final Args args) {
+        args.set(1, this.vandalism$enhancedServerListGetSelectedServerListName() + ".dat");
+    }
+
+
     @Unique
     private String vandalism$enhancedServerListGetSelectedServerListName() {
         return Vandalism.getInstance().getServerListManager().getSelectedServerList().getName();
@@ -31,36 +62,6 @@ public abstract class MixinServerList {
     private void vandalism$enhancedServerListSyncServerList() {
         Vandalism.getInstance().getServerListManager().get(this.vandalism$enhancedServerListGetSelectedServerListName()).setSize(this.servers.size());
         Vandalism.getInstance().getServerListManager().saveConfig();
-    }
-
-    @Inject(method = "loadFile", at = @At(value = "RETURN"))
-    private void vandalism$enhancedServerListSyncServerListSizeOnLoad(final CallbackInfo ci) {
-        this.vandalism$enhancedServerListSyncServerList();
-    }
-
-    @Inject(method = "saveFile", at = @At(value = "RETURN"))
-    private void vandalism$enhancedServerListUpdateServerListSizeOnSave(final CallbackInfo ci) {
-        this.vandalism$enhancedServerListSyncServerList();
-    }
-
-    @ModifyArgs(method = "loadFile", at = @At(value = "INVOKE", target = "Ljava/io/File;<init>(Ljava/io/File;Ljava/lang/String;)V"))
-    private void vandalism$enhancedServerListChangeLoadFileName(final Args args) {
-        args.set(1, this.vandalism$enhancedServerListGetSelectedServerListName() + ".dat");
-    }
-
-    @ModifyArgs(method = "saveFile", at = @At(value = "INVOKE", target = "Ljava/io/File;createTempFile(Ljava/lang/String;Ljava/lang/String;Ljava/io/File;)Ljava/io/File;"))
-    private void vandalism$enhancedServerListChangeTempSaveFileName(final Args args) {
-        args.set(0, this.vandalism$enhancedServerListGetSelectedServerListName());
-    }
-
-    @ModifyArgs(method = "saveFile", at = @At(value = "INVOKE", target = "Ljava/io/File;<init>(Ljava/io/File;Ljava/lang/String;)V", ordinal = 0))
-    private void vandalism$enhancedServerListChangeOldSaveFileName(final Args args) {
-        args.set(1, this.vandalism$enhancedServerListGetSelectedServerListName() + ".dat_old");
-    }
-
-    @ModifyArgs(method = "saveFile", at = @At(value = "INVOKE", target = "Ljava/io/File;<init>(Ljava/io/File;Ljava/lang/String;)V", ordinal = 1))
-    private void vandalism$enhancedServerListChangeSaveFileName(final Args args) {
-        args.set(1, this.vandalism$enhancedServerListGetSelectedServerListName() + ".dat");
     }
 
 }

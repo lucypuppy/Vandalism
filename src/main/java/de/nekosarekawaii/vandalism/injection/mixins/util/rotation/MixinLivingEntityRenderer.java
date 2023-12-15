@@ -19,28 +19,31 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Objects;
+
 @Mixin(LivingEntityRenderer.class)
 public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extends EntityModel<T>> extends EntityRenderer<T> implements FeatureRendererContext<T, M>, MinecraftWrapper {
 
     @Unique
-    private float vandalism$rotationPitch;
+    private Float vandalism$rotationPitch;
 
     protected MixinLivingEntityRenderer(final EntityRendererFactory.Context ignored) {
         super(ignored);
     }
 
     @Inject(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "HEAD"))
-    private void vandalism$initRenderedModRotationPitch(final T livingEntity, final float yaw, final float tickDelta, final MatrixStack matrixStack, final VertexConsumerProvider vertexConsumerProvider, final int light, final CallbackInfo ci) {
-        this.vandalism$rotationPitch = Float.NaN;
-        final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
-        if (livingEntity != this.mc.player || rotation == null) return;
+    private void initRenderedModRotationPitch(final T livingEntity, final float yaw, final float tickDelta, final MatrixStack matrixStack, final VertexConsumerProvider vertexConsumerProvider, final int light, final CallbackInfo ci) {
+        final var rotation = Vandalism.getInstance().getRotationListener().getRotation();
+        if (livingEntity != this.mc.player || rotation == null) {
+            return;
+        }
+
         this.vandalism$rotationPitch = rotation.getPitch();
     }
 
     @Redirect(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/MathHelper;lerp(FFF)F"))
-    private float vandalism$setRenderedModRotationPitch(final float tickDelta, final float prevPitch, final float pitch) {
-        if (!Float.isNaN(this.vandalism$rotationPitch)) return this.vandalism$rotationPitch;
-        return MathHelper.lerp(tickDelta, prevPitch, pitch);
+    private float setRenderedModRotationPitch(final float tickDelta, final float prevPitch, final float pitch) {
+        return Objects.requireNonNullElseGet(this.vandalism$rotationPitch, () -> MathHelper.lerp(tickDelta, prevPitch, pitch));
     }
 
 }

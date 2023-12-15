@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinMinecraftClient {
 
     @Inject(method = "render", at = @At("HEAD"))
-    public void vandalism$onDrawFrame(final boolean tick, final CallbackInfo ci) {
+    public void onDrawFrame(final boolean tick, final CallbackInfo ci) {
         RenderUtil.drawFrame();
     }
 

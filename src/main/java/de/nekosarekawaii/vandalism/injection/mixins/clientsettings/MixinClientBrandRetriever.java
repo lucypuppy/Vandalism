@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinClientBrandRetriever {
 
     @Inject(method = "getClientModName", at = @At("HEAD"), cancellable = true, remap = false)
-    private static void vandalism$changeBrand(final CallbackInfoReturnable<String> cir) {
+    private static void changeBrand(final CallbackInfoReturnable<String> cir) {
         if (Vandalism.getInstance() != null && Vandalism.getInstance().getConfigManager() != null && Vandalism.getInstance().getClientSettings() != null && Vandalism.getInstance().getClientSettings().getNetworkingSettings().changeBrand.getValue()) {
             cir.setReturnValue(Vandalism.getInstance().getClientSettings().getNetworkingSettings().brand.getValue());
         }

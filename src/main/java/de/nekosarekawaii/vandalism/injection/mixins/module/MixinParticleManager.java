@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinParticleManager {
 
     @Redirect(method = "createParticle", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/particle/ParticleFactory;createParticle(Lnet/minecraft/particle/ParticleEffect;Lnet/minecraft/client/world/ClientWorld;DDDDDD)Lnet/minecraft/client/particle/Particle;"))
-    private @Nullable Particle vandalism$visualThrottleBlockTooManyParticles1(final ParticleFactory<ParticleEffect> particleFactory, final ParticleEffect parameters, final ClientWorld world, final double x, final double y, final double z, final double velocityX, final double velocityY, final double velocityZ) {
+    private @Nullable Particle hookVisualThrottle(final ParticleFactory<ParticleEffect> particleFactory, final ParticleEffect parameters, final ClientWorld world, final double x, final double y, final double z, final double velocityX, final double velocityY, final double velocityZ) {
         final VisualThrottleModule visualThrottleModule = Vandalism.getInstance().getModuleManager().getVisualThrottleModule();
         if (visualThrottleModule.isActive() && visualThrottleModule.blockTooManyParticles.getValue()) {
             final String particleId = parameters.asString();
@@ -35,7 +35,7 @@ public abstract class MixinParticleManager {
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
-    private void vandalism$visualThrottleBlockTooManyParticles2(final CallbackInfo ci) {
+    private void hookVisualThrottle(final CallbackInfo ci) {
         final VisualThrottleModule visualThrottleModule = Vandalism.getInstance().getModuleManager().getVisualThrottleModule();
         if (visualThrottleModule.isActive() && visualThrottleModule.blockTooManyParticles.getValue()) {
             for (final ParticleTracker particleTracker : visualThrottleModule.particleTrackerMap.values()) {
@@ -47,7 +47,7 @@ public abstract class MixinParticleManager {
     }
 
     @Inject(method = "clearParticles", at = @At("HEAD"))
-    private void vandalism$visualThrottleBlockTooManyParticles3(final CallbackInfo ci) {
+    private void hookVisualThrottle_Clear(final CallbackInfo ci) {
         Vandalism.getInstance().getModuleManager().getVisualThrottleModule().particleTrackerMap.clear();
     }
 

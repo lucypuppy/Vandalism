@@ -12,8 +12,8 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 public abstract class MixinEntity implements MinecraftWrapper {
 
     @ModifyVariable(method = "getRotationVector(FF)Lnet/minecraft/util/math/Vec3d;", at = @At("HEAD"), ordinal = 1, argsOnly = true)
-    private float vandalism$modifyRotationYaw(final float yaw) {
-        if (this.mc.player == ((Entity) (Object) this)) {
+    private float modifyRotationYaw(final float yaw) {
+        if (this.mc.player == (Object) this) {
             final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
             if (rotation != null) return rotation.getYaw();
         }
@@ -21,8 +21,8 @@ public abstract class MixinEntity implements MinecraftWrapper {
     }
 
     @ModifyVariable(method = "getRotationVector(FF)Lnet/minecraft/util/math/Vec3d;", at = @At("HEAD"), ordinal = 0, argsOnly = true)
-    private float vandalism$modifyRotationPitch(final float pitch) {
-        if (this.mc.player == ((Entity) (Object) this)) {
+    private float modifyRotationPitch(final float pitch) {
+        if (this.mc.player == (Object) this) {
             final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
             if (rotation != null) return rotation.getPitch();
         }

@@ -11,11 +11,10 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public abstract class MixinPlayerEntity implements MinecraftWrapper {
 
     @Redirect(method = "tickNewAi", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;getYaw()F"))
-    private float vandalism$modifyRotationYaw(final PlayerEntity instance) {
-        if (this.mc.player == ((PlayerEntity) (Object) this)) {
-            if (Vandalism.getInstance().getRotationListener().getRotation() != null) {
-                return Vandalism.getInstance().getRotationListener().getRotation().getYaw();
-            }
+    private float modifyRotationYaw(final PlayerEntity instance) {
+        if (this.mc.player == (Object) this) {
+            final var rotation = Vandalism.getInstance().getRotationListener().getRotation();
+            if (rotation != null) return rotation.getYaw();
         }
         return instance.getYaw();
     }

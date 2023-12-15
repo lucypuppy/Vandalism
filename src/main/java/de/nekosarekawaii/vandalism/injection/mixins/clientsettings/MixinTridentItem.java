@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 public abstract class MixinTridentItem {
 
     @ModifyArgs(method = "onStoppedUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;addVelocity(DDD)V"))
-    public void vandalism$customizeRiptideBoostMultipier(final Args args) {
+    public void customizeRiptideBoostMultiplier(final Args args) {
         if (!Vandalism.getInstance().getClientSettings().getMovementSettings().customizeRiptideBoostMultiplier.getValue()) {
             return;
         }

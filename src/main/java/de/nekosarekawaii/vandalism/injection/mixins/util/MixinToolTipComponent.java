@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public interface MixinToolTipComponent {
 
     @Inject(method = "of*", at = @At("HEAD"), cancellable = true)
-    private static void vandalism$applyTooltipComponentToTooltipData(final TooltipData data, final CallbackInfoReturnable<TooltipComponent> cir) {
+    private static void applyTooltipComponentToTooltipData(final TooltipData data, final CallbackInfoReturnable<TooltipComponent> cir) {
         if (data instanceof final ITooltipData tooltipData) {
             cir.setReturnValue(tooltipData.getComponent());
         }
