@@ -33,11 +33,10 @@ public abstract class AbstractCreativeTab {
             }
             entries.addAll(this.TEMP_ITEMS);
         })).build();
-
-        // We need some kind of unique identifier for the item group, so we use the hash code of the name
-        final String id = this.name.getString().toLowerCase().replace(" ", "_");
-
-        Registry.register(Registries.ITEM_GROUP, new Identifier(FabricBootstrap.MOD_ID, id), itemGroup);
+        Registry.register(Registries.ITEM_GROUP, new Identifier(
+                FabricBootstrap.MOD_ID,
+                this.name.getString().toLowerCase().replace(" ", "_")
+        ), itemGroup);
     }
 
 }
