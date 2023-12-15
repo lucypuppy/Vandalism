@@ -68,7 +68,7 @@ public abstract class AbstractTokenBasedAccount extends AbstractAccount {
             return;
         }
 
-        final String response = JSON_REQUESTER.post(this.redeemUrl, "{\"token\":\" " + this.token + " \"}");
+        final String response = JSON_REQUESTER.post(this.redeemUrl, "{\"token\":\"" + this.token + "\"}");
         updateSession(fromResponse(response));
     }
 
