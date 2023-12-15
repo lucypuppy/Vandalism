@@ -9,7 +9,7 @@ import de.nekosarekawaii.vandalism.base.account.type.microsoft.MSCredentialsAcco
 import de.nekosarekawaii.vandalism.base.account.type.microsoft.MSDeviceCodeAccount;
 import de.nekosarekawaii.vandalism.base.account.type.microsoft.MSLocalWebserverAccount;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
-import de.nekosarekawaii.vandalism.gui.ClientMenuManager;
+import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.session.Session;
 

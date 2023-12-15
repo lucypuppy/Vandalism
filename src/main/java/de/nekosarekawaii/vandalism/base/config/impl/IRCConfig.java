@@ -2,7 +2,7 @@ package de.nekosarekawaii.vandalism.base.config.impl;
 
 import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.base.config.AbstractConfig;
-import de.nekosarekawaii.vandalism.gui.impl.irc.IrcClientMenuWindow;
+import de.nekosarekawaii.vandalism.clientmenu.impl.irc.IrcClientMenuWindow;
 import imgui.type.ImString;
 
 import java.util.HashMap;

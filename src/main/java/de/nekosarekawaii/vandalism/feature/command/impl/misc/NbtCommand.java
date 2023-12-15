@@ -6,7 +6,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.feature.command.arguments.NbtCompoundArgumentType;
-import de.nekosarekawaii.vandalism.gui.impl.nbteditor.NbtEditorClientMenuWindow;
+import de.nekosarekawaii.vandalism.clientmenu.impl.nbteditor.NbtEditorClientMenuWindow;
 import de.nekosarekawaii.vandalism.util.minecraft.ChatUtil;
 import de.nekosarekawaii.vandalism.util.minecraft.ItemStackUtil;
 import net.minecraft.command.CommandSource;

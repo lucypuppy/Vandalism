@@ -5,7 +5,7 @@ import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.base.event.game.ScreenListener;
 import de.nekosarekawaii.vandalism.base.event.render.Render2DListener;
-import de.nekosarekawaii.vandalism.gui.ClientMenuManager;
+import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.integration.hud.config.HUDConfig;
 import de.nekosarekawaii.vandalism.integration.hud.gui.HUDClientMenuWindow;
 import de.nekosarekawaii.vandalism.integration.hud.impl.DebugElement;

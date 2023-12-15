@@ -3,7 +3,7 @@ package de.nekosarekawaii.vandalism.base.clientsettings.gui;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
-import de.nekosarekawaii.vandalism.gui.base.ClientMenuWindow;
+import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import imgui.ImGui;
 import net.minecraft.client.gui.DrawContext;
 
