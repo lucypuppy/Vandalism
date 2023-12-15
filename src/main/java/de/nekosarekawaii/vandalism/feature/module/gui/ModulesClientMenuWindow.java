@@ -159,30 +159,33 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
         }
         if (ImGui.beginPopupContextItem(moduleId + "configmenu", ImGuiPopupFlags.MouseButtonRight)) {
             ImGui.text(module.getName() + " Module");
-
             this.renderModuleData(module, moduleId, 400, 300);
             ImGui.endPopup();
         }
     }
 
     private void renderModuleData(final AbstractModule module, final String id, final int width, final int height) {
-        ImGui.separator();
-        this.renderModuleInfo(module);
+        ImGui.sameLine();
+        ImGui.textDisabled("(?)");
+        if (ImGui.isItemHovered()) {
+            ImGui.beginTooltip();
+            this.renderModuleInfo(module);
+            ImGui.endTooltip();
+        }
         ImGui.separator();
         final List<Value<?>> values = module.getValues();
         if (!values.isEmpty()) {
-            ImGui.text("Config");
-            ImGui.separator();
-            if (ImGui.button("Reset config" + id + "resetconfigbutton")) {
-                for (final Value<?> value : values) {
-                    value.resetValue();
-                }
-            }
             if (ImGui.button((this.openedModules.contains(module) ? "Close" : "Open") + " config window" + id + "toggleconfigwindowbutton")) {
                 if (this.openedModules.contains(module)) {
                     this.openedModules.remove(module);
                 } else {
                     this.openedModules.add(module);
+                }
+            }
+            ImGui.sameLine();
+            if (ImGui.button("Reset config" + id + "resetconfigbutton")) {
+                for (final Value<?> value : values) {
+                    value.resetValue();
                 }
             }
             ImGui.pushStyleColor(ImGuiCol.ChildBg, 0.0f, 0.0f, 0.0f, 0.15f);
