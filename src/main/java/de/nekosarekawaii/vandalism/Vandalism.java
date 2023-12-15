@@ -76,6 +76,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     private CreativeTabManager creativeTabManager;
 
     public void printStartup() {
+        this.logger.info("");
         final String[] ASCII_ART = {
                 " ██▒   █▓ ▄▄▄       ███▄    █ ▓█████▄  ▄▄▄       ██▓     ██▓  ██████  ███▄ ▄███▓",
                 "▓██░   █▒▒████▄     ██ ▀█   █ ▒██▀ ██▌▒████▄    ▓██▒    ▓██▒▒██    ▒ ▓██▒▀█▀ ██▒",
@@ -88,14 +89,14 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
                 "      ░        ░  ░         ░    ░          ░  ░    ░  ░ ░        ░         ░   ",
                 "     ░                         ░                                                "
         };
-        final String spacer = "=".repeat(ASCII_ART[0].length() + 15);
-        this.logger.info("");
-        this.logger.info(spacer);
         for (final String line : ASCII_ART) {
             this.logger.info(line);
         }
-        this.logger.info(FabricBootstrap.WINDOW_TITLE.replaceFirst(FabricBootstrap.MOD_NAME, " ".repeat(15)));
-        this.logger.info(spacer);
+        this.logger.info("");
+        this.logger.info("Version: " + FabricBootstrap.MOD_VERSION);
+        this.logger.info("Made by " + FabricBootstrap.MOD_AUTHORS + " with <3");
+        this.logger.info("");
+        this.logger.info("Starting...");
         this.logger.info("");
     }
 
@@ -143,6 +144,10 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
         // We have to load the config files after all systems have been initialized
         this.configManager.init();
+
+        this.logger.info("");
+        this.logger.info("Done!");
+        this.logger.info("");
 
         mc.getWindow().setTitle(FabricBootstrap.WINDOW_TITLE);
     }
