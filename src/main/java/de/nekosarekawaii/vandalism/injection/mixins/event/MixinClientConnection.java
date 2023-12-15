@@ -1,6 +1,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.vandalism.base.event.network.DisconnectListener;
 import de.nekosarekawaii.vandalism.base.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.base.event.network.OutgoingPacketListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -8,6 +9,7 @@ import net.minecraft.network.ClientConnection;
 import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.listener.PacketListener;
 import net.minecraft.network.packet.Packet;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -62,6 +64,12 @@ public abstract class MixinClientConnection {
             vandalism$selfRepeating = true;
             this.sendImmediately(event.packet, callbacks, flush);
         }
+    }
+
+    @Inject(method = "disconnect", at = @At("RETURN"))
+    private void callDisconnectListener(Text disconnectReason, CallbackInfo ci) {
+        DietrichEvents2.global().postInternal(DisconnectListener.DisconnectEvent.ID,
+                new DisconnectListener.DisconnectEvent((ClientConnection) (Object) this, disconnectReason));
     }
 
 }
