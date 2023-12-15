@@ -33,6 +33,9 @@ public abstract class AbstractCreativeTab {
             }
             entries.addAll(this.TEMP_ITEMS);
         })).build();
+
+        // We need some kind of unique identifier for the item group, so we use the hash code of the name
+        // I hate the JVM, I hate Java, I hate everything - let's use C++ instead
         Registry.register(Registries.ITEM_GROUP, new Identifier(FabricBootstrap.MOD_ID, Integer.toString(this.name.hashCode())), itemGroup);
     }
 
