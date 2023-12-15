@@ -121,7 +121,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
 
     @Override
     public void onDisconnect(ClientConnection clientConnection, Text disconnectReason) {
-        if (Objects.equals(clientConnection, mc.getNetworkHandler().getConnection())) { // There is a thing called pinging a server
+        if (mc.getNetworkHandler() != null && Objects.equals(clientConnection, mc.getNetworkHandler().getConnection())) { // There is a thing called pinging a server
             for (AbstractModule module : getList()) {
                 if (module.isActive() && module.isDisableOnQuit()) {
                     module.toggle();
