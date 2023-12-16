@@ -1,6 +1,7 @@
 package de.nekosarekawaii.vandalism.base.value;
 
 import de.florianmichael.rclasses.pattern.functional.IName;
+import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import imgui.ImGui;
 
 import java.util.List;
@@ -26,6 +27,10 @@ public interface ValueParent extends IName {
 
     default void renderValue(final Value<?> value) {
         if (value.isVisible() == null || value.isVisible().getAsBoolean()) {
+            if (value instanceof ValueGroup) {
+                value.render();
+                return;
+            }
             ImGui.text(value.getName());
             ImGui.sameLine();
             this.renderValueDescription(value);
