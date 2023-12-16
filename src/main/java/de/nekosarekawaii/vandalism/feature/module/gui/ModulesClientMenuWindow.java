@@ -126,7 +126,7 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
             for (final AbstractModule module : this.openedModules) {
                 final String id = "##opened" + module.getCategory().getName() + "module" + module.getName();
                 ImGui.begin(module.getName() + " Config" + id, windowFlags);
-                this.renderModuleData(module, id, -1, -1);
+                this.renderModuleData(module, id, -1, -1, true);
                 ImGui.end();
             }
         }
@@ -159,18 +159,23 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
         }
         if (ImGui.beginPopupContextItem(moduleId + "configmenu", ImGuiPopupFlags.MouseButtonRight)) {
             ImGui.text(module.getName() + " Module");
-            this.renderModuleData(module, moduleId, 400, 300);
+            this.renderModuleData(module, moduleId, 400, 300, false);
             ImGui.endPopup();
         }
     }
 
-    private void renderModuleData(final AbstractModule module, final String id, final int width, final int height) {
-        ImGui.sameLine();
-        ImGui.textDisabled("(?)");
-        if (ImGui.isItemHovered()) {
-            ImGui.beginTooltip();
+    private void renderModuleData(final AbstractModule module, final String id, final int width, final int height, final boolean configWindow) {
+        if (configWindow) {
             this.renderModuleInfo(module);
-            ImGui.endTooltip();
+            ImGui.spacing();
+        } else {
+            ImGui.sameLine();
+            ImGui.textDisabled("(?)");
+            if (ImGui.isItemHovered()) {
+                ImGui.beginTooltip();
+                this.renderModuleInfo(module);
+                ImGui.endTooltip();
+            }
         }
         ImGui.separator();
         final List<Value<?>> values = module.getValues();
