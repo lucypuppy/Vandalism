@@ -13,7 +13,6 @@ public class EnumModeValue<T extends IName> extends Value<T> {
     @SafeVarargs
     public EnumModeValue(ValueParent parent, String name, String description, T defaultValue, final T... options) {
         super(parent, name, description, defaultValue);
-
         this.options = options;
     }
 

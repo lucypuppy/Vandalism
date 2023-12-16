@@ -7,6 +7,7 @@ import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import imgui.ImGui;
+import imgui.flag.ImGuiSelectableFlags;
 import imgui.type.ImString;
 
 import java.util.ArrayList;
@@ -22,8 +23,13 @@ public class MultiModeValue extends Value<List<String>> {
     }
 
     public MultiModeValue(ValueParent parent, String name, String description, List<String> defaultValue, final String... options) {
-        super(parent, name, description, new ArrayList<>(defaultValue) /* Java's Arrays.asList() makes lists unmodifiable */);
+        super(parent, name, description, defaultValue, new ArrayList<>(defaultValue) /* Java's Arrays.asList() makes lists unmodifiable */);
         this.options = Arrays.stream(options).toList();
+    }
+
+    @Override
+    public void resetValue() {
+        this.setValue(new ArrayList<>(this.getDefaultValue()));
     }
 
     @Override
@@ -48,13 +54,18 @@ public class MultiModeValue extends Value<List<String>> {
     @Override
     public void render() {
         if (ImGui.beginCombo("##" + this.getName() + this.getParent().getName(), this.getValue().toString().substring(1, this.getValue().toString().length() - 1))) {
+            ImGui.separator();
+            ImGui.text("Search for " + this.getName());
+            ImGui.setNextItemWidth(-1);
             ImGui.inputText("##" + this.getName() + this.getParent().getName() + "search", this.searchInput);
+            ImGui.separator();
+            ImGui.spacing();
             for (final String value : this.options) {
                 if (this.searchInput.isNotEmpty() && !StringUtils.contains(value, this.searchInput.get())) {
                     continue;
                 }
                 final boolean isSelected = this.isSelected(value);
-                if (ImGui.selectable(value, isSelected)) {
+                if (ImGui.selectable(value, isSelected, ImGuiSelectableFlags.DontClosePopups)) {
                     if (isSelected) {
                         this.getValue().remove(value);
                     } else {
