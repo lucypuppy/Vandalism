@@ -31,11 +31,10 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
         this.values = new ArrayList<>();
         this.active = new BooleanValue(
                 this,
-                "Enabled",
+                "Active",
                 "Whether this HUD element is active.",
                 true
         );
-
         this.defaultX = defaultX;
         this.defaultY = defaultY;
         this.x = defaultX;

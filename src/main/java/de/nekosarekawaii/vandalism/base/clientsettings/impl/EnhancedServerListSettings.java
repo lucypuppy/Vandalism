@@ -45,7 +45,7 @@ public class EnhancedServerListSettings extends ValueGroup {
     public final BooleanValue multiplayerScreenServerInformation = new BooleanValue(
             this,
             "Multiplayer Screen Server Information",
-            "If enabled the Game shows all necessary server information behind a server list entry.",
+            "If activated the Game shows all necessary server information behind a server list entry.",
             true
     ).visibleCondition(this.enhancedServerList::getValue);
 

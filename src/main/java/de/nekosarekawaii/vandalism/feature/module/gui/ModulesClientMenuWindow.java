@@ -24,7 +24,7 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
 
     private final ImString searchInput = new ImString();
     private final ImString favoriteModulesSearchInput = new ImString();
-    private final ImString enabledModulesSearchInput = new ImString();
+    private final ImString activatedModulesSearchInput = new ImString();
 
     public ModulesClientMenuWindow() {
         super("Modules", Category.CONFIGURATION);
@@ -81,28 +81,28 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
                 ImGui.separator();
                 ImGui.end();
             }
-            final List<AbstractModule> enabledModules = new ArrayList<>();
+            final List<AbstractModule> activatedModules = new ArrayList<>();
             for (final AbstractModule module : moduleManager.getList()) {
                 if (module.isActive()) {
-                    enabledModules.add(module);
+                    activatedModules.add(module);
                 }
             }
-            if (!enabledModules.isEmpty()) {
+            if (!activatedModules.isEmpty()) {
                 ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
-                final String modulesEnabledIdentifier = modulesIdentifier + "enabled";
-                ImGui.begin("Enabled Modules" + modulesEnabledIdentifier, windowFlags);
+                final String modulesActivatedIdentifier = modulesIdentifier + "activated";
+                ImGui.begin("Activated Modules" + modulesActivatedIdentifier, windowFlags);
                 ImGui.separator();
                 ImGui.setNextItemWidth(-1);
-                ImGui.inputText(modulesEnabledIdentifier + "input", this.enabledModulesSearchInput);
+                ImGui.inputText(modulesActivatedIdentifier + "input", this.activatedModulesSearchInput);
                 ImGui.separator();
-                ImGui.beginChild(modulesEnabledIdentifier + "scrolllist", -1, -1, true);
-                for (final AbstractModule module : enabledModules) {
-                    if (!this.enabledModulesSearchInput.get().isBlank()) {
-                        if (!(StringUtils.contains(module.getName(), this.enabledModulesSearchInput.get()) || StringUtils.contains(module.getDescription(), this.enabledModulesSearchInput.get()))) {
+                ImGui.beginChild(modulesActivatedIdentifier + "scrolllist", -1, -1, true);
+                for (final AbstractModule module : activatedModules) {
+                    if (!this.activatedModulesSearchInput.get().isBlank()) {
+                        if (!(StringUtils.contains(module.getName(), this.activatedModulesSearchInput.get()) || StringUtils.contains(module.getDescription(), this.activatedModulesSearchInput.get()))) {
                             continue;
                         }
                     }
-                    this.renderModule(module, "enabled");
+                    this.renderModule(module, "activated");
                 }
                 ImGui.endChild();
                 ImGui.separator();
@@ -140,8 +140,8 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
         } else {
             color = new float[]{0.8f, 0.1f, 0.1f, 0.45f};
         }
-        final boolean moduleEnabled = module.isActive();
-        if (moduleEnabled) {
+        final boolean moduleActivated = module.isActive();
+        if (moduleActivated) {
             ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], color[3]);
             ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], color[3] - 0.1f);
             ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
@@ -154,7 +154,7 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
             this.renderModuleInfo(module);
             ImGui.endTooltip();
         }
-        if (moduleEnabled) {
+        if (moduleActivated) {
             ImGui.popStyleColor(3);
         }
         if (ImGui.beginPopupContextItem(moduleId + "configmenu", ImGuiPopupFlags.MouseButtonRight)) {

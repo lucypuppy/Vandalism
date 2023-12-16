@@ -49,7 +49,7 @@ public class VisualThrottleModule extends AbstractModule {
     public final BooleanValue modifyDisplayNameLength = new BooleanValue(
             this,
             "Modify display name length",
-            "If enabled allows you to modify the max display name length.",
+            "If activated allows you to modify the max display name length.",
             true
     );
 

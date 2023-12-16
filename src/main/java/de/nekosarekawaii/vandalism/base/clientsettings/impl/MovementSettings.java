@@ -11,7 +11,7 @@ public class MovementSettings extends ValueGroup {
     public final BooleanValue customizeRiptideBoostMultiplier = new BooleanValue(
             this,
             "Customize Riptide Boost Multiplier",
-            "If enabled shows you a slider to modify the riptide boost multiplier.",
+            "If activated shows you a slider to modify the riptide boost multiplier.",
             false
     );
 
