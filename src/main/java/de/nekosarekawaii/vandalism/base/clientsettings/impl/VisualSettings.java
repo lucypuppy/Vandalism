@@ -10,7 +10,7 @@ public class VisualSettings extends ValueGroup {
     public final BooleanValue customBobView = new BooleanValue(
             this,
             "Custom Bob View",
-            "If enabled allows you to customize the bob view camera effect.",
+            "If activated allows you to customize the bob view camera effect.",
             false
     );
 

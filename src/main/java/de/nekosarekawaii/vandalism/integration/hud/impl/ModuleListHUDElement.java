@@ -12,12 +12,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ModuleListHUDElement extends HUDElement implements ModuleToggleListener {
 
-    private final List<String> enabledModules;
+    private final List<String> activatedModules;
     private boolean sort;
 
     public ModuleListHUDElement() {
         super("Module List", 2, 150);
-        this.enabledModules = new CopyOnWriteArrayList<>();
+        this.activatedModules = new CopyOnWriteArrayList<>();
         DietrichEvents2.global().subscribe(ModuleToggleListener.ModuleToggleEvent.ID, this);
     }
 
@@ -37,14 +37,15 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
         this.sort();
         int yOffset = 0;
         final boolean shadow = false;
-        for (final String enabledModule : this.enabledModules) {
-            final int textWidth = this.mc.textRenderer.getWidth(enabledModule);
+        for (final String activatedModule : this.activatedModules) {
+            final int textWidth = this.mc.textRenderer.getWidth(activatedModule);
             switch (this.alignmentX) {
                 case MIDDLE ->
-                        context.drawText(this.mc.textRenderer, enabledModule, (this.x + this.width / 2) - (textWidth / 2), this.y + yOffset, -1, shadow);
+                        context.drawText(this.mc.textRenderer, activatedModule, (this.x + this.width / 2) - (textWidth / 2), this.y + yOffset, -1, shadow);
                 case RIGHT ->
-                        context.drawText(this.mc.textRenderer, enabledModule, (this.x + this.width) - textWidth, this.y + yOffset, -1, shadow);
-                default -> context.drawText(this.mc.textRenderer, enabledModule, this.x, this.y + yOffset, -1, shadow);
+                        context.drawText(this.mc.textRenderer, activatedModule, (this.x + this.width) - textWidth, this.y + yOffset, -1, shadow);
+                default ->
+                        context.drawText(this.mc.textRenderer, activatedModule, this.x, this.y + yOffset, -1, shadow);
             }
 
             this.width = Math.max(this.width, textWidth);
@@ -62,14 +63,14 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
     private void sort() {
         if (this.sort) {
             this.sort = false;
-            this.enabledModules.clear();
+            this.activatedModules.clear();
             final List<AbstractModule> modules = Vandalism.getInstance().getModuleManager().getList();
             for (final AbstractModule module : modules) {
                 if (module.isActive() && module.isShowInHUD()) {
-                    this.enabledModules.add(module.getName());
+                    this.activatedModules.add(module.getName());
                 }
             }
-            this.enabledModules.sort((s1, s2) -> {
+            this.activatedModules.sort((s1, s2) -> {
                 final int compare;
                 switch (this.alignmentY) {
                     case TOP, MIDDLE ->

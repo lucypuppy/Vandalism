@@ -60,7 +60,7 @@ public class AutoRespawnModule extends AbstractModule implements TickGameListene
         // request respawn from server
         this.mc.player.requestRespawn();
 
-        // automatically send /back if enabled
+        // automatically send /back if activated
         if (this.autoBack.getValue()) this.mc.getNetworkHandler().sendChatCommand("back");
     }
 

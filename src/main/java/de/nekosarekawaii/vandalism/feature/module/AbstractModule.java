@@ -55,7 +55,7 @@ public abstract class AbstractModule extends Feature implements ValueParent {
                     this.onDisable();
                 }
                 if (Vandalism.getInstance().getClientSettings().getMenuSettings().moduleStateLogging.getValue() && this.mc.player != null) {
-                    ChatUtil.infoChatMessage(this.getName() + " has been " + (newValue ? "enabled" : "disabled") + ".");
+                    ChatUtil.infoChatMessage(this.getName() + " has been " + (newValue ? "activated" : "deactivated") + ".");
                 }
                 this.recursiveUpdateActiveState(newValue, this.values);
             }
@@ -79,7 +79,7 @@ public abstract class AbstractModule extends Feature implements ValueParent {
         );
     }
 
-    public void enableDefault() {
+    public void activateDefault() {
         this.active.setValue(true);
     }
 

@@ -16,7 +16,7 @@ public class PushVelocityModule extends AbstractModule implements EntityPushList
     private final BooleanValue modifyEntityPush = new BooleanValue(
             this,
             "Modify Entity Push",
-            "If enabled you can modify the entity push velocity.",
+            "If activated you can modify the entity push velocity.",
             true
     );
 
@@ -32,7 +32,7 @@ public class PushVelocityModule extends AbstractModule implements EntityPushList
     private final BooleanValue modifyFluidPush = new BooleanValue(
             this,
             "Modify Fluid Push",
-            "If enabled you can modify the fluid push velocity.",
+            "If activated you can modify the fluid push velocity.",
             true
     );
 
