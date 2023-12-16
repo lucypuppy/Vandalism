@@ -125,7 +125,7 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
             }
             for (final AbstractModule module : this.openedModules) {
                 final String id = "##opened" + module.getCategory().getName() + "module" + module.getName();
-                ImGui.begin(module.getName() + " Config" + id, windowFlags);
+                ImGui.begin(module.getName() + " Module Config" + id, windowFlags);
                 this.renderModuleData(module, id, -1, -1, true);
                 ImGui.end();
             }
