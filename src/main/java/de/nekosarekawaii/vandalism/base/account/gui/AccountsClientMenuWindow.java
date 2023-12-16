@@ -133,7 +133,7 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
                 ImGui.sameLine();
             }
 
-            if (ImGui.button(account.getDisplayName() + " (" + (account.getStatus() == null ? "IDLE" : account.getStatus()) + ")", ImGui.getColumnWidth(), ACCOUNT_ENTRY_CONTENT_HEIGHT + 1f)) {
+            if (ImGui.button(account.getDisplayName() + " (" + (account.getStatus() == null ? "Idle" : account.getStatus()) + ")", ImGui.getColumnWidth(), ACCOUNT_ENTRY_CONTENT_HEIGHT + 1f)) {
                 try {
                     accountManager.logIn(account);
                     account.setStatus("Logged in");
