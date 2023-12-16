@@ -28,12 +28,15 @@ public interface ValueParent extends IName {
     default void renderValue(final Value<?> value) {
         if (value.isVisible() == null || value.isVisible().getAsBoolean()) {
             if (value instanceof ValueGroup) {
+                this.renderValueDescription(value);
+                ImGui.sameLine();
                 value.render();
                 return;
             }
             ImGui.text(value.getName());
             ImGui.sameLine();
             this.renderValueDescription(value);
+            ImGui.sameLine();
             value.render();
         }
     }
