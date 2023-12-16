@@ -210,9 +210,9 @@ public class InfoHUDElement extends HUDElement {
                 final String[] infoParts = new String[]{infoEntry.getKey(), infoEntry.getValue()};
                 for (int i = 0; i < infoParts.length; i++) {
                     final String infoPart = infoParts[i];
-                    this.drawText(context, (i == 0 ? Formatting.UNDERLINE : "") + infoPart, this.x, this.y + height);
-                    height += fontHeight + 3;
                     final int textWidth = this.mc.textRenderer.getWidth(infoPart);
+                    this.drawText(context, (i == 0 ? Formatting.UNDERLINE : "") + infoPart, (this.x + this.width / 2) - textWidth / 2, this.y + height);
+                    height += fontHeight + 3;
                     if (textWidth > width) {
                         width = textWidth;
                     }
