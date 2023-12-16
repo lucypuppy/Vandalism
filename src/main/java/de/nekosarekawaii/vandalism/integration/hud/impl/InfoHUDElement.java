@@ -4,6 +4,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
+import de.nekosarekawaii.vandalism.util.minecraft.ServerUtil;
 import de.nekosarekawaii.vandalism.util.minecraft.WorldUtil;
 import net.minecraft.client.gui.DrawContext;
 
@@ -55,13 +56,6 @@ public class InfoHUDElement extends HUDElement {
             15
     ).visibleCondition(this.position::getValue);
 
-    private final BooleanValue serverBrand = new BooleanValue(
-            this,
-            "Server Brand",
-            "Shows the current server brand.",
-            true
-    );
-
     private final BooleanValue difficulty = new BooleanValue(
             this,
             "Difficulty",
@@ -73,6 +67,20 @@ public class InfoHUDElement extends HUDElement {
             this,
             "Permissions Level",
             "Shows the current permissions level.",
+            true
+    );
+
+    private final BooleanValue serverBrand = new BooleanValue(
+            this,
+            "Server Brand",
+            "Shows the current server brand.",
+            true
+    );
+
+    private final BooleanValue serverAddress = new BooleanValue(
+            this,
+            "Server Address",
+            "Shows the current server address.",
             true
     );
 
@@ -143,6 +151,12 @@ public class InfoHUDElement extends HUDElement {
                 ));
             }
         }
+        if (this.difficulty.getValue()) {
+            infoMap.put("Difficulty", this.mc.world != null ? this.mc.world.getDifficulty().getName() : "unknown");
+        }
+        if (this.permissionsLevel.getValue()) {
+            infoMap.put("Permissions Level", this.mc.player != null ? Integer.toString(this.mc.player.getPermissionLevel()) : "unknown");
+        }
         if (this.serverBrand.getValue()) {
             String value = "unknown";
             if (this.mc.getNetworkHandler() != null) {
@@ -153,11 +167,8 @@ public class InfoHUDElement extends HUDElement {
             }
             infoMap.put("Server Brand", value);
         }
-        if (this.difficulty.getValue()) {
-            infoMap.put("Difficulty", this.mc.world != null ? this.mc.world.getDifficulty().getName() : "unknown");
-        }
-        if (this.permissionsLevel.getValue()) {
-            infoMap.put("Permissions Level", this.mc.player != null ? Integer.toString(this.mc.player.getPermissionLevel()) : "unknown");
+        if (this.serverAddress.getValue()) {
+            infoMap.put("Server Address", ServerUtil.lastServerExists() && this.mc.player != null ? ServerUtil.getLastServerInfo().address : "unknown");
         }
         int width = 0, height = 0;
         final int fontHeight = this.mc.textRenderer.fontHeight;
