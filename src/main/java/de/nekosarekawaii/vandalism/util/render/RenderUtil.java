@@ -1,10 +1,12 @@
 package de.nekosarekawaii.vandalism.util.render;
 
 import de.florianmichael.rclasses.common.ColorUtils;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
@@ -53,6 +55,10 @@ public class RenderUtil {
             newText.append(Text.literal(String.valueOf(text.charAt(i))).setStyle(Style.EMPTY.withColor(color.getRGB())));
         }
         return newText;
+    }
+
+    public static int getGlId(final Identifier identifier) {
+        return MinecraftClient.getInstance().getTextureManager().getTexture(identifier).getGlId();
     }
 
 }

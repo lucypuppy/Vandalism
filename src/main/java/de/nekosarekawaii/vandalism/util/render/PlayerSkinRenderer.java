@@ -1,28 +1,35 @@
 package de.nekosarekawaii.vandalism.util.render;
 
-import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.yggdrasil.ProfileResult;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.client.util.DefaultSkinHelper;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class PlayerSkinRenderer {
 
-    private final PlayerListEntry playerListEntry;
-    private int glId = -1;
+    private static final ExecutorService SKIN_LOADER = Executors.newSingleThreadExecutor();
 
-    public PlayerSkinRenderer(final UUID uuid, final String username) {
-        this.playerListEntry = new PlayerListEntry(new GameProfile(uuid, username), true);
+    private int glId;
+
+    public PlayerSkinRenderer(final UUID uuid) {
+        this.glId = RenderUtil.getGlId(DefaultSkinHelper.getSkinTextures(uuid).texture());
+        CompletableFuture.supplyAsync(() -> {
+            final ProfileResult result = MinecraftClient.getInstance().getSessionService().fetchProfile(uuid, false);
+            if (result == null) return null;
+            return result.profile();
+        }, SKIN_LOADER).thenComposeAsync(profile -> {
+            if (profile == null) return CompletableFuture.completedFuture(DefaultSkinHelper.getSkinTextures(uuid));
+            return MinecraftClient.getInstance().getSkinProvider().fetchSkinTextures(profile);
+        }, MinecraftClient.getInstance()).thenAcceptAsync(skin -> this.glId = RenderUtil.getGlId(skin.texture()), MinecraftClient.getInstance());
     }
 
     public int getGlId() {
-        if (glId == -1) {
-            final var skinTexture = this.playerListEntry.getSkinTextures().texture();
-            if (skinTexture != null) {
-                glId = MinecraftClient.getInstance().getTextureManager().getTexture(skinTexture).getGlId();
-            }
-        }
-        return glId;
+        return this.glId;
     }
+
 
 }

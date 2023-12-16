@@ -126,7 +126,8 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
             if (account == null) continue;
 
             if (account.getPlayerSkin() != null) {
-                ImGui.image(account.getPlayerSkin().getGlId(), ACCOUNT_ENTRY_CONTENT_WIDTH, ACCOUNT_ENTRY_CONTENT_HEIGHT);
+                //Those are not some magic values these are the values to render exactly the face from the skin.
+                ImGui.image(account.getPlayerSkin().getGlId(), ACCOUNT_ENTRY_CONTENT_WIDTH, ACCOUNT_ENTRY_CONTENT_HEIGHT, 0.125f, 0.1f, 0.25f, 0.250f);
                 ImGui.sameLine();
             }
 
