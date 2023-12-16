@@ -1,5 +1,6 @@
 package de.nekosarekawaii.vandalism.integration.hud.impl;
 
+import de.florianmichael.rclasses.math.geometry.Alignment;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
@@ -8,6 +9,7 @@ import de.nekosarekawaii.vandalism.util.minecraft.ServerUtil;
 import de.nekosarekawaii.vandalism.util.minecraft.WorldUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -145,12 +147,12 @@ public class InfoHUDElement extends HUDElement {
                 double correctedX = posX, correctedZ = posZ;
                 switch (dimension) {
                     case NETHER -> {
-                        name = "Overworld Position: ";
+                        name = "Overworld Position";
                         correctedX = posX * 8;
                         correctedZ = posZ * 8;
                     }
                     case OVERWORLD -> {
-                        name = "Nether Position: ";
+                        name = "Nether Position";
                         correctedX = posX / 8;
                         correctedZ = posZ / 8;
                     }
@@ -204,16 +206,45 @@ public class InfoHUDElement extends HUDElement {
         int width = 0, height = 0;
         final int fontHeight = this.mc.textRenderer.fontHeight;
         for (final Map.Entry<String, String> infoEntry : infoMap.entrySet()) {
-            String text = infoEntry.getKey() + ": " + infoEntry.getValue();
-            context.drawText(this.mc.textRenderer, text, this.x, this.y + height, -1, false);
-            height += fontHeight;
-            final int textWidth = this.mc.textRenderer.getWidth(text);
-            if (textWidth > width) {
-                width = textWidth;
+            if (this.alignmentX == Alignment.MIDDLE) {
+                final String[] infoParts = new String[]{infoEntry.getKey(), infoEntry.getValue()};
+                for (int i = 0; i < infoParts.length; i++) {
+                    final String infoPart = infoParts[i];
+                    this.drawText(context, (i == 0 ? Formatting.UNDERLINE : "") + infoPart, this.x, this.y + height);
+                    height += fontHeight + 3;
+                    final int textWidth = this.mc.textRenderer.getWidth(infoPart);
+                    if (textWidth > width) {
+                        width = textWidth;
+                    }
+                }
+            } else {
+                final String text;
+                int textWidth = 0;
+                switch (this.alignmentX) {
+                    case LEFT -> {
+                        text = infoEntry.getKey() + " » " + infoEntry.getValue();
+                        textWidth = this.mc.textRenderer.getWidth(text);
+                        this.drawText(context, text, this.x, this.y + height);
+                        height += fontHeight;
+                    }
+                    case RIGHT -> {
+                        text = infoEntry.getValue() + " « " + infoEntry.getKey();
+                        textWidth = this.mc.textRenderer.getWidth(text);
+                        this.drawText(context, text, (this.x + this.width) - textWidth, this.y + height);
+                        height += fontHeight;
+                    }
+                }
+                if (textWidth > width) {
+                    width = textWidth;
+                }
             }
         }
         this.width = width;
         this.height = height;
+    }
+
+    private void drawText(final DrawContext context, final String text, final int x, final int y) {
+        context.drawText(this.mc.textRenderer, text, x, y, -1, false);
     }
 
 }
