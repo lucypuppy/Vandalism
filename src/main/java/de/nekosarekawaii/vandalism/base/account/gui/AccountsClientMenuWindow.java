@@ -4,6 +4,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountManager;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
+import de.nekosarekawaii.vandalism.util.render.PlayerSkinRenderer;
 import imgui.ImGui;
 import imgui.flag.ImGuiMouseButton;
 import imgui.flag.ImGuiWindowFlags;
@@ -125,9 +126,10 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
         for (AbstractAccount account : accountManager.getList()) {
             if (account == null) continue;
 
-            if (account.getPlayerSkin() != null) {
+            final PlayerSkinRenderer accountPlayerSkin = account.getPlayerSkin();
+            if (accountPlayerSkin != null && accountPlayerSkin.getGlId() != -1) {
                 //Those are not some magic values these are the values to render exactly the face from the skin.
-                ImGui.image(account.getPlayerSkin().getGlId(), ACCOUNT_ENTRY_CONTENT_WIDTH, ACCOUNT_ENTRY_CONTENT_HEIGHT, 0.125f, 0.1f, 0.25f, 0.250f);
+                ImGui.image(accountPlayerSkin.getGlId(), ACCOUNT_ENTRY_CONTENT_WIDTH, ACCOUNT_ENTRY_CONTENT_HEIGHT, 0.125f, 0.1f, 0.25f, 0.250f);
                 ImGui.sameLine();
             }
 

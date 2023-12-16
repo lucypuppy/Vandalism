@@ -16,7 +16,7 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
     private boolean sort;
 
     public ModuleListHUDElement() {
-        super("Module List", 2, 140);
+        super("Module List", 2, 150);
         this.enabledModules = new CopyOnWriteArrayList<>();
         DietrichEvents2.global().subscribe(ModuleToggleListener.ModuleToggleEvent.ID, this);
     }

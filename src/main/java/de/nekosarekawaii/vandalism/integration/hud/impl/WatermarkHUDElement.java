@@ -10,8 +10,8 @@ public class WatermarkHUDElement extends HUDElement {
     public WatermarkHUDElement() {
         super(
                 "Watermark",
-                0,
-                0
+                2,
+                2
         );
     }
 

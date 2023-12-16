@@ -2,6 +2,7 @@ package de.nekosarekawaii.vandalism.util.render;
 
 import de.florianmichael.rclasses.common.ColorUtils;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.texture.AbstractTexture;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -58,7 +59,12 @@ public class RenderUtil {
     }
 
     public static int getGlId(final Identifier identifier) {
-        return MinecraftClient.getInstance().getTextureManager().getTexture(identifier).getGlId();
+        final AbstractTexture texture = MinecraftClient.getInstance().getTextureManager().getTexture(identifier);
+        if (texture != null) {
+            return texture.getGlId();
+        } else {
+            return -1;
+        }
     }
 
 }
