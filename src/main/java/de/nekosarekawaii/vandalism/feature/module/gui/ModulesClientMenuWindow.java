@@ -199,35 +199,11 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
 
     private void renderModuleInfo(final AbstractModule module) {
         final String description = module.getDescription();
-        if (!description.isBlank()) {
-            if (description.contains(" ")) {
-                final List<String> descriptionLines = new ArrayList<>();
-                final String[] descriptionWords = description.split(" ");
-                if (descriptionWords.length > 10) {
-                    StringBuilder currentLine = new StringBuilder();
-                    for (final String descriptionWord : descriptionWords) {
-                        if (currentLine.length() + descriptionWord.length() > 60) {
-                            descriptionLines.add(currentLine.toString());
-                            currentLine = new StringBuilder();
-                        }
-                        currentLine.append(descriptionWord).append(" ");
-                    }
-                    descriptionLines.add(currentLine.toString());
-                } else {
-                    descriptionLines.add(description);
-                }
-                for (final String descriptionLine : descriptionLines) {
-                    ImGui.text(descriptionLine);
-                }
-            } else {
-                ImGui.text(description);
-            }
-        } else {
-            ImGui.text("No description found.");
-        }
+        if (!description.isBlank()) ImGui.text(description);
+        else ImGui.text("No description found.");
         if (module.isExperimental()) {
             ImGui.spacing();
-            ImGui.textColored(0.8f, 0.1f, 0.1f, 1f, "Warning this is a unstable experimental module!");
+            ImGui.textColored(0.8f, 0.1f, 0.1f, 1f, "Warning: This module is experimental, which means that there may be problems or complications with the functionality.");
         }
         final VersionRange supportedVersions = module.getSupportedVersions();
         if (supportedVersions != null) {
