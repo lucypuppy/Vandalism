@@ -48,9 +48,8 @@ import java.io.File;
  *  - Fix ImGui#begin in every im window (remove No Collapse Flag and move the code out of the if)
  *  - Fix module tabs display (no stacking) when the mod starts the first time
  *  - Fix calculations for the custom hud
- *  - Change skin texture to head texture in the account manager
  *  - Fix the sprint event (attacking is wrong when sprintEvent.force = true)
- *  - Fix ImGuiScreen#close because it could break the entire game
+ *  - Fix ClientMenuScreen#close because it could break the entire game
  */
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 

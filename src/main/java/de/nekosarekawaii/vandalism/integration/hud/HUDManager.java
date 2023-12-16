@@ -8,7 +8,6 @@ import de.nekosarekawaii.vandalism.base.event.render.Render2DListener;
 import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.integration.hud.config.HUDConfig;
 import de.nekosarekawaii.vandalism.integration.hud.gui.HUDClientMenuWindow;
-import de.nekosarekawaii.vandalism.integration.hud.impl.DebugElement;
 import de.nekosarekawaii.vandalism.integration.hud.impl.InfoHUDElement;
 import de.nekosarekawaii.vandalism.integration.hud.impl.ModuleListHUDElement;
 import de.nekosarekawaii.vandalism.integration.hud.impl.WatermarkHUDElement;
@@ -32,8 +31,7 @@ public class HUDManager extends Storage<HUDElement> implements Render2DListener,
         this.add(
                 new WatermarkHUDElement(),
                 this.moduleListHUDElement = new ModuleListHUDElement(),
-                new InfoHUDElement(),
-                new DebugElement()
+                new InfoHUDElement()
         );
     }
 
