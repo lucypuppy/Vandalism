@@ -74,3 +74,4 @@ accessible method net/minecraft/entity/LivingEntity getMovementSpeed (F)F
 accessible method net/minecraft/entity/player/PlayerEntity getOffGroundSpeed ()F
 accessible field net/minecraft/client/MinecraftClient sessionService Lcom/mojang/authlib/minecraft/MinecraftSessionService;
 mutable field net/minecraft/client/MinecraftClient sessionService Lcom/mojang/authlib/minecraft/MinecraftSessionService;
+accessible field net/minecraft/client/network/ClientPlayerEntity ticksSinceLastPositionPacketSent I
