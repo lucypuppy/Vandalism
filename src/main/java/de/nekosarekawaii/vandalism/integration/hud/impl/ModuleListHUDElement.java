@@ -72,7 +72,7 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
             this.enabledModules.sort((s1, s2) -> {
                 final int compare;
                 switch (this.alignmentY) {
-                    case TOP ->
+                    case TOP, MIDDLE ->
                             compare = Integer.compare(this.mc.textRenderer.getWidth(s2), this.mc.textRenderer.getWidth(s1));
                     case BOTTOM ->
                             compare = Integer.compare(this.mc.textRenderer.getWidth(s1), this.mc.textRenderer.getWidth(s2));
