@@ -1,11 +1,18 @@
 package de.nekosarekawaii.vandalism.integration.hud.impl;
 
+import de.florianmichael.rclasses.math.geometry.Alignment;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
+import de.nekosarekawaii.vandalism.util.minecraft.ServerUtil;
 import de.nekosarekawaii.vandalism.util.minecraft.WorldUtil;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class InfoHUDElement extends HUDElement {
 
@@ -52,13 +59,6 @@ public class InfoHUDElement extends HUDElement {
             15
     ).visibleCondition(this.position::getValue);
 
-    private final BooleanValue serverBrand = new BooleanValue(
-            this,
-            "Server Brand",
-            "Shows the current server brand.",
-            true
-    );
-
     private final BooleanValue difficulty = new BooleanValue(
             this,
             "Difficulty",
@@ -73,33 +73,45 @@ public class InfoHUDElement extends HUDElement {
             true
     );
 
+    private final ValueGroup serverElements = new ValueGroup(
+            this,
+            "Server Elements",
+            "Elements that are shown in the server category."
+    );
+
+    private final BooleanValue serverBrand = new BooleanValue(
+            this.serverElements,
+            "Server Brand",
+            "Shows the current server brand.",
+            true
+    );
+
+    private final BooleanValue serverVersion = new BooleanValue(
+            this.serverElements,
+            "Server Version",
+            "Shows the current server version.",
+            true
+    );
+
+    private final BooleanValue serverAddress = new BooleanValue(
+            this.serverElements,
+            "Server Address",
+            "Shows the current server address.",
+            true
+    );
+
     public InfoHUDElement() {
         super("Info", 2, 60);
     }
 
     @Override
     public void onRender(final DrawContext context, final float delta) {
-        int color = -1;
-        boolean shadow = false;
-        int x = this.x, width = 0, height = 0;
-        final int fontHeight = this.mc.textRenderer.fontHeight;
+        final Map<String, String> infoMap = new HashMap<>();
         if (this.fps.getValue()) {
-            final String text = "FPS: " + this.mc.getCurrentFps();
-            context.drawText(this.mc.textRenderer, text, x, this.y + height, color, shadow);
-            height += fontHeight;
-            final int textWidth = this.mc.textRenderer.getWidth(text);
-            if (textWidth > width) {
-                width = textWidth;
-            }
+            infoMap.put("FPS", Integer.toString(this.mc.getCurrentFps()));
         }
         if (this.username.getValue()) {
-            final String text = "Username: " + this.mc.session.getUsername();
-            context.drawText(this.mc.textRenderer, text, x, this.y + height, color, shadow);
-            height += fontHeight;
-            final int textWidth = this.mc.textRenderer.getWidth(text);
-            if (textWidth > width) {
-                width = textWidth;
-            }
+            infoMap.put("Username", this.mc.session.getUsername());
         }
         final double posX, posY, posZ;
         if (this.mc.player != null) {
@@ -116,18 +128,12 @@ public class InfoHUDElement extends HUDElement {
             if (positionDecimalPlacesRawValue < 1) this.positionDecimalPlaces.setValue(1);
             else if (positionDecimalPlacesRawValue > 15) this.positionDecimalPlaces.setValue(15);
             final String positionDecimalPlaces = "%." + this.positionDecimalPlaces.getValue() + "f";
-            final String text = "Position: " + String.format(
+            infoMap.put("Position", String.format(
                     positionDecimalPlaces + ", " + positionDecimalPlaces + ", " + positionDecimalPlaces,
                     posX,
                     posY,
                     posZ
-            );
-            context.drawText(this.mc.textRenderer, text, x, this.y + height, color, shadow);
-            height += fontHeight;
-            final int textWidth = this.mc.textRenderer.getWidth(text);
-            if (textWidth > width) {
-                width = textWidth;
-            }
+            ));
         }
         if (this.dimensionalPosition.getValue()) {
             final WorldUtil.Dimension dimension = mc.player == null ? WorldUtil.Dimension.OVERWORLD : WorldUtil.getDimension();
@@ -137,38 +143,37 @@ public class InfoHUDElement extends HUDElement {
                 else if (positionDecimalPlacesRawValue > 15) this.positionDecimalPlaces.setValue(15);
                 final int decimalPlaces = this.positionDecimalPlaces.getValue();
                 final String positionFormat = "%." + decimalPlaces + "f";
-                String text = "";
+                String name = "";
                 double correctedX = posX, correctedZ = posZ;
                 switch (dimension) {
                     case NETHER -> {
-                        text = "Overworld Position: ";
+                        name = "Overworld Position";
                         correctedX = posX * 8;
                         correctedZ = posZ * 8;
                     }
                     case OVERWORLD -> {
-                        text = "Nether Position: ";
+                        name = "Nether Position";
                         correctedX = posX / 8;
                         correctedZ = posZ / 8;
                     }
                     default -> {
                     }
                 }
-                text += String.format(
+                infoMap.put(name, String.format(
                         positionFormat + ", " + positionFormat + ", " + positionFormat,
                         correctedX,
                         posY,
                         correctedZ
-                );
-                context.drawText(this.mc.textRenderer, text, x, this.y + height, color, shadow);
-                height += fontHeight;
-                final int textWidth = this.mc.textRenderer.getWidth(text);
-                if (textWidth > width) {
-                    width = textWidth;
-                }
+                ));
             }
         }
+        if (this.difficulty.getValue()) {
+            infoMap.put("Difficulty", this.mc.world != null ? this.mc.world.getDifficulty().getName() : "unknown");
+        }
+        if (this.permissionsLevel.getValue()) {
+            infoMap.put("Permissions Level", this.mc.player != null ? Integer.toString(this.mc.player.getPermissionLevel()) : "unknown");
+        }
         if (this.serverBrand.getValue()) {
-            String text = "Server Brand: ";
             String value = "unknown";
             if (this.mc.getNetworkHandler() != null) {
                 final String brand = this.mc.getNetworkHandler().getBrand();
@@ -176,34 +181,70 @@ public class InfoHUDElement extends HUDElement {
                     value = brand.replaceFirst("\\(.*?\\) ", "");
                 }
             }
-            text += value;
-            context.drawText(this.mc.textRenderer, text, x, this.y + height, color, shadow);
-            height += fontHeight;
-            final int textWidth = this.mc.textRenderer.getWidth(text);
-            if (textWidth > width) {
-                width = textWidth;
-            }
+            infoMap.put("Server Brand", value);
         }
-        if (this.difficulty.getValue()) {
-            final String text = "Difficulty: " + (this.mc.world != null ? this.mc.world.getDifficulty().getName() : "unknown");
-            context.drawText(this.mc.textRenderer, text, x, this.y + height, color, shadow);
-            height += fontHeight;
-            final int textWidth = this.mc.textRenderer.getWidth(text);
-            if (textWidth > width) {
-                width = textWidth;
+        if (this.serverVersion.getValue()) {
+            String value = "unknown";
+            if (ServerUtil.lastServerExists() && this.mc.player != null) {
+                final Text version = ServerUtil.getLastServerInfo().version;
+                if (version != null) {
+                    value = version.getString();
+                }
             }
+            infoMap.put("Server Version", value);
         }
-        if (this.permissionsLevel.getValue()) {
-            final String text = "Permissions Level: " + (this.mc.player != null ? this.mc.player.getPermissionLevel() : "unknown");
-            context.drawText(this.mc.textRenderer, text, x, this.y + height, color, shadow);
-            height += fontHeight;
-            final int textWidth = this.mc.textRenderer.getWidth(text);
-            if (textWidth > width) {
-                width = textWidth;
+        if (this.serverAddress.getValue()) {
+            String value = "unknown";
+            if (ServerUtil.lastServerExists() && this.mc.player != null) {
+                final String address = ServerUtil.getLastServerInfo().address;
+                if (address != null) {
+                    value = address;
+                }
+            }
+            infoMap.put("Server Address", value);
+        }
+        int width = 0, height = 0;
+        final int fontHeight = this.mc.textRenderer.fontHeight;
+        for (final Map.Entry<String, String> infoEntry : infoMap.entrySet()) {
+            if (this.alignmentX == Alignment.MIDDLE) {
+                final String[] infoParts = new String[]{infoEntry.getKey(), infoEntry.getValue()};
+                for (int i = 0; i < infoParts.length; i++) {
+                    final String infoPart = infoParts[i];
+                    final int textWidth = this.mc.textRenderer.getWidth(infoPart);
+                    this.drawText(context, (i == 0 ? Formatting.UNDERLINE : "") + infoPart, (this.x + this.width / 2) - textWidth / 2, this.y + height);
+                    height += fontHeight + 3;
+                    if (textWidth > width) {
+                        width = textWidth;
+                    }
+                }
+            } else {
+                final String text;
+                int textWidth = 0;
+                switch (this.alignmentX) {
+                    case LEFT -> {
+                        text = infoEntry.getKey() + " » " + infoEntry.getValue();
+                        textWidth = this.mc.textRenderer.getWidth(text);
+                        this.drawText(context, text, this.x, this.y + height);
+                        height += fontHeight;
+                    }
+                    case RIGHT -> {
+                        text = infoEntry.getValue() + " « " + infoEntry.getKey();
+                        textWidth = this.mc.textRenderer.getWidth(text);
+                        this.drawText(context, text, (this.x + this.width) - textWidth, this.y + height);
+                        height += fontHeight;
+                    }
+                }
+                if (textWidth > width) {
+                    width = textWidth;
+                }
             }
         }
         this.width = width;
         this.height = height;
+    }
+
+    private void drawText(final DrawContext context, final String text, final int x, final int y) {
+        context.drawText(this.mc.textRenderer, text, x, y, -1, false);
     }
 
 }

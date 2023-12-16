@@ -30,7 +30,7 @@ public class HUDClientMenuWindow extends ClientMenuWindow {
             if (ImGui.button("Close Custom HUD Config##closecustomhudconfig")) {
                 this.setActive(false);
             }
-
+            ImGui.sameLine();
             if (ImGui.button("Reset Custom HUD Config##resetcustomhudconfig")) {
                 for (final HUDElement hudElement : this.hudManager.getList()) {
                     hudElement.reset();

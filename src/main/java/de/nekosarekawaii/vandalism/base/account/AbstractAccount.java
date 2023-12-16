@@ -111,7 +111,7 @@ public abstract class AbstractAccount implements IName, MinecraftWrapper {
         DietrichEvents2.global().postInternal(UpdateSessionListener.UpdateSessionEvent.ID, event);
         this.session = event.newSession; // Allow the event to change the session
 
-        playerSkin = new PlayerSkinRenderer(session.getUuidOrNull(), session.getUsername());
+        playerSkin = new PlayerSkinRenderer(session.getUuidOrNull());
         lastLogin = TimeFormatter.currentDateTime();
     }
 
