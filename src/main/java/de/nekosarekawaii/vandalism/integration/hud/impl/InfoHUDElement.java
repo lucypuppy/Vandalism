@@ -7,6 +7,7 @@ import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
 import de.nekosarekawaii.vandalism.util.minecraft.ServerUtil;
 import de.nekosarekawaii.vandalism.util.minecraft.WorldUtil;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.text.Text;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -70,15 +71,28 @@ public class InfoHUDElement extends HUDElement {
             true
     );
 
-    private final BooleanValue serverBrand = new BooleanValue(
+    private final ValueGroup serverElements = new ValueGroup(
             this,
+            "Server Elements",
+            "Elements that are shown in the server category."
+    );
+
+    private final BooleanValue serverBrand = new BooleanValue(
+            this.serverElements,
             "Server Brand",
             "Shows the current server brand.",
             true
     );
 
+    private final BooleanValue serverVersion = new BooleanValue(
+            this.serverElements,
+            "Server Version",
+            "Shows the current server version.",
+            true
+    );
+
     private final BooleanValue serverAddress = new BooleanValue(
-            this,
+            this.serverElements,
             "Server Address",
             "Shows the current server address.",
             true
@@ -167,8 +181,25 @@ public class InfoHUDElement extends HUDElement {
             }
             infoMap.put("Server Brand", value);
         }
+        if (this.serverVersion.getValue()) {
+            String value = "unknown";
+            if (ServerUtil.lastServerExists() && this.mc.player != null) {
+                final Text version = ServerUtil.getLastServerInfo().version;
+                if (version != null) {
+                    value = version.getString();
+                }
+            }
+            infoMap.put("Server Version", value);
+        }
         if (this.serverAddress.getValue()) {
-            infoMap.put("Server Address", ServerUtil.lastServerExists() && this.mc.player != null ? ServerUtil.getLastServerInfo().address : "unknown");
+            String value = "unknown";
+            if (ServerUtil.lastServerExists() && this.mc.player != null) {
+                final String address = ServerUtil.getLastServerInfo().address;
+                if (address != null) {
+                    value = address;
+                }
+            }
+            infoMap.put("Server Address", value);
         }
         int width = 0, height = 0;
         final int fontHeight = this.mc.textRenderer.fontHeight;

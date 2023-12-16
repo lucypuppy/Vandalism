@@ -16,7 +16,7 @@ public class PlayerSkinRenderer {
     private int glId;
 
     public PlayerSkinRenderer(final UUID uuid) {
-        this.glId = RenderUtil.getGlId(DefaultSkinHelper.getSkinTextures(uuid).texture());
+        this.glId = -1;
         CompletableFuture.supplyAsync(() -> {
             final ProfileResult result = MinecraftClient.getInstance().getSessionService().fetchProfile(uuid, false);
             if (result == null) return null;
@@ -30,6 +30,5 @@ public class PlayerSkinRenderer {
     public int getGlId() {
         return this.glId;
     }
-
 
 }
