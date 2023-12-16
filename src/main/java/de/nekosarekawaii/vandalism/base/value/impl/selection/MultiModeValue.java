@@ -33,7 +33,7 @@ public class MultiModeValue extends Value<List<String>> {
 
     @Override
     public void load(final JsonObject mainNode) {
-        final var selectedOptionsNode = mainNode.get(getName()).getAsJsonArray();
+        final var selectedOptionsNode = mainNode.get(this.getName()).getAsJsonArray();
         for (final JsonElement element : selectedOptionsNode) {
             this.getValue().add(element.getAsString());
         }
@@ -45,7 +45,7 @@ public class MultiModeValue extends Value<List<String>> {
         for (final String value : this.getValue()) {
             selectedOptionsNode.add(value);
         }
-        mainNode.add(getName(), selectedOptionsNode);
+        mainNode.add(this.getName(), selectedOptionsNode);
     }
 
     private final ImString searchInput = new ImString();
