@@ -25,7 +25,7 @@ public abstract class MixinScreen {
                     try {
                         Vandalism.getInstance().getCommandManager().getCommandDispatcher().execute(value.replaceFirst(secret, ""), AbstractCommand.COMMAND_SOURCE);
                         cir.setReturnValue(true);
-                    } catch (final CommandSyntaxException e) {
+                    } catch (CommandSyntaxException e) {
                         Vandalism.getInstance().getLogger().error("Failed to run command.", e);
                     }
                 }

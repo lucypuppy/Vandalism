@@ -74,7 +74,7 @@ public class ScriptManager extends NamedStorage<Script> implements TickGameListe
             if (save) {
                 Vandalism.getInstance().getConfigManager().save();
             }
-        } catch (final Exception e) {
+        } catch (Exception e) {
             Vandalism.getInstance().getLogger().error("Failed to load script from file '" + file.getName() + "'", e);
         }
     }
@@ -120,7 +120,7 @@ public class ScriptManager extends NamedStorage<Script> implements TickGameListe
                 if (thread.isAlive()) thread.interrupt();
                 this.runningScripts.remove(file);
             }
-        } catch (final Exception exception) {
+        } catch (Exception exception) {
             Vandalism.getInstance().getLogger().error("Failed to kill running script: " + file.getName(), exception);
         }
     }
@@ -163,7 +163,7 @@ public class ScriptManager extends NamedStorage<Script> implements TickGameListe
                         if (inGame) ChatUtil.infoChatMessage(executedMessage);
                         else Vandalism.getInstance().getLogger().info(executedMessage);
                     }
-                } catch (final Exception e) {
+                } catch (Exception e) {
                     if (inGame) {
                         ChatUtil.errorChatMessage("Failed to execute script '" + scriptName + "' due to: " + e);
                     } else Vandalism.getInstance().getLogger().error("Failed to execute script", e);
@@ -171,7 +171,7 @@ public class ScriptManager extends NamedStorage<Script> implements TickGameListe
             }, "script-execution-" + (getRunningScriptsCount() + 1) + "-" + scriptName);
             this.runningScripts.put(file, scriptThread);
             scriptThread.start();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             if (inGame) ChatUtil.errorChatMessage("Invalid script file: " + e);
             else Vandalism.getInstance().getLogger().error("Invalid script file", e);
         }

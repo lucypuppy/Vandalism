@@ -88,7 +88,7 @@ public class NetworkingSettings extends ValueGroup {
                 }
 
             });
-        } catch (final NativeHookException e) {
+        } catch (NativeHookException e) {
             Vandalism.getInstance().getLogger().error("Failed to register native input hook disconnect listener.", e);
         }
     }

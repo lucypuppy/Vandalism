@@ -99,7 +99,7 @@ public enum ScriptCommand {
         final double speed;
         try {
             speed = Double.parseDouble(args[0].trim());
-        } catch (final NumberFormatException e) {
+        } catch (NumberFormatException e) {
             throw new RuntimeException("Invalid double value '" + args[0] + "' for speed argument after SetSpeed command");
         }
         if (execute) {
@@ -132,7 +132,7 @@ public enum ScriptCommand {
         final float yaw;
         try {
             yaw = Float.parseFloat(args[0].trim());
-        } catch (final NumberFormatException e) {
+        } catch (NumberFormatException e) {
             throw new RuntimeException("Invalid float value '" + args[0] + "' for yaw argument after SetYaw command");
         }
         if (execute) {
@@ -165,7 +165,7 @@ public enum ScriptCommand {
         final float pitch;
         try {
             pitch = Float.parseFloat(args[0].trim());
-        } catch (final NumberFormatException e) {
+        } catch (NumberFormatException e) {
             throw new RuntimeException("Invalid float value '" + args[0] + "' for pitch argument after SetYaw command");
         }
         if (execute) {
@@ -198,7 +198,7 @@ public enum ScriptCommand {
         final double xVelocity;
         try {
             xVelocity = Double.parseDouble(args[0].trim());
-        } catch (final NumberFormatException e) {
+        } catch (NumberFormatException e) {
             throw new RuntimeException("Invalid double value '" + args[0] + "' for xVelocity argument after SetVelocityX command");
         }
         if (execute) {
@@ -232,7 +232,7 @@ public enum ScriptCommand {
         final double yVelocity;
         try {
             yVelocity = Double.parseDouble(args[0].trim());
-        } catch (final NumberFormatException e) {
+        } catch (NumberFormatException e) {
             throw new RuntimeException("Invalid double value '" + args[0] + "' for yVelocity argument after SetVelocityY command");
         }
         if (execute) {
@@ -266,7 +266,7 @@ public enum ScriptCommand {
         final double zVelocity;
         try {
             zVelocity = Double.parseDouble(args[0].trim());
-        } catch (final NumberFormatException e) {
+        } catch (NumberFormatException e) {
             throw new RuntimeException("Invalid double value '" + args[0] + "' for zVelocity argument after SetVelocityZ command");
         }
         if (execute) {
@@ -300,7 +300,7 @@ public enum ScriptCommand {
         final long delay;
         try {
             delay = Long.parseLong(args[0].trim());
-        } catch (final NumberFormatException e) {
+        } catch (NumberFormatException e) {
             throw new RuntimeException("Invalid long value '" + args[0] + "' for delay argument after wait command");
         }
         if (delay < 1) {
@@ -309,7 +309,7 @@ public enum ScriptCommand {
         if (execute) {
             try {
                 Thread.sleep(delay);
-            } catch (final InterruptedException ignored) {
+            } catch (InterruptedException ignored) {
             }
         }
         if (args.length > 1) {
@@ -337,7 +337,7 @@ public enum ScriptCommand {
         int amount;
         try {
             amount = Integer.parseInt(args[0].trim());
-        } catch (final NumberFormatException e) {
+        } catch (NumberFormatException e) {
             throw new RuntimeException("Invalid integer value '" + args[0] + "' for amount argument after times command");
         }
         if (amount < 1) {

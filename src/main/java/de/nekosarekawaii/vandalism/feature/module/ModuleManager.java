@@ -92,7 +92,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
                 this.trueSightModule = new TrueSightModule(),
                 this.visualThrottleModule = new VisualThrottleModule(),
                 new VehicleOneHitModule(),
-                new LongJumpModule()
+                new LongJumpModule(),
+                new TrashTalkModule()
         );
 
         configManager.add(new ConfigWithValues("modules", getList()));

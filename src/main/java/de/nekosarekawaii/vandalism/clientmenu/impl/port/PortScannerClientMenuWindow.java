@@ -136,14 +136,14 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
                                                     this.ports.put(port, new PortResult(port, this.hostname.get()));
                                                 }
                                             }
-                                        } catch (final Exception ignored) {
+                                        } catch (Exception ignored) {
                                         }
                                         if (this.checkedPort < port) {
                                             this.checkedPort = port;
                                         }
                                     }
                                     this.stop();
-                                } catch (final Exception e) {
+                                } catch (Exception e) {
                                     this.state.set(State.FAILED.getMessage() + e.getClass().getSimpleName() + ": " + e.getMessage());
                                 }
                             });

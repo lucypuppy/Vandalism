@@ -107,7 +107,7 @@ public class ServerListManager {
                 }
             }
             jsonReader.close();
-        } catch (final IOException e) {
+        } catch (IOException e) {
             Vandalism.getInstance().getLogger().error("Failed to load enhanced server list config.", e);
         }
     }
@@ -127,7 +127,7 @@ public class ServerListManager {
             configObject.add("serverLists", serverListsArray);
             printWriter.println(GSON.toJson(configObject));
             printWriter.close();
-        } catch (final IOException e) {
+        } catch (IOException e) {
             Vandalism.getInstance().getLogger().error("Failed to save enhanced server list config.", e);
         }
     }

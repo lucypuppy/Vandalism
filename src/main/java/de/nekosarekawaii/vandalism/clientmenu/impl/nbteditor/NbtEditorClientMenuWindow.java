@@ -53,7 +53,7 @@ public class NbtEditorClientMenuWindow extends ClientMenuWindow {
             stream.close();
             setActive(true);
             Vandalism.getInstance().getClientMenuManager().openScreen();
-        } catch (final IOException io) {
+        } catch (IOException io) {
             Vandalism.getInstance().getLogger().error("Failed to display nbt.", io);
         }
     }

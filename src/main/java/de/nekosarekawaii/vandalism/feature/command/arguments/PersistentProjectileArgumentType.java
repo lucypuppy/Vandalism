@@ -40,7 +40,7 @@ public class PersistentProjectileArgumentType implements ArgumentType<Persistent
         final String argument = reader.readString().toUpperCase();
         try {
             return PersistentProjectile.valueOf(argument);
-        } catch (final IllegalArgumentException exception) {
+        } catch (IllegalArgumentException exception) {
             throw NOT_EXISTING.create(argument);
         }
     }

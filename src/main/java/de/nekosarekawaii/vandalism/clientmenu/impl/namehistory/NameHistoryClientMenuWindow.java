@@ -77,7 +77,7 @@ public class NameHistoryClientMenuWindow extends ClientMenuWindow {
     private void delayedResetState() {
         try {
             Thread.sleep(10000);
-        } catch (final InterruptedException ignored) {
+        } catch (InterruptedException ignored) {
         }
         this.resetState();
     }
@@ -113,7 +113,7 @@ public class NameHistoryClientMenuWindow extends ClientMenuWindow {
                                 this.state.set("Invalid response for the uuid from the mojang api (Content is blank).");
                                 this.clear();
                             }
-                        } catch (final Exception e) {
+                        } catch (Exception e) {
                             this.state.set("Error while getting uuid from mojang api: " + e);
                         }
                         if (this.lastUUID.isBlank() && this.mc.player != null) {
@@ -163,7 +163,7 @@ public class NameHistoryClientMenuWindow extends ClientMenuWindow {
                                     this.state.set("Invalid response for the name history from the laby.net api (Content is blank).");
                                     this.clear();
                                 }
-                            } catch (final Exception e) {
+                            } catch (Exception e) {
                                 this.state.set("Error while getting name history from mojang api: " + e);
                                 this.clear();
                             }

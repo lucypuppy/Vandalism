@@ -145,7 +145,7 @@ public abstract class AbstractAccount implements IName, MinecraftWrapper {
             UserApiService userApiService;
             try {
                 userApiService = authenticationService.createUserApiService(session.getAccessToken());
-            } catch (final AuthenticationException e) {
+            } catch (AuthenticationException e) {
                 userApiService = UserApiService.OFFLINE; // Technically trash, but whatever, Java is bad, Mojang is bad, everything is bad
             }
             mc.userApiService = userApiService;

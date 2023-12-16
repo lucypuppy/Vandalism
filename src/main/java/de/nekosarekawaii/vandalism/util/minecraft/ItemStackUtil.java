@@ -67,7 +67,7 @@ public class ItemStackUtil implements MinecraftWrapper {
             if (!nbt.isBlank()) {
                 stack.setNbt(NbtHelper.fromNbtProviderString(nbt));
             }
-        } catch (final CommandSyntaxException e) {
+        } catch (CommandSyntaxException e) {
             Vandalism.getInstance().getLogger().error("Failed to create item stack with nbt: " + nbt, e);
         }
         return stack;
@@ -83,7 +83,7 @@ public class ItemStackUtil implements MinecraftWrapper {
             if (!nbt.isBlank()) {
                 stack.setNbt(NbtHelper.fromNbtProviderString(nbt));
             }
-        } catch (final CommandSyntaxException e) {
+        } catch (CommandSyntaxException e) {
             Vandalism.getInstance().getLogger().error("Failed to create block item stack with nbt: " + nbt, e);
         }
         return stack;
@@ -121,7 +121,7 @@ public class ItemStackUtil implements MinecraftWrapper {
                 ChatUtil.infoChatMessage("You should have received '" + itemStack.getName().getString() + "' item.");
             }
             return true;
-        } catch (final Throwable throwable) {
+        } catch (Throwable throwable) {
             ChatUtil.errorChatMessage("Failed to give item cause of: " + throwable);
         }
         return false;

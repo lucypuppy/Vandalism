@@ -41,7 +41,7 @@ public class ChatClearCommand extends AbstractCommand {
                                     if (!commandHistoryFile.createNewFile()) {
                                         Vandalism.getInstance().getLogger().error("Failed to create new command history file.");
                                     }
-                                } catch (final IOException e) {
+                                } catch (IOException e) {
                                     Vandalism.getInstance().getLogger().error("Failed to create new command history file.", e);
                                 }
                             }

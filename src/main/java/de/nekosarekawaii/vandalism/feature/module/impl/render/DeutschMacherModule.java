@@ -212,7 +212,7 @@ public class DeutschMacherModule extends AbstractModule implements TextDrawListe
             try {
                 result.append(this.toDeutsch(new BigDecimal(part).toBigInteger()));
                 continue;
-            } catch (final NumberFormatException ignored) {
+            } catch (NumberFormatException ignored) {
             }
             result.append(part);
         }

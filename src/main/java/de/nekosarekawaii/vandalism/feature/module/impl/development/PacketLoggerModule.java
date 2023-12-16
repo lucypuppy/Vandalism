@@ -82,7 +82,7 @@ public class PacketLoggerModule extends AbstractModule implements IncomingPacket
     }
 
     @Override
-    public void onOutgoingPacket(OutgoingPacketEvent event) {
+    public void onOutgoingPacket(final OutgoingPacketEvent event) {
         logPacket(true, event.packet);
     }
 }

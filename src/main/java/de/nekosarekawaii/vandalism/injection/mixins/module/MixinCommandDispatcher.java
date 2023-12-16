@@ -40,7 +40,7 @@ public abstract class MixinCommandDispatcher<S> {
         if (exploitFixerModule.isActive() && exploitFixerModule.blockBrigadierStackOverflowCrash.getValue()) {
             try {
                 return this.parseNodes(this.root, command, context);
-            } catch (final StackOverflowError ignored) {
+            } catch (StackOverflowError ignored) {
                 return new ParseResults<>(context, command, Collections.singletonMap(
                         this.root, vandalism$STACK_OVERFLOW_EXCEPTION.createWithContext(command))
                 );
