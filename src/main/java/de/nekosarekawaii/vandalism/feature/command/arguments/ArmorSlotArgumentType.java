@@ -40,7 +40,7 @@ public class ArmorSlotArgumentType implements ArgumentType<ArmorSlotArgumentType
         final String input = reader.readString().toUpperCase();
         try {
             return ArmorSlot.valueOf(input);
-        } catch (final IllegalArgumentException exception) {
+        } catch (IllegalArgumentException exception) {
             throw NOT_EXISTING.create(input);
         }
     }

@@ -187,7 +187,7 @@ public class ScriptEditor implements MinecraftWrapper {
             Vandalism.getInstance().getScriptManager().loadScriptFromFile(this.scriptFile, true);
             this.lastScriptFileModification = this.scriptFile.lastModified();
             this.textEditor.setTextLines(lines);
-        } catch (final Throwable throwable) {
+        } catch (Throwable throwable) {
             Vandalism.getInstance().getLogger().error("Error while saving script file: " + this.scriptFile.getName(), throwable);
         }
     }
@@ -240,7 +240,7 @@ public class ScriptEditor implements MinecraftWrapper {
                                 }
                             }
                         }
-                    } catch (final Exception e) {
+                    } catch (Exception e) {
                         errorMarkers.put(lineNumber, e.getMessage().replace(e.getClass().getName() + ": ", ""));
                     }
                 }
@@ -257,7 +257,7 @@ public class ScriptEditor implements MinecraftWrapper {
                         scanner.close();
                         this.textEditor.setText(code.toString());
                         this.lastScriptFileModification = this.scriptFile.lastModified();
-                    } catch (final IOException ioException) {
+                    } catch (IOException ioException) {
                         Vandalism.getInstance().getLogger().error("Error while reloading script file from disk: " + this.scriptFile.getName(), ioException);
                     }
                 }

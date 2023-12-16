@@ -1,15 +1,13 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.nekosarekawaii.vandalism.base.event.player.ChatListener;
+import de.nekosarekawaii.vandalism.base.event.player.ChatModifyReceiveListener;
+import de.nekosarekawaii.vandalism.base.event.player.ChatSendListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
+import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
-public class MessageEncryptorModule extends AbstractModule implements ChatListener {
+public class MessageEncryptorModule extends AbstractModule implements ChatSendListener, ChatModifyReceiveListener {
 
     public static final MutableText ENCRYPTION_PREFIX = Text.empty()
             .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
@@ -27,16 +25,31 @@ public class MessageEncryptorModule extends AbstractModule implements ChatListen
     @Override
     public void onEnable() {
         DietrichEvents2.global().subscribe(ChatSendEvent.ID, this);
+        DietrichEvents2.global().subscribe(ChatModifyReceiveEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
         DietrichEvents2.global().unsubscribe(ChatSendEvent.ID, this);
+        DietrichEvents2.global().unsubscribe(ChatModifyReceiveEvent.ID, this);
     }
 
     @Override
     public void onChatSend(final ChatSendEvent event) {
         event.message = this.encryptMessage(event.message);
+    }
+
+    @Override
+    public void onChatModifyReceive(final ChatModifyReceiveEvent event) {
+        final String message = event.mutableText.getString();
+        if (this.isEncrypted(message)) {
+            event.mutableText.append(MessageEncryptorModule.ENCRYPTION_PREFIX.setStyle(
+                    MessageEncryptorModule.ENCRYPTION_PREFIX.getStyle().withHoverEvent(new HoverEvent(
+                            HoverEvent.Action.SHOW_TEXT,
+                            Text.literal(this.decryptMessage(message))
+                    )))
+            );
+        }
     }
 
     private String encryptMessage(final String message) {
@@ -58,7 +71,7 @@ public class MessageEncryptorModule extends AbstractModule implements ChatListen
         return stringBuilder.toString();
     }
 
-    public String decryptMessage(final String message) {
+    private String decryptMessage(final String message) {
         final StringBuilder stringBuilder = new StringBuilder();
         boolean isEncrpyted = false, isOldCorona = true;
         for (final char c : message.toCharArray()) {
@@ -79,7 +92,7 @@ public class MessageEncryptorModule extends AbstractModule implements ChatListen
         return stringBuilder.toString();
     }
 
-    public boolean isEncrypted(final String text) {
+    private boolean isEncrypted(final String text) {
         for (final char c : text.toCharArray()) {
             if (c >= OFFSET_CHAR && c < CHECK_CHAR)
                 return true;

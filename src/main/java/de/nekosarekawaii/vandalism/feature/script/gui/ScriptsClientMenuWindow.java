@@ -3,9 +3,9 @@ package de.nekosarekawaii.vandalism.feature.script.gui;
 import de.florianmichael.rclasses.common.RandomUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.Value;
+import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.feature.script.Script;
 import de.nekosarekawaii.vandalism.feature.script.parse.ScriptParser;
-import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import imgui.ImGui;
 import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiTabBarFlags;
@@ -163,7 +163,7 @@ public class ScriptsClientMenuWindow extends ClientMenuWindow {
                                                                     if (!code.isBlank()) {
                                                                         this.scriptEditors.put(scriptFile, new ScriptEditor(scriptFile, code));
                                                                     }
-                                                                } catch (final Throwable throwable) {
+                                                                } catch (Throwable throwable) {
                                                                     Vandalism.getInstance().getLogger().error("Error while opening script file: " + scriptFile.getName(), throwable);
                                                                 }
                                                             }

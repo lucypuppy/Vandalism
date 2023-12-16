@@ -41,7 +41,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
             try {
                 final MutableText description = Text.Serializer.fromJson(descriptionString);
                 if (description != null) this.motd = description.getString();
-            } catch (final JsonSyntaxException ignored) {
+            } catch (JsonSyntaxException ignored) {
                 this.motd = descriptionString;
             }
         }

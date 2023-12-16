@@ -112,7 +112,7 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
             final int byteCount = ByteCountDataOutput.INSTANCE.getCount();
             ByteCountDataOutput.INSTANCE.reset();
             tooltipData.add(new TextTooltipComponent(Text.literal(StringUtils.formatBytes(byteCount)).formatted(Formatting.GRAY).asOrderedText()));
-        } catch (final IOException e) {
+        } catch (IOException e) {
             Vandalism.getInstance().getLogger().error("Failed to write item stack to nbt.", e);
         }
     }

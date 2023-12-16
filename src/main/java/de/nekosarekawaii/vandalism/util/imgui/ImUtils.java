@@ -36,7 +36,7 @@ public class ImUtils {
         try {
             fontConfig.setName(fontName + " " + size + "px");
             return atlas.addFontFromMemoryTTF(IOUtils.toByteArray(Files.newInputStream(path.get())), size, fontConfig, glyphRanges);
-        } catch (final IOException e) {
+        } catch (IOException e) {
             Vandalism.getInstance().getLogger().error("Failed to load font: " + pathString, e);
         }
         return null;

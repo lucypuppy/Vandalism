@@ -69,7 +69,7 @@ public class ServerAddressResolverClientMenuWindow extends ClientMenuWindow {
                             if (newAddress.contains("./")) newAddress = newAddress.replace("./", "/");
                             if (newAddress.contains("/")) newAddress = newAddress.replace("/", "\n");
                             this.lastData.set(oldAddress + "\n\n" + newAddress);
-                        } catch (final Exception e) {
+                        } catch (Exception e) {
                             this.lastData.set("Error: " + e.getMessage());
                         }
                     });

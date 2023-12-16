@@ -61,7 +61,7 @@ public abstract class MixinServerResourcePackProvider implements MinecraftWrappe
                         zos.write(buffer, 0, length);
                     }
                     zos.closeEntry();
-                } catch (final IOException ioException) {
+                } catch (IOException ioException) {
                     Vandalism.getInstance().getLogger().error("Failed to add zip entry into server resource pack zip!", ioException);
                 }
             }
@@ -88,13 +88,13 @@ public abstract class MixinServerResourcePackProvider implements MinecraftWrappe
                             while ((length = zipIn.read(buffer)) > 0) {
                                 fos.write(buffer, 0, length);
                             }
-                        } catch (final IOException ioException) {
+                        } catch (IOException ioException) {
                             Vandalism.getInstance().getLogger().error("Failed to write entry of server resource pack!", ioException);
                         } finally {
                             zipIn.closeEntry();
                         }
                     }
-                } catch (final IOException ioException) {
+                } catch (IOException ioException) {
                     Vandalism.getInstance().getLogger().error("Failed to read server resource pack!", ioException);
                 }
                 resourcePackFile.delete();
@@ -102,12 +102,12 @@ public abstract class MixinServerResourcePackProvider implements MinecraftWrappe
                 if (dirFiles != null && dirFiles.length > 0) {
                     try (final FileOutputStream fos = new FileOutputStream(new File(tempDir.getParentFile(), resourcePackFile.getName() + ".zip")); final ZipOutputStream zos = new ZipOutputStream(fos)) {
                         this.vandalism$zipResourcePackFiles(tempDir, "", zos);
-                    } catch (final IOException ioException) {
+                    } catch (IOException ioException) {
                         Vandalism.getInstance().getLogger().error("Failed to finish conversion of server resource pack into a resource pack zip!", ioException);
                     }
                 } else Vandalism.getInstance().getLogger().error("Empty server resource pack zip!");
                 FileUtils.deleteDirectory(tempDir);
-            } catch (final IOException ioException) {
+            } catch (IOException ioException) {
                 Vandalism.getInstance().getLogger().error("Failed to convert the server resource pack into a resource pack zip!", ioException);
             }
             return CompletableFuture.completedFuture(null);

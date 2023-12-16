@@ -50,6 +50,7 @@ import java.io.File;
  *  - Fix calculations for the custom hud
  *  - Fix the sprint event (attacking is wrong when sprintEvent.force = true)
  *  - Fix ClientMenuScreen#close because it could break the entire game
+ *  - Fix trash talk module reacting to "this." for some reason.
  */
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 

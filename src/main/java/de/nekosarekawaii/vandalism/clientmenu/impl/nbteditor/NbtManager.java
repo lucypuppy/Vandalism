@@ -38,7 +38,7 @@ public class NbtManager implements ImNbtDrawer, MinecraftWrapper {
                             "imnbt/icons.png"
                     ))
             ));
-        } catch (final IOException e) {
+        } catch (IOException e) {
             this.icons = null;
             Vandalism.getInstance().getLogger().error("Failed to load nbt editor icons!", e);
         }

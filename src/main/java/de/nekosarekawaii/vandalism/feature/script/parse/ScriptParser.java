@@ -37,7 +37,7 @@ public class ScriptParser {
                     }
                     try {
                         scriptCommand.check(scriptName, lineNumber, code);
-                    } catch (final Exception e) {
+                    } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                     return new Pair<>(scriptCommand, new Pair<>(lineNumber, code));
@@ -65,7 +65,7 @@ public class ScriptParser {
             }
             scanner.close();
             return code;
-        } catch (final Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException("Failed to parse script code line in script '" + name + "' at line " + lineNumber + " due to an exception: " + e.getMessage());
         }
     }
@@ -81,7 +81,7 @@ public class ScriptParser {
                     }
                     try {
                         return info.parseValue(split[1]);
-                    } catch (final Exception exception) {
+                    } catch (Exception exception) {
                         throw new RuntimeException("Failed to parse script info '" + line + "' " + (advancedErrors ? "in script '" + scriptName + "' at line " + lineNumber : "") + " due to an exception: " + exception.getMessage());
                     }
                 }
@@ -119,7 +119,7 @@ public class ScriptParser {
                 lineNumber++;
             }
             scanner.close();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException("Failed to parse script info at line " + lineNumber + " due to an exception: " + e.getMessage());
         }
 

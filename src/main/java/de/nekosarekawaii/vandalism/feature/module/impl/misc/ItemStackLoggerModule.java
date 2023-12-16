@@ -178,7 +178,7 @@ public class ItemStackLoggerModule extends AbstractModule implements TickGameLis
                     ChatUtil.chatMessage(text.formatted(Formatting.DARK_GREEN), false);
                 }
 
-            } catch (final Throwable throwable) {
+            } catch (Throwable throwable) {
                 Vandalism.getInstance().getLogger().error("Failed to log stack!", throwable);
             }
         });

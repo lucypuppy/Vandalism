@@ -46,7 +46,7 @@ public class GameModeArgumentType implements ArgumentType<GameMode> {
         if (gameMode == null) {
             try {
                 gameMode = GameMode.byId(Integer.parseInt(argument));
-            } catch (final NumberFormatException ignored) {
+            } catch (NumberFormatException ignored) {
             }
         }
         if (gameMode == null) throw NOT_EXISTING.create(argument);
