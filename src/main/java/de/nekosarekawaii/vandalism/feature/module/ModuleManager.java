@@ -100,7 +100,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
 
     @Override
     public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        if (action != GLFW.GLFW_PRESS || this.mc.player == null || this.mc.currentScreen != null) {
+        //Cancel if the key is unknown to prevent the module from being toggled multiple times.
+        if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN || this.mc.player == null || this.mc.currentScreen != null) {
             return;
         }
         for (final AbstractModule module : Vandalism.getInstance().getModuleManager().getList()) {
