@@ -7,7 +7,6 @@ import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import imgui.ImGui;
-import imgui.flag.ImGuiSelectableFlags;
 import imgui.type.ImString;
 
 import java.util.ArrayList;
@@ -65,7 +64,7 @@ public class MultiModeValue extends Value<List<String>> {
                     continue;
                 }
                 final boolean isSelected = this.isSelected(value);
-                if (ImGui.selectable(value, isSelected, ImGuiSelectableFlags.DontClosePopups)) {
+                if (ImGui.selectable(value, isSelected)) {
                     if (isSelected) {
                         this.getValue().remove(value);
                     } else {
