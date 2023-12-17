@@ -11,6 +11,7 @@ import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.gui.ModulesClientMenuWindow;
 import de.nekosarekawaii.vandalism.feature.module.impl.combat.BowSpammerModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.combat.KillauraModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.development.PacketLoggerModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.development.TestModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.*;
@@ -38,6 +39,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
     private ModPacketBlockerModule modPacketBlockerModule;
     private TrueSightModule trueSightModule;
     private VisualThrottleModule visualThrottleModule;
+    private KillauraModule killauraModule;
 
     public ModuleManager(final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
         this.configManager = configManager;
@@ -92,7 +94,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
                 this.visualThrottleModule = new VisualThrottleModule(),
                 new VehicleOneHitModule(),
                 new LongJumpModule(),
-                new TrashTalkModule()
+                new TrashTalkModule(),
+                this.killauraModule = new KillauraModule()
         );
 
         configManager.add(new ConfigWithValues("modules", getList()));
@@ -169,6 +172,10 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
 
     public VisualThrottleModule getVisualThrottleModule() {
         return visualThrottleModule;
+    }
+
+    public KillauraModule getKillauraModule() {
+        return killauraModule;
     }
 
 }
