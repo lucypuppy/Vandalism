@@ -272,7 +272,8 @@ public class InfoHUDElement extends HUDElement {
     }
 
     private void drawText(final DrawContext context, final String text, final int x, final int y) {
-        context.drawText(this.mc.textRenderer, text, x, y, this.color.getValue().getRGB(), this.shadow.getValue());
+        context.drawText(this.mc.textRenderer, text, x, y, this.color.getValue(-y * 20).getRGB(),
+                this.shadow.getValue());
     }
 
 }
