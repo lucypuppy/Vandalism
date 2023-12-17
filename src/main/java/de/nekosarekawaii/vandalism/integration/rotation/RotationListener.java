@@ -1,6 +1,5 @@
 package de.nekosarekawaii.vandalism.integration.rotation;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.common.RandomUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.network.OutgoingPacketListener;
@@ -21,8 +20,8 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
     private RotationPriority currentPriority;
 
     public RotationListener() {
-        DietrichEvents2.global().subscribe(OutgoingPacketEvent.ID, this);
-        DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(OutgoingPacketEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(Render2DEvent.ID, this);
     }
 
     @Override

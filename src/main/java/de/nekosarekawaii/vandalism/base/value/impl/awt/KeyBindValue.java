@@ -1,7 +1,7 @@
 package de.nekosarekawaii.vandalism.base.value.impl.awt;
 
 import com.google.gson.JsonObject;
-import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
@@ -36,7 +36,7 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
         if (!this.waitingForInput) {
             if (ImGui.button(InputType.getKeyName(this.getValue()) + "##" + this.getName() + this.getParent().getName(), 0, 25)) {
                 this.waitingForInput = true;
-                DietrichEvents2.global().subscribe(KeyboardInputEvent.ID, this);
+                Vandalism.getEventSystem().subscribe(KeyboardInputEvent.ID, this);
             }
         } else {
             ImGui.textWrapped("Listening for key input...");
@@ -53,7 +53,7 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
 
     private void finishInput() {
         this.waitingForInput = false;
-        DietrichEvents2.global().unsubscribe(KeyboardInputEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(KeyboardInputEvent.ID, this);
     }
 
     @Override

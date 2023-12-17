@@ -1,8 +1,8 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.common.ColorUtils;
 import de.florianmichael.rclasses.common.StringUtils;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
@@ -58,12 +58,12 @@ public class BetterTabListModule extends AbstractModule implements KeyboardInput
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(KeyboardInputEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(KeyboardInputEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(KeyboardInputEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(KeyboardInputEvent.ID, this);
     }
 
     @Override

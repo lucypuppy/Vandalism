@@ -1,6 +1,5 @@
 package de.nekosarekawaii.vandalism.injection.mixins;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.game.MinecraftBoostrapListener;
 import de.nekosarekawaii.vandalism.base.event.game.ShutdownProcessListener;
@@ -21,7 +20,7 @@ public abstract class MixinMinecraftClient {
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;onResolutionChanged()V"))
     private void callMinecraftBootstrapListener(final CallbackInfo ci) {
-        DietrichEvents2.global().postInternal(
+        Vandalism.getEventSystem().postInternal(
                 MinecraftBoostrapListener.MinecraftBootstrapEvent.ID,
                 new MinecraftBoostrapListener.MinecraftBootstrapEvent((MinecraftClient) (Object) this)
         );
@@ -29,7 +28,7 @@ public abstract class MixinMinecraftClient {
 
     @Inject(method = "close", at = @At(value = "HEAD"))
     private void callShutdownProcessListener(final CallbackInfo ci) {
-        DietrichEvents2.global().postInternal(
+        Vandalism.getEventSystem().postInternal(
                 ShutdownProcessListener.ShutdownProcessEvent.ID,
                 new ShutdownProcessListener.ShutdownProcessEvent()
         );

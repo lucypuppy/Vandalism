@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.network.WorldListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.block.Block;
@@ -34,12 +34,12 @@ public class BlockDensityModule extends AbstractModule implements WorldListener 
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(BlockEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(BlockEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(BlockEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(BlockEvent.ID, this);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.game.ScreenListener;
 import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
 import de.nekosarekawaii.vandalism.base.event.network.WorldListener;
@@ -27,7 +27,7 @@ public abstract class MixinMinecraftClient {
 
     @Inject(method = "tick", at = @At(value = "HEAD"))
     private void callTickGameListener(final CallbackInfo ci) {
-        DietrichEvents2.global().postInternal(TickGameListener.TickGameEvent.ID, new TickGameListener.TickGameEvent());
+        Vandalism.getEventSystem().postInternal(TickGameListener.TickGameEvent.ID, new TickGameListener.TickGameEvent());
     }
 
     @Inject(method = "setScreen", at = @At(value = "HEAD"), cancellable = true)
@@ -37,7 +37,7 @@ public abstract class MixinMinecraftClient {
             return;
         }
         final var openScreenEvent = new ScreenListener.ScreenEvent(screen);
-        DietrichEvents2.global().postInternal(ScreenListener.ScreenEvent.ID, openScreenEvent);
+        Vandalism.getEventSystem().postInternal(ScreenListener.ScreenEvent.ID, openScreenEvent);
         if (openScreenEvent.isCancelled()) {
             ci.cancel();
         }
@@ -49,17 +49,17 @@ public abstract class MixinMinecraftClient {
 
     @Inject(method = "setWorld", at = @At("HEAD"))
     private void callWorldListener_Pre(final ClientWorld world, final CallbackInfo ci) {
-        DietrichEvents2.global().postInternal(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent(WorldListener.WorldEventState.PRE));
+        Vandalism.getEventSystem().postInternal(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent(WorldListener.WorldEventState.PRE));
     }
 
     @Inject(method = "setWorld", at = @At("RETURN"))
     private void callWorldListener_Post(final ClientWorld world, final CallbackInfo ci) {
-        DietrichEvents2.global().postInternal(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent(WorldListener.WorldEventState.POST));
+        Vandalism.getEventSystem().postInternal(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent(WorldListener.WorldEventState.POST));
     }
 
     @Inject(method = "onResolutionChanged", at = @At("RETURN"))
     public void callScreenListener(final CallbackInfo ci) {
-        DietrichEvents2.global().postInternal(ScreenListener.ScreenEvent.ID, new ScreenListener.ScreenEvent());
+        Vandalism.getEventSystem().postInternal(ScreenListener.ScreenEvent.ID, new ScreenListener.ScreenEvent());
     }
 
 }

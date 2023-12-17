@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.entity.EntityPushListener;
 import de.nekosarekawaii.vandalism.base.event.entity.FluidPushListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
@@ -51,14 +51,14 @@ public class PushVelocityModule extends AbstractModule implements EntityPushList
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(EntityPushEvent.ID, this);
-        DietrichEvents2.global().subscribe(FluidPushEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(EntityPushEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(FluidPushEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(EntityPushEvent.ID, this);
-        DietrichEvents2.global().unsubscribe(FluidPushEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(EntityPushEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(FluidPushEvent.ID, this);
     }
 
     @Override

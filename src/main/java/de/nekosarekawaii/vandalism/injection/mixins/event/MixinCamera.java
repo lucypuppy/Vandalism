@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.render.CameraClipRaytraceListener;
 import net.minecraft.client.render.Camera;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,7 +14,7 @@ public abstract class MixinCamera {
     @Inject(method = "clipToSpace", at = @At("HEAD"), cancellable = true)
     public void callCameraClipRaytraceListener(final double desiredCameraDistance, final CallbackInfoReturnable<Double> cir) {
         final var event = new CameraClipRaytraceListener.CameraClipRaytraceEvent();
-        DietrichEvents2.global().postInternal(CameraClipRaytraceListener.CameraClipRaytraceEvent.ID, event);
+        Vandalism.getEventSystem().postInternal(CameraClipRaytraceListener.CameraClipRaytraceEvent.ID, event);
 
         if (event.isCancelled()) {
             cir.setReturnValue(desiredCameraDistance);

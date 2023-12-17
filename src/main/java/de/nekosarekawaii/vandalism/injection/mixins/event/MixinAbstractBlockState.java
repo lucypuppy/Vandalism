@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.network.WorldListener;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.ShapeContext;
@@ -22,7 +22,7 @@ public abstract class MixinAbstractBlockState {
             return;
         }
         final var event = new WorldListener.BlockEvent(((AbstractBlock.AbstractBlockState) (Object) this).asBlockState(), pos, callback.getReturnValue());
-        DietrichEvents2.global().postInternal(WorldListener.BlockEvent.ID, event);
+        Vandalism.getEventSystem().postInternal(WorldListener.BlockEvent.ID, event);
         if (event.shouldUpdate) {
             callback.setReturnValue(event.shape);
         }

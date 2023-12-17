@@ -1,6 +1,5 @@
 package de.nekosarekawaii.vandalism.feature.script;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.pattern.storage.named.NamedStorage;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
@@ -32,8 +31,8 @@ public class ScriptManager extends NamedStorage<Script> implements TickGameListe
         clientMenuManager.add(new ScriptsClientMenuWindow());
         this.directory = new File(runDirectory, "scripts");
 
-        DietrichEvents2.global().subscribe(KeyboardInputEvent.ID, this);
-        DietrichEvents2.global().subscribe(TickGameEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(KeyboardInputEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(TickGameEvent.ID, this);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.dietrichevents2.Priorities;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
@@ -24,12 +24,12 @@ public class AmbienceModule extends AbstractModule implements IncomingPacketList
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(IncomingPacketEvent.ID, this, Priorities.LOW);
+        Vandalism.getEventSystem().subscribe(IncomingPacketEvent.ID, this, Priorities.LOW);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(IncomingPacketEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(IncomingPacketEvent.ID, this);
     }
 
     @Override

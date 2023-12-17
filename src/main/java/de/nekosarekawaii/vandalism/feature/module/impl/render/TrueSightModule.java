@@ -1,7 +1,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.common.ColorUtils;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.render.LivingEntityRenderBottomLayerListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
@@ -47,12 +47,12 @@ public class TrueSightModule extends AbstractModule implements LivingEntityRende
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(LivingEntityRenderBottomLayerEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(LivingEntityRenderBottomLayerEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(LivingEntityRenderBottomLayerEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(LivingEntityRenderBottomLayerEvent.ID, this);
     }
 
     @Override

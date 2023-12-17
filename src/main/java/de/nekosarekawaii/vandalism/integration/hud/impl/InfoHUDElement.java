@@ -1,6 +1,7 @@
 package de.nekosarekawaii.vandalism.integration.hud.impl;
 
 import de.florianmichael.rclasses.math.geometry.Alignment;
+import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
@@ -11,41 +12,68 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
 public class InfoHUDElement extends HUDElement {
 
-    private final BooleanValue fps = new BooleanValue(
+    private final ValueGroup visualElements = new ValueGroup(
             this,
+            "Visual Elements",
+            "Elements that are shown in the visual category."
+    );
+
+    private final BooleanValue shadow = new BooleanValue(
+            this.visualElements,
+            "Shadow",
+            "Whether or not the text should have a shadow.",
+            true
+    );
+
+    private final ColorValue color = new ColorValue(
+            this.visualElements,
+            "Color",
+            "The color of the text.",
+            Color.WHITE
+    );
+
+    private final ValueGroup infoElements = new ValueGroup(
+            this,
+            "Info Elements",
+            "Elements that are shown in the info category."
+    );
+
+    private final BooleanValue fps = new BooleanValue(
+            this.infoElements,
             "FPS",
             "Shows the current fps.",
             true
     );
 
     private final BooleanValue username = new BooleanValue(
-            this,
+            this.infoElements,
             "Username",
             "Shows the current username.",
             true
     );
 
     private final BooleanValue position = new BooleanValue(
-            this,
+            this.infoElements,
             "Position",
             "Shows the current position.",
             true
     );
 
     private final BooleanValue dimensionalPosition = new BooleanValue(
-            this,
+            this.infoElements,
             "Dimensional Position",
             "Shows the current position of the dimension you are currently playing in.",
             true
     );
 
     private final ValueGroup positionElements = new ValueGroup(
-            this,
+            this.infoElements,
             "Position Elements",
             "Elements that are shown in the position category."
     ).visibleCondition(this.position::getValue);
@@ -60,21 +88,21 @@ public class InfoHUDElement extends HUDElement {
     ).visibleCondition(this.position::getValue);
 
     private final BooleanValue difficulty = new BooleanValue(
-            this,
+            this.infoElements,
             "Difficulty",
             "Shows the current world difficulty.",
             true
     );
 
     private final BooleanValue permissionsLevel = new BooleanValue(
-            this,
+            this.infoElements,
             "Permissions Level",
             "Shows the current permissions level.",
             true
     );
 
     private final ValueGroup serverElements = new ValueGroup(
-            this,
+            this.infoElements,
             "Server Elements",
             "Elements that are shown in the server category."
     );
@@ -244,7 +272,7 @@ public class InfoHUDElement extends HUDElement {
     }
 
     private void drawText(final DrawContext context, final String text, final int x, final int y) {
-        context.drawText(this.mc.textRenderer, text, x, y, -1, false);
+        context.drawText(this.mc.textRenderer, text, x, y, this.color.getValue().getRGB(), this.shadow.getValue());
     }
 
 }

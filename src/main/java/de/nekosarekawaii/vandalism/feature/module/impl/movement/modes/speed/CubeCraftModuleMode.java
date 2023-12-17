@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.speed;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.entity.MotionListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.SpeedModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
@@ -18,12 +18,12 @@ public class CubeCraftModuleMode extends ModuleMulti<SpeedModule> implements Mot
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(MotionEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(MotionEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(MotionEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(MotionEvent.ID, this);
     }
 
     @Override

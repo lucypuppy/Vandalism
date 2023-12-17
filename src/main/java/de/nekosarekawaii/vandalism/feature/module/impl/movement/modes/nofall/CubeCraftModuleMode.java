@@ -1,7 +1,6 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.nofall;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.nekosarekawaii.vandalism.base.event.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.NoFallModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
@@ -16,12 +15,12 @@ public class CubeCraftModuleMode extends ModuleMulti<NoFallModule> implements Ou
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(OutgoingPacketEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(OutgoingPacketEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(OutgoingPacketEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(OutgoingPacketEvent.ID, this);
     }
 
     @Override

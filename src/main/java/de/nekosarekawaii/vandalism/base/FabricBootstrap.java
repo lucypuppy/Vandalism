@@ -1,6 +1,5 @@
 package de.nekosarekawaii.vandalism.base;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.game.MinecraftBoostrapListener;
 import de.nekosarekawaii.vandalism.base.event.game.ShutdownProcessListener;
@@ -26,7 +25,7 @@ public class FabricBootstrap implements ClientModInitializer {
 
         FabricBootstrap.WINDOW_TITLE = String.format("%s %s made by %s", FabricBootstrap.MOD_NAME, FabricBootstrap.MOD_VERSION, FabricBootstrap.MOD_AUTHORS);
 
-        DietrichEvents2.global().subscribe(Vandalism.getInstance(),
+        Vandalism.getEventSystem().subscribe(Vandalism.getInstance(),
                 MinecraftBoostrapListener.MinecraftBootstrapEvent.ID,
                 ShutdownProcessListener.ShutdownProcessEvent.ID
         );

@@ -1,7 +1,6 @@
 package de.nekosarekawaii.vandalism.clientmenu;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
@@ -34,7 +33,7 @@ public class ClientMenuManager extends Storage<ClientMenuWindow> implements Keyb
 
     public ClientMenuManager(final ConfigManager configManager, final File runDirectory) {
         configManager.add(new ClientMenuConfig(this));
-        DietrichEvents2.global().subscribe(this, KeyboardInputEvent.ID, Render2DEvent.ID);
+        Vandalism.getEventSystem().subscribe(this, KeyboardInputEvent.ID, Render2DEvent.ID);
 
         ImLoader.init(runDirectory);
     }

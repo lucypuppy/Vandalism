@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.game.KeyboardInputListener;
 import net.minecraft.client.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,14 +13,14 @@ public abstract class MixinKeyboard {
 
     @Inject(method = "onKey", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;", shift = At.Shift.BEFORE, ordinal = 0))
     private void callKeyboardInputListener_Key(final long window, final int key, final int scanCode, final int action, final int modifiers, final CallbackInfo callbackInfo) {
-        DietrichEvents2.global().postInternal(KeyboardInputListener.KeyboardInputEvent.ID,
+        Vandalism.getEventSystem().postInternal(KeyboardInputListener.KeyboardInputEvent.ID,
                 new KeyboardInputListener.KeyboardInputEvent(KeyboardInputListener.Type.KEY, window, key, -1, scanCode, action, modifiers)
         );
     }
 
     @Inject(method = "onChar", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;", shift = At.Shift.BEFORE))
     private void callKeyboardInputListener_Char(final long window, final int codePoint, final int modifiers, final CallbackInfo callbackInfo) {
-        DietrichEvents2.global().postInternal(KeyboardInputListener.KeyboardInputEvent.ID,
+        Vandalism.getEventSystem().postInternal(KeyboardInputListener.KeyboardInputEvent.ID,
                 new KeyboardInputListener.KeyboardInputEvent(KeyboardInputListener.Type.CHAR, window, -1, codePoint, -1, -1, modifiers)
         );
     }

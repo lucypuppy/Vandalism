@@ -1,13 +1,13 @@
 package de.nekosarekawaii.vandalism.feature.creativetab;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.dietrichevents2.Priorities;
 import de.florianmichael.rclasses.pattern.storage.Storage;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.feature.creativetab.impl.CrashItemsCreativeTab;
+import de.nekosarekawaii.vandalism.feature.creativetab.impl.GriefItemsCreativeTab;
 import de.nekosarekawaii.vandalism.feature.creativetab.impl.KickItemsCreativeTab;
 import de.nekosarekawaii.vandalism.feature.creativetab.impl.TrollItemsCreativeTab;
-import de.nekosarekawaii.vandalism.feature.creativetab.impl.GriefItemsCreativeTab;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 
@@ -30,8 +30,8 @@ public class CreativeTabManager extends Storage<AbstractCreativeTab> implements 
                 new GriefItemsCreativeTab(),
                 new TrollItemsCreativeTab()
         );
-        
-        DietrichEvents2.global().subscribe(OutgoingPacketEvent.ID, this, Priorities.HIGH);
+
+        Vandalism.getEventSystem().subscribe(OutgoingPacketEvent.ID, this, Priorities.HIGH);
     }
 
     @Override

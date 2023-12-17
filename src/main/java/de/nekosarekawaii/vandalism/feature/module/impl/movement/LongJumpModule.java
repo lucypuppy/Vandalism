@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.entity.MotionListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.minecraft.MovementUtil;
@@ -22,7 +22,7 @@ public class LongJumpModule extends AbstractModule implements MotionListener {
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(MotionEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(MotionEvent.ID, this);
         if (this.mc.getNetworkHandler() != null) {
             MovementUtil.clip(3.5, 0);
             MovementUtil.setSpeed(0.01);
@@ -33,7 +33,7 @@ public class LongJumpModule extends AbstractModule implements MotionListener {
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(MotionEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(MotionEvent.ID, this);
         this.waitTicks = 0;
         this.moveTicks = 0;
         this.canLongJump = false;

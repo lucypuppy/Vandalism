@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.player.SprintListener;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.world.ClientWorld;
@@ -17,7 +17,7 @@ public abstract class MixinClientWorld implements MinecraftWrapper {
     private void callSprintListener(final Entity entity, final CallbackInfo ci) {
         if (this.mc.player == entity) {
             final var event = new SprintListener.SprintEvent(entity.isSprinting());
-            DietrichEvents2.global().postInternal(SprintListener.SprintEvent.ID, event);
+            Vandalism.getEventSystem().postInternal(SprintListener.SprintEvent.ID, event);
 
             if (event.force) {
                 entity.setSprinting(event.sprinting);

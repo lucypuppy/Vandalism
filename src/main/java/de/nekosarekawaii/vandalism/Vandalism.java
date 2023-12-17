@@ -1,5 +1,6 @@
 package de.nekosarekawaii.vandalism;
 
+import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.account.AccountManager;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
@@ -55,6 +56,7 @@ import java.io.File;
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 
     private static final Vandalism instance = new Vandalism();
+    private static final DietrichEvents2 EVENT_SYSTEM = new DietrichEvents2(33, Throwable::printStackTrace);
     private final Logger logger = LoggerFactory.getLogger(FabricBootstrap.MOD_NAME);
     private File runDirectory;
 
@@ -211,6 +213,10 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
     public HUDManager getHudManager() {
         return hudManager;
+    }
+
+    public static DietrichEvents2 getEventSystem() {
+        return EVENT_SYSTEM;
     }
 
 }
