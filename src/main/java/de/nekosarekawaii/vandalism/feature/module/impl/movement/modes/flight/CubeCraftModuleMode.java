@@ -41,6 +41,8 @@ public class CubeCraftModuleMode extends ModuleMulti<FlightModule> implements Mo
 
     @Override
     public void onPostMotion(final MotionEvent event) {
+        if (this.mc.player == null)
+            return;
         if (this.mc.player.hurtTime > 0) {
             this.waitTicks++;
             if (this.waitTicks >= 4) {

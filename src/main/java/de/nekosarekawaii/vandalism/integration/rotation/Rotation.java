@@ -1,5 +1,6 @@
 package de.nekosarekawaii.vandalism.integration.rotation;
 
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.minecraft.WorldUtil;
 import net.minecraft.entity.Entity;
@@ -73,8 +74,9 @@ public class Rotation implements MinecraftWrapper {
             Vec3d bestHitBoxVector = null;
             for (Vec3d hitboxVector : possibleHitBoxPoints) {
                 final float[] simulatedRotation = getRotationToPoint(hitboxVector, mc.player);
-                final double hitBoxDistance = WorldUtil.rayTraceRange(simulatedRotation[0], simulatedRotation[1]);
-                if (hitBoxDistance > 0 && hitBoxDistance < 3) {
+                final double hitBoxDistance = WorldUtil.rayTraceRange(simulatedRotation[0], simulatedRotation[1], true);
+                //   ChatUtil.infoChatMessage("" + hitBoxDistance);
+                if (hitBoxDistance > 0 && hitBoxDistance < Vandalism.getInstance().getModuleManager().getKillauraModule().range.getValue()) {
                     if (bestDistance > hitBoxDistance) {
                         bestDistance = hitBoxDistance;
                         bestHitBoxVector = hitboxVector;

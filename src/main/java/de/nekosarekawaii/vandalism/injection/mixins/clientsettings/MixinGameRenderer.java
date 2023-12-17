@@ -1,7 +1,10 @@
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.event.player.RotationListener;
+import de.nekosarekawaii.vandalism.feature.module.impl.combat.KillauraModule;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.minecraft.MathUtil;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
@@ -9,11 +12,25 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
 public abstract class MixinGameRenderer implements MinecraftWrapper {
+
+    @ModifyConstant(method = "updateTargetedEntity", constant = @Constant(doubleValue = 9.0))
+    private double hookReachModifyCombatReach(double constant) {
+        KillauraModule killauraModule = Vandalism.getInstance().getModuleManager().getKillauraModule();
+        return killauraModule.isActive() ? MathUtil.getFixedMinecraftReach(killauraModule.range.getValue()) :
+                constant;
+    }
+
+    @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setInverseViewRotationMatrix(Lorg/joml/Matrix3f;)V", shift = At.Shift.AFTER))
+    private void hookRotation(final CallbackInfo ci) {
+        Vandalism.getEventSystem().postInternal(RotationListener.RotationEvent.ID, new RotationListener.RotationEvent());
+    }
 
     @Inject(method = "bobView", at = @At("HEAD"), cancellable = true)
     private void customBobView(final MatrixStack matrixStack, final float f, final CallbackInfo callbackInfo) {
