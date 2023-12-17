@@ -1,6 +1,5 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
@@ -56,12 +55,12 @@ public class ItemStackLoggerModule extends AbstractModule implements TickGameLis
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(TickGameEvent.ID, this, Priorities.HIGH);
+        Vandalism.getEventSystem().subscribe(TickGameEvent.ID, this, Priorities.HIGH);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(TickGameEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(TickGameEvent.ID, this);
     }
 
     @Override

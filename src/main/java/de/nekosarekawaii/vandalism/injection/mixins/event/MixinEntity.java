@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.entity.EntityPushListener;
 import de.nekosarekawaii.vandalism.base.event.entity.FluidPushListener;
 import de.nekosarekawaii.vandalism.base.event.entity.StepListener;
@@ -28,7 +28,7 @@ public abstract class MixinEntity implements MinecraftWrapper {
     private double callEntityPushListener(final double constant) {
         if (this.mc.player == (Object) this) {
             final EntityPushListener.EntityPushEvent entityPushEvent = new EntityPushListener.EntityPushEvent(constant);
-            DietrichEvents2.global().postInternal(EntityPushListener.EntityPushEvent.ID, entityPushEvent);
+            Vandalism.getEventSystem().postInternal(EntityPushListener.EntityPushEvent.ID, entityPushEvent);
             if (entityPushEvent.isCancelled()) return 0;
             return entityPushEvent.value;
         }
@@ -39,7 +39,7 @@ public abstract class MixinEntity implements MinecraftWrapper {
     private boolean callFluidPushListener_Water(final Entity instance, final TagKey<Fluid> tag, double speed) {
         if (this.mc.player == (Object) this) {
             final var event = new FluidPushListener.FluidPushEvent(speed);
-            DietrichEvents2.global().postInternal(FluidPushListener.FluidPushEvent.ID, event);
+            Vandalism.getEventSystem().postInternal(FluidPushListener.FluidPushEvent.ID, event);
 
             if (event.isCancelled()) {
                 return false;
@@ -53,7 +53,7 @@ public abstract class MixinEntity implements MinecraftWrapper {
     private boolean callFluidPushListener_Collision(final Entity instance, final TagKey<Fluid> tag, double speed) {
         if (this.mc.player == (Object) this) {
             final var event = new FluidPushListener.FluidPushEvent(speed);
-            DietrichEvents2.global().postInternal(FluidPushListener.FluidPushEvent.ID, event);
+            Vandalism.getEventSystem().postInternal(FluidPushListener.FluidPushEvent.ID, event);
             if (event.isCancelled()) {
                 return false;
             }
@@ -66,7 +66,7 @@ public abstract class MixinEntity implements MinecraftWrapper {
     private float callStepListener(final Entity instance) {
         if (this.mc.player == (Object) this) {
             final var event = new StepListener.StepEvent(instance.getStepHeight());
-            DietrichEvents2.global().postInternal(StepListener.StepEvent.ID, event);
+            Vandalism.getEventSystem().postInternal(StepListener.StepEvent.ID, event);
 
             return event.stepHeight;
         }
@@ -77,7 +77,7 @@ public abstract class MixinEntity implements MinecraftWrapper {
     private void callStepSuccessListener(final Vec3d movement, final CallbackInfoReturnable<Vec3d> cir) {
         if (this.mc.player == (Object) this) {
             final var event = new StepSuccessListener.StepSuccessEvent(movement, cir.getReturnValue());
-            DietrichEvents2.global().postInternal(StepSuccessListener.StepSuccessEvent.ID, event);
+            Vandalism.getEventSystem().postInternal(StepSuccessListener.StepSuccessEvent.ID, event);
 
             cir.setReturnValue(event.adjustMovementForCollisions);
         }
@@ -87,7 +87,7 @@ public abstract class MixinEntity implements MinecraftWrapper {
     public Vec3d callStrafeListener(final Vec3d movementInput, final float speed, final float yaw) {
         if (this.mc.player == (Object) this) {
             final var event = new StrafeListener.StrafeEvent(movementInput, speed, yaw);
-            DietrichEvents2.global().postInternal(StrafeListener.StrafeEvent.ID, event);
+            Vandalism.getEventSystem().postInternal(StrafeListener.StrafeEvent.ID, event);
 
             return movementInputToVelocity(event.movementInput, event.speed, event.yaw);
         }

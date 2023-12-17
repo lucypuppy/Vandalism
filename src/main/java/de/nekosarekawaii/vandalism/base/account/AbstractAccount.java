@@ -6,9 +6,9 @@ import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.UserApiService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilEnvironment;
-import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.io.mappings.TimeFormatter;
 import de.florianmichael.rclasses.pattern.functional.IName;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.internal.UpdateSessionListener;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.PlayerSkinRenderer;
@@ -108,7 +108,7 @@ public abstract class AbstractAccount implements IName, MinecraftWrapper {
 
     public void updateSession(Session session) {
         final var event = new UpdateSessionListener.UpdateSessionEvent(this.session, session);
-        DietrichEvents2.global().postInternal(UpdateSessionListener.UpdateSessionEvent.ID, event);
+        Vandalism.getEventSystem().postInternal(UpdateSessionListener.UpdateSessionEvent.ID, event);
         this.session = event.newSession; // Allow the event to change the session
 
         playerSkin = new PlayerSkinRenderer(session.getUuidOrNull());

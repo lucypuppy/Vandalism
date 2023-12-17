@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.player.ChatSendListener;
 import net.minecraft.client.gui.screen.ChatScreen;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,7 +15,7 @@ public abstract class MixinChatScreen {
         chatText = instance.normalize(chatText);
         if (!chatText.isBlank()) {
             final var event = new ChatSendListener.ChatSendEvent(chatText);
-            DietrichEvents2.global().postInternal(ChatSendListener.ChatSendEvent.ID, event);
+            Vandalism.getEventSystem().postInternal(ChatSendListener.ChatSendEvent.ID, event);
             chatText = event.message;
         }
         return chatText;

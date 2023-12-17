@@ -1,7 +1,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.dietrichevents2.Priorities;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.base.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
@@ -43,14 +43,14 @@ public class ModPacketBlockerModule extends AbstractModule implements IncomingPa
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(IncomingPacketEvent.ID, this, Priorities.HIGH);
-        DietrichEvents2.global().subscribe(OutgoingPacketEvent.ID, this, Priorities.HIGH);
+        Vandalism.getEventSystem().subscribe(IncomingPacketEvent.ID, this, Priorities.HIGH);
+        Vandalism.getEventSystem().subscribe(OutgoingPacketEvent.ID, this, Priorities.HIGH);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(IncomingPacketEvent.ID, this);
-        DietrichEvents2.global().unsubscribe(OutgoingPacketEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(IncomingPacketEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(OutgoingPacketEvent.ID, this);
     }
 
     private boolean cancel(final String channel) {

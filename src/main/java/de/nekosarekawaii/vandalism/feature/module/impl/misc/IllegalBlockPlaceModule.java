@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
@@ -27,12 +27,12 @@ public class IllegalBlockPlaceModule extends AbstractModule implements TickGameL
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(TickGameEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(TickGameEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(TickGameEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(TickGameEvent.ID, this);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.player.AttackListener;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.entity.Entity;
@@ -15,7 +15,7 @@ public abstract class MixinClientPlayerInteractionManager {
 
     @Inject(method = "attackEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;syncSelectedSlot()V", shift = At.Shift.AFTER))
     private void callAttackListener(final PlayerEntity player, final Entity target, final CallbackInfo ci) {
-        DietrichEvents2.global().postInternal(AttackListener.AttackSendEvent.ID, new AttackListener.AttackSendEvent(target));
+        Vandalism.getEventSystem().postInternal(AttackListener.AttackSendEvent.ID, new AttackListener.AttackSendEvent(target));
     }
 
 }

@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.speed;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.SpeedModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
@@ -14,12 +14,12 @@ public class LongHopModuleMode extends ModuleMulti<SpeedModule> implements TickG
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(TickGameEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(TickGameEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(TickGameEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(TickGameEvent.ID, this);
     }
 
     @Override

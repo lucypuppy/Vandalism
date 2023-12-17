@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.flight;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.entity.MotionListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.FlightModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
@@ -21,7 +21,7 @@ public class CubeCraftModuleMode extends ModuleMulti<FlightModule> implements Mo
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(MotionListener.MotionEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(MotionListener.MotionEvent.ID, this);
         if (this.mc.getNetworkHandler() != null) {
             MovementUtil.clip(3.5, 0);
             MovementUtil.setSpeed(0.01);
@@ -32,7 +32,7 @@ public class CubeCraftModuleMode extends ModuleMulti<FlightModule> implements Mo
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(MotionListener.MotionEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(MotionListener.MotionEvent.ID, this);
         this.waitTicks = 0;
         this.moveTicks = 0;
         this.canLongJump = false;

@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.render.TextDrawListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.util.Formatting;
@@ -58,12 +58,12 @@ public class DeutschMacherModule extends AbstractModule implements TextDrawListe
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(TextDrawEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(TextDrawEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(TextDrawEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(TextDrawEvent.ID, this);
     }
 
     private String toDeutsch(final byte num) {

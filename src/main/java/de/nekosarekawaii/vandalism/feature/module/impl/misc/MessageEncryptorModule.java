@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.player.ChatModifyReceiveListener;
 import de.nekosarekawaii.vandalism.base.event.player.ChatSendListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
@@ -24,14 +24,14 @@ public class MessageEncryptorModule extends AbstractModule implements ChatSendLi
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(ChatSendEvent.ID, this);
-        DietrichEvents2.global().subscribe(ChatModifyReceiveEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(ChatSendEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(ChatModifyReceiveEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(ChatSendEvent.ID, this);
-        DietrichEvents2.global().unsubscribe(ChatModifyReceiveEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(ChatSendEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(ChatModifyReceiveEvent.ID, this);
     }
 
     @Override

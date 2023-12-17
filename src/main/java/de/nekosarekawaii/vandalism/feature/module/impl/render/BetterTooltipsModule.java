@@ -1,6 +1,5 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.common.ColorUtils;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.florianmichael.rclasses.io.ByteCountDataOutput;
@@ -39,12 +38,12 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(TooltipDrawEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(TooltipDrawEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(TooltipDrawEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(TooltipDrawEvent.ID, this);
     }
 
     @Override

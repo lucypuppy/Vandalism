@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.player.SprintListener;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
@@ -20,12 +20,12 @@ public class SprintModule extends AbstractModule implements SprintListener {
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(SprintEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(SprintEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(SprintEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(SprintEvent.ID, this);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.development;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
 import de.nekosarekawaii.vandalism.base.event.player.MoveInputListener;
@@ -47,18 +46,18 @@ public class TestModule extends AbstractModule implements TickGameListener, Stra
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(TickGameEvent.ID, this);
-        DietrichEvents2.global().subscribe(StrafeEvent.ID, this);
-        DietrichEvents2.global().subscribe(Render2DEvent.ID, this);
-        DietrichEvents2.global().subscribe(MoveInputEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(TickGameEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(StrafeEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(Render2DEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(MoveInputEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(TickGameEvent.ID, this);
-        DietrichEvents2.global().unsubscribe(StrafeEvent.ID, this);
-        DietrichEvents2.global().unsubscribe(Render2DEvent.ID, this);
-        DietrichEvents2.global().unsubscribe(MoveInputEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(TickGameEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(StrafeEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(Render2DEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(MoveInputEvent.ID, this);
         this.rotationListener.resetRotation();
     }
 

@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
@@ -13,12 +13,12 @@ public class VelocityModule extends AbstractModule implements IncomingPacketList
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(IncomingPacketEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(IncomingPacketEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(IncomingPacketEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(IncomingPacketEvent.ID, this);
     }
 
     @Override

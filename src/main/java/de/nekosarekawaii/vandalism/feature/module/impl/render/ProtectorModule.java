@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.render.TextDrawListener;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
@@ -46,12 +46,12 @@ public class ProtectorModule extends AbstractModule implements TextDrawListener 
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(TextDrawEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(TextDrawEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(TextDrawEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(TextDrawEvent.ID, this);
     }
 
     @Override

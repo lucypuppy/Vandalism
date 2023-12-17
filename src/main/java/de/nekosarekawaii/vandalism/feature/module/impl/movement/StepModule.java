@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.entity.StepListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
@@ -23,12 +23,12 @@ public class StepModule extends AbstractModule implements StepListener {
 
     @Override
     public void onEnable() {
-        DietrichEvents2.global().subscribe(StepEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(StepEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(StepEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(StepEvent.ID, this);
     }
 
     @Override

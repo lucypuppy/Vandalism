@@ -1,24 +1,46 @@
 package de.nekosarekawaii.vandalism.integration.hud.impl;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.internal.ModuleToggleListener;
+import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
 import net.minecraft.client.gui.DrawContext;
 
+import java.awt.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ModuleListHUDElement extends HUDElement implements ModuleToggleListener {
 
-    private final List<String> activatedModules;
+    private final List<String> activatedModules = new CopyOnWriteArrayList<>();
     private boolean sort;
+
+    private final ValueGroup visualElements = new ValueGroup(
+            this,
+            "Visual Elements",
+            "Elements that are shown in the visual category."
+    );
+
+    private final BooleanValue shadow = new BooleanValue(
+            this.visualElements,
+            "Shadow",
+            "Whether or not the text should have a shadow.",
+            true
+    );
+
+    private final ColorValue color = new ColorValue(
+            this.visualElements,
+            "Color",
+            "The color of the text.",
+            Color.WHITE
+    );
 
     public ModuleListHUDElement() {
         super("Module List", 2, 150);
-        this.activatedModules = new CopyOnWriteArrayList<>();
-        DietrichEvents2.global().subscribe(ModuleToggleListener.ModuleToggleEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(ModuleToggleListener.ModuleToggleEvent.ID, this);
     }
 
     @Override
@@ -41,11 +63,9 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
             final int textWidth = this.mc.textRenderer.getWidth(activatedModule);
             switch (this.alignmentX) {
                 case MIDDLE ->
-                        context.drawText(this.mc.textRenderer, activatedModule, (this.x + this.width / 2) - (textWidth / 2), this.y + yOffset, -1, shadow);
-                case RIGHT ->
-                        context.drawText(this.mc.textRenderer, activatedModule, (this.x + this.width) - textWidth, this.y + yOffset, -1, shadow);
-                default ->
-                        context.drawText(this.mc.textRenderer, activatedModule, this.x, this.y + yOffset, -1, shadow);
+                        drawText(context, activatedModule, (this.x + this.width / 2) - (textWidth / 2), this.y + yOffset);
+                case RIGHT -> drawText(context, activatedModule, (this.x + this.width) - textWidth, this.y + yOffset);
+                default -> drawText(context, activatedModule, this.x, this.y + yOffset);
             }
 
             this.width = Math.max(this.width, textWidth);
@@ -82,6 +102,10 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
                 return compare;
             });
         }
+    }
+
+    private void drawText(final DrawContext context, final String text, final int x, final int y) {
+        context.drawText(this.mc.textRenderer, text, x, y, this.color.getValue().getRGB(), this.shadow.getValue());
     }
 
 }

@@ -1,6 +1,5 @@
 package de.nekosarekawaii.vandalism.feature.module;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.internal.ModuleToggleListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
@@ -41,7 +40,7 @@ public abstract class AbstractModule extends Feature implements ValueParent {
                 false
         ).onValueChange((oldValue, newValue) -> {
             final var event = new ModuleToggleListener.ModuleToggleEvent(this, newValue);
-            DietrichEvents2.global().postInternal(ModuleToggleListener.ModuleToggleEvent.ID, event);
+            Vandalism.getEventSystem().postInternal(ModuleToggleListener.ModuleToggleEvent.ID, event);
 
             // Allows the event to change the active state of the module
             // It's important that people don't use the setActive method from the module itself in the event

@@ -1,6 +1,5 @@
 package de.nekosarekawaii.vandalism.feature.module;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.pattern.storage.named.NamedStorage;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
@@ -44,9 +43,9 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
         this.configManager = configManager;
         clientMenuManager.add(new ModulesClientMenuWindow());
 
-        DietrichEvents2.global().subscribe(KeyboardInputEvent.ID, this);
-        DietrichEvents2.global().subscribe(ShutdownProcessEvent.ID, this);
-        DietrichEvents2.global().subscribe(DisconnectEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(KeyboardInputEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(ShutdownProcessEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(DisconnectEvent.ID, this);
     }
 
     @Override

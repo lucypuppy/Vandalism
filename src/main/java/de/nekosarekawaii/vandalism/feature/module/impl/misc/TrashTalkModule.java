@@ -1,6 +1,5 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.common.RandomUtils;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
@@ -31,12 +30,12 @@ public class TrashTalkModule extends AbstractModule implements ChatReceiveListen
     @Override
     public void onEnable() {
         this.setup();
-        DietrichEvents2.global().subscribe(ChatReceiveEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(ChatReceiveEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(ChatReceiveEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(ChatReceiveEvent.ID, this);
         this.contentMap.clear();
     }
 

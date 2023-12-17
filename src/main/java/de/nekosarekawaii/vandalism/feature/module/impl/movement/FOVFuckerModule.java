@@ -1,8 +1,8 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.common.RandomUtils;
 import de.florianmichael.rclasses.math.integration.MSTimer;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
@@ -110,12 +110,12 @@ public class FOVFuckerModule extends AbstractModule implements TickGameListener 
     @Override
     public void onEnable() {
         this.reset();
-        DietrichEvents2.global().subscribe(TickGameEvent.ID, this);
+        Vandalism.getEventSystem().subscribe(TickGameEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        DietrichEvents2.global().unsubscribe(TickGameEvent.ID, this);
+        Vandalism.getEventSystem().unsubscribe(TickGameEvent.ID, this);
         this.reset();
     }
 
