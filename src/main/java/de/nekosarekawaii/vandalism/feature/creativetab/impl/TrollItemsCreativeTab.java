@@ -25,17 +25,25 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
     }
 
     @Override
-    public void exposeItems(List<ItemStack> items) {
-        for (Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
+    public void exposeItems(final List<ItemStack> items) {
+        for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
             items.add(withClientSide(createTrollPotion(new ItemStack(item)), Text.literal(Formatting.GOLD + "Troll Potion")));
         }
-        for (Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
+        for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
             items.add(withClientSide(createKillPotion(new ItemStack(item)), Text.literal(Formatting.RED + "Kill Potion")));
         }
         items.add(withClientSide(createKillArea(), Text.literal(Formatting.RED + "Kill Area")));
         items.add(withClientSide(createWhiteHole(), Text.literal(Formatting.WHITE + Formatting.BOLD.toString() + "White Hole")));
         items.add(withClientSide(createBlackHole(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Black Hole")));
         items.add(withClientSide(createEventHorizonArea(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area")));
+        for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
+            items.add(withClientSide(createOldTrollPotion(new ItemStack(item)), Text.literal(Formatting.GOLD + "Troll Potion (Old)")));
+        }
+        for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
+            items.add(withClientSide(createOldKillPotion(new ItemStack(item)), Text.literal(Formatting.RED + "Kill Potion (Old)")));
+        }
+        items.add(withClientSide(createOldKillArea(), Text.literal(Formatting.RED + "Kill Area (Old)")));
+        items.add(withClientSide(createOldEventHorizonArea(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area (Old)")));
         items.add(withClientSide(createStargazer(), Text.literal(Formatting.YELLOW + Formatting.BOLD.toString() + "Stargazer"), true));
     }
 
@@ -53,11 +61,36 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
         return origin;
     }
 
+    private static ItemStack createOldTrollPotion(final ItemStack origin) {
+        final NbtCompound base = new NbtCompound();
+        final NbtList customPotionEffects = new NbtList();
+        int i = 0;
+        for (final StatusEffect statusEffect : Registries.STATUS_EFFECT) {
+            i++;
+            final Identifier id = Registries.STATUS_EFFECT.getId(statusEffect);
+            if (id != null && id.getNamespace().equals("minecraft")) {
+                customPotionEffects.add(ItemStackUtil.createOldEffectNBT(i, 10000, 255, false));
+            }
+        }
+        base.put("CustomPotionEffects", customPotionEffects);
+        origin.setNbt(base);
+        return origin;
+    }
+
     private static ItemStack createKillPotion(final ItemStack origin) {
         final NbtCompound base = new NbtCompound();
         final NbtList customPotionEffects = new NbtList();
         customPotionEffects.add(ItemStackUtil.createEffectNBT("instant_health", 2000, 125, false));
         base.put("custom_potion_effects", customPotionEffects);
+        origin.setNbt(base);
+        return origin;
+    }
+
+    private static ItemStack createOldKillPotion(final ItemStack origin) {
+        final NbtCompound base = new NbtCompound();
+        final NbtList customPotionEffects = new NbtList();
+        customPotionEffects.add(ItemStackUtil.createOldEffectNBT(6, 2000, 125, false));
+        base.put("CustomPotionEffects", customPotionEffects);
         origin.setNbt(base);
         return origin;
     }
@@ -81,8 +114,27 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
         return item;
     }
 
+    private static ItemStack createOldKillArea() {
+        final ItemStack item = new ItemStack(Items.SALMON_SPAWN_EGG);
+        final NbtCompound base = new NbtCompound();
+        final NbtCompound entityTag = new NbtCompound();
+        final NbtList effects = new NbtList();
+        effects.add(ItemStackUtil.createOldEffectNBT(6, 20, 125, false));
+        entityTag.put("Effects", effects);
+        entityTag.putFloat("RadiusOnUse", 0.1f);
+        entityTag.putFloat("RadiusPerTick", 0.01f);
+        entityTag.putInt("Duration", 20000);
+        entityTag.putFloat("Radius", 100f);
+        entityTag.putInt("ReapplicationDelay", 40);
+        entityTag.putString("Particle", "block cave_air");
+        entityTag.putString("id", "minecraft:area_effect_cloud");
+        base.put("EntityTag", entityTag);
+        item.setNbt(base);
+        return item;
+    }
+
     private static ItemStack createWhiteHole() {
-        final ItemStack item = new ItemStack(Items.PANDA_SPAWN_EGG);
+        final ItemStack item = new ItemStack(Items.CHICKEN_SPAWN_EGG);
         final NbtCompound base = new NbtCompound();
         final NbtCompound entityTag = new NbtCompound();
         entityTag.putFloat("RadiusOnUse", 0.1f);
@@ -125,6 +177,32 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
         effects.add(ItemStackUtil.createEffectNBT("levitation", 19, 125, false));
         effects.add(ItemStackUtil.createEffectNBT("darkness", 170, 125, false));
         entityTag.put("effects", effects);
+        entityTag.putFloat("RadiusOnUse", 0.1f);
+        entityTag.putFloat("RadiusPerTick", 0.01f);
+        entityTag.putInt("Duration", 20000);
+        entityTag.putFloat("Radius", 100f);
+        entityTag.putInt("ReapplicationDelay", 40);
+        entityTag.putString("Particle", "item air");
+        entityTag.putString("id", "minecraft:area_effect_cloud");
+        base.put("EntityTag", entityTag);
+        item.setNbt(base);
+        return item;
+    }
+
+    private ItemStack createOldEventHorizonArea() {
+        final ItemStack item = new ItemStack(Items.BAT_SPAWN_EGG);
+        final NbtCompound base = new NbtCompound();
+        final NbtCompound entityTag = new NbtCompound();
+        final NbtList effects = new NbtList();
+        effects.add(ItemStackUtil.createOldEffectNBT(2, 170, 125, false));
+        effects.add(ItemStackUtil.createOldEffectNBT(4, 150, 125, false));
+        effects.add(ItemStackUtil.createOldEffectNBT(11, 170, 125, false));
+        effects.add(ItemStackUtil.createOldEffectNBT(14, 130, 1, false));
+        effects.add(ItemStackUtil.createOldEffectNBT(18, 170, 125, false));
+        effects.add(ItemStackUtil.createOldEffectNBT(20, 160, 1, false));
+        effects.add(ItemStackUtil.createOldEffectNBT(25, 19, 125, false));
+        effects.add(ItemStackUtil.createOldEffectNBT(33, 170, 125, false));
+        entityTag.put("Effects", effects);
         entityTag.putFloat("RadiusOnUse", 0.1f);
         entityTag.putFloat("RadiusPerTick", 0.01f);
         entityTag.putInt("Duration", 20000);
