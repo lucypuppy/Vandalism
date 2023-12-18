@@ -12,7 +12,7 @@ public abstract class Feature implements IName, MinecraftWrapper {
     private final String description;
     private final Category category;
     private final VersionRange supportedVersions;
-    private boolean experimental;
+    private boolean experimental = false;
 
     public Feature(String name, String description, Category category) {
         this(name, description, category, null);
@@ -51,8 +51,8 @@ public abstract class Feature implements IName, MinecraftWrapper {
         return experimental;
     }
 
-    public void setExperimental(boolean experimental) {
-        this.experimental = experimental;
+    public void experimental() {
+        this.experimental = true;
     }
 
     public VersionRange getSupportedVersions() {

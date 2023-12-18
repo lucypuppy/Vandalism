@@ -24,11 +24,11 @@ public abstract class AbstractModule extends Feature implements ValueParent {
     private final BooleanValue showInHUD;
     private final KeyBindValue keyBind;
 
-    private boolean disableOnQuit;
-    private boolean disableOnShutdown;
+    private boolean disableOnQuit = false;
+    private boolean disableOnShutdown = false;
 
     public AbstractModule(String name, String description, Category category) {
-        this(name, description, category, null); // Java is just so much fun
+        this(name, description, category, null);
     }
 
     public AbstractModule(String name, String description, Category category, VersionRange supportedVersions) {
@@ -41,12 +41,10 @@ public abstract class AbstractModule extends Feature implements ValueParent {
         ).onValueChange((oldValue, newValue) -> {
             final var event = new ModuleToggleListener.ModuleToggleEvent(this, newValue);
             Vandalism.getEventSystem().postInternal(ModuleToggleListener.ModuleToggleEvent.ID, event);
-
             // Allows the event to change the active state of the module
             // It's important that people don't use the setActive method from the module itself in the event
             // because that would cause an infinite loop
             newValue = event.active;
-
             if (oldValue != newValue) {
                 if (newValue) {
                     this.onEnable();
@@ -113,16 +111,8 @@ public abstract class AbstractModule extends Feature implements ValueParent {
         return this.favorite.getValue();
     }
 
-    public void setFavorite(final boolean favorite) {
-        this.favorite.setValue(favorite);
-    }
-
     public boolean isShowInHUD() {
         return this.showInHUD.getValue();
-    }
-
-    public void setShowInHUD(final boolean showInHUD) {
-        this.showInHUD.setValue(showInHUD);
     }
 
     public KeyBindValue getKeyBind() {
@@ -137,12 +127,6 @@ public abstract class AbstractModule extends Feature implements ValueParent {
         return disableOnShutdown;
     }
 
-    /**
-     * Recursively updates the active state of all module modes and their values.
-     *
-     * @param active Whether the module should be active.
-     * @param values The values to update.
-     */
     private void recursiveUpdateActiveState(final boolean active, final List<Value<?>> values) {
         if (values == null) return;
         for (final Value<?> value : values) {

@@ -3,13 +3,13 @@ package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
 import de.nekosarekawaii.vandalism.base.event.player.MoveInputListener;
+import de.nekosarekawaii.vandalism.base.event.player.RotationListener;
 import de.nekosarekawaii.vandalism.base.event.player.StrafeListener;
 import de.nekosarekawaii.vandalism.base.event.render.Render2DListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
-import de.nekosarekawaii.vandalism.integration.rotation.RotationListener;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationPriority;
 import de.nekosarekawaii.vandalism.util.minecraft.TimerHack;
 import de.nekosarekawaii.vandalism.util.minecraft.WorldUtil;
@@ -23,20 +23,30 @@ import net.minecraft.util.math.Vec3d;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KillauraModule extends AbstractModule implements TickGameListener, StrafeListener, Render2DListener, MoveInputListener, de.nekosarekawaii.vandalism.base.event.player.RotationListener {
+public class KillAuraModule extends AbstractModule implements TickGameListener, StrafeListener, Render2DListener, MoveInputListener, RotationListener {
 
-    public final Value<Double> range =
-            new DoubleValue(this, "Range", "Increases your maximum range to fist enemies", 3.0, 3.0, 6.0);
+    public final Value<Double> range = new DoubleValue(
+            this,
+            "Range",
+            "The range in which the enemies will be attacked.",
+            3.0,
+            3.0,
+            6.0
+    );
 
     private PlayerEntity target;
     private Vec3d rotationVector;
-    private final RotationListener rotationListener;
+    private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
 
-    public KillauraModule() {
-        super("Killaura", "A module that automatically kills entities in minecraft.", Category.DEVELOPMENT);
+    public KillAuraModule() {
+        super(
+                "Kill Aura",
+                "Automatically attacks nearby enemies.",
+                Category.COMBAT
+        );
         this.rotationListener = Vandalism.getInstance().getRotationListener();
-
-        setExperimental(true);
+        this.experimental();
+        this.activateDefault();
     }
 
     @Override
@@ -58,8 +68,8 @@ public class KillauraModule extends AbstractModule implements TickGameListener, 
         this.rotationListener.resetRotation();
     }
 
-    //TODO mouse event -> attack
-    //TODO: frame event (entityrenderer set angles)-> rotate
+    //TODO Mouse event -> attack
+    //TODO: Frame event (entity renderer set angles)-> rotate
 
     @Override
     public void onTick() {
@@ -70,26 +80,28 @@ public class KillauraModule extends AbstractModule implements TickGameListener, 
                 entities.add(entity);
             }
         });
-
         if (entities.isEmpty()) {
             return;
         }
         this.target = entities.get(0);
-
-        if (this.rotationVector == null)
+        if (this.rotationVector == null) {
             return;
-
-        double raytraceDistance = -1;
-        //TODO: need serverside yaw/pitch or move into proper events.
-        if (this.rotationListener.getTargetRotation() != null) {
-            if (Float.isNaN(this.rotationListener.getTargetRotation().getYaw()) || Float.isNaN(this.rotationListener.getTargetRotation().getPitch()))
-                return;
-            raytraceDistance = WorldUtil.rayTraceRange(this.rotationListener.getTargetRotation().getYaw(), this.rotationListener.getTargetRotation().getPitch(), true);
         }
-        // if(raytraceDistance > 3){
-        // }
-        if (!target.isBlocking() && raytraceDistance <= this.range.getValue() - 0.05 && raytraceDistance > 0)
+        double raytraceDistance = -1;
+        //TODO: Need server side yaw / pitch or move into proper events.
+        if (this.rotationListener.getTargetRotation() != null) {
+            if (Float.isNaN(this.rotationListener.getTargetRotation().getYaw()) || Float.isNaN(this.rotationListener.getTargetRotation().getPitch())) {
+                return;
+            }
+            raytraceDistance = WorldUtil.rayTraceRange(
+                    this.rotationListener.getTargetRotation().getYaw(),
+                    this.rotationListener.getTargetRotation().getPitch(),
+                    true
+            );
+        }
+        if (!this.target.isBlocking() && raytraceDistance <= this.range.getValue() - 0.05 && raytraceDistance > 0) {
             this.handleAttack();
+        }
     }
 
     //TODO: Make a proper util
@@ -105,14 +117,15 @@ public class KillauraModule extends AbstractModule implements TickGameListener, 
         if (TimerHack.getSpeed() > 1) {
             additionalBaseDelayOffset = -(TimerHack.getSpeed() - 1);
         }
-        float attackCooldown = mc.player.getAttackCooldownProgress(additionalBaseDelayOffset);
+        float attackCooldown = this.mc.player.getAttackCooldownProgress(additionalBaseDelayOffset);
         baseAttackDamage *= 0.2F + attackCooldown * attackCooldown * 0.8F;
         // enchantmentBonus *= attackCooldown;
         if (baseAttackDamage >= 0.98) {
             this.mc.doAttack();
         } else {
-            if (this.mc.player.getOffHandStack().isEmpty())
+            if (this.mc.player.getOffHandStack().isEmpty()) {
                 return;
+            }
             if (this.mc.player.getOffHandStack().getItem().equals(Items.SHIELD)) {
                 this.mc.doItemUse();
             }
@@ -122,7 +135,7 @@ public class KillauraModule extends AbstractModule implements TickGameListener, 
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
         /*Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
-            if (ImGui.begin("Graph##testmodule", Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags())) {
+            if (ImGui.begin("Graph##killauramodule", Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().getGlobalWindowFlags())) {
                 if (this.clicker instanceof final BoxMuellerClicker clicker) {
                     final int size = clicker.getDelays().getNormalList().size();
                     if (size > 5) {
@@ -134,7 +147,7 @@ public class KillauraModule extends AbstractModule implements TickGameListener, 
                             yAxis[i] = clicker.getDelays().getNormalList().get(i).getLeft();
                             yAxis2[i] = clicker.getDelays().getNormalList().get(i).getRight().longValue() * 20L;
                         }
-                        if (ImPlot.beginPlot("CPSGraph")) {
+                        if (ImPlot.beginPlot("KillAuraCPSGraph")) {
                             ImPlot.plotLine("Delay", xAxis, yAxis);
                             ImPlot.plotLine("CPS", xAxis, yAxis2);
                             ImPlot.endPlot();
@@ -178,7 +191,6 @@ public class KillauraModule extends AbstractModule implements TickGameListener, 
         if (this.target != null) {
             final Rotation rotation = Rotation.Builder.build(this.target, true, 6f, 1D / 32);
             if (rotation == null) { //sanity check, crashes if you sneak and have your reach set to 3.0
-                //   ChatUtil.infoChatMessage("hä");
                 this.rotationVector = null;
                 this.rotationListener.resetRotation();
                 return;
@@ -189,4 +201,5 @@ public class KillauraModule extends AbstractModule implements TickGameListener, 
             this.rotationListener.resetRotation();
         }
     }
+
 }
