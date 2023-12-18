@@ -33,7 +33,7 @@ public class ClientMenuManager extends Storage<ClientMenuWindow> implements Keyb
 
     public ClientMenuManager(final ConfigManager configManager, final File runDirectory) {
         configManager.add(new ClientMenuConfig(this));
-        Vandalism.getEventSystem().subscribe(this, KeyboardInputEvent.ID, Render2DEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, KeyboardInputEvent.ID, Render2DEvent.ID);
 
         ImLoader.init(runDirectory);
     }

@@ -55,12 +55,12 @@ public class ItemStackLoggerModule extends AbstractModule implements TickGameLis
 
     @Override
     public void onEnable() {
-        Vandalism.getEventSystem().subscribe(TickGameEvent.ID, this, Priorities.HIGH);
+        Vandalism.getInstance().getEventSystem().subscribe(TickGameEvent.ID, this, Priorities.HIGH);
     }
 
     @Override
     public void onDisable() {
-        Vandalism.getEventSystem().unsubscribe(TickGameEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(TickGameEvent.ID, this);
     }
 
     @Override

@@ -15,21 +15,21 @@ public abstract class MixinMouse implements MinecraftWrapper {
     @Inject(method = "onMouseButton", at = @At("HEAD"))
     private void callMouseEvent_Button(final long window, final int button, final int action, final int mods, final CallbackInfo ci) {
         if (this.mc.getWindow().getHandle() == window) {
-            Vandalism.getEventSystem().postInternal(MouseInputListener.MouseEvent.ID, new MouseInputListener.MouseEvent(button, action, mods));
+            Vandalism.getInstance().getEventSystem().postInternal(MouseInputListener.MouseEvent.ID, new MouseInputListener.MouseEvent(button, action, mods));
         }
     }
 
     @Inject(method = "onMouseScroll", at = @At("HEAD"))
     private void callMouseEvent_Scroll(final long window, final double horizontal, final double vertical, final CallbackInfo ci) {
         if (this.mc.getWindow().getHandle() == window) {
-            Vandalism.getEventSystem().postInternal(MouseInputListener.MouseEvent.ID, new MouseInputListener.MouseEvent(true, horizontal, vertical));
+            Vandalism.getInstance().getEventSystem().postInternal(MouseInputListener.MouseEvent.ID, new MouseInputListener.MouseEvent(true, horizontal, vertical));
         }
     }
 
     @Inject(method = "onCursorPos", at = @At("HEAD"))
     private void callMouseEvent_Pos(final long window, final double x, final double y, final CallbackInfo ci) {
         if (this.mc.getWindow().getHandle() == window) {
-            Vandalism.getEventSystem().postInternal(MouseInputListener.MouseEvent.ID, new MouseInputListener.MouseEvent(false, x, y));
+            Vandalism.getInstance().getEventSystem().postInternal(MouseInputListener.MouseEvent.ID, new MouseInputListener.MouseEvent(false, x, y));
         }
     }
 

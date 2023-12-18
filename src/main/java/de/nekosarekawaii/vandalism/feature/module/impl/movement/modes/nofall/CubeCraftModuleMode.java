@@ -15,12 +15,12 @@ public class CubeCraftModuleMode extends ModuleMulti<NoFallModule> implements Ou
 
     @Override
     public void onEnable() {
-        Vandalism.getEventSystem().subscribe(OutgoingPacketEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(OutgoingPacketEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        Vandalism.getEventSystem().unsubscribe(OutgoingPacketEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(OutgoingPacketEvent.ID, this);
     }
 
     @Override

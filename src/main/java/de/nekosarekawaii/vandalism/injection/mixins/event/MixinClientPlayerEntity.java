@@ -18,27 +18,27 @@ public abstract class MixinClientPlayerEntity {
     @Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z", ordinal = 0))
     private boolean callSprintListener_at_1(final KeyBinding instance) {
         final var event = new SprintListener.SprintEvent(instance.isPressed());
-        Vandalism.getEventSystem().postInternal(SprintListener.SprintEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().postInternal(SprintListener.SprintEvent.ID, event);
         return event.sprinting;
     }
 
     @Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z", ordinal = 1))
     private boolean callSprintListener_at_2(final KeyBinding instance) {
         final var event = new SprintListener.SprintEvent(instance.isPressed());
-        Vandalism.getEventSystem().postInternal(SprintListener.SprintEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().postInternal(SprintListener.SprintEvent.ID, event);
         return event.sprinting;
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void callMotionListener_pre(final CallbackInfo ci) {
         final MotionListener.MotionEvent motionEvent = new MotionListener.MotionEvent(StateTypes.PRE);
-        Vandalism.getEventSystem().postInternal(MotionListener.MotionEvent.ID, motionEvent);
+        Vandalism.getInstance().getEventSystem().postInternal(MotionListener.MotionEvent.ID, motionEvent);
     }
 
     @Inject(method = "sendMovementPackets()V", at = @At("TAIL"))
     private void callMotionListener_post(final CallbackInfo ci) {
         final MotionListener.MotionEvent motionEvent = new MotionListener.MotionEvent(StateTypes.POST);
-        Vandalism.getEventSystem().postInternal(MotionListener.MotionEvent.ID, motionEvent);
+        Vandalism.getInstance().getEventSystem().postInternal(MotionListener.MotionEvent.ID, motionEvent);
     }
 
 }

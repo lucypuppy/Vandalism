@@ -20,7 +20,7 @@ public abstract class MixinMinecraftClient {
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;onResolutionChanged()V"))
     private void callMinecraftBootstrapListener(final CallbackInfo ci) {
-        Vandalism.getEventSystem().postInternal(
+        Vandalism.getInstance().getEventSystem().postInternal(
                 MinecraftBoostrapListener.MinecraftBootstrapEvent.ID,
                 new MinecraftBoostrapListener.MinecraftBootstrapEvent((MinecraftClient) (Object) this)
         );
@@ -28,7 +28,7 @@ public abstract class MixinMinecraftClient {
 
     @Inject(method = "close", at = @At(value = "HEAD"))
     private void callShutdownProcessListener(final CallbackInfo ci) {
-        Vandalism.getEventSystem().postInternal(
+        Vandalism.getInstance().getEventSystem().postInternal(
                 ShutdownProcessListener.ShutdownProcessEvent.ID,
                 new ShutdownProcessListener.ShutdownProcessEvent()
         );

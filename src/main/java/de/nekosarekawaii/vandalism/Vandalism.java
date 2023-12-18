@@ -56,11 +56,13 @@ import java.io.File;
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 
     private static final Vandalism instance = new Vandalism();
-    private static final DietrichEvents2 EVENT_SYSTEM = new DietrichEvents2(33, Throwable::printStackTrace);
+
+    private final DietrichEvents2 eventSystem = new DietrichEvents2(33, Throwable::printStackTrace);
     private final Logger logger = LoggerFactory.getLogger(FabricBootstrap.MOD_NAME);
-    private File runDirectory;
 
     // Base handlers
+    private File runDirectory;
+
     private ConfigManager configManager;
     private ClientMenuManager clientMenuManager;
     private ClientSettings clientSettings;
@@ -163,6 +165,10 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         return instance;
     }
 
+    public DietrichEvents2 getEventSystem() {
+        return eventSystem;
+    }
+
     public Logger getLogger() {
         return logger;
     }
@@ -213,10 +219,6 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
     public HUDManager getHudManager() {
         return hudManager;
-    }
-
-    public static DietrichEvents2 getEventSystem() {
-        return EVENT_SYSTEM;
     }
 
 }

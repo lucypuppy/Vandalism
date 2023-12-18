@@ -45,9 +45,9 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
         this.configManager = configManager;
         clientMenuManager.add(new ModulesClientMenuWindow());
 
-        Vandalism.getEventSystem().subscribe(KeyboardInputEvent.ID, this);
-        Vandalism.getEventSystem().subscribe(ShutdownProcessEvent.ID, this);
-        Vandalism.getEventSystem().subscribe(DisconnectEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(KeyboardInputEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(ShutdownProcessEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(DisconnectEvent.ID, this);
     }
 
     @Override

@@ -5,8 +5,14 @@ import de.florianmichael.rclasses.io.encryption.EncryptionUtils;
 import javax.crypto.spec.IvParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 
+/**
+ * Static Encryption util to encrypt and decrypt strings over multiple game sessions.
+ */
 public class StaticEncryptionUtil {
 
+    /**
+     * The initial vector used for encryption and decryption.
+     */
     private static final IvParameterSpec INIITAL_VECTOR = new IvParameterSpec(new byte[] { 42, 49, 55, 1, 99, 62, 70, 83, 104, 115, 8, 15, 91, 120, 27, 33 });
 
     public static String encrypt(final String key, final String data) throws InvalidKeySpecException {

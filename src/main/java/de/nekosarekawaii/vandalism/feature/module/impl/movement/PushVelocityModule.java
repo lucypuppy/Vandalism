@@ -51,14 +51,14 @@ public class PushVelocityModule extends AbstractModule implements EntityPushList
 
     @Override
     public void onEnable() {
-        Vandalism.getEventSystem().subscribe(EntityPushEvent.ID, this);
-        Vandalism.getEventSystem().subscribe(FluidPushEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(EntityPushEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(FluidPushEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        Vandalism.getEventSystem().unsubscribe(EntityPushEvent.ID, this);
-        Vandalism.getEventSystem().unsubscribe(FluidPushEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(EntityPushEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(FluidPushEvent.ID, this);
     }
 
     @Override

@@ -16,12 +16,12 @@ public class LongJumpModule extends AbstractModule implements MotionListener {
 
     public LongJumpModule() {
         super("Long Jump", "Let's you jump further from normal.", Category.MOVEMENT);
-        this.experimental();
+        this.markExperimental();
     }
 
     @Override
     public void onEnable() {
-        Vandalism.getEventSystem().subscribe(MotionEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(MotionEvent.ID, this);
         if (this.mc.getNetworkHandler() != null) {
             MovementUtil.clip(3.5, 0);
             MovementUtil.setSpeed(0.01);
@@ -32,7 +32,7 @@ public class LongJumpModule extends AbstractModule implements MotionListener {
 
     @Override
     public void onDisable() {
-        Vandalism.getEventSystem().unsubscribe(MotionEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(MotionEvent.ID, this);
         this.waitTicks = 0;
         this.moveTicks = 0;
         this.canLongJump = false;

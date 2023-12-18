@@ -45,25 +45,25 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
                 Category.COMBAT
         );
         this.rotationListener = Vandalism.getInstance().getRotationListener();
-        this.experimental();
+        this.markExperimental();
     }
 
     @Override
     public void onEnable() {
-        Vandalism.getEventSystem().subscribe(TickGameEvent.ID, this);
-        Vandalism.getEventSystem().subscribe(StrafeEvent.ID, this);
-        Vandalism.getEventSystem().subscribe(Render2DEvent.ID, this);
-        Vandalism.getEventSystem().subscribe(MoveInputEvent.ID, this);
-        Vandalism.getEventSystem().subscribe(RotationEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(TickGameEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(StrafeEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(Render2DEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(MoveInputEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(RotationEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        Vandalism.getEventSystem().unsubscribe(TickGameEvent.ID, this);
-        Vandalism.getEventSystem().unsubscribe(StrafeEvent.ID, this);
-        Vandalism.getEventSystem().unsubscribe(Render2DEvent.ID, this);
-        Vandalism.getEventSystem().unsubscribe(MoveInputEvent.ID, this);
-        Vandalism.getEventSystem().unsubscribe(RotationEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(TickGameEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(StrafeEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(Render2DEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(MoveInputEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(RotationEvent.ID, this);
         this.rotationListener.resetRotation();
     }
 

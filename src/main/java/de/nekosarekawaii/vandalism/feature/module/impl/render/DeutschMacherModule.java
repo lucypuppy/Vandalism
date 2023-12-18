@@ -58,12 +58,12 @@ public class DeutschMacherModule extends AbstractModule implements TextDrawListe
 
     @Override
     public void onEnable() {
-        Vandalism.getEventSystem().subscribe(TextDrawEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(TextDrawEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        Vandalism.getEventSystem().unsubscribe(TextDrawEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(TextDrawEvent.ID, this);
     }
 
     private String toDeutsch(final byte num) {

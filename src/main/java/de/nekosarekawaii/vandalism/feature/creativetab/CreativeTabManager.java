@@ -31,7 +31,7 @@ public class CreativeTabManager extends Storage<AbstractCreativeTab> implements 
                 new TrollItemsCreativeTab()
         );
 
-        Vandalism.getEventSystem().subscribe(OutgoingPacketEvent.ID, this, Priorities.HIGH);
+        Vandalism.getInstance().getEventSystem().subscribe(OutgoingPacketEvent.ID, this, Priorities.HIGH);
     }
 
     @Override

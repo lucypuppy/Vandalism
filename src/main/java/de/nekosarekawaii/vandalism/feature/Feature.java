@@ -12,7 +12,7 @@ public abstract class Feature implements IName, MinecraftWrapper {
     private final String description;
     private final Category category;
     private final VersionRange supportedVersions;
-    private boolean experimental = false;
+    private boolean experimental;
 
     public Feature(String name, String description, Category category) {
         this(name, description, category, null);
@@ -51,7 +51,7 @@ public abstract class Feature implements IName, MinecraftWrapper {
         return experimental;
     }
 
-    public void experimental() {
+    public void markExperimental() {
         this.experimental = true;
     }
 
@@ -60,7 +60,7 @@ public abstract class Feature implements IName, MinecraftWrapper {
     }
 
     public boolean isSupportedVersion(final VersionEnum version) {
-        if (this.supportedVersions == null) {
+        if (this.supportedVersions == null) { // Using null as a wildcard instead of VersionRange.all() is faster
             return true;
         }
         return this.supportedVersions.contains(version);

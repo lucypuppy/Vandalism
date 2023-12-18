@@ -22,7 +22,7 @@ public abstract class MixinItemStack {
     private void callTooltipDrawListener(final CallbackInfoReturnable<Optional<TooltipData>> cir) {
         final List<TooltipData> tooltipData = new ArrayList<>();
         cir.getReturnValue().ifPresent(tooltipData::add);
-        Vandalism.getEventSystem().postInternal(TooltipDrawListener.TooltipDrawEvent.ID, new TooltipDrawListener.TooltipDrawEvent(
+        Vandalism.getInstance().getEventSystem().postInternal(TooltipDrawListener.TooltipDrawEvent.ID, new TooltipDrawListener.TooltipDrawEvent(
                 (ItemStack) (Object) this, tooltipData)
         );
         if (tooltipData.size() == 1) {

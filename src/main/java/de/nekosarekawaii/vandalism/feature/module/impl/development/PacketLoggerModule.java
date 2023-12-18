@@ -44,14 +44,14 @@ public class PacketLoggerModule extends AbstractModule implements IncomingPacket
 
     @Override
     public void onEnable() {
-        Vandalism.getEventSystem().subscribe(IncomingPacketEvent.ID, this, Priorities.LOW);
-        Vandalism.getEventSystem().subscribe(OutgoingPacketEvent.ID, this, Priorities.LOW);
+        Vandalism.getInstance().getEventSystem().subscribe(IncomingPacketEvent.ID, this, Priorities.LOW);
+        Vandalism.getInstance().getEventSystem().subscribe(OutgoingPacketEvent.ID, this, Priorities.LOW);
     }
 
     @Override
     public void onDisable() {
-        Vandalism.getEventSystem().unsubscribe(IncomingPacketEvent.ID, this);
-        Vandalism.getEventSystem().unsubscribe(OutgoingPacketEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(IncomingPacketEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(OutgoingPacketEvent.ID, this);
     }
 
     private void logPacket(final boolean outgoing, final Packet<?> packet) {

@@ -28,7 +28,7 @@ public abstract class MixinGameRenderer implements MinecraftWrapper {
 
     @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setInverseViewRotationMatrix(Lorg/joml/Matrix3f;)V", shift = At.Shift.AFTER))
     private void hookRotation(final CallbackInfo ci) {
-        Vandalism.getEventSystem().postInternal(RotationListener.RotationEvent.ID, new RotationListener.RotationEvent());
+        Vandalism.getInstance().getEventSystem().postInternal(RotationListener.RotationEvent.ID, new RotationListener.RotationEvent());
     }
 
     @Inject(method = "bobView", at = @At("HEAD"), cancellable = true)

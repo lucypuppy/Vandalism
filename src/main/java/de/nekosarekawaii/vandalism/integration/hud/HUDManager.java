@@ -19,8 +19,8 @@ public class HUDManager extends Storage<HUDElement> implements Render2DListener,
     public ModuleListHUDElement moduleListHUDElement;
 
     public HUDManager(final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
-        Vandalism.getEventSystem().subscribe(Render2DEvent.ID, this);
-        Vandalism.getEventSystem().subscribe(ScreenEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(Render2DEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(ScreenEvent.ID, this);
 
         configManager.add(new HUDConfig(this));
         clientMenuManager.add(new HUDClientMenuWindow(this));

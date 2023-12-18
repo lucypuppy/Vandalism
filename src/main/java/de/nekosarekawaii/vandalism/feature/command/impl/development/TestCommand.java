@@ -9,7 +9,7 @@ public class TestCommand extends AbstractCommand {
 
     public TestCommand() {
         super("Just for development purposes.", Category.DEVELOPMENT, "test");
-        this.experimental();
+        this.markExperimental();
     }
 
     @Override

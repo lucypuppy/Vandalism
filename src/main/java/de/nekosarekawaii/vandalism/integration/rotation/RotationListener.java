@@ -20,8 +20,8 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
     private RotationPriority currentPriority;
 
     public RotationListener() {
-        Vandalism.getEventSystem().subscribe(OutgoingPacketEvent.ID, this);
-        Vandalism.getEventSystem().subscribe(Render2DEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(OutgoingPacketEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(Render2DEvent.ID, this);
     }
 
     @Override

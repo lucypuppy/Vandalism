@@ -35,7 +35,7 @@ public abstract class MixinClientConnection {
     @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/packet/Packet;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/ClientConnection;handlePacket(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;)V", ordinal = 0), cancellable = true)
     private void callIncomingPacketListener(final ChannelHandlerContext channelHandlerContext, Packet<?> packet, final CallbackInfo ci) {
         final var event = new IncomingPacketListener.IncomingPacketEvent(packet);
-        Vandalism.getEventSystem().postInternal(IncomingPacketListener.IncomingPacketEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().postInternal(IncomingPacketListener.IncomingPacketEvent.ID, event);
         if (event.isCancelled()) {
             ci.cancel();
             return;
@@ -54,7 +54,7 @@ public abstract class MixinClientConnection {
         }
 
         final var event = new OutgoingPacketListener.OutgoingPacketEvent(packet);
-        Vandalism.getEventSystem().postInternal(OutgoingPacketListener.OutgoingPacketEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().postInternal(OutgoingPacketListener.OutgoingPacketEvent.ID, event);
         if (event.isCancelled()) {
             ci.cancel();
             return;
@@ -68,7 +68,7 @@ public abstract class MixinClientConnection {
 
     @Inject(method = "disconnect", at = @At("RETURN"))
     private void callDisconnectListener(Text disconnectReason, CallbackInfo ci) {
-        Vandalism.getEventSystem().postInternal(DisconnectListener.DisconnectEvent.ID,
+        Vandalism.getInstance().getEventSystem().postInternal(DisconnectListener.DisconnectEvent.ID,
                 new DisconnectListener.DisconnectEvent((ClientConnection) (Object) this, disconnectReason));
     }
 

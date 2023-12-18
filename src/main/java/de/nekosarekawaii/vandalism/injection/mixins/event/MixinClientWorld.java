@@ -17,7 +17,7 @@ public abstract class MixinClientWorld implements MinecraftWrapper {
     private void callSprintListener(final Entity entity, final CallbackInfo ci) {
         if (this.mc.player == entity) {
             final var event = new SprintListener.SprintEvent(entity.isSprinting());
-            Vandalism.getEventSystem().postInternal(SprintListener.SprintEvent.ID, event);
+            Vandalism.getInstance().getEventSystem().postInternal(SprintListener.SprintEvent.ID, event);
 
             if (event.force) {
                 entity.setSprinting(event.sprinting);

@@ -15,7 +15,7 @@ public abstract class MixinClientPlayerInteractionManager {
 
     @Inject(method = "attackEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;syncSelectedSlot()V", shift = At.Shift.AFTER))
     private void callAttackListener(final PlayerEntity player, final Entity target, final CallbackInfo ci) {
-        Vandalism.getEventSystem().postInternal(AttackListener.AttackSendEvent.ID, new AttackListener.AttackSendEvent(target));
+        Vandalism.getInstance().getEventSystem().postInternal(AttackListener.AttackSendEvent.ID, new AttackListener.AttackSendEvent(target));
     }
 
 }
