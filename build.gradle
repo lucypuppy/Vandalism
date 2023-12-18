@@ -70,13 +70,9 @@ dependencies {
 	modImplementation("de.florianmichael:viafabricplus:${project.viafabricplus_version}")
 
 	// Lenni0451's Class-transform, Reflect, ImNbt & MCPing
-	implementation("net.lenni0451.classtransform:core:${project.classtransform_version}")
 	implementation("net.lenni0451:Reflect:${project.reflect_version}")
 	implementation("net.lenni0451:ImNbt:${project.imnbt_version}")
 	implementation("net.lenni0451:MCPing:${project.mc_ping_version}")
-
-	// RaphiMC's NoteBlockLib
-    implementation("net.raphimc:NoteBlockLib:${project.noteblocklib_version}")
 
 	implementation("com.github.kwhat:jnativehook:${project.jnativehook_version}")
 	implementation("org.jsoup:jsoup:${project.jsoup_version}")
