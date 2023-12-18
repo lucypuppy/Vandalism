@@ -90,28 +90,27 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
             if (subButton("Delete account")) {
                 ImGui.closeCurrentPopup();
                 Vandalism.getInstance().getAccountManager().remove(hoveredAccount);
-                hoveredAccount = null;
-                ImGui.endPopup(); // We force cancel all rendering actions by pushing the endPopup call here
-                return;
+                this.hoveredAccount = null;
             }
-
-            if (subButton("Copy Name")) {
-                mc.keyboard.setClipboard(hoveredAccount.getDisplayName());
-            }
-            final Session session = hoveredAccount.getSession();
-            if (session != null) {
-                if (session.getUuidOrNull() != null && subButton("Copy UUID")) {
-                    mc.keyboard.setClipboard(session.getUuidOrNull().toString());
+            if (this.hoveredAccount != null) {
+                if (subButton("Copy Name")) {
+                    this.mc.keyboard.setClipboard(this.hoveredAccount.getDisplayName());
                 }
-                if (subButton("Copy Access token")) {
-                    mc.keyboard.setClipboard(session.getAccessToken());
-                }
-                ImGui.text("Account type: " + hoveredAccount.getName());
-                if (hoveredAccount.getLastLogin() != null) {
-                    ImGui.text("Last login: " + hoveredAccount.getLastLogin());
-                }
-                if (hoveredAccount.getSession().getUuidOrNull() != null) {
-                    ImGui.text("Account UUID: " + session.getUuidOrNull());
+                final Session session = this.hoveredAccount.getSession();
+                if (session != null) {
+                    if (session.getUuidOrNull() != null && subButton("Copy UUID")) {
+                        this.mc.keyboard.setClipboard(session.getUuidOrNull().toString());
+                    }
+                    if (subButton("Copy Access token")) {
+                        this.mc.keyboard.setClipboard(session.getAccessToken());
+                    }
+                    ImGui.text("Account type: " + this.hoveredAccount.getName());
+                    if (this.hoveredAccount.getLastLogin() != null) {
+                        ImGui.text("Last login: " + this.hoveredAccount.getLastLogin());
+                    }
+                    if (this.hoveredAccount.getSession().getUuidOrNull() != null) {
+                        ImGui.text("Account UUID: " + session.getUuidOrNull());
+                    }
                 }
             }
             ImGui.endPopup();
