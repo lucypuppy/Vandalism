@@ -63,9 +63,12 @@ public class VisualThrottleModule extends AbstractModule {
     ).visibleCondition(this.modifyDisplayNameLength::getValue);
 
     public VisualThrottleModule() {
-        super("Visual Throttle", "Limits the game rendering to enhance performance or even prevent crashes.", Category.RENDER);
-
-        setExperimental(true);
+        super(
+                "Visual Throttle",
+                "Limits the game rendering to enhance performance or even prevent crashes.",
+                Category.RENDER
+        );
+        this.experimental();
     }
 
 }

@@ -2,7 +2,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.player.RotationListener;
-import de.nekosarekawaii.vandalism.feature.module.impl.combat.KillauraModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.combat.KillAuraModule;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.minecraft.MathUtil;
 import net.minecraft.client.render.GameRenderer;
@@ -21,10 +21,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinGameRenderer implements MinecraftWrapper {
 
     @ModifyConstant(method = "updateTargetedEntity", constant = @Constant(doubleValue = 9.0))
-    private double hookReachModifyCombatReach(double constant) {
-        KillauraModule killauraModule = Vandalism.getInstance().getModuleManager().getKillauraModule();
-        return killauraModule.isActive() ? MathUtil.getFixedMinecraftReach(killauraModule.range.getValue()) :
-                constant;
+    private double hookKillAuraCombatRange(final double constant) {
+        final KillAuraModule killauraModule = Vandalism.getInstance().getModuleManager().getKillauraModule();
+        return killauraModule.isActive() ? MathUtil.getFixedMinecraftReach(killauraModule.range.getValue()) : constant;
     }
 
     @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setInverseViewRotationMatrix(Lorg/joml/Matrix3f;)V", shift = At.Shift.AFTER))

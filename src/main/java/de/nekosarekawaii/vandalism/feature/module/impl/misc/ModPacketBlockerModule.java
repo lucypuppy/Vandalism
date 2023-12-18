@@ -27,7 +27,7 @@ public class ModPacketBlockerModule extends AbstractModule implements IncomingPa
 
     public ModPacketBlockerModule() {
         super("Mod Packet Blocker", "Blocks various packets from mods which could be detected by a server.", Category.MISC);
-        activateDefault();
+        this.activateDefault();
         for (final String modId : Arrays.asList("journeymap", "roughlyenoughitems", "architectury")) {
             this.platformSettings.put(
                     modId,

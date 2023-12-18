@@ -16,8 +16,7 @@ public class LongJumpModule extends AbstractModule implements MotionListener {
 
     public LongJumpModule() {
         super("Long Jump", "Let's you jump further from normal.", Category.MOVEMENT);
-
-        setExperimental(true);
+        this.experimental();
     }
 
     @Override
@@ -87,4 +86,5 @@ public class LongJumpModule extends AbstractModule implements MotionListener {
             }
         }
     }
+
 }
