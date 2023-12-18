@@ -25,7 +25,7 @@ public class FabricBootstrap implements ClientModInitializer {
 
         FabricBootstrap.WINDOW_TITLE = String.format("%s %s made by %s", FabricBootstrap.MOD_NAME, FabricBootstrap.MOD_VERSION, FabricBootstrap.MOD_AUTHORS);
 
-        Vandalism.getEventSystem().subscribe(Vandalism.getInstance(),
+        Vandalism.getInstance().getEventSystem().subscribe(Vandalism.getInstance(),
                 MinecraftBoostrapListener.MinecraftBootstrapEvent.ID,
                 ShutdownProcessListener.ShutdownProcessEvent.ID
         );

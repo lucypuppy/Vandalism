@@ -84,12 +84,12 @@ public class InteractionSpammerModule extends AbstractModule implements TickGame
     @Override
     public void onEnable() {
         this.clear();
-        Vandalism.getEventSystem().subscribe(TickGameEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(TickGameEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        Vandalism.getEventSystem().unsubscribe(TickGameEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(TickGameEvent.ID, this);
         this.clear();
     }
 

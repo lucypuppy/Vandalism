@@ -21,7 +21,7 @@ public class CubeCraftModuleMode extends ModuleMulti<FlightModule> implements Mo
 
     @Override
     public void onEnable() {
-        Vandalism.getEventSystem().subscribe(MotionListener.MotionEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(MotionListener.MotionEvent.ID, this);
         if (this.mc.getNetworkHandler() != null) {
             MovementUtil.clip(3.5, 0);
             MovementUtil.setSpeed(0.01);
@@ -32,7 +32,7 @@ public class CubeCraftModuleMode extends ModuleMulti<FlightModule> implements Mo
 
     @Override
     public void onDisable() {
-        Vandalism.getEventSystem().unsubscribe(MotionListener.MotionEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(MotionListener.MotionEvent.ID, this);
         this.waitTicks = 0;
         this.moveTicks = 0;
         this.canLongJump = false;

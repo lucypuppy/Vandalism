@@ -18,12 +18,12 @@ public class CubeCraftModuleMode extends ModuleMulti<SpeedModule> implements Mot
 
     @Override
     public void onEnable() {
-        Vandalism.getEventSystem().subscribe(MotionEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(MotionEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        Vandalism.getEventSystem().unsubscribe(MotionEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(MotionEvent.ID, this);
     }
 
     @Override

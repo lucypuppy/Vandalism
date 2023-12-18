@@ -13,12 +13,12 @@ public class VelocityModule extends AbstractModule implements IncomingPacketList
 
     @Override
     public void onEnable() {
-        Vandalism.getEventSystem().subscribe(IncomingPacketEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(IncomingPacketEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        Vandalism.getEventSystem().unsubscribe(IncomingPacketEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(IncomingPacketEvent.ID, this);
     }
 
     @Override

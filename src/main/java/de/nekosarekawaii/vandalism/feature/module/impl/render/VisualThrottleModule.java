@@ -68,7 +68,7 @@ public class VisualThrottleModule extends AbstractModule {
                 "Limits the game rendering to enhance performance or even prevent crashes.",
                 Category.RENDER
         );
-        this.experimental();
+        this.markExperimental();
     }
 
 }

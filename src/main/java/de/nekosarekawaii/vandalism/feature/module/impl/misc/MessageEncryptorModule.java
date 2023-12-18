@@ -24,14 +24,14 @@ public class MessageEncryptorModule extends AbstractModule implements ChatSendLi
 
     @Override
     public void onEnable() {
-        Vandalism.getEventSystem().subscribe(ChatSendEvent.ID, this);
-        Vandalism.getEventSystem().subscribe(ChatModifyReceiveEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(ChatSendEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(ChatModifyReceiveEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        Vandalism.getEventSystem().unsubscribe(ChatSendEvent.ID, this);
-        Vandalism.getEventSystem().unsubscribe(ChatModifyReceiveEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(ChatSendEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(ChatModifyReceiveEvent.ID, this);
     }
 
     @Override

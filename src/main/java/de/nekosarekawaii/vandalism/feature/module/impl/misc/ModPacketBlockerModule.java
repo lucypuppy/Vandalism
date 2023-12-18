@@ -43,14 +43,14 @@ public class ModPacketBlockerModule extends AbstractModule implements IncomingPa
 
     @Override
     public void onEnable() {
-        Vandalism.getEventSystem().subscribe(IncomingPacketEvent.ID, this, Priorities.HIGH);
-        Vandalism.getEventSystem().subscribe(OutgoingPacketEvent.ID, this, Priorities.HIGH);
+        Vandalism.getInstance().getEventSystem().subscribe(IncomingPacketEvent.ID, this, Priorities.HIGH);
+        Vandalism.getInstance().getEventSystem().subscribe(OutgoingPacketEvent.ID, this, Priorities.HIGH);
     }
 
     @Override
     public void onDisable() {
-        Vandalism.getEventSystem().unsubscribe(IncomingPacketEvent.ID, this);
-        Vandalism.getEventSystem().unsubscribe(OutgoingPacketEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(IncomingPacketEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(OutgoingPacketEvent.ID, this);
     }
 
     private boolean cancel(final String channel) {

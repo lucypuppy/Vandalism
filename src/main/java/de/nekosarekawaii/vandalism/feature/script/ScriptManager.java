@@ -31,8 +31,8 @@ public class ScriptManager extends NamedStorage<Script> implements TickGameListe
         clientMenuManager.add(new ScriptsClientMenuWindow());
         this.directory = new File(runDirectory, "scripts");
 
-        Vandalism.getEventSystem().subscribe(KeyboardInputEvent.ID, this);
-        Vandalism.getEventSystem().subscribe(TickGameEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(KeyboardInputEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(TickGameEvent.ID, this);
     }
 
     @Override

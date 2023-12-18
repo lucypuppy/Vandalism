@@ -123,7 +123,7 @@ public class ScriptParser {
             throw new RuntimeException("Failed to parse script info at line " + lineNumber + " due to an exception: " + e.getMessage());
         }
         final var script = new Script(name, description, category, file, version, author);
-        if (experimental) script.experimental();
+        if (experimental) script.markExperimental();
         return script;
     }
 

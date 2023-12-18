@@ -22,7 +22,7 @@ public abstract class MixinAbstractBlockState {
             return;
         }
         final var event = new WorldListener.BlockEvent(((AbstractBlock.AbstractBlockState) (Object) this).asBlockState(), pos, callback.getReturnValue());
-        Vandalism.getEventSystem().postInternal(WorldListener.BlockEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().postInternal(WorldListener.BlockEvent.ID, event);
         if (event.shouldUpdate) {
             callback.setReturnValue(event.shape);
         }

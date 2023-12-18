@@ -58,12 +58,12 @@ public class BetterTabListModule extends AbstractModule implements KeyboardInput
 
     @Override
     public void onEnable() {
-        Vandalism.getEventSystem().subscribe(KeyboardInputEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(KeyboardInputEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        Vandalism.getEventSystem().unsubscribe(KeyboardInputEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(KeyboardInputEvent.ID, this);
     }
 
     @Override

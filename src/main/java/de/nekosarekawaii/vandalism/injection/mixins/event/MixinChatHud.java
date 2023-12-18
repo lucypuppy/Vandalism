@@ -21,14 +21,14 @@ public abstract class MixinChatHud {
     @ModifyArg(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;ILnet/minecraft/client/gui/hud/MessageIndicator;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/ChatMessages;breakRenderedChatMessageLines(Lnet/minecraft/text/StringVisitable;ILnet/minecraft/client/font/TextRenderer;)Ljava/util/List;"))
     public StringVisitable callChatModifyReceiveListener(final StringVisitable content) {
         final ChatModifyReceiveListener.ChatModifyReceiveEvent event = new ChatModifyReceiveListener.ChatModifyReceiveEvent((MutableText) content);
-        Vandalism.getEventSystem().postInternal(ChatModifyReceiveListener.ChatModifyReceiveEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().postInternal(ChatModifyReceiveListener.ChatModifyReceiveEvent.ID, event);
         return event.mutableText;
     }
 
     @Inject(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;ILnet/minecraft/client/gui/hud/MessageIndicator;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/ChatMessages;breakRenderedChatMessageLines(Lnet/minecraft/text/StringVisitable;ILnet/minecraft/client/font/TextRenderer;)Ljava/util/List;"))
     public void callChatReceiveListener(final Text message, final MessageSignatureData signature, final int ticks, final MessageIndicator indicator, final boolean refresh, final CallbackInfo ci) {
         final ChatReceiveListener.ChatReceiveEvent event = new ChatReceiveListener.ChatReceiveEvent(message, signature, indicator);
-        Vandalism.getEventSystem().postInternal(ChatReceiveListener.ChatReceiveEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().postInternal(ChatReceiveListener.ChatReceiveEvent.ID, event);
     }
 
 }

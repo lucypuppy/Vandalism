@@ -23,12 +23,12 @@ public class StepModule extends AbstractModule implements StepListener {
 
     @Override
     public void onEnable() {
-        Vandalism.getEventSystem().subscribe(StepEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(StepEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        Vandalism.getEventSystem().unsubscribe(StepEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(StepEvent.ID, this);
     }
 
     @Override

@@ -15,7 +15,7 @@ public abstract class MixinChatScreen {
         chatText = instance.normalize(chatText);
         if (!chatText.isBlank()) {
             final var event = new ChatSendListener.ChatSendEvent(chatText);
-            Vandalism.getEventSystem().postInternal(ChatSendListener.ChatSendEvent.ID, event);
+            Vandalism.getInstance().getEventSystem().postInternal(ChatSendListener.ChatSendEvent.ID, event);
             chatText = event.message;
         }
         return chatText;

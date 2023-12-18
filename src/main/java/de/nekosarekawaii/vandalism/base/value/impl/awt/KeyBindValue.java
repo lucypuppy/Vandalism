@@ -36,7 +36,7 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
         if (!this.waitingForInput) {
             if (ImGui.button(InputType.getKeyName(this.getValue()) + "##" + this.getName() + this.getParent().getName(), 0, 25)) {
                 this.waitingForInput = true;
-                Vandalism.getEventSystem().subscribe(KeyboardInputEvent.ID, this);
+                Vandalism.getInstance().getEventSystem().subscribe(KeyboardInputEvent.ID, this);
             }
         } else {
             ImGui.textWrapped("Listening for key input...");
@@ -53,7 +53,7 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
 
     private void finishInput() {
         this.waitingForInput = false;
-        Vandalism.getEventSystem().unsubscribe(KeyboardInputEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(KeyboardInputEvent.ID, this);
     }
 
     @Override

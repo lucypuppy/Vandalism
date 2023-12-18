@@ -35,14 +35,14 @@ public class FlightModule extends AbstractModule implements OutgoingPacketListen
 
     @Override
     public void onEnable() {
-        Vandalism.getEventSystem().subscribe(MotionListener.MotionEvent.ID, this);
-        Vandalism.getEventSystem().subscribe(OutgoingPacketEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(MotionListener.MotionEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(OutgoingPacketEvent.ID, this);
     }
 
     @Override
     public void onDisable() {
-        Vandalism.getEventSystem().unsubscribe(MotionListener.MotionEvent.ID, this);
-        Vandalism.getEventSystem().unsubscribe(OutgoingPacketEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(MotionListener.MotionEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(OutgoingPacketEvent.ID, this);
     }
 
 

@@ -29,13 +29,13 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
     @Redirect(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/model/EntityModel;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;IIFFFF)V"))
     private void callLivingEntityRenderBottomLayerListener(final EntityModel<T> instance, final MatrixStack matrices, final VertexConsumer vertices, final int light, final int overlay, final float red, final float green, final float blue, final float alpha, @Local T livingEntity) {
         final var event = new LivingEntityRenderBottomLayerListener.LivingEntityRenderBottomLayerEvent(livingEntity, matrices, vertices, light, overlay, red, green, blue, alpha);
-        Vandalism.getEventSystem().postInternal(LivingEntityRenderBottomLayerListener.LivingEntityRenderBottomLayerEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().postInternal(LivingEntityRenderBottomLayerListener.LivingEntityRenderBottomLayerEvent.ID, event);
         instance.render(matrices, vertices, event.light, event.overlay, event.red, event.green, event.blue, event.alpha);
     }
 
     @Inject(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;pop()V", shift = At.Shift.BEFORE))
     private void callLivingEntityRenderPostListener(final T livingEntity, final float yaw, final float tickDelta, final MatrixStack matrixStack, final VertexConsumerProvider vertexConsumerProvider, final int light, final CallbackInfo ci) {
-        Vandalism.getEventSystem().postInternal(LivingEntityRenderPostListener.LivingEntityRenderPostEvent.ID, new LivingEntityRenderPostListener.LivingEntityRenderPostEvent(livingEntity, yaw, tickDelta, matrixStack, light));
+        Vandalism.getInstance().getEventSystem().postInternal(LivingEntityRenderPostListener.LivingEntityRenderPostEvent.ID, new LivingEntityRenderPostListener.LivingEntityRenderPostEvent(livingEntity, yaw, tickDelta, matrixStack, light));
     }
 
 }

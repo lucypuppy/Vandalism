@@ -24,7 +24,7 @@ public abstract class MixinInGameHud {
         if (this.debugHud.shouldShowDebugHud()) { // We never want to render anything when this is true, so /shrug
             return;
         }
-        Vandalism.getEventSystem().postInternal(Render2DListener.Render2DEvent.ID, new Render2DListener.Render2DEvent(context, tickDelta));
+        Vandalism.getInstance().getEventSystem().postInternal(Render2DListener.Render2DEvent.ID, new Render2DListener.Render2DEvent(context, tickDelta));
     }
 
 }
