@@ -7,7 +7,6 @@ import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import imgui.ImGui;
 import imgui.flag.ImGuiColorEditFlags;
 import imgui.flag.ImGuiDataType;
-import imgui.type.ImBoolean;
 import imgui.type.ImFloat;
 import imgui.type.ImInt;
 
@@ -15,22 +14,14 @@ import java.awt.*;
 
 public class ColorValue extends Value<Color> {
 
-    private boolean rainbowMode = false;
-    private float rainbowSaturation = 0.6f;
-    private float rainbowBrightness = 1f;
-    private int rainbowSpeed = 2;
+    private boolean rainbowMode;
+    private float rainbowSaturation;
+    private float rainbowBrightness;
+    private int rainbowSpeed;
 
     public ColorValue(ValueParent parent, String name, String description, Color defaultValue) {
         super(parent, name, description, defaultValue);
-    }
-
-    public ColorValue(ValueParent parent, String name, String description, Color defaultValue,
-                      boolean rainbowMode, float rainbowSaturation, float rainbowBrightness, int rainbowSpeed) {
-        super(parent, name, description, defaultValue);
-        this.rainbowMode = rainbowMode;
-        this.rainbowSaturation = rainbowSaturation;
-        this.rainbowBrightness = rainbowBrightness;
-        this.rainbowSpeed = rainbowSpeed;
+        this.resetRainbowMode();
     }
 
     @Override
@@ -73,6 +64,19 @@ public class ColorValue extends Value<Color> {
         mainNode.add(getName(), valueNode);
     }
 
+    private void resetRainbowMode() {
+        this.rainbowMode = false;
+        this.rainbowSaturation = 0.6f;
+        this.rainbowBrightness = 1f;
+        this.rainbowSpeed = 2;
+    }
+
+    @Override
+    public void resetValue() {
+        super.resetValue();
+        this.resetRainbowMode();
+    }
+
     public Color getValue(int rainbowOffset) {
         if (this.rainbowMode) {
             double rainbowState = Math.ceil((System.currentTimeMillis() * rainbowSpeed + rainbowOffset) / 20.0);
@@ -93,7 +97,7 @@ public class ColorValue extends Value<Color> {
     public void render() {
         final float[] rgba = ColorUtils.rgba(this.getValue().getRGB());
 
-        if (ImGui.checkbox("Rainbow##" + this.getName() + this.getParent().getName(), new ImBoolean(this.rainbowMode))) {
+        if (ImGui.checkbox("Rainbow##" + this.getName() + this.getParent().getName(), this.rainbowMode)) {
             this.rainbowMode = !this.rainbowMode;
         }
 
