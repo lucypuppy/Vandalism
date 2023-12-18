@@ -25,15 +25,17 @@ import java.util.List;
 
 public class KillauraModule extends AbstractModule implements TickGameListener, StrafeListener, Render2DListener, MoveInputListener, de.nekosarekawaii.vandalism.base.event.player.RotationListener {
 
-    public final Value<Double> range = new DoubleValue(this, "Range", "Increases your maximum range to fist enemys", 3.0, 3.0, 6.0);
+    public final Value<Double> range =
+            new DoubleValue(this, "Range", "Increases your maximum range to fist enemies", 3.0, 3.0, 6.0);
+
     private PlayerEntity target;
     private Vec3d rotationVector;
-
     private final RotationListener rotationListener;
 
     public KillauraModule() {
-        super("Killaua", "A module that automatically kills entities in minecraft.", Category.DEVELOPMENT);
+        super("Killaura", "A module that automatically kills entities in minecraft.", Category.DEVELOPMENT);
         this.rotationListener = Vandalism.getInstance().getRotationListener();
+
         setExperimental(true);
     }
 
