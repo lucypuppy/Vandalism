@@ -75,7 +75,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
         if (this.mc.world == null || this.mc.player == null) return;
         final List<LivingEntity> entities = new ArrayList<>();
         this.mc.world.getEntities().forEach(entity -> {
-            if (this.mc.player.distanceTo(entity) < this.range.getValue() && entity != this.mc.player && entity instanceof final LivingEntity livingEntity) {
+            if (this.mc.player.distanceTo(entity) <= this.range.getValue() && entity != this.mc.player && entity instanceof final LivingEntity livingEntity) {
                 entities.add(livingEntity);
             }
         });
