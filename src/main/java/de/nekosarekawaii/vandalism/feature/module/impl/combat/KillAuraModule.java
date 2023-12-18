@@ -14,8 +14,8 @@ import de.nekosarekawaii.vandalism.integration.rotation.RotationPriority;
 import de.nekosarekawaii.vandalism.util.minecraft.TimerHack;
 import de.nekosarekawaii.vandalism.util.minecraft.WorldUtil;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
@@ -34,7 +34,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
             6.0
     );
 
-    private PlayerEntity target;
+    private LivingEntity target;
     private Vec3d rotationVector;
     private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
 
@@ -46,7 +46,6 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
         );
         this.rotationListener = Vandalism.getInstance().getRotationListener();
         this.experimental();
-        this.activateDefault();
     }
 
     @Override
@@ -74,10 +73,10 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
     @Override
     public void onTick() {
         if (this.mc.world == null || this.mc.player == null) return;
-        final List<PlayerEntity> entities = new ArrayList<>();
-        this.mc.world.getPlayers().forEach(entity -> {
-            if (this.mc.player.distanceTo(entity) < 6 && entity != this.mc.player) {
-                entities.add(entity);
+        final List<LivingEntity> entities = new ArrayList<>();
+        this.mc.world.getEntities().forEach(entity -> {
+            if (this.mc.player.distanceTo(entity) < 6 && entity != this.mc.player && entity instanceof final LivingEntity livingEntity) {
+                entities.add(livingEntity);
             }
         });
         if (entities.isEmpty()) {
@@ -187,7 +186,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
     }
 
     @Override
-    public void onRotation(RotationEvent event) {
+    public void onRotation(final RotationEvent event) {
         if (this.target != null) {
             final Rotation rotation = Rotation.Builder.build(this.target, true, 6f, 1D / 32);
             if (rotation == null) { //sanity check, crashes if you sneak and have your reach set to 3.0
