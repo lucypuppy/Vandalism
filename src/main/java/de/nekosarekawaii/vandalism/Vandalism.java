@@ -31,6 +31,7 @@ import java.io.File;
  *  - Delete MixinClientPlayerEntity & MixinClientWorld
  *  - Delete CustomRPConfirmScreen
  *  - Add Proxy manager
+ *  - Add JiJ and JiS for building/exporting the mod
  * <p>
  * TODO | Everyone else
  *  - Fix tick bug (cps is not accurate) -> see BoxMuellerClicker#update
