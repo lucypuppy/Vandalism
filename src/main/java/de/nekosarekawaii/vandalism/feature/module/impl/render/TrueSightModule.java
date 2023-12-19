@@ -1,6 +1,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
 import de.florianmichael.rclasses.common.ColorUtils;
+import de.florianmichael.rclasses.common.model.HSBColor;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.render.LivingEntityRenderBottomLayerListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
@@ -34,7 +35,7 @@ public class TrueSightModule extends AbstractModule implements LivingEntityRende
             true
     ).visibleCondition(this.entities::getValue);
 
-    private final Value<Color> entityColor = new ColorValue(
+    private final Value<HSBColor> entityColor = new ColorValue(
             this,
             "Entity Color",
             "The color of invisible entities.",
@@ -58,7 +59,7 @@ public class TrueSightModule extends AbstractModule implements LivingEntityRende
     @Override
     public void onLivingEntityRenderBottomLayer(final LivingEntityRenderBottomLayerEvent event) {
         if (this.entities.getValue() && event.livingEntity.isInvisible()) {
-            final Color color = this.entityColor.getValue();
+            final Color color = this.entityColor.getValue().getColor();
             event.red = color.getRed() / 255F;
             event.green = color.getGreen() / 255F;
             event.blue = color.getBlue() / 255F;

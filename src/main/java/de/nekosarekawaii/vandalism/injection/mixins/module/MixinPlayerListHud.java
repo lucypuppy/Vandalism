@@ -54,7 +54,7 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
         final BetterTabListModule betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
         final int color;
         if (betterTabListModule.isActive() && betterTabListModule.highlightSelf.getValue() && this.mc.player != null && entry.getProfile().getId().equals(this.mc.player.getGameProfile().getId())) {
-            color = betterTabListModule.selfColor.getValue().getRGB();
+            color = betterTabListModule.selfColor.getValue().getColor().getRGB();
         } else {
             color = this.mc.options.getTextBackgroundColor(0x20FFFFFF);
         }
@@ -68,9 +68,9 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
             final int gameModeId = entry.getGameMode().getId();
             final int gameModeY = (int) ((y + (this.mc.textRenderer.fontHeight / 2f)) / vandalism$SCALE);
             final double pingPercent = Math.min((float) latency / betterTabListModule.highPing.getValue(), 1.0f);
-            final Color lowPingColor = betterTabListModule.lowPingColor.getValue();
-            final Color averagePingColor = betterTabListModule.averagePingColor.getValue();
-            final Color highPingColor = betterTabListModule.highPingColor.getValue();
+            final Color lowPingColor = betterTabListModule.lowPingColor.getValue().getColor();
+            final Color averagePingColor = betterTabListModule.averagePingColor.getValue().getColor();
+            final Color highPingColor = betterTabListModule.highPingColor.getValue().getColor();
             final Color pingColor = RenderUtil.interpolateColor(lowPingColor, averagePingColor, highPingColor, pingPercent);
             final String ping = latency + " ms", gameMode = gameModeId + " gm";
             context.getMatrices().push();
