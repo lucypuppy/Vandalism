@@ -12,7 +12,7 @@ import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.gui.ModulesClientMenuWindow;
 import de.nekosarekawaii.vandalism.feature.module.impl.combat.BowSpammerModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.combat.KillAuraModule;
-import de.nekosarekawaii.vandalism.feature.module.impl.development.PacketLoggerModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.development.PacketManagerModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.development.TestModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.*;
@@ -54,7 +54,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
     public void init() {
         this.add(
                 new BowSpammerModule(),
-                new PacketLoggerModule(),
+                new PacketManagerModule(),
                 new TestModule(),
                 new BungeeCordSpooferModule(),
                 new ConsoleSpammerModule(),
