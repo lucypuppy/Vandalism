@@ -8,8 +8,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import java.awt.*;
-
 @Mixin(WorldRenderer.class)
 public abstract class MixinWorldRenderer {
 
@@ -19,10 +17,11 @@ public abstract class MixinWorldRenderer {
         if (espModule.isActive()) {
             final var color = espModule.outlineColor.getValue();
 
-            red = color.getRed();
-            green = color.getGreen();
-            blue = color.getBlue();
-            alpha = color.getAlpha();
+            red = color.getColor().getRed();
+            green = color.getColor().getGreen();
+            blue = color.getColor().getBlue();
+            alpha = color.getColor().getAlpha();
+
         }
         instance.setColor(red, green, blue, alpha);
     }

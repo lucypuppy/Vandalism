@@ -1,6 +1,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
 import de.florianmichael.rclasses.common.ColorUtils;
+import de.florianmichael.rclasses.common.model.HSBColor;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
@@ -9,7 +10,7 @@ import java.awt.*;
 
 public class ESPModule extends AbstractModule {
 
-    public final Value<Color> outlineColor = new ColorValue(
+    public final Value<HSBColor> outlineColor = new ColorValue(
             this,
             "Color",
             "The color of the outline.",
