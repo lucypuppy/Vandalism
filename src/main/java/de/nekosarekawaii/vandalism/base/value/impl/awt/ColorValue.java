@@ -59,8 +59,8 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
     public void load(final JsonObject mainNode) {
         final JsonObject valueNode = mainNode.get(getName()).getAsJsonObject();
         this.setValue(new Color(valueNode.get("color").getAsInt(), true));
-        this.mainColorFade = new Color(valueNode.get("mainColor").getAsInt(), true);
-        this.secondaryColorFade = new Color(valueNode.get("secondaryColor").getAsInt(), true);
+        this.mainColorFade = new Color(valueNode.get("mainColorFade").getAsInt(), true);
+        this.secondaryColorFade = new Color(valueNode.get("secondaryColorFade").getAsInt(), true);
 
         for (final Value<?> value : this.getValues()) {
             value.load(valueNode);
