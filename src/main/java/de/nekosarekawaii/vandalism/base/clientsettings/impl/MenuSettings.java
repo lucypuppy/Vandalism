@@ -45,7 +45,7 @@ public class MenuSettings extends ValueGroup {
 
     public final BooleanValue replaceGameMenuScreenButtons = new BooleanValue(
             this,
-            "Replaces Game Menu Screen Buttons",
+            "Replace Game Menu Screen Buttons",
             "Adds a multiplayer and a reconnect button to the game menu screen.",
             true
     );
@@ -78,8 +78,15 @@ public class MenuSettings extends ValueGroup {
             true
     );
 
+    public final BooleanValue forceEnableRespawnButton = new BooleanValue(
+            this,
+            "Force Enable Respawn Button",
+            "Forces the respawn button to be enabled.",
+            false
+    );
+
     public MenuSettings(final ClientSettings parent) {
         super(parent, "Menu", "Menu related settings.");
     }
-    
+
 }
