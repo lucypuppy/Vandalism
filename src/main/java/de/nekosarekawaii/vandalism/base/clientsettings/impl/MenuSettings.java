@@ -78,12 +78,20 @@ public class MenuSettings extends ValueGroup {
             true
     );
 
+    public final BooleanValue forceEnableReconfiguartionDisconnectButton = new BooleanValue(
+            this,
+            "Force Enable Reconfiguration Disconnect Button",
+            "Forces the disconnect button of the reconfiguration screen to be enabled.",
+            true
+    );
+
     public final BooleanValue forceEnableRespawnButton = new BooleanValue(
             this,
             "Force Enable Respawn Button",
             "Forces the respawn button to be enabled.",
             false
     );
+
 
     public MenuSettings(final ClientSettings parent) {
         super(parent, "Menu", "Menu related settings.");
