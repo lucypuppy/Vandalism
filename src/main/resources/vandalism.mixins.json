@@ -27,6 +27,7 @@
     "clientsettings.MixinMultiplayerScreen",
     "clientsettings.MixinNetworkUtils",
     "clientsettings.MixinPlayerEntity",
+    "clientsettings.MixinReconfigurationScreen",
     "clientsettings.MixinServerEntry",
     "clientsettings.MixinServerList",
     "clientsettings.MixinServerResourcePackProvider",
