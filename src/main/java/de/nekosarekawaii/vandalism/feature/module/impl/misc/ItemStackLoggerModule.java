@@ -145,7 +145,7 @@ public class ItemStackLoggerModule extends AbstractModule implements TickGameLis
                 itemNbt.putInt("Count", count);
                 itemNbt.putInt("NBT Count", nbtCount);
                 itemNbt.put("NBT", nbt);
-                NbtIo.write(itemNbt, itemNbtFile);
+                NbtIo.write(itemNbt, itemNbtFile.toPath());
 
                 final String normalWithoutNBT = "Position: " + position + " | Damage: " + damage + " | Count: " + count + " | NBT Count: " + nbtCount;
                 if (this.notifyInChat.getValue()) {

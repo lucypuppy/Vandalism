@@ -62,7 +62,6 @@ accessible field net/minecraft/client/MinecraftClient itemUseCooldown I
 accessible method net/minecraft/client/gui/widget/TextFieldWidget getMaxLength ()I
 accessible field net/minecraft/client/session/report/AbuseReportContext environment Lnet/minecraft/client/session/report/ReporterEnvironment;
 accessible class net/minecraft/client/texture/PlayerSkinProvider$Key
-accessible method net/minecraft/client/texture/PlayerSkinProvider getTextureEntry (Lcom/mojang/authlib/GameProfile;)Lcom/mojang/authlib/properties/Property;
 accessible method net/minecraft/client/gui/screen/GameMenuScreen disconnect ()V
 accessible method net/minecraft/client/network/ClientPlayerInteractionManager syncSelectedSlot ()V
 accessible field net/minecraft/network/packet/c2s/play/ClickSlotC2SPacket actionType Lnet/minecraft/screen/slot/SlotActionType;
@@ -75,3 +74,6 @@ accessible method net/minecraft/entity/player/PlayerEntity getOffGroundSpeed ()F
 accessible field net/minecraft/client/MinecraftClient sessionService Lcom/mojang/authlib/minecraft/MinecraftSessionService;
 mutable field net/minecraft/client/MinecraftClient sessionService Lcom/mojang/authlib/minecraft/MinecraftSessionService;
 accessible field net/minecraft/client/network/ClientPlayerEntity ticksSinceLastPositionPacketSent I
+accessible field net/minecraft/client/MinecraftClient LOGGER Lorg/slf4j/Logger;
+accessible field net/minecraft/client/MinecraftClient userPropertiesFuture Ljava/util/concurrent/CompletableFuture;
+mutable field net/minecraft/client/MinecraftClient userPropertiesFuture Ljava/util/concurrent/CompletableFuture;

@@ -14,6 +14,7 @@ import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.PlayerSkinRenderer;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.SocialInteractionsManager;
 import net.minecraft.client.realms.RealmsClient;
 import net.minecraft.client.realms.RealmsPeriodicCheckers;
@@ -21,6 +22,7 @@ import net.minecraft.client.session.ProfileKeys;
 import net.minecraft.client.session.Session;
 import net.minecraft.client.session.report.AbuseReportContext;
 import net.minecraft.client.session.report.ReporterEnvironment;
+import net.minecraft.util.Util;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -142,13 +144,17 @@ public abstract class AbstractAccount implements IName, MinecraftWrapper {
         mc.sessionService = authenticationService.createMinecraftSessionService();
 
         if (session.getAccountType().equals(Session.AccountType.MSA)) {
-            UserApiService userApiService;
-            try {
-                userApiService = authenticationService.createUserApiService(session.getAccessToken());
-            } catch (AuthenticationException e) {
-                userApiService = UserApiService.OFFLINE; // Technically trash, but whatever, Java is bad, Mojang is bad, everything is bad
-            }
+            final UserApiService userApiService = authenticationService.createUserApiService(session.getAccessToken());
             mc.userApiService = userApiService;
+            mc.userPropertiesFuture = CompletableFuture.supplyAsync(() -> {
+                try {
+                    return userApiService.fetchProperties();
+                } catch (AuthenticationException var2) {
+                    MinecraftClient.LOGGER.error("Failed to fetch user properties", var2);
+                    return UserApiService.OFFLINE_PROPERTIES;
+                }
+            }, Util.getDownloadWorkerExecutor());
+
             mc.socialInteractionsManager = new SocialInteractionsManager(mc, userApiService);
             mc.profileKeys = ProfileKeys.create(userApiService, session, mc.runDirectory.toPath());
             mc.abuseReportContext = AbuseReportContext.create(mc.abuseReportContext != null ? mc.abuseReportContext.environment : ReporterEnvironment.ofIntegratedServer(), userApiService);

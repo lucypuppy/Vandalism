@@ -39,7 +39,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
         if (mcPingResponse != null) {
             final String descriptionString = mcPingResponse.description;
             try {
-                final MutableText description = Text.Serializer.fromJson(descriptionString);
+                final MutableText description = Text.Serialization.fromJson(descriptionString);
                 if (description != null) this.motd = description.getString();
             } catch (JsonSyntaxException ignored) {
                 this.motd = descriptionString;
