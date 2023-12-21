@@ -85,7 +85,7 @@ public class TrashTalkModule extends AbstractModule implements ChatReceiveListen
     public void onChatReceive(final ChatReceiveEvent event) {
         final String message = event.text.getString();
         if (
-                StringUtils.contains(message, this.mc.session.getUsername() + ">") ||
+                StringUtils.contains(message, "<" + this.mc.session.getUsername() + ">") ||
                         StringUtils.contains(message, this.mc.session.getUsername() + ":") ||
                         StringUtils.contains(message, this.mc.session.getUsername() + "]") ||
                         StringUtils.contains(message, "] " + this.mc.session.getUsername())
