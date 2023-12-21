@@ -57,10 +57,10 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
         final ItemStack item = new ItemStack(Items.OAK_SIGN);
         final NbtCompound base = item.getOrCreateNbt();
         final NbtCompound blockEntityTag = new NbtCompound();
-        blockEntityTag.put("Text1", NbtString.of(Text.Serializer.toJson(Text.translatable(component))));
-        blockEntityTag.put("Text2", NbtString.of(Text.Serializer.toJson(Text.literal(""))));
-        blockEntityTag.put("Text3", NbtString.of(Text.Serializer.toJson(Text.literal(""))));
-        blockEntityTag.put("Text4", NbtString.of(Text.Serializer.toJson(Text.literal(""))));
+        blockEntityTag.put("Text1", NbtString.of(Text.Serialization.toJsonString(Text.translatable(component))));
+        blockEntityTag.put("Text2", NbtString.of(Text.Serialization.toJsonString(Text.literal(""))));
+        blockEntityTag.put("Text3", NbtString.of(Text.Serialization.toJsonString(Text.literal(""))));
+        blockEntityTag.put("Text4", NbtString.of(Text.Serialization.toJsonString(Text.literal(""))));
         base.put("BlockEntityTag", blockEntityTag);
         return item;
     }
@@ -68,7 +68,7 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
     private static ItemStack createCrashBook(final String component) {
         final ItemStack item = new ItemStack(Items.WRITTEN_BOOK);
         final NbtList pages = new NbtList();
-        pages.add(NbtString.of(Text.Serializer.toJson(Text.translatable(component))));
+        pages.add(NbtString.of(Text.Serialization.toJsonString(Text.translatable(component))));
         item.setSubNbt("pages", pages);
         item.setSubNbt("author", NbtString.of("Server"));
         item.setSubNbt("title", NbtString.of("Read Me!"));
@@ -79,7 +79,7 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
         final ItemStack item = new ItemStack(Items.SHEEP_SPAWN_EGG);
         final NbtCompound base = new NbtCompound();
         final NbtCompound entityTag = new NbtCompound();
-        entityTag.putString("CustomName", Text.Serializer.toJson(Text.literal("#".repeat(10000)).formatted(Formatting.DARK_GREEN, Formatting.BOLD, Formatting.UNDERLINE, Formatting.STRIKETHROUGH, Formatting.ITALIC, Formatting.OBFUSCATED)));
+        entityTag.putString("CustomName", Text.Serialization.toJsonString(Text.literal("#".repeat(10000)).formatted(Formatting.DARK_GREEN, Formatting.BOLD, Formatting.UNDERLINE, Formatting.STRIKETHROUGH, Formatting.ITALIC, Formatting.OBFUSCATED)));
         entityTag.putInt("Value", 1337);
         entityTag.putInt("Count", 999999);
         entityTag.putByte("CustomNameVisible", (byte) 1);
