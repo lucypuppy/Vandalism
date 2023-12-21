@@ -95,7 +95,7 @@ public class TrashTalkModule extends AbstractModule implements ChatReceiveListen
         final AtomicReference<String> targetName = new AtomicReference<>("<target>");
         for (final PlayerListEntry playerListEntry : this.mc.getNetworkHandler().getPlayerList()) {
             final String playerName = playerListEntry.getProfile().getName();
-            if (StringUtils.contains(message, playerName)) {
+            if (!this.mc.session.getUsername().equalsIgnoreCase(playerName) && StringUtils.contains(message, playerName)) {
                 targetName.set(playerName);
                 break;
             }
