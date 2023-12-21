@@ -221,7 +221,7 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
         final NbtCompound entityTag = new NbtCompound();
         entityTag.putInt("Steps", Integer.MIN_VALUE);
         entityTag.putString("id", "minecraft:shulker_bullet");
-        entityTag.putString("CustomName", Text.Serializer.toJson(Text.literal("*").formatted(Formatting.YELLOW, Formatting.BOLD)));
+        entityTag.putString("CustomName", Text.Serialization.toJsonString(Text.literal("*").formatted(Formatting.YELLOW, Formatting.BOLD)));
         entityTag.putByte("CustomNameVisible", (byte) 1);
         entityTag.putByte("NoGravity", (byte) 1);
         base.put("EntityTag", entityTag);

@@ -110,7 +110,7 @@ public class ItemStackUtil implements MinecraftWrapper {
         if (description != null) {
             final NbtList lore = new NbtList();
             for (final Text text : description) {
-                if (text != null) lore.add(NbtString.of(Text.Serializer.toJson(text)));
+                if (text != null) lore.add(NbtString.of(Text.Serialization.toJsonString(text)));
             }
             stack.getOrCreateSubNbt(ItemStack.DISPLAY_KEY).put(ItemStack.LORE_KEY, lore);
         }

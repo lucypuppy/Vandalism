@@ -26,7 +26,7 @@ public class EasyMCAccount extends AbstractTokenBasedAccount {
 
     @Override
     public Environment getEnvironment() {
-        return new Environment("https://api.mojang.com", "https://sessionserver.easymc.io", "https://api.minecraftservices.com", this.getName());
+        return new Environment("https://sessionserver.easymc.io", "https://api.minecraftservices.com", this.getName());
     }
 
     @Override

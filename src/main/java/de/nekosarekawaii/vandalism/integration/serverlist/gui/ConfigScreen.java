@@ -25,7 +25,7 @@ public class ConfigScreen extends Screen {
 
     @Override
     protected void init() {
-        this.addDrawableChild(new SlotList(this.client, this.width, this.height, 32, this.height - 64, this.textRenderer.fontHeight + 4));
+        this.addDrawableChild(new SlotList(this.client, this.width, this.height, 32, 64, this.textRenderer.fontHeight + 4));
         this.removeBtn = this.addDrawableChild(ButtonWidget.builder(Text.literal("Remove"), button -> {
             final ServerList selectedServerList = Vandalism.getInstance().getServerListManager().getSelectedServerList();
             if (this.client != null && !selectedServerList.isDefault()) {
@@ -66,7 +66,7 @@ public class ConfigScreen extends Screen {
     private static class SlotList extends AlwaysSelectedEntryListWidget<ListSlot> {
 
         public SlotList(final MinecraftClient minecraftClient, final int width, final int height, final int top, final int bottom, final int entryHeight) {
-            super(minecraftClient, width, height, top, bottom, entryHeight);
+            super(minecraftClient, width, height - top - bottom, top, entryHeight);
             for (final ServerList serverList : Vandalism.getInstance().getServerListManager().getServerLists()) {
                 this.addEntry(new ListSlot(serverList));
             }
