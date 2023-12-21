@@ -1,8 +1,8 @@
 package de.nekosarekawaii.vandalism.clientmenu.base;
 
 import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
-import de.nekosarekawaii.vandalism.util.imgui.ImLoader;
 import de.nekosarekawaii.vandalism.integration.hud.gui.HUDClientMenuWindow;
+import de.nekosarekawaii.vandalism.util.imgui.ImLoader;
 import imgui.ImGui;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -77,7 +77,9 @@ public class ClientMenuScreen extends Screen {
             if (!window.isActive()) {
                 continue;
             }
-            window.keyPressed(keyCode, scanCode, modifiers, false);
+            if (!window.keyPressed(keyCode, scanCode, modifiers, false)) {
+                return false;
+            }
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
@@ -88,7 +90,9 @@ public class ClientMenuScreen extends Screen {
             if (!window.isActive()) {
                 continue;
             }
-            window.keyPressed(keyCode, scanCode, modifiers, true);
+            if (!window.keyPressed(keyCode, scanCode, modifiers, true)) {
+                return false;
+            }
         }
         return super.keyReleased(keyCode, scanCode, modifiers);
     }

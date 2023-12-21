@@ -17,6 +17,9 @@ import java.util.List;
 
 public abstract class AbstractModule extends Feature implements ValueParent {
 
+    public static final String EXPERIMENTAL_WARNING_TEXT = "Warning: This module is experimental and may not work as expected.";
+    public static final String SUPPORTED_VERSIONS_TEXT = "Supported Versions:";
+
     private final List<Value<?>> values = new ArrayList<>();
 
     private final BooleanValue active;

@@ -7,24 +7,27 @@ import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import imgui.ImGui;
+import imgui.ImVec2;
 import imgui.flag.ImGuiCol;
-import imgui.flag.ImGuiPopupFlags;
+import imgui.flag.ImGuiCond;
+import imgui.flag.ImGuiMouseButton;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import net.minecraft.client.gui.DrawContext;
 import net.raphimc.vialoader.util.VersionRange;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ModulesClientMenuWindow extends ClientMenuWindow {
-
-    private final List<AbstractModule> openedModules = new CopyOnWriteArrayList<>();
 
     private final ImString searchInput = new ImString();
     private final ImString favoriteModulesSearchInput = new ImString();
     private final ImString activatedModulesSearchInput = new ImString();
+
+    private String lastPopupId = "";
+    private boolean closePopup = false;
 
     public ModulesClientMenuWindow() {
         super("Modules", Category.CONFIGURATION);
@@ -123,12 +126,6 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
                 ImGui.separator();
                 ImGui.end();
             }
-            for (final AbstractModule module : this.openedModules) {
-                final String id = "##opened" + module.getCategory().getName() + "module" + module.getName();
-                ImGui.begin(module.getName() + " Module Config" + id, windowFlags);
-                this.renderModuleData(module, id, -1, -1, true);
-                ImGui.end();
-            }
         }
     }
 
@@ -149,73 +146,76 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
         if (ImGui.button(module.getName() + moduleId + "togglebutton", -1, 25)) {
             module.toggle();
         }
-        if (ImGui.isItemHovered()) {
-            ImGui.beginTooltip();
-            this.renderModuleInfo(module);
-            ImGui.endTooltip();
-        }
         if (moduleActivated) {
             ImGui.popStyleColor(3);
         }
-        if (ImGui.beginPopupContextItem(moduleId + "configmenu", ImGuiPopupFlags.MouseButtonRight)) {
-            ImGui.text(module.getName() + " Module");
-            this.renderModuleData(module, moduleId, 400, 300, false);
+        final String popupId = module.getName() + " Module" + moduleId + "popup";
+        if (ImGui.isItemClicked(ImGuiMouseButton.Right)) {
+            ImGui.openPopup(popupId);
+            this.lastPopupId = popupId;
+        }
+        final ImVec2 displaySize = ImGui.getIO().getDisplaySize();
+        final float centerFactor = 0.5f;
+        ImGui.setNextWindowPos(displaySize.x * centerFactor, displaySize.y * centerFactor, ImGuiCond.Always, centerFactor, centerFactor);
+        if (ImGui.beginPopupModal(popupId, ImGuiWindowFlags.AlwaysAutoResize)) {
+            this.renderModuleInfo(module, true);
+            ImGui.separator();
+            if (ImGui.button("Close" + moduleId)) {
+                this.closePopup = true;
+            }
+            ImGui.sameLine();
+            final List<Value<?>> values = module.getValues();
+            if (!values.isEmpty()) {
+                if (ImGui.button("Reset config" + moduleId + "resetconfigbutton")) {
+                    for (final Value<?> value : values) {
+                        value.resetValue();
+                    }
+                }
+                module.renderValues();
+                ImGui.separator();
+            }
+            if (this.closePopup) {
+                this.closePopup = false;
+                this.lastPopupId = "";
+                ImGui.closeCurrentPopup();
+            }
             ImGui.endPopup();
         }
-    }
-
-    private void renderModuleData(final AbstractModule module, final String id, final int width, final int height, final boolean configWindow) {
-        if (configWindow) {
-            this.renderModuleInfo(module);
-            ImGui.spacing();
-        } else {
-            ImGui.sameLine();
-            ImGui.textDisabled("(?)");
-            if (ImGui.isItemHovered()) {
-                ImGui.beginTooltip();
-                this.renderModuleInfo(module);
-                ImGui.endTooltip();
-            }
-        }
-        ImGui.separator();
-        final List<Value<?>> values = module.getValues();
-        if (!values.isEmpty()) {
-            if (ImGui.button((this.openedModules.contains(module) ? "Close" : "Open") + " config window" + id + "toggleconfigwindowbutton")) {
-                if (this.openedModules.contains(module)) {
-                    this.openedModules.remove(module);
-                } else {
-                    this.openedModules.add(module);
-                }
-            }
-            ImGui.sameLine();
-            if (ImGui.button("Reset config" + id + "resetconfigbutton")) {
-                for (final Value<?> value : values) {
-                    value.resetValue();
-                }
-            }
-            ImGui.pushStyleColor(ImGuiCol.ChildBg, 0.0f, 0.0f, 0.0f, 0.15f);
-            ImGui.beginChild(id + "configscrolllist", width, height, true, ImGuiWindowFlags.HorizontalScrollbar);
-            module.renderValues();
-            ImGui.endChild();
-            ImGui.popStyleColor();
-            ImGui.separator();
+        if (ImGui.isItemHovered()) {
+            ImGui.beginTooltip();
+            this.renderModuleInfo(module, false);
+            ImGui.endTooltip();
         }
     }
 
-    private void renderModuleInfo(final AbstractModule module) {
+    private void renderModuleInfo(final AbstractModule module, final boolean wrapText) {
         final String description = module.getDescription();
-        if (!description.isBlank()) ImGui.text(description);
-        else ImGui.text("No description found.");
+        if (wrapText) ImGui.textWrapped(description);
+        else ImGui.text(description);
         if (module.isExperimental()) {
             ImGui.spacing();
-            ImGui.textColored(0.8f, 0.1f, 0.1f, 1f, "Warning: This module is experimental, which means that there may be problems or complications with the functionality.");
+            ImGui.pushStyleColor(ImGuiCol.Text, 0.8f, 0.1f, 0.1f, 1f);
+            if (wrapText) ImGui.textWrapped(AbstractModule.EXPERIMENTAL_WARNING_TEXT);
+            else ImGui.text(AbstractModule.EXPERIMENTAL_WARNING_TEXT);
+            ImGui.popStyleColor();
         }
         final VersionRange supportedVersions = module.getSupportedVersions();
         if (supportedVersions != null) {
             ImGui.spacing();
-            ImGui.text("Supported Versions:");
-            ImGui.text(supportedVersions.toString());
+            if (wrapText) ImGui.textWrapped(AbstractModule.SUPPORTED_VERSIONS_TEXT);
+            else ImGui.text(AbstractModule.SUPPORTED_VERSIONS_TEXT);
+            if (wrapText) ImGui.textWrapped(supportedVersions.toString());
+            else ImGui.text(supportedVersions.toString());
         }
+    }
+
+    @Override
+    public boolean keyPressed(final int key, final int scanCode, final int modifiers, final boolean release) {
+        if (key == GLFW.GLFW_KEY_ESCAPE && !release && !this.lastPopupId.isBlank()) {
+            this.closePopup = true;
+            return false;
+        }
+        return super.keyPressed(key, scanCode, modifiers, release);
     }
 
 }

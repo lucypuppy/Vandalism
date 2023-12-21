@@ -20,22 +20,9 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
 
     private final List<Value<?>> values = new ArrayList<>();
 
-    private final EnumModeValue<ColorMode> colorMode = new EnumModeValue<>(
-            this,
-            "Color Mode",
-            "The color mode",
-            ColorMode.STATIC,
-            ColorMode.values()
-    );
+    private final EnumModeValue<ColorMode> colorMode = new EnumModeValue<>(this, "Color Mode", "The color mode", ColorMode.STATIC, ColorMode.values());
 
-    private final IntegerValue rainbowSpeed = new IntegerValue(
-            this,
-            "Rainbow Speed",
-            "The speed of the rainbow",
-            2,
-            1,
-            10
-    );
+    private final IntegerValue rainbowSpeed = new IntegerValue(this, "Rainbow Speed", "The speed of the rainbow", 2, 1, 10);
 
     // These things arent the client colors these are just the twoColorFade colors and i need them in this class
     private Color mainColorFade;
@@ -124,23 +111,19 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
             final float[] mainFadeRgba = ColorUtils.rgba(this.mainColorFade.getRGB());
             final float[] secondFadeRgba = ColorUtils.rgba(this.secondaryColorFade.getRGB());
 
-            if (ImGui.colorEdit4("##mainFadeRgba" + this.getName() + this.getParent().getName(), mainFadeRgba,
-                    textInputFlags)) {
+            if (ImGui.colorEdit4("##mainFadeRgba" + this.getName() + this.getParent().getName(), mainFadeRgba, textInputFlags)) {
                 this.mainColorFade = new Color(mainFadeRgba[0], mainFadeRgba[1], mainFadeRgba[2], mainFadeRgba[3]);
             }
 
             ImGui.sameLine();
 
-            if (ImGui.colorEdit4("##secondFadeRgba" + this.getName() + this.getParent().getName(), secondFadeRgba,
-                    textInputFlags)) {
-                this.secondaryColorFade = new Color(secondFadeRgba[0], secondFadeRgba[1],
-                        secondFadeRgba[2], secondFadeRgba[3]);
+            if (ImGui.colorEdit4("##secondFadeRgba" + this.getName() + this.getParent().getName(), secondFadeRgba, textInputFlags)) {
+                this.secondaryColorFade = new Color(secondFadeRgba[0], secondFadeRgba[1], secondFadeRgba[2], secondFadeRgba[3]);
             }
         } else {
             final float[] rgba = ColorUtils.rgba(this.getValue().getColor().getRGB());
 
-            if (ImGui.colorEdit4("##rgba" + this.getName() + this.getParent().getName(), rgba,
-                    textInputFlags)) {
+            if (ImGui.colorEdit4("##rgba" + this.getName() + this.getParent().getName(), rgba, textInputFlags)) {
                 this.setValue(new Color(rgba[0], rgba[1], rgba[2], rgba[3]));
             }
         }
