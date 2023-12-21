@@ -50,13 +50,6 @@ public class MenuSettings extends ValueGroup {
             true
     );
 
-    public final BooleanValue moreResourcePackOptions = new BooleanValue(
-            this,
-            "More Server Resource Pack Options",
-            "Shows more options in the Server Resource Pack Download Screen.",
-            true
-    );
-
     public final BooleanValue downloadingTerrainScreenEscaping = new BooleanValue(
             this,
             "Downloading Terrain Screen Escaping",
