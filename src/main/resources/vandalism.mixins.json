@@ -13,7 +13,6 @@
     "clientsettings.MixinBuiltinModelItemRenderer",
     "clientsettings.MixinChatScreen",
     "clientsettings.MixinClientBrandRetriever",
-    "clientsettings.MixinClientCommonNetworkHandler",
     "clientsettings.MixinClientConnection",
     "clientsettings.MixinClientPlayerInteractionManager",
     "clientsettings.MixinDeathScreen",
