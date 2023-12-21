@@ -64,6 +64,13 @@ public class MenuSettings extends ValueGroup {
             true
     );
 
+    public final BooleanValue progressScreenEscaping = new BooleanValue(
+            this,
+            "Progress Screen Escaping",
+            "Allows you to escape the progress screen by pressing the escape key.",
+            true
+    );
+
     public final BooleanValue disconnectedScreenEscaping = new BooleanValue(
             this,
             "Disconnected Screen Escaping",
