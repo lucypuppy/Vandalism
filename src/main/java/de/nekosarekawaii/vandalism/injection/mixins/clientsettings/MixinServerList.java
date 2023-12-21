@@ -34,17 +34,17 @@ public abstract class MixinServerList {
 
     @ModifyArgs(method = "loadFile", at = @At(value = "INVOKE", target = "Ljava/nio/file/Path;resolve(Ljava/lang/String;)Ljava/nio/file/Path;"))
     private void enhancedServerListChangeLoadFileName(final Args args) {
-        args.set(1, this.vandalism$enhancedServerListGetSelectedServerListName() + ".dat");
+        args.set(0, this.vandalism$enhancedServerListGetSelectedServerListName() + ".dat");
     }
 
     @ModifyArgs(method = "saveFile", at = @At(value = "INVOKE", target = "Ljava/nio/file/Path;resolve(Ljava/lang/String;)Ljava/nio/file/Path;", ordinal = 0))
     private void enhancedServerListChangeOldSaveFileName(final Args args) {
-        args.set(1, this.vandalism$enhancedServerListGetSelectedServerListName() + ".dat_old");
+        args.set(0, this.vandalism$enhancedServerListGetSelectedServerListName() + ".dat_old");
     }
 
     @ModifyArgs(method = "saveFile", at = @At(value = "INVOKE", target = "Ljava/nio/file/Path;resolve(Ljava/lang/String;)Ljava/nio/file/Path;", ordinal = 1))
     private void enhancedServerListChangeSaveFileName(final Args args) {
-        args.set(1, this.vandalism$enhancedServerListGetSelectedServerListName() + ".dat");
+        args.set(0, this.vandalism$enhancedServerListGetSelectedServerListName() + ".dat");
     }
 
 
