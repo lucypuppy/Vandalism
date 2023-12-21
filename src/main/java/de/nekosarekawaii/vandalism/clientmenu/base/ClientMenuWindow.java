@@ -26,7 +26,9 @@ public class ClientMenuWindow implements IName, MinecraftWrapper {
     }
     public void mouseClicked(final double mouseX, final double mouseY, final int button, final boolean release) {
     }
-    public void keyPressed(final int key, final int scanCode, final int modifiers, final boolean release) {
+
+    public boolean keyPressed(final int key, final int scanCode, final int modifiers, final boolean release) {
+        return true;
     }
 
     public boolean isActive() {

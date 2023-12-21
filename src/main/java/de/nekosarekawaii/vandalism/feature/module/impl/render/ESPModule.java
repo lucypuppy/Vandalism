@@ -14,7 +14,7 @@ public class ESPModule extends AbstractModule {
             this,
             "Color",
             "The color of the outline.",
-            ColorUtils.withAlpha(Color.MAGENTA, 200)
+            ColorUtils.withAlpha(Color.WHITE, 200)
     );
 
     public ESPModule() {
