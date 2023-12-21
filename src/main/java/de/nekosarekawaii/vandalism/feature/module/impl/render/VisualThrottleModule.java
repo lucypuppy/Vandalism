@@ -62,6 +62,20 @@ public class VisualThrottleModule extends AbstractModule {
             500
     ).visibleCondition(this.modifyDisplayNameLength::getValue);
 
+    public final BooleanValue blockStructureBlockBoundingBoxes = new BooleanValue(
+            this,
+            "Block structure block bounding boxes",
+            "Blocks the bounding boxes from structure blocks.",
+            true
+    );
+
+    public final BooleanValue blockStructureBlockAirBoxes = new BooleanValue(
+            this,
+            "Block structure block air boxes",
+            "Blocks the air boxes from structure blocks.",
+            true
+    );
+
     public VisualThrottleModule() {
         super(
                 "Visual Throttle",

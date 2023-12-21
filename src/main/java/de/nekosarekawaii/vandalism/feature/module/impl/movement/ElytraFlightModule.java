@@ -30,12 +30,12 @@ public class ElytraFlightModule extends AbstractModule implements TickGameListen
     }
 
     @Override
-    public void onEnable() {
+    public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(TickGameEvent.ID, this);
     }
 
     @Override
-    public void onDisable() {
+    public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(TickGameEvent.ID, this);
     }
 
@@ -46,7 +46,7 @@ public class ElytraFlightModule extends AbstractModule implements TickGameListen
         final ItemStack itemStack = this.mc.player.getEquippedStack(EquipmentSlot.CHEST);
         if (itemStack.getItem() != Items.ELYTRA || !ElytraItem.isUsable(itemStack)) {
             ChatUtil.errorChatMessage(Text.literal("You need to equip an elytra to fly."));
-            this.toggle();
+            this.deactivate();
         }
     }
 

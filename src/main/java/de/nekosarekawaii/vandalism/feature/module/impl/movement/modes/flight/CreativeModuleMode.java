@@ -12,12 +12,12 @@ public class CreativeModuleMode extends ModuleMulti<FlightModule> implements Tic
     }
 
     @Override
-    public void onEnable() {
+    public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(TickGameEvent.ID, this);
     }
 
     @Override
-    public void onDisable() {
+    public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(TickGameEvent.ID, this);
         if (this.mc.player == null) return;
         this.mc.player.getAbilities().flying = false;

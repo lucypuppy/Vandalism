@@ -18,8 +18,8 @@ public class ModuleModeValue<T extends AbstractModule> extends ValueModeGeneric<
 
         this.onValueChange((oldValue, newValue) -> {
             if (parent.isActive()) {
-                oldValue.onDisable();
-                newValue.onEnable();
+                oldValue.onDeactivate();
+                newValue.onActivate();
             }
         });
     }

@@ -37,12 +37,12 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
     }
 
     @Override
-    public void onEnable() {
+    public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(TooltipDrawEvent.ID, this);
     }
 
     @Override
-    public void onDisable() {
+    public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(TooltipDrawEvent.ID, this);
     }
 

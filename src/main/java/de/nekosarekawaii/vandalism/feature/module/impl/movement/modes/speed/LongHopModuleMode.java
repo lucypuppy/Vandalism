@@ -13,12 +13,12 @@ public class LongHopModuleMode extends ModuleMulti<SpeedModule> implements TickG
     }
 
     @Override
-    public void onEnable() {
+    public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(TickGameEvent.ID, this);
     }
 
     @Override
-    public void onDisable() {
+    public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(TickGameEvent.ID, this);
     }
 

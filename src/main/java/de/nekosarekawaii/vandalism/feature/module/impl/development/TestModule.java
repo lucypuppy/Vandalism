@@ -9,12 +9,12 @@ public class TestModule extends AbstractModule {
     }
 
     @Override
-    public void onEnable() {
+    public void onActivate() {
 
     }
 
     @Override
-    public void onDisable() {
+    public void onDeactivate() {
     }
 
 }

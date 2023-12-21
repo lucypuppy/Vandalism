@@ -47,12 +47,12 @@ public class TrueSightModule extends AbstractModule implements LivingEntityRende
     }
 
     @Override
-    public void onEnable() {
+    public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(LivingEntityRenderBottomLayerEvent.ID, this);
     }
 
     @Override
-    public void onDisable() {
+    public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(LivingEntityRenderBottomLayerEvent.ID, this);
     }
 

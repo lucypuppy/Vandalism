@@ -33,12 +33,12 @@ public class BlockDensityModule extends AbstractModule implements WorldListener 
     }
 
     @Override
-    public void onEnable() {
+    public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(BlockEvent.ID, this);
     }
 
     @Override
-    public void onDisable() {
+    public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(BlockEvent.ID, this);
     }
 

@@ -45,12 +45,12 @@ public class ProtectorModule extends AbstractModule implements TextDrawListener 
     }
 
     @Override
-    public void onEnable() {
+    public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(TextDrawEvent.ID, this);
     }
 
     @Override
-    public void onDisable() {
+    public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(TextDrawEvent.ID, this);
     }
 

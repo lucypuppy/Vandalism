@@ -49,7 +49,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
     }
 
     @Override
-    public void onEnable() {
+    public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(TickGameEvent.ID, this);
         Vandalism.getInstance().getEventSystem().subscribe(StrafeEvent.ID, this);
         Vandalism.getInstance().getEventSystem().subscribe(Render2DEvent.ID, this);
@@ -58,7 +58,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
     }
 
     @Override
-    public void onDisable() {
+    public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(TickGameEvent.ID, this);
         Vandalism.getInstance().getEventSystem().unsubscribe(StrafeEvent.ID, this);
         Vandalism.getInstance().getEventSystem().unsubscribe(Render2DEvent.ID, this);
