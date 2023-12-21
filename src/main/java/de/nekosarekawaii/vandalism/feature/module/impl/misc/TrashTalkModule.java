@@ -6,12 +6,14 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.player.ChatReceiveListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.script.parse.ScriptVariable;
+import net.minecraft.client.network.PlayerListEntry;
 
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class TrashTalkModule extends AbstractModule implements ChatReceiveListener {
 
@@ -44,7 +46,7 @@ public class TrashTalkModule extends AbstractModule implements ChatReceiveListen
             try {
                 final PrintWriter printWriter = new PrintWriter(this.contentFile);
                 printWriter.println("'%mod_name%', 'best client' > '%mod_name% is the best client!', 'I love %mod_name%!'");
-                printWriter.println("'cool', 'nice', 'awesome' > 'Looser', 'Cringe'");
+                printWriter.println("'cool', 'nice', 'awesome' > '%target% you are cringe'");
                 printWriter.close();
             } catch (Exception e) {
                 Vandalism.getInstance().getLogger().error("Failed to create trash talk file!", e);
@@ -82,8 +84,21 @@ public class TrashTalkModule extends AbstractModule implements ChatReceiveListen
     @Override
     public void onChatReceive(final ChatReceiveEvent event) {
         final String message = event.text.getString();
-        if (StringUtils.contains(message, this.mc.session.getUsername())) {
+        if (
+                StringUtils.contains(message, this.mc.session.getUsername() + ">") ||
+                        StringUtils.contains(message, this.mc.session.getUsername() + ":") ||
+                        StringUtils.contains(message, this.mc.session.getUsername() + "]") ||
+                        StringUtils.contains(message, "] " + this.mc.session.getUsername())
+        ) {
             return;
+        }
+        final AtomicReference<String> targetName = new AtomicReference<>("<target>");
+        for (final PlayerListEntry playerListEntry : this.mc.getNetworkHandler().getPlayerList()) {
+            final String playerName = playerListEntry.getProfile().getName();
+            if (StringUtils.contains(message, playerName)) {
+                targetName.set(playerName);
+                break;
+            }
         }
         this.setup();
         this.contentMap.forEach((words, answers) -> {
@@ -95,7 +110,9 @@ public class TrashTalkModule extends AbstractModule implements ChatReceiveListen
                     } else {
                         answer = answers[RandomUtils.randomInt(0, answers.length)];
                     }
-                    this.mc.getNetworkHandler().sendChatMessage(ScriptVariable.applyReplacements(answer));
+                    answer = ScriptVariable.applyReplacements(answer);
+                    answer = answer.replace("%target%", targetName.get());
+                    this.mc.getNetworkHandler().sendChatMessage(answer);
                     break;
                 }
             }
