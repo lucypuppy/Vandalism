@@ -13,9 +13,10 @@ public abstract class ModuleMulti<T extends AbstractModule> implements Minecraft
         this.parent = parent;
     }
 
-    public void onEnable() {
+    public void onActivate() {
     }
-    public void onDisable() {
+
+    public void onDeactivate() {
     }
 
     public String getName() {

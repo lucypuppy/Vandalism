@@ -159,17 +159,17 @@ public class ServerInfoWidget implements MinecraftWrapper {
                             this.mc.keyboard.setClipboard(serverInfoBuilder.toString());
                         }
                         if (this.mcPingResponse.players.sample.length > 0) {
-                            if (ImGui.button("Player List: " + (this.showPlayerList ? "Disable" : "Enable") + uniqueId, buttonWidth, buttonHeight)) {
+                            if (ImGui.button("Player List: " + (this.showPlayerList ? "Deactivate" : "Activate") + uniqueId, buttonWidth, buttonHeight)) {
                                 this.showPlayerList = !this.showPlayerList;
                             }
                         }
                         if ((this.mcPingResponse.modinfo != null && this.mcPingResponse.modinfo.modList.length > 0) || (this.mcPingResponse.forgeData != null && this.mcPingResponse.forgeData.mods.length > 0)) {
-                            if (ImGui.button("Mods: " + (this.showMods ? "Disable" : "Enable") + uniqueId, buttonWidth, buttonHeight)) {
+                            if (ImGui.button("Mods: " + (this.showMods ? "Deactivate" : "Activate") + uniqueId, buttonWidth, buttonHeight)) {
                                 this.showMods = !this.showMods;
                             }
                         }
                         if (this.queryPingResponse != null && this.queryPingResponse.plugins.sample.length > 0) {
-                            if (ImGui.button("Plugins: " + (this.showPlugins ? "Disable" : "Enable") + uniqueId, buttonWidth, buttonHeight)) {
+                            if (ImGui.button("Plugins: " + (this.showPlugins ? "Deactivate" : "Activate") + uniqueId, buttonWidth, buttonHeight)) {
                                 this.showPlugins = !this.showPlugins;
                             }
                         }

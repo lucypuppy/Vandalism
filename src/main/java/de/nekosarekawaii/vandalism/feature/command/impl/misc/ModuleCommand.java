@@ -23,7 +23,6 @@ public class ModuleCommand extends AbstractCommand {
             ModuleArgumentType.get(context).toggle();
             return SINGLE_SUCCESS;
         })));
-
         builder.then(literal("show-bind").then(argument("module", ModuleArgumentType.create()).executes(context -> {
             final AbstractModule module = ModuleArgumentType.get(context);
             if (module.getKeyBind().isValid()) {
@@ -34,7 +33,6 @@ public class ModuleCommand extends AbstractCommand {
 
             return SINGLE_SUCCESS;
         })));
-
         builder.then(literal("unbind").then(argument("module", ModuleArgumentType.create()).executes(context -> {
             final AbstractModule module = ModuleArgumentType.get(context);
             if (module.getKeyBind().isValid()) {
@@ -46,7 +44,6 @@ public class ModuleCommand extends AbstractCommand {
 
             return SINGLE_SUCCESS;
         })));
-
         builder.then(literal("bind").then(argument("module", ModuleArgumentType.create()).then(argument("key-name", KeyNameArgumentType.create()).executes(context -> {
             final AbstractModule module = ModuleArgumentType.get(context);
             final Integer keyCode = KeyNameArgumentType.get(context);
@@ -72,7 +69,6 @@ public class ModuleCommand extends AbstractCommand {
                     ChatUtil.warningChatMessage("Module " + mod.getName() + " is also bound to the key " + InputType.getKeyName(keyCode) + ".");
                 }
             }
-
             return SINGLE_SUCCESS;
         }))));
     }

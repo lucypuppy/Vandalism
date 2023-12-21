@@ -117,8 +117,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
     @Override
     public void onShutdownProcess() {
         for (AbstractModule module : getList()) {
-            if (module.isActive() && module.isDisableOnShutdown()) {
-                module.toggle();
+            if (module.isActive() && module.isDeactivateOnShutdown()) {
+                module.deactivate();
             }
         }
     }
@@ -127,8 +127,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
     public void onDisconnect(ClientConnection clientConnection, Text disconnectReason) {
         if (mc.getNetworkHandler() != null && Objects.equals(clientConnection, mc.getNetworkHandler().getConnection())) { // There is a thing called pinging a server
             for (AbstractModule module : getList()) {
-                if (module.isActive() && module.isDisableOnQuit()) {
-                    module.toggle();
+                if (module.isActive() && module.isDeactivateOnQuit()) {
+                    module.deactivate();
                 }
             }
         }

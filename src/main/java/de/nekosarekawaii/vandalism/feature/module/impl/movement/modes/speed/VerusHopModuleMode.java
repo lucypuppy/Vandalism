@@ -17,12 +17,12 @@ public class VerusHopModuleMode extends ModuleMulti<SpeedModule> implements Moti
     private double moveSpeed;
 
     @Override
-    public void onEnable() {
+    public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(MotionEvent.ID, this);
     }
 
     @Override
-    public void onDisable() {
+    public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(MotionEvent.ID, this);
     }
 

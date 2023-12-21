@@ -108,13 +108,13 @@ public class FOVFuckerModule extends AbstractModule implements TickGameListener 
     }
 
     @Override
-    public void onEnable() {
+    public void onActivate() {
         this.reset();
         Vandalism.getInstance().getEventSystem().subscribe(TickGameEvent.ID, this);
     }
 
     @Override
-    public void onDisable() {
+    public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(TickGameEvent.ID, this);
         this.reset();
     }

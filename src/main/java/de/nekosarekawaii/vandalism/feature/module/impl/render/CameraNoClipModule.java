@@ -11,12 +11,12 @@ public class CameraNoClipModule extends AbstractModule implements CameraClipRayt
     }
 
     @Override
-    public void onEnable() {
+    public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(CameraClipRaytraceEvent.ID, this);
     }
 
     @Override
-    public void onDisable() {
+    public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(CameraClipRaytraceEvent.ID, this);
     }
 

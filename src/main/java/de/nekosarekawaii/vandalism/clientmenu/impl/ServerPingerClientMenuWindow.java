@@ -121,7 +121,7 @@ public class ServerPingerClientMenuWindow extends ClientMenuWindow {
                     } else ImGui.text("Pinging...");
                 }
                 if (!this.hostname.get().isBlank() && this.currentState != State.WAITING_RESPONSE) {
-                    if (ImGui.button("Auto Ping: " + (this.autoPing ? "Disable" : "Enable") + "##autopingerverpinger")) {
+                    if (ImGui.button("Auto Ping: " + (this.autoPing ? "Deactivate" : "Activate") + "##autopingerverpinger")) {
                         this.autoPing = !this.autoPing;
                     }
                     if (!this.autoPing) {

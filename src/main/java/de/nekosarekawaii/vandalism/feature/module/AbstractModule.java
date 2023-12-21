@@ -24,8 +24,8 @@ public abstract class AbstractModule extends Feature implements ValueParent {
     private final BooleanValue showInHUD;
     private final KeyBindValue keyBind;
 
-    private boolean disableOnQuit = false;
-    private boolean disableOnShutdown = false;
+    private boolean deactivateOnQuit = false;
+    private boolean deactivateOnShutdown = false;
 
     public AbstractModule(String name, String description, Category category) {
         this(name, description, category, null);
@@ -47,9 +47,9 @@ public abstract class AbstractModule extends Feature implements ValueParent {
             newValue = event.active;
             if (oldValue != newValue) {
                 if (newValue) {
-                    this.onEnable();
+                    this.onActivate();
                 } else {
-                    this.onDisable();
+                    this.onDeactivate();
                 }
                 if (Vandalism.getInstance().getClientSettings().getMenuSettings().moduleStateLogging.getValue() && this.mc.player != null) {
                     ChatUtil.infoChatMessage(this.getName() + " has been " + (newValue ? "activated" : "deactivated") + ".");
@@ -81,30 +81,43 @@ public abstract class AbstractModule extends Feature implements ValueParent {
     }
 
     public void disableAfterSession() {
-        this.disableOnQuit = true;
-        this.disableOnShutdown = true;
+        this.deactivateOnQuit();
+        this.deactivateOnShutdown();
     }
 
-    public void disableOnQuit() {
-        this.disableOnQuit = true;
+    public void deactivateOnQuit() {
+        this.deactivateOnQuit = true;
     }
 
-    public void disableOnShutdown() {
-        this.disableOnShutdown = true;
+    public void deactivateOnShutdown() {
+        this.deactivateOnShutdown = true;
     }
 
-    public void onEnable() {
+    public void onActivate() {
     }
 
-    public void onDisable() {
+    public void onDeactivate() {
     }
 
     public boolean isActive() {
         return this.active.getValue();
     }
 
+    private void setActive(final boolean active) {
+        if (this.active.getValue() == active) return;
+        this.active.setValue(active);
+    }
+
+    public void activate() {
+        this.setActive(true);
+    }
+
+    public void deactivate() {
+        this.setActive(false);
+    }
+
     public void toggle() {
-        this.active.setValue(!this.active.getValue());
+        this.setActive(!this.isActive());
     }
 
     public boolean isFavorite() {
@@ -119,12 +132,12 @@ public abstract class AbstractModule extends Feature implements ValueParent {
         return keyBind;
     }
 
-    public boolean isDisableOnQuit() {
-        return disableOnQuit;
+    public boolean isDeactivateOnQuit() {
+        return deactivateOnQuit;
     }
 
-    public boolean isDisableOnShutdown() {
-        return disableOnShutdown;
+    public boolean isDeactivateOnShutdown() {
+        return deactivateOnShutdown;
     }
 
     private void recursiveUpdateActiveState(final boolean active, final List<Value<?>> values) {
@@ -134,9 +147,9 @@ public abstract class AbstractModule extends Feature implements ValueParent {
                 recursiveUpdateActiveState(active, valueGroup.getValues());
             } else if (value instanceof final ModuleModeValue<?> moduleModeValue) {
                 if (active) {
-                    moduleModeValue.getValue().onEnable();
+                    moduleModeValue.getValue().onActivate();
                 } else {
-                    moduleModeValue.getValue().onDisable();
+                    moduleModeValue.getValue().onDeactivate();
                 }
             }
         }

@@ -28,13 +28,13 @@ public class TrashTalkModule extends AbstractModule implements ChatReceiveListen
     }
 
     @Override
-    public void onEnable() {
+    public void onActivate() {
         this.setup();
         Vandalism.getInstance().getEventSystem().subscribe(ChatReceiveEvent.ID, this);
     }
 
     @Override
-    public void onDisable() {
+    public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(ChatReceiveEvent.ID, this);
         this.contentMap.clear();
     }

@@ -19,12 +19,12 @@ public class SprintModule extends AbstractModule implements SprintListener {
     }
 
     @Override
-    public void onEnable() {
+    public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(SprintEvent.ID, this);
     }
 
     @Override
-    public void onDisable() {
+    public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(SprintEvent.ID, this);
     }
 

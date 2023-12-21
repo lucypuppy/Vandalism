@@ -18,14 +18,14 @@ public class MenuSettings extends ValueGroup {
     public final BooleanValue moduleStateLogging = new BooleanValue(
             this,
             "Module State Logging",
-            "Enables/Disables the logging for the module state.",
+            "Activates/Deactivates the logging for the module state.",
             true
     );
 
     public final BooleanValue scriptExecutionLogging = new BooleanValue(
             this,
             "Script Execution Logging",
-            "Enables/Disables the logging for the script execution.",
+            "Activates/Deactivates the logging for the script execution.",
             false
     );
 

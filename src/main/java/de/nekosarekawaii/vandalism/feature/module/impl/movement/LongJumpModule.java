@@ -20,7 +20,7 @@ public class LongJumpModule extends AbstractModule implements MotionListener {
     }
 
     @Override
-    public void onEnable() {
+    public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(MotionEvent.ID, this);
         if (this.mc.getNetworkHandler() != null) {
             MovementUtil.clip(3.5, 0);
@@ -31,7 +31,7 @@ public class LongJumpModule extends AbstractModule implements MotionListener {
     }
 
     @Override
-    public void onDisable() {
+    public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(MotionEvent.ID, this);
         this.waitTicks = 0;
         this.moveTicks = 0;

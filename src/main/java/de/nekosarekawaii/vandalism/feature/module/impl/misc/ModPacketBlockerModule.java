@@ -42,13 +42,13 @@ public class ModPacketBlockerModule extends AbstractModule implements IncomingPa
     }
 
     @Override
-    public void onEnable() {
+    public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(IncomingPacketEvent.ID, this, Priorities.HIGH);
         Vandalism.getInstance().getEventSystem().subscribe(OutgoingPacketEvent.ID, this, Priorities.HIGH);
     }
 
     @Override
-    public void onDisable() {
+    public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(IncomingPacketEvent.ID, this);
         Vandalism.getInstance().getEventSystem().unsubscribe(OutgoingPacketEvent.ID, this);
     }
