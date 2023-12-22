@@ -17,11 +17,12 @@ import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ScriptManager extends NamedStorage<Script> implements TickGameListener, KeyboardInputListener, MinecraftWrapper {
 
-    private final ConcurrentHashMap<File, Thread> runningScripts = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, Thread> runningScripts = new ConcurrentHashMap<>();
     private final File directory;
 
     private final ConfigManager configManager;
@@ -55,7 +56,7 @@ public class ScriptManager extends NamedStorage<Script> implements TickGameListe
                 }
             }
         }
-        configManager.add(new ConfigWithValues("scripts", getList()));
+        this.configManager.add(new ConfigWithValues("scripts", getList()));
     }
 
     public void loadScriptFromFile(final File file, final boolean save) {
@@ -90,10 +91,10 @@ public class ScriptManager extends NamedStorage<Script> implements TickGameListe
         }
         for (final Script script : getList()) {
             if (script.getKeyBind().getValue() == key) {
-                if (this.isScriptRunning(script.getFile())) {
-                    this.killRunningScriptByScriptFile(script.getFile());
+                if (this.isScriptRunning(script.getUuid())) {
+                    this.killRunningScript(script.getUuid());
                 }
-                this.executeScriptByScriptFile(script.getFile());
+                this.executeScript(script.getUuid());
             }
         }
     }
@@ -102,34 +103,40 @@ public class ScriptManager extends NamedStorage<Script> implements TickGameListe
         return this.runningScripts.size();
     }
 
-    public boolean isScriptRunning(final File file) {
-        return this.runningScripts.containsKey(file);
+    public boolean isScriptRunning(final UUID uuid) {
+        return this.runningScripts.containsKey(uuid);
     }
 
     public void killAllRunningScripts() {
-        for (final File file : this.runningScripts.keySet()) {
-            this.killRunningScriptByScriptFile(file);
+        for (final UUID uuid : this.runningScripts.keySet()) {
+            this.killRunningScript(uuid);
         }
     }
 
-    public void killRunningScriptByScriptFile(final File file) {
+    public void killRunningScript(final UUID uuid) {
         try {
-            if (this.runningScripts.containsKey(file)) {
-                final Thread thread = this.runningScripts.get(file);
-                if (thread.isAlive()) thread.interrupt();
-                this.runningScripts.remove(file);
+            if (this.runningScripts.containsKey(uuid)) {
+                final Thread thread = this.runningScripts.get(uuid);
+                thread.interrupt();
+                thread.stop();
+                this.runningScripts.remove(uuid);
             }
         } catch (Exception exception) {
-            Vandalism.getInstance().getLogger().error("Failed to kill running script: " + file.getName(), exception);
+            Vandalism.getInstance().getLogger().error("Failed to kill running script.", exception);
         }
     }
 
-    public void executeScriptByScriptFile(final File file) {
+    public void executeScript(final UUID uuid) {
         final boolean inGame = this.mc.player != null;
         try {
-            if (isScriptRunning(file)) {
-                throw new RuntimeException("Failed to execute script '" + file.getName() + "' because it is already running");
+            if (this.isScriptRunning(uuid)) {
+                throw new RuntimeException("Failed to execute script because it's already running");
             }
+            final Script script = this.getList().stream().filter(s -> s.getUuid().equals(uuid)).findFirst().orElse(null);
+            if (script == null) {
+                throw new RuntimeException("Failed to execute script because the script doesn't exist");
+            }
+            final File file = script.getFile();
             if (file == null || !file.exists() || !file.isFile() || file.length() < 1) {
                 throw new RuntimeException("Failed to parse script code from script file because the file is null");
             }
@@ -168,7 +175,7 @@ public class ScriptManager extends NamedStorage<Script> implements TickGameListe
                     } else Vandalism.getInstance().getLogger().error("Failed to execute script", e);
                 }
             }, "script-execution-" + (getRunningScriptsCount() + 1) + "-" + scriptName);
-            this.runningScripts.put(file, scriptThread);
+            this.runningScripts.put(script.getUuid(), scriptThread);
             scriptThread.start();
         } catch (Exception e) {
             if (inGame) ChatUtil.errorChatMessage("Invalid script file: " + e);

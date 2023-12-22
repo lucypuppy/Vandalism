@@ -17,10 +17,7 @@ import net.minecraft.util.Util;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ScriptsClientMenuWindow extends ClientMenuWindow {
@@ -139,11 +136,15 @@ public class ScriptsClientMenuWindow extends ClientMenuWindow {
                                                     ImGui.separator();
                                                     ImGui.spacing();
                                                     if (this.mc.player != null) {
-                                                        if (ImGui.button((Vandalism.getInstance().getScriptManager().isScriptRunning(scriptFile) ? "Kill" : "Execute") + "##scriptsexecuteorkill" + script.getName(), buttonWidth, buttonHeight)) {
-                                                            if (Vandalism.getInstance().getScriptManager().isScriptRunning(scriptFile)) {
-                                                                Vandalism.getInstance().getScriptManager().killRunningScriptByScriptFile(scriptFile);
-                                                            } else {
-                                                                Vandalism.getInstance().getScriptManager().executeScriptByScriptFile(scriptFile);
+                                                        final Script scriptFromList = Vandalism.getInstance().getScriptManager().getList().stream().filter(s -> s.getFile().getName().equalsIgnoreCase(scriptFile.getName())).findFirst().orElse(null);
+                                                        if (scriptFromList != null) {
+                                                            final UUID uuid = scriptFromList.getUuid();
+                                                            if (ImGui.button((Vandalism.getInstance().getScriptManager().isScriptRunning(uuid) ? "Kill" : "Execute") + "##scriptsexecuteorkill" + script.getName(), buttonWidth, buttonHeight)) {
+                                                                if (Vandalism.getInstance().getScriptManager().isScriptRunning(uuid)) {
+                                                                    Vandalism.getInstance().getScriptManager().killRunningScript(uuid);
+                                                                } else {
+                                                                    Vandalism.getInstance().getScriptManager().executeScript(uuid);
+                                                                }
                                                             }
                                                         }
                                                     }
