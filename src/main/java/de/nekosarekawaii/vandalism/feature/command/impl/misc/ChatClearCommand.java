@@ -12,13 +12,7 @@ import java.io.IOException;
 public class ChatClearCommand extends AbstractCommand {
 
     public ChatClearCommand() {
-        super(
-                "Clears your clientside chat (also allows you to clear your sent history).",
-                Category.MISC,
-                "chatclear",
-                "clearchat",
-                "cc"
-        );
+        super("Clears your clientside chat (also allows you to clear your sent history).", Category.MISC, "chatclear", "clearchat", "cc");
     }
 
     @Override
@@ -27,30 +21,28 @@ public class ChatClearCommand extends AbstractCommand {
             this.mc.inGameHud.getChatHud().clear(false);
             return SINGLE_SUCCESS;
         });
-
-        builder.then(argument("clear-sent-history", BoolArgumentType.bool())
-                .executes(context -> {
-                    final boolean clearSentHistory = BoolArgumentType.getBool(context, "clear-sent-history");
-                    if (clearSentHistory) {
-                        final File commandHistoryFile = new File(this.mc.runDirectory, "command_history.txt");
-                        if (commandHistoryFile.exists()) {
-                            if (!commandHistoryFile.delete()) {
-                                Vandalism.getInstance().getLogger().error("Failed to delete command history file.");
-                            } else {
-                                try {
-                                    if (!commandHistoryFile.createNewFile()) {
-                                        Vandalism.getInstance().getLogger().error("Failed to create new command history file.");
-                                    }
-                                } catch (IOException e) {
-                                    Vandalism.getInstance().getLogger().error("Failed to create new command history file.", e);
-                                }
+        builder.then(argument("clear-sent-history", BoolArgumentType.bool()).executes(context -> {
+            final boolean clearSentHistory = BoolArgumentType.getBool(context, "clear-sent-history");
+            if (clearSentHistory) {
+                this.mc.getCommandHistoryManager().getHistory().clear();
+                final File commandHistoryFile = new File(this.mc.runDirectory, "command_history.txt");
+                if (commandHistoryFile.exists()) {
+                    if (!commandHistoryFile.delete()) {
+                        Vandalism.getInstance().getLogger().error("Failed to delete command history file.");
+                    } else {
+                        try {
+                            if (!commandHistoryFile.createNewFile()) {
+                                Vandalism.getInstance().getLogger().error("Failed to create new command history file.");
                             }
+                        } catch (IOException e) {
+                            Vandalism.getInstance().getLogger().error("Failed to create new command history file.", e);
                         }
                     }
-                    this.mc.inGameHud.getChatHud().clear(clearSentHistory);
-                    return SINGLE_SUCCESS;
-                })
-        );
+                }
+            }
+            this.mc.inGameHud.getChatHud().clear(clearSentHistory);
+            return SINGLE_SUCCESS;
+        }));
     }
 
 }
