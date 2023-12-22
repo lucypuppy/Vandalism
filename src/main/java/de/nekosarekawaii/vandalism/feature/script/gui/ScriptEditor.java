@@ -2,6 +2,7 @@ package de.nekosarekawaii.vandalism.feature.script.gui;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.feature.script.Script;
 import de.nekosarekawaii.vandalism.feature.script.parse.ScriptParser;
 import de.nekosarekawaii.vandalism.feature.script.parse.ScriptVariable;
 import de.nekosarekawaii.vandalism.feature.script.parse.command.ScriptCommand;
@@ -271,12 +272,16 @@ public class ScriptEditor implements MinecraftWrapper {
             int buttonWidth = 0, buttonHeight = 27;
             ImGui.setNextItemWidth(-300);
             ImGui.inputText("##scriptsinfotextfield" + this.originalScriptName + "editor", this.infoTextField, ImGuiInputTextFlags.ReadOnly);
-            if (Vandalism.getInstance().getScriptManager().isScriptRunning(this.scriptFile) || (!this.canBeSaved() && this.scriptFile.exists() && this.scriptFile.length() > 0 && this.mc.player != null)) {
-                ImGui.sameLine();
-                if (ImGui.button((Vandalism.getInstance().getScriptManager().isScriptRunning(this.scriptFile) ? "Kill" : "Execute") + "##scriptsexecuteorkillin" + this.originalScriptName + "editor", buttonWidth, buttonHeight)) {
-                    if (Vandalism.getInstance().getScriptManager().isScriptRunning(this.scriptFile)) {
-                        Vandalism.getInstance().getScriptManager().killRunningScriptByScriptFile(this.scriptFile);
-                    } else Vandalism.getInstance().getScriptManager().executeScriptByScriptFile(this.scriptFile);
+            final Script script = Vandalism.getInstance().getScriptManager().getList().stream().filter(s -> s.getFile().getName().equalsIgnoreCase(this.scriptFile.getName())).findFirst().orElse(null);
+            if (script != null) {
+                final UUID uuid = script.getUuid();
+                if (Vandalism.getInstance().getScriptManager().isScriptRunning(uuid) || (!this.canBeSaved() && this.scriptFile.exists() && this.scriptFile.length() > 0 && this.mc.player != null)) {
+                    ImGui.sameLine();
+                    if (ImGui.button((Vandalism.getInstance().getScriptManager().isScriptRunning(uuid) ? "Kill" : "Execute") + "##scriptsexecuteorkillin" + this.originalScriptName + "editor", buttonWidth, buttonHeight)) {
+                        if (Vandalism.getInstance().getScriptManager().isScriptRunning(uuid)) {
+                            Vandalism.getInstance().getScriptManager().killRunningScript(uuid);
+                        } else Vandalism.getInstance().getScriptManager().executeScript(uuid);
+                    }
                 }
             }
             if (!this.rename && !this.isReadOnly()) {
