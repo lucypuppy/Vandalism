@@ -104,15 +104,9 @@ public class TrashTalkModule extends AbstractModule implements ChatReceiveListen
         this.contentMap.forEach((words, answers) -> {
             for (final String word : words) {
                 if (StringUtils.contains(ScriptVariable.applyReplacements(message), word)) {
-                    String answer;
-                    if (answers.length == 1) {
-                        answer = answers[0];
-                    } else {
-                        answer = answers[RandomUtils.randomInt(0, answers.length)];
-                    }
-                    answer = ScriptVariable.applyReplacements(answer);
-                    answer = answer.replace("%target%", targetName.get());
-                    this.mc.getNetworkHandler().sendChatMessage(answer);
+                    this.mc.getNetworkHandler().sendChatMessage(ScriptVariable.applyReplacements(
+                                    answers.length == 1 ? answers[0] : answers[RandomUtils.randomInt(0, answers.length)])
+                            .replace("%target%", targetName.get()));
                     break;
                 }
             }
