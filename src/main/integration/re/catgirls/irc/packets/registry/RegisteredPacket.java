@@ -1,6 +1,6 @@
-package re.catgirls.packets.registry;
+package re.catgirls.irc.packets.registry;
 
-import re.catgirls.packets.Packet;
+import re.catgirls.irc.packets.Packet;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;

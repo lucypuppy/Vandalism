@@ -1,7 +1,7 @@
-package re.catgirls.packets.event;
+package re.catgirls.irc.packets.event;
 
-import re.catgirls.packets.Packet;
-import re.catgirls.packets.connection.PacketHandler;
+import re.catgirls.irc.packets.connection.PacketHandler;
+import re.catgirls.irc.packets.Packet;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

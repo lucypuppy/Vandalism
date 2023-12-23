@@ -1,7 +1,7 @@
 package re.catgirls.irc.packet.impl.shared;
 
-import re.catgirls.packets.Packet;
-import re.catgirls.packets.buffer.PacketBuffer;
+import re.catgirls.irc.packets.Packet;
+import re.catgirls.irc.packets.buffer.PacketBuffer;
 
 public class SharedKeepAlivePacket extends Packet {
 

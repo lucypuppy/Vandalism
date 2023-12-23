@@ -1,8 +1,8 @@
-package re.catgirls.packets.registry;
+package re.catgirls.irc.packets.registry;
 
 
 import re.catgirls.irc.packet.PacketRegistry;
-import re.catgirls.packets.Packet;
+import re.catgirls.irc.packets.Packet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;

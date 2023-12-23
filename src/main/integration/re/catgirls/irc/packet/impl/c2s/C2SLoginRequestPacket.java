@@ -2,8 +2,8 @@ package re.catgirls.irc.packet.impl.c2s;
 
 import com.google.common.hash.Hashing;
 import com.google.gson.JsonObject;
-import re.catgirls.packets.Packet;
-import re.catgirls.packets.buffer.PacketBuffer;
+import re.catgirls.irc.packets.Packet;
+import re.catgirls.irc.packets.buffer.PacketBuffer;
 
 import java.nio.charset.StandardCharsets;
 

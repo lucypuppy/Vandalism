@@ -2,8 +2,8 @@ package re.catgirls.irc.session;
 
 import re.catgirls.irc.packet.impl.c2s.C2SChatMessagePacket;
 import re.catgirls.irc.util.EncryptionHelper;
-import re.catgirls.packets.Packet;
-import re.catgirls.packets.connection.PacketHandler;
+import re.catgirls.irc.packets.Packet;
+import re.catgirls.irc.packets.connection.PacketHandler;
 
 import java.security.KeyPair;
 import java.security.PublicKey;

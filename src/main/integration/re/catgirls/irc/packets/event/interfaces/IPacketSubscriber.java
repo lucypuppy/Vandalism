@@ -1,4 +1,4 @@
-package re.catgirls.packets.event.interfaces;
+package re.catgirls.irc.packets.event.interfaces;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
