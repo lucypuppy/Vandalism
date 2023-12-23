@@ -1,4 +1,4 @@
-package re.catgirls.packets.buffer;
+package re.catgirls.irc.packets.buffer;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;

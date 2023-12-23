@@ -12,8 +12,8 @@ import re.catgirls.irc.packet.impl.s2c.S2CLoginResponsePacket;
 import re.catgirls.irc.packet.impl.s2c.S2CSessionListItemPacket;
 import re.catgirls.irc.packet.impl.shared.SharedKeepAlivePacket;
 import re.catgirls.irc.packet.impl.shared.SharedKeyExchangePacket;
-import re.catgirls.packets.event.EventRegistry;
-import re.catgirls.packets.registry.SimplePacketRegistry;
+import re.catgirls.irc.packets.event.EventRegistry;
+import re.catgirls.irc.packets.registry.SimplePacketRegistry;
 
 public class PacketRegistry extends SimplePacketRegistry {
 

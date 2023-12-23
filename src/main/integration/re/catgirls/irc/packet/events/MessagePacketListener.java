@@ -3,8 +3,8 @@ package re.catgirls.irc.packet.events;
 import re.catgirls.irc.packet.impl.s2c.S2CChatMessagePacket;
 import re.catgirls.irc.ChatClient;
 import re.catgirls.irc.listeners.impl.MessageListener;
-import re.catgirls.packets.connection.PacketHandler;
-import re.catgirls.packets.event.interfaces.IPacketSubscriber;
+import re.catgirls.irc.packets.connection.PacketHandler;
+import re.catgirls.irc.packets.event.interfaces.IPacketSubscriber;
 
 import java.util.Base64;
 import java.util.zip.CRC32;

@@ -8,9 +8,9 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 import re.catgirls.irc.ChatClient;
-import re.catgirls.packets.coder.RsaPacketDecoder;
-import re.catgirls.packets.coder.RsaPacketEncoder;
-import re.catgirls.packets.connection.PacketHandler;
+import re.catgirls.irc.packets.coder.RsaPacketDecoder;
+import re.catgirls.irc.packets.coder.RsaPacketEncoder;
+import re.catgirls.irc.packets.connection.PacketHandler;
 
 public class ChatChannelInitializer extends ChannelInitializer<Channel> {
 

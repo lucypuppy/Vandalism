@@ -1,9 +1,9 @@
-package re.catgirls.packets.connection;
+package re.catgirls.irc.packets.connection;
 
 import re.catgirls.irc.connection.ChatChannelInitializer;
 import re.catgirls.irc.listeners.impl.DisconnectListener;
-import re.catgirls.packets.Packet;
-import re.catgirls.packets.event.EventRegistry;
+import re.catgirls.irc.packets.Packet;
+import re.catgirls.irc.packets.event.EventRegistry;
 import io.netty.channel.*;
 import re.catgirls.irc.ChatClient;
 

@@ -1,8 +1,8 @@
 package re.catgirls.irc.packet.impl.s2c;
 
 import com.google.gson.JsonObject;
-import re.catgirls.packets.Packet;
-import re.catgirls.packets.buffer.PacketBuffer;
+import re.catgirls.irc.packets.Packet;
+import re.catgirls.irc.packets.buffer.PacketBuffer;
 
 public class S2CChatMessagePacket extends Packet {
 

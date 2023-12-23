@@ -3,8 +3,8 @@ package re.catgirls.irc.packet.events;
 import re.catgirls.irc.packet.impl.c2s.C2SLoginRequestPacket;
 import re.catgirls.irc.ChatClient;
 import re.catgirls.irc.packet.impl.shared.SharedKeyExchangePacket;
-import re.catgirls.packets.connection.PacketHandler;
-import re.catgirls.packets.event.interfaces.IPacketSubscriber;
+import re.catgirls.irc.packets.connection.PacketHandler;
+import re.catgirls.irc.packets.event.interfaces.IPacketSubscriber;
 
 /**
  * <h2>Handle incoming key exchange packets</h2>

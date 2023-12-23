@@ -5,8 +5,8 @@ import re.catgirls.irc.ChatClient;
 import re.catgirls.irc.interfaces.IdentifiableEnum;
 import re.catgirls.irc.listeners.impl.ProfileListener;
 import re.catgirls.irc.session.UserProfile;
-import re.catgirls.packets.Packet;
-import re.catgirls.packets.buffer.PacketBuffer;
+import re.catgirls.irc.packets.Packet;
+import re.catgirls.irc.packets.buffer.PacketBuffer;
 
 import java.util.Objects;
 

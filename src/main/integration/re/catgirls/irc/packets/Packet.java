@@ -1,6 +1,6 @@
-package re.catgirls.packets;
+package re.catgirls.irc.packets;
 
-import re.catgirls.packets.buffer.PacketBuffer;
+import re.catgirls.irc.packets.buffer.PacketBuffer;
 
 @SuppressWarnings("RedundantThrows")
 public abstract class Packet {

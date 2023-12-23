@@ -4,8 +4,8 @@ import re.catgirls.irc.packet.impl.c2s.C2SLoginRequestPacket;
 import re.catgirls.irc.packet.impl.s2c.S2CLoginResponsePacket;
 import re.catgirls.irc.ChatClient;
 import re.catgirls.irc.listeners.impl.LoginListener;
-import re.catgirls.packets.connection.PacketHandler;
-import re.catgirls.packets.event.interfaces.IPacketSubscriber;
+import re.catgirls.irc.packets.connection.PacketHandler;
+import re.catgirls.irc.packets.event.interfaces.IPacketSubscriber;
 
 /**
  * <h2>Handle incoming login response packets</h2>
