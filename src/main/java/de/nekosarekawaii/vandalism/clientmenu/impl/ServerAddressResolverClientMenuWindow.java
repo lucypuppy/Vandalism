@@ -61,11 +61,11 @@ public class ServerAddressResolverClientMenuWindow extends ClientMenuWindow {
                     Executors.newSingleThreadExecutor().submit(() -> {
                         try {
                             final ServerAddress serverAddress = ServerAddress.parse(this.hostname.get(), 25565);
-                            String oldAddress = serverAddress.toInetSocketAddress().toString();
+                            String oldAddress = serverAddress.getSocketAddress().toString();
                             if (oldAddress.contains("./")) oldAddress = oldAddress.replace("./", "/");
                             if (oldAddress.contains("/")) oldAddress = oldAddress.replace("/", "\n");
                             serverAddress.resolve();
-                            String newAddress = serverAddress.toInetSocketAddress().toString();
+                            String newAddress = serverAddress.getSocketAddress().toString();
                             if (newAddress.contains("./")) newAddress = newAddress.replace("./", "/");
                             if (newAddress.contains("/")) newAddress = newAddress.replace("/", "\n");
                             this.lastData.set(oldAddress + "\n\n" + newAddress);
