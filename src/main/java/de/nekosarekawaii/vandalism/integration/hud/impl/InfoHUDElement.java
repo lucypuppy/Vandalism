@@ -156,12 +156,17 @@ public class InfoHUDElement extends HUDElement {
             if (positionDecimalPlacesRawValue < 1) this.positionDecimalPlaces.setValue(1);
             else if (positionDecimalPlacesRawValue > 15) this.positionDecimalPlaces.setValue(15);
             final String positionDecimalPlaces = "%." + this.positionDecimalPlaces.getValue() + "f";
-            infoMap.put("Position", String.format(
-                    positionDecimalPlaces + ", " + positionDecimalPlaces + ", " + positionDecimalPlaces,
-                    posX,
-                    posY,
-                    posZ
-            ));
+            infoMap.put(
+                    "Position",
+                    String.format(
+                            positionDecimalPlaces + ", " +
+                                    positionDecimalPlaces + ", " +
+                                    positionDecimalPlaces,
+                            posX,
+                            posY,
+                            posZ
+                    )
+            );
         }
         if (this.dimensionalPosition.getValue()) {
             final WorldUtil.Dimension dimension = mc.player == null ? WorldUtil.Dimension.OVERWORLD : WorldUtil.getDimension();
@@ -196,10 +201,16 @@ public class InfoHUDElement extends HUDElement {
             }
         }
         if (this.difficulty.getValue()) {
-            infoMap.put("Difficulty", this.mc.world != null ? this.mc.world.getDifficulty().getName() : "unknown");
+            infoMap.put(
+                    "Difficulty",
+                    this.mc.world != null ? this.mc.world.getDifficulty().getName() : "unknown"
+            );
         }
         if (this.permissionsLevel.getValue()) {
-            infoMap.put("Permissions Level", this.mc.player != null ? Integer.toString(this.mc.player.getPermissionLevel()) : "unknown");
+            infoMap.put(
+                    "Permissions Level",
+                    this.mc.player != null ? Integer.toString(this.mc.player.getPermissionLevel()) : "unknown"
+            );
         }
         if (this.serverBrand.getValue()) {
             String value = "unknown";
@@ -239,7 +250,12 @@ public class InfoHUDElement extends HUDElement {
                 for (int i = 0; i < infoParts.length; i++) {
                     final String infoPart = infoParts[i];
                     final int textWidth = this.mc.textRenderer.getWidth(infoPart);
-                    this.drawText(context, (i == 0 ? Formatting.UNDERLINE : "") + infoPart, (this.x + this.width / 2) - textWidth / 2, this.y + height);
+                    this.drawText(
+                            context,
+                            (i == 0 ? Formatting.UNDERLINE : "") + infoPart,
+                            (this.x + this.width / 2) - textWidth / 2,
+                            this.y + height
+                    );
                     height += fontHeight + 3;
                     if (textWidth > width) {
                         width = textWidth;
@@ -272,8 +288,14 @@ public class InfoHUDElement extends HUDElement {
     }
 
     private void drawText(final DrawContext context, final String text, final int x, final int y) {
-        context.drawText(this.mc.textRenderer, text, x, y, this.color.getColor(-y * 20).getRGB(),
-                this.shadow.getValue());
+        context.drawText(
+                this.mc.textRenderer,
+                text,
+                x,
+                y,
+                this.color.getColor(-y * 20).getRGB(),
+                this.shadow.getValue()
+        );
     }
 
 }
