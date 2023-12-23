@@ -11,11 +11,9 @@ public interface SprintListener {
         public static final int ID = 19;
 
         public boolean sprinting;
-        public boolean force;
 
         public SprintEvent(final boolean sprinting) {
             this.sprinting = sprinting;
-            this.force = false;
         }
 
         @Override

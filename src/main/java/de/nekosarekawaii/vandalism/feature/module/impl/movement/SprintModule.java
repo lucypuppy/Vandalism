@@ -2,17 +2,9 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.player.SprintListener;
-import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 
 public class SprintModule extends AbstractModule implements SprintListener {
-
-    private final BooleanValue forceSprint = new BooleanValue(
-            this,
-            "Force Sprint",
-            "Forces you to sprint even if you are not moving.",
-            false
-    );
 
     public SprintModule() {
         super("Sprint", "Automatically let's you sprint!", Category.MOVEMENT);
@@ -37,9 +29,7 @@ public class SprintModule extends AbstractModule implements SprintListener {
             event.force = true;
             return;
         }*/
-
         event.sprinting = true;
-        event.force = this.forceSprint.getValue();
     }
 
 }
