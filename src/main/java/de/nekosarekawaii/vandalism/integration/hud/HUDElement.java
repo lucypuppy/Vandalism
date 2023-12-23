@@ -26,19 +26,25 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
     public int x, y;
     protected Alignment alignmentX, alignmentY;
 
-    protected HUDElement(final String name, final int defaultX, final int defaultY) {
+    public HUDElement(final String name, final int defaultX, final int defaultY) {
+        this(name, defaultX, defaultY, true);
+    }
+
+    public HUDElement(final String name, final int defaultX, final int defaultY, final boolean defaultActive) {
         this.name = name;
         this.values = new ArrayList<>();
         this.active = new BooleanValue(
                 this,
                 "Active",
                 "Whether this HUD element is active.",
-                true
+                defaultActive
         );
         this.defaultX = defaultX;
         this.defaultY = defaultY;
         this.x = defaultX;
         this.y = defaultY;
+        this.width = 10;
+        this.height = 10;
         calculateAlignment();
     }
 
