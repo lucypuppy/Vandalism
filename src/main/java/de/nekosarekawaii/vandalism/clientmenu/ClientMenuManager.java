@@ -15,6 +15,7 @@ import de.nekosarekawaii.vandalism.clientmenu.impl.irc.IrcClientMenuWindow;
 import de.nekosarekawaii.vandalism.clientmenu.impl.namehistory.NameHistoryClientMenuWindow;
 import de.nekosarekawaii.vandalism.clientmenu.impl.nbteditor.NbtEditorClientMenuWindow;
 import de.nekosarekawaii.vandalism.clientmenu.impl.port.PortScannerClientMenuWindow;
+import de.nekosarekawaii.vandalism.clientmenu.impl.serverdiscovery.ServerDiscoveryClientMenuWindow;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.imgui.ImLoader;
 import net.minecraft.client.MinecraftClient;
@@ -46,7 +47,8 @@ public class ClientMenuManager extends Storage<ClientMenuWindow> implements Keyb
                 new ServerAddressResolverClientMenuWindow(),
                 new ServerPingerClientMenuWindow(),
                 new NameHistoryClientMenuWindow(),
-                new NbtEditorClientMenuWindow()
+                new NbtEditorClientMenuWindow(),
+                new ServerDiscoveryClientMenuWindow()
         );
     }
 
