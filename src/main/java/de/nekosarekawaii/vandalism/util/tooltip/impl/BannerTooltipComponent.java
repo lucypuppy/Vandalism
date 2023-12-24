@@ -1,6 +1,7 @@
-package de.nekosarekawaii.vandalism.util.tooltip;
+package de.nekosarekawaii.vandalism.util.tooltip.impl;
 
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.tooltip.ConvertibleTooltipData;
 import net.minecraft.block.entity.BannerBlockEntity;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -16,7 +17,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.BannerItem;
 import net.minecraft.item.ItemStack;
 
-public class BannerTooltipComponent implements TooltipComponent, ITooltipData, MinecraftWrapper {
+public class BannerTooltipComponent implements TooltipComponent, ConvertibleTooltipData, MinecraftWrapper {
 
     private final ItemStack banner;
     private final ModelPart bannerField;
@@ -24,16 +25,6 @@ public class BannerTooltipComponent implements TooltipComponent, ITooltipData, M
     public BannerTooltipComponent(final ItemStack banner) {
         this.banner = banner;
         this.bannerField = this.mc.getEntityModelLoader().getModelPart(EntityModelLayers.BANNER).getChild("flag");
-    }
-
-    @Override
-    public TooltipComponent getComponent() {
-        return this;
-    }
-
-    @Override
-    public boolean renderPre() {
-        return false;
     }
 
     @Override
@@ -68,6 +59,11 @@ public class BannerTooltipComponent implements TooltipComponent, ITooltipData, M
         immediate.draw();
         matrices.pop();
         DiffuseLighting.enableGuiDepthLighting();
+    }
+
+    @Override
+    public TooltipComponent getComponent() {
+        return this;
     }
 
 }

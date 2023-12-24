@@ -14,7 +14,7 @@ public interface TooltipDrawListener {
 
         public static final int ID = 26;
 
-        public ItemStack itemStack;
+        public final ItemStack itemStack;
 
         public final List<TooltipData> tooltipData;
 

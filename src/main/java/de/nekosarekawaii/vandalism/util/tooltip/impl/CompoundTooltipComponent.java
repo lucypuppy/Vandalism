@@ -1,6 +1,7 @@
-package de.nekosarekawaii.vandalism.util.tooltip;
+package de.nekosarekawaii.vandalism.util.tooltip.impl;
 
 import com.google.common.collect.Lists;
+import de.nekosarekawaii.vandalism.util.tooltip.ConvertibleTooltipData;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
@@ -9,22 +10,12 @@ import org.joml.Matrix4f;
 
 import java.util.List;
 
-public class CompoundTooltipComponent implements TooltipComponent, ITooltipData {
+public class CompoundTooltipComponent implements TooltipComponent, ConvertibleTooltipData {
 
     private final List<TooltipComponent> components = Lists.newArrayList();
 
     public void addComponent(final TooltipComponent component) {
         components.add(component);
-    }
-
-    @Override
-    public TooltipComponent getComponent() {
-        return this;
-    }
-
-    @Override
-    public boolean renderPre() {
-        return false;
     }
 
     @Override
@@ -63,6 +54,11 @@ public class CompoundTooltipComponent implements TooltipComponent, ITooltipData 
             comp.drawText(textRenderer, x, y + yOff, matrix4f, immediate);
             yOff += comp.getHeight();
         }
+    }
+
+    @Override
+    public TooltipComponent getComponent() {
+        return this;
     }
 
 }

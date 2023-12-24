@@ -1,6 +1,6 @@
 package de.nekosarekawaii.vandalism.injection.mixins.util;
 
-import de.nekosarekawaii.vandalism.util.tooltip.ITooltipData;
+import de.nekosarekawaii.vandalism.util.tooltip.ConvertibleTooltipData;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.item.TooltipData;
@@ -16,8 +16,8 @@ public abstract class MixinDrawContext {
 
     @Inject(method = "method_51442", at = @At(value = "HEAD"), cancellable = true)
     private static void modifyTooltipData(final List<TooltipComponent> list, final TooltipData data, final CallbackInfo ci) {
-        if (data instanceof final ITooltipData tooltipData && !tooltipData.renderPre()) {
-            list.add(TooltipComponent.of(data));
+        if (data instanceof final ConvertibleTooltipData tooltipData) {
+            list.add(tooltipData.getComponent());
             ci.cancel();
         }
     }
