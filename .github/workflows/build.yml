@@ -31,3 +31,5 @@ jobs:
         with:
           name: Artifacts
           path: build/libs/
+          # Delete artifacts after 1 week
+          retention-days: 7
