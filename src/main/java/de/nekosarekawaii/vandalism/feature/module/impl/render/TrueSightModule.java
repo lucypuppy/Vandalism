@@ -7,18 +7,25 @@ import de.nekosarekawaii.vandalism.base.event.render.LivingEntityRenderBottomLay
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.base.value.impl.selection.MultiModeValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.registry.Registries;
 
 import java.awt.*;
+import java.util.Arrays;
 
 
 public class TrueSightModule extends AbstractModule implements LivingEntityRenderBottomLayerListener {
 
-    public final BooleanValue blocks = new BooleanValue(
+    private static final String[] MARKER_BLOCK_IDS = ClientWorld.BLOCK_MARKER_ITEMS.stream().map(item -> Registries.ITEM.getId(item).toString()).toArray(String[]::new);
+
+    public final MultiModeValue markerBlocks = new MultiModeValue(
             this,
-            "Blocks",
-            "Makes invisible blocks visible.",
-            true
+            "Marker Blocks",
+            "Makes invisible marker blocks visible.",
+            Arrays.asList(MARKER_BLOCK_IDS),
+            MARKER_BLOCK_IDS
     );
 
     private final BooleanValue entities = new BooleanValue(
