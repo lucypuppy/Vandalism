@@ -1,6 +1,8 @@
-package de.nekosarekawaii.vandalism.util.minecraft.impl.clicker;
+package de.nekosarekawaii.vandalism.util.clicker;
 
-public abstract class Clicker {
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+
+public abstract class Clicker implements MinecraftWrapper {
 
     protected Runnable clickAction = () -> {
     };
@@ -9,10 +11,6 @@ public abstract class Clicker {
         this.clickAction = clickAction;
     }
 
-    public abstract void update();
-
-    public long cpsToMs(final int cps) {
-        return 1000L / cps;
-    }
+    public abstract void onUpdate();
 
 }

@@ -8,13 +8,4 @@ public class TestModule extends AbstractModule {
         super("Test", "Just for development purposes.", Category.DEVELOPMENT);
     }
 
-    @Override
-    public void onActivate() {
-
-    }
-
-    @Override
-    public void onDeactivate() {
-    }
-
 }

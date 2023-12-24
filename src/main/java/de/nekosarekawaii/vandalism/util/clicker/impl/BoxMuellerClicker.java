@@ -4,7 +4,7 @@ import de.florianmichael.rclasses.common.RandomUtils;
 import de.florianmichael.rclasses.math.BoxMullerTransform;
 import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.florianmichael.rclasses.pattern.evicting.EvictingList;
-import de.nekosarekawaii.vandalism.util.minecraft.impl.clicker.Clicker;
+import de.nekosarekawaii.vandalism.util.clicker.Clicker;
 import net.minecraft.util.Pair;
 
 import java.util.ArrayList;
@@ -12,29 +12,32 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class BoxMuellerClicker extends Clicker {
 
-    private final MSTimer timer;
-    private long nextClick;
-    private int cps, updatePossibility;
-    private float mean, std;
-    private final EvictingList<Pair<Long, Integer>> delays;
-
-    public BoxMuellerClicker() {
-        this.timer = new MSTimer();
-        this.delays = new EvictingList<>(new ArrayList<>(), 100);
-        this.cps = RandomUtils.randomInt(8, 14);
-        this.nextClick = this.cpsToMs(this.cps);
-    }
+    private int delay;
+    private float mean;
+    private float std;
+    private float cps;
+    private final MSTimer msTimer = new MSTimer();
+    private float partialDelays;
+    private float cpsUpdatePossibility;
+    private final EvictingList<Pair<Integer, Integer>> delayHistory = new EvictingList<>(new ArrayList<>(), 100);
 
     @Override
-    public void update() {
-        if (this.timer.hasReached(this.nextClick, true)) {
-            if (this.updatePossibility == 100 || (Math.random() * 100) >= (100 - this.updatePossibility)) {
-                this.cps = (int) BoxMullerTransform.distribution(ThreadLocalRandom.current(), 1, 20, this.mean, this.std);
-            }
-            this.nextClick = this.cpsToMs(this.cps);
-            this.delays.add(new Pair<>(this.nextClick, this.cps));
-            this.clickAction.run();
+    public void onUpdate() {
+        if (!this.msTimer.hasReached(this.delay, true)) {
+            return;
         }
+
+        final ThreadLocalRandom random = ThreadLocalRandom.current();
+        if (RandomUtils.randomInt(0, 100) <= this.cpsUpdatePossibility || this.cps < 3) {
+            this.cps = BoxMullerTransform.distribution(random, 1, 20, this.mean, this.std);
+        }
+
+        final float delay = 1000.0f / this.cps;
+        this.delay = (int) Math.floor(delay + this.partialDelays);
+        this.partialDelays += delay - this.delay;
+
+        this.delayHistory.add(new Pair<>(this.delay, (int) this.cps));
+        this.clickAction.run();
     }
 
     public void setMean(final float mean) {
@@ -45,12 +48,12 @@ public class BoxMuellerClicker extends Clicker {
         this.std = std;
     }
 
-    public void setUpdatePossibility(final int updatePossibility) {
-        this.updatePossibility = updatePossibility;
+    public void setCpsUpdatePossibility(final float possibility) {
+        this.cpsUpdatePossibility = possibility;
     }
 
-    public EvictingList<Pair<Long, Integer>> getDelays() {
-        return delays;
+    public EvictingList<Pair<Integer, Integer>> getDelayHistory() {
+        return delayHistory;
     }
 
 }
