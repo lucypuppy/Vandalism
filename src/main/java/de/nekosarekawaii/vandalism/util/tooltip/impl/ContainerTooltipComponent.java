@@ -1,8 +1,9 @@
-package de.nekosarekawaii.vandalism.util.tooltip;
+package de.nekosarekawaii.vandalism.util.tooltip.impl;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.tooltip.ConvertibleTooltipData;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
@@ -14,7 +15,7 @@ import net.minecraft.util.collection.DefaultedList;
 
 import java.awt.*;
 
-public class ContainerTooltipComponent implements TooltipComponent, ITooltipData, MinecraftWrapper {
+public class ContainerTooltipComponent implements TooltipComponent, MinecraftWrapper, ConvertibleTooltipData {
 
     private static final Identifier TEXTURE_CONTAINER_BACKGROUND = new Identifier(FabricBootstrap.MOD_ID, "textures/hud/container.png");
 
@@ -39,36 +40,32 @@ public class ContainerTooltipComponent implements TooltipComponent, ITooltipData
     }
 
     @Override
-    public TooltipComponent getComponent() {
-        return this;
-    }
-
-    @Override
-    public boolean renderPre() {
-        return false;
-    }
-
-    @Override
     public void drawItems(final TextRenderer textRenderer, final int x, final int y, final DrawContext context) {
         final MatrixStack matrixStack = context.getMatrices();
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(this.color.getRed() / 255F, this.color.getGreen() / 255F, this.color.getBlue() / 255F, this.color.getAlpha() / 255F);
         context.drawTexture(TEXTURE_CONTAINER_BACKGROUND, x, y, 0, 0, 0, WIDTH, HEIGHT, WIDTH, HEIGHT);
         RenderSystem.setShaderColor(1, 1, 1, 1);
-        int row = 0;
-        for (int i = 0; i < this.items.size(); i++) {
-            final ItemStack itemStack = this.items.get(i);
+
+        int row = 0, column = 0;
+        for (final ItemStack itemStack : this.items) {
             matrixStack.push();
             matrixStack.translate(0, 0, 401);
-            context.drawItem(itemStack, x + 8 + i * 18, y + 7 + row * 18);
-            context.drawItemInSlot(textRenderer, itemStack, x + 8 + i * 18, y + 7 + row * 18, null);
+            context.drawItem(itemStack, x + 8 + column * 18, y + 7 + row * 18);
+            context.drawItemInSlot(textRenderer, itemStack, x + 8 + column * 18, y + 7 + row * 18, null);
             matrixStack.pop();
-            i++;
-            if (i >= 9) {
-                i = 0;
+
+            column++;
+            if (column >= 9) {
+                column = 0;
                 row++;
             }
         }
+    }
+
+    @Override
+    public TooltipComponent getComponent() {
+        return this;
     }
 
 }

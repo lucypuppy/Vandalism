@@ -1,7 +1,8 @@
-package de.nekosarekawaii.vandalism.util.tooltip;
+package de.nekosarekawaii.vandalism.util.tooltip.impl;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.tooltip.ConvertibleTooltipData;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
@@ -12,7 +13,7 @@ import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.map.MapState;
 import net.minecraft.util.Identifier;
 
-public class MapTooltipComponent implements TooltipComponent, ITooltipData, MinecraftWrapper {
+public class MapTooltipComponent implements TooltipComponent, MinecraftWrapper, ConvertibleTooltipData {
 
     private static final Identifier TEXTURE_MAP_BACKGROUND = new Identifier("textures/map/map_background.png");
     private final int mapId;
@@ -30,16 +31,6 @@ public class MapTooltipComponent implements TooltipComponent, ITooltipData, Mine
     @Override
     public int getWidth(final TextRenderer textRenderer) {
         return (int) ((128 + 16) * this.scale);
-    }
-
-    @Override
-    public TooltipComponent getComponent() {
-        return this;
-    }
-
-    @Override
-    public boolean renderPre() {
-        return false;
     }
 
     @Override
@@ -65,6 +56,11 @@ public class MapTooltipComponent implements TooltipComponent, ITooltipData, Mine
         this.mc.gameRenderer.getMapRenderer().draw(matrices, consumer, this.mapId, mapState, false, 0xF000F0);
         consumer.draw();
         matrices.pop();
+    }
+
+    @Override
+    public TooltipComponent getComponent() {
+        return this;
     }
 
 }
