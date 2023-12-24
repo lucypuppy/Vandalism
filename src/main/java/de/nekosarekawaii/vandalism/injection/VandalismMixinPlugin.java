@@ -13,7 +13,14 @@ public class VandalismMixinPlugin implements IMixinConfigPlugin {
     @Override
     public void onLoad(String mixinPackage) {
         final Set<String> loadedMixins = RStream.of("org.spongepowered.asm.mixin.transformer.MixinConfig").fields().by("globalMixinList").get();
-        loadedMixins.add("net.wurstclient.mixin.GameMenuScreenMixin");
+        final String wurstClientMixinPackage = "net.wurstclient.mixin.";
+        loadedMixins.add(wurstClientMixinPackage + "GameMenuScreenMixin");
+        loadedMixins.add(wurstClientMixinPackage + "ShulkerBoxScreenMixin");
+        loadedMixins.add(wurstClientMixinPackage + "GenericContainerScreenMixin");
+        loadedMixins.add(wurstClientMixinPackage + "MultiplayerScreenMixin");
+        loadedMixins.add(wurstClientMixinPackage + "TitleScreenMixin");
+        loadedMixins.add(wurstClientMixinPackage + "DisconnectedScreenMixin");
+        loadedMixins.add(wurstClientMixinPackage + "DisconnectedRealmsScreenMixin");
     }
 
     @Override
