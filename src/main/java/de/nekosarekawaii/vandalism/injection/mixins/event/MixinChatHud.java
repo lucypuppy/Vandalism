@@ -6,7 +6,6 @@ import de.nekosarekawaii.vandalism.base.event.player.ChatReceiveListener;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.client.gui.hud.MessageIndicator;
 import net.minecraft.network.message.MessageSignatureData;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,9 +19,12 @@ public abstract class MixinChatHud {
 
     @ModifyArg(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;ILnet/minecraft/client/gui/hud/MessageIndicator;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/ChatMessages;breakRenderedChatMessageLines(Lnet/minecraft/text/StringVisitable;ILnet/minecraft/client/font/TextRenderer;)Ljava/util/List;"))
     public StringVisitable callChatModifyReceiveListener(final StringVisitable content) {
-        final ChatModifyReceiveListener.ChatModifyReceiveEvent event = new ChatModifyReceiveListener.ChatModifyReceiveEvent((MutableText) content);
-        Vandalism.getInstance().getEventSystem().postInternal(ChatModifyReceiveListener.ChatModifyReceiveEvent.ID, event);
-        return event.mutableText;
+        if (content instanceof final Text text) {
+            final var event = new ChatModifyReceiveListener.ChatModifyReceiveEvent(text.copy());
+            Vandalism.getInstance().getEventSystem().postInternal(ChatModifyReceiveListener.ChatModifyReceiveEvent.ID, event);
+            return event.mutableText;
+        }
+        return content;
     }
 
     @Inject(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;ILnet/minecraft/client/gui/hud/MessageIndicator;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/ChatMessages;breakRenderedChatMessageLines(Lnet/minecraft/text/StringVisitable;ILnet/minecraft/client/font/TextRenderer;)Ljava/util/List;"))
