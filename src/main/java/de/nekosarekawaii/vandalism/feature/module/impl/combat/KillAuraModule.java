@@ -8,15 +8,18 @@ import de.nekosarekawaii.vandalism.base.event.player.StrafeListener;
 import de.nekosarekawaii.vandalism.base.event.render.Render2DListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationPriority;
-import de.nekosarekawaii.vandalism.util.minecraft.TimerHack;
+import de.nekosarekawaii.vandalism.util.minecraft.CombatUtil;
 import de.nekosarekawaii.vandalism.util.minecraft.WorldUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.item.Items;
+import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
@@ -25,13 +28,53 @@ import java.util.List;
 
 public class KillAuraModule extends AbstractModule implements TickGameListener, StrafeListener, Render2DListener, MoveInputListener, RotationListener {
 
-    public final Value<Double> range = new DoubleValue(
+    public final ValueGroup targetSelectionGroup = new ValueGroup(
             this,
+            "Target Selection",
+            "Settings for the target selection."
+    );
+
+    public final Value<Double> range = new DoubleValue(
+            this.targetSelectionGroup,
             "Range",
             "The range in which the enemies will be attacked.",
             3.0,
             3.0,
             6.0
+    );
+
+    public final ValueGroup targetsGroup = new ValueGroup(
+            this.targetSelectionGroup,
+            "Targets",
+            "Settings for the targets."
+    );
+
+    public final Value<Boolean> players = new BooleanValue(
+            this.targetsGroup,
+            "Players",
+            "Whether players should be attacked.",
+            true
+    );
+
+    public final Value<Boolean> hostile = new BooleanValue(
+            this.targetsGroup,
+            "Hostile",
+            "Whether hostile mobs should be attacked.",
+            false
+    );
+
+    public final Value<Boolean> animals = new BooleanValue(
+            this.targetsGroup,
+            "Animals",
+            "Whether animals should be attacked.",
+            false
+    );
+
+    public final Value<Boolean> isAlive = new BooleanValue(
+            this.targetsGroup,
+            "Alive",
+            "Checks if the entity is alive.",
+            true
     );
 
     private LivingEntity target;
@@ -44,6 +87,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
                 "Automatically attacks nearby enemies.",
                 Category.COMBAT
         );
+
         this.rotationListener = Vandalism.getInstance().getRotationListener();
         this.markExperimental();
     }
@@ -74,63 +118,36 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
     public void onTick() {
         if (this.mc.world == null || this.mc.player == null) return;
         final List<LivingEntity> entities = new ArrayList<>();
-        this.mc.world.getEntities().forEach(entity -> {
-            if (this.mc.player.distanceTo(entity) <= this.range.getValue() && entity != this.mc.player && entity instanceof final LivingEntity livingEntity) {
-                entities.add(livingEntity);
-            }
-        });
+        getTargets(entities);
+
         if (entities.isEmpty()) {
             return;
         }
+
         this.target = entities.get(0);
         if (this.rotationVector == null) {
             return;
         }
+
         double raytraceDistance = -1;
+
         //TODO: Need server side yaw / pitch or move into proper events.
         if (this.rotationListener.getTargetRotation() != null) {
             if (Float.isNaN(this.rotationListener.getTargetRotation().getYaw()) || Float.isNaN(this.rotationListener.getTargetRotation().getPitch())) {
                 return;
             }
+
             raytraceDistance = WorldUtil.rayTraceRange(
                     this.rotationListener.getTargetRotation().getYaw(),
                     this.rotationListener.getTargetRotation().getPitch(),
                     true
             );
         }
+
         if (!this.target.isBlocking() && raytraceDistance <= this.range.getValue() - 0.05 && raytraceDistance > 0) {
-            this.handleAttack();
+            CombatUtil.handleAttack(true);
         }
     }
-
-    //TODO: Make a proper util
-    private void handleAttack() {
-        float baseAttackDamage = (float) mc.player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
-            /*float enchantmentBonus;
-            if (target instanceof LivingEntity) {
-                enchantmentBonus = EnchantmentHelper.getAttackDamage(mc.player.getMainHandStack(), ((LivingEntity) target).getGroup());
-            } else {
-                enchantmentBonus = EnchantmentHelper.getAttackDamage(mc.player.getMainHandStack(), EntityGroup.DEFAULT);
-            }*/
-        float additionalBaseDelayOffset = 0;
-        if (TimerHack.getSpeed() > 1) {
-            additionalBaseDelayOffset = -(TimerHack.getSpeed() - 1);
-        }
-        float attackCooldown = this.mc.player.getAttackCooldownProgress(additionalBaseDelayOffset);
-        baseAttackDamage *= 0.2F + attackCooldown * attackCooldown * 0.8F;
-        // enchantmentBonus *= attackCooldown;
-        if (baseAttackDamage >= 0.98) {
-            this.mc.doAttack();
-        } else {
-            if (this.mc.player.getOffHandStack().isEmpty()) {
-                return;
-            }
-            if (this.mc.player.getOffHandStack().getItem().equals(Items.SHIELD)) {
-                this.mc.doItemUse();
-            }
-        }
-    }
-
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
         /*Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
@@ -189,16 +206,32 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
     public void onRotation(final RotationEvent event) {
         if (this.target != null) {
             final Rotation rotation = Rotation.Builder.build(this.target, true, 6f, 1D / 32);
+
             if (rotation == null) { //sanity check, crashes if you sneak and have your reach set to 3.0
                 this.rotationVector = null;
                 this.rotationListener.resetRotation();
                 return;
             }
+
             this.rotationListener.setRotation(rotation, new Vec2f(179, 180), RotationPriority.HIGH);
             this.rotationVector = new Vec3d(1, 1, 1);
         } else {
             this.rotationListener.resetRotation();
         }
+    }
+
+    private void getTargets(final List<LivingEntity> entities) {
+        this.mc.world.getEntities().forEach(entity -> {
+            if (entity instanceof final LivingEntity livingEntity
+                    && livingEntity != this.mc.player
+                    && this.mc.player.distanceTo(livingEntity) <= this.range.getValue()
+                    && (livingEntity.isAlive() || !isAlive.getValue()) &&
+                    ((livingEntity instanceof PlayerEntity && this.players.getValue())
+                            || (livingEntity instanceof HostileEntity && this.hostile.getValue())
+                            || (livingEntity instanceof AnimalEntity && this.animals.getValue()))) {
+                entities.add(livingEntity);
+            }
+        });
     }
 
 }
