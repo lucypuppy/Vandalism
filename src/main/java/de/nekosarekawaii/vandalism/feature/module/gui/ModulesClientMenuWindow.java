@@ -47,9 +47,12 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
             ImGui.inputText(modulesSearchIdentifier + "input", this.searchInput);
             ImGui.separator();
             ImGui.beginChild(modulesSearchIdentifier + "scrolllist", -1, -1, true);
-            if (!this.searchInput.get().isBlank()) {
+            final String searchInput = this.searchInput.get();
+            if (!searchInput.isBlank()) {
                 for (final AbstractModule module : moduleManager.getList()) {
-                    if (StringUtils.contains(module.getName(), this.searchInput.get()) || StringUtils.contains(module.getDescription(), this.searchInput.get())) {
+                    final String moduleName = module.getName();
+                    final boolean doesContainName = StringUtils.contains(moduleName, searchInput) || StringUtils.contains(moduleName.replace(" ", ""), searchInput);
+                    if (doesContainName || StringUtils.contains(module.getDescription(), searchInput)) {
                         this.renderModule(module, "search");
                     }
                 }

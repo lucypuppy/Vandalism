@@ -28,16 +28,14 @@ import java.io.File;
  *  - Apply checkstyle.xml to all classes
  *  - Delete MixinParticleManager
  *  - Replace MixinServerResourcePackProvider
- *  - Delete MixinClientPlayerEntity & MixinClientWorld
  *  - Delete CustomRPConfirmScreen
  *  - Add Proxy manager
  *  - Add JiJ and JiS for building/exporting the mod
  * <p>
  * TODO | Everyone else
- *  - Fix tick bug (cps is not accurate) -> see BoxMuellerClicker#update
+ *  - Fix tick bug (cps is not accurate) -> see BoxMuellerClicker#onUpdate
  *  - Rewrite EnhancedServerList
  *  - Add anti vanish via. the player list hud
- *  - Add the dripping stone block to the block density module
  *  - Fix the entity layer rendering from the true sight module
  *  - Fix offsets for the new "teleport" method in the fov fucker module
  *  - Fix spaces in the text rendering when using the "deutsch macher" module
@@ -50,9 +48,7 @@ import java.io.File;
  *  - Fix ImGui#begin in every im window (remove No Collapse Flag and move the code out of the if)
  *  - Fix module tabs display (no stacking) when the mod starts the first time
  *  - Fix calculations for the custom hud
- *  - Fix the sprint event (attacking is wrong when sprintEvent.force = true)
  *  - Fix ClientMenuScreen#close because it could break the entire game
- *  - Fix trash talk module reacting to "this." for some reason.
  */
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 

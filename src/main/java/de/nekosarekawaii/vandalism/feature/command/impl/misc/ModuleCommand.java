@@ -26,11 +26,10 @@ public class ModuleCommand extends AbstractCommand {
         builder.then(literal("show-bind").then(argument("module", ModuleArgumentType.create()).executes(context -> {
             final AbstractModule module = ModuleArgumentType.get(context);
             if (module.getKeyBind().isValid()) {
-                ChatUtil.infoChatMessage("Module " + module.getName() + " is bound to the key " + module.getKeyBind() + ".");
+                ChatUtil.infoChatMessage("Module " + module.getName() + " is bound to the key " + InputType.getKeyName(module.getKeyBind().getValue()) + ".");
             } else {
                 ChatUtil.infoChatMessage("Module " + module.getName() + " is not bound.");
             }
-
             return SINGLE_SUCCESS;
         })));
         builder.then(literal("unbind").then(argument("module", ModuleArgumentType.create()).executes(context -> {
@@ -51,18 +50,15 @@ public class ModuleCommand extends AbstractCommand {
                 ChatUtil.infoChatMessage("Module " + module.getName() + " is not bound.");
                 return SINGLE_SUCCESS;
             }
-
             if (keyCode.equals(module.getKeyBind().getValue())) {
                 ChatUtil.infoChatMessage("Module " + module.getName() + " is already bound to the key " + InputType.getKeyName(keyCode) + ".");
                 return SINGLE_SUCCESS;
             }
-
             module.getKeyBind().setValue(keyCode);
             if (keyCode == GLFW.GLFW_KEY_UNKNOWN) {
                 ChatUtil.infoChatMessage("Unbound module " + module.getName() + ".");
                 return SINGLE_SUCCESS;
             }
-
             ChatUtil.infoChatMessage("Bound module " + module.getName() + " to the key " + InputType.getKeyName(keyCode) + ".");
             for (final AbstractModule mod : Vandalism.getInstance().getModuleManager().getList()) {
                 if (mod.getKeyBind().getValue().equals(keyCode) && !mod.getName().equals(module.getName())) {
