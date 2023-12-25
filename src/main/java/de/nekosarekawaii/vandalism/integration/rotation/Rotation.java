@@ -1,6 +1,5 @@
 package de.nekosarekawaii.vandalism.integration.rotation;
 
-import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.minecraft.WorldUtil;
 import net.minecraft.entity.Entity;
@@ -65,31 +64,38 @@ public class Rotation implements MinecraftWrapper {
 
     public static class Builder {
 
-        public static Rotation build(final Entity entity, final boolean bestHitVec, final double range, final double precision) {
+        public static Rotation build(final Entity entity, final double range, final int aimPoints) {
             if (mc.player == null) return null;
             Rotation normalRotations = null;
-            final List<Vec3d> possibleHitBoxPoints = computeHitboxAimPoints(entity, mc.player, 48);
+            final List<Vec3d> possibleHitBoxPoints = computeHitboxAimPoints(entity, mc.player, aimPoints);
             final List<Vec3d> hitAblePoints = new ArrayList<>();
+
             double bestDistance = 99;
             Vec3d bestHitBoxVector = null;
             for (Vec3d hitboxVector : possibleHitBoxPoints) {
                 final float[] simulatedRotation = getRotationToPoint(hitboxVector, mc.player);
                 final double hitBoxDistance = WorldUtil.rayTraceRange(simulatedRotation[0], simulatedRotation[1], true);
                 //   ChatUtil.infoChatMessage("" + hitBoxDistance);
-                if (hitBoxDistance > 0 && hitBoxDistance < Vandalism.getInstance().getModuleManager().getKillauraModule().range.getValue()) {
+
+                if (hitBoxDistance > 0 && hitBoxDistance < range) {
                     if (bestDistance > hitBoxDistance) {
                         bestDistance = hitBoxDistance;
                         bestHitBoxVector = hitboxVector;
                     }
+
                     hitAblePoints.add(hitboxVector);
                 }
             }
+
             possibleHitBoxPoints.clear();
+
             if (bestHitBoxVector != null) {
                 final float[] rotations = getRotationToPoint(bestHitBoxVector, mc.player);
                 normalRotations = new Rotation(rotations[0], rotations[1]);
             }
+
             hitAblePoints.clear();
+
             //TODO: add more logic
             return normalRotations;
         }

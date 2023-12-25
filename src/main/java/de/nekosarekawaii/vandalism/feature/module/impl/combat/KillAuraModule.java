@@ -8,6 +8,7 @@ import de.nekosarekawaii.vandalism.base.event.player.StrafeListener;
 import de.nekosarekawaii.vandalism.base.event.render.Render2DListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
@@ -75,6 +76,21 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
             "Alive",
             "Checks if the entity is alive.",
             true
+    );
+
+    public final ValueGroup rotationGroup = new ValueGroup(
+            this,
+            "Rotation",
+            "Settings for the rotations."
+    );
+
+    public final Value<Integer> aimPoints = new IntegerValue(
+            this.rotationGroup,
+            "Aim Points",
+            "The amount of aim points. (Higher values can cause lag)",
+            32,
+            1,
+            100
     );
 
     private LivingEntity target;
@@ -205,7 +221,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
     @Override
     public void onRotation(final RotationEvent event) {
         if (this.target != null) {
-            final Rotation rotation = Rotation.Builder.build(this.target, true, 6f, 1D / 32);
+            final Rotation rotation = Rotation.Builder.build(this.target, this.range.getValue(), this.aimPoints.getValue());
 
             if (rotation == null) { //sanity check, crashes if you sneak and have your reach set to 3.0
                 this.rotationVector = null;
