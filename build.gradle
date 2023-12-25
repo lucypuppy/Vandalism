@@ -103,6 +103,14 @@ jar {
 	}
 }
 
+idea {
+	module {
+		["run"].each {
+			excludeDirs << file("$projectDir/$it")
+		}
+	}
+}
+
 sourceSets {
 	main {
 		java {
