@@ -6,7 +6,7 @@ import net.minecraft.item.Items;
 
 public class CombatUtil implements MinecraftWrapper {
 
-    public static void handleAttack(final boolean autoBlock) {
+    public static boolean handleAttack(final boolean autoBlock) {
         float baseAttackDamage = (float) mc.player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
 
             /*float enchantmentBonus;
@@ -29,15 +29,18 @@ public class CombatUtil implements MinecraftWrapper {
 
         if (baseAttackDamage >= 0.98) {
             mc.doAttack();
+            return true;
         } else if (autoBlock) {
             if (mc.player.getOffHandStack().isEmpty()) {
-                return;
+                return false;
             }
 
             if (mc.player.getOffHandStack().getItem().equals(Items.SHIELD)) {
                 mc.doItemUse();
             }
         }
+
+        return false;
     }
 
 }

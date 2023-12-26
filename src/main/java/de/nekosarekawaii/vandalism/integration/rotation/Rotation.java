@@ -48,13 +48,7 @@ public class Rotation implements MinecraftWrapper {
     }
 
     public Vec3d getVector() {
-        final float f = pitch * (float) (Math.PI / 180.0);
-        final float g = -yaw * (float) (Math.PI / 180.0);
-        final float h = MathHelper.cos(g);
-        final float i = MathHelper.sin(g);
-        final float j = MathHelper.cos(f);
-        final float k = MathHelper.sin(f);
-        return new Vec3d(i * j, -k, h * j);
+        return Vec3d.fromPolar(pitch, yaw);
     }
 
     @Override
