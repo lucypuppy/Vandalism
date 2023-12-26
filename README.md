@@ -4,6 +4,12 @@ Vandalism is a mod for Minecraft designed to train server administrators.
 
 ## Memes
 
+### Gothaj Memes
+
+![notpossibel](.github/memes/gothaj/NotPossibel.png)
+![richfromskid](.github/memes/gothaj/RichFromSkid.png)
+![littleprot](.github/memes/gothaj/LittleProtection.png)
+
 ### Eduard Memes
 
 - **SchnauzeVoll Client**
