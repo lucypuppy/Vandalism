@@ -72,7 +72,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
     // Features
     private ModuleManager moduleManager;
-    private CommandManager commandManager;
+    private CommandManaager commandManager;
     private ScriptManager scriptManager;
     private CreativeTabManager creativeTabManager;
 
