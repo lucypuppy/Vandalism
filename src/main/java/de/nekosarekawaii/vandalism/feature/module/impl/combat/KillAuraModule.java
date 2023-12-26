@@ -25,11 +25,12 @@ import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class KillAuraModule extends AbstractModule implements TickGameListener, StrafeListener, Render2DListener, MoveInputListener, RotationListener {
 
-    public final ValueGroup targetSelectionGroup = new ValueGroup(
+    private final ValueGroup targetSelectionGroup = new ValueGroup(
             this,
             "Target Selection",
             "Settings for the target selection."
@@ -44,47 +45,54 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
             6.0
     );
 
-    public final ValueGroup targetsGroup = new ValueGroup(
+    private final Value<Boolean> switchTarget = new BooleanValue(
+            this.targetSelectionGroup,
+            "Switch Target",
+            "Whether the target should be switched.",
+            true
+    );
+
+    private final ValueGroup targetsGroup = new ValueGroup(
             this.targetSelectionGroup,
             "Targets",
             "Settings for the targets."
     );
 
-    public final Value<Boolean> players = new BooleanValue(
+    private final Value<Boolean> players = new BooleanValue(
             this.targetsGroup,
             "Players",
             "Whether players should be attacked.",
             true
     );
 
-    public final Value<Boolean> hostile = new BooleanValue(
+    private final Value<Boolean> hostile = new BooleanValue(
             this.targetsGroup,
             "Hostile",
             "Whether hostile mobs should be attacked.",
             false
     );
 
-    public final Value<Boolean> animals = new BooleanValue(
+    private final Value<Boolean> animals = new BooleanValue(
             this.targetsGroup,
             "Animals",
             "Whether animals should be attacked.",
             false
     );
 
-    public final Value<Boolean> isAlive = new BooleanValue(
+    private final Value<Boolean> isAlive = new BooleanValue(
             this.targetsGroup,
             "Alive",
             "Checks if the entity is alive.",
             true
     );
 
-    public final ValueGroup rotationGroup = new ValueGroup(
+    private final ValueGroup rotationGroup = new ValueGroup(
             this,
             "Rotation",
             "Settings for the rotations."
     );
 
-    public final Value<Integer> aimPoints = new IntegerValue(
+    private final Value<Integer> aimPoints = new IntegerValue(
             this.rotationGroup,
             "Aim Points",
             "The amount of aim points. (Higher values can cause lag)",
@@ -96,6 +104,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
     private LivingEntity target;
     private Vec3d rotationVector;
     private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
+    private int targetIndex = 0;
 
     public KillAuraModule() {
         super(
@@ -124,7 +133,9 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
         Vandalism.getInstance().getEventSystem().unsubscribe(Render2DEvent.ID, this);
         Vandalism.getInstance().getEventSystem().unsubscribe(MoveInputEvent.ID, this);
         Vandalism.getInstance().getEventSystem().unsubscribe(RotationEvent.ID, this);
+
         this.rotationListener.resetRotation();
+        targetIndex = 0;
     }
 
     //TODO Mouse event -> attack
@@ -133,14 +144,9 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
     @Override
     public void onTick() {
         if (this.mc.world == null || this.mc.player == null) return;
-        final List<LivingEntity> entities = new ArrayList<>();
-        getTargets(entities);
 
-        if (entities.isEmpty()) {
-            return;
-        }
+        getTarget();
 
-        this.target = entities.get(0);
         if (this.rotationVector == null) {
             return;
         }
@@ -160,10 +166,13 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
             );
         }
 
-        if (!this.target.isBlocking() && raytraceDistance <= this.range.getValue() - 0.05 && raytraceDistance > 0) {
-            CombatUtil.handleAttack(true);
+        if (!this.target.isBlocking()
+                && raytraceDistance <= this.range.getValue() - 0.05 && raytraceDistance > 0
+                && CombatUtil.handleAttack(true)) {
+            this.targetIndex++;
         }
     }
+
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
         /*Vandalism.getInstance().getImGuiHandler().getImGuiRenderer().addRenderInterface(io -> {
@@ -236,7 +245,8 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
         }
     }
 
-    private void getTargets(final List<LivingEntity> entities) {
+    private void getTarget() {
+        final List<LivingEntity> entities = new ArrayList<>();
         this.mc.world.getEntities().forEach(entity -> {
             if (entity instanceof final LivingEntity livingEntity
                     && livingEntity != this.mc.player
@@ -248,6 +258,19 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
                 entities.add(livingEntity);
             }
         });
+
+        if (entities.isEmpty()) {
+            return;
+        }
+
+        // Sort entities by distance
+        entities.sort(Comparator.comparingDouble(entity -> this.mc.player.distanceTo(entity)));
+
+        if (!this.switchTarget.getValue() || this.targetIndex >= entities.size()) {
+            this.targetIndex = 0;
+        }
+
+        this.target = entities.get(this.targetIndex);
     }
 
 }
