@@ -16,6 +16,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ModuleListHUDElement extends HUDElement implements ModuleToggleListener {
 
     private final List<String> activatedModules = new CopyOnWriteArrayList<>();
+    private final List<String> externalModules = new CopyOnWriteArrayList<>();
+
     private boolean sort;
 
     private final ValueGroup visualElements = new ValueGroup(
@@ -40,7 +42,7 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
 
     public ModuleListHUDElement() {
         super("Module List", 2, 150);
-        Vandalism.getInstance().getEventSystem().subscribe(ModuleToggleListener.ModuleToggleEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(ModuleToggleEvent.ID, this);
     }
 
     @Override
@@ -58,7 +60,6 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
     public void onRender(final DrawContext context, final float delta) {
         this.sort();
         int yOffset = 0;
-        final boolean shadow = false;
         for (final String activatedModule : this.activatedModules) {
             final int textWidth = this.mc.textRenderer.getWidth(activatedModule);
             switch (this.alignmentX) {
@@ -67,7 +68,6 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
                 case RIGHT -> drawText(context, activatedModule, (this.x + this.width) - textWidth, this.y + yOffset);
                 default -> drawText(context, activatedModule, this.x, this.y + yOffset);
             }
-
             this.width = Math.max(this.width, textWidth);
             yOffset += this.mc.textRenderer.fontHeight;
         }
@@ -90,6 +90,7 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
                     this.activatedModules.add(module.getName());
                 }
             }
+            this.activatedModules.addAll(this.externalModules);
             this.activatedModules.sort((s1, s2) -> {
                 final int compare;
                 switch (this.alignmentY) {
@@ -105,8 +106,26 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
     }
 
     private void drawText(final DrawContext context, final String text, final int x, final int y) {
-        context.drawText(this.mc.textRenderer, text, x, y, this.color.getColor(-y * 20).getRGB(),
-                this.shadow.getValue());
+        context.drawText(
+                this.mc.textRenderer,
+                text, x, y,
+                this.color.getColor(-y * 20).getRGB(),
+                this.shadow.getValue()
+        );
+    }
+
+    public void addExternalModule(final String source, final String name) {
+        final String module = source + " " + name;
+        if (this.externalModules.contains(module)) {
+            return;
+        }
+        this.externalModules.add(module);
+        this.sort = true;
+    }
+
+    public void removeExternalModule(final String source, final String name) {
+        this.externalModules.remove(source + " " + name);
+        this.sort = true;
     }
 
 }
