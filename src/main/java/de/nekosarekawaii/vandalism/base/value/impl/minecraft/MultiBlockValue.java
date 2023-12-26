@@ -17,13 +17,7 @@ public class MultiBlockValue extends MultiModeValue {
     }
 
     public MultiBlockValue(ValueParent parent, String name, String description, final List<Block> defaultValue, final Block... options) {
-        super(
-                parent,
-                name,
-                description,
-                defaultValue.stream().map(block -> Registries.BLOCK.getId(block).toString()).toList(),
-                Arrays.stream(options).map(block -> Registries.BLOCK.getId(block).toString()).toArray(String[]::new)
-        );
+        super(parent, name, description, defaultValue.stream().map(block -> Registries.BLOCK.getId(block).toString()).toList(), Arrays.stream(options).map(block -> Registries.BLOCK.getId(block).toString()).toArray(String[]::new));
     }
 
     public boolean isSelected(final Identifier value) {

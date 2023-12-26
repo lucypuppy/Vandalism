@@ -25,7 +25,7 @@ public class ValueModeGeneric<T> extends Value<T> {
 
     @Override
     public void load(final JsonObject mainNode) {
-        final T value = fromString.apply(mainNode.get(getName()).getAsString());
+        final T value = this.fromString.apply(mainNode.get(getName()).getAsString());
         if (!this.options.contains(value)) {
             this.setValue(this.getDefaultValue());
             return;
@@ -35,15 +35,15 @@ public class ValueModeGeneric<T> extends Value<T> {
 
     @Override
     public void save(final JsonObject mainNode) {
-        mainNode.addProperty(this.getName(), toString.apply(this.getValue()));
+        mainNode.addProperty(this.getName(), this.toString.apply(this.getValue()));
     }
 
     @Override
     public void render() {
-        final String selectedString = toString.apply(this.getValue());
+        final String selectedString = this.toString.apply(this.getValue());
         if (ImGui.beginCombo("##" + this.getName() + this.getParent().getName(), selectedString)) {
             for (final T mode : this.options) {
-                final String modeString = toString.apply(mode);
+                final String modeString = this.toString.apply(mode);
                 if (ImGui.selectable(modeString, modeString.equals(selectedString))) {
                     this.setValue(mode);
                 }

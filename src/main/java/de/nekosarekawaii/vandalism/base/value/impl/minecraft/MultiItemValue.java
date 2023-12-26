@@ -17,13 +17,7 @@ public class MultiItemValue extends MultiModeValue {
     }
 
     public MultiItemValue(ValueParent parent, String name, String description, final List<Item> defaultValue, final Item... options) {
-        super(
-                parent,
-                name,
-                description,
-                defaultValue.stream().map(item -> Registries.ITEM.getId(item).toString()).toList(),
-                Arrays.stream(options).map(item -> Registries.ITEM.getId(item).toString()).toArray(String[]::new)
-        );
+        super(parent, name, description, defaultValue.stream().map(item -> Registries.ITEM.getId(item).toString()).toList(), Arrays.stream(options).map(item -> Registries.ITEM.getId(item).toString()).toArray(String[]::new));
     }
 
     public boolean isSelected(final Identifier value) {
