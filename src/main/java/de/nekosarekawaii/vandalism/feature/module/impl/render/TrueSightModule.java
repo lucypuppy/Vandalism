@@ -6,26 +6,26 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.render.LivingEntityRenderBottomLayerListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
+import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiItemValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
-import de.nekosarekawaii.vandalism.base.value.impl.selection.MultiModeValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.registry.Registries;
+import net.minecraft.item.Item;
 
 import java.awt.*;
-import java.util.Arrays;
+import java.util.List;
 
 
 public class TrueSightModule extends AbstractModule implements LivingEntityRenderBottomLayerListener {
 
-    private static final String[] MARKER_BLOCK_IDS = ClientWorld.BLOCK_MARKER_ITEMS.stream().map(item -> Registries.ITEM.getId(item).toString()).toArray(String[]::new);
+    private static final List<Item> MARKER_BLOCK_ITEMS = ClientWorld.BLOCK_MARKER_ITEMS.stream().toList();
 
-    public final MultiModeValue markerBlocks = new MultiModeValue(
+    public final MultiItemValue markerBlocks = new MultiItemValue(
             this,
             "Marker Blocks",
             "Makes invisible marker blocks visible.",
-            Arrays.asList(MARKER_BLOCK_IDS),
-            MARKER_BLOCK_IDS
+            MARKER_BLOCK_ITEMS,
+            MARKER_BLOCK_ITEMS.toArray(Item[]::new)
     );
 
     private final BooleanValue entities = new BooleanValue(
