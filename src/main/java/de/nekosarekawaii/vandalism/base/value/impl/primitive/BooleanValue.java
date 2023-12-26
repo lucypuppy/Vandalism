@@ -14,7 +14,9 @@ public class BooleanValue extends Value<Boolean> {
 
     @Override
     public void load(final JsonObject mainNode) {
-        this.setValue(mainNode.get(this.getName()).getAsBoolean());
+        if (mainNode.has(this.getName())) {
+            this.setValue(mainNode.get(this.getName()).getAsBoolean());
+        }
     }
 
     @Override

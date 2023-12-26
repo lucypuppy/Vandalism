@@ -11,8 +11,9 @@ import java.util.Set;
 public class VandalismMixinPlugin implements IMixinConfigPlugin {
 
     @Override
-    public void onLoad(String mixinPackage) {
-        final Set<String> loadedMixins = RStream.of("org.spongepowered.asm.mixin.transformer.MixinConfig").fields().by("globalMixinList").get();
+    public void onLoad(final String mixinPackage) {
+        final RStream loadedMixinsStream = RStream.of("org.spongepowered.asm.mixin.transformer.MixinConfig");
+        final Set<String> loadedMixins = loadedMixinsStream.fields().by("globalMixinList").get();
         final String wurstClientMixinPackage = "net.wurstclient.mixin.";
         loadedMixins.add(wurstClientMixinPackage + "GameMenuScreenMixin");
         loadedMixins.add(wurstClientMixinPackage + "ShulkerBoxScreenMixin");
@@ -21,6 +22,7 @@ public class VandalismMixinPlugin implements IMixinConfigPlugin {
         loadedMixins.add(wurstClientMixinPackage + "TitleScreenMixin");
         loadedMixins.add(wurstClientMixinPackage + "DisconnectedScreenMixin");
         loadedMixins.add(wurstClientMixinPackage + "DisconnectedRealmsScreenMixin");
+        loadedMixins.add(wurstClientMixinPackage + "StatsScreenMixin");
     }
 
     @Override
@@ -29,12 +31,12 @@ public class VandalismMixinPlugin implements IMixinConfigPlugin {
     }
 
     @Override
-    public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
+    public boolean shouldApplyMixin(final String targetClassName, final String mixinClassName) {
         return true;
     }
 
     @Override
-    public void acceptTargets(Set<String> myTargets, Set<String> otherTargets) {
+    public void acceptTargets(final Set<String> myTargets, final Set<String> otherTargets) {
     }
 
     @Override
@@ -43,11 +45,11 @@ public class VandalismMixinPlugin implements IMixinConfigPlugin {
     }
 
     @Override
-    public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
+    public void preApply(final String targetClassName, final ClassNode targetClass, final String mixinClassName, final IMixinInfo mixinInfo) {
     }
 
     @Override
-    public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
+    public void postApply(final String targetClassName, final ClassNode targetClass, final String mixinClassName, final IMixinInfo mixinInfo) {
     }
 
 }
