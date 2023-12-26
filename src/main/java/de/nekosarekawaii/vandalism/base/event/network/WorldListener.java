@@ -1,9 +1,12 @@
 package de.nekosarekawaii.vandalism.base.event.network;
 
 import de.florianmichael.dietrichevents2.AbstractEvent;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.BlockView;
 
 public interface WorldListener {
 
@@ -42,16 +45,20 @@ public interface WorldListener {
 
         public static final int ID = 14;
 
-        public BlockState state;
-        public BlockPos pos;
+        public final Block block;
+        public final BlockState state;
+        public final BlockView world;
+        public final BlockPos pos;
+        public final ShapeContext context;
         public VoxelShape shape;
-        public boolean shouldUpdate;
 
-        public BlockEvent(final BlockState state, final BlockPos pos, final VoxelShape shape) {
+        public BlockEvent(final Block block, final BlockState state, final BlockView world, final BlockPos pos, final ShapeContext context, final VoxelShape shape) {
+            this.block = block;
             this.state = state;
+            this.world = world;
             this.pos = pos;
+            this.context = context;
             this.shape = shape;
-            this.shouldUpdate = false;
         }
 
         @Override

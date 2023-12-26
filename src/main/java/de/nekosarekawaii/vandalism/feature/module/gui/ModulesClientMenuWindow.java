@@ -22,6 +22,9 @@ import java.util.List;
 
 public class ModulesClientMenuWindow extends ClientMenuWindow {
 
+    public static final float[] ACTIVE_COLOR = new float[]{0.1f, 0.8f, 0.1f, 0.45f};
+    public static final float[] INACTIVE_COLOR = new float[]{0.8f, 0.1f, 0.1f, 0.45f};
+
     private final ImString searchInput = new ImString();
     private final ImString favoriteModulesSearchInput = new ImString();
     private final ImString activatedModulesSearchInput = new ImString();
@@ -47,9 +50,12 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
             ImGui.inputText(modulesSearchIdentifier + "input", this.searchInput);
             ImGui.separator();
             ImGui.beginChild(modulesSearchIdentifier + "scrolllist", -1, -1, true);
-            if (!this.searchInput.get().isBlank()) {
+            final String searchInput = this.searchInput.get();
+            if (!searchInput.isBlank()) {
                 for (final AbstractModule module : moduleManager.getList()) {
-                    if (StringUtils.contains(module.getName(), this.searchInput.get()) || StringUtils.contains(module.getDescription(), this.searchInput.get())) {
+                    final String moduleName = module.getName();
+                    final boolean doesContainName = StringUtils.contains(moduleName, searchInput) || StringUtils.contains(moduleName.replace(" ", ""), searchInput);
+                    if (doesContainName || StringUtils.contains(module.getDescription(), searchInput)) {
                         this.renderModule(module, "search");
                     }
                 }
@@ -132,11 +138,8 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
     private void renderModule(final AbstractModule module, final String id) {
         final String moduleId = "##" + id + module.getCategory().getName() + "module" + module.getName();
         final float[] color;
-        if (module.isActive()) {
-            color = new float[]{0.1f, 0.8f, 0.1f, 0.45f};
-        } else {
-            color = new float[]{0.8f, 0.1f, 0.1f, 0.45f};
-        }
+        if (module.isActive()) color = ACTIVE_COLOR;
+        else color = INACTIVE_COLOR;
         final boolean moduleActivated = module.isActive();
         if (moduleActivated) {
             ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], color[3]);
