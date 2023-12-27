@@ -153,8 +153,7 @@ public class ItemStackLoggerModule extends AbstractModule implements TickGameLis
                     final MutableText copyButton = Text.literal(" (Copy Data)");
                     copyButton.setStyle(copyButton.getStyle().withFormatting(Formatting.GREEN).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, normalWithoutNBT + " | [NBT] " + nbt)));
                     final MutableText copyGiveCommandButton = Text.literal(" (Copy Give Command)");
-                    final String giveCommand = Vandalism.getInstance().getClientSettings().getChatSettings().commandPrefix.getValue() + "give " + item + nbt + " " + count;
-                    copyGiveCommandButton.setStyle(copyGiveCommandButton.getStyle().withFormatting(Formatting.YELLOW).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, giveCommand)));
+                    copyGiveCommandButton.setStyle(copyGiveCommandButton.getStyle().withFormatting(Formatting.YELLOW).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, Vandalism.getInstance().getClientSettings().getChatSettings().commandPrefix.getValue() + "give " + item + nbt + " " + count)));
                     final MutableText openDirectoryButton = Text.literal(" (Open Directory)");
                     openDirectoryButton.setStyle(openDirectoryButton.getStyle().withFormatting(Formatting.GOLD).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, itemNbtFile.getParent())));
                     final MutableText openFileButton = Text.literal(" (Open File)");

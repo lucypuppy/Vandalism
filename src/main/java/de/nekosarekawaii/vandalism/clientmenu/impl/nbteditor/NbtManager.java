@@ -135,11 +135,7 @@ public class NbtManager implements ImNbtDrawer, MinecraftWrapper {
 
     @Override
     public void setClipboard(final @NotNull NamedTag tag) {
-        this.mc.keyboard.setClipboard(
-                tag.getName() +
-                        ": " +
-                        tag.getTag().toString()
-        );
+        this.mc.keyboard.setClipboard(tag.getName() + ": " + tag.getTag().toString());
     }
 
     @Nullable
