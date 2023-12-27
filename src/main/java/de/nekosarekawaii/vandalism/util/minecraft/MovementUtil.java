@@ -1,6 +1,7 @@
 package de.nekosarekawaii.vandalism.util.minecraft;
 
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -9,31 +10,85 @@ import net.minecraft.util.math.Vec3d;
 public class MovementUtil implements MinecraftWrapper {
 
     private static final float DEG_TO_RAD = 0.01745329238f;
-
     private static final float[] POSSIBLE_MOVEMENTS = new float[]{-1F, 0.0F, 1F};
 
+    /**
+     * Get the direction of the player.
+     *
+     * @return The direction of the player.
+     */
     public static double getDirection() {
         return getDirection(0);
     }
 
+    /**
+     * Get the direction of the player.
+     *
+     * @param directionOffset The offset to use.
+     * @return The direction of the player.
+     */
     public static double getDirection(final float directionOffset) {
         if (mc.player == null) return 0;
         final float offset = (180.0F + directionOffset);
         return (Math.atan2(mc.player.forwardSpeed, mc.player.sidewaysSpeed) / Math.PI * offset + mc.player.getYaw()) * Math.PI / offset;
     }
 
+    /**
+     * Set the speed of the player.
+     *
+     * @param speed The speed to set.
+     * @return The new velocity of the player.
+     */
     public static Vec3d setSpeed(final double speed) {
         return setSpeed(speed, 0);
     }
 
+    /**
+     * Set the speed of the player.
+     *
+     * @param speed  The speed to set.
+     * @param offset The offset to use.
+     * @return The new velocity of the player.
+     */
     public static Vec3d setSpeed(final double speed, final float offset) {
-        if (mc.player == null) return null;
-        final double direction = getDirection(offset);
-        mc.player.setVelocity(Math.cos(direction) * speed, mc.player.getVelocity().getY(), Math.sin(direction) * speed);
-        return mc.player.getVelocity();
+        return setSpeed(mc.player, speed, offset);
     }
 
-    //LivingEntity, check everytime after update
+    /**
+     * Set the speed of an entity.
+     *
+     * @param entity The entity to set the speed of.
+     * @param speed  The speed to set.
+     * @return The new velocity of the entity.
+     */
+    public static Vec3d setSpeed(final Entity entity, final double speed) {
+        return setSpeed(entity, speed, 0);
+    }
+
+    /**
+     * Set the speed of an entity.
+     *
+     * @param entity The entity to set the speed of.
+     * @param speed  The speed to set.
+     * @param offset The offset to use.
+     * @return The new velocity of the entity.
+     */
+    public static Vec3d setSpeed(final Entity entity, final double speed, final float offset) {
+        final double direction = getDirection(offset);
+        entity.setVelocity(Math.cos(direction) * speed, entity.getVelocity().getY(), Math.sin(direction) * speed);
+        return entity.getVelocity();
+    }
+
+    /**
+     * Check if the player is moving.
+     *
+     * @return If the player is moving.
+     */
+    public static boolean isMoving() {
+        if (mc.player == null) return false;
+        return mc.player.forwardSpeed != 0 || mc.player.sidewaysSpeed != 0;
+    }
+
     public static Vec3d applyFriction(final Vec3d velocity, final float percentage) {
         if (mc.player == null) return Vec3d.ZERO;
         final BlockPos blockPos = mc.player.getVelocityAffectingPos();
@@ -46,33 +101,56 @@ public class MovementUtil implements MinecraftWrapper {
         return velocity.multiply(f, 1, f);
     }
 
+    /**
+     * Get the base speed of a player.
+     *
+     * @return The base speed.
+     */
     public static double getBaseSpeed() {
         if (mc.player == null) return 0;
+
         double baseSpeed = 0.153D;
         if (!mc.player.isSprinting()) {
             baseSpeed = 0.118D;
         }
+
         if (mc.player.hasStatusEffect(StatusEffects.SPEED)) {
             final int amplifier = 1 + mc.player.getStatusEffect(StatusEffects.SPEED).getAmplifier();
             final double fixedSpeedMotion = 0.11D;
             baseSpeed *= 1.0D + fixedSpeedMotion * (amplifier + 1);
         }
+
         return baseSpeed;
     }
 
+    /**
+     * Get the speed of the player.
+     * @return The speed of the player.
+     */
     public static double getSpeed() {
         if (mc.player == null) return 0;
         return Math.hypot(mc.player.getVelocity().getX(), mc.player.getVelocity().getZ());
     }
 
+    /**
+     * Clip the player.
+     * @param vertical The vertical value.
+     * @param horizontal The horizontal value.
+     */
     public static void clip(final double vertical, final double horizontal) {
         if (mc.player == null) return;
         final double direction = getDirection();
         mc.player.setPos(mc.player.getX() - Math.sin(direction) * horizontal, mc.player.getY() + vertical, mc.player.getZ() + Math.cos(direction) * horizontal);
     }
 
+    /**
+     * Get the fixed move inputs.
+     * @param yaw The yaw to use.
+     * @return The fixed move inputs.
+     */
     public static float[] getFixedMoveInputs(final float yaw) {
         final float[] INPUTS = new float[2];
+
         if (Math.abs(mc.player.forwardSpeed) > 0F || Math.abs(mc.player.sidewaysSpeed) > 0F) {
             final float wantedYaw = getInputAngle(mc.player.getYaw());
             Vec3d movementInput;
@@ -117,12 +195,18 @@ public class MovementUtil implements MinecraftWrapper {
                     }
                 }
             }
+
             INPUTS[0] = (currentBestForward * mag);
             INPUTS[1] = (currentBestStrafing * mag);
         }
         return INPUTS;
     }
 
+    /**
+     * Get the input angle.
+     * @param yaw The yaw to use.
+     * @return The input angle.
+     */
     public static float getInputAngle(final float yaw) {
         final float vertical = mc.player.forwardSpeed;
         final float horizontal = mc.player.sidewaysSpeed;
@@ -135,8 +219,10 @@ public class MovementUtil implements MinecraftWrapper {
             else if (horizontal < 0) return yaw + 135F;
             else return MathHelper.wrapDegrees(yaw - 180f);
         }
+
         if (horizontal > 0) return yaw - 90f;
         else if (horizontal < 0) return yaw + 90f;
+
         return yaw;
     }
 
