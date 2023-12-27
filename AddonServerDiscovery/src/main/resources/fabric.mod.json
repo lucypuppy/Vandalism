@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "vandalism-server-discovery",
+  "version": "${version}",
+  "name": "Vandalism-Server-Discovery",
+  "description": "",
+  "authors": [
+    "NekosAreKawaii",
+    "Snow"
+  ],
+  "environment": "client",
+  "entrypoints": {
+    "vandalism:onLaunch": [
+      "de.nekosarekawaii.vandalism.addonserverdiscovery.AddonServerDiscovery"
+    ]
+  },
+  "depends": {
+    "vandalism": "*"
+  }
+}

@@ -1,4 +1,4 @@
-package de.nekosarekawaii.vandalism.clientmenu.impl.serverdiscovery;
+package de.nekosarekawaii.vandalism.addonserverdiscovery.clientmenu;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.Vandalism;

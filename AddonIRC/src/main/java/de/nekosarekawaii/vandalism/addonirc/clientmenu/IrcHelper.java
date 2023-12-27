@@ -1,4 +1,4 @@
-package de.nekosarekawaii.vandalism.clientmenu.impl.irc;
+package de.nekosarekawaii.vandalism.addonirc.clientmenu;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.util.minecraft.ChatUtil;

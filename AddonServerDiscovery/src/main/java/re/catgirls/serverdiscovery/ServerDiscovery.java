@@ -3,9 +3,9 @@ package re.catgirls.serverdiscovery;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.florianmichael.rclasses.io.WebUtils;
+import re.catgirls.serverdiscovery.search.SearchQueryBuilder;
 import re.catgirls.serverdiscovery.entry.ServerEntry;
 import re.catgirls.serverdiscovery.search.NumberRangeType;
-import re.catgirls.serverdiscovery.search.SearchQueryBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;

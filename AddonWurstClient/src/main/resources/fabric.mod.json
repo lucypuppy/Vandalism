@@ -17,10 +17,6 @@
     ]
   },
   "depends": {
-    "fabricloader": "0.15.3",
-    "minecraft": "~1.20.4",
-    "java": ">=17",
-    "fabric-api": "0.91.3",
-    "viafabricplus": ">=3.0.0"
+    "vandalism": "*"
   }
 }
