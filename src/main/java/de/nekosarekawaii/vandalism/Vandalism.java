@@ -35,7 +35,6 @@ import java.io.File;
  * TODO | Everyone else
  *  - Fix tick bug (cps is not accurate) -> see BoxMuellerClicker#onUpdate
  *  - Rewrite EnhancedServerList
- *  - Add anti vanish via. the player list hud
  *  - Fix the entity layer rendering from the true sight module
  *  - Fix offsets for the new "teleport" method in the fov fucker module
  *  - Fix spaces in the text rendering when using the "deutsch macher" module
@@ -43,12 +42,15 @@ import java.io.File;
  *      - Add protection for custom rank prefixes
  *      - Add protection for skins
  *      - Add protection for coords
+ *      - Add protection for ip addresses
  *      - Maybe use a chat event instead of a text draw event
  *  - Make the width and height customizable or use calculations in the modules im window for the tabs
  *  - Fix ImGui#begin in every im window (remove No Collapse Flag and move the code out of the if)
  *  - Fix module tabs display (no stacking) when the mod starts the first time
  *  - Fix calculations for the custom hud
  *  - Fix ClientMenuScreen#close because it could break the entire game
+ *  - Fix the MixinPlayerListHud more info text y offsets
+ *  - Add anti vanish via. the player list hud
  */
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 
