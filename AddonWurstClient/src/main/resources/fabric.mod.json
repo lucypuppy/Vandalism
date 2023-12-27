@@ -5,7 +5,8 @@
   "name": "Vandalism-Wurst-Client",
   "description": "Implementation of the Wurst client for Vandalism.",
   "authors": [
-    "NekosAreKawaii"
+    "NekosAreKawaii",
+    "Snow"
   ],
   "environment": "client",
   "mixins": [

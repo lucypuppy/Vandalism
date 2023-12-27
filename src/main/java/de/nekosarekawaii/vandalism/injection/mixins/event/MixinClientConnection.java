@@ -35,12 +35,15 @@ public abstract class MixinClientConnection {
 
     @Shadow
     private Channel channel;
+
     @Shadow
     @Final
     public static AttributeKey<NetworkState.PacketHandler<?>> CLIENTBOUND_PROTOCOL_KEY;
+
     @Shadow
     @Final
     public static AttributeKey<NetworkState.PacketHandler<?>> SERVERBOUND_PROTOCOL_KEY;
+
     @Unique
     private boolean vandalism$selfRepeating;
 
@@ -80,8 +83,10 @@ public abstract class MixinClientConnection {
 
     @Inject(method = "disconnect", at = @At("RETURN"))
     private void callDisconnectListener(Text disconnectReason, CallbackInfo ci) {
-        Vandalism.getInstance().getEventSystem().postInternal(DisconnectListener.DisconnectEvent.ID,
-                new DisconnectListener.DisconnectEvent((ClientConnection) (Object) this, disconnectReason));
+        Vandalism.getInstance().getEventSystem().postInternal(
+                DisconnectListener.DisconnectEvent.ID,
+                new DisconnectListener.DisconnectEvent((ClientConnection) (Object) this, disconnectReason)
+        );
     }
 
 }

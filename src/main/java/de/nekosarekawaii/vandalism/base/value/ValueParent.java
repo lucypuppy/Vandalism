@@ -29,8 +29,8 @@ public interface ValueParent extends IName {
     default void renderValue(final Value<?> value) {
         if (value.isVisible() == null || value.isVisible().getAsBoolean()) {
             if (value instanceof ValueGroup) {
-                this.renderValueDescription(value);
                 value.render();
+                this.renderValueDescription(value);
                 return;
             }
             ImGui.text(value.getName());
