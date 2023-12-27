@@ -1,4 +1,4 @@
-package de.nekosarekawaii.vandalism.injection.mixins.fix.wurst;
+package de.nekosarekawaii.vandalism.addonwurstclient.injection.mixins.privacy;
 
 import net.wurstclient.analytics.dmurph.JGoogleAnalyticsTracker;
 import org.spongepowered.asm.mixin.Mixin;

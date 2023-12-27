@@ -15,9 +15,9 @@ import de.nekosarekawaii.vandalism.feature.script.ScriptManager;
 import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationListener;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerListManager;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
-import net.wurstclient.WurstClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -144,10 +144,12 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.creativeTabManager = new CreativeTabManager();
         this.creativeTabManager.init();
 
+        for (VandalismAddonLauncher entrypoint : FabricLoader.getInstance().getEntrypoints(VandalismAddonLauncher.getEntrypointName(), VandalismAddonLauncher.class)) {
+            entrypoint.onLaunch(this);
+        }
+
         // We have to load the config files after all systems have been initialized
         this.configManager.init();
-
-        WurstClient.INSTANCE.initialize();
 
         this.logger.info("");
         this.logger.info("Done!");

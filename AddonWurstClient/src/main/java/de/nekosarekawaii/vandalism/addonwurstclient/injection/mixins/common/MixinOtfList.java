@@ -1,4 +1,4 @@
-package de.nekosarekawaii.vandalism.injection.mixins.fix.wurst;
+package de.nekosarekawaii.vandalism.addonwurstclient.injection.mixins.common;
 
 import net.wurstclient.other_feature.OtfList;
 import net.wurstclient.other_features.HackListOtf;

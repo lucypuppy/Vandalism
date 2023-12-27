@@ -1,4 +1,4 @@
-package de.nekosarekawaii.vandalism.injection.mixins.fix.wurst;
+package de.nekosarekawaii.vandalism.addonwurstclient.injection.mixins.render;
 
 import net.minecraft.client.gui.DrawContext;
 import net.wurstclient.hud.HackListHUD;

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "vandalism-wurst-client",
+  "version": "${version}",
+  "name": "Vandalism-Wurst-Client",
+  "description": "Implementation of the Wurst client for Vandalism.",
+  "authors": [
+    "NekosAreKawaii"
+  ],
+  "environment": "client",
+  "mixins": [
+    "vandalism-wurst-client.mixins.json"
+  ],
+  "entrypoints": {
+    "vandalism:onLaunch": [
+      "de.nekosarekawaii.vandalism.addonwurstclient.AddonWurstClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": "0.15.3",
+    "minecraft": "~1.20.4",
+    "java": ">=17",
+    "fabric-api": "0.91.3",
+    "viafabricplus": ">=3.0.0"
+  }
+}

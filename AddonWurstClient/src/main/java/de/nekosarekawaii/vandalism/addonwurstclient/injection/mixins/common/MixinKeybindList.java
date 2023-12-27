@@ -1,4 +1,4 @@
-package de.nekosarekawaii.vandalism.injection.mixins.fix.wurst;
+package de.nekosarekawaii.vandalism.addonwurstclient.injection.mixins.common;
 
 import net.wurstclient.keybinds.Keybind;
 import net.wurstclient.keybinds.KeybindList;

@@ -1,4 +1,4 @@
-package de.nekosarekawaii.vandalism.injection.mixins.fix.wurst;
+package de.nekosarekawaii.vandalism.addonwurstclient.injection.mixins;
 
 import net.wurstclient.WurstInitializer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -11,7 +11,7 @@ public abstract class MixinWurstInitializer {
 
     @Inject(method = "onInitialize", at = @At("HEAD"), cancellable = true)
     private void cancelWurstInitialization(final CallbackInfo ci) {
-        ci.cancel();
+        ci.cancel(); // Cancel Wurst initialization because we are moving it to load after the client has been initialized, counterpart in AddonWurstClient.java
     }
 
 }
