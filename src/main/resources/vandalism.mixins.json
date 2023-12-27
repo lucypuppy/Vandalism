@@ -59,7 +59,6 @@
     "event.MixinScreen",
     "event.MixinTextVisitFactory",
     "fix.imgui.MixinImGuiImplGlfw",
-    "fix.imnbt.MixinContextMenu",
     "fix.imnbt.MixinMainWindow",
     "fix.minecraft.MixinAccessibilityOnboardingScreen",
     "fix.minecraft.MixinModStatus",

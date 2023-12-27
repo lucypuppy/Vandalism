@@ -1,4 +1,4 @@
-package de.nekosarekawaii.vandalism.clientmenu.imgui.impl.menu.nbteditor;
+package de.nekosarekawaii.vandalism.clientmenu.impl.nbteditor;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
@@ -30,6 +30,8 @@ public class NbtManager implements ImNbtDrawer, MinecraftWrapper {
 
     private Window window;
     private Popup<?> popup;
+
+    private NamedTag clipboardTag;
 
     public NbtManager() {
         try {
@@ -130,18 +132,18 @@ public class NbtManager implements ImNbtDrawer, MinecraftWrapper {
 
     @Override
     public boolean hasClipboard() {
-        return true;
+        return this.clipboardTag != null;
     }
 
     @Override
     public void setClipboard(final @NotNull NamedTag tag) {
-        this.mc.keyboard.setClipboard(tag.getName() + ": " + tag.getTag().toString());
+        this.clipboardTag = tag;
     }
 
     @Nullable
     @Override
     public NamedTag getClipboard() {
-        return null;
+        return this.clipboardTag;
     }
 
 }
