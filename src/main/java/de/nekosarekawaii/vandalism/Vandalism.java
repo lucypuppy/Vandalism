@@ -143,6 +143,8 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.creativeTabManager = new CreativeTabManager();
         this.creativeTabManager.init();
 
+        VandalismAddonLauncher.call(addon -> addon.onLaunch(this));
+
         // We have to load the config files after all systems have been initialized
         this.configManager.init();
 
@@ -151,6 +153,8 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.logger.info("");
 
         mc.getWindow().setTitle(FabricBootstrap.WINDOW_TITLE);
+
+        VandalismAddonLauncher.call(addon -> addon.onLateLaunch(this));
     }
 
     @Override

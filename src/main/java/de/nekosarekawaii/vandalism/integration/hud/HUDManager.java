@@ -16,6 +16,7 @@ import net.minecraft.client.gui.DrawContext;
 
 public class HUDManager extends Storage<HUDElement> implements Render2DListener, ScreenListener, MinecraftWrapper {
 
+    public WatermarkHUDElement watermarkHUDElement;
     public ModuleListHUDElement moduleListHUDElement;
 
     public HUDManager(final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
@@ -29,7 +30,7 @@ public class HUDManager extends Storage<HUDElement> implements Render2DListener,
     @Override
     public void init() {
         this.add(
-                new WatermarkHUDElement(),
+                this.watermarkHUDElement = new WatermarkHUDElement(),
                 this.moduleListHUDElement = new ModuleListHUDElement(),
                 new InfoHUDElement()
         );

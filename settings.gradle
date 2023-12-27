@@ -8,3 +8,7 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+include "AddonWurstClient"
+include "AddonIRC"
+include "AddonServerDiscovery"
+
