@@ -3,6 +3,7 @@ package de.nekosarekawaii.vandalism.base.value;
 import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import imgui.ImGui;
+import imgui.flag.ImGuiMouseButton;
 
 import java.util.List;
 
@@ -34,10 +35,13 @@ public interface ValueParent extends IName {
                 return;
             }
             ImGui.text(value.getName());
-            ImGui.sameLine();
             this.renderValueDescription(value);
             ImGui.sameLine();
             value.render();
+            if (ImGui.isItemClicked(ImGuiMouseButton.Middle)) {
+                value.resetValue();
+            }
+            this.renderValueDescription(value);
         }
     }
 
@@ -45,8 +49,6 @@ public interface ValueParent extends IName {
         if (value.getDescription() == null) {
             return;
         }
-        ImGui.textDisabled("(?)");
-
         if (ImGui.isItemHovered()) {
             ImGui.beginTooltip();
             ImGui.text(value.getDescription());
