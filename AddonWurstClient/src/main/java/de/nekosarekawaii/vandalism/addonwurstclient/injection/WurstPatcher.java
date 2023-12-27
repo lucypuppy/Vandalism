@@ -1,5 +1,6 @@
 package de.nekosarekawaii.vandalism.addonwurstclient.injection;
 
+import de.nekosarekawaii.vandalism.Vandalism;
 import net.lenni0451.reflect.stream.RStream;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
@@ -12,7 +13,7 @@ public class WurstPatcher implements IMixinConfigPlugin {
 
     @Override
     public void onLoad(String mixinPackage) {
-        System.out.println("Patching the Wurst!");
+        Vandalism.getInstance().getLogger().info("Frying the wurst...");
 
         final RStream loadedMixinsStream = RStream.of("org.spongepowered.asm.mixin.transformer.MixinConfig");
         final Set<String> loadedMixins = loadedMixinsStream.fields().by("globalMixinList").get();
