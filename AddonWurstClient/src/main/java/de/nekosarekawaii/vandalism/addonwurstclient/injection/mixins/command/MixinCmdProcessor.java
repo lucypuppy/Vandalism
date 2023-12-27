@@ -1,4 +1,4 @@
-package de.nekosarekawaii.vandalism.injection.mixins.fix.wurst;
+package de.nekosarekawaii.vandalism.addonwurstclient.injection.mixins.command;
 
 import net.wurstclient.command.CmdProcessor;
 import net.wurstclient.events.ChatOutputListener;

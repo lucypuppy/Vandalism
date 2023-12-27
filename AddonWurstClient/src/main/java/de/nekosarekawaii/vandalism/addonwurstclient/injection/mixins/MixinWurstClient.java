@@ -1,4 +1,4 @@
-package de.nekosarekawaii.vandalism.injection.mixins.fix.wurst;
+package de.nekosarekawaii.vandalism.addonwurstclient.injection.mixins;
 
 import net.minecraft.client.option.KeyBinding;
 import net.wurstclient.WurstClient;
@@ -11,6 +11,8 @@ public abstract class MixinWurstClient {
 
     @Redirect(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/fabricmc/fabric/api/client/keybinding/v1/KeyBindingHelper;registerKeyBinding(Lnet/minecraft/client/option/KeyBinding;)Lnet/minecraft/client/option/KeyBinding;"))
     private KeyBinding cancelWurstZoomKeybinding(final KeyBinding keyBinding) {
+        // Prevent the FAPI from loading the keybinding as we are loading the WurstClient to late for the FAPI
+        // Since we don't need this keybinding anyway, we can just get rid of it
         return keyBinding;
     }
 

@@ -1,4 +1,4 @@
-package de.nekosarekawaii.vandalism.injection.mixins.fix.wurst;
+package de.nekosarekawaii.vandalism.addonwurstclient.injection.mixins.command;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.Vandalism;

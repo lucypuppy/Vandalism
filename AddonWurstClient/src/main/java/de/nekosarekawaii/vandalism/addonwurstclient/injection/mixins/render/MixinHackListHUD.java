@@ -1,4 +1,4 @@
-package de.nekosarekawaii.vandalism.injection.mixins.fix.wurst;
+package de.nekosarekawaii.vandalism.addonwurstclient.injection.mixins.render;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import net.wurstclient.hack.Hack;

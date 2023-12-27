@@ -1,4 +1,4 @@
-package de.nekosarekawaii.vandalism.injection.mixins.fix.wurst;
+package de.nekosarekawaii.vandalism.addonwurstclient.injection.mixins.render;
 
 import net.wurstclient.other_features.WurstLogoOtf;
 import org.spongepowered.asm.mixin.Mixin;
@@ -6,8 +6,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(WurstLogoOtf.Visibility.class)
-public abstract class MixinWurstLogoOtfVisibility {
+@Mixin(value = WurstLogoOtf.Visibility.class, remap = false)
+public abstract class MixinWurstLogoOtf_Visibility {
 
     @Inject(method = "toString", at = @At("RETURN"), cancellable = true)
     private void renameWurstLogoSetting(final CallbackInfoReturnable<String> cir) {
