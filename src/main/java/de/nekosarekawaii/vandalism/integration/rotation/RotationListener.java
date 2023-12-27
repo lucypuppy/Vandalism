@@ -8,6 +8,7 @@ import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.RenderUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 
@@ -93,17 +94,24 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
         if (this.rotateSpeedMinMax.x > 0 && this.rotateSpeedMinMax.y > 0) {
             this.rotateSpeed = RandomUtils.randomFloat(this.rotateSpeedMinMax.x, this.rotateSpeedMinMax.y);
         }
+
+        // Cool Intave cloudcheck bypass
+        if (mc.crosshairTarget != null && mc.crosshairTarget.getType() == HitResult.Type.ENTITY) {
+            this.rotateSpeed = RandomUtils.randomFloat(0.0f, 4.0f);
+        }
+
         if (this.rotateSpeed > 0) {
             final float lastYaw = lastRotation.getYaw();
             final float lastPitch = lastRotation.getPitch();
             final float deltaYaw = MathHelper.wrapDegrees(rotation.getYaw() - lastYaw);
             final float deltaPitch = rotation.getPitch() - lastPitch;
             final double distance = Math.sqrt(deltaYaw * deltaYaw + deltaPitch * deltaPitch);
+
             if (distance > 0) {
                 final double distributionYaw = Math.abs(deltaYaw / distance);
                 final double distributionPitch = Math.abs(deltaPitch / distance);
                 final double maxYaw = this.rotateSpeed * distributionYaw;
-                final double maxPitch = this.rotateSpeed * distributionPitch;
+                final double maxPitch = (this.rotateSpeed / 2.0) * distributionPitch;
                 final float moveYaw = (float) Math.max(Math.min(deltaYaw, maxYaw), -maxYaw);
                 final float movePitch = (float) Math.max(Math.min(deltaPitch, maxPitch), -maxPitch);
                 return new Rotation(lastYaw + moveYaw, lastPitch + movePitch);
