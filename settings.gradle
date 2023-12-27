@@ -9,4 +9,6 @@ pluginManagement {
     }
 }
 include "AddonWurstClient"
+include "AddonIRC"
+include "AddonServerDiscovery"
 

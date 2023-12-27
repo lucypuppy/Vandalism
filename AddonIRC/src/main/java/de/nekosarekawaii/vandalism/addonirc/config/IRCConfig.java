@@ -1,8 +1,8 @@
-package de.nekosarekawaii.vandalism.base.config.impl;
+package de.nekosarekawaii.vandalism.addonirc.config;
 
 import com.google.gson.JsonObject;
+import de.nekosarekawaii.vandalism.addonirc.clientmenu.IrcClientMenuWindow;
 import de.nekosarekawaii.vandalism.base.config.AbstractConfig;
-import de.nekosarekawaii.vandalism.clientmenu.impl.irc.IrcClientMenuWindow;
 import imgui.type.ImString;
 
 import java.util.HashMap;
