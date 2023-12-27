@@ -15,7 +15,6 @@ import de.nekosarekawaii.vandalism.feature.script.ScriptManager;
 import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationListener;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerListManager;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
