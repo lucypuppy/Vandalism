@@ -12,15 +12,17 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.integration.clicker.Clicker;
+import de.nekosarekawaii.vandalism.integration.clicker.impl.CooldownClicker;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationPriority;
-import de.nekosarekawaii.vandalism.util.minecraft.CombatUtil;
 import de.nekosarekawaii.vandalism.util.minecraft.WorldUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Items;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
@@ -105,6 +107,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
     private Vec3d rotationVector;
     private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
     private int targetIndex = 0;
+    private final Clicker clicker = new CooldownClicker();
 
     public KillAuraModule() {
         super(
@@ -115,6 +118,21 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
 
         this.rotationListener = Vandalism.getInstance().getRotationListener();
         this.markExperimental();
+
+        this.clicker.setClickAction(attack -> {
+            if (attack) {
+                mc.doAttack();
+                this.targetIndex++;
+            } else { //TODO add setting for autoblock/autoshield
+                if (mc.player.getOffHandStack().isEmpty()) {
+                    return;
+                }
+
+                if (mc.player.getOffHandStack().getItem().equals(Items.SHIELD)) {
+                    mc.doItemUse();
+                }
+            }
+        });
     }
 
     @Override
@@ -166,10 +184,8 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
             );
         }
 
-        if (!this.target.isBlocking()
-                && raytraceDistance <= this.range.getValue() - 0.05 && raytraceDistance > 0
-                && CombatUtil.handleAttack(true)) {
-            this.targetIndex++;
+        if (!this.target.isBlocking() && raytraceDistance <= this.range.getValue() - 0.05 && raytraceDistance > 0) {
+            clicker.onUpdate();
         }
     }
 

@@ -1,10 +1,10 @@
-package de.nekosarekawaii.vandalism.util.clicker.impl;
+package de.nekosarekawaii.vandalism.integration.clicker.impl;
 
 import de.florianmichael.rclasses.common.RandomUtils;
 import de.florianmichael.rclasses.math.BoxMullerTransform;
 import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.florianmichael.rclasses.pattern.evicting.EvictingList;
-import de.nekosarekawaii.vandalism.util.clicker.Clicker;
+import de.nekosarekawaii.vandalism.integration.clicker.Clicker;
 import net.minecraft.util.Pair;
 
 import java.util.ArrayList;
@@ -24,6 +24,7 @@ public class BoxMuellerClicker extends Clicker {
     @Override
     public void onUpdate() {
         if (!this.msTimer.hasReached(this.delay, true)) {
+            this.clickAction.accept(false);
             return;
         }
 
@@ -37,7 +38,7 @@ public class BoxMuellerClicker extends Clicker {
         this.partialDelays += delay - this.delay;
 
         this.delayHistory.add(new Pair<>(this.delay, (int) this.cps));
-        this.clickAction.run();
+        this.clickAction.accept(true);
     }
 
     public void setMean(final float mean) {
