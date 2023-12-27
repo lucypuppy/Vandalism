@@ -17,8 +17,8 @@ public class ValueGroup extends Value<List<Value<?>>> implements ValueParent, Mi
 
     @Override
     public void load(final JsonObject valueObject) {
-        final var valueNode = valueObject.getAsJsonObject(getName());
-        for (final Value<?> value : getValues()) {
+        final var valueNode = valueObject.getAsJsonObject(this.getName());
+        for (final Value<?> value : this.getValues()) {
             value.load(valueNode);
         }
     }
@@ -26,15 +26,15 @@ public class ValueGroup extends Value<List<Value<?>>> implements ValueParent, Mi
     @Override
     public void save(final JsonObject valueObject) {
         final var valueNode = new JsonObject();
-        for (Value<?> value : getValues()) {
+        for (final Value<?> value : this.getValues()) {
             value.save(valueNode);
         }
-        valueObject.add(getName(), valueNode);
+        valueObject.add(this.getName(), valueNode);
     }
 
     @Override
     public void render() {
-        if (ImGui.treeNodeEx(this.getName())) {
+        if (ImGui.treeNodeEx(this.getName() + "##" + this.getName() + this.getParent().getName())) {
             this.renderValues();
             ImGui.treePop();
         }
