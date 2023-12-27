@@ -19,5 +19,10 @@
   "depends": {
     "vandalism": "*",
     "wurst": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "parent": "vandalism"
+    }
   }
 }

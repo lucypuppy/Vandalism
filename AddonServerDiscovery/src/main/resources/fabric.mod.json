@@ -16,5 +16,10 @@
   },
   "depends": {
     "vandalism": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "parent": "vandalism"
+    }
   }
 }
