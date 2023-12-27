@@ -30,7 +30,6 @@ public interface ValueParent extends IName {
         if (value.isVisible() == null || value.isVisible().getAsBoolean()) {
             if (value instanceof ValueGroup) {
                 this.renderValueDescription(value);
-                ImGui.sameLine();
                 value.render();
                 return;
             }
