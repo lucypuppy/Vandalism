@@ -1,0 +1,28 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "de.nekosarekawaii.vandalism.addonwurstclient.injection.mixins",
+  "plugin": "de.nekosarekawaii.vandalism.addonwurstclient.injection.WurstPatcher",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "command.MixinChatUtils",
+    "render.MixinClickGui",
+    "command.MixinCmdList",
+    "command.MixinCmdProcessor",
+    "render.MixinHackListHUD",
+    "render.MixinIngameHUD",
+    "privacy.MixinJGoogleAnalyticsTracker",
+    "common.MixinKeybindList",
+    "common.MixinOtfList",
+    "render.MixinTacoCmd",
+    "privacy.MixinWurstAnalytics",
+    "MixinWurstClient",
+    "MixinWurstInitializer",
+    "render.MixinWurstLogo",
+    "render.MixinWurstLogoOtf_Visibility",
+    "privacy.MixinWurstUpdater"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

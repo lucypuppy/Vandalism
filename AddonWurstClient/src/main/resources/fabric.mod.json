@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "vandalism-wurst-client",
+  "version": "${version}",
+  "name": "Vandalism-Wurst-Client",
+  "description": "Implementation of the Wurst client for Vandalism.",
+  "authors": [
+    "NekosAreKawaii"
+  ],
+  "environment": "client",
+  "mixins": [
+    "vandalism-wurst-client.mixins.json"
+  ],
+  "entrypoints": {
+    "vandalism:onLaunch": [
+      "de.nekosarekawaii.vandalism.addonwurstclient.AddonWurstClient"
+    ]
+  },
+  "depends": {
+    "vandalism": "*",
+    "wurst": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "parent": "vandalism"
+    }
+  }
+}

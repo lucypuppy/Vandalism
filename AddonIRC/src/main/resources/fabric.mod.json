@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "vandalism-irc",
+  "version": "${version}",
+  "name": "Vandalism-IRC",
+  "description": "IRC for Vandalism",
+  "authors": [
+    "NekosAreKawaii",
+    "Snow"
+  ],
+  "environment": "client",
+  "entrypoints": {
+    "vandalism:onLaunch": [
+      "de.nekosarekawaii.vandalism.addonirc.AddonIRC"
+    ]
+  },
+  "depends": {
+    "vandalism": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "parent": "vandalism"
+    }
+  }
+}

@@ -114,3 +114,21 @@ Vandalism is a mod for Minecraft designed to train server administrators.
 - **DarkAndBlue Strong Testa**
 
 ![darkandblue-strong-testa](.github/memes/intave/darkandblue-strong-testa.png)
+
+### Gothaj Memes
+
+- **Not possibel v2**
+
+![notpossibel](.github/memes/gothaj/NotPossibel.png)
+
+- **Rich from Skid**
+
+![richfromskid](.github/memes/gothaj/RichFromSkid.png)
+
+- **Little Protection**
+
+![littleprot](.github/memes/gothaj/LittleProtection.png)
+
+- **More on your side**
+
+![moreonyourside](.github/memes/gothaj/IamMoreOnYourSide.png)

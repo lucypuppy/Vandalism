@@ -10,7 +10,14 @@ import java.awt.*;
 
 public class WatermarkHUDElement extends HUDElement {
 
-    private ColorValue color = new ColorValue(this, "Color", "Define the color of the water mark", Color.WHITE);
+    private static final int IMAGE_WIDTH = 156, IMAGE_HEIGHT = 44;
+
+    private final ColorValue color = new ColorValue(
+            this,
+            "Color",
+            "Define the color of the water mark",
+            Color.WHITE
+    );
 
     public WatermarkHUDElement() {
         super(
@@ -22,29 +29,34 @@ public class WatermarkHUDElement extends HUDElement {
 
     @Override
     public void onRender(final DrawContext context, final float delta) {
-        final int imageWidth = 156, imageHeight = 44;
         this.mc.getTextureManager().getTexture(FabricBootstrap.MOD_ICON).setFilter(
                 true,
                 true
         );
         GLStateTracker.BLEND.save(true);
-        context.setShaderColor(color.getValue().getColor().getRed() / 255f, color.getValue().getColor().getGreen() / 255f,
-                color.getValue().getColor().getBlue() / 255f, color.getValue().getColor().getAlpha() / 255f);
+
+        final Color selectedColor = this.color.getValue().getColor();
+        context.setShaderColor(
+                selectedColor.getRed() / 255F,
+                selectedColor.getGreen() / 255F,
+                selectedColor.getBlue() / 255F,
+                selectedColor.getAlpha() / 255F
+        );
         context.drawTexture(
                 FabricBootstrap.MOD_ICON,
                 this.x,
                 this.y,
                 0,
                 0,
-                imageWidth,
-                imageHeight,
-                imageWidth,
-                imageHeight
+                IMAGE_WIDTH,
+                IMAGE_HEIGHT,
+                IMAGE_WIDTH,
+                IMAGE_HEIGHT
         );
         context.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         GLStateTracker.BLEND.revert();
-        this.width = imageWidth;
-        this.height = imageHeight;
+        this.width = IMAGE_WIDTH;
+        this.height = IMAGE_HEIGHT;
     }
 
 }
