@@ -34,11 +34,13 @@ public class WatermarkHUDElement extends HUDElement {
                 true
         );
         GLStateTracker.BLEND.save(true);
+
+        final Color selectedColor = this.color.getValue().getColor();
         context.setShaderColor(
-                this.color.getValue().getColor().getRed() / 255f,
-                this.color.getValue().getColor().getGreen() / 255f,
-                this.color.getValue().getColor().getBlue() / 255f,
-                this.color.getValue().getColor().getAlpha() / 255f
+                selectedColor.getRed() / 255F,
+                selectedColor.getGreen() / 255F,
+                selectedColor.getBlue() / 255F,
+                selectedColor.getAlpha() / 255F
         );
         context.drawTexture(
                 FabricBootstrap.MOD_ICON,
