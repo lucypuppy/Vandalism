@@ -2,7 +2,6 @@ package de.nekosarekawaii.vandalism.clientmenu.impl.nbteditor;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
-import de.nekosarekawaii.vandalism.clientmenu.imgui.impl.menu.nbteditor.NbtManager;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import net.lenni0451.imnbt.ui.types.Popup;
