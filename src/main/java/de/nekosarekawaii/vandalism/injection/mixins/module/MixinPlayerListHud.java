@@ -1,88 +1,89 @@
 package de.nekosarekawaii.vandalism.injection.mixins.module;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.module.impl.render.BetterTabListModule;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
-import de.nekosarekawaii.vandalism.util.render.RenderUtil;
-import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.text.Text;
-import net.minecraft.world.GameMode;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.awt.*;
+import java.util.List;
 
 @Mixin(value = PlayerListHud.class)
 public abstract class MixinPlayerListHud implements MinecraftWrapper {
 
-    @Shadow
-    public abstract Text getPlayerName(final PlayerListEntry entry);
+    @Shadow @Final private MinecraftClient client;
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V", ordinal = 2))
-    private void cancelRenderFill(final DrawContext instance, final int x1, final int y1, final int x2, final int y2, final int color) {
-    }
+    @Unique
+    private PlayerListEntry vandalism$trackedEntry;
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;III)I"))
-    private int cancelDrawTextWithShadow(final DrawContext instance, final TextRenderer textRenderer, final Text text, final int x, final int y, final int color) {
-        return x;
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V", ordinal = 2, shift = At.Shift.BEFORE))
+    public void trackEntry(DrawContext context, int scaledWindowWidth, Scoreboard scoreboard, ScoreboardObjective objective, CallbackInfo ci, @Local(ordinal = 0) List<PlayerListEntry> list, @Local(ordinal = 15) int w) {
+        vandalism$trackedEntry = list.get(w);
     }
 
     @ModifyConstant(constant = @Constant(longValue = 80L), method = "collectPlayerEntries")
     private long hookBetterTabListModule(final long count) {
-        final BetterTabListModule betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
-        return betterTabListModule.isActive() ? betterTabListModule.tabSize.getValue() : count;
+        final var betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
+
+        if (betterTabListModule.isActive()) {
+            return betterTabListModule.tabSize.getValue();
+        } else {
+            return count;
+        }
     }
 
-    @Unique
-    private static final float vandalism$SCALE = 0.5f;
 
-    @ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Ljava/lang/Math;min(II)I"), index = 0)
-    private int hookBetterTabListModule(final int width) {
-        final BetterTabListModule betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
-        return betterTabListModule.isActive() && betterTabListModule.moreInfo.getValue() ? (int) (width + (vandalism$SCALE * 30)) : width;
+    @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V", ordinal = 2))
+    public void hookBetterTabListModule(DrawContext instance, int x1, int y1, int x2, int y2, int color, Operation<Void> original) {
+        final var betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
+        if (betterTabListModule.isActive() && betterTabListModule.highlightSelf.getValue()) {
+            if (this.mc.player != null && vandalism$trackedEntry.getProfile().getId().equals(this.mc.player.getGameProfile().getId())) {
+                color = betterTabListModule.selfColor.getColor().getRGB();
+            }
+        }
+
+        original.call(instance, x1, y1, x2, y2, color);
+    }
+
+
+    @Inject(method = "getPlayerName", at = @At("RETURN"), cancellable = true)
+    public void hookBetterTabListModule(PlayerListEntry entry, CallbackInfoReturnable<Text> cir) {
+        final var betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
+
+        if (betterTabListModule.isActive() && betterTabListModule.moreInfo.getValue()) {
+            final var color = betterTabListModule.getColorFromGameMode(entry.getGameMode().getId());
+
+            cir.setReturnValue(Text.literal("").append(Text.literal("[" + entry.getGameMode().getId() + "] ").withColor(color)).append(cir.getReturnValue()));
+        }
     }
 
     @Inject(method = "renderLatencyIcon", at = @At("HEAD"), cancellable = true)
-    private void hookBetterTabListModule(final DrawContext context, final int width, int x, final int y, final PlayerListEntry entry, final CallbackInfo ci) {
-        final BetterTabListModule betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
-        final int color;
-        if (betterTabListModule.isActive() && betterTabListModule.highlightSelf.getValue() && this.mc.player != null && entry.getProfile().getId().equals(this.mc.player.getGameProfile().getId())) {
-            color = betterTabListModule.selfColor.getValue().getColor().getRGB();
-        } else {
-            color = this.mc.options.getTextBackgroundColor(0x20FFFFFF);
-        }
-        final boolean moreInfo = betterTabListModule.isActive() && betterTabListModule.moreInfo.getValue();
-        final boolean isOnlineMode = this.mc.isInSingleplayer() || this.mc.getNetworkHandler() != null && this.mc.getNetworkHandler().getConnection().isEncrypted();
-        final int offset = isOnlineMode ? 9 : 0;
-        final int x1 = x + offset;
-        context.fill(x1, y, x1 + width - offset - (!isOnlineMode ? 1 : 0), y + 8, color);
-        context.drawTextWithShadow(this.mc.textRenderer, this.getPlayerName(entry), x1, y, entry.getGameMode() == GameMode.SPECTATOR ? -1862270977 : -1);
-        if (moreInfo) {
-            x -= 2;
-            final int infoX = (int) (x / vandalism$SCALE) + (int) (width / vandalism$SCALE);
-            final int pingY = (int) (y / vandalism$SCALE) - 1;
-            final int latency = entry.getLatency();
-            final int gameModeId = entry.getGameMode().getId();
-            final int gameModeY = (int) ((y + (this.mc.textRenderer.fontHeight / 2f)) / vandalism$SCALE) - 1;
-            final double pingPercent = Math.min((float) latency / betterTabListModule.highPing.getValue(), 1.0f);
-            final Color lowPingColor = betterTabListModule.lowPingColor.getValue().getColor();
-            final Color averagePingColor = betterTabListModule.averagePingColor.getValue().getColor();
-            final Color highPingColor = betterTabListModule.highPingColor.getValue().getColor();
-            final Color pingColor = RenderUtil.interpolateColor(lowPingColor, averagePingColor, highPingColor, pingPercent);
-            final String ping = latency + " ms";
-            final String gameMode = gameModeId + " gm";
-            final boolean shadow = true;
-            context.getMatrices().push();
-            context.getMatrices().scale(vandalism$SCALE, vandalism$SCALE, 1.0f);
-            context.drawText(this.mc.textRenderer, ping, infoX - this.mc.textRenderer.getWidth(ping), pingY, pingColor.getRGB(), shadow);
-            context.drawText(this.mc.textRenderer, gameMode, infoX - this.mc.textRenderer.getWidth(gameMode), gameModeY, betterTabListModule.getColorFromGameMode(gameModeId), shadow);
-            context.getMatrices().pop();
+    public void hookBetterTabListModule(DrawContext context, int width, int x, int y, PlayerListEntry entry, CallbackInfo ci) {
+        final var betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
+        if (betterTabListModule.isActive() && betterTabListModule.moreInfo.getValue()) {
+            final var matrices = context.getMatrices();
+            matrices.push();
+            matrices.translate(x + width - 6, y + client.textRenderer.fontHeight / 2F, 0);
+            matrices.scale(0.5F, 0.5F, 1);
+
+            final var color = betterTabListModule.getColorFromPing(entry.getLatency());
+            context.drawText(client.textRenderer, String.valueOf(entry.getLatency()), -client.textRenderer.getWidth(String.valueOf(entry.getLatency())) / 2, -client.textRenderer.fontHeight / 2, color, true);
+
+            matrices.pop();
             ci.cancel();
         }
     }

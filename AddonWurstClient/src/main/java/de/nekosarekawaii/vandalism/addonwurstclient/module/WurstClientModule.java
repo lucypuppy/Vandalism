@@ -1,5 +1,6 @@
 package de.nekosarekawaii.vandalism.addonwurstclient.module;
 
+import de.nekosarekawaii.vandalism.addonwurstclient.injection.access.IWurstClient;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.wurstclient.WurstClient;
 
@@ -11,12 +12,12 @@ public class WurstClientModule extends AbstractModule {
 
     @Override
     public void onActivate() {
-        WurstClient.INSTANCE.setEnabled(true);
+        ((IWurstClient) (Object) WurstClient.INSTANCE).vandalism$setTrackedEnabled(true);
     }
 
     @Override
     public void onDeactivate() {
-        WurstClient.INSTANCE.setEnabled(false);
+        ((IWurstClient) (Object) WurstClient.INSTANCE).vandalism$setTrackedEnabled(false);
     }
 
 }
