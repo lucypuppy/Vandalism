@@ -6,6 +6,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
+import de.nekosarekawaii.vandalism.util.minecraft.ClickList;
 import de.nekosarekawaii.vandalism.util.minecraft.ServerUtil;
 import de.nekosarekawaii.vandalism.util.minecraft.WorldUtil;
 import net.minecraft.client.gui.DrawContext;
@@ -48,6 +49,13 @@ public class InfoHUDElement extends HUDElement {
             this.infoElements,
             "FPS",
             "Shows the current fps.",
+            true
+    );
+
+    private final BooleanValue cps = new BooleanValue(
+            this.infoElements,
+            "CPS",
+            "Shows the current cps.",
             true
     );
 
@@ -132,11 +140,19 @@ public class InfoHUDElement extends HUDElement {
         super("Info", 2, 60);
     }
 
+    public final ClickList leftClick = new ClickList();
+    public final ClickList rightClick = new ClickList();
+
     @Override
     public void onRender(final DrawContext context, final float delta) {
         final Map<String, String> infoMap = new HashMap<>();
         if (this.fps.getValue()) {
             infoMap.put("FPS", Integer.toString(this.mc.getCurrentFps()));
+        }
+        if (this.cps.getValue()) {
+            this.leftClick.onTick();
+            this.rightClick.onTick();
+            infoMap.put("CPS", this.leftClick.clicks() + " / " + this.rightClick.clicks());
         }
         if (this.username.getValue()) {
             infoMap.put("Username", this.mc.session.getUsername());
@@ -297,5 +313,4 @@ public class InfoHUDElement extends HUDElement {
                 this.shadow.getValue()
         );
     }
-
 }

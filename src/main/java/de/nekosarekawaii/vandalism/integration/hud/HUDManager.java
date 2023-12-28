@@ -18,6 +18,7 @@ public class HUDManager extends Storage<HUDElement> implements Render2DListener,
 
     public WatermarkHUDElement watermarkHUDElement;
     public ModuleListHUDElement moduleListHUDElement;
+    public InfoHUDElement infoHUDElement;
 
     public HUDManager(final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
         Vandalism.getInstance().getEventSystem().subscribe(Render2DEvent.ID, this);
@@ -32,7 +33,7 @@ public class HUDManager extends Storage<HUDElement> implements Render2DListener,
         this.add(
                 this.watermarkHUDElement = new WatermarkHUDElement(),
                 this.moduleListHUDElement = new ModuleListHUDElement(),
-                new InfoHUDElement()
+                this.infoHUDElement = new InfoHUDElement()
         );
     }
 

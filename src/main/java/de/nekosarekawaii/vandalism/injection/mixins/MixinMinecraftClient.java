@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.lang.management.ManagementFactory;
 
@@ -47,6 +48,16 @@ public abstract class MixinMinecraftClient {
     @Inject(method = "updateWindowTitle", at = @At("HEAD"), cancellable = true)
     private void forceCancelWindowTitleUpdates(final CallbackInfo ci) {
         ci.cancel();
+    }
+
+    @Inject(method = "doAttack", at = @At("HEAD"))
+    public void doAttack(CallbackInfoReturnable<Boolean> cir) {
+        Vandalism.getInstance().getHudManager().infoHUDElement.leftClick.click();
+    }
+
+    @Inject(method = "doItemUse", at = @At("HEAD"))
+    public void doItemUse(CallbackInfo ci) {
+        Vandalism.getInstance().getHudManager().infoHUDElement.rightClick.click();
     }
 
 }
