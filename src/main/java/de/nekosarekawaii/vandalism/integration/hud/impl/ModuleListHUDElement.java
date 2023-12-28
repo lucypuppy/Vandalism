@@ -2,7 +2,9 @@ package de.nekosarekawaii.vandalism.integration.hud.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.internal.ModuleToggleListener;
+import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
@@ -26,12 +28,41 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
             "Elements that are shown in the visual category."
     );
 
+    private final ValueGroup textElements = new ValueGroup(
+            visualElements,
+            "Text Elements",
+            "Elements that are shown in the text category."
+    );
+
     private final BooleanValue shadow = new BooleanValue(
-            this.visualElements,
+            this.textElements,
             "Shadow",
             "Whether or not the text should have a shadow.",
             true
     );
+
+    private final Value<Integer> heightOffset = new IntegerValue(
+            this.textElements,
+            "Height Offset",
+            "The height offset of the text.",
+            0,
+            0,
+            5);
+
+    private final BooleanValue background = new BooleanValue(
+            this.visualElements,
+            "Background",
+            "Whether or not to draw a background.",
+            false
+    );
+
+    private final Value<Integer> widthOffset = new IntegerValue(
+            this.visualElements,
+            "Width Offset",
+            "The width offset of background.",
+            0,
+            0,
+            5);
 
     private final ColorValue color = new ColorValue(
             this.visualElements,
@@ -63,13 +94,49 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
         for (final String activatedModule : this.activatedModules) {
             final int textWidth = this.mc.textRenderer.getWidth(activatedModule);
             switch (this.alignmentX) {
-                case MIDDLE ->
-                        drawText(context, activatedModule, (this.x + this.width / 2) - (textWidth / 2), this.y + yOffset);
-                case RIGHT -> drawText(context, activatedModule, (this.x + this.width) - textWidth, this.y + yOffset);
-                default -> drawText(context, activatedModule, this.x, this.y + yOffset);
+                case MIDDLE -> {
+                    if (background.getValue()) {
+                        context.fill(
+                                (this.x + this.width / 2) - (textWidth / 2) - widthOffset.getValue(),
+                                this.y + yOffset,
+                                (this.x + this.width / 2) + (textWidth / 2) + widthOffset.getValue(),
+                                this.y + yOffset + this.mc.textRenderer.fontHeight + heightOffset.getValue(),
+                                Integer.MIN_VALUE
+                        );
+                    }
+
+                    drawText(context, activatedModule, (this.x + this.width / 2) - (textWidth / 2), this.y + yOffset + heightOffset.getValue());
+                }
+                case RIGHT -> {
+                    if (background.getValue()) {
+                        context.fill(
+                                (this.x + this.width) - textWidth - widthOffset.getValue(),
+                                this.y + yOffset,
+                                (this.x + this.width) + widthOffset.getValue(),
+                                this.y + yOffset + this.mc.textRenderer.fontHeight + heightOffset.getValue(),
+                                Integer.MIN_VALUE
+                        );
+                    }
+
+                    drawText(context, activatedModule, (this.x + this.width) - textWidth, this.y + yOffset + heightOffset.getValue());
+                }
+                default -> {
+                    if (background.getValue()) {
+                        context.fill(
+                                this.x - widthOffset.getValue(),
+                                this.y + yOffset,
+                                this.x + textWidth + widthOffset.getValue(),
+                                this.y + yOffset + this.mc.textRenderer.fontHeight + heightOffset.getValue(),
+                                Integer.MIN_VALUE
+                        );
+                    }
+
+                    drawText(context, activatedModule, this.x, this.y + yOffset + heightOffset.getValue());
+                }
             }
+
             this.width = Math.max(this.width, textWidth);
-            yOffset += this.mc.textRenderer.fontHeight;
+            yOffset += this.mc.textRenderer.fontHeight + heightOffset.getValue();
         }
         this.height = yOffset;
     }
@@ -119,6 +186,7 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
         if (this.externalModules.contains(module)) {
             return;
         }
+
         this.externalModules.add(module);
         this.sort = true;
     }
