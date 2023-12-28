@@ -1,5 +1,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.fix.imnbt;
 
+import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.clientmenu.impl.nbteditor.NbtEditorClientMenuWindow;
 import imgui.ImGui;
 import net.lenni0451.imnbt.ui.windows.MainWindow;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,7 +17,12 @@ public abstract class MixinMainWindow {
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Limgui/ImGui;menuItem(Ljava/lang/String;)Z"))
     private boolean cancelRenderMenuItems(final String name) {
-        if (name.equals("Exit") || name.equals("About")) {
+        if (name.equals("About")) {
+            return false;
+        } else if (name.equals("Exit")) {
+            if (ImGui.menuItem("Exit")) {
+                Vandalism.getInstance().getClientMenuManager().getByClass(NbtEditorClientMenuWindow.class).setActive(false);
+            }
             return false;
         }
         return ImGui.menuItem(name);

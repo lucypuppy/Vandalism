@@ -117,7 +117,6 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.configManager = new ConfigManager();
 
         this.clientMenuManager = new ClientMenuManager(this.configManager, this.runDirectory);
-        this.clientMenuManager.init();
 
         this.clientSettings = new ClientSettings(this.configManager, this.clientMenuManager);
         this.accountManager = new AccountManager(this.configManager, this.clientMenuManager);
@@ -144,6 +143,12 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
         this.creativeTabManager = new CreativeTabManager();
         this.creativeTabManager.init();
+
+        /*
+                Cause of the menu category button order this needs to be called
+                after every default menu has been added and before the addons are loaded
+         */
+        this.clientMenuManager.init();
 
         VandalismAddonLauncher.call(addon -> addon.onLaunch(this));
 
