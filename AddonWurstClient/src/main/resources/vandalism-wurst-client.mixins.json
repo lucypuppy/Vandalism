@@ -20,12 +20,10 @@
     "render.MixinIngameHUD",
     "render.MixinTacoCmd",
     "render.MixinWurstLogo",
-    "render.MixinWurstLogoOtf_Visibility"
+    "render.MixinWurstLogoOtf_Visibility",
+    "MixinEnabledHacksFile"
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "mixins": [
-    "MixinEnabledHacksFile"
-  ]
+  }
 }
