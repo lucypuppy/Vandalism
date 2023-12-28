@@ -47,7 +47,7 @@ public class BetterTabListModule extends AbstractModule implements KeyboardInput
             final int id = value.getId();
             final Color defaultColor = switch (id) {
                 case 0 -> Color.YELLOW.brighter();
-                case 1 -> Color.ORANGE;
+                case 1 -> new Color(255, 120, 0, 255);
                 case 2 -> Color.GREEN.darker();
                 case 3 -> Color.RED.brighter();
                 default -> Color.WHITE;
