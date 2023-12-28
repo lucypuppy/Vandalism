@@ -47,7 +47,8 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
             "The height offset of the text.",
             0,
             0,
-            5);
+            5
+    );
 
     private final BooleanValue background = new BooleanValue(
             this.visualElements,
@@ -62,7 +63,8 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
             "The width offset of background.",
             0,
             0,
-            5);
+            5
+    );
 
     private final ColorValue color = new ColorValue(
             this.visualElements,
@@ -95,48 +97,48 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
             final int textWidth = this.mc.textRenderer.getWidth(activatedModule);
             switch (this.alignmentX) {
                 case MIDDLE -> {
-                    if (background.getValue()) {
+                    if (this.background.getValue()) {
                         context.fill(
-                                (this.x + this.width / 2) - (textWidth / 2) - widthOffset.getValue(),
+                                (this.x + this.width / 2) - (textWidth / 2) - this.widthOffset.getValue(),
                                 this.y + yOffset,
-                                (this.x + this.width / 2) + (textWidth / 2) + widthOffset.getValue(),
-                                this.y + yOffset + this.mc.textRenderer.fontHeight + heightOffset.getValue(),
+                                (this.x + this.width / 2) + (textWidth / 2) + this.widthOffset.getValue(),
+                                this.y + yOffset + this.mc.textRenderer.fontHeight + this.heightOffset.getValue(),
                                 Integer.MIN_VALUE
                         );
                     }
 
-                    drawText(context, activatedModule, (this.x + this.width / 2) - (textWidth / 2), this.y + yOffset + heightOffset.getValue());
+                    drawText(context, activatedModule, (this.x + this.width / 2) - (textWidth / 2), this.y + yOffset + this.heightOffset.getValue());
                 }
                 case RIGHT -> {
-                    if (background.getValue()) {
+                    if (this.background.getValue()) {
                         context.fill(
-                                (this.x + this.width) - textWidth - widthOffset.getValue(),
+                                (this.x + this.width) - textWidth - this.widthOffset.getValue(),
                                 this.y + yOffset,
-                                (this.x + this.width) + widthOffset.getValue(),
-                                this.y + yOffset + this.mc.textRenderer.fontHeight + heightOffset.getValue(),
+                                (this.x + this.width) + this.widthOffset.getValue(),
+                                this.y + yOffset + this.mc.textRenderer.fontHeight + this.heightOffset.getValue(),
                                 Integer.MIN_VALUE
                         );
                     }
 
-                    drawText(context, activatedModule, (this.x + this.width) - textWidth, this.y + yOffset + heightOffset.getValue());
+                    drawText(context, activatedModule, (this.x + this.width) - textWidth, this.y + yOffset + this.heightOffset.getValue());
                 }
                 default -> {
-                    if (background.getValue()) {
+                    if (this.background.getValue()) {
                         context.fill(
-                                this.x - widthOffset.getValue(),
+                                this.x - this.widthOffset.getValue(),
                                 this.y + yOffset,
-                                this.x + textWidth + widthOffset.getValue(),
-                                this.y + yOffset + this.mc.textRenderer.fontHeight + heightOffset.getValue(),
+                                this.x + textWidth + this.widthOffset.getValue(),
+                                this.y + yOffset + this.mc.textRenderer.fontHeight + this.heightOffset.getValue(),
                                 Integer.MIN_VALUE
                         );
                     }
 
-                    drawText(context, activatedModule, this.x, this.y + yOffset + heightOffset.getValue());
+                    drawText(context, activatedModule, this.x, this.y + yOffset + this.heightOffset.getValue());
                 }
             }
 
             this.width = Math.max(this.width, textWidth);
-            yOffset += this.mc.textRenderer.fontHeight + heightOffset.getValue();
+            yOffset += this.mc.textRenderer.fontHeight + this.heightOffset.getValue();
         }
         this.height = yOffset;
     }
