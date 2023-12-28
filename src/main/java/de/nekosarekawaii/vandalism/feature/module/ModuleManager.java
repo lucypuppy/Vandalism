@@ -98,7 +98,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
                 this.killauraModule = new KillAuraModule(),
                 new BoatFlightModule(),
                 new ParalyzeModule(),
-                new NoComModule()
+                new EcholocationModule()
         );
 
         configManager.add(new ConfigWithValues("modules", getList()));
