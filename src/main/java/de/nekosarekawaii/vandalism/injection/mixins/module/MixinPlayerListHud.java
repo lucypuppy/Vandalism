@@ -67,7 +67,7 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
         if (betterTabListModule.isActive() && betterTabListModule.moreInfo.getValue()) {
             final var color = betterTabListModule.getColorFromGameMode(entry.getGameMode().getId());
 
-            cir.setReturnValue(Text.literal("").append(Text.literal("[" + entry.getGameMode().getId() + "]").withColor(color)).append(cir.getReturnValue()));
+            cir.setReturnValue(Text.literal("").append(Text.literal("[" + entry.getGameMode().getId() + "] ").withColor(color)).append(cir.getReturnValue()));
         }
     }
 
