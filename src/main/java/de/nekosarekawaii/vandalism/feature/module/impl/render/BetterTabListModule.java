@@ -11,6 +11,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.render.RenderUtil;
 import net.minecraft.world.GameMode;
 import org.lwjgl.glfw.GLFW;
 
@@ -82,6 +83,14 @@ public class BetterTabListModule extends AbstractModule implements KeyboardInput
             return colorValue.getValue().getColor().getRGB();
         }
         return Color.WHITE.getRGB();
+    }
+
+    public int getColorFromPing(final long ping) {
+        final var a = lowPingColor.getValue().getColor();
+        final var b = averagePingColor.getValue().getColor();
+        final var c = highPingColor.getValue().getColor();
+
+        return RenderUtil.interpolateColor(a, b, c, Math.min((float) ping / highPing.getValue(), 1F)).getRGB();
     }
 
 }
