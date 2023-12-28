@@ -26,6 +26,7 @@ public class WurstPatcher implements IMixinConfigPlugin {
         loadedMixins.add(wurstClientMixinPackage + "DisconnectedScreenMixin");
         loadedMixins.add(wurstClientMixinPackage + "DisconnectedRealmsScreenMixin");
         loadedMixins.add(wurstClientMixinPackage + "StatsScreenMixin");
+        loadedMixins.add(wurstClientMixinPackage + "PlayerSkinProviderMixin");
     }
 
     @Override
