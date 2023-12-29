@@ -240,7 +240,7 @@ public class InfoHUDElement extends HUDElement {
         }
         if (this.serverVersion.getValue()) {
             String value = "unknown";
-            if (ServerUtil.lastServerExists() && this.mc.player != null) {
+            if (ServerUtil.lastServerExists() && this.mc.player != null && !this.mc.isInSingleplayer()) {
                 final Text version = ServerUtil.getLastServerInfo().version;
                 if (version != null) {
                     value = version.getString();
