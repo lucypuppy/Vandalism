@@ -3,6 +3,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.player.SprintListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.minecraft.MovementUtil;
 
 public class SprintModule extends AbstractModule implements SprintListener {
 
@@ -29,7 +30,7 @@ public class SprintModule extends AbstractModule implements SprintListener {
             event.force = true;
             return;
         }*/
-        event.sprinting = true;
+        event.sprinting = MovementUtil.isMoving();
     }
 
 }
