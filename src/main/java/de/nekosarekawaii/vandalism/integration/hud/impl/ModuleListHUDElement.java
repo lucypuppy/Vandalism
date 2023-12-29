@@ -30,10 +30,17 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
     );
 
     private final ValueGroup textElements = new ValueGroup(
-            visualElements,
+            this.visualElements,
             "Text Elements",
             "Elements that are shown in the text category."
     );
+
+    private final BooleanValue showExternalClientName = new BooleanValue(
+            this.textElements,
+            "Show External Client Name",
+            "Whether or not to show the name of an external client.",
+            true
+    ).onValueChange((oldValue, newValue) -> this.sort = true);
 
     private final BooleanValue shadow = new BooleanValue(
             this.textElements,
@@ -160,7 +167,12 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
                     this.activatedModules.add(module.getName());
                 }
             }
-            this.activatedModules.addAll(this.externalModules);
+            for (String activatedModule : this.externalModules) {
+                if (!this.showExternalClientName.getValue()) {
+                    activatedModule = activatedModule.split("\\s", 2)[1];
+                }
+                this.activatedModules.add(activatedModule);
+            }
             this.activatedModules.sort((s1, s2) -> {
                 final int compare;
                 switch (this.alignmentY) {
