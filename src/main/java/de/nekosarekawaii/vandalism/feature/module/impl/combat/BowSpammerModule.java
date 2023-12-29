@@ -35,7 +35,7 @@ public class BowSpammerModule extends AbstractModule implements TickGameListener
     public BowSpammerModule() {
         super("Bow Spammer", "Lets you spam arrows with a bow.", Category.COMBAT, VersionRange.single(VersionEnum.r1_8));
 
-        this.disableAfterSession();
+        this.deactivateAfterSession();
     }
 
     @Override
