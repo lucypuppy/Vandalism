@@ -31,12 +31,15 @@ public abstract class MixinHackListHUD {
     @Inject(method = "updateState", at = @At("HEAD"), cancellable = true)
     private void redirectWurstHackListEntry(final Hack hack, final CallbackInfo ci) {
         final String name;
-        if (vandalism$NORMAL_HACK_NAMES.containsKey(hack.getName()))
+        if (vandalism$NORMAL_HACK_NAMES.containsKey(hack.getName())) {
             name = vandalism$NORMAL_HACK_NAMES.get(hack.getName());
+        }
         else vandalism$NORMAL_HACK_NAMES.put(hack.getName(), name = vandalism$normalizeHackName(hack));
-        if (hack.isEnabled())
+        if (hack.isEnabled()) {
             Vandalism.getInstance().getHudManager().moduleListHUDElement.addExternalModule("Wurst", name);
-        else Vandalism.getInstance().getHudManager().moduleListHUDElement.removeExternalModule("Wurst", name);
+        } else {
+            Vandalism.getInstance().getHudManager().moduleListHUDElement.removeExternalModule("Wurst", name);
+        }
         ci.cancel();
     }
 
