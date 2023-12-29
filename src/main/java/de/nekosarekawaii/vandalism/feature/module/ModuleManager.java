@@ -101,7 +101,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
                 this.autoBlockModule = new AutoBlockModule(),
                 this.killauraModule = new KillAuraModule(),
                 new BoatFlightModule(),
-                new ParalyzeModule(),
                 new EcholocationModule(),
                 new AutoClickerModule(),
                 new SuicideModule()
