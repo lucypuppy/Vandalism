@@ -78,3 +78,13 @@ accessible field net/minecraft/client/MinecraftClient LOGGER Lorg/slf4j/Logger;
 accessible field net/minecraft/client/MinecraftClient userPropertiesFuture Ljava/util/concurrent/CompletableFuture;
 mutable field net/minecraft/client/MinecraftClient userPropertiesFuture Ljava/util/concurrent/CompletableFuture;
 accessible field net/minecraft/client/world/ClientWorld BLOCK_MARKER_ITEMS Ljava/util/Set;
+accessible field net/minecraft/network/packet/c2s/play/VehicleMoveC2SPacket x D
+mutable field net/minecraft/network/packet/c2s/play/VehicleMoveC2SPacket x D
+accessible field net/minecraft/network/packet/c2s/play/VehicleMoveC2SPacket y D
+mutable field net/minecraft/network/packet/c2s/play/VehicleMoveC2SPacket y D
+accessible field net/minecraft/network/packet/c2s/play/VehicleMoveC2SPacket z D
+mutable field net/minecraft/network/packet/c2s/play/VehicleMoveC2SPacket z D
+accessible field net/minecraft/network/packet/c2s/play/VehicleMoveC2SPacket yaw F
+mutable field net/minecraft/network/packet/c2s/play/VehicleMoveC2SPacket yaw F
+accessible field net/minecraft/network/packet/c2s/play/VehicleMoveC2SPacket pitch F
+mutable field net/minecraft/network/packet/c2s/play/VehicleMoveC2SPacket pitch F
