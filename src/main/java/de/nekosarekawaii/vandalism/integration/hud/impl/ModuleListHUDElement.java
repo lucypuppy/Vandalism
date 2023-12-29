@@ -18,6 +18,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ModuleListHUDElement extends HUDElement implements ModuleToggleListener {
 
     private final List<String> activatedModules = new CopyOnWriteArrayList<>();
+
     private final List<String> externalModules = new CopyOnWriteArrayList<>();
 
     private boolean sort;
@@ -188,7 +189,6 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
         if (this.externalModules.contains(module)) {
             return;
         }
-
         this.externalModules.add(module);
         this.sort = true;
     }
