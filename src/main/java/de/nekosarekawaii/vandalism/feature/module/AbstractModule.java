@@ -83,7 +83,7 @@ public abstract class AbstractModule extends Feature implements ValueParent {
         this.active.setValue(true);
     }
 
-    public void disableAfterSession() {
+    public void deactivateAfterSession() {
         this.deactivateOnQuit();
         this.deactivateOnShutdown();
     }
