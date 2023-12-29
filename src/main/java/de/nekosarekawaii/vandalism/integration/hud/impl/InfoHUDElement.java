@@ -19,69 +19,57 @@ import java.util.Map;
 
 public class InfoHUDElement extends HUDElement {
 
-    private final ValueGroup visualElements = new ValueGroup(
-            this,
-            "Visual Elements",
-            "Elements that are shown in the visual category."
-    );
-
     private final BooleanValue shadow = new BooleanValue(
-            this.visualElements,
+            this,
             "Shadow",
             "Whether or not the text should have a shadow.",
             true
     );
 
     private final ColorValue color = new ColorValue(
-            this.visualElements,
+            this,
             "Color",
             "The color of the text.",
             Color.WHITE
     );
 
-    private final ValueGroup infoElements = new ValueGroup(
-            this,
-            "Info Elements",
-            "Elements that are shown in the info category."
-    );
-
     private final BooleanValue fps = new BooleanValue(
-            this.infoElements,
+            this,
             "FPS",
             "Shows the current fps.",
             true
     );
 
     private final BooleanValue cps = new BooleanValue(
-            this.infoElements,
+            this,
             "CPS",
             "Shows the current cps.",
             true
     );
 
     private final BooleanValue username = new BooleanValue(
-            this.infoElements,
+            this,
             "Username",
             "Shows the current username.",
             true
     );
 
     private final BooleanValue position = new BooleanValue(
-            this.infoElements,
+            this,
             "Position",
             "Shows the current position.",
             true
     );
 
     private final BooleanValue dimensionalPosition = new BooleanValue(
-            this.infoElements,
+            this,
             "Dimensional Position",
             "Shows the current position of the dimension you are currently playing in.",
             true
     );
 
     private final ValueGroup positionElements = new ValueGroup(
-            this.infoElements,
+            this,
             "Position Elements",
             "Elements that are shown in the position category."
     ).visibleCondition(this.position::getValue);
@@ -96,21 +84,21 @@ public class InfoHUDElement extends HUDElement {
     ).visibleCondition(this.position::getValue);
 
     private final BooleanValue difficulty = new BooleanValue(
-            this.infoElements,
+            this,
             "Difficulty",
             "Shows the current world difficulty.",
             true
     );
 
     private final BooleanValue permissionsLevel = new BooleanValue(
-            this.infoElements,
+            this,
             "Permissions Level",
             "Shows the current permissions level.",
             true
     );
 
     private final ValueGroup serverElements = new ValueGroup(
-            this.infoElements,
+            this,
             "Server Elements",
             "Elements that are shown in the server category."
     );

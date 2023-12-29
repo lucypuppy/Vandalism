@@ -6,7 +6,6 @@ import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
-import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
 import net.minecraft.client.gui.DrawContext;
@@ -23,34 +22,22 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
 
     private boolean sort;
 
-    private final ValueGroup visualElements = new ValueGroup(
-            this,
-            "Visual Elements",
-            "Elements that are shown in the visual category."
-    );
-
-    private final ValueGroup textElements = new ValueGroup(
-            this.visualElements,
-            "Text Elements",
-            "Elements that are shown in the text category."
-    );
-
     private final BooleanValue showExternalClientName = new BooleanValue(
-            this.textElements,
+            this,
             "Show External Client Name",
             "Whether or not to show the name of an external client.",
             true
     ).onValueChange((oldValue, newValue) -> this.sort = true);
 
     private final BooleanValue shadow = new BooleanValue(
-            this.textElements,
+            this,
             "Shadow",
             "Whether or not the text should have a shadow.",
             true
     );
 
     private final Value<Integer> heightOffset = new IntegerValue(
-            this.textElements,
+            this,
             "Height Offset",
             "The height offset of the text.",
             0,
@@ -59,14 +46,14 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
     );
 
     private final BooleanValue background = new BooleanValue(
-            this.visualElements,
+            this,
             "Background",
             "Whether or not to draw a background.",
             false
     );
 
     private final Value<Integer> widthOffset = new IntegerValue(
-            this.visualElements,
+            this,
             "Width Offset",
             "The width offset of background.",
             0,
@@ -75,7 +62,7 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
     );
 
     private final ColorValue color = new ColorValue(
-            this.visualElements,
+            this,
             "Color",
             "The color of the text.",
             Color.WHITE
