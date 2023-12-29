@@ -122,7 +122,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
 
         this.clicker.setClickAction(attack -> {
             if (attack) {
-                mc.doAttack();
+                this.mc.doAttack();
                 this.targetIndex++;
             } else if (this.autoBlockModule.isActive()) {
                 this.autoBlockModule.setBlocking(true);
@@ -132,17 +132,25 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, TickGameEvent.ID, StrafeEvent.ID, Render2DEvent.ID,
-                MoveInputEvent.ID, RotationEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(
+                this,
+                TickGameEvent.ID, StrafeEvent.ID,
+                Render2DEvent.ID, MoveInputEvent.ID,
+                RotationEvent.ID
+        );
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, TickGameEvent.ID, StrafeEvent.ID, Render2DEvent.ID,
-                MoveInputEvent.ID, RotationEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(
+                this,
+                TickGameEvent.ID, StrafeEvent.ID,
+                Render2DEvent.ID, MoveInputEvent.ID,
+                RotationEvent.ID
+        );
 
         this.rotationListener.resetRotation();
-        targetIndex = 0;
+        this.targetIndex = 0;
     }
 
     //TODO Mouse event -> attack
@@ -174,7 +182,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
         }
 
         if (!this.target.isBlocking() && raytraceDistance <= this.range.getValue() - 0.05 && raytraceDistance > 0) {
-            clicker.onUpdate();
+            this.clicker.onUpdate();
         }
     }
 
@@ -237,7 +245,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
         if (this.target != null) {
             final Rotation rotation = Rotation.Builder.build(this.target, this.range.getValue(), this.aimPoints.getValue());
 
-            if (rotation == null) { //sanity check, crashes if you sneak and have your reach set to 3.0
+            if (rotation == null) { //Sanity check, crashes if you sneak and have your reach set to 3.0
                 this.rotationVector = null;
                 this.rotationListener.resetRotation();
                 return;
@@ -277,4 +285,5 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
 
         this.target = entities.get(this.targetIndex);
     }
+
 }

@@ -5,12 +5,17 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
 import de.nekosarekawaii.vandalism.base.event.player.AttackListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.SwordItem;
 import net.raphimc.vialoader.util.VersionEnum;
 
 public class AutoBlockModule extends AbstractModule implements AttackListener, TickGameListener {
 
     private boolean blocking = false;
+
+    private long lastAttack;
 
     public AutoBlockModule() {
         super(
@@ -19,8 +24,6 @@ public class AutoBlockModule extends AbstractModule implements AttackListener, T
                 Category.COMBAT
         );
     }
-
-    private long lastAttack;
 
     @Override
     public void onActivate() {
@@ -33,35 +36,47 @@ public class AutoBlockModule extends AbstractModule implements AttackListener, T
     }
 
     @Override
-    public void onAttackSend(AttackSendEvent event) {
-        setBlocking(false);
+    public void onAttackSend(final AttackSendEvent event) {
+        this.setBlocking(false);
         this.lastAttack = System.currentTimeMillis();
     }
 
     @Override
     public void onTick() {
         final long timeSinceLastAttack = System.currentTimeMillis() - this.lastAttack;
-        setBlocking(timeSinceLastAttack < 1000L);
+        this.setBlocking(timeSinceLastAttack < 1000L);
     }
 
-    public void setBlocking(boolean blocking) {
+    public void setBlocking(final boolean blocking) {
+        final ItemStack mainHandStack = this.mc.player.getMainHandStack();
+        final ItemStack offHandStack = this.mc.player.getOffHandStack();
+        if (mainHandStack.isEmpty() && offHandStack.isEmpty()) {
+            return;
+        }
+        final Item mainHandItem = mainHandStack.getItem();
+        final Item offHandItem = offHandStack.getItem();
+        final boolean isOldVersion = ProtocolHack.getTargetVersion().isOlderThanOrEqualTo(VersionEnum.r1_8);
+        if (isOldVersion) {
+            if (!(mainHandItem instanceof SwordItem)) {
+                return;
+            }
+        } else if (mainHandItem.equals(Items.SHIELD) || offHandItem.equals(Items.SHIELD)) {
+            return;
+        }
         if (blocking) {
-            if (ProtocolHack.getTargetVersion().isOlderThanOrEqualTo(VersionEnum.r1_8) && !this.blocking) {
-                mc.options.useKey.setPressed(true);
+            if (isOldVersion && !this.blocking) {
+                this.mc.options.useKey.setPressed(true);
             } else {
-                if (!mc.player.getOffHandStack().isEmpty() && mc.player.getOffHandStack().getItem().equals(Items.SHIELD)) {
-                    mc.doItemUse();
-                }
+                this.mc.doItemUse();
             }
         } else {
-            mc.options.useKey.setPressed(false);
+            this.mc.options.useKey.setPressed(false);
         }
-
         this.blocking = blocking;
     }
 
     public boolean isBlocking() {
-        return blocking;
+        return this.blocking;
     }
 
 }
