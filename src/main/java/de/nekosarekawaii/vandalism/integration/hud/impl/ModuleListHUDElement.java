@@ -74,7 +74,7 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
     );
 
     public ModuleListHUDElement() {
-        super("Module List", 2, 150);
+        super("Module List", 2, 159);
         Vandalism.getInstance().getEventSystem().subscribe(ModuleToggleEvent.ID, this);
     }
 
