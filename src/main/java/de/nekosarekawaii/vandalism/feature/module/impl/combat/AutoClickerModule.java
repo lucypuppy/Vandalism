@@ -10,7 +10,11 @@ public class AutoClickerModule extends AbstractModule implements TickGameListene
     private final MSTimer clickTimer = new MSTimer();
 
     public AutoClickerModule() {
-        super("AutoClicker", "", Category.COMBAT);
+        super(
+                "Auto Clicker",
+                "Automatically uses the attack / block break key.",
+                Category.COMBAT
+        );
     }
 
     @Override
@@ -25,8 +29,8 @@ public class AutoClickerModule extends AbstractModule implements TickGameListene
 
     @Override
     public void onTick() {
-        if (clickTimer.hasReached((long) ((1000 / 14) * Math.random()), true)) {
-            mc.doAttack();
+        if (this.clickTimer.hasReached((long) ((1000 / 14) * Math.random()), true)) {
+            this.mc.doAttack();
         }
     }
 
