@@ -8,7 +8,6 @@ import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.RenderUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 
@@ -95,10 +94,10 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
             this.rotateSpeed = RandomUtils.randomFloat(this.rotateSpeedMinMax.x, this.rotateSpeedMinMax.y);
         }
 
-        // Cool Intave cloudcheck bypass
-        if (mc.crosshairTarget != null && mc.crosshairTarget.getType() == HitResult.Type.ENTITY) {
-            this.rotateSpeed = RandomUtils.randomFloat(0.0f, 4.0f);
-        }
+        //// Cool Intave cloudcheck bypass //Todo fix
+        //if (mc.crosshairTarget != null && mc.crosshairTarget.getType() == HitResult.Type.ENTITY) {
+        //    this.rotateSpeed = RandomUtils.randomFloat(0.0f, 4.0f);
+        //}
 
         if (this.rotateSpeed > 0) {
             final float lastYaw = lastRotation.getYaw();

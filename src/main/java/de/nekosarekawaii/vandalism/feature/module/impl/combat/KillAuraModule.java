@@ -22,7 +22,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Items;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
@@ -105,9 +104,10 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
 
     private LivingEntity target;
     private Vec3d rotationVector;
-    private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
     private int targetIndex = 0;
     private final Clicker clicker = new CooldownClicker();
+    private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
+    private final AutoBlockModule autoBlockModule;
 
     public KillAuraModule() {
         super(
@@ -117,40 +117,29 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
         );
 
         this.rotationListener = Vandalism.getInstance().getRotationListener();
+        this.autoBlockModule = Vandalism.getInstance().getModuleManager().getAutoBlockModule();
         this.markExperimental();
 
         this.clicker.setClickAction(attack -> {
             if (attack) {
                 mc.doAttack();
                 this.targetIndex++;
-            } else { //TODO add setting for autoblock/autoshield
-                if (mc.player.getOffHandStack().isEmpty()) {
-                    return;
-                }
-
-                if (mc.player.getOffHandStack().getItem().equals(Items.SHIELD)) {
-                    mc.doItemUse();
-                }
+            } else if (this.autoBlockModule.isActive()) {
+                this.autoBlockModule.setBlocking(true);
             }
         });
     }
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(TickGameEvent.ID, this);
-        Vandalism.getInstance().getEventSystem().subscribe(StrafeEvent.ID, this);
-        Vandalism.getInstance().getEventSystem().subscribe(Render2DEvent.ID, this);
-        Vandalism.getInstance().getEventSystem().subscribe(MoveInputEvent.ID, this);
-        Vandalism.getInstance().getEventSystem().subscribe(RotationEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(this, TickGameEvent.ID, StrafeEvent.ID, Render2DEvent.ID,
+                MoveInputEvent.ID, RotationEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(TickGameEvent.ID, this);
-        Vandalism.getInstance().getEventSystem().unsubscribe(StrafeEvent.ID, this);
-        Vandalism.getInstance().getEventSystem().unsubscribe(Render2DEvent.ID, this);
-        Vandalism.getInstance().getEventSystem().unsubscribe(MoveInputEvent.ID, this);
-        Vandalism.getInstance().getEventSystem().unsubscribe(RotationEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, TickGameEvent.ID, StrafeEvent.ID, Render2DEvent.ID,
+                MoveInputEvent.ID, RotationEvent.ID);
 
         this.rotationListener.resetRotation();
         targetIndex = 0;
@@ -288,5 +277,4 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
 
         this.target = entities.get(this.targetIndex);
     }
-
 }
