@@ -42,21 +42,26 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
             this.rotation = this.applyGCDFix(rotationDistribution(this.targetRotation, this.lastRotation), delta);
             return;
         }
+
         if (this.rotation == null) {
             return;
         }
+
         final float yaw = MathHelper.wrapDegrees(this.mc.player.getYaw());
         final float pitch = this.mc.player.getPitch();
         final float yawDiff = Math.abs(yaw - this.rotation.getYaw());
         final float pitchDiff = Math.abs(pitch - this.rotation.getPitch());
+
         if (yawDiff <= 0.5 && pitchDiff <= 0.5) {
             this.rotation = null;
             return;
         }
+
         if (!Vandalism.getInstance().getClientSettings().getRotationSettings().rotateBack.getValue()) {
             this.rotation = this.applyGCDFix(new Rotation(yaw, pitch), delta);
             return;
         }
+
         this.rotation = this.applyGCDFix(rotationDistribution(new Rotation(yaw, pitch), this.lastRotation), delta);
     }
 
@@ -69,7 +74,6 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
     }
 
     public void resetRotation() {
-        this.rotation = null;
         this.targetRotation = null;
     }
 
