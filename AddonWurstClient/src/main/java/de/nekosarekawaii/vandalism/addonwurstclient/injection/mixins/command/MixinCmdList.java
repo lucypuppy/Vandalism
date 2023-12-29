@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.util.minecraft.ChatUtil;
 import net.minecraft.command.CommandSource;
 import net.wurstclient.WurstClient;
 import net.wurstclient.command.CmdList;
@@ -23,6 +24,8 @@ public abstract class MixinCmdList {
     private void vandalism$runWurstCommand(final String input) {
         if (WurstClient.INSTANCE.isEnabled()) {
             WurstClient.INSTANCE.getCmdProcessor().process(input.replaceFirst("wurst", ""));
+        } else {
+            ChatUtil.errorChatMessage("Wurst Client is not enabled!");
         }
     }
 
