@@ -11,7 +11,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 @Mixin(value = EnabledHacksFile.class, remap = false)
-public class MixinEnabledHacksFile {
+public abstract class MixinEnabledHacksFile {
 
     @Redirect(method = "createJson", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0))
     public <T extends Hack> Stream<T> useStoredEnabledData(Stream<T> instance, Predicate<? super T> predicate) {

@@ -34,7 +34,6 @@ public class WatermarkHUDElement extends HUDElement {
                 true
         );
         GLStateTracker.BLEND.save(true);
-
         final Color selectedColor = this.color.getValue().getColor();
         context.setShaderColor(
                 selectedColor.getRed() / 255F,
