@@ -10,6 +10,8 @@ import de.nekosarekawaii.vandalism.base.event.network.DisconnectListener;
 import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.gui.ModulesClientMenuWindow;
+import de.nekosarekawaii.vandalism.feature.module.impl.combat.AutoBlockModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.combat.AutoClickerModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.combat.BowSpammerModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.combat.KillAuraModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.development.PacketManagerModule;
@@ -40,6 +42,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
     private TrueSightModule trueSightModule;
     private VisualThrottleModule visualThrottleModule;
     private KillAuraModule killauraModule;
+    private AutoBlockModule autoBlockModule;
 
     public ModuleManager(final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
         this.configManager = configManager;
@@ -95,10 +98,12 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
                 new VehicleOneHitModule(),
                 new LongJumpModule(),
                 new TrashTalkModule(),
+                this.autoBlockModule = new AutoBlockModule(),
                 this.killauraModule = new KillAuraModule(),
                 new BoatFlightModule(),
                 new ParalyzeModule(),
-                new EcholocationModule()
+                new EcholocationModule(),
+                new AutoClickerModule()
         );
 
         configManager.add(new ConfigWithValues("modules", getList()));
@@ -179,6 +184,10 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
 
     public KillAuraModule getKillauraModule() {
         return killauraModule;
+    }
+
+    public AutoBlockModule getAutoBlockModule() {
+        return autoBlockModule;
     }
 
 }
