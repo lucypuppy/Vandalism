@@ -250,7 +250,7 @@ public class InfoHUDElement extends HUDElement {
         }
         if (this.serverAddress.getValue()) {
             String value = "unknown";
-            if (ServerUtil.lastServerExists() && this.mc.player != null) {
+            if (ServerUtil.lastServerExists() && this.mc.player != null && !this.mc.isInSingleplayer()) {
                 final String address = ServerUtil.getLastServerInfo().address;
                 if (address != null) {
                     value = address;
@@ -313,4 +313,5 @@ public class InfoHUDElement extends HUDElement {
                 this.shadow.getValue()
         );
     }
+
 }
