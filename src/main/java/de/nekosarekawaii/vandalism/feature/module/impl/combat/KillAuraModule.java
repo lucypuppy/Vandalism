@@ -12,6 +12,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.misc.TargetSelectorModule;
 import de.nekosarekawaii.vandalism.integration.clicker.Clicker;
 import de.nekosarekawaii.vandalism.integration.clicker.impl.CooldownClicker;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
@@ -19,13 +20,9 @@ import de.nekosarekawaii.vandalism.integration.rotation.RotationPriority;
 import de.nekosarekawaii.vandalism.util.minecraft.WorldUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -53,40 +50,6 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
             true
     );
 
-    private final ValueGroup targetsGroup = new ValueGroup(
-            this.targetSelectionGroup,
-            "Targets",
-            "Settings for the targets."
-    );
-
-    private final Value<Boolean> players = new BooleanValue(
-            this.targetsGroup,
-            "Players",
-            "Whether players should be attacked.",
-            true
-    );
-
-    private final Value<Boolean> hostile = new BooleanValue(
-            this.targetsGroup,
-            "Hostile",
-            "Whether hostile mobs should be attacked.",
-            false
-    );
-
-    private final Value<Boolean> animals = new BooleanValue(
-            this.targetsGroup,
-            "Animals",
-            "Whether animals should be attacked.",
-            false
-    );
-
-    private final Value<Boolean> isAlive = new BooleanValue(
-            this.targetsGroup,
-            "Alive",
-            "Checks if the entity is alive.",
-            true
-    );
-
     private final ValueGroup rotationGroup = new ValueGroup(
             this,
             "Rotation",
@@ -108,6 +71,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
     private final Clicker clicker = new CooldownClicker();
     private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
     private final AutoBlockModule autoBlockModule;
+    private final TargetSelectorModule targetSelectorModule;
 
     public KillAuraModule() {
         super(
@@ -118,6 +82,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
 
         this.rotationListener = Vandalism.getInstance().getRotationListener();
         this.autoBlockModule = Vandalism.getInstance().getModuleManager().getAutoBlockModule();
+        this.targetSelectorModule = Vandalism.getInstance().getModuleManager().getTargetSelectorModule();
         this.markExperimental();
 
         this.clicker.setClickAction(attack -> {
@@ -162,7 +127,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
 
         getTarget();
 
-        if (this.rotationVector == null) {
+        if (this.target == null || this.rotationVector == null) {
             return;
         }
 
@@ -259,20 +224,15 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
     }
 
     private void getTarget() {
-        final List<LivingEntity> entities = new ArrayList<>();
-        this.mc.world.getEntities().forEach(entity -> {
-            if (entity instanceof final LivingEntity livingEntity
-                    && livingEntity != this.mc.player
-                    && this.mc.player.distanceTo(livingEntity) <= this.range.getValue()
-                    && (livingEntity.isAlive() || !isAlive.getValue()) &&
-                    ((livingEntity instanceof PlayerEntity && this.players.getValue())
-                            || (livingEntity instanceof HostileEntity && this.hostile.getValue())
-                            || (livingEntity instanceof AnimalEntity && this.animals.getValue()))) {
-                entities.add(livingEntity);
-            }
-        });
+        if (!targetSelectorModule.isActive()) {
+            this.target = null;
+            return;
+        }
+
+        final List<LivingEntity> entities = this.targetSelectorModule.getTargets(this.range.getValue());
 
         if (entities.isEmpty()) {
+            this.target = null;
             return;
         }
 
