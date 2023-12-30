@@ -104,13 +104,15 @@ public class ItemStackUtil implements MinecraftWrapper {
 
     public static ItemStack withClientSide(final ItemStack stack, final Text name, final boolean glint, @Nullable final Text... description) {
         final NbtCompound base = stack.getOrCreateNbt();
-        base.put(CreativeTabManager.CLIENTSIDE_NAME, new NbtCompound());
+        base.putString(CreativeTabManager.CLIENTSIDE_NAME, Text.Serialization.toJsonString(stack.getName()));
         if (glint) base.put(CreativeTabManager.CLIENTSIDE_GLINT, new NbtCompound());
         stack.setCustomName(name);
         if (description != null) {
             final NbtList lore = new NbtList();
             for (final Text text : description) {
-                if (text != null) lore.add(NbtString.of(Text.Serialization.toJsonString(text)));
+                if (text != null) {
+                    lore.add(NbtString.of(Text.Serialization.toJsonString(text)));
+                }
             }
             stack.getOrCreateSubNbt(ItemStack.DISPLAY_KEY).put(ItemStack.LORE_KEY, lore);
         }
