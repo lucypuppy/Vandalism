@@ -1,7 +1,6 @@
 package de.nekosarekawaii.vandalism.injection.mixins.util.rotation;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;
@@ -35,6 +34,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
     private void initRenderedModRotationPitch(final T livingEntity, final float yaw, final float tickDelta, final MatrixStack matrixStack, final VertexConsumerProvider vertexConsumerProvider, final int light, final CallbackInfo ci) {
         final var rotation = Vandalism.getInstance().getRotationListener().getRotation();
         if (livingEntity != this.mc.player || rotation == null) {
+            this.vandalism$rotationPitch = null;
             return;
         }
 

@@ -38,6 +38,7 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
         this.lastRotation = new Rotation(this.mc.player.lastYaw, this.mc.player.lastPitch);
+
         if (this.targetRotation != null) {
             this.rotation = this.applyGCDFix(rotationDistribution(this.targetRotation, this.lastRotation), delta);
             return;
@@ -49,7 +50,7 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
 
         final float yaw = MathHelper.wrapDegrees(this.mc.player.getYaw());
         final float pitch = this.mc.player.getPitch();
-        final float yawDiff = Math.abs(yaw - this.rotation.getYaw());
+        final float yawDiff = Math.abs(yaw - MathHelper.wrapDegrees(this.rotation.getYaw()));
         final float pitchDiff = Math.abs(pitch - this.rotation.getPitch());
 
         if (yawDiff <= 0.5 && pitchDiff <= 0.5) {
