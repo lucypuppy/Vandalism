@@ -43,6 +43,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
     private VisualThrottleModule visualThrottleModule;
     private KillAuraModule killauraModule;
     private AutoBlockModule autoBlockModule;
+    private TargetSelectorModule targetSelectorModule;
 
     public ModuleManager(final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
         this.configManager = configManager;
@@ -56,6 +57,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
     @Override
     public void init() {
         this.add(
+                this.targetSelectorModule = new TargetSelectorModule(),
                 new BowSpammerModule(),
                 new PacketManagerModule(),
                 new TestModule(),
@@ -188,6 +190,10 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
 
     public AutoBlockModule getAutoBlockModule() {
         return autoBlockModule;
+    }
+
+    public TargetSelectorModule getTargetSelectorModule() {
+        return targetSelectorModule;
     }
 
 }
