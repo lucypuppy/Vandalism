@@ -10,6 +10,7 @@ import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.ArrayList;
@@ -44,6 +45,13 @@ public class TargetSelectorModule extends AbstractModule implements TickGameList
             this.targetSelectionGroup,
             "Animals",
             "Whether animals should be attacked.",
+            false
+    );
+
+    private final Value<Boolean> villager = new BooleanValue(
+            this.targetSelectionGroup,
+            "Villager",
+            "Whether villager should be attacked",
             false
     );
 
@@ -96,7 +104,8 @@ public class TargetSelectorModule extends AbstractModule implements TickGameList
                         && (livingEntity.isAlive() || !isAlive.getValue()) &&
                         ((livingEntity instanceof PlayerEntity && players.getValue())
                                 || (livingEntity instanceof HostileEntity && hostile.getValue())
-                                || (livingEntity instanceof AnimalEntity && animals.getValue()))) {
+                                || (livingEntity instanceof AnimalEntity && animals.getValue())
+                                || (livingEntity instanceof VillagerEntity && villager.getValue()))) {
                     targets.add(livingEntity);
                 }
             });
