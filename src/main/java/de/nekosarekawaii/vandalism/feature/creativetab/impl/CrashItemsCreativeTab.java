@@ -14,27 +14,31 @@ import static de.nekosarekawaii.vandalism.util.minecraft.ItemStackUtil.withClien
 
 public class CrashItemsCreativeTab extends AbstractCreativeTab {
 
+    private static final String CRASH_SKULL_1 = "ewogICJ0aW1lc3RhbXAiIDogMTY4ODYwNjcyODYzNywKICAicHJvZmlsZUlkIiA6ICJhNDAxNDkxYTAwZTI0OGVmYTZmZjcxMjI2Y2ZhNzU1NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlZDBjaW5VIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICIiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ==";
+    private static final String CRASH_SKULL_2 = "ewogICJ0aW1lc3RhbXAiIDogMTY4ODYwNjcyODYzNywKICAicHJvZmlsZUlkIiA6ICJhNDAxNDkxYTAwZTI0OGVmYTZmZjcxMjI2Y2ZhNzU1NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlZDBjaW5VIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICIgLm1pbmVjcmFmdC5uZXQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ==";
+
     public CrashItemsCreativeTab() {
         super(Text.literal("Crash Items"), Items.BARRIER);
     }
 
     @Override
-    public void exposeItems(List<ItemStack> items) {
-        items.add(withClientSide(createCrashSkull("ewogICJ0aW1lc3RhbXAiIDogMTY4ODYwNjcyODYzNywKICAicHJvZmlsZUlkIiA6ICJhNDAxNDkxYTAwZTI0OGVmYTZmZjcxMjI2Y2ZhNzU1NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlZDBjaW5VIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICIiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head")));
-        items.add(withClientSide(createCrashSkull("ewogICJ0aW1lc3RhbXAiIDogMTY4ODYwNjcyODYzNywKICAicHJvZmlsZUlkIiA6ICJhNDAxNDkxYTAwZTI0OGVmYTZmZjcxMjI2Y2ZhNzU1NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlZDBjaW5VIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICIgLm1pbmVjcmFmdC5uZXQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Crash Head V2")));
-        items.add(withClientSide(createCrashSign("translation.test.invalid"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign")));
-        items.add(withClientSide(createCrashSign("translation.test.invalid2"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign V2")));
-        items.add(withClientSide(createCrashBook("translation.test.invalid"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book")));
-        items.add(withClientSide(createCrashBook("translation.test.invalid2"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book V2")));
-        items.add(withClientSide(createClientCrashExperience(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Client Crash Experience")));
+    public void exposeItems(final List<ItemStack> items) {
+        items.add(withClientSide(createClientInstantCrashSkull(CRASH_SKULL_1), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Skull")));
+        items.add(withClientSide(createClientInstantCrashSkull(CRASH_SKULL_2), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Skull V2")));
+        items.add(withClientSide(createClientInstantCrashSign("translation.test.invalid"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign")));
+        items.add(withClientSide(createClientInstantCrashSign("translation.test.invalid2"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign V2")));
+        items.add(withClientSide(createClientInstantCrashBook("translation.test.invalid"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book")));
+        items.add(withClientSide(createClientInstantCrashBook("translation.test.invalid2"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book V2")));
+        items.add(withClientSide(createClientLagExperience(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Client Lag Experience")));
         items.add(withClientSide(createClientCrashArea(), Text.literal(Formatting.RED.toString() + Formatting.BOLD + "Client Crash Area")));
-        items.add(withClientSide(createSodiumClientFreezeEntity(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Sodium Freeze Entity")));
+        items.add(withClientSide(createSodiumClientFreezeEntity(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Sodium Client Freeze Entity")));
         items.add(withClientSide(createClientInstantCrashPot(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Pot")));
-        items.add(withClientSide(createServerCrashEntity(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Crash Entity")));
-        items.add(withClientSide(createInstantCrashSculkItem(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Instant Crash Block")));
+        items.add(withClientSide(createServerInstantCrashEntity(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Instant Crash Entity")));
+        items.add(withClientSide(createServerInstantCrashSculk(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Instant Crash Sculk")));
+        //items.add(withClientSide(createClientInstantCrashStone(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Stone")));
     }
 
-    private static ItemStack createCrashSkull(final String value) {
+    private static ItemStack createClientInstantCrashSkull(final String value) {
         final ItemStack item = new ItemStack(Items.PLAYER_HEAD);
         final NbtCompound base = new NbtCompound();
         final NbtCompound properties = new NbtCompound();
@@ -53,7 +57,7 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
         return item;
     }
 
-    private static ItemStack createCrashSign(final String component) {
+    private static ItemStack createClientInstantCrashSign(final String component) {
         final ItemStack item = new ItemStack(Items.OAK_SIGN);
         final NbtCompound base = item.getOrCreateNbt();
         final NbtCompound blockEntityTag = new NbtCompound();
@@ -65,7 +69,7 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
         return item;
     }
 
-    private static ItemStack createCrashBook(final String component) {
+    private static ItemStack createClientInstantCrashBook(final String component) {
         final ItemStack item = new ItemStack(Items.WRITTEN_BOOK);
         final NbtList pages = new NbtList();
         pages.add(NbtString.of(Text.Serialization.toJsonString(Text.translatable(component))));
@@ -75,7 +79,7 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
         return item;
     }
 
-    private static ItemStack createClientCrashExperience() {
+    private static ItemStack createClientLagExperience() {
         final ItemStack item = new ItemStack(Items.SHEEP_SPAWN_EGG);
         final NbtCompound base = new NbtCompound();
         final NbtCompound entityTag = new NbtCompound();
@@ -91,7 +95,7 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
         return item;
     }
 
-    private static ItemStack createServerCrashEntity() {
+    private static ItemStack createServerInstantCrashEntity() {
         final ItemStack item = new ItemStack(Items.BAT_SPAWN_EGG);
         final NbtCompound base = new NbtCompound();
         final NbtCompound entityTag = new NbtCompound();
@@ -146,7 +150,7 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
         return item;
     }
 
-    private static ItemStack createInstantCrashSculkItem() {
+    private static ItemStack createServerInstantCrashSculk() {
         final ItemStack item = new ItemStack(Items.SCULK_CATALYST);
         final NbtCompound base = new NbtCompound();
         final NbtCompound blockEntityTag = new NbtCompound();
@@ -164,5 +168,29 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
         item.setNbt(base);
         return item;
     }
+
+    /*
+    TODO: 1.20.2 / maybe 1.20.3 instant crash
+    {display:{Name:'{"text":"","extra":[[]]}'}}
+        private static ItemStack createClientInstantCrashStone() {
+            final ItemStack item = new ItemStack(Items.STONE);
+            final NbtCompound base = new NbtCompound();
+            final NbtCompound display = new NbtCompound();
+            final NbtCompound name = new NbtCompound();
+            name.putString("text", "");
+            final NbtList extra = new NbtList();
+            extra.add(new NbtList());
+            name.put("extra", extra);
+            display.put("Name", name);
+            base.put("display", display);
+            item.setNbt(base);
+            return item;
+        }
+    */
+
+    /*
+    TODO: Access Violation
+    {"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["txsla", "txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_"]}]}]}]}]}]}]}]}
+     */
 
 }
