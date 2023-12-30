@@ -18,6 +18,7 @@ import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.imgui.ImLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.client.gui.screen.MessageScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
@@ -59,7 +60,7 @@ public class ClientMenuManager extends Storage<ClientMenuWindow> implements Keyb
         RenderSystem.recordRenderCall(() -> {
             Screen screen = MinecraftClient.getInstance().currentScreen;
             if (screen != null) {
-                if (screen instanceof ConnectScreen || screen instanceof LevelLoadingScreen || screen instanceof ClientMenuScreen) {
+                if (screen instanceof ConnectScreen || screen instanceof LevelLoadingScreen || screen instanceof MessageScreen || screen instanceof ClientMenuScreen) {
                     return;
                 } else if (screen instanceof ChatScreen || screen instanceof HandledScreen<?> && !(screen instanceof InventoryScreen)) {
                     screen = null;

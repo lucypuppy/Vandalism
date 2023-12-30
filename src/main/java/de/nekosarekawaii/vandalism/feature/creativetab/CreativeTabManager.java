@@ -9,7 +9,9 @@ import de.nekosarekawaii.vandalism.feature.creativetab.impl.GriefItemsCreativeTa
 import de.nekosarekawaii.vandalism.feature.creativetab.impl.KickItemsCreativeTab;
 import de.nekosarekawaii.vandalism.feature.creativetab.impl.TrollItemsCreativeTab;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
+import net.minecraft.text.Text;
 
 import java.util.UUID;
 
@@ -30,19 +32,17 @@ public class CreativeTabManager extends Storage<AbstractCreativeTab> implements 
                 new GriefItemsCreativeTab(),
                 new TrollItemsCreativeTab()
         );
-
         Vandalism.getInstance().getEventSystem().subscribe(OutgoingPacketEvent.ID, this, Priorities.HIGH);
     }
 
     @Override
     public void onOutgoingPacket(final OutgoingPacketEvent event) {
         if (event.packet instanceof final CreativeInventoryActionC2SPacket creativeInventoryActionC2SPacket) {
-            final var itemStack = creativeInventoryActionC2SPacket.getStack();
-            final var nbt = itemStack.getNbt();
-
+            final ItemStack itemStack = creativeInventoryActionC2SPacket.getStack();
+            final NbtCompound nbt = itemStack.getNbt();
             if (nbt != null) {
                 if (nbt.contains(CLIENTSIDE_NAME)) {
-                    final var display = itemStack.getSubNbt(ItemStack.DISPLAY_KEY);
+                    final NbtCompound display = itemStack.getSubNbt(ItemStack.DISPLAY_KEY);
                     if (display != null) {
                         display.remove(ItemStack.NAME_KEY);
                         display.remove(ItemStack.LORE_KEY);
@@ -50,6 +50,7 @@ public class CreativeTabManager extends Storage<AbstractCreativeTab> implements 
                             itemStack.removeSubNbt(ItemStack.DISPLAY_KEY);
                         }
                     }
+                    itemStack.setCustomName(Text.Serialization.fromJson(nbt.getString(CLIENTSIDE_NAME)));
                     nbt.remove(CLIENTSIDE_NAME);
                 }
                 if (nbt.contains(CLIENTSIDE_GLINT)) {
