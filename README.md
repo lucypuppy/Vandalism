@@ -76,6 +76,10 @@ Vandalism is a mod for Minecraft designed to train server administrators.
 ![needle-pr-1](.github/memes/shydev/needle-pr-1.png)
 ![needle-pr-2](.github/memes/shydev/needle-pr-2.png)
 
+- **Der Needle Bot Angriff.**
+
+![der-bot-angriff](.github/memes/shydev/DerBotAngriff.png)
+
 ### Jimppa Memes
 
 - **Seggs**
