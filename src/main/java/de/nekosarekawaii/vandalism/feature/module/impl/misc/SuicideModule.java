@@ -17,7 +17,7 @@ public class SuicideModule extends AbstractModule {
         super(
                 "Suicide",
                 "Allows you to kill your self.",
-                Category.EXPLOIT
+                Category.MISC
         );
         this.deactivateAfterSession();
     }

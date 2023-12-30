@@ -110,7 +110,7 @@ public class ItemStackLoggerModule extends AbstractModule implements TickGameLis
         LOGGED_ITEMS_DIR.mkdirs();
         if (!LOGGED_ITEMS_DIR.exists()) return;
 
-        final File serverDir = new File(LOGGED_ITEMS_DIR, ServerUtil.lastServerExists() ? ServerUtil.getLastServerInfo().address : "single player");
+        final File serverDir = new File(LOGGED_ITEMS_DIR, ServerUtil.lastServerExists() && !this.mc.isInSingleplayer() && !this.mc.isIntegratedServerRunning() ? ServerUtil.getLastServerInfo().address : "single player");
         serverDir.mkdirs();
         if (!serverDir.exists()) return;
 

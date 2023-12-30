@@ -5,11 +5,13 @@
   "plugin": "de.nekosarekawaii.vandalism.addonwurstclient.injection.WurstPatcher",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "MixinEnabledHacksFile",
     "MixinWurstClient",
     "MixinWurstInitializer",
     "command.MixinChatUtils",
     "command.MixinCmdList",
     "command.MixinCmdProcessor",
+    "common.MixinHackList",
     "common.MixinKeybindList",
     "common.MixinOtfList",
     "privacy.MixinJGoogleAnalyticsTracker",
@@ -20,8 +22,7 @@
     "render.MixinIngameHUD",
     "render.MixinTacoCmd",
     "render.MixinWurstLogo",
-    "render.MixinWurstLogoOtf_Visibility",
-    "MixinEnabledHacksFile"
+    "render.MixinWurstLogoOtf_Visibility"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -10,23 +10,31 @@ import java.util.Set;
 
 public class WurstPatcher implements IMixinConfigPlugin {
 
+    private static final String WURST_MIXIN_PACKAGE = "net.wurstclient.mixin.";
+
+    private void disableMixins(final String... mixinClasses) {
+        final RStream loadedMixinsStream = RStream.of("org.spongepowered.asm.mixin.transformer.MixinConfig");
+        final Set<String> loadedMixins = loadedMixinsStream.fields().by("globalMixinList").get();
+        for (final String mixinClass : mixinClasses) {
+            loadedMixins.add(WURST_MIXIN_PACKAGE + mixinClass);
+        }
+    }
+
     @Override
     public void onLoad(final String mixinPackage) {
         System.out.println("Vandalism fries the wurst...");
-
-        final RStream loadedMixinsStream = RStream.of("org.spongepowered.asm.mixin.transformer.MixinConfig");
-        final Set<String> loadedMixins = loadedMixinsStream.fields().by("globalMixinList").get();
-
-        final String wurstClientMixinPackage = "net.wurstclient.mixin.";
-        loadedMixins.add(wurstClientMixinPackage + "GameMenuScreenMixin");
-        loadedMixins.add(wurstClientMixinPackage + "ShulkerBoxScreenMixin");
-        loadedMixins.add(wurstClientMixinPackage + "GenericContainerScreenMixin");
-        loadedMixins.add(wurstClientMixinPackage + "MultiplayerScreenMixin");
-        loadedMixins.add(wurstClientMixinPackage + "TitleScreenMixin");
-        loadedMixins.add(wurstClientMixinPackage + "DisconnectedScreenMixin");
-        loadedMixins.add(wurstClientMixinPackage + "DisconnectedRealmsScreenMixin");
-        loadedMixins.add(wurstClientMixinPackage + "StatsScreenMixin");
-        loadedMixins.add(wurstClientMixinPackage + "PlayerSkinProviderMixin");
+        this.disableMixins(
+                "GameMenuScreenMixin",
+                "ShulkerBoxScreenMixin",
+                "GenericContainerScreenMixin",
+                "MultiplayerScreenMixin",
+                "TitleScreenMixin",
+                "DisconnectedScreenMixin",
+                "DisconnectedRealmsScreenMixin",
+                "StatsScreenMixin",
+                "PlayerSkinProviderMixin",
+                "EntityRendererMixin"
+        );
     }
 
     @Override
