@@ -10,10 +10,7 @@ import de.nekosarekawaii.vandalism.base.event.network.DisconnectListener;
 import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.gui.ModulesClientMenuWindow;
-import de.nekosarekawaii.vandalism.feature.module.impl.combat.AutoBlockModule;
-import de.nekosarekawaii.vandalism.feature.module.impl.combat.AutoClickerModule;
-import de.nekosarekawaii.vandalism.feature.module.impl.combat.BowSpammerModule;
-import de.nekosarekawaii.vandalism.feature.module.impl.combat.KillAuraModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.combat.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.development.PacketManagerModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.development.TestModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.*;
@@ -105,7 +102,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
                 new BoatFlightModule(),
                 new EcholocationModule(),
                 new AutoClickerModule(),
-                new SuicideModule()
+                new SuicideModule(),
+                new WtabModule()
         );
 
         configManager.add(new ConfigWithValues("modules", getList()));

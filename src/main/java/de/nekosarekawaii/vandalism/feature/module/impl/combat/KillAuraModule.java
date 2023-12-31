@@ -14,7 +14,7 @@ import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.TargetSelectorModule;
 import de.nekosarekawaii.vandalism.integration.clicker.Clicker;
-import de.nekosarekawaii.vandalism.integration.clicker.impl.CooldownClicker;
+import de.nekosarekawaii.vandalism.integration.clicker.impl.BoxMuellerClicker;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationPriority;
 import de.nekosarekawaii.vandalism.util.minecraft.WorldUtil;
@@ -68,7 +68,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
     private LivingEntity target;
     private Vec3d rotationVector;
     private int targetIndex = 0;
-    private final Clicker clicker = new CooldownClicker();
+    private final Clicker clicker = new BoxMuellerClicker();
     private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
     private final AutoBlockModule autoBlockModule;
     private final TargetSelectorModule targetSelectorModule;
@@ -84,6 +84,12 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
         this.autoBlockModule = Vandalism.getInstance().getModuleManager().getAutoBlockModule();
         this.targetSelectorModule = Vandalism.getInstance().getModuleManager().getTargetSelectorModule();
         this.markExperimental();
+
+        if (clicker instanceof final BoxMuellerClicker clicker) {
+            clicker.setStd(1);
+            clicker.setMean(15);
+            clicker.setCpsUpdatePossibility(80);
+        }
 
         this.clicker.setClickAction(attack -> {
             if (attack) {
@@ -196,9 +202,10 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
 
     @Override
     public void onStrafe(final StrafeEvent event) {
-       /* if (this.rotationListener.getRotation() == null || this.rotationListener.getTargetRotation() == null) return;
+        if (this.rotationListener.getRotation() == null || this.rotationListener.getTargetRotation() == null) return;
         event.yaw = this.rotationListener.getRotation().getYaw();
-        float[] INPUTS = MovementUtil.getFixedMoveInputs(event.yaw);
+
+       /*  float[] INPUTS = MovementUtil.getFixedMoveInputs(event.yaw);
         if (INPUTS[0] == 0f && INPUTS[1] == 0f) {
             return;
         }
@@ -216,7 +223,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
                 return;
             }
 
-            this.rotationListener.setRotation(rotation, new Vec2f(179, 180), RotationPriority.HIGH);
+            this.rotationListener.setRotation(rotation, new Vec2f(20, 40), RotationPriority.HIGH);
             this.rotationVector = new Vec3d(1, 1, 1);
         } else {
             this.rotationListener.resetRotation();
