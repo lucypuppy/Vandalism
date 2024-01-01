@@ -11,6 +11,7 @@
     "command.MixinChatUtils",
     "command.MixinCmdList",
     "command.MixinCmdProcessor",
+    "command.MixinFriendsCmd",
     "common.MixinHackList",
     "common.MixinKeybindList",
     "common.MixinOtfList",
