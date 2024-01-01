@@ -29,18 +29,17 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
 
     private final ConfigManager configManager;
 
+    private TargetSelectorModule targetSelectorModule;
     private BetterTabListModule betterTabListModule;
     private ESPModule espModule;
     private ExploitFixerModule exploitFixerModule;
     private FastUseModule fastUseModule;
     private IllegalBlockPlaceModule illegalBlockPlaceModule;
-    private MessageEncryptorModule messageEncryptorModule;
     private ModPacketBlockerModule modPacketBlockerModule;
     private TrueSightModule trueSightModule;
     private VisualThrottleModule visualThrottleModule;
-    private KillAuraModule killauraModule;
+    private KillAuraModule killAuraModule;
     private AutoBlockModule autoBlockModule;
-    private TargetSelectorModule targetSelectorModule;
 
     public ModuleManager(final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
         this.configManager = configManager;
@@ -71,7 +70,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
                 this.illegalBlockPlaceModule = new IllegalBlockPlaceModule(),
                 new InteractionSpammerModule(),
                 new ItemStackLoggerModule(),
-                this.messageEncryptorModule = new MessageEncryptorModule(),
+                new MessageEncryptorModule(),
                 this.modPacketBlockerModule = new ModPacketBlockerModule(),
                 new BlockDensityModule(),
                 new ElytraFlightModule(),
@@ -98,12 +97,12 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
                 new LongJumpModule(),
                 new TrashTalkModule(),
                 this.autoBlockModule = new AutoBlockModule(),
-                this.killauraModule = new KillAuraModule(),
+                this.killAuraModule = new KillAuraModule(),
                 new BoatFlightModule(),
                 new EcholocationModule(),
                 new AutoClickerModule(),
                 new SuicideModule(),
-                new WtabModule()
+                new WTabModule()
         );
 
         configManager.add(new ConfigWithValues("modules", getList()));
@@ -124,7 +123,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
 
     @Override
     public void onShutdownProcess() {
-        for (AbstractModule module : getList()) {
+        for (final AbstractModule module : getList()) {
             if (module.isActive() && module.isDeactivateOnShutdown()) {
                 module.deactivate();
             }
@@ -132,8 +131,9 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
     }
 
     @Override
-    public void onDisconnect(ClientConnection clientConnection, Text disconnectReason) {
-        if (mc.getNetworkHandler() != null && Objects.equals(clientConnection, mc.getNetworkHandler().getConnection())) { // There is a thing called pinging a server
+    public void onDisconnect(final ClientConnection clientConnection, final Text disconnectReason) {
+        // There is a thing called pinging a server
+        if (this.mc.getNetworkHandler() != null && Objects.equals(clientConnection, mc.getNetworkHandler().getConnection())) {
             for (AbstractModule module : getList()) {
                 if (module.isActive() && module.isDeactivateOnQuit()) {
                     module.deactivate();
@@ -144,6 +144,10 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
 
     public List<AbstractModule> getByCategory(final Feature.Category category) {
         return this.getList().stream().filter(abstractModule -> abstractModule.getCategory() == category).toList();
+    }
+
+    public TargetSelectorModule getTargetSelectorModule() {
+        return targetSelectorModule;
     }
 
     public BetterTabListModule getBetterTabListModule() {
@@ -166,10 +170,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
         return illegalBlockPlaceModule;
     }
 
-    public MessageEncryptorModule getMessageEncryptorModule() {
-        return messageEncryptorModule;
-    }
-
     public ModPacketBlockerModule getModPacketBlockerModule() {
         return modPacketBlockerModule;
     }
@@ -182,16 +182,12 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
         return visualThrottleModule;
     }
 
-    public KillAuraModule getKillauraModule() {
-        return killauraModule;
+    public KillAuraModule getKillAuraModule() {
+        return killAuraModule;
     }
 
     public AutoBlockModule getAutoBlockModule() {
         return autoBlockModule;
-    }
-
-    public TargetSelectorModule getTargetSelectorModule() {
-        return targetSelectorModule;
     }
 
 }
