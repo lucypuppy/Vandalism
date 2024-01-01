@@ -105,8 +105,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
                 new SuicideModule(),
                 new WTabModule()
         );
-
-        configManager.add(new ConfigWithValues("modules", getList()));
+        this.configManager.add(new ConfigWithValues("modules", getList()));
     }
 
     @Override
