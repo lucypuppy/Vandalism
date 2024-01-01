@@ -13,7 +13,7 @@ public abstract class MixinGameRenderer {
 
     @ModifyConstant(method = "updateTargetedEntity", constant = @Constant(doubleValue = 9.0))
     private double hookKillAura(final double constant) {
-        final KillAuraModule killauraModule = Vandalism.getInstance().getModuleManager().getKillauraModule();
+        final KillAuraModule killauraModule = Vandalism.getInstance().getModuleManager().getKillAuraModule();
         return killauraModule.isActive() ? MathUtil.getFixedMinecraftReach(killauraModule.range.getValue()) : constant;
     }
 
