@@ -29,22 +29,21 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
 
     private final ConfigManager configManager;
 
-    private TargetSelectorModule targetSelectorModule;
-    private BetterTabListModule betterTabListModule;
-    private ESPModule espModule;
-    private ExploitFixerModule exploitFixerModule;
-    private FastUseModule fastUseModule;
-    private IllegalBlockPlaceModule illegalBlockPlaceModule;
     private ModPacketBlockerModule modPacketBlockerModule;
+    private ExploitFixerModule exploitFixerModule;
+    private TargetSelectorModule targetSelectorModule;
+    private AutoBlockModule autoBlockModule;
+    private KillAuraModule killAuraModule;
     private TrueSightModule trueSightModule;
     private VisualThrottleModule visualThrottleModule;
-    private KillAuraModule killAuraModule;
-    private AutoBlockModule autoBlockModule;
+    private BetterTabListModule betterTabListModule;
+    private FastUseModule fastUseModule;
+    private IllegalBlockPlaceModule illegalBlockPlaceModule;
+    private ESPModule espModule;
 
     public ModuleManager(final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
         this.configManager = configManager;
         clientMenuManager.add(new ModulesClientMenuWindow());
-
         Vandalism.getInstance().getEventSystem().subscribe(KeyboardInputEvent.ID, this);
         Vandalism.getInstance().getEventSystem().subscribe(ShutdownProcessEvent.ID, this);
         Vandalism.getInstance().getEventSystem().subscribe(DisconnectEvent.ID, this);
@@ -53,25 +52,33 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
     @Override
     public void init() {
         this.add(
-                this.targetSelectorModule = new TargetSelectorModule(),
-                new BowSpammerModule(),
-                new PacketManagerModule(),
-                new TestModule(),
-                new BungeeCordSpooferModule(),
-                new ConsoleSpammerModule(),
-                new CraftCarryModule(),
+                this.modPacketBlockerModule = new ModPacketBlockerModule(),
                 this.exploitFixerModule = new ExploitFixerModule(),
-                new GodModeModule(),
-                new JoinLeaveModule(),
-                new ServerCrasherModule(),
-                new AutoFishModule(),
-                new AutoRespawnModule(),
+                this.targetSelectorModule = new TargetSelectorModule(),
+                this.autoBlockModule = new AutoBlockModule(),
+                this.killAuraModule = new KillAuraModule(),
+                this.trueSightModule = new TrueSightModule(),
+                this.visualThrottleModule = new VisualThrottleModule(),
+                this.betterTabListModule = new BetterTabListModule(),
                 this.fastUseModule = new FastUseModule(),
                 this.illegalBlockPlaceModule = new IllegalBlockPlaceModule(),
+                this.espModule = new ESPModule(),
+                //Don't touch the order of the list above this comment because it breaks anything.
+                //The order of the list below this comment doesn't matter.
+                new TestModule(),
+                new PacketManagerModule(),
+                new ServerCrasherModule(),
+                new BungeeCordSpooferModule(),
+                new GodModeModule(),
+                new BowSpammerModule(),
+                new ConsoleSpammerModule(),
+                new CraftCarryModule(),
+                new JoinLeaveModule(),
+                new AutoFishModule(),
+                new AutoRespawnModule(),
                 new InteractionSpammerModule(),
                 new ItemStackLoggerModule(),
                 new MessageEncryptorModule(),
-                this.modPacketBlockerModule = new ModPacketBlockerModule(),
                 new BlockDensityModule(),
                 new ElytraFlightModule(),
                 new FlightModule(),
@@ -85,19 +92,13 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
                 new StepModule(),
                 new VelocityModule(),
                 new AmbienceModule(),
-                this.betterTabListModule = new BetterTabListModule(),
                 new BetterTooltipsModule(),
                 new CameraNoClipModule(),
                 new DeutschMacherModule(),
-                this.espModule = new ESPModule(),
                 new ProtectorModule(),
-                this.trueSightModule = new TrueSightModule(),
-                this.visualThrottleModule = new VisualThrottleModule(),
                 new VehicleOneHitModule(),
                 new LongJumpModule(),
                 new TrashTalkModule(),
-                this.autoBlockModule = new AutoBlockModule(),
-                this.killAuraModule = new KillAuraModule(),
                 new BoatFlightModule(),
                 new EcholocationModule(),
                 new AutoClickerModule(),
@@ -146,32 +147,24 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
         return this.getList().stream().filter(abstractModule -> abstractModule.getCategory() == category).toList();
     }
 
-    public TargetSelectorModule getTargetSelectorModule() {
-        return targetSelectorModule;
-    }
-
-    public BetterTabListModule getBetterTabListModule() {
-        return betterTabListModule;
-    }
-
-    public ESPModule getEspModule() {
-        return espModule;
+    public ModPacketBlockerModule getModPacketBlockerModule() {
+        return modPacketBlockerModule;
     }
 
     public ExploitFixerModule getExploitFixerModule() {
         return exploitFixerModule;
     }
 
-    public FastUseModule getFastUseModule() {
-        return fastUseModule;
+    public TargetSelectorModule getTargetSelectorModule() {
+        return targetSelectorModule;
     }
 
-    public IllegalBlockPlaceModule getIllegalBlockPlaceModule() {
-        return illegalBlockPlaceModule;
+    public AutoBlockModule getAutoBlockModule() {
+        return autoBlockModule;
     }
 
-    public ModPacketBlockerModule getModPacketBlockerModule() {
-        return modPacketBlockerModule;
+    public KillAuraModule getKillAuraModule() {
+        return killAuraModule;
     }
 
     public TrueSightModule getTrueSightModule() {
@@ -182,12 +175,20 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
         return visualThrottleModule;
     }
 
-    public KillAuraModule getKillAuraModule() {
-        return killAuraModule;
+    public BetterTabListModule getBetterTabListModule() {
+        return betterTabListModule;
     }
 
-    public AutoBlockModule getAutoBlockModule() {
-        return autoBlockModule;
+    public IllegalBlockPlaceModule getIllegalBlockPlaceModule() {
+        return illegalBlockPlaceModule;
+    }
+
+    public FastUseModule getFastUseModule() {
+        return fastUseModule;
+    }
+
+    public ESPModule getEspModule() {
+        return espModule;
     }
 
 }
