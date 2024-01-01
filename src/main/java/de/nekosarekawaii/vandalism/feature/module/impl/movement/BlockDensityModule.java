@@ -52,6 +52,7 @@ public class BlockDensityModule extends AbstractModule implements WorldListener 
         DEFAULT_AFFECTED_BLOCKS.add(Blocks.CAKE);
         DEFAULT_AFFECTED_BLOCKS.add(Blocks.CANDLE);
         DEFAULT_AFFECTED_BLOCKS.add(Blocks.CANDLE_CAKE);
+        DEFAULT_AFFECTED_BLOCKS.add(Blocks.BIG_DRIPLEAF);
     }
 
     private final MultiBlockValue affectedBlocks = new MultiBlockValue(

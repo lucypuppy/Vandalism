@@ -37,7 +37,7 @@ public class HUDClientMenuWindow extends ClientMenuWindow {
             Vandalism.getInstance().getConfigManager().save();
         }
         ImGui.separator();
-        if (ImGui.beginTabBar("##config")) {
+        if (ImGui.beginTabBar("##customhudconfig")) {
             for (final HUDElement hudElement : this.hudManager.getList()) {
                 if (ImGui.beginTabItem(hudElement.getName() + "##" + hudElement.getName() + "customhudconfig")) {
                     if (ImGui.button("Reset##reset" + hudElement.getName() + "customhudconfig")) {
