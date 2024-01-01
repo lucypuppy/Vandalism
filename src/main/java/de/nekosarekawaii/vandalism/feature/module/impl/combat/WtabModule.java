@@ -1,17 +1,15 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
-import de.florianmichael.rclasses.common.RandomUtils;
-import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
 import de.nekosarekawaii.vandalism.base.event.player.AttackListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import net.minecraft.entity.Entity;
 
 public class WtabModule extends AbstractModule implements AttackListener, TickGameListener {
 
-    private boolean movementTab, sprintTab;
-    private long resetMS;
-    private final MSTimer resetTime = new MSTimer();
+    private boolean sprintTab;
+    private Entity movementTarget;
 
     public WtabModule() {
         super(
@@ -41,41 +39,33 @@ public class WtabModule extends AbstractModule implements AttackListener, TickGa
 
     @Override
     public void onAttackSend(AttackSendEvent event) {
-        if (!(Math.random() * 100 < 80))
+        if (!(Math.random() * 100 < 80) || mc.player == null)
             return;
 
-        if (!movementTab && mc.options.forwardKey.isPressed()) {
+        if (mc.options.forwardKey.isPressed() && movementTarget == null) {
             mc.options.forwardKey.setPressed(false);
-            mc.options.backKey.setPressed(true);
-            movementTab = true;
+            movementTarget = event.target;
         }
 
         if (!sprintTab && (mc.player.isSprinting() || mc.options.sprintKey.isPressed())) {
             mc.options.sprintKey.setPressed(false);
             sprintTab = true;
         }
-
-        resetMS = RandomUtils.randomInt(100, 200);
-        resetTime.reset();
-
     }
 
     @Override
     public void onTick() {
-        //ChatUtil.chatMessage(movementTab + " " + sprintTab);
+        if (mc.player == null)
+            return;
 
         if (sprintTab) {
             mc.options.sprintKey.setPressed(true);
             sprintTab = false;
         }
 
-        if (!resetTime.hasReached(resetMS))
-            return;
-
-        if (movementTab) {
-            mc.options.backKey.setPressed(false);
+        if (movementTarget != null && mc.player.distanceTo(movementTarget) >= 3.1) {
             mc.options.forwardKey.setPressed(true);
-            movementTab = false;
+            movementTarget = null;
         }
     }
 }
