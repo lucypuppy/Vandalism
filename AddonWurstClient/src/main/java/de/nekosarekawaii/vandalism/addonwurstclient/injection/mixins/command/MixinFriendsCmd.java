@@ -26,7 +26,7 @@ public abstract class MixinFriendsCmd extends Command {
     }
 
     @Redirect(method = "<init>()V", at = @At(value = "INVOKE", target = "Lnet/wurstclient/commands/FriendsCmd;addSetting(Lnet/wurstclient/settings/Setting;)V"))
-    private void forceWurstMiddleClickFriendsDefaultDisabled(FriendsCmd instance, Setting setting) {
+    private void forceWurstMiddleClickFriendsDefaultDisabled(final FriendsCmd instance, final Setting setting) {
         this.addSetting(vandalism_MIDDLE_CLICK_FRIENDS);
     }
 
