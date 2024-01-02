@@ -11,6 +11,7 @@
     "command.MixinChatUtils",
     "command.MixinCmdList",
     "command.MixinCmdProcessor",
+    "command.MixinFriendsCmd",
     "common.MixinHackList",
     "common.MixinKeybindList",
     "common.MixinOtfList",
@@ -22,7 +23,8 @@
     "render.MixinIngameHUD",
     "render.MixinTacoCmd",
     "render.MixinWurstLogo",
-    "render.MixinWurstLogoOtf_Visibility"
+    "render.MixinWurstLogoOtf_Visibility",
+    "render.MixinWurstOptionsScreen"
   ],
   "injectors": {
     "defaultRequire": 1
