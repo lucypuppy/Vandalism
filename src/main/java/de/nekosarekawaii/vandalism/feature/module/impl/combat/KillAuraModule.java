@@ -1,5 +1,6 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
+import de.florianmichael.rclasses.functional.tuple.Pair;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
 import de.nekosarekawaii.vandalism.base.event.player.MoveInputListener;
@@ -17,9 +18,11 @@ import de.nekosarekawaii.vandalism.integration.clicker.Clicker;
 import de.nekosarekawaii.vandalism.integration.clicker.impl.BoxMuellerClicker;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationPriority;
+import de.nekosarekawaii.vandalism.util.minecraft.ChatUtil;
 import de.nekosarekawaii.vandalism.util.minecraft.WorldUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
@@ -140,19 +143,25 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
         double raytraceDistance = -1;
 
         //TODO: Need server side yaw / pitch or move into proper events.
-        if (this.rotationListener.getTargetRotation() != null) {
-            if (Float.isNaN(this.rotationListener.getTargetRotation().getYaw()) || Float.isNaN(this.rotationListener.getTargetRotation().getPitch())) {
+        if (this.rotationListener.getRotation() != null) {
+            if (Float.isNaN(this.rotationListener.getRotation().getYaw()) || Float.isNaN(this.rotationListener.getRotation().getPitch())) {
                 return;
             }
 
-            raytraceDistance = WorldUtil.rayTraceRange(
-                    this.rotationListener.getTargetRotation().getYaw(),
-                    this.rotationListener.getTargetRotation().getPitch(),
-                    true
+            final Pair<HitResult, Double> raytrace = WorldUtil.rayTrace(
+                    this.rotationListener.getRotation(),
+                    mc.player.getCameraPosVec(1.0f),
+                    this.range.getValue()
             );
+
+            raytraceDistance = raytrace != null ? raytrace.getSecond() : -1.0;
         }
 
-        if (!this.target.isBlocking() && raytraceDistance <= this.range.getValue() - 0.05 && raytraceDistance > 0) {
+        if (raytraceDistance > this.range.getValue()) {
+            ChatUtil.chatMessage("Hurensohn Distanz " + raytraceDistance);
+        }
+
+        if (!this.target.isBlocking() && raytraceDistance <= this.range.getValue() && raytraceDistance > 0) {
             this.clicker.onUpdate();
         }
     }
