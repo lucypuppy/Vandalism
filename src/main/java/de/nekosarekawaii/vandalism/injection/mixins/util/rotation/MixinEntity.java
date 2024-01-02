@@ -4,29 +4,22 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(Entity.class)
+@Mixin(value = Entity.class, priority = -1)
 public abstract class MixinEntity implements MinecraftWrapper {
 
-    @ModifyVariable(method = "getRotationVector(FF)Lnet/minecraft/util/math/Vec3d;", at = @At("HEAD"), ordinal = 1, argsOnly = true)
-    private float modifyRotationYaw(final float yaw) {
-        if (this.mc.player == (Object) this) {
-            final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
-            if (rotation != null) return rotation.getYaw();
-        }
-        return yaw;
-    }
 
-    @ModifyVariable(method = "getRotationVector(FF)Lnet/minecraft/util/math/Vec3d;", at = @At("HEAD"), ordinal = 0, argsOnly = true)
-    private float modifyRotationPitch(final float pitch) {
+    @Inject(method = "getRotationVector(FF)Lnet/minecraft/util/math/Vec3d;", at = @At("HEAD"), cancellable = true)
+    private void injectGetRotationVector(float pitch, float yaw, CallbackInfoReturnable<Vec3d> cir) {
         if (this.mc.player == (Object) this) {
             final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
-            if (rotation != null) return rotation.getPitch();
+            if (rotation != null) cir.setReturnValue(rotation.getVector());
         }
-        return pitch;
     }
 
 }
