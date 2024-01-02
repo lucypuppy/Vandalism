@@ -1,10 +1,12 @@
 package de.nekosarekawaii.vandalism.integration.rotation;
 
+import de.florianmichael.rclasses.functional.tuple.Pair;
+import de.florianmichael.rclasses.functional.tuple.immutable.ImmutablePair;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.minecraft.WorldUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Pair;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -68,10 +70,18 @@ public class Rotation implements MinecraftWrapper {
             Vec3d bestHitBoxVector = null;
             for (Vec3d hitboxVector : possibleHitBoxPoints) {
                 final float[] simulatedRotation = getRotationToPoint(hitboxVector, mc.player);
-                final double hitBoxDistance = WorldUtil.rayTraceRange(simulatedRotation[0], simulatedRotation[1], true);
-                //   ChatUtil.infoChatMessage("" + hitBoxDistance);
+                final Pair<HitResult, Double> raytrace = WorldUtil.rayTrace(
+                        new Rotation(simulatedRotation[0], simulatedRotation[1]),
+                        mc.player.getCameraPosVec(1.0f),
+                        range
+                );
 
-                if (hitBoxDistance > 0 && hitBoxDistance < range) {
+                final double hitBoxDistance = raytrace != null ? raytrace.getSecond() : -1.0;
+
+                // if (hitBoxDistance >= 3.0)
+                //     ChatUtil.infoChatMessage("" + hitBoxDistance);
+
+                if (hitBoxDistance > 0 && hitBoxDistance <= range) {
                     if (bestDistance > hitBoxDistance) {
                         bestDistance = hitBoxDistance;
                         bestHitBoxVector = hitboxVector;
@@ -124,7 +134,7 @@ public class Rotation implements MinecraftWrapper {
         final double cosTheta = Math.cos(theta);
         final double sinPhi = Math.sin(phi);
         final double cosPhi = Math.cos(phi);
-        return new Pair<>(r * sinPhi * cosTheta, r * cosPhi);
+        return new ImmutablePair<>(r * sinPhi * cosTheta, r * cosPhi);
     }
 
     private static List<Byte> getVisibleHitBoxSides(final Entity entity, final PlayerEntity player) {

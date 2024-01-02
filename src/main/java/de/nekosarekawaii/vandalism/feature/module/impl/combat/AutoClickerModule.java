@@ -29,7 +29,7 @@ public class AutoClickerModule extends AbstractModule implements TickGameListene
 
     @Override
     public void onTick() {
-        if (this.clickTimer.hasReached((long) ((1000 / 14) * Math.random()), true)) {
+        if (this.clickTimer.hasReached((long) ((1000 / 10) * Math.random()), true)) {
             this.mc.doAttack();
         }
     }
