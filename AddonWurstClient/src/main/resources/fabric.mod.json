@@ -8,6 +8,7 @@
     "NekosAreKawaii",
     "Snow"
   ],
+  "license": "GPL-v3",
   "environment": "client",
   "mixins": [
     "vandalism-wurst-client.mixins.json"
