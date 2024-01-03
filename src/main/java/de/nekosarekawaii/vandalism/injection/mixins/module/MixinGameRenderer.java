@@ -1,22 +1,20 @@
 package de.nekosarekawaii.vandalism.injection.mixins.module;
 
-import de.nekosarekawaii.vandalism.util.minecraft.WorldUtil;
+import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.event.player.RaytraceListener;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.Slice;
+import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 @Mixin(GameRenderer.class)
 public abstract class MixinGameRenderer {
 
-    @Redirect(method = "updateTargetedEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Vec3d;squaredDistanceTo(Lnet/minecraft/util/math/Vec3d;)D"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/util/hit/EntityHitResult;getPos()Lnet/minecraft/util/math/Vec3d;")))
-    public double hookReach(Vec3d instance, Vec3d vec) {
-        if (WorldUtil.raytraceRange != -1.0)
-            return Math.pow(instance.distanceTo(vec) / WorldUtil.raytraceRange * 3.0, 2);
-
-        return instance.squaredDistanceTo(vec);
+    @ModifyConstant(method = "updateTargetedEntity", constant = @Constant(doubleValue = 9.0))
+    private double modifyRaytraceRange(double constant) {
+        final RaytraceListener.RaytraceEvent event = new RaytraceListener.RaytraceEvent(constant);
+        Vandalism.getInstance().getEventSystem().postInternal(RaytraceListener.RaytraceEvent.ID, event);
+        return event.range;
     }
 
 }
