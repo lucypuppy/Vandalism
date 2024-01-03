@@ -55,13 +55,22 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
             "Settings for the target selection."
     );
 
-    public final Value<Double> range = new DoubleValue(
+    private final Value<Double> range = new DoubleValue(
             this.targetSelectionGroup,
             "Range",
-            "The range in which the enemies will be attacked.",
+            "The range extension for the aim.",
             3.0,
             3.0,
             6.0
+    );
+
+    private final Value<Double> preAimRangeExtension = new DoubleValue(
+            this.targetSelectionGroup,
+            "Pre Aim Range Extension",
+            "The range extension for the aim.",
+            3.0,
+            0.0,
+            3.0
     );
 
     private final Value<Boolean> switchTarget = new BooleanValue(
@@ -167,14 +176,14 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
             }
 
             final Vec3d eyePos = mc.player.getEyePos();
-            final HitResult raytrace = WorldUtil.rayTrace(this.rotationListener.getRotation());
+            final HitResult raytrace = WorldUtil.rayTrace(this.rotationListener.getRotation(), Math.pow(getRange(false), 2));
             raytraceDistance = raytrace != null ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
 
             ChatUtil.chatMessage("Cool Distanz " + raytraceDistance);
         }
 
 
-        if (!this.target.isBlocking() && raytraceDistance <= this.range.getValue() && raytraceDistance > 0) {
+        if (!this.target.isBlocking() && raytraceDistance <= getRange(false) && raytraceDistance > 0) {
             this.clicker.onUpdate();
         }
     }
@@ -237,7 +246,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
     @Override
     public void onRotation(final RotationEvent event) {
         if (this.target != null) {
-            final Rotation rotation = Rotation.Builder.build(this.target, this.range.getValue(), this.aimPoints.getValue());
+            final Rotation rotation = Rotation.Builder.build(this.target, getRange(true), this.aimPoints.getValue());
 
             if (rotation == null) { //Sanity check, crashes if you sneak and have your reach set to 3.0
                 this.rotationVector = null;
@@ -254,8 +263,8 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
 
     @Override
     public void onRaytrace(RaytraceEvent event) {
-        if (this.target != null) {
-            event.range = Math.pow(this.range.getValue(), 2);
+        if (this.target != null && this.rotationListener.getRotation() != null) {
+            event.range = Math.pow(getRange(false), 2);
         }
     }
 
@@ -265,7 +274,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
             return;
         }
 
-        final List<LivingEntity> entities = this.targetSelectorModule.getTargets(this.range.getValue() + 1.0);
+        final List<LivingEntity> entities = this.targetSelectorModule.getTargets(getRange(true) + 1.0);
 
         if (entities.isEmpty()) {
             this.target = null;
@@ -280,6 +289,14 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
         }
 
         this.target = entities.get(this.targetIndex);
+    }
+
+    private double getRange(boolean preAim) {
+        if (this.preAimRangeExtension.getValue() > 0 && preAim) {
+            return this.range.getValue() + this.preAimRangeExtension.getValue();
+        }
+
+        return this.range.getValue();
     }
 
 }
