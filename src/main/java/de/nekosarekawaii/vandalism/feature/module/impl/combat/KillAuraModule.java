@@ -247,7 +247,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
             return;
         }
 
-        final List<LivingEntity> entities = this.targetSelectorModule.getTargets(this.range.getValue());
+        final List<LivingEntity> entities = this.targetSelectorModule.getTargets(this.range.getValue() + 1.0);
 
         if (entities.isEmpty()) {
             this.target = null;
