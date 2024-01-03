@@ -1,9 +1,9 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
-import de.florianmichael.rclasses.functional.tuple.Pair;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
 import de.nekosarekawaii.vandalism.base.event.player.MoveInputListener;
+import de.nekosarekawaii.vandalism.base.event.player.RaytraceListener;
 import de.nekosarekawaii.vandalism.base.event.player.RotationListener;
 import de.nekosarekawaii.vandalism.base.event.player.StrafeListener;
 import de.nekosarekawaii.vandalism.base.event.render.Render2DListener;
@@ -29,7 +29,7 @@ import net.minecraft.util.math.Vec3d;
 import java.util.Comparator;
 import java.util.List;
 
-public class KillAuraModule extends AbstractModule implements TickGameListener, StrafeListener, Render2DListener, MoveInputListener, RotationListener {
+public class KillAuraModule extends AbstractModule implements TickGameListener, StrafeListener, Render2DListener, MoveInputListener, RotationListener, RaytraceListener {
 
     private final ValueGroup targetSelectionGroup = new ValueGroup(
             this,
@@ -110,7 +110,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
                 this,
                 TickGameEvent.ID, StrafeEvent.ID,
                 Render2DEvent.ID, MoveInputEvent.ID,
-                RotationEvent.ID
+                RotationEvent.ID, RaytraceEvent.ID
         );
     }
 
@@ -120,7 +120,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
                 this,
                 TickGameEvent.ID, StrafeEvent.ID,
                 Render2DEvent.ID, MoveInputEvent.ID,
-                RotationEvent.ID
+                RotationEvent.ID, RaytraceEvent.ID
         );
 
         this.rotationListener.resetRotation();
@@ -148,18 +148,13 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
                 return;
             }
 
-            final Pair<HitResult, Double> raytrace = WorldUtil.rayTrace(
-                    this.rotationListener.getRotation(),
-                    mc.player.getCameraPosVec(1.0f),
-                    this.range.getValue()
-            );
+            final Vec3d eyePos = mc.player.getEyePos();
+            final HitResult raytrace = WorldUtil.rayTrace(this.rotationListener.getRotation());
+            raytraceDistance = raytrace != null ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
 
-            raytraceDistance = raytrace != null ? raytrace.getSecond() : -1.0;
+            ChatUtil.chatMessage("Cool Distanz " + raytraceDistance);
         }
 
-        if (raytraceDistance > this.range.getValue()) {
-            ChatUtil.chatMessage("Hurensohn Distanz " + raytraceDistance);
-        }
 
         if (!this.target.isBlocking() && raytraceDistance <= this.range.getValue() && raytraceDistance > 0) {
             this.clicker.onUpdate();
@@ -236,6 +231,13 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
             this.rotationVector = new Vec3d(1, 1, 1);
         } else {
             this.rotationListener.resetRotation();
+        }
+    }
+
+    @Override
+    public void onRaytrace(RaytraceEvent event) {
+        if (this.target != null) {
+            event.range = Math.pow(this.range.getValue(), 2);
         }
     }
 

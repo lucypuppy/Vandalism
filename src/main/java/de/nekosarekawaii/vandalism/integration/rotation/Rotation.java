@@ -65,21 +65,17 @@ public class Rotation implements MinecraftWrapper {
             Rotation normalRotations = null;
             final List<Vec3d> possibleHitBoxPoints = computeHitboxAimPoints(entity, mc.player, aimPoints);
             final List<Vec3d> hitAblePoints = new ArrayList<>();
+            final Vec3d eyePos = mc.player.getEyePos();
 
             double bestDistance = 99;
             Vec3d bestHitBoxVector = null;
             for (Vec3d hitboxVector : possibleHitBoxPoints) {
                 final float[] simulatedRotation = getRotationToPoint(hitboxVector, mc.player);
-                final Pair<HitResult, Double> raytrace = WorldUtil.rayTrace(
-                        new Rotation(simulatedRotation[0], simulatedRotation[1]),
-                        mc.player.getCameraPosVec(1.0f),
-                        range
-                );
+                final HitResult raytrace = WorldUtil.rayTrace(new Rotation(simulatedRotation[0], simulatedRotation[1]));
+                final double hitBoxDistance = raytrace != null ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
 
-                final double hitBoxDistance = raytrace != null ? raytrace.getSecond() : -1.0;
-
-                // if (hitBoxDistance >= 3.0)
-                //     ChatUtil.infoChatMessage("" + hitBoxDistance);
+                //if (hitBoxDistance >= 3.0)
+                //  ChatUtil.infoChatMessage("" + hitBoxDistance);
 
                 if (hitBoxDistance > 0 && hitBoxDistance <= range) {
                     if (bestDistance > hitBoxDistance) {
