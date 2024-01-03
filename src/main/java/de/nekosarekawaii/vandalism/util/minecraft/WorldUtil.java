@@ -25,6 +25,7 @@ import net.minecraft.util.hit.HitResult;
 public class WorldUtil implements MinecraftWrapper {
 
     public static boolean doingRaytrace = false;
+    public static double raytraceRange = -1;
 
     public enum Dimension {
         OVERWORLD, NETHER, END
@@ -39,17 +40,21 @@ public class WorldUtil implements MinecraftWrapper {
     }
 
     // This is a edited copy of net.minecraft.client.render.GameRenderer.updateTargetedEntity
-    public static HitResult rayTrace(final Rotation rotation) {
+    public static HitResult rayTrace(final Rotation rotation, final double range) {
         final float lastYaw = mc.player.getYaw();
         final float lastPitch = mc.player.getPitch();
         mc.player.setYaw(rotation.getYaw());
         mc.player.setPitch(rotation.getPitch());
+
+        raytraceRange = range;
         doingRaytrace = true;
 
         mc.gameRenderer.updateTargetedEntity(1.0F);
         final HitResult crosshairTarget = mc.crosshairTarget;
 
         doingRaytrace = false;
+        raytraceRange = -1;
+
         mc.player.setYaw(lastYaw);
         mc.player.setPitch(lastPitch);
         return crosshairTarget;

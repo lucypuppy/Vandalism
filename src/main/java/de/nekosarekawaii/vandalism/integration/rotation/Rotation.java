@@ -80,6 +80,8 @@ public class Rotation implements MinecraftWrapper {
 
         public static Rotation build(final Entity entity, final double range, final int aimPoints) {
             if (mc.player == null) return null;
+            final double rangeSq = Math.pow(range, 2);
+
             Rotation normalRotations = null;
             final List<Vec3d> possibleHitBoxPoints = computeHitboxAimPoints(entity, mc.player, aimPoints);
             final List<Vec3d> hitAblePoints = new ArrayList<>();
@@ -89,7 +91,10 @@ public class Rotation implements MinecraftWrapper {
             Vec3d bestHitBoxVector = null;
             for (Vec3d hitboxVector : possibleHitBoxPoints) {
                 final float[] simulatedRotation = getRotationToPoint(hitboxVector, mc.player);
-                final HitResult raytrace = WorldUtil.rayTrace(new Rotation(simulatedRotation[0], simulatedRotation[1]));
+                final HitResult raytrace = WorldUtil.rayTrace(
+                        new Rotation(simulatedRotation[0], simulatedRotation[1]),
+                        rangeSq
+                );
                 final double hitBoxDistance = raytrace != null ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
 
                 //if (hitBoxDistance >= 3.0)
