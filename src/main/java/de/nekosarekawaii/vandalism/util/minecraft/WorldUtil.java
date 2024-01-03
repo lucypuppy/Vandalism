@@ -9,7 +9,6 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RaycastContext;
 
 public class WorldUtil implements MinecraftWrapper {
 
@@ -27,28 +26,28 @@ public class WorldUtil implements MinecraftWrapper {
         };
     }
 
+    // This is a edited copy of net.minecraft.client.render.GameRenderer.updateTargetedEntity
     public static Pair<HitResult, Double> rayTrace(final Rotation rotation, final Vec3d cameraVec, final double range) {
+        final HitResult crosshairTarget = mc.player.raycast(range, 1.0f, false);
+        final double expectedRange = crosshairTarget != null ? crosshairTarget.getPos().distanceTo(cameraVec) : range;
+
         final Vec3d rotationVec = rotation.getVector();
         final Vec3d maxVec = cameraVec.add(rotationVec.x * range, rotationVec.y * range, rotationVec.z * range);
+        final Box box = mc.player.getBoundingBox().stretch(rotationVec.multiply(range)).expand(1.0F);
+        final EntityHitResult entityHitResult = ProjectileUtil.raycast(mc.player, cameraVec, maxVec, box,
+                entity -> !entity.isSpectator() && entity.canHit(), Math.pow(expectedRange, 2));
 
-        final HitResult crosshairTarget = mc.player.getWorld().raycast(new RaycastContext(cameraVec, maxVec,
-                RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, mc.player));
-        final double croshairRange = crosshairTarget != null ? crosshairTarget.getPos().squaredDistanceTo(cameraVec) : range * range;
+        if (entityHitResult != null) { // Future lilly & keksbye find out why we need that offset im too tired now.
+            final double raytraceRange = entityHitResult.getPos().distanceTo(cameraVec) + 0.23989532614;
 
-        final Box box = mc.player.getBoundingBox().stretch(rotationVec.multiply(range)).expand(1.0, 1.0, 1.0);
-        final EntityHitResult entityHitResult = ProjectileUtil.raycast(
-                mc.player,
-                cameraVec,
-                maxVec,
-                box,
-                entity -> !entity.isSpectator() && entity.canHit(),
-                croshairRange
-        );
+            if (raytraceRange < expectedRange || crosshairTarget == null) {
+                //ChatUtil.chatMessage("b " + raytraceRange + " < " + expectedRange);
+                return new ImmutablePair<>(entityHitResult, raytraceRange);
+            }
+        }
 
-        if (entityHitResult != null) {
-            final Vec3d raytracePos = entityHitResult.getPos();
-            final double raytraceRange = cameraVec.distanceTo(raytracePos) + 0.55;
-            return new ImmutablePair<>(entityHitResult, raytraceRange);
+        if (crosshairTarget != null) {
+            return new ImmutablePair<>(crosshairTarget, expectedRange);
         }
 
         return null;
