@@ -12,6 +12,7 @@
     "keksbyte"
   ],
   "environment": "client",
+  "license": "GPL-v3",
   "icon": "assets/vandalism/textures/icon/icon_1024x1024.png",
   "entrypoints": {
     "client": [
