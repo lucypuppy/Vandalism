@@ -29,6 +29,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public abstract class AbstractConfig<T extends JsonElement> {
+
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private final Class<T> nodeType;
@@ -41,17 +42,16 @@ public abstract class AbstractConfig<T extends JsonElement> {
 
     public void save() {
         try {
-            file.delete();
-            file.createNewFile();
-
-            try (final FileWriter fw = new FileWriter(file)) {
+            this.file.delete();
+            this.file.createNewFile();
+            try (final FileWriter fw = new FileWriter(this.file)) {
                 fw.write(GSON.toJson(save0()));
                 fw.flush();
             } catch (Exception e) {
-                Vandalism.getInstance().getLogger().error("Failed to save config " + file.getName(), e);
+                Vandalism.getInstance().getLogger().error("Failed to save config " + this.file.getName(), e);
             }
         } catch (IOException e) {
-            Vandalism.getInstance().getLogger().error("Failed to create config " + file.getName(), e);
+            Vandalism.getInstance().getLogger().error("Failed to create config " + this.file.getName(), e);
         }
     }
 
@@ -66,6 +66,7 @@ public abstract class AbstractConfig<T extends JsonElement> {
     }
 
     public abstract T save0();
+
     public abstract void load0(final T mainNode);
 
 }
