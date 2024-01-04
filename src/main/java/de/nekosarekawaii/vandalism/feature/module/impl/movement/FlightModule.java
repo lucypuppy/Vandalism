@@ -34,7 +34,7 @@ public class FlightModule extends AbstractModule implements OutgoingPacketListen
             this,
             "Anti Kick",
             "Bypasses the vanilla fly kick.",
-            false
+            true
     );
 
     private final ModuleModeValue<FlightModule> mode = new ModuleModeValue<>(
