@@ -66,8 +66,8 @@ import java.io.File;
  *  - Fix ImGui#begin in every im window (remove No Collapse Flag and move the code out of the if)
  *  - Fix module tabs display (no stacking) when the mod starts the first time
  *  - Fix calculations for the custom hud
+ *  - Fix module list out of screen rendering when the alignment is at the bottom of the screen
  *  - Fix ClientMenuScreen#close because it could break the entire game
- *  - Fix the MixinPlayerListHud more info text y offsets
  *  - Add anti vanish via. the player list hud
  */
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
