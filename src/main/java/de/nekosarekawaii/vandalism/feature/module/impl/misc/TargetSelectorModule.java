@@ -33,8 +33,6 @@ import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class TargetSelectorModule extends AbstractModule implements TickGameListener {
@@ -87,7 +85,6 @@ public class TargetSelectorModule extends AbstractModule implements TickGameList
     );
 
     private final List<LivingEntity> targets = new ArrayList<>();
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public TargetSelectorModule() {
         super(
@@ -113,20 +110,17 @@ public class TargetSelectorModule extends AbstractModule implements TickGameList
         if (mc.world == null)
             return;
 
-        executorService.submit(() -> {
-            targets.clear();
-
-            mc.world.getEntities().forEach(entity -> {
-                if (entity instanceof final LivingEntity livingEntity
-                        && livingEntity != mc.player
-                        && (livingEntity.isAlive() || !isAlive.getValue()) &&
-                        ((livingEntity instanceof PlayerEntity && players.getValue())
-                                || (livingEntity instanceof HostileEntity && hostile.getValue())
-                                || (livingEntity instanceof AnimalEntity && animals.getValue())
-                                || (livingEntity instanceof VillagerEntity && villager.getValue()))) {
-                    targets.add(livingEntity);
-                }
-            });
+        targets.clear();
+        mc.world.getEntities().forEach(entity -> {
+            if (entity instanceof final LivingEntity livingEntity
+                    && livingEntity != mc.player
+                    && (livingEntity.isAlive() || !isAlive.getValue()) &&
+                    ((livingEntity instanceof PlayerEntity && players.getValue())
+                            || (livingEntity instanceof HostileEntity && hostile.getValue())
+                            || (livingEntity instanceof AnimalEntity && animals.getValue())
+                            || (livingEntity instanceof VillagerEntity && villager.getValue()))) {
+                targets.add(livingEntity);
+            }
         });
     }
 
