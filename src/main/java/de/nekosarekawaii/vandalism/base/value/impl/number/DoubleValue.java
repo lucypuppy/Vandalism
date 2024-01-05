@@ -33,6 +33,9 @@ public class DoubleValue extends ValueNumber<Double> {
 
     @Override
     public void load(final JsonObject valueObject) {
+        if (!valueObject.has(this.getName())) {
+            return;
+        }
         this.setValue(valueObject.get(this.getName()).getAsDouble());
     }
 
