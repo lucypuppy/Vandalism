@@ -20,7 +20,11 @@ package de.nekosarekawaii.vandalism.util.minecraft;
 
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.RaycastContext;
 
 public class WorldUtil implements MinecraftWrapper {
 
@@ -41,6 +45,8 @@ public class WorldUtil implements MinecraftWrapper {
 
     // This is a edited copy of net.minecraft.client.render.GameRenderer.updateTargetedEntity
     public static HitResult rayTrace(final Rotation rotation, final double range) {
+        final HitResult lastCrosshairTarget = mc.crosshairTarget;
+        final Entity lastTargetedEntity = mc.targetedEntity;
         final float lastYaw = mc.player.getYaw();
         final float lastPitch = mc.player.getPitch();
         mc.player.setYaw(rotation.getYaw());
@@ -55,9 +61,31 @@ public class WorldUtil implements MinecraftWrapper {
         doingRaytrace = false;
         raytraceRange = -1;
 
+        mc.crosshairTarget = lastCrosshairTarget;
+        mc.targetedEntity = lastTargetedEntity;
         mc.player.setYaw(lastYaw);
         mc.player.setPitch(lastPitch);
         return crosshairTarget;
+    }
+
+    public static boolean rayTraceBlock(final Vec3d targetPosition, final double maxDistance) {
+        final Vec3d playerPosition = mc.player.getEyePos();
+        final Vec3d lookDirection = targetPosition.subtract(playerPosition).normalize();
+        final Vec3d currentPos = playerPosition.add(
+                lookDirection.x * maxDistance,
+                lookDirection.y * maxDistance,
+                lookDirection.z * maxDistance
+        );
+        final BlockHitResult rayTraceResult = mc.world.raycast(
+                new RaycastContext(
+                        playerPosition,
+                        currentPos,
+                        RaycastContext.ShapeType.OUTLINE,
+                        RaycastContext.FluidHandling.NONE,
+                        mc.player
+                )
+        );
+        return rayTraceResult == null || rayTraceResult.getType() != HitResult.Type.BLOCK;
     }
 
 }
