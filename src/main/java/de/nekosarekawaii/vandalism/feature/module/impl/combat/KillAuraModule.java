@@ -59,7 +59,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
             "Range",
             "The range extension for the aim.",
             3.0,
-            3.0,
+            2.0,
             6.0
     );
 
@@ -158,30 +158,28 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
 
     @Override
     public void onTick() {
-        if (this.mc.world == null || this.mc.player == null) return;
-
-        getTarget();
-
-        if (this.target == null || this.rotationVector == null) {
+        if (this.mc.world == null || this.mc.player == null) {
             return;
         }
 
-        double raytraceDistance = -1;
-
-        //TODO: Need server side yaw / pitch or move into proper events.
-        if (this.rotationListener.getRotation() != null) {
-            if (Float.isNaN(this.rotationListener.getRotation().getYaw()) || Float.isNaN(this.rotationListener.getRotation().getPitch())) {
-                return;
-            }
-
-            final Vec3d eyePos = mc.player.getEyePos();
-            final HitResult raytrace = WorldUtil.rayTrace(this.rotationListener.getRotation(), Math.pow(getRange(true), 2));
-            raytraceDistance = raytrace != null ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
+        getTarget();
+        if (this.target == null ||
+                this.rotationVector == null ||
+                this.rotationListener.getRotation() == null ||
+                Float.isNaN(this.rotationListener.getRotation().getYaw()) ||
+                Float.isNaN(this.rotationListener.getRotation().getPitch())) {
+            return;
         }
 
-        if (!this.target.isBlocking() && raytraceDistance <= getRange(true) && raytraceDistance > 0) {
-            this.clicker.onUpdate();
+        final Vec3d eyePos = mc.player.getEyePos();
+        final HitResult raytrace = WorldUtil.rayTrace(this.rotationListener.getRotation(), Math.pow(getRange(true), 2));
+        final double raytraceDistance = raytrace != null ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
+
+        if (this.target.isBlocking() || raytraceDistance > getRange(false) || raytraceDistance <= 0) {
+            return;
         }
+
+        this.clicker.onUpdate();
     }
 
     @Override
