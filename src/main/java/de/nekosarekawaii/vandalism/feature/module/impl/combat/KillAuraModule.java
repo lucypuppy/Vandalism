@@ -36,7 +36,6 @@ import de.nekosarekawaii.vandalism.integration.clicker.Clicker;
 import de.nekosarekawaii.vandalism.integration.clicker.impl.BoxMuellerClicker;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationPriority;
-import de.nekosarekawaii.vandalism.util.minecraft.ChatUtil;
 import de.nekosarekawaii.vandalism.util.minecraft.WorldUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.LivingEntity;
@@ -116,7 +115,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
         this.markExperimental();
 
         if (clicker instanceof final BoxMuellerClicker clicker) {
-            clicker.setStd(1);
+            clicker.setStd(5);
             clicker.setMean(15);
             clicker.setCpsUpdatePossibility(80);
         }
@@ -176,14 +175,11 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
             }
 
             final Vec3d eyePos = mc.player.getEyePos();
-            final HitResult raytrace = WorldUtil.rayTrace(this.rotationListener.getRotation(), Math.pow(getRange(false), 2));
+            final HitResult raytrace = WorldUtil.rayTrace(this.rotationListener.getRotation(), Math.pow(getRange(true), 2));
             raytraceDistance = raytrace != null ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
-
-            ChatUtil.chatMessage("Cool Distanz " + raytraceDistance);
         }
 
-
-        if (!this.target.isBlocking() && raytraceDistance <= getRange(false) && raytraceDistance > 0) {
+        if (!this.target.isBlocking() && raytraceDistance <= getRange(true) && raytraceDistance > 0) {
             this.clicker.onUpdate();
         }
     }
@@ -254,7 +250,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
                 return;
             }
 
-            this.rotationListener.setRotation(rotation, new Vec2f(20, 40), RotationPriority.HIGH);
+            this.rotationListener.setRotation(rotation, new Vec2f(10, 25), RotationPriority.HIGH);
             this.rotationVector = new Vec3d(1, 1, 1);
         } else {
             this.rotationListener.resetRotation();
@@ -264,7 +260,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
     @Override
     public void onRaytrace(RaytraceEvent event) {
         if (this.target != null && this.rotationListener.getRotation() != null) {
-            event.range = Math.pow(getRange(false), 2);
+            event.range = Math.pow(getRange(false) - 0.05, 2);
         }
     }
 

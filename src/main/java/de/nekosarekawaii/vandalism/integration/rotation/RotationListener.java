@@ -117,10 +117,13 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
             this.rotateSpeed = RandomUtils.randomFloat(this.rotateSpeedMinMax.x, this.rotateSpeedMinMax.y);
         }
 
-        //TODO: Fix this shitty Intave cloudcheck bypass.
-        /*if (mc.crosshairTarget != null && mc.crosshairTarget.getType() == HitResult.Type.ENTITY) {
-             this.rotateSpeed = RandomUtils.randomFloat(0.0f, 4.0f);
-        }*/
+        //if (mc.crosshairTarget != null && mc.crosshairTarget.getType() == HitResult.Type.ENTITY) {
+        //    this.lastOnTarget = System.currentTimeMillis();
+        //}
+
+        //if (System.currentTimeMillis() - this.lastOnTarget < 100L) {
+        //    this.rotateSpeed = RandomUtils.randomFloat(5.0f, 7.0f);
+        //}
 
         if (this.rotateSpeed > 0) {
             final float lastYaw = lastRotation.getYaw();

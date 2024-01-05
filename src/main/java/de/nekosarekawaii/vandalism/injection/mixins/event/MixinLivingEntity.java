@@ -20,11 +20,15 @@ package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.player.MoveFlyingListener;
+import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(LivingEntity.class)
@@ -40,6 +44,20 @@ public abstract class MixinLivingEntity implements MinecraftWrapper {
             args.set(1, event.upwardSpeed);
             args.set(2, event.forwardSpeed);
         }
+    }
+
+    @Redirect(method = "jump", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Vec3d;add(DDD)Lnet/minecraft/util/math/Vec3d;"))
+    private Vec3d hookFixRotation(Vec3d instance, double x, double y, double z) {
+        if (this.mc.player == (Object) this) {
+            final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
+
+            if (rotation != null) {
+                final float yaw = rotation.getYaw() * 0.017453292F;
+                return instance.add(-MathHelper.sin(yaw) * 0.2F, 0.0, MathHelper.cos(yaw) * 0.2F);
+            }
+        }
+
+        return instance.add(x, y, z);
     }
 
 }
