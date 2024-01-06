@@ -54,6 +54,7 @@ import java.io.File;
  *  - Grab the correct UUID from an session account if possible there is none set
  * <p>
  * TODO | Everyone else
+ *  - Update ImNbt
  *  - Fix tick bug (cps is not accurate) -> see BoxMuellerClicker#onUpdate
  *  - Rewrite EnhancedServerList
  *  - Fix the entity layer rendering from the true sight module
