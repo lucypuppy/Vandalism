@@ -196,7 +196,11 @@ public class NameHistoryClientMenuWindow extends ClientMenuWindow {
             }
             if (!this.lastUsername.isBlank() && !this.lastUUID.isBlank()) {
                 if (ImGui.button("Copy UUID##namehistorycopyuuid")) {
-                    this.mc.keyboard.setClipboard(this.lastUUID + " | " + Arrays.toString(Uuids.toIntArray(UUID.fromString(this.lastUUID))));
+                    this.mc.keyboard.setClipboard(this.lastUUID);
+                }
+                ImGui.sameLine();
+                if (ImGui.button("Copy UUID Array##namehistorycopyuuidarray")) {
+                    this.mc.keyboard.setClipboard(Arrays.toString(Uuids.toIntArray(UUID.fromString(this.lastUUID))));
                 }
                 ImGui.sameLine();
                 if (ImGui.button("Copy Data##namehistorycopydata")) {
