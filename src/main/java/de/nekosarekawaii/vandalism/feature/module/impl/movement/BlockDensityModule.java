@@ -88,8 +88,6 @@ public class BlockDensityModule extends AbstractModule implements WorldListener 
             true
     );
 
-    private boolean wasOneFire = false;
-
     public BlockDensityModule() {
         super(
                 "Block Density",
@@ -123,16 +121,8 @@ public class BlockDensityModule extends AbstractModule implements WorldListener 
         if (this.affectedBlocks.isSelected(block) || isFluid) {
             final double minX = 0, minY = 0, minZ = 0, maxX = 1, maxZ = 1;
             double maxY = 1;
-            if (isFluid && fluidState.getFluid() instanceof WaterFluid) {
-                if (this.wasOneFire) {
-                    this.wasOneFire = false;
-                    this.mc.options.jumpKey.setPressed(false);
-                }
-                if (this.mc.player.isOnFire()) {
-                    this.wasOneFire = true;
-                    this.mc.options.jumpKey.setPressed(true);
-                    maxY = 0.59;
-                }
+            if (isFluid && fluidState.getFluid() instanceof WaterFluid && this.mc.player.isOnFire() || this.mc.player.fallDistance >= 2) {
+                maxY = 0.59;
             }
             event.shape = VoxelShapes.cuboid(
                     minX,
