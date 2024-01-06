@@ -178,6 +178,7 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
         final ImVec2 displaySize = ImGui.getIO().getDisplaySize();
         final float centerFactor = 0.5f;
         ImGui.setNextWindowPos(displaySize.x * centerFactor, displaySize.y * centerFactor, ImGuiCond.Always, centerFactor, centerFactor);
+        ImGui.setNextWindowSizeConstraints(200f, 50f, 1000000f, 1000000f);
         if (ImGui.beginPopupModal(popupId, ImGuiWindowFlags.AlwaysAutoResize)) {
             this.renderModuleInfo(module, true);
             ImGui.separator();
