@@ -40,6 +40,7 @@ public class ClientSettings implements ValueParent {
     private final MovementSettings movementSettings = new MovementSettings(this);
     private final RotationSettings rotationSettings = new RotationSettings(this);
     private final EnhancedServerListSettings enhancedServerListSettings = new EnhancedServerListSettings(this);
+    private final TargetSettings targetSettings = new TargetSettings(this);
 
     public ClientSettings(final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
         configManager.add(new ConfigWithValues("client-settings", getValues().stream().map(value -> (ValueParent) value).toList()));
@@ -72,6 +73,10 @@ public class ClientSettings implements ValueParent {
 
     public EnhancedServerListSettings getEnhancedServerListSettings() {
         return enhancedServerListSettings;
+    }
+
+    public TargetSettings getTargetSettings() {
+        return targetSettings;
     }
 
     @Override
