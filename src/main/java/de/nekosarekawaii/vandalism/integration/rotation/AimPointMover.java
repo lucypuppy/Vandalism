@@ -122,23 +122,12 @@ public class AimPointMover implements MinecraftWrapper {
     }
 
     private double getRaytraceReach(Entity target, Vec3d point, double reach) {
-        double range = -1;
-        double d0 = reach;
+        final Vec3d eyePos = mc.player.getEyePos();
+        final Vec3d rotationVec = Rotation.Builder.build(point, eyePos).getVector();
+        final Vec3d maxVec = eyePos.add(rotationVec.x * reach, rotationVec.y * reach, rotationVec.z * reach);
 
-
-        Vec3d vec3 = mc.player.getEyePos();
-        Vec3d vec31 = Rotation.Builder.build(point, vec3).getVector();
-        Vec3d vec32 = vec3.add(vec31.x * d0, vec31.y * d0, vec31.z * d0);
-
-        //float f1 = target.bor(); //Todo
-        Box axisalignedbb = target.getBoundingBox();//.expand(f1, f1, f1);
-        Optional<Vec3d> raycast = axisalignedbb.raycast(vec3, vec32);
-
-        if (raycast.isPresent()) {
-            range = vec3.distanceTo(raycast.get());
-        }
-
-        return range;
+        final Optional<Vec3d> raycast = target.getBoundingBox().raycast(eyePos, maxVec);
+        return raycast.map(eyePos::distanceTo).orElse(-1.0);
     }
 
 }

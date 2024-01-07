@@ -49,7 +49,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
 
     private ModPacketBlockerModule modPacketBlockerModule;
     private ExploitFixerModule exploitFixerModule;
-    private TargetSelectorModule targetSelectorModule;
     private AutoBlockModule autoBlockModule;
     private KillAuraModule killAuraModule;
     private TrueSightModule trueSightModule;
@@ -72,7 +71,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
         this.add(
                 this.modPacketBlockerModule = new ModPacketBlockerModule(),
                 this.exploitFixerModule = new ExploitFixerModule(),
-                this.targetSelectorModule = new TargetSelectorModule(),
                 this.autoBlockModule = new AutoBlockModule(),
                 this.killAuraModule = new KillAuraModule(),
                 this.trueSightModule = new TrueSightModule(),
@@ -170,10 +168,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
 
     public ExploitFixerModule getExploitFixerModule() {
         return exploitFixerModule;
-    }
-
-    public TargetSelectorModule getTargetSelectorModule() {
-        return targetSelectorModule;
     }
 
     public AutoBlockModule getAutoBlockModule() {

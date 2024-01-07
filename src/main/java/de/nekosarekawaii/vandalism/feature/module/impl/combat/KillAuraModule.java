@@ -31,18 +31,19 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.feature.module.impl.misc.TargetSelectorModule;
 import de.nekosarekawaii.vandalism.integration.clicker.Clicker;
 import de.nekosarekawaii.vandalism.integration.clicker.impl.BoxMuellerClicker;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationPriority;
 import de.nekosarekawaii.vandalism.util.minecraft.WorldUtil;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -100,7 +101,6 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
     private final Clicker clicker = new BoxMuellerClicker();
     private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
     private final AutoBlockModule autoBlockModule;
-    private final TargetSelectorModule targetSelectorModule;
 
     public KillAuraModule() {
         super(
@@ -111,7 +111,6 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
 
         this.rotationListener = Vandalism.getInstance().getRotationListener();
         this.autoBlockModule = Vandalism.getInstance().getModuleManager().getAutoBlockModule();
-        this.targetSelectorModule = Vandalism.getInstance().getModuleManager().getTargetSelectorModule();
         this.markExperimental();
 
         if (clicker instanceof final BoxMuellerClicker clicker) {
@@ -175,7 +174,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
         final HitResult raytrace = WorldUtil.rayTrace(this.rotationListener.getRotation(), Math.pow(getRange(true), 2));
         final double raytraceDistance = raytrace != null ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
 
-        if (this.target.isBlocking() || raytraceDistance > getRange(false) || raytraceDistance <= 0) {
+        if (raytraceDistance > getRange(false) || raytraceDistance <= 0) {
             return;
         }
 
@@ -248,7 +247,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
                 return;
             }
 
-            this.rotationListener.setRotation(rotation, new Vec2f(10, 25), RotationPriority.HIGH);
+            this.rotationListener.setRotation(rotation, new Vec2f(30, 50), RotationPriority.HIGH);
             this.rotationVector = new Vec3d(1, 1, 1);
         } else {
             this.rotationListener.resetRotation();
@@ -263,12 +262,15 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
     }
 
     private void getTarget() {
-        if (!targetSelectorModule.isActive()) {
-            this.target = null;
-            return;
+        final List<LivingEntity> entities = new ArrayList<>();
+
+        for (final Entity entity : mc.world.getEntities()) {
+            if (WorldUtil.isTarget(entity) && mc.player.distanceTo(entity) <= getRange(true) + 1.0) {
+                entities.add((LivingEntity) entity);
+            }
         }
 
-        final List<LivingEntity> entities = this.targetSelectorModule.getTargets(getRange(true) + 1.0);
+        entities.sort(Comparator.comparingDouble(entity -> this.mc.player.distanceTo(entity)));
 
         if (entities.isEmpty()) {
             this.target = null;
