@@ -39,7 +39,7 @@ public class VisualSettings extends ValueGroup {
             5.0f,
             0.0f,
             50.0f
-    ).format("%.2f").visibleCondition(this.customBobView::getValue);
+    ).visibleCondition(this.customBobView::getValue);
 
     public final FloatValue shieldAlpha = new FloatValue(
             this,
@@ -48,7 +48,7 @@ public class VisualSettings extends ValueGroup {
             1.0f,
             0.1f,
             1.0f
-    ).format("%.2f");
+    );
 
     public VisualSettings(final ClientSettings parent) {
         super(parent, "Visual", "Visual related settings.");

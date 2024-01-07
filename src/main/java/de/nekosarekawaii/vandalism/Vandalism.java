@@ -49,8 +49,12 @@ import java.io.File;
  *  - Delete CustomRPConfirmScreen
  *  - Add Proxy manager
  *  - Add JiJ and JiS for building/exporting the mod
+ *  - Fix cracked account names when restarting the game (their name is "null")
+ *  - Add direct login to the account manager
+ *  - Grab the correct UUID from an session account if possible there is none set
  * <p>
  * TODO | Everyone else
+ *  - Update ImNbt
  *  - Fix tick bug (cps is not accurate) -> see BoxMuellerClicker#onUpdate
  *  - Rewrite EnhancedServerList
  *  - Fix the entity layer rendering from the true sight module
