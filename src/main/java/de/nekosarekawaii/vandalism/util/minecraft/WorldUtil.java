@@ -18,6 +18,8 @@
 
 package de.nekosarekawaii.vandalism.util.minecraft;
 
+import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.event.entity.EntityTargetListener;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.entity.Entity;
@@ -86,6 +88,12 @@ public class WorldUtil implements MinecraftWrapper {
                 )
         );
         return rayTraceResult == null || rayTraceResult.getType() != HitResult.Type.BLOCK;
+    }
+
+    public static boolean isTarget(final Entity entity) {
+        final EntityTargetListener.EntityTargetEvent event = new EntityTargetListener.EntityTargetEvent(entity);
+        Vandalism.getInstance().getEventSystem().postInternal(EntityTargetListener.EntityTargetEvent.ID, event);
+        return event.isTarget;
     }
 
 }
