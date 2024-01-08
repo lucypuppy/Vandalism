@@ -68,18 +68,14 @@ public class AutoRespawnModule extends AbstractModule implements TickGameListene
 
     @Override
     public void onTick() {
-        if (this.mc.world == null || !this.mc.player.isDead()) return;
-
-        // check if we should instantly respawn, if not check is the delay has passed
+        if (this.mc.player == null || !this.mc.player.isDead()) return;
         if (!this.instantRespawn.getValue() && !this.delayTimer.hasReached(this.delay.getValue(), true)) {
             return;
         }
-
-        // request respawn from server
         this.mc.player.requestRespawn();
-
-        // automatically send /back if activated
-        if (this.autoBack.getValue()) this.mc.getNetworkHandler().sendChatCommand("back");
+        if (this.autoBack.getValue()) {
+            this.mc.getNetworkHandler().sendChatCommand("back");
+        }
     }
 
 }

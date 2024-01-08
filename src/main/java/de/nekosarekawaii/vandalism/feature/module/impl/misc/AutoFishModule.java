@@ -24,8 +24,6 @@ import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.entity.projectile.FishingBobberEntity;
-import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
-import net.minecraft.util.Hand;
 
 public class AutoFishModule extends AbstractModule implements TickGameListener {
 
@@ -58,13 +56,12 @@ public class AutoFishModule extends AbstractModule implements TickGameListener {
                 this.hasFish = true;
                 this.retractDelayTimer.reset();
             }
-
             if (this.hasFish && this.retractDelayTimer.hasReached(this.retractDelayValue.getValue(), true)) {
-                this.mc.getNetworkHandler().sendPacket(new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, 0));
+                this.mc.doItemUse();
                 this.throwDelayTimer.reset();
             }
         } else if (this.throwDelayTimer.hasReached(this.throwDelayValue.getValue(), true)) {
-            this.mc.getNetworkHandler().sendPacket(new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, 0));
+            this.mc.doItemUse();
             this.hasFish = false;
         }
     }
