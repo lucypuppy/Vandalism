@@ -40,15 +40,17 @@ public interface ValueParent extends IName {
 
     default void renderValues() {
         for (final Value<?> value : this.getValues()) {
-            renderValue(value);
+            this.renderValue(value);
         }
     }
 
     default void renderValue(final Value<?> value) {
         if (value.isVisible() == null || value.isVisible().getAsBoolean()) {
-            if (value instanceof ValueGroup) {
+            if (value instanceof final ValueGroup valueGroup) {
                 value.render();
-                this.renderValueDescription(value);
+                if (!valueGroup.isOpen()) {
+                    this.renderValueDescription(value);
+                }
                 return;
             }
             ImGui.text(value.getName());
