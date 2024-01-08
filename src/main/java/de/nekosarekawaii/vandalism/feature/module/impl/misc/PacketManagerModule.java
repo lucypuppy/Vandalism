@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.impl.development;
+package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.florianmichael.dietrichevents2.Priorities;
 import de.florianmichael.rclasses.common.StringUtils;
@@ -24,7 +24,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.base.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
-import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.MultiModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
@@ -35,10 +35,17 @@ import net.minecraft.network.packet.Packet;
 
 public class PacketManagerModule extends AbstractModule implements IncomingPacketListener, OutgoingPacketListener {
 
-    private final ModeValue modeValue = new ModeValue(this, "Mode", "The mode of the packet manager.", "Cancel", "Log");
+    private static final String LOGGED_CLIENT_PACKETS = "Logged Client Packets";
+    private static final String LOGGED_SERVER_PACKETS = "Logged Server Packets";
+
+    private static final String CANCELLED_CLIENT_PACKETS = "Cancelled Client Packets";
+    private static final String CANCELLED_SERVER_PACKETS = "Cancelled Server Packets";
+
+    private final BooleanValue log = new BooleanValue(this, "Log", "Log packets.", true);
+    private final BooleanValue cancel = new BooleanValue(this, "Cancel", "Cancel packets.", false);
 
     public PacketManagerModule() {
-        super("Packet Manager", "Allows to cancel or log packets.", Category.DEVELOPMENT);
+        super("Packet Manager", "Allows to log and cancel packets.", Category.MISC);
         for (final NetworkState networkState : NetworkState.values()) {
             final String networkStateName = StringUtils.normalizeEnumName(networkState.name());
             final ValueGroup valueGroup = new ValueGroup(this, networkStateName, networkStateName + " Packets");
@@ -46,8 +53,14 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
             if (serverPackets.length > 0) {
                 new MultiModeValue(
                         valueGroup,
-                        "Server Packets",
-                        "Incoming Packets",
+                        LOGGED_SERVER_PACKETS,
+                        "Logs incoming packets.",
+                        serverPackets
+                );
+                new MultiModeValue(
+                        valueGroup,
+                        CANCELLED_SERVER_PACKETS,
+                        "Cancel incoming packets.",
                         serverPackets
                 );
             }
@@ -55,8 +68,14 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
             if (clientPackets.length > 0) {
                 new MultiModeValue(
                         valueGroup,
-                        "Client Packets",
-                        "Outgoing Packets",
+                        LOGGED_CLIENT_PACKETS,
+                        "Logs outgoing packets.",
+                        clientPackets
+                );
+                new MultiModeValue(
+                        valueGroup,
+                        CANCELLED_CLIENT_PACKETS,
+                        "Cancel outgoing packets." + (networkState == NetworkState.PLAY ? " (for example CloseHandledScreenC2SPacket which allows you to put items into your crafting slots)" : ""),
                         clientPackets
                 );
             }
@@ -75,34 +94,69 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
         Vandalism.getInstance().getEventSystem().unsubscribe(OutgoingPacketEvent.ID, this);
     }
 
-    private boolean handlePacket(final boolean outgoing, final Packet<?> packet, final NetworkState networkState) {
+    private boolean loggedContainsPacket(final boolean outgoing, final Packet<?> packet, final NetworkState networkState) {
+        if (!this.log.getValue()) {
+            return false;
+        }
         final String packetName = packet.getClass().getSimpleName();
         for (final Value<?> value : this.getValues()) {
             if (value instanceof final ValueGroup valueGroup && valueGroup.getName().equalsIgnoreCase(networkState.name())) {
                 for (final Value<?> valueGroupValue : valueGroup.getValues()) {
                     if (valueGroupValue instanceof final MultiModeValue multiModeValue) {
                         if (multiModeValue.getValue().contains(packetName)) {
-                            if (this.modeValue.getSelectedIndex() == 1) {
-                                final StringBuilder text = new StringBuilder();
-                                if (outgoing) {
-                                    text.append("Outgoing packet: ");
-                                } else {
-                                    text.append("Incoming packet: ");
-                                }
-                                text.append(packetName);
-                                if (this.mc.inGameHud != null) {
-                                    ChatUtil.infoChatMessage(text.toString());
-                                } else {
-                                    Vandalism.getInstance().getLogger().info(text.toString());
-                                }
-                                break;
-                            } else return true;
+                            if (outgoing) {
+                                return multiModeValue.getName().equalsIgnoreCase(LOGGED_CLIENT_PACKETS);
+                            } else {
+                                return multiModeValue.getName().equalsIgnoreCase(LOGGED_SERVER_PACKETS);
+                            }
                         }
                     }
                 }
             }
         }
         return false;
+    }
+
+    private boolean cancelContainsPacket(final boolean outgoing, final Packet<?> packet, final NetworkState networkState) {
+        if (!this.cancel.getValue()) {
+            return false;
+        }
+        final String packetName = packet.getClass().getSimpleName();
+        for (final Value<?> value : this.getValues()) {
+            if (value instanceof final ValueGroup valueGroup && valueGroup.getName().equalsIgnoreCase(networkState.name())) {
+                for (final Value<?> valueGroupValue : valueGroup.getValues()) {
+                    if (valueGroupValue instanceof final MultiModeValue multiModeValue) {
+                        if (multiModeValue.getValue().contains(packetName)) {
+                            if (outgoing) {
+                                return multiModeValue.getName().equalsIgnoreCase(CANCELLED_CLIENT_PACKETS);
+                            } else {
+                                return multiModeValue.getName().equalsIgnoreCase(CANCELLED_SERVER_PACKETS);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean handlePacket(final boolean outgoing, final Packet<?> packet, final NetworkState networkState) {
+        final String packetName = packet.getClass().getSimpleName();
+        if (this.loggedContainsPacket(outgoing, packet, networkState)) {
+            final StringBuilder text = new StringBuilder();
+            if (outgoing) {
+                text.append("Outgoing packet: ");
+            } else {
+                text.append("Incoming packet: ");
+            }
+            text.append(packetName);
+            if (this.mc.inGameHud != null) {
+                ChatUtil.infoChatMessage(text.toString());
+            } else {
+                Vandalism.getInstance().getLogger().info(text.toString());
+            }
+        }
+        return this.cancelContainsPacket(outgoing, packet, networkState);
     }
 
     @Override
