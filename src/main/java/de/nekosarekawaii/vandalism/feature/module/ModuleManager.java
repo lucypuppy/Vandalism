@@ -116,7 +116,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
                 new BoatFlightModule(),
                 new EcholocationModule(),
                 new AutoClickerModule(),
-                new SuicideModule(),
                 new WTabModule()
         );
         this.configManager.add(new ConfigWithValues("modules", getList()));
