@@ -147,7 +147,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
     public void onDisconnect(final ClientConnection clientConnection, final Text disconnectReason) {
         // There is a thing called pinging a server
         if (this.mc.getNetworkHandler() != null && Objects.equals(clientConnection, mc.getNetworkHandler().getConnection())) {
-            for (AbstractModule module : getList()) {
+            for (final AbstractModule module : getList()) {
                 if (module.isActive() && module.isDeactivateOnQuit()) {
                     module.deactivate();
                 }
