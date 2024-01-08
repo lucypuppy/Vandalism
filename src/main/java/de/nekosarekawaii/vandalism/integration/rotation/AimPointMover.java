@@ -89,7 +89,8 @@ public class AimPointMover implements MinecraftWrapper {
             double y = center.y + this.maxYRadius * Math.sin(phi) * Math.sin(theta);
             double z = center.z + this.maxXZRadius * Math.cos(phi);
 
-            if (!WorldUtil.rayTraceBlock(new Vec3d(x, y, z), fixedRange))
+            final Rotation rotation = Rotation.Builder.build(new Vec3d(x, y, z), mc.player.getEyePos());
+            if (rotation == null || !WorldUtil.rayTraceBlock(rotation, fixedRange))
                 continue;
 
             final Vec3d newPoint = new Vec3d(x, y, z);

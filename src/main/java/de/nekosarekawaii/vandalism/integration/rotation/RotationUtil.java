@@ -97,7 +97,9 @@ public class RotationUtil implements MinecraftWrapper {
         Vec3d closestPoint = null;
 
         for (Vec3d p : aimPoints) {
-            if (!WorldUtil.rayTraceBlock(p, range))
+
+            final Rotation rotation = Rotation.Builder.build(p, mc.player.getEyePos());
+            if (rotation == null || !WorldUtil.rayTraceBlock(rotation, range))
                 continue;
 
             Vec3d eyes = mc.player.getEyePos();
