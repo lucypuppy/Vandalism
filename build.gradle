@@ -50,7 +50,12 @@ allprojects {
 
 		mappings("net.fabricmc:yarn:${project.yarn_mappings_version}:v2")
 		modImplementation("net.fabricmc:fabric-loader:${project.loader_version}")
-		modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
+
+		modImplementation(fabricApi.module("fabric-api-base", project.fabric_version))
+		modImplementation(fabricApi.module("fabric-resource-loader-v0", project.fabric_version))
+		modImplementation(fabricApi.module("fabric-networking-api-v1", project.fabric_version))
+		modImplementation(fabricApi.module("fabric-registry-sync-v0", project.fabric_version))
+		modImplementation(fabricApi.module("fabric-item-group-api-v1", project.fabric_version))
 
 		implementation("io.github.spair:imgui-java-binding:${project.spair_imgui_version}")
 		implementation("io.github.spair:imgui-java-lwjgl3:${project.spair_imgui_version}")

@@ -23,11 +23,14 @@ import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import imgui.ImGui;
+import imgui.flag.ImGuiTreeNodeFlags;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ValueGroup extends Value<List<Value<?>>> implements ValueParent, MinecraftWrapper {
+
+    private boolean open = false;
 
     public ValueGroup(ValueParent parent, String name, String description) {
         super(parent, name, description, new ArrayList<>());
@@ -35,26 +38,33 @@ public class ValueGroup extends Value<List<Value<?>>> implements ValueParent, Mi
 
     @Override
     public void load(final JsonObject valueObject) {
-        final var valueNode = valueObject.getAsJsonObject(this.getName());
+        final JsonObject valueNode = valueObject.getAsJsonObject(this.getName());
         for (final Value<?> value : this.getValues()) {
             value.load(valueNode);
+        }
+        if (valueNode.has("open")) {
+            this.open = valueNode.get("open").getAsBoolean();
         }
     }
 
     @Override
     public void save(final JsonObject valueObject) {
-        final var valueNode = new JsonObject();
+        final JsonObject valueNode = new JsonObject();
         for (final Value<?> value : this.getValues()) {
             value.save(valueNode);
         }
+        valueNode.addProperty("open", this.open);
         valueObject.add(this.getName(), valueNode);
     }
 
     @Override
     public void render() {
-        if (ImGui.treeNodeEx(this.getName() + "##" + this.getName() + this.getParent().getName())) {
+        if (ImGui.treeNodeEx(this.getName() + "##" + this.getName() + this.getParent().getName(), this.open ? ImGuiTreeNodeFlags.DefaultOpen : 0)) {
+            this.open = true;
             this.renderValues();
             ImGui.treePop();
+        } else {
+            this.open = false;
         }
     }
 
@@ -68,6 +78,10 @@ public class ValueGroup extends Value<List<Value<?>>> implements ValueParent, Mi
         for (final Value<?> value : this.getValue()) {
             value.resetValue();
         }
+    }
+
+    public boolean isOpen() {
+        return this.open;
     }
 
 }

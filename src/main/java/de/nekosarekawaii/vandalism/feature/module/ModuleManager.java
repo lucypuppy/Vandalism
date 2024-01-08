@@ -29,7 +29,6 @@ import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.gui.ModulesClientMenuWindow;
 import de.nekosarekawaii.vandalism.feature.module.impl.combat.*;
-import de.nekosarekawaii.vandalism.feature.module.impl.development.PacketManagerModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.development.TestModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.*;
@@ -88,14 +87,13 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
                 new GodModeModule(),
                 new BowSpammerModule(),
                 new ConsoleSpammerModule(),
-                new CraftCarryModule(),
                 new JoinLeaveModule(),
                 new AutoFishModule(),
                 new AutoRespawnModule(),
                 new InteractionSpammerModule(),
                 new ItemStackLoggerModule(),
                 new MessageEncryptorModule(),
-                new BlockDensityModule(),
+                new BlockNormalizerModule(),
                 new ElytraFlightModule(),
                 new FlightModule(),
                 new FOVFuckerModule(),
