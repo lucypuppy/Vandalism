@@ -32,7 +32,6 @@ public class RotationUtil implements MinecraftWrapper {
 
     public static List<Byte> getVisibleHitBoxSides(final Entity entity, final PlayerEntity player) {
         final List<Byte> sides = new ArrayList<>();
-        //TODO: Check if anything has changed in 1.20.2 regarding hit box position offsetting
         final float width = (entity.getWidth() + 0.2f) / 2f;
         final float height = entity.getHeight() + 0.2f;
         final double eyePosY = entity.getY() - 0.1;
@@ -40,7 +39,7 @@ public class RotationUtil implements MinecraftWrapper {
             sides.add((byte) 0); //x
         }
         if (player.getX() < entity.getX() - width || player.getX() > entity.getX() + width) {
-            sides.add((byte) 1); //Z
+            sides.add((byte) 1); //z
         }
         if (player.getY() + player.getEyeHeight(player.getPose()) < eyePosY || player.getY() + player.getEyeHeight(player.getPose()) > eyePosY + height) {
             sides.add((byte) 2); //y
@@ -48,14 +47,14 @@ public class RotationUtil implements MinecraftWrapper {
         return sides;
     }
 
-    public static List<Vec3d> computeHitboxAimPoints(final Entity entity, final PlayerEntity player, final int aimPoints) {
+    public static List<Vec3d> computeHitBoxAimPoints(final Entity entity, final PlayerEntity player, final int aimPoints) {
         final List<Vec3d> points = new ArrayList<>();
         final List<Byte> visibleSides = getVisibleHitBoxSides(entity, player);
         final double targetPosY = entity.getY() - 0.1;
         final double targetHeight = entity.getHeight() + 0.2;
         final double targetWidth = entity.getWidth();
         /*
-         * hitbox formula:
+         * hit box formula:
          * visibleSides * width * height
          * (points * points)
          */
@@ -92,7 +91,8 @@ public class RotationUtil implements MinecraftWrapper {
         return points;
     }
 
-    public static Vec3d findClosestVisiblePoint(List<Vec3d> aimPoints, double range) { //hashmap, collect all hitable points in one list
+    //hashmap, collect all damageable points in one list
+    public static Vec3d findClosestVisiblePoint(List<Vec3d> aimPoints, double range) {
         double tempDist = Double.MAX_VALUE;
         Vec3d closestPoint = null;
 

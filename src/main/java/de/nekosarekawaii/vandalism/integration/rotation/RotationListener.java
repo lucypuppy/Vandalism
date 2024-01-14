@@ -112,7 +112,6 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
     }
 
     public Rotation rotationDistribution(final Rotation rotation, final Rotation lastRotation) {
-        //TODO: Code a better calculation for the rotate speed.
         if (this.rotateSpeedMinMax.x > 0 && this.rotateSpeedMinMax.y > 0) {
             this.rotateSpeed = RandomUtils.randomFloat(this.rotateSpeedMinMax.x, this.rotateSpeedMinMax.y);
         }
