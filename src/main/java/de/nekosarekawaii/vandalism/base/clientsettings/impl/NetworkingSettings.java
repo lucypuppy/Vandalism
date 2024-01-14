@@ -18,19 +18,18 @@
 
 package de.nekosarekawaii.vandalism.base.clientsettings.impl;
 
-import com.github.kwhat.jnativehook.GlobalScreen;
-import com.github.kwhat.jnativehook.NativeHookException;
-import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
-import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
+import de.nekosarekawaii.vandalism.base.event.game.KeyboardInputListener;
+import de.nekosarekawaii.vandalism.base.value.impl.awt.KeyBindValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.text.Text;
+import org.lwjgl.glfw.GLFW;
 
-public class NetworkingSettings extends ValueGroup {
+public class NetworkingSettings extends ValueGroup implements KeyboardInputListener {
 
     public final BooleanValue changeBrand = new BooleanValue(
             this,
@@ -45,13 +44,6 @@ public class NetworkingSettings extends ValueGroup {
             "The Brand that will used.",
             ClientBrandRetriever.VANILLA
     ).visibleCondition(this.changeBrand::getValue);
-
-    public final BooleanValue forceDisconnectKeybind = new BooleanValue(
-            this,
-            "Force Disconnect Keybind",
-            "Enables that you can disconnect with the key END even if the Game is frozen.",
-            true
-    );
 
     public final BooleanValue spoofIsCreativeLevelTwoOp = new BooleanValue(
             this,
@@ -88,26 +80,26 @@ public class NetworkingSettings extends ValueGroup {
             false
     );
 
+    private final KeyBindValue forceDisconnectKey = new KeyBindValue(
+            this,
+            "Force Disconnect Key",
+            "The Key that will be used to immediately disconnect from a server.",
+            GLFW.GLFW_KEY_END
+    );
+
     public NetworkingSettings(final ClientSettings parent) {
         super(parent, "Networking", "Networking related settings.");
-        try {
-            GlobalScreen.registerNativeHook();
-            GlobalScreen.addNativeKeyListener(new NativeKeyListener() {
+        Vandalism.getInstance().getEventSystem().subscribe(KeyboardInputEvent.ID, this);
+    }
 
-                @Override
-                public void nativeKeyPressed(final NativeKeyEvent nativeEvent) {
-                    if (Vandalism.getInstance().getClientSettings().getNetworkingSettings().forceDisconnectKeybind.getValue()) {
-                        if (nativeEvent.getKeyCode() == 3663) {
-                            if (NetworkingSettings.this.mc.getNetworkHandler() != null) {
-                                NetworkingSettings.this.mc.getNetworkHandler().getConnection().disconnect(Text.literal("Manual force disconnect."));
-                            }
-                        }
-                    }
-                }
-
-            });
-        } catch (NativeHookException e) {
-            Vandalism.getInstance().getLogger().error("Failed to register native input hook disconnect listener.", e);
+    @Override
+    public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
+        if (key == this.forceDisconnectKey.getValue() && action == GLFW.GLFW_PRESS) {
+            if (NetworkingSettings.this.mc.getNetworkHandler() != null) {
+                NetworkingSettings.this.mc.getNetworkHandler().getConnection().disconnect(
+                        Text.literal("Manual force disconnect.")
+                );
+            }
         }
     }
 
