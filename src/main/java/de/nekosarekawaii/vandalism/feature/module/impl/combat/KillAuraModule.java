@@ -259,8 +259,6 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             }
         }
 
-        entities.sort(Comparator.comparingDouble(entity -> this.mc.player.distanceTo(entity)));
-
         if (entities.isEmpty()) {
             this.target = null;
             return;

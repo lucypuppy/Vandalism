@@ -18,12 +18,17 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
-import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.cancellable.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.velocity.BlocksmcModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.velocity.CancelModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
 
-public class VelocityModule extends AbstractModule implements IncomingPacketListener {
+public class VelocityModule extends AbstractModule {
+
+    private final ModuleModeValue mode = new ModuleModeValue(this, "Mode", "The mode of the velocity.",
+            new CancelModuleMode(this),
+            new BlocksmcModuleMode(this)
+    );
 
     public VelocityModule() {
         super("Velocity", "Modifies the server and the damage source velocity you take.", Category.MOVEMENT);
@@ -31,20 +36,10 @@ public class VelocityModule extends AbstractModule implements IncomingPacketList
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(IncomingPacketEvent.ID, this);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(IncomingPacketEvent.ID, this);
-    }
-
-    @Override
-    public void onIncomingPacket(final IncomingPacketEvent event) {
-        //For some reason the player can be null when joining a server.
-        if (event.packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket && this.mc.player != null && velocityPacket.getId() == this.mc.player.getId()) {
-            event.cancel();
-        }
     }
 
 }
