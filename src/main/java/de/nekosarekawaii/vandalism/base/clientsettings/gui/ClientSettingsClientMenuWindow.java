@@ -31,31 +31,32 @@ public class ClientSettingsClientMenuWindow extends ClientMenuWindow {
 
     public ClientSettingsClientMenuWindow(final ClientSettings clientSettings) {
         super("Client Settings", Category.CONFIGURATION);
-
         this.clientSettings = clientSettings;
     }
 
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         ImGui.begin(getName());
-        if (ImGui.beginTabBar("##config")) {
-            for (final Value<?> value : clientSettings.getValues()) {
+        if (ImGui.beginTabBar("##clientsettings")) {
+            for (final Value<?> value : this.clientSettings.getValues()) {
                 if (value instanceof final ValueGroup valueGroup) {
-                    if (ImGui.beginTabItem(valueGroup.getName())) {
-                        if (ImGui.button("Reset " + valueGroup.getName())) {
+                    final String name = valueGroup.getName();
+                    final String id = "##" + name + "settings";
+                    if (ImGui.beginTabItem(name + id)) {
+                        if (ImGui.button("Reset " + name + " Settings" + id)) {
                             for (final Value<?> valueGroupValue : valueGroup.getValues()) {
                                 valueGroupValue.resetValue();
                             }
                         }
                         ImGui.separator();
-                        if (ImGui.beginChild("##" + valueGroup.getName())) {
+                        if (ImGui.beginChild(id)) {
                             valueGroup.renderValues();
                             ImGui.endChild();
                         }
                         ImGui.endTabItem();
                     }
                 } else {
-                    clientSettings.renderValue(value);
+                    this.clientSettings.renderValue(value);
                 }
             }
             ImGui.endTabBar();
