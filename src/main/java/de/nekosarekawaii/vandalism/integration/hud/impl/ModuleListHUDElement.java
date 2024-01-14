@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.integration.hud.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.internal.ModuleToggleListener;
+import de.nekosarekawaii.vandalism.base.event.normal.internal.ModuleToggleListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;

@@ -19,54 +19,57 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
-import de.nekosarekawaii.vandalism.base.value.Value;
+import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.minecraft.TimerHack;
 
-public class TimerModule extends AbstractModule implements TickGameListener {
+public class TimerModule extends AbstractModule implements PlayerUpdateListener {
 
-    private final Value<Float> timerModifier = new FloatValue(
+    private final FloatValue timerSpeed = new FloatValue(
             this,
-            "Timer Modifier",
-            "Allows you to customize the timer speed.",
-            2.f,
-            .1f,
-            20.f
+            "Timer Speed",
+            "The amount of speed the timer should have.",
+            2.0f,
+            0.1f,
+            20.0f
     );
 
-    private final BooleanValue screen = new BooleanValue(
+    private final BooleanValue guis = new BooleanValue(
             this,
-            "Screen",
-            "Allows you to use the timer in screen(s).",
+            "GUI's",
+            "Also applies the timer to GUI's.",
             false
     );
 
-
     public TimerModule() {
-        super("Timer", "Modifies the timer speed.", Category.MOVEMENT);
-    }
-
-    @Override
-    public void onTick() {
-        if (!this.screen.getValue() && mc.currentScreen != null) {
-            TimerHack.reset();
-        } else {
-            TimerHack.setSpeed(this.timerModifier.getValue());
-        }
+        super(
+                "Timer",
+                "Allows you to customize the speed of the game timer.",
+                Category.MOVEMENT
+        );
     }
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(TickGameEvent.ID, this);
+        TimerHack.reset();
+        Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);
     }
 
     @Override
     public void onDeactivate() {
+        Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
         TimerHack.reset();
-        Vandalism.getInstance().getEventSystem().unsubscribe(TickGameEvent.ID, this);
+    }
+
+    @Override
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        if (!this.guis.getValue() && this.mc.currentScreen != null) {
+            TimerHack.reset();
+        } else {
+            TimerHack.setSpeed(this.timerSpeed.getValue());
+        }
     }
 
 }

@@ -51,7 +51,8 @@ public class WurstPatcher implements IMixinConfigPlugin {
                 "DisconnectedRealmsScreenMixin",
                 "StatsScreenMixin",
                 "PlayerSkinProviderMixin",
-                "EntityRendererMixin"
+                "EntityRendererMixin",
+                "PlayerInventoryMixin"
         );
     }
 

@@ -19,9 +19,9 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.network.DisconnectListener;
-import de.nekosarekawaii.vandalism.base.event.network.IncomingPacketListener;
-import de.nekosarekawaii.vandalism.base.event.network.OutgoingPacketListener;
+import de.nekosarekawaii.vandalism.base.event.cancellable.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.base.event.cancellable.network.OutgoingPacketListener;
+import de.nekosarekawaii.vandalism.base.event.normal.network.DisconnectListener;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;

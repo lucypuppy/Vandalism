@@ -18,10 +18,10 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
+import de.florianmichael.dietrichevents2.StateTypes;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.game.ScreenListener;
-import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
-import de.nekosarekawaii.vandalism.base.event.network.WorldListener;
+import de.nekosarekawaii.vandalism.base.event.cancellable.render.ScreenListener;
+import de.nekosarekawaii.vandalism.base.event.normal.network.WorldListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.world.ClientWorld;
@@ -43,11 +43,6 @@ public abstract class MixinMinecraftClient {
     @Unique
     private boolean vandalism$selfCall = false;
 
-    @Inject(method = "tick", at = @At(value = "HEAD"))
-    private void callTickGameListener(final CallbackInfo ci) {
-        Vandalism.getInstance().getEventSystem().postInternal(TickGameListener.TickGameEvent.ID, new TickGameListener.TickGameEvent());
-    }
-
     @Inject(method = "setScreen", at = @At(value = "HEAD"), cancellable = true)
     private void callScreenListener(Screen screen, final CallbackInfo ci) {
         if (vandalism$selfCall) {
@@ -67,12 +62,12 @@ public abstract class MixinMinecraftClient {
 
     @Inject(method = "setWorld", at = @At("HEAD"))
     private void callWorldListener_Pre(final ClientWorld world, final CallbackInfo ci) {
-        Vandalism.getInstance().getEventSystem().postInternal(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent(WorldListener.WorldEventState.PRE));
+        Vandalism.getInstance().getEventSystem().postInternal(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent(StateTypes.PRE));
     }
 
     @Inject(method = "setWorld", at = @At("RETURN"))
     private void callWorldListener_Post(final ClientWorld world, final CallbackInfo ci) {
-        Vandalism.getInstance().getEventSystem().postInternal(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent(WorldListener.WorldEventState.POST));
+        Vandalism.getInstance().getEventSystem().postInternal(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent(StateTypes.POST));
     }
 
     @Inject(method = "onResolutionChanged", at = @At("RETURN"))

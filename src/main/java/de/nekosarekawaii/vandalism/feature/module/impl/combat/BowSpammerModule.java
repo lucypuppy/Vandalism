@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
 import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
+import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.item.Items;
@@ -28,7 +28,7 @@ import net.minecraft.util.Hand;
 import net.raphimc.vialoader.util.VersionEnum;
 import net.raphimc.vialoader.util.VersionRange;
 
-public class BowSpammerModule extends AbstractModule implements TickGameListener {
+public class BowSpammerModule extends AbstractModule implements PlayerUpdateListener {
 
     private final IntegerValue maxPacketsPerTick = new IntegerValue(
             this,
@@ -58,20 +58,16 @@ public class BowSpammerModule extends AbstractModule implements TickGameListener
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(TickGameEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(TickGameEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
     }
 
     @Override
-    public void onTick() {
-        if (this.mc.player == null) {
-            return;
-        }
-
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (this.mc.player.getMainHandStack().isOf(Items.BOW)) {
             if (this.shootTimer.hasReached(this.shootDelay.getValue(), true)) {
                 for (int i = 0; i < this.maxPacketsPerTick.getValue(); i++) {

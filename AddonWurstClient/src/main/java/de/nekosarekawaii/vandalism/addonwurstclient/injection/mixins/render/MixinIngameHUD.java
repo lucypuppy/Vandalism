@@ -29,7 +29,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public abstract class MixinIngameHUD {
 
     @Redirect(method = "onRenderGUI", at = @At(value = "INVOKE", target = "Lnet/wurstclient/hud/HackListHUD;render(Lnet/minecraft/client/gui/DrawContext;F)V"))
-    private void disableWurstHackList(final HackListHUD instance, final DrawContext context, final float partialTicks) {
-    }
+    private void disableWurstHackList(final HackListHUD instance, final DrawContext context, final float partialTicks) {}
 
 }

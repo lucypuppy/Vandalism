@@ -19,8 +19,8 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.player.ChatModifyReceiveListener;
-import de.nekosarekawaii.vandalism.base.event.player.ChatSendListener;
+import de.nekosarekawaii.vandalism.base.event.normal.player.ChatModifyReceiveListener;
+import de.nekosarekawaii.vandalism.base.event.normal.player.ChatSendListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;

@@ -20,8 +20,8 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.network.IncomingPacketListener;
-import de.nekosarekawaii.vandalism.base.event.network.OutgoingPacketListener;
+import de.nekosarekawaii.vandalism.base.event.cancellable.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.base.event.cancellable.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.fabricmc.loader.api.FabricLoader;

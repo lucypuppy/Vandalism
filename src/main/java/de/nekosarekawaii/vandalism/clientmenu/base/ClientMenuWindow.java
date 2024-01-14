@@ -82,8 +82,16 @@ public class ClientMenuWindow implements IName, MinecraftWrapper {
         SERVER_UTILS,
         MISC_UTILS;
 
-        public String getName() {
-            return StringUtils.normalizeEnumName(this.name());
+        private final String name;
+
+        Category() {
+            this.name = StringUtils.normalizeEnumName(this.name());
         }
+
+        public String getName() {
+            return this.name;
+        }
+
     }
+
 }

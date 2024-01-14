@@ -19,7 +19,8 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.render.Render2DListener;
+import de.nekosarekawaii.vandalism.base.event.normal.render.Render2DListener;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.DebugHud;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -37,9 +38,12 @@ public abstract class MixinInGameHud {
     @Final
     private DebugHud debugHud;
 
+    @Shadow @Final private MinecraftClient client;
+
     @Inject(method = "render(Lnet/minecraft/client/gui/DrawContext;F)V", at = @At(value = "TAIL"))
     private void callRender2DListener(final DrawContext context, final float tickDelta, final CallbackInfo ci) {
-        if (this.debugHud.shouldShowDebugHud()) { // We never want to render anything when this is true, so /shrug
+        // We never want to render anything when this is true
+        if (this.debugHud.shouldShowDebugHud() || this.client.options.hudHidden) {
             return;
         }
         Vandalism.getInstance().getEventSystem().postInternal(Render2DListener.Render2DEvent.ID, new Render2DListener.Render2DEvent(context, tickDelta));

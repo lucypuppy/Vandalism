@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.render;
 import de.florianmichael.rclasses.common.ColorUtils;
 import de.florianmichael.rclasses.common.model.HSBColor;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.render.LivingEntityRenderBottomLayerListener;
+import de.nekosarekawaii.vandalism.base.event.normal.render.LivingEntityRenderBottomLayerListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiItemValue;

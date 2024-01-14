@@ -22,8 +22,8 @@ import de.florianmichael.rclasses.pattern.storage.named.NamedStorage;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
-import de.nekosarekawaii.vandalism.base.event.game.KeyboardInputListener;
-import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
+import de.nekosarekawaii.vandalism.base.event.normal.game.KeyboardInputListener;
+import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.feature.script.gui.ScriptsClientMenuWindow;
 import de.nekosarekawaii.vandalism.feature.script.parse.ScriptParser;
@@ -38,20 +38,18 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ScriptManager extends NamedStorage<Script> implements TickGameListener, KeyboardInputListener, MinecraftWrapper {
+public class ScriptManager extends NamedStorage<Script> implements PlayerUpdateListener, KeyboardInputListener, MinecraftWrapper {
 
     private final ConcurrentHashMap<UUID, Thread> runningScripts = new ConcurrentHashMap<>();
     private final File directory;
-
     private final ConfigManager configManager;
 
     public ScriptManager(final ConfigManager configManager, final ClientMenuManager clientMenuManager, final File runDirectory) {
         this.configManager = configManager;
         clientMenuManager.add(new ScriptsClientMenuWindow());
         this.directory = new File(runDirectory, "scripts");
-
         Vandalism.getInstance().getEventSystem().subscribe(KeyboardInputEvent.ID, this);
-        Vandalism.getInstance().getEventSystem().subscribe(TickGameEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);
     }
 
     @Override
@@ -102,7 +100,7 @@ public class ScriptManager extends NamedStorage<Script> implements TickGameListe
     }
 
     @Override
-    public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
+    public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         //Cancel if the key is unknown to prevent the script from being executed multiple times.
         if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN || this.mc.player == null || this.mc.currentScreen != null) {
             return;
@@ -202,7 +200,7 @@ public class ScriptManager extends NamedStorage<Script> implements TickGameListe
     }
 
     @Override
-    public void onTick() {
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         for (final Script script : this.getList()) {
             if (!script.getFile().exists()) {
                 this.remove(script);

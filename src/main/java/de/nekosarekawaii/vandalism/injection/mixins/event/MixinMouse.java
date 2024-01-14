@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.game.MouseInputListener;
+import de.nekosarekawaii.vandalism.base.event.normal.game.MouseInputListener;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.Mouse;
 import org.spongepowered.asm.mixin.Mixin;

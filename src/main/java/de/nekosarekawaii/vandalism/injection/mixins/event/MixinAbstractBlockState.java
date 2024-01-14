@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.network.WorldListener;
+import de.nekosarekawaii.vandalism.base.event.normal.network.BlockCollisionShapeListener;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -43,13 +43,13 @@ public abstract class MixinAbstractBlockState {
     public abstract BlockState asBlockState();
 
     @Redirect(method = "getCollisionShape(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;getCollisionShape(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;"))
-    public VoxelShape callBlockListener(final Block block, final BlockState blockState, final BlockView world, final BlockPos pos, final ShapeContext context) {
+    public VoxelShape call(final Block block, final BlockState blockState, final BlockView world, final BlockPos pos, final ShapeContext context) {
         final VoxelShape shape = this.getBlock().getCollisionShape(this.asBlockState(), world, pos, context);
         if (pos == null || world == null || MinecraftClient.getInstance() == null || MinecraftClient.getInstance().player == null) {
             return shape;
         }
-        final var event = new WorldListener.BlockEvent(block, blockState, world, pos, context, shape);
-        Vandalism.getInstance().getEventSystem().postInternal(WorldListener.BlockEvent.ID, event);
+        final var event = new BlockCollisionShapeListener.BlockCollisionShapeEvent(block, blockState, world, pos, context, shape);
+        Vandalism.getInstance().getEventSystem().postInternal(BlockCollisionShapeListener.BlockCollisionShapeEvent.ID, event);
         return event.shape;
     }
 

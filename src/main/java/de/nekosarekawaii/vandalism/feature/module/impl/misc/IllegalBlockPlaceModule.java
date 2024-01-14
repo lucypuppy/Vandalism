@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
+import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.block.AirBlock;
@@ -30,7 +30,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 
-public class IllegalBlockPlaceModule extends AbstractModule implements TickGameListener {
+public class IllegalBlockPlaceModule extends AbstractModule implements PlayerUpdateListener {
 
     public BooleanValue viaVersionBug = new BooleanValue(
             this,
@@ -45,26 +45,21 @@ public class IllegalBlockPlaceModule extends AbstractModule implements TickGameL
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(TickGameEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(TickGameEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
     }
 
     @Override
-    public void onTick() {
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         final Entity cameraEntity = this.mc.getCameraEntity();
-        if (this.mc.player == null || this.mc.interactionManager == null || cameraEntity == null) {
-            return;
-        }
-
         final HitResult hitResult = cameraEntity.raycast(this.mc.interactionManager.getReachDistance(), 0, false);
         if (!(hitResult instanceof final BlockHitResult blockHitResult) || this.mc.player.getMainHandStack().isEmpty()) {
             return;
         }
-
         final Block block = this.mc.world.getBlockState(blockHitResult.getBlockPos()).getBlock();
         if ((block instanceof AirBlock || block instanceof FluidBlock) && this.mc.options.useKey.isPressed()) {
             this.mc.interactionManager.interactBlock(this.mc.player, Hand.MAIN_HAND, blockHitResult);

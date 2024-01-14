@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class InputType {
+
     public static final Map<String, Integer> FIELD_NAMES = new HashMap<>();
 
     static {
@@ -45,9 +46,7 @@ public class InputType {
         if (keyCode == GLFW.GLFW_KEY_UNKNOWN) {
             return false;
         }
-        final long handle = MinecraftClient.getInstance().getWindow().getHandle();
-
-        return GLFW.glfwGetKey(handle, keyCode) == GLFW.GLFW_PRESS;
+        return GLFW.glfwGetKey(MinecraftClient.getInstance().getWindow().getHandle(), keyCode) == GLFW.GLFW_PRESS;
     }
 
 }

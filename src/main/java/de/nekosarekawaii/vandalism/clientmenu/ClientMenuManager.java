@@ -22,8 +22,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
-import de.nekosarekawaii.vandalism.base.event.game.KeyboardInputListener;
-import de.nekosarekawaii.vandalism.base.event.render.Render2DListener;
+import de.nekosarekawaii.vandalism.base.event.normal.game.KeyboardInputListener;
+import de.nekosarekawaii.vandalism.base.event.normal.render.Render2DListener;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuScreen;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.clientmenu.config.ClientMenuConfig;
@@ -68,7 +68,7 @@ public class ClientMenuManager extends Storage<ClientMenuWindow> implements Keyb
     }
 
     @Override
-    public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
+    public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         if (action == GLFW.GLFW_PRESS && Vandalism.getInstance().getClientSettings().getMenuSettings().menuKey.getValue() == key && !(MinecraftClient.getInstance().currentScreen instanceof ChatScreen)) {
             openScreen();
         }

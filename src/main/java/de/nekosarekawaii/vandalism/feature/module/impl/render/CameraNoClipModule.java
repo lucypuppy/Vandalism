@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.render.CameraClipRaytraceListener;
+import de.nekosarekawaii.vandalism.base.event.cancellable.render.CameraClipRaytraceListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 
 public class CameraNoClipModule extends AbstractModule implements CameraClipRaytraceListener {

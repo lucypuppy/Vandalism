@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
+import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.command.impl.misc.NbtCommand;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
@@ -50,7 +50,7 @@ import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ItemStackLoggerModule extends AbstractModule implements TickGameListener {
+public class ItemStackLoggerModule extends AbstractModule implements PlayerUpdateListener {
 
     private final BooleanValue notifyInChat = new BooleanValue(
             this,
@@ -61,29 +61,30 @@ public class ItemStackLoggerModule extends AbstractModule implements TickGameLis
 
     private static final File LOGGED_ITEMS_DIR = new File(Vandalism.getInstance().getRunDirectory(), "logged-items");
 
-    private final DateFormat formatter;
+    private final DateFormat formatter = new SimpleDateFormat("hh:mm:ss a, dd/MM/yyyy");
 
-    private final ExecutorService executorService;
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public ItemStackLoggerModule() {
-        super("Item Stack Logger", "Logs item stacks to '" + LOGGED_ITEMS_DIR.getAbsolutePath() + "'", Category.MISC);
-        this.formatter = new SimpleDateFormat("hh:mm:ss a, dd/MM/yyyy");
-        this.executorService = Executors.newFixedThreadPool(4);
+        super(
+                "Item Stack Logger",
+                "Logs item stacks to '" + LOGGED_ITEMS_DIR.getAbsolutePath() + "'",
+                Category.MISC
+        );
     }
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(TickGameEvent.ID, this, Priorities.HIGH);
+        Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this, Priorities.HIGH);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(TickGameEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
     }
 
     @Override
-    public void onTick() {
-        if (this.mc.world == null) return;
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         for (final Entity entity : this.mc.world.getEntities()) {
             if (entity == this.mc.player) continue;
             if (entity instanceof final ItemEntity itemEntity) {
@@ -95,7 +96,6 @@ public class ItemStackLoggerModule extends AbstractModule implements TickGameLis
         }
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void logStack(final Entity entity, final ItemStack stack) {
         final Item item = stack.getItem();
         if (item.equals(Items.AIR)) {
@@ -142,20 +142,18 @@ public class ItemStackLoggerModule extends AbstractModule implements TickGameLis
 
         final File itemOrBlockDir = new File(playerOrEntityNameDir, isItem ? "item" : "block");
         itemOrBlockDir.mkdirs();
-
         if (!itemOrBlockDir.exists()) return;
+
         final File itemNameDir = new File(itemOrBlockDir, itemNameString.replace(" item", "").replace(" block", ""));
         itemNameDir.mkdirs();
-
         if (!itemNameDir.exists()) return;
-        final File itemNbtFile = new File(itemNameDir, nbtCount + "-[" + String.valueOf(damage).hashCode() + nbt.hashCode() + "].nbt");
 
+        final File itemNbtFile = new File(itemNameDir, nbtCount + "-[" + String.valueOf(damage).hashCode() + nbt.hashCode() + "].nbt");
         if (itemNbtFile.exists()) return;
 
         this.executorService.submit(() -> {
             try {
                 itemNbtFile.createNewFile();
-
                 final NbtCompound itemNbt = new NbtCompound();
                 itemNbt.putString("At Date", this.formatter.format(new Date()));
                 itemNbt.putString("At Position", position);
@@ -164,7 +162,6 @@ public class ItemStackLoggerModule extends AbstractModule implements TickGameLis
                 itemNbt.putInt("NBT Count", nbtCount);
                 itemNbt.put("NBT", nbt);
                 NbtIo.write(itemNbt, itemNbtFile.toPath());
-
                 final String normalWithoutNBT = "Position: " + position + " | Damage: " + damage + " | Count: " + count + " | NBT Count: " + nbtCount;
                 if (this.notifyInChat.getValue()) {
                     final MutableText text = Text.literal("Options:");
@@ -187,7 +184,6 @@ public class ItemStackLoggerModule extends AbstractModule implements TickGameLis
                     style = style.withClickEvent(clickEvent);
                     displayNBTButton.setStyle(style);
                     text.append(displayNBTButton);
-
                     ChatUtil.infoChatMessage(Text.literal("Item Stack Logger").formatted(Formatting.AQUA));
                     ChatUtil.chatMessage(Text.literal("Found a " + itemFromText + ".").formatted(Formatting.DARK_AQUA), false);
                     ChatUtil.chatMessage(Text.literal(normalWithoutNBT).formatted(Formatting.LIGHT_PURPLE), false);

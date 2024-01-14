@@ -188,7 +188,7 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
     }
 
     /*
-    TODO: 1.20.2 / maybe 1.20.3 instant crash
+    TODO: 1.20.2 / maybe 1.20.3 instant crash.
     {display:{Name:'{"text":"","extra":[[]]}'}}
         private static ItemStack createClientInstantCrashStone() {
             final ItemStack item = new ItemStack(Items.STONE);
@@ -207,7 +207,7 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
     */
 
     /*
-    TODO: Access Violation
+    TODO: Access Violation.
     {"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["txsla", "txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_"]}]}]}]}]}]}]}]}
      */
 

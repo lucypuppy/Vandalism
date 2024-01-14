@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.base.value.impl.awt;
 
 import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.game.KeyboardInputListener;
+import de.nekosarekawaii.vandalism.base.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.util.render.InputType;
@@ -75,7 +75,7 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
     }
 
     @Override
-    public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
+    public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         if (key != GLFW.GLFW_KEY_UNKNOWN && action == GLFW.GLFW_PRESS) {
             this.finishInput();
             if (key != GLFW.GLFW_KEY_ESCAPE) {

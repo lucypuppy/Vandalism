@@ -20,8 +20,8 @@ package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.render.LivingEntityRenderBottomLayerListener;
-import de.nekosarekawaii.vandalism.base.event.render.LivingEntityRenderPostListener;
+import de.nekosarekawaii.vandalism.base.event.normal.render.LivingEntityRenderBottomLayerListener;
+import de.nekosarekawaii.vandalism.base.event.normal.render.LivingEntityRenderPostListener;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;

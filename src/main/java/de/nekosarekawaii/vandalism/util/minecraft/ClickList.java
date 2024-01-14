@@ -27,17 +27,17 @@ public class ClickList {
 
     private final List<Long> clicks = new ArrayList<>();
 
-    public void onTick() {
-        if (clicks.isEmpty()) return;
-        clicks.removeIf((click) -> Util.getMeasuringTimeMs() - click > 1000);
+    public void update() {
+        if (this.clicks.isEmpty()) return;
+        this.clicks.removeIf((click) -> Util.getMeasuringTimeMs() - click > 1000);
     }
 
     public void click() {
-        clicks.add(Util.getMeasuringTimeMs());
+        this.clicks.add(Util.getMeasuringTimeMs());
     }
 
     public int clicks() {
-        return clicks.size();
+        return this.clicks.size();
     }
 
 }
