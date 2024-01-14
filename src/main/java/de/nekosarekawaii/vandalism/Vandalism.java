@@ -69,7 +69,7 @@ import java.io.File;
  *  - Fix module list out of screen rendering when the alignment is at the bottom of the screen
  *  - Fix ClientMenuScreen#close because it could break the entire game
  *  - Add anti vanish via. the player list hud
- *  - Use #has from Gson in all the values to fix an config load issue
+ *  - Fix an config load issue by adding #has from Gson in all the values
  *  - Fix this by something like an auto detection: "...visibleCondition(() -> this.getParent().mode.getValue().equals(this))"
  *  - Remove duplicated code by creating a new template for modules which uses packets or something like that
  *  - Fix Rotation raytrace when block normalizer is enabled (Collision shape event) @FooFieOwO
