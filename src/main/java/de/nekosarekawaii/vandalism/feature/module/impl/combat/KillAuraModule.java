@@ -148,9 +148,6 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         this.targetIndex = 0;
     }
 
-    //TODO Mouse event -> attack
-    //TODO: Frame event (entity renderer set angles)-> rotate
-
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         this.getTarget();

@@ -74,7 +74,7 @@ public class Rotation implements MinecraftWrapper {
         private static Vec3d lastPoint;
 
         public static Rotation build(Entity e, double range, int saimPoints) {
-            List<Vec3d> aimPoints = RotationUtil.computeHitboxAimPoints(e, mc.player, saimPoints);
+            List<Vec3d> aimPoints = RotationUtil.computeHitBoxAimPoints(e, mc.player, saimPoints);
             Vec3d eyePos = mc.player.getEyePos();
 
             // Create an instance of AimPointMover with your aimPoints

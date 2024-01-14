@@ -41,6 +41,13 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 
 /**
+ * TODO: NekosAreKawaii <br>
+ *  - Fix an config load issue by adding #has from Gson in all the values
+ *  - Remove duplicated code by creating a new template for modules which uses packets or something like that
+ *  - Update ImNbt
+ *  - Add Access Violation crash item to CrashItemCreativeTab
+ *  - Added 1.20.2 / maybe 1.20.3 instant crash crash item to CrashItemCreativeTab
+ * <br><br>
  * TODO: Verschlxfene <br>
  *  - Apply checkstyle.xml to all classes
  *  - Delete MixinParticleManager
@@ -54,10 +61,18 @@ import java.io.File;
  *  - Fix Rotation raytrace when block normalizer is enabled (Collision shape event)
  *  - Fix NoClipMode from PhaseModule
  *  - Fix SprintModule to be compatible with the rotation listener and also the backwards direction (ask Verschlxfene)
+ *  - Fix calculations for the HUD aka. HUDElement#calculatePosition
+ *  - Fix tick bug (cps is not accurate) -> see BoxMuellerClicker#onUpdate
+ *  - Fix this by something like an auto detection (for example you could make module modes features):
+ *    "...visibleCondition(() -> this.getParent().mode.getValue().equals(this))"
+ *  - Make a better calculation for the rotate speed RotationListener#rotationDistribution
+ *  - Check if anything has changed in 1.20.2 regarding hit box position offsetting RotationUtil#getVisibleHitBoxSides
+ *  - KillAura#onPrePlayerUpdate | Frame event (entity renderer set angles) -> rotate / Mouse event -> attack
+ * <br><br>
+ * TODO: Snow <br>
+ *  - Implement ServerDiscoveryClientMenuWindow#renderServerPopup "Add to server list" feature
  * <br><br>
  * TODO: Everyone <br>
- *  - Update ImNbt
- *  - Fix tick bug (cps is not accurate) -> see BoxMuellerClicker#onUpdate
  *  - Rewrite EnhancedServerList
  *  - Fix the entity layer rendering from the true sight module
  *  - Fix offsets for the new "teleport" method in the fov fucker module
@@ -67,16 +82,11 @@ import java.io.File;
  *      - Add protection for skins
  *      - Add protection for coords
  *      - Add protection for ip addresses
- *      - Maybe use a chat event instead of a text draw event
  *  - Make the width and height customizable or use calculations in the modules im window for the tabs
  *  - Fix ImGui#begin in every im window (remove No Collapse Flag and move the code out of the if)
  *  - Fix module tabs display (no stacking) when the mod starts the first time
- *  - Fix calculations for the custom hud
  *  - Fix ClientMenuScreen#close because it could break the entire game
  *  - Add anti vanish via. the player list hud
- *  - Fix an config load issue by adding #has from Gson in all the values
- *  - Fix this by something like an auto detection: "...visibleCondition(() -> this.getParent().mode.getValue().equals(this))"
- *  - Remove duplicated code by creating a new template for modules which uses packets or something like that
  */
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 

@@ -100,8 +100,6 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
     public void calculatePosition() {
         final int scaledWidth = this.mc.getWindow().getScaledWidth();
         final int scaledHeight = this.mc.getWindow().getScaledHeight();
-
-        //TODO: Fix rescale.
     }
 
     protected abstract void onRender(final DrawContext context, final float delta);

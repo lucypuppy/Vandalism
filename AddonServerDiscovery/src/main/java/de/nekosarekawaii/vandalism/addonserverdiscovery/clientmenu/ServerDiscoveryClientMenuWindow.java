@@ -47,7 +47,11 @@ public class ServerDiscoveryClientMenuWindow extends ClientMenuWindow {
 
     /* api stuff */
     private final CopyOnWriteArrayList<ServerEntry> entries = new CopyOnWriteArrayList<>();
-    private final ServerDiscovery api = new ServerDiscovery("https://api.catgirls.re", "eD0gW4x01PBahgNnChWqPtyzp6P7ApUe");
+
+    private final ServerDiscovery api = new ServerDiscovery(
+            "https://api.catgirls.re",
+            "eD0gW4x01PBahgNnChWqPtyzp6P7ApUe"
+    );
 
     /* find settings */
     private final ImInt minimumPlayers = new ImInt(0);
@@ -72,11 +76,11 @@ public class ServerDiscoveryClientMenuWindow extends ClientMenuWindow {
         if (ImGui.beginMenuBar()) {
 
             /* Find servers menu */
-            if (ImGui.beginMenu("Find servers")) {
-                ImGui.inputText("Brand filter", brandFilter);
-                ImGui.inputText("Motd filter", motdFilter);
+            if (ImGui.beginMenu("Find Servers")) {
+                ImGui.inputText("Brand Filter", brandFilter);
+                ImGui.inputText("MOTD Filter", motdFilter);
 
-                if (ImGui.beginCombo("Number range type", StringUtils.normalizeEnumName(playerNumberRange.name()))) {
+                if (ImGui.beginCombo("Number Range Type", StringUtils.normalizeEnumName(playerNumberRange.name()))) {
                     for (NumberRangeType value : NumberRangeType.values()) {
                         if (ImGui.selectable(StringUtils.normalizeEnumName(value.name()), value == playerNumberRange)) {
                             playerNumberRange = value;
@@ -88,11 +92,11 @@ public class ServerDiscoveryClientMenuWindow extends ClientMenuWindow {
 
                 switch (playerNumberRange) {
                     case EQUALS -> ImGui.inputInt("Players", minimumPlayers);
-                    case LESS_THAN -> ImGui.inputInt("Max players", maximumPlayers);
-                    case GREATER_THAN -> ImGui.inputInt("Min players", minimumPlayers);
+                    case LESS_THAN -> ImGui.inputInt("Max Players", maximumPlayers);
+                    case GREATER_THAN -> ImGui.inputInt("Min Players", minimumPlayers);
                     case BETWEEN -> {
-                        ImGui.inputInt("Minimum players", minimumPlayers);
-                        ImGui.inputInt("Maximum range", maximumPlayers);
+                        ImGui.inputInt("Minimum Players", minimumPlayers);
+                        ImGui.inputInt("Maximum Range", maximumPlayers);
                     }
                 }
 
@@ -124,13 +128,13 @@ public class ServerDiscoveryClientMenuWindow extends ClientMenuWindow {
                 ImGui.endMenu();
             }
 
-            if (ImGui.beginMenu("Find player")) {
+            if (ImGui.beginMenu("Find Player")) {
                 ImGui.inputText("Player name", playerNameFilter);
                 ImGui.inputInt("Server limit", serverLimit);
 
                 ImGui.separator();
 
-                if (ImGui.button("Find player", ImGui.getColumnWidth(), 30) && !playerNameFilter.isEmpty()) {
+                if (ImGui.button("Find Player", ImGui.getColumnWidth(), 30) && !playerNameFilter.isEmpty()) {
                     performServerSearch(new SearchQueryBuilder().containsPlayer(playerNameFilter.get()));
                 }
 
@@ -195,7 +199,7 @@ public class ServerDiscoveryClientMenuWindow extends ClientMenuWindow {
         if (ImGui.beginPopupContextItem("serverentry-popup")) {
             ImGui.text(hoveredEntry.address());
             ImGui.separator();
-            ImGui.text("Motd: " + Formatting.strip(hoveredEntry.motd()));
+            ImGui.text("MOTD: " + Formatting.strip(hoveredEntry.motd()));
             ImGui.text("Brand: " + hoveredEntry.brand());
             ImGui.text("Player count: " + hoveredEntry.playerCount());
             ImGui.text("Player list: " + Formatting.strip(hoveredEntry.players()));
@@ -206,7 +210,6 @@ public class ServerDiscoveryClientMenuWindow extends ClientMenuWindow {
                 ImGui.closeCurrentPopup();
             }
 
-            // TODO: Implement.
             ImGui.button("Add to server list");
 
             ImGui.endPopup();
@@ -230,4 +233,5 @@ public class ServerDiscoveryClientMenuWindow extends ClientMenuWindow {
     enum ServerDiscoveryRows {
         ADDRESS, MOTD, PLAYERS, BRAND, ONLINE
     }
+
 }
