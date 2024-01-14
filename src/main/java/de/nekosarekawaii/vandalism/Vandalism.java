@@ -47,6 +47,7 @@ import java.io.File;
  *  - Update ImNbt
  *  - Add Access Violation crash item to CrashItemCreativeTab
  *  - Added 1.20.2 / maybe 1.20.3 instant crash crash item to CrashItemCreativeTab
+ *  - Replaced target selection with actual entity selection (create something like an registry multi selection value)
  * <br><br>
  * TODO: Verschlxfene <br>
  *  - Apply checkstyle.xml to all classes

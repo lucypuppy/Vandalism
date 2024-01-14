@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.base.event.cancellable.network;
 
 import de.florianmichael.dietrichevents2.CancellableEvent;
+import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkState;
 import net.minecraft.network.packet.Packet;
 
@@ -32,10 +33,12 @@ public interface OutgoingPacketListener {
 
         public Packet<?> packet;
         public final NetworkState networkState;
+        public final ClientConnection connection;
 
-        public OutgoingPacketEvent(final Packet<?> packet, final NetworkState networkState) {
+        public OutgoingPacketEvent(final Packet<?> packet, final NetworkState networkState, final ClientConnection connection) {
             this.packet = packet;
             this.networkState = networkState;
+            this.connection = connection;
         }
 
         @Override
