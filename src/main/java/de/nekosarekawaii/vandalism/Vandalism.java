@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 
 /**
- * TODO: Verschlxfene
+ * TODO: Verschlxfene <br>
  *  - Apply checkstyle.xml to all classes
  *  - Delete MixinParticleManager
  *  - Add Proxy manager
@@ -49,7 +49,13 @@ import java.io.File;
  *  - Fix cracked account names when restarting the game (their name is "null")
  *  - Add direct login to the account manager
  * <br><br>
- * TODO: Everyone else
+ * TODO: FooFieOwO <br>
+ *  - Fix module list out of screen rendering when the alignment is at the bottom of the screen
+ *  - Fix Rotation raytrace when block normalizer is enabled (Collision shape event)
+ *  - Fix NoClipMode from PhaseModule
+ *  - Fix SprintModule to be compatible with the rotation listener and also the backwards direction (ask Verschlxfene)
+ * <br><br>
+ * TODO: Everyone <br>
  *  - Update ImNbt
  *  - Fix tick bug (cps is not accurate) -> see BoxMuellerClicker#onUpdate
  *  - Rewrite EnhancedServerList
@@ -66,15 +72,11 @@ import java.io.File;
  *  - Fix ImGui#begin in every im window (remove No Collapse Flag and move the code out of the if)
  *  - Fix module tabs display (no stacking) when the mod starts the first time
  *  - Fix calculations for the custom hud
- *  - Fix module list out of screen rendering when the alignment is at the bottom of the screen
  *  - Fix ClientMenuScreen#close because it could break the entire game
  *  - Add anti vanish via. the player list hud
  *  - Fix an config load issue by adding #has from Gson in all the values
  *  - Fix this by something like an auto detection: "...visibleCondition(() -> this.getParent().mode.getValue().equals(this))"
  *  - Remove duplicated code by creating a new template for modules which uses packets or something like that
- *  - Fix Rotation raytrace when block normalizer is enabled (Collision shape event) @FooFieOwO
- *  - Fix NoClipMode from PhaseModule @FooFieOwO
- *  - Fix SprintModule to be compatible with the rotation listener and also the backwards direction (ask Verschlxfene) @FooFieOwO
  */
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 
