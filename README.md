@@ -84,8 +84,7 @@ Vandalism is a mod for Minecraft designed to train server administrators.
 
 - **Seggs**
 
-![seggs-1](.github/memes/jimppa/seggs-1.png)
-![seggs-2](.github/memes/jimppa/seggs-2.png)
+![seggs](.github/memes/jimppa/seggs.png)
 
 - **neg**
 
