@@ -71,7 +71,6 @@
     "module.MixinEntityRenderer",
     "module.MixinFeatureRenderer",
     "module.MixinGameRenderer",
-    "module.MixinIdentifier",
     "module.MixinIllusionerEntityRenderer",
     "module.MixinInGameHud",
     "module.MixinLivingEntityRenderer",
