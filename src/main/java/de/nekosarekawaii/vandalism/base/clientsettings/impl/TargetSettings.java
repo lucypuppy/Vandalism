@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.base.clientsettings.impl;
 import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
-import de.nekosarekawaii.vandalism.base.event.entity.EntityTargetListener;
+import de.nekosarekawaii.vandalism.base.event.normal.internal.TargetListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
@@ -31,7 +31,7 @@ import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 
-public class TargetSettings extends ValueGroup implements EntityTargetListener {
+public class TargetSettings extends ValueGroup implements TargetListener {
 
     private final Value<Boolean> players = new BooleanValue(
             this,
@@ -70,11 +70,11 @@ public class TargetSettings extends ValueGroup implements EntityTargetListener {
 
     public TargetSettings(final ClientSettings parent) {
         super(parent, "Target", "Target related settings.");
-        Vandalism.getInstance().getEventSystem().subscribe(EntityTargetEvent.ID, this, Priorities.HIGHEST);
+        Vandalism.getInstance().getEventSystem().subscribe(TargetEvent.ID, this, Priorities.HIGHEST);
     }
 
     @Override
-    public void onEntityTarget(EntityTargetEvent event) {
+    public void onTarget(TargetEvent event) {
         if (!(event.entity instanceof final LivingEntity livingEntity
                 && livingEntity != mc.player
                 && (livingEntity.isAlive() || !isAlive.getValue()) &&

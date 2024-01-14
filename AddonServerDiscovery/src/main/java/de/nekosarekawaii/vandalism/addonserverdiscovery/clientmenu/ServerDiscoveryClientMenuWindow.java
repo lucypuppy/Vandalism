@@ -206,7 +206,7 @@ public class ServerDiscoveryClientMenuWindow extends ClientMenuWindow {
                 ImGui.closeCurrentPopup();
             }
 
-            // TODO: implement
+            // TODO: Implement.
             ImGui.button("Add to server list");
 
             ImGui.endPopup();

@@ -20,17 +20,34 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
+import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 
-public class AutoFishModule extends AbstractModule implements TickGameListener {
+public class AutoFishModule extends AbstractModule implements PlayerUpdateListener {
 
-    public final IntegerValue throwDelayValue = new IntegerValue(this, "Throw Delay", "Here you can input the custom throw delay value.", 1000, 0, 5000);
-    public final IntegerValue retractDelayValue = new IntegerValue(this, "Retract Delay", "Here you can input the custom retract delay value.", 500, 0, 1000);
+    public final IntegerValue throwDelayValue = new IntegerValue(
+            this,
+            "Throw Delay",
+            "Here you can input the custom throw delay value.",
+            1000,
+            0,
+            5000
+    );
 
-    private final MSTimer retractDelayTimer = new MSTimer(), throwDelayTimer = new MSTimer();
+    public final IntegerValue retractDelayValue = new IntegerValue(
+            this,
+            "Retract Delay",
+            "Here you can input the custom retract delay value.",
+            500,
+            0,
+            1000
+    );
+
+    private final MSTimer retractDelayTimer = new MSTimer();
+    private final MSTimer throwDelayTimer = new MSTimer();
+
     private boolean hasFish = false;
 
     public AutoFishModule() {
@@ -39,17 +56,18 @@ public class AutoFishModule extends AbstractModule implements TickGameListener {
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(TickGameEvent.ID, this);
+        this.hasFish = false;
+        Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(TickGameEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
+        this.hasFish = false;
     }
 
     @Override
-    public void onTick() {
-        if (this.mc.player == null || this.mc.getNetworkHandler() == null) return;
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         final FishingBobberEntity fishHook = this.mc.player.fishHook;
         if (fishHook != null) {
             if (!this.hasFish && fishHook.caughtFish && fishHook.getVelocity().y < -0.2) {

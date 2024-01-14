@@ -19,8 +19,8 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.entity.EntityPushListener;
-import de.nekosarekawaii.vandalism.base.event.entity.FluidPushListener;
+import de.nekosarekawaii.vandalism.base.event.cancellable.player.EntityPushListener;
+import de.nekosarekawaii.vandalism.base.event.cancellable.player.FluidPushListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;

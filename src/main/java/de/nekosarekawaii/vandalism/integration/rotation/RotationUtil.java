@@ -32,7 +32,7 @@ public class RotationUtil implements MinecraftWrapper {
 
     public static List<Byte> getVisibleHitBoxSides(final Entity entity, final PlayerEntity player) {
         final List<Byte> sides = new ArrayList<>();
-        //TODO: check if anything has changed in 1.20.2 regarding hitbox position offsetting
+        //TODO: Check if anything has changed in 1.20.2 regarding hit box position offsetting
         final float width = (entity.getWidth() + 0.2f) / 2f;
         final float height = entity.getHeight() + 0.2f;
         final double eyePosY = entity.getY() - 0.1;

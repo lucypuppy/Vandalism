@@ -156,8 +156,8 @@ public class InfoHUDElement extends HUDElement {
             infoMap.put("FPS", Integer.toString(this.mc.getCurrentFps()));
         }
         if (this.cps.getValue()) {
-            this.leftClick.onTick();
-            this.rightClick.onTick();
+            this.leftClick.update();
+            this.rightClick.update();
             infoMap.put("CPS", this.leftClick.clicks() + " / " + this.rightClick.clicks());
         }
         if (this.username.getValue()) {

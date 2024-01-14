@@ -34,15 +34,16 @@ public class AddonWurstClient implements VandalismAddonLauncher {
     private WurstClientModule module;
 
     @Override
-    public void onLaunch(Vandalism vandalism) {
-        WurstClient.INSTANCE.initialize(); // Initialize WurstClient, counterpart in MixinWurstInitializer.java
+    public void onLaunch(final Vandalism vandalism) {
+        //Initialize WurstClient, counterpart in MixinWurstInitializer.java
+        WurstClient.INSTANCE.initialize();
 
-        vandalism.getModuleManager().add(module = new WurstClientModule());
+        vandalism.getModuleManager().add(this.module = new WurstClientModule());
     }
 
     @Override
-    public void onLateLaunch(Vandalism vandalism) {
-        ((IWurstClient) (Object) WurstClient.INSTANCE).vandalism$setSilentEnabled(module.isActive());
+    public void onLateLaunch(final Vandalism vandalism) {
+        ((IWurstClient) (Object) WurstClient.INSTANCE).vandalism$setSilentEnabled(this.module.isActive());
     }
 
 }

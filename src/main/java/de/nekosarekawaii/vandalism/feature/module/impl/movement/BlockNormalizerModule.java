@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.network.WorldListener;
+import de.nekosarekawaii.vandalism.base.event.normal.network.BlockCollisionShapeListener;
 import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiBlockValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
@@ -33,7 +33,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlockNormalizerModule extends AbstractModule implements WorldListener {
+public class BlockNormalizerModule extends AbstractModule implements BlockCollisionShapeListener {
 
     private static final List<Block> PRESET_BLOCKS = new ArrayList<>();
 
@@ -78,16 +78,16 @@ public class BlockNormalizerModule extends AbstractModule implements WorldListen
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(BlockEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(BlockCollisionShapeEvent.ID, this);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(BlockEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(BlockCollisionShapeEvent.ID, this);
     }
 
     @Override
-    public void onCollisionShapeGet(final BlockEvent event) {
+    public void onBlockCollisionShape(final BlockCollisionShapeEvent event) {
         if (this.disableOnSneak.getValue() && this.mc.options.sneakKey.isPressed()) {
             return;
         }

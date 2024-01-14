@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.base.clientsettings.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
-import de.nekosarekawaii.vandalism.base.event.game.KeyboardInputListener;
+import de.nekosarekawaii.vandalism.base.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.KeyBindValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
@@ -93,7 +93,7 @@ public class NetworkingSettings extends ValueGroup implements KeyboardInputListe
     }
 
     @Override
-    public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
+    public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         if (key == this.forceDisconnectKey.getValue() && action == GLFW.GLFW_PRESS) {
             if (NetworkingSettings.this.mc.getNetworkHandler() != null) {
                 NetworkingSettings.this.mc.getNetworkHandler().getConnection().disconnect(

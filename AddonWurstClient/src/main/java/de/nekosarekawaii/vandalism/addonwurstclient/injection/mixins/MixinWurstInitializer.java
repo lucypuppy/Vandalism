@@ -29,7 +29,8 @@ public abstract class MixinWurstInitializer {
 
     @Inject(method = "onInitialize", at = @At("HEAD"), cancellable = true)
     private void cancelWurstInitialization(final CallbackInfo ci) {
-        ci.cancel(); // Cancel Wurst initialization because we are moving it to load after the client has been initialized, counterpart in AddonWurstClient.java
+        //Cancel Wurst initialization because we are moving it to load after the client has been initialized, counterpart in AddonWurstClient.java
+        ci.cancel();
     }
 
 }

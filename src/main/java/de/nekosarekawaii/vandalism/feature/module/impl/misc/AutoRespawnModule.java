@@ -20,12 +20,12 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
+import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 
-public class AutoRespawnModule extends AbstractModule implements TickGameListener {
+public class AutoRespawnModule extends AbstractModule implements PlayerUpdateListener {
 
     private final BooleanValue instantRespawn = new BooleanValue(
             this,
@@ -53,23 +53,26 @@ public class AutoRespawnModule extends AbstractModule implements TickGameListene
     private final MSTimer delayTimer = new MSTimer();
 
     public AutoRespawnModule() {
-        super("Auto Respawn", "Automatically respawns you when you die.", Category.MISC);
+        super(
+                "Auto Respawn",
+                "Respawns you when you die without having to press the respawn button.",
+                Category.MISC
+        );
     }
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(TickGameEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(TickGameEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
     }
 
     @Override
-    public void onTick() {
-        if (this.mc.player == null || !this.mc.player.isDead()) return;
-        if (!this.instantRespawn.getValue() && !this.delayTimer.hasReached(this.delay.getValue(), true)) {
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        if (!this.mc.player.isDead() || !this.instantRespawn.getValue() && !this.delayTimer.hasReached(this.delay.getValue(), true)) {
             return;
         }
         this.mc.player.requestRespawn();

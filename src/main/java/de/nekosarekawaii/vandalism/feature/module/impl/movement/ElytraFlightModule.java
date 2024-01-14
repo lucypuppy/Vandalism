@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
+import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.elytraflight.CreativeModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
@@ -30,7 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 
-public class ElytraFlightModule extends AbstractModule implements TickGameListener {
+public class ElytraFlightModule extends AbstractModule implements PlayerUpdateListener {
 
     private final ModuleModeValue<ElytraFlightModule> mode = new ModuleModeValue<>(
             this,
@@ -49,18 +49,16 @@ public class ElytraFlightModule extends AbstractModule implements TickGameListen
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(TickGameEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(TickGameEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
     }
 
     @Override
-    public void onTick() {
-        if (this.mc.player == null) return;
-
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         final ItemStack itemStack = this.mc.player.getEquippedStack(EquipmentSlot.CHEST);
         if (itemStack.getItem() != Items.ELYTRA || !ElytraItem.isUsable(itemStack)) {
             ChatUtil.errorChatMessage(Text.literal("You need to equip an elytra to fly."));

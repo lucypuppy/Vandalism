@@ -23,8 +23,8 @@ import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.account.AccountManager;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
-import de.nekosarekawaii.vandalism.base.event.game.MinecraftBoostrapListener;
-import de.nekosarekawaii.vandalism.base.event.game.ShutdownProcessListener;
+import de.nekosarekawaii.vandalism.base.event.normal.game.MinecraftBoostrapListener;
+import de.nekosarekawaii.vandalism.base.event.normal.game.ShutdownProcessListener;
 import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.feature.command.CommandManager;
 import de.nekosarekawaii.vandalism.feature.creativetab.CreativeTabManager;
@@ -73,12 +73,18 @@ import java.io.File;
  *  - Fix module list out of screen rendering when the alignment is at the bottom of the screen
  *  - Fix ClientMenuScreen#close because it could break the entire game
  *  - Add anti vanish via. the player list hud
+ *  - Use #has from Gson in all the values to fix an config load issue
+ *  - Fix this by something like an auto detection: "...visibleCondition(() -> this.getParent().mode.getValue().equals(this))"
+ *  - Remove duplicated code by creating a new template for modules which uses packets or something like that
+ *  - Fix Rotation raytrace when block normalizer is enabled (Collision shape event) @FooFieOwO
+ *  - Fix NoClipMode from PhaseModule @FooFieOwO
+ *  - Fix SprintModule to be compatible with the rotation listener and also the backwards direction (ask Verschlxfene) @FooFieOwO
  */
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 
     private static final Vandalism instance = new Vandalism();
 
-    private final DietrichEvents2 eventSystem = new DietrichEvents2(35 /* This value has to be incremented for every new event */, Throwable::printStackTrace);
+    private final DietrichEvents2 eventSystem = new DietrichEvents2(33 /* This value has to be incremented for every new event */, Throwable::printStackTrace);
     private final Logger logger = LoggerFactory.getLogger(FabricBootstrap.MOD_NAME);
 
     // Base handlers

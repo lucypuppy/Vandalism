@@ -19,22 +19,32 @@
 package de.nekosarekawaii.vandalism.addonwurstclient.injection.mixins.common;
 
 import net.wurstclient.other_feature.OtfList;
-import net.wurstclient.other_features.DisableOtf;
-import net.wurstclient.other_features.HackListOtf;
-import net.wurstclient.other_features.WurstCapesOtf;
-import net.wurstclient.other_features.ZoomOtf;
+import net.wurstclient.other_feature.OtherFeature;
+import net.wurstclient.other_features.*;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.TreeMap;
 
 @Mixin(value = OtfList.class, remap = false)
 public abstract class MixinOtfList {
 
+    @Unique
+    private static final List<Class<? extends OtherFeature>> vandalism_DISABLED_OTFS = Arrays.asList(
+            HackListOtf.class,
+            DisableOtf.class,
+            WurstCapesOtf.class,
+            ZoomOtf.class,
+            NoChatReportsOtf.class
+    );
+
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/util/TreeMap;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"))
-    private Object removeSomeWurstOtfs(TreeMap instance, Object key, Object value) {
-        if (value.getClass().equals(HackListOtf.class) || value.getClass().equals(DisableOtf.class) || value.getClass().equals(WurstCapesOtf.class) || value.getClass().equals(ZoomOtf.class)) {
+    private Object disableSomeWurstOtherFeatures(TreeMap instance, Object key, Object value) {
+        if (vandalism_DISABLED_OTFS.contains(value.getClass())) {
             return value;
         }
         return instance.put(key, value);

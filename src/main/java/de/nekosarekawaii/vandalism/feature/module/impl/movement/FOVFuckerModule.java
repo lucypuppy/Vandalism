@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 import de.florianmichael.rclasses.common.RandomUtils;
 import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
+import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
@@ -36,7 +36,7 @@ import net.minecraft.util.math.Vec3d;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
-public class FOVFuckerModule extends AbstractModule implements TickGameListener {
+public class FOVFuckerModule extends AbstractModule implements PlayerUpdateListener {
 
     private final Value<Float> maxDistance = new FloatValue(
             this,
@@ -128,22 +128,19 @@ public class FOVFuckerModule extends AbstractModule implements TickGameListener 
     @Override
     public void onActivate() {
         this.reset();
-        Vandalism.getInstance().getEventSystem().subscribe(TickGameEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(TickGameEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
         this.reset();
     }
 
     @Override
-    public void onTick() {
-        if (this.mc.world == null || this.mc.player == null) return;
-
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (this.target == null) {
             final Stream<AbstractClientPlayerEntity> players = this.mc.world.getPlayers().stream();
-
             this.target = players.sorted(Comparator.comparingDouble(player -> this.mc.player.distanceTo(player))).
                     filter(player -> this.mc.player != player && this.mc.player.distanceTo(player) <= this.maxDistance.getValue()).
                     findFirst().

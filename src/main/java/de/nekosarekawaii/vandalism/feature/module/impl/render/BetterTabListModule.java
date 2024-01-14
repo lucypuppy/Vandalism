@@ -22,7 +22,7 @@ import de.florianmichael.rclasses.common.ColorUtils;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.florianmichael.rclasses.common.model.HSBColor;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.game.KeyboardInputListener;
+import de.nekosarekawaii.vandalism.base.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
@@ -87,7 +87,7 @@ public class BetterTabListModule extends AbstractModule implements KeyboardInput
     }
 
     @Override
-    public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
+    public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         if (this.toggleable.getValue()
                 && this.mc.currentScreen == null
                 && action == GLFW.GLFW_PRESS

@@ -168,12 +168,21 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
 
     private enum ColorMode implements IName {
 
-        STATIC, RAINBOW, TWO_COLOR_FADE;
+        STATIC,
+        RAINBOW,
+        TWO_COLOR_FADE;
+
+        private final String name;
+
+        ColorMode() {
+            this.name = StringUtils.normalizeEnumName(this.name());
+        }
 
         @Override
         public String getName() {
-            return StringUtils.normalizeEnumName(this.name());
+            return this.name;
         }
+
     }
 
 }

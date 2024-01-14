@@ -19,47 +19,54 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.entity.MotionListener;
+import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.minecraft.MovementUtil;
 import de.nekosarekawaii.vandalism.util.minecraft.TimerHack;
 import net.minecraft.util.math.Vec3d;
 
-public class LongJumpModule extends AbstractModule implements MotionListener {
+public class LongJumpModule extends AbstractModule implements PlayerUpdateListener {
 
-    private int waitTicks, moveTicks;
-    private double lastPosY;
-    private boolean canLongJump;
-    private double moveSpeed;
+    private int waitTicks = 0;
+    private int moveTicks = 0;
+    private double lastPosY = 0;
+    private double moveSpeed = 0;
+    private boolean canLongJump = false;
 
     public LongJumpModule() {
-        super("Long Jump", "Let's you jump further from normal.", Category.MOVEMENT);
+        super("Long Jump", "Let's you jump further than normal.", Category.MOVEMENT);
         this.markExperimental();
+    }
+
+    private void reset() {
+        this.waitTicks = 0;
+        this.moveTicks = 0;
+        this.lastPosY = 0;
+        this.moveSpeed = 0;
+        this.canLongJump = false;
+        TimerHack.reset();
     }
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(MotionEvent.ID, this);
+        this.reset();
+        Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);
         if (this.mc.getNetworkHandler() != null) {
             MovementUtil.clip(3.5, 0);
             MovementUtil.setSpeed(0.01);
-            this.lastPosY = mc.player.getY();
+            this.lastPosY = this.mc.player.getY();
             this.moveSpeed = MovementUtil.getBaseSpeed() * 4;
         }
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(MotionEvent.ID, this);
-        this.waitTicks = 0;
-        this.moveTicks = 0;
-        this.canLongJump = false;
-        TimerHack.setSpeed(1);
-
+        Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
+        this.reset();
     }
 
     @Override
-    public void onPostMotion(final MotionEvent event) {
+    public void onPostPlayerUpdate(final PlayerUpdateEvent event) {
         if (this.mc.player.hurtTime > 0) {
             this.waitTicks++;
             if (this.waitTicks >= 4) {
@@ -71,17 +78,15 @@ public class LongJumpModule extends AbstractModule implements MotionListener {
                 this.mc.player.setVelocity(this.mc.player.getVelocity().add(0, 1, 0));
             } else {
                 final Vec3d moveVelocity = this.mc.player.getVelocity();
-
                 if (this.mc.player.fallDistance > 0.2f && this.moveTicks <= 2) {
                     this.mc.player.setVelocity(new Vec3d(moveVelocity.getX(), 0, moveVelocity.getZ()));
-                    this.mc.player.setVelocity(mc.player.getVelocity().add(0, 0.01, 0));
+                    this.mc.player.setVelocity(this.mc.player.getVelocity().add(0, 0.01, 0));
                     this.moveTicks = 5;
                     TimerHack.setSpeed(0.8f);
                     return;
                 } else {
                     TimerHack.setSpeed(1.3f);
                 }
-
                 if (Math.abs(this.mc.player.getY() - this.lastPosY) > 1) {
                     MovementUtil.setSpeed(-0.01);
                     this.mc.player.fallDistance = 0;

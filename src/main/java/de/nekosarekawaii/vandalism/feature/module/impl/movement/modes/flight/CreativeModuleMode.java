@@ -19,11 +19,11 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.flight;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
+import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.FlightModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
 
-public class CreativeModuleMode extends ModuleMulti<FlightModule> implements TickGameListener {
+public class CreativeModuleMode extends ModuleMulti<FlightModule> implements PlayerUpdateListener {
 
     public CreativeModuleMode(final FlightModule parent) {
         super("Creative", parent);
@@ -31,20 +31,19 @@ public class CreativeModuleMode extends ModuleMulti<FlightModule> implements Tic
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(TickGameEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(TickGameEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
         if (this.mc.player == null) return;
         this.mc.player.getAbilities().flying = false;
         this.mc.player.getAbilities().allowFlying = this.mc.player.getAbilities().creativeMode;
     }
 
     @Override
-    public void onTick() {
-        if (this.mc.player == null) return;
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         this.mc.player.getAbilities().flying = true;
         this.mc.player.getAbilities().allowFlying = true;
     }

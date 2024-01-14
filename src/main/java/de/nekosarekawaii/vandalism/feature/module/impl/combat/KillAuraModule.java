@@ -19,12 +19,8 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.game.TickGameListener;
-import de.nekosarekawaii.vandalism.base.event.player.MoveInputListener;
-import de.nekosarekawaii.vandalism.base.event.player.RaytraceListener;
-import de.nekosarekawaii.vandalism.base.event.player.RotationListener;
-import de.nekosarekawaii.vandalism.base.event.player.StrafeListener;
-import de.nekosarekawaii.vandalism.base.event.render.Render2DListener;
+import de.nekosarekawaii.vandalism.base.event.normal.player.*;
+import de.nekosarekawaii.vandalism.base.event.normal.render.Render2DListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
@@ -47,7 +43,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class KillAuraModule extends AbstractModule implements TickGameListener, StrafeListener, Render2DListener, MoveInputListener, RotationListener, RaytraceListener {
+public class KillAuraModule extends AbstractModule implements PlayerUpdateListener, StrafeListener, Render2DListener, MoveInputListener, RotationListener, RaytraceListener {
 
     private final ValueGroup targetSelectionGroup = new ValueGroup(
             this,
@@ -133,7 +129,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(
                 this,
-                TickGameEvent.ID, StrafeEvent.ID,
+                PlayerUpdateEvent.ID, StrafeEvent.ID,
                 Render2DEvent.ID, MoveInputEvent.ID,
                 RotationEvent.ID, RaytraceEvent.ID
         );
@@ -143,7 +139,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(
                 this,
-                TickGameEvent.ID, StrafeEvent.ID,
+                PlayerUpdateEvent.ID, StrafeEvent.ID,
                 Render2DEvent.ID, MoveInputEvent.ID,
                 RotationEvent.ID, RaytraceEvent.ID
         );
@@ -156,12 +152,8 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
     //TODO: Frame event (entity renderer set angles)-> rotate
 
     @Override
-    public void onTick() {
-        if (this.mc.world == null || this.mc.player == null) {
-            return;
-        }
-
-        getTarget();
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        this.getTarget();
         if (this.target == null ||
                 this.rotationVector == null ||
                 this.rotationListener.getRotation() == null ||
@@ -229,7 +221,7 @@ public class KillAuraModule extends AbstractModule implements TickGameListener, 
         if (this.rotationListener.getRotation() == null || this.rotationListener.getTargetRotation() == null) return;
         event.yaw = this.rotationListener.getRotation().getYaw();
 
-       /*  float[] INPUTS = MovementUtil.getFixedMoveInputs(event.yaw);
+       /* float[] INPUTS = MovementUtil.getFixedMoveInputs(event.yaw);
         if (INPUTS[0] == 0f && INPUTS[1] == 0f) {
             return;
         }

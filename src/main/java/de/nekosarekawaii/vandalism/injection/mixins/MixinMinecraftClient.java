@@ -19,8 +19,8 @@
 package de.nekosarekawaii.vandalism.injection.mixins;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.game.MinecraftBoostrapListener;
-import de.nekosarekawaii.vandalism.base.event.game.ShutdownProcessListener;
+import de.nekosarekawaii.vandalism.base.event.normal.game.MinecraftBoostrapListener;
+import de.nekosarekawaii.vandalism.base.event.normal.game.ShutdownProcessListener;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;

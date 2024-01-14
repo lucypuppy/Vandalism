@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.feature.creativetab;
 import de.florianmichael.dietrichevents2.Priorities;
 import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.network.OutgoingPacketListener;
+import de.nekosarekawaii.vandalism.base.event.cancellable.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.feature.creativetab.impl.CrashItemsCreativeTab;
 import de.nekosarekawaii.vandalism.feature.creativetab.impl.GriefItemsCreativeTab;
 import de.nekosarekawaii.vandalism.feature.creativetab.impl.KickItemsCreativeTab;

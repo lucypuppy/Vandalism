@@ -19,8 +19,8 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.entity.MotionListener;
-import de.nekosarekawaii.vandalism.base.event.network.OutgoingPacketListener;
+import de.nekosarekawaii.vandalism.base.event.cancellable.network.OutgoingPacketListener;
+import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.flight.CreativeModuleMode;
@@ -28,7 +28,7 @@ import de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.flight.Cub
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
-public class FlightModule extends AbstractModule implements OutgoingPacketListener, MotionListener {
+public class FlightModule extends AbstractModule implements OutgoingPacketListener, PlayerUpdateListener {
 
     private final BooleanValue antiKick = new BooleanValue(
             this,
@@ -45,29 +45,24 @@ public class FlightModule extends AbstractModule implements OutgoingPacketListen
             new CubeCraftModuleMode(this)
     );
 
-    private double lastPacketY = 0.0D;
-
     public FlightModule() {
         super("Flight", "Allows you to fly (even in survival or adventure).", Category.MOVEMENT);
     }
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(MotionListener.MotionEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);
         Vandalism.getInstance().getEventSystem().subscribe(OutgoingPacketEvent.ID, this);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(MotionListener.MotionEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
         Vandalism.getInstance().getEventSystem().unsubscribe(OutgoingPacketEvent.ID, this);
     }
 
-
     @Override
-    public void onPreMotion(MotionEvent event) {
-        if (this.mc.player == null) return;
-
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (this.antiKick.getValue()) {
             this.mc.player.ticksSinceLastPositionPacketSent = 20;
         }
@@ -75,10 +70,10 @@ public class FlightModule extends AbstractModule implements OutgoingPacketListen
 
     @Override
     public void onOutgoingPacket(final OutgoingPacketEvent event) {
-        if (event.packet instanceof final PlayerMoveC2SPacket playerMoveC2SPacket
-                && this.antiKick.getValue()
-                && this.mc.player.age % 2 == 0) {
-            playerMoveC2SPacket.y = playerMoveC2SPacket.y - 0.1D;
+        if (event.packet instanceof final PlayerMoveC2SPacket playerMoveC2SPacket) {
+            if (this.antiKick.getValue() && this.mc.player.age % 2 == 0) {
+                playerMoveC2SPacket.y = playerMoveC2SPacket.y - 0.1;
+            }
         }
     }
 

@@ -24,6 +24,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.florianmichael.rclasses.io.WebUtils;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
+import de.nekosarekawaii.vandalism.util.minecraft.UUIDUtil;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
@@ -121,18 +122,10 @@ public class NameHistoryClientMenuWindow extends ClientMenuWindow {
                     this.executor.submit(() -> {
                         try {
                             this.state.set("Getting uuid by username from mojang api...");
-                            final String mojangApiContent = WebUtils.DEFAULT.get("https://api.mojang.com/users/profiles/minecraft/" + this.lastUsername);
-                            if (!mojangApiContent.isBlank()) {
-                                this.lastUUID = mojangApiContent.split("\"id\" : \"")[1].split("\",")[0].replaceFirst(
-                                        "(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)",
-                                        "$1-$2-$3-$4-$5"
-                                );
-                            } else {
-                                this.state.set("Invalid response for the uuid from the mojang api (Content is blank).");
-                                this.clear();
-                            }
+                            this.lastUUID = UUIDUtil.getUUIDFromName(this.lastUsername);
                         } catch (Exception e) {
-                            this.state.set("Error while getting uuid from mojang api: " + e);
+                            this.clear();
+                            this.state.set("Error while getting uuid for name '" + this.lastUsername + "' from mojang api: " + e);
                         }
                         if (this.lastUUID.isBlank() && this.mc.player != null) {
                             this.state.set("Fallback: Trying to get the uuid from the user on the server...");

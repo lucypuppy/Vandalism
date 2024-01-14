@@ -42,14 +42,14 @@ public class ClientSettingsClientMenuWindow extends ClientMenuWindow {
                 if (value instanceof final ValueGroup valueGroup) {
                     final String name = valueGroup.getName();
                     final String id = "##" + name + "settings";
-                    if (ImGui.beginTabItem(name + id)) {
-                        if (ImGui.button("Reset " + name + " Settings" + id)) {
+                    if (ImGui.beginTabItem(name + id + "tab")) {
+                        if (ImGui.button("Reset " + name + " Settings" + id + "button")) {
                             for (final Value<?> valueGroupValue : valueGroup.getValues()) {
                                 valueGroupValue.resetValue();
                             }
                         }
                         ImGui.separator();
-                        if (ImGui.beginChild(id)) {
+                        if (ImGui.beginChild(id + "values")) {
                             valueGroup.renderValues();
                             ImGui.endChild();
                         }

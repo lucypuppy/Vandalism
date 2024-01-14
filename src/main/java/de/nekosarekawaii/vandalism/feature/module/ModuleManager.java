@@ -22,9 +22,9 @@ import de.florianmichael.rclasses.pattern.storage.named.NamedStorage;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
-import de.nekosarekawaii.vandalism.base.event.game.KeyboardInputListener;
-import de.nekosarekawaii.vandalism.base.event.game.ShutdownProcessListener;
-import de.nekosarekawaii.vandalism.base.event.network.DisconnectListener;
+import de.nekosarekawaii.vandalism.base.event.normal.game.KeyboardInputListener;
+import de.nekosarekawaii.vandalism.base.event.normal.game.ShutdownProcessListener;
+import de.nekosarekawaii.vandalism.base.event.normal.network.DisconnectListener;
 import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.gui.ModulesClientMenuWindow;
@@ -113,7 +113,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
                 new VehicleOneHitModule(),
                 new LongJumpModule(),
                 new TrashTalkModule(),
-                new BoatFlightModule(),
+                new VehicleFlightModule(),
                 new EcholocationModule(),
                 new AutoClickerModule(),
                 new WTabModule()
@@ -122,7 +122,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
     }
 
     @Override
-    public void onKey(final long window, final int key, final int scanCode, final int action, final int modifiers) {
+    public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         //Cancel if the key is unknown to prevent the module from being toggled multiple times.
         if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN || this.mc.player == null || this.mc.currentScreen != null) {
             return;

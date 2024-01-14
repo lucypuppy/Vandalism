@@ -54,19 +54,19 @@ public abstract class Feature implements IName, MinecraftWrapper {
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     public Category getCategory() {
-        return category;
+        return this.category;
     }
 
     public boolean isExperimental() {
-        return experimental;
+        return this.experimental;
     }
 
     public void markExperimental() {
@@ -74,11 +74,12 @@ public abstract class Feature implements IName, MinecraftWrapper {
     }
 
     public VersionRange getSupportedVersions() {
-        return supportedVersions;
+        return this.supportedVersions;
     }
 
     public boolean isSupportedVersion(final VersionEnum version) {
-        if (this.supportedVersions == null) { // Using null as a wildcard instead of VersionRange.all() is faster
+        //Using null as a wildcard instead of VersionRange.all() is faster
+        if (this.supportedVersions == null) {
             return true;
         }
         return this.supportedVersions.contains(version);
