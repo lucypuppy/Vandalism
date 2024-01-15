@@ -44,9 +44,8 @@ import java.io.File;
  * TODO: NekosAreKawaii <br>
  *  - Fix an config load issue by adding #has from Gson in all the values
  *  - Remove duplicated code by creating a new template for modules which uses packets or something like that
- *  - Update ImNbt
  *  - Add Access Violation crash item to CrashItemCreativeTab
- *  - Added 1.20.2 / maybe 1.20.3 instant crash crash item to CrashItemCreativeTab
+ *  - Add 1.20.2 / maybe 1.20.3 instant crash crash item to CrashItemCreativeTab
  *  - Replaced target selection with actual entity selection (create something like an registry multi selection value)
  * <br><br>
  * TODO: Verschlxfene <br>
