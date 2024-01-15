@@ -22,6 +22,8 @@ import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.minecraft.WorldUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
@@ -97,9 +99,8 @@ public class RotationUtil implements MinecraftWrapper {
         Vec3d closestPoint = null;
 
         for (Vec3d p : aimPoints) {
-
-            final Rotation rotation = Rotation.Builder.build(p, mc.player.getEyePos());
-            if (rotation == null || !WorldUtil.rayTraceBlock(rotation, range))
+            final BlockHitResult blockHitResult = WorldUtil.rayTraceBlock(p, range);
+            if (blockHitResult != null && blockHitResult.getType() == HitResult.Type.BLOCK)
                 continue;
 
             Vec3d eyes = mc.player.getEyePos();

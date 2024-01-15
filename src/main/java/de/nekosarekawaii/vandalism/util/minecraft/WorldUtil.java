@@ -70,24 +70,40 @@ public class WorldUtil implements MinecraftWrapper {
         return crosshairTarget;
     }
 
-    public static boolean rayTraceBlock(final Rotation rotation, final double maxDistance) {
-        final Vec3d vec3d2 = rotation.getVector();
-        final Vec3d cameraPosVec = mc.player.getCameraPosVec(1.0F);
-        final Vec3d currentPos = cameraPosVec.add(
-                vec3d2.x * maxDistance,
-                vec3d2.y * maxDistance,
-                vec3d2.z * maxDistance
+    public static BlockHitResult rayTraceBlock(final Rotation rotation, final double maxDistance) {
+        final Vec3d playerPosition = mc.player.getEyePos();
+        final Vec3d rotationVector = rotation.getVector();
+        final Vec3d currentPos = playerPosition.add(
+                rotationVector.x * maxDistance,
+                rotationVector.y * maxDistance,
+                rotationVector.z * maxDistance
         );
-        final BlockHitResult rayTraceResult = mc.world.raycast(
-                new RaycastContext(
-                        cameraPosVec,
-                        currentPos,
-                        RaycastContext.ShapeType.OUTLINE,
-                        RaycastContext.FluidHandling.NONE,
-                        mc.player
-                )
+
+        return mc.world.raycast(new RaycastContext(
+                playerPosition,
+                currentPos,
+                RaycastContext.ShapeType.OUTLINE,
+                RaycastContext.FluidHandling.NONE,
+                mc.player
+        ));
+    }
+
+    public static BlockHitResult rayTraceBlock(final Vec3d targetPosition, final double maxDistance) {
+        final Vec3d playerPosition = mc.player.getEyePos();
+        final Vec3d lookDirection = targetPosition.subtract(playerPosition).normalize();
+        final Vec3d currentPos = playerPosition.add(
+                lookDirection.x * maxDistance,
+                lookDirection.y * maxDistance,
+                lookDirection.z * maxDistance
         );
-        return rayTraceResult == null || rayTraceResult.getType() != HitResult.Type.BLOCK;
+
+        return mc.world.raycast(new RaycastContext(
+                playerPosition,
+                currentPos,
+                RaycastContext.ShapeType.OUTLINE,
+                RaycastContext.FluidHandling.NONE,
+                mc.player
+        ));
     }
 
     public static boolean isTarget(final Entity entity) {
