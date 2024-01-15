@@ -34,12 +34,4 @@ public class VelocityModule extends AbstractModule {
         super("Velocity", "Modifies the server and the damage source velocity you take.", Category.MOVEMENT);
     }
 
-    @Override
-    public void onActivate() {
-    }
-
-    @Override
-    public void onDeactivate() {
-    }
-
 }
