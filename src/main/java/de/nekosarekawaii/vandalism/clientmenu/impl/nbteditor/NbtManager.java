@@ -164,4 +164,9 @@ public class NbtManager implements ImNbtDrawer, MinecraftWrapper {
         return this.clipboardTag;
     }
 
+    @Override
+    public void exit() {
+        Vandalism.getInstance().getClientMenuManager().getByClass(NbtEditorClientMenuWindow.class).setActive(false);
+    }
+
 }

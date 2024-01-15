@@ -163,7 +163,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         final HitResult raytrace = WorldUtil.rayTrace(this.rotationListener.getRotation(), Math.pow(getRange(true), 2));
         final double raytraceDistance = raytrace != null ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
 
-        if (raytraceDistance > getRange(false) || raytraceDistance <= 0) {
+        if (raytraceDistance > getRange(true) || raytraceDistance <= 0) {
             return;
         }
 
@@ -236,7 +236,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 return;
             }
 
-            this.rotationListener.setRotation(rotation, new Vec2f(30, 50), RotationPriority.HIGH);
+            this.rotationListener.setRotation(rotation, new Vec2f(60, 70), RotationPriority.HIGH);
             this.rotationVector = new Vec3d(1, 1, 1);
         } else {
             this.rotationListener.resetRotation();

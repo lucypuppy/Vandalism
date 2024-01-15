@@ -27,13 +27,13 @@ import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.util.math.MathHelper;
 
-public class BlocksmcModuleMode extends ModuleMulti<VelocityModule> implements PlayerUpdateListener, IncomingPacketListener {
-
-    public BlocksmcModuleMode(final VelocityModule parent) {
-        super("BlocksMC", parent);
-    }
+public class BlocksMCModuleMode extends ModuleMulti<VelocityModule> implements PlayerUpdateListener, IncomingPacketListener {
 
     private boolean velocity = false;
+
+    public BlocksMCModuleMode(final VelocityModule parent) {
+        super("BlocksMC", parent);
+    }
 
     @Override
     public void onActivate() {
@@ -47,22 +47,25 @@ public class BlocksmcModuleMode extends ModuleMulti<VelocityModule> implements P
 
     @Override
     public void onIncomingPacket(final IncomingPacketEvent event) {
-        if (event.packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket && velocityPacket.getId() == this.mc.player.getId()) {
+        if (event.packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket && this.mc.player != null && velocityPacket.getId() == this.mc.player.getId()) {
             event.cancel();
-            mc.player.setVelocity(mc.player.getVelocity().add(0, velocityPacket.getVelocityY() / 8000.0, 0));
-            velocity = true;
+            if (this.mc.player.isOnGround()) {
+                this.mc.player.setVelocity(this.mc.player.getVelocity().add(0, velocityPacket.getVelocityY() / 8000.0, 0));
+            }
+            this.velocity = true;
         }
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (velocity) {
-            if (mc.player.hurtTime > 6) {
+        if (this.velocity) {
+            if (this.mc.player.hurtTime > 6) {
                 final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
-                float yaw = (rotation != null ? rotation.getYaw() : mc.player.getYaw()) * 0.017453292F;
-                mc.player.setVelocity(mc.player.getVelocity().add(-MathHelper.sin(yaw) * 0.1F, 0.0F, MathHelper.cos(yaw) * 0.1F));
-            } else {
-                velocity = false;
+                final float yaw = (rotation != null ? rotation.getYaw() : this.mc.player.getYaw()) * 0.017453292F;
+                this.mc.player.setVelocity(this.mc.player.getVelocity().add(-MathHelper.sin(yaw) * 0.04F, 0.0F, MathHelper.cos(yaw) * 0.04F));
+            }
+            else {
+                this.velocity = false;
             }
         }
     }

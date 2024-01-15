@@ -18,30 +18,39 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.fix.imnbt;
 
-import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.clientmenu.impl.nbteditor.NbtEditorClientMenuWindow;
 import imgui.ImGui;
 import net.lenni0451.imnbt.ui.windows.MainWindow;
+import net.lenni0451.mcstructs.nbt.INbtTag;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import javax.annotation.Nullable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Mixin(value = MainWindow.class, remap = false)
 public abstract class MixinMainWindow {
 
+    @Shadow @Nullable public abstract INbtTag getOpenTab();
+
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Limgui/ImGui;menuItem(Ljava/lang/String;)Z"))
-    private boolean cancelRenderMenuItems(final String name) {
-        if (name.equals("About")) {
-            return false;
-        } else if (name.equals("Exit")) {
-            if (ImGui.menuItem("Exit")) {
-                Vandalism.getInstance().getClientMenuManager().getByClass(NbtEditorClientMenuWindow.class).setActive(false);
+    private boolean changeRenderMenuItems(String name) {
+        switch (name) {
+            case "About" -> {
+                return false;
             }
-            return false;
+            case "Close" -> {
+                name = "Close Tab";
+                if (this.getOpenTab() == null) {
+                    return ImGui.menuItem(name, null, false, false);
+                }
+            }
+            case "Exit" -> {
+                name = "Close";
+            }
         }
         return ImGui.menuItem(name);
     }

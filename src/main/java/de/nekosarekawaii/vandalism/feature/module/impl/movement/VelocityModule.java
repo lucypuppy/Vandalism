@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.velocity.BlocksmcModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.velocity.BlocksMCModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.velocity.CancelModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
 
@@ -27,11 +27,15 @@ public class VelocityModule extends AbstractModule {
 
     private final ModuleModeValue mode = new ModuleModeValue(this, "Mode", "The mode of the velocity.",
             new CancelModuleMode(this),
-            new BlocksmcModuleMode(this)
+            new BlocksMCModuleMode(this)
     );
 
     public VelocityModule() {
-        super("Velocity", "Modifies the server and the damage source velocity you take.", Category.MOVEMENT);
+        super(
+                "Velocity",
+                "Modifies the server and the damage source velocity you take.",
+                Category.MOVEMENT
+        );
     }
 
 }
