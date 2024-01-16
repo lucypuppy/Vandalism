@@ -20,8 +20,10 @@ package de.nekosarekawaii.vandalism.base.account.type;
 
 import com.google.gson.JsonObject;
 import de.florianmichael.rclasses.common.array.ObjectTypeChecker;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
+import de.nekosarekawaii.vandalism.util.minecraft.UUIDUtil;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
@@ -57,7 +59,18 @@ public class SessionAccount extends AbstractAccount {
     @Override
     public void logIn0() {
         if (!ObjectTypeChecker.isUUID(this.uuid)) {
-            this.uuid = UUID.randomUUID().toString();
+            String uuid = "";
+            if (!this.name.isBlank()) {
+                try {
+                    uuid = UUIDUtil.getUUIDFromName(this.name);
+                } catch (Exception e) {
+                    Vandalism.getInstance().getLogger().error("Failed to get UUID from username: \"" + this.name + "\"", e);
+                }
+            }
+            if (!ObjectTypeChecker.isUUID(uuid)) {
+                uuid = UUID.randomUUID().toString();
+            }
+            this.uuid = uuid;
         }
         updateSession(new Session(name, UUID.fromString(uuid), accessToken, Optional.of(xuid), Optional.of(clientId), Session.AccountType.LEGACY));
     }
