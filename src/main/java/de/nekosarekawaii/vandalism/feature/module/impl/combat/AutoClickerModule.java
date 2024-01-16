@@ -21,9 +21,19 @@ package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 
 public class AutoClickerModule extends AbstractModule implements PlayerUpdateListener {
+
+    private final IntegerValue cps = new IntegerValue(
+            this,
+            "CPS",
+            "The amount of clicks per second.",
+            10,
+            1,
+            20
+    );
 
     private final MSTimer clickTimer = new MSTimer();
 
@@ -47,7 +57,7 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.clickTimer.hasReached((long) ((1000 / 10) * Math.random()), true)) {
+        if (this.clickTimer.hasReached((long) ((1000 / this.cps.getValue()) * Math.random()), true)) {
             this.mc.doAttack();
         }
     }
