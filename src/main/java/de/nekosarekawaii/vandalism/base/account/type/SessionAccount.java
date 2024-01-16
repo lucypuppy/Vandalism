@@ -28,6 +28,7 @@ import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
 import net.minecraft.client.session.Session;
+import net.minecraft.util.Uuids;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -104,9 +105,15 @@ public class SessionAccount extends AbstractAccount {
             public void displayFactory() {
                 ImGui.inputText("Name", name, ImGuiInputTextFlags.CallbackResize);
                 ImGui.inputText("UUID", uuid, ImGuiInputTextFlags.CallbackResize);
+                final String name = this.name.get();
                 ImGui.inputText("Access Token", accessToken, ImGuiInputTextFlags.CallbackResize);
                 ImGui.inputText("XUID", xuid, ImGuiInputTextFlags.CallbackResize);
                 ImGui.inputText("Client ID", clientId, ImGuiInputTextFlags.CallbackResize);
+                if (!name.isEmpty()) {
+                    if (ImGui.button("Get Offline UUID", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                        uuid.set(Uuids.getOfflinePlayerUuid(name).toString());
+                    }
+                }
             }
 
             @Override
