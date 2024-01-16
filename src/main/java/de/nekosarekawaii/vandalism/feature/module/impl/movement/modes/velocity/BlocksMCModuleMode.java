@@ -20,16 +20,12 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.velocity;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.cancellable.network.IncomingPacketListener;
-import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.VelocityModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
-import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.util.math.MathHelper;
 
-public class BlocksMCModuleMode extends ModuleMulti<VelocityModule> implements PlayerUpdateListener, IncomingPacketListener {
-
-    private boolean velocity = false;
+public class BlocksMCModuleMode extends ModuleMulti<VelocityModule> implements IncomingPacketListener {
 
     public BlocksMCModuleMode(final VelocityModule parent) {
         super("BlocksMC", parent);
@@ -37,36 +33,20 @@ public class BlocksMCModuleMode extends ModuleMulti<VelocityModule> implements P
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, IncomingPacketEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, IncomingPacketEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, IncomingPacketEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, IncomingPacketEvent.ID);
     }
 
     @Override
     public void onIncomingPacket(final IncomingPacketEvent event) {
         if (event.packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket && this.mc.player != null && velocityPacket.getId() == this.mc.player.getId()) {
-            event.cancel();
-            if (this.mc.player.isOnGround()) {
-                this.mc.player.setVelocity(this.mc.player.getVelocity().add(0, velocityPacket.getVelocityY() / 8000.0, 0));
-            }
-            this.velocity = true;
-        }
-    }
-
-    @Override
-    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.velocity) {
-            if (this.mc.player.hurtTime > 6) {
-                final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
-                final float yaw = (rotation != null ? rotation.getYaw() : this.mc.player.getYaw()) * 0.017453292F;
-                this.mc.player.setVelocity(this.mc.player.getVelocity().add(-MathHelper.sin(yaw) * 0.04F, 0.0F, MathHelper.cos(yaw) * 0.04F));
-            }
-            else {
-                this.velocity = false;
-            }
+            final float yaw = this.mc.player.getYaw() * 0.017453292F;
+            velocityPacket.velocityX = (int) ((-MathHelper.sin(yaw) * 0.8F) * 8000.0D);
+            velocityPacket.velocityZ = (int) ((MathHelper.cos(yaw) * 0.8F) * 8000.0D);
         }
     }
 
