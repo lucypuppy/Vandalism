@@ -42,8 +42,11 @@ public class CancelModuleMode extends ModuleMulti<VelocityModule> implements Inc
 
     @Override
     public void onIncomingPacket(final IncomingPacketEvent event) {
-        if (event.packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket &&
-                velocityPacket.getId() == this.mc.player.getId()) {
+        if (
+                event.packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket &&
+                this.mc.player != null &&
+                velocityPacket.getId() == this.mc.player.getId()
+        ) {
             event.cancel();
         }
     }
