@@ -19,15 +19,15 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.velocity.BlocksMCModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.velocity.CancelModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.velocity.ReverseModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
 
 public class VelocityModule extends AbstractModule {
 
-    private final ModuleModeValue mode = new ModuleModeValue(this, "Mode", "The mode of the velocity.",
+    public final ModuleModeValue mode = new ModuleModeValue(this, "Mode", "The mode of the velocity.",
             new CancelModuleMode(this),
-            new BlocksMCModuleMode(this)
+            new ReverseModuleMode(this)
     );
 
     public VelocityModule() {

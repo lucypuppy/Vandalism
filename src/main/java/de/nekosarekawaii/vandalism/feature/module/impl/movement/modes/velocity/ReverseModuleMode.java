@@ -20,15 +20,20 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.velocity;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.cancellable.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.base.value.Value;
+import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.VelocityModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.util.math.MathHelper;
 
-public class BlocksMCModuleMode extends ModuleMulti<VelocityModule> implements IncomingPacketListener {
+public class ReverseModuleMode extends ModuleMulti<VelocityModule> implements IncomingPacketListener {
 
-    public BlocksMCModuleMode(final VelocityModule parent) {
-        super("BlocksMC", parent);
+    private final Value<Float> multiplier = new FloatValue(getParent(), "Multiplier", "The multiplier for the velocity.",
+            0.3F, 0.0F, 1.0F).visibleCondition(() -> this.getParent().mode.getValue().equals(this));
+
+    public ReverseModuleMode(final VelocityModule parent) {
+        super("Reverse", parent);
     }
 
     @Override
@@ -45,8 +50,8 @@ public class BlocksMCModuleMode extends ModuleMulti<VelocityModule> implements I
     public void onIncomingPacket(final IncomingPacketEvent event) {
         if (event.packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket && this.mc.player != null && velocityPacket.getId() == this.mc.player.getId()) {
             final float yaw = this.mc.player.getYaw() * 0.017453292F;
-            velocityPacket.velocityX = (int) ((-MathHelper.sin(yaw) * 0.8F) * 8000.0D);
-            velocityPacket.velocityZ = (int) ((MathHelper.cos(yaw) * 0.8F) * 8000.0D);
+            velocityPacket.velocityX = (int) ((-MathHelper.sin(yaw) * this.multiplier.getValue()) * 8000.0D);
+            velocityPacket.velocityZ = (int) ((MathHelper.cos(yaw) * this.multiplier.getValue()) * 8000.0D);
         }
     }
 
