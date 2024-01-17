@@ -83,7 +83,6 @@
     "util.MixinConnectScreen",
     "util.MixinDrawContext",
     "util.MixinMinecraftClient",
-    "util.MixinRenderTickCounter",
     "util.MixinToolTipComponent",
     "integration.MixinClientPlayerEntity",
     "integration.MixinEntity",

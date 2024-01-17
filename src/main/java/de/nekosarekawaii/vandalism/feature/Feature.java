@@ -78,7 +78,7 @@ public abstract class Feature implements IName, MinecraftWrapper {
     }
 
     public boolean isSupportedVersion(final VersionEnum version) {
-        //Using null as a wildcard instead of VersionRange.all() is faster
+        // Using null as a wildcard instead of VersionRange.all() is faster
         if (this.supportedVersions == null) {
             return true;
         }
