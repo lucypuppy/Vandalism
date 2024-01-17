@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.base.account.gui;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
+import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.base.account.AccountManager;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.util.render.PlayerSkinRenderer;
@@ -28,6 +29,8 @@ import imgui.flag.ImGuiMouseButton;
 import imgui.flag.ImGuiWindowFlags;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.session.Session;
+
+import java.util.function.Consumer;
 
 import static de.nekosarekawaii.vandalism.util.imgui.ImUtils.subButton;
 
@@ -43,6 +46,20 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
         this.accountManager = accountManager;
     }
 
+    private void recallAccount(final AccountFactory factory, final Consumer<AbstractAccount> account) {
+        factory.make().whenComplete((abstractAccount, throwable) -> {
+            if (abstractAccount == null) {
+                Vandalism.getInstance().getLogger().error("Failed to create account");
+                return;
+            }
+            if (throwable != null) {
+                Vandalism.getInstance().getLogger().error("Failed to create account", throwable);
+            } else {
+                account.accept(abstractAccount);
+            }
+        });
+    }
+
     protected void renderMenuBar(final AccountManager accountManager) {
         if (ImGui.beginMenuBar()) {
             if (ImGui.beginMenu("Add Account")) {
@@ -50,17 +67,10 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
                     if (ImGui.beginMenu(account.getName())) {
                         factory.displayFactory();
                         if (ImGui.button("Add", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
-                            factory.make().whenComplete((abstractAccount, throwable) -> {
-                                if (abstractAccount == null) {
-                                    Vandalism.getInstance().getLogger().error("Failed to create account");
-                                    return;
-                                }
-                                if (throwable != null) {
-                                    Vandalism.getInstance().getLogger().error("Failed to create account", throwable);
-                                } else {
-                                    accountManager.add(abstractAccount);
-                                }
-                            });
+                            recallAccount(factory, accountManager::add);
+                        }
+                        if (ImGui.button("Login", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                            recallAccount(factory, AbstractAccount::logIn);
                         }
                         ImGui.endMenu();
                     }
