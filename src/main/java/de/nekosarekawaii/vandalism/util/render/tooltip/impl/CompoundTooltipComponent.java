@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.tooltip.impl;
+package de.nekosarekawaii.vandalism.util.render.tooltip.impl;
 
 import com.google.common.collect.Lists;
-import de.nekosarekawaii.vandalism.util.tooltip.ConvertibleTooltipData;
+import de.nekosarekawaii.vandalism.util.render.tooltip.ConvertibleTooltipData;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;

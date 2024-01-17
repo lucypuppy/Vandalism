@@ -16,24 +16,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.minecraft;
+package de.nekosarekawaii.vandalism.util.game;
 
-public class TimerHack {
+import de.florianmichael.rclasses.math.integration.MSTimer;
 
-    private static final float DEFAULT_TIMER_SPEED = 1.0F;
+@Deprecated
+public class ParticleTracker {
 
-    private static float TIMER_SPEED = DEFAULT_TIMER_SPEED;
+    private final String particleId;
+    private final MSTimer timer;
+    private int count;
 
-    public static void setSpeed(final float speed) {
-        TIMER_SPEED = Math.max(0.01F, speed);
+    public ParticleTracker(final String particleId) {
+        this.particleId = particleId;
+        this.timer = new MSTimer();
+        this.count = 1;
     }
 
-    public static float getSpeed() {
-        return TIMER_SPEED;
+    public String getParticleId() {
+        return this.particleId;
     }
 
-    public static void reset() {
-        TIMER_SPEED = DEFAULT_TIMER_SPEED;
+    public void increaseCount() {
+        this.count++;
+    }
+
+    public void resetCount() {
+        this.count = 1;
+    }
+
+    public MSTimer getTimer() {
+        return this.timer;
+    }
+
+    public int getCount() {
+        return this.count;
     }
 
 }

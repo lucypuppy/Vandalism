@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.render.VisualThrottleModule;
-import de.nekosarekawaii.vandalism.util.ParticleTracker;
+import de.nekosarekawaii.vandalism.util.game.ParticleTracker;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.ParticleManager;

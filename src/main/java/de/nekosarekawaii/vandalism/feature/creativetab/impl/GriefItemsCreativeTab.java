@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.creativetab.impl;
 
 import de.nekosarekawaii.vandalism.feature.creativetab.AbstractCreativeTab;
-import de.nekosarekawaii.vandalism.util.minecraft.ItemStackUtil;
+import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.SpawnEggItem;
@@ -29,7 +29,7 @@ import net.minecraft.util.Formatting;
 
 import java.util.List;
 
-import static de.nekosarekawaii.vandalism.util.minecraft.ItemStackUtil.withClientSide;
+import static de.nekosarekawaii.vandalism.util.game.ItemStackUtil.withClientSide;
 
 public class GriefItemsCreativeTab extends AbstractCreativeTab {
 

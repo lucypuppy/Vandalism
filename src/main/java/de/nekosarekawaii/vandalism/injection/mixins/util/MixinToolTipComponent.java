@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.util;
 
-import de.nekosarekawaii.vandalism.util.tooltip.ConvertibleTooltipData;
+import de.nekosarekawaii.vandalism.util.render.tooltip.ConvertibleTooltipData;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.item.TooltipData;
 import org.spongepowered.asm.mixin.Mixin;

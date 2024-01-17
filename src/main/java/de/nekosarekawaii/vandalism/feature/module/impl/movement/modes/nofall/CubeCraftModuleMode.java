@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.cancellable.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.NoFallModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
-import de.nekosarekawaii.vandalism.util.minecraft.MinecraftConstants;
+import de.nekosarekawaii.vandalism.util.MinecraftConstants;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
 public class CubeCraftModuleMode extends ModuleMulti<NoFallModule> implements OutgoingPacketListener {

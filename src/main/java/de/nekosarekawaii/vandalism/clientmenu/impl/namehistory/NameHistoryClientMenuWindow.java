@@ -24,7 +24,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.florianmichael.rclasses.io.WebUtils;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
-import de.nekosarekawaii.vandalism.util.minecraft.UUIDUtil;
+import de.nekosarekawaii.vandalism.util.common.UUIDUtil;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;

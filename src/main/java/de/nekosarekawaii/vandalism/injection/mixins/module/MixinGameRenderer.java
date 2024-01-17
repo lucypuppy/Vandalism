@@ -21,7 +21,6 @@ package de.nekosarekawaii.vandalism.injection.mixins.module;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.RaytraceListener;
 import de.nekosarekawaii.vandalism.injection.access.IGameRenderer;
-import de.nekosarekawaii.vandalism.util.minecraft.WorldUtil;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.render.GameRenderer;
 import org.spongepowered.asm.mixin.Mixin;

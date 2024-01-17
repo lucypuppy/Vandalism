@@ -25,7 +25,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.awt.KeyBindValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.PhaseModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
-import de.nekosarekawaii.vandalism.util.minecraft.MovementUtil;
+import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 import net.minecraft.util.shape.VoxelShapes;
 import org.lwjgl.glfw.GLFW;
 

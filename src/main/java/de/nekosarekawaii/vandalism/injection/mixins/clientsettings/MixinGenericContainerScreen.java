@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.util.minecraft.InventoryUtil;
+import de.nekosarekawaii.vandalism.util.game.InventoryUtil;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.ScreenHandlerProvider;

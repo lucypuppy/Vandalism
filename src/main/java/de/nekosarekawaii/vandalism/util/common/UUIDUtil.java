@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.minecraft;
+package de.nekosarekawaii.vandalism.util.common;
 
 import de.florianmichael.rclasses.io.WebUtils;
 

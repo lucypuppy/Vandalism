@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.integration.rotation;
 
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
-import de.nekosarekawaii.vandalism.util.minecraft.WorldUtil;
+import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;

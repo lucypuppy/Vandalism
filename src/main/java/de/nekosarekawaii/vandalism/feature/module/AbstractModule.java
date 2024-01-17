@@ -27,7 +27,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
-import de.nekosarekawaii.vandalism.util.minecraft.ChatUtil;
+import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.raphimc.vialoader.util.VersionRange;
 
 import java.util.ArrayList;

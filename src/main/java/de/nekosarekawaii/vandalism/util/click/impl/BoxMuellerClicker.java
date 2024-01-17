@@ -16,13 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.integration.clicker.impl;
+package de.nekosarekawaii.vandalism.util.click.impl;
 
 import de.florianmichael.rclasses.common.RandomUtils;
 import de.florianmichael.rclasses.math.BoxMullerTransform;
 import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.florianmichael.rclasses.pattern.evicting.EvictingList;
-import de.nekosarekawaii.vandalism.integration.clicker.Clicker;
+import de.nekosarekawaii.vandalism.util.click.Clicker;
 import net.minecraft.util.Pair;
 
 import java.util.ArrayList;

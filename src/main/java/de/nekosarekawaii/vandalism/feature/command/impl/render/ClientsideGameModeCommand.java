@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.feature.command.impl.render;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.feature.command.arguments.GameModeArgumentType;
-import de.nekosarekawaii.vandalism.util.minecraft.ChatUtil;
+import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.GameMode;

@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.util.minecraft.ServerUtil;
+import de.nekosarekawaii.vandalism.util.game.ServerUtil;
 import net.minecraft.client.gui.screen.DisconnectedScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.*;

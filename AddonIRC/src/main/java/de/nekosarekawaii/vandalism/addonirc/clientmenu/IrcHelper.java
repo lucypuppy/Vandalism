@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.addonirc.clientmenu;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.util.minecraft.ChatUtil;
+import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.util.Formatting;
 import re.catgirls.irc.ChatClientWrapper;
 import re.catgirls.irc.listeners.impl.ProfileListener;

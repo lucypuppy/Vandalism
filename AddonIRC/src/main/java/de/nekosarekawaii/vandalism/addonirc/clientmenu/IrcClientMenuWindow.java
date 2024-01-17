@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.addonirc.clientmenu;
 
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
-import de.nekosarekawaii.vandalism.util.minecraft.ChatUtil;
+import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiPopupFlags;

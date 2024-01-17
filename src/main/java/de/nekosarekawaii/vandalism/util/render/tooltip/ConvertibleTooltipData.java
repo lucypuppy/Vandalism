@@ -16,40 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util;
+package de.nekosarekawaii.vandalism.util.render.tooltip;
 
-import de.florianmichael.rclasses.math.integration.MSTimer;
+import net.minecraft.client.gui.tooltip.TooltipComponent;
+import net.minecraft.client.item.TooltipData;
 
-public class ParticleTracker {
+public interface ConvertibleTooltipData extends TooltipData {
 
-    private final String particleId;
-    private final MSTimer timer;
-    private int count;
-
-    public ParticleTracker(final String particleId) {
-        this.particleId = particleId;
-        this.timer = new MSTimer();
-        this.count = 1;
-    }
-
-    public String getParticleId() {
-        return this.particleId;
-    }
-
-    public void increaseCount() {
-        this.count++;
-    }
-
-    public void resetCount() {
-        this.count = 1;
-    }
-
-    public MSTimer getTimer() {
-        return this.timer;
-    }
-
-    public int getCount() {
-        return this.count;
-    }
+    TooltipComponent getComponent();
 
 }

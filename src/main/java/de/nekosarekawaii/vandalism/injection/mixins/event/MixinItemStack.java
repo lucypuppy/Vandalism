@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.render.TooltipDrawListener;
-import de.nekosarekawaii.vandalism.util.tooltip.impl.CompoundTooltipComponent;
+import de.nekosarekawaii.vandalism.util.render.tooltip.impl.CompoundTooltipComponent;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.item.TooltipData;
 import net.minecraft.item.ItemStack;

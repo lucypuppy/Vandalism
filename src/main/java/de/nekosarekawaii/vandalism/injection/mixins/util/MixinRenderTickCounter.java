@@ -18,7 +18,6 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.util;
 
-import de.nekosarekawaii.vandalism.util.minecraft.TimerHack;
 import net.minecraft.client.render.RenderTickCounter;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;

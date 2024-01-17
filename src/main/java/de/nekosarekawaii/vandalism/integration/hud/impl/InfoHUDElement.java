@@ -24,9 +24,9 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
-import de.nekosarekawaii.vandalism.util.minecraft.ClickList;
-import de.nekosarekawaii.vandalism.util.minecraft.ServerUtil;
-import de.nekosarekawaii.vandalism.util.minecraft.WorldUtil;
+import de.nekosarekawaii.vandalism.util.click.CPSTracker;
+import de.nekosarekawaii.vandalism.util.game.ServerUtil;
+import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -146,8 +146,8 @@ public class InfoHUDElement extends HUDElement {
         super("Info", 2, 60);
     }
 
-    public final ClickList leftClick = new ClickList();
-    public final ClickList rightClick = new ClickList();
+    public final CPSTracker leftClick = new CPSTracker();
+    public final CPSTracker rightClick = new CPSTracker();
 
     @Override
     public void onRender(final DrawContext context, final float delta) {

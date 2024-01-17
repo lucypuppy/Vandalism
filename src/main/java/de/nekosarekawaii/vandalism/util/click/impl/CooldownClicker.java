@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.integration.clicker.impl;
+package de.nekosarekawaii.vandalism.util.click.impl;
 
-import de.nekosarekawaii.vandalism.integration.clicker.Clicker;
-import de.nekosarekawaii.vandalism.util.minecraft.TimerHack;
+import de.nekosarekawaii.vandalism.util.click.Clicker;
 import net.minecraft.entity.attribute.EntityAttributes;
 
 public class CooldownClicker extends Clicker {
