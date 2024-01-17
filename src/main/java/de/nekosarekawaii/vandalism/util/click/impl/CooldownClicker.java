@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.util.click.impl;
 
 import de.nekosarekawaii.vandalism.util.click.Clicker;
+import de.nekosarekawaii.vandalism.util.game.TimerHack;
 import net.minecraft.entity.attribute.EntityAttributes;
 
 public class CooldownClicker extends Clicker {
@@ -29,8 +30,9 @@ public class CooldownClicker extends Clicker {
 
         float additionalBaseDelayOffset = 0;
 
-        if (TimerHack.getSpeed() > 1) {
-            additionalBaseDelayOffset = -(TimerHack.getSpeed() - 1);
+        Float speed = TimerHack.getSpeedOrNull();
+        if (speed != null && speed > 1) {
+            additionalBaseDelayOffset = -(speed - 1);
         }
 
         final float attackCooldown = mc.player.getAttackCooldownProgress(additionalBaseDelayOffset);

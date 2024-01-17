@@ -23,6 +23,7 @@ import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.FlightModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
+import de.nekosarekawaii.vandalism.util.game.TimerHack;
 import net.minecraft.util.math.Vec3d;
 
 public class CubeCraftModuleMode extends ModuleMulti<FlightModule> implements PlayerUpdateListener {
