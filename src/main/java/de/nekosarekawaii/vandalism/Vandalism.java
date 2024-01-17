@@ -49,7 +49,6 @@ import java.io.File;
  *  - Replaced target selection with actual entity selection (create something like an registry multi selection value)
  * <br><br>
  * TODO: Verschlxfene <br>
- *  - Apply checkstyle.xml to all classes
  *  - Delete MixinParticleManager
  *  - Add Proxy manager
  *  - Add JiJ and JiS for building/exporting the mod
@@ -87,6 +86,7 @@ import java.io.File;
  *  - Fix module tabs display (no stacking) when the mod starts the first time
  *  - Fix ClientMenuScreen#close because it could break the entire game
  *  - Add anti vanish via. the player list hud
+ *  - Export generic constants to {@link de.nekosarekawaii.vandalism.util.MinecraftConstants} and add comment to link where to get them
  */
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 
