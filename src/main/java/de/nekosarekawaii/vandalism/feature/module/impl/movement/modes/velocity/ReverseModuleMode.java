@@ -49,7 +49,7 @@ public class ReverseModuleMode extends ModuleMulti<VelocityModule> implements In
     @Override
     public void onIncomingPacket(final IncomingPacketEvent event) {
         if (event.packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket && this.mc.player != null && velocityPacket.getId() == this.mc.player.getId()) {
-            final float yaw = this.mc.player.getYaw() * 0.017453292F;
+            final float yaw = (float) Math.toRadians(this.mc.player.getYaw());
             velocityPacket.velocityX = (int) ((-MathHelper.sin(yaw) * this.multiplier.getValue()) * 8000.0D);
             velocityPacket.velocityZ = (int) ((MathHelper.cos(yaw) * this.multiplier.getValue()) * 8000.0D);
         }
