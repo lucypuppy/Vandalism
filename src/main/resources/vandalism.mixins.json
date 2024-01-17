@@ -85,11 +85,11 @@
     "util.MixinMinecraftClient",
     "util.MixinRenderTickCounter",
     "util.MixinToolTipComponent",
-    "util.rotation.MixinClientPlayerEntity",
-    "util.rotation.MixinEntity",
-    "util.rotation.MixinLivingEntity",
-    "util.rotation.MixinLivingEntityRenderer",
-    "util.rotation.MixinPlayerEntity"
+    "integration.MixinClientPlayerEntity",
+    "integration.MixinEntity",
+    "integration.MixinLivingEntity",
+    "integration.MixinLivingEntityRenderer",
+    "integration.MixinPlayerEntity"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.injection.mixins.util.rotation;
+package de.nekosarekawaii.vandalism.injection.mixins.integration;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
