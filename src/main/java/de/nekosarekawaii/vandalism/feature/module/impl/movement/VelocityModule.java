@@ -25,7 +25,7 @@ import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
 
 public class VelocityModule extends AbstractModule {
 
-    public final ModuleModeValue mode = new ModuleModeValue(this, "Mode", "The mode of the velocity.",
+    public final ModuleModeValue<VelocityModule> mode = new ModuleModeValue<>(this, "Mode", "The mode of the velocity.",
             new CancelModuleMode(this),
             new ReverseModuleMode(this)
     );

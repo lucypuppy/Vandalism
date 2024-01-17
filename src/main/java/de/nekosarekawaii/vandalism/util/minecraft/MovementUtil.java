@@ -27,7 +27,6 @@ import net.minecraft.util.math.Vec3d;
 
 public class MovementUtil implements MinecraftWrapper {
 
-    private static final float DEG_TO_RAD = 0.01745329238f;
     private static final float[] POSSIBLE_MOVEMENTS = new float[]{-1F, 0.0F, 1F};
 
     /**
@@ -172,8 +171,8 @@ public class MovementUtil implements MinecraftWrapper {
         if (Math.abs(mc.player.forwardSpeed) > 0F || Math.abs(mc.player.sidewaysSpeed) > 0F) {
             final float wantedYaw = getInputAngle(mc.player.getYaw());
             Vec3d movementInput;
-            final float currentDX = MathHelper.sin(yaw * DEG_TO_RAD);
-            final float currentDZ = MathHelper.cos(yaw * DEG_TO_RAD);
+            final float currentDX = MathHelper.sin((float) Math.toRadians(yaw));
+            final float currentDZ = MathHelper.cos((float) Math.toRadians(yaw));
             // .. as seen here
             float currentBestForward = 1.0F;
             float currentBestStrafing = 0.0F;

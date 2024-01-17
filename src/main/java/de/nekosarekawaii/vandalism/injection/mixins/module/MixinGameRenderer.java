@@ -20,23 +20,52 @@ package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.RaytraceListener;
+import de.nekosarekawaii.vandalism.injection.access.IGameRenderer;
 import de.nekosarekawaii.vandalism.util.minecraft.WorldUtil;
+import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.render.GameRenderer;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(GameRenderer.class)
-public abstract class MixinGameRenderer {
+public abstract class MixinGameRenderer implements IGameRenderer {
+
+    @Unique
+    private double vandalism$range = -1;
 
     @ModifyConstant(method = "updateTargetedEntity", constant = @Constant(doubleValue = 9.0))
-    private double modifyRaytraceRange(double constant) {
-        if (WorldUtil.doingRaytrace) // Skip calling the event when we do custom raytraces.
-            return WorldUtil.raytraceRange;
+    private double changeRange(double constant) {
+        if (vandalism$range != -1) {
+            return vandalism$range;
+        } else {
+            final RaytraceListener.RaytraceEvent event = new RaytraceListener.RaytraceEvent(constant);
+            Vandalism.getInstance().getEventSystem().postInternal(RaytraceListener.RaytraceEvent.ID, event);
+            return event.range;
+        }
+    }
 
-        final RaytraceListener.RaytraceEvent event = new RaytraceListener.RaytraceEvent(constant);
-        Vandalism.getInstance().getEventSystem().postInternal(RaytraceListener.RaytraceEvent.ID, event);
-        return event.range;
+    @Redirect(method = "updateTargetedEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;hasExtendedReach()Z"))
+    private boolean alwaysSurvival(ClientPlayerInteractionManager instance) {
+        return vandalism$range == -1 && instance.hasExtendedReach();
+    }
+
+    @Override
+    public boolean vandalism$isSelfInflicted() {
+        return vandalism$range != -1;
+    }
+
+    @Override
+    public double vandalism$getRange() {
+        return vandalism$range;
+    }
+
+    @Override
+    public void vandalism$setRange(double range) {
+        vandalism$range = range;
     }
 
 }
