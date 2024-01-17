@@ -20,18 +20,20 @@ package de.nekosarekawaii.vandalism.util.game;
 
 public class TimerHack {
 
-    private static float speed = Float.NaN;
+    private static final float DEFAULT_TIMER_SPEED = 1.0F;
+
+    private static float TIMER_SPEED = DEFAULT_TIMER_SPEED;
 
     public static void setSpeed(final float speed) {
-        TimerHack.speed = 1_000 / speed;
+        TIMER_SPEED = Math.max(0.01F, speed);
+    }
+
+    public static float getSpeed() {
+        return TIMER_SPEED;
     }
 
     public static void reset() {
-        speed = Float.NaN;
-    }
-
-    public static Float getSpeedOrNull() {
-        return Float.isNaN(speed) ? null : speed;
+        TIMER_SPEED = DEFAULT_TIMER_SPEED;
     }
 
 }

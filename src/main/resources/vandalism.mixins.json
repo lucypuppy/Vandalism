@@ -63,6 +63,11 @@
     "fix.minecraft.MixinModStatus",
     "fix.minecraft.MixinMultiplayerScreen",
     "fix.minecraft.MixinWindow",
+    "integration.MixinClientPlayerEntity",
+    "integration.MixinEntity",
+    "integration.MixinLivingEntity",
+    "integration.MixinLivingEntityRenderer",
+    "integration.MixinPlayerEntity",
     "module.MixinClientPlayerInteractionManager",
     "module.MixinClientPlayNetworkAddon",
     "module.MixinClientWorld",
@@ -83,12 +88,8 @@
     "util.MixinConnectScreen",
     "util.MixinDrawContext",
     "util.MixinMinecraftClient",
-    "util.MixinToolTipComponent",
-    "integration.MixinClientPlayerEntity",
-    "integration.MixinEntity",
-    "integration.MixinLivingEntity",
-    "integration.MixinLivingEntityRenderer",
-    "integration.MixinPlayerEntity"
+    "util.MixinRenderTickCounter",
+    "util.MixinToolTipComponent"
   ],
   "injectors": {
     "defaultRequire": 1
