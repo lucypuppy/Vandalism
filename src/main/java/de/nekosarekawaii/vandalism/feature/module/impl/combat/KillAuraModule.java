@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
+import de.florianmichael.rclasses.pattern.evicting.EvictingList;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.*;
 import de.nekosarekawaii.vandalism.base.event.normal.render.Render2DListener;
@@ -69,6 +70,13 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             3.0
     );
 
+    private final Value<Boolean> reachExtendExploit = new BooleanValue(
+            this.targetSelectionGroup,
+            "Reach Extend Exploit",
+            "Whether the reach extend exploit should be used.",
+            false
+    );
+
     private final Value<Boolean> switchTarget = new BooleanValue(
             this.targetSelectionGroup,
             "Switch Target",
@@ -92,8 +100,13 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     );
 
     private LivingEntity target;
-    private Vec3d rotationVector;
     private int targetIndex = 0;
+
+    private Vec3d rotationVector;
+
+    private double raytraceDistance = -1.0;
+    private final EvictingList<Double> reachList = new EvictingList<>(new ArrayList<>(), 5);
+
     private final Clicker clicker = new BoxMuellerClicker();
     private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
     private final AutoBlockModule autoBlockModule;
@@ -118,6 +131,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         this.clicker.setClickAction(attack -> {
             if (attack) {
                 this.mc.doAttack();
+
+                this.reachList.add(this.raytraceDistance);
                 this.targetIndex++;
             } else if (this.autoBlockModule.isActive()) {
                 this.autoBlockModule.setBlocking(true);
@@ -160,10 +175,10 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         }
 
         final Vec3d eyePos = mc.player.getEyePos();
-        final HitResult raytrace = WorldUtil.raytrace(this.rotationListener.getRotation(), Math.pow(getRange(true), 2));
-        final double raytraceDistance = raytrace != null ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
+        final HitResult raytrace = WorldUtil.raytrace(this.rotationListener.getRotation(), Math.pow(getAimRange(), 2));
+        this.raytraceDistance = raytrace != null ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
 
-        if (raytraceDistance > getRange(true) || raytraceDistance <= 0) {
+        if (this.raytraceDistance > getAimRange() || this.raytraceDistance <= 0) {
             return;
         }
 
@@ -228,7 +243,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     @Override
     public void onRotation(final RotationEvent event) {
         if (this.target != null) {
-            final Rotation rotation = Rotation.Builder.build(this.target, getRange(true), this.aimPoints.getValue());
+            final Rotation rotation = Rotation.Builder.build(this.target, getAimRange(), this.aimPoints.getValue());
 
             if (rotation == null) { //Sanity check, crashes if you sneak and have your reach set to 3.0
                 this.rotationVector = null;
@@ -246,7 +261,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     @Override
     public void onRaytrace(RaytraceEvent event) {
         if (this.target != null && this.rotationListener.getRotation() != null) {
-            event.range = Math.pow(getRange(false) - 0.05, 2);
+            event.range = Math.pow(getRange() - 0.05, 2);
         }
     }
 
@@ -254,7 +269,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         final List<LivingEntity> entities = new ArrayList<>();
 
         for (final Entity entity : mc.world.getEntities()) {
-            if (WorldUtil.isTarget(entity) && mc.player.distanceTo(entity) <= getRange(true) + 1.0) {
+            if (WorldUtil.isTarget(entity) && mc.player.distanceTo(entity) <= getAimRange() + 1.0) {
                 entities.add((LivingEntity) entity);
             }
         }
@@ -274,9 +289,22 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         this.target = entities.get(this.targetIndex);
     }
 
-    private double getRange(boolean preAim) {
-        if (this.preAimRangeExtension.getValue() > 0 && preAim) {
-            return this.range.getValue() + this.preAimRangeExtension.getValue();
+    private double getAimRange() {
+        return getRange() + this.preAimRangeExtension.getValue();
+    }
+
+    private double getRange() {
+        if (this.reachExtendExploit.getValue() && !this.reachList.getNormalList().isEmpty()) {
+            final double average = this.reachList.getNormalList().stream()
+                    .mapToDouble(Double::doubleValue).average().orElse(0.0);
+            final double extend = (this.range.getValue() - average) / 4.0;
+
+            if (extend > 0.0) {
+                //ChatUtil.infoChatMessage("Reach " + (this.range.getValue() + extend) + " (+" + extend + ")");
+                return this.range.getValue() + extend;
+            }
+
+            return this.range.getValue();
         }
 
         return this.range.getValue();
