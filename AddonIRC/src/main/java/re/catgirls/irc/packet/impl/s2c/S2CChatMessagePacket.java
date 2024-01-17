@@ -10,15 +10,10 @@ public class S2CChatMessagePacket extends Packet {
     private JsonObject sender;
     private JsonObject message;
 
-    // @formatter:off
-
     public S2CChatMessagePacket() { }
 
     @Override
     public void write(final PacketBuffer buffer) {}
-
-    // @formatter:on
-
 
     @Override
     public void read(final PacketBuffer buffer) {

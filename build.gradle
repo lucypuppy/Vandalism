@@ -89,7 +89,7 @@ allprojects {
 	}
 
 	jar {
-		// Rename the project's license file to LICENSE_<project_name> to avoid conflicts
+		//Rename the project's license file to LICENSE_<project_name> to avoid conflicts
 		from("LICENSE") {
 			rename {
 				"${it}_${maven_name}"
@@ -124,25 +124,25 @@ subprojects {
 		group "vandalism"
 
 		doLast {
-			// Locate the mods folder
+			//Locate the mods folder
 			File modsFolder = new File(rootProject.projectDir, "run" + File.separator + "mods")
 
-			// Addon output jars are always named Addon<name>-<version>.jar
+			//Addon output jars are always named Addon<name>-<version>.jar
 			String newName = project.name + "-${project.maven_version}.jar"
 
-			// Locate the output jar
+			//Locate the output jar
 			File outputJar = new File(file("."), "build" + File.separator + "libs" + File.separator + newName)
 
 			for (final def modFile in modsFolder.listFiles()) {
 				if (modFile.name.startsWith(project.name) && modFile.isFile()) {
-					// If the addon is already installed, delete the old version
+					//If the addon is already installed, delete the old version
 					if (!modFile.delete()) {
 						println "Failed to delete old version of " + project.name
 					}
 				}
 			}
 
-			// Copy the output jar to the mods folder
+			//Copy the output jar to the mods folder
 			if (outputJar.renameTo(new File(modsFolder, newName))) {
 				println "Installed " + project.name
 			}

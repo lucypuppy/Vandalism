@@ -42,7 +42,7 @@ public abstract class MixinInGameHud {
 
     @Inject(method = "render(Lnet/minecraft/client/gui/DrawContext;F)V", at = @At(value = "TAIL"))
     private void callRender2DListener(final DrawContext context, final float tickDelta, final CallbackInfo ci) {
-        // We never want to render anything when this is true
+        //We never want to render anything when this is true
         if (this.debugHud.shouldShowDebugHud() || this.client.options.hudHidden) {
             return;
         }

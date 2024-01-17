@@ -4,9 +4,9 @@ import com.google.gson.JsonObject;
 import re.catgirls.irc.ChatClient;
 import re.catgirls.irc.interfaces.IdentifiableEnum;
 import re.catgirls.irc.listeners.impl.ProfileListener;
-import re.catgirls.irc.session.UserProfile;
 import re.catgirls.irc.packets.Packet;
 import re.catgirls.irc.packets.buffer.PacketBuffer;
+import re.catgirls.irc.session.UserProfile;
 
 import java.util.Objects;
 
@@ -47,7 +47,7 @@ public class S2CSessionListItemPacket extends Packet {
                 if (listener != null) {
                     final UserProfile oldProfile = instance.getUsers().get(object.get("name").getAsString());
 
-                    // Compare mc servers
+                    //Compare mc servers
                     if (profile.getMcServer() != null && !Objects.equals(oldProfile.getMcServer(), profile.getMcServer()))
                         listener.onMinecraftServerUpdate(
                                 profile,
@@ -55,7 +55,7 @@ public class S2CSessionListItemPacket extends Packet {
                                 oldProfile.getMcServer()
                         );
 
-                    // Compare mc usernames
+                    //Compare mc usernames
                     if (profile.getMcUsername() != null && !Objects.equals(oldProfile.getMcUsername(), profile.getMcUsername()))
                         listener.onMinecraftUsernameUpdate(
                                 profile,
@@ -64,7 +64,7 @@ public class S2CSessionListItemPacket extends Packet {
                         );
                 }
 
-                // Update in map
+                //Update in map
                 instance.getUsers().put(object.get("name").getAsString(), profile);
             }
             case REMOVE_ENTRY -> {
@@ -80,7 +80,7 @@ public class S2CSessionListItemPacket extends Packet {
     public void write(final PacketBuffer buffer) {
     }
 
-    // response codes lulz
+    //response codes
     public enum Action implements IdentifiableEnum {
         ADD_ENTRY(0),
         UPDATE_ENTRY(1),

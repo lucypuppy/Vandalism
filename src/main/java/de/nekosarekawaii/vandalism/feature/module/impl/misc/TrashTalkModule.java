@@ -42,7 +42,7 @@ public class TrashTalkModule extends AbstractModule implements ChatReceiveListen
     public TrashTalkModule() {
         super(
                 "Trash Talk",
-                "If activated the mod will react to certain words in the chat and will answer with a funny message.",
+                "If activated the client will react to certain words in the chat and will answer with a funny message.",
                 Category.MISC
         );
     }

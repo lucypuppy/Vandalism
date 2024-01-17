@@ -55,14 +55,14 @@ public class EncryptionHelper {
         buf.readBytes(keyBytes);
         keyBytes = decrypt(privateKey, keyBytes);
 
-        // create specs
+        //create specs
         SecretKeySpec secretKey = new SecretKeySpec(keyBytes, "AES");
         IvParameterSpec ivSpec = new IvParameterSpec(ivBytes);
 
         Cipher decryptCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         decryptCipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
 
-        // wow decrypt
+        //decrypt
         byte[] encryptedData = new byte[buf.readableBytes()];
         buf.readBytes(encryptedData);
 
@@ -80,17 +80,17 @@ public class EncryptionHelper {
     public static ByteBuf encryptByteBuf(final PublicKey publicKey, final ByteBuf buf) throws Exception {
         final ByteBuf finalBytebuf = Unpooled.buffer();
 
-        // generate init vector key
+        //generate init vector key
         byte[] ivBytes = new byte[16];
         ThreadLocalRandom.current().nextBytes(ivBytes);
         IvParameterSpec ivSpec = new IvParameterSpec(ivBytes);
 
-        // init key generator
+        //init key generator
         KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
         keyGenerator.init(128);
         SecretKeySpec secretKeySpec = new SecretKeySpec(keyGenerator.generateKey().getEncoded(), "AES");
 
-        // write keys
+        //write keys
         final byte[] ivBytesEncrypted = encrypt(publicKey, ivBytes);
         finalBytebuf.writeInt(ivBytesEncrypted.length);
         finalBytebuf.writeBytes(ivBytesEncrypted);
@@ -99,7 +99,7 @@ public class EncryptionHelper {
         finalBytebuf.writeInt(keySpec.length);
         finalBytebuf.writeBytes(keySpec);
 
-        // encrypt our final traffic w AES
+        //encrypt our final traffic w AES
         Cipher encryptCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         encryptCipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivSpec);
         finalBytebuf.writeBytes(Unpooled.wrappedBuffer(encryptCipher.doFinal(buf.array())));

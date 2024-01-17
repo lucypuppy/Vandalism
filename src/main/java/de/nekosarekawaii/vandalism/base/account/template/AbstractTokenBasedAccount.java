@@ -82,7 +82,7 @@ public abstract class AbstractTokenBasedAccount extends AbstractAccount {
     @Override
     public void logIn0() throws Throwable {
         if (this.session != null) {
-            updateSession(session); // If we are already logged in, we don't need to do anything except reloading the session
+            updateSession(session); //If we are already logged in, we don't need to do anything except reloading the session
             return;
         }
 

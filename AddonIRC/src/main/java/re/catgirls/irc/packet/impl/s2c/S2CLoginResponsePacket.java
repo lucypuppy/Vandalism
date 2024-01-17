@@ -2,9 +2,9 @@ package re.catgirls.irc.packet.impl.s2c;
 
 import com.google.gson.JsonObject;
 import re.catgirls.irc.interfaces.IdentifiableEnum;
-import re.catgirls.irc.session.UserProfile;
 import re.catgirls.irc.packets.Packet;
 import re.catgirls.irc.packets.buffer.PacketBuffer;
+import re.catgirls.irc.session.UserProfile;
 
 public class S2CLoginResponsePacket extends Packet {
 
@@ -12,16 +12,11 @@ public class S2CLoginResponsePacket extends Packet {
     private String reason;
     private UserProfile profile;
 
-    // @formatter:off
-
     public S2CLoginResponsePacket() { }
 
     @Override
     public void write(final PacketBuffer buffer) {}
-
-    // @formatter:on
-
-
+    
     @Override
     public void read(final PacketBuffer buffer) {
         final JsonObject object = buffer.readJson();
@@ -42,7 +37,7 @@ public class S2CLoginResponsePacket extends Packet {
 
     }
 
-    // response codes lulz
+    //response codes
     public enum Result {
         OK(0),
         INVALID_HWID(1),

@@ -27,10 +27,10 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.click.Clicker;
-import de.nekosarekawaii.vandalism.util.click.impl.BoxMuellerClicker;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationPriority;
+import de.nekosarekawaii.vandalism.util.click.Clicker;
+import de.nekosarekawaii.vandalism.util.click.impl.BoxMuellerClicker;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.Entity;
@@ -264,7 +264,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             return;
         }
 
-        // Sort entities by distance
+        //Sort entities by distance
         entities.sort(Comparator.comparingDouble(entity -> this.mc.player.distanceTo(entity)));
 
         if (!this.switchTarget.getValue() || this.targetIndex >= entities.size()) {

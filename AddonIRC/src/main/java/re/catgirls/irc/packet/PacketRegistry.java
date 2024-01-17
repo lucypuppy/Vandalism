@@ -44,15 +44,15 @@ public class PacketRegistry extends SimplePacketRegistry {
         KEEP_ALIVE(0),
         KEY_EXCHANGE(1),
 
-        // login
+        //login
         LOGIN_REQUEST(2),
         LOGIN_RESPONSE(3),
 
-        // messages
+        //messages
         MESSAGE_REQUEST(4),
         MESSAGE_RESPONSE(5),
 
-        // user data
+        //user data
         DATA_UPDATE_REQUEST(6),
         SESSION_LIST_ITEM(7);
 

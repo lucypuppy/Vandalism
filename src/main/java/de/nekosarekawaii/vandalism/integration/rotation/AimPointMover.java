@@ -84,8 +84,8 @@ public class AimPointMover implements MinecraftWrapper {
         //List<Vec3> outOfRangePoints = new ArrayList<>();
 
         for (int i = 0; i < numPoints; i++) {
-            double theta = Math.random() * 2 * Math.PI; // Random azimuthal angle
-            double phi = Math.acos(2 * Math.random() - 1); // Random polar angle
+            double theta = Math.random() * 2 * Math.PI; //Random azimuthal angle
+            double phi = Math.acos(2 * Math.random() - 1); //Random polar angle
 
             double x = center.x + this.maxXZRadius * Math.sin(phi) * Math.cos(theta);
             double y = center.y + this.maxYRadius * Math.sin(phi) * Math.sin(theta);
@@ -113,7 +113,7 @@ public class AimPointMover implements MinecraftWrapper {
     }
 
     private static boolean isPointInBoundingBox(Vec3d point, Box boundingBox) {
-        final double halfSize = 0.1; // Adjust this value to control the size of the bounding box
+        final double halfSize = 0.1; //Adjust this value to control the size of the bounding box
         final double minX = point.x - halfSize;
         final double minY = point.y - halfSize;
         final double minZ = point.z - halfSize;
