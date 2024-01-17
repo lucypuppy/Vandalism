@@ -53,7 +53,6 @@ import java.io.File;
  *  - Delete MixinParticleManager
  *  - Add Proxy manager
  *  - Add JiJ and JiS for building/exporting the mod
- *  - Add direct login to the account manager
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Fix module list out of screen rendering when the alignment is at the bottom of the screen
