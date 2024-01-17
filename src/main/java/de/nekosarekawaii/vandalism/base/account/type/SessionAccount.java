@@ -23,7 +23,7 @@ import de.florianmichael.rclasses.common.array.ObjectTypeChecker;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
-import de.nekosarekawaii.vandalism.util.minecraft.UUIDUtil;
+import de.nekosarekawaii.vandalism.util.common.UUIDUtil;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;

@@ -16,13 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.tooltip;
+package de.nekosarekawaii.vandalism.util;
 
-import net.minecraft.client.gui.tooltip.TooltipComponent;
-import net.minecraft.client.item.TooltipData;
+public class MinecraftConstants {
 
-public interface ConvertibleTooltipData extends TooltipData {
-
-    TooltipComponent getComponent();
+    // those constant gets used in shitty anti cheats with no proper collision handling, posY % const == 0 = ground True
+    public static double MAGIC_ON_GROUND_MODULO_FACTOR = 0.015625;
 
 }

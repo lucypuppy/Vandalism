@@ -21,8 +21,8 @@ package de.nekosarekawaii.vandalism.feature.command.impl.misc;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
-import de.nekosarekawaii.vandalism.util.minecraft.ChatUtil;
-import de.nekosarekawaii.vandalism.util.minecraft.ServerUtil;
+import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.util.game.ServerUtil;
 import net.minecraft.command.CommandSource;
 
 public class CopyServerIPCommand extends AbstractCommand {

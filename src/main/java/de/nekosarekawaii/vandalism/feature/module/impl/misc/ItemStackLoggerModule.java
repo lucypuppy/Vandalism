@@ -24,8 +24,8 @@ import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.command.impl.misc.NbtCommand;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.minecraft.ChatUtil;
-import de.nekosarekawaii.vandalism.util.minecraft.ServerUtil;
+import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.util.game.ServerUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;

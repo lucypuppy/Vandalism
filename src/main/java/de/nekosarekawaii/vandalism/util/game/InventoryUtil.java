@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.minecraft;
+package de.nekosarekawaii.vandalism.util.game;
 
 import com.google.common.collect.Lists;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;

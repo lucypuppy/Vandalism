@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.util;
 
-import de.nekosarekawaii.vandalism.util.minecraft.ServerUtil;
+import de.nekosarekawaii.vandalism.util.game.ServerUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;

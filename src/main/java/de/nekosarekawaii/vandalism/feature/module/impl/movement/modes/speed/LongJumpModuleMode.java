@@ -23,7 +23,7 @@ import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.SpeedModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
-import de.nekosarekawaii.vandalism.util.minecraft.MovementUtil;
+import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 
 public class LongJumpModuleMode extends ModuleMulti<SpeedModule> implements PlayerUpdateListener {
 

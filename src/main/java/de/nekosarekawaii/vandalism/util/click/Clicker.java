@@ -16,11 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.minecraft;
+package de.nekosarekawaii.vandalism.util.click;
 
-public class MinecraftConstants {
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 
-    // those constant gets used in shitty anti cheats with no proper collision handling, posY % const == 0 = ground True
-    public static double MAGIC_ON_GROUND_MODULO_FACTOR = 0.015625;
+import java.util.function.Consumer;
+
+public abstract class Clicker implements MinecraftWrapper {
+
+    protected Consumer<Boolean> clickAction = aBoolean -> {
+    };
+
+    public void setClickAction(final Consumer<Boolean> clickAction) {
+        this.clickAction = clickAction;
+    }
+
+    public abstract void onUpdate();
 
 }

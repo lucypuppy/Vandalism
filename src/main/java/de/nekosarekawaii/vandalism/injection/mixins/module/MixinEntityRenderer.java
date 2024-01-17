@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.render.VisualThrottleModule;
-import de.nekosarekawaii.vandalism.util.minecraft.TextUtil;
+import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,7 +37,7 @@ public abstract class MixinEntityRenderer {
     private Text vandalism$modifyDisplayNameLength(final Text text) {
         final VisualThrottleModule visualThrottleModule = Vandalism.getInstance().getModuleManager().getVisualThrottleModule();
         if (visualThrottleModule.isActive() && visualThrottleModule.modifyDisplayNameLength.getValue()) {
-            return TextUtil.trimText(text, visualThrottleModule.maxDisplayNameLength.getValue());
+            return ChatUtil.trimText(text, visualThrottleModule.maxDisplayNameLength.getValue());
         }
         return text;
     }

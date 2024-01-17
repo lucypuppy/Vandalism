@@ -16,18 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.minecraft;
+package de.nekosarekawaii.vandalism.util.game;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
+import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
 import java.awt.*;
+import java.util.Optional;
 
 public class ChatUtil implements MinecraftWrapper {
 
@@ -91,6 +89,23 @@ public class ChatUtil implements MinecraftWrapper {
 
     public static void chatMessage(final Text message, final boolean prefix) {
         mc.inGameHud.getChatHud().addMessage(prefix ? CHAT_PREFIX.copy().append(message) : message);
+    }
+
+    public static Text trimText(final Text text, final int length) {
+        if (text.getString().length() <= length) {
+            return text;
+        }
+        final StringBuilder stringBuilder = new StringBuilder();
+        final Style originalStyle = text.getStyle();
+        text.visit((string) -> {
+            final int remainingLength = length - stringBuilder.length();
+            if (remainingLength <= 0) return StringVisitable.TERMINATE_VISIT;
+            else {
+                stringBuilder.append(string.length() <= remainingLength ? string : string.substring(0, remainingLength));
+                return Optional.empty();
+            }
+        });
+        return Text.literal(stringBuilder.toString()).setStyle(originalStyle);
     }
 
 }

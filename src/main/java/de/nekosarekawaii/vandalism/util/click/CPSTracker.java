@@ -16,22 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.tooltip.impl;
+package de.nekosarekawaii.vandalism.util.click;
 
-import de.nekosarekawaii.vandalism.util.tooltip.ConvertibleTooltipData;
-import net.minecraft.client.gui.tooltip.OrderedTextTooltipComponent;
-import net.minecraft.client.gui.tooltip.TooltipComponent;
-import net.minecraft.text.OrderedText;
+import net.minecraft.util.Util;
 
-public class TextTooltipComponent extends OrderedTextTooltipComponent implements ConvertibleTooltipData {
+import java.util.ArrayList;
+import java.util.List;
 
-    public TextTooltipComponent(final OrderedText text) {
-        super(text);
+public class CPSTracker {
+
+    private final List<Long> clicks = new ArrayList<>();
+
+    public void update() {
+        if (this.clicks.isEmpty()) return;
+        this.clicks.removeIf((click) -> Util.getMeasuringTimeMs() - click > 1000);
     }
 
-    @Override
-    public TooltipComponent getComponent() {
-        return this;
+    public void click() {
+        this.clicks.add(Util.getMeasuringTimeMs());
+    }
+
+    public int clicks() {
+        return this.clicks.size();
     }
 
 }

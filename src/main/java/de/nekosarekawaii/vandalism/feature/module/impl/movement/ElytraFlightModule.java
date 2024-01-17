@@ -23,7 +23,7 @@ import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.elytraflight.CreativeModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
-import de.nekosarekawaii.vandalism.util.minecraft.ChatUtil;
+import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ElytraItem;
 import net.minecraft.item.ItemStack;

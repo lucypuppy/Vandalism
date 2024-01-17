@@ -23,7 +23,7 @@ import com.google.gson.JsonParser;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
-import de.nekosarekawaii.vandalism.util.StaticEncryptionUtil;
+import de.nekosarekawaii.vandalism.util.common.StaticEncryptionUtil;
 import net.minecraft.client.session.Session;
 import net.raphimc.minecraftauth.step.AbstractStep;
 import net.raphimc.minecraftauth.step.java.StepMCProfile;

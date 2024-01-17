@@ -29,7 +29,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.List;
 
-import static de.nekosarekawaii.vandalism.util.minecraft.ItemStackUtil.withClientSide;
+import static de.nekosarekawaii.vandalism.util.game.ItemStackUtil.withClientSide;
 
 public class KickItemsCreativeTab extends AbstractCreativeTab {
 
