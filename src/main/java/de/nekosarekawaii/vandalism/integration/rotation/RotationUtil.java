@@ -62,7 +62,7 @@ public class RotationUtil implements MinecraftWrapper {
          */
         final double horDist = targetWidth / aimPoints;
         final double vertDist = targetHeight / aimPoints;
-        if (visibleSides.contains((byte) 0)) { // x
+        if (visibleSides.contains((byte) 0)) { //x
             for (double y = 0; y <= targetHeight; y += vertDist) {
                 for (double x = 0; x <= targetWidth; x += horDist) {
                     double zOff = (player.getZ() > entity.getZ() ? targetWidth / 2 : -targetWidth / 2);
@@ -71,7 +71,7 @@ public class RotationUtil implements MinecraftWrapper {
             }
         }
 
-        if (visibleSides.contains((byte) 2)) { // y
+        if (visibleSides.contains((byte) 2)) { //y
             for (double y = 0; y <= targetWidth; y += horDist) {
                 for (double x = 0; x <= targetWidth; x += horDist) {
                     double yOff = (player.getEyeY() < targetPosY ? 0 : targetHeight);
@@ -80,7 +80,7 @@ public class RotationUtil implements MinecraftWrapper {
             }
         }
 
-        if (visibleSides.contains((byte) 1)) { // z
+        if (visibleSides.contains((byte) 1)) { //z
             for (double y = 0; y <= targetHeight; y += vertDist) {
                 for (double x = 0; x <= targetWidth; x += horDist) {
                     double xOff = (player.getX() > entity.getX() ? targetWidth / 2 : -targetWidth / 2);

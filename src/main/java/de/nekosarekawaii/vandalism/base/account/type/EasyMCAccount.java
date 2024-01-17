@@ -29,7 +29,7 @@ import java.util.UUID;
 
 public class EasyMCAccount extends AbstractTokenBasedAccount {
 
-    public EasyMCAccount() { // Java is bad, we are worse
+    public EasyMCAccount() { //Java is bad, we are worse
         this(null);
     }
 

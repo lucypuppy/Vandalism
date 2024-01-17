@@ -5,10 +5,7 @@ import re.catgirls.irc.packets.buffer.PacketBuffer;
 
 public class SharedKeepAlivePacket extends Packet {
 
-    // @formatter:off
     public SharedKeepAlivePacket() {}
-    // @formatter:on
-
 
     @Override
     public void read(final PacketBuffer buffer) {
@@ -19,4 +16,5 @@ public class SharedKeepAlivePacket extends Packet {
     public void write(final PacketBuffer buffer) {
 
     }
+
 }

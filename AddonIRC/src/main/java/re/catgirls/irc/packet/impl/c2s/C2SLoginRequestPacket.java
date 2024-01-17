@@ -14,7 +14,6 @@ public class C2SLoginRequestPacket extends Packet {
     private final String password;
     private final String client;
 
-    // @formatter:off
     public C2SLoginRequestPacket() { throw new RuntimeException("Not implemented"); }
 
     public C2SLoginRequestPacket(final String username, final String password, final String client) {
@@ -22,8 +21,6 @@ public class C2SLoginRequestPacket extends Packet {
         this.password = password;
         this.client = client;
     }
-
-    // @formatter:on
 
     @Override
     public void write(final PacketBuffer buffer) {

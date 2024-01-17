@@ -1,16 +1,16 @@
 package re.catgirls.irc.connection;
 
-import re.catgirls.irc.packet.impl.shared.SharedKeyExchangePacket;
-import re.catgirls.irc.session.Session;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 import re.catgirls.irc.ChatClient;
+import re.catgirls.irc.packet.impl.shared.SharedKeyExchangePacket;
 import re.catgirls.irc.packets.coder.RsaPacketDecoder;
 import re.catgirls.irc.packets.coder.RsaPacketEncoder;
 import re.catgirls.irc.packets.connection.PacketHandler;
+import re.catgirls.irc.session.Session;
 
 public class ChatChannelInitializer extends ChannelInitializer<Channel> {
 
@@ -25,11 +25,11 @@ public class ChatChannelInitializer extends ChannelInitializer<Channel> {
         final Session chatChannelSession = new Session(chatPacketHandler);
         ChatClient.getInstance().setSession(chatChannelSession);
 
-        // in
+        //in
         channel.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4));
         channel.pipeline().addLast(new RsaPacketDecoder(ChatClient.getInstance().getPacketRegistry(), chatChannelSession));
 
-        // out
+        //out
         channel.pipeline().addLast(new LengthFieldPrepender(4));
         channel.pipeline().addLast(new RsaPacketEncoder(ChatClient.getInstance().getPacketRegistry(), chatChannelSession));
 

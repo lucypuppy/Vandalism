@@ -29,7 +29,7 @@ public class ChatSettings extends ValueGroup {
     public final StringValue commandPrefix = new StringValue(
             this,
             "Command Prefix",
-            "Change the prefix to run the commands of the Mod.",
+            "Change the client command prefix to run the commands with.",
             "."
     );
 

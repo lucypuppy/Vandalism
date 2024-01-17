@@ -42,7 +42,7 @@ public class ImUtils {
     public static ImFont loadFont(final String fontName, final int size, final ImFontAtlas atlas, final ImFontConfig fontConfig, final short[] glyphRanges) {
         final Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(FabricBootstrap.MOD_ID);
         if (modContainer.isEmpty()) {
-            Vandalism.getInstance().getLogger().error("Could not find mod container for mod " + FabricBootstrap.MOD_ID);
+            Vandalism.getInstance().getLogger().error("Could not find mod container of " + FabricBootstrap.MOD_ID);
             return null;
         }
         final String pathString = "assets/" + FabricBootstrap.MOD_ID + "/font/" + fontName + ".ttf";

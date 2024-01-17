@@ -117,11 +117,11 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
         }
 
         //if (mc.crosshairTarget != null && mc.crosshairTarget.getType() == HitResult.Type.ENTITY) {
-        //    this.lastOnTarget = System.currentTimeMillis();
+        //   this.lastOnTarget = System.currentTimeMillis();
         //}
 
         //if (System.currentTimeMillis() - this.lastOnTarget < 100L) {
-        //    this.rotateSpeed = RandomUtils.randomFloat(5.0f, 7.0f);
+        //   this.rotateSpeed = RandomUtils.randomFloat(5.0f, 7.0f);
         //}
 
         if (this.rotateSpeed > 0) {

@@ -35,7 +35,7 @@ public abstract class AbstractCommand extends Feature {
 
     public static final int SINGLE_SUCCESS = com.mojang.brigadier.Command.SINGLE_SUCCESS;
     public static final CommandRegistryAccess REGISTRY_ACCESS = CommandManager.createRegistryAccess(BuiltinRegistries.createWrapperLookup());
-    public static final CommandSource COMMAND_SOURCE = new ClientCommandSource(null, MinecraftClient.getInstance()); // Mojang is bad, we are good
+    public static final CommandSource COMMAND_SOURCE = new ClientCommandSource(null, MinecraftClient.getInstance()); //Mojang is bad, we are good
 
     private final String[] aliases;
 

@@ -45,7 +45,7 @@ public class MultiModeValue extends Value<List<String>> {
     }
 
     public MultiModeValue(ValueParent parent, String name, String description, List<String> defaultValue, final String... options) {
-        super(parent, name, description, defaultValue, new ArrayList<>(defaultValue)); // Java's Arrays.asList() makes lists unmodifiable
+        super(parent, name, description, defaultValue, new ArrayList<>(defaultValue)); //Java's Arrays.asList() makes lists unmodifiable
         this.options = Arrays.asList(options);
     }
 
@@ -56,7 +56,7 @@ public class MultiModeValue extends Value<List<String>> {
 
     @Override
     public void load(final JsonObject mainNode) {
-        this.getValue().clear(); // To prevent duplicates
+        this.getValue().clear(); //To prevent duplicates
         final var selectedOptionsNode = mainNode.get(this.getName()).getAsJsonArray();
         for (final JsonElement element : selectedOptionsNode) {
             final String value = element.getAsString();

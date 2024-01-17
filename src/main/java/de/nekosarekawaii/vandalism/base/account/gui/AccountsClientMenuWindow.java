@@ -114,7 +114,7 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
 
     protected void renderAccountPopup() {
         if (ImGui.beginPopupContextItem("account-popup")) {
-            ImGui.setNextItemWidth(400F); // Just some magic value to make the popup look good
+            ImGui.setNextItemWidth(400F); //Just some magic value to make the popup look good
             if (subButton("Delete account")) {
                 ImGui.closeCurrentPopup();
                 Vandalism.getInstance().getAccountManager().remove(hoveredAccount);

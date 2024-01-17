@@ -27,7 +27,7 @@ public class SayCommand extends AbstractCommand {
 
     public SayCommand() {
         super(
-                "Allows you to send every message into the chat by skipping the command system of this mod.",
+                "Allows you to send every message into the chat by skipping the command system of this client.",
                 Category.MISC,
                 "say"
         );

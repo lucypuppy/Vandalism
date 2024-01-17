@@ -116,15 +116,15 @@ public enum ScriptVariable {
         return descriptionBuilder;
     }),
     MOD_NAME(() -> FabricBootstrap.MOD_NAME, descriptionBuilder -> {
-        descriptionBuilder.append("The name of this mod.");
+        descriptionBuilder.append("The name of this client.");
         return descriptionBuilder;
     }),
     MOD_VERSION(() -> FabricBootstrap.MOD_VERSION, descriptionBuilder -> {
-        descriptionBuilder.append("The version of this mod.");
+        descriptionBuilder.append("The version of this client.");
         return descriptionBuilder;
     }),
     MOD_AUTHORS(() -> FabricBootstrap.MOD_AUTHORS, descriptionBuilder -> {
-        descriptionBuilder.append("The authors of this mod.");
+        descriptionBuilder.append("The authors of this client.");
         return descriptionBuilder;
     });
 

@@ -42,7 +42,7 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
 
     private final IntegerValue rainbowSpeed = new IntegerValue(this, "Rainbow Speed", "The speed of the rainbow", 2, 1, 10);
 
-    // These things arent the client colors these are just the twoColorFade colors and i need them in this class
+    //These things arent the client colors these are just the twoColorFade colors and i need them in this class
     private Color mainColorFade;
     private Color secondaryColorFade;
 
@@ -99,7 +99,7 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
             this.setValue(ColorUtils.colorInterpolate(mainColorFade, secondaryColorFade, fade));
         }
 
-        return super.getValue(); // Do another super.getValue() because the value might have changed
+        return super.getValue(); //Do another super.getValue() because the value might have changed
     }
 
     @Override

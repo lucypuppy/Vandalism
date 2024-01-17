@@ -35,7 +35,8 @@ public class WorldUtil implements MinecraftWrapper {
         OVERWORLD, NETHER, END
     }
 
-    public static Dimension getDimension() { // TODO | no
+    //We don't need any other dimensions since this client isn't intended to be compatible with mod packs.
+    public static Dimension getDimension() {
         return switch (mc.world.getRegistryKey().getValue().getPath()) {
             case "the_nether" -> Dimension.NETHER;
             case "the_end" -> Dimension.END;

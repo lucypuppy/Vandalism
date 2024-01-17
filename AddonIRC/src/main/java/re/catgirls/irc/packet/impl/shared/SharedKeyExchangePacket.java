@@ -11,10 +11,9 @@ public class SharedKeyExchangePacket extends Packet {
 
     private PublicKey key;
 
-    // @formatter:off
     public SharedKeyExchangePacket() {}
+
     public SharedKeyExchangePacket(final PublicKey key) { this.key = key; }
-    // @formatter:on
 
     @Override
     public void read(final PacketBuffer buffer) {
@@ -47,4 +46,5 @@ public class SharedKeyExchangePacket extends Packet {
             return null;
         }
     }
+
 }

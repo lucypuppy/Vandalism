@@ -65,14 +65,14 @@ public class ChatClient {
     public ChatClient() {
         instance = this;
 
-        // create new event loop groups
+        //create new event loop groups
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         if (Epoll.isAvailable()) {
             workerGroup = new EpollEventLoopGroup();
             LOGGER.info("Epoll is available, using native epoll implementation.");
         } else LOGGER.warn("Epoll is not available, using NIO implementation.");
 
-        // create new packet registry instance
+        //create new packet registry instance
         try {
             this.packetRegistry = new PacketRegistry();
         } catch (RuntimeException e) {
@@ -81,13 +81,13 @@ public class ChatClient {
 
         final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
-        // create keep-alive handler
+        //create keep-alive handler
         executorService.scheduleAtFixedRate(() -> {
             if (session == null) return;
             session.getHandler().send(new SharedKeepAlivePacket());
         }, 0, 5, TimeUnit.SECONDS);
 
-        // creates new bootstrap instance for the IRC client
+        //creates new bootstrap instance for the IRC client
         this.bootstrap = new Bootstrap().
                 option(ChannelOption.TCP_NODELAY, true).
                 group(workerGroup).
@@ -112,15 +112,15 @@ public class ChatClient {
             final String client,
             final Consumer<Future<? super Void>> callback
     ) throws IOException {
-        // clear users
+        //clear users
         ChatClient.getInstance().getUsers().clear();
 
-        // set username & password to connect with
+        //set username & password to connect with
         this.username = username;
         this.password = password;
         this.client = client;
 
-        // connect to the server
+        //connect to the server
         try {
             this.bootstrap.connect(address).awaitUninterruptibly().sync().addListener(callback::accept);
         } catch (InterruptedException e) {

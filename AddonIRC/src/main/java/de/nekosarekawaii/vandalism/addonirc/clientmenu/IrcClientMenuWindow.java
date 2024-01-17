@@ -172,8 +172,7 @@ public class IrcClientMenuWindow extends ClientMenuWindow {
             /* message input */
 
             ImGui.pushItemWidth(ImGui.getWindowWidth() - (40 * 2));
-
-            // wtf
+            
             if (ImGui.inputText(
                     "##messagefield",
                     messageField,
@@ -206,13 +205,13 @@ public class IrcClientMenuWindow extends ClientMenuWindow {
             return;
         }
 
-        // send message request
+        //send message request
         ChatClient.getInstance().getSession().requestMessage(message.get());
 
-        // reset message
+        //reset message
         message.set("");
 
-        // set keyboard focus
+        //set keyboard focus
         ImGui.setKeyboardFocusHere(-1);
     }
 

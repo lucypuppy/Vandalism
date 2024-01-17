@@ -51,7 +51,7 @@ import java.io.File;
  * TODO: Verschlxfene <br>
  *  - Delete MixinParticleManager
  *  - Add Proxy manager
- *  - Add JiJ and JiS for building/exporting the mod
+ *  - Add JiJ and JiS for building/exporting the client
  *  - Rewrite MovementUtil#getFixedMoveInputs to prevent bruteforcing inputs
  *  - Rewrite GCD fix to be accurate
  *  - Rewrite TimerHack to use TPS instead of "speed" alias random multiplier w
@@ -84,7 +84,7 @@ import java.io.File;
  *      - Add protection for ip addresses
  *  - Make the width and height customizable or use calculations in the modules im window for the tabs
  *  - Fix ImGui#begin in every im window (remove No Collapse Flag and move the code out of the if)
- *  - Fix module tabs display (no stacking) when the mod starts the first time
+ *  - Fix module tabs display (no stacking) when the client starts the first time
  *  - Fix ClientMenuScreen#close because it could break the entire game
  *  - Add anti vanish via. the player list hud
  *  - Export generic constants to {@link de.nekosarekawaii.vandalism.util.MinecraftConstants} and add comment to link where to get them
@@ -96,7 +96,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     private final DietrichEvents2 eventSystem = new DietrichEvents2(33 /* This value has to be incremented for every new event */, Throwable::printStackTrace);
     private final Logger logger = LoggerFactory.getLogger(FabricBootstrap.MOD_NAME);
 
-    // Base handlers
+    //Base handlers
     private File runDirectory;
 
     private ConfigManager configManager;
@@ -104,12 +104,12 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     private ClientSettings clientSettings;
     private AccountManager accountManager;
 
-    // Integration
+    //Integration
     private RotationListener rotationListener;
     private ServerListManager serverListManager;
     private HUDManager hudManager;
 
-    // Features
+    //Features
     private ModuleManager moduleManager;
     private CommandManager commandManager;
     private ScriptManager scriptManager;
@@ -145,7 +145,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.printStartup();
         mc.getWindow().setTitle(String.format("Starting %s...", FabricBootstrap.WINDOW_TITLE));
 
-        // Base handlers
+        //Base handlers
         FabricBootstrap.MOD_ICON = new Identifier(FabricBootstrap.MOD_ID, "textures/logo.png");
 
         this.runDirectory = new File(this.runDirectory, FabricBootstrap.MOD_ID);
@@ -159,7 +159,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.accountManager = new AccountManager(this.configManager, this.clientMenuManager);
         this.accountManager.init();
 
-        // Integration
+        //Integration
         this.rotationListener = new RotationListener();
 
         this.serverListManager = new ServerListManager(this.runDirectory);
@@ -168,7 +168,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.hudManager = new HUDManager(this.configManager, this.clientMenuManager);
         this.hudManager.init();
 
-        // Features
+        //Features
         this.moduleManager = new ModuleManager(this.configManager, this.clientMenuManager);
         this.moduleManager.init();
 
@@ -189,7 +189,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
         VandalismAddonLauncher.call(addon -> addon.onLaunch(this));
 
-        // We have to load the config files after all systems have been initialized
+        //We have to load the config files after all systems have been initialized
         this.configManager.init();
 
         this.logger.info("");

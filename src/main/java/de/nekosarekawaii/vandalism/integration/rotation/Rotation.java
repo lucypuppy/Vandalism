@@ -77,31 +77,31 @@ public class Rotation implements MinecraftWrapper {
             List<Vec3d> aimPoints = RotationUtil.computeHitBoxAimPoints(e, mc.player, saimPoints);
             Vec3d eyePos = mc.player.getEyePos();
 
-            // Create an instance of AimPointMover with your aimPoints
+            //Create an instance of AimPointMover with your aimPoints
             AimPointMover aimPointMover = new AimPointMover(aimPoints);
 
             aimPointMover.setRandomization(0.1, 0.6, 0.1, 0.7);
 
-            // Get the current best point
+            //Get the current best point
             Vec3d bestPoint = RotationUtil.findClosestVisiblePoint(aimPoints, range);
 
-            if (bestPoint == null) { // Sanitycheck
+            if (bestPoint == null) { //Sanitycheck
                 return null;
             }
 
-            // Define your desired range (e.g., 3.0) here
+            //Define your desired range (e.g., 3.0) here
             double desiredRange = 3.0;
 
-            // Calculate the distance to the best point
+            //Calculate the distance to the best point
             double currentDistance = bestPoint.distanceTo(eyePos);
 
-            // If the best point is within range, move to the next smooth point
+            //If the best point is within range, move to the next smooth point
             bestPoint = aimPointMover.getNextSmoothPointTest(bestPoint, lastPoint, currentDistance > desiredRange ? 6 : 3, range, e);
             if (bestPoint != null) {
                 lastPoint = bestPoint;
             }
 
-            // Calculate the rotation towards the updated best point
+            //Calculate the rotation towards the updated best point
             return build(bestPoint, eyePos);
         }
 

@@ -28,7 +28,7 @@ import java.util.List;
 
 public class AddonWurstClient implements VandalismAddonLauncher {
 
-    // Temporary list to store the enabled hacks when the user disables the WurstClient module
+    //Temporary list to store the enabled hacks when the user disables the WurstClient module
     public static List<String> enabledHacks;
 
     private WurstClientModule module;
