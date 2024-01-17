@@ -53,7 +53,6 @@ import java.io.File;
  *  - Delete MixinParticleManager
  *  - Add Proxy manager
  *  - Add JiJ and JiS for building/exporting the mod
- *  - Fix cracked account names when restarting the game (their name is "null")
  *  - Add direct login to the account manager
  * <br><br>
  * TODO: FooFieOwO <br>

@@ -83,12 +83,22 @@ public class SessionAccount extends AbstractAccount {
 
     @Override
     public void save0(JsonObject mainNode) {
-        // No Op
+        // Every account stores the last input from updateSession(), but we still have to save and load our own account data
+        mainNode.addProperty("name", name);
+        mainNode.addProperty("uuid", uuid);
+        mainNode.addProperty("accessToken", accessToken);
+        mainNode.addProperty("xuid", xuid);
+        mainNode.addProperty("clientId", clientId);
     }
 
     @Override
     public void load0(JsonObject mainNode) {
-        // No Op
+        // Every account stores the last input from updateSession(), but we still have to save and load our own account data
+        name = mainNode.get("name").getAsString();
+        uuid = mainNode.get("uuid").getAsString();
+        accessToken = mainNode.get("accessToken").getAsString();
+        xuid = mainNode.get("xuid").getAsString();
+        clientId = mainNode.get("clientId").getAsString();
     }
 
     @Override
