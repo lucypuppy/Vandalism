@@ -30,9 +30,8 @@ public class CooldownClicker extends Clicker {
 
         float additionalBaseDelayOffset = 0;
 
-        Float speed = TimerHack.getSpeedOrNull();
-        if (speed != null && speed > 1) {
-            additionalBaseDelayOffset = -(speed - 1);
+        if (TimerHack.getSpeed() > 1) {
+            additionalBaseDelayOffset = -(TimerHack.getSpeed() - 1);
         }
 
         final float attackCooldown = mc.player.getAttackCooldownProgress(additionalBaseDelayOffset);

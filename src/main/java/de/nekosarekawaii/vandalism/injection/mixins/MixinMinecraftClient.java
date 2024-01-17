@@ -64,10 +64,4 @@ public abstract class MixinMinecraftClient {
         Vandalism.getInstance().getHudManager().infoHUDElement.rightClick.click();
     }
 
-    @Inject(method = "getTargetMillisPerTick", at = @At("RETURN"), cancellable = true)
-    public void callTickTimeListener(float millis, CallbackInfoReturnable<Float> cir) {
-        final Float speed = TimerHack.getSpeedOrNull();
-        if (speed != null) cir.setReturnValue(speed);
-    }
-
 }
