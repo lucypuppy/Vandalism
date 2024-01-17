@@ -27,7 +27,7 @@ public class ChatClientWrapper {
     ) {
         scheduler = Executors.newSingleThreadScheduledExecutor();
         scheduler.scheduleWithFixedDelay(() -> {
-            //check if the session is null, if it isn't then we return because that means we're already connected...lol
+            //check if the session is null, if it isn't then we return because that means we're already connected
             if (this.client.getSession() != null) return;
 
             try {
