@@ -21,6 +21,8 @@ package de.nekosarekawaii.vandalism.injection.mixins.event;
 import de.florianmichael.dietrichevents2.StateTypes;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.cancellable.render.ScreenListener;
+import de.nekosarekawaii.vandalism.base.event.normal.game.MinecraftBoostrapListener;
+import de.nekosarekawaii.vandalism.base.event.normal.game.ShutdownProcessListener;
 import de.nekosarekawaii.vandalism.base.event.normal.network.WorldListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -42,6 +44,22 @@ public abstract class MixinMinecraftClient {
 
     @Unique
     private boolean vandalism$selfInflicted = false;
+
+    @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;onResolutionChanged()V"))
+    private void callMinecraftBootstrapListener(final CallbackInfo ci) {
+        Vandalism.getInstance().getEventSystem().postInternal(
+                MinecraftBoostrapListener.MinecraftBootstrapEvent.ID,
+                new MinecraftBoostrapListener.MinecraftBootstrapEvent((MinecraftClient) (Object) this)
+        );
+    }
+
+    @Inject(method = "close", at = @At(value = "HEAD"))
+    private void callShutdownProcessListener(final CallbackInfo ci) {
+        Vandalism.getInstance().getEventSystem().postInternal(
+                ShutdownProcessListener.ShutdownProcessEvent.ID,
+                new ShutdownProcessListener.ShutdownProcessEvent()
+        );
+    }
 
     @Inject(method = "setScreen", at = @At(value = "HEAD"), cancellable = true)
     private void callScreenListener(Screen screen, final CallbackInfo ci) {

@@ -39,22 +39,6 @@ public abstract class MixinMinecraftClient {
     @Unique
     private boolean vandalism$loadingDisplayed = false;
 
-    @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;onResolutionChanged()V"))
-    private void callMinecraftBootstrapListener(final CallbackInfo ci) {
-        Vandalism.getInstance().getEventSystem().postInternal(
-                MinecraftBoostrapListener.MinecraftBootstrapEvent.ID,
-                new MinecraftBoostrapListener.MinecraftBootstrapEvent((MinecraftClient) (Object) this)
-        );
-    }
-
-    @Inject(method = "close", at = @At(value = "HEAD"))
-    private void callShutdownProcessListener(final CallbackInfo ci) {
-        Vandalism.getInstance().getEventSystem().postInternal(
-                ShutdownProcessListener.ShutdownProcessEvent.ID,
-                new ShutdownProcessListener.ShutdownProcessEvent()
-        );
-    }
-
     @Inject(method = "onFinishedLoading", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;collectLoadTimes(Lnet/minecraft/client/MinecraftClient$LoadingContext;)V", shift = At.Shift.AFTER))
     private void displayLoadingTime(final CallbackInfo ci) {
         if (!this.vandalism$loadingDisplayed) {
