@@ -53,6 +53,8 @@ import java.io.File;
  *  - Delete MixinParticleManager
  *  - Add Proxy manager
  *  - Add JiJ and JiS for building/exporting the mod
+ *  - Rewrite MovementUtil#getFixedMoveInputs to prevent bruteforcing inputs
+ *  - Rewrite GCD fix to be accurate
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Fix module list out of screen rendering when the alignment is at the bottom of the screen

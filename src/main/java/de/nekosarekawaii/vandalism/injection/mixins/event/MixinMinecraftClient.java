@@ -41,22 +41,22 @@ public abstract class MixinMinecraftClient {
     @Shadow public abstract void setScreen(@Nullable Screen screen);
 
     @Unique
-    private boolean vandalism$selfCall = false;
+    private boolean vandalism$selfInflicted = false;
 
     @Inject(method = "setScreen", at = @At(value = "HEAD"), cancellable = true)
     private void callScreenListener(Screen screen, final CallbackInfo ci) {
-        if (vandalism$selfCall) {
-            vandalism$selfCall = false;
+        if (vandalism$selfInflicted) {
+            vandalism$selfInflicted = false;
             return;
         }
-        final var openScreenEvent = new ScreenListener.ScreenEvent(screen);
-        Vandalism.getInstance().getEventSystem().postInternal(ScreenListener.ScreenEvent.ID, openScreenEvent);
-        if (openScreenEvent.isCancelled()) {
+        final var event = new ScreenListener.ScreenEvent(screen);
+        Vandalism.getInstance().getEventSystem().postInternal(ScreenListener.ScreenEvent.ID, event);
+        if (event.isCancelled()) {
             ci.cancel();
         }
-        if (!Objects.equals(screen, openScreenEvent.screen)) {
-            this.vandalism$selfCall = true;
-            this.setScreen(openScreenEvent.screen);
+        if (!Objects.equals(screen, event.screen)) {
+            this.vandalism$selfInflicted = true;
+            this.setScreen(event.screen);
         }
     }
 
