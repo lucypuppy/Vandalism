@@ -32,13 +32,16 @@ public class DoubleValue extends ValueNumber<Double> {
     }
 
     @Override
-    public void load(final JsonObject valueObject) {
-        this.setValue(valueObject.get(this.getName()).getAsDouble());
+    public void load(final JsonObject mainNode) {
+        if (!mainNode.has(this.getName())) {
+            return;
+        }
+        this.setValue(mainNode.get(this.getName()).getAsDouble());
     }
 
     @Override
-    public void save(final JsonObject valueObject) {
-        valueObject.addProperty(this.getName(), this.getValue());
+    public void save(final JsonObject mainNode) {
+        mainNode.addProperty(this.getName(), this.getValue());
     }
 
     @Override

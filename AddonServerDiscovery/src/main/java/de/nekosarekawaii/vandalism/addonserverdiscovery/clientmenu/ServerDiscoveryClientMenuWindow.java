@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.addonserverdiscovery.clientmenu;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiTableFlags;
 import imgui.flag.ImGuiWindowFlags;
@@ -114,7 +115,7 @@ public class ServerDiscoveryClientMenuWindow extends ClientMenuWindow {
 
                 ImGui.separator();
 
-                if (ImGui.button("Find servers", ImGui.getColumnWidth(), 30)) {
+                if (ImUtils.subButton("Find servers")) {
                     final var query = new SearchQueryBuilder();
 
                     if (crackedOnly) query.offlineOnly();
@@ -134,7 +135,7 @@ public class ServerDiscoveryClientMenuWindow extends ClientMenuWindow {
 
                 ImGui.separator();
 
-                if (ImGui.button("Find Player", ImGui.getColumnWidth(), 30) && !playerNameFilter.isEmpty()) {
+                if (ImUtils.subButton("Find Player") && !playerNameFilter.isEmpty()) {
                     performServerSearch(new SearchQueryBuilder().containsPlayer(playerNameFilter.get()));
                 }
 

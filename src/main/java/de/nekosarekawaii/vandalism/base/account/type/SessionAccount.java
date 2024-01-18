@@ -24,6 +24,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.util.common.UUIDUtil;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
@@ -46,15 +47,14 @@ public class SessionAccount extends AbstractAccount {
         super("Session");
     }
 
-    public SessionAccount(String name, String uuid, String accessToken, String xuid, String clientId) {
+    public SessionAccount(final String name, final String uuid, final String accessToken, final String xuid, final String clientId) {
         this();
         this.name = name;
         this.uuid = uuid;
         this.accessToken = accessToken;
         this.xuid = xuid;
         this.clientId = clientId;
-
-        logIn0();
+        this.logIn0();
     }
 
     @Override
@@ -73,7 +73,7 @@ public class SessionAccount extends AbstractAccount {
             }
             this.uuid = uuid;
         }
-        updateSession(new Session(name, UUID.fromString(uuid), accessToken, Optional.of(xuid), Optional.of(clientId), Session.AccountType.LEGACY));
+        updateSession(new Session(this.name, UUID.fromString(this.uuid), this.accessToken, Optional.of(this.xuid), Optional.of(this.clientId), Session.AccountType.LEGACY));
     }
 
     @Override
@@ -82,27 +82,28 @@ public class SessionAccount extends AbstractAccount {
     }
 
     @Override
-    public void save0(JsonObject mainNode) {
+    public void save0(final JsonObject mainNode) {
         //Every account stores the last input from updateSession(), but we still have to save and load our own account data
-        mainNode.addProperty("name", name);
-        mainNode.addProperty("uuid", uuid);
-        mainNode.addProperty("accessToken", accessToken);
-        mainNode.addProperty("xuid", xuid);
-        mainNode.addProperty("clientId", clientId);
+        mainNode.addProperty("name", this.name);
+        mainNode.addProperty("uuid", this.uuid);
+        mainNode.addProperty("accessToken", this.accessToken);
+        mainNode.addProperty("xuid", this.xuid);
+        mainNode.addProperty("clientId", this.clientId);
     }
 
     @Override
-    public void load0(JsonObject mainNode) {
+    public void load0(final JsonObject mainNode) {
         //Every account stores the last input from updateSession(), but we still have to save and load our own account data
-        name = mainNode.get("name").getAsString();
-        uuid = mainNode.get("uuid").getAsString();
-        accessToken = mainNode.get("accessToken").getAsString();
-        xuid = mainNode.get("xuid").getAsString();
-        clientId = mainNode.get("clientId").getAsString();
+        this.name = mainNode.get("name").getAsString();
+        this.uuid = mainNode.get("uuid").getAsString();
+        this.accessToken = mainNode.get("accessToken").getAsString();
+        this.xuid = mainNode.get("xuid").getAsString();
+        this.clientId = mainNode.get("clientId").getAsString();
     }
 
     @Override
     public AccountFactory factory() {
+
         return new AccountFactory() {
 
             private final ImString name = new ImString();
@@ -113,24 +114,26 @@ public class SessionAccount extends AbstractAccount {
 
             @Override
             public void displayFactory() {
-                ImGui.inputText("Name", name, ImGuiInputTextFlags.CallbackResize);
-                ImGui.inputText("UUID", uuid, ImGuiInputTextFlags.CallbackResize);
+                ImGui.inputText("Name", this.name, ImGuiInputTextFlags.CallbackResize);
+                ImGui.inputText("UUID", this.uuid, ImGuiInputTextFlags.CallbackResize);
                 final String name = this.name.get();
-                ImGui.inputText("Access Token", accessToken, ImGuiInputTextFlags.CallbackResize);
-                ImGui.inputText("XUID", xuid, ImGuiInputTextFlags.CallbackResize);
-                ImGui.inputText("Client ID", clientId, ImGuiInputTextFlags.CallbackResize);
+                ImGui.inputText("Access Token", this.accessToken, ImGuiInputTextFlags.CallbackResize);
+                ImGui.inputText("XUID", this.xuid, ImGuiInputTextFlags.CallbackResize);
+                ImGui.inputText("Client ID", this.clientId, ImGuiInputTextFlags.CallbackResize);
                 if (!name.isEmpty()) {
-                    if (ImGui.button("Get Offline UUID", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
-                        uuid.set(Uuids.getOfflinePlayerUuid(name).toString());
+                    if (ImUtils.subButton("Get Offline UUID")) {
+                        this.uuid.set(Uuids.getOfflinePlayerUuid(name).toString());
                     }
                 }
             }
 
             @Override
             public CompletableFuture<AbstractAccount> make() {
-                return CompletableFuture.completedFuture(new SessionAccount(name.get(), uuid.get(), accessToken.get(), xuid.get(), clientId.get()));
+                return CompletableFuture.completedFuture(new SessionAccount(this.name.get(), this.uuid.get(), this.accessToken.get(), this.xuid.get(), this.clientId.get()));
             }
+
         };
+
     }
 
 }

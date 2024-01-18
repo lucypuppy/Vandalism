@@ -33,24 +33,23 @@ public class EasyMCAccount extends AbstractTokenBasedAccount {
         this(null);
     }
 
-    public EasyMCAccount(String token) {
+    public EasyMCAccount(final String token) {
         super("EasyMC", "https://api.easymc.io/v1/token/redeem", token);
     }
 
     @Override
-    public AbstractTokenBasedAccount create(String token) {
+    public AbstractTokenBasedAccount create(final String token) {
         return new EasyMCAccount(token);
     }
 
     @Override
     public Environment getEnvironment() {
-        return new Environment("https://sessionserver.easymc.io", "https://api.minecraftservices.com", this.getName());
+        return new Environment("https://sessionserver.easymc.io", "https://api.minecraftservices.com", this.getType());
     }
 
     @Override
-    public Session fromResponse(String response) {
+    public Session fromResponse(final String response) {
         final JsonObject responseNode = JsonParser.parseString(response).getAsJsonObject();
-
         return new Session(
                 responseNode.get("mcName").getAsString(),
                 UUID.fromString(responseNode.get("uuid").getAsString()),

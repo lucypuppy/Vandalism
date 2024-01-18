@@ -30,10 +30,12 @@ public abstract class ValueNoOpConfig<T> extends Value<T> {
 
     @Override
     public void load(JsonObject mainNode) {
+        //No Op
     }
 
     @Override
     public void save(JsonObject mainNode) {
+        //No Op
     }
 
 }

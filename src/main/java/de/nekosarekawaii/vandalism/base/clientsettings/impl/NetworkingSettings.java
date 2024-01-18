@@ -95,14 +95,14 @@ public class NetworkingSettings extends ValueGroup implements KeyboardInputListe
             true
     );
 
-    private final ValueGroup kickAllPlayersGroup = new ValueGroup(
+    private final ValueGroup kickAllPlayersSettings = new ValueGroup(
             this,
-            "Kick All Players",
+            "Kick All Players Settings",
             "Kick All Players related settings."
     ).visibleCondition(this.kickAllPlayers::getValue);
 
     public final IntegerValue kickAllPlayersPingConnectionTimeout = new IntegerValue(
-            this.kickAllPlayersGroup,
+            this.kickAllPlayersSettings,
             "Kick All Players Ping Connection Timeout",
             "The Ping Connection Timeout that will be used to kick all Players.",
             5000,
@@ -111,7 +111,7 @@ public class NetworkingSettings extends ValueGroup implements KeyboardInputListe
     ).visibleCondition(this.kickAllPlayers::getValue);
 
     public final IntegerValue kickAllPlayersPingReadTimeout = new IntegerValue(
-            this.kickAllPlayersGroup,
+            this.kickAllPlayersSettings,
             "Kick All Players Ping Read Timeout",
             "The Ping Read Timeout that will be used to kick all Players.",
             5000,
@@ -120,7 +120,7 @@ public class NetworkingSettings extends ValueGroup implements KeyboardInputListe
     ).visibleCondition(this.kickAllPlayers::getValue);
 
     public final IntegerValue kickAllPlayersKickDelay = new IntegerValue(
-            this.kickAllPlayersGroup,
+            this.kickAllPlayersSettings,
             "Kick All Players Kick Delay",
             "The Kick Delay that will be used to kick a Player.",
             6000,

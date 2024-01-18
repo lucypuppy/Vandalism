@@ -25,7 +25,6 @@ import com.mojang.authlib.minecraft.UserApiService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilEnvironment;
 import de.florianmichael.rclasses.io.mappings.TimeFormatter;
-import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.internal.UpdateSessionListener;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
@@ -44,22 +43,24 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class AbstractAccount implements IName, MinecraftWrapper {
+public abstract class AbstractAccount implements MinecraftWrapper {
 
-    private final String name;
+    private final String type;
+
     protected Session session;
     protected String status;
     protected PlayerSkinRenderer playerSkin;
 
     private String lastLogin;
 
-    public AbstractAccount(String name) {
-        this.name = name;
+    public AbstractAccount(final String type) {
+        this.type = type;
     }
 
     public abstract void logIn0() throws Throwable;
     
     public abstract void save0(final JsonObject mainNode) throws Throwable;
+
     public abstract void load0(final JsonObject mainNode) throws Throwable;
 
     public abstract String getDisplayName();
@@ -69,102 +70,96 @@ public abstract class AbstractAccount implements IName, MinecraftWrapper {
     }
 
     public void save(final JsonObject mainNode) throws Throwable {
-        if (session != null) {
+        if (this.session != null) {
             final JsonObject sessionNode = new JsonObject();
-            saveSession(sessionNode);
-
+            this.saveSession(sessionNode);
             mainNode.add("session", sessionNode);
         }
-        if (lastLogin != null) {
-            mainNode.addProperty("lastLogin", lastLogin);
+        if (this.lastLogin != null) {
+            mainNode.addProperty("lastLogin", this.lastLogin);
         }
-        save0(mainNode);
+        this.save0(mainNode);
     }
 
     public void load(final JsonObject mainNode) throws Throwable {
         if (mainNode.has("session")) {
-            updateSession(loadSession(mainNode.get("session").getAsJsonObject()));
+            this.updateSession(this.loadSession(mainNode.get("session").getAsJsonObject()));
         }
         if (mainNode.has("lastLogin")) {
-            lastLogin = mainNode.get("lastLogin").getAsString();
+            this.lastLogin = mainNode.get("lastLogin").getAsString();
         }
-        load0(mainNode);
+        this.load0(mainNode);
     }
 
     public abstract AccountFactory factory();
 
     public PlayerSkinRenderer getPlayerSkin() {
-        return playerSkin;
+        return this.playerSkin;
     }
 
     public String getLastLogin() {
-        return lastLogin;
+        return this.lastLogin;
     }
 
     public String getStatus() {
-        return status;
+        return this.status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(final String status) {
         this.status = status;
     }
 
     public Session getSession() {
-        return session;
+        return this.session;
     }
 
-    public void updateSession(Session session) {
-        final var event = new UpdateSessionListener.UpdateSessionEvent(this.session, session);
+    public void updateSession(final Session session) {
+        final UpdateSessionListener.UpdateSessionEvent event = new UpdateSessionListener.UpdateSessionEvent(this.session, session);
         Vandalism.getInstance().getEventSystem().postInternal(UpdateSessionListener.UpdateSessionEvent.ID, event);
         this.session = event.newSession; //Allow the event to change the session
-
-        playerSkin = new PlayerSkinRenderer(session.getUuidOrNull());
-        lastLogin = TimeFormatter.currentDateTime();
+        this.playerSkin = new PlayerSkinRenderer(session.getUuidOrNull());
+        this.lastLogin = TimeFormatter.currentDateTime();
     }
 
-    @Override
-    public String getName() {
-        return name;
+    public String getType() {
+        return this.type;
     }
 
     public void logIn() {
         CompletableFuture.runAsync(() -> {
             try {
-                logIn0(); //Set the game session and reload the skins
-                if (reloadProfileKeys(session, getEnvironment())) {
-                    setStatus("Updated session and logged in");
+                this.logIn0(); //Set the game session and reload the skins
+                if (reloadProfileKeys(this.session, getEnvironment())) {
+                    this.setStatus("Updated session and logged in");
                 } else {
-                    setStatus("Failed to update UserApiService");
+                    this.setStatus("Failed to update UserApiService");
                 }
-            } catch (Throwable e) {
-                throw new RuntimeException(e);
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
             }
         });
     }
 
     public static boolean reloadProfileKeys(final Session session, final Environment environment) {
-        final var authenticationService = new YggdrasilAuthenticationService(mc.getNetworkProxy(), environment);
+        final YggdrasilAuthenticationService authenticationService = new YggdrasilAuthenticationService(mc.getNetworkProxy(), environment);
         mc.session = session; //We already did that in normal cases, but for people who use this as API we need to do it again
         mc.getSplashTextLoader().session = session; //We will never know, right?
         mc.sessionService = authenticationService.createMinecraftSessionService();
-
         if (session.getAccountType().equals(Session.AccountType.MSA)) {
             final UserApiService userApiService = authenticationService.createUserApiService(session.getAccessToken());
             mc.userApiService = userApiService;
             mc.userPropertiesFuture = CompletableFuture.supplyAsync(() -> {
                 try {
                     return userApiService.fetchProperties();
-                } catch (AuthenticationException var2) {
-                    MinecraftClient.LOGGER.error("Failed to fetch user properties", var2);
+                } catch (AuthenticationException e) {
+                    MinecraftClient.LOGGER.error("Failed to fetch user properties", e);
                     return UserApiService.OFFLINE_PROPERTIES;
                 }
             }, Util.getDownloadWorkerExecutor());
-
             mc.socialInteractionsManager = new SocialInteractionsManager(mc, userApiService);
             mc.profileKeys = ProfileKeys.create(userApiService, session, mc.runDirectory.toPath());
             mc.abuseReportContext = AbuseReportContext.create(mc.abuseReportContext != null ? mc.abuseReportContext.environment : ReporterEnvironment.ofIntegratedServer(), userApiService);
             mc.realmsPeriodicCheckers = new RealmsPeriodicCheckers(RealmsClient.createRealmsClient(mc));
-
             return userApiService != UserApiService.OFFLINE;
         } else {
             //Legacy account types doesn't need reloading the profile since we can't get the required fields (access token) for it
@@ -174,14 +169,14 @@ public abstract class AbstractAccount implements IName, MinecraftWrapper {
     }
 
     public void saveSession(final JsonObject node) {
-        node.addProperty("username", session.getUsername());
-        if (session.getUuidOrNull() != null) {
-            node.addProperty("uuid", session.getUuidOrNull().toString());
+        node.addProperty("username", this.session.getUsername());
+        if (this.session.getUuidOrNull() != null) {
+            node.addProperty("uuid", this.session.getUuidOrNull().toString());
         }
-        node.addProperty("accessToken", session.getAccessToken());
-        session.getXuid().ifPresent(s -> node.addProperty("xuid", s));
-        session.getClientId().ifPresent(s -> node.addProperty("clientId", s));
-        node.addProperty("accountType", session.getAccountType().getName());
+        node.addProperty("accessToken", this.session.getAccessToken());
+        this.session.getXuid().ifPresent(s -> node.addProperty("xuid", s));
+        this.session.getClientId().ifPresent(s -> node.addProperty("clientId", s));
+        node.addProperty("accountType", this.session.getAccountType().getName());
     }
 
     public Session loadSession(final JsonObject node) {
@@ -191,7 +186,6 @@ public abstract class AbstractAccount implements IName, MinecraftWrapper {
         final Optional<String> xuid = node.has("xuid") ? Optional.of(node.get("xuid").getAsString()) : Optional.empty();
         final Optional<String> clientId = node.has("clientId") ? Optional.of(node.get("clientId").getAsString()) : Optional.empty();
         final String accountType = node.get("accountType").getAsString();
-
         return new Session(username, uuid == null ? null : UUID.fromString(uuid), accessToken, xuid, clientId, Session.AccountType.byName(accountType));
     }
 

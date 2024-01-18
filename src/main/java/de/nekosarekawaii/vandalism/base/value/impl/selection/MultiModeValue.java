@@ -56,14 +56,20 @@ public class MultiModeValue extends Value<List<String>> {
 
     @Override
     public void load(final JsonObject mainNode) {
+        if (!mainNode.has(this.getName())) {
+            return;
+        }
         this.getValue().clear(); //To prevent duplicates
-        final var selectedOptionsNode = mainNode.get(this.getName()).getAsJsonArray();
-        for (final JsonElement element : selectedOptionsNode) {
-            final String value = element.getAsString();
-            if (this.getValue().contains(value)) {
+        final JsonArray selectedOptionsNode = mainNode.get(this.getName()).getAsJsonArray();
+        for (final JsonElement selectedOptionNode : selectedOptionsNode) {
+            final String selectedOption = selectedOptionNode.getAsString();
+            if (!this.options.contains(selectedOption)) {
                 continue;
             }
-            this.getValue().add(value);
+            if (this.getValue().contains(selectedOption)) {
+                continue;
+            }
+            this.getValue().add(selectedOption);
         }
     }
 

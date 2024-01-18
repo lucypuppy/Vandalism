@@ -36,7 +36,10 @@ public class EnumModeValue<T extends IName> extends Value<T> {
 
     @Override
     public void load(final JsonObject mainNode) {
-        final String selectedOption = mainNode.get(getName()).getAsString();
+        if (!mainNode.has(this.getName())) {
+            return;
+        }
+        final String selectedOption = mainNode.get(this.getName()).getAsString();
         for (final T value : this.options) {
             if (value.getName().equals(selectedOption)) {
                 this.setValue(value);

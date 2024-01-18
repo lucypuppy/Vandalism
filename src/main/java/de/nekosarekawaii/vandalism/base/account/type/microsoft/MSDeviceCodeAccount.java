@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.base.account.type.microsoft;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.base.account.template.AbstractMicrosoftAccount;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import net.minecraft.util.Util;
 import net.raphimc.minecraftauth.MinecraftAuth;
@@ -34,42 +35,56 @@ import java.util.concurrent.CompletableFuture;
 
 public class MSDeviceCodeAccount extends AbstractMicrosoftAccount {
 
+    private static final String OPEN_URL = "Please open the url: ";
+
     private static final AccountFactory FACTORY = new AccountFactory() {
+
         private String state;
 
         @Override
         public void displayFactory() {
-            ImGui.text(this.state == null ? "Click the button below to get a device code." : state);
+            if (this.state != null && this.state.startsWith(OPEN_URL)) {
+                final String[] split = this.state.split(OPEN_URL);
+                if (split.length == 2) {
+                    final String url = split[1];
+                    if (ImUtils.subButton("Open URL")) {
+                        Util.getOperatingSystem().open(url);
+                    }
+                    if (ImUtils.subButton("Copy URL")) {
+                        mc.keyboard.setClipboard(url);
+                    }
+                }
+            }
+            ImGui.text(this.state == null ? "Click the button below to get a device code." : this.state);
         }
 
         @Override
         public CompletableFuture<AbstractAccount> make() {
             return CompletableFuture.supplyAsync(() -> {
                 try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
-                    final var javaSession = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.getFromInput(httpClient, new StepMsaDeviceCode.MsaDeviceCodeCallback(msaDeviceCode -> {
+                    final StepFullJavaSession.FullJavaSession javaSession = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.getFromInput(httpClient, new StepMsaDeviceCode.MsaDeviceCodeCallback(msaDeviceCode -> {
                         final String url = msaDeviceCode.getDirectVerificationUri();
-                        this.state = "Please open the url: " + url;
+                        this.state = OPEN_URL + url;
                         Util.getOperatingSystem().open(url);
                     }));
-
                     this.state = null;
-                    final var account = new MSDeviceCodeAccount();
+                    final MSDeviceCodeAccount account = new MSDeviceCodeAccount();
                     account.initWithExistingSession(javaSession);
-
                     return account;
-                } catch (Throwable e) {
-                    this.state = "Failed to login: " + e.getMessage();
+                } catch (Throwable t) {
+                    this.state = "Failed to log into account: " + t.getMessage();
                     return null;
                 }
             });
         }
+
     };
 
     public MSDeviceCodeAccount() {
         super("device-code", FACTORY);
     }
 
-    public MSDeviceCodeAccount(String tokenChain) {
+    public MSDeviceCodeAccount(final String tokenChain) {
         super("device-code", FACTORY, tokenChain);
     }
 
