@@ -28,6 +28,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.integration.rotation.HitboxSelectMode;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationPriority;
 import de.nekosarekawaii.vandalism.util.click.Clicker;
@@ -37,7 +38,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
@@ -105,7 +105,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     private Vec3d rotationVector;
 
     private double raytraceDistance = -1.0;
-    private final EvictingList<Double> reachList = new EvictingList<>(new ArrayList<>(), 5);
+    private final EvictingList<Double> reachList = new EvictingList<>(new ArrayList<>(), 10);
 
     private final Clicker clicker = new BoxMuellerClicker();
     private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
@@ -131,6 +131,10 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         this.clicker.setClickAction(attack -> {
             if (attack) {
                 this.mc.doAttack();
+
+                // if (this.raytraceDistance > this.range.getValue()) {
+                //     ChatUtil.infoChatMessage("Extended by " + (this.raytraceDistance - this.range.getValue()));
+                // }
 
                 this.reachList.add(this.raytraceDistance);
                 this.targetIndex++;
@@ -243,7 +247,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     @Override
     public void onRotation(final RotationEvent event) {
         if (this.target != null) {
-            final Rotation rotation = Rotation.Builder.build(this.target, getAimRange(), this.aimPoints.getValue());
+            final Rotation rotation = Rotation.Builder.build(this.target, getAimRange(), this.aimPoints.getValue(), HitboxSelectMode.Circular);
 
             if (rotation == null) { //Sanity check, crashes if you sneak and have your reach set to 3.0
                 this.rotationVector = null;
@@ -251,7 +255,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 return;
             }
 
-            this.rotationListener.setRotation(rotation, new Vec2f(60, 70), RotationPriority.HIGH);
+            this.rotationListener.setRotation(rotation, 60, RotationPriority.HIGH);
             this.rotationVector = new Vec3d(1, 1, 1);
         } else {
             this.rotationListener.resetRotation();
@@ -262,6 +266,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     public void onRaytrace(RaytraceEvent event) {
         if (this.target != null && this.rotationListener.getRotation() != null) {
             event.range = Math.pow(getRange() - 0.05, 2);
+            // ChatUtil.infoChatMessage("Raytrace Range: " + Math.sqrt(event.range));
         }
     }
 

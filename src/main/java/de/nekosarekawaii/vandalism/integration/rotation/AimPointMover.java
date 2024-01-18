@@ -23,7 +23,6 @@ import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
@@ -34,34 +33,25 @@ import java.util.Optional;
 public class AimPointMover implements MinecraftWrapper {
 
     private Vec3d bestPoint;
-    private final List<Vec3d> pointsInRange;
-    private double minXZRadius, maxXZRadius, minYRadius, maxYRadius;
+    private final double minRadius, maxRadius;
+    private final HitboxSelectMode mode;
 
-    public void setRandomization(double minXZRadius, double maxXZRadius, double minYRadius, double maxYRadius) {
-        this.minXZRadius = minXZRadius;
-        this.maxXZRadius = maxXZRadius;
-        this.minYRadius = minYRadius;
-        this.maxYRadius = maxYRadius;
+    public AimPointMover(final HitboxSelectMode mode, final double minRadius, final double maxRadius) {
+        this.mode = mode;
+        this.minRadius = minRadius;
+        this.maxRadius = maxRadius;
     }
 
-    public AimPointMover(List<Vec3d> aimPoints) {
-        this.pointsInRange = new ArrayList<>();
-    }
-
-    public Vec3d getNextSmoothPointTest(Vec3d bestPoint, Vec3d lastPoint, double desiredRange, double fixedRange, Entity entity) {
-        final Box boundingBox = entity.getBoundingBox();
+    public Vec3d getNextSmoothPointTest(Vec3d bestPoint, Vec3d lastPoint, double desiredRange, double range, Entity entity) {
         Vec3d rotationPoint = bestPoint;
-
         this.bestPoint = bestPoint;
-        this.pointsInRange.clear();
 
         final List<Vec3d> hitablePointsInCircle = generatePointsAround(
                 this.bestPoint,
                 entity,
-                boundingBox,
                 750,
                 desiredRange,
-                fixedRange
+                range
         );
 
         if (hitablePointsInCircle.size() >= 2) {
@@ -72,56 +62,54 @@ public class AimPointMover implements MinecraftWrapper {
             }
 
             //Let the point travel around in the circle generated around the besthitvec and let ot travel smoothly
-            final Vec3d firstPoint = hitablePointsInCircle.get(0);
-            rotationPoint = firstPoint;
+            rotationPoint = hitablePointsInCircle.get(0);
         }
 
         return rotationPoint;
     }
 
-    private List<Vec3d> generatePointsAround(Vec3d center, Entity target, Box boundingBox, int numPoints, double range, double fixedRange) {
-        List<Vec3d> points = new ArrayList<>();
-        //List<Vec3> outOfRangePoints = new ArrayList<>();
+    private List<Vec3d> generatePointsAround(Vec3d center, Entity entity, int numPoints, double desiredRange, double range) {
+        final List<Vec3d> points = new ArrayList<>();
+        final double currentDistance = bestPoint.distanceTo(mc.player.getEyePos());
+        final double dynamicWidth = Math.min(this.maxRadius, this.minRadius + (this.maxRadius - this.minRadius) * (currentDistance / range));
+        final double dynamicHeight = Math.min(this.maxRadius, this.minRadius + (this.maxRadius - this.minRadius) * (currentDistance / range));
+        final double goldenAngleIncrement = Math.PI * (1 - Math.sqrt(15));
 
         for (int i = 0; i < numPoints; i++) {
-            double theta = Math.random() * 2 * Math.PI; //Random azimuthal angle
-            double phi = Math.acos(2 * Math.random() - 1); //Random polar angle
+            double x = center.x;
+            double y = center.y;
+            double z = center.z;
 
-            double x = center.x + this.maxXZRadius * Math.sin(phi) * Math.cos(theta);
-            double y = center.y + this.maxYRadius * Math.sin(phi) * Math.sin(theta);
-            double z = center.z + this.maxXZRadius * Math.cos(phi);
+            switch (this.mode) {
+                case Circular: // Circular
+                    double azimuthalAngle = i * goldenAngleIncrement;
+                    double polarAngle = Math.acos(2 * Math.random() - 1); // Random polar angle,
+                    x = center.x + dynamicWidth * Math.sin(polarAngle) * Math.cos(azimuthalAngle);
+                    y = center.y + dynamicWidth * Math.sin(polarAngle) * Math.sin(azimuthalAngle);
+                    z = center.z + dynamicWidth * Math.cos(polarAngle);
+                    break;
+                case Square: // Square
+                    x = center.x + dynamicWidth * (Math.random() - 0.5);
+                    y = center.y + dynamicHeight * (Math.random() - 0.5);
+                    z = center.z + dynamicWidth * (Math.random() - 0.5);
+                    break;
+            }
+
             final Vec3d newPoint = new Vec3d(x, y, z);
 
             final BlockHitResult blockHitResult = WorldUtil.rayTraceBlock(newPoint, range);
             if (blockHitResult != null && blockHitResult.getType() == HitResult.Type.BLOCK)
                 continue;
 
-            //range = bestHitVectorPoint Range
-            final boolean allowOutOfHitbox = range > fixedRange;
-            if (isPointInBoundingBox(newPoint, boundingBox) || allowOutOfHitbox) {
-                double dist = getRaytraceReach(target, newPoint, range);
-                if ((dist > 0 && dist <= range) || allowOutOfHitbox) {
-                    //Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("" + dist));
-                    points.add(newPoint);
-                } else {
-                    //outOfRangePoints.add(newPoint);
-                }
+            final boolean allowOutOfHitbox = range > desiredRange;
+            final double dist = getRaytraceReach(entity, newPoint, range);
+
+            if ((dist > 0 && dist <= range) || allowOutOfHitbox) {
+                points.add(newPoint);
             }
         }
 
-        return points; //new List[]{points/*, outOfRangePoints*/}; @Keksbyte if you wanna do this please use a pair. _FooFieOwO
-    }
-
-    private static boolean isPointInBoundingBox(Vec3d point, Box boundingBox) {
-        final double halfSize = 0.1; //Adjust this value to control the size of the bounding box
-        final double minX = point.x - halfSize;
-        final double minY = point.y - halfSize;
-        final double minZ = point.z - halfSize;
-        final double maxX = point.x + halfSize;
-        final double maxY = point.y + halfSize;
-        final double maxZ = point.z + halfSize;
-        return boundingBox.intersects(new Box(minX, minY, minZ, maxX, maxY, maxZ));
-
+        return points;
     }
 
     private double getRaytraceReach(Entity target, Vec3d point, double reach) {
