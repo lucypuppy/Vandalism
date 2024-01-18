@@ -233,14 +233,12 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
                                 case STATE -> ImGui.text(portResult.getCurrentState().getMessage());
                                 case QUERY_STATE -> ImGui.text(portResult.getCurrentQueryState().getMessage());
                                 case ACTIONS -> {
-                                    ImGui.spacing();
                                     final int buttonWidth = 0, buttonHeight = 28;
                                     if (portResult.getCurrentState() == PortResult.PingState.WAITING_INPUT) {
                                         if (ImGui.button("Ping##portsping" + portResult.getPort(), buttonWidth, buttonHeight)) {
                                             portResult.ping();
                                         }
                                     }
-                                    ImGui.spacing();
                                 }
                                 default -> {
                                 }
