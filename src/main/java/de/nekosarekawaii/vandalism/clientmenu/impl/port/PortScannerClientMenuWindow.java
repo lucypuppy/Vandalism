@@ -45,7 +45,8 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
             if (
                     !Character.isLetterOrDigit(imGuiInputTextCallbackData.getEventChar()) &&
                             imGuiInputTextCallbackData.getEventChar() != '.' &&
-                            imGuiInputTextCallbackData.getEventChar() != '-'
+                            imGuiInputTextCallbackData.getEventChar() != '-' &&
+                            imGuiInputTextCallbackData.getEventChar() != ':'
             ) {
                 imGuiInputTextCallbackData.setEventChar((char) 0);
             }
@@ -115,6 +116,21 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
                             this.hostname.get().indexOf(".") < this.hostname.get().length() - 2
             ) {
                 if (!this.isRunning()) {
+                    boolean shouldSetFocus = false;
+                    if (this.hostname.get().contains(":")) {
+                        final String[] data = this.hostname.get().split(":");
+                        this.hostname.set(data[0]);
+                        shouldSetFocus = true;
+                        if (data.length >= 2) {
+                            try {
+                                final int port = Integer.parseInt(data[1]);
+                                this.minPort.set(Math.max(1, Math.min(port - 500, 65535)));
+                                this.maxPort.set(Math.max(port, Math.min(port + 500, 65535)));
+                            }
+                            catch (Exception ignored) {
+                            }
+                        }
+                    }
                     ImGui.inputInt("Min Port##portscannerminport", this.minPort, 1);
                     this.minPort.set(Math.max(1, Math.min(this.minPort.get(), this.maxPort.get() - 1)));
                     ImGui.inputInt("Max Port##portscannermaxport", this.maxPort, 1);
@@ -135,6 +151,9 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
                             this.reset();
                         }
                         ImGui.sameLine();
+                    }
+                    if (shouldSetFocus) {
+                        ImGui.setKeyboardFocusHere();
                     }
                     if (ImGui.button("Start##portscannerstart")) {
                         this.reset();
