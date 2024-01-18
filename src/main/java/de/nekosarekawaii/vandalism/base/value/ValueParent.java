@@ -48,7 +48,7 @@ public interface ValueParent extends IName {
         if (value.isVisible() == null || value.isVisible().getAsBoolean()) {
             if (value instanceof final ValueGroup valueGroup) {
                 value.render();
-                if (!valueGroup.isWasOpen()) {
+                if (!valueGroup.wasOpen()) {
                     this.renderValueDescription(value);
                 }
                 return;
