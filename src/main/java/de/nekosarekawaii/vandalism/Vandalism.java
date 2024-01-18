@@ -47,6 +47,7 @@ import java.io.File;
  *  - Add 1.20.2 / maybe 1.20.3 instant crash crash item to CrashItemCreativeTab
  *  - Replaced target selection with actual entity selection (create something like an registry multi selection value)
  *  - Implement second layer rendering of account skins inside the account manager
+ *  - Fix item display names in the creative tabs.
  * <br><br>
  * TODO: Verschlxfene <br>
  *  - Delete MixinParticleManager
