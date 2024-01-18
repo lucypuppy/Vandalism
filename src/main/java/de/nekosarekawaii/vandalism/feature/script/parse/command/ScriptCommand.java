@@ -364,8 +364,8 @@ public enum ScriptCommand {
         if (args.length < 2) {
             throw new RuntimeException("Times command needs at least two arguments '" + args[0] + "'");
         }
+        final Pair<ScriptCommand, Pair<Integer, String>> parsedCodeObject = ScriptParser.parseCodeFromScriptLine(scriptName, commandWithCode, lineNumber, execute);
         for (int i = 0; i < amount; i++) {
-            final Pair<ScriptCommand, Pair<Integer, String>> parsedCodeObject = ScriptParser.parseCodeFromScriptLine(scriptName, commandWithCode, lineNumber, execute);
             if (parsedCodeObject != null) {
                 final String parsedCode = parsedCodeObject.getRight().getRight();
                 final ScriptCommand scriptCommand = parsedCodeObject.getLeft();
