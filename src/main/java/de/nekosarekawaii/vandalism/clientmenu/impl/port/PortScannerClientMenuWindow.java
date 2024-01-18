@@ -32,6 +32,8 @@ import net.minecraft.client.gui.DrawContext;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 
@@ -196,6 +198,19 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
             if (!this.ports.isEmpty()) {
                 ImGui.separator();
                 ImGui.text("Ports");
+                final List<PortResult> freePortResults = new ArrayList<>();
+                for (final PortResult portResult : this.ports.values()) {
+                    if (portResult.getCurrentState() == PortResult.PingState.WAITING_INPUT) {
+                        freePortResults.add(portResult);
+                    }
+                }
+                if (!freePortResults.isEmpty()) {
+                    if (ImGui.button("Ping All Ports##portscannerpingallports")) {
+                        for (final PortResult portResult : freePortResults) {
+                            portResult.ping();
+                        }
+                    }
+                }
                 final PortsTableColumn[] portsTableColumns = PortsTableColumn.values();
                 final int maxPortsTableColumns = portsTableColumns.length;
                 if (ImGui.beginTable("ports##portstable", maxPortsTableColumns,

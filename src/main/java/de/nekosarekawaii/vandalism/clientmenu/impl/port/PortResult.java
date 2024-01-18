@@ -111,8 +111,8 @@ public class PortResult {
                     .finishHandler(response -> {
                         this.serverInfoWidget.setMcPingResponse(response);
                         this.currentState = PingState.SUCCESS;
-                    })
-                    .getAsync();
+                    }).getAsync();
+            this.currentState = PingState.WAITING_RESPONSE;
             MCPing.pingQuery()
                     .address(this.hostname, this.port)
                     .timeout(5000, 5000)
@@ -137,8 +137,8 @@ public class PortResult {
                     .finishHandler(response -> {
                         this.serverInfoWidget.setQueryPingResponse(response);
                         this.currentQueryState = PingState.SUCCESS;
-                    })
-                    .getAsync();
+                    }).getAsync();
+            this.currentQueryState = PingState.WAITING_RESPONSE;
         } else this.currentState = PingState.WAITING_INPUT;
     }
 

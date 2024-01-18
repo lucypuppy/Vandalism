@@ -26,6 +26,8 @@ import imgui.flag.ImGuiTableFlags;
 import imgui.flag.ImGuiWindowFlags;
 import net.lenni0451.mcping.responses.MCPingResponse;
 import net.lenni0451.mcping.responses.QueryPingResponse;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ServerInfo;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
@@ -127,6 +129,12 @@ public class ServerInfoWidget implements MinecraftWrapper {
                         ImGui.text(address);
                         ImGui.separator();
                         ImGui.spacing();
+                        if (ImGui.button("Add to the Server List" + uniqueId + "addtoserverlist", buttonWidth, buttonHeight)) {
+                            final net.minecraft.client.option.ServerList serverList = new net.minecraft.client.option.ServerList(MinecraftClient.getInstance());
+                            serverList.loadFile();
+                            serverList.add(new ServerInfo("Port Scan Result (" + this.mcPingResponse.server.port + ")", address, ServerInfo.ServerType.OTHER), false);
+                            serverList.saveFile();
+                        }
                         if (ImGui.button("Copy Address" + uniqueId + "copyaddress", buttonWidth, buttonHeight)) {
                             this.mc.keyboard.setClipboard(address);
                         }
