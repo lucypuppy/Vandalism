@@ -24,10 +24,11 @@ import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 public class ModuleModeValue<T extends AbstractModule> extends ValueModeGeneric<ModuleMulti<T>> {
 
     @SafeVarargs
-    public ModuleModeValue(AbstractModule parent, String name, String description, ModuleMulti<T>... options) {
-        super(parent, name, description, ModuleMulti::getName, s -> {
+    public ModuleModeValue(final AbstractModule parent, final String name, final String description, final ModuleMulti<T>... options) {
+
+        super(parent, name, description, ModuleMulti::getName, mn -> {
             for (final ModuleMulti<T> module : options) {
-                if (module.getName().equals(s)) {
+                if (module.getName().equals(mn)) {
                     return module;
                 }
             }
@@ -40,6 +41,7 @@ public class ModuleModeValue<T extends AbstractModule> extends ValueModeGeneric<
                 newValue.onActivate();
             }
         });
+
     }
 
 }

@@ -29,25 +29,24 @@ public class ClientMenuConfig extends AbstractConfig<JsonObject> {
 
     public ClientMenuConfig(final ClientMenuManager clientMenuManager) {
         super(JsonObject.class, "client-menu");
-
         this.clientMenuManager = clientMenuManager;
     }
 
     @Override
     public JsonObject save0() {
-        final var mainNode = new JsonObject();
-        for (ClientMenuWindow window : this.clientMenuManager.getList()) {
+        final JsonObject mainNode = new JsonObject();
+        for (final ClientMenuWindow window : this.clientMenuManager.getList()) {
             mainNode.addProperty(window.getName(), window.isActive());
         }
-
         return mainNode;
     }
 
     @Override
-    public void load0(JsonObject mainNode) {
-        for (ClientMenuWindow window : this.clientMenuManager.getList()) {
-            if (mainNode.has(window.getName())) {
-                window.setActive(mainNode.get(window.getName()).getAsBoolean());
+    public void load0(final JsonObject mainNode) {
+        for (final ClientMenuWindow window : this.clientMenuManager.getList()) {
+            final String windowName = window.getName();
+            if (mainNode.has(windowName)) {
+                window.setActive(mainNode.get(windowName).getAsBoolean());
             }
         }
     }

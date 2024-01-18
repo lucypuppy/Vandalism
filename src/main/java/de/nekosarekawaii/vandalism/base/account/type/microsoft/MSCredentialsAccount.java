@@ -34,7 +34,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import java.util.concurrent.CompletableFuture;
 
 public class MSCredentialsAccount extends AbstractMicrosoftAccount {
+
     private static final AccountFactory FACTORY = new AccountFactory() {
+
         private String state;
 
         private final ImString email = new ImString();
@@ -42,35 +44,33 @@ public class MSCredentialsAccount extends AbstractMicrosoftAccount {
 
         @Override
         public void displayFactory() {
-            ImGui.text(this.state == null ? "Please enter your credentials." : state);
-
-            ImGui.inputText("Email", email, ImGuiInputTextFlags.CallbackResize);
-            ImGui.inputText("Password", password, ImGuiInputTextFlags.CallbackResize);
+            ImGui.text(this.state == null ? "Please enter your credentials." : this.state);
+            ImGui.inputText("Email", this.email, ImGuiInputTextFlags.CallbackResize);
+            ImGui.inputText("Password", this.password, ImGuiInputTextFlags.CallbackResize);
         }
 
         @Override
         public CompletableFuture<AbstractAccount> make() {
             return CompletableFuture.supplyAsync(() -> {
                 try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
-                    final var javaSession = MinecraftAuth.JAVA_CREDENTIALS_LOGIN.getFromInput(httpClient, new StepCredentialsMsaCode.MsaCredentials(this.email.get(), this.password.get()));
-
-                    final var account = new MSCredentialsAccount();
+                    final StepFullJavaSession.FullJavaSession javaSession = MinecraftAuth.JAVA_CREDENTIALS_LOGIN.getFromInput(httpClient, new StepCredentialsMsaCode.MsaCredentials(this.email.get(), this.password.get()));
+                    final MSCredentialsAccount account = new MSCredentialsAccount();
                     account.initWithExistingSession(javaSession);
-
                     return account;
-                } catch (Throwable e) {
-                    this.state = "Failed to login: " + e.getMessage();
+                } catch (Throwable t) {
+                    this.state = "Failed to log into account: " + t.getMessage();
                     return null;
                 }
             });
         }
+
     };
 
     public MSCredentialsAccount() {
         super("credentials", FACTORY);
     }
 
-    public MSCredentialsAccount(String tokenChain) {
+    public MSCredentialsAccount(final String tokenChain) {
         super("credentials", FACTORY, tokenChain);
     }
 

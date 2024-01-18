@@ -19,9 +19,11 @@
 package de.nekosarekawaii.vandalism.base.config.template;
 
 import com.google.gson.JsonObject;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.AbstractConfig;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
+import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 
 import java.util.List;
 
@@ -29,28 +31,30 @@ public class ConfigWithValues extends AbstractConfig<JsonObject> {
 
     private final List<? extends ValueParent> keys;
 
-    public ConfigWithValues(String name, final List<? extends ValueParent> keys) {
+    public ConfigWithValues(final String name, final List<? extends ValueParent> keys) {
         super(JsonObject.class, name);
-
         this.keys = keys;
     }
 
     @Override
     public JsonObject save0() {
-        final var mainNode = new JsonObject();
-        for (ValueParent key : this.keys) {
-            final var keyNode = new JsonObject();
+        final JsonObject mainNode = new JsonObject();
+        for (final ValueParent key : this.keys) {
+            final JsonObject keyNode = new JsonObject();
             saveValues(keyNode, key.getValues());
-
             mainNode.add(key.getName(), keyNode);
         }
         return mainNode;
     }
 
     @Override
-    public void load0(JsonObject mainNode) {
-        for (ValueParent key : this.keys) {
-            final var keyNode = mainNode.getAsJsonObject(key.getName());
+    public void load0(final JsonObject mainNode) {
+        for (final ValueParent key : this.keys) {
+            final String keyName = key.getName();
+            if (!mainNode.has(keyName)) {
+                continue;
+            }
+            final JsonObject keyNode = mainNode.getAsJsonObject(keyName);
             if (keyNode != null) {
                 loadValues(keyNode, key.getValues());
             }
@@ -68,7 +72,23 @@ public class ConfigWithValues extends AbstractConfig<JsonObject> {
             if (!targetNode.has(value.getName())) {
                 continue;
             }
-            value.load(targetNode);
+            try {
+                value.load(targetNode);
+            }
+            catch (Throwable t) {
+                String parentName = "";
+                final ValueParent parent = value.getParent();
+                if (parent != null) {
+                    if (parent instanceof final ValueGroup valueGroup) {
+                        final ValueParent grandParent = valueGroup.getParent();
+                        if (grandParent != null) {
+                            parentName = grandParent.getName() + "/";
+                        }
+                    }
+                    parentName += parent.getName() + "/";
+                }
+                Vandalism.getInstance().getLogger().error("Failed to load value: " + parentName + value.getName(), t);
+            }
         }
     }
 

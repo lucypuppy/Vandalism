@@ -31,26 +31,27 @@ import net.minecraft.client.session.Session;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class AbstractTokenBasedAccount extends AbstractAccount {
+
     private static final WebUtils JSON_REQUESTER = WebUtils.create().withHeader("Content-Type", "application/json");
 
     private final String redeemUrl;
     private String token;
 
-    public AbstractTokenBasedAccount(String name, String redeemUrl) {
+    public AbstractTokenBasedAccount(final String name, final String redeemUrl) {
         super(name);
         this.redeemUrl = redeemUrl;
     }
 
-    public AbstractTokenBasedAccount(String name, String redeemUrl, String token) {
+    public AbstractTokenBasedAccount(final String name, final String redeemUrl, final String token) {
         this(name, redeemUrl);
         this.token = token;
-
-        if (token != null && getEnvironment() == YggdrasilEnvironment.PROD.getEnvironment()) {
+        if (token != null && this.getEnvironment() == YggdrasilEnvironment.PROD.getEnvironment()) {
             throw new RuntimeException("You are using the production environment. This is not allowed.");
         }
     }
 
     public abstract Session fromResponse(final String response);
+
     public abstract AbstractTokenBasedAccount create(final String token);
 
     @Override
@@ -69,34 +70,34 @@ public abstract class AbstractTokenBasedAccount extends AbstractAccount {
 
             @Override
             public void displayFactory() {
-                ImGui.inputText("Token", token, ImGuiInputTextFlags.CallbackResize);
+                ImGui.inputText("Token", this.token, ImGuiInputTextFlags.CallbackResize);
             }
 
             @Override
             public CompletableFuture<AbstractAccount> make() {
-                return CompletableFuture.supplyAsync(() -> create(token.get()));
+                return CompletableFuture.supplyAsync(() -> create(this.token.get()));
             }
+
         };
     }
 
     @Override
     public void logIn0() throws Throwable {
         if (this.session != null) {
-            updateSession(session); //If we are already logged in, we don't need to do anything except reloading the session
+            //If we are already logged in, we don't need to do anything except reloading the session
+            this.updateSession(this.session);
             return;
         }
-
-        final String response = JSON_REQUESTER.post(this.redeemUrl, "{\"token\":\"" + this.token + "\"}");
-        updateSession(fromResponse(response));
+        this.updateSession(this.fromResponse(JSON_REQUESTER.post(this.redeemUrl, "{\"token\":\"" + this.token + "\"}")));
     }
 
     @Override
-    public void save0(JsonObject mainNode) {
+    public void save0(final JsonObject mainNode) {
         mainNode.addProperty("token", this.token);
     }
 
     @Override
-    public void load0(JsonObject mainNode) {
+    public void load0(final JsonObject mainNode) {
         this.token = mainNode.get("token").getAsString();
     }
 

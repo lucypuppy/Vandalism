@@ -48,7 +48,6 @@ public class AccountManager extends Storage<AbstractAccount> {
                 new SessionAccount(),
                 new EasyMCAccount()
         ).forEach(account -> ACCOUNT_TYPES.put(account, account.factory()));
-
         configManager.add(new AccountsConfig(this));
         clientMenuManager.add(new AccountsClientMenuWindow(this));
     }
@@ -59,7 +58,7 @@ public class AccountManager extends Storage<AbstractAccount> {
     @Override
     public void init() {
         final Session session = MinecraftClient.getInstance().getSession();
-        firstAccount = currentAccount = new SessionAccount(
+        this.firstAccount = this.currentAccount = new SessionAccount(
                 session.getUsername(),
                 session.getUuidOrNull() != null ? session.getUuidOrNull().toString() : "",
                 session.getAccessToken(),
@@ -70,15 +69,15 @@ public class AccountManager extends Storage<AbstractAccount> {
 
     public void logIn(final AbstractAccount account) throws Throwable {
         account.logIn();
-        currentAccount = account;
+        this.currentAccount = account;
     }
 
     public AbstractAccount getCurrentAccount() {
-        return currentAccount;
+        return this.currentAccount;
     }
 
     public void logOut() throws Throwable {
-        logIn(firstAccount);
+        this.logIn(this.firstAccount);
     }
 
 }

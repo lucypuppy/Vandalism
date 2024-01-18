@@ -43,11 +43,11 @@ public class ValueModeGeneric<T> extends Value<T> {
 
     @Override
     public void load(final JsonObject mainNode) {
-        final T value = this.fromString.apply(mainNode.get(this.getName()).getAsString());
-        if (!this.options.contains(value)) {
-            this.setValue(this.getDefaultValue());
+        if (!mainNode.has(this.getName())) {
             return;
         }
+        final T value = this.fromString.apply(mainNode.get(this.getName()).getAsString());
+        if (!this.options.contains(value)) return;
         this.setValue(value);
     }
 

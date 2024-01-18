@@ -30,41 +30,45 @@ import java.util.List;
 
 public class ValueGroup extends Value<List<Value<?>>> implements ValueParent, MinecraftWrapper {
 
-    private boolean open = false;
+    private boolean wasOpen = false;
 
     public ValueGroup(ValueParent parent, String name, String description) {
         super(parent, name, description, new ArrayList<>());
     }
 
     @Override
-    public void load(final JsonObject valueObject) {
-        final JsonObject valueNode = valueObject.getAsJsonObject(this.getName());
+    public void load(final JsonObject mainNode) {
+        if (!mainNode.has(this.getName())) {
+            return;
+        }
+        final JsonObject valueNode = mainNode.getAsJsonObject(this.getName());
         for (final Value<?> value : this.getValues()) {
             value.load(valueNode);
         }
-        if (valueNode.has("open")) {
-            this.open = valueNode.get("open").getAsBoolean();
+        final String wasOpenName = this.getName() + " was open";
+        if (valueNode.has(wasOpenName)) {
+            this.wasOpen = valueNode.get(wasOpenName).getAsBoolean();
         }
     }
 
     @Override
-    public void save(final JsonObject valueObject) {
+    public void save(final JsonObject mainNode) {
         final JsonObject valueNode = new JsonObject();
         for (final Value<?> value : this.getValues()) {
             value.save(valueNode);
         }
-        valueNode.addProperty("open", this.open);
-        valueObject.add(this.getName(), valueNode);
+        valueNode.addProperty(this.getName() + " was open", this.wasOpen);
+        mainNode.add(this.getName(), valueNode);
     }
 
     @Override
     public void render() {
-        if (ImGui.treeNodeEx(this.getName() + "##" + this.getName() + this.getParent().getName(), this.open ? ImGuiTreeNodeFlags.DefaultOpen : 0)) {
-            this.open = true;
+        if (ImGui.treeNodeEx(this.getName() + "##" + this.getName() + this.getParent().getName(), this.wasOpen ? ImGuiTreeNodeFlags.DefaultOpen : 0)) {
+            this.wasOpen = true;
             this.renderValues();
             ImGui.treePop();
         } else {
-            this.open = false;
+            this.wasOpen = false;
         }
     }
 
@@ -80,8 +84,8 @@ public class ValueGroup extends Value<List<Value<?>>> implements ValueParent, Mi
         }
     }
 
-    public boolean isOpen() {
-        return this.open;
+    public boolean isWasOpen() {
+        return this.wasOpen;
     }
 
 }

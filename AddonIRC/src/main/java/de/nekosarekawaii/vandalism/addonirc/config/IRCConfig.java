@@ -31,7 +31,6 @@ public class IRCConfig extends AbstractConfig<JsonObject> {
 
     public IRCConfig() {
         super(JsonObject.class, "irc");
-
         this.values.put("address", IrcClientMenuWindow.ADDRESS);
         this.values.put("username", IrcClientMenuWindow.USERNAME);
         this.values.put("password", IrcClientMenuWindow.PASSWORD);
@@ -39,11 +38,8 @@ public class IRCConfig extends AbstractConfig<JsonObject> {
 
     @Override
     public JsonObject save0() {
-        final var mainNode = new JsonObject();
-        this.values.forEach((key, value) -> {
-            mainNode.addProperty(key, value.get());
-        });
-
+        final JsonObject mainNode = new JsonObject();
+        this.values.forEach((key, value) -> mainNode.addProperty(key, value.get()));
         return mainNode;
     }
 

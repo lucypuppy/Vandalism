@@ -42,13 +42,13 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
 
     private final IntegerValue rainbowSpeed = new IntegerValue(this, "Rainbow Speed", "The speed of the rainbow", 2, 1, 10);
 
-    //These things arent the client colors these are just the twoColorFade colors and i need them in this class
+    //These things aren't the client colors these are just the twoColorFade colors and I need in this class
     private Color mainColorFade;
     private Color secondaryColorFade;
 
     public ColorValue(ValueParent parent, String name, String description, HSBColor defaultValue) {
         super(parent, name, description, defaultValue);
-        resetColor();
+        this.resetColor();
     }
 
     public ColorValue(ValueParent parent, String name, String description, Color defaultValue) {
@@ -62,11 +62,19 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
 
     @Override
     public void load(final JsonObject mainNode) {
-        final JsonObject valueNode = mainNode.get(getName()).getAsJsonObject();
-        this.setValue(new Color(valueNode.get("color").getAsInt(), true));
-        this.mainColorFade = new Color(valueNode.get("mainColorFade").getAsInt(), true);
-        this.secondaryColorFade = new Color(valueNode.get("secondaryColorFade").getAsInt(), true);
-
+        if (!mainNode.has(this.getName())) {
+            return;
+        }
+        final JsonObject valueNode = mainNode.get(this.getName()).getAsJsonObject();
+        if (valueNode.has("color")) {
+            this.setValue(new Color(valueNode.get("color").getAsInt(), true));
+        }
+        if (valueNode.has("mainColorFade")) {
+            this.mainColorFade = new Color(valueNode.get("mainColorFade").getAsInt(), true);
+        }
+        if (valueNode.has("secondaryColorFade")) {
+            this.secondaryColorFade = new Color(valueNode.get("secondaryColorFade").getAsInt(), true);
+        }
         for (final Value<?> value : this.getValues()) {
             value.load(valueNode);
         }
@@ -78,11 +86,9 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
         valueNode.addProperty("color", super.getValue().getColor().getRGB());
         valueNode.addProperty("mainColorFade", this.mainColorFade.getRGB());
         valueNode.addProperty("secondaryColorFade", this.secondaryColorFade.getRGB());
-
         for (final Value<?> value : this.getValues()) {
             value.save(valueNode);
         }
-
         mainNode.add(getName(), valueNode);
     }
 

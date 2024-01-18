@@ -23,6 +23,7 @@ import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.base.account.AccountManager;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.render.PlayerSkinRenderer;
 import imgui.ImGui;
 import imgui.flag.ImGuiMouseButton;
@@ -35,6 +36,7 @@ import java.util.function.Consumer;
 import static de.nekosarekawaii.vandalism.util.imgui.ImUtils.subButton;
 
 public class AccountsClientMenuWindow extends ClientMenuWindow {
+
     private static final float ACCOUNT_ENTRY_CONTENT_WIDTH = 64F;
     private static final float ACCOUNT_ENTRY_CONTENT_HEIGHT = 64F;
 
@@ -42,7 +44,6 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
 
     public AccountsClientMenuWindow(final AccountManager accountManager) {
         super("Accounts", Category.CONFIGURATION);
-
         this.accountManager = accountManager;
     }
 
@@ -64,12 +65,12 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
         if (ImGui.beginMenuBar()) {
             if (ImGui.beginMenu("Add Account")) {
                 AccountManager.ACCOUNT_TYPES.forEach((account, factory) -> {
-                    if (ImGui.beginMenu(account.getName())) {
+                    if (ImGui.beginMenu(account.getType())) {
                         factory.displayFactory();
-                        if (ImGui.button("Add", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                        if (ImUtils.subButton("Add")) {
                             recallAccount(factory, accountManager::add);
                         }
-                        if (ImGui.button("Login", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                        if (ImUtils.subButton("Login")) {
                             recallAccount(factory, AbstractAccount::logIn);
                         }
                         ImGui.endMenu();
@@ -79,29 +80,30 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
             }
             if (ImGui.beginMenu("Current Account")) {
                 final AbstractAccount currentAccount = accountManager.getCurrentAccount();
-                ImGui.text("Account type: " + currentAccount.getName());
-                ImGui.text("Account name: " + currentAccount.getDisplayName());
+                ImGui.text("Account Type: " + currentAccount.getType());
+                ImGui.text("Account Name: " + currentAccount.getDisplayName());
                 if (currentAccount.getSession().getUuidOrNull() != null) {
                     ImGui.text("Account UUID: " + currentAccount.getSession().getUuidOrNull());
                 }
-                if (ImGui.button("Copy", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
-                    final var name = currentAccount.getDisplayName();
-                    final var uuid = currentAccount.getSession().getUuidOrNull().toString();
-                    final var accessToken = currentAccount.getSession().getAccessToken();
-                    final var xuid = currentAccount.getSession().getXuid().orElse("Not available");
-                    final var clientId = currentAccount.getSession().getClientId().orElse("Not available");
-
-                    mc.keyboard.setClipboard("Name: " + name + "\n" +
+                if (ImUtils.subButton("Copy")) {
+                    final String name = currentAccount.getDisplayName();
+                    final String uuid = currentAccount.getSession().getUuidOrNull().toString();
+                    final String accessToken = currentAccount.getSession().getAccessToken();
+                    final String xuid = currentAccount.getSession().getXuid().orElse("Not available");
+                    final String clientId = currentAccount.getSession().getClientId().orElse("Not available");
+                    this.mc.keyboard.setClipboard(
+                            "Name: " + name + "\n" +
                             "UUID: " + uuid + "\n" +
                             "Access Token: " + accessToken + "\n" +
                             "XUID: " + xuid + "\n" +
-                            "Client ID: " + clientId + "\n");
+                            "Client ID: " + clientId + "\n"
+                    );
                 }
                 if (subButton("Logout")) {
                     try {
                         accountManager.logOut();
                     } catch (Throwable t) {
-                        Vandalism.getInstance().getLogger().error("Failed to logout", t);
+                        Vandalism.getInstance().getLogger().error("Failed to logout.", t);
                     }
                 }
                 ImGui.endMenu();
@@ -117,7 +119,7 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
             ImGui.setNextItemWidth(400F); //Just some magic value to make the popup look good
             if (subButton("Delete account")) {
                 ImGui.closeCurrentPopup();
-                Vandalism.getInstance().getAccountManager().remove(hoveredAccount);
+                Vandalism.getInstance().getAccountManager().remove(this.hoveredAccount);
                 this.hoveredAccount = null;
             }
             if (this.hoveredAccount != null) {
@@ -132,7 +134,7 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
                     if (subButton("Copy Access token")) {
                         this.mc.keyboard.setClipboard(session.getAccessToken());
                     }
-                    ImGui.text("Account type: " + this.hoveredAccount.getName());
+                    ImGui.text("Account type: " + this.hoveredAccount.getType());
                     if (this.hoveredAccount.getLastLogin() != null) {
                         ImGui.text("Last login: " + this.hoveredAccount.getLastLogin());
                     }
@@ -146,34 +148,31 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        ImGui.begin(getName(), ImGuiWindowFlags.MenuBar);
-        renderMenuBar(accountManager);
-
-        for (AbstractAccount account : accountManager.getList()) {
+    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        ImGui.begin(this.getName(), ImGuiWindowFlags.MenuBar);
+        this.renderMenuBar(this.accountManager);
+        for (final AbstractAccount account : this.accountManager.getList()) {
             if (account == null) continue;
-
             final PlayerSkinRenderer accountPlayerSkin = account.getPlayerSkin();
             if (accountPlayerSkin != null && accountPlayerSkin.getGlId() != -1) {
                 //Those are not some magic values these are the values to render exactly the face from the skin.
                 ImGui.image(accountPlayerSkin.getGlId(), ACCOUNT_ENTRY_CONTENT_WIDTH, ACCOUNT_ENTRY_CONTENT_HEIGHT, 0.125f, 0.1f, 0.25f, 0.250f);
                 ImGui.sameLine();
             }
-
             if (ImGui.button(account.getDisplayName() + " (" + (account.getStatus() == null ? "Idle" : account.getStatus()) + ")", ImGui.getColumnWidth(), ACCOUNT_ENTRY_CONTENT_HEIGHT + 1f)) {
                 try {
-                    accountManager.logIn(account);
+                    this.accountManager.logIn(account);
                     account.setStatus("Logged in");
                 } catch (Throwable throwable) {
                     account.setStatus("Error: " + throwable.getMessage());
                 }
             }
             if (ImGui.isItemHovered() && ImGui.isItemClicked(ImGuiMouseButton.Right)) {
-                hoveredAccount = account;
+                this.hoveredAccount = account;
                 ImGui.openPopup("account-popup");
             }
         }
-        renderAccountPopup();
+        this.renderAccountPopup();
         ImGui.end();
     }
 
