@@ -84,7 +84,7 @@ public class ValueGroup extends Value<List<Value<?>>> implements ValueParent, Mi
         }
     }
 
-    public boolean isWasOpen() {
+    public boolean wasOpen() {
         return this.wasOpen;
     }
 
