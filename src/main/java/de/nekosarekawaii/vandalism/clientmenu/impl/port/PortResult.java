@@ -26,6 +26,7 @@ import net.lenni0451.mcping.exception.ConnectTimeoutException;
 import net.lenni0451.mcping.exception.ConnectionRefusedException;
 import net.lenni0451.mcping.exception.DataReadException;
 import net.lenni0451.mcping.exception.PacketReadException;
+import net.lenni0451.mcping.responses.MCPingResponse;
 import net.minecraft.SharedConstants;
 
 import java.net.BindException;
@@ -52,6 +53,14 @@ public class PortResult {
 
     public int getPort() {
         return this.port;
+    }
+
+    public String getHostname() {
+        return this.hostname;
+    }
+
+    public MCPingResponse getMcPingResponse() {
+        return this.serverInfoWidget.getMcPingResponse();
     }
 
     public PingState getCurrentState() {

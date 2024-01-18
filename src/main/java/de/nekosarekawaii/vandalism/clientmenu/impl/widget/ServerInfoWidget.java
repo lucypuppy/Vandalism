@@ -132,7 +132,11 @@ public class ServerInfoWidget implements MinecraftWrapper {
                         if (ImGui.button("Add to the Server List" + uniqueId + "addtoserverlist", buttonWidth, buttonHeight)) {
                             final net.minecraft.client.option.ServerList serverList = new net.minecraft.client.option.ServerList(MinecraftClient.getInstance());
                             serverList.loadFile();
-                            serverList.add(new ServerInfo("Port Scan Result (" + this.mcPingResponse.server.port + ")", address, ServerInfo.ServerType.OTHER), false);
+                            serverList.add(new ServerInfo(
+                                    "Port Scan Result (" + this.mcPingResponse.server.port + ")",
+                                    address,
+                                    ServerInfo.ServerType.OTHER
+                            ), false);
                             serverList.saveFile();
                         }
                         if (ImGui.button("Copy Address" + uniqueId + "copyaddress", buttonWidth, buttonHeight)) {

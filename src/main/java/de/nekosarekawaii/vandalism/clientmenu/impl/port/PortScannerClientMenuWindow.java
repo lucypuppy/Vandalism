@@ -28,7 +28,9 @@ import imgui.flag.ImGuiTableFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImInt;
 import imgui.type.ImString;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.network.ServerInfo;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -128,8 +130,7 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
                                 final int port = Integer.parseInt(data[1]);
                                 this.minPort.set(Math.max(1, Math.min(port - 500, 65535)));
                                 this.maxPort.set(Math.max(port, Math.min(port + 500, 65535)));
-                            }
-                            catch (Exception ignored) {
+                            } catch (Exception ignored) {
                             }
                         }
                     }
@@ -198,15 +199,19 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
             if (!this.ports.isEmpty()) {
                 ImGui.separator();
                 ImGui.text("Ports");
-                final List<PortResult> freePortResults = new ArrayList<>();
+                final List<PortResult> uncheckedPortResults = new ArrayList<>();
+                final List<PortResult> validPortResults = new ArrayList<>();
                 for (final PortResult portResult : this.ports.values()) {
-                    if (portResult.getCurrentState() == PortResult.PingState.WAITING_INPUT) {
-                        freePortResults.add(portResult);
+                    if (portResult.getCurrentState() == PortResult.PingState.WAITING_INPUT && portResult.getCurrentQueryState() == PortResult.PingState.WAITING_INPUT) {
+                        uncheckedPortResults.add(portResult);
+                    }
+                    if (portResult.getMcPingResponse() != null) {
+                        validPortResults.add(portResult);
                     }
                 }
-                if (!freePortResults.isEmpty()) {
+                if (!uncheckedPortResults.isEmpty()) {
                     if (ImGui.button("Ping All Ports##portscannerpingallports")) {
-                        for (final PortResult portResult : freePortResults) {
+                        for (final PortResult portResult : uncheckedPortResults) {
                             portResult.ping();
                         }
                     }
@@ -249,22 +254,40 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
                 }
                 ImGui.separator();
                 ImGui.text("Server Infos");
-                final ServerInfosTableColumn[] serverInfosTableColumns = ServerInfosTableColumn.values();
-                final int maxServerInfosTableColumns = serverInfosTableColumns.length;
-                if (ImGui.beginTable("serverinfos##serverinfostableportscanner", maxServerInfosTableColumns,
-                        ImGuiTableFlags.Borders |
-                                ImGuiTableFlags.Resizable |
-                                ImGuiTableFlags.RowBg |
-                                ImGuiTableFlags.ContextMenuInBody
-                )) {
-                    for (final ServerInfosTableColumn serverInfosTableColumn : serverInfosTableColumns) {
-                        ImGui.tableSetupColumn(serverInfosTableColumn.getName());
+                ImGui.separator();
+                if (!validPortResults.isEmpty()) {
+                    if (ImGui.button("Add all Results to the Server List##portsaddallresultstoserverlistportscanner")) {
+                        final net.minecraft.client.option.ServerList serverList = new net.minecraft.client.option.ServerList(MinecraftClient.getInstance());
+                        serverList.loadFile();
+                        for (final PortResult portResult : validPortResults) {
+                            serverList.add(new ServerInfo(
+                                    "Port Scan Result (" + portResult.getPort() + ")",
+                                    portResult.getHostname() + ":" + portResult.getPort(),
+                                    ServerInfo.ServerType.OTHER
+                            ), false);
+                        }
+                        serverList.saveFile();
                     }
-                    ImGui.tableHeadersRow();
-                    for (final PortResult portResult : this.ports.values()) {
-                        portResult.renderTableEntry();
+                    final ServerInfosTableColumn[] serverInfosTableColumns = ServerInfosTableColumn.values();
+                    final int maxServerInfosTableColumns = serverInfosTableColumns.length;
+                    if (ImGui.beginTable("serverinfos##serverinfostableportscanner", maxServerInfosTableColumns,
+                            ImGuiTableFlags.Borders |
+                                    ImGuiTableFlags.Resizable |
+                                    ImGuiTableFlags.RowBg |
+                                    ImGuiTableFlags.ContextMenuInBody
+                    )) {
+                        for (final ServerInfosTableColumn serverInfosTableColumn : serverInfosTableColumns) {
+                            ImGui.tableSetupColumn(serverInfosTableColumn.getName());
+                        }
+                        ImGui.tableHeadersRow();
+                        for (final PortResult portResult : validPortResults) {
+                            portResult.renderTableEntry();
+                        }
+                        ImGui.endTable();
                     }
-                    ImGui.endTable();
+                }
+                else {
+                    ImGui.text("No valid Results.");
                 }
             }
             ImGui.end();
