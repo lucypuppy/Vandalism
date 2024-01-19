@@ -47,9 +47,9 @@ import java.io.File;
  *  - Add 1.20.2 / maybe 1.20.3 instant crash crash item to CrashItemCreativeTab
  *  - Replaced target selection with actual entity selection (create something like an registry multi selection value)
  *  - Implement second layer rendering of account skins inside the account manager
- *  - Fix item display names in the creative tabs.
- *  - Change behavior of the echolocation module to use it as a chunk load detector.
- *  - Change trash talk module to a chat reaction module.
+ *  - Fix item display names in the creative tabs
+ *  - Change behavior of the echolocation module to use it as a chunk load detector
+ *  - Change trash talk module to a chat reaction module
  * <br><br>
  * TODO: Verschlxfene <br>
  *  - Delete MixinParticleManager
@@ -60,6 +60,7 @@ import java.io.File;
  *  - Rewrite TimerHack to use TPS instead of "speed" alias random multiplier w
  * <br><br>
  * TODO: FooFieOwO <br>
+ *  - Make a better calculation for the rotate speed RotationListener#rotationDistribution
  *  - Fix module list out of screen rendering when the alignment is at the bottom of the screen
  *  - Fix Rotation raytrace when block normalizer is enabled (Collision shape event)
  *  - Fix NoClipMode from PhaseModule
@@ -68,7 +69,6 @@ import java.io.File;
  *  - Fix tick bug (cps is not accurate) -> see BoxMuellerClicker#onUpdate
  *  - Fix this by something like an auto detection (for example you could make module modes features):
  *    "...visibleCondition(() -> this.getParent().mode.getValue().equals(this))"
- *  - Make a better calculation for the rotate speed RotationListener#rotationDistribution
  *  - Check if anything has changed in 1.20.2 regarding hit box position offsetting RotationUtil#getVisibleHitBoxSides
  *  - KillAura#onPrePlayerUpdate | Frame event (entity renderer set angles) -> rotate / Mouse event -> attack
  * <br><br>
