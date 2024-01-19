@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.addonwurstclient.injection.mixins.render;
+package de.nekosarekawaii.vandalism.addonwurstclient.injection.mixins.command;
 
 import net.wurstclient.commands.TacoCmd;
 import org.spongepowered.asm.mixin.Mixin;
