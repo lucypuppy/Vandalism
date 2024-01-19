@@ -29,6 +29,13 @@ import java.util.Optional;
 
 public class ChatUtil implements MinecraftWrapper {
 
+    public static final MutableText CHAT_PREFIX = Text.empty()
+            .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
+            .append("(")
+            .append(Text.literal(FabricBootstrap.MOD_NAME)
+                    .setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Color.WHITE.getRGB()))))
+            .append(") ");
+
     private enum Type {
 
         INFO(Color.GREEN), WARNING(Color.ORANGE), ERROR(Color.RED);
@@ -36,7 +43,12 @@ public class ChatUtil implements MinecraftWrapper {
         private final MutableText prefix;
 
         Type(final Color color) {
-            this.prefix = Text.empty().setStyle(Style.EMPTY.withFormatting(Formatting.GRAY)).append("[").append(Text.literal(StringUtils.normalizeEnumName(this.name())).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(color.getRGB())))).append("] ");
+            this.prefix = Text.empty()
+                    .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
+                    .append("[")
+                    .append(Text.literal(StringUtils.normalizeEnumName(this.name()))
+                    .setStyle(Style.EMPTY.withColor(TextColor.fromRgb(color.getRGB()))))
+                    .append("] ");
         }
 
         public MutableText getPrefix() {
@@ -44,8 +56,6 @@ public class ChatUtil implements MinecraftWrapper {
         }
 
     }
-
-    private static final MutableText CHAT_PREFIX = Text.empty().setStyle(Style.EMPTY.withFormatting(Formatting.GRAY)).append("(").append(Text.literal(FabricBootstrap.MOD_NAME).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Color.WHITE.getRGB())))).append(") ");
 
     public static void infoChatMessage(final String message) {
         infoChatMessage(Text.literal(message));
