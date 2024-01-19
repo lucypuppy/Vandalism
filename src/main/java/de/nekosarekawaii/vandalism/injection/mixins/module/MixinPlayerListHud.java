@@ -30,11 +30,15 @@ import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -85,7 +89,11 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
         if (betterTabListModule.isActive() && betterTabListModule.moreInfo.getValue()) {
             final var color = betterTabListModule.getColorFromGameMode(entry.getGameMode().getId());
 
-            cir.setReturnValue(Text.literal("").append(Text.literal("[" + entry.getGameMode().getId() + "] ").withColor(color)).append(cir.getReturnValue()));
+            cir.setReturnValue(Text.literal("").append(
+                    Text.literal(
+                            Formatting.DARK_GRAY + "[" + Formatting.RESET + entry.getGameMode().getId() + Formatting.DARK_GRAY + "] " + Formatting.RESET
+                    ).withColor(color)
+            ).append(cir.getReturnValue()));
         }
     }
 
