@@ -48,9 +48,7 @@ public class ModuleModeValue<T extends AbstractModule> extends ValueModeGeneric<
     public void render() {
         super.render();
 
-        for (Value<?> value : getValue().getValues()) {
-            value.render();
-        }
+        getValue().renderValues();
     }
 
 }
