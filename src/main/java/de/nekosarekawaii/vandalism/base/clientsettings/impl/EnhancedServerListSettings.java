@@ -21,7 +21,6 @@ package de.nekosarekawaii.vandalism.base.clientsettings.impl;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.KeyBindValue;
-import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerList;
@@ -66,15 +65,6 @@ public class EnhancedServerListSettings extends ValueGroup {
             "If activated the Game shows all necessary server information behind a server list entry.",
             true
     ).visibleCondition(this.enhancedServerList::getValue);
-
-    public final IntegerValue maxServerVersionLength = new IntegerValue(
-            this,
-            "Max Server Version Length",
-            "Sets the max display length of a server version that is being displayed in the multiplayer screen.",
-            60,
-            6,
-            250
-    ).visibleCondition(() -> this.enhancedServerList.getValue() && this.multiplayerScreenServerInformation.getValue());
 
     public EnhancedServerListSettings(final ClientSettings parent) {
         super(parent, "Enhanced Server List", "Enhanced Server List related settings.");

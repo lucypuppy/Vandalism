@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.florianmichael.viafabricplus.protocolhack.ProtocolHack;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.util.game.ServerUtil;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
@@ -67,12 +68,7 @@ public abstract class MixinServerEntry {
         if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().enhancedServerList.getValue()) {
             if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().multiplayerScreenServerInformation.getValue()) {
                 final int textX = x + textRenderer.getWidth(text) + 22;
-                String versionName = this.server.version.getString();
-                final int maxServerVersionLength = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().maxServerVersionLength.getValue();
-                if (versionName.length() > maxServerVersionLength) {
-                    versionName = versionName.substring(0, maxServerVersionLength);
-                }
-                instance.drawTextWithShadow(textRenderer, vandalism$VERSION_TEXT + versionName, textX, y, -1);
+                instance.drawTextWithShadow(textRenderer, vandalism$VERSION_TEXT + ServerUtil.fixVersionName(this.server.version.getString()), textX, y, -1);
                 instance.drawTextWithShadow(
                         textRenderer,
                         vandalism$PROTOCOL_TEXT + this.server.protocolVersion,

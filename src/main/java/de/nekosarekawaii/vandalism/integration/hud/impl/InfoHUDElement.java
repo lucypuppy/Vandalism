@@ -158,7 +158,7 @@ public class InfoHUDElement extends HUDElement {
         if (this.cps.getValue()) {
             this.leftClick.update();
             this.rightClick.update();
-            infoMap.put("CPS", this.leftClick.clicks() + " / " + this.rightClick.clicks());
+            infoMap.put("CPS", this.leftClick.clicks() + " | " + this.rightClick.clicks());
         }
         if (this.username.getValue()) {
             infoMap.put("Username", this.mc.session.getUsername());
@@ -249,7 +249,7 @@ public class InfoHUDElement extends HUDElement {
             if (ServerUtil.lastServerExists() && this.mc.player != null && !this.mc.isInSingleplayer()) {
                 final Text version = ServerUtil.getLastServerInfo().version;
                 if (version != null) {
-                    value = version.getString();
+                    value = ServerUtil.fixVersionName(version.getString());
                 }
             }
             infoMap.put("Server Version", value);

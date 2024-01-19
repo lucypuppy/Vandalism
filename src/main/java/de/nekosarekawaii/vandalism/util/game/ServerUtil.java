@@ -59,4 +59,22 @@ public class ServerUtil implements MinecraftWrapper {
         GAME_MENU_SCREEN.disconnect();
     }
 
+    public static String fixVersionName(final String input) {
+        if (input.contains(" ")) {
+            final String[] data = input.split(" ");
+            if (data.length > 1) {
+                final String name = data[0];
+                String versionRange = input.substring(name.length() + 1);
+                if (versionRange.contains(", ")) {
+                    final String[] versions = versionRange.split(", ");
+                    if (versions.length > 1) {
+                        versionRange = versions[0] + "-" + versions[versions.length - 1];
+                    }
+                }
+                return name + " " + versionRange;
+            }
+        }
+        return input;
+    }
+
 }
