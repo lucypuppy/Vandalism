@@ -30,9 +30,9 @@ public class SpeedModule extends AbstractModule {
             this,
             "Mode",
             "The current speed mode.",
-            new LongJumpModuleMode(this),
-            new VerusHopModuleMode(this),
-            new CubeCraftModuleMode(this)
+            new LongJumpModuleMode(),
+            new VerusHopModuleMode(),
+            new CubeCraftModuleMode()
     );
 
     public SpeedModule() {

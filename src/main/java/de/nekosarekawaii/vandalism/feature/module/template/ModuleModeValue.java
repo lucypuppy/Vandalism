@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.feature.module.template;
 
+import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.template.ValueModeGeneric;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 
@@ -25,7 +26,6 @@ public class ModuleModeValue<T extends AbstractModule> extends ValueModeGeneric<
 
     @SafeVarargs
     public ModuleModeValue(final AbstractModule parent, final String name, final String description, final ModuleMulti<T>... options) {
-
         super(parent, name, description, ModuleMulti::getName, mn -> {
             for (final ModuleMulti<T> module : options) {
                 if (module.getName().equals(mn)) {
@@ -42,6 +42,15 @@ public class ModuleModeValue<T extends AbstractModule> extends ValueModeGeneric<
             }
         });
 
+    }
+
+    @Override
+    public void render() {
+        super.render();
+
+        for (Value<?> value : getValue().getValues()) {
+            value.render();
+        }
     }
 
 }

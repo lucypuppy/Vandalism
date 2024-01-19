@@ -25,8 +25,8 @@ import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
 
 public class CreativeModuleMode extends ModuleMulti<FlightModule> implements PlayerUpdateListener {
 
-    public CreativeModuleMode(final FlightModule parent) {
-        super("Creative", parent);
+    public CreativeModuleMode() {
+        super("Creative");
     }
 
     @Override

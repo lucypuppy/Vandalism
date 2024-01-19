@@ -26,8 +26,8 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
 public class VanillaModuleMode extends ModuleMulti<NoFallModule> implements OutgoingPacketListener {
 
-    public VanillaModuleMode(final NoFallModule parent) {
-        super("Vanilla", parent);
+    public VanillaModuleMode() {
+        super("Vanilla");
     }
 
     @Override

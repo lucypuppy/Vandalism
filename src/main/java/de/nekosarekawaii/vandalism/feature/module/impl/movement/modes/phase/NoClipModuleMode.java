@@ -32,30 +32,30 @@ import org.lwjgl.glfw.GLFW;
 public class NoClipModuleMode extends ModuleMulti<PhaseModule> implements PlayerUpdateListener, BlockCollisionShapeListener {
 
     private final DoubleValue motionYOffset = new DoubleValue(
-            this.getParent(),
+            this,
             "Motion Y Offset",
             "The motion y offset of the no clip phase.",
             0.5,
             0.1,
             2.0
-    ).visibleCondition(() -> this.getParent().mode.getValue().equals(this));
+    );
 
     private final KeyBindValue upwardsKey = new KeyBindValue(
-            this.getParent(),
+            this,
             "Upwards Key",
             "The key to go upwards with the no clip phase.",
             GLFW.GLFW_KEY_SPACE
-    ).visibleCondition(() -> this.getParent().mode.getValue().equals(this));
+    );
 
     private final KeyBindValue downwardsKey = new KeyBindValue(
-            this.getParent(),
+            this,
             "Downwards Key",
             "The key to go downwards with the no clip phase.",
             GLFW.GLFW_KEY_LEFT_SHIFT
-    ).visibleCondition(() -> this.getParent().mode.getValue().equals(this));
+    );
 
-    public NoClipModuleMode(final PhaseModule parent) {
-        super("No Clip", parent);
+    public NoClipModuleMode() {
+        super("No Clip");
     }
 
     @Override

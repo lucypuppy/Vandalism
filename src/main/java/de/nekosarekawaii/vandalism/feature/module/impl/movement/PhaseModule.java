@@ -28,7 +28,7 @@ public class PhaseModule extends AbstractModule {
             this,
             "Mode",
             "The current phase mode.",
-            new NoClipModuleMode(this)
+            new NoClipModuleMode()
     );
 
     public PhaseModule() {

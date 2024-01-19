@@ -29,8 +29,8 @@ public class NoFallModule extends AbstractModule {
             this,
             "Mode",
             "The current no fall mode.",
-            new VanillaModuleMode(this),
-            new CubeCraftModuleMode(this)
+            new VanillaModuleMode(),
+            new CubeCraftModuleMode()
     );
 
     public NoFallModule() {

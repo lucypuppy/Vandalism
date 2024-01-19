@@ -41,8 +41,8 @@ public class FlightModule extends AbstractModule implements OutgoingPacketListen
             this,
             "Mode",
             "The current flight mode.",
-            new CreativeModuleMode(this),
-            new CubeCraftModuleMode(this)
+            new CreativeModuleMode(),
+            new CubeCraftModuleMode()
     );
 
     public FlightModule() {

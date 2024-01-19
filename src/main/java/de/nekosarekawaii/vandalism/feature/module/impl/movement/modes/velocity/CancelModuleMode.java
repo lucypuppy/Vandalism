@@ -26,8 +26,8 @@ import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 
 public class CancelModuleMode extends ModuleMulti<VelocityModule> implements IncomingPacketListener {
 
-    public CancelModuleMode(final VelocityModule parent) {
-        super("Cancel", parent);
+    public CancelModuleMode() {
+        super("Cancel");
     }
 
     @Override
