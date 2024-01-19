@@ -101,7 +101,7 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
             oldValue.hue = (float) (rainbowState / 360.0);
             this.setValue(oldValue);
         } else if (this.colorMode.getValue() == ColorMode.TWO_COLOR_FADE) {
-            final double fade = Math.sin(System.currentTimeMillis() / 600.0D + offset * 0.002D) * 0.5D + 0.5D;
+            final double fade = Math.sin(System.currentTimeMillis() / 600.0d + offset * 0.002d) * 0.5d + 0.5d;
             this.setValue(ColorUtils.colorInterpolate(mainColorFade, secondaryColorFade, fade));
         }
 

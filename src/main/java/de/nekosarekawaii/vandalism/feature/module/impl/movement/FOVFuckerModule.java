@@ -42,9 +42,9 @@ public class FOVFuckerModule extends AbstractModule implements PlayerUpdateListe
             this,
             "Max Distance",
             "The maximum distance to find targets.",
-            5F,
-            2F,
-            10F
+            5f,
+            2f,
+            10f
     );
 
     private final Value<Double> targetYPosOffset = new DoubleValue(
@@ -157,7 +157,7 @@ public class FOVFuckerModule extends AbstractModule implements PlayerUpdateListe
         final double direction = (Math.atan2(
                 this.target.forwardSpeed,
                 this.target.sidewaysSpeed
-        ) / Math.PI * 180.0F + this.target.getYaw()) * Math.PI / 180.0F;
+        ) / Math.PI * 180.0f + this.target.getYaw()) * Math.PI / 180.0f;
 
         if (this.useYawFromTarget.getValue()) {
             this.mc.player.setYaw(this.target.getHeadYaw());
@@ -196,12 +196,12 @@ public class FOVFuckerModule extends AbstractModule implements PlayerUpdateListe
         float strafe = 0, forward = 0;
         if (diffZ != 0 || diffX != 0) {
             final float yaw = (float) Math.toDegrees(Math.atan2(diffZ, diffX));
-            final float yawDiff = MathHelper.wrapDegrees(yaw - this.target.getYaw() - 90F);
+            final float yawDiff = MathHelper.wrapDegrees(yaw - this.target.getYaw() - 90f);
 
-            if (yawDiff >= -67.5F && yawDiff <= 67.5F) ++forward;
-            if (yawDiff <= -112.5F || yawDiff >= 112.5) --forward;
-            if (yawDiff >= 22.5F && yawDiff <= 157.5F) --strafe;
-            if (yawDiff >= -157.5F && yawDiff <= -22.5F) ++strafe;
+            if (yawDiff >= -67.5f && yawDiff <= 67.5f) ++forward;
+            if (yawDiff <= -112.5f || yawDiff >= 112.5f) --forward;
+            if (yawDiff >= 22.5f && yawDiff <= 157.5f) --strafe;
+            if (yawDiff >= -157.5f && yawDiff <= -22.5f) ++strafe;
         }
 
         //offsets

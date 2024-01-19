@@ -85,10 +85,10 @@ public class TrueSightModule extends AbstractModule implements LivingEntityRende
     public void onLivingEntityRenderBottomLayer(final LivingEntityRenderBottomLayerEvent event) {
         if (this.entities.getValue() && event.livingEntity.isInvisible()) {
             final Color color = this.entityColor.getValue().getColor();
-            event.red = color.getRed() / 255F;
-            event.green = color.getGreen() / 255F;
-            event.blue = color.getBlue() / 255F;
-            event.alpha = color.getAlpha() / 255F;
+            event.red = color.getRed() / 255f;
+            event.green = color.getGreen() / 255f;
+            event.blue = color.getBlue() / 255f;
+            event.alpha = color.getAlpha() / 255f;
         }
     }
 

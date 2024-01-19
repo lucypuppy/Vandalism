@@ -35,9 +35,9 @@ public class CooldownClicker extends Clicker {
         }
 
         final float attackCooldown = mc.player.getAttackCooldownProgress(additionalBaseDelayOffset);
-        final float finalAttackDamage = baseAttackDamage * (0.2F + attackCooldown * attackCooldown * 0.8F);
+        final float finalAttackDamage = baseAttackDamage * (0.2f + attackCooldown * attackCooldown * 0.8f);
 
-        if (finalAttackDamage >= 0.98) {
+        if (finalAttackDamage >= 0.98f) {
             this.clickAction.accept(true);
             this.mc.player.resetLastAttackedTicks();
         } else {

@@ -54,9 +54,9 @@ public class RenderUtil {
             throw new IllegalArgumentException("Color can't be null.");
         }
         if (percent <= 0.5) {
-            return ColorUtils.colorInterpolate(minColor, midColor, percent * 2D);
+            return ColorUtils.colorInterpolate(minColor, midColor, percent * 2d);
         }
-        return ColorUtils.colorInterpolate(midColor, maxColor, (percent - 0.5) * 2D);
+        return ColorUtils.colorInterpolate(midColor, maxColor, (percent - 0.5) * 2d);
     }
 
     public static Formatting getRandomColor() {

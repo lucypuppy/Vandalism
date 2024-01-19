@@ -116,7 +116,7 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
             final float delta
     ) {
         if (!this.isActive()) {
-            RenderSystem.setShaderColor(0.5F, 0.5F, 0.5F, 0.9F);
+            RenderSystem.setShaderColor(0.5f, 0.5f, 0.5f, 0.9f);
         }
 
         final boolean mouseOver = Boundings.isInBounds(
@@ -169,7 +169,7 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
         );
 
         this.onRender(context, delta);
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
     }
 
     public boolean isActive() {

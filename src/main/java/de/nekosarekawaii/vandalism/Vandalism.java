@@ -46,7 +46,6 @@ import java.io.File;
  *  - Add Access Violation crash item to CrashItemCreativeTab
  *  - Add 1.20.2 / maybe 1.20.3 instant crash crash item to CrashItemCreativeTab
  *  - Replaced target selection with actual entity selection (create something like an registry multi selection value)
- *  - Implement second layer rendering of account skins inside the account manager
  *  - Fix item display names in the creative tabs
  *  - Change behavior of the echolocation module to use it as a chunk load detector
  *  - Change trash talk module to a chat reaction module

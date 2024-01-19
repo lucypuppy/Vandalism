@@ -47,9 +47,9 @@ public abstract class MixinGameRenderer {
             return;
         }
         final float g = playerEntity.horizontalSpeed - playerEntity.prevHorizontalSpeed, h = -(playerEntity.horizontalSpeed + g * f), i = MathHelper.lerp(f, playerEntity.prevStrideDistance, playerEntity.strideDistance);
-        matrixStack.translate((MathHelper.sin(h * MathHelper.PI) * i * 0.5F), -Math.abs(MathHelper.cos(h * MathHelper.PI) * i), 0.0D);
-        matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(MathHelper.sin(h * MathHelper.PI) * i * (3.0F + additionalBobbing)));
-        matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(Math.abs(MathHelper.cos(h * MathHelper.PI - (0.2F + additionalBobbing)) * i) * 5.0F));
+        matrixStack.translate((MathHelper.sin(h * MathHelper.PI) * i * 0.5f), -Math.abs(MathHelper.cos(h * MathHelper.PI) * i), 0.0d);
+        matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(MathHelper.sin(h * MathHelper.PI) * i * (3.0f + additionalBobbing)));
+        matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(Math.abs(MathHelper.cos(h * MathHelper.PI - (0.2f + additionalBobbing)) * i) * 5.0f));
         callbackInfo.cancel();
     }
 

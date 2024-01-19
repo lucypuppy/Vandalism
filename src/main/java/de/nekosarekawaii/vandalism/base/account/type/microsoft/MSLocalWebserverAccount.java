@@ -49,6 +49,7 @@ public class MSLocalWebserverAccount extends AbstractMicrosoftAccount {
 
         @Override
         public void displayFactory() {
+            ImGui.text(this.state == null ? "Click the button below to get a device code." : this.state);
             if (this.state != null && this.state.startsWith(OPEN_URL)) {
                 final String[] split = this.state.split(OPEN_URL);
                 if (split.length == 2) {
@@ -61,7 +62,6 @@ public class MSLocalWebserverAccount extends AbstractMicrosoftAccount {
                     }
                 }
             }
-            ImGui.text(this.state == null ? "Click the button below to get a device code." : this.state);
         }
 
         @Override

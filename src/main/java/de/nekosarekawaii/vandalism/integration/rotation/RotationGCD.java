@@ -35,8 +35,8 @@ public enum RotationGCD implements IName {
         yaw = lastYaw;
         pitch = lastPitch;
 
-        final float gcdCursorDeltaX = deltaYaw / 0.15F,
-                gcdCursorDeltaY = deltaPitch / 0.15F;
+        final float gcdCursorDeltaX = deltaYaw / 0.15f,
+                gcdCursorDeltaY = deltaPitch / 0.15f;
 
         final double cursorDeltaX = gcdCursorDeltaX / multiplier,
                 cursorDeltaY = gcdCursorDeltaY / multiplier;
@@ -56,8 +56,8 @@ public enum RotationGCD implements IName {
             final double newCursorDeltaX = currentDeltaX * multiplier,
                     newCursorDeltaY = currentDeltaY * multiplier;
 
-            yaw += (float) newCursorDeltaX * 0.15F;
-            pitch += (float) newCursorDeltaY * 0.15F;
+            yaw += (float) newCursorDeltaX * 0.15f;
+            pitch += (float) newCursorDeltaY * 0.15f;
         }
 
         return new Rotation(yaw, pitch);

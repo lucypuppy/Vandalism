@@ -20,12 +20,12 @@ package de.nekosarekawaii.vandalism.util.game;
 
 public class TimerHack {
 
-    private static final float DEFAULT_TIMER_SPEED = 1.0F;
+    private static final float DEFAULT_TIMER_SPEED = 1.0f;
 
     private static float TIMER_SPEED = DEFAULT_TIMER_SPEED;
 
     public static void setSpeed(final float speed) {
-        TIMER_SPEED = Math.max(0.01F, speed);
+        TIMER_SPEED = Math.max(0.01f, speed);
     }
 
     public static float getSpeed() {

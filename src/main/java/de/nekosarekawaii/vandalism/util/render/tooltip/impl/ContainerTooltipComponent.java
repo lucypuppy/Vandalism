@@ -61,7 +61,7 @@ public class ContainerTooltipComponent implements TooltipComponent, MinecraftWra
     public void drawItems(final TextRenderer textRenderer, final int x, final int y, final DrawContext context) {
         final MatrixStack matrixStack = context.getMatrices();
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        RenderSystem.setShaderColor(this.color.getRed() / 255F, this.color.getGreen() / 255F, this.color.getBlue() / 255F, this.color.getAlpha() / 255F);
+        RenderSystem.setShaderColor(this.color.getRed() / 255f, this.color.getGreen() / 255f, this.color.getBlue() / 255f, this.color.getAlpha() / 255f);
         context.drawTexture(TEXTURE_CONTAINER_BACKGROUND, x, y, 0, 0, 0, WIDTH, HEIGHT, WIDTH, HEIGHT);
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
