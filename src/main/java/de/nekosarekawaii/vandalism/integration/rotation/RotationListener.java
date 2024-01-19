@@ -109,7 +109,6 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
     }
 
     public Rotation rotationDistribution(final Rotation rotation, final Rotation lastRotation, float correlationStrength, boolean correlation) {
-        //TODO: Code a better calculation for the rotate speed.
         //correlation can overaim/underaim, i recomend to set it at around 0.2
         double rotateSpeed = this.rotateSpeed + Math.random() * 5;
         //if ((Math.random() * 100) <= 10) {
