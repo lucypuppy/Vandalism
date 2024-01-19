@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.nofall.CubeCraftModuleMode;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.nofall.VanillaModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.modes.nofall.GroundSpoofModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
 
 public class NoFallModule extends AbstractModule {
@@ -29,7 +29,7 @@ public class NoFallModule extends AbstractModule {
             this,
             "Mode",
             "The current no fall mode.",
-            new VanillaModuleMode(),
+            new GroundSpoofModuleMode(),
             new CubeCraftModuleMode()
     );
 

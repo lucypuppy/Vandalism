@@ -24,10 +24,10 @@ import de.nekosarekawaii.vandalism.feature.module.impl.movement.NoFallModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
-public class VanillaModuleMode extends ModuleMulti<NoFallModule> implements OutgoingPacketListener {
+public class GroundSpoofModuleMode extends ModuleMulti<NoFallModule> implements OutgoingPacketListener {
 
-    public VanillaModuleMode() {
-        super("Vanilla");
+    public GroundSpoofModuleMode() {
+        super("Ground Spoof");
     }
 
     @Override
