@@ -84,7 +84,6 @@ import java.io.File;
  *      - Add protection for coords
  *      - Add protection for ip addresses
  *  - Make the width and height customizable or use calculations in the modules im window for the tabs
- *  - Fix ImGui#begin in every im window (remove No Collapse Flag and move the code out of the if)
  *  - Fix module tabs display (no stacking) when the client starts the first time
  *  - Fix ClientMenuScreen#close because it could break the entire game
  *  - Add anti vanish via. the player list hud
