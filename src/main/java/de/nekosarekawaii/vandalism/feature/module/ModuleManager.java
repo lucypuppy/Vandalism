@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.feature.module;
 
+import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.pattern.storage.named.NamedStorage;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
@@ -58,7 +59,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
     private ModPacketBlockerModule modPacketBlockerModule;
     private ExploitFixerModule exploitFixerModule;
     private AutoBlockModule autoBlockModule;
-    private KillAuraModule killAuraModule;
     private TrueSightModule trueSightModule;
     private VisualThrottleModule visualThrottleModule;
     private BetterTabListModule betterTabListModule;
@@ -66,12 +66,13 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
     private IllegalBlockPlaceModule illegalBlockPlaceModule;
     private ESPModule espModule;
 
-    public ModuleManager(final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
+    public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
         this.configManager = configManager;
         clientMenuManager.add(new ModulesClientMenuWindow());
-        Vandalism.getInstance().getEventSystem().subscribe(KeyboardInputEvent.ID, this);
-        Vandalism.getInstance().getEventSystem().subscribe(ShutdownProcessEvent.ID, this);
-        Vandalism.getInstance().getEventSystem().subscribe(DisconnectEvent.ID, this);
+
+        eventSystem.subscribe(KeyboardInputEvent.ID, this);
+        eventSystem.subscribe(ShutdownProcessEvent.ID, this);
+        eventSystem.subscribe(DisconnectEvent.ID, this);
     }
 
     @Override
@@ -80,15 +81,13 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
                 this.modPacketBlockerModule = new ModPacketBlockerModule(),
                 this.exploitFixerModule = new ExploitFixerModule(),
                 this.autoBlockModule = new AutoBlockModule(),
-                this.killAuraModule = new KillAuraModule(),
                 this.trueSightModule = new TrueSightModule(),
                 this.visualThrottleModule = new VisualThrottleModule(),
                 this.betterTabListModule = new BetterTabListModule(),
                 this.fastUseModule = new FastUseModule(),
                 this.illegalBlockPlaceModule = new IllegalBlockPlaceModule(),
                 this.espModule = new ESPModule(),
-                //Don't touch the order of the list above this comment because it breaks anything.
-                //The order of the list below this comment doesn't matter.
+                new KillAuraModule(),
                 new TestModule(),
                 new PacketManagerModule(),
                 new ServerCrasherModule(),
@@ -178,10 +177,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
 
     public AutoBlockModule getAutoBlockModule() {
         return autoBlockModule;
-    }
-
-    public KillAuraModule getKillAuraModule() {
-        return killAuraModule;
     }
 
     public TrueSightModule getTrueSightModule() {

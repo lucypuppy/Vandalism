@@ -131,11 +131,6 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         this.clicker.setClickAction(attack -> {
             if (attack) {
                 this.mc.doAttack();
-
-                // if (this.raytraceDistance > this.range.getValue()) {
-                //     ChatUtil.infoChatMessage("Extended by " + (this.raytraceDistance - this.range.getValue()));
-                // }
-
                 this.reachList.add(this.raytraceDistance);
                 this.targetIndex++;
             } else if (this.autoBlockModule.isActive()) {
