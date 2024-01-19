@@ -30,7 +30,7 @@ public class StepModule extends AbstractModule implements StepListener {
             this,
             "Step Height",
             "Allows you to customize the step height.",
-            10.0f,
+            1.0f,
             0.7f,
             10.0f
     );
