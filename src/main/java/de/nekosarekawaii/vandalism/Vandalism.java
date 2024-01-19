@@ -168,7 +168,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.hudManager.init();
 
         //Features
-        this.moduleManager = new ModuleManager(this.configManager, this.clientMenuManager);
+        this.moduleManager = new ModuleManager(this.eventSystem, this.configManager, this.clientMenuManager);
         this.moduleManager.init();
 
         this.commandManager = new CommandManager();

@@ -24,8 +24,7 @@ import java.util.function.Consumer;
 
 public abstract class Clicker implements MinecraftWrapper {
 
-    protected Consumer<Boolean> clickAction = aBoolean -> {
-    };
+    protected Consumer<Boolean> clickAction = attack -> {};
 
     public void setClickAction(final Consumer<Boolean> clickAction) {
         this.clickAction = clickAction;
