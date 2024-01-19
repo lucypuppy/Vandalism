@@ -28,7 +28,16 @@ import net.minecraft.command.CommandSource;
 public class CopyServerIPCommand extends AbstractCommand {
 
     public CopyServerIPCommand() {
-        super("Copies the ip address of the server your are currently connected to into your clipboard.", Category.MISC, "copyserverip", "serveripcopy", "copyserveraddress", "serveraddresscopy", "copyip", "copyserverip");
+        super(
+                "Copies the ip address of the server your are currently connected to into your clipboard.",
+                Category.MISC,
+                "copyserverip",
+                "serveripcopy",
+                "copyserveraddress",
+                "serveraddresscopy",
+                "copyip",
+                "copyserverip"
+        );
     }
 
     @Override
@@ -37,7 +46,6 @@ public class CopyServerIPCommand extends AbstractCommand {
             this.copyAddress(false);
             return SINGLE_SUCCESS;
         });
-
         builder.then(argument("entire-address", BoolArgumentType.bool())
                 .executes(context -> {
                     this.copyAddress(BoolArgumentType.getBool(context, "entire-address"));
@@ -51,7 +59,6 @@ public class CopyServerIPCommand extends AbstractCommand {
             ChatUtil.errorChatMessage("You are in Single-player.");
             return;
         }
-
         this.mc.keyboard.setClipboard(ServerUtil.getLastServerInfo().address + (entireAddress ? " | " + this.mc.getNetworkHandler().getConnection().getAddress().toString() : ""));
         ChatUtil.infoChatMessage("Server IP copied into the Clipboard.");
     }

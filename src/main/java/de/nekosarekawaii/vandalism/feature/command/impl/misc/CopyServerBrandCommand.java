@@ -23,22 +23,27 @@ import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.command.CommandSource;
 
-public class CopyPositionCommand extends AbstractCommand {
+public class CopyServerBrandCommand extends AbstractCommand {
 
-    public CopyPositionCommand() {
+    public CopyServerBrandCommand() {
         super(
-                "Copies your current position into your clipboard.",
+                "Lets you copy the brand from the server you are currently connected to.",
                 Category.MISC,
-                "copyposition",
-                "copypos"
+                "copyserverbrand",
+                "copybrand"
         );
     }
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
-            this.mc.keyboard.setClipboard(this.mc.player.getBlockPos().toShortString());
-            ChatUtil.infoChatMessage("Position copied into the Clipboard.");
+            if (this.mc.isInSingleplayer()) {
+                ChatUtil.errorChatMessage("You are in Single-player.");
+            }
+            else {
+                this.mc.keyboard.setClipboard(this.mc.getNetworkHandler().getBrand());
+                ChatUtil.infoChatMessage("Server Brand copied into the Clipboard.");
+            }
             return SINGLE_SUCCESS;
         });
     }
