@@ -109,9 +109,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
     private final Clicker clicker = new BoxMuellerClicker();
     private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
-    private final AutoBlockModule autoBlockModule;
 
-    public KillAuraModule() {
+    public KillAuraModule(final AutoBlockModule autoBlock) {
         super(
                 "Kill Aura",
                 "Automatically attacks nearby enemies.",
@@ -119,7 +118,6 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         );
 
         this.rotationListener = Vandalism.getInstance().getRotationListener();
-        this.autoBlockModule = Vandalism.getInstance().getModuleManager().getAutoBlockModule();
         this.markExperimental();
 
         if (clicker instanceof final BoxMuellerClicker clicker) {
@@ -133,8 +131,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 this.mc.doAttack();
                 this.reachList.add(this.raytraceDistance);
                 this.targetIndex++;
-            } else if (this.autoBlockModule.isActive()) {
-                this.autoBlockModule.setBlocking(true);
+            } else if (autoBlock.isActive()) {
+                autoBlock.setBlocking(true);
             }
         });
     }

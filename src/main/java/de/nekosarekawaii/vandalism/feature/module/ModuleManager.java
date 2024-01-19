@@ -87,7 +87,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
                 this.fastUseModule = new FastUseModule(),
                 this.illegalBlockPlaceModule = new IllegalBlockPlaceModule(),
                 this.espModule = new ESPModule(),
-                new KillAuraModule(),
+                new KillAuraModule(this.autoBlockModule),
                 new TestModule(),
                 new PacketManagerModule(),
                 new ServerCrasherModule(),
