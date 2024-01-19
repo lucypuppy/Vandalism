@@ -49,6 +49,12 @@ import java.io.File;
  *  - Fix item display names in the creative tabs
  *  - Change behavior of the echolocation module to use it as a chunk load detector
  *  - Change trash talk module to a chat reaction module
+ *  - Fix spaces in the text rendering when using the "deutsch macher" module
+ *  - Protector Module:
+ *      - Add protection for custom rank prefixes
+ *      - Add protection for skins
+ *      - Add protection for coords
+ *      - Add protection for ip addresses
  * <br><br>
  * TODO: Verschlxfene <br>
  *  - Delete MixinParticleManager
@@ -56,7 +62,8 @@ import java.io.File;
  *  - Add JiJ and JiS for building/exporting the client
  *  - Rewrite MovementUtil#getFixedMoveInputs to prevent bruteforcing inputs
  *  - Rewrite GCD fix to be accurate
- *  - Rewrite TimerHack to use TPS instead of "speed" alias random multiplier w
+ *  - Rewrite TimerHack to use TPS instead of "speed" alias random multiplier
+ *  - Fix the entity layer rendering from the true sight module
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Make a better calculation for the rotate speed RotationListener#rotationDistribution
@@ -66,8 +73,6 @@ import java.io.File;
  *  - Fix SprintModule to be compatible with the rotation listener and also the backwards direction (ask Verschlxfene)
  *  - Fix calculations for the HUD aka. HUDElement#calculatePosition
  *  - Fix tick bug (cps is not accurate) -> see BoxMuellerClicker#onUpdate
- *  - Fix this by something like an auto detection (for example you could make module modes features):
- *    "...visibleCondition(() -> this.getParent().mode.getValue().equals(this))"
  *  - Check if anything has changed in 1.20.2 regarding hit box position offsetting RotationUtil#getVisibleHitBoxSides
  *  - KillAura#onPrePlayerUpdate | Frame event (entity renderer set angles) -> rotate / Mouse event -> attack
  * <br><br>
@@ -76,14 +81,7 @@ import java.io.File;
  * <br><br>
  * TODO: Everyone <br>
  *  - Rewrite EnhancedServerList
- *  - Fix the entity layer rendering from the true sight module
  *  - Fix offsets for the new "teleport" method in the fov fucker module
- *  - Fix spaces in the text rendering when using the "deutsch macher" module
- *  - Protector Module:
- *      - Add protection for custom rank prefixes
- *      - Add protection for skins
- *      - Add protection for coords
- *      - Add protection for ip addresses
  *  - Make the width and height customizable or use calculations in the modules im window for the tabs
  *  - Fix module tabs display (no stacking) when the client starts the first time
  *  - Fix ClientMenuScreen#close because it could break the entire game
@@ -182,10 +180,8 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.creativeTabManager = new CreativeTabManager();
         this.creativeTabManager.init();
 
-        /*
-                Cause of the menu category button order this needs to be called
-                after every default menu has been added and before the addons are loaded
-         */
+        // Cause of the menu category button order this needs to be called
+        // after every default menu has been added and before the addons are loaded
         this.clientMenuManager.init();
 
         VandalismAddonLauncher.call(addon -> addon.onLaunch(this));
