@@ -82,117 +82,112 @@ public class IrcClientMenuWindow extends ClientMenuWindow {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        if (ImGui.begin("IRC##irc", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.MenuBar)) {
+        ImGui.begin("IRC##irc", ImGuiWindowFlags.MenuBar);
 
-            if (ImGui.beginMenuBar()) {
-                if (ImGui.beginMenu("Connection")) {
-                    ImGui.pushItemWidth(250);
+        if (ImGui.beginMenuBar()) {
+            if (ImGui.beginMenu("Connection")) {
+                ImGui.pushItemWidth(250);
 
-                    /* server info */
-                    ImGui.inputText("Server address", ADDRESS);
-                    ImGui.inputText("Username", USERNAME);
-                    ImGui.inputText("Password", PASSWORD, ImGuiInputTextFlags.Password);
+                /* server info */
+                ImGui.inputText("Server address", ADDRESS);
+                ImGui.inputText("Username", USERNAME);
+                ImGui.inputText("Password", PASSWORD, ImGuiInputTextFlags.Password);
 
-                    /* connect/disconnect buttons */
-                    if (ImGui.button("Connect", helper.isConnected() ? 115 : 250, 30)) {
+                /* connect/disconnect buttons */
+                if (ImGui.button("Connect", helper.isConnected() ? 115 : 250, 30)) {
+                    try {
+                        helper.disconnect();
+                        helper.connect(ADDRESS.get(), USERNAME.get(), PASSWORD.get());
+                    } catch (Exception ignored) {
+                    }
+                }
+
+                if (helper.isConnected()) {
+                    ImGui.sameLine();
+                    if (ImGui.button("Disconnect", 125, 30)) {
                         try {
                             helper.disconnect();
-                            helper.connect(ADDRESS.get(), USERNAME.get(), PASSWORD.get());
                         } catch (Exception ignored) {
                         }
                     }
-
-                    if (helper.isConnected()) {
-                        ImGui.sameLine();
-                        if (ImGui.button("Disconnect", 125, 30)) {
-                            try {
-                                helper.disconnect();
-                            } catch (Exception ignored) {
-                            }
-                        }
-                    }
-
-                    ImGui.popItemWidth();
-                    ImGui.endMenu();
                 }
 
-                if (ImGui.button("Clear history")) helper.getMessages().clear();
-
-                ImGui.endMenuBar();
+                ImGui.popItemWidth();
+                ImGui.endMenu();
             }
 
-            ImGui.beginChild("##irc_channel_pane", 100, ImGui.getWindowHeight() - 118, false);
+            if (ImGui.button("Clear history")) helper.getMessages().clear();
 
-            /* Channel selection */
-            ImGui.selectable("Public chat");
-
-            ImGui.separator();
-
-            /* Online users */
-
-            for (final UserProfile value : ChatClient.getInstance().getUsers().values()) {
-                ImGui.selectable((value.getName()));
-
-                if (ImGui.isItemHovered() && ImGui.isMouseClicked(1)) {
-                    ImGui.openPopup("##" + value.getName(), ImGuiPopupFlags.MouseButtonRight);
-                }
-
-                if (ImGui.beginPopup("##" + value.getName())) {
-                    if (ImGui.menuItem("Join %s's server".formatted(value.getName()))) {
-                        ChatUtil.chatMessage(":3");
-                    }
-
-                    ImGui.endPopup();
-                }
-            }
-
-            ImGui.endChild();
-
-            /* put channels list & message box in the same line */
-
-            ImGui.sameLine();
-
-            ImGui.beginChild("##messagebox_scrollable", 0, ImGui.getWindowHeight() - 118, false, ImGuiWindowFlags.HorizontalScrollbar);
-            ImGui.setScrollY(ImGui.getScrollMaxY());
-
-            /* message history in child */
-
-            ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 0, 1.5f);
-
-            for (String message : helper.getMessages()) {
-                drawText(" " + message);
-            }
-
-            ImGui.popStyleVar();
-
-            /* end child */
-
-            ImGui.endChild();
-
-            /* message input */
-
-            ImGui.pushItemWidth(ImGui.getWindowWidth() - (40 * 2));
-            
-            if (ImGui.inputText(
-                    "##messagefield",
-                    messageField,
-                    ImGuiInputTextFlags.EnterReturnsTrue
-            )) sendMessage(messageField);
-
-            ImGui.popItemWidth();
-
-            /* send button */
-
-            ImGui.sameLine();
-
-            /* hhh */
-            if (ImGui.button("Send")) {
-                sendMessage(messageField);
-            }
-
-            /* end child */
-            ImGui.end();
+            ImGui.endMenuBar();
         }
+
+        ImGui.beginChild("##irc_channel_pane", 100, ImGui.getWindowHeight() - 118, false);
+
+        /* Channel selection */
+        ImGui.selectable("Public chat");
+
+        ImGui.separator();
+
+        /* Online users */
+
+        for (final UserProfile value : ChatClient.getInstance().getUsers().values()) {
+            ImGui.selectable((value.getName()));
+
+            if (ImGui.isItemHovered() && ImGui.isMouseClicked(1)) {
+                ImGui.openPopup("##" + value.getName(), ImGuiPopupFlags.MouseButtonRight);
+            }
+
+            if (ImGui.beginPopup("##" + value.getName())) {
+                if (ImGui.menuItem("Join %s's server".formatted(value.getName()))) {
+                    ChatUtil.chatMessage(":3");
+                }
+
+                ImGui.endPopup();
+            }
+        }
+
+        ImGui.endChild();
+
+        /* put channels list & message box in the same line */
+
+        ImGui.sameLine();
+
+        ImGui.beginChild("##messagebox_scrollable", 0, ImGui.getWindowHeight() - 118, false, ImGuiWindowFlags.HorizontalScrollbar);
+        ImGui.setScrollY(ImGui.getScrollMaxY());
+
+        /* message history in child */
+
+        ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 0, 1.5f);
+
+        for (String message : helper.getMessages()) {
+            drawText(" " + message);
+        }
+
+        ImGui.popStyleVar();
+
+        ImGui.endChild();
+
+        /* message input */
+
+        ImGui.pushItemWidth(ImGui.getWindowWidth() - (40 * 2));
+
+        if (ImGui.inputText(
+                "##messagefield",
+                messageField,
+                ImGuiInputTextFlags.EnterReturnsTrue
+        )) sendMessage(messageField);
+
+        ImGui.popItemWidth();
+
+        /* send button */
+
+        ImGui.sameLine();
+
+        if (ImGui.button("Send")) {
+            sendMessage(messageField);
+        }
+
+        ImGui.end();
     }
 
     /**

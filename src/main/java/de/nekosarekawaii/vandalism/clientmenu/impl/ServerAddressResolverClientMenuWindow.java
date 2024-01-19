@@ -23,7 +23,6 @@ import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
 import imgui.flag.ImGuiInputTextFlags;
-import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import net.lenni0451.mcping.ServerAddress;
 import net.minecraft.client.gui.DrawContext;
@@ -40,7 +39,8 @@ public class ServerAddressResolverClientMenuWindow extends ClientMenuWindow {
             if (
                     !Character.isLetterOrDigit(imGuiInputTextCallbackData.getEventChar()) &&
                             imGuiInputTextCallbackData.getEventChar() != '.' &&
-                            imGuiInputTextCallbackData.getEventChar() != '-'
+                            imGuiInputTextCallbackData.getEventChar() != '-' &&
+                            imGuiInputTextCallbackData.getEventChar() != ':'
             ) {
                 imGuiInputTextCallbackData.setEventChar((char) 0);
             }
@@ -58,53 +58,52 @@ public class ServerAddressResolverClientMenuWindow extends ClientMenuWindow {
 
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        if (ImGui.begin(
-                "Server Address Resolver##serveraddressresolver",
-                ImGuiWindowFlags.NoCollapse
-        )) {
-            ImGui.inputText(
-                    "Hostname##serveraddressresolverhostname",
-                    this.hostname,
-                    ImGuiInputTextFlags.CallbackCharFilter,
-                    HOSTNAME_FILTER
-            );
-            if (
-                    !this.hostname.get().isBlank() &&
-                            this.hostname.get().length() >= 4 &&
-                            this.hostname.get().contains(".") &&
-                            this.hostname.get().indexOf(".") < this.hostname.get().length() - 2
-            ) {
-                if (ImGui.button("Resolve Server Address##serveraddressresolverresolve")) {
-                    this.lastData.clear();
-                    Executors.newSingleThreadExecutor().submit(() -> {
-                        try {
-                            final ServerAddress serverAddress = ServerAddress.parse(this.hostname.get(), 25565);
-                            String oldAddress = serverAddress.getSocketAddress().toString();
-                            if (oldAddress.contains("./")) oldAddress = oldAddress.replace("./", "/");
-                            if (oldAddress.contains("/")) oldAddress = oldAddress.replace("/", "\n");
-                            serverAddress.resolve();
-                            String newAddress = serverAddress.getSocketAddress().toString();
-                            if (newAddress.contains("./")) newAddress = newAddress.replace("./", "/");
-                            if (newAddress.contains("/")) newAddress = newAddress.replace("/", "\n");
-                            this.lastData.set(oldAddress + "\n\n" + newAddress);
-                        } catch (Exception e) {
-                            this.lastData.set("Error: " + e.getMessage());
-                        }
-                    });
-                }
-                ImGui.sameLine();
-            }
-            if (!this.lastData.get().isBlank()) {
-                if (ImGui.button("Clear##serveraddressresolverclear")) {
-                    this.lastData.clear();
-                }
-                ImGui.separator();
-                ImGui.text("Data");
-                ImGui.setNextItemWidth(-1);
-                ImGui.inputTextMultiline("##serveraddressresolverdata", this.lastData, -1, 100, ImGuiInputTextFlags.ReadOnly);
-            }
-            ImGui.end();
+        ImGui.begin("Server Address Resolver##serveraddressresolver");
+        ImGui.inputText(
+                "Hostname##serveraddressresolverhostname",
+                this.hostname,
+                ImGuiInputTextFlags.CallbackCharFilter,
+                HOSTNAME_FILTER
+        );
+        if (this.hostname.get().contains(":")) {
+            this.hostname.set(this.hostname.get().split(":")[0]);
         }
+        if (
+                !this.hostname.get().isBlank() &&
+                        this.hostname.get().length() >= 4 &&
+                        this.hostname.get().contains(".") &&
+                        this.hostname.get().indexOf(".") < this.hostname.get().length() - 2
+        ) {
+            if (ImGui.button("Resolve Server Address##serveraddressresolverresolve")) {
+                this.lastData.clear();
+                Executors.newSingleThreadExecutor().submit(() -> {
+                    try {
+                        final ServerAddress serverAddress = ServerAddress.parse(this.hostname.get(), 25565);
+                        String oldAddress = serverAddress.getSocketAddress().toString();
+                        if (oldAddress.contains("./")) oldAddress = oldAddress.replace("./", "/");
+                        if (oldAddress.contains("/")) oldAddress = oldAddress.replace("/", "\n");
+                        serverAddress.resolve();
+                        String newAddress = serverAddress.getSocketAddress().toString();
+                        if (newAddress.contains("./")) newAddress = newAddress.replace("./", "/");
+                        if (newAddress.contains("/")) newAddress = newAddress.replace("/", "\n");
+                        this.lastData.set(oldAddress + "\n\n" + newAddress);
+                    } catch (Exception e) {
+                        this.lastData.set("Error: " + e.getMessage());
+                    }
+                });
+            }
+            ImGui.sameLine();
+        }
+        if (!this.lastData.get().isBlank()) {
+            if (ImGui.button("Clear##serveraddressresolverclear")) {
+                this.lastData.clear();
+            }
+            ImGui.separator();
+            ImGui.text("Data");
+            ImGui.setNextItemWidth(-1);
+            ImGui.inputTextMultiline("##serveraddressresolverdata", this.lastData, -1, 100, ImGuiInputTextFlags.ReadOnly);
+        }
+        ImGui.end();
     }
 
 }

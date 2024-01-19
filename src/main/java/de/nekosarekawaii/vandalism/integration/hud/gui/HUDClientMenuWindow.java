@@ -23,7 +23,6 @@ import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
 import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
 import imgui.ImGui;
-import imgui.flag.ImGuiWindowFlags;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
 
@@ -43,22 +42,22 @@ public class HUDClientMenuWindow extends ClientMenuWindow {
 
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        ImGui.begin("Custom HUD Config##customhudconfig", ImGuiWindowFlags.NoCollapse);
-        if (ImGui.button("Close Custom HUD Config##closecustomhudconfig")) {
+        ImGui.begin("HUD Config##hudconfig");
+        if (ImGui.button("Close HUD Config##closehudconfig")) {
             this.setActive(false);
         }
         ImGui.sameLine();
-        if (ImGui.button("Reset Custom HUD Config##resetcustomhudconfig")) {
+        if (ImGui.button("Reset HUD Config##resethudconfig")) {
             for (final HUDElement hudElement : this.hudManager.getList()) {
                 hudElement.reset();
             }
             Vandalism.getInstance().getConfigManager().save();
         }
         ImGui.separator();
-        if (ImGui.beginTabBar("##customhudconfig")) {
+        if (ImGui.beginTabBar("##hudconfig")) {
             for (final HUDElement hudElement : this.hudManager.getList()) {
-                if (ImGui.beginTabItem(hudElement.getName() + "##" + hudElement.getName() + "customhudconfig")) {
-                    if (ImGui.button("Reset##reset" + hudElement.getName() + "customhudconfig")) {
+                if (ImGui.beginTabItem(hudElement.getName() + "##" + hudElement.getName() + "hudconfig")) {
+                    if (ImGui.button("Reset##reset" + hudElement.getName() + "hudconfig")) {
                         hudElement.reset();
                         Vandalism.getInstance().getConfigManager().save();
                     }

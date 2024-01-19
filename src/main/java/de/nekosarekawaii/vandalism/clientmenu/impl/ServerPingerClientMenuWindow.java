@@ -28,7 +28,6 @@ import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiTableFlags;
-import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImInt;
 import imgui.type.ImString;
 import net.lenni0451.mcping.MCPing;
@@ -52,7 +51,8 @@ public class ServerPingerClientMenuWindow extends ClientMenuWindow {
             if (
                     !Character.isLetterOrDigit(imGuiInputTextCallbackData.getEventChar()) &&
                             imGuiInputTextCallbackData.getEventChar() != '.' &&
-                            imGuiInputTextCallbackData.getEventChar() != '-'
+                            imGuiInputTextCallbackData.getEventChar() != '-' &&
+                            imGuiInputTextCallbackData.getEventChar() != ':'
             ) {
                 imGuiInputTextCallbackData.setEventChar((char) 0);
             }
@@ -84,94 +84,100 @@ public class ServerPingerClientMenuWindow extends ClientMenuWindow {
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         this.serverInfoWidget.renderSubData();
-        if (ImGui.begin(
-                "Server Pinger##serverpinger",
-                ImGuiWindowFlags.NoCollapse
-        )) {
-            ImGui.text("State: " + this.currentState.getMessage());
-            ImGui.text("Query State: " + this.currentQueryState.getMessage());
-            ImGui.inputText(
-                    "Hostname##serverpingerhostname",
-                    this.hostname,
-                    ImGuiInputTextFlags.CallbackCharFilter,
-                    HOSTNAME_FILTER
-            );
-            if (
-                    !this.hostname.get().isBlank() &&
-                            this.hostname.get().length() >= 4 &&
-                            this.hostname.get().contains(".") &&
-                            this.hostname.get().indexOf(".") < this.hostname.get().length() - 2
-            ) {
-                if (ImGui.button("Clear Hostname##clearhostnameserverpinger")) {
-                    this.hostname.clear();
+        ImGui.begin("Server Pinger##serverpinger");
+        ImGui.text("State: " + this.currentState.getMessage());
+        ImGui.text("Query State: " + this.currentQueryState.getMessage());
+        ImGui.inputText(
+                "Hostname##serverpingerhostname",
+                this.hostname,
+                ImGuiInputTextFlags.CallbackCharFilter,
+                HOSTNAME_FILTER
+        );
+        if (this.hostname.get().contains(":")) {
+            final String[] data = this.hostname.get().split(":");
+            this.hostname.set(data[0]);
+            if (data.length >= 2) {
+                try {
+                    this.port.set(Integer.parseInt(data[1]));
+                } catch (Exception ignored) {
                 }
-                if (ImGui.inputInt("Port##portserverpinger", this.port, 1)) {
-                    this.port.set(Math.max(1, Math.min(this.port.get(), 65535)));
+            }
+        }
+        if (
+                !this.hostname.get().isBlank() &&
+                        this.hostname.get().length() >= 4 &&
+                        this.hostname.get().contains(".") &&
+                        this.hostname.get().indexOf(".") < this.hostname.get().length() - 2
+        ) {
+            if (ImGui.button("Clear Hostname##clearhostnameserverpinger")) {
+                this.hostname.clear();
+            }
+            if (ImGui.inputInt("Port##portserverpinger", this.port, 1)) {
+                this.port.set(Math.max(1, Math.min(this.port.get(), 65535)));
+            }
+            if (this.port.get() != 25565) {
+                if (ImGui.button("Reset Port##portresetserverpinger")) {
+                    this.port.set(25565);
                 }
-                if (this.port.get() != 25565) {
-                    if (ImGui.button("Reset Port##portresetserverpinger")) {
-                        this.port.set(25565);
+            }
+            if (ImGui.inputInt("Query Port##queryportserverpinger", this.queryPort, 1)) {
+                this.queryPort.set(Math.max(1, Math.min(this.queryPort.get(), 65535)));
+            }
+            if (this.queryPort.get() != 25565) {
+                if (ImGui.button("Reset Query Port##queryresetserverpinger")) {
+                    this.queryPort.set(25565);
+                }
+            }
+            ImGui.inputInt("Protocol##protocolserverpinger", this.protocol, 1);
+            if (this.protocol.get() != SharedConstants.getProtocolVersion()) {
+                if (ImGui.button("Reset Protocol##protocolresetserverpinger")) {
+                    this.protocol.set(SharedConstants.getProtocolVersion());
+                }
+            }
+            if (ImGui.inputInt("Auto Ping Time##autopingtimeserverpinger", this.autoPingTime, 1)) {
+                this.autoPingTime.set(Math.max(1000, Math.min(this.autoPingTime.get(), 60000)));
+            }
+            if (this.autoPing && !this.hostname.get().isBlank()) {
+                if (this.currentState != State.WAITING_RESPONSE) {
+                    ImGui.text("Pinging in " + (this.autoPingTime.get() - this.autoPingTimer.getDelta()) + "ms");
+                    if (this.autoPingTimer.hasReached(this.autoPingTime.get(), true)) {
+                        this.ping();
                     }
+                } else ImGui.text("Pinging...");
+            }
+            if (!this.hostname.get().isBlank() && this.currentState != State.WAITING_RESPONSE) {
+                if (ImGui.button("Auto Ping: " + (this.autoPing ? "Deactivate" : "Activate") + "##autopingerverpinger")) {
+                    this.autoPing = !this.autoPing;
                 }
-                if (ImGui.inputInt("Query Port##queryportserverpinger", this.queryPort, 1)) {
-                    this.queryPort.set(Math.max(1, Math.min(this.queryPort.get(), 65535)));
-                }
-                if (this.queryPort.get() != 25565) {
-                    if (ImGui.button("Reset Query Port##queryresetserverpinger")) {
-                        this.queryPort.set(25565);
-                    }
-                }
-                ImGui.inputInt("Protocol##protocolserverpinger", this.protocol, 1);
-                if (this.protocol.get() != SharedConstants.getProtocolVersion()) {
-                    if (ImGui.button("Reset Protocol##protocolresetserverpinger")) {
-                        this.protocol.set(SharedConstants.getProtocolVersion());
-                    }
-                }
-                if (ImGui.inputInt("Auto Ping Time##autopingtimeserverpinger", this.autoPingTime, 1)) {
-                    this.autoPingTime.set(Math.max(1000, Math.min(this.autoPingTime.get(), 60000)));
-                }
-                if (this.autoPing && !this.hostname.get().isBlank()) {
-                    if (this.currentState != State.WAITING_RESPONSE) {
-                        ImGui.text("Pinging in " + (this.autoPingTime.get() - this.autoPingTimer.getDelta()) + "ms");
-                        if (this.autoPingTimer.hasReached(this.autoPingTime.get(), true)) {
-                            this.ping();
-                        }
-                    } else ImGui.text("Pinging...");
-                }
-                if (!this.hostname.get().isBlank() && this.currentState != State.WAITING_RESPONSE) {
-                    if (ImGui.button("Auto Ping: " + (this.autoPing ? "Deactivate" : "Activate") + "##autopingerverpinger")) {
-                        this.autoPing = !this.autoPing;
-                    }
-                    if (!this.autoPing) {
-                        ImGui.sameLine();
-                        if (ImGui.button("Ping##pingserverpinger")) {
-                            this.ping();
-                        }
-                    }
-                }
-                if (this.serverInfoWidget.getMcPingResponse() != null) {
-                    if (ImGui.button("Clear##clearserverpinger")) {
-                        this.clear();
-                    }
-                    final ServerInfosTableColumn[] serverInfosTableColumns = ServerInfosTableColumn.values();
-                    final int maxServerInfosTableColumns = serverInfosTableColumns.length;
-                    if (ImGui.beginTable("serverinfos##serverinfostableserverpinger", maxServerInfosTableColumns,
-                            ImGuiTableFlags.Borders |
-                                    ImGuiTableFlags.Resizable |
-                                    ImGuiTableFlags.RowBg |
-                                    ImGuiTableFlags.ContextMenuInBody
-                    )) {
-                        for (final ServerInfosTableColumn serverInfosTableColumn : serverInfosTableColumns) {
-                            ImGui.tableSetupColumn(serverInfosTableColumn.getName());
-                        }
-                        ImGui.tableHeadersRow();
-                        this.serverInfoWidget.renderTableEntry(true);
-                        ImGui.endTable();
+                if (!this.autoPing) {
+                    ImGui.sameLine();
+                    if (ImGui.button("Ping##pingserverpinger")) {
+                        this.ping();
                     }
                 }
             }
-            ImGui.end();
+            if (this.serverInfoWidget.getMcPingResponse() != null) {
+                if (ImGui.button("Clear##clearserverpinger")) {
+                    this.clear();
+                }
+                final ServerInfosTableColumn[] serverInfosTableColumns = ServerInfosTableColumn.values();
+                final int maxServerInfosTableColumns = serverInfosTableColumns.length;
+                if (ImGui.beginTable("serverinfos##serverinfostableserverpinger", maxServerInfosTableColumns,
+                        ImGuiTableFlags.Borders |
+                                ImGuiTableFlags.Resizable |
+                                ImGuiTableFlags.RowBg |
+                                ImGuiTableFlags.ContextMenuInBody
+                )) {
+                    for (final ServerInfosTableColumn serverInfosTableColumn : serverInfosTableColumns) {
+                        ImGui.tableSetupColumn(serverInfosTableColumn.getName());
+                    }
+                    ImGui.tableHeadersRow();
+                    this.serverInfoWidget.renderTableEntry(true);
+                    ImGui.endTable();
+                }
+            }
         }
+        ImGui.end();
     }
 
     private void clear() {

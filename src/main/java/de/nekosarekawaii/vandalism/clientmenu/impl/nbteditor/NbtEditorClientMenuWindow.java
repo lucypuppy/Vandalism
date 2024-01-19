@@ -46,10 +46,9 @@ public class NbtEditorClientMenuWindow extends ClientMenuWindow {
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         final Window nbtRendererWindow = this.nbtManager.getWindow();
         if (nbtRendererWindow != null) {
-            if (ImGui.begin("Nbt Editor##nbteditor", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.MenuBar)) {
-                nbtRendererWindow.render();
-                ImGui.end();
-            }
+            ImGui.begin("Nbt Editor##nbteditor", ImGuiWindowFlags.MenuBar);
+            nbtRendererWindow.render();
+            ImGui.end();
         } else {
             this.nbtManager.showWindow(this.nbtManager.getMainWindow());
         }
