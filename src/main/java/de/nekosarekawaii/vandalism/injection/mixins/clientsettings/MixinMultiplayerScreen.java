@@ -23,8 +23,8 @@ import de.florianmichael.viafabricplus.protocolhack.ProtocolHack;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerList;
 import de.nekosarekawaii.vandalism.integration.serverlist.gui.ConfigScreen;
-import de.nekosarekawaii.vandalism.util.game.ServerUtil;
 import de.nekosarekawaii.vandalism.util.common.UUIDUtil;
+import de.nekosarekawaii.vandalism.util.game.ServerUtil;
 import net.lenni0451.mcping.MCPing;
 import net.lenni0451.mcping.responses.MCPingResponse;
 import net.minecraft.client.gui.screen.GameMenuScreen;
@@ -187,8 +187,9 @@ public abstract class MixinMultiplayerScreen extends Screen {
             return true;
         }
         if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().pasteServerKey.getValue() == keyCode) {
-            final String clipboard = this.client.keyboard.getClipboard();
+            String clipboard = this.client.keyboard.getClipboard();
             if (clipboard != null && !clipboard.isBlank()) {
+                clipboard = clipboard.replaceAll("[^a-zA-Z0-9.:-_]", "");
                 final ServerInfo serverInfo = new ServerInfo(
                         "Copied from Clipboard",
                         clipboard,
