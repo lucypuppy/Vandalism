@@ -71,7 +71,7 @@ public abstract class MixinChatScreen implements MinecraftWrapper {
             final int x = this.chatField.getX() + this.chatField.getWidth() - this.mc.textRenderer.getWidth(text) - 2;
             final int y = this.chatField.getY() - this.mc.textRenderer.fontHeight - 2;
 
-            final Color color = RenderUtil.interpolateColor(Color.GREEN, Color.YELLOW, Color.RED, Math.min((float) currentLength / this.vandalism$realMaxLength, 1.0F));
+            final Color color = RenderUtil.interpolateColor(Color.GREEN, Color.YELLOW, Color.RED, Math.min((float) currentLength / this.vandalism$realMaxLength, 1.0f));
             context.drawText(this.mc.textRenderer, text, x, y, color.getRGB(), true);
         }
     }

@@ -37,8 +37,8 @@ import static de.nekosarekawaii.vandalism.util.imgui.ImUtils.subButton;
 
 public class AccountsClientMenuWindow extends ClientMenuWindow {
 
-    private static final float ACCOUNT_ENTRY_CONTENT_WIDTH = 64F;
-    private static final float ACCOUNT_ENTRY_CONTENT_HEIGHT = 64F;
+    private static final float ACCOUNT_ENTRY_CONTENT_WIDTH = 64f;
+    private static final float ACCOUNT_ENTRY_CONTENT_HEIGHT = 64f;
 
     private final AccountManager accountManager;
 
@@ -116,7 +116,7 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
 
     protected void renderAccountPopup() {
         if (ImGui.beginPopupContextItem("account-popup")) {
-            ImGui.setNextItemWidth(400F); //Just some magic value to make the popup look good
+            ImGui.setNextItemWidth(400f); //Just some magic value to make the popup look good
             if (subButton("Delete account")) {
                 ImGui.closeCurrentPopup();
                 Vandalism.getInstance().getAccountManager().remove(this.hoveredAccount);
@@ -154,10 +154,14 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
         for (final AbstractAccount account : this.accountManager.getList()) {
             if (account == null) continue;
             final PlayerSkinRenderer accountPlayerSkin = account.getPlayerSkin();
-            if (accountPlayerSkin != null && accountPlayerSkin.getGlId() != -1) {
-                //Those are not some magic values these are the values to render exactly the face from the skin.
-                ImGui.image(accountPlayerSkin.getGlId(), ACCOUNT_ENTRY_CONTENT_WIDTH, ACCOUNT_ENTRY_CONTENT_HEIGHT, 0.125f, 0.1f, 0.25f, 0.250f);
-                ImGui.sameLine();
+            if (accountPlayerSkin != null) {
+                final int playerSkinId = accountPlayerSkin.getGlId();
+                if (playerSkinId != -1) {
+                    ImUtils.texture(playerSkinId, ACCOUNT_ENTRY_CONTENT_WIDTH, ACCOUNT_ENTRY_CONTENT_HEIGHT, 8f, 8f, 15.5f, 15f);
+                    ImGui.sameLine(15);
+                    ImUtils.texture(playerSkinId, ACCOUNT_ENTRY_CONTENT_WIDTH, ACCOUNT_ENTRY_CONTENT_HEIGHT, 39.5f, 8f, 47.1f, 14.8f);
+                    ImGui.sameLine();
+                }
             }
             if (ImGui.button(account.getDisplayName() + " (" + (account.getStatus() == null ? "Idle" : account.getStatus()) + ")", ImGui.getColumnWidth(), ACCOUNT_ENTRY_CONTENT_HEIGHT + 1f)) {
                 try {

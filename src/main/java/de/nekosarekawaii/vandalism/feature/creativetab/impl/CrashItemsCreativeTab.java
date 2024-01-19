@@ -160,8 +160,8 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
         final ItemStack item = new ItemStack(Items.BAT_SPAWN_EGG);
         final NbtCompound base = new NbtCompound();
         final NbtCompound entityTag = new NbtCompound();
-        entityTag.putFloat("width", 999999F);
-        entityTag.putFloat("height", 999999F);
+        entityTag.putFloat("width", 999999f);
+        entityTag.putFloat("height", 999999f);
         entityTag.putString("id", "minecraft:interaction");
         base.put("EntityTag", entityTag);
         item.setNbt(base);

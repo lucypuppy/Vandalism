@@ -103,8 +103,8 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
         if (betterTabListModule.isActive() && betterTabListModule.moreInfo.getValue()) {
             final var matrices = context.getMatrices();
             matrices.push();
-            matrices.translate(x + width - 6, y + client.textRenderer.fontHeight / 2F, 0);
-            matrices.scale(0.5F, 0.5F, 1);
+            matrices.translate(x + width - 6, y + client.textRenderer.fontHeight / 2f, 0);
+            matrices.scale(0.5f, 0.5f, 1f);
 
             final var color = betterTabListModule.getColorFromPing(entry.getLatency());
             context.drawText(client.textRenderer, String.valueOf(entry.getLatency()), -client.textRenderer.getWidth(String.valueOf(entry.getLatency())) / 2, -client.textRenderer.fontHeight / 2, color, true);

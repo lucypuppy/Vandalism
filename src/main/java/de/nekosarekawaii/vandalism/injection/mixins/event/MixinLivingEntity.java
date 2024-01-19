@@ -52,8 +52,8 @@ public abstract class MixinLivingEntity implements MinecraftWrapper {
             final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
 
             if (rotation != null) {
-                final float yaw = rotation.getYaw() * 0.017453292F;
-                return instance.add(-MathHelper.sin(yaw) * 0.2F, 0.0, MathHelper.cos(yaw) * 0.2F);
+                final float yaw = rotation.getYaw() * 0.017453292f;
+                return instance.add(-MathHelper.sin(yaw) * 0.2f, 0.0, MathHelper.cos(yaw) * 0.2f);
             }
         }
 

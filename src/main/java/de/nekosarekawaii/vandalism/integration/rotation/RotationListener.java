@@ -94,7 +94,7 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
     }
 
     private Rotation applyGCDFix(final Rotation rotation, final float partialTicks) {
-        final double f = this.mc.options.getMouseSensitivity().getValue() * 0.6F + 0.2F;
+        final double f = this.mc.options.getMouseSensitivity().getValue() * 0.6f + 0.2f;
         final double g = f * f * f;
         final double gcd = g * 8.0;
         final boolean disallowGCD = this.mc.options.getPerspective().isFirstPerson() && this.mc.player.isUsingSpyglass();
@@ -104,7 +104,7 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
         final RotationGCD gcdMode = Vandalism.getInstance().getClientSettings().getRotationSettings().gcdMode.getValue();
         final Rotation fixedRotation = gcdMode.getLambda().apply(rotation, this.lastRotation, disallowGCD ? g : gcd, iterations);
         fixedRotation.setYaw(this.lastRotation.getYaw() + MathHelper.wrapDegrees(fixedRotation.getYaw() - this.lastRotation.getYaw()));
-        fixedRotation.setPitch(MathHelper.clamp(fixedRotation.getPitch(), -90.0F, 90.0F));
+        fixedRotation.setPitch(MathHelper.clamp(fixedRotation.getPitch(), -90.0f, 90.0f));
         return fixedRotation;
     }
 

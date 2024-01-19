@@ -60,4 +60,12 @@ public class ImUtils {
         return null;
     }
 
+    public static void texture(final int textureId, final float textureWidth, final float textureHeight, final float x1, final float y1, final float x2, final float y2) {
+        final float u1 = x1 / (textureWidth - 1f);
+        final float v1 = y1 / (textureHeight - 1f);
+        final float u2 = x2 / (textureWidth - 1f);
+        final float v2 = y2 / (textureHeight - 1f);
+        ImGui.image(textureId, textureWidth, textureHeight, u1, v1, u2, v2);
+    }
+
 }

@@ -169,9 +169,9 @@ public class InfoHUDElement extends HUDElement {
             posY = this.mc.player.getY();
             posZ = this.mc.player.getZ();
         } else {
-            posX = 0D;
-            posY = 0D;
-            posZ = 0D;
+            posX = 0d;
+            posY = 0d;
+            posZ = 0d;
         }
         if (this.position.getValue()) {
             final int positionDecimalPlacesRawValue = this.positionDecimalPlaces.getValue();

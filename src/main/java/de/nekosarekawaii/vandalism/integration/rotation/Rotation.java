@@ -106,8 +106,8 @@ public class Rotation implements MinecraftWrapper {
         public static Rotation build(final Vec3d to, final Vec3d eyePos) {
             final Vec3d diff = to.subtract(eyePos);
             final double hypot = Math.hypot(diff.getX(), diff.getZ());
-            final float yaw = (float) (MathHelper.atan2(diff.getZ(), diff.getX()) * (180.0F / Math.PI)) - 90.0F;
-            final float pitch = (float) (-MathHelper.atan2(diff.getY(), hypot) * (180.0F / Math.PI));
+            final float yaw = (float) (MathHelper.atan2(diff.getZ(), diff.getX()) * (180.0f / Math.PI)) - 90.0f;
+            final float pitch = (float) (-MathHelper.atan2(diff.getY(), hypot) * (180.0f / Math.PI));
             return new Rotation(yaw, pitch);
         }
 

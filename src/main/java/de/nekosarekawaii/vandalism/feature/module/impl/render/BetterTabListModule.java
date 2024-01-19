@@ -108,7 +108,7 @@ public class BetterTabListModule extends AbstractModule implements KeyboardInput
         final var b = averagePingColor.getValue().getColor();
         final var c = highPingColor.getValue().getColor();
 
-        return RenderUtil.interpolateColor(a, b, c, Math.min((float) ping / highPing.getValue(), 1F)).getRGB();
+        return RenderUtil.interpolateColor(a, b, c, Math.min((float) ping / highPing.getValue(), 1f)).getRGB();
     }
 
 }
