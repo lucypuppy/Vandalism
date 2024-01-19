@@ -74,4 +74,8 @@ public class ValueModeGeneric<T> extends Value<T> {
         return this.options.indexOf(this.getValue());
     }
 
+    public List<T> getOptions() {
+        return options;
+    }
+
 }
