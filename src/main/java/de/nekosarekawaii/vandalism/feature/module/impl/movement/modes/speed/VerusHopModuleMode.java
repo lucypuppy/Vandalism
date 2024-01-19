@@ -30,8 +30,8 @@ public class VerusHopModuleMode extends ModuleMulti<SpeedModule> implements Play
     private int offGroundTicks = 0;
     private double moveSpeed = 0;
 
-    public VerusHopModuleMode(final SpeedModule parent) {
-        super("Verus Hop", parent);
+    public VerusHopModuleMode() {
+        super("Verus Hop");
     }
 
     private void reset() {

@@ -30,8 +30,8 @@ public class CubeCraftModuleMode extends ModuleMulti<SpeedModule> implements Pla
     private int offGroundTicks = 0;
     private double moveSpeed = 0;
 
-    public CubeCraftModuleMode(final SpeedModule parent) {
-        super("Cube Craft Hop", parent);
+    public CubeCraftModuleMode() {
+        super("Cube Craft Hop");
     }
 
     private void reset() {

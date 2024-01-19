@@ -28,16 +28,16 @@ import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 public class LongJumpModuleMode extends ModuleMulti<SpeedModule> implements PlayerUpdateListener {
 
     private final DoubleValue speed = new DoubleValue(
-            this.getParent(),
+            this,
             "Speed",
             "The speed amount of the long jump speed.",
             1.2,
             1.0,
             5.0
-    ).visibleCondition(() -> this.getParent().mode.getValue().equals(this));
+    );
 
-    public LongJumpModuleMode(final SpeedModule parent) {
-        super("Long Jump", parent);
+    public LongJumpModuleMode() {
+        super("Long Jump");
     }
 
     @Override

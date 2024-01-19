@@ -26,8 +26,8 @@ import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
 
 public class CreativeModuleMode extends ModuleMulti<ElytraFlightModule> implements PlayerUpdateListener {
 
-    public CreativeModuleMode(final ElytraFlightModule parent) {
-        super("Creative", parent);
+    public CreativeModuleMode() {
+        super("Creative");
     }
 
     @Override

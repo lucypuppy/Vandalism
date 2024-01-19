@@ -18,15 +18,28 @@
 
 package de.nekosarekawaii.vandalism.feature.module.template;
 
+import de.nekosarekawaii.vandalism.base.value.Value;
+import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 
-public abstract class ModuleMulti<T extends AbstractModule> implements MinecraftWrapper {
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class ModuleMulti<T extends AbstractModule> implements ValueParent, MinecraftWrapper {
+
+    private final List<Value<?>> values = new ArrayList<>();
 
     private final String name;
-    private final T parent;
+    public final @Nullable T parent;
 
-    public ModuleMulti(final String name, final T parent) {
+    public ModuleMulti(final String name) {
+        this.name = name;
+        this.parent = null;
+    }
+
+    public ModuleMulti(final String name, final @Nullable T parent) {
         this.name = name;
         this.parent = parent;
     }
@@ -41,8 +54,9 @@ public abstract class ModuleMulti<T extends AbstractModule> implements Minecraft
         return this.name;
     }
 
-    public T getParent() {
-        return this.parent;
+    @Override
+    public List<Value<?>> getValues() {
+        return values;
     }
 
 }

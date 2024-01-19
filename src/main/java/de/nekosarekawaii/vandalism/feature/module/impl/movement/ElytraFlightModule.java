@@ -36,7 +36,7 @@ public class ElytraFlightModule extends AbstractModule implements PlayerUpdateLi
             this,
             "Mode",
             "The current elytra flight mode.",
-            new CreativeModuleMode(this)
+            new CreativeModuleMode()
     );
 
     public ElytraFlightModule() {

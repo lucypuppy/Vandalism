@@ -48,7 +48,7 @@ public interface VandalismAddonLauncher {
      * @param consumer The consumer to invoke.
      */
     static void call(final Consumer<VandalismAddonLauncher> consumer) {
-        for (final VandalismAddonLauncher entrypoint : FabricLoader.getInstance().getEntrypoints("vandalism:onLaunch", VandalismAddonLauncher.class)) {
+        for (final var entrypoint : FabricLoader.getInstance().getEntrypoints("vandalism:onLaunch", VandalismAddonLauncher.class)) {
             consumer.accept(entrypoint);
         }
     }

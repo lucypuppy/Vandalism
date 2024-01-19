@@ -30,16 +30,16 @@ import net.minecraft.util.math.MathHelper;
 public class ReverseModuleMode extends ModuleMulti<VelocityModule> implements IncomingPacketListener {
 
     private final Value<Float> multiplier = new FloatValue(
-            this.getParent(),
+            this,
             "Multiplier",
             "The multiplier for the reverse velocity.",
             0.3F,
             0.0F,
             1.0F
-    ).visibleCondition(() -> this.getParent().mode.getValue().equals(this));
+    );
 
-    public ReverseModuleMode(final VelocityModule parent) {
-        super("Reverse", parent);
+    public ReverseModuleMode() {
+        super("Reverse");
     }
 
     @Override
