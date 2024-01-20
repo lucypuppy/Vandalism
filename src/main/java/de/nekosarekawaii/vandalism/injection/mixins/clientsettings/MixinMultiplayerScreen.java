@@ -70,95 +70,13 @@ public abstract class MixinMultiplayerScreen extends Screen {
     }
 
     @Inject(method = "init", at = @At("RETURN"))
-    private void addMoreButtons(final CallbackInfo ci) {
+    private void addEnhancedServerListButton(final CallbackInfo ci) {
         if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().enhancedServerList.getValue()) {
             this.addDrawableChild(ButtonWidget.builder(Text.literal("Server Lists"), button -> {
                 if (this.client != null) {
                     this.client.setScreen(new ConfigScreen((MultiplayerScreen) (Object) this));
                 }
             }).dimensions(2, 4, 100, 20).build());
-        }
-        if (Vandalism.getInstance().getClientSettings().getNetworkingSettings().kickAllPlayers.getValue()) {
-            this.addDrawableChild(ButtonWidget.builder(Text.literal("Kick All Players"), button -> {
-                if (this.client != null) {
-                    final MultiplayerServerListWidget.Entry selectedEntry = this.serverListWidget.getSelectedOrNull();
-                    if (selectedEntry instanceof final MultiplayerServerListWidget.ServerEntry selectedServerEntry) {
-                        final ServerInfo serverInfo = selectedServerEntry.getServer();
-                        if (serverInfo != null) {
-                            String host = serverInfo.address;
-                            int port = 25565;
-                            if (host.contains(":")) {
-                                final String[] data = host.split(":");
-                                host = data[0];
-                                port = Integer.parseInt(data[1]);
-                            }
-                            MCPing.pingModern(ProtocolHack.getTargetVersion().getVersion()).address(host, port)
-                                    .timeout(
-                                            Vandalism.getInstance().getClientSettings().getNetworkingSettings().kickAllPlayersPingConnectionTimeout.getValue(),
-                                            Vandalism.getInstance().getClientSettings().getNetworkingSettings().kickAllPlayersPingReadTimeout.getValue()
-                                    )
-                                    .exceptionHandler(t -> Vandalism.getInstance().getLogger().error("Failed to kick any player cause of an error while pinging the server.", t))
-                                    .finishHandler(response -> {
-                                        final MCPingResponse.Players playersData = response.players;
-                                        if (playersData.online > 0) {
-                                            final MCPingResponse.Players.Player[] players = playersData.sample;
-                                            if (players != null && players.length > 0) {
-                                                final Session originalSession = this.client.session;
-                                                final ServerInfo originalServerInfo = ServerUtil.getLastServerInfo();
-                                                ServerUtil.setLastServerInfo(serverInfo);
-                                                for (final MCPingResponse.Players.Player player : players) {
-                                                    if (player != null) {
-                                                        final String name = player.name;
-                                                        final String id = player.id;
-                                                        if (!name.isBlank()) {
-                                                            try {
-                                                                Vandalism.getInstance().getLogger().info("Kicking " + name + "...");
-                                                                String uuid;
-                                                                try {
-                                                                    uuid = UUIDUtil.getUUIDFromName(name);
-                                                                } catch (Exception e) {
-                                                                    uuid = id;
-                                                                    Vandalism.getInstance().getLogger().error("Failed to get UUID of the player: \"" + name + "\" (using fallback UUID).");
-                                                                }
-                                                                this.client.session = new Session(
-                                                                        name,
-                                                                        UUID.fromString(uuid),
-                                                                        "",
-                                                                        Optional.of(""),
-                                                                        Optional.of(""),
-                                                                        Session.AccountType.LEGACY
-                                                                );
-                                                                RenderSystem.recordRenderCall(ServerUtil::connectToLastServer);
-                                                                Thread.sleep(Vandalism.getInstance().getClientSettings().getNetworkingSettings().kickAllPlayersKickDelay.getValue());
-                                                                Vandalism.getInstance().getLogger().info("Player " + name + " should be kicked.");
-                                                            } catch (Exception e) {
-                                                                Vandalism.getInstance().getLogger().error("Failed to kick the player: \"" + name + "\"", e);
-                                                            }
-                                                        } else {
-                                                            Vandalism.getInstance().getLogger().error("Failed to kick the player: \"" + id + "\"");
-                                                        }
-                                                    }
-                                                }
-                                                this.client.session = originalSession;
-                                                ServerUtil.setLastServerInfo(originalServerInfo);
-                                                RenderSystem.recordRenderCall(() -> {
-                                                    if (this.parent instanceof GameMenuScreen && this.client.player == null) {
-                                                        this.parent = new TitleScreen();
-                                                    }
-                                                    this.client.setScreen((MultiplayerScreen) (Object) this);
-                                                    this.refresh();
-                                                });
-                                            } else {
-                                                Vandalism.getInstance().getLogger().error("There are no players to kick online.");
-                                            }
-                                        } else {
-                                            Vandalism.getInstance().getLogger().error("There are no players to kick online.");
-                                        }
-                                    }).getAsync();
-                        }
-                    }
-                }
-            }).dimensions(2, this.height - 24, 100, 20).build());
         }
     }
 
@@ -185,6 +103,86 @@ public abstract class MixinMultiplayerScreen extends Screen {
     public boolean keyPressed(final int keyCode, final int scanCode, final int modifiers) {
         if (this.client == null || !Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().enhancedServerList.getValue()) {
             return true;
+        }
+        if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().kickAllPlayersKey.getValue() == keyCode) {
+            if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().kickAllPlayers.getValue()) {
+                final MultiplayerServerListWidget.Entry selectedEntry = this.serverListWidget.getSelectedOrNull();
+                if (selectedEntry instanceof final MultiplayerServerListWidget.ServerEntry selectedServerEntry) {
+                    final ServerInfo serverInfo = selectedServerEntry.getServer();
+                    if (serverInfo != null) {
+                        String host = serverInfo.address;
+                        int port = 25565;
+                        if (host.contains(":")) {
+                            final String[] data = host.split(":");
+                            host = data[0];
+                            port = Integer.parseInt(data[1]);
+                        }
+                        MCPing.pingModern(ProtocolHack.getTargetVersion().getVersion()).address(host, port)
+                                .timeout(
+                                        Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().kickAllPlayersPingConnectionTimeout.getValue(),
+                                        Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().kickAllPlayersPingReadTimeout.getValue()
+                                )
+                                .exceptionHandler(t -> Vandalism.getInstance().getLogger().error("Failed to kick any player cause of an error while pinging the server.", t))
+                                .finishHandler(response -> {
+                                    final MCPingResponse.Players playersData = response.players;
+                                    if (playersData.online > 0) {
+                                        final MCPingResponse.Players.Player[] players = playersData.sample;
+                                        if (players != null && players.length > 0) {
+                                            final Session originalSession = this.client.session;
+                                            final ServerInfo originalServerInfo = ServerUtil.getLastServerInfo();
+                                            ServerUtil.setLastServerInfo(serverInfo);
+                                            for (final MCPingResponse.Players.Player player : players) {
+                                                if (player != null) {
+                                                    final String name = player.name;
+                                                    final String id = player.id;
+                                                    if (!name.isBlank()) {
+                                                        try {
+                                                            Vandalism.getInstance().getLogger().info("Kicking " + name + "...");
+                                                            String uuid;
+                                                            try {
+                                                                uuid = UUIDUtil.getUUIDFromName(name);
+                                                            } catch (Exception e) {
+                                                                uuid = id;
+                                                                Vandalism.getInstance().getLogger().error("Failed to get UUID of the player: \"" + name + "\" (using fallback UUID).");
+                                                            }
+                                                            this.client.session = new Session(
+                                                                    name,
+                                                                    UUID.fromString(uuid),
+                                                                    "",
+                                                                    Optional.of(""),
+                                                                    Optional.of(""),
+                                                                    Session.AccountType.LEGACY
+                                                            );
+                                                            RenderSystem.recordRenderCall(ServerUtil::connectToLastServer);
+                                                            Thread.sleep(Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().kickAllPlayersKickDelay.getValue());
+                                                            Vandalism.getInstance().getLogger().info("Player " + name + " should be kicked.");
+                                                        } catch (Exception e) {
+                                                            Vandalism.getInstance().getLogger().error("Failed to kick the player: \"" + name + "\"", e);
+                                                        }
+                                                    } else {
+                                                        Vandalism.getInstance().getLogger().error("Failed to kick the player: \"" + id + "\"");
+                                                    }
+                                                }
+                                            }
+                                            this.client.session = originalSession;
+                                            ServerUtil.setLastServerInfo(originalServerInfo);
+                                            RenderSystem.recordRenderCall(() -> {
+                                                if (this.parent instanceof GameMenuScreen && this.client.player == null) {
+                                                    this.parent = new TitleScreen();
+                                                }
+                                                this.client.setScreen((MultiplayerScreen) (Object) this);
+                                                this.refresh();
+                                            });
+                                        } else {
+                                            Vandalism.getInstance().getLogger().error("There are no players to kick online.");
+                                        }
+                                    } else {
+                                        Vandalism.getInstance().getLogger().error("There are no players to kick online.");
+                                    }
+                                }).getAsync();
+                    }
+                }
+            }
         }
         if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().pasteServerKey.getValue() == keyCode) {
             String clipboard = this.client.keyboard.getClipboard();
