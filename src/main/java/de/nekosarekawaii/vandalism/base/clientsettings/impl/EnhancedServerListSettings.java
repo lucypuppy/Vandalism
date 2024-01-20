@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.base.clientsettings.impl;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.KeyBindValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerList;
@@ -37,6 +38,13 @@ public class EnhancedServerListSettings extends ValueGroup {
             Vandalism.getInstance().getServerListManager().setSelectedServerList(ServerList.DEFAULT_SERVER_LIST_NAME);
         }
     });
+
+    public final BooleanValue multiplayerScreenServerInformation = new BooleanValue(
+            this,
+            "Multiplayer Screen Server Information",
+            "If activated the Game shows all necessary server information behind a server list entry.",
+            true
+    ).visibleCondition(this.enhancedServerList::getValue);
 
     public final KeyBindValue pasteServerKey = new KeyBindValue(
             this,
@@ -59,12 +67,52 @@ public class EnhancedServerListSettings extends ValueGroup {
             GLFW.GLFW_KEY_DELETE
     ).visibleCondition(this.enhancedServerList::getValue);
 
-    public final BooleanValue multiplayerScreenServerInformation = new BooleanValue(
+    public final BooleanValue kickAllPlayers = new BooleanValue(
             this,
-            "Multiplayer Screen Server Information",
-            "If activated the Game shows all necessary server information behind a server list entry.",
+            "Kick All Players",
+            "Adds a Button to the Multiplayer Screen that allows you to kick all Players from the Server.",
             true
     ).visibleCondition(this.enhancedServerList::getValue);
+
+    private final ValueGroup kickAllPlayersSettings = new ValueGroup(
+            this,
+            "Kick All Players Settings",
+            "Kick All Players related settings."
+    ).visibleCondition(() -> this.enhancedServerList.getValue() && this.kickAllPlayers.getValue());
+
+    public final KeyBindValue kickAllPlayersKey = new KeyBindValue(
+            this.kickAllPlayersSettings,
+            "Kick All Players Key",
+            "Change the key to kick all Players from the Server.",
+            GLFW.GLFW_KEY_PAGE_UP
+    ).visibleCondition(this.enhancedServerList::getValue);
+
+    public final IntegerValue kickAllPlayersPingConnectionTimeout = new IntegerValue(
+            this.kickAllPlayersSettings,
+            "Kick All Players Ping Connection Timeout",
+            "The Ping Connection Timeout that will be used to kick all Players.",
+            5000,
+            1000,
+            10000
+    ).visibleCondition(() -> this.enhancedServerList.getValue() && this.kickAllPlayers.getValue());
+
+    public final IntegerValue kickAllPlayersPingReadTimeout = new IntegerValue(
+            this.kickAllPlayersSettings,
+            "Kick All Players Ping Read Timeout",
+            "The Ping Read Timeout that will be used to kick all Players.",
+            5000,
+            1000,
+            10000
+    ).visibleCondition(() -> this.enhancedServerList.getValue() && this.kickAllPlayers.getValue());
+
+    public final IntegerValue kickAllPlayersKickDelay = new IntegerValue(
+            this.kickAllPlayersSettings,
+            "Kick All Players Kick Delay",
+            "The Kick Delay that will be used to kick a Player.",
+            6000,
+            100,
+            10000
+    ).visibleCondition(() -> this.enhancedServerList.getValue() && this.kickAllPlayers.getValue());
 
     public EnhancedServerListSettings(final ClientSettings parent) {
         super(parent, "Enhanced Server List", "Enhanced Server List related settings.");

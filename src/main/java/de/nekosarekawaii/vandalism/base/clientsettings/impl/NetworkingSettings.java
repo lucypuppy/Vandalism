@@ -22,7 +22,6 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.KeyBindValue;
-import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
@@ -87,46 +86,6 @@ public class NetworkingSettings extends ValueGroup implements KeyboardInputListe
             "The Key that will be used to immediately disconnect from a server.",
             GLFW.GLFW_KEY_END
     );
-
-    public final BooleanValue kickAllPlayers = new BooleanValue(
-            this,
-            "Kick All Players",
-            "Adds a Button to the Multiplayer Screen that allows you to kick all Players from the Server.",
-            true
-    );
-
-    private final ValueGroup kickAllPlayersSettings = new ValueGroup(
-            this,
-            "Kick All Players Settings",
-            "Kick All Players related settings."
-    ).visibleCondition(this.kickAllPlayers::getValue);
-
-    public final IntegerValue kickAllPlayersPingConnectionTimeout = new IntegerValue(
-            this.kickAllPlayersSettings,
-            "Kick All Players Ping Connection Timeout",
-            "The Ping Connection Timeout that will be used to kick all Players.",
-            5000,
-            1000,
-            10000
-    ).visibleCondition(this.kickAllPlayers::getValue);
-
-    public final IntegerValue kickAllPlayersPingReadTimeout = new IntegerValue(
-            this.kickAllPlayersSettings,
-            "Kick All Players Ping Read Timeout",
-            "The Ping Read Timeout that will be used to kick all Players.",
-            5000,
-            1000,
-            10000
-    ).visibleCondition(this.kickAllPlayers::getValue);
-
-    public final IntegerValue kickAllPlayersKickDelay = new IntegerValue(
-            this.kickAllPlayersSettings,
-            "Kick All Players Kick Delay",
-            "The Kick Delay that will be used to kick a Player.",
-            6000,
-            100,
-            10000
-    ).visibleCondition(this.kickAllPlayers::getValue);
 
     public NetworkingSettings(final ClientSettings parent) {
         super(parent, "Networking", "Networking related settings.");
