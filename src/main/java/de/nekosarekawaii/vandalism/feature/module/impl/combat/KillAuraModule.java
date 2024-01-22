@@ -18,8 +18,6 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
-import de.florianmichael.rclasses.common.StringUtils;
-import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.RaytraceListener;
@@ -27,6 +25,7 @@ import de.nekosarekawaii.vandalism.base.event.normal.player.RotationListener;
 import de.nekosarekawaii.vandalism.base.event.normal.render.Render2DListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
@@ -35,10 +34,8 @@ import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.rotation.HitboxSelectMode;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationPriority;
-import de.nekosarekawaii.vandalism.util.click.Clicker;
+import de.nekosarekawaii.vandalism.util.click.ClickType;
 import de.nekosarekawaii.vandalism.util.click.impl.BoxMuellerClicker;
-import de.nekosarekawaii.vandalism.util.click.impl.CooldownClicker;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -75,30 +72,36 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             3.0
     );
 
-    private final Value<Boolean> reachExtendExploit = new BooleanValue(
+    private final ValueGroup reachExploitGroup = new ValueGroup(
             this.targetSelectionGroup,
-            "Reach Extend Exploit",
-            "Whether the reach extend exploit should be used.",
+            "Reach Exploit",
+            "Settings for the reach exploit."
+    );
+
+    private final Value<Boolean> firstHitExtender = new BooleanValue(
+            this.reachExploitGroup,
+            "First Hit Extender",
+            "Whether the first hit extender should be used.",
             false
     );
 
-    private final Value<Integer> reachExploitHits = new IntegerValue(
-            this.targetSelectionGroup,
-            "Reach Exploit Hits",
-            "The amount of hits needed for the reach extend exploit.",
-            2,
-            1,
-            10
-    ).visibleCondition(this.reachExtendExploit::getValue);
+    private final Value<Integer> firstHitExtenderOffTime = new IntegerValue(
+            this.reachExploitGroup,
+            "First Hit Extender Off Time",
+            "The time in milliseconds after the first hit extender should be disabled.",
+            1000,
+            0,
+            10000
+    ).visibleCondition(this.firstHitExtender::getValue);
 
-    private final Value<Double> reachExploitRangeExtender = new DoubleValue(
-            this.targetSelectionGroup,
-            "Reach Exploit Range Extender",
-            "The range extender for the reach extend exploit. (Experimental)",
+    private final Value<Double> firstHitRangeExtender = new DoubleValue(
+            this.reachExploitGroup,
+            "First Hit Range Extender",
+            "The range extender for the first hit extender.",
             1.0,
             0.0,
             2.0
-    ).visibleCondition(this.reachExtendExploit::getValue);
+    ).visibleCondition(this.firstHitExtender::getValue);
 
     private final Value<Boolean> switchTarget = new BooleanValue(
             this.targetSelectionGroup,
@@ -127,6 +130,31 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             "Settings for the rotations."
     );
 
+    private final Value<Float> rotateSpeed = new FloatValue(
+            this.rotationGroup,
+            "Rotate Speed",
+            "The speed of the rotation.",
+            60.0f,
+            1.0f,
+            180.0f
+    );
+
+    private final Value<Boolean> correlation = new BooleanValue(
+            this.rotationGroup,
+            "Correlation",
+            "Whether the correlation should be used.",
+            true
+    );
+
+    private final Value<Float> correlationStrength = new FloatValue(
+            this.rotationGroup,
+            "Correlation Strength",
+            "The strength of the correlation.",
+            0.2f,
+            0.0f,
+            1.0f
+    ).visibleCondition(this.correlation::getValue);
+
     private final Value<Integer> aimPoints = new IntegerValue(
             this.rotationGroup,
             "Aim Points",
@@ -146,12 +174,11 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     private LivingEntity target;
     private int targetIndex = 0;
 
-    private Vec3d rotationVector;
-
     private double raytraceDistance = -1.0;
-    private int lowReachHits = 0;
 
     private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
+
+    private long lastPossibleHit = -1;
 
     public KillAuraModule(final AutoBlockModule autoBlock) {
         super(
@@ -171,13 +198,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
         this.clickType.getValue().getClicker().setClickAction(attack -> {
             if (attack) {
-                if (this.lowReachHits < this.reachExploitHits.getValue()) {
-                    if (this.raytraceDistance <= this.range.getValue()) {
-                        this.lowReachHits++;
-                    }
-                } else if (this.target.hurtTime > 0) {
-                    this.lowReachHits = 0;
-                    ChatUtil.infoChatMessage("Reach exploit triggered!");
+                if (this.raytraceDistance <= getRange()) {
+                    this.lastPossibleHit = System.currentTimeMillis();
                 }
 
                 this.mc.doAttack();
@@ -213,7 +235,6 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         this.getTarget();
         if (this.target == null ||
-                this.rotationVector == null ||
                 this.rotationListener.getRotation() == null ||
                 Float.isNaN(this.rotationListener.getRotation().getYaw()) ||
                 Float.isNaN(this.rotationListener.getRotation().getPitch())) {
@@ -237,13 +258,14 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             final Rotation rotation = Rotation.Builder.build(this.target, getAimRange(), this.aimPoints.getValue(), HitboxSelectMode.Circular);
 
             if (rotation == null) { //Sanity check, crashes if you sneak and have your reach set to 3.0
-                this.rotationVector = null;
                 this.rotationListener.resetRotation();
                 return;
             }
 
-            this.rotationListener.setRotation(rotation, 60, RotationPriority.HIGH, this.movementFix.getValue());
-            this.rotationVector = new Vec3d(1, 1, 1);
+            final float rotateSpeed = (float) (this.rotateSpeed.getValue() + Math.random() * 5.0f);
+            this.rotationListener.setRotation(rotation, rotateSpeed, RotationPriority.HIGH,
+                    this.movementFix.getValue(), this.correlation.getValue(),
+                    this.correlationStrength.getValue());
         } else {
             this.rotationListener.resetRotation();
         }
@@ -285,33 +307,12 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     }
 
     private double getRange() {
-        if (this.reachExtendExploit.getValue() && this.lowReachHits >= this.reachExploitHits.getValue()) {
-            return this.range.getValue() + this.reachExploitRangeExtender.getValue();
+        if (this.firstHitExtender.getValue() &&
+                (System.currentTimeMillis() - this.lastPossibleHit) >= this.firstHitExtenderOffTime.getValue()) {
+            return this.range.getValue() + this.firstHitRangeExtender.getValue();
         }
 
         return this.range.getValue();
-    }
-
-    private enum ClickType implements IName {
-        Cooldown(new CooldownClicker()),
-        BoxMueller(new BoxMuellerClicker());
-
-        private final String name;
-        private final Clicker clicker;
-
-        ClickType(final Clicker clicker) {
-            this.name = StringUtils.normalizeEnumName(this.name());
-            this.clicker = clicker;
-        }
-
-        public Clicker getClicker() {
-            return clicker;
-        }
-
-        @Override
-        public String getName() {
-            return name;
-        }
     }
 
 }
