@@ -39,15 +39,14 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
     private String tokenChain;
     private StepFullJavaSession.FullJavaSession session;
 
-    public AbstractMicrosoftAccount(String name, AccountFactory factory) {
+    public AbstractMicrosoftAccount(final String name, final AccountFactory factory) {
         super("Microsoft (" + name + ")"); //Java is bad, but we are worse
         this.factory = factory;
     }
 
-    public AbstractMicrosoftAccount(String name, AccountFactory factory, String tokenChain) {
+    public AbstractMicrosoftAccount(final String name, final AccountFactory factory, final String tokenChain) {
         super("Microsoft (" + name + ")");
         this.factory = factory;
-
         this.tokenChain = tokenChain;
     }
 
@@ -58,17 +57,16 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
         if (this.session != null) { //If we already got a session, we should use it right?
             if (this.tokenChain == null) {
                 //Save the token chain if we don't have it yet
-                this.tokenChain = getStep().toJson(session).toString();
+                this.tokenChain = this.getStep().toJson(this.session).toString();
             }
-            final StepMCProfile.MCProfile profile = session.getMcProfile();
-            updateSession(new Session(profile.getName(), profile.getId(), profile.getMcToken().getAccessToken(), Optional.empty(), Optional.empty(), Session.AccountType.MSA));
+            final StepMCProfile.MCProfile profile = this.session.getMcProfile();
+            this.updateSession(new Session(profile.getName(), profile.getId(), profile.getMcToken().getAccessToken(), Optional.empty(), Optional.empty(), Session.AccountType.MSA));
         } else {
             try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
                 //Get the token chain as a json object
                 final JsonObject tokenChainNode = JsonParser.parseString(this.tokenChain).getAsJsonObject();
-
                 //Refresh the token chain and get the new token chain
-                initWithExistingSession(getStep().refresh(httpClient, getStep().fromJson(tokenChainNode)));
+                this.initWithExistingSession(this.getStep().refresh(httpClient, this.getStep().fromJson(tokenChainNode)));
             }
         }
     }
@@ -79,13 +77,13 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
     }
 
     @Override
-    public void save0(JsonObject mainNode) throws Throwable {
-        mainNode.addProperty("tokenChain", StaticEncryptionUtil.encrypt(getDisplayName(), tokenChain));
+    public void save0(final JsonObject mainNode) throws Throwable {
+        mainNode.addProperty("tokenChain", StaticEncryptionUtil.encrypt(this.getSession().getUsername(), this.tokenChain));
     }
 
     @Override
-    public void load0(JsonObject mainNode) throws Throwable {
-        tokenChain = StaticEncryptionUtil.decrypt(getDisplayName(), mainNode.get("tokenChain").getAsString());
+    public void load0(final JsonObject mainNode) throws Throwable {
+        this.tokenChain = StaticEncryptionUtil.decrypt(this.getSession().getUsername(), mainNode.get("tokenChain").getAsString());
     }
 
     @Override

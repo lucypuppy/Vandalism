@@ -23,6 +23,7 @@ import com.mojang.authlib.yggdrasil.YggdrasilEnvironment;
 import de.florianmichael.rclasses.io.WebUtils;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
+import de.nekosarekawaii.vandalism.util.common.StaticEncryptionUtil;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
@@ -92,13 +93,13 @@ public abstract class AbstractTokenBasedAccount extends AbstractAccount {
     }
 
     @Override
-    public void save0(final JsonObject mainNode) {
-        mainNode.addProperty("token", this.token);
+    public void save0(final JsonObject mainNode) throws Throwable {
+        mainNode.addProperty("token", StaticEncryptionUtil.encrypt(this.getSession().getUsername(), this.token));
     }
 
     @Override
-    public void load0(final JsonObject mainNode) {
-        this.token = mainNode.get("token").getAsString();
+    public void load0(final JsonObject mainNode) throws Throwable {
+        this.token = StaticEncryptionUtil.decrypt(this.getSession().getUsername(), mainNode.get("token").getAsString());
     }
 
 }
