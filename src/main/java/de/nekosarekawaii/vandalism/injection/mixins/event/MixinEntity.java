@@ -101,7 +101,7 @@ public abstract class MixinEntity implements MinecraftWrapper {
     @Redirect(method = "updateVelocity", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;movementInputToVelocity(Lnet/minecraft/util/math/Vec3d;FF)Lnet/minecraft/util/math/Vec3d;"))
     public Vec3d callStrafeListener(final Vec3d movementInput, final float speed, final float yaw) {
         if (this.mc.player == (Object) this) {
-            final StrafeListener.StrafeEvent event = new StrafeListener.StrafeEvent(movementInput, speed, yaw);
+            final StrafeListener.StrafeEvent event = new StrafeListener.StrafeEvent(movementInput, speed, yaw, StrafeListener.Type.UPDATE_VELOCITY);
             Vandalism.getInstance().getEventSystem().postInternal(StrafeListener.StrafeEvent.ID, event);
             return movementInputToVelocity(event.movementInput, event.speed, event.yaw);
         }

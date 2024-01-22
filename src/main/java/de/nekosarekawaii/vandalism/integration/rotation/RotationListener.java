@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.integration.rotation;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.cancellable.network.OutgoingPacketListener;
+import de.nekosarekawaii.vandalism.base.event.normal.player.StrafeListener;
 import de.nekosarekawaii.vandalism.base.event.normal.render.Render2DListener;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.RenderUtil;
@@ -27,16 +28,17 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.MathHelper;
 
-public class RotationListener implements OutgoingPacketListener, Render2DListener, MinecraftWrapper {
+public class RotationListener implements OutgoingPacketListener, Render2DListener, StrafeListener, MinecraftWrapper {
 
     private Rotation rotation, targetRotation, lastRotation;
     private double partialIterations;
     private float rotateSpeed;
     private RotationPriority currentPriority;
+    private boolean movementFix;
 
     public RotationListener() {
-        Vandalism.getInstance().getEventSystem().subscribe(OutgoingPacketEvent.ID, this);
-        Vandalism.getInstance().getEventSystem().subscribe(Render2DEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(this,
+                OutgoingPacketEvent.ID, Render2DEvent.ID, StrafeEvent.ID);
     }
 
     @Override
@@ -81,11 +83,26 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
         this.rotation = this.applyGCDFix(rotationDistribution(new Rotation(yaw, pitch), this.lastRotation, 0.2f, true), delta);
     }
 
-    public void setRotation(final Rotation rotation, final float rotateSpeed, final RotationPriority priority) {
+    @Override
+    public void onStrafe(final StrafeListener.StrafeEvent event) {
+        if (this.rotation == null || !this.movementFix)
+            return;
+
+        // Thanks mojang...
+        if (event.type == StrafeListener.Type.JUMP) {
+            event.yaw = (float) Math.toRadians(this.rotation.getYaw());
+            return;
+        }
+
+        event.yaw = this.rotation.getYaw();
+    }
+
+    public void setRotation(final Rotation rotation, final float rotateSpeed, final RotationPriority priority, final boolean movementFix) {
         if (this.currentPriority == null || priority.getPriority() >= this.currentPriority.getPriority()) {
             this.targetRotation = rotation;
             this.rotateSpeed = rotateSpeed;
             this.currentPriority = priority;
+            this.movementFix = movementFix;
         }
     }
 
@@ -143,7 +160,7 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
                 // Apply correlation (reverse the effect)
                 float correlatedMoveYaw = moveYaw;
                 float correlatedMovePitch = movePitch;
-                if(correlation){
+                if (correlation) {
                     correlatedMoveYaw = moveYaw + movePitch * correlationStrength;
                     correlatedMovePitch = movePitch + moveYaw * correlationStrength;
                 }
