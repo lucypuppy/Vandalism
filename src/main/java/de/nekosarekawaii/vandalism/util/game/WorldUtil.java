@@ -24,8 +24,11 @@ import de.nekosarekawaii.vandalism.injection.access.IGameRenderer;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 
@@ -70,12 +73,26 @@ public class WorldUtil implements MinecraftWrapper {
         return crosshairTarget;
     }
 
-    public static BlockHitResult rayTraceBlock(final Vec3d targetPosition, final double maxDistance) {
+    public static boolean canHitEntity(final Entity target, final Rotation rotation, final double range) {
         final Vec3d eyePos = mc.player.getEyePos();
-        final Vec3d lookVector = targetPosition.subtract(eyePos).normalize().multiply(maxDistance);
-        final Vec3d currentPos = eyePos.add(lookVector);
+        final Vec3d rotationVector = rotation.getVector();
 
-        return mc.world.raycast(new RaycastContext(eyePos, currentPos, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, mc.player));
+        final double rangeSquared = range * range;
+
+        final Vec3d targetVec = eyePos.add(rotationVector.x * range, rotationVector.y * range, rotationVector.z * range);
+        final Box box = mc.player.getBoundingBox().stretch(rotationVector.multiply(range)).expand(1.0, 1.0, 1.0);
+
+        final EntityHitResult raycastEntity = ProjectileUtil.raycast(mc.player, eyePos, targetVec, box,
+                entity -> !entity.isSpectator() && entity.canHit() && entity == target, rangeSquared);
+
+        if (raycastEntity == null)
+            return false;
+
+        final BlockHitResult raycastBlocks = mc.world.raycast(new RaycastContext(eyePos, raycastEntity.getPos(),
+                RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, mc.player));
+
+        final double distance = eyePos.squaredDistanceTo(raycastEntity.getPos());
+        return distance <= rangeSquared && (raycastBlocks == null || raycastBlocks.getType() == HitResult.Type.MISS);
     }
 
     public static boolean isTarget(final Entity entity) {

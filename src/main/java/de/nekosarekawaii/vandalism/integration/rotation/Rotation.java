@@ -81,7 +81,7 @@ public class Rotation implements MinecraftWrapper {
             final AimPointMover aimPointMover = new AimPointMover(mode, 0.1, 0.6);
 
             //Get the current best point
-            Vec3d bestPoint = RotationUtil.findClosestVisiblePoint(aimPoints, range);
+            Vec3d bestPoint = RotationUtil.findClosestVisiblePoint(aimPoints, e, range);
 
             if (bestPoint == null) { //Sanitycheck
                 return null;
