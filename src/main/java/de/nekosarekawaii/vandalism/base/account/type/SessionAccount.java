@@ -23,6 +23,7 @@ import de.florianmichael.rclasses.common.array.ObjectTypeChecker;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
+import de.nekosarekawaii.vandalism.util.common.StaticEncryptionUtil;
 import de.nekosarekawaii.vandalism.util.common.UUIDUtil;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
@@ -73,7 +74,7 @@ public class SessionAccount extends AbstractAccount {
             }
             this.uuid = uuid;
         }
-        updateSession(new Session(this.name, UUID.fromString(this.uuid), this.accessToken, Optional.of(this.xuid), Optional.of(this.clientId), Session.AccountType.LEGACY));
+        this.updateSession(new Session(this.name, UUID.fromString(this.uuid), this.accessToken, Optional.of(this.xuid), Optional.of(this.clientId), Session.AccountType.LEGACY));
     }
 
     @Override
@@ -82,21 +83,21 @@ public class SessionAccount extends AbstractAccount {
     }
 
     @Override
-    public void save0(final JsonObject mainNode) {
+    public void save0(final JsonObject mainNode) throws Throwable {
         //Every account stores the last input from updateSession(), but we still have to save and load our own account data
         mainNode.addProperty("name", this.name);
         mainNode.addProperty("uuid", this.uuid);
-        mainNode.addProperty("accessToken", this.accessToken);
+        mainNode.addProperty("accessToken", StaticEncryptionUtil.encrypt(this.name, this.accessToken));
         mainNode.addProperty("xuid", this.xuid);
         mainNode.addProperty("clientId", this.clientId);
     }
 
     @Override
-    public void load0(final JsonObject mainNode) {
+    public void load0(final JsonObject mainNode) throws Throwable {
         //Every account stores the last input from updateSession(), but we still have to save and load our own account data
         this.name = mainNode.get("name").getAsString();
         this.uuid = mainNode.get("uuid").getAsString();
-        this.accessToken = mainNode.get("accessToken").getAsString();
+        this.accessToken = StaticEncryptionUtil.decrypt(this.name, mainNode.get("accessToken").getAsString());
         this.xuid = mainNode.get("xuid").getAsString();
         this.clientId = mainNode.get("clientId").getAsString();
     }
