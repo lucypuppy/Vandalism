@@ -21,8 +21,6 @@ package de.nekosarekawaii.vandalism.integration.rotation;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
@@ -96,9 +94,8 @@ public class AimPointMover implements MinecraftWrapper {
             }
 
             final Vec3d newPoint = new Vec3d(x, y, z);
-
-            final BlockHitResult blockHitResult = WorldUtil.rayTraceBlock(newPoint, range);
-            if (blockHitResult != null && blockHitResult.getType() == HitResult.Type.BLOCK)
+            final Rotation rotation = Rotation.Builder.build(newPoint, mc.player.getEyePos());
+            if (!WorldUtil.canHitEntity(entity, rotation, range))
                 continue;
 
             final boolean allowOutOfHitbox = range > desiredRange;

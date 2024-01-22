@@ -22,8 +22,6 @@ import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
@@ -94,18 +92,18 @@ public class RotationUtil implements MinecraftWrapper {
     }
 
     //hashmap, collect all damageable points in one list
-    public static Vec3d findClosestVisiblePoint(List<Vec3d> aimPoints, double range) {
+    public static Vec3d findClosestVisiblePoint(List<Vec3d> aimPoints, Entity e, double range) {
         double tempDist = Double.MAX_VALUE;
         Vec3d closestPoint = null;
 
+        final Vec3d eyes = mc.player.getEyePos();
+
         for (Vec3d p : aimPoints) {
-            final BlockHitResult blockHitResult = WorldUtil.rayTraceBlock(p, range);
-            if (blockHitResult != null && blockHitResult.getType() == HitResult.Type.BLOCK)
+            final Rotation rotation = Rotation.Builder.build(p, eyes);
+            if (!WorldUtil.canHitEntity(e, rotation, range))
                 continue;
 
-            Vec3d eyes = mc.player.getEyePos();
-            double dist = Math.sqrt(Math.pow(p.x - eyes.x, 2.0) + Math.pow(p.y - eyes.y, 2.0) + Math.pow(p.z - eyes.z, 2.0));
-
+            final double dist = Math.sqrt(Math.pow(p.x - eyes.x, 2.0) + Math.pow(p.y - eyes.y, 2.0) + Math.pow(p.z - eyes.z, 2.0));
             if (dist > 0D && dist < tempDist) {
                 tempDist = dist;
                 closestPoint = p;
