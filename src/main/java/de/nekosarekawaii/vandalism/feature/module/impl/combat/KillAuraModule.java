@@ -35,6 +35,7 @@ import de.nekosarekawaii.vandalism.integration.rotation.HitboxSelectMode;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationPriority;
 import de.nekosarekawaii.vandalism.util.click.ClickType;
+import de.nekosarekawaii.vandalism.util.click.Clicker;
 import de.nekosarekawaii.vandalism.util.click.impl.BoxMuellerClicker;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.entity.Entity;
@@ -116,13 +117,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             "Settings for the clicking."
     );
 
-    private final Value<ClickType> clickType = new EnumModeValue<>(
-            this.clicking,
-            "Click Type",
-            "The type of clicking.",
-            ClickType.BoxMueller,
-            ClickType.values()
-    );
+    private final AutoBlockModule autoBlock;
 
     private final ValueGroup rotationGroup = new ValueGroup(
             this,
@@ -177,6 +172,16 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     private double raytraceDistance = -1.0;
 
     private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
+    private final Value<ClickType> clickType = new EnumModeValue<>(
+            this.clicking,
+            "Click Type",
+            "The type of clicking.",
+            ClickType.BoxMueller,
+            ClickType.values()
+    ).onValueChange((oldValue, newValue) -> {
+        oldValue.getClicker().setClickAction(aBoolean -> {});
+        updateClicker(newValue.getClicker());
+    });
 
     private long lastPossibleHit = -1;
 
@@ -187,27 +192,11 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 Category.COMBAT
         );
 
+        this.autoBlock = autoBlock;
         this.rotationListener = Vandalism.getInstance().getRotationListener();
         this.markExperimental();
 
-        if (this.clickType.getValue().getClicker() instanceof final BoxMuellerClicker clicker) {
-            clicker.setStd(5);
-            clicker.setMean(15);
-            clicker.setCpsUpdatePossibility(80);
-        }
-
-        this.clickType.getValue().getClicker().setClickAction(attack -> {
-            if (attack) {
-                if (this.raytraceDistance <= getRange()) {
-                    this.lastPossibleHit = System.currentTimeMillis();
-                }
-
-                this.mc.doAttack();
-                this.targetIndex++;
-            } else if (autoBlock.isActive()) {
-                autoBlock.setBlocking(true);
-            }
-        });
+        updateClicker(this.clickType.getValue().getClicker());
     }
 
     @Override
@@ -313,6 +302,27 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         }
 
         return this.range.getValue();
+    }
+
+    private void updateClicker(final Clicker clicker) {
+        if (clicker instanceof final BoxMuellerClicker boxMuellerClicker) {
+            boxMuellerClicker.setStd(5);
+            boxMuellerClicker.setMean(15);
+            boxMuellerClicker.setCpsUpdatePossibility(80);
+        }
+
+        clicker.setClickAction(attack -> {
+            if (attack) {
+                if (this.raytraceDistance <= getRange()) {
+                    this.lastPossibleHit = System.currentTimeMillis();
+                }
+
+                this.mc.doAttack();
+                this.targetIndex++;
+            } else if (autoBlock.isActive()) {
+                autoBlock.setBlocking(true);
+            }
+        });
     }
 
 }
