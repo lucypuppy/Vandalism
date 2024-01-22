@@ -55,6 +55,7 @@ import java.io.File;
  *      - Add protection for skins
  *      - Add protection for coords
  *      - Add protection for ip addresses
+ *  - Update libs
  * <br><br>
  * TODO: Verschlxfene <br>
  *  - Delete MixinParticleManager

@@ -25,17 +25,23 @@ public interface StrafeListener {
 
     void onStrafe(final StrafeEvent event);
 
+    enum Type {
+        JUMP, UPDATE_VELOCITY
+    }
+
     class StrafeEvent extends AbstractEvent<StrafeListener> {
 
         public static final int ID = 27;
 
         public Vec3d movementInput;
         public float speed, yaw;
+        public final Type type;
 
-        public StrafeEvent(final Vec3d movementInput, final float speed, final float yaw) {
+        public StrafeEvent(final Vec3d movementInput, final float speed, final float yaw, final Type type) {
             this.movementInput = movementInput;
             this.speed = speed;
             this.yaw = yaw;
+            this.type = type;
         }
 
         @Override

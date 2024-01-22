@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.integration.rotation;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.cancellable.network.OutgoingPacketListener;
+import de.nekosarekawaii.vandalism.base.event.normal.player.StrafeListener;
 import de.nekosarekawaii.vandalism.base.event.normal.render.Render2DListener;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.RenderUtil;
@@ -27,16 +28,20 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.MathHelper;
 
-public class RotationListener implements OutgoingPacketListener, Render2DListener, MinecraftWrapper {
+public class RotationListener implements OutgoingPacketListener, Render2DListener, StrafeListener, MinecraftWrapper {
 
     private Rotation rotation, targetRotation, lastRotation;
     private double partialIterations;
-    private float rotateSpeed;
     private RotationPriority currentPriority;
 
+    private float rotateSpeed;
+    private float correlationStrength;
+    private boolean correlation;
+    private boolean movementFix;
+
     public RotationListener() {
-        Vandalism.getInstance().getEventSystem().subscribe(OutgoingPacketEvent.ID, this);
-        Vandalism.getInstance().getEventSystem().subscribe(Render2DEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(this,
+                OutgoingPacketEvent.ID, Render2DEvent.ID, StrafeEvent.ID);
     }
 
     @Override
@@ -55,7 +60,7 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
         this.lastRotation = new Rotation(this.mc.player.lastYaw, this.mc.player.lastPitch);
 
         if (this.targetRotation != null) {
-            this.rotation = this.applyGCDFix(rotationDistribution(this.targetRotation, this.lastRotation, 0.2f, true), delta);
+            this.rotation = this.applyGCDFix(rotationDistribution(this.targetRotation, this.lastRotation), delta);
             return;
         }
 
@@ -78,14 +83,31 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
             return;
         }
 
-        this.rotation = this.applyGCDFix(rotationDistribution(new Rotation(yaw, pitch), this.lastRotation, 0.2f, true), delta);
+        this.rotation = this.applyGCDFix(rotationDistribution(new Rotation(yaw, pitch), this.lastRotation), delta);
     }
 
-    public void setRotation(final Rotation rotation, final float rotateSpeed, final RotationPriority priority) {
+    @Override
+    public void onStrafe(final StrafeListener.StrafeEvent event) {
+        if (this.rotation == null || !this.movementFix)
+            return;
+
+        // Thanks mojang...
+        if (event.type == StrafeListener.Type.JUMP) {
+            event.yaw = (float) Math.toRadians(this.rotation.getYaw());
+            return;
+        }
+
+        event.yaw = this.rotation.getYaw();
+    }
+
+    public void setRotation(final Rotation rotation, final float rotateSpeed, final RotationPriority priority, final boolean movementFix, final boolean correlation, final float correlationStrength) {
         if (this.currentPriority == null || priority.getPriority() >= this.currentPriority.getPriority()) {
             this.targetRotation = rotation;
             this.rotateSpeed = rotateSpeed;
             this.currentPriority = priority;
+            this.movementFix = movementFix;
+            this.correlation = correlation;
+            this.correlationStrength = correlationStrength;
         }
     }
 
@@ -108,33 +130,20 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
         return fixedRotation;
     }
 
-    public Rotation rotationDistribution(final Rotation rotation, final Rotation lastRotation, float correlationStrength, boolean correlation) {
-        //correlation can overaim/underaim, i recomend to set it at around 0.2
-        double rotateSpeed = this.rotateSpeed + Math.random() * 5;
-        //if ((Math.random() * 100) <= 10) {
-        //    // rotateSpeed = Math.random() * 35;
-        //}
-        //if (KillauraModule.getTarget() != null) {
-        //    if (KillauraModule.getTarget().hurtTime >= 4) {
-        //        // rotateSpeed = MathUtil.getRandomFloat(4, 10);
-        //    }
-        //}
-        //if (mc.objectMouseOver != null) {
-        //    if (mc.objectMouseOver.typeOfHit.equals(MovingObjectPosition.MovingObjectType.ENTITY)) {
-        //        // rotateSpeed = MathUtil.getRandomFloat(0, (float) (2 + Math.random() * 5));
-        //    }
-        //}
-        if (rotateSpeed > 0) {
+    // correlation can overaim/underaim, i recomend to set it at around 0.2f
+    public Rotation rotationDistribution(final Rotation rotation, final Rotation lastRotation) {
+        if (this.rotateSpeed > 0) {
             final float lastYaw = lastRotation.getYaw();
             final float lastPitch = lastRotation.getPitch();
             final float deltaYaw = MathHelper.wrapDegrees(rotation.getYaw() - lastYaw);
             final float deltaPitch = rotation.getPitch() - lastPitch;
             final double distance = Math.sqrt(deltaYaw * deltaYaw + deltaPitch * deltaPitch);
+
             if (distance > 0) {
                 final double distributionYaw = Math.abs(deltaYaw / distance);
                 final double distributionPitch = Math.abs(deltaPitch / distance);
-                final double maxYaw = rotateSpeed * distributionYaw;
-                final double maxPitch = (rotateSpeed) * distributionPitch;
+                final double maxYaw = this.rotateSpeed * distributionYaw;
+                final double maxPitch = this.rotateSpeed * distributionPitch;
 
                 // Introduce correlation between yaw and pitch
                 final float moveYaw = (float) Math.max(Math.min(deltaYaw, maxYaw), -maxYaw);
@@ -143,14 +152,16 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
                 // Apply correlation (reverse the effect)
                 float correlatedMoveYaw = moveYaw;
                 float correlatedMovePitch = movePitch;
-                if(correlation){
-                    correlatedMoveYaw = moveYaw + movePitch * correlationStrength;
-                    correlatedMovePitch = movePitch + moveYaw * correlationStrength;
+
+                if (this.correlation) {
+                    correlatedMoveYaw = moveYaw + movePitch * this.correlationStrength;
+                    correlatedMovePitch = movePitch + moveYaw * this.correlationStrength;
                 }
 
                 return new Rotation(lastYaw + correlatedMoveYaw, lastPitch + correlatedMovePitch);
             }
         }
+
         return rotation;
     }
 
