@@ -161,7 +161,11 @@ public class InfoHUDElement extends HUDElement {
             infoMap.put("CPS", this.leftClick.clicks() + " | " + this.rightClick.clicks());
         }
         if (this.username.getValue()) {
-            infoMap.put("Username", this.mc.session.getUsername());
+            String username = this.mc.session.getUsername();
+            if (this.mc.player != null) {
+                username = this.mc.player.getGameProfile().getName();
+            }
+            infoMap.put("Username", username);
         }
         final double posX, posY, posZ;
         if (this.mc.player != null) {
