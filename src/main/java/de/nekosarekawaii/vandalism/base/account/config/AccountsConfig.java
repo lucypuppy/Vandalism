@@ -96,13 +96,13 @@ public class AccountsConfig extends AbstractConfig<JsonObject> {
             final AbstractAccount lastAccount = this.loadAccount(mainNode.get("lastAccount").getAsJsonObject());
             if (lastAccount != null) {
                 try {
-                    lastAccount.logIn();
+                    Vandalism.getInstance().getAccountManager().logIn(lastAccount);
                 } catch (Throwable t) {
                     Vandalism.getInstance().getLogger().error("Failed to log into the last account: " + lastAccount.getDisplayName(), t);
                 }
             }
             else {
-                Vandalism.getInstance().getLogger().warn("Failed to load the last account!");
+                Vandalism.getInstance().getLogger().error("Failed to load the last account!");
             }
         }
     }
