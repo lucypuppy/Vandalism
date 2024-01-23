@@ -67,9 +67,7 @@ import java.io.File;
  *  - Fix the entity layer rendering from the true sight module
  * <br><br>
  * TODO: FooFieOwO <br>
- *  - Make a better calculation for the rotate speed RotationListener#rotationDistribution
  *  - Fix module list out of screen rendering when the alignment is at the bottom of the screen
- *  - Fix Rotation raytrace when block normalizer is enabled (Collision shape event)
  *  - Fix NoClipMode from PhaseModule
  *  - Fix SprintModule to be compatible with the rotation listener and also the backwards direction (ask Verschlxfene)
  *  - Fix calculations for the HUD aka. HUDElement#calculatePosition
