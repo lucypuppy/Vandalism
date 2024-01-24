@@ -41,6 +41,7 @@ import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
@@ -170,8 +171,9 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     private int targetIndex = 0;
 
     private double raytraceDistance = -1.0;
+    private boolean isLooking = false;
 
-    private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
+    private long lastPossibleHit = -1;
     private final Value<ClickType> clickType = new EnumModeValue<>(
             this.clicking,
             "Click Type",
@@ -182,8 +184,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         oldValue.getClicker().setClickAction(aBoolean -> {});
         updateClicker(newValue.getClicker());
     });
-
-    private long lastPossibleHit = -1;
+    private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
 
     public KillAuraModule(final AutoBlockModule autoBlock) {
         super(
@@ -229,6 +230,11 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 Float.isNaN(this.rotationListener.getRotation().getPitch())) {
             return;
         }
+
+        // Check if the target is looking at us
+        final Rotation pseudoRotation = Rotation.Builder.build(mc.player.getPos(), this.target.getEyePos());
+        this.isLooking = Math.abs(MathHelper.wrapDegrees(pseudoRotation.getYaw()) - this.target.getYaw()) <= 80.0 &&
+                mc.player.getPos().distanceTo(this.target.getPos()) <= 6.0;
 
         final Vec3d eyePos = mc.player.getEyePos();
         final HitResult raytrace = WorldUtil.raytrace(this.rotationListener.getRotation(), Math.pow(getAimRange(), 2));
@@ -297,7 +303,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
     private double getRange() {
         if (this.firstHitExtender.getValue() &&
-                (System.currentTimeMillis() - this.lastPossibleHit) >= this.firstHitExtenderOffTime.getValue()) {
+                (System.currentTimeMillis() - this.lastPossibleHit) >= this.firstHitExtenderOffTime.getValue() &&
+                this.isLooking) {
             return this.range.getValue() + this.firstHitRangeExtender.getValue();
         }
 

@@ -100,7 +100,7 @@ public class RotationUtil implements MinecraftWrapper {
 
         for (Vec3d p : aimPoints) {
             final Rotation rotation = Rotation.Builder.build(p, eyes);
-            if (!WorldUtil.canHitEntity(e, rotation, range))
+            if (!WorldUtil.canHitEntity(mc.player, e, rotation, range))
                 continue;
 
             final double dist = Math.sqrt(Math.pow(p.x - eyes.x, 2.0) + Math.pow(p.y - eyes.y, 2.0) + Math.pow(p.z - eyes.z, 2.0));

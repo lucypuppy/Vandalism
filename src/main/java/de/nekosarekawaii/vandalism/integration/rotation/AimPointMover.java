@@ -95,7 +95,7 @@ public class AimPointMover implements MinecraftWrapper {
 
             final Vec3d newPoint = new Vec3d(x, y, z);
             final Rotation rotation = Rotation.Builder.build(newPoint, mc.player.getEyePos());
-            if (!WorldUtil.canHitEntity(entity, rotation, range))
+            if (!WorldUtil.canHitEntity(mc.player, entity, rotation, range))
                 continue;
 
             final boolean allowOutOfHitbox = range > desiredRange;
