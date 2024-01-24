@@ -93,7 +93,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             "The time in milliseconds after the first hit extender should be disabled.",
             1000,
             0,
-            10000
+            5000
     ).visibleCondition(this.firstHitExtender::getValue);
 
     private final Value<Double> firstHitRangeExtender = new DoubleValue(
