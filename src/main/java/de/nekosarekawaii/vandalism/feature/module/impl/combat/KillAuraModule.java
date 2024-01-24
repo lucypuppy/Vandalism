@@ -233,7 +233,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
         // Check if the target is looking at us
         final Rotation pseudoRotation = Rotation.Builder.build(mc.player.getPos(), this.target.getEyePos());
-        this.isLooking = Math.abs(MathHelper.wrapDegrees(pseudoRotation.getYaw()) - this.target.getYaw()) <= 80.0 &&
+        this.isLooking = Math.abs(MathHelper.wrapDegrees(pseudoRotation.getYaw()) - MathHelper.wrapDegrees(this.target.getYaw())) <= 80.0 &&
                 mc.player.getPos().distanceTo(this.target.getPos()) <= 6.0;
 
         final Vec3d eyePos = mc.player.getEyePos();
