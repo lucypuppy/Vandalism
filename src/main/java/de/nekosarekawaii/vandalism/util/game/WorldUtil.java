@@ -73,23 +73,23 @@ public class WorldUtil implements MinecraftWrapper {
         return crosshairTarget;
     }
 
-    public static boolean canHitEntity(final Entity target, final Rotation rotation, final double range) {
-        final Vec3d eyePos = mc.player.getEyePos();
+    public static boolean canHitEntity(final Entity from, final Entity target, final Rotation rotation, final double range) {
+        final Vec3d eyePos = from.getEyePos();
         final Vec3d rotationVector = rotation.getVector();
 
         final double rangeSquared = range * range;
 
         final Vec3d targetVec = eyePos.add(rotationVector.x * range, rotationVector.y * range, rotationVector.z * range);
-        final Box box = mc.player.getBoundingBox().stretch(rotationVector.multiply(range)).expand(1.0, 1.0, 1.0);
+        final Box box = from.getBoundingBox().stretch(rotationVector.multiply(range)).expand(1.0, 1.0, 1.0);
 
-        final EntityHitResult raycastEntity = ProjectileUtil.raycast(mc.player, eyePos, targetVec, box,
+        final EntityHitResult raycastEntity = ProjectileUtil.raycast(from, eyePos, targetVec, box,
                 entity -> !entity.isSpectator() && entity.canHit() && entity == target, rangeSquared);
 
         if (raycastEntity == null)
             return false;
 
         final BlockHitResult raycastBlocks = mc.world.raycast(new RaycastContext(eyePos, raycastEntity.getPos(),
-                RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, mc.player));
+                RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, from));
 
         final double distance = eyePos.squaredDistanceTo(raycastEntity.getPos());
         return distance <= rangeSquared && (raycastBlocks == null || raycastBlocks.getType() == HitResult.Type.MISS);
