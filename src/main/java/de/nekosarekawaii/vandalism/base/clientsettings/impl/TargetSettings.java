@@ -22,7 +22,9 @@ import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.event.normal.internal.TargetListener;
+import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryValue;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -40,6 +42,13 @@ public class TargetSettings extends ValueGroup implements TargetListener {
             Collections.singletonList(EntityType.PLAYER)
     );
 
+    private final Value<Boolean> isAlive = new BooleanValue(
+            this,
+            "Alive",
+            "Whether the target has to be alive or not.",
+            true
+    );
+
     public TargetSettings(final ClientSettings parent) {
         super(parent, "Target", "Target related settings.");
         Vandalism.getInstance().getEventSystem().subscribe(TargetEvent.ID, this, Priorities.HIGHEST);
@@ -48,7 +57,7 @@ public class TargetSettings extends ValueGroup implements TargetListener {
     @Override
     public void onTarget(final TargetEvent event) {
         final Entity entity = event.entity;
-        if (entity == this.mc.player) {
+        if (entity == this.mc.player || (!entity.isAlive() && isAlive.getValue())) {
             event.isTarget = false;
             return;
         }
