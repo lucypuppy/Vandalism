@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.network.BlockCollisionShapeListener;
-import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiBlockValue;
+import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.block.Block;
@@ -28,6 +28,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.WaterFluid;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.shape.VoxelShapes;
 
 import java.util.ArrayList;
@@ -46,10 +47,11 @@ public class BlockNormalizerModule extends AbstractModule implements BlockCollis
         PRESET_BLOCKS.add(Blocks.BIG_DRIPLEAF);
     }
 
-    private final MultiBlockValue affectedBlocks = new MultiBlockValue(
+    private final MultiRegistryValue<Block> affectedBlocks = new MultiRegistryValue<>(
             this,
             "Blocks",
             "Change the blocks that are affected by this module.",
+            Registries.BLOCK,
             PRESET_BLOCKS,
             PRESET_BLOCKS.toArray(Block[]::new)
     );
