@@ -22,50 +22,22 @@ import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.event.normal.internal.TargetListener;
-import de.nekosarekawaii.vandalism.base.value.Value;
-import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.registry.Registries;
+
+import java.util.Collections;
 
 public class TargetSettings extends ValueGroup implements TargetListener {
 
-    private final Value<Boolean> players = new BooleanValue(
+    private final MultiRegistryValue<EntityType<?>> targets = new MultiRegistryValue<>(
             this,
-            "Players",
-            "Whether players should be attacked.",
-            true
-    );
-
-    private final Value<Boolean> hostile = new BooleanValue(
-            this,
-            "Hostile",
-            "Whether hostile mobs should be attacked.",
-            false
-    );
-
-    private final Value<Boolean> animals = new BooleanValue(
-            this,
-            "Animals",
-            "Whether animals should be attacked.",
-            false
-    );
-
-    private final Value<Boolean> villager = new BooleanValue(
-            this,
-            "Villager",
-            "Whether villager should be attacked",
-            false
-    );
-
-    private final Value<Boolean> isAlive = new BooleanValue(
-            this,
-            "Alive",
-            "Checks if the entity is alive.",
-            true
+            "Targets",
+            "The entities to target.",
+            Registries.ENTITY_TYPE,
+            Collections.singletonList(EntityType.PLAYER)
     );
 
     public TargetSettings(final ClientSettings parent) {
@@ -74,15 +46,15 @@ public class TargetSettings extends ValueGroup implements TargetListener {
     }
 
     @Override
-    public void onTarget(TargetEvent event) {
-        if (!(event.entity instanceof final LivingEntity livingEntity
-                && livingEntity != mc.player
-                && (livingEntity.isAlive() || !isAlive.getValue()) &&
-                ((livingEntity instanceof PlayerEntity && players.getValue())
-                        || (livingEntity instanceof HostileEntity && hostile.getValue())
-                        || (livingEntity instanceof AnimalEntity && animals.getValue())
-                        || (livingEntity instanceof VillagerEntity && villager.getValue())))) {
+    public void onTarget(final TargetEvent event) {
+        final Entity entity = event.entity;
+        if (entity == this.mc.player) {
+            event.isTarget = false;
+            return;
+        }
+        if (!this.targets.isSelected(entity.getType())) {
             event.isTarget = false;
         }
     }
+
 }

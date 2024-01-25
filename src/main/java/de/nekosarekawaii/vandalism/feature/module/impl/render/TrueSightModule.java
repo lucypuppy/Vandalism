@@ -24,11 +24,12 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.render.LivingEntityRenderBottomLayerListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
-import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiItemValue;
+import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.Item;
+import net.minecraft.registry.Registries;
 
 import java.awt.*;
 import java.util.List;
@@ -38,10 +39,11 @@ public class TrueSightModule extends AbstractModule implements LivingEntityRende
 
     private static final List<Item> MARKER_BLOCK_ITEMS = ClientWorld.BLOCK_MARKER_ITEMS.stream().toList();
 
-    public final MultiItemValue markerBlocks = new MultiItemValue(
+    public final MultiRegistryValue<Item> markerBlocks = new MultiRegistryValue<>(
             this,
             "Marker Blocks",
             "Makes invisible marker blocks visible.",
+            Registries.ITEM,
             MARKER_BLOCK_ITEMS,
             MARKER_BLOCK_ITEMS.toArray(Item[]::new)
     );
