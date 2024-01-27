@@ -18,14 +18,22 @@
 
 package de.nekosarekawaii.vandalism.integration.spotify;
 
+import de.nekosarekawaii.vandalism.base.FabricBootstrap;
+import net.minecraft.client.texture.NativeImageBackedTexture;
+import net.minecraft.util.Identifier;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class SpotifyTrack {
 
+    public final static Identifier IMAGE_IDENTIFIER = new Identifier(FabricBootstrap.MOD_ID, "spotify_track.png");
+
     private String type;
     private String name;
     private final List<String> artists;
+    private NativeImageBackedTexture image;
+    private String imageUrl;
     private long time;
     private long lastTime;
     private long progress;
@@ -36,6 +44,8 @@ public class SpotifyTrack {
         this.type = "";
         this.name = "";
         this.artists = new ArrayList<>();
+        this.image = null;
+        this.imageUrl = "";
         this.time = 0L;
         this.lastTime = 0L;
         this.duration = 0L;
@@ -61,6 +71,22 @@ public class SpotifyTrack {
 
     public List<String> getArtists() {
         return this.artists;
+    }
+
+    public NativeImageBackedTexture getImage() {
+        return this.image;
+    }
+
+    public void setImage(final NativeImageBackedTexture image) {
+        this.image = image;
+    }
+
+    public String getImageUrl() {
+        return this.imageUrl;
+    }
+
+    public void setImageUrl(final String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public long getTime() {

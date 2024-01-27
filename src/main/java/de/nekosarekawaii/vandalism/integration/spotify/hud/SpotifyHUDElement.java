@@ -27,9 +27,11 @@ import de.nekosarekawaii.vandalism.integration.spotify.SpotifyManager;
 import de.nekosarekawaii.vandalism.integration.spotify.SpotifyTrack;
 import de.nekosarekawaii.vandalism.util.render.GLStateTracker;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.texture.AbstractTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 import java.awt.*;
 import java.util.LinkedHashMap;
@@ -111,7 +113,13 @@ public class SpotifyHUDElement extends HUDElement {
                     this.y + (fontHeight * infoMap.size()) + heightAddition,
                     Integer.MIN_VALUE
             );
-            this.mc.getTextureManager().getTexture(FabricBootstrap.MOD_ICON).setFilter(
+            Identifier imageIdentifier = FabricBootstrap.MOD_ICON;
+            AbstractTexture image = this.mc.getTextureManager().getTexture(imageIdentifier);
+            if (spotifyTrack.getImage() != null) {
+                imageIdentifier = SpotifyTrack.IMAGE_IDENTIFIER;
+                image = spotifyTrack.getImage();
+            }
+            image.setFilter(
                     true,
                     true
             );
@@ -120,7 +128,7 @@ public class SpotifyHUDElement extends HUDElement {
             final int textureY = this.y + 2;
             final int textureSize = 30;
             context.drawTexture(
-                    FabricBootstrap.MOD_ICON,
+                    imageIdentifier,
                     textureX,
                     textureY,
                     0,
