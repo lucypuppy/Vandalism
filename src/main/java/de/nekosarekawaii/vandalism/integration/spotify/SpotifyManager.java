@@ -22,6 +22,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.sun.net.httpserver.HttpServer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
@@ -30,12 +31,13 @@ import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
 import de.nekosarekawaii.vandalism.integration.spotify.config.SpotifyConfig;
 import de.nekosarekawaii.vandalism.integration.spotify.gui.SpotifyClientMenuWindow;
 import de.nekosarekawaii.vandalism.integration.spotify.hud.SpotifyHUDElement;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.texture.NativeImage;
+import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.util.Util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import javax.imageio.ImageIO;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.URL;
@@ -236,6 +238,34 @@ public class SpotifyManager {
                                         }
                                     }
                                 }
+                                if (itemJson.has("album")) {
+                                    final JsonObject albumJson = itemJson.getAsJsonObject("album");
+                                    if (albumJson.has("images")) {
+                                        final JsonArray imagesArray = albumJson.getAsJsonArray("images");
+                                        if (!imagesArray.isEmpty()) {
+                                            final JsonObject imageJson = imagesArray.get(1).getAsJsonObject();
+                                            if (imageJson.has("url")) {
+                                                final String imageUrl = imageJson.get("url").getAsString();
+                                                if (!this.spotifyTrack.getImageUrl().equals(imageUrl)) {
+                                                    this.spotifyTrack.setImageUrl(imageUrl);
+                                                    try (final InputStream inputStream = new URL(imageUrl).openStream()) {
+                                                        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+                                                        ImageIO.write(ImageIO.read(inputStream), "png", out);
+                                                        final NativeImage nativeImage = NativeImage.read(new ByteArrayInputStream(out.toByteArray()));
+                                                        out.close();
+                                                        RenderSystem.recordRenderCall(() -> {
+                                                            final NativeImageBackedTexture image = new NativeImageBackedTexture(nativeImage);
+                                                            MinecraftClient.getInstance().getTextureManager().registerTexture(SpotifyTrack.IMAGE_IDENTIFIER, image);
+                                                            this.spotifyTrack.setImage(image);
+                                                        });
+                                                    } catch (IOException e) {
+                                                        Vandalism.getInstance().getLogger().error("Failed to load Spotify track image.", e);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                             if (responseJson.has("is_playing")) {
                                 this.spotifyTrack.setPaused(!responseJson.get("is_playing").getAsBoolean());
@@ -248,8 +278,7 @@ public class SpotifyManager {
                                     this.spotifyTrack.setProgress(progressMs);
                                 }
                             }
-                        }
-                        else {
+                        } else {
                             Vandalism.getInstance().getLogger().error("Spotify data request returned an empty response.");
                         }
                     }
@@ -257,8 +286,7 @@ public class SpotifyManager {
                     if (responseCode == 401) {
                         Vandalism.getInstance().getLogger().info("Refreshing Spotify access token...");
                         this.refresh(this.refreshToken);
-                    }
-                    else {
+                    } else {
                         Vandalism.getInstance().getLogger().error("Spotify data request failed with response code:");
                         Vandalism.getInstance().getLogger().error(responseCode + " -> " + StatusMessages.getMessage(responseCode));
                     }

@@ -27,9 +27,11 @@ import de.nekosarekawaii.vandalism.integration.spotify.SpotifyManager;
 import de.nekosarekawaii.vandalism.integration.spotify.SpotifyTrack;
 import de.nekosarekawaii.vandalism.util.render.GLStateTracker;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.texture.AbstractTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 import java.awt.*;
 import java.util.LinkedHashMap;
@@ -111,7 +113,13 @@ public class SpotifyHUDElement extends HUDElement {
                     this.y + (fontHeight * infoMap.size()) + heightAddition,
                     Integer.MIN_VALUE
             );
-            this.mc.getTextureManager().getTexture(FabricBootstrap.MOD_ICON).setFilter(
+            Identifier imageIdentifier = FabricBootstrap.MOD_ICON;
+            AbstractTexture image = this.mc.getTextureManager().getTexture(imageIdentifier);
+            if (spotifyTrack.getImage() != null) {
+                imageIdentifier = SpotifyTrack.IMAGE_IDENTIFIER;
+                image = spotifyTrack.getImage();
+            }
+            image.setFilter(
                     true,
                     true
             );
@@ -120,7 +128,7 @@ public class SpotifyHUDElement extends HUDElement {
             final int textureY = this.y + 2;
             final int textureSize = 30;
             context.drawTexture(
-                    FabricBootstrap.MOD_ICON,
+                    imageIdentifier,
                     textureX,
                     textureY,
                     0,
@@ -141,7 +149,7 @@ public class SpotifyHUDElement extends HUDElement {
                         pauseRectY1,
                         pauseRectX2,
                         pauseRectY2,
-                        ColorUtils.toSRGB(0, 0, 0, 0.5f)
+                        ColorUtils.toSRGB(0, 0, 0, 0.6f)
                 );
                 final float alpha = System.currentTimeMillis() % 1000 < 500 ? 0.7f : 0f;
                 context.fill(
@@ -149,14 +157,14 @@ public class SpotifyHUDElement extends HUDElement {
                         pauseRectY1 + 6,
                         pauseRectX2 - 15,
                         pauseRectY2 - 6,
-                        ColorUtils.toSRGB(0, 0, 0, alpha)
+                        ColorUtils.toSRGB(1f, 1f, 1f, alpha)
                 );
                 context.fill(
                         pauseRectX1 + 15,
                         pauseRectY1 + 6,
                         pauseRectX2 - 8,
                         pauseRectY2 - 6,
-                        ColorUtils.toSRGB(0, 0, 0, alpha)
+                        ColorUtils.toSRGB(1f, 1f, 1f, alpha)
                 );
             }
             final int progressBarY = this.y + (fontHeight * infoMap.size()) + heightAddition - 10;
@@ -164,10 +172,16 @@ public class SpotifyHUDElement extends HUDElement {
             final int progressBarStartX = this.x + progressBarOffset;
             final int endWidth = this.width - (progressBarOffset * 2);
             final int progressBarEndX = progressBarStartX + endWidth;
-            int progressBarCurrentProgress = (int) (progressBarStartX + (endWidth * (currentProgress / (double) spotifyTrack.getDuration())));
+            int progressBarCurrentProgress =  (int) (progressBarStartX + (endWidth * (Math.max(1, currentProgress) / (double) spotifyTrack.getDuration())));
             if (progressBarCurrentProgress > progressBarEndX) {
                 progressBarCurrentProgress = progressBarEndX;
             }
+            context.drawHorizontalLine(
+                    progressBarStartX,
+                    progressBarEndX - 1,
+                    progressBarY,
+                    Color.GRAY.getRGB()
+            );
             context.drawHorizontalLine(
                     progressBarStartX,
                     progressBarCurrentProgress,

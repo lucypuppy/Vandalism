@@ -169,7 +169,6 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             true
     );
 
-
     private LivingEntity target;
     private int targetIndex = 0;
 
