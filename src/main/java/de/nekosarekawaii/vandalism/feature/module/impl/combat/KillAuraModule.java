@@ -117,6 +117,13 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             "Settings for the clicking."
     );
 
+    private final ValueGroup rotationGroup = new ValueGroup(
+            this,
+            "Rotation",
+            "Settings for the rotations."
+    );
+    private final AutoBlockModule autoBlock;
+
     private final FloatValue rotateSpeed = new FloatValue(
             this.rotationGroup,
             "Rotate Speed",
@@ -125,13 +132,6 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             0.0f,
             180.0f
     );
-
-    private final ValueGroup rotationGroup = new ValueGroup(
-            this,
-            "Rotation",
-            "Settings for the rotations."
-    );
-    private final AutoBlockModule autoBlock;
 
     private final BooleanValue correlation = new BooleanValue(
             this.rotationGroup,
@@ -179,8 +179,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             ClickType.BoxMueller,
             ClickType.values()
     ).onValueChange((oldValue, newValue) -> {
-        oldValue.getClicker().setClickAction(aBoolean -> {
-        });
+        oldValue.getClicker().setClickAction(aBoolean -> {});
         updateClicker(newValue.getClicker());
     });
     private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
