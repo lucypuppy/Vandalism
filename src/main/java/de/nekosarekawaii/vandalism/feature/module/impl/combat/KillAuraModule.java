@@ -117,22 +117,21 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             "Settings for the clicking."
     );
 
-    private final AutoBlockModule autoBlock;
+    private final FloatValue rotateSpeed = new FloatValue(
+            this.rotationGroup,
+            "Rotate Speed",
+            "The speed of the rotation.",
+            60.0f,
+            0.0f,
+            180.0f
+    );
 
     private final ValueGroup rotationGroup = new ValueGroup(
             this,
             "Rotation",
             "Settings for the rotations."
     );
-
-    private final FloatValue rotateSpeed = new FloatValue(
-            this.rotationGroup,
-            "Rotate Speed",
-            "The speed of the rotation.",
-            60.0f,
-            1.0f,
-            180.0f
-    );
+    private final AutoBlockModule autoBlock;
 
     private final BooleanValue correlation = new BooleanValue(
             this.rotationGroup,
@@ -180,7 +179,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             ClickType.BoxMueller,
             ClickType.values()
     ).onValueChange((oldValue, newValue) -> {
-        oldValue.getClicker().setClickAction(aBoolean -> {});
+        oldValue.getClicker().setClickAction(aBoolean -> {
+        });
         updateClicker(newValue.getClicker());
     });
     private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
@@ -255,7 +255,11 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 return;
             }
 
-            final float rotateSpeed = (float) (this.rotateSpeed.getValue() + Math.random() * 5.0f);
+            float rotateSpeed = 0.0f;
+            if (this.rotateSpeed.getValue() > 0.0f) {
+                rotateSpeed = (float) (this.rotateSpeed.getValue() + Math.random() * 5.0f);
+            }
+
             this.rotationListener.setRotation(rotation, rotateSpeed, RotationPriority.HIGH,
                     this.movementFix.getValue(), this.correlation.getValue(),
                     this.correlationStrength.getValue());
