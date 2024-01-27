@@ -33,6 +33,7 @@ public class HUDClientMenuWindow extends ClientMenuWindow {
 
     private final HUDManager hudManager;
 
+    private HUDElement draggedElement;
     private boolean mouseDown = false;
     private int lastMouseX, lastMouseY;
 
@@ -76,8 +77,10 @@ public class HUDClientMenuWindow extends ClientMenuWindow {
         ImGui.end();
         final Window window = this.mc.getWindow();
         final double scaledWidth = window.getScaledWidth(), scaledHeight = window.getScaledHeight();
+        boolean mouseOver = false;
         for (final HUDElement hudElement : this.hudManager.getList()) {
-            hudElement.render(
+            if (hudElement.render(
+                    this.draggedElement,
                     this.mouseDown,
                     mouseX,
                     mouseY,
@@ -87,7 +90,15 @@ public class HUDClientMenuWindow extends ClientMenuWindow {
                     scaledHeight,
                     context,
                     delta
-            );
+            )) {
+                mouseOver = true;
+            }
+            if (hudElement.dragged) {
+                this.draggedElement = hudElement;
+            }
+        }
+        if (!mouseOver && this.mouseDown) {
+            this.draggedElement = null;
         }
         context.drawHorizontalLine(0, (int) scaledWidth, (int) (scaledHeight * 0.66), Color.green.getRGB());
         context.drawHorizontalLine(0, (int) scaledWidth, (int) (scaledHeight * 0.33), Color.green.getRGB());

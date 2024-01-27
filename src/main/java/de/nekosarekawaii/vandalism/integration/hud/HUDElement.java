@@ -26,7 +26,9 @@ import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.render.InputType;
 import net.minecraft.client.gui.DrawContext;
+import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -38,7 +40,7 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
     private final List<Value<?>> values;
     private final BooleanValue active;
     public boolean shouldSave;
-    private boolean dragged;
+    public boolean dragged;
     private final int defaultX, defaultY;
     protected int width, height;
     public int x, y;
@@ -63,7 +65,7 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
         this.y = defaultY;
         this.width = 10;
         this.height = 10;
-        calculateAlignment();
+        this.calculateAlignment();
     }
 
     public void reset() {
@@ -85,7 +87,6 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
         } else {
             this.alignmentX = Alignment.LEFT;
         }
-
         if (scaledHeight * 0.66 < y + height / 2.0) {
             this.alignmentY = Alignment.BOTTOM;
         } else if (scaledHeight * 0.33 < y + height / 2.0) {
@@ -104,7 +105,8 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
 
     public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {}
 
-    public void render(
+    public boolean render(
+            final HUDElement draggedElement,
             final boolean mouseDown,
             final int mouseX,
             final int mouseY,
@@ -118,7 +120,52 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
         if (!this.isActive()) {
             RenderSystem.setShaderColor(0.5f, 0.5f, 0.5f, 0.9f);
         }
-
+        final boolean isDraggedElement = draggedElement == this;
+        if (isDraggedElement) {
+            final int offset;
+            if (InputType.isPressed(GLFW.GLFW_KEY_LEFT_CONTROL)) {
+                offset = 5;
+            }
+            else if (InputType.isPressed(GLFW.GLFW_KEY_LEFT_SHIFT)) {
+                offset = 2;
+            }
+            else {
+                offset = 1;
+            }
+            if (InputType.isPressed(GLFW.GLFW_KEY_BACKSPACE)) {
+                this.x = this.defaultX;
+                this.y = this.defaultY;
+                this.calculateAlignment();
+            }
+            if (InputType.isPressed(GLFW.GLFW_KEY_LEFT)) {
+                this.x -= offset;
+                if (this.x < 0) {
+                    this.x = 0;
+                }
+                this.calculateAlignment();
+            }
+            if (InputType.isPressed(GLFW.GLFW_KEY_RIGHT)) {
+                this.x += offset;
+                if (this.x + this.width > scaledWidth) {
+                    this.x = (int) (scaledWidth - this.width);
+                }
+                this.calculateAlignment();
+            }
+            if (InputType.isPressed(GLFW.GLFW_KEY_UP)) {
+                this.y -= offset;
+                if (this.y < 0) {
+                    this.y = 0;
+                }
+                this.calculateAlignment();
+            }
+            if (InputType.isPressed(GLFW.GLFW_KEY_DOWN)) {
+                this.y += offset;
+                if (this.y + this.height > scaledHeight) {
+                    this.y = (int) (scaledHeight - this.height);
+                }
+                this.calculateAlignment();
+            }
+        }
         final boolean mouseOver = Boundings.isInBounds(
                 mouseX,
                 mouseY,
@@ -127,39 +174,34 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
                 this.width + 4,
                 this.height + 3
         );
-
         if (mouseDown) {
             if (mouseOver) {
                 this.dragged = true;
             }
-
             if (this.dragged) {
                 final int x = this.x + mouseDeltaX,
                         y = this.y + mouseDeltaY;
                 if (x + this.width < scaledWidth && y + this.height < scaledHeight && x > 0 && y > 0) {
                     this.x = x;
                     this.y = y;
-                    calculateAlignment();
+                    this.calculateAlignment();
                     this.shouldSave = true;
                 }
             }
         } else {
             this.dragged = false;
         }
-
         final int borderPosX = this.x - 2;
         final int borderPosY = this.y - 2;
         final int borderSizeX = this.width + 4;
         final int borderSizeY = this.height + 3;
-        final boolean show = mouseOver || this.dragged;
-
+        final boolean show = mouseOver || this.dragged || isDraggedElement;
         if (show) {
             context.drawHorizontalLine(0, (int) scaledWidth, borderPosY, Color.CYAN.getRGB());
             context.drawHorizontalLine(0, (int) scaledWidth, borderPosY + borderSizeY - 1, Color.CYAN.getRGB());
             context.drawVerticalLine(borderPosX, 0, (int) scaledHeight, Color.CYAN.getRGB());
             context.drawVerticalLine(borderPosX + borderSizeX - 1, 0, (int) scaledHeight, Color.CYAN.getRGB());
         }
-
         context.drawBorder(
                 borderPosX,
                 borderPosY,
@@ -167,9 +209,9 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
                 borderSizeY,
                 show ? Color.red.getRGB() : Color.WHITE.getRGB()
         );
-
         this.onRender(context, delta);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        return mouseOver;
     }
 
     public boolean isActive() {
