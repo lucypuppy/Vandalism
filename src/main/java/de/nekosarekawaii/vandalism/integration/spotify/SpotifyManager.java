@@ -50,7 +50,7 @@ public class SpotifyManager {
 
     private static final int REDIRECT_PORT = 30562;
     private static final String REDIRECT_PATH = "/spotify/";
-    private static final String REDIRECT_URI = "http://127.0.0.1:" + REDIRECT_PORT + REDIRECT_PATH;
+    public static final String REDIRECT_URI = "http://127.0.0.1:" + REDIRECT_PORT + REDIRECT_PATH;
 
     private String clientId = "";
     private String clientSecret = "";
