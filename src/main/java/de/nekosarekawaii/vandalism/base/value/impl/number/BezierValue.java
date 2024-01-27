@@ -98,6 +98,8 @@ public class BezierValue extends Value<Float> implements ValueParent {
         for (final Value<?> value : this.getValues()) {
             value.load(valueNode);
         }
+
+        this.updateCurve();
     }
 
     @Override
