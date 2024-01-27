@@ -23,7 +23,6 @@ import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener
 import de.nekosarekawaii.vandalism.base.event.normal.player.RaytraceListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.RotationListener;
 import de.nekosarekawaii.vandalism.base.event.normal.render.Render2DListener;
-import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
@@ -56,7 +55,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             "Settings for the target selection."
     );
 
-    private final Value<Double> range = new DoubleValue(
+    private final DoubleValue range = new DoubleValue(
             this.targetSelectionGroup,
             "Range",
             "The range extension for the aim.",
@@ -65,7 +64,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             6.0
     );
 
-    private final Value<Double> preAimRangeExtension = new DoubleValue(
+    private final DoubleValue preAimRangeExtension = new DoubleValue(
             this.targetSelectionGroup,
             "Pre Aim Range Extension",
             "The range extension for the aim.",
@@ -80,14 +79,14 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             "Settings for the reach exploit."
     );
 
-    private final Value<Boolean> firstHitExtender = new BooleanValue(
+    private final BooleanValue firstHitExtender = new BooleanValue(
             this.reachExploitGroup,
             "First Hit Extender",
             "Whether the first hit extender should be used.",
             false
     );
 
-    private final Value<Integer> firstHitExtenderOffTime = new IntegerValue(
+    private final IntegerValue firstHitExtenderOffTime = new IntegerValue(
             this.reachExploitGroup,
             "First Hit Extender Off Time",
             "The time in milliseconds after the first hit extender should be disabled.",
@@ -96,7 +95,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             5000
     ).visibleCondition(this.firstHitExtender::getValue);
 
-    private final Value<Double> firstHitRangeExtender = new DoubleValue(
+    private final DoubleValue firstHitRangeExtender = new DoubleValue(
             this.reachExploitGroup,
             "First Hit Range Extender",
             "The range extender for the first hit extender.",
@@ -105,7 +104,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             2.0
     ).visibleCondition(this.firstHitExtender::getValue);
 
-    private final Value<Boolean> switchTarget = new BooleanValue(
+    private final BooleanValue switchTarget = new BooleanValue(
             this.targetSelectionGroup,
             "Switch Target",
             "Whether the target should be switched.",
@@ -126,7 +125,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             "Settings for the rotations."
     );
 
-    private final Value<Float> rotateSpeed = new FloatValue(
+    private final FloatValue rotateSpeed = new FloatValue(
             this.rotationGroup,
             "Rotate Speed",
             "The speed of the rotation.",
@@ -135,14 +134,14 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             180.0f
     );
 
-    private final Value<Boolean> correlation = new BooleanValue(
+    private final BooleanValue correlation = new BooleanValue(
             this.rotationGroup,
             "Correlation",
             "Whether the correlation should be used.",
             true
     );
 
-    private final Value<Float> correlationStrength = new FloatValue(
+    private final FloatValue correlationStrength = new FloatValue(
             this.rotationGroup,
             "Correlation Strength",
             "The strength of the correlation.",
@@ -151,7 +150,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             1.0f
     ).visibleCondition(this.correlation::getValue);
 
-    private final Value<Integer> aimPoints = new IntegerValue(
+    private final IntegerValue aimPoints = new IntegerValue(
             this.rotationGroup,
             "Aim Points",
             "The amount of aim points. (Higher values can cause lag)",
@@ -160,7 +159,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             100
     );
 
-    private final Value<Boolean> movementFix = new BooleanValue(
+    private final BooleanValue movementFix = new BooleanValue(
             this.rotationGroup,
             "Movement Fix",
             "Whether the movement fix should be used.",
@@ -174,7 +173,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     private boolean isLooking = false;
 
     private long lastPossibleHit = -1;
-    private final Value<ClickType> clickType = new EnumModeValue<>(
+    private final EnumModeValue<ClickType> clickType = new EnumModeValue<>(
             this.clicking,
             "Click Type",
             "The type of clicking.",

@@ -16,25 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.impl.render;
+package de.nekosarekawaii.vandalism.base.value.impl.misc;
 
-import de.florianmichael.rclasses.common.ColorUtils;
-import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.base.value.ValueParent;
+import de.nekosarekawaii.vandalism.base.value.template.ValueNoOpConfig;
+import imgui.ImGui;
 
-import java.awt.*;
+import java.util.function.Consumer;
 
-public class ESPModule extends AbstractModule {
+public class ButtonValue extends ValueNoOpConfig<Consumer<ButtonValue>> {
 
-    public final ColorValue outlineColor = new ColorValue(
-            this,
-            "Color",
-            "The color of the outline.",
-            ColorUtils.withAlpha(Color.WHITE, 200)
-    );
+    public ButtonValue(ValueParent parent, String name, String description, Consumer<ButtonValue> defaultValue) {
+        super(parent, name, description, defaultValue);
+    }
 
-    public ESPModule() {
-        super("ESP", "Lets you see blocks or entities trough blocks.", Category.RENDER);
+    @Override
+    public void render() {
+        if (ImGui.button(this.getName() + "##" + this.getName() + this.getParent().getName())) {
+            this.getValue().accept(this);
+        }
+        ImGui.spacing();
     }
 
 }

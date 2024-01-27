@@ -56,7 +56,7 @@ public abstract class ModuleMulti<T extends AbstractModule> implements ValuePare
 
     @Override
     public List<Value<?>> getValues() {
-        return values;
+        return this.values;
     }
 
 }

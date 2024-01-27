@@ -71,7 +71,7 @@ public abstract class AbstractTokenBasedAccount extends AbstractAccount {
 
             @Override
             public void displayFactory() {
-                ImGui.inputText("Token", this.token, ImGuiInputTextFlags.CallbackResize);
+                ImGui.inputText("Token", this.token, ImGuiInputTextFlags.CallbackResize | ImGuiInputTextFlags.Password);
             }
 
             @Override

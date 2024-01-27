@@ -33,6 +33,7 @@ import de.nekosarekawaii.vandalism.feature.script.ScriptManager;
 import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationListener;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerListManager;
+import de.nekosarekawaii.vandalism.integration.spotify.SpotifyManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -45,6 +46,7 @@ import java.io.File;
  *  - Remove duplicated code by creating a new template for modules which uses packets or something like that
  *  - Add Access Violation crash item to CrashItemCreativeTab
  *  - Add 1.20.2 / maybe 1.20.3 instant crash crash item to CrashItemCreativeTab
+ *  - Add Server Instant Crash Sign to CrashItemCreativeTab
  *  - Fix item display names in the creative tabs
  *  - Change behavior of the echolocation module to use it as a chunk load detector
  *  - Change trash talk module to a chat reaction module
@@ -105,6 +107,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     private RotationListener rotationListener;
     private ServerListManager serverListManager;
     private HUDManager hudManager;
+    private SpotifyManager spotifyManager;
 
     //Features
     private ModuleManager moduleManager;
@@ -164,6 +167,8 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
         this.hudManager = new HUDManager(this.configManager, this.clientMenuManager);
         this.hudManager.init();
+
+        this.spotifyManager = new SpotifyManager(this.configManager, this.hudManager);
 
         //Features
         this.moduleManager = new ModuleManager(this.eventSystem, this.configManager, this.clientMenuManager);
@@ -259,6 +264,10 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
     public HUDManager getHudManager() {
         return hudManager;
+    }
+
+    public SpotifyManager getSpotifyManager() {
+        return spotifyManager;
     }
 
 }

@@ -21,7 +21,6 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.cancellable.player.EntityPushListener;
 import de.nekosarekawaii.vandalism.base.event.cancellable.player.FluidPushListener;
-import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
@@ -38,7 +37,7 @@ public class PushVelocityModule extends AbstractModule implements EntityPushList
             true
     );
 
-    private final Value<Double> entityPushMultiplier = new DoubleValue(
+    private final DoubleValue entityPushMultiplier = new DoubleValue(
             this,
             "Entity Push Multiplier",
             "Which multiplier of velocity should a entity push apply to you.",
@@ -54,7 +53,7 @@ public class PushVelocityModule extends AbstractModule implements EntityPushList
             true
     );
 
-    private final Value<Double> fluidPushSpeed = new DoubleValue(
+    private final DoubleValue fluidPushSpeed = new DoubleValue(
             this,
             "Fluid Push Value",
             "Which value of speed should a fluid push apply to you.",

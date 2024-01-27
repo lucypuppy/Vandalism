@@ -22,6 +22,7 @@ import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.base.event.cancellable.render.ScreenListener;
+import de.nekosarekawaii.vandalism.base.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.base.event.normal.render.Render2DListener;
 import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.integration.hud.config.HUDConfig;
@@ -32,7 +33,7 @@ import de.nekosarekawaii.vandalism.integration.hud.impl.WatermarkHUDElement;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 
-public class HUDManager extends Storage<HUDElement> implements Render2DListener, ScreenListener, MinecraftWrapper {
+public class HUDManager extends Storage<HUDElement> implements Render2DListener, ScreenListener, KeyboardInputListener, MinecraftWrapper {
 
     public WatermarkHUDElement watermarkHUDElement;
     public ModuleListHUDElement moduleListHUDElement;
@@ -41,7 +42,7 @@ public class HUDManager extends Storage<HUDElement> implements Render2DListener,
     public HUDManager(final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
         Vandalism.getInstance().getEventSystem().subscribe(Render2DEvent.ID, this);
         Vandalism.getInstance().getEventSystem().subscribe(ScreenEvent.ID, this);
-
+        Vandalism.getInstance().getEventSystem().subscribe(KeyboardInputEvent.ID, this);
         configManager.add(new HUDConfig(this));
         clientMenuManager.add(new HUDClientMenuWindow(this));
     }
@@ -50,8 +51,8 @@ public class HUDManager extends Storage<HUDElement> implements Render2DListener,
     public void init() {
         this.add(
                 this.watermarkHUDElement = new WatermarkHUDElement(),
-                this.moduleListHUDElement = new ModuleListHUDElement(),
-                this.infoHUDElement = new InfoHUDElement()
+                this.infoHUDElement = new InfoHUDElement(),
+                this.moduleListHUDElement = new ModuleListHUDElement()
         );
     }
 
@@ -72,4 +73,12 @@ public class HUDManager extends Storage<HUDElement> implements Render2DListener,
             hudElement.calculatePosition();
         }
     }
+
+    @Override
+    public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
+        for (final HUDElement hudElement : this.getList()) {
+            hudElement.onKeyInput(window, key, scanCode, action, modifiers);
+        }
+    }
+
 }

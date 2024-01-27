@@ -33,7 +33,7 @@ public class WatermarkHUDElement extends HUDElement {
     private final ColorValue color = new ColorValue(
             this,
             "Color",
-            "Define the color of the water mark",
+            "The color of the watermark.",
             Color.WHITE
     );
 
@@ -41,7 +41,7 @@ public class WatermarkHUDElement extends HUDElement {
         super(
                 "Watermark",
                 2,
-                2
+                4
         );
     }
 
