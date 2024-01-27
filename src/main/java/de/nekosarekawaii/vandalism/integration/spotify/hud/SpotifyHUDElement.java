@@ -149,7 +149,7 @@ public class SpotifyHUDElement extends HUDElement {
                         pauseRectY1,
                         pauseRectX2,
                         pauseRectY2,
-                        ColorUtils.toSRGB(0, 0, 0, 0.5f)
+                        ColorUtils.toSRGB(0, 0, 0, 0.6f)
                 );
                 final float alpha = System.currentTimeMillis() % 1000 < 500 ? 0.7f : 0f;
                 context.fill(
@@ -157,14 +157,14 @@ public class SpotifyHUDElement extends HUDElement {
                         pauseRectY1 + 6,
                         pauseRectX2 - 15,
                         pauseRectY2 - 6,
-                        ColorUtils.toSRGB(0, 0, 0, alpha)
+                        ColorUtils.toSRGB(1f, 1f, 1f, alpha)
                 );
                 context.fill(
                         pauseRectX1 + 15,
                         pauseRectY1 + 6,
                         pauseRectX2 - 8,
                         pauseRectY2 - 6,
-                        ColorUtils.toSRGB(0, 0, 0, alpha)
+                        ColorUtils.toSRGB(1f, 1f, 1f, alpha)
                 );
             }
             final int progressBarY = this.y + (fontHeight * infoMap.size()) + heightAddition - 10;
@@ -172,10 +172,16 @@ public class SpotifyHUDElement extends HUDElement {
             final int progressBarStartX = this.x + progressBarOffset;
             final int endWidth = this.width - (progressBarOffset * 2);
             final int progressBarEndX = progressBarStartX + endWidth;
-            int progressBarCurrentProgress = (int) (progressBarStartX + (endWidth * ((paused ? 1 : currentProgress) / (double) spotifyTrack.getDuration())));
+            int progressBarCurrentProgress =  (int) (progressBarStartX + (endWidth * (Math.max(1, currentProgress) / (double) spotifyTrack.getDuration())));
             if (progressBarCurrentProgress > progressBarEndX) {
                 progressBarCurrentProgress = progressBarEndX;
             }
+            context.drawHorizontalLine(
+                    progressBarStartX,
+                    progressBarEndX - 1,
+                    progressBarY,
+                    Color.GRAY.getRGB()
+            );
             context.drawHorizontalLine(
                     progressBarStartX,
                     progressBarCurrentProgress,
