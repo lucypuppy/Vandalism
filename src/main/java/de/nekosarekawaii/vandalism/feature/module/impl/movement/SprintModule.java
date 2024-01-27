@@ -18,29 +18,50 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
+import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 
 public class SprintModule extends AbstractModule implements PlayerUpdateListener {
+
+    private final BooleanValue legit = new BooleanValue(
+            this,
+            "Legit",
+            "Only sprints if its allowed.",
+            true
+    );
 
     public SprintModule() {
         super("Sprint", "Automatically let's you sprint!", Category.MOVEMENT);
     }
 
     @Override
-    public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);
+    public void onActivate() { // Low Priority so other modules can easly override this.
+        Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this, Priorities.LOW);
     }
 
     @Override
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
+        this.mc.player.setSprinting(mc.options.sprintKey.isPressed());
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        this.mc.player.setSprinting(true);
+        mc.options.sprintKey.setPressed(true);
+
+        if (legit.getValue()) {
+            return;
+        }
+
+        if (!mc.player.horizontalCollision
+                && !mc.player.isSneaking()
+                && !mc.player.isSprinting()
+                && (Math.abs(mc.player.input.movementForward) >= 0.8F || Math.abs(mc.player.sidewaysSpeed) >= 0.8F)) {
+            this.mc.player.setSprinting(true);
+        }
     }
 
 }
