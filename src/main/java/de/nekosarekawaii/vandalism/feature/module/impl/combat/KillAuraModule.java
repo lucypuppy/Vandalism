@@ -117,12 +117,22 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             "Settings for the clicking."
     );
 
+    private final EnumModeValue<ClickType> clickType = new EnumModeValue<>(
+            this.clicking,
+            "Click Type",
+            "The type of clicking.",
+            ClickType.BoxMueller,
+            ClickType.values()
+    ).onValueChange((oldValue, newValue) -> {
+        oldValue.getClicker().setClickAction(aBoolean -> {});
+        this.updateClicker(newValue.getClicker());
+    });
+
     private final ValueGroup rotationGroup = new ValueGroup(
             this,
             "Rotation",
             "Settings for the rotations."
     );
-    private final AutoBlockModule autoBlock;
 
     private final FloatValue rotateSpeed = new FloatValue(
             this.rotationGroup,
@@ -165,6 +175,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             true
     );
 
+
     private LivingEntity target;
     private int targetIndex = 0;
 
@@ -172,16 +183,9 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     private boolean isLooking = false;
 
     private long lastPossibleHit = -1;
-    private final EnumModeValue<ClickType> clickType = new EnumModeValue<>(
-            this.clicking,
-            "Click Type",
-            "The type of clicking.",
-            ClickType.BoxMueller,
-            ClickType.values()
-    ).onValueChange((oldValue, newValue) -> {
-        oldValue.getClicker().setClickAction(aBoolean -> {});
-        updateClicker(newValue.getClicker());
-    });
+
+    private final AutoBlockModule autoBlock;
+
     private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
 
     public KillAuraModule(final AutoBlockModule autoBlock) {
@@ -190,11 +194,9 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 "Automatically attacks nearby enemies.",
                 Category.COMBAT
         );
-
         this.autoBlock = autoBlock;
         this.rotationListener = Vandalism.getInstance().getRotationListener();
-
-        updateClicker(this.clickType.getValue().getClicker());
+        this.updateClicker(this.clickType.getValue().getClicker());
     }
 
     @Override
@@ -268,7 +270,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     }
 
     @Override
-    public void onRaytrace(RaytraceEvent event) {
+    public void onRaytrace(final RaytraceEvent event) {
         if (this.target != null && this.rotationListener.getRotation() != null) {
             event.range = Math.pow(getRange() - 0.05, 2);
         }
