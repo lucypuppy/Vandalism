@@ -138,40 +138,40 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             "Settings for the rotations."
     );
 
-    private final ValueGroup rotationSmoothingGroup = new ValueGroup(
+    private final ValueGroup rotationSpeedGroup = new ValueGroup(
             this.rotationGroup,
-            "Smoothing",
-            "Settings for the Smoothing."
+            "Rotation Speed Generation",
+            "Settings for the rotation speed generation."
     );
 
-    private final EnumModeValue<SmoothingType> smoothingType = new EnumModeValue<>(
-            this.rotationSmoothingGroup,
-            "Smoothing Type",
-            "The type of smoothing.",
+    private final EnumModeValue<SmoothingType> rotationSpeedType = new EnumModeValue<>(
+            this.rotationSpeedGroup,
+            "Roation Speed Type",
+            "The type of the rotation speed.",
             SmoothingType.Bezier,
             SmoothingType.values()
     );
 
     private final FloatValue rotateSpeed = new FloatValue(
-            this.rotationSmoothingGroup,
+            this.rotationSpeedGroup,
             "Rotate Speed",
             "The speed of the rotation.",
             60.0f,
             1.0f,
             180.0f
-    ).visibleCondition(() -> this.smoothingType.getValue() == SmoothingType.Distribution);
+    ).visibleCondition(() -> this.rotationSpeedType.getValue() == SmoothingType.Normal);
 
     private final BezierValue bezierValue = new BezierValue(
-            this.rotationSmoothingGroup,
+            this.rotationSpeedGroup,
             "Bezier",
-            "The bezier curve for the rotation.",
+            "The bezier curve for the rotation Speed.",
             40.0f,
             20.0f,
             90.0f,
             50.0f,
             1.0f,
             180.0f
-    ).visibleCondition(() -> this.smoothingType.getValue() == SmoothingType.Bezier);
+    ).visibleCondition(() -> this.rotationSpeedType.getValue() == SmoothingType.Bezier);
 
     private final FloatValue correlationStrength = new FloatValue(
             this.rotationGroup,
@@ -281,7 +281,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
             float rotateSpeed = 0.0f;
 
-            if (this.smoothingType.getValue() == SmoothingType.Bezier) {
+            if (this.rotationSpeedType.getValue() == SmoothingType.Bezier) {
                 float rotationPercentage;
 
                 if (rotationListener.getRotation() == null) {
@@ -292,7 +292,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 }
 
                 rotateSpeed = this.bezierValue.getValue(rotationPercentage);
-            } else if (this.smoothingType.getValue() == SmoothingType.Distribution) {
+            } else if (this.rotationSpeedType.getValue() == SmoothingType.Normal) {
                 rotateSpeed = (float) (this.rotateSpeed.getValue() + Math.random() * 5.0f);
             }
 
@@ -372,7 +372,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     public enum SmoothingType implements IName {
 
         Bezier,
-        Distribution,
+        Normal,
         None;
 
         private final String name;
