@@ -20,12 +20,14 @@ package de.nekosarekawaii.vandalism.integration.spotify.gui;
 
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.integration.spotify.SpotifyManager;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
 import imgui.type.ImString;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.util.Util;
 
 public class SpotifyClientMenuWindow extends ClientMenuWindow {
 
@@ -61,6 +63,12 @@ public class SpotifyClientMenuWindow extends ClientMenuWindow {
                 }
                 ImGui.sameLine();
                 ImGui.checkbox("Show Client Secret", this.showClientSecret);
+                if (ImUtils.subButton("Open Spotify Developer Dashboard")) {
+                    Util.getOperatingSystem().open("https://developer.spotify.com/dashboard/create/");
+                }
+                if (ImUtils.subButton("Copy redirect URI")) {
+                    this.mc.keyboard.setClipboard(SpotifyManager.REDIRECT_URI);
+                }
                 ImGui.endMenu();
             }
             if (this.spotifyManager.isLoggedIn()) {
