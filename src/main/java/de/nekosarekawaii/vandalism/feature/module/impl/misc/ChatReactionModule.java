@@ -33,16 +33,16 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class TrashTalkModule extends AbstractModule implements ChatReceiveListener {
+public class ChatReactionModule extends AbstractModule implements ChatReceiveListener {
 
     private final Map<String[], String[]> contentMap = new HashMap<>();
 
-    private final File contentFile = new File(Vandalism.getInstance().getRunDirectory(), "trash_talk.txt");
+    private final File contentFile = new File(Vandalism.getInstance().getRunDirectory(), "chat_reaction.txt");
 
-    public TrashTalkModule() {
+    public ChatReactionModule() {
         super(
-                "Trash Talk",
-                "If activated the client will react to certain words in the chat and will answer with a funny message.",
+                "Chat Reaction",
+                "If activated the client will react to certain words in the chat and will answer with a certain message.",
                 Category.MISC
         );
     }
@@ -64,10 +64,10 @@ public class TrashTalkModule extends AbstractModule implements ChatReceiveListen
             try {
                 final PrintWriter printWriter = new PrintWriter(this.contentFile);
                 printWriter.println("'%mod_name%', 'best client' > '%mod_name% is the best client!', 'I love %mod_name%!'");
-                printWriter.println("'cool', 'nice', 'awesome' > '%target% you are cringe'");
+                printWriter.println("'cool', 'nice', 'awesome' > '%target% nice', '%target% cool', '%target% awesome'");
                 printWriter.close();
             } catch (Exception e) {
-                Vandalism.getInstance().getLogger().error("Failed to create trash talk file!", e);
+                Vandalism.getInstance().getLogger().error("Failed to create chat reaction file!", e);
             }
         }
         if (this.contentMap.isEmpty()) {
@@ -94,7 +94,7 @@ public class TrashTalkModule extends AbstractModule implements ChatReceiveListen
                 }
                 scanner.close();
             } catch (Exception e) {
-                Vandalism.getInstance().getLogger().error("Failed to load trash talk file!", e);
+                Vandalism.getInstance().getLogger().error("Failed to load chat reaction file!", e);
             }
         }
     }
@@ -118,13 +118,20 @@ public class TrashTalkModule extends AbstractModule implements ChatReceiveListen
                 break;
             }
         }
+        final String target = targetName.get();
+        if (target.equals("%target%")) {
+            return;
+        }
         this.setup();
         this.contentMap.forEach((words, answers) -> {
             for (final String word : words) {
                 if (StringUtils.contains(ScriptVariable.applyReplacements(message), word)) {
-                    this.mc.getNetworkHandler().sendChatMessage(ScriptVariable.applyReplacements(
-                                    answers.length == 1 ? answers[0] : answers[RandomUtils.randomInt(0, answers.length)])
-                            .replace("%target%", targetName.get()));
+                    String answer = answers.length == 1 ? answers[0] : answers[RandomUtils.randomInt(0, answers.length)];
+                    answer = ScriptVariable.applyReplacements(answer);
+                    if (answer.contains("%target%")) {
+                        answer = answer.replace("%target%", target);
+                    }
+                    this.mc.getNetworkHandler().sendChatMessage(answer);
                     break;
                 }
             }

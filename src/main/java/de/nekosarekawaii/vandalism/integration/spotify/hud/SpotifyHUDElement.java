@@ -68,8 +68,8 @@ public class SpotifyHUDElement extends HUDElement {
             this,
             "Text Wrap Width",
             "The width in which the text should get wrapped.",
-            300,
-            300,
+            320,
+            320,
             600
     );
 
@@ -118,7 +118,7 @@ public class SpotifyHUDElement extends HUDElement {
     private final MSTimer updateTimer = new MSTimer();
 
     public SpotifyHUDElement() {
-        super("Spotify", 180, 4, false);
+        super("Spotify", 166, 4, false);
     }
 
     @Override

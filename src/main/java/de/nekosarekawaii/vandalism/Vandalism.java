@@ -49,7 +49,6 @@ import java.io.File;
  *  - Add Server Instant Crash Sign to CrashItemCreativeTab
  *  - Fix item display names in the creative tabs
  *  - Change behavior of the echolocation module to use it as a chunk load detector
- *  - Change trash talk module to a chat reaction module
  *  - Fix spaces in the text rendering when using the "deutsch macher" module
  *  - Protector Module:
  *      - Add protection for custom rank prefixes

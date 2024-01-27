@@ -31,7 +31,10 @@ import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.gui.ModulesClientMenuWindow;
 import de.nekosarekawaii.vandalism.feature.module.impl.combat.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.development.TestModule;
-import de.nekosarekawaii.vandalism.feature.module.impl.exploit.*;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.BungeeCordSpooferModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.EcholocationModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.JoinLeaveModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.VehicleOneHitModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.consolespammer.ConsoleSpammerModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.godmode.GodModeModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.servercrasher.ServerCrasherModule;
@@ -120,7 +123,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
                 new ProtectorModule(),
                 new VehicleOneHitModule(),
                 new LongJumpModule(),
-                new TrashTalkModule(),
+                new ChatReactionModule(),
                 new VehicleFlightModule(),
                 new EcholocationModule(),
                 new AutoClickerModule(),
