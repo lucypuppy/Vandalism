@@ -56,6 +56,7 @@ import java.io.File;
  *      - Add protection for coords
  *      - Add protection for ip addresses
  *  - Update libs
+ *  - Fix spotify integration app management
  * <br><br>
  * TODO: Verschlxfene <br>
  *  - Delete MixinParticleManager
