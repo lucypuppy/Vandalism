@@ -23,12 +23,25 @@ import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
+import imgui.flag.ImGuiMouseButton;
+import imgui.type.ImBoolean;
 import imgui.type.ImString;
 
 public class StringValue extends Value<String> {
 
+    private final boolean containsPassword;
+    private final ImBoolean showPassword;
+
     public StringValue(ValueParent parent, String name, String description, String defaultValue) {
         super(parent, name, description, defaultValue);
+        this.containsPassword = false;
+        this.showPassword = new ImBoolean(false);
+    }
+
+    public StringValue(ValueParent parent, String name, String description, String defaultValue, final boolean containsPassword) {
+        super(parent, name, description, defaultValue);
+        this.containsPassword = containsPassword;
+        this.showPassword = new ImBoolean(false);
     }
 
     @Override
@@ -46,9 +59,28 @@ public class StringValue extends Value<String> {
 
     @Override
     public void render() {
+        final String id = "##" + this.getName() + this.getParent().getName();
+        final int flags = ImGuiInputTextFlags.CallbackResize | (!this.showPassword.get() && this.containsPassword ? ImGuiInputTextFlags.Password : 0);
         final ImString input = new ImString(this.getValue());
-        if (ImGui.inputText("##" + this.getName() + this.getParent().getName(), input, ImGuiInputTextFlags.CallbackResize)) {
+        if (ImGui.inputText(id, input, flags)) {
             this.setValue(input.get());
+        }
+        if (ImGui.isItemHovered()) {
+            ImGui.beginTooltip();
+            ImGui.text(this.getDescription());
+            ImGui.endTooltip();
+        }
+        if (ImGui.isItemClicked(ImGuiMouseButton.Middle)) {
+            this.resetValue();
+        }
+        if (this.containsPassword) {
+            ImGui.sameLine();
+            ImGui.checkbox(id + "showPassword", this.showPassword);
+            if (ImGui.isItemHovered()) {
+                ImGui.beginTooltip();
+                ImGui.text("Shows the content of this field.");
+                ImGui.endTooltip();
+            }
         }
     }
 

@@ -20,7 +20,6 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.cancellable.network.IncomingPacketListener;
-import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
@@ -28,7 +27,7 @@ import net.minecraft.util.math.MathHelper;
 
 public class ReverseModuleMode extends ModuleMulti<VelocityModule> implements IncomingPacketListener {
 
-    private final Value<Float> multiplier = new FloatValue(
+    private final FloatValue multiplier = new FloatValue(
             this,
             "Multiplier",
             "The multiplier for the reverse velocity.",

@@ -20,17 +20,16 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.StepListener;
-import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 
 public class StepModule extends AbstractModule implements StepListener {
 
-    private final Value<Float> stepHeight = new FloatValue(
+    private final FloatValue stepHeight = new FloatValue(
             this,
             "Step Height",
             "Allows you to customize the step height.",
-            1.0f,
+            5.0f,
             0.7f,
             10.0f
     );

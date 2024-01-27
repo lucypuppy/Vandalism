@@ -69,8 +69,7 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
     public void reset() {
         this.x = this.defaultX;
         this.y = this.defaultY;
-        calculateAlignment();
-
+        this.calculateAlignment();
         for (final Value<?> value : this.getValues()) {
             value.resetValue();
         }
@@ -79,7 +78,6 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
     public void calculateAlignment() {
         final int scaledWidth = this.mc.getWindow().getScaledWidth();
         final int scaledHeight = this.mc.getWindow().getScaledHeight();
-
         if (scaledWidth * 0.66 < x + width / 2.0) {
             this.alignmentX = Alignment.RIGHT;
         } else if (scaledWidth * 0.33 < x + width / 2.0) {
@@ -103,6 +101,8 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
     }
 
     protected abstract void onRender(final DrawContext context, final float delta);
+
+    public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {}
 
     public void render(
             final boolean mouseDown,

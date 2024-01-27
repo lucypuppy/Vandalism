@@ -118,7 +118,7 @@ public class SessionAccount extends AbstractAccount {
                 ImGui.inputText("Name", this.name, ImGuiInputTextFlags.CallbackResize);
                 ImGui.inputText("UUID", this.uuid, ImGuiInputTextFlags.CallbackResize);
                 final String name = this.name.get();
-                ImGui.inputText("Access Token", this.accessToken, ImGuiInputTextFlags.CallbackResize);
+                ImGui.inputText("Access Token", this.accessToken, ImGuiInputTextFlags.CallbackResize | ImGuiInputTextFlags.Password);
                 ImGui.inputText("XUID", this.xuid, ImGuiInputTextFlags.CallbackResize);
                 ImGui.inputText("Client ID", this.clientId, ImGuiInputTextFlags.CallbackResize);
                 if (!name.isEmpty()) {

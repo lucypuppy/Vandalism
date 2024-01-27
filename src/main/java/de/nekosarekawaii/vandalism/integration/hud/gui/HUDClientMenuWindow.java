@@ -25,6 +25,7 @@ import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
 import imgui.ImGui;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
+import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 
@@ -42,7 +43,7 @@ public class HUDClientMenuWindow extends ClientMenuWindow {
 
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        ImGui.begin("HUD Config##hudconfig");
+        ImGui.begin("HUD Config##hudconfigwindow");
         if (ImGui.button("Close HUD Config##closehudconfig")) {
             this.setActive(false);
         }
@@ -62,10 +63,9 @@ public class HUDClientMenuWindow extends ClientMenuWindow {
                         Vandalism.getInstance().getConfigManager().save();
                     }
                     ImGui.spacing();
-                    if (ImGui.beginChild("##values" + hudElement.getName())) {
-                        hudElement.renderValues();
-                        ImGui.endChild();
-                    }
+                    ImGui.beginChild("##values" + hudElement.getName());
+                    hudElement.renderValues();
+                    ImGui.endChild();
                     ImGui.endTabItem();
                 }
             }
@@ -114,6 +114,14 @@ public class HUDClientMenuWindow extends ClientMenuWindow {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean keyPressed(final int key, final int scanCode, final int modifiers, final boolean release) {
+        for (final HUDElement hudElement : this.hudManager.getList()) {
+            hudElement.onKeyInput(this.mc.getWindow().getHandle(), key, scanCode, release ? GLFW.GLFW_RELEASE : GLFW.GLFW_PRESS, modifiers);
+        }
+        return super.keyPressed(key, scanCode, modifiers, release);
     }
 
 }

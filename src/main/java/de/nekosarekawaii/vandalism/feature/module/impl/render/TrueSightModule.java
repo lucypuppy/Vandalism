@@ -19,10 +19,8 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
 import de.florianmichael.rclasses.common.ColorUtils;
-import de.florianmichael.rclasses.common.model.HSBColor;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.render.LivingEntityRenderBottomLayerListener;
-import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
@@ -62,7 +60,7 @@ public class TrueSightModule extends AbstractModule implements LivingEntityRende
             true
     ).visibleCondition(this.entities::getValue);
 
-    private final Value<HSBColor> entityColor = new ColorValue(
+    private final ColorValue entityColor = new ColorValue(
             this,
             "Entity Color",
             "The color of invisible entities.",

@@ -20,7 +20,6 @@ package de.nekosarekawaii.vandalism.integration.hud.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.internal.ModuleToggleListener;
-import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
@@ -35,7 +34,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ModuleListHUDElement extends HUDElement implements ModuleToggleListener {
 
     private final List<String> activatedModules = new CopyOnWriteArrayList<>();
-
     private final List<String> externalModules = new CopyOnWriteArrayList<>();
 
     private boolean sort;
@@ -54,7 +52,7 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
             true
     );
 
-    private final Value<Integer> heightOffset = new IntegerValue(
+    private final IntegerValue heightOffset = new IntegerValue(
             this,
             "Height Offset",
             "The height offset of the text.",
@@ -70,7 +68,7 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
             false
     );
 
-    private final Value<Integer> widthOffset = new IntegerValue(
+    private final IntegerValue widthOffset = new IntegerValue(
             this,
             "Width Offset",
             "The width offset of background.",
@@ -119,8 +117,7 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
                                 Integer.MIN_VALUE
                         );
                     }
-
-                    drawText(context, activatedModule, (this.x + this.width / 2) - (textWidth / 2), this.y + yOffset + this.heightOffset.getValue());
+                    this.drawText(context, activatedModule, (this.x + this.width / 2) - (textWidth / 2), this.y + yOffset + this.heightOffset.getValue());
                 }
                 case RIGHT -> {
                     if (this.background.getValue()) {
@@ -132,8 +129,7 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
                                 Integer.MIN_VALUE
                         );
                     }
-
-                    drawText(context, activatedModule, (this.x + this.width) - textWidth, this.y + yOffset + this.heightOffset.getValue());
+                    this.drawText(context, activatedModule, (this.x + this.width) - textWidth, this.y + yOffset + this.heightOffset.getValue());
                 }
                 default -> {
                     if (this.background.getValue()) {
@@ -145,15 +141,22 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
                                 Integer.MIN_VALUE
                         );
                     }
-
-                    drawText(context, activatedModule, this.x, this.y + yOffset + this.heightOffset.getValue());
+                    this.drawText(context, activatedModule, this.x, this.y + yOffset + this.heightOffset.getValue());
                 }
             }
-
             this.width = Math.max(this.width, textWidth);
             yOffset += this.mc.textRenderer.fontHeight + this.heightOffset.getValue();
         }
         this.height = yOffset;
+    }
+
+    private void drawText(final DrawContext context, final String text, final int x, final int y) {
+        context.drawText(
+                this.mc.textRenderer,
+                text, x, y,
+                this.color.getColor(-y * 20).getRGB(),
+                this.shadow.getValue()
+        );
     }
 
     @Override
@@ -190,15 +193,6 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
                 return compare;
             });
         }
-    }
-
-    private void drawText(final DrawContext context, final String text, final int x, final int y) {
-        context.drawText(
-                this.mc.textRenderer,
-                text, x, y,
-                this.color.getColor(-y * 20).getRGB(),
-                this.shadow.getValue()
-        );
     }
 
     public void addExternalModule(final String source, final String name) {

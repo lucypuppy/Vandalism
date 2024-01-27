@@ -29,6 +29,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import imgui.ImGui;
 import imgui.flag.ImGuiColorEditFlags;
+import imgui.flag.ImGuiMouseButton;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -38,26 +39,37 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
 
     private final List<Value<?>> values = new ArrayList<>();
 
-    private final EnumModeValue<ColorMode> colorMode = new EnumModeValue<>(this, "Color Mode", "The color mode", ColorMode.STATIC, ColorMode.values());
+    private final EnumModeValue<ColorMode> mode = new EnumModeValue<>(
+            this,
+            "Color Mode",
+            "The mode of the color value.",
+            ColorMode.STATIC,
+            ColorMode.values()
+    );
 
-    private final IntegerValue rainbowSpeed = new IntegerValue(this, "Rainbow Speed", "The speed of the rainbow", 2, 1, 10);
+    private final IntegerValue rainbowSpeed = new IntegerValue(
+            this,
+            "Rainbow Speed",
+            "The speed of the rainbow color mode from the color value.",
+            2,
+            1,
+            10
+    ).visibleCondition(() -> this.mode.getValue() == ColorMode.RAINBOW);
 
-    //These things aren't the client colors these are just the twoColorFade colors and I need in this class
+    private static final Color DEFAULT_MAIN_COLOR_FADE = new Color(74, 0, 224);
+    private static final Color DEFAULT_SECONDARY_COLOR_FADE = new Color(142, 45, 226);
+
     private Color mainColorFade;
     private Color secondaryColorFade;
 
     public ColorValue(ValueParent parent, String name, String description, HSBColor defaultValue) {
         super(parent, name, description, defaultValue);
-        this.resetColor();
+        this.mainColorFade = DEFAULT_MAIN_COLOR_FADE;
+        this.secondaryColorFade = DEFAULT_SECONDARY_COLOR_FADE;
     }
 
     public ColorValue(ValueParent parent, String name, String description, Color defaultValue) {
         this(parent, name, description, new HSBColor(defaultValue));
-    }
-
-    private void resetColor() {
-        this.mainColorFade = new Color(74, 0, 224);
-        this.secondaryColorFade = new Color(142, 45, 226);
     }
 
     @Override
@@ -92,20 +104,24 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
         mainNode.add(getName(), valueNode);
     }
 
-    public HSBColor getValue(int offset) {
-        if (this.colorMode.getValue() == ColorMode.RAINBOW) {
-            double rainbowState = Math.ceil((System.currentTimeMillis() * rainbowSpeed.getValue() + offset) / 20.0);
+    public HSBColor getValue(final int offset) {
+        if (this.mode.getValue() == ColorMode.RAINBOW) {
+            double rainbowState = Math.ceil((System.currentTimeMillis() * this.rainbowSpeed.getValue() + offset) / 20.0);
             rainbowState %= 360.0;
-
             final HSBColor oldValue = super.getValue();
             oldValue.hue = (float) (rainbowState / 360.0);
+            oldValue.saturation = Math.max(oldValue.saturation, 0.2f);
+            oldValue.brightness = Math.max(oldValue.brightness, 0.2f);
             this.setValue(oldValue);
-        } else if (this.colorMode.getValue() == ColorMode.TWO_COLOR_FADE) {
-            final double fade = Math.sin(System.currentTimeMillis() / 600.0d + offset * 0.002d) * 0.5d + 0.5d;
-            this.setValue(ColorUtils.colorInterpolate(mainColorFade, secondaryColorFade, fade));
+        } else if (this.mode.getValue() == ColorMode.TWO_COLOR_FADE) {
+            this.setValue(ColorUtils.colorInterpolate(
+                    this.mainColorFade,
+                    this.secondaryColorFade,
+                    Math.sin(System.currentTimeMillis() / 600.0d + offset * 0.002d) * 0.5d + 0.5d
+            ));
         }
-
-        return super.getValue(); //Do another super.getValue() because the value might have changed
+        //Do another super.getValue() because the value might have changed.
+        return super.getValue();
     }
 
     @Override
@@ -113,7 +129,7 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
         return this.getValue(0);
     }
 
-    public Color getColor(int offset) {
+    public Color getColor(final int offset) {
         return this.getValue(offset).getColor();
     }
 
@@ -121,40 +137,54 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
         return this.getColor(0);
     }
 
-    public void setValue(Color color) {
-        setValue(new HSBColor(color));
+    public void setValue(final Color color) {
+        this.setValue(new HSBColor(color));
     }
 
     @Override
     public void render() {
-        colorMode.render();
-        ImGui.sameLine();
-
         final int textInputFlags = ImGuiColorEditFlags.AlphaBar | ImGuiColorEditFlags.NoInputs;
-        if (this.colorMode.getValue() == ColorMode.TWO_COLOR_FADE) {
-            final float[] mainFadeRgba = ColorUtils.rgba(this.mainColorFade.getRGB());
-            final float[] secondFadeRgba = ColorUtils.rgba(this.secondaryColorFade.getRGB());
-
-            if (ImGui.colorEdit4("##mainFadeRgba" + this.getName() + this.getParent().getName(), mainFadeRgba, textInputFlags)) {
-                this.mainColorFade = new Color(mainFadeRgba[0], mainFadeRgba[1], mainFadeRgba[2], mainFadeRgba[3]);
+        if (this.mode.getValue() != ColorMode.TWO_COLOR_FADE) {
+            final float[] rgba = ColorUtils.rgba(this.getValue().getColor().getRGB());
+            if (ImGui.colorEdit4("##rgba" + this.getName() + this.getParent().getName(), rgba, textInputFlags)) {
+                this.setValue(new Color(rgba[0], rgba[1], rgba[2], Math.max(rgba[3], 0.1f)));
             }
-
-            ImGui.sameLine();
-
-            if (ImGui.colorEdit4("##secondFadeRgba" + this.getName() + this.getParent().getName(), secondFadeRgba, textInputFlags)) {
-                this.secondaryColorFade = new Color(secondFadeRgba[0], secondFadeRgba[1], secondFadeRgba[2], secondFadeRgba[3]);
+            if (ImGui.isItemClicked(ImGuiMouseButton.Middle)) {
+                this.resetValue();
+            }
+            if (ImGui.isItemHovered()) {
+                ImGui.beginTooltip();
+                ImGui.text("The color of the color value.");
+                ImGui.endTooltip();
             }
         } else {
-            final float[] rgba = ColorUtils.rgba(this.getValue().getColor().getRGB());
-
-            if (ImGui.colorEdit4("##rgba" + this.getName() + this.getParent().getName(), rgba, textInputFlags)) {
-                this.setValue(new Color(rgba[0], rgba[1], rgba[2], rgba[3]));
+            final float[] mainFadeRgba = ColorUtils.rgba(this.mainColorFade.getRGB());
+            final float[] secondFadeRgba = ColorUtils.rgba(this.secondaryColorFade.getRGB());
+            if (ImGui.colorEdit4("##mainFadeRgba" + this.getName() + this.getParent().getName(), mainFadeRgba, textInputFlags)) {
+                this.mainColorFade = new Color(mainFadeRgba[0], mainFadeRgba[1], mainFadeRgba[2], Math.max(mainFadeRgba[3], 0.1f));
+            }
+            if (ImGui.isItemClicked(ImGuiMouseButton.Middle)) {
+                this.mainColorFade = DEFAULT_MAIN_COLOR_FADE;
+            }
+            if (ImGui.isItemHovered()) {
+                ImGui.beginTooltip();
+                ImGui.text("The main color of the two color fade mode from the color value.");
+                ImGui.endTooltip();
+            }
+            ImGui.sameLine();
+            if (ImGui.colorEdit4("##secondFadeRgba" + this.getName() + this.getParent().getName(), secondFadeRgba, textInputFlags)) {
+                this.secondaryColorFade = new Color(secondFadeRgba[0], secondFadeRgba[1], secondFadeRgba[2], Math.max(secondFadeRgba[3], 0.1f));
+            }
+            if (ImGui.isItemClicked(ImGuiMouseButton.Middle)) {
+                this.secondaryColorFade = DEFAULT_SECONDARY_COLOR_FADE;
+            }
+            if (ImGui.isItemHovered()) {
+                ImGui.beginTooltip();
+                ImGui.text("The secondary color of the two color fade mode from the color value.");
+                ImGui.endTooltip();
             }
         }
-
-        if (this.colorMode.getValue() == ColorMode.RAINBOW) {
-            rainbowSpeed.render();
-        }
+        this.renderValues();
     }
 
     @Override
@@ -167,8 +197,8 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
         for (final Value<?> value : this.getValues()) {
             value.resetValue();
         }
-
-        resetColor();
+        this.mainColorFade = DEFAULT_MAIN_COLOR_FADE;
+        this.secondaryColorFade = DEFAULT_SECONDARY_COLOR_FADE;
         super.resetValue();
     }
 

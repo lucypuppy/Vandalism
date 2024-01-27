@@ -32,7 +32,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.awt.*;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class InfoHUDElement extends HUDElement {
@@ -142,16 +142,16 @@ public class InfoHUDElement extends HUDElement {
             true
     );
 
+    public final CPSTracker leftClick = new CPSTracker();
+    public final CPSTracker rightClick = new CPSTracker();
+
     public InfoHUDElement() {
         super("Info", 2, 60);
     }
 
-    public final CPSTracker leftClick = new CPSTracker();
-    public final CPSTracker rightClick = new CPSTracker();
-
     @Override
     public void onRender(final DrawContext context, final float delta) {
-        final Map<String, String> infoMap = new HashMap<>();
+        final Map<String, String> infoMap = new LinkedHashMap<>();
         if (this.fps.getValue()) {
             infoMap.put("FPS", Integer.toString(this.mc.getCurrentFps()));
         }

@@ -22,7 +22,6 @@ import de.florianmichael.rclasses.common.RandomUtils;
 import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
@@ -38,7 +37,7 @@ import java.util.stream.Stream;
 
 public class FOVFuckerModule extends AbstractModule implements PlayerUpdateListener {
 
-    private final Value<Float> maxDistance = new FloatValue(
+    private final FloatValue maxDistance = new FloatValue(
             this,
             "Max Distance",
             "The maximum distance to find targets.",
@@ -47,7 +46,7 @@ public class FOVFuckerModule extends AbstractModule implements PlayerUpdateListe
             10f
     );
 
-    private final Value<Double> targetYPosOffset = new DoubleValue(
+    private final DoubleValue targetYPosOffset = new DoubleValue(
             this,
             "Target Y Pos Offset",
             "The offset for the y position you will be teleported to.",
@@ -55,7 +54,7 @@ public class FOVFuckerModule extends AbstractModule implements PlayerUpdateListe
             -5.0,
             5.0
     );
-    private final Value<Double> targetHPosOffset = new DoubleValue(
+    private final DoubleValue targetHPosOffset = new DoubleValue(
             this,
             "Target H Pos Offset",
             "The offset for the horizontal position you will be teleported to.",

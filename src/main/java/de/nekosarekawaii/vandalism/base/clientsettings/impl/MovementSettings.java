@@ -19,7 +19,6 @@
 package de.nekosarekawaii.vandalism.base.clientsettings.impl;
 
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
-import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
@@ -33,7 +32,7 @@ public class MovementSettings extends ValueGroup {
             false
     );
 
-    public final Value<Float> riptideBoostMultiplier = new FloatValue(
+    public final FloatValue riptideBoostMultiplier = new FloatValue(
             this,
             "Riptide Boost Multiplier",
             "Lets you modify the riptide boost multiplier.",

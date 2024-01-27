@@ -49,10 +49,9 @@ public class ClientSettingsClientMenuWindow extends ClientMenuWindow {
                             }
                         }
                         ImGui.separator();
-                        if (ImGui.beginChild(id + "values")) {
-                            valueGroup.renderValues();
-                            ImGui.endChild();
-                        }
+                        ImGui.beginChild(id + "values");
+                        valueGroup.renderValues();
+                        ImGui.endChild();
                         ImGui.endTabItem();
                     }
                 } else {
