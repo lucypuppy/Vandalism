@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.integration.rotation;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.clientsettings.impl.RotationSettings;
 import de.nekosarekawaii.vandalism.base.event.cancellable.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.StrafeListener;
 import de.nekosarekawaii.vandalism.base.event.normal.render.Render2DListener;
@@ -36,7 +37,6 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
 
     private float rotateSpeed;
     private float correlationStrength;
-    private boolean correlation;
     private boolean movementFix;
 
     public RotationListener() {
@@ -60,7 +60,8 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
         this.lastRotation = new Rotation(this.mc.player.lastYaw, this.mc.player.lastPitch);
 
         if (this.targetRotation != null) {
-            this.rotation = this.applyGCDFix(rotationDistribution(this.targetRotation, this.lastRotation), delta);
+            this.rotation = this.applyGCDFix(rotationDistribution(this.targetRotation, this.lastRotation,
+                    this.rotateSpeed, this.correlationStrength), delta);
             return;
         }
 
@@ -78,12 +79,15 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
             return;
         }
 
-        if (!Vandalism.getInstance().getClientSettings().getRotationSettings().rotateBack.getValue()) {
+        final RotationSettings settings = Vandalism.getInstance().getClientSettings().getRotationSettings();
+
+        if (!settings.rotateBack.getValue()) {
             this.rotation = this.applyGCDFix(new Rotation(yaw, pitch), delta);
             return;
         }
 
-        this.rotation = this.applyGCDFix(rotationDistribution(new Rotation(yaw, pitch), this.lastRotation), delta);
+        this.rotation = this.applyGCDFix(rotationDistribution(new Rotation(yaw, pitch), this.lastRotation,
+                settings.rotateSpeed.getValue(), settings.correlationStrength.getValue()), delta);
     }
 
     @Override
@@ -100,14 +104,14 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
         event.yaw = this.rotation.getYaw();
     }
 
-    public void setRotation(final Rotation rotation, final float rotateSpeed, final RotationPriority priority, final boolean movementFix, final boolean correlation, final float correlationStrength) {
+    public void setRotation(final Rotation rotation, final RotationPriority priority, final float rotateSpeed, final float correlationStrength, final boolean movementFix) {
         if (this.currentPriority == null || priority.getPriority() >= this.currentPriority.getPriority()) {
             this.targetRotation = rotation;
-            this.rotateSpeed = rotateSpeed;
             this.currentPriority = priority;
-            this.movementFix = movementFix;
-            this.correlation = correlation;
+
+            this.rotateSpeed = rotateSpeed;
             this.correlationStrength = correlationStrength;
+            this.movementFix = movementFix;
         }
     }
 
@@ -131,8 +135,8 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
     }
 
     // correlation can overaim/underaim, i recomend to set it at around 0.2f
-    public Rotation rotationDistribution(final Rotation rotation, final Rotation lastRotation) {
-        if (this.rotateSpeed > 0) {
+    private Rotation rotationDistribution(final Rotation rotation, final Rotation lastRotation, final float rotateSpeed, final float correlationStrength) {
+        if (rotateSpeed > 0) {
             final float lastYaw = lastRotation.getYaw();
             final float lastPitch = lastRotation.getPitch();
             final float deltaYaw = MathHelper.wrapDegrees(rotation.getYaw() - lastYaw);
@@ -142,8 +146,8 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
             if (distance > 0) {
                 final double distributionYaw = Math.abs(deltaYaw / distance);
                 final double distributionPitch = Math.abs(deltaPitch / distance);
-                final double maxYaw = this.rotateSpeed * distributionYaw;
-                final double maxPitch = this.rotateSpeed * distributionPitch;
+                final double maxYaw = rotateSpeed * distributionYaw;
+                final double maxPitch = rotateSpeed * distributionPitch;
 
                 // Introduce correlation between yaw and pitch
                 final float moveYaw = (float) Math.max(Math.min(deltaYaw, maxYaw), -maxYaw);
@@ -153,9 +157,9 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
                 float correlatedMoveYaw = moveYaw;
                 float correlatedMovePitch = movePitch;
 
-                if (this.correlation) {
-                    correlatedMoveYaw = moveYaw + movePitch * this.correlationStrength;
-                    correlatedMovePitch = movePitch + moveYaw * this.correlationStrength;
+                if (correlationStrength > 0.0f) {
+                    correlatedMoveYaw = moveYaw + movePitch * correlationStrength;
+                    correlatedMovePitch = movePitch + moveYaw * correlationStrength;
                 }
 
                 return new Rotation(lastYaw + correlatedMoveYaw, lastPitch + correlatedMovePitch);
