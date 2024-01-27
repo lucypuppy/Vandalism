@@ -194,7 +194,6 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
         this.autoBlock = autoBlock;
         this.rotationListener = Vandalism.getInstance().getRotationListener();
-        this.markExperimental();
 
         updateClicker(this.clickType.getValue().getClicker());
     }
