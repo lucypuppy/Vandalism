@@ -73,14 +73,14 @@ public class ClientMenuWindow implements IName, MinecraftWrapper {
     }
 
     public Category getCategory() {
-        return category;
+        return this.category;
     }
 
     public enum Category {
 
-        CONFIGURATION,
-        SERVER_UTILS,
-        MISC_UTILS;
+        CONFIG,
+        SERVER,
+        MISC;
 
         private final String name;
 

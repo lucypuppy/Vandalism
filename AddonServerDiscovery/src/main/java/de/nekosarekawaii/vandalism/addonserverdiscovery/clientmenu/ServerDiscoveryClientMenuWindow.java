@@ -43,7 +43,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ServerDiscoveryClientMenuWindow extends ClientMenuWindow {
 
     public ServerDiscoveryClientMenuWindow() {
-        super("Server Discovery", Category.SERVER_UTILS);
+        super("Server Discovery", Category.SERVER);
     }
 
     /* api stuff */

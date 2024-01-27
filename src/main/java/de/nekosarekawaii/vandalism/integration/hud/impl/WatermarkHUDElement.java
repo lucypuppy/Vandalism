@@ -47,7 +47,7 @@ public class WatermarkHUDElement extends HUDElement {
 
     @Override
     public void onRender(final DrawContext context, final float delta) {
-        this.mc.getTextureManager().getTexture(FabricBootstrap.MOD_ICON).setFilter(
+        this.mc.getTextureManager().getTexture(FabricBootstrap.MOD_LOGO).setFilter(
                 true,
                 true
         );
@@ -60,7 +60,7 @@ public class WatermarkHUDElement extends HUDElement {
                 selectedColor.getAlpha() / 255f
         );
         context.drawTexture(
-                FabricBootstrap.MOD_ICON,
+                FabricBootstrap.MOD_LOGO,
                 this.x,
                 this.y,
                 0,

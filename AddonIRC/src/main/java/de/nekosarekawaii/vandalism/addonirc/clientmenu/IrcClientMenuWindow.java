@@ -39,7 +39,7 @@ import re.catgirls.irc.session.UserProfile;
 public class IrcClientMenuWindow extends ClientMenuWindow {
 
     public IrcClientMenuWindow() {
-        super("IRC", Category.CONFIGURATION);
+        super("IRC", Category.CONFIG);
     }
 
     public static final ImString ADDRESS = new ImString(64);

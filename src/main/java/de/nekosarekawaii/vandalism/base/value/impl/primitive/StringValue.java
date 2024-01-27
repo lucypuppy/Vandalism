@@ -78,7 +78,7 @@ public class StringValue extends Value<String> {
             ImGui.checkbox(id + "showPassword", this.showPassword);
             if (ImGui.isItemHovered()) {
                 ImGui.beginTooltip();
-                ImGui.text("Shows the content of this field.");
+                ImGui.text("Shows the content of " + this.getName() + ".");
                 ImGui.endTooltip();
             }
         }

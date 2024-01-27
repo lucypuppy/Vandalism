@@ -143,7 +143,8 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         mc.getWindow().setTitle(String.format("Starting %s...", FabricBootstrap.WINDOW_TITLE));
 
         //Base handlers
-        FabricBootstrap.MOD_ICON = new Identifier(FabricBootstrap.MOD_ID, "textures/logo.png");
+        FabricBootstrap.MOD_LOGO = new Identifier(FabricBootstrap.MOD_ID, "textures/logo.png");
+        FabricBootstrap.MOD_ICON = new Identifier(FabricBootstrap.MOD_ID, "textures/icon/icon_1024x1024.png");
 
         this.runDirectory = new File(this.runDirectory, FabricBootstrap.MOD_ID);
         this.runDirectory.mkdirs();
@@ -165,7 +166,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.hudManager = new HUDManager(this.configManager, this.clientMenuManager);
         this.hudManager.init();
 
-        this.spotifyManager = new SpotifyManager(this.configManager, this.hudManager);
+        this.spotifyManager = new SpotifyManager(this.configManager, this.clientMenuManager, this.hudManager);
 
         //Features
         this.moduleManager = new ModuleManager(this.eventSystem, this.configManager, this.clientMenuManager);

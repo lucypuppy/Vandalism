@@ -63,7 +63,7 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
     private int currentPort, checkedPort;
 
     public PortScannerClientMenuWindow() {
-        super("Port Scanner", Category.SERVER_UTILS);
+        super("Port Scanner", Category.SERVER);
         this.hostname = new ImString(253);
         this.progress = new ImString(200);
         this.state = new ImString(100);

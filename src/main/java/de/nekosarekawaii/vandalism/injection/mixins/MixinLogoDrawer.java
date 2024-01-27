@@ -46,7 +46,7 @@ public abstract class MixinLogoDrawer {
     @Redirect(method = "draw(Lnet/minecraft/client/gui/DrawContext;IFI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIFFIIII)V"))
     private void forceModLogo(final DrawContext instance, final Identifier texture, final int x, final int y, final float u, final float v, final int width, final int height, final int textureWidth, final int textureHeight) {
         if (texture.equals(LOGO_TEXTURE) || texture.equals(MINCERAFT_TEXTURE)) {
-            instance.drawTexture(FabricBootstrap.MOD_ICON, x, y, u, v, width, height, textureWidth, textureHeight);
+            instance.drawTexture(FabricBootstrap.MOD_LOGO, x, y, u, v, width, height, textureWidth, textureHeight);
         } else if (!texture.equals(EDITION_TEXTURE)) {
             instance.drawTexture(texture, x, y, u, v, width, height, textureWidth, textureHeight);
         }

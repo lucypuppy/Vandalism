@@ -70,7 +70,7 @@ public class NameHistoryClientMenuWindow extends ClientMenuWindow {
     private String lastUsername, lastUUID;
 
     public NameHistoryClientMenuWindow() {
-        super("Name History", Category.MISC_UTILS);
+        super("Name History", Category.MISC);
         this.username = new ImString(16);
         this.state = new ImString(200);
         this.resetState();

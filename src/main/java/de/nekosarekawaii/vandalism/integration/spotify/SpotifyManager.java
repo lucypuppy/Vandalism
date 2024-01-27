@@ -25,8 +25,10 @@ import com.google.gson.JsonParser;
 import com.sun.net.httpserver.HttpServer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
+import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
 import de.nekosarekawaii.vandalism.integration.spotify.config.SpotifyConfig;
+import de.nekosarekawaii.vandalism.integration.spotify.gui.SpotifyClientMenuWindow;
 import de.nekosarekawaii.vandalism.integration.spotify.hud.SpotifyHUDElement;
 import net.minecraft.util.Util;
 
@@ -59,9 +61,10 @@ public class SpotifyManager {
 
     private Thread executor = null;
 
-    public SpotifyManager(final ConfigManager configManager, final HUDManager hudManager) {
+    public SpotifyManager(final ConfigManager configManager, final ClientMenuManager clientMenuManager, final HUDManager hudManager) {
         configManager.add(new SpotifyConfig(this));
-        hudManager.add(new SpotifyHUDElement());
+        clientMenuManager.add(new SpotifyClientMenuWindow(this));
+        hudManager.add(new SpotifyHUDElement(this));
     }
 
     public String getClientId() {
@@ -213,7 +216,7 @@ public class SpotifyManager {
                         if (!response.isEmpty()) {
                             final JsonObject responseJson = JsonParser.parseString(response.toString()).getAsJsonObject();
                             if (responseJson.has("currently_playing_type")) {
-                                this.spotifyTrack.setAd(responseJson.get("currently_playing_type").getAsString().equals("ad"));
+                                this.spotifyTrack.setType(responseJson.get("currently_playing_type").getAsString());
                             }
                             if (responseJson.has("item")) {
                                 final JsonObject itemJson = responseJson.getAsJsonObject("item");

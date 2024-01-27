@@ -18,21 +18,18 @@
 
 package de.nekosarekawaii.vandalism.integration.spotify.hud;
 
-import de.florianmichael.rclasses.math.geometry.Alignment;
+import de.florianmichael.rclasses.common.ColorUtils;
 import de.florianmichael.rclasses.math.integration.MSTimer;
-import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
-import de.nekosarekawaii.vandalism.base.value.impl.misc.ButtonValue;
+import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
-import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
-import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
 import de.nekosarekawaii.vandalism.integration.spotify.SpotifyManager;
 import de.nekosarekawaii.vandalism.integration.spotify.SpotifyTrack;
+import de.nekosarekawaii.vandalism.util.render.GLStateTracker;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
 import java.awt.*;
 import java.util.LinkedHashMap;
@@ -50,20 +47,6 @@ public class SpotifyHUDElement extends HUDElement {
             30000
     );
 
-    private final BooleanValue shadow = new BooleanValue(
-            this,
-            "Shadow",
-            "Whether or not the text should have a shadow.",
-            true
-    );
-
-    private final ColorValue color = new ColorValue(
-            this,
-            "Color",
-            "The color of the text.",
-            Color.WHITE
-    );
-
     private final IntegerValue textWrapWidth = new IntegerValue(
             this,
             "Text Wrap Width",
@@ -73,76 +56,35 @@ public class SpotifyHUDElement extends HUDElement {
             600
     );
 
-    private final StringValue clientId = new StringValue(
-            this,
-            "Client ID",
-            "The client id of your Spotify application.",
-            ""
-    ).onValueChange((oldValue, newValue) -> {
-        if (!oldValue.equals(newValue)) {
-            Vandalism.getInstance().getSpotifyManager().logout();
-        }
-    });
-
-    private final StringValue clientSecret = new StringValue(
-            this,
-            "Client Secret",
-            "The client secret of your Spotify application.",
-            "",
-            true
-    ).onValueChange((oldValue, newValue) -> {
-        if (!oldValue.equals(newValue)) {
-            Vandalism.getInstance().getSpotifyManager().logout();
-        }
-    });
-
-    private final ButtonValue spotifyLogin = new ButtonValue(
-            this,
-            "Spotify Login",
-            "Logs you into Spotify.",
-            buttonValue -> Vandalism.getInstance().getSpotifyManager().login()
-    ).visibleCondition(() -> {
-        final boolean hasClientId = !this.clientId.getValue().isEmpty();
-        final boolean hasClientSecret = !this.clientSecret.getValue().isEmpty();
-        final boolean isSpotifyLoggedIn = Vandalism.getInstance().getSpotifyManager().isLoggedIn();
-        return hasClientId && hasClientSecret && !isSpotifyLoggedIn;
-    });
-
-    private final ButtonValue spotifyLogout = new ButtonValue(
-            this,
-            "Spotify Logout",
-            "Logs you out of Spotify.",
-            buttonValue -> Vandalism.getInstance().getSpotifyManager().logout()
-    ).visibleCondition(() -> Vandalism.getInstance().getSpotifyManager().isLoggedIn());
-
     private final MSTimer updateTimer = new MSTimer();
 
-    public SpotifyHUDElement() {
+    private final SpotifyManager spotifyManager;
+
+    public SpotifyHUDElement(final SpotifyManager spotifyManager) {
         super("Spotify", 166, 4, false);
+        this.spotifyManager = spotifyManager;
     }
 
     @Override
     public void onRender(final DrawContext context, final float delta) {
-        Vandalism.getInstance().getSpotifyManager().setClientId(this.clientId.getValue());
-        Vandalism.getInstance().getSpotifyManager().setClientSecret(this.clientSecret.getValue());
+        final MatrixStack matrices = context.getMatrices();
+        final float scale = 0.5f;
+        final int fontHeight = this.mc.textRenderer.fontHeight;
+        final int heightAddition = this.spotifyManager.isLoggedIn() ? fontHeight * 2 : 0;
         final Map<String, String> infoMap = new LinkedHashMap<>();
-        final SpotifyManager spotifyManager = Vandalism.getInstance().getSpotifyManager();
+        final SpotifyManager spotifyManager = this.spotifyManager;
         if (spotifyManager.isLoggedIn()) {
             final SpotifyTrack spotifyTrack = spotifyManager.getCurrentPlaying();
             if (this.updateTimer.hasReached(this.updateInterval.getValue(), true)) {
                 spotifyManager.requestData();
             }
-            final String spotifyTrackType = spotifyTrack.isAd() ? "Ad" : "Track";
             final boolean paused = spotifyTrack.isPaused();
-            infoMap.put("Spotify " + spotifyTrackType + " State", paused ? "Paused" : "Playing");
-            infoMap.put("Spotify " + spotifyTrackType + " Name", spotifyTrack.getName());
-            final StringBuilder artists = new StringBuilder();
-            for (final String artist : spotifyTrack.getArtists()) {
-                artists.append(artist).append(", ");
+            final String type = spotifyTrack.getType();
+            if (type.length() > 1) {
+                infoMap.put("Type", type.substring(0, 1).toUpperCase() + type.substring(1));
             }
-            if (!artists.isEmpty()) {
-                infoMap.put("Spotify " + spotifyTrackType + " Artists", artists.substring(0, artists.length() - 2));
-            }
+            infoMap.put("Name", spotifyTrack.getName());
+            infoMap.put("Artists", String.join(", ", spotifyTrack.getArtists()));
             String max = "00:00";
             if (spotifyTrack.getDuration() > 0) {
                 final int maxSeconds = (int) Math.ceil(spotifyTrack.getDuration() / 1000d);
@@ -153,92 +95,149 @@ public class SpotifyHUDElement extends HUDElement {
             final long time = spotifyTrack.getTime();
             final long progress = spotifyTrack.getProgress();
             long currentProgress;
+            final long currentTime = System.currentTimeMillis();
             if (paused) {
-                currentProgress = progress;
+                currentProgress = spotifyTrack.getLastTime() - (time - progress);
             } else {
-                currentProgress = System.currentTimeMillis() - (time - progress);
+                currentProgress = currentTime - (time - progress);
+                spotifyTrack.setLastTime(currentTime);
             }
             final int currentSeconds = (int) Math.ceil(Math.min(currentProgress, spotifyTrack.getDuration()) / 1000d);
             final int currentMinutes = currentSeconds / 60;
             final int currentSecondsRest = currentSeconds % 60;
             final String current = (currentMinutes < 10 ? "0" : "") + currentMinutes + ":" + (currentSecondsRest < 10 ? "0" : "") + currentSecondsRest;
-            infoMap.put("Spotify " + spotifyTrackType + " Progress", current + " / " + max);
+            context.fill(
+                    this.x,
+                    this.y,
+                    this.x + this.width,
+                    this.y + (fontHeight * infoMap.size()) + heightAddition,
+                    Integer.MIN_VALUE
+            );
+            this.mc.getTextureManager().getTexture(FabricBootstrap.MOD_ICON).setFilter(
+                    true,
+                    true
+            );
+            GLStateTracker.BLEND.save(true);
+            final int textureX = this.x + 2;
+            final int textureY = this.y + 2;
+            final int textureSize = 30;
+            context.drawTexture(
+                    FabricBootstrap.MOD_ICON,
+                    textureX,
+                    textureY,
+                    0,
+                    0,
+                    textureSize,
+                    textureSize,
+                    textureSize,
+                    textureSize
+            );
+            GLStateTracker.BLEND.revert();
+            if (paused) {
+                final int pauseRectX1 = textureX + 2;
+                final int pauseRectX2 = textureX + textureSize - 2;
+                final int pauseRectY1 = textureY + 2;
+                final int pauseRectY2 = textureY + textureSize - 2;
+                context.fill(
+                        pauseRectX1,
+                        pauseRectY1,
+                        pauseRectX2,
+                        pauseRectY2,
+                        ColorUtils.toSRGB(0, 0, 0, 0.5f)
+                );
+                final float alpha = System.currentTimeMillis() % 1000 < 500 ? 0.7f : 0f;
+                context.fill(
+                        pauseRectX1 + 8,
+                        pauseRectY1 + 6,
+                        pauseRectX2 - 15,
+                        pauseRectY2 - 6,
+                        ColorUtils.toSRGB(0, 0, 0, alpha)
+                );
+                context.fill(
+                        pauseRectX1 + 15,
+                        pauseRectY1 + 6,
+                        pauseRectX2 - 8,
+                        pauseRectY2 - 6,
+                        ColorUtils.toSRGB(0, 0, 0, alpha)
+                );
+            }
+            final int progressBarY = this.y + (fontHeight * infoMap.size()) + heightAddition - 10;
+            final int progressBarOffset = 8;
+            final int progressBarStartX = this.x + progressBarOffset;
+            final int endWidth = this.width - (progressBarOffset * 2);
+            final int progressBarEndX = progressBarStartX + endWidth;
+            int progressBarCurrentProgress = (int) (progressBarStartX + (endWidth * (currentProgress / (double) spotifyTrack.getDuration())));
+            if (progressBarCurrentProgress > progressBarEndX) {
+                progressBarCurrentProgress = progressBarEndX;
+            }
+            context.drawHorizontalLine(
+                    progressBarStartX,
+                    progressBarCurrentProgress,
+                    progressBarY,
+                    Color.GREEN.getRGB()
+            );
+            matrices.push();
+            matrices.scale(scale, scale, 1f);
+            context.drawVerticalLine(
+                    (int) (progressBarCurrentProgress / scale) + 1,
+                    (int) (progressBarY / scale) - 4,
+                    (int) ((progressBarY + 4) / scale),
+                    Color.WHITE.getRGB()
+            );
+            context.drawVerticalLine(
+                    (int) (progressBarStartX / scale),
+                    (int) (progressBarY / scale) - 4,
+                    (int) ((progressBarY + 4) / scale),
+                    Color.GRAY.getRGB()
+            );
+            context.drawCenteredTextWithShadow(
+                    this.mc.textRenderer,
+                    current,
+                    (int) (progressBarStartX / scale),
+                    (int) ((progressBarY + 5) / scale),
+                    Color.WHITE.getRGB()
+            );
+            context.drawVerticalLine(
+                    (int) (progressBarEndX / scale),
+                    (int) (progressBarY / scale) - 4,
+                    (int) ((progressBarY + 4) / scale),
+                    Color.GRAY.getRGB()
+            );
+            context.drawCenteredTextWithShadow(
+                    this.mc.textRenderer,
+                    max,
+                    (int) (progressBarEndX / scale),
+                    (int) ((progressBarY + 5) / scale),
+                    Color.WHITE.getRGB()
+            );
+            matrices.pop();
         } else {
             infoMap.put("Spotify", "Not logged in.");
         }
-        int width = 0, height = 0;
-        final int fontHeight = this.mc.textRenderer.fontHeight;
         final int wrapWidth = this.textWrapWidth.getValue();
+        int width = 0, height = 0;
+        final int textOffset = 34;
+        final int textX = (int) ((this.x + textOffset) / scale);
+        final int textY = (int) ((this.y + 4) / scale) + 7;
+        matrices.push();
+        matrices.scale(scale, scale, 1f);
         for (final Map.Entry<String, String> infoEntry : infoMap.entrySet()) {
-            if (this.alignmentX == Alignment.MIDDLE) {
-                final String[] infoParts = new String[]{infoEntry.getKey(), infoEntry.getValue()};
-                for (int i = 0; i < infoParts.length; i++) {
-                    final List<OrderedText> wrappedTexts = this.mc.textRenderer.wrapLines(
-                            Text.literal((i == 0 ? Formatting.UNDERLINE : "") + infoParts[i]),
-                            wrapWidth
-                    );
-                    for (final OrderedText text : wrappedTexts) {
-                        final int textWidth = this.mc.textRenderer.getWidth(text);
-                        this.drawText(
-                                context,
-                                text,
-                                (this.x + this.width / 2) - textWidth / 2,
-                                this.y + height
-                        );
-                        height += fontHeight + 3;
-                        if (textWidth > width) {
-                            width = textWidth;
-                        }
-                    }
-                }
-            } else {
-                switch (this.alignmentX) {
-                    case LEFT -> {
-                        final List<OrderedText> wrappedTexts = this.mc.textRenderer.wrapLines(
-                                Text.literal(infoEntry.getKey() + " » " + infoEntry.getValue()),
-                                wrapWidth
-                        );
-                        for (final OrderedText text : wrappedTexts) {
-                            final int textWidth = this.mc.textRenderer.getWidth(text);
-                            this.drawText(context, text, this.x, this.y + height);
-                            height += fontHeight;
-                            if (textWidth > width) {
-                                width = textWidth;
-                            }
-                        }
-                    }
-                    case RIGHT -> {
-                        final List<OrderedText> wrappedTexts = this.mc.textRenderer.wrapLines(
-                                Text.literal(infoEntry.getValue() + " « " + infoEntry.getKey()),
-                                wrapWidth
-                        );
-                        for (final OrderedText text : wrappedTexts) {
-                            final int textWidth = this.mc.textRenderer.getWidth(text);
-                            this.drawText(context, text, (this.x + this.width) - textWidth, this.y + height);
-                            height += fontHeight;
-                            if (textWidth > width) {
-                                width = textWidth;
-                            }
-                        }
-                    }
-                    default -> {
-                    }
+            final List<OrderedText> wrappedTexts = this.mc.textRenderer.wrapLines(
+                    Text.literal(infoEntry.getKey() + " » " + infoEntry.getValue()),
+                    (int) (wrapWidth / scale)
+            );
+            for (final OrderedText text : wrappedTexts) {
+                final int textWidth = (int) (this.mc.textRenderer.getWidth(text) * scale);
+                context.drawTextWithShadow(this.mc.textRenderer, text, textX, textY + height, -1);
+                height += (int) (fontHeight / scale) - 4;
+                if (textWidth > width) {
+                    width = textWidth;
                 }
             }
         }
-        this.width = width;
-        this.height = height;
-    }
-
-    private void drawText(final DrawContext context, final OrderedText text, final int x, final int y) {
-        context.drawText(
-                this.mc.textRenderer,
-                text,
-                x,
-                y,
-                this.color.getColor(-y * 20).getRGB(),
-                this.shadow.getValue()
-        );
+        matrices.pop();
+        this.width = (int) (width + textOffset + 1 / scale);
+        this.height = (this.spotifyManager.isLoggedIn() ? this.y + (fontHeight * infoMap.size()) + heightAddition - 2 : 0);
     }
 
 }

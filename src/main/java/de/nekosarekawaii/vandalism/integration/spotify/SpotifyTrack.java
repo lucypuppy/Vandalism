@@ -23,30 +23,32 @@ import java.util.List;
 
 public class SpotifyTrack {
 
-    private boolean isAd;
+    private String type;
     private String name;
     private final List<String> artists;
     private long time;
+    private long lastTime;
     private long progress;
     private long duration;
     private boolean paused;
 
     public SpotifyTrack() {
-        this.isAd = false;
+        this.type = "";
         this.name = "";
         this.artists = new ArrayList<>();
         this.time = 0L;
+        this.lastTime = 0L;
         this.duration = 0L;
         this.progress = 0L;
         this.paused = true;
     }
 
-    public boolean isAd() {
-        return this.isAd;
+    public String getType() {
+        return this.type;
     }
 
-    public void setAd(final boolean isAd) {
-        this.isAd = isAd;
+    public void setType(final String type) {
+        this.type = type;
     }
 
     public String getName() {
@@ -67,6 +69,14 @@ public class SpotifyTrack {
 
     public void setTime(final long time) {
         this.time = time;
+    }
+
+    public long getLastTime() {
+        return this.lastTime;
+    }
+
+    public void setLastTime(final long lastTime) {
+        this.lastTime = lastTime;
     }
 
     public long getProgress() {

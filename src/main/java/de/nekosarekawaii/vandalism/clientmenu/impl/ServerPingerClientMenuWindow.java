@@ -68,7 +68,7 @@ public class ServerPingerClientMenuWindow extends ClientMenuWindow {
     private final ServerInfoWidget serverInfoWidget;
 
     public ServerPingerClientMenuWindow() {
-        super("Server Pinger", Category.SERVER_UTILS);
+        super("Server Pinger", Category.SERVER);
         this.hostname = new ImString(253);
         this.port = new ImInt(25565);
         this.queryPort = new ImInt(25565);

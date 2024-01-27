@@ -51,7 +51,7 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
     private boolean closePopup = false;
 
     public ModulesClientMenuWindow() {
-        super("Modules", Category.CONFIGURATION);
+        super("Modules", Category.CONFIG);
     }
 
     @Override
