@@ -164,7 +164,7 @@ public class SpotifyHUDElement extends HUDElement {
             final int progressBarStartX = this.x + progressBarOffset;
             final int endWidth = this.width - (progressBarOffset * 2);
             final int progressBarEndX = progressBarStartX + endWidth;
-            int progressBarCurrentProgress = (int) (progressBarStartX + (endWidth * (currentProgress / (double) spotifyTrack.getDuration())));
+            int progressBarCurrentProgress = (int) (progressBarStartX + (endWidth * ((paused ? 1 : currentProgress) / (double) spotifyTrack.getDuration())));
             if (progressBarCurrentProgress > progressBarEndX) {
                 progressBarCurrentProgress = progressBarEndX;
             }
