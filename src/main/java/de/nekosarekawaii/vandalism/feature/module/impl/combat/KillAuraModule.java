@@ -18,11 +18,14 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
+import de.florianmichael.rclasses.common.StringUtils;
+import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.RaytraceListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.RotationListener;
 import de.nekosarekawaii.vandalism.base.event.normal.render.Render2DListener;
+import de.nekosarekawaii.vandalism.base.value.impl.number.BezierValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
@@ -135,14 +138,40 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             "Settings for the rotations."
     );
 
-    private final FloatValue rotateSpeed = new FloatValue(
+    private final ValueGroup rotationSmoothingGroup = new ValueGroup(
             this.rotationGroup,
+            "Smoothing",
+            "Settings for the Smoothing."
+    );
+
+    private final EnumModeValue<SmoothingType> smoothingType = new EnumModeValue<>(
+            this.rotationSmoothingGroup,
+            "Smoothing Type",
+            "The type of smoothing.",
+            SmoothingType.Bezier,
+            SmoothingType.values()
+    );
+
+    private final FloatValue rotateSpeed = new FloatValue(
+            this.rotationSmoothingGroup,
             "Rotate Speed",
             "The speed of the rotation.",
             60.0f,
-            0.0f,
+            1.0f,
             180.0f
-    );
+    ).visibleCondition(() -> this.smoothingType.getValue() == SmoothingType.Distribution);
+
+    private final BezierValue bezierValue = new BezierValue(
+            this.rotationSmoothingGroup,
+            "Bezier",
+            "The bezier curve for the rotation.",
+            40.0f,
+            20.0f,
+            90.0f,
+            50.0f,
+            1.0f,
+            180.0f
+    ).visibleCondition(() -> this.smoothingType.getValue() == SmoothingType.Bezier);
 
     private final FloatValue correlationStrength = new FloatValue(
             this.rotationGroup,
@@ -249,19 +278,22 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 return;
             }
 
-            final float rotationPercentage;
-
-            if (rotationListener.getRotation() == null) {
-                final Rotation playerRotation = new Rotation(this.mc.player.getYaw(), this.mc.player.getPitch());
-                rotationPercentage = RotationUtil.calculateRotationPercentage(playerRotation, rotation, true);
-            } else {
-                rotationPercentage = RotationUtil.calculateRotationPercentage(rotationListener.getRotation(), rotation, true);
-            }
 
             float rotateSpeed = 0.0f;
-            if (this.rotateSpeed.getValue() > 0.0f) {
+
+            if (this.smoothingType.getValue() == SmoothingType.Bezier) {
+                float rotationPercentage;
+
+                if (rotationListener.getRotation() == null) {
+                    final Rotation playerRotation = new Rotation(this.mc.player.getYaw(), this.mc.player.getPitch());
+                    rotationPercentage = RotationUtil.calculateRotationPercentage(playerRotation, rotation, true);
+                } else {
+                    rotationPercentage = RotationUtil.calculateRotationPercentage(rotationListener.getRotation(), rotation, true);
+                }
+
+                rotateSpeed = this.bezierValue.getValue(rotationPercentage);
+            } else if (this.smoothingType.getValue() == SmoothingType.Distribution) {
                 rotateSpeed = (float) (this.rotateSpeed.getValue() + Math.random() * 5.0f);
-                rotateSpeed *= 1.0f - rotationPercentage;
             }
 
             this.rotationListener.setRotation(rotation, RotationPriority.HIGH, rotateSpeed,
@@ -335,6 +367,25 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 autoBlock.setBlocking(true);
             }
         });
+    }
+
+    public enum SmoothingType implements IName {
+
+        Bezier,
+        Distribution,
+        None;
+
+        private final String name;
+
+        SmoothingType() {
+            this.name = StringUtils.normalizeEnumName(this.name());
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
     }
 
 }
