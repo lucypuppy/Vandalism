@@ -63,10 +63,12 @@ public interface ValueParent extends IName {
                 ImGui.sameLine();
             }
             value.render();
-            if (!(value instanceof ColorValue) && !isButtonValue && !(value instanceof StringValue)) {
+            if (!(value instanceof ColorValue) && !(value instanceof StringValue)) {
                 this.renderValueDescription(value);
-                if (ImGui.isItemClicked(ImGuiMouseButton.Middle)) {
-                    value.resetValue();
+                if (!isButtonValue) {
+                    if (ImGui.isItemClicked(ImGuiMouseButton.Middle)) {
+                        value.resetValue();
+                    }
                 }
             }
         }
