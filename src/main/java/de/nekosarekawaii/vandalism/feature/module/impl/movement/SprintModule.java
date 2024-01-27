@@ -45,7 +45,9 @@ public class SprintModule extends AbstractModule implements PlayerUpdateListener
     @Override
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
-        this.mc.player.setSprinting(mc.options.sprintKey.isPressed());
+
+        if (this.mc.player != null)
+            this.mc.player.setSprinting(mc.options.sprintKey.isPressed());
     }
 
     @Override
