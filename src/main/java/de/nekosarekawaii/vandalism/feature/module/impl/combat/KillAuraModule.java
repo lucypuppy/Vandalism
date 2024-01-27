@@ -117,6 +117,23 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             "Settings for the clicking."
     );
 
+    private final EnumModeValue<ClickType> clickType = new EnumModeValue<>(
+            this.clicking,
+            "Click Type",
+            "The type of clicking.",
+            ClickType.BoxMueller,
+            ClickType.values()
+    ).onValueChange((oldValue, newValue) -> {
+        oldValue.getClicker().setClickAction(aBoolean -> {});
+        this.updateClicker(newValue.getClicker());
+    });
+
+    private final ValueGroup rotationGroup = new ValueGroup(
+            this,
+            "Rotation",
+            "Settings for the rotations."
+    );
+
     private final FloatValue rotateSpeed = new FloatValue(
             this.rotationGroup,
             "Rotate Speed",
@@ -125,13 +142,6 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             0.0f,
             180.0f
     );
-
-    private final ValueGroup rotationGroup = new ValueGroup(
-            this,
-            "Rotation",
-            "Settings for the rotations."
-    );
-    private final AutoBlockModule autoBlock;
 
     private final BooleanValue correlation = new BooleanValue(
             this.rotationGroup,
@@ -165,6 +175,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             true
     );
 
+
     private LivingEntity target;
     private int targetIndex = 0;
 
@@ -172,17 +183,9 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     private boolean isLooking = false;
 
     private long lastPossibleHit = -1;
-    private final EnumModeValue<ClickType> clickType = new EnumModeValue<>(
-            this.clicking,
-            "Click Type",
-            "The type of clicking.",
-            ClickType.BoxMueller,
-            ClickType.values()
-    ).onValueChange((oldValue, newValue) -> {
-        oldValue.getClicker().setClickAction(aBoolean -> {
-        });
-        updateClicker(newValue.getClicker());
-    });
+
+    private final AutoBlockModule autoBlock;
+
     private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
 
     public KillAuraModule(final AutoBlockModule autoBlock) {
@@ -191,11 +194,9 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 "Automatically attacks nearby enemies.",
                 Category.COMBAT
         );
-
         this.autoBlock = autoBlock;
         this.rotationListener = Vandalism.getInstance().getRotationListener();
-
-        updateClicker(this.clickType.getValue().getClicker());
+        this.updateClicker(this.clickType.getValue().getClicker());
     }
 
     @Override
