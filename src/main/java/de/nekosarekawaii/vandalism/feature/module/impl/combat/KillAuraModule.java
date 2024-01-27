@@ -33,6 +33,7 @@ import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.rotation.HitboxSelectMode;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationPriority;
+import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
 import de.nekosarekawaii.vandalism.util.click.ClickType;
 import de.nekosarekawaii.vandalism.util.click.Clicker;
 import de.nekosarekawaii.vandalism.util.click.impl.BoxMuellerClicker;
@@ -143,13 +144,6 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             180.0f
     );
 
-    private final BooleanValue correlation = new BooleanValue(
-            this.rotationGroup,
-            "Correlation",
-            "Whether the correlation should be used.",
-            true
-    );
-
     private final FloatValue correlationStrength = new FloatValue(
             this.rotationGroup,
             "Correlation Strength",
@@ -157,7 +151,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             0.2f,
             0.0f,
             1.0f
-    ).visibleCondition(this.correlation::getValue);
+    );
 
     private final IntegerValue aimPoints = new IntegerValue(
             this.rotationGroup,
@@ -256,14 +250,23 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 return;
             }
 
+            final float rotationPercentage;
+
+            if (rotationListener.getRotation() == null) {
+                final Rotation playerRotation = new Rotation(this.mc.player.getYaw(), this.mc.player.getPitch());
+                rotationPercentage = RotationUtil.calculateRotationPercentage(playerRotation, rotation, true);
+            } else {
+                rotationPercentage = RotationUtil.calculateRotationPercentage(rotationListener.getRotation(), rotation, true);
+            }
+
             float rotateSpeed = 0.0f;
             if (this.rotateSpeed.getValue() > 0.0f) {
                 rotateSpeed = (float) (this.rotateSpeed.getValue() + Math.random() * 5.0f);
+                rotateSpeed *= 1.0f - rotationPercentage;
             }
 
-            this.rotationListener.setRotation(rotation, rotateSpeed, RotationPriority.HIGH,
-                    this.movementFix.getValue(), this.correlation.getValue(),
-                    this.correlationStrength.getValue());
+            this.rotationListener.setRotation(rotation, RotationPriority.HIGH, rotateSpeed,
+                    this.correlationStrength.getValue(), this.movementFix.getValue());
         } else {
             this.rotationListener.resetRotation();
         }
