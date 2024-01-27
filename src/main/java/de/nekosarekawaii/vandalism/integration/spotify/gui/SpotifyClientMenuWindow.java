@@ -83,9 +83,7 @@ public class SpotifyClientMenuWindow extends ClientMenuWindow {
             }
             ImGui.endMenuBar();
         }
-        if (this.spotifyManager.isLoggedIn()) {
-
-        }
+        ImGui.text("Status: " + (this.spotifyManager.isLoggedIn() ? "Logged in" : "Not logged in"));
         ImGui.end();
     }
 
