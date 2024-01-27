@@ -79,12 +79,10 @@ public class SpotifyHUDElement extends HUDElement {
                 spotifyManager.requestData();
             }
             final boolean paused = spotifyTrack.isPaused();
-            final String type = spotifyTrack.getType();
-            if (type.length() > 1) {
-                infoMap.put("Type", type.substring(0, 1).toUpperCase() + type.substring(1));
-            }
-            infoMap.put("Name", spotifyTrack.getName());
-            infoMap.put("Artists", String.join(", ", spotifyTrack.getArtists()));
+            final String waitingForData = "Waiting for data...";
+            infoMap.put("Type", !spotifyTrack.getType().isEmpty() ? spotifyTrack.getType().substring(0, 1).toUpperCase() + spotifyTrack.getType().substring(1) : waitingForData);
+            infoMap.put("Name", !spotifyTrack.getName().isEmpty() ? spotifyTrack.getName() : waitingForData);
+            infoMap.put("Artists", !spotifyTrack.getArtists().isEmpty() ? String.join(", ", spotifyTrack.getArtists()) : waitingForData);
             String max = "00:00";
             if (spotifyTrack.getDuration() > 0) {
                 final int maxSeconds = (int) Math.ceil(spotifyTrack.getDuration() / 1000d);
