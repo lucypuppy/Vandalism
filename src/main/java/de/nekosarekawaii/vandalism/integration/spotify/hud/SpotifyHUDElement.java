@@ -236,7 +236,7 @@ public class SpotifyHUDElement extends HUDElement {
             }
         }
         matrices.pop();
-        this.width = (int) (width + textOffset + 1 / scale);
+        this.width = Math.max((int) (width + textOffset + 1 / scale), 160);
         this.height = (this.spotifyManager.isLoggedIn() ? this.y + (fontHeight * infoMap.size()) + heightAddition - 2 : 0);
     }
 
