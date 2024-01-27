@@ -43,7 +43,7 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
     private final AccountManager accountManager;
 
     public AccountsClientMenuWindow(final AccountManager accountManager) {
-        super("Accounts", Category.CONFIGURATION);
+        super("Accounts", Category.CONFIG);
         this.accountManager = accountManager;
     }
 
@@ -103,7 +103,7 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
                     try {
                         accountManager.logOut();
                     } catch (Throwable t) {
-                        Vandalism.getInstance().getLogger().error("Failed to logout.", t);
+                        Vandalism.getInstance().getLogger().error("Failed to logout from account.", t);
                     }
                 }
                 ImGui.endMenu();

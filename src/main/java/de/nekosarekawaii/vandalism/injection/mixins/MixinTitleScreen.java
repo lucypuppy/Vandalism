@@ -36,7 +36,7 @@ public abstract class MixinTitleScreen {
     @Redirect(method = "loadTexturesAsync", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/TextureManager;loadTextureAsync(Lnet/minecraft/util/Identifier;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
     private static CompletableFuture<Void>forceModLogo(final TextureManager instance, final Identifier id, final Executor executor) {
         final Identifier newId;
-        if (id.equals(LogoDrawer.LOGO_TEXTURE)) newId = FabricBootstrap.MOD_ICON;
+        if (id.equals(LogoDrawer.LOGO_TEXTURE)) newId = FabricBootstrap.MOD_LOGO;
         else if (id.equals(LogoDrawer.EDITION_TEXTURE)) return CompletableFuture.completedFuture(null);
         else newId = id;
         return instance.loadTextureAsync(newId, executor);

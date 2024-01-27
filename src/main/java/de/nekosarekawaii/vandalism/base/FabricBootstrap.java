@@ -30,7 +30,7 @@ public class FabricBootstrap implements ClientModInitializer {
 
     public static String MOD_ID, MOD_NAME, MOD_AUTHORS, MOD_VERSION;
 
-    public static Identifier MOD_ICON;
+    public static Identifier MOD_LOGO, MOD_ICON;
     public static String WINDOW_TITLE;
 
     @Override

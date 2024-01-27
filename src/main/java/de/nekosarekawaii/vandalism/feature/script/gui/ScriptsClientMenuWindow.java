@@ -49,7 +49,7 @@ public class ScriptsClientMenuWindow extends ClientMenuWindow {
     private final ImBoolean hideHints;
 
     public ScriptsClientMenuWindow() {
-        super("Scripts", Category.CONFIGURATION);
+        super("Scripts", Category.CONFIG);
         this.scriptEditors = new ConcurrentHashMap<>();
         this.hideHints = new ImBoolean(false);
     }

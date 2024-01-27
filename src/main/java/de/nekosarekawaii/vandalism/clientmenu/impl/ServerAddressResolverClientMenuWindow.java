@@ -51,7 +51,7 @@ public class ServerAddressResolverClientMenuWindow extends ClientMenuWindow {
     private final ImString hostname, lastData;
 
     public ServerAddressResolverClientMenuWindow() {
-        super("Server Address Resolver", Category.SERVER_UTILS);
+        super("Server Address Resolver", Category.SERVER);
         this.hostname = new ImString(253);
         this.lastData = new ImString();
     }

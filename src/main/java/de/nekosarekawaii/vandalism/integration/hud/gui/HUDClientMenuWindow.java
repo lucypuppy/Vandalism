@@ -38,7 +38,7 @@ public class HUDClientMenuWindow extends ClientMenuWindow {
     private int lastMouseX, lastMouseY;
 
     public HUDClientMenuWindow(final HUDManager hudManager) {
-        super("HUD Config", Category.CONFIGURATION);
+        super("HUD Config", Category.CONFIG);
         this.hudManager = hudManager;
     }
 

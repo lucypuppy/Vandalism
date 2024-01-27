@@ -38,7 +38,7 @@ public class NbtEditorClientMenuWindow extends ClientMenuWindow {
     private final NbtManager nbtManager;
 
     public NbtEditorClientMenuWindow() {
-        super("Nbt Editor", Category.MISC_UTILS);
+        super("Nbt Editor", Category.MISC);
         this.nbtManager = new NbtManager();
     }
 

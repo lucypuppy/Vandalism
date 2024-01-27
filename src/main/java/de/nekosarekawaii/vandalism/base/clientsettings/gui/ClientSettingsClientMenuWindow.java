@@ -30,7 +30,7 @@ public class ClientSettingsClientMenuWindow extends ClientMenuWindow {
     private final ClientSettings clientSettings;
 
     public ClientSettingsClientMenuWindow(final ClientSettings clientSettings) {
-        super("Client Settings", Category.CONFIGURATION);
+        super("Client Settings", Category.CONFIG);
         this.clientSettings = clientSettings;
     }
 
