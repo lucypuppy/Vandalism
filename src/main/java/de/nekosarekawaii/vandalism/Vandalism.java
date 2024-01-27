@@ -72,8 +72,6 @@ import java.io.File;
  *  - Fix NoClipMode from PhaseModule
  *  - Fix SprintModule to be compatible with the rotation listener and also the backwards direction (ask Verschlxfene)
  *  - Fix calculations for the HUD aka. HUDElement#calculatePosition
- *  - Fix tick bug (cps is not accurate) -> see BoxMuellerClicker#onUpdate
- *  - Check if anything has changed in 1.20.2 regarding hit box position offsetting RotationUtil#getVisibleHitBoxSides
  *  - KillAura#onPrePlayerUpdate | Frame event (entity renderer set angles) -> rotate / Mouse event -> attack
  * <br><br>
  * TODO: Snow <br>
