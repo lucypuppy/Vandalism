@@ -19,8 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.normal.render.EntityRenderBottomLayerListener;
-import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
@@ -36,7 +35,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(FeatureRenderer.class)
-public class MixinFeatureRenderer {
+public abstract class MixinFeatureRenderer {
 
     @Unique
     private static Entity vandalism$entity;
@@ -46,12 +45,13 @@ public class MixinFeatureRenderer {
         vandalism$entity = entity;
     }
 
-    @Redirect(method = "renderModel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/model/EntityModel;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;IIFFFF)V"))
-    private static void callLivingEntityRenderBottomLayerListener(final EntityModel instance, final MatrixStack matrices, final VertexConsumer vertices, final int light, final int overlay, final float red, final float green, final float blue, final float alpha) {
-        final var event = new EntityRenderBottomLayerListener.EntityRenderBottomLayerEvent(vandalism$entity, matrices, vertices, light, overlay, red, green, blue, alpha);
-        Vandalism.getInstance().getEventSystem().postInternal(EntityRenderBottomLayerListener.EntityRenderBottomLayerEvent.ID, event);
-        instance.render(matrices, vertices, event.light, event.overlay, event.red, event.green, event.blue, event.alpha);
+    @Redirect(method = "renderModel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/RenderLayer;getEntityCutoutNoCull(Lnet/minecraft/util/Identifier;)Lnet/minecraft/client/render/RenderLayer;"))
+    private static RenderLayer changeRenderLayer(Identifier texture) {
+        if (Vandalism.getInstance().getModuleManager().getTrueSightModule().test(vandalism$entity)) {
+            return RenderLayer.getItemEntityTranslucentCull(texture);
+        } else {
+            return RenderLayer.getEntityCutoutNoCull(texture);
+        }
     }
-
 
 }
