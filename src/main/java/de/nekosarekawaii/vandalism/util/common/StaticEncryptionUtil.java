@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.util.common;
 import de.florianmichael.rclasses.common.encryption.EncryptionUtils;
 
 import javax.crypto.spec.IvParameterSpec;
+import java.nio.charset.StandardCharsets;
 import java.security.spec.InvalidKeySpecException;
 
 /**
@@ -33,12 +34,17 @@ public class StaticEncryptionUtil {
      */
     private static final IvParameterSpec INIITAL_VECTOR = new IvParameterSpec(new byte[] { 42, 49, 55, 1, 99, 62, 70, 83, 104, 115, 8, 15, 91, 120, 27, 33 });
 
+    /**
+     * The salt used for encryption and decryption over multiple sessions.
+     */
+    private static final byte[] SALT = "xOtlS4mV9e0o89$LsetrR$R89u".getBytes(StandardCharsets.UTF_8);
+
     public static String encrypt(final String key, final String data) throws InvalidKeySpecException {
-        return EncryptionUtils.aes(INIITAL_VECTOR, EncryptionUtils.fromString(key)).encrypt(data);
+        return EncryptionUtils.aes(INIITAL_VECTOR, EncryptionUtils.fromString(key, SALT)).encrypt(data);
     }
 
     public static String decrypt(final String key, final String data) throws InvalidKeySpecException {
-        return EncryptionUtils.aes(INIITAL_VECTOR, EncryptionUtils.fromString(key)).decrypt(data);
+        return EncryptionUtils.aes(INIITAL_VECTOR, EncryptionUtils.fromString(key, SALT)).decrypt(data);
     }
 
 }
