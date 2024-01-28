@@ -25,6 +25,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
@@ -52,13 +53,6 @@ public class TrueSightModule extends AbstractModule implements EntityRenderBotto
             "Makes invisible entities visible.",
             true
     );
-
-    public final BooleanValue showIllusionerEntity = new BooleanValue(
-            this,
-            "Show Illusioner Entity",
-            "Makes the illusioner entity visible.",
-            true
-    ).visibleCondition(this.entities::getValue);
 
     private final ColorValue entityColor = new ColorValue(
             this,
@@ -93,7 +87,7 @@ public class TrueSightModule extends AbstractModule implements EntityRenderBotto
     }
 
     public boolean test(final Entity entity) {
-        return isActive() && this.entities.getValue() && entity.isInvisible();
+        return this.isActive() && this.entities.getValue() && entity.isInvisible() && WorldUtil.isTarget(entity);
     }
 
 }
