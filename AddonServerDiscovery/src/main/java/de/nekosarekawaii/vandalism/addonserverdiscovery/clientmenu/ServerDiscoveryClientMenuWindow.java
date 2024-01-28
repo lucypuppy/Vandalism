@@ -35,7 +35,6 @@ import re.catgirls.serverdiscovery.search.NumberRangeType;
 import re.catgirls.serverdiscovery.search.SearchQueryBuilder;
 
 import java.awt.*;
-import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -222,7 +221,7 @@ public class ServerDiscoveryClientMenuWindow extends ClientMenuWindow {
             try {
                 entries.clear();
                 entries.addAll(api.getServers(query, serverLimit.get(), playerNumberRange, minimumPlayers.get(), maximumPlayers.get()));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 Vandalism.getInstance().getLogger().error("Failed to perform search query", e);
             }
         });

@@ -22,7 +22,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import de.florianmichael.rclasses.io.WebUtils;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.util.common.UUIDUtil;
 import imgui.ImGui;
@@ -35,6 +34,10 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.util.Uuids;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,6 +46,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class NameHistoryClientMenuWindow extends ClientMenuWindow {
+
+    private static final HttpClient REQUESTER = HttpClient.newHttpClient();
 
     private static final ImGuiInputTextCallback USERNAME_NAME_FILTER = new ImGuiInputTextCallback() {
 
@@ -137,7 +142,12 @@ public class NameHistoryClientMenuWindow extends ClientMenuWindow {
                     if (!this.lastUUID.isBlank()) {
                         try {
                             this.state.set("Getting name history by uuid...");
-                            final String labyNetApiContent = WebUtils.DEFAULT.get("https://laby.net/api/v2/user/" + this.lastUUID + "/get-profile");
+                            final HttpRequest request = HttpRequest.newBuilder()
+                                    .uri(URI.create("https://laby.net/api/v2/user/" + this.lastUUID + "/get-profile"))
+                                    .GET()
+                                    .build();
+                            final HttpResponse<String> response = REQUESTER.send(request, HttpResponse.BodyHandlers.ofString());
+                            final String labyNetApiContent = response.body();
                             if (!labyNetApiContent.isBlank()) {
                                 final JsonObject jsonObject = this.gson.fromJson(labyNetApiContent, JsonObject.class);
                                 if (jsonObject.has("username_history")) {

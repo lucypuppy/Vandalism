@@ -19,12 +19,11 @@
 package de.nekosarekawaii.vandalism.integration.spotify.hud;
 
 import de.florianmichael.rclasses.common.ColorUtils;
-import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
+import de.nekosarekawaii.vandalism.integration.spotify.SpotifyData;
 import de.nekosarekawaii.vandalism.integration.spotify.SpotifyManager;
-import de.nekosarekawaii.vandalism.integration.spotify.SpotifyTrack;
 import de.nekosarekawaii.vandalism.util.render.GLStateTracker;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.texture.AbstractTexture;
@@ -40,15 +39,6 @@ import java.util.Map;
 
 public class SpotifyHUDElement extends HUDElement {
 
-    private final IntegerValue updateInterval = new IntegerValue(
-            this,
-            "Update Interval",
-            "The interval in milliseconds in which the Spotify data should get updated.",
-            10000,
-            5000,
-            30000
-    );
-
     private final IntegerValue textWrapWidth = new IntegerValue(
             this,
             "Text Wrap Width",
@@ -57,8 +47,6 @@ public class SpotifyHUDElement extends HUDElement {
             320,
             600
     );
-
-    private final MSTimer updateTimer = new MSTimer();
 
     private final SpotifyManager spotifyManager;
 
@@ -76,33 +64,31 @@ public class SpotifyHUDElement extends HUDElement {
         final Map<String, String> infoMap = new LinkedHashMap<>();
         final SpotifyManager spotifyManager = this.spotifyManager;
         if (spotifyManager.isLoggedIn()) {
-            final SpotifyTrack spotifyTrack = spotifyManager.getCurrentPlaying();
-            if (this.updateTimer.hasReached(this.updateInterval.getValue(), true)) {
-                spotifyManager.requestData();
-            }
-            final boolean paused = spotifyTrack.isPaused();
+            spotifyManager.update();
+            final SpotifyData spotifyData = spotifyManager.getCurrentSpotifyData();
+            final boolean paused = spotifyData.isPaused();
             final String waitingForData = "Waiting for data...";
-            infoMap.put("Type", !spotifyTrack.getType().isEmpty() ? spotifyTrack.getType().substring(0, 1).toUpperCase() + spotifyTrack.getType().substring(1) : waitingForData);
-            infoMap.put("Name", !spotifyTrack.getName().isEmpty() ? spotifyTrack.getName() : waitingForData);
-            infoMap.put("Artists", !spotifyTrack.getArtists().isEmpty() ? String.join(", ", spotifyTrack.getArtists()) : waitingForData);
+            infoMap.put("Type", !spotifyData.getType().isEmpty() ? spotifyData.getType() : waitingForData);
+            infoMap.put("Name", !spotifyData.getName().isEmpty() ? spotifyData.getName() : waitingForData);
+            infoMap.put("Artists", !spotifyData.getArtists().isEmpty() ? String.join(", ", spotifyData.getArtists()) : waitingForData);
             String max = "00:00";
-            if (spotifyTrack.getDuration() > 0) {
-                final int maxSeconds = (int) Math.ceil(spotifyTrack.getDuration() / 1000d);
+            if (spotifyData.getDuration() > 0) {
+                final int maxSeconds = (int) Math.ceil(spotifyData.getDuration() / 1000d);
                 final int maxMinutes = maxSeconds / 60;
                 final int maxSecondsRest = maxSeconds % 60;
                 max = (maxMinutes < 10 ? "0" : "") + maxMinutes + ":" + (maxSecondsRest < 10 ? "0" : "") + maxSecondsRest;
             }
-            final long time = spotifyTrack.getTime();
-            final long progress = spotifyTrack.getProgress();
+            final long time = spotifyData.getTime();
+            final long progress = spotifyData.getProgress();
             long currentProgress;
             final long currentTime = System.currentTimeMillis();
             if (paused) {
-                currentProgress = spotifyTrack.getLastTime() - (time - progress);
+                currentProgress = spotifyData.getLastTime() - (time - progress);
             } else {
                 currentProgress = currentTime - (time - progress);
-                spotifyTrack.setLastTime(currentTime);
+                spotifyData.setLastTime(currentTime);
             }
-            final int currentSeconds = (int) Math.ceil(Math.min(currentProgress, spotifyTrack.getDuration()) / 1000d);
+            final int currentSeconds = (int) Math.ceil(Math.min(currentProgress, spotifyData.getDuration()) / 1000d);
             final int currentMinutes = currentSeconds / 60;
             final int currentSecondsRest = currentSeconds % 60;
             final String current = (currentMinutes < 10 ? "0" : "") + currentMinutes + ":" + (currentSecondsRest < 10 ? "0" : "") + currentSecondsRest;
@@ -115,9 +101,9 @@ public class SpotifyHUDElement extends HUDElement {
             );
             Identifier imageIdentifier = FabricBootstrap.MOD_ICON;
             AbstractTexture image = this.mc.getTextureManager().getTexture(imageIdentifier);
-            if (spotifyTrack.getImage() != null) {
-                imageIdentifier = SpotifyTrack.IMAGE_IDENTIFIER;
-                image = spotifyTrack.getImage();
+            if (spotifyData.getImage() != null) {
+                imageIdentifier = SpotifyData.IMAGE_IDENTIFIER;
+                image = spotifyData.getImage();
             }
             image.setFilter(
                     true,
@@ -140,30 +126,26 @@ public class SpotifyHUDElement extends HUDElement {
             );
             GLStateTracker.BLEND.revert();
             if (paused) {
-                final int pauseRectX1 = textureX + 2;
-                final int pauseRectX2 = textureX + textureSize - 2;
-                final int pauseRectY1 = textureY + 2;
-                final int pauseRectY2 = textureY + textureSize - 2;
                 context.fill(
-                        pauseRectX1,
-                        pauseRectY1,
-                        pauseRectX2,
-                        pauseRectY2,
+                        textureX,
+                        textureY,
+                        textureX + textureSize,
+                        textureY + textureSize,
                         ColorUtils.toSRGB(0, 0, 0, 0.6f)
                 );
                 final float alpha = System.currentTimeMillis() % 1000 < 500 ? 0.7f : 0f;
                 context.fill(
-                        pauseRectX1 + 8,
-                        pauseRectY1 + 6,
-                        pauseRectX2 - 15,
-                        pauseRectY2 - 6,
+                        textureX + 10,
+                        textureY + 8,
+                        textureX + textureSize - 17,
+                        textureY + textureSize - 8,
                         ColorUtils.toSRGB(1f, 1f, 1f, alpha)
                 );
                 context.fill(
-                        pauseRectX1 + 15,
-                        pauseRectY1 + 6,
-                        pauseRectX2 - 8,
-                        pauseRectY2 - 6,
+                        textureX + 17,
+                        textureY + 8,
+                        textureX + textureSize - 10,
+                        textureY + textureSize - 8,
                         ColorUtils.toSRGB(1f, 1f, 1f, alpha)
                 );
             }
@@ -172,7 +154,7 @@ public class SpotifyHUDElement extends HUDElement {
             final int progressBarStartX = this.x + progressBarOffset;
             final int endWidth = this.width - (progressBarOffset * 2);
             final int progressBarEndX = progressBarStartX + endWidth;
-            int progressBarCurrentProgress =  (int) (progressBarStartX + (endWidth * (Math.max(1, currentProgress) / (double) spotifyTrack.getDuration())));
+            int progressBarCurrentProgress =  (int) (progressBarStartX + (endWidth * (Math.max(1, currentProgress) / (double) spotifyData.getDuration())));
             if (progressBarCurrentProgress > progressBarEndX) {
                 progressBarCurrentProgress = progressBarEndX;
             }
@@ -235,7 +217,7 @@ public class SpotifyHUDElement extends HUDElement {
         matrices.scale(scale, scale, 1f);
         for (final Map.Entry<String, String> infoEntry : infoMap.entrySet()) {
             final List<OrderedText> wrappedTexts = this.mc.textRenderer.wrapLines(
-                    Text.literal(infoEntry.getKey() + " » " + infoEntry.getValue()),
+                    Text.literal(infoEntry.getKey() + ": " + infoEntry.getValue()),
                     (int) (wrapWidth / scale)
             );
             for (final OrderedText text : wrappedTexts) {
@@ -249,7 +231,7 @@ public class SpotifyHUDElement extends HUDElement {
         }
         matrices.pop();
         this.width = Math.max((int) (width + textOffset + 1 / scale), 160);
-        this.height = (this.spotifyManager.isLoggedIn() ? this.y + (fontHeight * infoMap.size()) + heightAddition - 2 : 0);
+        this.height = (this.spotifyManager.isLoggedIn() ?  (fontHeight * infoMap.size()) + heightAddition : 0);
     }
 
 }

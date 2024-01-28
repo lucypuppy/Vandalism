@@ -29,7 +29,6 @@ import net.minecraft.util.Identifier;
 public class FabricBootstrap implements ClientModInitializer {
 
     public static String MOD_ID, MOD_NAME, MOD_AUTHORS, MOD_VERSION;
-
     public static Identifier MOD_LOGO, MOD_ICON;
     public static String WINDOW_TITLE;
 
@@ -40,9 +39,7 @@ public class FabricBootstrap implements ClientModInitializer {
             FabricBootstrap.MOD_AUTHORS = String.join(", ", modContainer.getMetadata().getAuthors().stream().map(Person::getName).toList());
             FabricBootstrap.MOD_VERSION = modContainer.getMetadata().getVersion().getFriendlyString();
         });
-
-        FabricBootstrap.WINDOW_TITLE = String.format("%s %s made by %s", FabricBootstrap.MOD_NAME, FabricBootstrap.MOD_VERSION, FabricBootstrap.MOD_AUTHORS);
-
+        FabricBootstrap.WINDOW_TITLE = String.format("%s %s", FabricBootstrap.MOD_NAME, FabricBootstrap.MOD_VERSION);
         Vandalism.getInstance().getEventSystem().subscribe(Vandalism.getInstance(),
                 MinecraftBoostrapListener.MinecraftBootstrapEvent.ID,
                 ShutdownProcessListener.ShutdownProcessEvent.ID
