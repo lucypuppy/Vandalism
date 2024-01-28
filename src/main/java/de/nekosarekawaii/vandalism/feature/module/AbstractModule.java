@@ -47,6 +47,7 @@ public abstract class AbstractModule extends Feature implements ValueParent {
 
     private boolean deactivateOnQuit = false;
     private boolean deactivateOnShutdown = false;
+    private boolean deactivateOnWorldLoad = false;
 
     public AbstractModule(String name, String description, Category category) {
         this(name, description, category, null);
@@ -104,6 +105,7 @@ public abstract class AbstractModule extends Feature implements ValueParent {
     public void deactivateAfterSession() {
         this.deactivateOnQuit();
         this.deactivateOnShutdown();
+        this.deactivateOnWorldLoad();
     }
 
     public void deactivateOnQuit() {
@@ -112,6 +114,10 @@ public abstract class AbstractModule extends Feature implements ValueParent {
 
     public void deactivateOnShutdown() {
         this.deactivateOnShutdown = true;
+    }
+
+    public void deactivateOnWorldLoad() {
+        this.deactivateOnWorldLoad = true;
     }
 
     public void onActivate() {
@@ -159,6 +165,10 @@ public abstract class AbstractModule extends Feature implements ValueParent {
 
     public boolean isDeactivateOnShutdown() {
         return deactivateOnShutdown;
+    }
+
+    public boolean isDeactivateOnWorldLoad() {
+        return deactivateOnWorldLoad;
     }
 
     private void recursiveUpdateActiveState(final boolean active, final List<Value<?>> values) {

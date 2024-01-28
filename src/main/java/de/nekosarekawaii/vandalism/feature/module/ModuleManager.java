@@ -26,6 +26,7 @@ import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.base.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.base.event.normal.game.ShutdownProcessListener;
 import de.nekosarekawaii.vandalism.base.event.normal.network.DisconnectListener;
+import de.nekosarekawaii.vandalism.base.event.normal.network.WorldListener;
 import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.gui.ModulesClientMenuWindow;
@@ -55,7 +56,8 @@ import org.lwjgl.glfw.GLFW;
 import java.util.List;
 import java.util.Objects;
 
-public class ModuleManager extends NamedStorage<AbstractModule> implements KeyboardInputListener, ShutdownProcessListener, DisconnectListener, MinecraftWrapper {
+public class ModuleManager extends NamedStorage<AbstractModule> implements KeyboardInputListener, ShutdownProcessListener,
+        DisconnectListener, MinecraftWrapper, WorldListener {
 
     private final ConfigManager configManager;
 
@@ -73,9 +75,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
         this.configManager = configManager;
         clientMenuManager.add(new ModulesClientMenuWindow());
 
-        eventSystem.subscribe(KeyboardInputEvent.ID, this);
-        eventSystem.subscribe(ShutdownProcessEvent.ID, this);
-        eventSystem.subscribe(DisconnectEvent.ID, this);
+        eventSystem.subscribe(this, KeyboardInputEvent.ID, ShutdownProcessEvent.ID, DisconnectEvent.ID, WorldLoadEvent.ID);
     }
 
     @Override
@@ -162,6 +162,15 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
                 if (module.isActive() && module.isDeactivateOnQuit()) {
                     module.deactivate();
                 }
+            }
+        }
+    }
+
+    @Override
+    public void onPreWorldLoad() {
+        for (final AbstractModule module : getList()) {
+            if (module.isActive() && module.isDeactivateOnWorldLoad()) {
+                module.deactivate();
             }
         }
     }
