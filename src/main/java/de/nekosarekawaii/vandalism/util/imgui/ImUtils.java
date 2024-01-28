@@ -39,25 +39,24 @@ public class ImUtils {
         return ImGui.button(str, ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing());
     }
 
-    public static ImFont loadFont(final String fontName, final int size, final ImFontAtlas atlas, final ImFontConfig fontConfig, final short[] glyphRanges) {
+    public static void loadFont(final String fontName, final int size, final ImFontAtlas atlas, final ImFontConfig fontConfig, final short[] glyphRanges) {
         final Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(FabricBootstrap.MOD_ID);
         if (modContainer.isEmpty()) {
             Vandalism.getInstance().getLogger().error("Could not find mod container of " + FabricBootstrap.MOD_ID);
-            return null;
+            return;
         }
         final String pathString = "assets/" + FabricBootstrap.MOD_ID + "/font/" + fontName + ".ttf";
         final Optional<Path> path = modContainer.get().findPath(pathString);
         if (path.isEmpty()) {
             Vandalism.getInstance().getLogger().error("Could not find font file: " + pathString);
-            return null;
+            return;
         }
         try {
             fontConfig.setName(fontName + " " + size + "px");
-            return atlas.addFontFromMemoryTTF(IOUtils.toByteArray(Files.newInputStream(path.get())), size, fontConfig, glyphRanges);
+            atlas.addFontFromMemoryTTF(IOUtils.toByteArray(Files.newInputStream(path.get())), size, fontConfig, glyphRanges);
         } catch (IOException e) {
             Vandalism.getInstance().getLogger().error("Failed to load font: " + pathString, e);
         }
-        return null;
     }
 
     public static void texture(final int textureId, final float textureWidth, final float textureHeight, final float x1, final float y1, final float x2, final float y2) {
