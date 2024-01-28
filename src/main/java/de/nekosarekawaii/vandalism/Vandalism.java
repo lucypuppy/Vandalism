@@ -62,7 +62,6 @@ import java.io.File;
  *  - Add Proxy manager
  *  - Rewrite MovementUtil#getFixedMoveInputs to prevent bruteforcing inputs
  *  - Rewrite GCD fix to be accurate
- *  - Rewrite TimerHack to use TPS instead of "speed" alias random multiplier
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Fix module list out of screen rendering when the alignment is at the bottom of the screen
