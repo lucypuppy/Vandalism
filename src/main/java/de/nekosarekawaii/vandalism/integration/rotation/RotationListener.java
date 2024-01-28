@@ -18,18 +18,17 @@
 
 package de.nekosarekawaii.vandalism.integration.rotation;
 
+import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.RotationSettings;
 import de.nekosarekawaii.vandalism.base.event.cancellable.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.StrafeListener;
-import de.nekosarekawaii.vandalism.base.event.normal.render.Render2DListener;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.RenderUtil;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.MathHelper;
 
-public class RotationListener implements OutgoingPacketListener, Render2DListener, StrafeListener, MinecraftWrapper {
+public class RotationListener implements OutgoingPacketListener, StrafeListener, MinecraftWrapper, de.nekosarekawaii.vandalism.base.event.normal.player.RotationListener {
 
     private Rotation rotation, targetRotation, lastRotation;
     private double partialIterations;
@@ -40,8 +39,10 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
     private boolean movementFix;
 
     public RotationListener() {
-        Vandalism.getInstance().getEventSystem().subscribe(this,
-                OutgoingPacketEvent.ID, Render2DEvent.ID, StrafeEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, OutgoingPacketEvent.ID, StrafeEvent.ID);
+
+        // Priority is low because we want to calculate the rotation after the module set it.
+        Vandalism.getInstance().getEventSystem().subscribe(RotationEvent.ID, this, Priorities.LOW);
     }
 
     @Override
@@ -56,12 +57,13 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
     }
 
     @Override
-    public void onRender2DInGame(final DrawContext context, final float delta) {
+    public void onRotation(RotationEvent event) {
+        final float partialTicks = this.mc.getTickDelta();
         this.lastRotation = new Rotation(this.mc.player.lastYaw, this.mc.player.lastPitch);
 
         if (this.targetRotation != null) {
             this.rotation = this.applyGCDFix(rotationDistribution(this.targetRotation, this.lastRotation,
-                    this.rotateSpeed, this.correlationStrength), delta);
+                    this.rotateSpeed, this.correlationStrength), partialTicks);
             return;
         }
 
@@ -82,12 +84,12 @@ public class RotationListener implements OutgoingPacketListener, Render2DListene
         final RotationSettings settings = Vandalism.getInstance().getClientSettings().getRotationSettings();
 
         if (!settings.rotateBack.getValue()) {
-            this.rotation = this.applyGCDFix(new Rotation(yaw, pitch), delta);
+            this.rotation = this.applyGCDFix(new Rotation(yaw, pitch), partialTicks);
             return;
         }
 
         this.rotation = this.applyGCDFix(rotationDistribution(new Rotation(yaw, pitch), this.lastRotation,
-                settings.rotateSpeed.getValue(), settings.correlationStrength.getValue()), delta);
+                settings.rotateSpeed.getValue(), settings.correlationStrength.getValue()), partialTicks);
     }
 
     @Override
