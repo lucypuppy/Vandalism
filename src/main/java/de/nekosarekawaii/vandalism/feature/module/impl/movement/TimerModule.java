@@ -19,21 +19,20 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.base.event.normal.game.TickTimeListener;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.game.TimerHack;
 
-public class TimerModule extends AbstractModule implements PlayerUpdateListener {
+public class TimerModule extends AbstractModule implements TickTimeListener {
 
-    private final FloatValue timerSpeed = new FloatValue(
+    private final FloatValue ticksPerSecond = new FloatValue(
             this,
-            "Timer Speed",
+            "Timer per seconds",
             "The amount of speed the timer should have.",
-            2.0f,
-            0.1f,
-            20.0f
+            20.0f,
+            1.0f,
+            100.0f
     );
 
     private final BooleanValue guis = new BooleanValue(
@@ -53,22 +52,18 @@ public class TimerModule extends AbstractModule implements PlayerUpdateListener 
 
     @Override
     public void onActivate() {
-        TimerHack.reset();
-        Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(TickTimeEvent.ID, this);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
-        TimerHack.reset();
+        Vandalism.getInstance().getEventSystem().unsubscribe(TickTimeEvent.ID, this);
     }
 
     @Override
-    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (!this.guis.getValue() && this.mc.currentScreen != null) {
-            TimerHack.reset();
-        } else {
-            TimerHack.setSpeed(this.timerSpeed.getValue());
+    public void onTickTimings(TickTimeEvent e) {
+        if (this.guis.getValue() || this.mc.currentScreen == null) {
+            e.tickTime = 1_000F / this.ticksPerSecond.getValue();
         }
     }
 

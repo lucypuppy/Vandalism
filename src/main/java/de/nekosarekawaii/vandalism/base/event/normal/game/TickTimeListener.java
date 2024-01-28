@@ -16,11 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.base.event.normal.render;
+package de.nekosarekawaii.vandalism.base.event.normal.game;
 
-@Deprecated
-public interface LivingEntityRenderPostListener {
+import de.florianmichael.dietrichevents2.AbstractEvent;
 
-    int ID = 29;
+public interface TickTimeListener {
+
+    void onTickTimings(final TickTimeEvent e);
+
+    class TickTimeEvent extends AbstractEvent<TickTimeListener> {
+
+        public static final int ID = 29;
+
+        public float tickTime;
+
+        public TickTimeEvent(float tickTime) {
+            this.tickTime = tickTime;
+        }
+
+        @Override
+        public void call(TickTimeListener tickTimeListener) {
+            tickTimeListener.onTickTimings(this);
+        }
+    }
 
 }
