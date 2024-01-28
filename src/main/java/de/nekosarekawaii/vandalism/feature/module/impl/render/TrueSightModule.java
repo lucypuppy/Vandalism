@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
 import de.florianmichael.rclasses.common.ColorUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.normal.render.LivingEntityRenderBottomLayerListener;
+import de.nekosarekawaii.vandalism.base.event.normal.render.EntityRenderBottomLayerListener;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
@@ -33,7 +33,7 @@ import java.awt.*;
 import java.util.List;
 
 
-public class TrueSightModule extends AbstractModule implements LivingEntityRenderBottomLayerListener {
+public class TrueSightModule extends AbstractModule implements EntityRenderBottomLayerListener {
 
     private static final List<Item> MARKER_BLOCK_ITEMS = ClientWorld.BLOCK_MARKER_ITEMS.stream().toList();
 
@@ -73,17 +73,17 @@ public class TrueSightModule extends AbstractModule implements LivingEntityRende
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(LivingEntityRenderBottomLayerEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(EntityRenderBottomLayerEvent.ID, this);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(LivingEntityRenderBottomLayerEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(EntityRenderBottomLayerEvent.ID, this);
     }
 
     @Override
-    public void onLivingEntityRenderBottomLayer(final LivingEntityRenderBottomLayerEvent event) {
-        if (this.entities.getValue() && event.livingEntity.isInvisible()) {
+    public void onLivingEntityRenderBottomLayer(final EntityRenderBottomLayerEvent event) {
+        if (this.entities.getValue() && event.entity.isInvisible()) {
             final Color color = this.entityColor.getValue().getColor();
             event.red = color.getRed() / 255f;
             event.green = color.getGreen() / 255f;
