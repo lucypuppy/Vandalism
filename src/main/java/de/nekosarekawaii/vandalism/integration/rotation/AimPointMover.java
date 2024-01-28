@@ -32,9 +32,9 @@ public class AimPointMover implements MinecraftWrapper {
 
     private Vec3d bestPoint;
     private final double minRadius, maxRadius;
-    private final HitboxSelectMode mode;
+    private final HitBoxSelectMode mode;
 
-    public AimPointMover(final HitboxSelectMode mode, final double minRadius, final double maxRadius) {
+    public AimPointMover(final HitBoxSelectMode mode, final double minRadius, final double maxRadius) {
         this.mode = mode;
         this.minRadius = minRadius;
         this.maxRadius = maxRadius;
@@ -79,14 +79,14 @@ public class AimPointMover implements MinecraftWrapper {
             double z = center.z;
 
             switch (this.mode) {
-                case Circular: // Circular
+                case CIRCULAR: // Circular
                     double azimuthalAngle = i * goldenAngleIncrement;
                     double polarAngle = Math.acos(2 * Math.random() - 1); // Random polar angle,
                     x = center.x + dynamicWidth * Math.sin(polarAngle) * Math.cos(azimuthalAngle);
                     y = center.y + dynamicWidth * Math.sin(polarAngle) * Math.sin(azimuthalAngle);
                     z = center.z + dynamicWidth * Math.cos(polarAngle);
                     break;
-                case Square: // Square
+                case SQUARE: // Square
                     x = center.x + dynamicWidth * (Math.random() - 0.5);
                     y = center.y + dynamicHeight * (Math.random() - 0.5);
                     z = center.z + dynamicWidth * (Math.random() - 0.5);
@@ -98,10 +98,10 @@ public class AimPointMover implements MinecraftWrapper {
             if (!WorldUtil.canHitEntity(mc.player, entity, rotation, range))
                 continue;
 
-            final boolean allowOutOfHitbox = range > desiredRange;
+            final boolean allowOutOfHitBox = range > desiredRange;
             final double dist = getRaytraceReach(entity, newPoint, range);
 
-            if ((dist > 0 && dist <= range) || allowOutOfHitbox) {
+            if ((dist > 0 && dist <= range) || allowOutOfHitBox) {
                 points.add(newPoint);
             }
         }

@@ -40,84 +40,124 @@ public abstract class AbstractModule extends Feature implements ValueParent {
 
     private final List<Value<?>> values = new ArrayList<>();
 
-    private final BooleanValue active;
-    private final BooleanValue favorite;
-    private final BooleanValue showInHUD;
-    private final KeyBindValue keyBind;
+    private final BooleanValue active = new BooleanValue(
+            this,
+            "Active",
+            "Whether this module is active.",
+            false
+    ).onValueChange((oldValue, newValue) -> {
+        final ModuleToggleListener.ModuleToggleEvent event = new ModuleToggleListener.ModuleToggleEvent(this, newValue);
+        Vandalism.getInstance().getEventSystem().postInternal(ModuleToggleListener.ModuleToggleEvent.ID, event);
+        //Allows the event to change the active state of the module
+        //It's important that people don't use the setActive method from the module itself in the event
+        //because that would cause an infinite loop
+        newValue = event.active;
+        if (oldValue != newValue) {
+            if (newValue) {
+                this.onActivate();
+            } else {
+                this.onDeactivate();
+            }
+            if (Vandalism.getInstance().getClientSettings().getMenuSettings().moduleStateLogging.getValue() && this.mc.player != null) {
+                ChatUtil.infoChatMessage(this.getName() + " has been " + (newValue ? "activated" : "deactivated") + ".");
+            }
+            this.recursiveUpdateActiveState(newValue, this.values);
+        }
+    });
 
-    private boolean deactivateOnQuit = false;
-    private boolean deactivateOnShutdown = false;
-    private boolean deactivateOnWorldLoad = false;
+    private final BooleanValue favorite = new BooleanValue(
+            this,
+            "Favorite",
+            "Whether this module is a favorite.",
+            false
+    );
 
-    public AbstractModule(String name, String description, Category category) {
+    private final ValueGroup defaultSettings = new ValueGroup(
+            this,
+            "Default Settings",
+            "Default settings of this module."
+    );
+
+    private final BooleanValue showInHUD = new BooleanValue(
+            this.defaultSettings,
+            "Show in HUD",
+            "Whether this module should be shown in the HUD.",
+            true
+    );
+
+    private final KeyBindValue keyBind = new KeyBindValue(
+            this.defaultSettings,
+            "Key Bind",
+            "The key bind of this module."
+    );
+
+    private final ValueGroup deactivationSettings = new ValueGroup(
+            this.defaultSettings,
+            "Deactivation Settings",
+            "Deactivation settings of this module."
+    );
+
+    private final BooleanValue deactivateOnQuit = new BooleanValue(
+            this.deactivationSettings,
+            "Deactivate on Quit",
+            "Whether this module should be deactivated on quit.",
+            false
+    );
+
+    private final BooleanValue deactivateOnShutdown = new BooleanValue(
+            this.deactivationSettings,
+            "Deactivate on Shutdown",
+            "Whether this module should be deactivated on shutdown.",
+            false
+    );
+
+    private final BooleanValue deactivateOnWorldLoad = new BooleanValue(
+            this.deactivationSettings,
+            "Deactivate on World Load",
+            "Whether this module should be deactivated on world load.",
+            false
+    );
+
+    private final BooleanValue deactivateOnDeath = new BooleanValue(
+            this.deactivationSettings,
+            "Deactivate on Death",
+            "Whether this module should be deactivated on death.",
+            false
+    );
+
+    public AbstractModule(final String name, final String description, final Category category) {
         this(name, description, category, null);
     }
 
-    public AbstractModule(String name, String description, Category category, VersionRange supportedVersions) {
+    public AbstractModule(final String name, final String description, final Category category, final VersionRange supportedVersions) {
         super(name, description, category, supportedVersions);
-        this.active = new BooleanValue(
-                this,
-                "Active",
-                "Whether this module is active.",
-                false
-        ).onValueChange((oldValue, newValue) -> {
-            final var event = new ModuleToggleListener.ModuleToggleEvent(this, newValue);
-            Vandalism.getInstance().getEventSystem().postInternal(ModuleToggleListener.ModuleToggleEvent.ID, event);
-            //Allows the event to change the active state of the module
-            //It's important that people don't use the setActive method from the module itself in the event
-            //because that would cause an infinite loop
-            newValue = event.active;
-            if (oldValue != newValue) {
-                if (newValue) {
-                    this.onActivate();
-                } else {
-                    this.onDeactivate();
-                }
-                if (Vandalism.getInstance().getClientSettings().getMenuSettings().moduleStateLogging.getValue() && this.mc.player != null) {
-                    ChatUtil.infoChatMessage(this.getName() + " has been " + (newValue ? "activated" : "deactivated") + ".");
-                }
-                this.recursiveUpdateActiveState(newValue, this.values);
-            }
-        });
-        this.favorite = new BooleanValue(
-                this,
-                "Favorite",
-                "Whether this module is a favorite.",
-                false
-        );
-        this.showInHUD = new BooleanValue(
-                this,
-                "Show in HUD",
-                "Whether this module should be shown in the HUD.",
-                true
-        );
-        this.keyBind = new KeyBindValue(
-                this,
-                "Key Bind",
-                "The key bind of this module."
-        );
     }
 
     public void activateDefault() {
         this.active.setValue(true);
     }
 
-    public void deactivateAfterSession() {
-        this.deactivateOnQuit();
-        this.deactivateOnShutdown();
-        this.deactivateOnWorldLoad();
+    public void deactivateAfterSessionDefault() {
+        this.deactivateOnQuitDefault();
+        this.deactivateOnShutdownDefault();
+        this.deactivateOnWorldLoadDefault();
+        this.deactivateOnDeathDefault();
     }
 
-    public void deactivateOnQuit() {
-        this.deactivateOnQuit = true;
+    public void deactivateOnQuitDefault() {
+        this.deactivateOnQuit.setValue(true);
     }
 
-    public void deactivateOnShutdown() {
-        this.deactivateOnShutdown = true;
+    public void deactivateOnShutdownDefault() {
+        this.deactivateOnShutdown.setValue(true);
     }
 
-    public void deactivateOnWorldLoad() {
-        this.deactivateOnWorldLoad = true;
+    public void deactivateOnWorldLoadDefault() {
+        this.deactivateOnWorldLoad.setValue(true);
+    }
+
+    public void deactivateOnDeathDefault() {
+        this.deactivateOnDeath.setValue(true);
     }
 
     public void onActivate() {
@@ -156,19 +196,23 @@ public abstract class AbstractModule extends Feature implements ValueParent {
     }
 
     public KeyBindValue getKeyBind() {
-        return keyBind;
+        return this.keyBind;
     }
 
     public boolean isDeactivateOnQuit() {
-        return deactivateOnQuit;
+        return this.deactivateOnQuit.getValue();
     }
 
     public boolean isDeactivateOnShutdown() {
-        return deactivateOnShutdown;
+        return this.deactivateOnShutdown.getValue();
     }
 
     public boolean isDeactivateOnWorldLoad() {
-        return deactivateOnWorldLoad;
+        return this.deactivateOnWorldLoad.getValue();
+    }
+
+    public boolean isDeactivateOnDeath() {
+        return this.deactivateOnDeath.getValue();
     }
 
     private void recursiveUpdateActiveState(final boolean active, final List<Value<?>> values) {

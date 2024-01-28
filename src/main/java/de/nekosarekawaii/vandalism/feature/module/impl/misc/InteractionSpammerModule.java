@@ -92,7 +92,7 @@ public class InteractionSpammerModule extends AbstractModule implements PlayerUp
                 "Lets you spam interactions.",
                 Category.MISC
         );
-        this.deactivateAfterSession();
+        this.deactivateAfterSessionDefault();
     }
 
     private void reset() {

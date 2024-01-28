@@ -33,7 +33,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.integration.rotation.HitboxSelectMode;
+import de.nekosarekawaii.vandalism.integration.rotation.HitBoxSelectMode;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationPriority;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
@@ -198,19 +198,6 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             true
     );
 
-    private final ValueGroup extrasGroup = new ValueGroup(
-            this,
-            "Extras",
-            "Extra settings."
-    );
-
-    private final BooleanValue autoDisableOnDeath = new BooleanValue(
-            this.extrasGroup,
-            "Auto Disable On Death",
-            "Automatically Disables the module on death.",
-            true
-    );
-
     private LivingEntity target;
     private int targetIndex = 0;
 
@@ -232,7 +219,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         this.rotationListener = Vandalism.getInstance().getRotationListener();
         this.updateClicker(this.clickType.getValue().getClicker());
 
-        this.deactivateAfterSession();
+        this.deactivateAfterSessionDefault();
     }
 
     @Override
@@ -256,27 +243,25 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (mc.player.isDead() && this.autoDisableOnDeath.getValue()) {
-            this.deactivate();
-        }
-
-        if (this.target == null ||
+        if (
+                this.target == null ||
                 this.rotationListener.getRotation() == null ||
                 Float.isNaN(this.rotationListener.getRotation().getYaw()) ||
-                Float.isNaN(this.rotationListener.getRotation().getPitch())) {
+                Float.isNaN(this.rotationListener.getRotation().getPitch())
+        ) {
             return;
         }
 
         // Check if the target is looking at us
-        final Rotation pseudoRotation = Rotation.Builder.build(mc.player.getPos(), this.target.getEyePos());
+        final Rotation pseudoRotation = Rotation.Builder.build(this.mc.player.getPos(), this.target.getEyePos());
         this.isLooking = Math.abs(MathHelper.wrapDegrees(pseudoRotation.getYaw()) - MathHelper.wrapDegrees(this.target.getYaw())) <= 80.0 &&
-                mc.player.getPos().distanceTo(this.target.getPos()) <= 6.0;
+                this.mc.player.getPos().distanceTo(this.target.getPos()) <= 6.0;
 
         final Vec3d eyePos = mc.player.getEyePos();
-        final HitResult raytrace = WorldUtil.raytrace(this.rotationListener.getRotation(), Math.pow(getAimRange(), 2));
+        final HitResult raytrace = WorldUtil.raytrace(this.rotationListener.getRotation(), Math.pow(this.getAimRange(), 2));
         this.raytraceDistance = raytrace != null ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
 
-        if (this.raytraceDistance > getAimRange() || this.raytraceDistance <= 0) {
+        if (this.raytraceDistance > this.getAimRange() || this.raytraceDistance <= 0) {
             return;
         }
 
@@ -285,10 +270,15 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
     @Override
     public void onRotation(final RotationEvent event) {
-        this.getTarget();
+        this.updateTarget();
 
         if (this.target != null) {
-            final Rotation rotation = Rotation.Builder.build(this.target, getAimRange(), this.aimPoints.getValue(), HitboxSelectMode.Circular);
+            final Rotation rotation = Rotation.Builder.build(
+                    this.target,
+                    this.getAimRange(),
+                    this.aimPoints.getValue(),
+                    HitBoxSelectMode.CIRCULAR
+            );
 
             if (rotation == null) { //Sanity check, crashes if you sneak and have your reach set to 3.0
                 this.rotationListener.resetRotation();
@@ -312,8 +302,13 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 rotateSpeed = (float) (this.rotateSpeed.getValue() + Math.random() * 5.0f);
             }
 
-            this.rotationListener.setRotation(rotation, RotationPriority.HIGH, rotateSpeed,
-                    this.correlationStrength.getValue(), this.movementFix.getValue());
+            this.rotationListener.setRotation(
+                    rotation,
+                    RotationPriority.HIGH,
+                    rotateSpeed,
+                    this.correlationStrength.getValue(),
+                    this.movementFix.getValue()
+            );
         } else {
             this.rotationListener.resetRotation();
         }
@@ -326,7 +321,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         }
     }
 
-    private void getTarget() {
+    private void updateTarget() {
         final List<LivingEntity> entities = new ArrayList<>();
 
         for (final Entity entity : mc.world.getEntities()) {
@@ -379,8 +374,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
                 this.mc.doAttack();
                 this.targetIndex++;
-            } else if (autoBlock.isActive()) {
-                autoBlock.setBlocking(true);
+            } else if (this.autoBlock.isActive()) {
+                this.autoBlock.setBlocking(true);
             }
         });
     }
