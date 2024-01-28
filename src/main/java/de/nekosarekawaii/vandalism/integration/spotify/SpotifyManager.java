@@ -24,6 +24,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.sun.net.httpserver.HttpServer;
+import de.florianmichael.rclasses.math.integration.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
@@ -40,28 +41,39 @@ import javax.imageio.ImageIO;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
+import java.net.URI;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * An implementation of <a href="https://developer.spotify.com/documentation/">Spotify</a>.
  */
 public class SpotifyManager {
 
-    private static final int REDIRECT_PORT = 30562;
+    private static final HttpClient REQUESTER = HttpClient.newHttpClient();
+
+    private static final String REDIRECT_URI_START = "http://127.0.0.1:";
     private static final String REDIRECT_PATH = "/spotify/";
-    public static final String REDIRECT_URI = "http://127.0.0.1:" + REDIRECT_PORT + REDIRECT_PATH;
+
+    private boolean isRunning = false;
 
     private String clientId = "";
     private String clientSecret = "";
+
+    private int httpServerPort = 30562;
+
     private String accessToken = "";
     private String refreshToken = "";
 
-    private final SpotifyTrack spotifyTrack = new SpotifyTrack();
-
-    private Thread executor = null;
+    private final SpotifyData currentSpotifyData = new SpotifyData();
+    private final MSTimer updateTimer = new MSTimer();
+    private final ExecutorService executor = Executors.newFixedThreadPool(2);
 
     public SpotifyManager(final ConfigManager configManager, final ClientMenuManager clientMenuManager, final HUDManager hudManager) {
         configManager.add(new SpotifyConfig(this));
@@ -85,17 +97,28 @@ public class SpotifyManager {
         this.clientSecret = clientSecret;
     }
 
+    public int getHttpServerPort() {
+        return this.httpServerPort;
+    }
+
+    public void setHttpServerPort(final int httpServerPort) {
+        this.httpServerPort = httpServerPort;
+    }
+
     public String getRefreshToken() {
         return this.refreshToken;
     }
 
-    public void login() {
+    public String getRedirectUri() {
+        return REDIRECT_URI_START + this.httpServerPort + REDIRECT_PATH;
+    }
+
+    private void tryStartHttpServer() {
+        if (this.isRunning) {
+            return;
+        }
         try {
-            Util.getOperatingSystem().open(
-                    "https://accounts.spotify.com/authorize?client_id=" + this.clientId + "&response_type=code&redirect_uri=" + REDIRECT_URI +
-                            "&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state"
-            );
-            final HttpServer server = HttpServer.create(new InetSocketAddress(REDIRECT_PORT), 0);
+            final HttpServer server = HttpServer.create(new InetSocketAddress(this.httpServerPort), 0);
             server.createContext(REDIRECT_PATH, exchange -> {
                 final String query = exchange.getRequestURI().getQuery();
                 final Map<String, String> queryParams = new HashMap<>();
@@ -113,77 +136,84 @@ public class SpotifyManager {
                 final String code = queryParams.get("code");
                 if (code != null) {
                     try {
-                        final HttpURLConnection connection = (HttpURLConnection) new URL("https://accounts.spotify.com/api/token").openConnection();
-                        connection.setRequestMethod("POST");
-                        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                        connection.setDoOutput(true);
-                        try (final OutputStream os = connection.getOutputStream()) {
-                            final byte[] input = (
-                                    "grant_type=authorization_code" +
-                                            "&code=" + code +
-                                            "&redirect_uri=" + REDIRECT_URI +
-                                            "&client_id=" + this.clientId +
-                                            "&client_secret=" + this.clientSecret
-                            ).getBytes(StandardCharsets.UTF_8);
-                            os.write(input, 0, input.length);
-                        }
-                        try (final BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
-                            final StringBuilder response = new StringBuilder();
-                            String responseLine;
-                            while ((responseLine = br.readLine()) != null) {
-                                response.append(responseLine.trim());
+                        final HttpRequest request = HttpRequest.newBuilder()
+                                .uri(URI.create("https://accounts.spotify.com/api/token"))
+                                .header("Content-Type", "application/x-www-form-urlencoded")
+                                .POST(HttpRequest.BodyPublishers.ofString(
+                                        "grant_type=authorization_code&code=" + code + "&redirect_uri=" + this.getRedirectUri() + "&client_id=" + this.clientId + "&client_secret=" + this.clientSecret)
+                                )
+                                .build();
+                        final HttpResponse<String> response = REQUESTER.send(request, HttpResponse.BodyHandlers.ofString());
+                        final int responseCode = response.statusCode();
+                        if (responseCode == HttpURLConnection.HTTP_OK) {
+                            final String responseBody = response.body();
+                            if (!responseBody.isEmpty()) {
+                                final JsonObject responseJson = JsonParser.parseString(responseBody).getAsJsonObject();
+                                if (responseJson.has("access_token") && responseJson.has("refresh_token")) {
+                                    this.accessToken = responseJson.get("access_token").getAsString();
+                                    this.refreshToken = responseJson.get("refresh_token").getAsString();
+                                    success = true;
+                                }
+                            } else {
+                                Vandalism.getInstance().getLogger().error("Spotify access token request returned an empty response.");
                             }
-                            final JsonObject responseJson = JsonParser.parseString(response.toString()).getAsJsonObject();
-                            if (responseJson.has("access_token") && responseJson.has("refresh_token")) {
-                                this.accessToken = responseJson.get("access_token").getAsString();
-                                this.refreshToken = responseJson.get("refresh_token").getAsString();
-                                success = true;
-                            }
+                        } else {
+                            Vandalism.getInstance().getLogger().error("Spotify access token request failed with response code:");
+                            Vandalism.getInstance().getLogger().error(responseCode + " -> " + StatusMessages.getMessage(responseCode));
                         }
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         Vandalism.getInstance().getLogger().error("Failed to request access token from Spotify.", e);
                     }
                 }
                 final String response = "Vandalism Spotify Authentication has been " + (success ? "successfully" : "failed") + ".\nYou can close this tab.";
-                exchange.sendResponseHeaders(200, response.length());
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length());
                 final OutputStream os = exchange.getResponseBody();
                 os.write(response.getBytes());
                 os.close();
                 server.stop(0);
+                this.isRunning = false;
             });
             server.setExecutor(null);
             server.start();
+            this.isRunning = true;
         } catch (IOException e) {
-            Vandalism.getInstance().getLogger().error("Failed to open Spotify authentication URL.", e);
+            Vandalism.getInstance().getLogger().error("Failed to create Spotify authentication Http Server.", e);
         }
+    }
+
+    public void login() {
+        Util.getOperatingSystem().open(
+                "https://accounts.spotify.com/authorize?client_id=" + this.clientId + "&response_type=code&redirect_uri=" + this.getRedirectUri() +
+                        "&scope=user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state"
+        );
+        this.tryStartHttpServer();
     }
 
     public void refresh(final String refreshToken) {
         this.refreshToken = refreshToken;
         try {
-            final String tokenEndpoint = "https://accounts.spotify.com/api/token";
-            final String payload = "grant_type=refresh_token&refresh_token=" + refreshToken + "&client_id=" + this.clientId + "&client_secret=" + this.clientSecret;
-            final URL url = new URL(tokenEndpoint);
-            final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            connection.setDoOutput(true);
-            try (final OutputStream os = connection.getOutputStream()) {
-                final byte[] input = payload.getBytes(StandardCharsets.UTF_8);
-                os.write(input, 0, input.length);
-            }
-            try (final BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
-                final StringBuilder response = new StringBuilder();
-                String responseLine;
-                while ((responseLine = br.readLine()) != null) {
-                    response.append(responseLine.trim());
+            final HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://accounts.spotify.com/api/token"))
+                    .header("Content-Type", "application/x-www-form-urlencoded")
+                    .POST(HttpRequest.BodyPublishers.ofString("grant_type=refresh_token&refresh_token=" + refreshToken + "&client_id=" + this.clientId + "&client_secret=" + this.clientSecret))
+                    .build();
+            final HttpResponse<String> response = REQUESTER.send(request, HttpResponse.BodyHandlers.ofString());
+            final int responseCode = response.statusCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                final String responseBody = response.body();
+                if (!responseBody.isEmpty()) {
+                    final JsonObject responseJson = JsonParser.parseString(responseBody).getAsJsonObject();
+                    if (responseJson.has("access_token")) {
+                        this.accessToken = responseJson.get("access_token").getAsString();
+                    }
+                } else {
+                    Vandalism.getInstance().getLogger().error("Spotify refresh request returned an empty response.");
                 }
-                final JsonObject responseJson = JsonParser.parseString(response.toString()).getAsJsonObject();
-                if (responseJson.has("access_token")) {
-                    this.accessToken = responseJson.get("access_token").getAsString();
-                }
+            } else {
+                Vandalism.getInstance().getLogger().error("Spotify refresh request failed with response code:");
+                Vandalism.getInstance().getLogger().error(responseCode + " -> " + StatusMessages.getMessage(responseCode));
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             Vandalism.getInstance().getLogger().error("Failed to refresh access token from Spotify.", e);
         }
     }
@@ -193,48 +223,131 @@ public class SpotifyManager {
         this.refreshToken = "";
     }
 
-    public void requestData() {
+    private void execute(final Runnable runnable) {
         if (!this.isLoggedIn()) {
             return;
         }
-        if (this.executor != null && this.executor.isAlive()) {
-            return;
-        }
-        this.executor = new Thread(() -> {
+        this.executor.submit(runnable);
+    }
+
+    public void previous() {
+        this.execute(() -> {
             try {
-                final String url = "https://api.spotify.com/v1/me/player/currently-playing";
-                final HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                connection.setRequestMethod("GET");
-                connection.setRequestProperty("Authorization", "Bearer " + this.accessToken);
-                connection.setRequestProperty("Accept", "application/json");
-                final int responseCode = connection.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    try (final BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
-                        final StringBuilder response = new StringBuilder();
-                        String responseLine;
-                        while ((responseLine = br.readLine()) != null) {
-                            response.append(responseLine.trim());
-                        }
-                        if (!response.isEmpty()) {
-                            final JsonObject responseJson = JsonParser.parseString(response.toString()).getAsJsonObject();
+                final HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create("https://api.spotify.com/v1/me/player/previous"))
+                        .header("Authorization", "Bearer " + this.accessToken)
+                        .POST(HttpRequest.BodyPublishers.noBody())
+                        .build();
+                final HttpResponse<String> response = REQUESTER.send(request, HttpResponse.BodyHandlers.ofString());
+                final int responseCode = response.statusCode();
+                if (responseCode != HttpURLConnection.HTTP_NO_CONTENT) {
+                    Vandalism.getInstance().getLogger().error("Spotify previous request failed with response code:");
+                    Vandalism.getInstance().getLogger().error(responseCode + " -> " + StatusMessages.getMessage(responseCode));
+                }
+            } catch (Exception e) {
+                Vandalism.getInstance().getLogger().error("Failed to request previous from Spotify.", e);
+            }
+        });
+    }
+
+    public void play() {
+        this.execute(() -> {
+            try {
+                final HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create("https://api.spotify.com/v1/me/player/play"))
+                        .header("Authorization", "Bearer " + this.accessToken)
+                        .PUT(HttpRequest.BodyPublishers.noBody())
+                        .build();
+                final HttpResponse<String> response = REQUESTER.send(request, HttpResponse.BodyHandlers.ofString());
+                final int responseCode = response.statusCode();
+                if (responseCode != HttpURLConnection.HTTP_NO_CONTENT) {
+                    Vandalism.getInstance().getLogger().error("Spotify play request failed with response code:");
+                    Vandalism.getInstance().getLogger().error(responseCode + " -> " + StatusMessages.getMessage(responseCode));
+                }
+            } catch (Exception e) {
+                Vandalism.getInstance().getLogger().error("Failed to request play from Spotify.", e);
+            }
+        });
+    }
+
+    public void pause() {
+        this.execute(() -> {
+            try {
+                final HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create("https://api.spotify.com/v1/me/player/pause"))
+                        .header("Authorization", "Bearer " + this.accessToken)
+                        .PUT(HttpRequest.BodyPublishers.noBody())
+                        .build();
+                final HttpResponse<String> response = REQUESTER.send(request, HttpResponse.BodyHandlers.ofString());
+                final int responseCode = response.statusCode();
+                if (responseCode != HttpURLConnection.HTTP_NO_CONTENT) {
+                    Vandalism.getInstance().getLogger().error("Spotify pause request failed with response code:");
+                    Vandalism.getInstance().getLogger().error(responseCode + " -> " + StatusMessages.getMessage(responseCode));
+                }
+            } catch (Exception e) {
+                Vandalism.getInstance().getLogger().error("Failed to request pause from Spotify.", e);
+            }
+        });
+    }
+
+    public void next() {
+        this.execute(() -> {
+            try {
+                final HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create("https://api.spotify.com/v1/me/player/next"))
+                        .header("Authorization", "Bearer " + this.accessToken)
+                        .POST(HttpRequest.BodyPublishers.noBody())
+                        .build();
+                final HttpResponse<String> response = REQUESTER.send(request, HttpResponse.BodyHandlers.ofString());
+                final int responseCode = response.statusCode();
+                if (responseCode != HttpURLConnection.HTTP_NO_CONTENT) {
+                    Vandalism.getInstance().getLogger().error("Spotify next request failed with response code:");
+                    Vandalism.getInstance().getLogger().error(responseCode + " -> " + StatusMessages.getMessage(responseCode));
+                }
+            } catch (Exception e) {
+                Vandalism.getInstance().getLogger().error("Failed to request next from Spotify.", e);
+            }
+        });
+    }
+
+    public void update() {
+        if (this.updateTimer.hasReached(10000, true)) {
+            this.execute(() -> {
+                try {
+                    final HttpRequest request = HttpRequest.newBuilder()
+                            .uri(URI.create("https://api.spotify.com/v1/me/player/currently-playing"))
+                            .header("Authorization", "Bearer " + this.accessToken)
+                            .headers("Accept", "application/json")
+                            .GET()
+                            .build();
+                    final HttpResponse<String> response = REQUESTER.send(request, HttpResponse.BodyHandlers.ofString());
+                    final int responseCode = response.statusCode();
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                        final String responseBody = response.body();
+                        if (!responseBody.isEmpty()) {
+                            final JsonObject responseJson = JsonParser.parseString(responseBody).getAsJsonObject();
                             if (responseJson.has("currently_playing_type")) {
-                                this.spotifyTrack.setType(responseJson.get("currently_playing_type").getAsString());
+                                String type = responseJson.get("currently_playing_type").getAsString();
+                                if (!type.isEmpty()) {
+                                    type = type.substring(0, 1).toUpperCase() + type.substring(1);
+                                }
+                                this.currentSpotifyData.setType(type);
                             }
                             if (responseJson.has("item")) {
                                 final JsonObject itemJson = responseJson.getAsJsonObject("item");
                                 if (itemJson.has("name")) {
-                                    this.spotifyTrack.setName(itemJson.get("name").getAsString());
+                                    this.currentSpotifyData.setName(itemJson.get("name").getAsString());
                                 }
                                 if (itemJson.has("duration_ms")) {
-                                    this.spotifyTrack.setDuration(itemJson.get("duration_ms").getAsLong());
+                                    this.currentSpotifyData.setDuration(itemJson.get("duration_ms").getAsLong());
                                 }
                                 if (itemJson.has("artists")) {
-                                    this.spotifyTrack.getArtists().clear();
+                                    this.currentSpotifyData.getArtists().clear();
                                     final JsonArray artistsArray = itemJson.getAsJsonArray("artists");
                                     for (final JsonElement artistElement : artistsArray) {
                                         final JsonObject artistJson = artistElement.getAsJsonObject();
                                         if (artistJson.has("name")) {
-                                            this.spotifyTrack.getArtists().add(artistJson.get("name").getAsString());
+                                            this.currentSpotifyData.getArtists().add(artistJson.get("name").getAsString());
                                         }
                                     }
                                 }
@@ -246,8 +359,8 @@ public class SpotifyManager {
                                             final JsonObject imageJson = imagesArray.get(1).getAsJsonObject();
                                             if (imageJson.has("url")) {
                                                 final String imageUrl = imageJson.get("url").getAsString();
-                                                if (!this.spotifyTrack.getImageUrl().equals(imageUrl)) {
-                                                    this.spotifyTrack.setImageUrl(imageUrl);
+                                                if (!this.currentSpotifyData.getImageUrl().equals(imageUrl)) {
+                                                    this.currentSpotifyData.setImageUrl(imageUrl);
                                                     try (final InputStream inputStream = new URL(imageUrl).openStream()) {
                                                         final ByteArrayOutputStream out = new ByteArrayOutputStream();
                                                         ImageIO.write(ImageIO.read(inputStream), "png", out);
@@ -255,8 +368,8 @@ public class SpotifyManager {
                                                         out.close();
                                                         RenderSystem.recordRenderCall(() -> {
                                                             final NativeImageBackedTexture image = new NativeImageBackedTexture(nativeImage);
-                                                            MinecraftClient.getInstance().getTextureManager().registerTexture(SpotifyTrack.IMAGE_IDENTIFIER, image);
-                                                            this.spotifyTrack.setImage(image);
+                                                            MinecraftClient.getInstance().getTextureManager().registerTexture(SpotifyData.IMAGE_IDENTIFIER, image);
+                                                            this.currentSpotifyData.setImage(image);
                                                         });
                                                     } catch (IOException e) {
                                                         Vandalism.getInstance().getLogger().error("Failed to load Spotify track image.", e);
@@ -268,43 +381,39 @@ public class SpotifyManager {
                                 }
                             }
                             if (responseJson.has("is_playing")) {
-                                this.spotifyTrack.setPaused(!responseJson.get("is_playing").getAsBoolean());
+                                this.currentSpotifyData.setPaused(!responseJson.get("is_playing").getAsBoolean());
                             }
-                            if (!this.spotifyTrack.isPaused()) {
+                            if (!this.currentSpotifyData.isPaused()) {
                                 if (responseJson.has("progress_ms")) {
-                                    final long currentMs = System.currentTimeMillis();
-                                    final long progressMs = responseJson.get("progress_ms").getAsLong() - 2000;
-                                    this.spotifyTrack.setTime(currentMs);
-                                    this.spotifyTrack.setProgress(progressMs);
+                                    this.currentSpotifyData.setTime(System.currentTimeMillis());
+                                    this.currentSpotifyData.setProgress(responseJson.get("progress_ms").getAsLong() - 2000);
                                 }
                             }
                         } else {
                             Vandalism.getInstance().getLogger().error("Spotify data request returned an empty response.");
                         }
-                    }
-                } else {
-                    if (responseCode == 401) {
-                        Vandalism.getInstance().getLogger().info("Refreshing Spotify access token...");
-                        this.refresh(this.refreshToken);
                     } else {
-                        Vandalism.getInstance().getLogger().error("Spotify data request failed with response code:");
-                        Vandalism.getInstance().getLogger().error(responseCode + " -> " + StatusMessages.getMessage(responseCode));
+                        if (responseCode == 401) {
+                            Vandalism.getInstance().getLogger().info("Refreshing Spotify access token...");
+                            this.refresh(this.refreshToken);
+                        } else if (responseCode != 204) {
+                            Vandalism.getInstance().getLogger().error("Spotify data request failed with response code:");
+                            Vandalism.getInstance().getLogger().error(responseCode + " -> " + StatusMessages.getMessage(responseCode));
+                        }
                     }
+                } catch (Exception e) {
+                    Vandalism.getInstance().getLogger().error("Failed to request data from Spotify.", e);
                 }
-            } catch (IOException e) {
-                Vandalism.getInstance().getLogger().error("Failed to request data from Spotify.", e);
-            }
-            this.executor = null;
-        });
-        this.executor.start();
+            });
+        }
     }
 
     public boolean isLoggedIn() {
         return this.accessToken != null && !this.accessToken.isEmpty();
     }
 
-    public SpotifyTrack getCurrentPlaying() {
-        return this.spotifyTrack;
+    public SpotifyData getCurrentSpotifyData() {
+        return this.currentSpotifyData;
     }
 
 }

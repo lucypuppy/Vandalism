@@ -20,7 +20,6 @@ package de.nekosarekawaii.vandalism.base.account.template;
 
 import com.google.gson.JsonObject;
 import com.mojang.authlib.yggdrasil.YggdrasilEnvironment;
-import de.florianmichael.rclasses.io.WebUtils;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.util.common.StaticEncryptionUtil;
@@ -29,11 +28,15 @@ import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
 import net.minecraft.client.session.Session;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class AbstractTokenBasedAccount extends AbstractAccount {
 
-    private static final WebUtils JSON_REQUESTER = WebUtils.create().withHeader("Content-Type", "application/json");
+    private static final HttpClient REQUESTER = HttpClient.newHttpClient();
 
     private final String redeemUrl;
     private String token;
@@ -89,7 +92,12 @@ public abstract class AbstractTokenBasedAccount extends AbstractAccount {
             this.updateSession(this.session);
             return;
         }
-        this.updateSession(this.fromResponse(JSON_REQUESTER.post(this.redeemUrl, "{\"token\":\"" + this.token + "\"}")));
+        final HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(this.redeemUrl))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString("{\"token\":\"" + this.token + "\"}"))
+                .build();
+        this.updateSession(this.fromResponse(REQUESTER.send(request, HttpResponse.BodyHandlers.ofString()).body()));
     }
 
     @Override

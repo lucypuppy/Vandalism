@@ -25,7 +25,7 @@ import net.minecraft.util.Identifier;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpotifyTrack {
+public class SpotifyData {
 
     public final static Identifier IMAGE_IDENTIFIER = new Identifier(FabricBootstrap.MOD_ID, "spotify_track.png");
 
@@ -40,7 +40,7 @@ public class SpotifyTrack {
     private long duration;
     private boolean paused;
 
-    public SpotifyTrack() {
+    public SpotifyData() {
         this.type = "";
         this.name = "";
         this.artists = new ArrayList<>();

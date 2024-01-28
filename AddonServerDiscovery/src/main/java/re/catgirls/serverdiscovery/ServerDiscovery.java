@@ -2,12 +2,15 @@ package re.catgirls.serverdiscovery;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import de.florianmichael.rclasses.io.WebUtils;
-import re.catgirls.serverdiscovery.search.SearchQueryBuilder;
 import re.catgirls.serverdiscovery.entry.ServerEntry;
 import re.catgirls.serverdiscovery.search.NumberRangeType;
+import re.catgirls.serverdiscovery.search.SearchQueryBuilder;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,7 +23,7 @@ import java.util.List;
  */
 public class ServerDiscovery {
 
-    private static final WebUtils REQUESTER = WebUtils.create();
+    private static final HttpClient REQUESTER = HttpClient.newHttpClient();
 
     private final String host;
     private final String key;
@@ -49,12 +52,14 @@ public class ServerDiscovery {
             final NumberRangeType playerRange,
             final int minPlayers,
             final int maxPlayers
-    ) throws IOException {
+    ) throws Exception {
         final List<ServerEntry> entries = new ArrayList<>();
-
-        final String response = REQUESTER.get("%s/v1/list_servers?key=%s%s".formatted(this.host, this.key, builder.create().isBlank() ? "" : "&" + builder.create()));
-        final JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
-
+        final HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("%s/v1/list_servers?key=%s%s".formatted(this.host, this.key, builder.create().isBlank() ? "" : "&" + builder.create())))
+                .GET()
+                .build();
+        final HttpResponse<String> response = REQUESTER.send(request, HttpResponse.BodyHandlers.ofString());
+        final JsonObject jsonObject = JsonParser.parseString(response.body()).getAsJsonObject();
         jsonObject.getAsJsonArray("data").forEach(jsonElement -> {
             final JsonObject object = jsonElement.getAsJsonObject();
 
@@ -72,7 +77,6 @@ public class ServerDiscovery {
                     if (object.get("player_count").getAsInt() != minPlayers) return;
                 }
             }
-
             entries.add(new ServerEntry(
                     object.get("address").getAsString(),
                     object.get("motd").getAsString(),
@@ -83,12 +87,12 @@ public class ServerDiscovery {
                     object.get("player_count").getAsInt()
             ));
         });
-
         Collections.shuffle(entries);
         return entries.subList(0, Math.min(entries.size(), limit));
     }
 
-    public List<ServerEntry> getServers(final SearchQueryBuilder builder, final int limit) throws IOException {
+    public List<ServerEntry> getServers(final SearchQueryBuilder builder, final int limit) throws Exception {
         return getServers(builder, limit, NumberRangeType.ANY, -1, -1);
     }
+
 }

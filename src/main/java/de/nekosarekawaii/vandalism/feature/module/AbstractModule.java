@@ -65,17 +65,17 @@ public abstract class AbstractModule extends Feature implements ValueParent {
         }
     });
 
-    private final BooleanValue favorite = new BooleanValue(
-            this,
-            "Favorite",
-            "Whether this module is a favorite.",
-            false
-    );
-
     private final ValueGroup defaultSettings = new ValueGroup(
             this,
             "Default Settings",
             "Default settings of this module."
+    );
+
+    private final BooleanValue favorite = new BooleanValue(
+            this.defaultSettings,
+            "Favorite",
+            "Whether this module is a favorite.",
+            false
     );
 
     private final BooleanValue showInHUD = new BooleanValue(
@@ -92,7 +92,7 @@ public abstract class AbstractModule extends Feature implements ValueParent {
     );
 
     private final ValueGroup deactivationSettings = new ValueGroup(
-            this.defaultSettings,
+            this,
             "Deactivation Settings",
             "Deactivation settings of this module."
     );

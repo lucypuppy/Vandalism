@@ -18,14 +18,22 @@
 
 package de.nekosarekawaii.vandalism.util.common;
 
-import de.florianmichael.rclasses.io.WebUtils;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 public class UUIDUtil {
 
-    private static final String API_URL = "https://api.mojang.com/users/profiles/minecraft/";
+    private static final HttpClient REQUESTER = HttpClient.newHttpClient();
 
     public static String getUUIDFromName(final String name) throws Exception {
-        final String mojangApiContent = WebUtils.DEFAULT.get(API_URL + name);
+        final HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.mojang.com/users/profiles/minecraft/" + name))
+                .GET()
+                .build();
+        final HttpResponse<String> response = REQUESTER.send(request, HttpResponse.BodyHandlers.ofString());
+        final String mojangApiContent = response.body();
         if (!mojangApiContent.isBlank()) {
             return mojangApiContent.split("\"id\" : \"")[1].split("\",")[0].replaceFirst(
                     "(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)",
