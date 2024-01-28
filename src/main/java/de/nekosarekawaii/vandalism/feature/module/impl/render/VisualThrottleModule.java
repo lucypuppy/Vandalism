@@ -94,6 +94,13 @@ public class VisualThrottleModule extends AbstractModule {
             true
     );
 
+    public final BooleanValue blockIllusionerEntityDuplicates = new BooleanValue(
+            this,
+            "Block illusioner entity duplicates",
+            "Blocks the duplicates from illusioner entities.",
+            true
+    );
+
     public VisualThrottleModule() {
         super(
                 "Visual Throttle",
