@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.integration.spotify.hud;
 
-import de.florianmichael.rclasses.common.ColorUtils;
+import de.florianmichael.rclasses.common.color.ColorUtils;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;

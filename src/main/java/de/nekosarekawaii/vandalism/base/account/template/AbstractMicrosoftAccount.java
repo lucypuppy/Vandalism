@@ -25,11 +25,10 @@ import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.util.common.StaticEncryptionUtil;
 import net.minecraft.client.session.Session;
+import net.raphimc.minecraftauth.MinecraftAuth;
 import net.raphimc.minecraftauth.step.AbstractStep;
 import net.raphimc.minecraftauth.step.java.StepMCProfile;
 import net.raphimc.minecraftauth.step.java.session.StepFullJavaSession;
-import net.raphimc.minecraftauth.util.MicrosoftConstants;
-import org.apache.http.impl.client.CloseableHttpClient;
 
 import java.util.Optional;
 
@@ -62,12 +61,10 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
             final StepMCProfile.MCProfile profile = this.session.getMcProfile();
             this.updateSession(new Session(profile.getName(), profile.getId(), profile.getMcToken().getAccessToken(), Optional.empty(), Optional.empty(), Session.AccountType.MSA));
         } else {
-            try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
-                //Get the token chain as a json object
-                final JsonObject tokenChainNode = JsonParser.parseString(this.tokenChain).getAsJsonObject();
-                //Refresh the token chain and get the new token chain
-                this.initWithExistingSession(this.getStep().refresh(httpClient, this.getStep().fromJson(tokenChainNode)));
-            }
+            //Get the token chain as a json object
+            final JsonObject tokenChainNode = JsonParser.parseString(this.tokenChain).getAsJsonObject();
+            //Refresh the token chain and get the new token chain
+            this.initWithExistingSession(this.getStep().refresh(MinecraftAuth.createHttpClient(), this.getStep().fromJson(tokenChainNode)));
         }
     }
 

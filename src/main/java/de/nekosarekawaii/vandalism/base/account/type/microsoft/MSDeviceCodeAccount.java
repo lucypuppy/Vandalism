@@ -61,8 +61,8 @@ public class MSDeviceCodeAccount extends AbstractMicrosoftAccount {
         @Override
         public CompletableFuture<AbstractAccount> make() {
             return CompletableFuture.supplyAsync(() -> {
-                try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
-                    final StepFullJavaSession.FullJavaSession javaSession = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.getFromInput(httpClient, new StepMsaDeviceCode.MsaDeviceCodeCallback(msaDeviceCode -> {
+                try {
+                    final StepFullJavaSession.FullJavaSession javaSession = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.getFromInput(MinecraftAuth.createHttpClient(), new StepMsaDeviceCode.MsaDeviceCodeCallback(msaDeviceCode -> {
                         final String url = msaDeviceCode.getDirectVerificationUri();
                         this.state = OPEN_URL + url;
                         Util.getOperatingSystem().open(url);

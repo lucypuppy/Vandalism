@@ -19,9 +19,9 @@
 package de.nekosarekawaii.vandalism.base.value.impl.awt;
 
 import com.google.gson.JsonObject;
-import de.florianmichael.rclasses.common.ColorUtils;
+import de.florianmichael.rclasses.common.color.ColorUtils;
 import de.florianmichael.rclasses.common.StringUtils;
-import de.florianmichael.rclasses.common.model.HSBColor;
+import de.florianmichael.rclasses.common.color.HSBColor;
 import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;

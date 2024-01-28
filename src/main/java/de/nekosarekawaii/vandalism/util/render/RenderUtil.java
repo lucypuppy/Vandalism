@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.util.render;
 
-import de.florianmichael.rclasses.common.ColorUtils;
+import de.florianmichael.rclasses.common.color.ColorUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.AbstractTexture;
 import net.minecraft.text.MutableText;

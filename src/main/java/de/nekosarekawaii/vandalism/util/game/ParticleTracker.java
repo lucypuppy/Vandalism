@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.util.game;
 
-import de.florianmichael.rclasses.math.integration.MSTimer;
+import de.florianmichael.rclasses.math.timer.MSTimer;
 
 @Deprecated
 public class ParticleTracker {

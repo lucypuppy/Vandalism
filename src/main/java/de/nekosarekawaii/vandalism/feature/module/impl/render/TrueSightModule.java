@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
-import de.florianmichael.rclasses.common.ColorUtils;
+import de.florianmichael.rclasses.common.color.ColorUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.render.EntityRenderBottomLayerListener;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;

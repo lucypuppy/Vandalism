@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.util.common;
 
-import de.florianmichael.rclasses.io.encryption.EncryptionUtils;
+import de.florianmichael.rclasses.common.encryption.EncryptionUtils;
 
 import javax.crypto.spec.IvParameterSpec;
 import java.security.spec.InvalidKeySpecException;
