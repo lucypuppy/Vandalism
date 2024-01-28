@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.event.normal.network.WorldListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.RaytraceListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.RotationListener;
@@ -51,7 +52,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class KillAuraModule extends AbstractModule implements PlayerUpdateListener, Render2DListener, RotationListener, RaytraceListener {
+public class KillAuraModule extends AbstractModule implements PlayerUpdateListener, Render2DListener, RotationListener, RaytraceListener, WorldListener {
 
     private final ValueGroup targetSelectionGroup = new ValueGroup(
             this,
@@ -127,10 +128,10 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             "The type of clicking.",
             ClickType.BoxMueller,
             ClickType.values()
-    ).onValueChange((oldValue, newValue) -> {
+    ).onValueChange((oldValue, newValue) -> { //@formatter:off
         oldValue.getClicker().setClickAction(aBoolean -> {});
         this.updateClicker(newValue.getClicker());
-    });
+    }); //@formatter:on
 
     private final ValueGroup rotationGroup = new ValueGroup(
             this,
@@ -198,6 +199,19 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             true
     );
 
+    private final ValueGroup extrasGroup = new ValueGroup(
+            this,
+            "Extras",
+            "Extra settings."
+    );
+
+    private final BooleanValue autoDisable = new BooleanValue(
+            this.extrasGroup,
+            "Auto Disable",
+            "Automatically disables the module.",
+            true
+    );
+
     private LivingEntity target;
     private int targetIndex = 0;
 
@@ -207,7 +221,6 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     private long lastPossibleHit = -1;
 
     private final AutoBlockModule autoBlock;
-
     private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
 
     public KillAuraModule(final AutoBlockModule autoBlock) {
@@ -225,8 +238,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(
                 this,
-                PlayerUpdateEvent.ID, Render2DEvent.ID,
-                RotationEvent.ID, RaytraceEvent.ID
+                PlayerUpdateEvent.ID, Render2DEvent.ID, RotationEvent.ID, RaytraceEvent.ID, WorldLoadEvent.ID
         );
     }
 
@@ -234,8 +246,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(
                 this,
-                PlayerUpdateEvent.ID, Render2DEvent.ID,
-                RotationEvent.ID, RaytraceEvent.ID
+                PlayerUpdateEvent.ID, Render2DEvent.ID, RotationEvent.ID, RaytraceEvent.ID, WorldLoadEvent.ID
         );
 
         this.rotationListener.resetRotation();
@@ -244,7 +255,10 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        this.getTarget();
+        if (mc.player.getHealth() <= 0.0 && this.autoDisable.getValue()) {
+            this.deactivate();
+        }
+
         if (this.target == null ||
                 this.rotationListener.getRotation() == null ||
                 Float.isNaN(this.rotationListener.getRotation().getYaw()) ||
@@ -270,6 +284,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
     @Override
     public void onRotation(final RotationEvent event) {
+        this.getTarget();
+
         if (this.target != null) {
             final Rotation rotation = Rotation.Builder.build(this.target, getAimRange(), this.aimPoints.getValue(), HitboxSelectMode.Circular);
 
@@ -277,7 +293,6 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 this.rotationListener.resetRotation();
                 return;
             }
-
 
             float rotateSpeed = 0.0f;
 
@@ -307,6 +322,13 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     public void onRaytrace(final RaytraceEvent event) {
         if (this.target != null && this.rotationListener.getRotation() != null) {
             event.range = Math.pow(getRange() - 0.05, 2);
+        }
+    }
+
+    @Override
+    public void onPreWorldLoad() {
+        if (this.autoDisable.getValue()) {
+            this.deactivate();
         }
     }
 
