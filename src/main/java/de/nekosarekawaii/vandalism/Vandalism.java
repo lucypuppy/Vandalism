@@ -61,7 +61,6 @@ import java.io.File;
  * TODO: Verschlxfene <br>
  *  - Delete MixinParticleManager
  *  - Add Proxy manager
- *  - Add JiJ and JiS for building/exporting the client
  *  - Rewrite MovementUtil#getFixedMoveInputs to prevent bruteforcing inputs
  *  - Rewrite GCD fix to be accurate
  *  - Rewrite TimerHack to use TPS instead of "speed" alias random multiplier
