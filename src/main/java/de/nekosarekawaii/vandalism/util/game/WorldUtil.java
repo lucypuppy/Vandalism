@@ -82,14 +82,21 @@ public class WorldUtil implements MinecraftWrapper {
         final Vec3d targetVec = eyePos.add(rotationVector.x * range, rotationVector.y * range, rotationVector.z * range);
         final Box box = from.getBoundingBox().stretch(rotationVector.multiply(range)).expand(1.0, 1.0, 1.0);
 
-        final EntityHitResult raycastEntity = ProjectileUtil.raycast(from, eyePos, targetVec, box,
-                entity -> !entity.isSpectator() && entity.canHit() && entity == target, rangeSquared);
+        final EntityHitResult raycastEntity = ProjectileUtil.raycast(from, eyePos, targetVec, box, entity -> {
+            return !entity.isSpectator() && entity.canHit() && entity == target;
+        }, rangeSquared);
 
-        if (raycastEntity == null)
+        if (raycastEntity == null) {
             return false;
+        }
 
-        final BlockHitResult raycastBlocks = mc.world.raycast(new RaycastContext(eyePos, raycastEntity.getPos(),
-                RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, from));
+        final BlockHitResult raycastBlocks = mc.world.raycast(new RaycastContext(
+                eyePos,
+                raycastEntity.getPos(),
+                RaycastContext.ShapeType.OUTLINE,
+                RaycastContext.FluidHandling.NONE,
+                from
+        ));
 
         final double distance = eyePos.squaredDistanceTo(raycastEntity.getPos());
         return distance <= rangeSquared && (raycastBlocks == null || raycastBlocks.getType() == HitResult.Type.MISS);
