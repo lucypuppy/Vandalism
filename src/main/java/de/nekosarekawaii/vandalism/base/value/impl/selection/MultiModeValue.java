@@ -89,6 +89,14 @@ public class MultiModeValue extends Value<List<String>> {
             ImGui.text("Search for " + this.getName());
             ImGui.setNextItemWidth(-1);
             ImGui.inputText("##" + this.getName() + this.getParent().getName() + "search", this.searchInput);
+            if (ImGui.button("Select all##" + this.getName() + this.getParent().getName() + "selectAll", 220, ImGui.getTextLineHeightWithSpacing())) {
+                this.getValue().clear();
+                this.getValue().addAll(this.options);
+            }
+            ImGui.sameLine();
+            if (ImGui.button("Deselect all##" + this.getName() + this.getParent().getName() + "deselectAll", 220, ImGui.getTextLineHeightWithSpacing())) {
+                this.getValue().clear();
+            }
             ImGui.separator();
             ImGui.spacing();
             for (final String value : this.options) {
