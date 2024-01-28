@@ -100,7 +100,7 @@ public enum ScriptCommand {
                 final String parsedCode = parsedCodeObject.getRight().getRight();
                 final ScriptCommand scriptCommand = parsedCodeObject.getLeft();
                 if (execute) scriptCommand.execute(scriptName, lineNumber, parsedCode);
-                else scriptCommand.check(scriptName, lineNumber, parsedCode);
+                else scriptCommand.test(scriptName, lineNumber, parsedCode);
             } else throw new RuntimeException("Unknown script command after jump command '" + command + "'");
         }
     }, exampleBuilder -> {
@@ -131,7 +131,7 @@ public enum ScriptCommand {
                 final String parsedCode = parsedCodeObject.getRight().getRight();
                 final ScriptCommand scriptCommand = parsedCodeObject.getLeft();
                 if (execute) scriptCommand.execute(scriptName, lineNumber, parsedCode);
-                else scriptCommand.check(scriptName, lineNumber, parsedCode);
+                else scriptCommand.test(scriptName, lineNumber, parsedCode);
             } else throw new RuntimeException("Unknown script command after set speed command '" + command + "'");
         }
     }, exampleBuilder -> {
@@ -164,7 +164,7 @@ public enum ScriptCommand {
                 final String parsedCode = parsedCodeObject.getRight().getRight();
                 final ScriptCommand scriptCommand = parsedCodeObject.getLeft();
                 if (execute) scriptCommand.execute(scriptName, lineNumber, parsedCode);
-                else scriptCommand.check(scriptName, lineNumber, parsedCode);
+                else scriptCommand.test(scriptName, lineNumber, parsedCode);
             } else throw new RuntimeException("Unknown script command after set yaw command '" + command + "'");
         }
     }, exampleBuilder -> {
@@ -197,7 +197,7 @@ public enum ScriptCommand {
                 final String parsedCode = parsedCodeObject.getRight().getRight();
                 final ScriptCommand scriptCommand = parsedCodeObject.getLeft();
                 if (execute) scriptCommand.execute(scriptName, lineNumber, parsedCode);
-                else scriptCommand.check(scriptName, lineNumber, parsedCode);
+                else scriptCommand.test(scriptName, lineNumber, parsedCode);
             } else throw new RuntimeException("Unknown script command after set pitch command '" + command + "'");
         }
     }, exampleBuilder -> {
@@ -231,7 +231,7 @@ public enum ScriptCommand {
                 final String parsedCode = parsedCodeObject.getRight().getRight();
                 final ScriptCommand scriptCommand = parsedCodeObject.getLeft();
                 if (execute) scriptCommand.execute(scriptName, lineNumber, parsedCode);
-                else scriptCommand.check(scriptName, lineNumber, parsedCode);
+                else scriptCommand.test(scriptName, lineNumber, parsedCode);
             } else throw new RuntimeException("Unknown script command after set velocity x command '" + command + "'");
         }
     }, exampleBuilder -> {
@@ -265,7 +265,7 @@ public enum ScriptCommand {
                 final String parsedCode = parsedCodeObject.getRight().getRight();
                 final ScriptCommand scriptCommand = parsedCodeObject.getLeft();
                 if (execute) scriptCommand.execute(scriptName, lineNumber, parsedCode);
-                else scriptCommand.check(scriptName, lineNumber, parsedCode);
+                else scriptCommand.test(scriptName, lineNumber, parsedCode);
             } else throw new RuntimeException("Unknown script command after set velocity y command '" + command + "'");
         }
     }, exampleBuilder -> {
@@ -299,7 +299,7 @@ public enum ScriptCommand {
                 final String parsedCode = parsedCodeObject.getRight().getRight();
                 final ScriptCommand scriptCommand = parsedCodeObject.getLeft();
                 if (execute) scriptCommand.execute(scriptName, lineNumber, parsedCode);
-                else scriptCommand.check(scriptName, lineNumber, parsedCode);
+                else scriptCommand.test(scriptName, lineNumber, parsedCode);
             } else throw new RuntimeException("Unknown script command after set velocity z command '" + command + "'");
         }
     }, exampleBuilder -> {
@@ -336,7 +336,7 @@ public enum ScriptCommand {
                 final String parsedCode = parsedCodeObject.getRight().getRight();
                 final ScriptCommand scriptCommand = parsedCodeObject.getLeft();
                 if (execute) scriptCommand.execute(scriptName, lineNumber, parsedCode);
-                else scriptCommand.check(scriptName, lineNumber, parsedCode);
+                else scriptCommand.test(scriptName, lineNumber, parsedCode);
             } else throw new RuntimeException("Unknown script command after wait command '" + command + "'");
         }
     }, exampleBuilder -> {
@@ -370,7 +370,7 @@ public enum ScriptCommand {
                 final String parsedCode = parsedCodeObject.getRight().getRight();
                 final ScriptCommand scriptCommand = parsedCodeObject.getLeft();
                 if (execute) scriptCommand.execute(scriptName, lineNumber, parsedCode);
-                else scriptCommand.check(scriptName, lineNumber, parsedCode);
+                else scriptCommand.test(scriptName, lineNumber, parsedCode);
             } else throw new RuntimeException("Unknown script command after times command '" + command + "'");
         }
     }, exampleBuilder -> {
@@ -390,7 +390,7 @@ public enum ScriptCommand {
         this.scriptCommandExample = scriptCommandExample;
     }
 
-    public void check(final String scriptName, final int lineNumber, final String code) throws Exception {
+    public void test(final String scriptName, final int lineNumber, final String code) throws Exception {
         this.scriptCommandExecution.execute(scriptName, lineNumber, code, false);
     }
 
