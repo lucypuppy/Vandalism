@@ -20,13 +20,13 @@ package de.nekosarekawaii.vandalism.feature.module;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.pattern.storage.named.NamedStorage;
-import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.base.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.base.event.normal.game.ShutdownProcessListener;
 import de.nekosarekawaii.vandalism.base.event.normal.network.DisconnectListener;
 import de.nekosarekawaii.vandalism.base.event.normal.network.WorldListener;
+import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.gui.ModulesClientMenuWindow;
@@ -56,8 +56,11 @@ import org.lwjgl.glfw.GLFW;
 import java.util.List;
 import java.util.Objects;
 
-public class ModuleManager extends NamedStorage<AbstractModule> implements KeyboardInputListener, ShutdownProcessListener,
-        DisconnectListener, MinecraftWrapper, WorldListener {
+public class ModuleManager extends NamedStorage<AbstractModule> implements
+        KeyboardInputListener, ShutdownProcessListener,
+        DisconnectListener, MinecraftWrapper,
+        WorldListener, PlayerUpdateListener
+{
 
     private final ConfigManager configManager;
 
@@ -74,8 +77,12 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
         this.configManager = configManager;
         clientMenuManager.add(new ModulesClientMenuWindow());
-
-        eventSystem.subscribe(this, KeyboardInputEvent.ID, ShutdownProcessEvent.ID, DisconnectEvent.ID, WorldLoadEvent.ID);
+        eventSystem.subscribe(
+                this,
+                KeyboardInputEvent.ID, ShutdownProcessEvent.ID,
+                DisconnectEvent.ID, WorldLoadEvent.ID,
+                PlayerUpdateEvent.ID
+        );
     }
 
     @Override
@@ -138,7 +145,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
         if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN || this.mc.player == null || this.mc.currentScreen != null) {
             return;
         }
-        for (final AbstractModule module : Vandalism.getInstance().getModuleManager().getList()) {
+        for (final AbstractModule module : this.getList()) {
             if (module.getKeyBind().getValue() == key) {
                 module.toggle();
             }
@@ -147,7 +154,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
 
     @Override
     public void onShutdownProcess() {
-        for (final AbstractModule module : getList()) {
+        for (final AbstractModule module : this.getList()) {
             if (module.isActive() && module.isDeactivateOnShutdown()) {
                 module.deactivate();
             }
@@ -158,7 +165,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
     public void onDisconnect(final ClientConnection clientConnection, final Text disconnectReason) {
         //There is a thing called pinging a server
         if (this.mc.getNetworkHandler() != null && Objects.equals(clientConnection, mc.getNetworkHandler().getConnection())) {
-            for (final AbstractModule module : getList()) {
+            for (final AbstractModule module : this.getList()) {
                 if (module.isActive() && module.isDeactivateOnQuit()) {
                     module.deactivate();
                 }
@@ -168,8 +175,18 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements Keybo
 
     @Override
     public void onPreWorldLoad() {
-        for (final AbstractModule module : getList()) {
+        for (final AbstractModule module : this.getList()) {
             if (module.isActive() && module.isDeactivateOnWorldLoad()) {
+                module.deactivate();
+            }
+        }
+    }
+
+    @Override
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        if (!mc.player.isDead()) return;
+        for (final AbstractModule module : this.getList()) {
+            if (module.isActive() && module.isDeactivateOnDeath()) {
                 module.deactivate();
             }
         }

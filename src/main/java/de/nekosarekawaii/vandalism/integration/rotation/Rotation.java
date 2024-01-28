@@ -73,7 +73,7 @@ public class Rotation implements MinecraftWrapper {
 
         private static Vec3d lastPoint;
 
-        public static Rotation build(Entity e, double range, int saimPoints, HitboxSelectMode mode) {
+        public static Rotation build(Entity e, double range, int saimPoints, HitBoxSelectMode mode) {
             final List<Vec3d> aimPoints = RotationUtil.computeHitBoxAimPoints(e, mc.player, saimPoints);
             final Vec3d eyePos = mc.player.getEyePos();
 

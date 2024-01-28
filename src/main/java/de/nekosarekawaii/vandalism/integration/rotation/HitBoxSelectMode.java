@@ -18,8 +18,9 @@
 
 package de.nekosarekawaii.vandalism.integration.rotation;
 
-public enum HitboxSelectMode {
+public enum HitBoxSelectMode {
 
-    Circular,
-    Square
+    CIRCULAR,
+    SQUARE
+
 }

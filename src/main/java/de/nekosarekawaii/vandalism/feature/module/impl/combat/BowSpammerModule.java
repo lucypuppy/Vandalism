@@ -53,7 +53,7 @@ public class BowSpammerModule extends AbstractModule implements PlayerUpdateList
     public BowSpammerModule() {
         super("Bow Spammer", "Lets you spam arrows with a bow.", Category.COMBAT, VersionRange.single(VersionEnum.r1_8));
 
-        this.deactivateAfterSession();
+        this.deactivateAfterSessionDefault();
     }
 
     @Override
