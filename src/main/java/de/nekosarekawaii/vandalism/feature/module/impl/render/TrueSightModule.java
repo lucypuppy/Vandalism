@@ -26,12 +26,12 @@ import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 
 import java.awt.*;
 import java.util.List;
-
 
 public class TrueSightModule extends AbstractModule implements EntityRenderBottomLayerListener {
 
@@ -83,13 +83,17 @@ public class TrueSightModule extends AbstractModule implements EntityRenderBotto
 
     @Override
     public void onLivingEntityRenderBottomLayer(final EntityRenderBottomLayerEvent event) {
-        if (this.entities.getValue() && event.entity.isInvisible()) {
+        if (this.test(event.entity)) {
             final Color color = this.entityColor.getValue().getColor();
             event.red = color.getRed() / 255f;
             event.green = color.getGreen() / 255f;
             event.blue = color.getBlue() / 255f;
             event.alpha = color.getAlpha() / 255f;
         }
+    }
+
+    public boolean test(final Entity entity) {
+        return isActive() && this.entities.getValue() && entity.isInvisible();
     }
 
 }
