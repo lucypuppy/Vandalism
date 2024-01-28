@@ -54,7 +54,7 @@ public class ScriptParser {
                         throw new RuntimeException("Invalid script command '" + line + "' " + (advancedErrors ? "in script '" + scriptName + "' at line " + lineNumber : ""));
                     }
                     try {
-                        scriptCommand.check(scriptName, lineNumber, code);
+                        scriptCommand.test(scriptName, lineNumber, code);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
