@@ -16,9 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.clientmenu.impl.nbteditor;
+package de.nekosarekawaii.vandalism.integration.nbteditor;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.integration.nbteditor.gui.NbtEditorClientMenuWindow;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.types.Popup;
@@ -39,7 +40,7 @@ import org.lwjgl.util.tinyfd.TinyFileDialogs;
 import java.io.IOException;
 import java.util.Objects;
 
-public class NbtManager implements ImNbtDrawer, MinecraftWrapper {
+public class NbtEditorManager implements ImNbtDrawer, MinecraftWrapper {
 
     private NativeImageBackedTexture icons;
     private final MainWindow mainWindow;
@@ -51,7 +52,7 @@ public class NbtManager implements ImNbtDrawer, MinecraftWrapper {
 
     private NamedTag clipboardTag;
 
-    public NbtManager() {
+    public NbtEditorManager() {
         try {
             this.icons = new NativeImageBackedTexture(NativeImage.read(
                     Objects.requireNonNull(Main.class.getClassLoader().getResourceAsStream(
