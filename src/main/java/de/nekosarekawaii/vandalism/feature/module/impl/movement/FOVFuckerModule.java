@@ -26,7 +26,6 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
-import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.util.math.MathHelper;
@@ -84,21 +83,15 @@ public class FOVFuckerModule extends AbstractModule implements PlayerUpdateListe
             false
     );
 
-    private final ValueGroup sneakGroup = new ValueGroup(
-            this,
-            "Sneak Spam Configuration",
-            "The settings for the sneak spam."
-    );
-
     private final BooleanValue sneakSpam = new BooleanValue(
-            this.sneakGroup,
+            this,
             "Sneak Spam",
-            "You are sus with the target.",
+            "Spams sneak while moving.",
             true
     );
 
     private final IntegerValue sneakSpamDelay = new IntegerValue(
-            this.sneakGroup,
+            this,
             "Sneak Spam Delay",
             "The delay for the sneak spam.",
             250,
