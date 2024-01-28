@@ -18,11 +18,13 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
+import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.dietrichevents2.StateTypes;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.cancellable.render.ScreenListener;
 import de.nekosarekawaii.vandalism.base.event.normal.game.MinecraftBoostrapListener;
 import de.nekosarekawaii.vandalism.base.event.normal.game.ShutdownProcessListener;
+import de.nekosarekawaii.vandalism.base.event.normal.game.TickTimeListener;
 import de.nekosarekawaii.vandalism.base.event.normal.network.WorldListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -34,6 +36,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Objects;
 
@@ -91,6 +94,14 @@ public abstract class MixinMinecraftClient {
     @Inject(method = "onResolutionChanged", at = @At("RETURN"))
     public void callScreenListener(final CallbackInfo ci) {
         Vandalism.getInstance().getEventSystem().postInternal(ScreenListener.ScreenEvent.ID, new ScreenListener.ScreenEvent());
+    }
+
+
+    @Inject(method = "getTargetMillisPerTick", at = @At("RETURN"), cancellable = true)
+    public void callTickTimeListener(float millis, CallbackInfoReturnable<Float> cir) {
+        final var event = new TickTimeListener.TickTimeEvent(cir.getReturnValue());
+        DietrichEvents2.global().post(TickTimeListener.TickTimeEvent.ID, event);
+        cir.setReturnValue(event.tickTime);
     }
 
 }
