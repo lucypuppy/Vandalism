@@ -52,8 +52,8 @@ public class MSCredentialsAccount extends AbstractMicrosoftAccount {
         @Override
         public CompletableFuture<AbstractAccount> make() {
             return CompletableFuture.supplyAsync(() -> {
-                try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
-                    final StepFullJavaSession.FullJavaSession javaSession = MinecraftAuth.JAVA_CREDENTIALS_LOGIN.getFromInput(httpClient, new StepCredentialsMsaCode.MsaCredentials(this.email.get(), this.password.get()));
+                try {
+                    final StepFullJavaSession.FullJavaSession javaSession = MinecraftAuth.JAVA_CREDENTIALS_LOGIN.getFromInput(MinecraftAuth.createHttpClient(), new StepCredentialsMsaCode.MsaCredentials(this.email.get(), this.password.get()));
                     final MSCredentialsAccount account = new MSCredentialsAccount();
                     account.initWithExistingSession(javaSession);
                     return account;

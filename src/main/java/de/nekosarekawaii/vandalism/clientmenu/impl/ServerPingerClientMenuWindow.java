@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.clientmenu.impl;
 
-import de.florianmichael.rclasses.math.integration.MSTimer;
+import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.clientmenu.impl.widget.ServerInfoWidget;

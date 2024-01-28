@@ -29,7 +29,6 @@ import net.raphimc.minecraftauth.step.AbstractStep;
 import net.raphimc.minecraftauth.step.java.session.StepFullJavaSession;
 import net.raphimc.minecraftauth.step.msa.StepLocalWebServer;
 import net.raphimc.minecraftauth.util.MicrosoftConstants;
-import org.apache.http.impl.client.CloseableHttpClient;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -67,8 +66,8 @@ public class MSLocalWebserverAccount extends AbstractMicrosoftAccount {
         @Override
         public CompletableFuture<AbstractAccount> make() {
             return CompletableFuture.supplyAsync(() -> {
-                try (final CloseableHttpClient httpClient = MicrosoftConstants.createHttpClient()) {
-                    final StepFullJavaSession.FullJavaSession javaSession = JAVA_LOCAL_WEBSERVER_LOGIN.getFromInput(httpClient, new StepLocalWebServer.LocalWebServerCallback(localWebServer -> {
+                try {
+                    final StepFullJavaSession.FullJavaSession javaSession = JAVA_LOCAL_WEBSERVER_LOGIN.getFromInput(MinecraftAuth.createHttpClient(), new StepLocalWebServer.LocalWebServerCallback(localWebServer -> {
                         final String url = localWebServer.getAuthenticationUrl();
                         this.state = OPEN_URL + url;
                         Util.getOperatingSystem().open(url);

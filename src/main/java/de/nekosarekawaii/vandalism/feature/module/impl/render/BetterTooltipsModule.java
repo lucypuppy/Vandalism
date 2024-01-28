@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
 import de.florianmichael.rclasses.common.StringUtils;
-import de.florianmichael.rclasses.io.ByteCountDataOutput;
+import de.florianmichael.rclasses.io.debugging.ByteCountDataOutput;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.render.TooltipDrawListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;

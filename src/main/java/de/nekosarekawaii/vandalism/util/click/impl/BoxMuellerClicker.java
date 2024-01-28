@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.util.click.impl;
 
 import de.florianmichael.rclasses.common.RandomUtils;
 import de.florianmichael.rclasses.math.BoxMullerTransform;
-import de.florianmichael.rclasses.math.integration.MSTimer;
+import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.florianmichael.rclasses.pattern.evicting.EvictingList;
 import de.nekosarekawaii.vandalism.util.click.Clicker;
 import net.minecraft.util.Pair;
