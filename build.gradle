@@ -1,170 +1,174 @@
 plugins {
-	id "fabric-loom" version "1.5-SNAPSHOT"
+    id "fabric-loom" version "1.5-SNAPSHOT"
 }
 
 allprojects {
-	apply plugin: "java-library"
-	apply plugin: "fabric-loom"
+    apply plugin: "java-library"
+    apply plugin: "fabric-loom"
 
-	base {
-		version = project.maven_version
-		group = project.maven_group
-	}
+    base {
+        version = project.maven_version
+        group = project.maven_group
+    }
 
-	repositories {
-		mavenCentral()
+    configurations {
+        jij // jar in jar configuration
+        api.extendsFrom jij
+        implementation.extendsFrom jij
+    }
 
-		maven {
-			name = "Jitpack"
-			url = "https://jitpack.io/"
-		}
+    repositories {
+        mavenCentral()
 
-		maven {
-			name = "Lenni0451"
-			url = "https://maven.lenni0451.net/everything/"
-		}
+        maven {
+            name = "Jitpack"
+            url = "https://jitpack.io/"
+        }
 
-		maven {
-			name = "TerraformersMC"
-			url = "https://maven.terraformersmc.com/releases/"
-		}
+        maven {
+            name = "Lenni0451"
+            url = "https://maven.lenni0451.net/everything/"
+        }
 
-		maven {
-			name = "OpenCollab Snapshots"
-			url = "https://repo.opencollab.dev/maven-snapshots/"
-		}
+        maven {
+            name = "TerraformersMC"
+            url = "https://maven.terraformersmc.com/releases/"
+        }
 
-		maven {
-			name = "ViaVersion"
-			url = "https://repo.viaversion.com/"
-		}
+        maven {
+            name = "OpenCollab Snapshots"
+            url = "https://repo.opencollab.dev/maven-snapshots/"
+        }
 
-		maven {
-			name = "Modrinth"
-			url = "https://api.modrinth.com/maven/"
-		}
-	}
+        maven {
+            name = "ViaVersion"
+            url = "https://repo.viaversion.com/"
+        }
 
-	dependencies {
-		minecraft("com.mojang:minecraft:${project.minecraft_version}")
+        maven {
+            name = "Modrinth"
+            url = "https://api.modrinth.com/maven/"
+        }
+    }
 
-		mappings("net.fabricmc:yarn:${project.yarn_mappings_version}:v2")
-		modImplementation("net.fabricmc:fabric-loader:${project.loader_version}")
+    dependencies {
+        minecraft "com.mojang:minecraft:${project.minecraft_version}"
 
-		modImplementation(fabricApi.module("fabric-api-base", project.fabric_version))
-		modImplementation(fabricApi.module("fabric-resource-loader-v0", project.fabric_version))
-		modImplementation(fabricApi.module("fabric-networking-api-v1", project.fabric_version))
-		modImplementation(fabricApi.module("fabric-registry-sync-v0", project.fabric_version))
-		modImplementation(fabricApi.module("fabric-item-group-api-v1", project.fabric_version))
+        mappings "net.fabricmc:yarn:${project.yarn_mappings_version}:v2"
+        modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-		implementation("io.github.spair:imgui-java-binding:${project.spair_imgui_version}")
-		implementation("io.github.spair:imgui-java-lwjgl3:${project.spair_imgui_version}")
-		for (os in ["macos", "windows", "linux"]) {
-			implementation("io.github.spair:imgui-java-natives-$os:${project.spair_imgui_version}")
-		}
+        modImplementation fabricApi.module("fabric-api-base", project.fabric_version)
+        modImplementation fabricApi.module("fabric-resource-loader-v0", project.fabric_version)
+        modImplementation fabricApi.module("fabric-networking-api-v1", project.fabric_version)
+        modImplementation fabricApi.module("fabric-registry-sync-v0", project.fabric_version)
+        modImplementation fabricApi.module("fabric-item-group-api-v1", project.fabric_version)
 
-		modImplementation("de.florianmichael:viafabricplus:${project.viafabricplus_version}")
+        modImplementation "de.florianmichael:viafabricplus:${project.viafabricplus_version}"
+    }
 
-		implementation("net.lenni0451:Reflect:${project.reflect_version}")
+    processResources {
+        inputs.property "version", project.version
+        filesMatching("fabric.mod.json") {
+            expand "version": project.version
+        }
+    }
 
-		for (module in ["common", "functional", "io", "math", "pattern"]) {
-			implementation("de.florianmichael.rclasses:$module:${project.rclasses_version}")
-		}
-	}
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
 
-	processResources {
-		inputs.property "version", project.version
-		filesMatching("fabric.mod.json") {
-			expand "version": project.version
-		}
-	}
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
 
-	java {
-		toolchain {
-			languageVersion = JavaLanguageVersion.of(17)
-		}
+    jar {
+        //Rename the project's license file to LICENSE_<project_name> to avoid conflicts
+        from("LICENSE") {
+            rename {
+                "${it}_${maven_name}"
+            }
+        }
+    }
 
-		sourceCompatibility = JavaVersion.VERSION_17
-		targetCompatibility = JavaVersion.VERSION_17
-	}
-
-	jar {
-		//Rename the project's license file to LICENSE_<project_name> to avoid conflicts
-		from("LICENSE") {
-			rename {
-				"${it}_${maven_name}"
-			}
-		}
-	}
-
-	idea {
-		module {
-			["run"].each {
-				excludeDirs << file("$projectDir/$it")
-			}
-		}
-	}
+    idea {
+        module {
+            ["run"].each {
+                excludeDirs << file("$projectDir/$it")
+            }
+        }
+    }
 
 }
 
 subprojects {
 
-	dependencies {
-		implementation project(":")
-	}
+    dependencies {
+        implementation project(":")
+    }
 
-	tasks.register("installCompileAddon") {
-		group "vandalism"
+    tasks.register("installCompileAddon") {
+        group "vandalism"
 
-		dependsOn "build"
-		finalizedBy "installAddon"
-	}
+        dependsOn "build"
+        finalizedBy "installAddon"
+    }
 
-	tasks.register("installAddon") {
-		group "vandalism"
+    tasks.register("installAddon") {
+        group "vandalism"
 
-		doLast {
-			//Locate the mods folder
-			File modsFolder = new File(rootProject.projectDir, "run" + File.separator + "mods")
+        doLast {
+            //Locate the mods folder
+            File modsFolder = new File(rootProject.projectDir, "run" + File.separator + "mods")
 
-			//Addon output jars are always named Addon<name>-<version>.jar
-			String newName = project.name + "-${project.maven_version}.jar"
+            //Addon output jars are always named Addon<name>-<version>.jar
+            String newName = project.name + "-${project.maven_version}.jar"
 
-			//Locate the output jar
-			File outputJar = new File(file("."), "build" + File.separator + "libs" + File.separator + newName)
+            //Locate the output jar
+            File outputJar = new File(file("."), "build" + File.separator + "libs" + File.separator + newName)
 
-			for (final def modFile in modsFolder.listFiles()) {
-				if (modFile.name.startsWith(project.name) && modFile.isFile()) {
-					//If the addon is already installed, delete the old version
-					if (!modFile.delete()) {
-						println "Failed to delete old version of " + project.name
-					}
-				}
-			}
+            for (final def modFile in modsFolder.listFiles()) {
+                if (modFile.name.startsWith(project.name) && modFile.isFile()) {
+                    //If the addon is already installed, delete the old version
+                    if (!modFile.delete()) {
+                        println "Failed to delete old version of " + project.name
+                    }
+                }
+            }
 
-			//Copy the output jar to the mods folder
-			if (outputJar.renameTo(new File(modsFolder, newName))) {
-				println "Installed " + project.name
-			}
-		}
-	}
+            //Copy the output jar to the mods folder
+            if (outputJar.renameTo(new File(modsFolder, newName))) {
+                println "Installed " + project.name
+            }
+        }
+    }
 
 }
 
 base {
-	archivesName = project.maven_name
+    archivesName = project.maven_name
 }
 
 loom {
-	accessWidenerPath = file("src/main/resources/" + maven_name + ".accesswidener")
+    accessWidenerPath = file("src/main/resources/" + maven_name + ".accesswidener")
 }
 
 dependencies {
-	implementation("de.florianmichael:DietrichEvents2:${project.dietrichevents2_version}")
-	implementation("de.florianmichael:WaybackAuthLib:${project.waybackauthlib_version}")
+    jij "de.florianmichael:DietrichEvents2:${project.dietrichevents2_version}"
+    jij "de.florianmichael:WaybackAuthLib:${project.waybackauthlib_version}"
+    jij ("de.florianmichael.rclasses:all:${project.rclasses_version}") {
+        exclude module: "kotlin-support"
+    }
 
-	implementation("net.lenni0451:ImNbt:${project.imnbt_version}")
-	implementation("net.lenni0451:MCPing:${project.mc_ping_version}")
+    jij "net.lenni0451:ImNbt:${project.imnbt_version}"
+    jij "net.lenni0451:MCPing:${project.mc_ping_version}"
+    jij "net.lenni0451:Reflect:${project.reflect_version}"
 
-	implementation("org.jsoup:jsoup:${project.jsoup_version}")
+    jij "io.github.spair:imgui-java-binding:${project.spair_imgui_version}"
+    jij "io.github.spair:imgui-java-lwjgl3:${project.spair_imgui_version}"
+    jij "io.github.spair:imgui-java-natives-macos:${project.spair_imgui_version}"
+    jij "io.github.spair:imgui-java-natives-windows:${project.spair_imgui_version}"
+    jij "io.github.spair:imgui-java-natives-linux:${project.spair_imgui_version}"
+
+    jij "org.jsoup:jsoup:${project.jsoup_version}"
 }
