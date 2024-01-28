@@ -162,7 +162,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.hudManager = new HUDManager(this.configManager, this.clientMenuManager);
         this.hudManager.init();
 
-        this.spotifyManager = new SpotifyManager(this.configManager, this.clientMenuManager, this.hudManager);
+        this.spotifyManager = new SpotifyManager(this.configManager, this.hudManager);
 
         //Features
         this.moduleManager = new ModuleManager(this.eventSystem, this.configManager, this.clientMenuManager);

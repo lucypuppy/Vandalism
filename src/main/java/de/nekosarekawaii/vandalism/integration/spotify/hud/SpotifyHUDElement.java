@@ -57,159 +57,155 @@ public class SpotifyHUDElement extends HUDElement {
 
     @Override
     public void onRender(final DrawContext context, final float delta) {
+        int width = 0, height = 0;
         final MatrixStack matrices = context.getMatrices();
         final float scale = 0.5f;
         final int fontHeight = this.mc.textRenderer.fontHeight;
-        final int heightAddition = this.spotifyManager.isLoggedIn() ? fontHeight * 2 : 0;
+        final int heightAddition = fontHeight * 2;
         final Map<String, String> infoMap = new LinkedHashMap<>();
         final SpotifyManager spotifyManager = this.spotifyManager;
-        if (spotifyManager.isLoggedIn()) {
-            spotifyManager.update();
-            final SpotifyData spotifyData = spotifyManager.getCurrentSpotifyData();
-            final boolean paused = spotifyData.isPaused();
-            final String waitingForData = "Waiting for data...";
-            infoMap.put("Type", !spotifyData.getType().isEmpty() ? spotifyData.getType() : waitingForData);
-            infoMap.put("Name", !spotifyData.getName().isEmpty() ? spotifyData.getName() : waitingForData);
-            infoMap.put("Artists", !spotifyData.getArtists().isEmpty() ? String.join(", ", spotifyData.getArtists()) : waitingForData);
-            String max = "00:00";
-            if (spotifyData.getDuration() > 0) {
-                final int maxSeconds = (int) Math.ceil(spotifyData.getDuration() / 1000d);
-                final int maxMinutes = maxSeconds / 60;
-                final int maxSecondsRest = maxSeconds % 60;
-                max = (maxMinutes < 10 ? "0" : "") + maxMinutes + ":" + (maxSecondsRest < 10 ? "0" : "") + maxSecondsRest;
-            }
-            final long time = spotifyData.getTime();
-            final long progress = spotifyData.getProgress();
-            long currentProgress;
-            final long currentTime = System.currentTimeMillis();
-            if (paused) {
-                currentProgress = spotifyData.getLastTime() - (time - progress);
-            } else {
-                currentProgress = currentTime - (time - progress);
-                spotifyData.setLastTime(currentTime);
-            }
-            final int currentSeconds = (int) Math.ceil(Math.min(currentProgress, spotifyData.getDuration()) / 1000d);
-            final int currentMinutes = currentSeconds / 60;
-            final int currentSecondsRest = currentSeconds % 60;
-            final String current = (currentMinutes < 10 ? "0" : "") + currentMinutes + ":" + (currentSecondsRest < 10 ? "0" : "") + currentSecondsRest;
+        spotifyManager.update();
+        final SpotifyData spotifyData = spotifyManager.getCurrentSpotifyData();
+        final boolean paused = spotifyData.isPaused();
+        final String waitingForData = "Waiting for data...";
+        infoMap.put("Type", !spotifyData.getType().isEmpty() ? spotifyData.getType() : waitingForData);
+        infoMap.put("Name", !spotifyData.getName().isEmpty() ? spotifyData.getName() : waitingForData);
+        infoMap.put("Artists", !spotifyData.getArtists().isEmpty() ? String.join(", ", spotifyData.getArtists()) : waitingForData);
+        String max = "00:00";
+        if (spotifyData.getDuration() > 0) {
+            final int maxSeconds = (int) Math.ceil(spotifyData.getDuration() / 1000d);
+            final int maxMinutes = maxSeconds / 60;
+            final int maxSecondsRest = maxSeconds % 60;
+            max = (maxMinutes < 10 ? "0" : "") + maxMinutes + ":" + (maxSecondsRest < 10 ? "0" : "") + maxSecondsRest;
+        }
+        final long time = spotifyData.getTime();
+        final long progress = spotifyData.getProgress();
+        long currentProgress;
+        final long currentTime = System.currentTimeMillis();
+        if (paused) {
+            currentProgress = spotifyData.getLastTime() - (time - progress);
+        } else {
+            currentProgress = currentTime - (time - progress);
+            spotifyData.setLastTime(currentTime);
+        }
+        final int currentSeconds = (int) Math.ceil(Math.min(currentProgress, spotifyData.getDuration()) / 1000d);
+        final int currentMinutes = currentSeconds / 60;
+        final int currentSecondsRest = currentSeconds % 60;
+        final String current = (currentMinutes < 10 ? "0" : "") + currentMinutes + ":" + (currentSecondsRest < 10 ? "0" : "") + currentSecondsRest;
+        context.fill(
+                this.x,
+                this.y,
+                this.x + this.width,
+                this.y + (fontHeight * infoMap.size()) + heightAddition,
+                Integer.MIN_VALUE
+        );
+        Identifier imageIdentifier = FabricBootstrap.MOD_ICON;
+        AbstractTexture image = this.mc.getTextureManager().getTexture(imageIdentifier);
+        if (spotifyData.getImage() != null) {
+            imageIdentifier = SpotifyData.IMAGE_IDENTIFIER;
+            image = spotifyData.getImage();
+        }
+        image.setFilter(
+                true,
+                true
+        );
+        GLStateTracker.BLEND.save(true);
+        final int textureX = this.x + 2;
+        final int textureY = this.y + 2;
+        final int textureSize = 30;
+        context.drawTexture(
+                imageIdentifier,
+                textureX,
+                textureY,
+                0,
+                0,
+                textureSize,
+                textureSize,
+                textureSize,
+                textureSize
+        );
+        GLStateTracker.BLEND.revert();
+        if (paused) {
             context.fill(
-                    this.x,
-                    this.y,
-                    this.x + this.width,
-                    this.y + (fontHeight * infoMap.size()) + heightAddition,
-                    Integer.MIN_VALUE
-            );
-            Identifier imageIdentifier = FabricBootstrap.MOD_ICON;
-            AbstractTexture image = this.mc.getTextureManager().getTexture(imageIdentifier);
-            if (spotifyData.getImage() != null) {
-                imageIdentifier = SpotifyData.IMAGE_IDENTIFIER;
-                image = spotifyData.getImage();
-            }
-            image.setFilter(
-                    true,
-                    true
-            );
-            GLStateTracker.BLEND.save(true);
-            final int textureX = this.x + 2;
-            final int textureY = this.y + 2;
-            final int textureSize = 30;
-            context.drawTexture(
-                    imageIdentifier,
                     textureX,
                     textureY,
-                    0,
-                    0,
-                    textureSize,
-                    textureSize,
-                    textureSize,
-                    textureSize
+                    textureX + textureSize,
+                    textureY + textureSize,
+                    ColorUtils.toSRGB(0, 0, 0, 0.6f)
             );
-            GLStateTracker.BLEND.revert();
-            if (paused) {
-                context.fill(
-                        textureX,
-                        textureY,
-                        textureX + textureSize,
-                        textureY + textureSize,
-                        ColorUtils.toSRGB(0, 0, 0, 0.6f)
-                );
-                final float alpha = System.currentTimeMillis() % 1000 < 500 ? 0.7f : 0f;
-                context.fill(
-                        textureX + 10,
-                        textureY + 8,
-                        textureX + textureSize - 17,
-                        textureY + textureSize - 8,
-                        ColorUtils.toSRGB(1f, 1f, 1f, alpha)
-                );
-                context.fill(
-                        textureX + 17,
-                        textureY + 8,
-                        textureX + textureSize - 10,
-                        textureY + textureSize - 8,
-                        ColorUtils.toSRGB(1f, 1f, 1f, alpha)
-                );
-            }
-            final int progressBarY = this.y + (fontHeight * infoMap.size()) + heightAddition - 10;
-            final int progressBarOffset = 8;
-            final int progressBarStartX = this.x + progressBarOffset;
-            final int endWidth = this.width - (progressBarOffset * 2);
-            final int progressBarEndX = progressBarStartX + endWidth;
-            int progressBarCurrentProgress =  (int) (progressBarStartX + (endWidth * (Math.max(1, currentProgress) / (double) spotifyData.getDuration())));
-            if (progressBarCurrentProgress > progressBarEndX) {
-                progressBarCurrentProgress = progressBarEndX;
-            }
-            context.drawHorizontalLine(
-                    progressBarStartX,
-                    progressBarEndX - 1,
-                    progressBarY,
-                    Color.GRAY.getRGB()
+            final float alpha = System.currentTimeMillis() % 1000 < 500 ? 0.7f : 0f;
+            context.fill(
+                    textureX + 10,
+                    textureY + 8,
+                    textureX + textureSize - 17,
+                    textureY + textureSize - 8,
+                    ColorUtils.toSRGB(1f, 1f, 1f, alpha)
             );
-            context.drawHorizontalLine(
-                    progressBarStartX,
-                    progressBarCurrentProgress,
-                    progressBarY,
-                    Color.GREEN.getRGB()
+            context.fill(
+                    textureX + 17,
+                    textureY + 8,
+                    textureX + textureSize - 10,
+                    textureY + textureSize - 8,
+                    ColorUtils.toSRGB(1f, 1f, 1f, alpha)
             );
-            matrices.push();
-            matrices.scale(scale, scale, 1f);
-            context.drawVerticalLine(
-                    (int) (progressBarCurrentProgress / scale) + 1,
-                    (int) (progressBarY / scale) - 4,
-                    (int) ((progressBarY + 4) / scale),
-                    Color.WHITE.getRGB()
-            );
-            context.drawVerticalLine(
-                    (int) (progressBarStartX / scale),
-                    (int) (progressBarY / scale) - 4,
-                    (int) ((progressBarY + 4) / scale),
-                    Color.GRAY.getRGB()
-            );
-            context.drawCenteredTextWithShadow(
-                    this.mc.textRenderer,
-                    current,
-                    (int) (progressBarStartX / scale),
-                    (int) ((progressBarY + 5) / scale),
-                    Color.WHITE.getRGB()
-            );
-            context.drawVerticalLine(
-                    (int) (progressBarEndX / scale),
-                    (int) (progressBarY / scale) - 4,
-                    (int) ((progressBarY + 4) / scale),
-                    Color.GRAY.getRGB()
-            );
-            context.drawCenteredTextWithShadow(
-                    this.mc.textRenderer,
-                    max,
-                    (int) (progressBarEndX / scale),
-                    (int) ((progressBarY + 5) / scale),
-                    Color.WHITE.getRGB()
-            );
-            matrices.pop();
-        } else {
-            infoMap.put("Spotify", "Not logged in.");
         }
+        final int progressBarY = this.y + (fontHeight * infoMap.size()) + heightAddition - 10;
+        final int progressBarOffset = 8;
+        final int progressBarStartX = this.x + progressBarOffset;
+        final int endWidth = this.width - (progressBarOffset * 2);
+        final int progressBarEndX = progressBarStartX + endWidth;
+        int progressBarCurrentProgress = (int) (progressBarStartX + (endWidth * (Math.max(1, currentProgress) / (double) spotifyData.getDuration())));
+        if (progressBarCurrentProgress > progressBarEndX) {
+            progressBarCurrentProgress = progressBarEndX;
+        }
+        context.drawHorizontalLine(
+                progressBarStartX,
+                progressBarEndX - 1,
+                progressBarY,
+                Color.GRAY.getRGB()
+        );
+        context.drawHorizontalLine(
+                progressBarStartX,
+                progressBarCurrentProgress,
+                progressBarY,
+                Color.GREEN.getRGB()
+        );
+        matrices.push();
+        matrices.scale(scale, scale, 1f);
+        context.drawVerticalLine(
+                (int) (progressBarCurrentProgress / scale) + 1,
+                (int) (progressBarY / scale) - 4,
+                (int) ((progressBarY + 4) / scale),
+                Color.WHITE.getRGB()
+        );
+        context.drawVerticalLine(
+                (int) (progressBarStartX / scale),
+                (int) (progressBarY / scale) - 4,
+                (int) ((progressBarY + 4) / scale),
+                Color.GRAY.getRGB()
+        );
+        context.drawCenteredTextWithShadow(
+                this.mc.textRenderer,
+                current,
+                (int) (progressBarStartX / scale),
+                (int) ((progressBarY + 5) / scale),
+                Color.WHITE.getRGB()
+        );
+        context.drawVerticalLine(
+                (int) (progressBarEndX / scale),
+                (int) (progressBarY / scale) - 4,
+                (int) ((progressBarY + 4) / scale),
+                Color.GRAY.getRGB()
+        );
+        context.drawCenteredTextWithShadow(
+                this.mc.textRenderer,
+                max,
+                (int) (progressBarEndX / scale),
+                (int) ((progressBarY + 5) / scale),
+                Color.WHITE.getRGB()
+        );
+        matrices.pop();
         final int wrapWidth = this.textWrapWidth.getValue();
-        int width = 0, height = 0;
         final int textOffset = 34;
         final int textX = (int) ((this.x + textOffset) / scale);
         final int textY = (int) ((this.y + 4) / scale) + 7;
@@ -231,7 +227,7 @@ public class SpotifyHUDElement extends HUDElement {
         }
         matrices.pop();
         this.width = Math.max((int) (width + textOffset + 1 / scale), 160);
-        this.height = (this.spotifyManager.isLoggedIn() ?  (fontHeight * infoMap.size()) + heightAddition : 0);
+        this.height = (fontHeight * infoMap.size()) + heightAddition;
     }
 
 }

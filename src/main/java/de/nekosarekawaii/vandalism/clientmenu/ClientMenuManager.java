@@ -30,8 +30,9 @@ import de.nekosarekawaii.vandalism.clientmenu.config.ClientMenuConfig;
 import de.nekosarekawaii.vandalism.clientmenu.impl.ServerAddressResolverClientMenuWindow;
 import de.nekosarekawaii.vandalism.clientmenu.impl.ServerPingerClientMenuWindow;
 import de.nekosarekawaii.vandalism.clientmenu.impl.namehistory.NameHistoryClientMenuWindow;
-import de.nekosarekawaii.vandalism.clientmenu.impl.nbteditor.NbtEditorClientMenuWindow;
 import de.nekosarekawaii.vandalism.clientmenu.impl.port.PortScannerClientMenuWindow;
+import de.nekosarekawaii.vandalism.integration.nbteditor.gui.NbtEditorClientMenuWindow;
+import de.nekosarekawaii.vandalism.integration.spotify.gui.SpotifyClientMenuWindow;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.imgui.ImLoader;
 import net.minecraft.client.MinecraftClient;
@@ -63,7 +64,8 @@ public class ClientMenuManager extends Storage<ClientMenuWindow> implements Keyb
                 new ServerAddressResolverClientMenuWindow(),
                 new ServerPingerClientMenuWindow(),
                 new NameHistoryClientMenuWindow(),
-                new NbtEditorClientMenuWindow()
+                new NbtEditorClientMenuWindow(),
+                new SpotifyClientMenuWindow()
         );
     }
 

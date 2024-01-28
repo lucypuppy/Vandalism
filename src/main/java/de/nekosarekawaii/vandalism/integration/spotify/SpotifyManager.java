@@ -27,10 +27,8 @@ import com.sun.net.httpserver.HttpServer;
 import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
-import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
 import de.nekosarekawaii.vandalism.integration.spotify.config.SpotifyConfig;
-import de.nekosarekawaii.vandalism.integration.spotify.gui.SpotifyClientMenuWindow;
 import de.nekosarekawaii.vandalism.integration.spotify.hud.SpotifyHUDElement;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
@@ -75,9 +73,8 @@ public class SpotifyManager {
     private final MSTimer updateTimer = new MSTimer();
     private final ExecutorService executor = Executors.newFixedThreadPool(2);
 
-    public SpotifyManager(final ConfigManager configManager, final ClientMenuManager clientMenuManager, final HUDManager hudManager) {
+    public SpotifyManager(final ConfigManager configManager, final HUDManager hudManager) {
         configManager.add(new SpotifyConfig(this));
-        clientMenuManager.add(new SpotifyClientMenuWindow(this));
         hudManager.add(new SpotifyHUDElement(this));
     }
 

@@ -16,10 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.clientmenu.impl.nbteditor;
+package de.nekosarekawaii.vandalism.integration.nbteditor.gui;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
+import de.nekosarekawaii.vandalism.integration.nbteditor.NbtEditorManager;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import net.lenni0451.imnbt.ui.types.Popup;
@@ -35,27 +36,27 @@ import java.io.IOException;
 
 public class NbtEditorClientMenuWindow extends ClientMenuWindow {
 
-    private final NbtManager nbtManager;
+    private final NbtEditorManager nbtEditorManager;
 
     public NbtEditorClientMenuWindow() {
         super("Nbt Editor", Category.MISC);
-        this.nbtManager = new NbtManager();
+        this.nbtEditorManager = new NbtEditorManager();
     }
 
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        final Window nbtRendererWindow = this.nbtManager.getWindow();
+        final Window nbtRendererWindow = this.nbtEditorManager.getWindow();
         if (nbtRendererWindow != null) {
             ImGui.begin("Nbt Editor##nbteditor", ImGuiWindowFlags.MenuBar);
             nbtRendererWindow.render();
             ImGui.end();
         } else {
-            this.nbtManager.showWindow(this.nbtManager.getMainWindow());
+            this.nbtEditorManager.showWindow(this.nbtEditorManager.getMainWindow());
         }
-        final Popup<?> nbtRendererPopup = this.nbtManager.getPopup();
+        final Popup<?> nbtRendererPopup = this.nbtEditorManager.getPopup();
         if (nbtRendererPopup != null) {
             nbtRendererPopup.open();
-            nbtRendererPopup.render(this.nbtManager);
+            nbtRendererPopup.render(this.nbtEditorManager);
         }
     }
 
@@ -64,7 +65,7 @@ public class NbtEditorClientMenuWindow extends ClientMenuWindow {
             final ByteArrayOutputStream stream = new ByteArrayOutputStream();
             final DataOutputStream out = new DataOutputStream(stream);
             NbtIo.write(nbt, out);
-            this.nbtManager.getMainWindow().dragAndDrop(new File(name), stream.toByteArray());
+            this.nbtEditorManager.getMainWindow().dragAndDrop(new File(name), stream.toByteArray());
             out.close();
             stream.close();
             setActive(true);
