@@ -46,6 +46,7 @@
     "event.MixinClientPlayerEntity",
     "event.MixinClientPlayerInteractionManager",
     "event.MixinEntity",
+    "event.MixinFeatureRenderer",
     "event.MixinGameRenderer",
     "event.MixinInGameHud",
     "event.MixinItemStack",

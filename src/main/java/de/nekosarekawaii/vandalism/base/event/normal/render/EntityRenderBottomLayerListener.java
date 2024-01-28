@@ -21,17 +21,17 @@ package de.nekosarekawaii.vandalism.base.event.normal.render;
 import de.florianmichael.dietrichevents2.AbstractEvent;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Entity;
 
-public interface LivingEntityRenderBottomLayerListener {
+public interface EntityRenderBottomLayerListener {
 
-    void onLivingEntityRenderBottomLayer(final LivingEntityRenderBottomLayerEvent event);
+    void onLivingEntityRenderBottomLayer(final EntityRenderBottomLayerEvent event);
 
-    class LivingEntityRenderBottomLayerEvent extends AbstractEvent<LivingEntityRenderBottomLayerListener> {
+    class EntityRenderBottomLayerEvent extends AbstractEvent<EntityRenderBottomLayerListener> {
 
         public static final int ID = 28;
 
-        public final LivingEntity livingEntity;
+        public final Entity entity;
 
         public final MatrixStack matrixStack;
 
@@ -41,8 +41,8 @@ public interface LivingEntityRenderBottomLayerListener {
 
         public float red, green, blue, alpha;
 
-        public LivingEntityRenderBottomLayerEvent(final LivingEntity livingEntity, final MatrixStack matrixStack, final VertexConsumer vertexConsumer, final int light, final int overlay, final float red, final float green, final float blue, final float alpha) {
-            this.livingEntity = livingEntity;
+        public EntityRenderBottomLayerEvent(final Entity entity, final MatrixStack matrixStack, final VertexConsumer vertexConsumer, final int light, final int overlay, final float red, final float green, final float blue, final float alpha) {
+            this.entity = entity;
             this.matrixStack = matrixStack;
             this.vertexConsumer = vertexConsumer;
             this.light = light;
@@ -54,7 +54,7 @@ public interface LivingEntityRenderBottomLayerListener {
         }
 
         @Override
-        public void call(final LivingEntityRenderBottomLayerListener listener) {
+        public void call(final EntityRenderBottomLayerListener listener) {
             listener.onLivingEntityRenderBottomLayer(this);
         }
 
