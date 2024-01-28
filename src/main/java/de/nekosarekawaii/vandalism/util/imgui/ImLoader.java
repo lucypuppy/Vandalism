@@ -60,15 +60,22 @@ public class ImLoader {
 
     protected static void loadFonts(final ImGuiIO io) {
         final var atlas = io.getFonts();
-        final var fontConfig = new ImFontConfig();
-        fontConfig.setPixelSnapH(true);
 
         final var rangesBuilder = new ImFontGlyphRangesBuilder();
-        rangesBuilder.addRanges(io.getFonts().getGlyphRangesDefault());
-        rangesBuilder.addRanges(io.getFonts().getGlyphRangesCyrillic());
-        rangesBuilder.addRanges(io.getFonts().getGlyphRangesJapanese());
+        rangesBuilder.addRanges(atlas.getGlyphRangesDefault());
+        rangesBuilder.addRanges(atlas.getGlyphRangesCyrillic());
+        rangesBuilder.addRanges(atlas.getGlyphRangesJapanese());
+        rangesBuilder.addRanges(FontAwesomeIcons._IconRange);
 
-        io.setFontDefault(ImUtils.loadFont("roboto-regular", 16, atlas, fontConfig, rangesBuilder.buildRanges()));
+        final var fontConfig = new ImFontConfig();
+        fontConfig.setPixelSnapH(true);
+        fontConfig.setGlyphRanges(rangesBuilder.buildRanges());
+
+        ImUtils.loadFont("roboto-regular", 16, atlas, fontConfig, fontConfig.getGlyphRanges());
+
+        fontConfig.setMergeMode(true);
+        ImUtils.loadFont("fa-solid-900", 16, atlas, fontConfig, fontConfig.getGlyphRanges());
+        ImUtils.loadFont("fa-regular-400", 16, atlas, fontConfig, fontConfig.getGlyphRanges());
 
         atlas.build();
         fontConfig.destroy();
