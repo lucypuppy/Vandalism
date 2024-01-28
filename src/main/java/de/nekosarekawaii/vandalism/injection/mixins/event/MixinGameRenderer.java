@@ -19,20 +19,57 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.event.normal.player.RaytraceListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.RotationListener;
+import de.nekosarekawaii.vandalism.injection.access.IGameRenderer;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.render.GameRenderer;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
-public abstract class MixinGameRenderer implements MinecraftWrapper {
+public abstract class MixinGameRenderer implements IGameRenderer, MinecraftWrapper {
+
+    @Unique
+    private double vandalism$range = -1;
 
     @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setInverseViewRotationMatrix(Lorg/joml/Matrix3f;)V", shift = At.Shift.AFTER))
     private void callRotationListener(final CallbackInfo ci) {
         Vandalism.getInstance().getEventSystem().postInternal(RotationListener.RotationEvent.ID, new RotationListener.RotationEvent());
+    }
+
+    @ModifyConstant(method = "updateTargetedEntity", constant = @Constant(doubleValue = 9.0))
+    private double changeRange(double constant) {
+        if (vandalism$range != -1) {
+            return vandalism$range;
+        } else {
+            final RaytraceListener.RaytraceEvent event = new RaytraceListener.RaytraceEvent(constant);
+            Vandalism.getInstance().getEventSystem().postInternal(RaytraceListener.RaytraceEvent.ID, event);
+            return event.range;
+        }
+    }
+
+    @Redirect(method = "updateTargetedEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;hasExtendedReach()Z"))
+    private boolean alwaysSurvival(ClientPlayerInteractionManager instance) {
+        return vandalism$range == -1 && instance.hasExtendedReach();
+    }
+
+    @Override
+    public boolean vandalism$isSelfInflicted() {
+        return vandalism$range != -1;
+    }
+
+    @Override
+    public double vandalism$getRange() {
+        return vandalism$range;
+    }
+
+    @Override
+    public void vandalism$setRange(double range) {
+        vandalism$range = range;
     }
 
 }
