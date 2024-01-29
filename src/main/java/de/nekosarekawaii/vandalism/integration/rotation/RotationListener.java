@@ -23,6 +23,8 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.RotationSettings;
 import de.nekosarekawaii.vandalism.base.event.cancellable.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.StrafeListener;
+import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationGCD;
+import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.RenderUtil;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
@@ -30,9 +32,11 @@ import net.minecraft.util.math.MathHelper;
 
 public class RotationListener implements OutgoingPacketListener, StrafeListener, MinecraftWrapper, de.nekosarekawaii.vandalism.base.event.normal.player.RotationListener {
 
-    private Rotation rotation, targetRotation, lastRotation;
-    private double partialIterations;
+    private Rotation rotation;
+    private Rotation targetRotation;
     private RotationPriority currentPriority;
+
+    private double partialIterations;
 
     private float rotateSpeed;
     private float correlationStrength;
@@ -59,11 +63,13 @@ public class RotationListener implements OutgoingPacketListener, StrafeListener,
     @Override
     public void onRotation(RotationEvent event) {
         final float partialTicks = this.mc.getTickDelta();
-        this.lastRotation = new Rotation(this.mc.player.lastYaw, this.mc.player.lastPitch);
+        final Rotation lastRotation = new Rotation(this.mc.player.lastYaw, this.mc.player.lastPitch);
 
         if (this.targetRotation != null) {
-            this.rotation = this.applyGCDFix(rotationDistribution(this.targetRotation, this.lastRotation,
-                    this.rotateSpeed, this.correlationStrength), partialTicks);
+            final Rotation smoothedRotation = RotationUtil.rotationDistribution(this.targetRotation, lastRotation,
+                    this.rotateSpeed, this.correlationStrength);
+
+            this.rotation = this.applyGCDFix(smoothedRotation, lastRotation, partialTicks);
             return;
         }
 
@@ -82,14 +88,10 @@ public class RotationListener implements OutgoingPacketListener, StrafeListener,
         }
 
         final RotationSettings settings = Vandalism.getInstance().getClientSettings().getRotationSettings();
+        final Rotation smoothedRotation = RotationUtil.rotationDistribution(new Rotation(yaw, pitch), lastRotation,
+                settings.rotateSpeed.getValue(), settings.correlationStrength.getValue());
 
-        if (!settings.rotateBack.getValue()) {
-            this.rotation = this.applyGCDFix(new Rotation(yaw, pitch), partialTicks);
-            return;
-        }
-
-        this.rotation = this.applyGCDFix(rotationDistribution(new Rotation(yaw, pitch), this.lastRotation,
-                settings.rotateSpeed.getValue(), settings.correlationStrength.getValue()), partialTicks);
+        this.rotation = this.applyGCDFix(smoothedRotation, lastRotation, partialTicks);
     }
 
     @Override
@@ -117,66 +119,31 @@ public class RotationListener implements OutgoingPacketListener, StrafeListener,
         }
     }
 
+    private Rotation applyGCDFix(final Rotation rotation, final Rotation lastRotation, final float partialTicks) {
+        final boolean disallowGCD = this.mc.options.getPerspective().isFirstPerson() && this.mc.player.isUsingSpyglass();
+        final double f = this.mc.options.getMouseSensitivity().getValue() * 0.6f + 0.2f;
+        final double g = f * f * f;
+        final double gcd = g * 8.0;
+
+        final double iterationsNeeded = (RenderUtil.getFps() / 20.0) * partialTicks;
+        final int iterations = MathHelper.floor(iterationsNeeded + this.partialIterations);
+        this.partialIterations += iterationsNeeded - iterations;
+
+        final RotationGCD gcdMode = Vandalism.getInstance().getClientSettings().getRotationSettings().gcdMode.getValue();
+        final Rotation fixedRotation = gcdMode.getLambda().apply(rotation, lastRotation, disallowGCD ? g : gcd, iterations);
+
+        fixedRotation.setYaw(lastRotation.getYaw() + MathHelper.wrapDegrees(fixedRotation.getYaw() - lastRotation.getYaw()));
+        fixedRotation.setPitch(MathHelper.clamp(fixedRotation.getPitch(), -90.0f, 90.0f));
+
+        return fixedRotation;
+    }
+
     public void resetRotation() {
         this.targetRotation = null;
     }
 
-    private Rotation applyGCDFix(final Rotation rotation, final float partialTicks) {
-        final double f = this.mc.options.getMouseSensitivity().getValue() * 0.6f + 0.2f;
-        final double g = f * f * f;
-        final double gcd = g * 8.0;
-        final boolean disallowGCD = this.mc.options.getPerspective().isFirstPerson() && this.mc.player.isUsingSpyglass();
-        final double iterationsNeeded = (RenderUtil.getFps() / 20.0) * partialTicks;
-        final int iterations = MathHelper.floor(iterationsNeeded + this.partialIterations);
-        this.partialIterations += iterationsNeeded - iterations;
-        final RotationGCD gcdMode = Vandalism.getInstance().getClientSettings().getRotationSettings().gcdMode.getValue();
-        final Rotation fixedRotation = gcdMode.getLambda().apply(rotation, this.lastRotation, disallowGCD ? g : gcd, iterations);
-        fixedRotation.setYaw(this.lastRotation.getYaw() + MathHelper.wrapDegrees(fixedRotation.getYaw() - this.lastRotation.getYaw()));
-        fixedRotation.setPitch(MathHelper.clamp(fixedRotation.getPitch(), -90.0f, 90.0f));
-        return fixedRotation;
-    }
-
-    // correlation can overaim/underaim, i recomend to set it at around 0.2f
-    private Rotation rotationDistribution(final Rotation rotation, final Rotation lastRotation, final float rotateSpeed, final float correlationStrength) {
-        if (rotateSpeed > 0) {
-            final float lastYaw = lastRotation.getYaw();
-            final float lastPitch = lastRotation.getPitch();
-            final float deltaYaw = MathHelper.wrapDegrees(rotation.getYaw() - lastYaw);
-            final float deltaPitch = rotation.getPitch() - lastPitch;
-            final double distance = Math.sqrt(deltaYaw * deltaYaw + deltaPitch * deltaPitch);
-
-            if (distance > 0) {
-                final double distributionYaw = Math.abs(deltaYaw / distance);
-                final double distributionPitch = Math.abs(deltaPitch / distance);
-                final double maxYaw = rotateSpeed * distributionYaw;
-                final double maxPitch = rotateSpeed * distributionPitch;
-
-                // Introduce correlation between yaw and pitch
-                final float moveYaw = (float) Math.max(Math.min(deltaYaw, maxYaw), -maxYaw);
-                final float movePitch = (float) Math.max(Math.min(deltaPitch, maxPitch), -maxPitch);
-
-                // Apply correlation (reverse the effect)
-                float correlatedMoveYaw = moveYaw;
-                float correlatedMovePitch = movePitch;
-
-                if (correlationStrength > 0.0f) {
-                    correlatedMoveYaw = moveYaw + movePitch * correlationStrength;
-                    correlatedMovePitch = movePitch + moveYaw * correlationStrength;
-                }
-
-                return new Rotation(lastYaw + correlatedMoveYaw, lastPitch + correlatedMovePitch);
-            }
-        }
-
-        return rotation;
-    }
-
     public Rotation getRotation() {
         return this.rotation;
-    }
-
-    public Rotation getTargetRotation() {
-        return this.targetRotation;
     }
 
 }
