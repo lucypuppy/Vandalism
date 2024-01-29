@@ -20,13 +20,15 @@ package de.nekosarekawaii.vandalism.util.click;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.florianmichael.rclasses.pattern.functional.IName;
+import de.nekosarekawaii.vandalism.util.click.impl.BezierClicker;
 import de.nekosarekawaii.vandalism.util.click.impl.BoxMuellerClicker;
 import de.nekosarekawaii.vandalism.util.click.impl.CooldownClicker;
 
 public enum ClickType implements IName {
 
-    Cooldown(new CooldownClicker()),
-    BoxMueller(new BoxMuellerClicker());
+    COOLDOWN(new CooldownClicker()),
+    BOXMUELLER(new BoxMuellerClicker()),
+    BEZIER(new BezierClicker());
 
     private final String name;
     private final Clicker clicker;

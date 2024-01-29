@@ -39,6 +39,7 @@ import de.nekosarekawaii.vandalism.integration.rotation.enums.HitBoxSelectMode;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
 import de.nekosarekawaii.vandalism.util.click.ClickType;
 import de.nekosarekawaii.vandalism.util.click.Clicker;
+import de.nekosarekawaii.vandalism.util.click.impl.BezierClicker;
 import de.nekosarekawaii.vandalism.util.click.impl.BoxMuellerClicker;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.entity.Entity;
@@ -121,16 +122,82 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             "Settings for the clicking."
     );
 
-    private final EnumModeValue<ClickType> clickType = new EnumModeValue<>(
+    private final BezierValue rotationSpeedBezier = new BezierValue(
+            this.rotationSpeedGroup,
+            "Rotation Speed Bezier Curve",
+            "The bezier curve for the rotation speed.",
+            40.0f,
+            20.0f,
+            90.0f,
+            50.0f,
+            1.0f,
+            180.0f
+    ).visibleCondition(() -> this.rotationSpeedType.getValue() == SmoothingType.BEZIER);    private final EnumModeValue<ClickType> clickType = new EnumModeValue<>(
             this.clicking,
             "Click Type",
             "The type of clicking.",
-            ClickType.BoxMueller,
+            ClickType.BEZIER,
             ClickType.values()
     ).onValueChange((oldValue, newValue) -> { //@formatter:off
         oldValue.getClicker().setClickAction(aBoolean -> {});
         this.updateClicker(newValue.getClicker());
     }); //@formatter:on
+
+    @Override
+    public void onRotation(final RotationEvent event) {
+        this.updateTarget();
+
+        if (this.target != null) {
+            final Rotation rotation = Rotation.Builder.build(
+                    this.target,
+                    this.getAimRange(),
+                    this.aimPoints.getValue(),
+                    HitBoxSelectMode.CIRCULAR
+            );
+
+            if (rotation == null) { //Sanity check, crashes if you sneak and have your reach set to 3.0
+                this.rotationListener.resetRotation();
+                return;
+            }
+
+            float rotateSpeed = 0.0f;
+
+            if (this.rotationSpeedType.getValue() == SmoothingType.BEZIER) {
+                float rotationPercentage;
+
+                if (rotationListener.getRotation() == null) {
+                    final Rotation playerRotation = new Rotation(this.mc.player.getYaw(), this.mc.player.getPitch());
+                    rotationPercentage = RotationUtil.calculateRotationPercentage(playerRotation, rotation, true);
+                } else {
+                    rotationPercentage = RotationUtil.calculateRotationPercentage(rotationListener.getRotation(), rotation, true);
+                }
+
+                rotateSpeed = this.rotationSpeedBezier.getValue(rotationPercentage);
+            } else if (this.rotationSpeedType.getValue() == SmoothingType.NORMAL) {
+                rotateSpeed = (float) (this.rotateSpeed.getValue() + Math.random() * 5.0f);
+            }
+
+            this.rotationListener.setRotation(
+                    rotation,
+                    RotationPriority.HIGH,
+                    rotateSpeed,
+                    this.correlationStrength.getValue(),
+                    this.movementFix.getValue()
+            );
+        } else {
+            this.rotationListener.resetRotation();
+        }
+    }    private final BezierValue cpsBezier = new BezierValue(
+            this.clicking,
+            "CPS Bezier Curve",
+            "The bezier curve for the CPS.",
+            25.0f,
+            17.0f,
+            15.0f,
+            25.0f,
+            1.0f,
+            25.0f
+    ).visibleCondition(() -> this.clickType.getValue() == ClickType.BEZIER);
 
     private final ValueGroup rotationGroup = new ValueGroup(
             this,
@@ -161,17 +228,31 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             180.0f
     ).visibleCondition(() -> this.rotationSpeedType.getValue() == SmoothingType.NORMAL);
 
-    private final BezierValue bezierValue = new BezierValue(
-            this.rotationSpeedGroup,
-            "Bezier",
-            "The bezier curve for the rotation Speed.",
-            40.0f,
-            20.0f,
-            90.0f,
-            50.0f,
-            1.0f,
-            180.0f
-    ).visibleCondition(() -> this.rotationSpeedType.getValue() == SmoothingType.BEZIER);
+    private void updateClicker(final Clicker clicker) {
+        if (clicker instanceof final BoxMuellerClicker boxMuellerClicker) {
+            boxMuellerClicker.setStd(5);
+            boxMuellerClicker.setMean(15);
+            boxMuellerClicker.setCpsUpdatePossibility(80);
+        }
+
+        if (clicker instanceof final BezierClicker bezierClicker) {
+            bezierClicker.setBezierValue(this.cpsBezier);
+            bezierClicker.setCpsUpdatePossibility(80);
+        }
+
+        clicker.setClickAction(attack -> {
+            if (attack) {
+                if (this.raytraceDistance <= getRange()) {
+                    this.lastPossibleHit = System.currentTimeMillis();
+                }
+
+                this.mc.doAttack();
+                this.targetIndex++;
+            } else if (this.autoBlock.isActive()) {
+                this.autoBlock.setBlocking(true);
+            }
+        });
+    }
 
     private final FloatValue correlationStrength = new FloatValue(
             this.rotationGroup,
@@ -268,51 +349,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         this.clickType.getValue().getClicker().onUpdate();
     }
 
-    @Override
-    public void onRotation(final RotationEvent event) {
-        this.updateTarget();
 
-        if (this.target != null) {
-            final Rotation rotation = Rotation.Builder.build(
-                    this.target,
-                    this.getAimRange(),
-                    this.aimPoints.getValue(),
-                    HitBoxSelectMode.CIRCULAR
-            );
-
-            if (rotation == null) { //Sanity check, crashes if you sneak and have your reach set to 3.0
-                this.rotationListener.resetRotation();
-                return;
-            }
-
-            float rotateSpeed = 0.0f;
-
-            if (this.rotationSpeedType.getValue() == SmoothingType.BEZIER) {
-                float rotationPercentage;
-
-                if (rotationListener.getRotation() == null) {
-                    final Rotation playerRotation = new Rotation(this.mc.player.getYaw(), this.mc.player.getPitch());
-                    rotationPercentage = RotationUtil.calculateRotationPercentage(playerRotation, rotation, true);
-                } else {
-                    rotationPercentage = RotationUtil.calculateRotationPercentage(rotationListener.getRotation(), rotation, true);
-                }
-
-                rotateSpeed = this.bezierValue.getValue(rotationPercentage);
-            } else if (this.rotationSpeedType.getValue() == SmoothingType.NORMAL) {
-                rotateSpeed = (float) (this.rotateSpeed.getValue() + Math.random() * 5.0f);
-            }
-
-            this.rotationListener.setRotation(
-                    rotation,
-                    RotationPriority.HIGH,
-                    rotateSpeed,
-                    this.correlationStrength.getValue(),
-                    this.movementFix.getValue()
-            );
-        } else {
-            this.rotationListener.resetRotation();
-        }
-    }
 
     @Override
     public void onRaytrace(final RaytraceEvent event) {
@@ -359,26 +396,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         return this.range.getValue();
     }
 
-    private void updateClicker(final Clicker clicker) {
-        if (clicker instanceof final BoxMuellerClicker boxMuellerClicker) {
-            boxMuellerClicker.setStd(5);
-            boxMuellerClicker.setMean(15);
-            boxMuellerClicker.setCpsUpdatePossibility(80);
-        }
 
-        clicker.setClickAction(attack -> {
-            if (attack) {
-                if (this.raytraceDistance <= getRange()) {
-                    this.lastPossibleHit = System.currentTimeMillis();
-                }
-
-                this.mc.doAttack();
-                this.targetIndex++;
-            } else if (this.autoBlock.isActive()) {
-                this.autoBlock.setBlocking(true);
-            }
-        });
-    }
 
     public enum SmoothingType implements IName {
 
