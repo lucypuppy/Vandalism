@@ -30,12 +30,12 @@ import java.util.function.Supplier;
 public abstract class MixinModStatus {
 
     @Inject(method = "isModded", at = @At("RETURN"), cancellable = true)
-    private void forceCancelModStatus(final CallbackInfoReturnable<Boolean> cir) {
+    private void forceCancelClientStatus(final CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(false);
     }
 
     @Inject(method = "check", at = @At("RETURN"), cancellable = true)
-    private static void fakeModStatus(final String vanillaBrand, final Supplier<String> brandSupplier, final String environment, final Class<?> clazz, CallbackInfoReturnable<ModStatus> cir) {
+    private static void fakeClientStatus(final String vanillaBrand, final Supplier<String> brandSupplier, final String environment, final Class<?> clazz, CallbackInfoReturnable<ModStatus> cir) {
         cir.setReturnValue(new ModStatus(ModStatus.Confidence.PROBABLY_NOT, environment + " jar signature and brand is untouched"));
     }
 
