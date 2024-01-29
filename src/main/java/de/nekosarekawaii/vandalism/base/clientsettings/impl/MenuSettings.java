@@ -19,10 +19,14 @@
 package de.nekosarekawaii.vandalism.base.clientsettings.impl;
 
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
+import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.KeyBindValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import org.lwjgl.glfw.GLFW;
+
+import java.awt.*;
 
 public class MenuSettings extends ValueGroup {
 
@@ -46,6 +50,51 @@ public class MenuSettings extends ValueGroup {
             "Activates/Deactivates the logging for the script execution.",
             false
     );
+
+    public final BooleanValue customWidgets = new BooleanValue(
+            this,
+            "Custom Widgets",
+            "Activates/Deactivates the use of our widgets.",
+            true
+    );
+
+    private final ValueGroup customWidgetsSettings = new ValueGroup(
+            this,
+            "Custom Widgets Settings",
+            "Settings for the custom widgets."
+    ).visibleCondition(this.customWidgets::getValue);
+
+    public final ColorValue customWidgetsMainColor = new ColorValue(
+            this.customWidgetsSettings,
+            "Custom Widgets Main Color",
+            "The main color of the custom widgets.",
+            new Color(217, 215, 215, 100)
+    ).visibleCondition(this.customWidgets::getValue);
+
+    public final ColorValue customWidgetsSecondaryColor = new ColorValue(
+            this.customWidgetsSettings,
+            "Custom Widgets Secondary Color",
+            "The secondary color of the custom widgets.",
+            new Color(40, 39, 39, 232)
+    ).visibleCondition(this.customWidgets::getValue);
+
+    public final IntegerValue customWidgetsOutlineWidth = new IntegerValue(
+            this.customWidgetsSettings,
+            "Custom Widgets Outline Width",
+            "The outline width of the custom widgets.",
+            1,
+            1,
+            3
+    ).visibleCondition(this.customWidgets::getValue);
+
+    public final IntegerValue customWidgetsSelectionOffset = new IntegerValue(
+            this.customWidgetsSettings,
+            "Custom Widgets Selection Offset",
+            "The selection offset of the custom widgets.",
+            1,
+            0,
+            4
+    ).visibleCondition(this.customWidgets::getValue);
 
     public final BooleanValue manageContainerButtons = new BooleanValue(
             this,

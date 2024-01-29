@@ -76,7 +76,7 @@ public abstract class MixinMultiplayerScreen extends Screen {
                 if (this.client != null) {
                     this.client.setScreen(new ConfigScreen((MultiplayerScreen) (Object) this));
                 }
-            }).dimensions(2, 4, 100, 20).build());
+            }).dimensions(4, 4, 100, 20).build());
         }
     }
 

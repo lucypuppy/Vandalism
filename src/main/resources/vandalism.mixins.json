@@ -25,6 +25,7 @@
     "clientsettings.MixinItemGroup",
     "clientsettings.MixinMultiplayerScreen",
     "clientsettings.MixinPlayerEntity",
+    "clientsettings.MixinPressableWidget",
     "clientsettings.MixinProgressScreen",
     "clientsettings.MixinReconfigurationScreen",
     "clientsettings.MixinServerEntry",
