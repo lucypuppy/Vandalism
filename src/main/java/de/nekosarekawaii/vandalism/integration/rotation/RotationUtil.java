@@ -54,6 +54,12 @@ public class RotationUtil implements MinecraftWrapper {
         final double targetPosY = entity.getY() - 0.1;
         final double targetHeight = entity.getHeight() + 0.2;
         final double targetWidth = entity.getWidth();
+
+        // If the entity has no width or height we can ignore it to fix the out of memory crash
+        if (targetWidth <= 0.0 || targetHeight <= 0.2) {
+            return points;
+        }
+
         /*
          * hit box formula:
          * visibleSides * width * height
