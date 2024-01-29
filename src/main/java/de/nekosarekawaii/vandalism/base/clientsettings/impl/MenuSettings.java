@@ -51,6 +51,20 @@ public class MenuSettings extends ValueGroup {
             false
     );
 
+    public final BooleanValue customBackground = new BooleanValue(
+            this,
+            "Custom Background",
+            "Activates/Deactivates the use of a custom background.",
+            true
+    );
+
+    public final ColorValue customBackgroundColor = new ColorValue(
+            this,
+            "Custom Background Color",
+            "The color of the custom background.",
+            new Color(54, 54, 54, 255)
+    ).visibleCondition(this.customBackground::getValue);
+
     public final BooleanValue customWidgets = new BooleanValue(
             this,
             "Custom Widgets",
@@ -75,7 +89,7 @@ public class MenuSettings extends ValueGroup {
             this.customWidgetsSettings,
             "Custom Widgets Secondary Color",
             "The secondary color of the custom widgets.",
-            new Color(40, 39, 39, 232)
+            new Color(25, 25, 25, 232)
     ).visibleCondition(this.customWidgets::getValue);
 
     public final IntegerValue customWidgetsOutlineWidth = new IntegerValue(

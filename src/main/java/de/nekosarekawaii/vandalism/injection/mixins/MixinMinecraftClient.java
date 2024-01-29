@@ -18,11 +18,7 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.normal.game.MinecraftBoostrapListener;
-import de.nekosarekawaii.vandalism.base.event.normal.game.ShutdownProcessListener;
-import de.nekosarekawaii.vandalism.util.game.TimerHack;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -55,12 +51,12 @@ public abstract class MixinMinecraftClient {
     }
 
     @Inject(method = "doAttack", at = @At("HEAD"))
-    public void doAttack(CallbackInfoReturnable<Boolean> cir) {
+    public void doAttack(final CallbackInfoReturnable<Boolean> cir) {
         Vandalism.getInstance().getHudManager().infoHUDElement.leftClick.click();
     }
 
     @Inject(method = "doItemUse", at = @At("HEAD"))
-    public void doItemUse(CallbackInfo ci) {
+    public void doItemUse(final CallbackInfo ci) {
         Vandalism.getInstance().getHudManager().infoHUDElement.rightClick.click();
     }
 

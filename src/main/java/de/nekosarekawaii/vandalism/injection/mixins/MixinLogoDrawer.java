@@ -19,6 +19,8 @@
 package de.nekosarekawaii.vandalism.injection.mixins;
 
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
+import de.nekosarekawaii.vandalism.util.render.GLStateTracker;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.LogoDrawer;
 import net.minecraft.util.Identifier;
@@ -44,9 +46,16 @@ public abstract class MixinLogoDrawer {
     public static Identifier MINCERAFT_TEXTURE;
 
     @Redirect(method = "draw(Lnet/minecraft/client/gui/DrawContext;IFI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIFFIIII)V"))
-    private void forceModLogo(final DrawContext instance, final Identifier texture, final int x, final int y, final float u, final float v, final int width, final int height, final int textureWidth, final int textureHeight) {
+    private void forceClientLogo(final DrawContext instance, final Identifier texture, final int x, final int y, final float u, final float v, final int width, final int height, final int textureWidth, final int textureHeight) {
         if (texture.equals(LOGO_TEXTURE) || texture.equals(MINCERAFT_TEXTURE)) {
+            MinecraftClient.getInstance().getTextureManager().getTexture(FabricBootstrap.MOD_LOGO).setFilter(
+                    true,
+                    true
+            );
+            GLStateTracker.BLEND.save(true);
             instance.drawTexture(FabricBootstrap.MOD_LOGO, x, y, u, v, width, height, textureWidth, textureHeight);
+            GLStateTracker.BLEND.revert();
+
         } else if (!texture.equals(EDITION_TEXTURE)) {
             instance.drawTexture(texture, x, y, u, v, width, height, textureWidth, textureHeight);
         }

@@ -29,6 +29,7 @@
     "clientsettings.MixinPressableWidget",
     "clientsettings.MixinProgressScreen",
     "clientsettings.MixinReconfigurationScreen",
+    "clientsettings.MixinScreen",
     "clientsettings.MixinServerEntry",
     "clientsettings.MixinServerList",
     "clientsettings.MixinSharedConstants",
