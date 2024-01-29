@@ -65,7 +65,6 @@ public abstract class MixinServerList {
         args.set(0, this.vandalism$enhancedServerListGetSelectedServerListName() + ".dat");
     }
 
-
     @Unique
     private String vandalism$enhancedServerListGetSelectedServerListName() {
         return Vandalism.getInstance().getServerListManager().getSelectedServerList().getName();

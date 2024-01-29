@@ -75,10 +75,6 @@ public class ClientSettings implements ValueParent {
         return enhancedServerListSettings;
     }
 
-    public TargetSettings getTargetSettings() {
-        return targetSettings;
-    }
-
     @Override
     public List<Value<?>> getValues() {
         return values;

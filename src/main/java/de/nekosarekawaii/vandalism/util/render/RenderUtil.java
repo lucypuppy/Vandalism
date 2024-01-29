@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.util.render;
 
 import de.florianmichael.rclasses.common.color.ColorUtils;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.texture.AbstractTexture;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
@@ -49,6 +50,15 @@ public class RenderUtil {
         return FPS;
     }
 
+    public static int getGlId(final Identifier identifier) {
+        final AbstractTexture texture = MinecraftClient.getInstance().getTextureManager().getTexture(identifier);
+        if (texture != null) {
+            return texture.getGlId();
+        } else {
+            return -1;
+        }
+    }
+
     public static Color interpolateColor(final Color minColor, final Color midColor, final Color maxColor, final double percent) {
         if (minColor == null || midColor == null || maxColor == null) {
             throw new IllegalArgumentException("Color can't be null.");
@@ -76,13 +86,42 @@ public class RenderUtil {
         return newText;
     }
 
-    public static int getGlId(final Identifier identifier) {
-        final AbstractTexture texture = MinecraftClient.getInstance().getTextureManager().getTexture(identifier);
-        if (texture != null) {
-            return texture.getGlId();
-        } else {
-            return -1;
-        }
+    public static void fillOutlined(final DrawContext drawContext, final int x1, final int y1, final int x2, final int y2, final int outlineWidth, final int color, final int outlineColor) {
+        drawContext.fill(
+                x1 + outlineWidth,
+                y1 + outlineWidth,
+                x2 - outlineWidth,
+                y2 - outlineWidth,
+                color
+        );
+        drawContext.fill(
+                x1,
+                y1,
+                x2,
+                y1 + outlineWidth,
+                outlineColor
+        );
+        drawContext.fill(
+                x1,
+                y2 - outlineWidth,
+                x2,
+                y2,
+                outlineColor
+        );
+        drawContext.fill(
+                x1,
+                y1 + outlineWidth,
+                x1 + outlineWidth,
+                y2 - outlineWidth,
+                outlineColor
+        );
+        drawContext.fill(
+                x2 - outlineWidth,
+                y1 + outlineWidth,
+                x2,
+                y2 - outlineWidth,
+                outlineColor
+        );
     }
 
 }
