@@ -43,12 +43,14 @@ public class BezierValue extends Value<Float> implements ValueParent {
     private final Float[] xValues = new Float[100];
     private final Float[] yValues = new Float[100];
 
-    private final int axisFlags = ImPlotAxisFlags.NoLabel | ImPlotAxisFlags.NoTickMarks | ImPlotAxisFlags.NoTickLabels;
-
-    public BezierValue(ValueParent parent, String name, String description, float pointOneDefaultValue, float pointTwoDefaultValue,
-                       float pointThreeDefaultValue, float pointFourDefaultValue, float minValue, float maxValue) {
+    public BezierValue(
+            ValueParent parent,
+            String name, String description,
+            final float pointOneDefaultValue, final float pointTwoDefaultValue,
+            final float pointThreeDefaultValue, final float pointFourDefaultValue,
+            final float minValue, final float maxValue
+    ) {
         super(parent, name, description, 0.0f);
-
         this.pointOne = new FloatValue(
                 this,
                 "Point 1",
@@ -57,7 +59,6 @@ public class BezierValue extends Value<Float> implements ValueParent {
                 minValue,
                 maxValue
         ).onValueChange((oldValue, newValue) -> this.updateCurve());
-
         this.pointTwo = new FloatValue(
                 this,
                 "Point 2",
@@ -66,7 +67,6 @@ public class BezierValue extends Value<Float> implements ValueParent {
                 minValue,
                 maxValue
         ).onValueChange((oldValue, newValue) -> this.updateCurve());
-
         this.pointThree = new FloatValue(
                 this,
                 "Point 3",
@@ -75,7 +75,6 @@ public class BezierValue extends Value<Float> implements ValueParent {
                 minValue,
                 maxValue
         ).onValueChange((oldValue, newValue) -> this.updateCurve());
-
         this.pointFour = new FloatValue(
                 this,
                 "Point 4",
@@ -84,7 +83,6 @@ public class BezierValue extends Value<Float> implements ValueParent {
                 minValue,
                 maxValue
         ).onValueChange((oldValue, newValue) -> this.updateCurve());
-
         this.updateCurve();
     }
 
@@ -94,36 +92,42 @@ public class BezierValue extends Value<Float> implements ValueParent {
             return;
         }
         final JsonObject valueNode = mainNode.get(this.getName()).getAsJsonObject();
-
         for (final Value<?> value : this.getValues()) {
             value.load(valueNode);
         }
-
         this.updateCurve();
     }
 
     @Override
     public void save(final JsonObject mainNode) {
         final JsonObject valueNode = new JsonObject();
-
         for (final Value<?> value : this.getValues()) {
             value.save(valueNode);
         }
-
         mainNode.add(getName(), valueNode);
     }
 
     @Override
     public void render() {
         ImGui.newLine();
-        renderValues();
-
-        if (ImPlot.beginPlot(this.getName() + "##" + this.getParent().getName(), "", "",
-                new ImVec2(0, 0), ImPlotFlags.CanvasOnly, this.axisFlags, this.axisFlags)) {
-            ImPlot.plotLine("##" + this.getParent().getName(), this.xValues, this.yValues);
+        this.renderValues();
+        final int axisFlags = ImPlotAxisFlags.NoLabel | ImPlotAxisFlags.NoTickMarks | ImPlotAxisFlags.NoTickLabels;
+        if (ImPlot.beginPlot(
+                this.getName() + "##" + this.getParent().getName(),
+                "",
+                "",
+                new ImVec2(0, 0),
+                ImPlotFlags.CanvasOnly,
+                axisFlags,
+                axisFlags
+        )) {
+            ImPlot.plotLine(
+                    this.getName() + "##" + this.getParent().getName() + "plotLine",
+                    this.xValues,
+                    this.yValues
+            );
             ImPlot.endPlot();
         }
-
         ImGui.spacing();
     }
 
@@ -140,8 +144,11 @@ public class BezierValue extends Value<Float> implements ValueParent {
     }
 
     public float getValue(final float percentage) {
-        return MathUtil.cubicBezier(this.pointOne.getValue(), this.pointTwo.getValue(),
-                this.pointThree.getValue(), this.pointFour.getValue(), percentage);
+        return MathUtil.cubicBezier(
+                this.pointOne.getValue(), this.pointTwo.getValue(),
+                this.pointThree.getValue(), this.pointFour.getValue(),
+                percentage
+        );
     }
 
 }
