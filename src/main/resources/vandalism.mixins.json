@@ -21,6 +21,7 @@
     "clientsettings.MixinGameMenuScreen",
     "clientsettings.MixinGameRenderer",
     "clientsettings.MixinGenericContainerScreen",
+    "clientsettings.MixinHopperScreen",
     "clientsettings.MixinInGameHud",
     "clientsettings.MixinItemGroup",
     "clientsettings.MixinMultiplayerScreen",
