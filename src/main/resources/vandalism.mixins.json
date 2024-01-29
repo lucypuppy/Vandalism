@@ -65,6 +65,7 @@
     "fix.minecraft.MixinAccessibilityOnboardingScreen",
     "fix.minecraft.MixinModStatus",
     "fix.minecraft.MixinMultiplayerScreen",
+    "fix.minecraft.MixinPackScreen",
     "fix.minecraft.MixinWindow",
     "integration.MixinClientPlayerEntity",
     "integration.MixinEntity",
