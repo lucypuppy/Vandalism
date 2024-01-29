@@ -18,19 +18,16 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
-import de.florianmichael.viafabricplus.protocolhack.ProtocolHack;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.event.cancellable.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.AttackListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.SwordItem;
-import net.raphimc.vialoader.util.VersionEnum;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.util.Hand;
 
-public class AutoBlockModule extends AbstractModule implements AttackListener, PlayerUpdateListener {
+public class AutoBlockModule extends AbstractModule implements AttackListener, PlayerUpdateListener, OutgoingPacketListener {
 
     private long lastAttack;
 
@@ -44,18 +41,20 @@ public class AutoBlockModule extends AbstractModule implements AttackListener, P
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, AttackSendEvent.ID, PlayerUpdateEvent.ID);
+        //Vandalism.getInstance().getEventSystem().subscribe(this, AttackSendEvent.ID, PlayerUpdateEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, OutgoingPacketEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, AttackSendEvent.ID, PlayerUpdateEvent.ID);
+       // Vandalism.getInstance().getEventSystem().unsubscribe(this, AttackSendEvent.ID, PlayerUpdateEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, OutgoingPacketEvent.ID);
     }
 
     @Override
     public void onAttackSend(final AttackSendEvent event) {
         if (event.target instanceof LivingEntity) {
-            this.setBlocking(false);
+            stopBlock();
             this.lastAttack = System.currentTimeMillis();
         }
     }
@@ -63,31 +62,33 @@ public class AutoBlockModule extends AbstractModule implements AttackListener, P
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (System.currentTimeMillis() - this.lastAttack > 500L) {
-            this.setBlocking(false);
+            stopBlock();
         }
     }
 
-    public void setBlocking(final boolean blocking) {
-        final ItemStack mainHandStack = this.mc.player.getMainHandStack();
-        final ItemStack offHandStack = this.mc.player.getOffHandStack();
-
-        if (mainHandStack.isEmpty() && offHandStack.isEmpty()) {
+    @Override
+    public void onPostPlayerUpdate(PlayerUpdateEvent event) {
+        if (System.currentTimeMillis() - this.lastAttack > 500L) {
             return;
         }
 
-        final Item mainHandItem = mainHandStack.getItem();
-        final Item offHandItem = offHandStack.getItem();
-        final boolean isOldVersion = ProtocolHack.getTargetVersion().isOlderThanOrEqualTo(VersionEnum.r1_8);
+        startBlock();
+    }
 
-        if (isOldVersion) {
-            if (!(mainHandItem instanceof SwordItem)) {
-                return;
-            }
-        } else if (!mainHandItem.equals(Items.SHIELD) && !offHandItem.equals(Items.SHIELD)) {
-            return;
-        }
+    @Override
+    public void onOutgoingPacket(OutgoingPacketEvent event) {
+        final Packet<?> packet = event.packet;
 
-        this.mc.options.useKey.setPressed(blocking);
+    }
+
+    public void startBlock() {
+        if (!this.mc.player.isBlocking())
+            this.mc.interactionManager.interactItem(this.mc.player, Hand.MAIN_HAND);
+    }
+
+    public void stopBlock() {
+        if (this.mc.player.isBlocking())
+            this.mc.interactionManager.stopUsingItem(this.mc.player);
     }
 
 }
