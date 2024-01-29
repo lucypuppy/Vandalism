@@ -33,16 +33,20 @@ public class BezierClicker extends Clicker {
     private float partialDelays;
     private float cpsUpdatePossibility;
     private BezierValue value;
+    private float percentage = 0.0f;
 
     @Override
     public void onUpdate() {
+        this.percentage += ThreadLocalRandom.current().nextFloat() * 0.01f;
+        if (this.percentage > 1.0f) this.percentage = 0.0f;
+
         if (this.value == null || !this.msTimer.hasReached(this.delay, true)) {
             this.clickAction.accept(false);
             return;
         }
 
         if (RandomUtils.randomInt(0, 100) <= this.cpsUpdatePossibility || this.cps < 3) {
-            this.cps = this.value.getValue(ThreadLocalRandom.current().nextFloat());
+            this.cps = this.value.getValue(this.percentage);
         }
 
         final float delay = 1000.0f / this.cps;
