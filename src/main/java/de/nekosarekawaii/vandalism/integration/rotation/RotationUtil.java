@@ -114,9 +114,9 @@ public class RotationUtil implements MinecraftWrapper {
     }
 
     public static float calculateRotationPercentage(final Rotation currentRotation, final Rotation targetRotation, final boolean yaw) {
-        final float current = MathHelper.wrapDegrees(yaw ? currentRotation.getYaw() : currentRotation.getPitch());
-        final float target = MathHelper.wrapDegrees(yaw ? targetRotation.getYaw() : targetRotation.getPitch());
-        final float diff = Math.abs(target - current);
+        final float current = yaw ? currentRotation.getYaw() : currentRotation.getPitch();
+        final float target = yaw ? targetRotation.getYaw() : targetRotation.getPitch();
+        final float diff = MathHelper.angleBetween(current, target);
         return 1.0f - (diff / (yaw ? 180.0f : 90.0f));
     }
 
