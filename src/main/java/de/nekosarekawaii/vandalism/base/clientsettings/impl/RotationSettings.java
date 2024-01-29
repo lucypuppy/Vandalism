@@ -20,19 +20,11 @@ package de.nekosarekawaii.vandalism.base.clientsettings.impl;
 
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
-import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
-import de.nekosarekawaii.vandalism.integration.rotation.RotationGCD;
+import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationGCD;
 
 public class RotationSettings extends ValueGroup {
-
-    public final BooleanValue rotateBack = new BooleanValue(
-            this,
-            "Rotate Back",
-            "Enable / Disable smooth rotate back.",
-            true
-    );
 
     public final FloatValue rotateSpeed = new FloatValue(
             this,
@@ -41,7 +33,7 @@ public class RotationSettings extends ValueGroup {
             60.0f,
             0.0f,
             180.0f
-    ).visibleCondition(this.rotateBack::getValue);
+    );
 
     public final FloatValue correlationStrength = new FloatValue(
             this,
@@ -50,7 +42,7 @@ public class RotationSettings extends ValueGroup {
             0.2f,
             0.0f,
             1.0f
-    ).visibleCondition(this.rotateBack::getValue);
+    );
 
     public final EnumModeValue<RotationGCD> gcdMode = new EnumModeValue<>(
             this,
