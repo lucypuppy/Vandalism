@@ -98,6 +98,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.illegalBlockPlaceModule = new IllegalBlockPlaceModule(),
                 this.espModule = new ESPModule(),
                 new KillAuraModule(this.autoBlockModule),
+                new UseItemSlowdownModule(this.autoBlockModule),
                 new TestModule(),
                 new PacketManagerModule(),
                 new ServerCrasherModule(),

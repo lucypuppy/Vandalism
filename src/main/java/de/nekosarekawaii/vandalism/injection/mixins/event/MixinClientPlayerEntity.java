@@ -20,8 +20,10 @@ package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.florianmichael.dietrichevents2.StateTypes;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerSlowdownListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.input.Input;
 import net.minecraft.client.network.ClientPlayerEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,6 +36,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinClientPlayerEntity {
 
     @Shadow @Final protected MinecraftClient client;
+
+    @Shadow
+    public Input input;
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void callPlayerUpdateListener_pre(final CallbackInfo ci) {
@@ -51,6 +56,20 @@ public abstract class MixinClientPlayerEntity {
         }
         final PlayerUpdateListener.PlayerUpdateEvent event = new PlayerUpdateListener.PlayerUpdateEvent(StateTypes.POST);
         Vandalism.getInstance().getEventSystem().postInternal(PlayerUpdateListener.PlayerUpdateEvent.ID, event);
+    }
+
+    @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isUsingItem()Z", ordinal = 0))
+    private void hookCustomMultiplier(CallbackInfo callbackInfo) {
+        final Input input = this.input;
+
+        input.movementForward /= 0.2f;
+        input.movementSideways /= 0.2f;
+
+        final PlayerSlowdownListener.PlayerSlowdownEvent playerUseMultiplier = new PlayerSlowdownListener.PlayerSlowdownEvent(0.2f, 0.2f);
+        Vandalism.getInstance().getEventSystem().postInternal(PlayerSlowdownListener.PlayerSlowdownEvent.ID, playerUseMultiplier);
+
+        input.movementForward *= playerUseMultiplier.movementForward;
+        input.movementSideways *= playerUseMultiplier.movementSideways;
     }
 
 }
