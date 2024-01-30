@@ -18,18 +18,14 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
-import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.cancellable.network.OutgoingPacketListener;
-import de.nekosarekawaii.vandalism.base.event.normal.player.AttackListener;
-import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.network.packet.Packet;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import net.minecraft.util.UseAction;
 
-public class AutoBlockModule extends AbstractModule implements AttackListener, PlayerUpdateListener, OutgoingPacketListener {
+public class AutoBlockModule extends AbstractModule {
 
-    private long lastAttack;
+    private boolean isBlocking;
 
     public AutoBlockModule() {
         super(
@@ -40,55 +36,30 @@ public class AutoBlockModule extends AbstractModule implements AttackListener, P
     }
 
     @Override
-    public void onActivate() {
-        //Vandalism.getInstance().getEventSystem().subscribe(this, AttackSendEvent.ID, PlayerUpdateEvent.ID);
-        Vandalism.getInstance().getEventSystem().subscribe(this, OutgoingPacketEvent.ID);
-    }
-
-    @Override
     public void onDeactivate() {
-       // Vandalism.getInstance().getEventSystem().unsubscribe(this, AttackSendEvent.ID, PlayerUpdateEvent.ID);
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, OutgoingPacketEvent.ID);
-    }
-
-    @Override
-    public void onAttackSend(final AttackSendEvent event) {
-        if (event.target instanceof LivingEntity) {
-            stopBlock();
-            this.lastAttack = System.currentTimeMillis();
-        }
-    }
-
-    @Override
-    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (System.currentTimeMillis() - this.lastAttack > 500L) {
-            stopBlock();
-        }
-    }
-
-    @Override
-    public void onPostPlayerUpdate(PlayerUpdateEvent event) {
-        if (System.currentTimeMillis() - this.lastAttack > 500L) {
-            return;
-        }
-
-        startBlock();
-    }
-
-    @Override
-    public void onOutgoingPacket(OutgoingPacketEvent event) {
-        final Packet<?> packet = event.packet;
-
+        stopBlock();
     }
 
     public void startBlock() {
-        if (!this.mc.player.isBlocking())
+        if (!this.isBlocking && this.isActive() && canBlock(this.mc.player.getMainHandStack())) {
             this.mc.interactionManager.interactItem(this.mc.player, Hand.MAIN_HAND);
+            this.isBlocking = true;
+        }
     }
 
     public void stopBlock() {
-        if (this.mc.player.isBlocking())
+        if (this.isBlocking && canBlock(this.mc.player.getMainHandStack())) {
             this.mc.interactionManager.stopUsingItem(this.mc.player);
+            this.isBlocking = false;
+        }
+    }
+
+    private boolean canBlock(final ItemStack itemStack) {
+        return itemStack != null && itemStack.getItem().getUseAction(itemStack) == UseAction.BLOCK;
+    }
+
+    public boolean isBlocking() {
+        return this.isBlocking;
     }
 
 }

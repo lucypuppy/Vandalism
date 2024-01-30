@@ -252,6 +252,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
         this.rotationListener.resetRotation();
         this.targetIndex = 0;
+
+        autoBlock.stopBlock();
     }
 
     @Override
@@ -262,6 +264,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                         Float.isNaN(this.rotationListener.getRotation().getYaw()) ||
                         Float.isNaN(this.rotationListener.getRotation().getPitch())
         ) {
+            autoBlock.stopBlock();
             return;
         }
 
@@ -275,6 +278,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         this.raytraceDistance = raytrace != null ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
 
         if (this.raytraceDistance > this.getAimRange() || this.raytraceDistance <= 0) {
+            autoBlock.stopBlock();
             return;
         }
 
@@ -392,10 +396,10 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                     this.lastPossibleHit = System.currentTimeMillis();
                 }
 
+                this.autoBlock.stopBlock();
                 this.mc.doAttack();
-                this.targetIndex++;
-            } else if (this.autoBlock.isActive()) {
                 this.autoBlock.startBlock();
+                this.targetIndex++;
             }
         });
     }
