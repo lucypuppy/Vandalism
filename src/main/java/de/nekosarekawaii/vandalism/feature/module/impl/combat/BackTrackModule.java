@@ -104,7 +104,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
         }
 
         if (packet instanceof PlayerPositionLookS2CPacket || packet instanceof DisconnectS2CPacket) {
-            //handlePackets(true);
+            handlePackets(true);
             return;
         }
 
