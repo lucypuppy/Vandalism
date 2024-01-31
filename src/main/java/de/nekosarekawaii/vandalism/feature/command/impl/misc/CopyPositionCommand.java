@@ -37,7 +37,7 @@ public class CopyPositionCommand extends AbstractCommand {
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
-            this.mc.keyboard.setClipboard(this.mc.player.getBlockPos().toShortString());
+            this.mc.keyboard.setClipboard(this.mc.player.getBlockPos().toShortString().replace(",", ""));
             ChatUtil.infoChatMessage("Position copied into the Clipboard.");
             return SINGLE_SUCCESS;
         });
