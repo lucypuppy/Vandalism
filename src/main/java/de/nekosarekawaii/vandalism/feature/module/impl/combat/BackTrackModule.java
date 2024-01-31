@@ -33,8 +33,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.TrackedPosition;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
-import net.minecraft.network.packet.c2s.play.CommandExecutionC2SPacket;
 import net.minecraft.network.packet.s2c.common.DisconnectS2CPacket;
 import net.minecraft.network.packet.s2c.play.*;
 import net.minecraft.util.math.Box;
@@ -98,10 +96,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
     public void onIncomingPacket(IncomingPacketEvent event) {
         final Packet<?> packet = event.packet;
 
-        // Ignore useless packet
-        if (packet instanceof ChatMessageC2SPacket || packet instanceof GameMessageS2CPacket ||
-                packet instanceof CommandExecutionC2SPacket || packet instanceof PlaySoundS2CPacket ||
-                this.targetEntity == null) {
+        if (packet instanceof GameMessageS2CPacket || packet instanceof PlaySoundS2CPacket || this.targetEntity == null) {
             return;
         }
 
