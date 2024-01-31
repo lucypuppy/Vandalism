@@ -98,3 +98,4 @@ accessible field net/minecraft/network/packet/s2c/play/EntityS2CPacket id I
 accessible field net/minecraft/network/ClientConnection packetListener Lnet/minecraft/network/listener/PacketListener;
 accessible field net/minecraft/network/ClientConnection packetsReceivedCounter I
 accessible method net/minecraft/network/ClientConnection handlePacket (Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;)V
+accessible field net/minecraft/entity/TrackedPosition pos Lnet/minecraft/util/math/Vec3d;
