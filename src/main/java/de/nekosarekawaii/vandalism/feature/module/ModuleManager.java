@@ -73,6 +73,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     private FastUseModule fastUseModule;
     private IllegalBlockPlaceModule illegalBlockPlaceModule;
     private ESPModule espModule;
+    private KillAuraModule killAuraModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
         this.configManager = configManager;
@@ -97,8 +98,9 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.fastUseModule = new FastUseModule(),
                 this.illegalBlockPlaceModule = new IllegalBlockPlaceModule(),
                 this.espModule = new ESPModule(),
-                new KillAuraModule(this.autoBlockModule),
+                this.killAuraModule = new KillAuraModule(this.autoBlockModule),
                 new UseItemSlowdownModule(this.autoBlockModule),
+                new BackTrackModule(this.killAuraModule),
                 new TestModule(),
                 new PacketManagerModule(),
                 new ServerCrasherModule(),
@@ -231,6 +233,10 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
     public ESPModule getEspModule() {
         return espModule;
+    }
+
+    public KillAuraModule getKillAuraModule() {
+        return killAuraModule;
     }
 
 }

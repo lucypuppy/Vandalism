@@ -404,6 +404,10 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         });
     }
 
+    public LivingEntity getTarget() {
+        return this.target;
+    }
+
     public enum SmoothingType implements IName {
 
         BEZIER,

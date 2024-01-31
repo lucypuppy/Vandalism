@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.event.normal.render.Render3DListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -51,6 +52,12 @@ public abstract class MixinGameRenderer {
         matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(MathHelper.sin(h * MathHelper.PI) * i * (3.0f + additionalBobbing)));
         matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(Math.abs(MathHelper.cos(h * MathHelper.PI - (0.2f + additionalBobbing)) * i) * 5.0f));
         callbackInfo.cancel();
+    }
+
+    @Inject(method = "renderWorld", at = @At(value = "FIELD", shift = At.Shift.BEFORE, target = "Lnet/minecraft/client/render/GameRenderer;renderHand:Z"))
+    private void test(float tickDelta, long limitTime, MatrixStack matrices, CallbackInfo ci) {
+        Vandalism.getInstance().getEventSystem().postInternal(Render3DListener.Render3DEvent.ID,
+                new Render3DListener.Render3DEvent(tickDelta, limitTime, matrices));
     }
 
 }
