@@ -21,10 +21,12 @@ package de.nekosarekawaii.vandalism.injection.mixins.event;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.RaytraceListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.RotationListener;
+import de.nekosarekawaii.vandalism.base.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.injection.access.IGameRenderer;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
@@ -42,7 +44,7 @@ public abstract class MixinGameRenderer implements IGameRenderer, MinecraftWrapp
     }
 
     @ModifyConstant(method = "updateTargetedEntity", constant = @Constant(doubleValue = 9.0))
-    private double changeRange(double constant) {
+    private double changeRange(final double constant) {
         if (vandalism$range != -1) {
             return vandalism$range;
         } else {
@@ -53,7 +55,7 @@ public abstract class MixinGameRenderer implements IGameRenderer, MinecraftWrapp
     }
 
     @Redirect(method = "updateTargetedEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;hasExtendedReach()Z"))
-    private boolean alwaysSurvival(ClientPlayerInteractionManager instance) {
+    private boolean alwaysSurvival(final ClientPlayerInteractionManager instance) {
         return vandalism$range == -1 && instance.hasExtendedReach();
     }
 
@@ -68,8 +70,16 @@ public abstract class MixinGameRenderer implements IGameRenderer, MinecraftWrapp
     }
 
     @Override
-    public void vandalism$setRange(double range) {
+    public void vandalism$setRange(final double range) {
         vandalism$range = range;
+    }
+
+    @Inject(method = "renderWorld", at = @At(value = "FIELD", shift = At.Shift.BEFORE, target = "Lnet/minecraft/client/render/GameRenderer;renderHand:Z"))
+    private void callRender3DListener(final float tickDelta, final long limitTime, final MatrixStack matrices, final CallbackInfo ci) {
+        Vandalism.getInstance().getEventSystem().postInternal(
+                Render3DListener.Render3DEvent.ID,
+                new Render3DListener.Render3DEvent(tickDelta, limitTime, matrices)
+        );
     }
 
 }

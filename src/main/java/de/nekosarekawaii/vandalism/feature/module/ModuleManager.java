@@ -167,7 +167,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     @Override
     public void onDisconnect(final ClientConnection clientConnection, final Text disconnectReason) {
         //There is a thing called pinging a server
-        if (this.mc.getNetworkHandler() != null && Objects.equals(clientConnection, mc.getNetworkHandler().getConnection())) {
+        if (this.mc.getNetworkHandler() != null && Objects.equals(clientConnection, this.mc.getNetworkHandler().getConnection())) {
             for (final AbstractModule module : this.getList()) {
                 if (module.isActive() && module.isDeactivateOnQuit()) {
                     module.deactivate();
@@ -187,7 +187,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (!mc.player.isDead()) return;
+        if (!this.mc.player.isDead()) return;
         for (final AbstractModule module : this.getList()) {
             if (module.isActive() && module.isDeactivateOnDeath()) {
                 module.deactivate();

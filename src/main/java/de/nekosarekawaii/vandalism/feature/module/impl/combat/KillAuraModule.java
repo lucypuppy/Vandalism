@@ -277,7 +277,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         this.raytraceDistance = raytrace != null ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
 
         if (this.raytraceDistance > this.getAimRange() || this.raytraceDistance <= 0) {
-            autoBlock.stopBlock();
+            this.autoBlock.stopBlock();
             return;
         }
 
@@ -425,7 +425,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
         @Override
         public String getName() {
-            return name;
+            return this.name;
         }
 
     }
