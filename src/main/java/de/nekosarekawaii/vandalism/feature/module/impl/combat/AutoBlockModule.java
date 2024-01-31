@@ -37,18 +37,21 @@ public class AutoBlockModule extends AbstractModule {
 
     @Override
     public void onDeactivate() {
-        stopBlock();
+        if (this.mc.player == null) {
+            return;
+        }
+        this.stopBlock();
     }
 
     public void startBlock() {
-        if (!this.isBlocking && this.isActive() && canBlock(this.mc.player.getMainHandStack())) {
+        if (!this.isBlocking && this.isActive() && this.canBlock(this.mc.player.getMainHandStack())) {
             this.mc.interactionManager.interactItem(this.mc.player, Hand.MAIN_HAND);
             this.isBlocking = true;
         }
     }
 
     public void stopBlock() {
-        if (this.isBlocking && canBlock(this.mc.player.getMainHandStack())) {
+        if (this.isBlocking && this.canBlock(this.mc.player.getMainHandStack())) {
             this.mc.interactionManager.stopUsingItem(this.mc.player);
             this.isBlocking = false;
         }
