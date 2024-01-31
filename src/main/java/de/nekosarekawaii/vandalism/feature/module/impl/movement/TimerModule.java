@@ -61,9 +61,9 @@ public class TimerModule extends AbstractModule implements TickTimeListener {
     }
 
     @Override
-    public void onTickTimings(TickTimeEvent e) {
+    public void onTickTimings(final TickTimeEvent event) {
         if (this.guis.getValue() || this.mc.currentScreen == null) {
-            e.tickTime = 1_000F / this.ticksPerSecond.getValue();
+            event.tickTime = 1000f / this.ticksPerSecond.getValue();
         }
     }
 

@@ -20,17 +20,30 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.SpawnEggItem;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 
-public class IllegalBlockPlaceModule extends AbstractModule implements PlayerUpdateListener {
+public class IllegalInteractionModule extends AbstractModule implements PlayerUpdateListener {
+
+    private final DoubleValue reach = new DoubleValue(
+            this,
+            "Reach",
+            "The reach of illegal interactions.",
+            3.0,
+            0.0,
+            5.0
+    );
 
     public BooleanValue viaVersionBug = new BooleanValue(
             this,
@@ -39,8 +52,12 @@ public class IllegalBlockPlaceModule extends AbstractModule implements PlayerUpd
             true
     );
 
-    public IllegalBlockPlaceModule() {
-        super("Illegal Block Place", "Lets you place blocks in air, liquids and your-self.", Category.MISC);
+    public IllegalInteractionModule() {
+        super(
+                "Illegal Interaction",
+                "Let's you interact with illegal block hit results.",
+                Category.MISC
+        );
     }
 
     @Override
@@ -56,8 +73,10 @@ public class IllegalBlockPlaceModule extends AbstractModule implements PlayerUpd
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         final Entity cameraEntity = this.mc.getCameraEntity();
-        final HitResult hitResult = cameraEntity.raycast(this.mc.interactionManager.getReachDistance(), 0, false);
-        if (!(hitResult instanceof final BlockHitResult blockHitResult) || this.mc.player.getMainHandStack().isEmpty()) {
+        final HitResult hitResult = cameraEntity.raycast(this.reach.getValue(), 0, false);
+        final ItemStack mainHandStack = this.mc.player.getMainHandStack();
+        final boolean invalidItem = mainHandStack.isEmpty() || !(mainHandStack.getItem() instanceof BlockItem || mainHandStack.getItem() instanceof SpawnEggItem);
+        if (!(hitResult instanceof final BlockHitResult blockHitResult) || invalidItem) {
             return;
         }
         final Block block = this.mc.world.getBlockState(blockHitResult.getBlockPos()).getBlock();

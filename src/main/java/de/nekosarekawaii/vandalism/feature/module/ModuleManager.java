@@ -32,10 +32,7 @@ import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.gui.ModulesClientMenuWindow;
 import de.nekosarekawaii.vandalism.feature.module.impl.combat.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.development.TestModule;
-import de.nekosarekawaii.vandalism.feature.module.impl.exploit.BungeeCordSpooferModule;
-import de.nekosarekawaii.vandalism.feature.module.impl.exploit.EcholocationModule;
-import de.nekosarekawaii.vandalism.feature.module.impl.exploit.JoinLeaveModule;
-import de.nekosarekawaii.vandalism.feature.module.impl.exploit.VehicleOneHitModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.consolespammer.ConsoleSpammerModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.godmode.GodModeModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.servercrasher.ServerCrasherModule;
@@ -71,7 +68,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     private VisualThrottleModule visualThrottleModule;
     private BetterTabListModule betterTabListModule;
     private FastUseModule fastUseModule;
-    private IllegalBlockPlaceModule illegalBlockPlaceModule;
+    private IllegalInteractionModule illegalInteractionModule;
     private ESPModule espModule;
     private KillAuraModule killAuraModule;
 
@@ -96,7 +93,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.visualThrottleModule = new VisualThrottleModule(),
                 this.betterTabListModule = new BetterTabListModule(),
                 this.fastUseModule = new FastUseModule(),
-                this.illegalBlockPlaceModule = new IllegalBlockPlaceModule(),
+                this.illegalInteractionModule = new IllegalInteractionModule(),
                 this.espModule = new ESPModule(),
                 this.killAuraModule = new KillAuraModule(this.autoBlockModule),
                 new UseItemSlowdownModule(this.autoBlockModule),
@@ -137,7 +134,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new VehicleFlightModule(),
                 new EcholocationModule(),
                 new AutoClickerModule(),
-                new WTabModule()
+                new WTabModule(),
+                new CraftCarryModule()
         );
         this.configManager.add(new ConfigWithValues("modules", getList()));
     }
@@ -223,8 +221,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
         return betterTabListModule;
     }
 
-    public IllegalBlockPlaceModule getIllegalBlockPlaceModule() {
-        return illegalBlockPlaceModule;
+    public IllegalInteractionModule getIllegalInteractionModule() {
+        return illegalInteractionModule;
     }
 
     public FastUseModule getFastUseModule() {
