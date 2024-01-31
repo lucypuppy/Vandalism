@@ -31,6 +31,7 @@ import net.minecraft.client.render.debug.DebugRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.TrackedPosition;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.network.packet.c2s.play.CommandExecutionC2SPacket;
@@ -51,7 +52,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
             0,
             1000);
 
-    private Vec3d realTargetPosition;
+    private TrackedPosition realTargetPosition;
     private Entity targetEntity;
 
     private final KillAuraModule killAuraModule;
@@ -88,7 +89,8 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
         handlePackets(false);
 
         if (this.realTargetPosition == null) {
-            this.realTargetPosition = this.targetEntity.getPos();
+            this.realTargetPosition = new TrackedPosition();
+            this.realTargetPosition.setPos(this.targetEntity.getPos());
         }
     }
 
@@ -110,18 +112,15 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
 
         if (packet instanceof final EntityS2CPacket entityS2CPacket) {
             if (entityS2CPacket.id == this.targetEntity.getId()) {
-                final double deltaX = entityS2CPacket.getDeltaX();
-                final double deltaY = entityS2CPacket.getDeltaY();
-                final double deltaZ = entityS2CPacket.getDeltaZ();
-                this.realTargetPosition.add(deltaX, deltaY, deltaZ);
+                this.realTargetPosition.withDelta(entityS2CPacket.getDeltaX(), entityS2CPacket.getDeltaY(), entityS2CPacket.getDeltaZ());
             }
         } else if (packet instanceof final EntityPositionS2CPacket positionS2CPacket) {
             if (positionS2CPacket.getId() == this.targetEntity.getId()) {
-                this.realTargetPosition = new Vec3d(positionS2CPacket.getX(), positionS2CPacket.getY(), positionS2CPacket.getZ());
+                this.realTargetPosition.setPos(new Vec3d(positionS2CPacket.getX(), positionS2CPacket.getY(), positionS2CPacket.getZ()));
             }
         }
 
-        if (this.mc.player.squaredDistanceTo(this.targetEntity) < this.mc.player.squaredDistanceTo(this.realTargetPosition)) {
+        if (this.mc.player.squaredDistanceTo(this.targetEntity) > this.mc.player.squaredDistanceTo(this.realTargetPosition.pos)) {
             handlePackets(true);
             return;
         }
@@ -144,19 +143,20 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
         if (this.targetEntity == null)
             return;
 
-        if (this.realTargetPosition.distanceTo(this.targetEntity.getPos()) < 0.1) {
+        final Vec3d pos = this.realTargetPosition.pos;
+        if (pos.distanceTo(this.targetEntity.getPos()) < 0.1) {
             return;
         }
 
         if (this.targetEntity instanceof final LivingEntity entity) {
             matrixStack.push();
 
-            final Box box = new Box(realTargetPosition.x - entity.getWidth() / 2,
-                    realTargetPosition.y,
-                    realTargetPosition.z - entity.getWidth() / 2,
-                    realTargetPosition.x + entity.getWidth() / 2,
-                    realTargetPosition.y + entity.getHeight(),
-                    realTargetPosition.z + entity.getWidth() / 2);
+            final Box box = new Box(pos.x - entity.getWidth() / 2,
+                    pos.y,
+                    pos.z - entity.getWidth() / 2,
+                    pos.x + entity.getWidth() / 2,
+                    pos.y + entity.getHeight(),
+                    pos.z + entity.getWidth() / 2);
 
             final Vec3d center = box.getCenter();
             final double scale = 1.5;
