@@ -113,18 +113,12 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
         }
 
         boolean move = false;
-        if (packet instanceof final EntityS2CPacket entityS2CPacket) {
-            if (entityS2CPacket.id == this.targetEntity.getId()) {
-                this.realTargetPosition.setPos(this.realTargetPosition.withDelta(entityS2CPacket.getDeltaX(),
-                        entityS2CPacket.getDeltaY(), entityS2CPacket.getDeltaZ()));
-            }
-
+        if (packet instanceof final EntityS2CPacket entityS2CPacket && entityS2CPacket.id == this.targetEntity.getId()) {
+            this.realTargetPosition.setPos(this.realTargetPosition.withDelta(entityS2CPacket.getDeltaX(),
+                    entityS2CPacket.getDeltaY(), entityS2CPacket.getDeltaZ()));
             move = true;
-        } else if (packet instanceof final EntityPositionS2CPacket positionS2CPacket) {
-            if (positionS2CPacket.getId() == this.targetEntity.getId()) {
-                this.realTargetPosition.setPos(new Vec3d(positionS2CPacket.getX(), positionS2CPacket.getY(), positionS2CPacket.getZ()));
-            }
-
+        } else if (packet instanceof final EntityPositionS2CPacket positionS2CPacket && positionS2CPacket.getId() == this.targetEntity.getId()) {
+            this.realTargetPosition.setPos(new Vec3d(positionS2CPacket.getX(), positionS2CPacket.getY(), positionS2CPacket.getZ()));
             move = true;
         }
 
