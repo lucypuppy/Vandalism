@@ -59,15 +59,16 @@ public abstract class MixinClientPlayerEntity {
     }
 
     @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isUsingItem()Z", ordinal = 0))
-    private void hookCustomMultiplier(CallbackInfo callbackInfo) {
+    private void callPlayerSlowdownListener(final CallbackInfo callbackInfo) {
+        if ((Object) this != this.client.player) {
+            return;
+        }
+        final float movementValue = 0.2f;
         final Input input = this.input;
-
-        input.movementForward /= 0.2f;
-        input.movementSideways /= 0.2f;
-
-        final PlayerSlowdownListener.PlayerSlowdownEvent playerUseMultiplier = new PlayerSlowdownListener.PlayerSlowdownEvent(0.2f, 0.2f);
+        input.movementForward /= movementValue;
+        input.movementSideways /= movementValue;
+        final PlayerSlowdownListener.PlayerSlowdownEvent playerUseMultiplier = new PlayerSlowdownListener.PlayerSlowdownEvent(movementValue, movementValue);
         Vandalism.getInstance().getEventSystem().postInternal(PlayerSlowdownListener.PlayerSlowdownEvent.ID, playerUseMultiplier);
-
         input.movementForward *= playerUseMultiplier.movementForward;
         input.movementSideways *= playerUseMultiplier.movementSideways;
     }

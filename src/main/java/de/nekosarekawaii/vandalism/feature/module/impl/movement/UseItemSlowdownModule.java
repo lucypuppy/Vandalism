@@ -26,13 +26,32 @@ import de.nekosarekawaii.vandalism.feature.module.impl.combat.AutoBlockModule;
 
 public class UseItemSlowdownModule extends AbstractModule implements PlayerSlowdownListener {
 
-    private final FloatValue forwardMultiplier = new FloatValue(this, "Forward", "", 1.0f, 0.2f, 1.0f);
-    private final FloatValue sidewaysMultiplier = new FloatValue(this, "Sideways", "", 1.0f, 0.2f, 1.0f);
+    private final FloatValue forwardMultiplier = new FloatValue(
+            this,
+            "Forward",
+            "Forward slowdown multiplier.",
+            1.0f,
+            0.2f,
+            1.0f
+    );
+
+    private final FloatValue sidewaysMultiplier = new FloatValue(
+            this,
+            "Sideways",
+            "Sideways slowdown multiplier.",
+            1.0f,
+            0.2f,
+            1.0f
+    );
 
     private final AutoBlockModule autoBlockModule;
 
     public UseItemSlowdownModule(final AutoBlockModule autoBlockModule) {
-        super("Use Item Slowdown", "Replaces the slowdown for using items", Category.MOVEMENT);
+        super(
+                "Use Item Slowdown",
+                "Modifies the slowdown when using an item.",
+                Category.MOVEMENT
+        );
         this.autoBlockModule = autoBlockModule;
     }
 
@@ -48,15 +67,15 @@ public class UseItemSlowdownModule extends AbstractModule implements PlayerSlowd
 
 
     @Override
-    public void onSlowdown(PlayerSlowdownEvent event) {
-        if (!mc.player.isSneaking() && isBlocking()) {
+    public void onSlowdown(final PlayerSlowdownEvent event) {
+        if (!this.mc.player.isSneaking() && this.isBlocking()) {
             event.movementForward = this.forwardMultiplier.getValue();
             event.movementSideways = this.sidewaysMultiplier.getValue();
         }
     }
 
     private boolean isBlocking() {
-        return (this.autoBlockModule.isBlocking() && this.autoBlockModule.isActive()) || mc.player.isUsingItem() || mc.options.useKey.isPressed();
+        return (this.autoBlockModule.isBlocking() && this.autoBlockModule.isActive()) || this.mc.player.isUsingItem() || this.mc.options.useKey.isPressed();
     }
 
 }
