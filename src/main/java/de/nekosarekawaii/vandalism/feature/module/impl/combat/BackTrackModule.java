@@ -133,7 +133,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
             move = true;
         }
 
-        if (this.mc.player.squaredDistanceTo(this.targetEntity) > this.mc.player.squaredDistanceTo(this.realTargetPosition.pos) && move) {
+        if (move && this.mc.player.squaredDistanceTo(this.targetEntity) > this.mc.player.squaredDistanceTo(this.realTargetPosition.pos)) {
             handlePackets(true);
             return;
         }
