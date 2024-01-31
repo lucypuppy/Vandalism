@@ -96,7 +96,8 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
     public void onIncomingPacket(IncomingPacketEvent event) {
         final Packet<?> packet = event.packet;
 
-        if (packet instanceof GameMessageS2CPacket || packet instanceof PlaySoundS2CPacket || this.targetEntity == null) {
+        if (packet instanceof GameMessageS2CPacket || packet instanceof PlaySoundS2CPacket
+                || this.targetEntity == null || this.realTargetPosition == null) {
             return;
         }
 
@@ -122,7 +123,9 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
             move = true;
         }
 
-        if (move && this.mc.player.squaredDistanceTo(this.targetEntity) > this.mc.player.squaredDistanceTo(this.realTargetPosition.pos)) {
+        final double dist = this.mc.player.squaredDistanceTo(this.targetEntity);
+        final double realDist = this.mc.player.squaredDistanceTo(this.realTargetPosition.pos);
+        if (move && dist > realDist) {
             handlePackets(true);
             return;
         }
