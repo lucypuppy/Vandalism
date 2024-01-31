@@ -407,7 +407,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         });
     }
 
-    public LivingEntity getTarget() {
+    public Entity getTarget() {
         return this.target;
     }
 
