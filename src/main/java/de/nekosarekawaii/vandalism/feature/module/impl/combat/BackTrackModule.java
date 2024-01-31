@@ -48,7 +48,8 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
             "The amount of ping to spoof.",
             60,
             0,
-            1000);
+            1000
+    );
 
     private TrackedPosition realTargetPosition;
     private Entity targetEntity;
@@ -64,27 +65,37 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, IncomingPacketEvent.ID, Render3DEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(
+                this,
+                PlayerUpdateEvent.ID,
+                IncomingPacketEvent.ID,
+                Render3DEvent.ID
+        );
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, IncomingPacketEvent.ID, Render3DEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(
+                this,
+                PlayerUpdateEvent.ID,
+                IncomingPacketEvent.ID,
+                Render3DEvent.ID
+        );
     }
 
     @Override
-    public void onPrePlayerUpdate(PlayerUpdateEvent event) {
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         this.targetEntity = this.killAuraModule.getTarget();
 
         if (!this.killAuraModule.isActive() || this.targetEntity == null) {
             this.targetEntity = null;
             this.realTargetPosition = null;
 
-            handlePackets(true);
+            this.handlePackets(true);
             return;
         }
 
-        handlePackets(false);
+        this.handlePackets(false);
 
         if (this.realTargetPosition == null) {
             this.realTargetPosition = new TrackedPosition();
@@ -93,31 +104,38 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
     }
 
     @Override
-    public void onIncomingPacket(IncomingPacketEvent event) {
+    public void onIncomingPacket(final IncomingPacketEvent event) {
         final Packet<?> packet = event.packet;
 
-        if (packet instanceof GameMessageS2CPacket || packet instanceof PlaySoundS2CPacket ||
+        if (
+                packet instanceof GameMessageS2CPacket || packet instanceof PlaySoundS2CPacket ||
                 this.targetEntity == null || this.realTargetPosition == null ||
-                mc.player == null || mc.world == null) {
+                this.mc.player == null || this.mc.world == null
+        ) {
             return;
         }
 
         if (packet instanceof PlayerPositionLookS2CPacket || packet instanceof DisconnectS2CPacket) {
-            handlePackets(true);
+            this.handlePackets(true);
             return;
         }
 
         if (packet instanceof final HealthUpdateS2CPacket health) {
             if (health.getHealth() <= 0) {
-                handlePackets(true);
+                this.handlePackets(true);
                 return;
             }
         }
 
         boolean move = false;
         if (packet instanceof final EntityS2CPacket entityS2CPacket && entityS2CPacket.id == this.targetEntity.getId()) {
-            this.realTargetPosition.setPos(this.realTargetPosition.withDelta(entityS2CPacket.getDeltaX(),
-                    entityS2CPacket.getDeltaY(), entityS2CPacket.getDeltaZ()));
+            this.realTargetPosition.setPos(
+                    this.realTargetPosition.withDelta(
+                            entityS2CPacket.getDeltaX(),
+                            entityS2CPacket.getDeltaY(),
+                            entityS2CPacket.getDeltaZ()
+                    )
+            );
             move = true;
         } else if (packet instanceof final EntityPositionS2CPacket positionS2CPacket && positionS2CPacket.getId() == this.targetEntity.getId()) {
             this.realTargetPosition.setPos(new Vec3d(positionS2CPacket.getX(), positionS2CPacket.getY(), positionS2CPacket.getZ()));
@@ -136,18 +154,19 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
     }
 
     private void handlePackets(final boolean clear) {
-        for (DelayedPacket packet : this.packets) {
-            if (clear || System.currentTimeMillis() > packet.getTime() + this.pingSpoof.getValue()) {
-                PacketUtil.recievePacket(mc.getNetworkHandler(), packet.getPacket());
+        for (final DelayedPacket packet : this.packets) {
+            if (clear || System.currentTimeMillis() > packet.time() + this.pingSpoof.getValue()) {
+                PacketUtil.recievePacket(this.mc.getNetworkHandler(), packet.packet());
                 this.packets.remove(packet);
             }
         }
     }
 
     @Override
-    public void onRender3D(float tickDelta, long limitTime, MatrixStack matrixStack) {
-        if (this.targetEntity == null)
+    public void onRender3D(final float tickDelta, final long limitTime, final MatrixStack matrixStack) {
+        if (this.targetEntity == null) {
             return;
+        }
 
         final Vec3d pos = this.realTargetPosition.pos;
         if (pos.distanceTo(this.targetEntity.getPos()) < 0.1) {
@@ -157,17 +176,19 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
         if (this.targetEntity instanceof final LivingEntity entity) {
             matrixStack.push();
 
-            final Box box = new Box(pos.x - entity.getWidth() / 2,
+            final Box box = new Box(
+                    pos.x - entity.getWidth() / 2f,
                     pos.y,
-                    pos.z - entity.getWidth() / 2,
-                    pos.x + entity.getWidth() / 2,
+                    pos.z - entity.getWidth() / 2f,
+                    pos.x + entity.getWidth() / 2f,
                     pos.y + entity.getHeight(),
-                    pos.z + entity.getWidth() / 2);
+                    pos.z + entity.getWidth() / 2f
+            );
 
             final Vec3d center = box.getCenter();
             final double scale = 1.5;
 
-            final Vec3d camPos = mc.gameRenderer.getCamera().getPos();
+            final Vec3d camPos = this.mc.gameRenderer.getCamera().getPos();
             matrixStack.translate(-camPos.x, -camPos.y, -camPos.z);
 
             final VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
@@ -177,33 +198,20 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
             final double minZ = (box.minZ - center.z) * scale + center.z;
             final double maxX = (box.maxX - center.x) * scale + center.x;
             final double maxZ = (box.maxZ - center.z) * scale + center.z;
-            DebugRenderer.drawBox(matrixStack, immediate, minX, box.minY, minZ, maxX, box.maxY, maxZ,
-                    1.0f, 0.0f, 0.0f, 0.4f);
-
+            DebugRenderer.drawBox(
+                    matrixStack,
+                    immediate,
+                    minX, box.minY, minZ, maxX, box.maxY, maxZ,
+                    1.0f, 0.0f, 0.0f, 0.4f
+            );
             matrixStack.pop();
+
             immediate.draw();
+
             matrixStack.pop();
         }
     }
 
-    private class DelayedPacket {
-
-        private final Packet<?> packet;
-        private final long time;
-
-        public DelayedPacket(final Packet<?> packet, final long time) {
-            this.packet = packet;
-            this.time = time;
-        }
-
-        public Packet<?> getPacket() {
-            return this.packet;
-        }
-
-        public long getTime() {
-            return this.time;
-        }
-
-    }
+    private record DelayedPacket(Packet<?> packet, long time) {}
 
 }
