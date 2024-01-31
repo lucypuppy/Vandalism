@@ -101,7 +101,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
         // Ignore useless packet
         if (packet instanceof ChatMessageC2SPacket || packet instanceof GameMessageS2CPacket ||
                 packet instanceof CommandExecutionC2SPacket || packet instanceof PlaySoundS2CPacket ||
-                packet instanceof HealthUpdateS2CPacket || this.targetEntity == null) {
+                this.targetEntity == null) {
             return;
         }
 
@@ -110,17 +110,30 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
             return;
         }
 
+        if (packet instanceof final HealthUpdateS2CPacket health) {
+            if (health.getHealth() <= 0) {
+                handlePackets(true);
+                return;
+            }
+        }
+
+        boolean move = false;
         if (packet instanceof final EntityS2CPacket entityS2CPacket) {
             if (entityS2CPacket.id == this.targetEntity.getId()) {
-                this.realTargetPosition.withDelta(entityS2CPacket.getDeltaX(), entityS2CPacket.getDeltaY(), entityS2CPacket.getDeltaZ());
+                this.realTargetPosition.setPos(this.realTargetPosition.withDelta(entityS2CPacket.getDeltaX(),
+                        entityS2CPacket.getDeltaY(), entityS2CPacket.getDeltaZ()));
             }
+
+            move = true;
         } else if (packet instanceof final EntityPositionS2CPacket positionS2CPacket) {
             if (positionS2CPacket.getId() == this.targetEntity.getId()) {
                 this.realTargetPosition.setPos(new Vec3d(positionS2CPacket.getX(), positionS2CPacket.getY(), positionS2CPacket.getZ()));
             }
+
+            move = true;
         }
 
-        if (this.mc.player.squaredDistanceTo(this.targetEntity) > this.mc.player.squaredDistanceTo(this.realTargetPosition.pos)) {
+        if (this.mc.player.squaredDistanceTo(this.targetEntity) > this.mc.player.squaredDistanceTo(this.realTargetPosition.pos) && move) {
             handlePackets(true);
             return;
         }
