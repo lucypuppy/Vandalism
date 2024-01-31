@@ -33,53 +33,49 @@ import net.minecraft.network.NetworkSide;
 import net.minecraft.network.NetworkState;
 import net.minecraft.network.packet.Packet;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PacketManagerModule extends AbstractModule implements IncomingPacketListener, OutgoingPacketListener {
 
-    private static final String LOGGED_CLIENT_PACKETS = "Logged Client Packets";
-    private static final String LOGGED_SERVER_PACKETS = "Logged Server Packets";
+    private final BooleanValue log = new BooleanValue(
+            this,
+            "Log",
+            "Log packets.",
+            true
+    );
 
-    private static final String CANCELLED_CLIENT_PACKETS = "Cancelled Client Packets";
-    private static final String CANCELLED_SERVER_PACKETS = "Cancelled Server Packets";
+    private final BooleanValue cancel = new BooleanValue(
+            this,
+            "Cancel",
+            "Cancel packets.",
+            false
+    );
 
-    private final BooleanValue log = new BooleanValue(this, "Log", "Log packets.", true);
-    private final BooleanValue cancel = new BooleanValue(this, "Cancel", "Cancel packets.", false);
+    private final MultiModeValue serverPackets;
+    private final MultiModeValue clientPackets;
 
     public PacketManagerModule() {
         super("Packet Manager", "Allows to log and cancel packets.", Category.MISC);
+        final List<String> serverPackets = new ArrayList<>();
+        final List<String> clientPackets = new ArrayList<>();
         for (final NetworkState networkState : NetworkState.values()) {
             final String networkStateName = StringUtils.normalizeEnumName(networkState.name());
-            final ValueGroup valueGroup = new ValueGroup(this, networkStateName, networkStateName + " Packets");
-            final String[] serverPackets = networkState.getPacketIdToPacketMap(NetworkSide.CLIENTBOUND).values().stream().map(Class::getSimpleName).toArray(String[]::new);
-            if (serverPackets.length > 0) {
-                new MultiModeValue(
-                        valueGroup,
-                        LOGGED_SERVER_PACKETS,
-                        "Logs incoming packets.",
-                        serverPackets
-                );
-                new MultiModeValue(
-                        valueGroup,
-                        CANCELLED_SERVER_PACKETS,
-                        "Cancel incoming packets.",
-                        serverPackets
-                );
-            }
-            final String[] clientPackets = networkState.getPacketIdToPacketMap(NetworkSide.SERVERBOUND).values().stream().map(Class::getSimpleName).toArray(String[]::new);
-            if (clientPackets.length > 0) {
-                new MultiModeValue(
-                        valueGroup,
-                        LOGGED_CLIENT_PACKETS,
-                        "Logs outgoing packets.",
-                        clientPackets
-                );
-                new MultiModeValue(
-                        valueGroup,
-                        CANCELLED_CLIENT_PACKETS,
-                        "Cancel outgoing packets." + (networkState == NetworkState.PLAY ? " (for example CloseHandledScreenC2SPacket which allows you to put items into your crafting slots)" : ""),
-                        clientPackets
-                );
-            }
+            networkState.getPacketIdToPacketMap(NetworkSide.CLIENTBOUND).values().stream().map(p -> networkStateName + p.getSimpleName()).forEachOrdered(serverPackets::add);
+            networkState.getPacketIdToPacketMap(NetworkSide.SERVERBOUND).values().stream().map(p -> networkStateName + p.getSimpleName()).forEachOrdered(clientPackets::add);
         }
+        this.serverPackets = new MultiModeValue(
+                this,
+                "Server Packets",
+                "The incoming packets.",
+                serverPackets
+        );
+        this.clientPackets = new MultiModeValue(
+                this,
+                "Client Packets",
+                "The outgoing packets.",
+                clientPackets
+        );
     }
 
     @Override
@@ -105,9 +101,9 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
                     if (valueGroupValue instanceof final MultiModeValue multiModeValue) {
                         if (multiModeValue.getValue().contains(packetName)) {
                             if (outgoing) {
-                                return multiModeValue.getName().equalsIgnoreCase(LOGGED_CLIENT_PACKETS);
+                                return multiModeValue.equals(this.clientPackets);
                             } else {
-                                return multiModeValue.getName().equalsIgnoreCase(LOGGED_SERVER_PACKETS);
+                                return multiModeValue.equals(this.serverPackets);
                             }
                         }
                     }
@@ -128,9 +124,9 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
                     if (valueGroupValue instanceof final MultiModeValue multiModeValue) {
                         if (multiModeValue.getValue().contains(packetName)) {
                             if (outgoing) {
-                                return multiModeValue.getName().equalsIgnoreCase(CANCELLED_CLIENT_PACKETS);
+                                return multiModeValue.equals(this.clientPackets);
                             } else {
-                                return multiModeValue.getName().equalsIgnoreCase(CANCELLED_SERVER_PACKETS);
+                                return multiModeValue.equals(this.serverPackets);
                             }
                         }
                     }

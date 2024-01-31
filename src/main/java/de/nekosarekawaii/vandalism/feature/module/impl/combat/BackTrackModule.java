@@ -59,7 +59,11 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
     private final ConcurrentLinkedQueue<DelayedPacket> packets = new ConcurrentLinkedQueue<>();
 
     public BackTrackModule(final KillAuraModule killAuraModule) {
-        super("Back Track", "", Category.COMBAT);
+        super(
+                "Back Track",
+                "Allows you to back track entities.",
+                Category.COMBAT
+        );
         this.killAuraModule = killAuraModule;
     }
 

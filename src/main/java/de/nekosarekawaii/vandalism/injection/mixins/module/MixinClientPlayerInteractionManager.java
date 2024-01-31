@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import de.florianmichael.viafabricplus.protocolhack.ProtocolHack;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.module.impl.misc.IllegalBlockPlaceModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.misc.IllegalInteractionModule;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
@@ -37,8 +37,8 @@ public abstract class MixinClientPlayerInteractionManager {
     private ActionResult hookIllegalBlockPlace(final ItemStack instance, final ItemUsageContext context) {
         ActionResult actionResult = instance.useOnBlock(context);
         if (ProtocolHack.getTargetVersion().isOlderThanOrEqualTo(VersionEnum.r1_8)) {
-            final IllegalBlockPlaceModule illegalBlockPlaceModule = Vandalism.getInstance().getModuleManager().getIllegalBlockPlaceModule();
-            if (illegalBlockPlaceModule.isActive() && illegalBlockPlaceModule.viaVersionBug.getValue()) {
+            final IllegalInteractionModule illegalInteractionModule = Vandalism.getInstance().getModuleManager().getIllegalInteractionModule();
+            if (illegalInteractionModule.isActive() && illegalInteractionModule.viaVersionBug.getValue()) {
                 if (actionResult == ActionResult.FAIL) {
                     actionResult = ActionResult.SUCCESS;
                 }
