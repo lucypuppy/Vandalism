@@ -23,23 +23,49 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.event.normal.internal.TargetListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
-import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryValue;
+import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryBlacklistValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.registry.Registries;
 
-import java.util.Collections;
+import java.util.Arrays;
 
 public class TargetSettings extends ValueGroup implements TargetListener {
 
-    private final MultiRegistryValue<EntityType<?>> targets = new MultiRegistryValue<>(
+    private final MultiRegistryBlacklistValue<EntityType<?>> targets = new MultiRegistryBlacklistValue<>(
             this,
             "Targets",
             "The entities to target.",
             Registries.ENTITY_TYPE,
-            Collections.singletonList(EntityType.PLAYER)
+            Arrays.asList(
+                    EntityType.ITEM,
+                    EntityType.EXPERIENCE_ORB,
+                    EntityType.AREA_EFFECT_CLOUD,
+                    EntityType.FISHING_BOBBER,
+                    EntityType.LIGHTNING_BOLT,
+                    EntityType.ARROW,
+                    EntityType.SPECTRAL_ARROW,
+                    EntityType.TRIDENT,
+                    EntityType.EGG,
+                    EntityType.POTION,
+                    EntityType.SNOWBALL,
+                    EntityType.ENDER_PEARL,
+                    EntityType.EXPERIENCE_BOTTLE,
+                    EntityType.BLOCK_DISPLAY,
+                    EntityType.TEXT_DISPLAY,
+                    EntityType.ITEM_DISPLAY,
+                    EntityType.INTERACTION,
+                    EntityType.MARKER,
+                    EntityType.FALLING_BLOCK,
+                    EntityType.EVOKER_FANGS,
+                    EntityType.WITHER_SKULL,
+                    EntityType.FIREWORK_ROCKET,
+                    EntityType.TNT,
+                    EntityType.LLAMA_SPIT,
+                    EntityType.EYE_OF_ENDER
+            )
     );
 
     private final Value<Boolean> isAlive = new BooleanValue(
@@ -57,7 +83,7 @@ public class TargetSettings extends ValueGroup implements TargetListener {
     @Override
     public void onTarget(final TargetEvent event) {
         final Entity entity = event.entity;
-        if (entity == this.mc.player || (!entity.isAlive() && isAlive.getValue())) {
+        if (entity == this.mc.player || (!entity.isAlive() && this.isAlive.getValue())) {
             event.isTarget = false;
             return;
         }

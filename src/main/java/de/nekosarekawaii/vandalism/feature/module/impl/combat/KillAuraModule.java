@@ -43,7 +43,6 @@ import de.nekosarekawaii.vandalism.util.click.impl.BezierClicker;
 import de.nekosarekawaii.vandalism.util.click.impl.BoxMuellerClicker;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -128,10 +127,10 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             "The type of clicking.",
             ClickType.BEZIER,
             ClickType.values()
-    ).onValueChange((oldValue, newValue) -> { //@formatter:off
+    ).onValueChange((oldValue, newValue) -> {
         oldValue.getClicker().setClickAction(aBoolean -> {});
         this.updateClicker(newValue.getClicker());
-    }); //@formatter:on
+    });
 
     private final BezierValue cpsBezier = new BezierValue(
             this.clicking,
@@ -159,7 +158,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
     private final EnumModeValue<SmoothingType> rotationSpeedType = new EnumModeValue<>(
             this.rotationSpeedGroup,
-            "Roation Speed Type",
+            "Rotation Speed Type",
             "The type of the rotation speed.",
             SmoothingType.BEZIER,
             SmoothingType.values()
@@ -211,7 +210,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             true
     );
 
-    private LivingEntity target;
+    private Entity target;
     private int targetIndex = 0;
 
     private double raytraceDistance = -1.0;
@@ -253,7 +252,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         this.rotationListener.resetRotation();
         this.targetIndex = 0;
 
-        autoBlock.stopBlock();
+        this.autoBlock.stopBlock();
     }
 
     @Override
@@ -264,7 +263,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                         Float.isNaN(this.rotationListener.getRotation().getYaw()) ||
                         Float.isNaN(this.rotationListener.getRotation().getPitch())
         ) {
-            autoBlock.stopBlock();
+            this.autoBlock.stopBlock();
             return;
         }
 
@@ -307,7 +306,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             if (this.rotationSpeedType.getValue() == SmoothingType.BEZIER) {
                 float rotationPercentage;
 
-                if (rotationListener.getRotation() == null) {
+                if (this.rotationListener.getRotation() == null) {
                     final Rotation playerRotation = new Rotation(this.mc.player.getYaw(), this.mc.player.getPitch());
                     rotationPercentage = RotationUtil.calculateRotationPercentage(playerRotation, rotation, true);
                 } else {
@@ -339,13 +338,15 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     }
 
     private void updateTarget() {
-        final List<LivingEntity> entities = new ArrayList<>();
+        final List<Entity> entities = new ArrayList<>();
 
-        for (final Entity entity : mc.world.getEntities()) {
-            if (WorldUtil.isTarget(entity)
-                    && mc.player.distanceTo(entity) <= getAimRange() + 1.0
-                    && entity.getWidth() > 0.0 && entity.getHeight() > 0.0) {
-                entities.add((LivingEntity) entity);
+        for (final Entity entity : this.mc.world.getEntities()) {
+            if (
+                    WorldUtil.isTarget(entity) &&
+                    this.mc.player.distanceTo(entity) <= getAimRange() + 1.0 &&
+                    entity.getWidth() > 0.0 && entity.getHeight() > 0.0
+            ) {
+                entities.add(entity);
             }
         }
 
@@ -369,9 +370,11 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     }
 
     private double getRange() {
-        if (this.firstHitExtender.getValue() &&
+        if (
+                this.firstHitExtender.getValue() &&
                 (System.currentTimeMillis() - this.lastPossibleHit) >= this.firstHitExtenderOffTime.getValue() &&
-                this.isLooking) {
+                this.isLooking
+        ) {
             return this.range.getValue() + this.firstHitRangeExtender.getValue();
         }
 
