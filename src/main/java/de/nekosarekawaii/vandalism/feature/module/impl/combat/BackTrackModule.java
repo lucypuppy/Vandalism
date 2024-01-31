@@ -96,8 +96,9 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
     public void onIncomingPacket(IncomingPacketEvent event) {
         final Packet<?> packet = event.packet;
 
-        if (packet instanceof GameMessageS2CPacket || packet instanceof PlaySoundS2CPacket
-                || this.targetEntity == null || this.realTargetPosition == null) {
+        if (packet instanceof GameMessageS2CPacket || packet instanceof PlaySoundS2CPacket ||
+                this.targetEntity == null || this.realTargetPosition == null ||
+                mc.player == null || mc.world == null) {
             return;
         }
 
