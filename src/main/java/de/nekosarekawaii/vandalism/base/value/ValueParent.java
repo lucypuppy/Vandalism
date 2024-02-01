@@ -20,8 +20,9 @@ package de.nekosarekawaii.vandalism.base.value;
 
 import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
-import de.nekosarekawaii.vandalism.base.value.impl.misc.ButtonValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
+import de.nekosarekawaii.vandalism.base.value.impl.rendering.ButtonValue;
+import de.nekosarekawaii.vandalism.base.value.impl.rendering.SeparatorValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import imgui.ImGui;
 import imgui.flag.ImGuiMouseButton;
@@ -56,8 +57,8 @@ public interface ValueParent extends IName {
                 }
                 return;
             }
-            final boolean isButtonValue = value instanceof ButtonValue;
-            if (!isButtonValue) {
+            final boolean isRenderValue = value instanceof ButtonValue || value instanceof SeparatorValue;
+            if (!isRenderValue) {
                 ImGui.text(value.getName());
                 this.renderValueDescription(value);
                 ImGui.sameLine();
@@ -65,7 +66,7 @@ public interface ValueParent extends IName {
             value.render();
             if (!(value instanceof ColorValue) && !(value instanceof StringValue)) {
                 this.renderValueDescription(value);
-                if (!isButtonValue) {
+                if (!isRenderValue) {
                     if (ImGui.isItemClicked(ImGuiMouseButton.Middle)) {
                         value.resetValue();
                     }
