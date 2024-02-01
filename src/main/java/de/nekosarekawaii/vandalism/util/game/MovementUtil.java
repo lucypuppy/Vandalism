@@ -166,8 +166,7 @@ public class MovementUtil implements MinecraftWrapper {
      * @return The fixed move inputs.
      */
     public static float[] getFixedMoveInputs(final float yaw) {
-        final float[] INPUTS = new float[2];
-
+        final float[] inputs = new float[2];
         if (Math.abs(mc.player.forwardSpeed) > 0f || Math.abs(mc.player.sidewaysSpeed) > 0f) {
             final float wantedYaw = getInputAngle(mc.player.getYaw());
             Vec3d movementInput;
@@ -182,10 +181,10 @@ public class MovementUtil implements MinecraftWrapper {
             float currentBestDiff = Float.MAX_VALUE;
             //use this and not just hardcode 0.98f, because moveForward and moveStrafing
             //is also dependent on whether the player is sneaking or using an item
-            float mag = Math.max(Math.abs(mc.player.forwardSpeed), Math.abs(mc.player.sidewaysSpeed));
+            final float mag = Math.max(Math.abs(mc.player.forwardSpeed), Math.abs(mc.player.sidewaysSpeed));
             //loop through all possible combinations of player.moveForward and player.moveStrafing
-            for (float forward : POSSIBLE_MOVEMENTS) {
-                for (float strafing : POSSIBLE_MOVEMENTS) {
+            for (final float forward : POSSIBLE_MOVEMENTS) {
+                for (final float strafing : POSSIBLE_MOVEMENTS) {
                     //don't do anything when the combination would make the player stand still
                     //(this would mess sin and cos)
                     if (forward == 0.0f && strafing == 0.0f) continue;
@@ -211,11 +210,10 @@ public class MovementUtil implements MinecraftWrapper {
                     }
                 }
             }
-
-            INPUTS[0] = (currentBestForward * mag);
-            INPUTS[1] = (currentBestStrafing * mag);
+            inputs[0] = (currentBestForward * mag);
+            inputs[1] = (currentBestStrafing * mag);
         }
-        return INPUTS;
+        return inputs;
     }
 
     /**

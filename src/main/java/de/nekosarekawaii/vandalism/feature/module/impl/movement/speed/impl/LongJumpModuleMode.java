@@ -16,17 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.impl.movement.elytraflight;
+package de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.SpeedModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
-import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
+import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 
-public class CreativeModuleMode extends ModuleMulti<ElytraFlightModule> implements PlayerUpdateListener {
+public class LongJumpModuleMode extends ModuleMulti<SpeedModule> implements PlayerUpdateListener {
 
-    public CreativeModuleMode() {
-        super("Creative");
+    private final DoubleValue speed = new DoubleValue(
+            this,
+            "Speed",
+            "The speed amount of the long jump speed.",
+            1.2,
+            1.0,
+            5.0
+    );
+
+    public LongJumpModuleMode() {
+        super("Long Jump");
     }
 
     @Override
@@ -37,21 +48,16 @@ public class CreativeModuleMode extends ModuleMulti<ElytraFlightModule> implemen
     @Override
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
-        if (this.mc.player == null) return;
-        this.mc.player.getAbilities().flying = false;
-        this.mc.player.getAbilities().allowFlying = this.mc.player.getAbilities().creativeMode;
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (!this.mc.player.isFallFlying()) {
-            this.mc.getNetworkHandler().sendPacket(
-                    new ClientCommandC2SPacket(this.mc.player, ClientCommandC2SPacket.Mode.START_FALL_FLYING)
-            );
-            return;
+        if (MovementUtil.isMoving()) {
+            if (this.mc.player.isOnGround()) {
+                this.mc.player.jump();
+            }
+            MovementUtil.setSpeed(this.speed.getValue());
         }
-        this.mc.player.getAbilities().flying = true;
-        this.mc.player.getAbilities().allowFlying = true;
     }
 
 }

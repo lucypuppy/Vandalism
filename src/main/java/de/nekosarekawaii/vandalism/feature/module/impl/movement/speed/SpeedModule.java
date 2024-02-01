@@ -19,6 +19,9 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.speed;
 
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.impl.CubeCraftModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.impl.LongJumpModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.impl.VerusHopModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
 
 public class SpeedModule extends AbstractModule {

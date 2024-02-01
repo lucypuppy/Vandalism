@@ -16,46 +16,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity;
+package de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.cancellable.network.IncomingPacketListener;
-import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.VelocityModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
-import net.minecraft.util.math.MathHelper;
 
-public class ReverseModuleMode extends ModuleMulti<VelocityModule> implements IncomingPacketListener {
+public class CancelModuleMode extends ModuleMulti<VelocityModule> implements IncomingPacketListener {
 
-    private final FloatValue multiplier = new FloatValue(
-            this,
-            "Multiplier",
-            "The multiplier for the reverse velocity.",
-            0.3F,
-            0.0F,
-            1.0F
-    );
-
-    public ReverseModuleMode() {
-        super("Reverse");
+    public CancelModuleMode() {
+        super("Cancel");
     }
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, IncomingPacketEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(IncomingPacketEvent.ID, this);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, IncomingPacketEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(IncomingPacketEvent.ID, this);
     }
 
     @Override
     public void onIncomingPacket(final IncomingPacketEvent event) {
-        if (event.packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket && this.mc.player != null && velocityPacket.getId() == this.mc.player.getId()) {
-            final float yaw = (float) Math.toRadians(this.mc.player.getYaw());
-            velocityPacket.velocityX = (int) ((-MathHelper.sin(yaw) * this.multiplier.getValue()) * 8000.0d);
-            velocityPacket.velocityZ = (int) ((MathHelper.cos(yaw) * this.multiplier.getValue()) * 8000.0d);
+        if (
+                event.packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket &&
+                this.mc.player != null &&
+                velocityPacket.getId() == this.mc.player.getId()
+        ) {
+            event.cancel();
         }
     }
 

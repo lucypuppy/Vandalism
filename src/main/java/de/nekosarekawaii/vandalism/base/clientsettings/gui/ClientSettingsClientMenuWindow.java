@@ -37,7 +37,7 @@ public class ClientSettingsClientMenuWindow extends ClientMenuWindow {
 
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        ImGui.begin(getName());
+        ImGui.begin(this.getName());
         if (ImGui.beginTabBar("##clientsettings")) {
             for (final Value<?> value : this.clientSettings.getValues()) {
                 if (value instanceof final ValueGroup valueGroup) {
