@@ -18,9 +18,10 @@
 
 package de.nekosarekawaii.vandalism.feature.module.template;
 
-import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.template.ValueModeGeneric;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import imgui.ImGui;
+import imgui.flag.ImGuiMouseButton;
 
 public class ModuleModeValue<T extends AbstractModule> extends ValueModeGeneric<ModuleMulti<T>> {
 
@@ -47,8 +48,10 @@ public class ModuleModeValue<T extends AbstractModule> extends ValueModeGeneric<
     @Override
     public void render() {
         super.render();
-
-        getValue().renderValues();
+        if (ImGui.isItemClicked(ImGuiMouseButton.Middle)) {
+            this.resetValue();
+        }
+        this.getValue().renderValues();
     }
 
 }

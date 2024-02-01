@@ -32,7 +32,7 @@ public class CreativeModuleMode extends ModuleMulti<FlightModule> implements Pla
             "The speed amount of the creative flight.",
             0.05f,
             0.05f,
-            5.0f
+            2.0f
     );
 
     public CreativeModuleMode() {
