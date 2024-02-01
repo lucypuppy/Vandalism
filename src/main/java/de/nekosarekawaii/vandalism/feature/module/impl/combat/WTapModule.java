@@ -24,15 +24,15 @@ import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.entity.Entity;
 
-public class WTabModule extends AbstractModule implements AttackListener, PlayerUpdateListener {
+public class WTapModule extends AbstractModule implements AttackListener, PlayerUpdateListener {
 
     private boolean sprintTab = false;
     private Entity movementTarget = null;
 
-    public WTabModule() {
+    public WTapModule() {
         super(
-                "W Tab",
-                "Automatically tabs w when you are in combat which applies more velocity to your target.",
+                "W Tap",
+                "Automatically taps w when you are in combat which applies more velocity to your target.",
                 Category.COMBAT
         );
     }
