@@ -65,7 +65,7 @@ import java.io.File;
  *  - Rewrite GCD fix to be accurate
  * <br><br>
  * TODO: FooFieOwO <br>
- *  - Check AimpotModule#generatePointsAround (this might be bad _FooFieOWO)
+ *  - Check AimPointMover#generatePointsAround (this might be bad FooFieOwO)
  *  - Fix module list out of screen rendering when the alignment is at the bottom of the screen
  *  - Fix NoClipMode from PhaseModule
  *  - Fix SprintModule to be compatible with the rotation listener and also the backwards direction (ask Verschlxfene)
