@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.base.value.impl.rendering;
 
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.template.ValueNoOpConfig;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 
 import java.util.function.Consumer;
@@ -32,7 +33,7 @@ public class ButtonValue extends ValueNoOpConfig<Consumer<ButtonValue>> {
 
     @Override
     public void render() {
-        if (ImGui.button(this.getName() + "##" + this.getName() + this.getParent().getName())) {
+        if (ImUtils.subButton(this.getName() + "##" + this.getName() + this.getParent().getName())) {
             this.getValue().accept(this);
         }
         ImGui.spacing();

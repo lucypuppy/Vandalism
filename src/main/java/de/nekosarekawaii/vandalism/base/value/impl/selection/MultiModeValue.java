@@ -25,6 +25,7 @@ import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.feature.module.gui.ModulesClientMenuWindow;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiComboFlags;
@@ -116,7 +117,7 @@ public class MultiModeValue extends Value<List<String>> {
                     ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], color[3] - 0.1f);
                     ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
                 }
-                if (ImGui.button(value, -1, 25)) {
+                if (ImUtils.subButton(value)) {
                     if (isSelected) this.getValue().remove(value);
                     else this.getValue().add(value);
                 }
