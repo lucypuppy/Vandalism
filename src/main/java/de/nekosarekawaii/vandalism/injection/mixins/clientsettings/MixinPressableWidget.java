@@ -41,14 +41,14 @@ public abstract class MixinPressableWidget extends ClickableWidget {
         super(x, y, width, height, message);
     }
 
-    @Redirect(method = "renderWidget", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;enableBlend()V"))
+    @Redirect(method = "renderWidget", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;enableBlend()V"), remap = false)
     private void cancelBlend() {
         if (!Vandalism.getInstance().getClientSettings().getMenuSettings().customWidgets.getValue()) {
             RenderSystem.enableBlend();
         }
     }
 
-    @Redirect(method = "renderWidget", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;enableDepthTest()V"))
+    @Redirect(method = "renderWidget", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;enableDepthTest()V"), remap = false)
     private void cancelDepthTest() {
         if (!Vandalism.getInstance().getClientSettings().getMenuSettings().customWidgets.getValue()) {
             RenderSystem.enableDepthTest();
