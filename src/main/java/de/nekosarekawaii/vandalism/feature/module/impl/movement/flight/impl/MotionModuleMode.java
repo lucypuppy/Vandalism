@@ -32,7 +32,7 @@ public class MotionModuleMode extends ModuleMulti<FlightModule> implements Playe
             this,
             "Motion Y Offset",
             "The motion y offset of the motion flight.",
-            0.5,
+            1.0,
             0.1,
             2.0
     );
@@ -62,9 +62,15 @@ public class MotionModuleMode extends ModuleMulti<FlightModule> implements Playe
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        final Vec3d speedVelocity = MovementUtil.setSpeed(this.speed.getValue());
+        double motionX = 0;
+        double motionZ = 0;
         final double motionY = this.mc.options.jumpKey.isPressed() ? this.motionYOffset.getValue() : this.mc.options.sneakKey.isPressed() ? -this.motionYOffset.getValue() : 0;
-        this.mc.player.setVelocity(speedVelocity.x, motionY, speedVelocity.z);
+        if (MovementUtil.isMoving()) {
+            final Vec3d speedVelocity = MovementUtil.setSpeed(this.speed.getValue());
+            motionX = speedVelocity.x;
+            motionZ = speedVelocity.z;
+        }
+        this.mc.player.setVelocity(motionX, motionY, motionZ);
     }
 
 }

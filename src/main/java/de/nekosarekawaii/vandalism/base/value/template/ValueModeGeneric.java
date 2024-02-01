@@ -59,6 +59,7 @@ public class ValueModeGeneric<T> extends Value<T> {
     @Override
     public void render() {
         final String selectedString = this.toString.apply(this.getValue());
+        ImGui.setNextItemWidth(ImGui.getColumnWidth() - 2);
         if (ImGui.beginCombo("##" + this.getName() + this.getParent().getName(), selectedString)) {
             for (final T mode : this.options) {
                 final String modeString = this.toString.apply(mode);

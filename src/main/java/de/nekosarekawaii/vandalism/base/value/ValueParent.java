@@ -24,6 +24,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
 import de.nekosarekawaii.vandalism.base.value.impl.rendering.ButtonValue;
 import de.nekosarekawaii.vandalism.base.value.impl.rendering.SeparatorValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
+import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
 import imgui.ImGui;
 import imgui.flag.ImGuiMouseButton;
 
@@ -74,7 +75,7 @@ public interface ValueParent extends IName {
                 }
             }
             value.render();
-            if (!(value instanceof ColorValue) && !(value instanceof StringValue)) {
+            if (!(value instanceof ColorValue) && !(value instanceof StringValue) && !(value instanceof ModuleModeValue)) {
                 this.renderValueDescription(value);
                 if (!isRenderValue && (ImGui.isItemClicked(ImGuiMouseButton.Middle))) {
                     value.resetValue();
