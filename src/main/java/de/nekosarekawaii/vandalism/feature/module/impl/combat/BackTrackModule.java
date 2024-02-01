@@ -22,7 +22,10 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.cancellable.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.event.normal.render.Render3DListener;
+import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.PacketUtil;
 import net.minecraft.client.render.Tessellator;
@@ -48,8 +51,30 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
             "The amount of ping to spoof.",
             60,
             0,
-            1000
-    );
+            1000);
+
+    private final ValueGroup resyncGroup = new ValueGroup(this, "Resync", "Resync options.");
+
+    private final BooleanValue resyncIfCloserToReal = new BooleanValue(
+            this.resyncGroup,
+            "Resync If Real Is Nearer Then Origin",
+            "Resyncs the target if the real position is nearer than the origin.",
+            true);
+
+    private final BooleanValue resyncOnDistanceToOrigin = new BooleanValue(
+            this.resyncGroup,
+            "Resync On Distance To Origin",
+            "Resyncs the target if the distance to the origin is higher than the selected range.",
+            true);
+
+    private final DoubleValue maxDistanceToOrigin = new DoubleValue(
+            this.resyncGroup,
+            "Max Distance To Origin",
+            "The maximum distance to the origin to resync the target.",
+            3.0,
+            0.0,
+            10.0
+    ).visibleCondition(this.resyncOnDistanceToOrigin::getValue);
 
     private TrackedPosition realTargetPosition;
     private Entity targetEntity;
@@ -146,9 +171,14 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
             move = true;
         }
 
-        final double dist = this.mc.player.squaredDistanceTo(this.targetEntity);
-        final double realDist = this.mc.player.squaredDistanceTo(this.realTargetPosition.pos);
-        if (move && dist > realDist) {
+        final double distanceToOrigin = Math.sqrt(this.mc.player.squaredDistanceTo(this.targetEntity));
+        final double distanceToRealPos = Math.sqrt(this.mc.player.squaredDistanceTo(this.realTargetPosition.pos));
+        final double distanceOriginToRealPos = Math.abs(distanceToOrigin - distanceToRealPos);
+
+        if (move && (
+                (this.resyncIfCloserToReal.getValue() && distanceToOrigin > distanceToRealPos) ||
+                (this.resyncOnDistanceToOrigin.getValue() && distanceOriginToRealPos > this.maxDistanceToOrigin.getValue())
+        )) {
             handlePackets(true);
             return;
         }
