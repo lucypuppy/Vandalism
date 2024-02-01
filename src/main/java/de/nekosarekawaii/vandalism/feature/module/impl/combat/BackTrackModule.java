@@ -51,7 +51,8 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
             "The amount of ping to spoof.",
             60,
             0,
-            1000);
+            1000
+    );
 
     private final ValueGroup resyncGroup = new ValueGroup(this, "Resync", "Resync options.");
 
@@ -175,10 +176,10 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
         final double distanceToRealPos = Math.sqrt(this.mc.player.squaredDistanceTo(this.realTargetPosition.pos));
         final double distanceOriginToRealPos = Math.abs(distanceToOrigin - distanceToRealPos);
 
-        if (move && (
-                (this.resyncIfCloserToReal.getValue() && distanceToOrigin > distanceToRealPos) ||
-                (this.resyncOnDistanceToOrigin.getValue() && distanceOriginToRealPos > this.maxDistanceToOrigin.getValue())
-        )) {
+        final boolean handlePackets1 = this.resyncIfCloserToReal.getValue() && distanceToOrigin > distanceToRealPos;
+        final boolean handlePackets2 = this.resyncOnDistanceToOrigin.getValue() && distanceOriginToRealPos > this.maxDistanceToOrigin.getValue();
+
+        if (move && handlePackets1 && handlePackets2) {
             handlePackets(true);
             return;
         }
