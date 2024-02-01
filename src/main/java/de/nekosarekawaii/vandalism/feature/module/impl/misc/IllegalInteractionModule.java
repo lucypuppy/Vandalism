@@ -28,6 +28,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.util.Hand;
@@ -75,7 +76,8 @@ public class IllegalInteractionModule extends AbstractModule implements PlayerUp
         final Entity cameraEntity = this.mc.getCameraEntity();
         final HitResult hitResult = cameraEntity.raycast(this.reach.getValue(), 0, false);
         final ItemStack mainHandStack = this.mc.player.getMainHandStack();
-        final boolean invalidItem = mainHandStack.isEmpty() || !(mainHandStack.getItem() instanceof BlockItem || mainHandStack.getItem() instanceof SpawnEggItem);
+        final Item item = mainHandStack.getItem();
+        final boolean invalidItem = mainHandStack.isEmpty() || !(item instanceof BlockItem || item instanceof SpawnEggItem);
         if (!(hitResult instanceof final BlockHitResult blockHitResult) || invalidItem) {
             return;
         }
