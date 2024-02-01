@@ -24,6 +24,7 @@ import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.KeyBindValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.base.value.impl.rendering.SeparatorValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
@@ -64,6 +65,12 @@ public abstract class AbstractModule extends Feature implements ValueParent {
             this.recursiveUpdateActiveState(newValue, this.values);
         }
     });
+
+    private final SeparatorValue defaultSettingsSeparator = new SeparatorValue(
+            this,
+            "Default Settings",
+            "Default settings of this module."
+    );
 
     private final ValueGroup defaultSettings = new ValueGroup(
             this,
@@ -123,6 +130,12 @@ public abstract class AbstractModule extends Feature implements ValueParent {
             "Deactivate on Death",
             "Whether this module should be deactivated on death.",
             false
+    );
+
+    private final SeparatorValue settingsSeparator = new SeparatorValue(
+            this,
+            "Settings",
+            "Settings of this module."
     );
 
     public AbstractModule(final String name, final String description, final Category category) {

@@ -187,15 +187,12 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
             }
             ImGui.sameLine();
             final List<Value<?>> values = module.getValues();
-            if (!values.isEmpty()) {
-                if (ImGui.button("Reset config" + moduleId + "resetconfigbutton")) {
-                    for (final Value<?> value : values) {
-                        value.resetValue();
-                    }
+            if (ImGui.button("Reset config" + moduleId + "resetconfigbutton")) {
+                for (final Value<?> value : values) {
+                    value.resetValue();
                 }
-                module.renderValues();
-                ImGui.separator();
             }
+            module.renderValues();
             if (this.closePopup) {
                 this.closePopup = false;
                 this.lastPopupId = "";
