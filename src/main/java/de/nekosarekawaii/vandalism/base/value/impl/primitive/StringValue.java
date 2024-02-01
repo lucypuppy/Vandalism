@@ -62,6 +62,7 @@ public class StringValue extends Value<String> {
         final String id = "##" + this.getName() + this.getParent().getName();
         final int flags = ImGuiInputTextFlags.CallbackResize | (!this.showPassword.get() && this.containsPassword ? ImGuiInputTextFlags.Password : 0);
         final ImString input = new ImString(this.getValue());
+        ImGui.setNextItemWidth(ImGui.getColumnWidth() - 2);
         if (ImGui.inputText(id, input, flags)) {
             this.setValue(input.get());
         }

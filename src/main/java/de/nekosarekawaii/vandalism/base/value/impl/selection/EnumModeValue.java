@@ -55,6 +55,7 @@ public class EnumModeValue<T extends IName> extends Value<T> {
 
     @Override
     public void render() {
+        ImGui.setNextItemWidth(ImGui.getColumnWidth() - 2);
         if (ImGui.beginCombo("##" + this.getName() + this.getParent().getName(), this.getValue().getName())) {
             for (final T mode : this.options) {
                 if (ImGui.selectable(mode.getName(), mode.getName().equals(this.getValue().getName()))) {

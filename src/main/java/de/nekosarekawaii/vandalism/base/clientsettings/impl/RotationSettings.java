@@ -49,7 +49,7 @@ public class RotationSettings extends ValueGroup {
             "GCD Mode",
             "Change the GCD Mode.",
             RotationGCD.REAL,
-            RotationGCD.NONE
+            RotationGCD.values()
     );
 
     public RotationSettings(final ClientSettings parent) {
