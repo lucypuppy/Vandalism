@@ -48,7 +48,7 @@ public class FloatValue extends ValueNumber<Float> {
     public void render() {
         final ImFloat nextValue = new ImFloat(this.getValue());
         ImGui.setNextItemWidth(ImGui.getColumnWidth() - 2);
-        if (ImGui.sliderScalar("##" + this.getName() + this.getParent().getName(), ImGuiDataType.Float, nextValue, this.getMinValue(), this.getMaxValue(), "%.1f")) {
+        if (ImGui.sliderScalar("##" + this.getName() + this.getParent().getName(), ImGuiDataType.Float, nextValue, this.getMinValue(), this.getMaxValue(), "%.3f")) {
             this.setValue(nextValue.get());
         }
     }
