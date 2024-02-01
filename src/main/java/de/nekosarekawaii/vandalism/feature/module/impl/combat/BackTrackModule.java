@@ -79,8 +79,8 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
 
     private final BooleanValue resyncOnDistanceToPlayer = new BooleanValue(
             this.resyncGroup,
-            "Resync On Distance To Origin",
-            "Resyncs the target if the distance to the origin is higher than the selected range.",
+            "Resync On Distance To Player",
+            "Resyncs the target if the distance to the player is higher than the selected range.",
             true);
 
     private final DoubleValue maxDistanceToPlayer = new DoubleValue(
