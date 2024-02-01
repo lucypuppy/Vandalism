@@ -128,7 +128,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             ClickType.BEZIER,
             ClickType.values()
     ).onValueChange((oldValue, newValue) -> {
-        oldValue.getClicker().setClickAction(aBoolean -> {});
+        oldValue.getClicker().setClickAction(aBoolean -> {
+        });
         this.updateClicker(newValue.getClicker());
     });
 
@@ -253,6 +254,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         this.targetIndex = 0;
 
         this.autoBlock.stopBlock();
+       //mc.options.useKey.setPressed(false);
     }
 
     @Override
@@ -264,6 +266,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                         Float.isNaN(this.rotationListener.getRotation().getPitch())
         ) {
             this.autoBlock.stopBlock();
+            //mc.options.useKey.setPressed(false);
             return;
         }
 
@@ -278,6 +281,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
         if (this.raytraceDistance > this.getAimRange() || this.raytraceDistance <= 0) {
             this.autoBlock.stopBlock();
+            //mc.options.useKey.setPressed(false);
             return;
         }
 
@@ -399,9 +403,14 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                     this.lastPossibleHit = System.currentTimeMillis();
                 }
 
+                //mc.options.useKey.setPressed(true);
                 this.autoBlock.stopBlock();
+                mc.player.setSprinting(false);
+
                 this.mc.doAttack();
+
                 this.autoBlock.startBlock();
+                mc.player.setSprinting(true);
                 this.targetIndex++;
             }
         });
