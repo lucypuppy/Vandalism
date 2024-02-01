@@ -93,7 +93,7 @@ public class HUDClientMenuWindow extends ClientMenuWindow {
             )) {
                 mouseOver = true;
             }
-            if (hudElement.dragged) {
+            if (hudElement.isDragged()) {
                 this.draggedElement = hudElement;
             }
         }
@@ -115,8 +115,8 @@ public class HUDClientMenuWindow extends ClientMenuWindow {
             if (release) {
                 boolean save = false;
                 for (final HUDElement hudElement : this.hudManager.getList()) {
-                    if (hudElement.shouldSave) {
-                        hudElement.shouldSave = false;
+                    if (hudElement.shouldSave()) {
+                        hudElement.setShouldSave(false);
                         save = true;
                     }
                 }

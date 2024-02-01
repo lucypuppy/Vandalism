@@ -27,65 +27,82 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 import net.minecraft.util.math.Vec3d;
 
-public class BukkitMoveDisablerMode extends ModuleMulti<FlightModule> implements PlayerUpdateListener, IncomingPacketListener {
+public class BukkitModuleMode extends ModuleMulti<FlightModule> implements PlayerUpdateListener, IncomingPacketListener {
 
-    public BukkitMoveDisablerMode() {
-        super("BukkitMoveDisablerMode");
+    public BukkitModuleMode() {
+        super("Bukkit");
     }
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, IncomingPacketEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(
+                this,
+                PlayerUpdateEvent.ID,
+                IncomingPacketEvent.ID
+        );
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, IncomingPacketEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(
+                this,
+                PlayerUpdateEvent.ID,
+                IncomingPacketEvent.ID
+        );
     }
 
     @Override
-    public void onPrePlayerUpdate(PlayerUpdateEvent event) {
-        final double hspeed = 0.0625D;
-        final double vspeed = 0.0625D;
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        final double hSpeed = 0.0625D;
+        final double vSpeed = 0.0625D;
 
-        final Vec3d forward = new Vec3d(0, 0, hspeed)
-                .rotateY(-(float) Math.toRadians(Math.round(mc.player.getYaw() / 90) * 90));
+        final Vec3d forward = new Vec3d(0, 0, hSpeed).rotateY(
+                -(float) Math.toRadians(Math.round(this.mc.player.getYaw() / 90) * 90)
+        );
+
         Vec3d moveVec = Vec3d.ZERO;
 
-        if (mc.options.forwardKey.isPressed()) {
+        if (this.mc.options.forwardKey.isPressed()) {
             moveVec = moveVec.add(forward);
-            mc.player.setVelocity(0, 0, 0);
-        } else if (mc.options.backKey.isPressed()) {
+            this.mc.player.setVelocity(0, 0, 0);
+        } else if (this.mc.options.backKey.isPressed()) {
             moveVec = moveVec.add(forward.negate());
-            mc.player.setVelocity(0, 0, 0);
+            this.mc.player.setVelocity(0, 0, 0);
         } else if (mc.options.leftKey.isPressed()) {
             moveVec = moveVec.add(forward.rotateY((float) Math.toRadians(90)));
-            mc.player.setVelocity(0, 0, 0);
+            this.mc.player.setVelocity(0, 0, 0);
         } else if (mc.options.rightKey.isPressed()) {
             moveVec = moveVec.add(forward.rotateY((float) -Math.toRadians(90)));
-            mc.player.setVelocity(0, 0, 0);
-        } else if (mc.options.jumpKey.isPressed()) {
-            moveVec = moveVec.add(0, vspeed, 0);
-            mc.player.setVelocity(0, 0, 0);
-        } else if (mc.options.sneakKey.isPressed()) {
-            moveVec = moveVec.add(0, -vspeed, 0);
-            mc.player.setVelocity(0, 0, 0);
+            this.mc.player.setVelocity(0, 0, 0);
+        } else if (this.mc.options.jumpKey.isPressed()) {
+            moveVec = moveVec.add(0, vSpeed, 0);
+            this.mc.player.setVelocity(0, 0, 0);
+        } else if (this.mc.options.sneakKey.isPressed()) {
+            moveVec = moveVec.add(0, -vSpeed, 0);
+            this.mc.player.setVelocity(0, 0, 0);
         }
 
-        mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(
-                mc.player.getX() + moveVec.x, mc.player.getY() + moveVec.y, mc.player.getZ() + moveVec.z, false));
+        this.mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(
+                this.mc.player.getX() + moveVec.x,
+                this.mc.player.getY() + moveVec.y,
+                this.mc.player.getZ() + moveVec.z,
+                false
+        ));
 
-        mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(
-                mc.player.getX() + moveVec.x, mc.player.getY() - 100, mc.player.getZ() + moveVec.z, true));
+        this.mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(
+                this.mc.player.getX() + moveVec.x,
+                this.mc.player.getY() - 100,
+                this.mc.player.getZ() + moveVec.z, true
+        ));
     }
 
     @Override
-    public void onIncomingPacket(IncomingPacketEvent event) {
+    public void onIncomingPacket(final IncomingPacketEvent event) {
         if (event.packet instanceof final PlayerPositionLookS2CPacket packet) {
-            if (mc.player == null) return;
-
+            if (this.mc.player == null) return;
             packet.pitch = mc.player.getPitch();
             packet.yaw = mc.player.getYaw();
         }
     }
+
 }
