@@ -18,7 +18,6 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
-import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.cancellable.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
@@ -98,13 +97,8 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
         Vandalism.getInstance().getEventSystem().subscribe(
                 this,
                 PlayerUpdateEvent.ID,
-                Render3DEvent.ID
-        );
-
-        Vandalism.getInstance().getEventSystem().subscribe(
                 IncomingPacketEvent.ID,
-                this,
-                Priorities.HIGH
+                Render3DEvent.ID
         );
     }
 
@@ -142,11 +136,11 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
     public void onIncomingPacket(final IncomingPacketEvent event) {
         final Packet<?> packet = event.packet;
 
-        if (//@formatter:off
+        if (
                 packet instanceof GameMessageS2CPacket || packet instanceof PlaySoundS2CPacket ||
                 this.targetEntity == null || this.realTargetPosition == null ||
-                this.mc.player == null || this.mc.world == null || event.isCancelled() //Ingore already cancelled packets
-        ) {//@formatter:on
+                this.mc.player == null || this.mc.world == null
+        ) {
             return;
         }
 
@@ -181,10 +175,10 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
         final double distanceToRealPos = Math.sqrt(this.mc.player.squaredDistanceTo(this.realTargetPosition.pos));
         final double distanceOriginToRealPos = Math.abs(distanceToOrigin - distanceToRealPos);
 
-        if (move && ( //@formatter:off
-                (this.resyncIfCloserToReal.getValue() && distanceToOrigin > distanceToRealPos) ||
-                (this.resyncOnDistanceToOrigin.getValue() && distanceOriginToRealPos > this.maxDistanceToOrigin.getValue())
-        )) {//@formatter:on
+        final boolean handlePackets1 = this.resyncIfCloserToReal.getValue() && distanceToOrigin > distanceToRealPos;
+        final boolean handlePackets2 = this.resyncOnDistanceToOrigin.getValue() && distanceOriginToRealPos > this.maxDistanceToOrigin.getValue();
+
+        if (move && handlePackets1 && handlePackets2) {
             handlePackets(true);
             return;
         }
@@ -193,9 +187,9 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
         event.cancel();
     }
 
-    private void handlePackets(final boolean flush) {
+    private void handlePackets(final boolean clear) {
         for (final DelayedPacket packet : this.packets) {
-            if (flush || System.currentTimeMillis() > packet.time() + this.pingSpoof.getValue()) {
+            if (clear || System.currentTimeMillis() > packet.time() + this.pingSpoof.getValue()) {
                 PacketUtil.recievePacket(this.mc.getNetworkHandler(), packet.packet());
                 this.packets.remove(packet);
             }
@@ -252,7 +246,6 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
         }
     }
 
-    //@formatter:off
     private record DelayedPacket(Packet<?> packet, long time) {}
-   //@formatter:on
+
 }
