@@ -162,14 +162,17 @@ public class InfoHUDElement extends HUDElement {
     @Override
     public void onRender(final DrawContext context, final float delta) {
         final Map<String, String> infoMap = new LinkedHashMap<>();
+
         if (this.fps.getValue()) {
             infoMap.put("FPS", Integer.toString(this.mc.getCurrentFps()));
         }
+
         if (this.cps.getValue()) {
             this.leftClick.update();
             this.rightClick.update();
             infoMap.put("CPS", this.leftClick.clicks() + " | " + this.rightClick.clicks());
         }
+
         if (this.username.getValue()) {
             String username = this.mc.session.getUsername();
             if (this.mc.player != null) {
@@ -177,6 +180,7 @@ public class InfoHUDElement extends HUDElement {
             }
             infoMap.put("Username", username);
         }
+
         final double posX, posY, posZ;
         if (this.mc.player != null) {
             posX = this.mc.player.getX();
@@ -187,6 +191,7 @@ public class InfoHUDElement extends HUDElement {
             posY = 0d;
             posZ = 0d;
         }
+
         if (this.position.getValue()) {
             final int positionDecimalPlacesRawValue = this.positionDecimalPlaces.getValue();
             if (positionDecimalPlacesRawValue < 1) this.positionDecimalPlaces.setValue(1);
@@ -204,6 +209,7 @@ public class InfoHUDElement extends HUDElement {
                     )
             );
         }
+
         if (this.dimensionalPosition.getValue()) {
             final WorldUtil.Dimension dimension = mc.player == null ? WorldUtil.Dimension.OVERWORLD : WorldUtil.getDimension();
             if (dimension != WorldUtil.Dimension.END) {
@@ -236,18 +242,21 @@ public class InfoHUDElement extends HUDElement {
                 ));
             }
         }
+
         if (this.difficulty.getValue()) {
             infoMap.put(
                     "Difficulty",
                     this.mc.world != null ? this.mc.world.getDifficulty().getName() : "unknown"
             );
         }
+
         if (this.permissionsLevel.getValue()) {
             infoMap.put(
                     "Permissions Level",
                     this.mc.player != null ? Integer.toString(this.mc.player.getPermissionLevel()) : "unknown"
             );
         }
+
         if (this.serverBrand.getValue()) {
             String value = "unknown";
             if (this.mc.getNetworkHandler() != null) {
@@ -258,6 +267,7 @@ public class InfoHUDElement extends HUDElement {
             }
             infoMap.put("Server Brand", value);
         }
+
         if (this.serverVersion.getValue()) {
             String value = "unknown";
             if (ServerUtil.lastServerExists() && this.mc.player != null && !this.mc.isInSingleplayer()) {
@@ -268,6 +278,7 @@ public class InfoHUDElement extends HUDElement {
             }
             infoMap.put("Server Version", value);
         }
+
         if (this.serverAddress.getValue()) {
             String value = "unknown";
             if (ServerUtil.lastServerExists() && this.mc.player != null && !this.mc.isInSingleplayer()) {
@@ -278,13 +289,14 @@ public class InfoHUDElement extends HUDElement {
             }
             infoMap.put("Server Address", value);
         }
+
         if (this.tickBaseCharge.getValue()) {
             final TickBaseModule tickBaseModule = Vandalism.getInstance().getModuleManager().getTickBaseModule();
-
             if (tickBaseModule.isActive()) {
                 infoMap.put("Tick Base Charge", tickBaseModule.getCharge() + " ticks");
             }
         }
+
         int width = 0, height = 0;
         final int fontHeight = this.mc.textRenderer.fontHeight;
         for (final Map.Entry<String, String> infoEntry : infoMap.entrySet()) {
