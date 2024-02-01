@@ -182,12 +182,12 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
         if (ImGui.beginPopupModal(popupId, ImGuiWindowFlags.AlwaysAutoResize)) {
             this.renderModuleInfo(module, true);
             ImGui.separator();
-            if (ImGui.button("Close" + moduleId)) {
+            if (ImGui.button("Close" + moduleId, 150, ImGui.getTextLineHeightWithSpacing())) {
                 this.closePopup = true;
             }
             ImGui.sameLine();
             final List<Value<?>> values = module.getValues();
-            if (ImGui.button("Reset config" + moduleId + "resetconfigbutton")) {
+            if (ImGui.button("Reset config" + moduleId + "resetconfigbutton", 150, ImGui.getTextLineHeightWithSpacing())) {
                 for (final Value<?> value : values) {
                     value.resetValue();
                 }
