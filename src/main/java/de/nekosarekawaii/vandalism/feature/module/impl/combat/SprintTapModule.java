@@ -24,21 +24,21 @@ import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.entity.Entity;
 
-public class WTabModule extends AbstractModule implements AttackListener, PlayerUpdateListener {
+public class SprintTapModule extends AbstractModule implements AttackListener, PlayerUpdateListener {
 
-    private boolean sprintTab = false;
+    private boolean sprintTap = false;
     private Entity movementTarget = null;
 
-    public WTabModule() {
+    public SprintTapModule() {
         super(
-                "W Tab",
-                "Automatically tabs w when you are in combat which applies more velocity to your target.",
+                "Sprint Tap",
+                "Automatically sprints and un-sprints when you are in combat which applies more velocity to your target.",
                 Category.COMBAT
         );
     }
 
     private void reset() {
-        this.sprintTab = false;
+        this.sprintTap = false;
         this.movementTarget = null;
     }
 
@@ -71,17 +71,17 @@ public class WTabModule extends AbstractModule implements AttackListener, Player
             this.mc.options.forwardKey.setPressed(false);
             this.movementTarget = event.target;
         }
-        if (!this.sprintTab && (this.mc.player.isSprinting() || this.mc.options.sprintKey.isPressed())) {
+        if (!this.sprintTap && (this.mc.player.isSprinting() || this.mc.options.sprintKey.isPressed())) {
             this.mc.options.sprintKey.setPressed(false);
-            this.sprintTab = true;
+            this.sprintTap = true;
         }
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.sprintTab) {
+        if (this.sprintTap) {
             this.mc.options.sprintKey.setPressed(true);
-            this.sprintTab = false;
+            this.sprintTap = false;
         }
         if (this.movementTarget != null && this.mc.player.distanceTo(this.movementTarget) >= 3.1) {
             this.mc.options.forwardKey.setPressed(true);
