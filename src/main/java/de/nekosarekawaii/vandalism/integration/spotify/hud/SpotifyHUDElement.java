@@ -43,8 +43,8 @@ public class SpotifyHUDElement extends HUDElement {
             this,
             "Text Wrap Width",
             "The width in which the text should get wrapped.",
-            195,
-            320,
+            188,
+            188,
             600
     );
 
