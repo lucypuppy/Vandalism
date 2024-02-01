@@ -19,20 +19,22 @@
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import net.minecraft.util.StringHelper;
+import de.nekosarekawaii.vandalism.base.clientsettings.impl.ChatSettings;
+import net.minecraft.client.gui.hud.ChatHud;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
-@Mixin(StringHelper.class)
-public abstract class MixinStringHelper {
+@Mixin(ChatHud.class)
+public abstract class MixinChatHud {
 
-    @Inject(method = "truncateChat", at = @At(value = "HEAD"), cancellable = true)
-    private static void moreChatInput(final String text, final CallbackInfoReturnable<String> cir) {
-        if (Vandalism.getInstance().getClientSettings().getChatSettings().moreChatInput.getValue()) {
-            cir.setReturnValue(text);
+    @ModifyConstant(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;ILnet/minecraft/client/gui/hud/MessageIndicator;Z)V", constant = @Constant(intValue = 100), expect = 2)
+    public int moreChatHistory(final int original) {
+        final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
+        if (chatSettings.moreChatHistory.getValue()) {
+            return chatSettings.moreChatHistoryMaxLength.getValue();
         }
+        return original;
     }
 
 }
