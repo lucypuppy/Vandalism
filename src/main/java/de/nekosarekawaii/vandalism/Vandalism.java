@@ -57,6 +57,7 @@ import java.io.File;
  *      - Add protection for ip addresses
  *  - Fix spotify menu control buttons
  *  - Use <a href="https://github.com/EvilCodeZ/JNI4J/tree/main">JNI4J</a> to improve the packet manager logging for fields
+ *  - Fix vanilla title texts being displayed after leaving a server
  * <br><br>
  * TODO: Verschlxfene <br>
  *  - Delete MixinParticleManager
