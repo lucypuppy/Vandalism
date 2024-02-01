@@ -71,6 +71,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     private IllegalInteractionModule illegalInteractionModule;
     private ESPModule espModule;
     private KillAuraModule killAuraModule;
+    private TickBaseModule tickBaseModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
         this.configManager = configManager;
@@ -96,6 +97,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.illegalInteractionModule = new IllegalInteractionModule(),
                 this.espModule = new ESPModule(),
                 this.killAuraModule = new KillAuraModule(this.autoBlockModule),
+                this.tickBaseModule = new TickBaseModule(),
                 new UseItemSlowdownModule(this.autoBlockModule),
                 new BackTrackModule(this.killAuraModule),
                 new TestModule(),
@@ -235,6 +237,10 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
     public KillAuraModule getKillAuraModule() {
         return killAuraModule;
+    }
+
+    public TickBaseModule getTickBaseModule() {
+        return tickBaseModule;
     }
 
 }

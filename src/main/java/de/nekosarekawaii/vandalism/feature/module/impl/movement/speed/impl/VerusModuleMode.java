@@ -19,59 +19,59 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.event.normal.game.TickTimeListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.SpeedModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
-import net.minecraft.util.math.Vec3d;
 
-public class VerusHopModuleMode extends ModuleMulti<SpeedModule> implements PlayerUpdateListener {
+public class VerusModuleMode extends ModuleMulti<SpeedModule> implements PlayerUpdateListener, TickTimeListener {
 
-    private int offGroundTicks = 0;
-    private double moveSpeed = 0;
+    private float charge = 0;
+    private boolean tick = false;
 
-    public VerusHopModuleMode() {
-        super("Verus Hop");
-    }
-
-    private void reset() {
-        this.offGroundTicks = 0;
-        this.moveSpeed = 0;
+    public VerusModuleMode() {
+        super("Verus");
     }
 
     @Override
     public void onActivate() {
-        this.reset();
-        Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, TickTimeEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
-        this.reset();
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, TickTimeEvent.ID);
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (MovementUtil.isMoving() && this.mc.player.isOnGround()) {
-            this.mc.player.jump();
+        if (this.mc.player.isOnGround()) {
+            if (MovementUtil.isMoving()) {
+                this.mc.player.jump();
+                MovementUtil.setSpeed(0.45);
+
+                tick = false;
+            }
+
+            charge = 3.0f;
+        } else {
+            charge = 0.0f;
         }
     }
 
     @Override
     public void onPostPlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.mc.player.isOnGround()) {
-            MovementUtil.setSpeed(MovementUtil.getBaseSpeed() * 1.525);
-            this.moveSpeed = MovementUtil.getBaseSpeed() * 2.4;
-            this.offGroundTicks = 0;
-        } else {
-            if (this.offGroundTicks == 0) {
-                this.moveSpeed += 0.01f;
-            }
-            final Vec3d velocityVector = MovementUtil.setSpeed(this.moveSpeed, this.offGroundTicks <= 2 ? 0.0026f * 45 : 0.0026f);
-            final Vec3d adjustedVelocity = MovementUtil.applyFriction(velocityVector, (float) (Math.random() * 1E-5));
-            this.moveSpeed = Math.hypot(adjustedVelocity.getX(), adjustedVelocity.getZ());
-            this.offGroundTicks++;
+        if (mc.player.fallDistance > 0.0f && !tick) {
+            MovementUtil.setSpeed(0.3);
+            tick = true;
+        }
+    }
+
+    @Override
+    public void onTickTimings(TickTimeEvent e) {
+        if (MovementUtil.isMoving()) {
+            e.tickTime = 1000f / (20.0f + charge);
         }
     }
 

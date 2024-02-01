@@ -18,10 +18,10 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
-import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.dietrichevents2.StateTypes;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.cancellable.render.ScreenListener;
+import de.nekosarekawaii.vandalism.base.event.normal.game.MaxTickLister;
 import de.nekosarekawaii.vandalism.base.event.normal.game.MinecraftBoostrapListener;
 import de.nekosarekawaii.vandalism.base.event.normal.game.ShutdownProcessListener;
 import de.nekosarekawaii.vandalism.base.event.normal.game.TickTimeListener;
@@ -35,6 +35,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -43,7 +44,8 @@ import java.util.Objects;
 @Mixin(value = MinecraftClient.class)
 public abstract class MixinMinecraftClient {
 
-    @Shadow public abstract void setScreen(@Nullable Screen screen);
+    @Shadow
+    public abstract void setScreen(@Nullable Screen screen);
 
     @Unique
     private boolean vandalism$selfInflicted = false;
@@ -96,12 +98,18 @@ public abstract class MixinMinecraftClient {
         Vandalism.getInstance().getEventSystem().postInternal(ScreenListener.ScreenEvent.ID, new ScreenListener.ScreenEvent());
     }
 
-
     @Inject(method = "getTargetMillisPerTick", at = @At("RETURN"), cancellable = true)
-    public void callTickTimeListener(float millis, CallbackInfoReturnable<Float> cir) {
+    public void callTickTimeListener(final float millis, final CallbackInfoReturnable<Float> cir) {
         final var event = new TickTimeListener.TickTimeEvent(cir.getReturnValue());
-        DietrichEvents2.global().post(TickTimeListener.TickTimeEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().postInternal(TickTimeListener.TickTimeEvent.ID, event);
         cir.setReturnValue(event.tickTime);
+    }
+
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Ljava/lang/Math;min(II)I"))
+    public int callMaxClientTickListener(int a, int b) {
+        final var event = new MaxTickLister.MaxTickEvent(a, b);
+        Vandalism.getInstance().getEventSystem().postInternal(MaxTickLister.MaxTickEvent.ID, event);
+        return event.minTicks;
     }
 
 }

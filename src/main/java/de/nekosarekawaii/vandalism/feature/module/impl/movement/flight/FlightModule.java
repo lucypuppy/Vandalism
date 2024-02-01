@@ -23,6 +23,7 @@ import de.nekosarekawaii.vandalism.base.event.cancellable.network.OutgoingPacket
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.BukkitMoveDisablerMode;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.CreativeModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.CubeCraftModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.MotionModuleMode;
@@ -44,7 +45,8 @@ public class FlightModule extends AbstractModule implements OutgoingPacketListen
             "The current flight mode.",
             new CreativeModuleMode(),
             new MotionModuleMode(),
-            new CubeCraftModuleMode()
+            new CubeCraftModuleMode(),
+            new BukkitMoveDisablerMode()
     );
 
     public FlightModule() {

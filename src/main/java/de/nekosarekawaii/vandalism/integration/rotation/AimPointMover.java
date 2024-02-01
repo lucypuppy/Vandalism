@@ -22,6 +22,7 @@ import de.nekosarekawaii.vandalism.integration.rotation.enums.HitBoxSelectMode;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
@@ -73,6 +74,13 @@ public class AimPointMover implements MinecraftWrapper {
         final double dynamicWidth = Math.min(this.maxRadius, this.minRadius + (this.maxRadius - this.minRadius) * (currentDistance / range));
         final double dynamicHeight = Math.min(this.maxRadius, this.minRadius + (this.maxRadius - this.minRadius) * (currentDistance / range));
         final double goldenAngleIncrement = Math.PI * (1 - Math.sqrt(15));
+
+        final Box box = entity.getBoundingBox();
+        center = new Vec3d( // this might be bad _FooFieOWO
+                Math.min(Math.max(center.x, box.minX + dynamicWidth), box.maxX - dynamicWidth),
+                Math.min(Math.max(center.y, box.minY + dynamicHeight), box.maxY - dynamicHeight),
+                Math.min(Math.max(center.z, box.minZ + dynamicWidth), box.maxZ - dynamicWidth)
+        );
 
         for (int i = 0; i < numPoints; i++) {
             double x = center.x;
