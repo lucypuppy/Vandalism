@@ -77,6 +77,21 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
             10.0
     ).visibleCondition(this.resyncOnDistanceToOrigin::getValue);
 
+    private final BooleanValue resyncOnDistanceToPlayer = new BooleanValue(
+            this.resyncGroup,
+            "Resync On Distance To Origin",
+            "Resyncs the target if the distance to the origin is higher than the selected range.",
+            true);
+
+    private final DoubleValue maxDistanceToPlayer = new DoubleValue(
+            this.resyncGroup,
+            "Max Distance To Player",
+            "The maximum distance to the player to resync the target.",
+            3.0,
+            0.0,
+            10.0
+    ).visibleCondition(this.resyncOnDistanceToPlayer::getValue);
+
     private TrackedPosition realTargetPosition;
     private Entity targetEntity;
 
@@ -177,15 +192,20 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
             move = true;
         }
 
-        final double distanceToOrigin = Math.sqrt(this.mc.player.squaredDistanceTo(this.targetEntity));
-        final double distanceToRealPos = Math.sqrt(this.mc.player.squaredDistanceTo(this.realTargetPosition.pos));
-        final double distanceOriginToRealPos = Math.abs(distanceToOrigin - distanceToRealPos);
-        final boolean condition1 = this.resyncIfCloserToReal.getValue() && distanceToOrigin > distanceToRealPos;
-        final boolean condition2 = this.resyncOnDistanceToOrigin.getValue() && distanceOriginToRealPos > this.maxDistanceToOrigin.getValue();
+        if (move) {
+            final double distanceToOrigin = this.mc.player.distanceTo(this.targetEntity);
+            final double distanceToRealPos = this.mc.player.getPos().distanceTo(this.realTargetPosition.pos);
+            final double distanceOriginToRealPos = this.targetEntity.getPos().distanceTo(this.realTargetPosition.pos);
 
-        if (move && (condition1 || condition2)) {
-            handlePackets(true);
-            return;
+            final boolean condition1 = this.resyncIfCloserToReal.getValue() && distanceToOrigin > distanceToRealPos;
+            final boolean condition2 = this.resyncOnDistanceToOrigin.getValue() && distanceOriginToRealPos > this.maxDistanceToOrigin.getValue();
+            final boolean condition3 = this.resyncOnDistanceToPlayer.getValue() && distanceToRealPos > this.maxDistanceToPlayer.getValue();
+
+            if (condition1 || condition2 || condition3) {
+                //ChatUtil.infoChatMessage("Resynced target. {" + condition1 + ", " + condition2 + ", " + condition3 + "}");
+                handlePackets(true);
+                return;
+            }
         }
 
         this.packets.add(new DelayedPacket(packet, System.currentTimeMillis()));
