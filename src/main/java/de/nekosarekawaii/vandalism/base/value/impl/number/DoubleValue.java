@@ -48,7 +48,7 @@ public class DoubleValue extends ValueNumber<Double> {
     public void render() {
         final ImDouble nextValue = new ImDouble(this.getValue());
         ImGui.setNextItemWidth(ImGui.getColumnWidth() - 2);
-        if (ImGui.sliderScalar("##" + this.getName() + this.getParent().getName(), ImGuiDataType.Double, nextValue, this.getMinValue(), this.getMaxValue(), "%.1f")) {
+        if (ImGui.sliderScalar("##" + this.getName() + this.getParent().getName(), ImGuiDataType.Double, nextValue, this.getMinValue(), this.getMaxValue(), "%.3f")) {
             this.setValue(nextValue.get());
         }
     }
