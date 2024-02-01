@@ -144,6 +144,20 @@ public class InfoHUDElement extends HUDElement {
             true
     );
 
+    private final BooleanValue packetsSent = new BooleanValue(
+            this,
+            "Packets Sent",
+            "Shows the current packets sent.",
+            true
+    );
+
+    private final BooleanValue packetsReceived = new BooleanValue(
+            this,
+            "Packets Received",
+            "Shows the current packets received.",
+            true
+    );
+
     private final BooleanValue tickBaseCharge = new BooleanValue(
             this,
             "Tick Base Charge",
@@ -201,17 +215,15 @@ public class InfoHUDElement extends HUDElement {
                     "Position",
                     String.format(
                             positionDecimalPlaces + ", " +
-                                    positionDecimalPlaces + ", " +
-                                    positionDecimalPlaces,
-                            posX,
-                            posY,
-                            posZ
+                            positionDecimalPlaces + ", " +
+                            positionDecimalPlaces,
+                            posX, posY, posZ
                     )
             );
         }
 
         if (this.dimensionalPosition.getValue()) {
-            final WorldUtil.Dimension dimension = mc.player == null ? WorldUtil.Dimension.OVERWORLD : WorldUtil.getDimension();
+            final WorldUtil.Dimension dimension = this.mc.player == null ? WorldUtil.Dimension.OVERWORLD : WorldUtil.getDimension();
             if (dimension != WorldUtil.Dimension.END) {
                 final int positionDecimalPlacesRawValue = this.positionDecimalPlaces.getValue();
                 if (positionDecimalPlacesRawValue < 1) this.positionDecimalPlaces.setValue(1);
@@ -288,6 +300,22 @@ public class InfoHUDElement extends HUDElement {
                 }
             }
             infoMap.put("Server Address", value);
+        }
+
+        if (this.packetsSent.getValue()) {
+            String value = "unknown";
+            if (this.mc.getNetworkHandler() != null) {
+                value = String.format("%.0f", this.mc.getNetworkHandler().getConnection().getAveragePacketsSent());
+            }
+            infoMap.put("Packets Sent", value);
+        }
+
+        if (this.packetsReceived.getValue()) {
+            String value = "unknown";
+            if (this.mc.getNetworkHandler() != null) {
+                value = String.format("%.0f", this.mc.getNetworkHandler().getConnection().getAveragePacketsReceived());
+            }
+            infoMap.put("Packets Received", value);
         }
 
         if (this.tickBaseCharge.getValue()) {

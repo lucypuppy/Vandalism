@@ -41,8 +41,8 @@ public class HUDConfig extends AbstractConfig<JsonObject> {
             final String hudElementName = hudElement.getName();
             try {
                 final JsonObject hudElementNode = new JsonObject();
-                hudElementNode.addProperty("x", hudElement.x);
-                hudElementNode.addProperty("y", hudElement.y);
+                hudElementNode.addProperty("x", hudElement.getX());
+                hudElementNode.addProperty("y", hudElement.getY());
                 if (!hudElement.getValues().isEmpty()) {
                     final JsonObject valuesNode = new JsonObject();
                     ConfigWithValues.saveValues(valuesNode, hudElement.getValues());
@@ -67,10 +67,10 @@ public class HUDConfig extends AbstractConfig<JsonObject> {
                 }
                 final JsonObject hudElementNode = mainNode.getAsJsonObject(hudElementName);
                 if (hudElementNode.has("x")) {
-                    hudElement.x = hudElementNode.get("x").getAsInt();
+                    hudElement.setX(hudElementNode.get("x").getAsInt());
                 }
                 if (hudElementNode.has("y")) {
-                    hudElement.y = hudElementNode.get("y").getAsInt();
+                    hudElement.setY(hudElementNode.get("y").getAsInt());
                 }
                 if (hudElementNode.has("values")) {
                     final JsonObject valuesNode = hudElementNode.get("values").getAsJsonObject();

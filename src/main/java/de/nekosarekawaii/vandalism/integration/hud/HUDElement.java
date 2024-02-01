@@ -39,11 +39,11 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
     private final String name;
     private final List<Value<?>> values;
     private final BooleanValue active;
-    public boolean shouldSave;
-    public boolean dragged;
+    private boolean shouldSave;
+    private boolean dragged;
     private final int defaultX, defaultY;
     protected int width, height;
-    public int x, y;
+    protected int x, y;
     protected Alignment alignmentX, alignmentY;
 
     public HUDElement(final String name, final int defaultX, final int defaultY) {
@@ -216,6 +216,78 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
 
     public boolean isActive() {
         return this.active.getValue();
+    }
+
+    public boolean shouldSave() {
+        return this.shouldSave;
+    }
+
+    public void setShouldSave(final boolean shouldSave) {
+        this.shouldSave = shouldSave;
+    }
+
+    public boolean isDragged() {
+        return this.dragged;
+    }
+
+    public void setDragged(final boolean dragged) {
+        this.dragged = dragged;
+    }
+
+    public int getDefaultX() {
+        return this.defaultX;
+    }
+
+    public int getDefaultY() {
+        return this.defaultY;
+    }
+
+    public int getWidth() {
+        return this.width;
+    }
+
+    public void setWidth(final int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return this.height;
+    }
+
+    public void setHeight(final int height) {
+        this.height = height;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(final int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(final int y) {
+        this.y = y;
+    }
+
+    public Alignment getAlignmentX() {
+        return this.alignmentX;
+    }
+
+    public void setAlignmentX(final Alignment alignmentX) {
+        this.alignmentX = alignmentX;
+    }
+
+    public Alignment getAlignmentY() {
+        return alignmentY;
+    }
+
+    public void setAlignmentY(final Alignment alignmentY) {
+        this.alignmentY = alignmentY;
     }
 
     @Override
