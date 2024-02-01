@@ -28,7 +28,7 @@ public class TimerModule extends AbstractModule implements TickTimeListener {
 
     private final FloatValue ticksPerSecond = new FloatValue(
             this,
-            "Timer per seconds",
+            "Ticks per seconds",
             "The amount of speed the timer should have.",
             20.0f,
             1.0f,
