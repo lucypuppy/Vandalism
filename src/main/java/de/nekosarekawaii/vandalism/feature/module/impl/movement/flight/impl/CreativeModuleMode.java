@@ -16,56 +16,48 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.impl.exploit.godmode;
+package de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl;
 
-import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.FlightModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
 
-public class HealCommandModuleMode extends ModuleMulti<GodModeModule> implements PlayerUpdateListener {
+public class CreativeModuleMode extends ModuleMulti<FlightModule> implements PlayerUpdateListener {
 
-    private boolean needsToSentCommand = false;
-
-    private final IntegerValue delay = new IntegerValue(
+    private final FloatValue speed = new FloatValue(
             this,
-            "Delay",
-            "The delay in ticks before respawning.",
-            500,
-            0,
-            10000
+            "Speed",
+            "The speed amount of the creative flight.",
+            0.05f,
+            0.05f,
+            5.0f
     );
 
-    private final MSTimer delayTimer = new MSTimer();
-
-    public HealCommandModuleMode() {
-        super("Heal Command");
+    public CreativeModuleMode() {
+        super("Creative");
     }
 
     @Override
     public void onActivate() {
-        this.needsToSentCommand = false;
         Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);
     }
 
     @Override
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
-        this.needsToSentCommand = false;
+        if (this.mc.player == null) return;
+        this.mc.player.getAbilities().flying = false;
+        this.mc.player.getAbilities().allowFlying = this.mc.player.getAbilities().creativeMode;
+        this.mc.player.getAbilities().setFlySpeed(this.speed.getDefaultValue());
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.needsToSentCommand) {
-            this.needsToSentCommand = false;
-            if (!this.mc.player.isDead()) {
-                this.mc.getNetworkHandler().sendChatCommand("heal");
-            }
-        }
-        if (this.mc.player.getHealth() <= this.mc.player.getMaxHealth() / 2f && this.delayTimer.hasReached(this.delay.getValue(), true)) {
-            this.needsToSentCommand = true;
-        }
+        this.mc.player.getAbilities().flying = true;
+        this.mc.player.getAbilities().allowFlying = true;
+        this.mc.player.getAbilities().setFlySpeed(this.speed.getValue());
     }
 
 }

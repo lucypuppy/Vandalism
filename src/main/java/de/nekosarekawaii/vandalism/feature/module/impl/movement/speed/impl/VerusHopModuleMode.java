@@ -16,10 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.impl.movement.speed;
+package de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.SpeedModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 import net.minecraft.util.math.Vec3d;

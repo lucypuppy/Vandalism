@@ -16,47 +16,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.impl.exploit.godmode;
+package de.nekosarekawaii.vandalism.feature.module.impl.movement.elytraflight.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.cancellable.render.ScreenListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.elytraflight.ElytraFlightModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
-import net.minecraft.client.gui.screen.DeathScreen;
+import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
 
-public class DisableDeathScreenModuleMode extends ModuleMulti<GodModeModule> implements PlayerUpdateListener, ScreenListener {
+public class CreativeModuleMode extends ModuleMulti<ElytraFlightModule> implements PlayerUpdateListener {
 
-    public DisableDeathScreenModuleMode() {
-        super("Disable Death Screen");
+    public CreativeModuleMode() {
+        super("Creative");
     }
 
     @Override
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);
-        Vandalism.getInstance().getEventSystem().subscribe(ScreenEvent.ID, this);
     }
 
     @Override
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
-        Vandalism.getInstance().getEventSystem().unsubscribe(ScreenEvent.ID, this);
+        if (this.mc.player == null) return;
+        this.mc.player.getAbilities().flying = false;
+        this.mc.player.getAbilities().allowFlying = this.mc.player.getAbilities().creativeMode;
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.mc.currentScreen instanceof DeathScreen) {
-            this.mc.setScreen(null);
-            this.mc.player.setHealth(20f);
-            this.mc.player.getHungerManager().setFoodLevel(20);
-            this.mc.player.getHungerManager().setSaturationLevel(20f);
+        if (!this.mc.player.isFallFlying()) {
+            this.mc.getNetworkHandler().sendPacket(
+                    new ClientCommandC2SPacket(this.mc.player, ClientCommandC2SPacket.Mode.START_FALL_FLYING)
+            );
+            return;
         }
-    }
-
-    @Override
-    public void onOpenScreen(final ScreenListener.ScreenEvent event) {
-        if (event.screen instanceof DeathScreen) {
-            event.cancel();
-        }
+        this.mc.player.getAbilities().flying = true;
+        this.mc.player.getAbilities().allowFlying = true;
     }
 
 }

