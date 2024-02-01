@@ -22,6 +22,7 @@ import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.base.value.impl.rendering.ButtonValue;
 import de.nekosarekawaii.vandalism.feature.command.impl.misc.NbtCommand;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
@@ -42,6 +43,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Util;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -51,6 +53,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ItemStackLoggerModule extends AbstractModule implements PlayerUpdateListener {
+
+    private final ButtonValue openDirectoryButton = new ButtonValue(
+            this,
+            "Open Directory",
+            "Opens the directory where the logged items are stored.",
+            buttonValue -> {
+                LOGGED_ITEMS_DIR.mkdirs();
+                if (!LOGGED_ITEMS_DIR.exists()) return;
+                Util.getOperatingSystem().open(LOGGED_ITEMS_DIR);
+            }
+    );
 
     private final BooleanValue notifyInChat = new BooleanValue(
             this,
@@ -68,7 +81,7 @@ public class ItemStackLoggerModule extends AbstractModule implements PlayerUpdat
     public ItemStackLoggerModule() {
         super(
                 "Item Stack Logger",
-                "Logs item stacks to '" + LOGGED_ITEMS_DIR.getAbsolutePath() + "'",
+                "Logs item stacks with their NBT data into a file.",
                 Category.MISC
         );
     }
