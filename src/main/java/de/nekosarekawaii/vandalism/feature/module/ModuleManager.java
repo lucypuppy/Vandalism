@@ -134,7 +134,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new VehicleFlightModule(),
                 new EcholocationModule(),
                 new AutoClickerModule(),
-                new WTabModule(),
+                new WTapModule(),
                 new CraftCarryModule()
         );
         this.configManager.add(new ConfigWithValues("modules", getList()));
