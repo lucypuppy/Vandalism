@@ -54,23 +54,56 @@ public class ChatSettings extends ValueGroup {
             true
     );
 
-    public final BooleanValue customChatLength = new BooleanValue(
+    public final BooleanValue moreChatInput = new BooleanValue(
             this,
-            "Custom Chat Length",
-            "Allows you to enable or disable a custom chat length.",
+            "More Chat Input",
+            "If enabled, you can increase or decrease the max chat input length.",
             true
     );
 
-    public final IntegerValue maxChatLength = new IntegerValue(
+    public final IntegerValue moreChatInputMaxLength = new IntegerValue(
             this,
-            "Max Chat Length",
-            "Set the Max Chat Length",
+            "More Chat Input Max Length",
+            "Allows you to change the max chat input length.",
             1000,
             1,
             10000
-    ).visibleCondition(this.customChatLength::getValue);
+    ).visibleCondition(this.moreChatInput::getValue);
+
+    public final BooleanValue moreChatHistory = new BooleanValue(
+            this,
+            "More Chat History",
+            "If enabled, you can increase or decrease the max chat history.",
+            true
+    );
+
+    public final IntegerValue moreChatHistoryMaxLength = new IntegerValue(
+            this,
+            "More Chat History Max Length",
+            "Allows you to change the max chat history.",
+            500,
+            100,
+            Short.MAX_VALUE / 2
+    ).visibleCondition(this.moreChatHistory::getValue);
+
+    public final BooleanValue moreChatInputSuggestions = new BooleanValue(
+            this,
+            "More Chat Input Suggestions",
+            "If enabled, you can increase or decrease the max chat input suggestions.",
+            true
+    );
+
+    public final IntegerValue moreChatInputSuggestionsMaxLength = new IntegerValue(
+            this,
+            "More Chat Input Suggestions Max Length",
+            "Allows you to change the max chat input suggestions.",
+            39,
+            10,
+            50
+    ).visibleCondition(this.moreChatInputSuggestions::getValue);
 
     public ChatSettings(final ClientSettings parent) {
         super(parent, "Chat", "Chat related settings.");
     }
+
 }

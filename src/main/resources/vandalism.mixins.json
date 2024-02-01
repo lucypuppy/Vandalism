@@ -11,6 +11,7 @@
     "MixinTitleScreen",
     "clientsettings.MixinAllowedAddressResolver",
     "clientsettings.MixinBuiltinModelItemRenderer",
+    "clientsettings.MixinChatHud",
     "clientsettings.MixinChatScreen",
     "clientsettings.MixinClientBrandRetriever",
     "clientsettings.MixinClientConnection",
