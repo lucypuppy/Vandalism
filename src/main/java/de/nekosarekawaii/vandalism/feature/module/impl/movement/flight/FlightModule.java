@@ -48,7 +48,7 @@ public class FlightModule extends AbstractModule implements OutgoingPacketListen
     );
 
     public FlightModule() {
-        super("Flight", "Allows you to fly (even in survival or adventure).", Category.MOVEMENT);
+        super("Flight", "Allows you to fly.", Category.MOVEMENT);
     }
 
     @Override
