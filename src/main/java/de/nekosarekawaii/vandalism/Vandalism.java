@@ -65,6 +65,7 @@ import java.io.File;
  *  - Rewrite GCD fix to be accurate
  * <br><br>
  * TODO: FooFieOwO <br>
+ *  - Check AimpotModule#generatePointsAround (this might be bad _FooFieOWO)
  *  - Fix module list out of screen rendering when the alignment is at the bottom of the screen
  *  - Fix NoClipMode from PhaseModule
  *  - Fix SprintModule to be compatible with the rotation listener and also the backwards direction (ask Verschlxfene)
@@ -87,7 +88,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
     private static final Vandalism instance = new Vandalism();
 
-    private final DietrichEvents2 eventSystem = new DietrichEvents2(35 /* This value has to be incremented for every new event */, Throwable::printStackTrace);
+    private final DietrichEvents2 eventSystem = new DietrichEvents2(36 /* This value has to be incremented for every new event */, Throwable::printStackTrace);
     private final Logger logger = LoggerFactory.getLogger(FabricBootstrap.MOD_NAME);
 
     //Base handlers

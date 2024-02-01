@@ -19,10 +19,12 @@
 package de.nekosarekawaii.vandalism.integration.hud.impl;
 
 import de.florianmichael.rclasses.math.geometry.Alignment;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.TickBaseModule;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
 import de.nekosarekawaii.vandalism.util.click.CPSTracker;
 import de.nekosarekawaii.vandalism.util.game.ServerUtil;
@@ -141,6 +143,14 @@ public class InfoHUDElement extends HUDElement {
             "Shows the current server address.",
             true
     );
+
+    private final BooleanValue tickBaseCharge = new BooleanValue(
+            this,
+            "Tick Base Charge",
+            "Shows the current tick base charge.",
+            true
+    );
+
 
     public final CPSTracker leftClick = new CPSTracker();
     public final CPSTracker rightClick = new CPSTracker();
@@ -267,6 +277,13 @@ public class InfoHUDElement extends HUDElement {
                 }
             }
             infoMap.put("Server Address", value);
+        }
+        if (this.tickBaseCharge.getValue()) {
+            final TickBaseModule tickBaseModule = Vandalism.getInstance().getModuleManager().getTickBaseModule();
+
+            if (tickBaseModule.isActive()) {
+                infoMap.put("Tick Base Charge", tickBaseModule.getCharge() + " ticks");
+            }
         }
         int width = 0, height = 0;
         final int fontHeight = this.mc.textRenderer.fontHeight;
