@@ -47,6 +47,7 @@ public class IntegerValue extends ValueNumber<Integer> {
     @Override
     public void render() {
         final ImInt nextValue = new ImInt(this.getValue());
+        ImGui.setNextItemWidth(ImGui.getColumnWidth() - 2);
         if (ImGui.sliderScalar("##" + this.getName() + this.getParent().getName(), ImGuiDataType.S32, nextValue, this.getMinValue(), this.getMaxValue())) {
             this.setValue(nextValue.get());
         }

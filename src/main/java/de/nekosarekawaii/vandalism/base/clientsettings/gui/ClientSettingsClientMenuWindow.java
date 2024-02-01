@@ -22,6 +22,7 @@ import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import net.minecraft.client.gui.DrawContext;
 
@@ -43,15 +44,14 @@ public class ClientSettingsClientMenuWindow extends ClientMenuWindow {
                     final String name = valueGroup.getName();
                     final String id = "##" + name + "settings";
                     if (ImGui.beginTabItem(name + id + "tab")) {
-                        if (ImGui.button("Reset " + name + " Settings" + id + "button")) {
+                        ImGui.beginChild(id + "values", ImGui.getColumnWidth(), -ImGui.getTextLineHeightWithSpacing(), true);
+                        valueGroup.renderValues();
+                        ImGui.endChild();
+                        if (ImUtils.subButton("Reset " + name + " Settings" + id + "button")) {
                             for (final Value<?> valueGroupValue : valueGroup.getValues()) {
                                 valueGroupValue.resetValue();
                             }
                         }
-                        ImGui.separator();
-                        ImGui.beginChild(id + "values");
-                        valueGroup.renderValues();
-                        ImGui.endChild();
                         ImGui.endTabItem();
                     }
                 } else {

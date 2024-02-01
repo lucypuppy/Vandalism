@@ -43,12 +43,20 @@ public interface ValueParent extends IName {
     }
 
     default void renderValues() {
+        this.renderValues(true);
+    }
+
+    default void renderValues(final boolean renderNames) {
         for (final Value<?> value : this.getValues()) {
-            this.renderValue(value);
+            this.renderValue(value, renderNames);
         }
     }
 
     default void renderValue(final Value<?> value) {
+        this.renderValue(value, true);
+    }
+
+    default void renderValue(final Value<?> value, final boolean renderName) {
         if (value.isVisible() == null || value.isVisible().getAsBoolean()) {
             if (value instanceof final ValueGroup valueGroup) {
                 value.render();
@@ -58,18 +66,18 @@ public interface ValueParent extends IName {
                 return;
             }
             final boolean isRenderValue = value instanceof ButtonValue || value instanceof SeparatorValue;
-            if (!isRenderValue) {
+            if (renderName && !isRenderValue) {
                 ImGui.text(value.getName());
                 this.renderValueDescription(value);
-                ImGui.sameLine();
+                if (!(value instanceof ColorValue)) {
+                    ImGui.sameLine();
+                }
             }
             value.render();
             if (!(value instanceof ColorValue) && !(value instanceof StringValue)) {
                 this.renderValueDescription(value);
-                if (!isRenderValue) {
-                    if (ImGui.isItemClicked(ImGuiMouseButton.Middle)) {
-                        value.resetValue();
-                    }
+                if (!isRenderValue && (ImGui.isItemClicked(ImGuiMouseButton.Middle))) {
+                    value.resetValue();
                 }
             }
         }

@@ -19,8 +19,8 @@
 package de.nekosarekawaii.vandalism.base.value.impl.awt;
 
 import com.google.gson.JsonObject;
-import de.florianmichael.rclasses.common.color.ColorUtils;
 import de.florianmichael.rclasses.common.StringUtils;
+import de.florianmichael.rclasses.common.color.ColorUtils;
 import de.florianmichael.rclasses.common.color.HSBColor;
 import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.base.value.Value;
@@ -41,8 +41,8 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
 
     private final EnumModeValue<ColorMode> mode = new EnumModeValue<>(
             this,
-            "Color Mode",
-            "The mode of the color value.",
+            "Mode",
+            "The mode of " + this.getName() + ".",
             ColorMode.STATIC,
             ColorMode.values()
     );
@@ -50,7 +50,7 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
     private final IntegerValue rainbowSpeed = new IntegerValue(
             this,
             "Rainbow Speed",
-            "The speed of the rainbow color mode from the color value.",
+            "The speed of the rainbow color mode from " + this.getName() + ".",
             2,
             1,
             10
@@ -184,7 +184,8 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
                 ImGui.endTooltip();
             }
         }
-        this.renderValues();
+        ImGui.sameLine();
+        this.renderValues(false);
     }
 
     @Override
