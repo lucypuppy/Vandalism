@@ -97,7 +97,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.illegalInteractionModule = new IllegalInteractionModule(),
                 this.espModule = new ESPModule(),
                 this.killAuraModule = new KillAuraModule(this.autoBlockModule),
-                this.tickBaseModule = new TickBaseModule(),
+                this.tickBaseModule = new TickBaseModule(this.killAuraModule),
                 new UseItemSlowdownModule(this.autoBlockModule),
                 new BackTrackModule(this.killAuraModule),
                 new TestModule(),
