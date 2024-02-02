@@ -29,6 +29,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.WaterFluid;
 import net.minecraft.registry.Registries;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.shape.VoxelShapes;
 
 import java.util.ArrayList;
@@ -96,7 +97,8 @@ public class BlockNormalizerModule extends AbstractModule implements BlockCollis
         final BlockState state = event.state;
         final FluidState fluidState = state.getFluidState();
         final boolean isFluid = this.fluidBlocks.getValue() && event.pos.getY() < this.mc.player.getY() && !fluidState.isEmpty();
-        if (this.affectedBlocks.isSelected(state.getBlock()) || isFluid) {
+        final boolean isWaterLogged = state.contains(Properties.WATERLOGGED) && state.get(Properties.WATERLOGGED);
+        if ((this.affectedBlocks.isSelected(state.getBlock()) || isFluid) && !isWaterLogged) {
             final double minX = 0, minY = 0, minZ = 0, maxX = 1, maxZ = 1;
             double maxY = 1;
             if (isFluid && fluidState.getFluid() instanceof WaterFluid && (this.mc.player.isOnFire() || this.mc.player.fallDistance >= 2)) {
