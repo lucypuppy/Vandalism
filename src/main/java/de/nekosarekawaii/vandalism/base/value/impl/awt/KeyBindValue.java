@@ -30,6 +30,8 @@ import org.lwjgl.glfw.GLFW;
 
 public class KeyBindValue extends Value<Integer> implements KeyboardInputListener {
 
+    private boolean waitingForInput;
+
     public KeyBindValue(ValueParent parent, String name, String description) {
         this(parent, name, description, GLFW.GLFW_KEY_UNKNOWN);
     }
@@ -50,8 +52,6 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
     public void save(final JsonObject mainNode) {
         mainNode.addProperty(this.getName(), getValue());
     }
-
-    private boolean waitingForInput;
 
     @Override
     public void render() {
