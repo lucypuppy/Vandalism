@@ -20,11 +20,11 @@ package de.nekosarekawaii.vandalism.base.event.normal.game;
 
 import de.florianmichael.dietrichevents2.AbstractEvent;
 
-public interface MaxTickLister {
+public interface MaxTickListener {
 
     void onMaxTicks(final MaxTickEvent event);
 
-    class MaxTickEvent extends AbstractEvent<MaxTickLister> {
+    class MaxTickEvent extends AbstractEvent<MaxTickListener> {
 
         public static final int ID = 35;
 
@@ -39,7 +39,7 @@ public interface MaxTickLister {
         }
 
         @Override
-        public void call(final MaxTickLister tickTimeListener) {
+        public void call(final MaxTickListener tickTimeListener) {
             tickTimeListener.onMaxTicks(this);
         }
     }

@@ -32,7 +32,7 @@ public class ClientMenuScreen extends Screen {
     private final Screen prevScreen;
 
     public ClientMenuScreen(final ClientMenuManager clientMenuManager, final Screen prevScreen) {
-        super(Text.literal("ClientMenu"));
+        super(Text.literal("Client Menu"));
         this.clientMenuManager = clientMenuManager;
         this.prevScreen = prevScreen;
     }
