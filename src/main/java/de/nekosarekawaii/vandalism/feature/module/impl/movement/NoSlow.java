@@ -69,6 +69,26 @@ public class NoSlow extends AbstractModule implements PlayerSlowdownListener {
             1.0f
     );
 
+    private final ValueGroup foodSlowDown = new ValueGroup(this, "Food", "Food Slowdown settings.");
+
+    private final FloatValue foodForwardMultiplier = new FloatValue(
+            this.foodSlowDown,
+            "Forward",
+            "Forward slowdown multiplier.",
+            1.0f,
+            0.2f,
+            1.0f
+    );
+
+    private final FloatValue foodSidewaysMultiplier = new FloatValue(
+            this.foodSlowDown,
+            "Sideways",
+            "Sideways slowdown multiplier.",
+            1.0f,
+            0.2f,
+            1.0f
+    );
+
     private final ValueGroup sneakSlowDown = new ValueGroup(this, "Sneak", "Sneak Slowdown settings.");
 
     private final FloatValue sneakForwardMultiplier = new FloatValue(
@@ -133,6 +153,10 @@ public class NoSlow extends AbstractModule implements PlayerSlowdownListener {
             if (item == Items.BOW || item == Items.CROSSBOW) {
                 return this.bowForwardMultiplier.getValue();
             }
+
+            if (item.isFood()) {
+                return this.foodForwardMultiplier.getValue();
+            }
         }
 
         if (this.mc.player.isSneaking()) {
@@ -152,6 +176,10 @@ public class NoSlow extends AbstractModule implements PlayerSlowdownListener {
 
             if (item == Items.BOW || item == Items.CROSSBOW) {
                 return this.bowSidewaysMultiplier.getValue();
+            }
+
+            if (item.isFood()) {
+                return this.foodSidewaysMultiplier.getValue();
             }
         }
 
