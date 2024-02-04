@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.event;
 import de.florianmichael.dietrichevents2.StateTypes;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.cancellable.render.ScreenListener;
-import de.nekosarekawaii.vandalism.base.event.normal.game.MaxTickLister;
+import de.nekosarekawaii.vandalism.base.event.normal.game.MaxTickListener;
 import de.nekosarekawaii.vandalism.base.event.normal.game.MinecraftBoostrapListener;
 import de.nekosarekawaii.vandalism.base.event.normal.game.ShutdownProcessListener;
 import de.nekosarekawaii.vandalism.base.event.normal.game.TickTimeListener;
@@ -107,8 +107,8 @@ public abstract class MixinMinecraftClient {
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Ljava/lang/Math;min(II)I"))
     public int callMaxClientTickListener(int a, int b) {
-        final var event = new MaxTickLister.MaxTickEvent(a, b);
-        Vandalism.getInstance().getEventSystem().postInternal(MaxTickLister.MaxTickEvent.ID, event);
+        final var event = new MaxTickListener.MaxTickEvent(a, b);
+        Vandalism.getInstance().getEventSystem().postInternal(MaxTickListener.MaxTickEvent.ID, event);
         return event.minTicks;
     }
 
