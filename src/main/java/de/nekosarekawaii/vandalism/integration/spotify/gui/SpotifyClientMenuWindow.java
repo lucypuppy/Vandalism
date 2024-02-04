@@ -24,7 +24,6 @@ import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.integration.spotify.SpotifyData;
 import de.nekosarekawaii.vandalism.integration.spotify.SpotifyManager;
-import de.nekosarekawaii.vandalism.util.imgui.FontAwesomeIcons;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
@@ -161,6 +160,7 @@ public class SpotifyClientMenuWindow extends ClientMenuWindow {
         if (currentProgress > spotifyData.getDuration()) {
             currentProgress = spotifyData.getDuration();
         }
+        /*
         if (ImGui.button(FontAwesomeIcons.StepBackward)) {
             spotifyManager.previous();
         }
@@ -178,6 +178,7 @@ public class SpotifyClientMenuWindow extends ClientMenuWindow {
         if (ImGui.button(FontAwesomeIcons.StepForward)) {
             spotifyManager.next();
         }
+        */
         ImGui.progressBar(Percentage.percentage(currentProgress, spotifyData.getDuration()) / 100, -1, 2);
         final long durationSeconds = spotifyData.getDuration() / 1000 % 60;
         ImGui.text(String.format("%d:%02d", currentProgress / 1000 / 60, currentProgress / 1000 % 60));
