@@ -45,4 +45,9 @@ public class CooldownClicker extends Clicker {
         }
     }
 
+    @Override
+    public void onRotate() {
+
+    }
+
 }
