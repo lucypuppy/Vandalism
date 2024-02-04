@@ -18,8 +18,8 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
-import de.florianmichael.rclasses.common.color.ColorUtils;
 import de.florianmichael.rclasses.common.StringUtils;
+import de.florianmichael.rclasses.common.color.ColorUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
@@ -43,6 +43,9 @@ public class BetterTabListModule extends AbstractModule implements KeyboardInput
 
     public final BooleanValue highlightSelf = new BooleanValue(this, "Highlight Self", "Highlights yourself in the Tab List.", true);
     public final ColorValue selfColor = new ColorValue(this, "Self Color", "The color to highlight your name with.", ColorUtils.withAlpha(Color.GREEN, 100)).visibleCondition(this.highlightSelf::getValue);
+
+    public final BooleanValue highlightFriends = new BooleanValue(this, "Highlight Friends", "Highlights friends in the Tab List.", true);
+    public final ColorValue friendsColor = new ColorValue(this, "Friends Color", "The color to highlight your friends names with.", ColorUtils.withAlpha(Color.CYAN, 100)).visibleCondition(this.highlightFriends::getValue);
 
     public final BooleanValue moreInfo = new BooleanValue(this, "More Info", "Shows the the game mode and the accurate ping right after every username.", true);
     public final IntegerValue highPing = new IntegerValue(this, "High Ping", "Sets the high ping value.", 500, 50, 1000).visibleCondition(this.moreInfo::getValue);

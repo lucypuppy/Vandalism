@@ -30,6 +30,7 @@ import de.nekosarekawaii.vandalism.feature.command.CommandManager;
 import de.nekosarekawaii.vandalism.feature.creativetab.CreativeTabManager;
 import de.nekosarekawaii.vandalism.feature.module.ModuleManager;
 import de.nekosarekawaii.vandalism.feature.script.ScriptManager;
+import de.nekosarekawaii.vandalism.integration.friends.FriendManager;
 import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationListener;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerListManager;
@@ -58,6 +59,7 @@ import java.io.File;
  *  - Fix spotify menu control buttons
  *  - Use <a href="https://github.com/EvilCodeZ/JNI4J/tree/main">JNI4J</a> to improve the packet manager logging for fields
  *  - Fix vanilla title texts being displayed after leaving a server
+ *  - Save config files on change
  * <br><br>
  * TODO: Verschlxfene <br>
  *  - Delete MixinParticleManager
@@ -122,6 +124,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     private ServerListManager serverListManager;
     private HUDManager hudManager;
     private SpotifyManager spotifyManager;
+    private FriendManager friendManager;
 
     //Features
     private ModuleManager moduleManager;
@@ -184,6 +187,8 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.hudManager.init();
 
         this.spotifyManager = new SpotifyManager(this.configManager, this.hudManager);
+
+        this.friendManager = new FriendManager(this.configManager);
 
         //Features
         this.moduleManager = new ModuleManager(this.eventSystem, this.configManager, this.clientMenuManager);
@@ -283,6 +288,10 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
     public SpotifyManager getSpotifyManager() {
         return spotifyManager;
+    }
+
+    public FriendManager getFriendManager() {
+        return friendManager;
     }
 
 }
