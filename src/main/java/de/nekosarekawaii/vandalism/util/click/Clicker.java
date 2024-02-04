@@ -32,4 +32,6 @@ public abstract class Clicker implements MinecraftWrapper {
 
     public abstract void onUpdate();
 
+    public abstract void onRotate();
+
 }

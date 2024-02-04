@@ -19,13 +19,11 @@
 package de.nekosarekawaii.vandalism.util.click.impl;
 
 import de.florianmichael.rclasses.common.RandomUtils;
-import de.florianmichael.rclasses.math.BoxMullerTransform;
+import de.florianmichael.rclasses.math.Arithmetics;
 import de.florianmichael.rclasses.math.timer.MSTimer;
-import de.florianmichael.rclasses.pattern.evicting.EvictingList;
+import de.nekosarekawaii.vandalism.util.MathUtil;
 import de.nekosarekawaii.vandalism.util.click.Clicker;
-import net.minecraft.util.Pair;
 
-import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class BoxMuellerClicker extends Clicker {
@@ -34,29 +32,48 @@ public class BoxMuellerClicker extends Clicker {
     private float mean;
     private float std;
     private float cps;
+    private int clicks;
+    private int minCps;
+    private int maxCps;
     private final MSTimer msTimer = new MSTimer();
     private float partialDelays;
     private float cpsUpdatePossibility;
-    private final EvictingList<Pair<Integer, Integer>> delayHistory = new EvictingList<>(new ArrayList<>(), 100);
 
     @Override
     public void onUpdate() {
-        if (!this.msTimer.hasReached(this.delay, true)) {
+        final int extra = RandomUtils.randomInt(-1, 1);
+
+        while (this.clicks + extra > 0) {
+            this.clickAction.accept(true);
+            this.clicks--;
+        }
+    }
+
+    @Override
+    public void onRotate() {
+        if (this.msTimer.hasReached(this.delay, true)) {
             this.clickAction.accept(false);
-            return;
+
+            if (RandomUtils.randomInt(0, 100) <= this.cpsUpdatePossibility || this.cps < this.minCps) {
+                final double gaussian = ThreadLocalRandom.current().nextGaussian(this.mean, this.std);
+                final double gaussianPercentage = MathUtil.normalizeGaussian(gaussian, this.mean, this.std);
+                this.cps = (float) Arithmetics.interpolate(this.minCps, this.maxCps, gaussianPercentage);
+            }
+
+            final float delay = 1000.0f / this.cps;
+            this.delay = (int) Math.floor(delay + this.partialDelays);
+            this.partialDelays += delay - this.delay;
+
+            this.clicks++;
         }
+    }
 
-        final ThreadLocalRandom random = ThreadLocalRandom.current();
-        if (RandomUtils.randomInt(0, 100) <= this.cpsUpdatePossibility || this.cps < 3) {
-            this.cps = BoxMullerTransform.distribution(random, 1, 20, this.mean, this.std);
-        }
+    public void setMaxCps(final int maxCps) {
+        this.maxCps = maxCps;
+    }
 
-        final float delay = 1000.0f / this.cps;
-        this.delay = (int) Math.floor(delay + this.partialDelays);
-        this.partialDelays += delay - this.delay;
-
-        this.delayHistory.add(new Pair<>(this.delay, (int) this.cps));
-        this.clickAction.accept(true);
+    public void setMinCps(final int minCps) {
+        this.minCps = minCps;
     }
 
     public void setMean(final float mean) {
@@ -69,10 +86,6 @@ public class BoxMuellerClicker extends Clicker {
 
     public void setCpsUpdatePossibility(final float possibility) {
         this.cpsUpdatePossibility = possibility;
-    }
-
-    public EvictingList<Pair<Integer, Integer>> getDelayHistory() {
-        return delayHistory;
     }
 
 }

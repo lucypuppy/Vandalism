@@ -29,4 +29,13 @@ public class MathUtil {
         return uuu * p0 + 3 * uu * t * p1 + 3 * u * tt * p2 + ttt * p3;
     }
 
+    public static double normalizeGaussian(double gaussian, double mean, double std) {
+        final double normalized = (gaussian - mean) / std;
+        return sigmoid(normalized);
+    }
+
+    public static double sigmoid(double x) {
+        return 1 / (1 + Math.exp(-x));
+    }
+
 }
