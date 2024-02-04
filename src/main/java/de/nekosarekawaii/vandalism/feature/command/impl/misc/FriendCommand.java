@@ -63,11 +63,16 @@ public class FriendCommand extends AbstractCommand {
             Vandalism.getInstance().getFriendManager().getList().clear();
             ChatUtil.infoChatMessage("Cleared " + amount + " friends.");
             return SINGLE_SUCCESS;
-        })).then(literal("alias").then(argument("friend", FriendArgumentType.create()).then(argument("alias", StringArgumentType.word()).executes(context -> {
+        })).then(literal("alias").then(literal("set").then(argument("friend", FriendArgumentType.create()).then(argument("alias", StringArgumentType.word()).executes(context -> {
             final Friend friend = FriendArgumentType.get(context);
             final String alias = StringArgumentType.getString(context, "alias");
             friend.setAlias(alias);
             ChatUtil.infoChatMessage("Set " + friend.getName() + "'s alias to " + alias + ".");
+            return SINGLE_SUCCESS;
+        })))).then(literal("remove").then(argument("friend", FriendArgumentType.create()).executes(context -> {
+            final Friend friend = FriendArgumentType.get(context);
+            friend.setAlias(friend.getName());
+            ChatUtil.infoChatMessage("Removed " + friend.getName() + "'s alias.");
             return SINGLE_SUCCESS;
         }))));
     }
