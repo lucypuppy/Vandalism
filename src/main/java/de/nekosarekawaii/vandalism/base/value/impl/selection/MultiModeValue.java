@@ -90,18 +90,22 @@ public class MultiModeValue extends Value<List<String>> {
     @Override
     public void render() {
         ImGui.setNextItemWidth(ImGui.getColumnWidth() - 2);
-        if (ImGui.beginCombo("##" + this.getName() + this.getParent().getName(), this.getValue().toString().substring(1, this.getValue().toString().length() - 1), ImGuiComboFlags.HeightLargest)) {
+        final String id = "##" + this.getName() + this.getParent().getName();
+        if (ImGui.beginCombo(id, this.getValue().toString().substring(1, this.getValue().toString().length() - 1), ImGuiComboFlags.HeightLargest)) {
             ImGui.separator();
             ImGui.text("Search for " + this.getName());
             ImGui.setNextItemWidth(Math.max(350, ImGui.getColumnWidth()));
-            ImGui.inputText("##" + this.getName() + this.getParent().getName() + "search", this.searchInput);
-            if (ImGui.button("Select all##" + this.getName() + this.getParent().getName() + "selectAll", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
+            ImGui.inputText(id + "search", this.searchInput);
+            if (ImGui.button("Select all" + id + "selectAll", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
                 this.getValue().clear();
                 this.getValue().addAll(this.options);
             }
             ImGui.sameLine();
-            if (ImGui.button("Deselect all##" + this.getName() + this.getParent().getName() + "deselectAll", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+            if (ImGui.button("Deselect all" + id + "deselectAll", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                 this.getValue().clear();
+            }
+            if (ImGui.button("Close" + id + "close", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                ImGui.closeCurrentPopup();
             }
             ImGui.separator();
             ImGui.spacing();
