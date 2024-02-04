@@ -458,14 +458,11 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                     this.lastPossibleHit = System.currentTimeMillis();
                 }
 
-                // mc.options.useKey.setPressed(true);
                 this.autoBlock.stopBlock();
-                mc.player.setSprinting(false);
 
                 this.mc.doAttack();
 
                 this.autoBlock.startBlock();
-                mc.player.setSprinting(true);
                 this.targetIndex++;
             }
         });

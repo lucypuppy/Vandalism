@@ -36,7 +36,7 @@ import java.util.concurrent.CompletableFuture;
 public class KeyNameArgumentType implements ArgumentType<Integer> {
 
     private static final DynamicCommandExceptionType notExisting = new DynamicCommandExceptionType(
-            id -> Text.literal("No enchantment with the id " + id + " has been found!")
+            name -> Text.literal("No key with the name " + name + " has been found!")
     );
 
     public static KeyNameArgumentType create() {
