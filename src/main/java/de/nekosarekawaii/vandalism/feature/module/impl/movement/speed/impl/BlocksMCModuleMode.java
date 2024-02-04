@@ -25,13 +25,13 @@ import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.SpeedModul
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 
-public class VerusModuleMode extends ModuleMulti<SpeedModule> implements PlayerUpdateListener, TickTimeListener {
+public class BlocksMCModuleMode extends ModuleMulti<SpeedModule> implements PlayerUpdateListener, TickTimeListener {
 
     private float charge = 0;
-    private boolean tick = false;
+    private int fallState = 0;
 
-    public VerusModuleMode() {
-        super("Verus");
+    public BlocksMCModuleMode() {
+        super("BlocksMC");
     }
 
     @Override
@@ -46,32 +46,39 @@ public class VerusModuleMode extends ModuleMulti<SpeedModule> implements PlayerU
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.mc.player.isOnGround()) {
-            if (MovementUtil.isMoving()) {
-                this.mc.player.jump();
-                MovementUtil.setSpeed(0.45);
+        if (!MovementUtil.isMoving()) {
+            this.charge = 0.0f;
+            return;
+        }
 
-                tick = false;
+        if (this.mc.player.isOnGround()) {
+            this.mc.player.jump();
+            MovementUtil.setSpeed(0.45);
+
+            this.charge = 3.0f;
+        } else {
+            if (mc.player.fallDistance > 0.0f) {
+                this.fallState++;
+                this.charge += 1.0f;
+            } else {
+                this.fallState = 0;
+                this.charge = 0.0f;
             }
 
-            charge = 3.0f;
-        } else {
-            charge = 0.0f;
-        }
-    }
-
-    @Override
-    public void onPostPlayerUpdate(final PlayerUpdateEvent event) {
-        if (mc.player.fallDistance > 0.0f && !tick) {
-            MovementUtil.setSpeed(0.3);
-            tick = true;
+            if (this.fallState == 1) {
+                MovementUtil.setSpeed(0.34);
+            } else if (this.fallState == 2) {
+                MovementUtil.setSpeed(0.25);
+            } else {
+                MovementUtil.setSpeed(MovementUtil.getSpeed());
+            }
         }
     }
 
     @Override
     public void onTickTimings(TickTimeEvent e) {
-        if (MovementUtil.isMoving()) {
-            e.tickTime = 1000f / (20.0f + charge);
+        if (MovementUtil.isMoving() && this.charge > 0.0f) {
+            e.tickTime = 1000f / (20.0f + this.charge);
         }
     }
 
