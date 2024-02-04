@@ -23,6 +23,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.render.InputType;
 import imgui.ImGui;
 import org.lwjgl.glfw.GLFW;
@@ -54,18 +55,19 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
 
     @Override
     public void render() {
+        final String id = "##" + this.getName() + this.getParent().getName();
         if (!this.waitingForInput) {
-            if (ImGui.button(InputType.getKeyName(this.getValue()) + "##" + this.getName() + this.getParent().getName(), 0, 25)) {
+            if (ImUtils.subButton(InputType.getKeyName(this.getValue()) + id)) {
                 this.waitingForInput = true;
                 Vandalism.getInstance().getEventSystem().subscribe(KeyboardInputEvent.ID, this);
             }
         } else {
             ImGui.textWrapped("Listening for key input...");
-            if (ImGui.button("Cancel##" + this.getName() + this.getParent().getName())) {
+            if (ImUtils.subButton("Cancel" + id + "cancel")) {
                 this.finishInput();
             }
             ImGui.sameLine();
-            if (ImGui.button("Reset##" + this.getName() + this.getParent().getName())) {
+            if (ImUtils.subButton("Reset" + id + "reset")) {
                 this.finishInput();
                 this.resetValue();
             }
