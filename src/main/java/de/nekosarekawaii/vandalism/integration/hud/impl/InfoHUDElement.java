@@ -174,7 +174,7 @@ public class InfoHUDElement extends HUDElement {
     }
 
     @Override
-    public void onRender(final DrawContext context, final float delta) {
+    public void onRender(final DrawContext context, final float delta, final boolean inGame) {
         final Map<String, String> infoMap = new LinkedHashMap<>();
 
         if (this.fps.getValue()) {

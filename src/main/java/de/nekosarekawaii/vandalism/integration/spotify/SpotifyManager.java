@@ -339,14 +339,18 @@ public class SpotifyManager {
                                     this.currentSpotifyData.setDuration(itemJson.get("duration_ms").getAsLong());
                                 }
                                 if (itemJson.has("artists")) {
-                                    this.currentSpotifyData.getArtists().clear();
                                     final JsonArray artistsArray = itemJson.getAsJsonArray("artists");
+                                    StringBuilder artists = new StringBuilder();
                                     for (final JsonElement artistElement : artistsArray) {
                                         final JsonObject artistJson = artistElement.getAsJsonObject();
                                         if (artistJson.has("name")) {
-                                            this.currentSpotifyData.getArtists().add(artistJson.get("name").getAsString());
+                                            artists.append(artistJson.get("name").getAsString()).append(", ");
                                         }
                                     }
+                                    if (artists.toString().endsWith(", ")) {
+                                        artists = new StringBuilder(artists.substring(0, artists.length() - 2));
+                                    }
+                                    this.currentSpotifyData.setArtists(artists.toString());
                                 }
                                 if (itemJson.has("album")) {
                                     final JsonObject albumJson = itemJson.getAsJsonObject("album");

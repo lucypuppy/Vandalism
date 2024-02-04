@@ -62,7 +62,7 @@ public class HUDManager extends Storage<HUDElement> implements Render2DListener,
             if (!hudElement.isActive()) {
                 continue;
             }
-            hudElement.onRender(context, delta);
+            hudElement.onRender(context, delta, true);
         }
     }
 

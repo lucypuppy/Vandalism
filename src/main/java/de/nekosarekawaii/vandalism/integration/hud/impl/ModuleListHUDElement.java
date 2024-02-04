@@ -101,7 +101,7 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
     }
 
     @Override
-    public void onRender(final DrawContext context, final float delta) {
+    public void onRender(final DrawContext context, final float delta, final boolean inGame) {
         this.sort();
         int yOffset = 0;
         for (final String activatedModule : this.activatedModules) {

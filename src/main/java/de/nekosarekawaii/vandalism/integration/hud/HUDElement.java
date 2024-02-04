@@ -101,7 +101,7 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
         final int scaledHeight = this.mc.getWindow().getScaledHeight();
     }
 
-    protected abstract void onRender(final DrawContext context, final float delta);
+    protected abstract void onRender(final DrawContext context, final float delta, final boolean inGame);
 
     public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {}
 
@@ -209,7 +209,7 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
                 borderSizeY,
                 show ? Color.red.getRGB() : Color.WHITE.getRGB()
         );
-        this.onRender(context, delta);
+        this.onRender(context, delta, false);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         return mouseOver;
     }
