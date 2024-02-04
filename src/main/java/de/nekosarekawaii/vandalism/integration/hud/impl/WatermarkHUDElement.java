@@ -46,7 +46,7 @@ public class WatermarkHUDElement extends HUDElement {
     }
 
     @Override
-    public void onRender(final DrawContext context, final float delta) {
+    public void onRender(final DrawContext context, final float delta, final boolean inGame) {
         this.mc.getTextureManager().getTexture(FabricBootstrap.MOD_LOGO).setFilter(
                 true,
                 true
