@@ -29,6 +29,7 @@ public class BlocksMCModuleMode extends ModuleMulti<SpeedModule> implements Play
 
     private float charge = 0;
     private int fallState = 0;
+    private boolean lastJumpPressed = false;
 
     public BlocksMCModuleMode() {
         super("BlocksMC");
@@ -50,6 +51,9 @@ public class BlocksMCModuleMode extends ModuleMulti<SpeedModule> implements Play
             this.charge = 0.0f;
             return;
         }
+
+        this.lastJumpPressed = this.mc.options.jumpKey.isPressed();
+        this.mc.options.jumpKey.setPressed(false);
 
         if (this.mc.player.isOnGround()) {
             this.mc.player.jump();
@@ -73,6 +77,11 @@ public class BlocksMCModuleMode extends ModuleMulti<SpeedModule> implements Play
                 MovementUtil.setSpeed(MovementUtil.getSpeed());
             }
         }
+    }
+
+    @Override
+    public void onPostPlayerUpdate(final PlayerUpdateEvent event) {
+        this.mc.options.jumpKey.setPressed(this.lastJumpPressed);
     }
 
     @Override
