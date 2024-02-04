@@ -46,6 +46,7 @@ public class MovementUtil implements MinecraftWrapper {
      */
     public static double getDirection(final float directionOffset) {
         if (mc.player == null) return 0;
+        if (!isMoving()) return mc.player.getYaw();
         final float offset = (180.0f + directionOffset);
         return (Math.atan2(mc.player.forwardSpeed, mc.player.sidewaysSpeed) / Math.PI * offset + mc.player.getYaw()) * Math.PI / offset;
     }
