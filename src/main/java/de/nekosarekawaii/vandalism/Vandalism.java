@@ -76,6 +76,10 @@ import java.io.File;
  * TODO: Snow <br>
  *  - Implement ServerDiscoveryClientMenuWindow#renderServerPopup "Add to server list" feature
  * <br><br>
+ * TODO: simon <br>
+ *  - Recode kick feature of enhanced server list with packet utils
+ *  - Add minecraft server pinger in DirectConnectScreen, GameMenuScreen and DisconnectedScreen
+ * <br><br>
  * TODO: Everyone <br>
  *  - Rewrite EnhancedServerList
  *  - Fix offsets for the new "teleport" method in the fov fucker module

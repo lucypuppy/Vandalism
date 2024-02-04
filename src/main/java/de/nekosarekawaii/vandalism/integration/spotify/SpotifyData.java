@@ -22,16 +22,13 @@ import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.util.Identifier;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 public class SpotifyData {
 
     public final static Identifier IMAGE_IDENTIFIER = new Identifier(FabricBootstrap.MOD_ID, "spotify_track.png");
 
     private String type;
     private String name;
-    private final List<String> artists;
+    private String artists;
     private NativeImageBackedTexture image;
     private String imageUrl;
     private long time;
@@ -43,7 +40,7 @@ public class SpotifyData {
     public SpotifyData() {
         this.type = "";
         this.name = "";
-        this.artists = new CopyOnWriteArrayList<>();
+        this.artists = "";
         this.image = null;
         this.imageUrl = "";
         this.time = 0L;
@@ -69,8 +66,12 @@ public class SpotifyData {
         this.name = name;
     }
 
-    public List<String> getArtists() {
+    public String getArtists() {
         return this.artists;
+    }
+
+    public void setArtists(final String artists) {
+        this.artists = artists;
     }
 
     public NativeImageBackedTexture getImage() {

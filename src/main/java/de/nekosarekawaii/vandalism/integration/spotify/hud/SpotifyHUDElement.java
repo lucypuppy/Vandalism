@@ -56,21 +56,30 @@ public class SpotifyHUDElement extends HUDElement {
     }
 
     @Override
-    public void onRender(final DrawContext context, final float delta) {
+    public void onRender(final DrawContext context, final float delta, final boolean inGame) {
+        final SpotifyManager spotifyManager = this.spotifyManager;
+        spotifyManager.update();
+        final SpotifyData spotifyData = spotifyManager.getCurrentSpotifyData();
+        final boolean paused = spotifyData.isPaused();
+        final String type = spotifyData.getType();
+        final boolean typeEmpty = type.isEmpty();
+        final String name = spotifyData.getName();
+        final boolean nameEmpty = name.isEmpty();
+        final String artists = spotifyData.getArtists();
+        final boolean artistsEmpty = artists.isEmpty();
+        if (inGame && typeEmpty && nameEmpty && artistsEmpty) {
+            return;
+        }
         int width = 0, height = 0;
         final MatrixStack matrices = context.getMatrices();
         final float scale = 0.5f;
         final int fontHeight = this.mc.textRenderer.fontHeight;
         final int heightAddition = fontHeight * 2;
         final Map<String, String> infoMap = new LinkedHashMap<>();
-        final SpotifyManager spotifyManager = this.spotifyManager;
-        spotifyManager.update();
-        final SpotifyData spotifyData = spotifyManager.getCurrentSpotifyData();
-        final boolean paused = spotifyData.isPaused();
         final String waitingForData = "Waiting for data...";
-        infoMap.put("Type", !spotifyData.getType().isEmpty() ? spotifyData.getType() : waitingForData);
-        infoMap.put("Name", !spotifyData.getName().isEmpty() ? spotifyData.getName() : waitingForData);
-        infoMap.put("Artists", !spotifyData.getArtists().isEmpty() ? String.join(", ", spotifyData.getArtists()) : waitingForData);
+        infoMap.put("Type", !typeEmpty ? type : waitingForData);
+        infoMap.put("Name", !nameEmpty ? name : waitingForData);
+        infoMap.put("Artists", !artistsEmpty ? artists : waitingForData);
         String max = "00:00";
         if (spotifyData.getDuration() > 0) {
             final int maxSeconds = (int) Math.ceil(spotifyData.getDuration() / 1000d);
