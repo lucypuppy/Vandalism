@@ -140,7 +140,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             5.0f,
             1.0f,
             10.0f
-    ).visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
+            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
 
     private final FloatValue mean = new FloatValue(
             this.clicking,
@@ -149,7 +150,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             15.0f,
             1.0f,
             30.0f
-    ).visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
+            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
 
     private final IntegerValue minCps = new IntegerValue(
             this.clicking,
@@ -158,7 +160,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             10,
             1,
             20
-    ).visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
+            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
 
     private final IntegerValue maxCps = new IntegerValue(
             this.clicking,
@@ -167,7 +170,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             20,
             1,
             30
-    ).visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
+            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
 
     private final BezierValue cpsBezier = new BezierValue(
             this.clicking,
