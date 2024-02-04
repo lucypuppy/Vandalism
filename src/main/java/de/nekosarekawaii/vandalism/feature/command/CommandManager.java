@@ -77,7 +77,8 @@ public class CommandManager extends Storage<AbstractCommand> implements Minecraf
                 new CreativeItemControlCommand(),
                 new EnchantCommand(),
                 new FlipCommand(),
-                new ClientsideInventoryClearCommand()
+                new ClientsideInventoryClearCommand(),
+                new FriendCommand()
         );
     }
 

@@ -22,7 +22,6 @@ import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.event.normal.internal.TargetListener;
-import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryBlacklistValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
@@ -68,11 +67,18 @@ public class TargetSettings extends ValueGroup implements TargetListener {
             )
     );
 
-    private final Value<Boolean> isAlive = new BooleanValue(
+    private final BooleanValue isAlive = new BooleanValue(
             this,
             "Alive",
             "Whether the target has to be alive or not.",
             true
+    );
+
+    public final BooleanValue ignoreFriends = new BooleanValue(
+            this,
+            "Ignore friends",
+            "Whether to ignore friends or not.",
+            false
     );
 
     public TargetSettings(final ClientSettings parent) {

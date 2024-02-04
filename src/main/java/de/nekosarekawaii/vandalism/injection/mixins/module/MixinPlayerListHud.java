@@ -21,7 +21,9 @@ package de.nekosarekawaii.vandalism.injection.mixins.module;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.authlib.GameProfile;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.integration.friends.Friend;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -72,9 +74,16 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
     @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V", ordinal = 2))
     public void hookBetterTabListModule(DrawContext instance, int x1, int y1, int x2, int y2, int color, Operation<Void> original) {
         final var betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
-        if (betterTabListModule.isActive() && betterTabListModule.highlightSelf.getValue()) {
-            if (this.mc.player != null && vandalism$trackedEntry.getProfile().getId().equals(this.mc.player.getGameProfile().getId())) {
+        final GameProfile profile = vandalism$trackedEntry.getProfile();
+        if (betterTabListModule.isActive()) {
+            if (betterTabListModule.highlightSelf.getValue() && this.mc.player != null && profile.getId().equals(this.mc.player.getGameProfile().getId())) {
                 color = betterTabListModule.selfColor.getColor().getRGB();
+            }
+            for (Friend f : Vandalism.getInstance().getFriendManager().getList()) {
+                if (betterTabListModule.highlightFriends.getValue() && profile.getName().equalsIgnoreCase(f.getName())) {
+                    color = betterTabListModule.friendsColor.getColor().getRGB();
+                    break;
+                }
             }
         }
 

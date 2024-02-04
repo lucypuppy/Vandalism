@@ -71,6 +71,10 @@ public class ClientSettings implements ValueParent {
         return rotationSettings;
     }
 
+    public TargetSettings getTargetSettings() {
+        return targetSettings;
+    }
+
     public EnhancedServerListSettings getEnhancedServerListSettings() {
         return enhancedServerListSettings;
     }
