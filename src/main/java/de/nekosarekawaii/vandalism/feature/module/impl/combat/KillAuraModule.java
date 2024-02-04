@@ -133,6 +133,42 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         this.updateClicker(newValue.getClicker());
     });
 
+    private final FloatValue std = new FloatValue(
+            this.clicking,
+            "Standard Deviation",
+            "The standard deviation for the Box-Mueller clicker.",
+            5.0f,
+            1.0f,
+            10.0f
+    ).visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+
+    private final FloatValue mean = new FloatValue(
+            this.clicking,
+            "Mean",
+            "The mean for the Box-Mueller clicker.",
+            15.0f,
+            1.0f,
+            30.0f
+    ).visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+
+    private final IntegerValue minCps = new IntegerValue(
+            this.clicking,
+            "Minimum CPS",
+            "The minimum CPS for the Box-Mueller clicker.",
+            10,
+            1,
+            20
+    ).visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+
+    private final IntegerValue maxCps = new IntegerValue(
+            this.clicking,
+            "Maximum CPS",
+            "The maximum CPS for the Box-Mueller clicker.",
+            20,
+            1,
+            30
+    ).visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+
     private final BezierValue cpsBezier = new BezierValue(
             this.clicking,
             "CPS Bezier Curve",
@@ -144,6 +180,15 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             1.0f,
             25.0f
     ).visibleCondition(() -> this.clickType.getValue() == ClickType.BEZIER);
+
+    private final IntegerValue updatePossibility = new IntegerValue(
+            this.clicking,
+            "Update Possibility",
+            "The possibility of the CPS update.",
+            80,
+            0,
+            100
+    ).visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER || this.clickType.getValue() == ClickType.BEZIER);
 
     private final ValueGroup rotationGroup = new ValueGroup(
             this,
@@ -292,6 +337,10 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     public void onRotation(final RotationEvent event) {
         this.updateTarget();
 
+        if (this.raytraceDistance <= this.getAimRange() && this.raytraceDistance > 0) {
+            this.clickType.getValue().getClicker().onRotate();
+        }
+
         if (this.target != null) {
             final Rotation rotation = Rotation.Builder.build(
                     this.target,
@@ -387,14 +436,16 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
     private void updateClicker(final Clicker clicker) {
         if (clicker instanceof final BoxMuellerClicker boxMuellerClicker) {
-            boxMuellerClicker.setStd(5);
-            boxMuellerClicker.setMean(15);
-            boxMuellerClicker.setCpsUpdatePossibility(80);
+            boxMuellerClicker.setStd(this.std.getValue());
+            boxMuellerClicker.setMean(this.mean.getValue());
+            boxMuellerClicker.setMinCps(this.minCps.getValue());
+            boxMuellerClicker.setMaxCps(this.maxCps.getValue());
+            boxMuellerClicker.setCpsUpdatePossibility(this.updatePossibility.getValue());
         }
 
         if (clicker instanceof final BezierClicker bezierClicker) {
             bezierClicker.setBezierValue(this.cpsBezier);
-            bezierClicker.setCpsUpdatePossibility(80);
+            bezierClicker.setCpsUpdatePossibility(this.updatePossibility.getValue());
         }
 
         clicker.setClickAction(attack -> {
@@ -403,7 +454,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                     this.lastPossibleHit = System.currentTimeMillis();
                 }
 
-                //mc.options.useKey.setPressed(true);
+                // mc.options.useKey.setPressed(true);
                 this.autoBlock.stopBlock();
                 mc.player.setSprinting(false);
 
