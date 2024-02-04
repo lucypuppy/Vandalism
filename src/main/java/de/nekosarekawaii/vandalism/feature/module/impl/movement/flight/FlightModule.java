@@ -32,13 +32,6 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
 public class FlightModule extends AbstractModule implements OutgoingPacketListener, PlayerUpdateListener {
 
-    private final BooleanValue antiKick = new BooleanValue(
-            this,
-            "Anti Kick",
-            "Bypasses the vanilla flight check.",
-            true
-    );
-
     private final ModuleModeValue<FlightModule> mode = new ModuleModeValue<>(
             this,
             "Mode",
@@ -48,6 +41,13 @@ public class FlightModule extends AbstractModule implements OutgoingPacketListen
             new BukkitModuleMode(),
             new CubeCraftModuleMode()
     );
+
+    private final BooleanValue antiKick = new BooleanValue(
+            this,
+            "Anti Kick",
+            "Bypasses the vanilla flight check.",
+            true
+    ).visibleCondition(() -> this.mode.getValue() instanceof CreativeModuleMode || this.mode.getValue() instanceof MotionModuleMode);
 
     public FlightModule() {
         super("Flight", "Allows you to fly.", Category.MOVEMENT);
@@ -67,16 +67,20 @@ public class FlightModule extends AbstractModule implements OutgoingPacketListen
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.antiKick.getValue()) {
-            this.mc.player.ticksSinceLastPositionPacketSent = 20;
+        if (this.mode.getValue() instanceof CreativeModuleMode || this.mode.getValue() instanceof MotionModuleMode) {
+            if (this.antiKick.getValue()) {
+                this.mc.player.ticksSinceLastPositionPacketSent = 20;
+            }
         }
     }
 
     @Override
     public void onOutgoingPacket(final OutgoingPacketEvent event) {
-        if (event.packet instanceof final PlayerMoveC2SPacket playerMoveC2SPacket) {
-            if (this.antiKick.getValue() && this.mc.player.age % 2 == 0) {
-                playerMoveC2SPacket.y = playerMoveC2SPacket.y - 0.1;
+        if (this.mode.getValue() instanceof CreativeModuleMode || this.mode.getValue() instanceof MotionModuleMode) {
+            if (event.packet instanceof final PlayerMoveC2SPacket playerMoveC2SPacket) {
+                if (this.antiKick.getValue() && this.mc.player.age % 2 == 0) {
+                    playerMoveC2SPacket.y = playerMoveC2SPacket.y - 0.1;
+                }
             }
         }
     }
