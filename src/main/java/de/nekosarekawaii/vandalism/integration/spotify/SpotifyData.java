@@ -22,8 +22,8 @@ import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.util.Identifier;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SpotifyData {
 
@@ -43,7 +43,7 @@ public class SpotifyData {
     public SpotifyData() {
         this.type = "";
         this.name = "";
-        this.artists = new ArrayList<>();
+        this.artists = new CopyOnWriteArrayList<>();
         this.image = null;
         this.imageUrl = "";
         this.time = 0L;
