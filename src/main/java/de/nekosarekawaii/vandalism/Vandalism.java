@@ -64,6 +64,19 @@ import java.io.File;
  *  - Add Proxy manager
  *  - Rewrite MovementUtil#getFixedMoveInputs to prevent bruteforcing inputs
  *  - Rewrite GCD fix to be accurate
+ *  - Rewrite tickbase to not use timer but shift the process baseTick
+ *  - Add support for multiple presses on tick in KeyBindSetting
+ *  - Delete TickBaseModule#worldTicker and replace with worldTick()
+ *  - Add working defensive and counter mode to Tickbase
+ *  - Fix Game server pinger (ensure pings are on different threads)
+ *  - Fix custom hud not working
+ *  - Add lag engine to fix countless BackTrack issues
+ *  - Remove useless settings (ChatSettings)
+ *  - Ensure MCConstants class file is used
+ *  - Rework wurst integration with ASM
+ *  - Rework bezier curve
+ *  - Rework parts of NoSlow
+ *  - Fix bukkit fly not working at all
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Check AimPointMover#generatePointsAround (this might be bad FooFieOwO)
