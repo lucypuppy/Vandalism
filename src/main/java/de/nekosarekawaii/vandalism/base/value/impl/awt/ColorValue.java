@@ -56,6 +56,15 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
             10
     ).visibleCondition(() -> this.mode.getValue() == ColorMode.RAINBOW);
 
+    private final IntegerValue twoColorSpeed = new IntegerValue(
+            this,
+            "Two Color Speed",
+            "The speed of the two color mode from " + this.getName() + ".",
+            2,
+            1,
+            10
+    ).visibleCondition(() -> this.mode.getValue() == ColorMode.TWO_COLOR_FADE);
+
     private static final Color DEFAULT_MAIN_COLOR_FADE = new Color(74, 0, 224);
     private static final Color DEFAULT_SECONDARY_COLOR_FADE = new Color(142, 45, 226);
 
@@ -117,7 +126,7 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
             this.setValue(ColorUtils.colorInterpolate(
                     this.mainColorFade,
                     this.secondaryColorFade,
-                    Math.sin(System.currentTimeMillis() / 600.0d + offset * 0.002d) * 0.5d + 0.5d
+                    Math.sin((System.currentTimeMillis() / 1000.0d) * this.twoColorSpeed.getValue() + offset * 0.002d) * 0.5d + 0.5d
             ));
         }
         //Do another super.getValue() because the value might have changed.
