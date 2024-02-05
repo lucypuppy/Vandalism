@@ -23,6 +23,7 @@ import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
 import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
 import imgui.ImGui;
+import imgui.flag.ImGuiTabItemFlags;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
 import org.lwjgl.glfw.GLFW;
@@ -44,36 +45,29 @@ public class HUDClientMenuWindow extends ClientMenuWindow {
 
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        ImGui.begin("HUD Config##hudconfigwindow");
-        if (ImGui.button("Close HUD Config##closehudconfig")) {
-            this.setActive(false);
-        }
-        ImGui.sameLine();
-        if (ImGui.button("Reset HUD Config##resethudconfig")) {
+        final String id = "##hudconfig";
+        ImGui.begin("HUD Config" + id + "window");
+        if (ImGui.beginTabBar(id)) {
             for (final HUDElement hudElement : this.hudManager.getList()) {
-                hudElement.reset();
-            }
-            Vandalism.getInstance().getConfigManager().save();
-        }
-        ImGui.separator();
-        if (ImGui.beginTabBar("##hudconfig")) {
-            for (final HUDElement hudElement : this.hudManager.getList()) {
-                if (ImGui.beginTabItem(hudElement.getName() + "##" + hudElement.getName() + "hudconfig")) {
-                    if (ImGui.button("Reset##reset" + hudElement.getName() + "hudconfig")) {
+                final String name = hudElement.getName();
+                final String tabId = id + name + "tab";
+                final boolean isDragged = this.draggedElement != null && this.draggedElement.getName().equals(name);
+                if (ImGui.beginTabItem(name + tabId, isDragged ? ImGuiTabItemFlags.SetSelected : 0)) {
+                    ImGui.beginChild(tabId + "values", ImGui.getColumnWidth(), - ImGui.getTextLineHeightWithSpacing() * 2.5f, true);
+                    hudElement.renderValues();
+                    ImGui.endChild();
+                    if (ImGui.button("Reset " + name + " Config" + id + name + "tabreset", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                         hudElement.reset();
                         Vandalism.getInstance().getConfigManager().save();
                     }
-                    ImGui.spacing();
-                    ImGui.beginChild("##values" + hudElement.getName());
-                    hudElement.renderValues();
-                    ImGui.endChild();
+                    if (ImGui.button("Close HUD Config" + id + "close", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                        this.setActive(false);
+                    }
                     ImGui.endTabItem();
                 }
             }
             ImGui.endTabBar();
         }
-        ImGui.separator();
-        ImGui.spacing();
         ImGui.end();
         final Window window = this.mc.getWindow();
         final double scaledWidth = window.getScaledWidth(), scaledHeight = window.getScaledHeight();

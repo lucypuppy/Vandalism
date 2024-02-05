@@ -152,10 +152,10 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
 
     @Override
     public void render() {
-        final int textInputFlags = ImGuiColorEditFlags.AlphaBar | ImGuiColorEditFlags.NoInputs;
+        final int colorEditFlags = ImGuiColorEditFlags.AlphaBar | ImGuiColorEditFlags.NoInputs;
         if (this.mode.getValue() != ColorMode.TWO_COLOR_FADE) {
             final float[] rgba = ColorUtils.rgba(this.getValue().getColor().getRGB());
-            if (ImGui.colorEdit4("##rgba" + this.getName() + this.getParent().getName(), rgba, textInputFlags)) {
+            if (ImGui.colorEdit4("##rgba" + this.getName() + this.getParent().getName(), rgba, colorEditFlags)) {
                 this.setValue(new Color(rgba[0], rgba[1], rgba[2], Math.max(rgba[3], 0.1f)));
             }
             if (ImGui.isItemClicked(ImGuiMouseButton.Middle)) {
@@ -169,7 +169,7 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
         } else {
             final float[] mainFadeRgba = ColorUtils.rgba(this.mainColorFade.getRGB());
             final float[] secondFadeRgba = ColorUtils.rgba(this.secondaryColorFade.getRGB());
-            if (ImGui.colorEdit4("##mainFadeRgba" + this.getName() + this.getParent().getName(), mainFadeRgba, textInputFlags)) {
+            if (ImGui.colorEdit4("##mainFadeRgba" + this.getName() + this.getParent().getName(), mainFadeRgba, colorEditFlags)) {
                 this.mainColorFade = new Color(mainFadeRgba[0], mainFadeRgba[1], mainFadeRgba[2], Math.max(mainFadeRgba[3], 0.1f));
             }
             if (ImGui.isItemClicked(ImGuiMouseButton.Middle)) {
@@ -181,7 +181,7 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
                 ImGui.endTooltip();
             }
             ImGui.sameLine();
-            if (ImGui.colorEdit4("##secondFadeRgba" + this.getName() + this.getParent().getName(), secondFadeRgba, textInputFlags)) {
+            if (ImGui.colorEdit4("##secondFadeRgba" + this.getName() + this.getParent().getName(), secondFadeRgba, colorEditFlags)) {
                 this.secondaryColorFade = new Color(secondFadeRgba[0], secondFadeRgba[1], secondFadeRgba[2], Math.max(secondFadeRgba[3], 0.1f));
             }
             if (ImGui.isItemClicked(ImGuiMouseButton.Middle)) {
