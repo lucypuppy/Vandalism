@@ -21,7 +21,6 @@ package de.nekosarekawaii.vandalism.feature.module;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.pattern.storage.named.NamedStorage;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
-import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.base.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.base.event.normal.game.ShutdownProcessListener;
 import de.nekosarekawaii.vandalism.base.event.normal.network.DisconnectListener;
@@ -29,6 +28,7 @@ import de.nekosarekawaii.vandalism.base.event.normal.network.WorldListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.feature.Feature;
+import de.nekosarekawaii.vandalism.feature.module.config.ModulesConfig;
 import de.nekosarekawaii.vandalism.feature.module.gui.ModulesClientMenuWindow;
 import de.nekosarekawaii.vandalism.feature.module.impl.combat.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.development.TestModule;
@@ -137,7 +137,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new SprintTapModule(),
                 new CraftCarryModule()
         );
-        this.configManager.add(new ConfigWithValues("modules", getList()));
+        this.configManager.add(new ModulesConfig(this));
     }
 
     @Override
