@@ -41,6 +41,8 @@ public abstract class AbstractModule extends Feature implements ValueParent {
 
     private final List<Value<?>> values = new ArrayList<>();
 
+    private final List<Value<?>> defaultValues;
+
     private final BooleanValue active = new BooleanValue(
             this,
             "Active",
@@ -144,6 +146,8 @@ public abstract class AbstractModule extends Feature implements ValueParent {
 
     public AbstractModule(final String name, final String description, final Category category, final VersionRange supportedVersions) {
         super(name, description, category, supportedVersions);
+        this.defaultValues = new ArrayList<>(this.values);
+        this.defaultValues.remove(this.deactivationSettings);
     }
 
     public void activateDefault() {
@@ -246,6 +250,10 @@ public abstract class AbstractModule extends Feature implements ValueParent {
     @Override
     public List<Value<?>> getValues() {
         return this.values;
+    }
+
+    public List<Value<?>> getDefaultValues() {
+        return this.defaultValues;
     }
 
 }

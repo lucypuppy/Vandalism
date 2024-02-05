@@ -18,12 +18,16 @@
 
 package de.nekosarekawaii.vandalism.feature.module.gui;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiCol;
@@ -182,17 +186,57 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
         if (ImGui.beginPopupModal(popupId, ImGuiWindowFlags.AlwaysAutoResize)) {
             this.renderModuleInfo(module, true);
             ImGui.separator();
-            if (ImGui.button("Close" + moduleId, 150, ImGui.getTextLineHeightWithSpacing())) {
-                this.closePopup = true;
+            module.renderValues();
+            ImGui.separator();
+            if (ImGui.button("Copy Config" + moduleId + "copyconfigbutton", 150, ImGui.getTextLineHeightWithSpacing())) {
+                final List<Value<?>> values = new ArrayList<>();
+                for (final Value<?> value : module.getValues()) {
+                    if (module.getDefaultValues().contains(value)) {
+                        continue;
+                    }
+                    values.add(value);
+                }
+                final JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("module", module.getName());
+                final JsonObject valuesJsonObject = new JsonObject();
+                ConfigWithValues.saveValues(valuesJsonObject, values);
+                jsonObject.add("values", valuesJsonObject);
+                this.mc.keyboard.setClipboard(jsonObject.toString());
             }
             ImGui.sameLine();
-            final List<Value<?>> values = module.getValues();
-            if (ImGui.button("Reset config" + moduleId + "resetconfigbutton", 150, ImGui.getTextLineHeightWithSpacing())) {
-                for (final Value<?> value : values) {
+            if ((ImGui.button("Paste Config" + moduleId + "pasteconfigbutton", 150, ImGui.getTextLineHeightWithSpacing()))) {
+                final String clipboard = this.mc.keyboard.getClipboard();
+                if (clipboard != null && !clipboard.isBlank()) {
+                    final List<Value<?>> values = new ArrayList<>();
+                    for (final Value<?> value : module.getValues()) {
+                        if (module.getDefaultValues().contains(value)) {
+                            continue;
+                        }
+                        values.add(value);
+                    }
+                    try {
+                        final JsonObject jsonObject = JsonParser.parseString(clipboard).getAsJsonObject();
+                        if (jsonObject.has("module")) {
+                            if (jsonObject.get("module").getAsString().equals(module.getName())) {
+                                if (jsonObject.has("values")) {
+                                    ConfigWithValues.loadValues(jsonObject.getAsJsonObject("values"), values);
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception exception) {
+                        Vandalism.getInstance().getLogger().error("Failed to paste module config from clipboard.", exception);
+                    }
+                }
+            }
+            if (ImUtils.subButton("Reset Config" + moduleId + "resetconfigbutton")) {
+                for (final Value<?> value : module.getValues()) {
                     value.resetValue();
                 }
             }
-            module.renderValues();
+            if (ImUtils.subButton("Close" + moduleId + "closebutton")) {
+                this.closePopup = true;
+            }
             if (this.closePopup) {
                 this.closePopup = false;
                 this.lastPopupId = "";
