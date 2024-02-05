@@ -383,7 +383,6 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             return;
         }
 
-
         stopBlocking(BlockState.PRE_CLICKING);
         this.clickType.getValue().getClicker().onUpdate();
         startBlocking(BlockState.POST_CLICKING);
