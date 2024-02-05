@@ -161,4 +161,9 @@ public class RotationUtil implements MinecraftWrapper {
         return rotation;
     }
 
+    public static boolean isEntityLookingAtEntity(final Entity origin, final Entity target, final double diff) {
+        final Rotation pseudoRotation = Rotation.Builder.build(target.getPos(), origin.getEyePos());
+        return Math.abs(MathHelper.wrapDegrees(pseudoRotation.getYaw()) - MathHelper.wrapDegrees(target.getYaw())) <= diff;
+    }
+
 }
