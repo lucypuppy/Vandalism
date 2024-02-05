@@ -66,7 +66,6 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
             if (ImUtils.subButton("Cancel" + id + "cancel")) {
                 this.finishInput();
             }
-            ImGui.sameLine();
             if (ImUtils.subButton("Reset" + id + "reset")) {
                 this.finishInput();
                 this.resetValue();
