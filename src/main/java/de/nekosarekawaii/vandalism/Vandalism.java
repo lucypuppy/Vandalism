@@ -67,7 +67,7 @@ import java.io.File;
  *  - Add Proxy manager
  *  - Rewrite MovementUtil#getFixedMoveInputs to prevent bruteforcing inputs
  *  - Rewrite GCD fix to be accurate
- *  - Rewrite tickbase to not use timer but shift the process baseTick
+ *  - Implement uncharge speed into tickbase
  *  - Add support for multiple presses on tick in KeyBindSetting
  *  - Delete TickBaseModule#worldTicker and replace with worldTick()
  *  - Add working defensive and counter mode to Tickbase
