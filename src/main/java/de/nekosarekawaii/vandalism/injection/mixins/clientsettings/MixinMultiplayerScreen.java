@@ -18,23 +18,21 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.florianmichael.viafabricplus.protocolhack.ProtocolHack;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerList;
 import de.nekosarekawaii.vandalism.integration.serverlist.gui.ConfigScreen;
 import de.nekosarekawaii.vandalism.util.common.UUIDUtil;
-import de.nekosarekawaii.vandalism.util.game.ServerUtil;
+import de.nekosarekawaii.vandalism.util.game.PacketBuilder;
 import net.lenni0451.mcping.MCPing;
 import net.lenni0451.mcping.responses.MCPingResponse;
-import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.network.ServerInfo;
-import net.minecraft.client.session.Session;
+import net.minecraft.network.ClientConnection;
+import net.minecraft.network.NetworkSide;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
@@ -45,9 +43,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
-
-import java.util.Optional;
-import java.util.UUID;
 
 @Mixin(MultiplayerScreen.class)
 public abstract class MixinMultiplayerScreen extends Screen {
@@ -128,9 +123,6 @@ public abstract class MixinMultiplayerScreen extends Screen {
                                     if (playersData.online > 0) {
                                         final MCPingResponse.Players.Player[] players = playersData.sample;
                                         if (players != null && players.length > 0) {
-                                            final Session originalSession = this.client.session;
-                                            final ServerInfo originalServerInfo = ServerUtil.getLastServerInfo();
-                                            ServerUtil.setLastServerInfo(serverInfo);
                                             for (final MCPingResponse.Players.Player player : players) {
                                                 if (player != null) {
                                                     final String name = player.name;
@@ -145,34 +137,67 @@ public abstract class MixinMultiplayerScreen extends Screen {
                                                                 uuid = id;
                                                                 Vandalism.getInstance().getLogger().error("Failed to get UUID of the player: \"" + name + "\" (using fallback UUID).");
                                                             }
-                                                            this.client.session = new Session(
-                                                                    name,
-                                                                    UUID.fromString(uuid),
-                                                                    "",
-                                                                    Optional.of(""),
-                                                                    Optional.of(""),
-                                                                    Session.AccountType.LEGACY
-                                                            );
-                                                            RenderSystem.recordRenderCall(ServerUtil::connectToLastServer);
+
+                                                            byte[] handshake = PacketBuilder.buildHandshakePacket(response.version.protocol, response.server.ip + "\u0000" + "127.0.0.1" + "\u0000" + uuid, response.server.port, 2).buildEncapsulated(false);
+                                                            byte[] login = PacketBuilder.buildLoginStartPacket(name).buildEncapsulated(false);
+                                                            ClientConnection conn = new ClientConnection(NetworkSide.SERVERBOUND);
+                                                            conn.channel.write(handshake);
+                                                            conn.channel.write(login);
+                                                            conn.flush();
                                                             Thread.sleep(Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().kickAllPlayersKickDelay.getValue());
                                                             Vandalism.getInstance().getLogger().info("Player " + name + " should be kicked.");
                                                         } catch (Exception e) {
                                                             Vandalism.getInstance().getLogger().error("Failed to kick the player: \"" + name + "\"", e);
                                                         }
-                                                    } else {
-                                                        Vandalism.getInstance().getLogger().error("Failed to kick the player: \"" + id + "\"");
                                                     }
                                                 }
                                             }
-                                            this.client.session = originalSession;
-                                            ServerUtil.setLastServerInfo(originalServerInfo);
-                                            RenderSystem.recordRenderCall(() -> {
-                                                if (this.parent instanceof GameMenuScreen && this.client.player == null) {
-                                                    this.parent = new TitleScreen();
-                                                }
-                                                this.client.setScreen((MultiplayerScreen) (Object) this);
-                                                this.refresh();
-                                            });
+
+//                                            final Session originalSession = this.client.session;
+//                                            final ServerInfo originalServerInfo = ServerUtil.getLastServerInfo();
+//                                            ServerUtil.setLastServerInfo(serverInfo);
+//                                            for (final MCPingResponse.Players.Player player : players) {
+//                                                if (player != null) {
+//                                                    final String name = player.name;
+//                                                    final String id = player.id;
+//                                                    if (!name.isBlank()) {
+//                                                        try {
+//                                                            Vandalism.getInstance().getLogger().info("Kicking " + name + "...");
+//                                                            String uuid;
+//                                                            try {
+//                                                                uuid = UUIDUtil.getUUIDFromName(name);
+//                                                            } catch (Exception e) {
+//                                                                uuid = id;
+//                                                                Vandalism.getInstance().getLogger().error("Failed to get UUID of the player: \"" + name + "\" (using fallback UUID).");
+//                                                            }
+//                                                            this.client.session = new Session(
+//                                                                    name,
+//                                                                    UUID.fromString(uuid),
+//                                                                    "",
+//                                                                    Optional.of(""),
+//                                                                    Optional.of(""),
+//                                                                    Session.AccountType.LEGACY
+//                                                            );
+//                                                            RenderSystem.recordRenderCall(ServerUtil::connectToLastServer);
+//                                                            Thread.sleep(Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().kickAllPlayersKickDelay.getValue());
+//                                                            Vandalism.getInstance().getLogger().info("Player " + name + " should be kicked.");
+//                                                        } catch (Exception e) {
+//                                                            Vandalism.getInstance().getLogger().error("Failed to kick the player: \"" + name + "\"", e);
+//                                                        }
+//                                                    } else {
+//                                                        Vandalism.getInstance().getLogger().error("Failed to kick the player: \"" + id + "\"");
+//                                                    }
+//                                                }
+//                                            }
+//                                            this.client.session = originalSession;
+//                                            ServerUtil.setLastServerInfo(originalServerInfo);
+//                                            RenderSystem.recordRenderCall(() -> {
+//                                                if (this.parent instanceof GameMenuScreen && this.client.player == null) {
+//                                                    this.parent = new TitleScreen();
+//                                                }
+//                                                this.client.setScreen((MultiplayerScreen) (Object) this);
+//                                                this.refresh();
+//                                            });
                                         } else {
                                             Vandalism.getInstance().getLogger().error("There are no players to kick online.");
                                         }
