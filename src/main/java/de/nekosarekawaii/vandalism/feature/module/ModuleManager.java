@@ -63,7 +63,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
     private ModPacketBlockerModule modPacketBlockerModule;
     private ExploitFixerModule exploitFixerModule;
-    private AutoBlockModule autoBlockModule;
     private TrueSightModule trueSightModule;
     private VisualThrottleModule visualThrottleModule;
     private BetterTabListModule betterTabListModule;
@@ -89,14 +88,13 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
         this.add(
                 this.modPacketBlockerModule = new ModPacketBlockerModule(),
                 this.exploitFixerModule = new ExploitFixerModule(),
-                this.autoBlockModule = new AutoBlockModule(),
                 this.trueSightModule = new TrueSightModule(),
                 this.visualThrottleModule = new VisualThrottleModule(),
                 this.betterTabListModule = new BetterTabListModule(),
                 this.fastUseModule = new FastUseModule(),
                 this.illegalInteractionModule = new IllegalInteractionModule(),
                 this.espModule = new ESPModule(),
-                this.killAuraModule = new KillAuraModule(this.autoBlockModule),
+                this.killAuraModule = new KillAuraModule(),
                 this.tickBaseModule = new TickBaseModule(this.killAuraModule),
                 new BackTrackModule(this.killAuraModule),
                 new NoSlow(),
@@ -205,10 +203,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
     public ExploitFixerModule getExploitFixerModule() {
         return exploitFixerModule;
-    }
-
-    public AutoBlockModule getAutoBlockModule() {
-        return autoBlockModule;
     }
 
     public TrueSightModule getTrueSightModule() {
