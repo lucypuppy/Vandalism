@@ -43,6 +43,7 @@ import de.nekosarekawaii.vandalism.util.click.impl.BezierClicker;
 import de.nekosarekawaii.vandalism.util.click.impl.BoxMuellerClicker;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.MathHelper;
@@ -108,6 +109,14 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             0.0,
             2.0
     ).visibleCondition(this.firstHitExtender::getValue);
+
+    private final EnumModeValue<SelectionMode> selectionMode = new EnumModeValue<>(
+            this.targetSelectionGroup,
+            "Target Selection Mode",
+            "The mode of the target selection.",
+            SelectionMode.RANGE,
+            SelectionMode.values()
+    );
 
     private final BooleanValue switchTarget = new BooleanValue(
             this.targetSelectionGroup,
@@ -455,8 +464,11 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             return;
         }
 
-        //Sort entities by distance
-        entities.sort(Comparator.comparingDouble(entity -> this.mc.player.distanceTo(entity)));
+        switch (this.selectionMode.getValue()) {
+            case RANGE -> entities.sort(Comparator.comparingDouble(entity -> this.mc.player.distanceTo(entity)));
+            case HEALTH -> entities.sort(Comparator.comparingDouble(entity -> ((PlayerEntity) entity).getHealth()));
+            case ARMOR -> entities.sort(Comparator.comparingDouble(entity -> ((PlayerEntity) entity).getArmor()));
+        }
 
         if (!this.switchTarget.getValue() || this.targetIndex >= entities.size()) {
             this.targetIndex = 0;
@@ -515,9 +527,9 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             this.mc.player.setSprinting(false);
         }
 
-        stopBlocking(BlockState.PRE_ATTACk);
+        stopBlocking(BlockState.PRE_ATTACK);
         this.mc.doAttack();
-        startBlocking(BlockState.POST_ATTACk);
+        startBlocking(BlockState.POST_ATTACK);
 
         if (this.resprintAfterAttack.getValue()) {
             this.mc.player.setSprinting(true);
@@ -532,7 +544,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         }
 
         if (!this.mc.player.isBlocking() && !this.isBlocking) {
-            if (blockState == BlockState.POST_ATTACk) {
+            if (blockState == BlockState.POST_ATTACK) {
                 var actionResult = mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
                 if (actionResult.isAccepted()) {
                     if (actionResult.shouldSwingHand()) {
@@ -546,12 +558,13 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     }
 
     private void stopBlocking(final BlockState blockState) {
+//        mc.options.useKey.setPressed(blockState != BlockState.ERROR);
         if (this.autoBlockMode.getValue() == AutoBlockMode.OFF) {
             return;
         }
 
         if (this.mc.player.isBlocking() || this.isBlocking) {
-            if (blockState == BlockState.PRE_ATTACk) {
+            if (blockState == BlockState.PRE_ATTACK) {
                 this.mc.interactionManager.stopUsingItem(mc.player);
             }
 
@@ -605,9 +618,27 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         ERROR,
         PRE_CLICKING,
         POST_CLICKING,
-        PRE_ATTACk,
-        POST_ATTACk;
+        PRE_ATTACK,
+        POST_ATTACK
 
+    }
+
+    private enum SelectionMode implements IName {
+
+        RANGE,
+        HEALTH,
+        ARMOR;
+
+        private final String name;
+
+        SelectionMode() {
+            this.name = StringUtils.normalizeEnumName(this.name());
+        }
+
+        @Override
+        public String getName() {
+            return this.name;
+        }
     }
 
 }
