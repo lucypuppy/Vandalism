@@ -66,6 +66,8 @@ public abstract class AbstractTokenBasedAccount extends AbstractAccount {
         return this.token == null ? "None" : this.token;
     }
 
+    protected abstract void extraRender();
+
     @Override
     public AccountFactory factory() {
         return new AccountFactory() {
@@ -75,6 +77,7 @@ public abstract class AbstractTokenBasedAccount extends AbstractAccount {
             @Override
             public void displayFactory() {
                 ImGui.inputText("Token", this.token, ImGuiInputTextFlags.CallbackResize | ImGuiInputTextFlags.Password);
+                AbstractTokenBasedAccount.this.extraRender();
             }
 
             @Override
