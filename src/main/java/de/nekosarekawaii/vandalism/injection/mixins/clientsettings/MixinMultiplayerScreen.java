@@ -38,7 +38,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.profiler.PerformanceLog;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -60,10 +59,6 @@ public abstract class MixinMultiplayerScreen extends Screen {
 
     @Shadow
     protected MultiplayerServerListWidget serverListWidget;
-
-    @Mutable
-    @Shadow
-    private Screen parent;
 
     protected MixinMultiplayerScreen(final Text title) {
         super(title);
@@ -142,8 +137,6 @@ public abstract class MixinMultiplayerScreen extends Screen {
                                                                 uuid = id;
                                                                 Vandalism.getInstance().getLogger().error("Failed to get UUID of the player: \"" + name + "\" (using fallback UUID).");
                                                             }
-
-                                                            System.out.println(response.server.ip + " " + response.server.port + " " + name + " " + uuid);
 
                                                             final ClientConnection clientConnection = ClientConnection.connect(new InetSocketAddress(response.server.ip, response.server.port), true, (PerformanceLog) null);
 
