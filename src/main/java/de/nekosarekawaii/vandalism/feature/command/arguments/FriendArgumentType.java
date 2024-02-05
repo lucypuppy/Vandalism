@@ -34,7 +34,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class FriendArgumentType implements ArgumentType<Friend> {
 
-    private static final DynamicCommandExceptionType notExisting = new DynamicCommandExceptionType(
+    private static final DynamicCommandExceptionType NOT_EXISTING = new DynamicCommandExceptionType(
             name -> Text.literal("No friend with the name " + name + " has been found!")
     );
 
@@ -47,18 +47,19 @@ public class FriendArgumentType implements ArgumentType<Friend> {
     }
 
     @Override
-    public Friend parse(StringReader reader) throws CommandSyntaxException {
+    public Friend parse(final StringReader reader) throws CommandSyntaxException {
         final String friendName = reader.readUnquotedString();
-        for (Friend f : Vandalism.getInstance().getFriendManager().getList()) {
-            if (f.getName().equalsIgnoreCase(friendName)) {
-                return f;
+        for (final Friend friend : Vandalism.getInstance().getFriendManager().getList()) {
+            if (friend.getName().equalsIgnoreCase(friendName)) {
+                return friend;
             }
         }
-        throw notExisting.createWithContext(reader, friendName);
+        throw NOT_EXISTING.createWithContext(reader, friendName);
     }
 
     @Override
-    public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+    public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
         return CommandSource.suggestMatching(Vandalism.getInstance().getFriendManager().getList().stream().map(Friend::getName), builder);
     }
+
 }

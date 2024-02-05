@@ -35,7 +35,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class KeyNameArgumentType implements ArgumentType<Integer> {
 
-    private static final DynamicCommandExceptionType notExisting = new DynamicCommandExceptionType(
+    private static final DynamicCommandExceptionType NOT_EXISTING = new DynamicCommandExceptionType(
             name -> Text.literal("No key with the name " + name + " has been found!")
     );
 
@@ -54,7 +54,7 @@ public class KeyNameArgumentType implements ArgumentType<Integer> {
             return GLFW.GLFW_KEY_UNKNOWN;
         } else {
             if (!InputType.FIELD_NAMES.containsKey(keyName)) {
-                throw notExisting.createWithContext(reader, keyName);
+                throw NOT_EXISTING.createWithContext(reader, keyName);
             }
             return InputType.FIELD_NAMES.get(keyName);
         }

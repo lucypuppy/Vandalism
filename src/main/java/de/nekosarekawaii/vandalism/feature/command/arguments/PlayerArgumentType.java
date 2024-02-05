@@ -27,6 +27,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.command.CommandSource;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 public class PlayerArgumentType implements ArgumentType<String>, MinecraftWrapper {
@@ -40,12 +41,13 @@ public class PlayerArgumentType implements ArgumentType<String>, MinecraftWrappe
     }
 
     @Override
-    public String parse(StringReader reader) throws CommandSyntaxException {
+    public String parse(final StringReader reader) throws CommandSyntaxException {
         return reader.readUnquotedString();
     }
 
     @Override
-    public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return CommandSource.suggestMatching(mc.getNetworkHandler().getPlayerList().stream().map(playerListEntry -> playerListEntry.getProfile().getName()), builder);
+    public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
+        return CommandSource.suggestMatching(Objects.requireNonNull(this.mc.getNetworkHandler()).getPlayerList().stream().map(playerListEntry -> playerListEntry.getProfile().getName()), builder);
     }
+
 }

@@ -50,7 +50,7 @@ public class FriendManager extends Storage<Friend> implements TargetListener, Te
         if (event.entity instanceof final PlayerEntity player) {
             final GameProfile gameProfile = player.getGameProfile();
             if (gameProfile == null) return;
-            for (final Friend friend : getList()) {
+            for (final Friend friend : this.getList()) {
                 if (friend.getName().equalsIgnoreCase(gameProfile.getName())) {
                     event.isTarget = false;
                     break;
@@ -61,8 +61,9 @@ public class FriendManager extends Storage<Friend> implements TargetListener, Te
 
     @Override
     public void onTextDraw(final TextDrawListener.TextDrawEvent event) {
-        for (Friend f : getList()) {
-            event.text = StringUtils.replace(event.text, f.getName(), f.getAlias());
+        for (final Friend friend : this.getList()) {
+            event.text = StringUtils.replace(event.text, friend.getName(), friend.getAlias());
         }
     }
+
 }
