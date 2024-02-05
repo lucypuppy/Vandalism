@@ -24,6 +24,7 @@ import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
+import imgui.flag.ImGuiCol;
 import net.minecraft.client.gui.DrawContext;
 
 public class ClientSettingsClientMenuWindow extends ClientMenuWindow {
@@ -44,9 +45,11 @@ public class ClientSettingsClientMenuWindow extends ClientMenuWindow {
                     final String name = valueGroup.getName();
                     final String id = "##" + name + "settings";
                     if (ImGui.beginTabItem(name + id + "tab")) {
+                        ImGui.pushStyleColor(ImGuiCol.ChildBg, 0.0f, 0.0f, 0.0f, 0.0f);
                         ImGui.beginChild(id + "values", ImGui.getColumnWidth(), -ImGui.getTextLineHeightWithSpacing(), true);
                         valueGroup.renderValues();
                         ImGui.endChild();
+                        ImGui.popStyleColor();
                         if (ImUtils.subButton("Reset " + name + " Settings" + id + "button")) {
                             for (final Value<?> valueGroupValue : valueGroup.getValues()) {
                                 valueGroupValue.resetValue();
