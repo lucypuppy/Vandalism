@@ -23,6 +23,7 @@ import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
 import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
 import imgui.ImGui;
+import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiTabItemFlags;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
@@ -53,9 +54,11 @@ public class HUDClientMenuWindow extends ClientMenuWindow {
                 final String tabId = id + name + "tab";
                 final boolean isDragged = this.draggedElement != null && this.draggedElement.getName().equals(name);
                 if (ImGui.beginTabItem(name + tabId, isDragged ? ImGuiTabItemFlags.SetSelected : 0)) {
+                    ImGui.pushStyleColor(ImGuiCol.ChildBg, 0.0f, 0.0f, 0.0f, 0.0f);
                     ImGui.beginChild(tabId + "values", ImGui.getColumnWidth(), - ImGui.getTextLineHeightWithSpacing() * 2.5f, true);
                     hudElement.renderValues();
                     ImGui.endChild();
+                    ImGui.popStyleColor();
                     if (ImGui.button("Reset " + name + " Config" + id + name + "tabreset", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                         hudElement.reset();
                         Vandalism.getInstance().getConfigManager().save();
