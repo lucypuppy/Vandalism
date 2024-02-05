@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.base.value;
 
 import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
 import de.nekosarekawaii.vandalism.base.value.impl.rendering.ButtonValue;
 import de.nekosarekawaii.vandalism.base.value.impl.rendering.SeparatorValue;
@@ -70,7 +71,7 @@ public interface ValueParent extends IName {
             if (renderName && !isRenderValue) {
                 ImGui.text(value.getName());
                 this.renderValueDescription(value);
-                if (!(value instanceof ColorValue)) {
+                if (!(value instanceof ColorValue) && !(value instanceof BooleanValue)) {
                     ImGui.sameLine();
                 }
             }
