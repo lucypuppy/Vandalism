@@ -43,7 +43,7 @@ import de.nekosarekawaii.vandalism.util.click.impl.BezierClicker;
 import de.nekosarekawaii.vandalism.util.click.impl.BoxMuellerClicker;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.MathHelper;
@@ -465,8 +465,16 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
         switch (this.selectionMode.getValue()) {
             case RANGE -> entities.sort(Comparator.comparingDouble(entity -> this.mc.player.distanceTo(entity)));
-            case HEALTH -> entities.sort(Comparator.comparingDouble(entity -> ((PlayerEntity) entity).getHealth()));
-            case ARMOR -> entities.sort(Comparator.comparingDouble(entity -> ((PlayerEntity) entity).getArmor()));
+            case HEALTH -> entities.sort(Comparator.comparingDouble(entity -> {
+                if (entity instanceof LivingEntity living)
+                    return living.getHealth();
+                return 0;
+            }));
+            case ARMOR -> entities.sort(Comparator.comparingDouble(entity -> {
+                if (entity instanceof LivingEntity living)
+                    return living.getArmor();
+                return 0;
+            }));
         }
 
         if (!this.switchTarget.getValue() || this.targetIndex >= entities.size()) {

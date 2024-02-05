@@ -20,27 +20,23 @@ package de.nekosarekawaii.vandalism.base.event.normal.game;
 
 import de.florianmichael.dietrichevents2.AbstractEvent;
 
-public interface MaxTickListener {
+public interface TickBaseListener {
 
-    void onMaxTicks(final MaxTickEvent event);
+    void onTickBase(final TickBaseEvent event);
 
-    class MaxTickEvent extends AbstractEvent<MaxTickListener> {
+    class TickBaseEvent extends AbstractEvent<TickBaseListener> {
 
         public static final int ID = 35;
 
-        public int maxTicks;
-        public int ticks;
-        public int minTicks;
+        public long time;
 
-        public MaxTickEvent(final int maxTicks, final int ticks) {
-            this.maxTicks = maxTicks;
-            this.ticks = ticks;
-            this.minTicks = Math.min(maxTicks, ticks);
+        public TickBaseEvent(final long time) {
+            this.time = time;
         }
 
         @Override
-        public void call(final MaxTickListener tickTimeListener) {
-            tickTimeListener.onMaxTicks(this);
+        public void call(final TickBaseListener tickBaseListener) {
+            tickBaseListener.onTickBase(this);
         }
     }
 

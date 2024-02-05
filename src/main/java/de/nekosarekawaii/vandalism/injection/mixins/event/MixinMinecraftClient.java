@@ -21,14 +21,15 @@ package de.nekosarekawaii.vandalism.injection.mixins.event;
 import de.florianmichael.dietrichevents2.StateTypes;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.cancellable.render.ScreenListener;
-import de.nekosarekawaii.vandalism.base.event.normal.game.MaxTickListener;
 import de.nekosarekawaii.vandalism.base.event.normal.game.MinecraftBoostrapListener;
 import de.nekosarekawaii.vandalism.base.event.normal.game.ShutdownProcessListener;
+import de.nekosarekawaii.vandalism.base.event.normal.game.TickBaseListener;
 import de.nekosarekawaii.vandalism.base.event.normal.game.TickTimeListener;
 import de.nekosarekawaii.vandalism.base.event.normal.network.WorldListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -107,9 +108,14 @@ public abstract class MixinMinecraftClient {
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Ljava/lang/Math;min(II)I"))
     public int callMaxClientTickListener(int a, int b) {
-        final var event = new MaxTickListener.MaxTickEvent(a, b);
-        Vandalism.getInstance().getEventSystem().postInternal(MaxTickListener.MaxTickEvent.ID, event);
-        return event.minTicks;
+        return b;
+    }
+
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;getMeasuringTimeMs()J", ordinal = 0))
+    public long getTime() {
+        final var event = new TickBaseListener.TickBaseEvent(Util.getMeasuringTimeMs());
+        Vandalism.getInstance().getEventSystem().postInternal(TickBaseListener.TickBaseEvent.ID, event);
+        return event.time;
     }
 
 }
