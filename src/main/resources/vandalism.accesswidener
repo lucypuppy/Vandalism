@@ -106,3 +106,4 @@ accessible field net/minecraft/network/packet/s2c/play/PlayerPositionLookS2CPack
 mutable field net/minecraft/network/packet/s2c/play/PlayerPositionLookS2CPacket pitch F
 accessible method net/minecraft/world/World tickBlockEntities ()V
 accessible method net/minecraft/entity/LivingEntity getJumpVelocity ()F
+accessible method net/minecraft/network/ClientConnection sendImmediately (Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/PacketCallbacks;Z)V
