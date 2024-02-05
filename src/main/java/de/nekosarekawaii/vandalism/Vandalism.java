@@ -93,7 +93,7 @@ import java.io.File;
  *  - Implement ServerDiscoveryClientMenuWindow#renderServerPopup "Add to server list" feature
  * <br><br>
  * TODO: simon <br>
- *  - Recode kick feature of enhanced server list with packet utils
+ *  - Recode kick feature of enhanced server list with packet utils (Maybe done, revert if not working)
  *  - Add minecraft server pinger in DirectConnectScreen, GameMenuScreen and DisconnectedScreen
  * <br><br>
  * TODO: Everyone <br>
