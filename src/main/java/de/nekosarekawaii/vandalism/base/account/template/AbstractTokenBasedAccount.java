@@ -23,10 +23,12 @@ import com.mojang.authlib.yggdrasil.YggdrasilEnvironment;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.util.common.StaticEncryptionUtil;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
 import net.minecraft.client.session.Session;
+import net.minecraft.util.Util;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -38,16 +40,21 @@ public abstract class AbstractTokenBasedAccount extends AbstractAccount {
 
     private static final HttpClient REQUESTER = HttpClient.newHttpClient();
 
+    private final String serviceUrl;
     private final String redeemUrl;
+
     private String token;
 
-    public AbstractTokenBasedAccount(final String name, final String redeemUrl) {
+    public AbstractTokenBasedAccount(final String name, final String serviceUrl, final String redeemUrl) {
         super(name);
+
+        this.serviceUrl = serviceUrl;
         this.redeemUrl = redeemUrl;
     }
 
-    public AbstractTokenBasedAccount(final String name, final String redeemUrl, final String token) {
-        this(name, redeemUrl);
+    public AbstractTokenBasedAccount(final String name, final String serviceUrl, final String redeemUrl, final String token) {
+        this(name, serviceUrl, redeemUrl);
+
         this.token = token;
         if (token != null && this.getEnvironment() == YggdrasilEnvironment.PROD.getEnvironment()) {
             throw new RuntimeException("You are using the production environment. This is not allowed.");
@@ -66,8 +73,6 @@ public abstract class AbstractTokenBasedAccount extends AbstractAccount {
         return this.token == null ? "None" : this.token;
     }
 
-    protected abstract void extraRender();
-
     @Override
     public AccountFactory factory() {
         return new AccountFactory() {
@@ -77,7 +82,9 @@ public abstract class AbstractTokenBasedAccount extends AbstractAccount {
             @Override
             public void displayFactory() {
                 ImGui.inputText("Token", this.token, ImGuiInputTextFlags.CallbackResize | ImGuiInputTextFlags.Password);
-                AbstractTokenBasedAccount.this.extraRender();
+                if (ImUtils.subButton("Open service")) {
+                    Util.getOperatingSystem().open(AbstractTokenBasedAccount.this.serviceUrl);
+                }
             }
 
             @Override
