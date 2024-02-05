@@ -77,6 +77,13 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             3.0
     );
 
+    private final BooleanValue preHit = new BooleanValue(
+            this.targetSelectionGroup,
+            "Pre Hit",
+            "Whether you want to pre hit in the extended range.",
+            false
+    );
+
     private final ValueGroup reachExploitGroup = new ValueGroup(
             this.targetSelectionGroup,
             "Reach Exploit",
@@ -457,15 +464,20 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 if (this.raytraceDistance <= getRange()) {
                     this.lastPossibleHit = System.currentTimeMillis();
                 }
-
-                this.autoBlock.stopBlock();
-
-                this.mc.doAttack();
-
-                this.autoBlock.startBlock();
-                this.targetIndex++;
+                if (this.preHit.getValue() || this.raytraceDistance <= getRange()) {
+                    this.hit();
+                }
             }
         });
+    }
+
+    private void hit() {
+        this.autoBlock.stopBlock();
+
+        this.mc.doAttack();
+
+        this.autoBlock.startBlock();
+        this.targetIndex++;
     }
 
     public Entity getTarget() {
