@@ -118,7 +118,7 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
             final float delta
     ) {
         if (!this.isActive()) {
-            RenderSystem.setShaderColor(0.5f, 0.5f, 0.5f, 0.9f);
+            RenderSystem.setShaderColor(0.6f, 0.6f, 0.6f, 1f);
         }
         final boolean isDraggedElement = draggedElement == this;
         if (isDraggedElement) {
