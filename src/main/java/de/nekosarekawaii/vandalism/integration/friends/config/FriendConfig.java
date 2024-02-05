@@ -63,4 +63,5 @@ public class FriendConfig extends AbstractConfig<JsonObject> {
             }
         }
     }
+
 }

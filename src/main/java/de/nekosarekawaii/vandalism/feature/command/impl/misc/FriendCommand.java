@@ -39,12 +39,12 @@ public class FriendCommand extends AbstractCommand {
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.then(literal("add").then(argument("name", PlayerArgumentType.create()).executes(context -> {
             final String name = PlayerArgumentType.get(context);
-            addFriend(name, name);
+            this.addFriend(name, name);
             return SINGLE_SUCCESS;
         }).then(argument("alias", StringArgumentType.word()).executes(context -> {
             final String name = PlayerArgumentType.get(context);
             final String alias = StringArgumentType.getString(context, "alias");
-            addFriend(name, alias);
+            this.addFriend(name, alias);
             return SINGLE_SUCCESS;
         })))).then(literal("remove").then(argument("friend", FriendArgumentType.create()).executes(context -> {
             final Friend friend = FriendArgumentType.get(context);
@@ -79,7 +79,7 @@ public class FriendCommand extends AbstractCommand {
 
     private void addFriend(final String name, final String alias) {
         final FriendManager friendManager = Vandalism.getInstance().getFriendManager();
-        for (Friend friend : friendManager.getList()) {
+        for (final Friend friend : friendManager.getList()) {
             if (friend.getName().equalsIgnoreCase(name)) {
                 ChatUtil.errorChatMessage("You already have a friend with the name " + name + ".");
                 return;
@@ -88,4 +88,5 @@ public class FriendCommand extends AbstractCommand {
         friendManager.add(new Friend(name, alias));
         ChatUtil.infoChatMessage("Added " + name + (!name.equals(alias) ? " (" + alias + ")" : "") + " as a friend.");
     }
+
 }

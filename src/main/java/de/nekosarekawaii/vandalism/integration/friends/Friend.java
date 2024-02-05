@@ -21,23 +21,23 @@ package de.nekosarekawaii.vandalism.integration.friends;
 public class Friend {
 
     private final String name;
-
     private String alias;
 
-    public Friend(String name, String alias) {
+    public Friend(final String name, final String alias) {
         this.name = name;
         this.alias = alias;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getAlias() {
-        return alias;
+        return this.alias;
     }
 
-    public void setAlias(String alias) {
+    public void setAlias(final String alias) {
         this.alias = alias;
     }
+
 }
