@@ -375,10 +375,10 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 this.mc.player.getPos().distanceTo(this.target.getPos()) <= 6.0;
 
         final Vec3d eyePos = mc.player.getEyePos();
-        final HitResult raytrace = WorldUtil.raytrace(this.rotationListener.getRotation(), Math.pow(preHit.getValue() ? this.getAimRange() : this.range.getValue(), 2));
+        final HitResult raytrace = WorldUtil.raytrace(this.rotationListener.getRotation(), Math.pow(preHit.getValue() ? this.getAimRange() : this.getRange(), 2));
         this.raytraceDistance = raytrace != null ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
 
-        if (this.raytraceDistance > (preHit.getValue() ? this.getAimRange() : this.range.getValue()) || this.raytraceDistance <= 0) {
+        if (this.raytraceDistance > (preHit.getValue() ? this.getAimRange() : this.getRange()) || this.raytraceDistance <= 0) {
             stopBlocking(BlockState.ERROR);
             return;
         }
@@ -484,11 +484,11 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         this.target = entities.get(this.targetIndex);
     }
 
-    private double getAimRange() {
+    public double getAimRange() {
         return getRange() + this.preAimRangeExtension.getValue();
     }
 
-    private double getRange() {
+    public double getRange() {
         if (
                 this.firstHitExtender.getValue() &&
                         (System.currentTimeMillis() - this.lastPossibleHit) >= this.firstHitExtenderOffTime.getValue() &&
