@@ -29,25 +29,22 @@ import java.util.concurrent.RejectedExecutionException;
 
 public class PacketUtil {
 
-    public static void recievePacket(final ClientPlayNetworkHandler handler, final Packet<?> packet) {
+    public static void receivePacket(final ClientPlayNetworkHandler handler, final Packet<?> packet) {
         if (handler.isConnectionOpen()) {
             final ClientConnection connection = handler.getConnection();
             final PacketListener packetListener = connection.getPacketListener();
-
             if (packetListener == null) {
                 throw new IllegalStateException("Received a packet before the packet listener was initialized");
             }
-
             if (packetListener.accepts(packet)) {
                 try {
                     ClientConnection.handlePacket(packet, packetListener);
-                } catch (OffThreadException e) {
+                } catch (OffThreadException ignored) {
                 } catch (RejectedExecutionException e) {
                     connection.disconnect(Text.translatable("multiplayer.disconnect.server_shutdown"));
                 } catch (ClassCastException e) {
                     connection.disconnect(Text.translatable("multiplayer.disconnect.invalid_packet"));
                 }
-
                 connection.packetsReceivedCounter++;
             }
         }
