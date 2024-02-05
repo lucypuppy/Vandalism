@@ -43,6 +43,7 @@ import de.nekosarekawaii.vandalism.util.click.impl.BezierClicker;
 import de.nekosarekawaii.vandalism.util.click.impl.BoxMuellerClicker;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.Hand;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -281,6 +282,26 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             AutoBlockMode.values()
     );
 
+    private final ValueGroup extraSettings = new ValueGroup(
+            this.autoBlockGroup,
+            "Extra Settings",
+            "Extra settings for the auto block."
+    );
+
+    private final BooleanValue unsprintOnAttack = new BooleanValue(
+            this.extraSettings,
+            "Unsprint On Attack",
+            "Whether you should unsprint on attack.",
+            true
+    );
+
+    private final BooleanValue resprintAfterAttack = new BooleanValue(
+            this.extraSettings,
+            "Resprint After Attack",
+            "Whether you should resprint after attack.",
+            true
+    );
+
     private Entity target;
     private int targetIndex = 0;
 
@@ -290,6 +311,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     private long lastPossibleHit = -1;
 
     private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
+
+    public boolean isBlocking = false;
 
     public KillAuraModule() {
         super(
@@ -488,9 +511,18 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     }
 
     private void hit() {
+        if (this.unsprintOnAttack.getValue()) {
+            this.mc.player.setSprinting(false);
+        }
+
         stopBlocking(BlockState.PRE_ATTACk);
         this.mc.doAttack();
         startBlocking(BlockState.POST_ATTACk);
+
+        if (this.resprintAfterAttack.getValue()) {
+            this.mc.player.setSprinting(true);
+        }
+
         this.targetIndex++;
     }
 
@@ -499,9 +531,18 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             return;
         }
 
-        // if (!this.mc.player.isBlocking()) {
-        //
-        // }
+        if (!this.mc.player.isBlocking() && !this.isBlocking) {
+            if (blockState == BlockState.POST_ATTACk) {
+                var actionResult = mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
+                if (actionResult.isAccepted()) {
+                    if (actionResult.shouldSwingHand()) {
+                        mc.player.swingHand(Hand.MAIN_HAND);
+                    }
+                }
+            }
+
+            this.isBlocking = true;
+        }
     }
 
     private void stopBlocking(final BlockState blockState) {
@@ -509,14 +550,13 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             return;
         }
 
-        if (this.autoBlockMode.getValue() == AutoBlockMode.RIGHT_CLICK) {
-            mc.options.useKey.setPressed(blockState != BlockState.ERROR);
-        }
+        if (this.mc.player.isBlocking() || this.isBlocking) {
+            if (blockState == BlockState.PRE_ATTACk) {
+                this.mc.interactionManager.stopUsingItem(mc.player);
+            }
 
-        //if (this.mc.player.isBlocking()) {
-        //
-        //
-        //}
+            this.isBlocking = false;
+        }
     }
 
     public Entity getTarget() {
