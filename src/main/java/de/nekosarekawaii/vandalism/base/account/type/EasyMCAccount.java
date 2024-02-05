@@ -22,7 +22,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.Environment;
 import de.nekosarekawaii.vandalism.base.account.template.AbstractTokenBasedAccount;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import net.minecraft.client.session.Session;
+import net.minecraft.util.Util;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -58,6 +60,13 @@ public class EasyMCAccount extends AbstractTokenBasedAccount {
                 Optional.empty(),
                 Session.AccountType.LEGACY
         );
+    }
+
+    @Override
+    protected void extraRender() {
+        if (ImUtils.subButton("Get")) {
+            Util.getOperatingSystem().open("https://easymc.io/get");
+        }
     }
 
 }
