@@ -23,8 +23,8 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.cancellable.render.ScreenListener;
 import de.nekosarekawaii.vandalism.base.event.normal.game.MinecraftBoostrapListener;
 import de.nekosarekawaii.vandalism.base.event.normal.game.ShutdownProcessListener;
-import de.nekosarekawaii.vandalism.base.event.normal.game.TickBaseListener;
 import de.nekosarekawaii.vandalism.base.event.normal.game.TickTimeListener;
+import de.nekosarekawaii.vandalism.base.event.normal.game.TimeTravelListener;
 import de.nekosarekawaii.vandalism.base.event.normal.network.WorldListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -113,8 +113,8 @@ public abstract class MixinMinecraftClient {
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;getMeasuringTimeMs()J", ordinal = 0))
     public long getTime() {
-        final var event = new TickBaseListener.TickBaseEvent(Util.getMeasuringTimeMs());
-        Vandalism.getInstance().getEventSystem().postInternal(TickBaseListener.TickBaseEvent.ID, event);
+        final var event = new TimeTravelListener.TimeTravelEvent(Util.getMeasuringTimeMs());
+        Vandalism.getInstance().getEventSystem().postInternal(TimeTravelListener.TimeTravelEvent.ID, event);
         return event.time;
     }
 

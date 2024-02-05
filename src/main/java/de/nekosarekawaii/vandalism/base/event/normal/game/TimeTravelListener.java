@@ -20,23 +20,23 @@ package de.nekosarekawaii.vandalism.base.event.normal.game;
 
 import de.florianmichael.dietrichevents2.AbstractEvent;
 
-public interface TickBaseListener {
+public interface TimeTravelListener {
 
-    void onTickBase(final TickBaseEvent event);
+    void onTimeTravel(final TimeTravelEvent event);
 
-    class TickBaseEvent extends AbstractEvent<TickBaseListener> {
+    class TimeTravelEvent extends AbstractEvent<TimeTravelListener> {
 
         public static final int ID = 35;
 
         public long time;
 
-        public TickBaseEvent(final long time) {
+        public TimeTravelEvent(final long time) {
             this.time = time;
         }
 
         @Override
-        public void call(final TickBaseListener tickBaseListener) {
-            tickBaseListener.onTickBase(this);
+        public void call(final TimeTravelListener timeTravelListener) {
+            timeTravelListener.onTimeTravel(this);
         }
     }
 
