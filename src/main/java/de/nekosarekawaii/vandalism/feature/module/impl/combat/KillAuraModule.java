@@ -77,13 +77,6 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             3.0
     );
 
-    private final BooleanValue preHit = new BooleanValue(
-            this.targetSelectionGroup,
-            "Pre Hit",
-            "Whether you want to pre hit in the extended range.",
-            false
-    );
-
     private final ValueGroup reachExploitGroup = new ValueGroup(
             this.targetSelectionGroup,
             "Reach Exploit",
@@ -199,7 +192,14 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             80,
             0,
             100
-    ).visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER || this.clickType.getValue() == ClickType.BEZIER);
+    ).visibleCondition(() -> this.clickType.getValue() != ClickType.COOLDOWN);
+
+    private final BooleanValue preHit = new BooleanValue(
+            this.clicking,
+            "Pre Hit",
+            "Whether you want to pre hit in the extended range. (Doesnt work in Cooldown mode)",
+            false
+    ).visibleCondition(() -> this.clickType.getValue() != ClickType.COOLDOWN);
 
     private final ValueGroup rotationGroup = new ValueGroup(
             this,
@@ -267,6 +267,20 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             true
     );
 
+    private final ValueGroup autoBlockGroup = new ValueGroup(
+            this,
+            "Auto Block",
+            "Settings for the auto block."
+    );
+
+    private final EnumModeValue<AutoBlockMode> autoBlockMode = new EnumModeValue<>(
+            this.autoBlockGroup,
+            "Auto Block Mode",
+            "The mode of the auto block.",
+            AutoBlockMode.OFF,
+            AutoBlockMode.values()
+    );
+
     private Entity target;
     private int targetIndex = 0;
 
@@ -275,16 +289,15 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
     private long lastPossibleHit = -1;
 
-    private final AutoBlockModule autoBlock;
     private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
 
-    public KillAuraModule(final AutoBlockModule autoBlock) {
+    public KillAuraModule() {
         super(
                 "Kill Aura",
                 "Automatically attacks nearby enemies.",
                 Category.COMBAT
         );
-        this.autoBlock = autoBlock;
+
         this.rotationListener = Vandalism.getInstance().getRotationListener();
         this.updateClicker(this.clickType.getValue().getClicker());
 
@@ -309,8 +322,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         this.rotationListener.resetRotation();
         this.targetIndex = 0;
 
-        this.autoBlock.stopBlock();
-       //mc.options.useKey.setPressed(false);
+        stopBlocking(BlockState.ERROR);
     }
 
     @Override
@@ -321,8 +333,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                         Float.isNaN(this.rotationListener.getRotation().getYaw()) ||
                         Float.isNaN(this.rotationListener.getRotation().getPitch())
         ) {
-            this.autoBlock.stopBlock();
-            //mc.options.useKey.setPressed(false);
+            stopBlocking(BlockState.ERROR);
             return;
         }
 
@@ -336,12 +347,14 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         this.raytraceDistance = raytrace != null ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
 
         if (this.raytraceDistance > this.getAimRange() || this.raytraceDistance <= 0) {
-            this.autoBlock.stopBlock();
-            //mc.options.useKey.setPressed(false);
+            stopBlocking(BlockState.ERROR);
             return;
         }
 
+        //
+        stopBlocking(BlockState.PRE_CLICKING);
         this.clickType.getValue().getClicker().onUpdate();
+        startBlocking(BlockState.POST_CLICKING);
     }
 
     @Override
@@ -407,8 +420,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         for (final Entity entity : this.mc.world.getEntities()) {
             if (
                     WorldUtil.isTarget(entity) &&
-                    this.mc.player.distanceTo(entity) <= getAimRange() + 1.0 &&
-                    entity.getWidth() > 0.0 && entity.getHeight() > 0.0
+                            this.mc.player.distanceTo(entity) <= getAimRange() + 1.0 &&
+                            entity.getWidth() > 0.0 && entity.getHeight() > 0.0
             ) {
                 entities.add(entity);
             }
@@ -436,8 +449,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     private double getRange() {
         if (
                 this.firstHitExtender.getValue() &&
-                (System.currentTimeMillis() - this.lastPossibleHit) >= this.firstHitExtenderOffTime.getValue() &&
-                this.isLooking
+                        (System.currentTimeMillis() - this.lastPossibleHit) >= this.firstHitExtenderOffTime.getValue() &&
+                        this.isLooking
         ) {
             return this.range.getValue() + this.firstHitRangeExtender.getValue();
         }
@@ -461,10 +474,13 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
         clicker.setClickAction(attack -> {
             if (attack) {
-                if (this.raytraceDistance <= getRange()) {
+                final boolean possibleHit = this.raytraceDistance <= getRange();
+
+                if (possibleHit) {
                     this.lastPossibleHit = System.currentTimeMillis();
                 }
-                if (this.preHit.getValue() || this.raytraceDistance <= getRange()) {
+
+                if ((this.preHit.getValue() && this.clickType.getValue() != ClickType.COOLDOWN) || possibleHit) {
                     this.hit();
                 }
             }
@@ -472,19 +488,42 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     }
 
     private void hit() {
-        this.autoBlock.stopBlock();
-
+        stopBlocking(BlockState.PRE_ATTACk);
         this.mc.doAttack();
-
-        this.autoBlock.startBlock();
+        startBlocking(BlockState.POST_ATTACk);
         this.targetIndex++;
+    }
+
+    private void startBlocking(final BlockState blockState) {
+        if (this.autoBlockMode.getValue() == AutoBlockMode.OFF) {
+            return;
+        }
+
+        // if (!this.mc.player.isBlocking()) {
+        //
+        // }
+    }
+
+    private void stopBlocking(final BlockState blockState) {
+        if (this.autoBlockMode.getValue() == AutoBlockMode.OFF) {
+            return;
+        }
+
+        if (this.autoBlockMode.getValue() == AutoBlockMode.RIGHT_CLICK) {
+            mc.options.useKey.setPressed(blockState != BlockState.ERROR);
+        }
+
+        //if (this.mc.player.isBlocking()) {
+        //
+        //
+        //}
     }
 
     public Entity getTarget() {
         return this.target;
     }
 
-    public enum SmoothingType implements IName {
+    private enum SmoothingType implements IName {
 
         BEZIER,
         NORMAL,
@@ -500,6 +539,34 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         public String getName() {
             return this.name;
         }
+
+    }
+
+    private enum AutoBlockMode implements IName {
+
+        OFF,
+        RIGHT_CLICK;
+
+        private final String name;
+
+        AutoBlockMode() {
+            this.name = StringUtils.normalizeEnumName(this.name());
+        }
+
+        @Override
+        public String getName() {
+            return this.name;
+        }
+
+    }
+
+    private enum BlockState {
+
+        ERROR,
+        PRE_CLICKING,
+        POST_CLICKING,
+        PRE_ATTACk,
+        POST_ATTACk;
 
     }
 
