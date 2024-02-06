@@ -56,11 +56,12 @@ import java.io.File;
  *      - Add protection for skins
  *      - Add protection for coords
  *      - Add protection for ip addresses
+ *      - Add protection for account manager
  *  - Fix spotify menu control buttons
  *  - Use <a href="https://github.com/EvilCodeZ/JNI4J/tree/main">JNI4J</a> to improve the packet manager logging for fields
  *  - Fix vanilla title texts being displayed after leaving a server
  *  - Save config files on change
- *  - Fix better tab list module duplicated highlighting of friends
+ *  - Fix better tab list module duplicated highlighting of friends & self
  * <br><br>
  * TODO: Verschlxfene <br>
  *  - Delete MixinParticleManager
@@ -72,7 +73,9 @@ import java.io.File;
  *  - Delete TickBaseModule#worldTicker and replace with worldTick()
  *  - Add working defensive and counter mode to Tickbase
  *  - Fix Game server pinger (ensure pings are on different threads)
- *  - Fix custom hud not working
+ *  - Fix calculations for the HUD:
+ *      - Fix HUDElement#calculatePosition
+ *      - Fix module list out of screen rendering when the alignment is for example at the bottom of the screen
  *  - Add lag engine to fix countless BackTrack issues
  *  - Remove useless settings (ChatSettings)
  *  - Ensure MCConstants class file is used
@@ -83,10 +86,8 @@ import java.io.File;
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Check AimPointMover#generatePointsAround (this might be bad FooFieOwO)
- *  - Fix module list out of screen rendering when the alignment is at the bottom of the screen
  *  - Fix NoClipMode from PhaseModule
  *  - Fix SprintModule to be compatible with the rotation listener and also the backwards direction (ask Verschlxfene)
- *  - Fix calculations for the HUD aka. HUDElement#calculatePosition
  *  - KillAura#onPrePlayerUpdate | Frame event (entity renderer set angles) -> rotate / Mouse event -> attack
  * <br><br>
  * TODO: Snow <br>
@@ -104,7 +105,6 @@ import java.io.File;
  *  - Fix module tabs display (no stacking) when the client starts the first time
  *  - Fix ClientMenuScreen#close because it could break the entire game
  *  - Add anti vanish via. the player list hud
- *  - Export generic constants to {@link de.nekosarekawaii.vandalism.util.MinecraftConstants} and add comment to link where to get them
  */
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 
