@@ -89,6 +89,7 @@ import java.io.File;
  *  - Fix NoClipMode from PhaseModule
  *  - Fix SprintModule to be compatible with the rotation listener and also the backwards direction (ask Verschlxfene)
  *  - KillAura#onPrePlayerUpdate | Frame event (entity renderer set angles) -> rotate / Mouse event -> attack
+ *  - Fix SprintTap letting go W key sometimes (maybe bc of tickbase)
  * <br><br>
  * TODO: Snow <br>
  *  - Implement ServerDiscoveryClientMenuWindow#renderServerPopup "Add to server list" feature
