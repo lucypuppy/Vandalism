@@ -546,11 +546,11 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     }
 
     private void startBlocking(final BlockState blockState) {
-        if (this.autoBlockMode.getValue() == AutoBlockMode.OFF) {
+        if (this.autoBlockMode.getValue() == AutoBlockMode.OFF || this.autoBlockMode.getValue() == AutoBlockMode.RIGHT_CLICK_PERMANENT) {
             return;
         }
 
-        if (!this.mc.player.isBlocking() && !this.isBlocking) {
+        if (this.autoBlockMode.getValue() == AutoBlockMode.TEST) {
             if (blockState == BlockState.POST_ATTACK) {
                 var actionResult = mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
                 if (actionResult.isAccepted()) {
@@ -565,17 +565,20 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     }
 
     private void stopBlocking(final BlockState blockState) {
-//        mc.options.useKey.setPressed(blockState != BlockState.ERROR);
         if (this.autoBlockMode.getValue() == AutoBlockMode.OFF) {
             return;
         }
 
-        if (this.mc.player.isBlocking() || this.isBlocking) {
-            if (blockState == BlockState.PRE_ATTACK) {
-                this.mc.interactionManager.stopUsingItem(mc.player);
-            }
+        if (this.autoBlockMode.getValue() == AutoBlockMode.RIGHT_CLICK_PERMANENT) {
+            mc.options.useKey.setPressed(blockState != BlockState.ERROR);
+        } else if (this.autoBlockMode.getValue() == AutoBlockMode.TEST) {
+            if (this.mc.player.isBlocking() || this.isBlocking) {
+                if (blockState == BlockState.PRE_ATTACK) {
+                    this.mc.interactionManager.stopUsingItem(mc.player);
+                }
 
-            this.isBlocking = false;
+                this.isBlocking = false;
+            }
         }
     }
 
@@ -605,7 +608,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     private enum AutoBlockMode implements IName {
 
         OFF,
-        RIGHT_CLICK;
+        RIGHT_CLICK_PERMANENT,
+        TEST;
 
         private final String name;
 
