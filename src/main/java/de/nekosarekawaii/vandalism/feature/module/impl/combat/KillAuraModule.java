@@ -546,11 +546,13 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     }
 
     private void startBlocking(final BlockState blockState) {
-        if (this.autoBlockMode.getValue() == AutoBlockMode.OFF || this.autoBlockMode.getValue() == AutoBlockMode.RIGHT_CLICK_PERMANENT) {
+        if (this.autoBlockMode.getValue() == AutoBlockMode.OFF) {
             return;
         }
 
-        if (this.autoBlockMode.getValue() == AutoBlockMode.TEST) {
+        if (this.autoBlockMode.getValue() == AutoBlockMode.RIGHT_CLICK_PERMANENT) {
+            mc.options.useKey.setPressed(true); // Ensure we are blocking permanently
+        } else if (this.autoBlockMode.getValue() == AutoBlockMode.TEST) {
             if (blockState == BlockState.POST_ATTACK) {
                 var actionResult = mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
                 if (actionResult.isAccepted()) {
