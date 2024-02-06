@@ -135,7 +135,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new EcholocationModule(),
                 new AutoClickerModule(),
                 new SprintTapModule(),
-                new CraftCarryModule()
+                new CraftCarryModule(),
+                new FakeLagModule()
         );
         this.configManager.add(new ModulesConfig(this));
     }
