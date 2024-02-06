@@ -89,12 +89,12 @@ import java.io.File;
  *  - Fix NoClipMode from PhaseModule
  *  - Fix SprintModule to be compatible with the rotation listener and also the backwards direction (ask Verschlxfene)
  *  - KillAura#onPrePlayerUpdate | Frame event (entity renderer set angles) -> rotate / Mouse event -> attack
+ *  - Fix SprintTap letting go W key sometimes (maybe bc of tickbase)
  * <br><br>
  * TODO: Snow <br>
  *  - Implement ServerDiscoveryClientMenuWindow#renderServerPopup "Add to server list" feature
  * <br><br>
  * TODO: simon <br>
- *  - Recode kick feature of enhanced server list with packet utils (Maybe done, revert if not working)
  *  - Add minecraft server pinger in DirectConnectScreen, GameMenuScreen and DisconnectedScreen
  *  - Add a better Autoblock to Killaura with FooFieOwO
  * <br><br>
