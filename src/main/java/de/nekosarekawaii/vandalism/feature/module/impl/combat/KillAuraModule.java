@@ -378,7 +378,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         final HitResult raytrace = WorldUtil.raytrace(this.rotationListener.getRotation(), Math.pow(preHit.getValue() ? this.getAimRange() : this.getRange(), 2));
         this.raytraceDistance = raytrace != null ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
 
-        if (this.raytraceDistance > (preHit.getValue() ? this.getAimRange() : this.getRange()) || this.raytraceDistance <= 0) {
+        if (this.raytraceDistance > (this.preHit.getValue() ? this.getAimRange() : this.getRange()) || this.raytraceDistance <= 0) {
             stopBlocking(BlockState.ERROR);
             return;
         }
@@ -392,7 +392,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     public void onRotation(final RotationEvent event) {
         this.updateTarget();
 
-        if (this.raytraceDistance <= this.getAimRange() && this.raytraceDistance > 0) {
+        if (this.raytraceDistance <= (this.preHit.getValue() ? this.getAimRange() : this.getRange()) && this.raytraceDistance > 0) {
             this.clickType.getValue().getClicker().onRotate();
         }
 
