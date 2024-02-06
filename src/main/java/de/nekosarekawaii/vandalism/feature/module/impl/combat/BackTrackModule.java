@@ -215,7 +215,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
     private void handlePackets(final boolean flush) {
         for (final DelayedPacket packet : this.packets) {
             if (flush || System.currentTimeMillis() > packet.time() + this.pingSpoof.getValue()) {
-                PacketUtil.receivePacket(this.mc.getNetworkHandler(), packet.packet());
+                PacketUtil.receivePacket(packet.packet());
                 this.packets.remove(packet);
             }
         }
