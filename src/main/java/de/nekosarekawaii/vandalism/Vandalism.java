@@ -90,6 +90,7 @@ import java.io.File;
  *  - Fix SprintModule to be compatible with the rotation listener and also the backwards direction (ask Verschlxfene)
  *  - KillAura#onPrePlayerUpdate | Frame event (entity renderer set angles) -> rotate / Mouse event -> attack
  *  - Fix SprintTap letting go W key sometimes (maybe bc of tickbase)
+ *  - Add more stuff to fake lag (Ideas off clumsy)
  * <br><br>
  * TODO: Snow <br>
  *  - Implement ServerDiscoveryClientMenuWindow#renderServerPopup "Add to server list" feature
