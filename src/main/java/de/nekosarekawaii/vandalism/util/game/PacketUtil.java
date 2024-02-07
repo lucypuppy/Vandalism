@@ -18,19 +18,24 @@
 
 package de.nekosarekawaii.vandalism.util.game;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.OffThreadException;
+import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.listener.PacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.RejectedExecutionException;
 
 public class PacketUtil {
 
-    public static void receivePacket(final ClientPlayNetworkHandler handler, final Packet<?> packet) {
-        if (handler.isConnectionOpen()) {
+    public static void receivePacket(final Packet<?> packet) {
+        final ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
+
+        if (handler != null && handler.isConnectionOpen()) {
             final ClientConnection connection = handler.getConnection();
             final PacketListener packetListener = connection.getPacketListener();
             if (packetListener == null) {
@@ -46,6 +51,23 @@ public class PacketUtil {
                     connection.disconnect(Text.translatable("multiplayer.disconnect.invalid_packet"));
                 }
                 connection.packetsReceivedCounter++;
+            }
+        }
+    }
+
+    public static void sendImmediately(final Packet<?> packet, final @Nullable PacketCallbacks callbacks, final boolean flush) {
+        final ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
+
+        if (handler != null && handler.isConnectionOpen()) {
+            final ClientConnection connection = handler.getConnection();
+
+            connection.packetsSentCounter++;
+            if (connection.channel.eventLoop().inEventLoop()) {
+                connection.sendInternal(packet, callbacks, flush);
+            } else {
+                connection.channel.eventLoop().execute(() -> {
+                    connection.sendInternal(packet, callbacks, flush);
+                });
             }
         }
     }
