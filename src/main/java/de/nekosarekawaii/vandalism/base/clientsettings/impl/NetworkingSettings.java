@@ -84,7 +84,8 @@ public class NetworkingSettings extends ValueGroup implements KeyboardInputListe
             this,
             "Force Disconnect Key",
             "The Key that will be used to immediately disconnect from a server.",
-            GLFW.GLFW_KEY_END
+            GLFW.GLFW_KEY_END,
+            false
     );
 
     public NetworkingSettings(final ClientSettings parent) {

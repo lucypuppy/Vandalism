@@ -102,11 +102,11 @@ public class ScriptManager extends NamedStorage<Script> implements PlayerUpdateL
     @Override
     public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         //Cancel if the key is unknown to prevent the script from being executed multiple times.
-        if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN || this.mc.player == null || this.mc.currentScreen != null) {
+        if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN) {
             return;
         }
-        for (final Script script : getList()) {
-            if (script.getKeyBind().getValue() == key) {
+        for (final Script script : this.getList()) {
+            if (script.getKeyBind().isPressed()) {
                 if (this.isScriptRunning(script.getUuid())) {
                     this.killRunningScript(script.getUuid());
                 }

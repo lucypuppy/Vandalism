@@ -34,7 +34,8 @@ public class MenuSettings extends ValueGroup {
             this,
             "Menu Key",
             "Change the key to open the Menu.",
-            GLFW.GLFW_KEY_RIGHT_SHIFT
+            GLFW.GLFW_KEY_RIGHT_SHIFT,
+            false
     );
 
     public final BooleanValue moduleStateLogging = new BooleanValue(
