@@ -144,11 +144,11 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     @Override
     public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         //Cancel if the key is unknown to prevent the module from being toggled multiple times.
-        if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN || this.mc.player == null || this.mc.currentScreen != null) {
+        if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN) {
             return;
         }
         for (final AbstractModule module : this.getList()) {
-            if (module.getKeyBind().getValue() == key) {
+            if (module.getKeyBind().isPressed()) {
                 module.toggle();
             }
         }

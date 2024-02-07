@@ -50,21 +50,24 @@ public class EnhancedServerListSettings extends ValueGroup {
             this,
             "Paste Server Key",
             "Change the key to paste a server from your clipboard.",
-            GLFW.GLFW_KEY_INSERT
+            GLFW.GLFW_KEY_INSERT,
+            false
     ).visibleCondition(this.enhancedServerList::getValue);
 
     public final KeyBindValue copyServerKey = new KeyBindValue(
             this,
             "Copy Server Key",
             "Change the key to copy a server to your clipboard.",
-            GLFW.GLFW_KEY_PAGE_DOWN
+            GLFW.GLFW_KEY_PAGE_DOWN,
+            false
     ).visibleCondition(this.enhancedServerList::getValue);
 
     public final KeyBindValue deleteServerKey = new KeyBindValue(
             this,
             "Delete Server Key",
             "Change the key to delete a server from the server list.",
-            GLFW.GLFW_KEY_DELETE
+            GLFW.GLFW_KEY_DELETE,
+            false
     ).visibleCondition(this.enhancedServerList::getValue);
 
     public final BooleanValue kickAllPlayers = new BooleanValue(
@@ -84,7 +87,8 @@ public class EnhancedServerListSettings extends ValueGroup {
             this.kickAllPlayersSettings,
             "Kick All Players Key",
             "Change the key to kick all Players from the Server.",
-            GLFW.GLFW_KEY_PAGE_UP
+            GLFW.GLFW_KEY_PAGE_UP,
+            false
     ).visibleCondition(this.enhancedServerList::getValue);
 
     public final IntegerValue kickAllPlayersPingConnectionTimeout = new IntegerValue(

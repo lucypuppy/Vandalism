@@ -44,7 +44,11 @@ public class Script extends Feature implements ValueParent {
         this.file = file;
         this.version = version;
         this.author = author;
-        this.keyBind = new KeyBindValue(this, "Key Bind", "The key bind of this script.");
+        this.keyBind = new KeyBindValue(
+                this,
+                "Key Bind",
+                "The key bind of this script."
+        );
     }
 
     public UUID getUuid() {

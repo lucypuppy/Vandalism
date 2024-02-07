@@ -26,9 +26,12 @@ import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.render.InputType;
 import imgui.ImGui;
+import net.minecraft.client.MinecraftClient;
 import org.lwjgl.glfw.GLFW;
 
 public class KeyBindValue extends Value<Integer> implements KeyboardInputListener {
+
+    private final boolean onlyInGame;
 
     private boolean waitingForInput;
 
@@ -37,7 +40,12 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
     }
 
     public KeyBindValue(ValueParent parent, String name, String description, Integer defaultValue) {
+        this(parent, name, description, defaultValue, true);
+    }
+
+    public KeyBindValue(ValueParent parent, String name, String description, Integer defaultValue, final boolean onlyInGame) {
         super(parent, name, description, defaultValue);
+        this.onlyInGame = onlyInGame;
     }
 
     @Override
@@ -89,11 +97,25 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
     }
 
     public boolean isPressed() {
+        final MinecraftClient mc = MinecraftClient.getInstance();
+        if (this.onlyInGame && (mc.player == null || mc.currentScreen != null)){
+            return false;
+        }
         return InputType.isPressed(this.getValue());
     }
 
     public boolean isValid() {
         return this.getValue() != GLFW.GLFW_KEY_UNKNOWN;
+    }
+
+    /**
+     * Don't use this method, use {@link #isPressed()} instead.
+     *
+     * @return the key code
+     */
+    @Override
+    public Integer getValue() {
+        return super.getValue();
     }
 
 }

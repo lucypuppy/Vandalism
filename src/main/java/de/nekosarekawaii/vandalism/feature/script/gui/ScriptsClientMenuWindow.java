@@ -20,10 +20,10 @@ package de.nekosarekawaii.vandalism.feature.script.gui;
 
 import de.florianmichael.rclasses.common.RandomUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.feature.script.Script;
 import de.nekosarekawaii.vandalism.feature.script.parse.ScriptParser;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiTabBarFlags;
@@ -144,11 +144,8 @@ public class ScriptsClientMenuWindow extends ClientMenuWindow {
                                         }
                                         case ACTIONS -> {
                                             ImGui.spacing();
-                                            for (final Value<?> scriptValue : script.getValues()) {
-                                                scriptValue.render();
-                                            }
-                                            ImGui.sameLine();
-                                            ImGui.button("...##scriptsmoreactions" + script.getName(), 0, 25);
+                                            script.renderValues(false);
+                                            ImUtils.subButton("...##scriptsmoreactions" + script.getName());
                                             if (ImGui.beginPopupContextItem("##scriptsmoreactionspopup" + script.getName(), ImGuiPopupFlags.MouseButtonLeft)) {
                                                 ImGui.text(script.getName());
                                                 ImGui.separator();
@@ -157,7 +154,7 @@ public class ScriptsClientMenuWindow extends ClientMenuWindow {
                                                     final Script scriptFromList = Vandalism.getInstance().getScriptManager().getList().stream().filter(s -> s.getFile().getName().equalsIgnoreCase(scriptFile.getName())).findFirst().orElse(null);
                                                     if (scriptFromList != null) {
                                                         final UUID uuid = scriptFromList.getUuid();
-                                                        if (ImGui.button((Vandalism.getInstance().getScriptManager().isScriptRunning(uuid) ? "Kill" : "Execute") + "##scriptsexecuteorkill" + script.getName(), buttonWidth, buttonHeight)) {
+                                                        if (ImUtils.subButton((Vandalism.getInstance().getScriptManager().isScriptRunning(uuid) ? "Kill" : "Execute") + "##scriptsexecuteorkill" + script.getName())) {
                                                             if (Vandalism.getInstance().getScriptManager().isScriptRunning(uuid)) {
                                                                 Vandalism.getInstance().getScriptManager().killRunningScript(uuid);
                                                             } else {
@@ -167,7 +164,7 @@ public class ScriptsClientMenuWindow extends ClientMenuWindow {
                                                     }
                                                 }
                                                 if (!this.scriptEditors.containsKey(scriptFile)) {
-                                                    if (ImGui.button("Edit##scriptsedit" + script.getName(), buttonWidth, buttonHeight)) {
+                                                    if (ImUtils.subButton("Edit##scriptsedit" + script.getName())) {
                                                         if (!scriptFile.exists()) {
                                                             Vandalism.getInstance().getLogger().error("Failed to open script editor for script file '" + scriptFile.getName() + "' because the file doesn't exist!");
                                                         } else {
