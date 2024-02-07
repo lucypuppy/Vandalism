@@ -70,7 +70,6 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
         }
     }
 
-
     @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V", ordinal = 2))
     public void hookBetterTabListModule(DrawContext instance, int x1, int y1, int x2, int y2, int color, Operation<Void> original) {
         final var betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
@@ -79,8 +78,8 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
             if (betterTabListModule.highlightSelf.getValue() && this.mc.player != null && profile.getId().equals(this.mc.player.getGameProfile().getId())) {
                 color = betterTabListModule.selfColor.getColor().getRGB();
             }
-            for (Friend f : Vandalism.getInstance().getFriendManager().getList()) {
-                if (betterTabListModule.highlightFriends.getValue() && profile.getName().equalsIgnoreCase(f.getName())) {
+            for (final Friend friend : Vandalism.getInstance().getFriendManager().getList()) {
+                if (betterTabListModule.highlightFriends.getValue() && profile.getName().equalsIgnoreCase(friend.getName())) {
                     color = betterTabListModule.friendsColor.getColor().getRGB();
                     break;
                 }
@@ -89,7 +88,6 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
 
         original.call(instance, x1, y1, x2, y2, color);
     }
-
 
     @Inject(method = "getPlayerName", at = @At("RETURN"), cancellable = true)
     public void hookBetterTabListModule(PlayerListEntry entry, CallbackInfoReturnable<Text> cir) {
