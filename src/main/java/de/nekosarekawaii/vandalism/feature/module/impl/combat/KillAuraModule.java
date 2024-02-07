@@ -30,6 +30,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.base.value.impl.rendering.SeparatorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
@@ -109,6 +110,9 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             0.0,
             2.0
     ).visibleCondition(this.firstHitExtender::getValue);
+
+    private final SeparatorValue reach = new SeparatorValue(this.targetSelectionGroup, "Reach",
+            "Settings for the reach.");
 
     private final EnumModeValue<SelectionMode> selectionMode = new EnumModeValue<>(
             this.targetSelectionGroup,
@@ -270,6 +274,9 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             100
     );
 
+    private final SeparatorValue moveFixSeparator = new SeparatorValue(this.rotationGroup, "MoveFixSeparator",
+            "Settings for the movement fix.");
+
     private final BooleanValue movementFix = new BooleanValue(
             this.rotationGroup,
             "Movement Fix",
@@ -292,7 +299,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     );
 
     private final ValueGroup extraSettings = new ValueGroup(
-            this.autoBlockGroup,
+            this,
             "Extra Settings",
             "Extra settings for the auto block."
     );
