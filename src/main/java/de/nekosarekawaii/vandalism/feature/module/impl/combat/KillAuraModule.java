@@ -30,6 +30,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.base.value.impl.rendering.SeparatorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
@@ -109,6 +110,9 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             0.0,
             2.0
     ).visibleCondition(this.firstHitExtender::getValue);
+
+    private final SeparatorValue reach = new SeparatorValue(this.targetSelectionGroup, "Reach",
+            "Settings for the reach.");
 
     private final EnumModeValue<SelectionMode> selectionMode = new EnumModeValue<>(
             this.targetSelectionGroup,
@@ -270,6 +274,9 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             100
     );
 
+    private final SeparatorValue moveFixSeparator = new SeparatorValue(this.rotationGroup, "MoveFixSeparator",
+            "Settings for the movement fix.");
+
     private final BooleanValue movementFix = new BooleanValue(
             this.rotationGroup,
             "Movement Fix",
@@ -292,7 +299,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     );
 
     private final ValueGroup extraSettings = new ValueGroup(
-            this.autoBlockGroup,
+            this,
             "Extra Settings",
             "Extra settings for the auto block."
     );
@@ -378,7 +385,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         final HitResult raytrace = WorldUtil.raytrace(this.rotationListener.getRotation(), Math.pow(preHit.getValue() ? this.getAimRange() : this.getRange(), 2));
         this.raytraceDistance = raytrace != null ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
 
-        if (this.raytraceDistance > (preHit.getValue() ? this.getAimRange() : this.getRange()) || this.raytraceDistance <= 0) {
+        if (this.raytraceDistance > (this.preHit.getValue() ? this.getAimRange() : this.getRange()) || this.raytraceDistance <= 0) {
             stopBlocking(BlockState.ERROR);
             return;
         }
@@ -392,7 +399,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     public void onRotation(final RotationEvent event) {
         this.updateTarget();
 
-        if (this.raytraceDistance <= this.getAimRange() && this.raytraceDistance > 0) {
+        if (this.raytraceDistance <= (this.preHit.getValue() ? this.getAimRange() : this.getRange()) && this.raytraceDistance > 0) {
             this.clickType.getValue().getClicker().onRotate();
         }
 
@@ -550,7 +557,9 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             return;
         }
 
-        if (!this.mc.player.isBlocking() && !this.isBlocking) {
+        if (this.autoBlockMode.getValue() == AutoBlockMode.RIGHT_CLICK_PERMANENT) {
+            mc.options.useKey.setPressed(true); // Ensure we are blocking permanently
+        } else if (this.autoBlockMode.getValue() == AutoBlockMode.TEST) {
             if (blockState == BlockState.POST_ATTACK) {
                 var actionResult = mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
                 if (actionResult.isAccepted()) {
@@ -565,17 +574,20 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     }
 
     private void stopBlocking(final BlockState blockState) {
-//        mc.options.useKey.setPressed(blockState != BlockState.ERROR);
         if (this.autoBlockMode.getValue() == AutoBlockMode.OFF) {
             return;
         }
 
-        if (this.mc.player.isBlocking() || this.isBlocking) {
-            if (blockState == BlockState.PRE_ATTACK) {
-                this.mc.interactionManager.stopUsingItem(mc.player);
-            }
+        if (this.autoBlockMode.getValue() == AutoBlockMode.RIGHT_CLICK_PERMANENT) {
+            mc.options.useKey.setPressed(blockState != BlockState.ERROR);
+        } else if (this.autoBlockMode.getValue() == AutoBlockMode.TEST) {
+            if (this.mc.player.isBlocking() || this.isBlocking) {
+                if (blockState == BlockState.PRE_ATTACK) {
+                    this.mc.interactionManager.stopUsingItem(mc.player);
+                }
 
-            this.isBlocking = false;
+                this.isBlocking = false;
+            }
         }
     }
 
@@ -605,7 +617,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     private enum AutoBlockMode implements IName {
 
         OFF,
-        RIGHT_CLICK;
+        RIGHT_CLICK_PERMANENT,
+        TEST;
 
         private final String name;
 

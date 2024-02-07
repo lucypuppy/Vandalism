@@ -83,7 +83,8 @@ public class SprintTapModule extends AbstractModule implements AttackListener, P
             this.mc.options.sprintKey.setPressed(true);
             this.sprintTap = false;
         }
-        if (this.movementTarget != null && this.mc.player.distanceTo(this.movementTarget) >= 3.1) {
+
+        if (this.mc.player != null && this.movementTarget != null && this.mc.player.distanceTo(this.movementTarget) >= 3.1) {
             this.mc.options.forwardKey.setPressed(true);
             this.movementTarget = null;
         }
