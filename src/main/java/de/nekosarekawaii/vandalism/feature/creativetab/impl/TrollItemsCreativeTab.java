@@ -63,6 +63,7 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
         items.add(withClientSide(createOldKillArea(), Text.literal(Formatting.RED + "Kill Area (Old)")));
         items.add(withClientSide(createOldEventHorizonArea(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area (Old)")));
         items.add(withClientSide(createStargazer(), Text.literal(Formatting.YELLOW + Formatting.BOLD.toString() + "Stargazer"), true));
+        items.add(withClientSide(createGhostBlock(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Ghost Block")));
     }
 
     private static ItemStack createTrollPotion(final ItemStack origin) {
@@ -207,7 +208,7 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
         return item;
     }
 
-    private ItemStack createOldEventHorizonArea() {
+    private static ItemStack createOldEventHorizonArea() {
         final ItemStack item = new ItemStack(Items.BAT_SPAWN_EGG);
         final NbtCompound base = new NbtCompound();
         final NbtCompound entityTag = new NbtCompound();
@@ -243,6 +244,16 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
         entityTag.putByte("CustomNameVisible", (byte) 1);
         entityTag.putByte("NoGravity", (byte) 1);
         base.put("EntityTag", entityTag);
+        item.setNbt(base);
+        return item;
+    }
+
+    private static ItemStack createGhostBlock() {
+        final ItemStack item = new ItemStack(Items.JIGSAW);
+        final NbtCompound base = new NbtCompound();
+        final NbtCompound blockEntityTag = new NbtCompound();
+        blockEntityTag.putString("pool", "funny:Funny");
+        base.put("BlockEntityTag", blockEntityTag);
         item.setNbt(base);
         return item;
     }
