@@ -195,7 +195,7 @@ public class ScriptsClientMenuWindow extends ClientMenuWindow {
                                                         }
                                                     }
                                                 }
-                                                if (ImGui.button("Delete##scriptsdelete" + script.getName(), buttonWidth, buttonHeight)) {
+                                                if (ImUtils.subButton("Delete##scriptsdelete" + script.getName())) {
                                                     if (!script.getFile().delete()) {
                                                         Vandalism.getInstance().getLogger().error("Failed to delete script: " + script.getName());
                                                     } else {
