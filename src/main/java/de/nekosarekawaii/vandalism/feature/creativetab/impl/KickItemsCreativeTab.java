@@ -40,7 +40,7 @@ public class KickItemsCreativeTab extends AbstractCreativeTab {
     }
 
     @Override
-    public void exposeItems(List<ItemStack> items) {
+    public void exposeItems(final List<ItemStack> items) {
         items.add(withClientSide(createKickHead(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Head")));
         items.add(withClientSide(createKickHeadV2(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Head V2")));
         items.add(withClientSide(createKickStand(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Kick Stand")));

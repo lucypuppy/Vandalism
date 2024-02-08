@@ -38,7 +38,7 @@ public class GriefItemsCreativeTab extends AbstractCreativeTab {
     }
 
     @Override
-    public void exposeItems(List<ItemStack> items) {
+    public void exposeItems(final List<ItemStack> items) {
         items.add(withClientSide(createGriefCreeper(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Grief Creeper")));
         items.add(withClientSide(createPoweredGriefCreeper(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Powered " + Formatting.RED + Formatting.BOLD + "Grief Creeper"), true));
         items.add(withClientSide(ItemStackUtil.createSpawnEggItemStack((SpawnEggItem) Items.SHEEP_SPAWN_EGG, "minecraft:ender_dragon"), Text.literal(Formatting.LIGHT_PURPLE + Formatting.BOLD.toString() + "Ender Dragon")));
