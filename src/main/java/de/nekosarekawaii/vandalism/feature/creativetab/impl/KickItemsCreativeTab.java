@@ -109,7 +109,7 @@ public class KickItemsCreativeTab extends AbstractCreativeTab {
         final NbtCompound tag = new NbtCompound();
         final NbtList recipes = new NbtList();
         recipes.add(0, NbtString.of(
-                "Funny:" + RandomUtils.randomString(
+                "Hacked:" + RandomUtils.randomString(
                         15000,
                         true,
                         true,

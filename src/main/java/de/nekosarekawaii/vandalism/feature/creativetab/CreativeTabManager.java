@@ -22,10 +22,7 @@ import de.florianmichael.dietrichevents2.Priorities;
 import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.cancellable.network.OutgoingPacketListener;
-import de.nekosarekawaii.vandalism.feature.creativetab.impl.CrashItemsCreativeTab;
-import de.nekosarekawaii.vandalism.feature.creativetab.impl.GriefItemsCreativeTab;
-import de.nekosarekawaii.vandalism.feature.creativetab.impl.KickItemsCreativeTab;
-import de.nekosarekawaii.vandalism.feature.creativetab.impl.TrollItemsCreativeTab;
+import de.nekosarekawaii.vandalism.feature.creativetab.impl.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
@@ -47,6 +44,7 @@ public class CreativeTabManager extends Storage<AbstractCreativeTab> implements 
         this.add(
                 new CrashItemsCreativeTab(),
                 new KickItemsCreativeTab(),
+                new ConsoleSpamItemsCreativeTab(),
                 new GriefItemsCreativeTab(),
                 new TrollItemsCreativeTab()
         );

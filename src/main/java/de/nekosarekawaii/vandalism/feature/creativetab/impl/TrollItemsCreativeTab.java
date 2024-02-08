@@ -255,7 +255,7 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
         final ItemStack item = new ItemStack(Items.JIGSAW);
         final NbtCompound base = new NbtCompound();
         final NbtCompound blockEntityTag = new NbtCompound();
-        blockEntityTag.putString("pool", "funny:Funny");
+        blockEntityTag.putString("pool", "Hacked:YouHaveBeenHacked");
         base.put("BlockEntityTag", blockEntityTag);
         item.setNbt(base);
         return item;
