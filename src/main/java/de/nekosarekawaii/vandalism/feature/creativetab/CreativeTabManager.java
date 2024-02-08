@@ -66,7 +66,10 @@ public class CreativeTabManager extends Storage<AbstractCreativeTab> implements 
                             itemStack.removeSubNbt(ItemStack.DISPLAY_KEY);
                         }
                     }
-                    itemStack.setCustomName(Text.Serialization.fromJson(nbt.getString(CLIENTSIDE_NAME)));
+                    final Text name = Text.Serialization.fromJson(nbt.getString(CLIENTSIDE_NAME));
+                    if (!itemStack.getName().equals(name)) {
+                        itemStack.setCustomName(name);
+                    }
                     nbt.remove(CLIENTSIDE_NAME);
                 }
                 if (nbt.contains(CLIENTSIDE_GLINT)) {
