@@ -30,23 +30,46 @@ public class MovementUtil implements MinecraftWrapper {
     private static final float[] POSSIBLE_MOVEMENTS = new float[]{-1f, 0.0f, 1f};
 
     /**
-     * Get the direction of the player.
+     * Get the direction of in which the player is looking.
      *
-     * @return The direction of the player.
+     * @return The direction in which the player is looking.
      */
     public static double getDirection() {
-        return getDirection(0);
+        return getDirection(true);
     }
 
     /**
-     * Get the direction of the player.
+     * Get the direction of in which the player is looking.
      *
      * @param directionOffset The offset to use.
-     * @return The direction of the player.
+     *
+     * @return The direction in which the player is looking.
      */
     public static double getDirection(final float directionOffset) {
+        return getDirection(directionOffset, true);
+    }
+
+    /**
+     * Get the direction of in which the player is looking.
+     *
+     * @param movingCheck If the player is moving.
+     * @return The direction in which the player is looking.
+     */
+    public static double getDirection(final boolean movingCheck) {
+        return getDirection(0, movingCheck);
+    }
+
+    /**
+     * Get the direction of in which the player is looking.
+     *
+     * @param directionOffset The offset to use.
+     * @param movingCheck If the player is moving.
+     *
+     * @return The direction in which the player is looking.
+     */
+    public static double getDirection(final float directionOffset, final boolean movingCheck) {
         if (mc.player == null) return 0;
-        if (!isMoving()) return Math.toRadians(mc.player.getYaw() + 90.0f);
+        if (movingCheck && !isMoving()) return Math.toRadians(mc.player.getYaw() + 90.0f);
         final float offset = (180.0f + directionOffset);
         return (Math.atan2(mc.player.forwardSpeed, mc.player.sidewaysSpeed) / Math.PI * offset + mc.player.getYaw()) * Math.PI / offset;
     }
@@ -64,7 +87,7 @@ public class MovementUtil implements MinecraftWrapper {
     /**
      * Set the speed of the player.
      *
-     * @param speed  The speed to set.
+     * @param speed The speed to set.
      * @param offset The offset to use.
      * @return The new velocity of the player.
      */
@@ -76,7 +99,7 @@ public class MovementUtil implements MinecraftWrapper {
      * Set the speed of an entity.
      *
      * @param entity The entity to set the speed of.
-     * @param speed  The speed to set.
+     * @param speed The speed to set.
      * @return The new velocity of the entity.
      */
     public static Vec3d setSpeed(final Entity entity, final double speed) {
@@ -87,7 +110,7 @@ public class MovementUtil implements MinecraftWrapper {
      * Set the speed of an entity.
      *
      * @param entity The entity to set the speed of.
-     * @param speed  The speed to set.
+     * @param speed The speed to set.
      * @param offset The offset to use.
      * @return The new velocity of the entity.
      */
@@ -157,7 +180,7 @@ public class MovementUtil implements MinecraftWrapper {
      */
     public static void clip(final double vertical, final double horizontal) {
         if (mc.player == null) return;
-        final double direction = getDirection();
+        final double direction = getDirection(false);
         mc.player.setPos(mc.player.getX() - Math.sin(direction) * horizontal, mc.player.getY() + vertical, mc.player.getZ() + Math.cos(direction) * horizontal);
     }
 
