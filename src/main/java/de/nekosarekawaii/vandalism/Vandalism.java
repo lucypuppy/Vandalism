@@ -48,7 +48,6 @@ import java.io.File;
  *  - Add Access Violation crash item to CrashItemCreativeTab
  *  - Add 1.20.2 / maybe 1.20.3 instant crash crash item to CrashItemCreativeTab
  *  - Add Server Instant Crash Sign to CrashItemCreativeTab
- *  - Fix item display names in the creative tabs
  *  - Change behavior of the echolocation module to use it as a chunk load detector
  *  - Fix spaces in the text rendering when using the "deutsch macher" module
  *  - Protector Module:
