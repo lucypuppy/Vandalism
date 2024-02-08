@@ -62,6 +62,12 @@ import java.io.File;
  *  - Fix vanilla title texts being displayed after leaving a server
  *  - Save config files on change
  *  - Fix better tab list module duplicated highlighting of friends & self
+ *  - Rewrite EnhancedServerList
+ *  - Fix offsets for the new "teleport" method in the fov fucker module
+ *  - Make the width and height customizable or use calculations in the modules im window for the tabs
+ *  - Fix module tabs display (no stacking) when the client starts the first time
+ *  - Fix ClientMenuScreen#close because it could break the entire game
+ *  - Add anti vanish via. the player list hud
  * <br><br>
  * TODO: Verschlxfene <br>
  *  - Delete MixinParticleManager
@@ -98,14 +104,6 @@ import java.io.File;
  * TODO: simon <br>
  *  - Add minecraft server pinger in DirectConnectScreen, GameMenuScreen and DisconnectedScreen
  *  - Add a better Autoblock to Killaura with FooFieOwO
- * <br><br>
- * TODO: Everyone <br>
- *  - Rewrite EnhancedServerList
- *  - Fix offsets for the new "teleport" method in the fov fucker module
- *  - Make the width and height customizable or use calculations in the modules im window for the tabs
- *  - Fix module tabs display (no stacking) when the client starts the first time
- *  - Fix ClientMenuScreen#close because it could break the entire game
- *  - Add anti vanish via. the player list hud
  */
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 
