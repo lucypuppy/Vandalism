@@ -18,11 +18,13 @@
 
 package de.nekosarekawaii.vandalism.feature.creativetab.impl;
 
+import de.florianmichael.rclasses.common.RandomUtils;
 import de.nekosarekawaii.vandalism.feature.creativetab.AbstractCreativeTab;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -41,7 +43,8 @@ public class KickItemsCreativeTab extends AbstractCreativeTab {
     public void exposeItems(List<ItemStack> items) {
         items.add(withClientSide(createKickHead(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Head")));
         items.add(withClientSide(createKickHeadV2(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Head V2")));
-        items.add(withClientSide(createKickStand(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Stand")));
+        items.add(withClientSide(createKickStand(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Kick Stand")));
+        items.add(withClientSide(createKickKnowledgeBook(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Kick Knowledge Book")));
     }
 
     private static ItemStack createKickHead() {
@@ -90,6 +93,35 @@ public class KickItemsCreativeTab extends AbstractCreativeTab {
         armorItems.add(firstArmorItem);
         entityTag.put("ArmorItems", armorItems);
         base.put("EntityTag", entityTag);
+        item.setNbt(base);
+        return item;
+    }
+
+    private static ItemStack createKickKnowledgeBook() {
+        final ItemStack item = new ItemStack(Items.FURNACE);
+        final NbtCompound base = new NbtCompound();
+        final NbtCompound blockEntityTag = new NbtCompound();
+        final NbtList items = new NbtList();
+        final NbtCompound firstSlot = new NbtCompound();
+        firstSlot.putByte("Slot", (byte) 0);
+        firstSlot.putString("id", "minecraft:knowledge_book");
+        firstSlot.putByte("Count", (byte) 1);
+        final NbtCompound tag = new NbtCompound();
+        final NbtList recipes = new NbtList();
+        recipes.add(0, NbtString.of(
+                "Funny:" + RandomUtils.randomString(
+                        15000,
+                        true,
+                        true,
+                        true,
+                        true
+                )
+        ));
+        tag.put("Recipes", recipes);
+        firstSlot.put("tag", tag);
+        items.add(firstSlot);
+        blockEntityTag.put("Items", items);
+        base.put("BlockEntityTag", blockEntityTag);
         item.setNbt(base);
         return item;
     }
