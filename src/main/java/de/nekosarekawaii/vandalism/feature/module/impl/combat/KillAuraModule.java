@@ -448,7 +448,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     @Override
     public void onRaytrace(final RaytraceEvent event) {
         if (this.target != null && this.rotationListener.getRotation() != null) {
-            event.range = Math.pow(getRange() - 0.05, 2);
+            event.range = Math.pow(getRange(), 2);
         }
     }
 
