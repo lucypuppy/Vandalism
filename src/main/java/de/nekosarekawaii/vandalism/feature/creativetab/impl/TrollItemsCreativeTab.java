@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.feature.creativetab.impl;
 
 import de.nekosarekawaii.vandalism.feature.creativetab.AbstractCreativeTab;
 import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -51,8 +52,8 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
             items.add(withClientSide(createKillPotion(new ItemStack(item)), Text.literal(Formatting.RED + "Kill Potion")));
         }
         items.add(withClientSide(createKillArea(), Text.literal(Formatting.RED + "Kill Area")));
-        items.add(withClientSide(createWhiteHole(), Text.literal(Formatting.WHITE + Formatting.BOLD.toString() + "White Hole")));
-        items.add(withClientSide(createBlackHole(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Black Hole")));
+        items.add(withClientSide(createWhiteHole(), Text.literal(Formatting.WHITE + "White Hole")));
+        items.add(withClientSide(createBlackHole(), Text.literal(Formatting.WHITE + "Black Hole")));
         items.add(withClientSide(createEventHorizonArea(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area")));
         for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
             items.add(withClientSide(createOldTrollPotion(new ItemStack(item)), Text.literal(Formatting.GOLD + "Troll Potion (Old)")));
@@ -64,6 +65,8 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
         items.add(withClientSide(createOldEventHorizonArea(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area (Old)")));
         items.add(withClientSide(createStargazer(), Text.literal(Formatting.YELLOW + Formatting.BOLD.toString() + "Stargazer"), true));
         items.add(withClientSide(createGhostBlock(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Ghost Block")));
+        items.add(withClientSide(createWardenSummonBlock(), Text.literal(Formatting.DARK_AQUA + Formatting.BOLD.toString() + "Warden Summon Block")));
+        items.add(withClientSide(createUnstableTNTBlock(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Unstable TNT Block")));
     }
 
     private static ItemStack createTrollPotion(final ItemStack origin) {
@@ -254,6 +257,30 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
         final NbtCompound blockEntityTag = new NbtCompound();
         blockEntityTag.putString("pool", "funny:Funny");
         base.put("BlockEntityTag", blockEntityTag);
+        item.setNbt(base);
+        return item;
+    }
+
+    private static ItemStack createWardenSummonBlock() {
+        final ItemStack item = new ItemStack(Blocks.SCULK_SHRIEKER);
+        final NbtCompound base = new NbtCompound();
+        final NbtCompound blockEntityTag = new NbtCompound();
+        blockEntityTag.putInt("warning_level", 4);
+        base.put("BlockEntityTag", blockEntityTag);
+        final NbtCompound blockStateTag = new NbtCompound();
+        blockStateTag.putString("can_summon", "true");
+        blockStateTag.putString("shrieking", "true");
+        base.put("BlockStateTag", blockStateTag);
+        item.setNbt(base);
+        return item;
+    }
+
+    private static ItemStack createUnstableTNTBlock() {
+        final ItemStack item = new ItemStack(Blocks.TNT);
+        final NbtCompound base = new NbtCompound();
+        final NbtCompound blockStateTag = new NbtCompound();
+        blockStateTag.putString("unstable", "true");
+        base.put("BlockStateTag", blockStateTag);
         item.setNbt(base);
         return item;
     }
