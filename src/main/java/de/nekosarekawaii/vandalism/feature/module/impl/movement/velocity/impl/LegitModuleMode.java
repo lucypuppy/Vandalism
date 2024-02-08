@@ -45,7 +45,7 @@ public class LegitModuleMode extends ModuleMulti<VelocityModule> implements Inco
 
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
-        if (this.velocity && mc.player.hurtTime == 10) {
+        if (this.velocity && mc.player.hurtTime == 10 && mc.player.isOnGround()) {
             mc.player.jump();
         }
     }
