@@ -45,13 +45,16 @@ public class ServerListManager {
     }
 
     public ServerList getSelectedServerList() {
+        if (this.selectedServerList == null) {
+            this.setSelectedServerList(ServerList.DEFAULT_SERVER_LIST_NAME);
+        }
         return this.selectedServerList;
     }
 
     public void setSelectedServerList(final String name) {
         final ServerList lastSelectedServerList = this.selectedServerList;
         this.selectedServerList = this.get(name);
-        this.lastSelectedServerList = lastSelectedServerList.getName();
+        this.lastSelectedServerList = lastSelectedServerList == null ? this.selectedServerList.getName() : lastSelectedServerList.getName();
     }
 
     public boolean hasBeenChanged() {
@@ -87,8 +90,8 @@ public class ServerListManager {
             return;
         }
         this.serverLists.remove(serverList);
-        if (this.serverLists.size() == 1) {
-            this.setSelectedServerList(this.serverLists.get(0).getName());
+        if (this.selectedServerList != null && this.selectedServerList.getName().equals(name)) {
+            this.setSelectedServerList(ServerList.DEFAULT_SERVER_LIST_NAME);
         }
         this.saveConfig();
     }
