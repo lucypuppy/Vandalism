@@ -64,7 +64,6 @@ allprojects {
         modImplementation fabricApi.module("fabric-item-group-api-v1", project.fabric_version)
 
         modImplementation "de.florianmichael:viafabricplus:${project.viafabricplus_version}"
-        modImplementation modApi("de.florianmichael:AsmFabricLoader:${project.asmfabricloader_version}")
     }
 
     processResources {
@@ -155,6 +154,7 @@ loom {
 }
 
 dependencies {
+    modImplementation modApi("de.florianmichael:AsmFabricLoader:${project.asmfabricloader_version}")
     jij "de.florianmichael:DietrichEvents2:${project.dietrichevents2_version}"
     jij "de.florianmichael:WaybackAuthLib:${project.waybackauthlib_version}"
     jij ("de.florianmichael.rclasses:all:${project.rclasses_version}") {
