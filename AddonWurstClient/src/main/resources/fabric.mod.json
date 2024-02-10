@@ -25,6 +25,7 @@
   "custom": {
     "modmenu": {
       "parent": "vandalism"
-    }
+    },
+    "afl:classtransform": "vandalism-wurst-client.classtransform.json"
   }
 }
