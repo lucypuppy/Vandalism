@@ -60,6 +60,7 @@ import java.io.File;
  *  - Fix spotify menu control buttons
  *  - Use <a href="https://github.com/EvilCodeZ/JNI4J/tree/main">JNI4J</a> to improve the packet manager logging for fields
  *  - Fix vanilla title texts being displayed after leaving a server
+ *  - Prevent the server from hiding name tags of players
  *  - Fix better tab list module duplicated highlighting of friends & self
  *  - Rewrite EnhancedServerList
  *  - Fix offsets for the new "teleport" method in the fov fucker module
