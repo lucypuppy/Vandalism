@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.integration.serverlist.gui;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerList;
+import de.nekosarekawaii.vandalism.integration.serverlist.ServerListManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -45,14 +46,19 @@ public class ConfigScreen extends Screen {
     protected void init() {
         this.addDrawableChild(new SlotList(this.client, this.width, this.height, 32, 64, this.textRenderer.fontHeight + 4));
         this.removeBtn = this.addDrawableChild(ButtonWidget.builder(Text.literal("Remove"), button -> {
-            final ServerList selectedServerList = Vandalism.getInstance().getServerListManager().getSelectedServerList();
+            final ServerListManager serverListManager = Vandalism.getInstance().getServerListManager();
+            final ServerList selectedServerList = serverListManager.getSelectedServerList();
             if (this.client != null && !selectedServerList.isDefault()) {
                 this.client.setScreen(new ConfirmScreen((confirmed) -> {
                     if (confirmed) {
-                        Vandalism.getInstance().getServerListManager().remove(selectedServerList.getName());
+                        serverListManager.remove(selectedServerList.getName());
                     }
-                    MinecraftClient.getInstance().setScreen(new ConfigScreen(this.parent));
-                }, Text.literal("Are you sure you want to remove this server list?"), Text.literal("'" + selectedServerList.getName() + " (" + selectedServerList.getSize() + ")' " + "will be lost forever! (A long time!)"), ScreenTexts.YES, ScreenTexts.NO));
+                    this.client.setScreen(new ConfigScreen(this.parent));
+                },
+                        Text.literal("Are you sure you want to remove this server list?"),
+                        Text.literal("'" + selectedServerList.getName() + " (" + selectedServerList.getSize() + ")' " + "will be lost forever! (A long time!)"),
+                        ScreenTexts.YES, ScreenTexts.NO
+                ));
             }
         }).width(74).build());
         final GridWidget gridWidget = new GridWidget();

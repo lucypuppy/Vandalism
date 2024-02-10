@@ -106,7 +106,7 @@ public class ScriptManager extends NamedStorage<Script> implements PlayerUpdateL
             return;
         }
         for (final Script script : this.getList()) {
-            if (script.getKeyBind().isPressed()) {
+            if (script.getKeyBind().isPressed(key)) {
                 if (this.isScriptRunning(script.getUuid())) {
                     this.killRunningScript(script.getUuid());
                 }

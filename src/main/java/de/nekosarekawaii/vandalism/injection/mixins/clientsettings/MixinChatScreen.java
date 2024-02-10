@@ -35,9 +35,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.awt.*;
 
@@ -58,7 +56,7 @@ public abstract class MixinChatScreen implements MinecraftWrapper {
         this.vandalism$realMaxLength = this.chatField.getMaxLength();
         final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
         if (chatSettings.moreChatInput.getValue()) {
-            this.chatField.setMaxLength(chatSettings.moreChatInputMaxLength.getValue());
+            this.chatField.setMaxLength(Integer.MAX_VALUE);
         }
     }
 
@@ -73,14 +71,6 @@ public abstract class MixinChatScreen implements MinecraftWrapper {
             final int y = this.chatField.getY() - this.mc.textRenderer.fontHeight - 2;
             final Color color = RenderUtil.interpolateColor(Color.GREEN, Color.YELLOW, Color.RED, Math.min((float) currentLength / this.vandalism$realMaxLength, 1.0f));
             context.drawText(this.mc.textRenderer, text, x, y, color.getRGB(), true);
-        }
-    }
-
-    @ModifyArgs(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ChatInputSuggestor;<init>(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/gui/screen/Screen;Lnet/minecraft/client/gui/widget/TextFieldWidget;Lnet/minecraft/client/font/TextRenderer;ZZIIZI)V"))
-    private void moreChatInputSuggestions(final Args args) {
-        final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
-        if (chatSettings.moreChatInputSuggestions.getValue()) {
-            args.set(7, chatSettings.moreChatInputSuggestionsMaxLength.getValue());
         }
     }
 
