@@ -60,7 +60,6 @@ import java.io.File;
  *  - Fix spotify menu control buttons
  *  - Use <a href="https://github.com/EvilCodeZ/JNI4J/tree/main">JNI4J</a> to improve the packet manager logging for fields
  *  - Fix vanilla title texts being displayed after leaving a server
- *  - Save config files on change
  *  - Fix better tab list module duplicated highlighting of friends & self
  *  - Rewrite EnhancedServerList
  *  - Fix offsets for the new "teleport" method in the fov fucker module
@@ -78,6 +77,7 @@ import java.io.File;
  *  - Add support for multiple presses on tick in KeyBindSetting
  *  - Delete TickBaseModule#worldTicker and replace with worldTick()
  *  - Add working defensive and counter mode to Tickbase
+ *  - Add config save thread
  *  - Fix Game server pinger (ensure pings are on different threads)
  *  - Fix calculations for the HUD:
  *      - Fix HUDElement#calculatePosition
