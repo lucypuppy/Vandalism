@@ -18,24 +18,94 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
-import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.base.event.normal.player.RotationListener;
+import de.nekosarekawaii.vandalism.base.value.impl.number.BezierValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
+import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.click.ClickType;
+import de.nekosarekawaii.vandalism.util.click.Clicker;
+import de.nekosarekawaii.vandalism.util.click.impl.BezierClicker;
+import de.nekosarekawaii.vandalism.util.click.impl.BoxMuellerClicker;
 
-public class AutoClickerModule extends AbstractModule implements PlayerUpdateListener {
+public class AutoClickerModule extends AbstractModule implements PlayerUpdateListener, RotationListener {
 
-    private final IntegerValue cps = new IntegerValue(
+    private final EnumModeValue<ClickType> clickType = new EnumModeValue<>(
             this,
-            "CPS",
-            "The amount of clicks per second.",
+            "Click Type",
+            "The type of clicking.",
+            ClickType.BEZIER,
+            ClickType.values()
+    ).onValueChange((oldValue, newValue) -> {
+        oldValue.getClicker().setClickAction(aBoolean -> {
+        });
+        this.updateClicker(newValue.getClicker());
+    });
+
+    private final FloatValue std = new FloatValue(
+            this,
+            "Standard Deviation",
+            "The standard deviation for the Box-Mueller clicker.",
+            5.0f,
+            1.0f,
+            10.0f
+    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
+            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+
+    private final FloatValue mean = new FloatValue(
+            this,
+            "Mean",
+            "The mean for the Box-Mueller clicker.",
+            15.0f,
+            1.0f,
+            30.0f
+    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
+            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+
+    private final IntegerValue minCps = new IntegerValue(
+            this,
+            "Minimum CPS",
+            "The minimum CPS for the Box-Mueller clicker.",
             10,
             1,
             20
-    );
+    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
+            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
 
-    private final MSTimer clickTimer = new MSTimer();
+    private final IntegerValue maxCps = new IntegerValue(
+            this,
+            "Maximum CPS",
+            "The maximum CPS for the Box-Mueller clicker.",
+            20,
+            1,
+            30
+    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
+            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+
+    private final BezierValue cpsBezier = new BezierValue(
+            this,
+            "CPS Bezier Curve",
+            "The bezier curve for the CPS.",
+            25.0f,
+            17.0f,
+            14.0f,
+            25.0f,
+            1.0f,
+            25.0f
+    ).visibleCondition(() -> this.clickType.getValue() == ClickType.BEZIER);
+
+    private final IntegerValue updatePossibility = new IntegerValue(
+            this,
+            "Update Possibility",
+            "The possibility of the CPS update.",
+            80,
+            0,
+            100
+    ).visibleCondition(() -> this.clickType.getValue() != ClickType.COOLDOWN);
+
 
     public AutoClickerModule() {
         super(
@@ -47,19 +117,43 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID);
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.clickTimer.hasReached((long) ((1000 / this.cps.getValue()) * Math.random()), true)) {
-            this.mc.doAttack();
+        this.clickType.getValue().getClicker().onUpdate();
+    }
+
+    @Override
+    public void onRotation(RotationEvent event) {
+        this.clickType.getValue().getClicker().onRotate();
+    }
+
+    private void updateClicker(final Clicker clicker) {
+        if (clicker instanceof final BoxMuellerClicker boxMuellerClicker) {
+            boxMuellerClicker.setStd(this.std.getValue());
+            boxMuellerClicker.setMean(this.mean.getValue());
+            boxMuellerClicker.setMinCps(this.minCps.getValue());
+            boxMuellerClicker.setMaxCps(this.maxCps.getValue());
+            boxMuellerClicker.setCpsUpdatePossibility(this.updatePossibility.getValue());
         }
+
+        if (clicker instanceof final BezierClicker bezierClicker) {
+            bezierClicker.setBezierValue(this.cpsBezier);
+            bezierClicker.setCpsUpdatePossibility(this.updatePossibility.getValue());
+        }
+
+        clicker.setClickAction(attack -> {
+            if (attack) {
+                mc.doAttack();
+            }
+        });
     }
 
 }
