@@ -18,6 +18,8 @@
 
 package de.nekosarekawaii.vandalism.feature.creativetab.impl;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.feature.creativetab.AbstractCreativeTab;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -55,8 +57,8 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
         items.add(withClientSide(createClientInstantCrashPot(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Pot")));
         items.add(withClientSide(createServerInstantCrashEntity(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Instant Crash Entity")));
         items.add(withClientSide(createServerInstantCrashSculk(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Instant Crash Sculk")));
-        //items.add(withClientSide(createServerInstantCrashSign(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Instant Crash Sign")));
-        //items.add(withClientSide(createClientInstantCrashStone(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Stone")));
+        items.add(withClientSide(createServerInstantCrashSign(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Instant Crash Sign")));
+        items.add(withClientSide(createClientInstantCrashStone(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Stone")));
     }
 
     private static ItemStack createClientInstantCrashSkull(final String value) {
@@ -194,8 +196,7 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
         return item;
     }
 
-    /*private static ItemStack createServerInstantCrashSign() {
-        {BlockEntityTag:{front_text:{messages:["'"]}}}
+    private static ItemStack createServerInstantCrashSign() {
         final ItemStack item = new ItemStack(Items.OAK_SIGN);
         final NbtCompound base = item.getOrCreateNbt();
         final NbtCompound blockEntityTag = new NbtCompound();
@@ -206,30 +207,21 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
         blockEntityTag.put("front_text", frontText);
         base.put("BlockEntityTag", blockEntityTag);
         return item;
-    }*/
+    }
 
-    /*
-    1.20.2 / maybe 1.20.3 instant crash:
-    {display:{Name:'{"text":"","extra":[[]]}'}}
-        private static ItemStack createClientInstantCrashStone() {
-            final ItemStack item = new ItemStack(Items.STONE);
-            final NbtCompound base = new NbtCompound();
-            final NbtCompound display = new NbtCompound();
-            final NbtCompound name = new NbtCompound();
-            name.putString("text", "");
-            final NbtList extra = new NbtList();
-            extra.add(new NbtList());
-            name.put("extra", extra);
-            display.put("Name", name);
-            base.put("display", display);
-            item.setNbt(base);
-            return item;
-        }
-    */
-
-    /*
-    Access Violation:
-    {"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["txsla", "txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_"]}]}]}]}]}]}]}]}
-     */
+    private static ItemStack createClientInstantCrashStone() {
+        final ItemStack item = new ItemStack(Items.STONE);
+        final NbtCompound base = new NbtCompound();
+        final NbtCompound display = new NbtCompound();
+        final JsonObject name = new JsonObject();
+        name.addProperty("text", "");
+        final JsonArray extra = new JsonArray();
+        extra.add(new JsonArray());
+        name.add("extra", extra);
+        display.putString(ItemStack.NAME_KEY, name.toString());
+        base.put(ItemStack.DISPLAY_KEY, display);
+        item.setNbt(base);
+        return item;
+    }
 
 }
