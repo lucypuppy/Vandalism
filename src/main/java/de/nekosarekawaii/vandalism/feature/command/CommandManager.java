@@ -79,7 +79,8 @@ public class CommandManager extends Storage<AbstractCommand> implements Minecraf
                 new FlipCommand(),
                 new ClientsideInventoryClearCommand(),
                 new FriendCommand(),
-                new DifficultyCommand()
+                new DifficultyCommand(),
+                new AdvancedBeaconCommand()
         );
     }
 
