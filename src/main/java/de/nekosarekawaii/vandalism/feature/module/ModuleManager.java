@@ -148,7 +148,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
             return;
         }
         for (final AbstractModule module : this.getList()) {
-            if (module.getKeyBind().isPressed()) {
+            if (module.getKeyBind().isPressed(key)) {
                 module.toggle();
             }
         }

@@ -122,8 +122,8 @@ public class ServerInfoWidget implements MinecraftWrapper {
                 }
                 case ACTIONS -> {
                     ImGui.spacing();
-                    final int buttonWidth = 0, buttonHeight = 28;
-                    ImGui.button("..." + uniqueId + "actions", 0, 25);
+                    final int buttonWidth = 150, buttonHeight = 28;
+                    ImGui.button("..." + uniqueId + "actions", -1, 25);
                     if (ImGui.beginPopupContextItem(uniqueId + "popup", ImGuiPopupFlags.MouseButtonLeft)) {
                         final String address = this.hostname + ':' + this.mcPingResponse.server.port;
                         ImGui.text(address);
