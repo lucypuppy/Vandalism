@@ -96,8 +96,7 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
             portResult.renderSubData();
         }
         ImGui.begin("Port Scanner##portscanner");
-        ImGui.text("Current State:");
-        ImGui.text(this.state.get());
+        ImGui.text("Current State: " + this.state.get());
         ImGui.separator();
         if (this.isRunning()) {
             ImGui.text("Progress");
@@ -139,20 +138,21 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
                     this.threads.set(Math.max(1, Math.min(this.threads.get(), 1000)));
                 }
                 if (this.minPort.get() != 1 || this.maxPort.get() != 65535 || this.threads.get() != 500) {
-                    if (ImGui.button("Reset Values##portscannerresetvalues")) {
+                    if (ImGui.button("Reset Values##portscannerresetvalues", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                         this.minPort.set(1);
                         this.maxPort.set(65535);
                         this.threads.set(500);
                     }
                     ImGui.sameLine();
                 }
+                ImGui.spacing();
                 if (!this.ports.isEmpty()) {
-                    if (ImGui.button("Clear##portscannerclear")) {
+                    if (ImGui.button("Clear##portscannerclear", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
                         this.reset();
                     }
                     ImGui.sameLine();
                 }
-                if (ImGui.button("Start##portscannerstart")) {
+                if (ImGui.button("Start##portscannerstart", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                     this.reset();
                     this.state.set(State.RUNNING.getMessage());
                     for (int i = 0; i < this.threads.get(); i++) {
@@ -183,12 +183,14 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
                         });
                     }
                 }
+                ImGui.spacing();
             }
         }
         if (this.isRunning()) {
-            if (ImGui.button("Stop##portscannerstop")) {
+            if (ImGui.button("Stop##portscannerstop", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                 this.stop();
             }
+            ImGui.spacing();
         }
         if (!this.ports.isEmpty()) {
             ImGui.separator();
@@ -204,11 +206,12 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
                 }
             }
             if (!uncheckedPortResults.isEmpty()) {
-                if (ImGui.button("Ping All Ports##portscannerpingallports")) {
+                if (ImGui.button("Ping All Ports##portscannerpingallports", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                     for (final PortResult portResult : uncheckedPortResults) {
                         portResult.ping();
                     }
                 }
+                ImGui.spacing();
             }
             final PortsTableColumn[] portsTableColumns = PortsTableColumn.values();
             final int maxPortsTableColumns = portsTableColumns.length;
@@ -232,9 +235,8 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
                             case STATE -> ImGui.text(portResult.getCurrentState().getMessage());
                             case QUERY_STATE -> ImGui.text(portResult.getCurrentQueryState().getMessage());
                             case ACTIONS -> {
-                                final int buttonWidth = 0, buttonHeight = 28;
                                 if (portResult.getCurrentState() == PortResult.PingState.WAITING_INPUT) {
-                                    if (ImGui.button("Ping##portsping" + portResult.getPort(), buttonWidth, buttonHeight)) {
+                                    if (ImGui.button("Ping##portsping" + portResult.getPort(), ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                                         portResult.ping();
                                     }
                                 }

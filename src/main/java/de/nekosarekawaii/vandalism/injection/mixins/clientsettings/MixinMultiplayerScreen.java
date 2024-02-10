@@ -30,6 +30,7 @@ import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.network.ServerInfo;
+import net.minecraft.client.session.Session;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.c2s.handshake.ConnectionIntent;
 import net.minecraft.network.packet.c2s.handshake.HandshakeC2SPacket;
@@ -46,6 +47,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.net.InetSocketAddress;
+import java.util.Optional;
 import java.util.UUID;
 
 @Mixin(MultiplayerScreen.class)
@@ -123,6 +125,7 @@ public abstract class MixinMultiplayerScreen extends Screen {
                                     if (playersData.online > 0) {
                                         final MCPingResponse.Players.Player[] players = playersData.sample;
                                         if (players != null && players.length > 0) {
+                                            final Session session = this.client.session;
                                             for (final MCPingResponse.Players.Player player : players) {
                                                 if (player != null) {
                                                     final String name = player.name;
@@ -137,12 +140,17 @@ public abstract class MixinMultiplayerScreen extends Screen {
                                                                 uuid = id;
                                                                 Vandalism.getInstance().getLogger().error("Failed to get UUID of the player: \"" + name + "\" (using fallback UUID).");
                                                             }
-
+                                                            this.client.session = new Session(
+                                                                    name,
+                                                                    UUID.fromString(uuid),
+                                                                    "",
+                                                                    Optional.of(""),
+                                                                    Optional.of(""),
+                                                                    Session.AccountType.LEGACY
+                                                            );
                                                             final ClientConnection clientConnection = ClientConnection.connect(new InetSocketAddress(response.server.ip, response.server.port), true, (PerformanceLog) null);
-
                                                             clientConnection.send(new HandshakeC2SPacket(response.server.protocol, response.server.ip, response.server.port, ConnectionIntent.LOGIN));
                                                             clientConnection.send(new LoginHelloC2SPacket(name, UUID.fromString(uuid)));
-
                                                             Vandalism.getInstance().getLogger().info("Player " + name + " should be kicked.");
                                                             Thread.sleep(Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().kickAllPlayersKickDelay.getValue());
                                                         } catch (Exception e) {
@@ -151,6 +159,7 @@ public abstract class MixinMultiplayerScreen extends Screen {
                                                     }
                                                 }
                                             }
+                                            this.client.session = session;
                                         } else {
                                             Vandalism.getInstance().getLogger().error("There are no players to kick online.");
                                         }

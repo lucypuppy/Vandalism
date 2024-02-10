@@ -68,6 +68,7 @@ import java.io.File;
  *  - Fix module tabs display (no stacking) when the client starts the first time
  *  - Fix ClientMenuScreen#close because it could break the entire game
  *  - Add anti vanish via. the player list hud
+ *  - Remove wursts shitty wurstsession in wursts wurstige minecraft wurst mixin class ich wurst nicht mehr
  * <br><br>
  * TODO: Verschlxfene <br>
  *  - Delete MixinParticleManager
