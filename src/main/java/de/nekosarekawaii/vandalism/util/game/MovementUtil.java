@@ -42,7 +42,6 @@ public class MovementUtil implements MinecraftWrapper {
      * Get the direction of in which the player is looking.
      *
      * @param directionOffset The offset to use.
-     *
      * @return The direction in which the player is looking.
      */
     public static double getDirection(final float directionOffset) {
@@ -63,8 +62,7 @@ public class MovementUtil implements MinecraftWrapper {
      * Get the direction of in which the player is looking.
      *
      * @param directionOffset The offset to use.
-     * @param movingCheck If the player is moving.
-     *
+     * @param movingCheck     If the player is moving.
      * @return The direction in which the player is looking.
      */
     public static double getDirection(final float directionOffset, final boolean movingCheck) {
@@ -87,7 +85,7 @@ public class MovementUtil implements MinecraftWrapper {
     /**
      * Set the speed of the player.
      *
-     * @param speed The speed to set.
+     * @param speed  The speed to set.
      * @param offset The offset to use.
      * @return The new velocity of the player.
      */
@@ -99,7 +97,7 @@ public class MovementUtil implements MinecraftWrapper {
      * Set the speed of an entity.
      *
      * @param entity The entity to set the speed of.
-     * @param speed The speed to set.
+     * @param speed  The speed to set.
      * @return The new velocity of the entity.
      */
     public static Vec3d setSpeed(final Entity entity, final double speed) {
@@ -110,11 +108,11 @@ public class MovementUtil implements MinecraftWrapper {
      * Set the speed of an entity.
      *
      * @param entity The entity to set the speed of.
-     * @param speed The speed to set.
+     * @param speed  The speed to set.
      * @param offset The offset to use.
      * @return The new velocity of the entity.
-     */
-    public static Vec3d setSpeed(final Entity entity, final double speed, final float offset) {
+    public    */
+    static Vec3d setSpeed(final Entity entity, final double speed, final float offset) {
         final double direction = getDirection(offset);
         entity.setVelocity(Math.cos(direction) * speed, entity.getVelocity().getY(), Math.sin(direction) * speed);
         return entity.getVelocity();
@@ -166,6 +164,7 @@ public class MovementUtil implements MinecraftWrapper {
 
     /**
      * Get the speed of the player.
+     *
      * @return The speed of the player.
      */
     public static double getSpeed() {
@@ -175,7 +174,8 @@ public class MovementUtil implements MinecraftWrapper {
 
     /**
      * Clip the player.
-     * @param vertical The vertical value.
+     *
+     * @param vertical   The vertical value.
      * @param horizontal The horizontal value.
      */
     public static void clip(final double vertical, final double horizontal) {
@@ -186,6 +186,7 @@ public class MovementUtil implements MinecraftWrapper {
 
     /**
      * Get the fixed move inputs.
+     *
      * @param yaw The yaw to use.
      * @return The fixed move inputs.
      */
@@ -242,6 +243,7 @@ public class MovementUtil implements MinecraftWrapper {
 
     /**
      * Get the input angle.
+     *
      * @param yaw The yaw to use.
      * @return The input angle.
      */
@@ -262,6 +264,22 @@ public class MovementUtil implements MinecraftWrapper {
         else if (horizontal < 0) return yaw + 90f;
 
         return yaw;
+    }
+
+    public static double getSpeedRelatedToYaw(float yaw) {
+        yaw = MathHelper.wrapDegrees(yaw);
+
+        final float angle = MathHelper.wrapDegrees((float) (Math.atan2(mc.player.getVelocity().getZ(), mc.player.getVelocity().getX()) * 180.0d / Math.PI - 90.0f));
+        final double diff = Math.abs(MathHelper.wrapDegrees(angle - yaw));
+
+        if (diff < 80) {
+            final double yawRadians = Math.toRadians(yaw);
+            final Vec3d directionVector = new Vec3d(-Math.sin(yawRadians), 0, Math.cos(yawRadians));
+            final Vec3d playerVelocity = new Vec3d(mc.player.getVelocity().getX(), 0, mc.player.getVelocity().getZ());
+            return playerVelocity.normalize().dotProduct(directionVector);
+        }
+
+        return -1.0;
     }
 
 }

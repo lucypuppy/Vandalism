@@ -22,11 +22,13 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.AttackListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
+import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 
 public class SprintTapModule extends AbstractModule implements AttackListener, PlayerUpdateListener {
 
-    private boolean sprintTap = false;
     private Entity movementTarget = null;
 
     public SprintTapModule() {
@@ -38,7 +40,6 @@ public class SprintTapModule extends AbstractModule implements AttackListener, P
     }
 
     private void reset() {
-        this.sprintTap = false;
         this.movementTarget = null;
     }
 
@@ -64,29 +65,30 @@ public class SprintTapModule extends AbstractModule implements AttackListener, P
 
     @Override
     public void onAttackSend(final AttackSendEvent event) {
-        if (!(Math.random() * 100 < 80) || this.mc.player == null) {
+        if (this.mc.player == null) {
             return;
         }
-        if (this.mc.options.forwardKey.isPressed() && this.movementTarget == null) {
-            this.mc.options.forwardKey.setPressed(false);
-            this.movementTarget = event.target;
-        }
-        if (!this.sprintTap && (this.mc.player.isSprinting() || this.mc.options.sprintKey.isPressed())) {
-            this.mc.options.sprintKey.setPressed(false);
-            this.sprintTap = true;
+
+        if (event.target instanceof final LivingEntity livingEntity && this.movementTarget == null) {
+            final boolean isLooking = RotationUtil.isEntityLookingAtEntity(this.mc.player, livingEntity, 80);
+
+            if (MovementUtil.isMoving() && livingEntity.hurtTime <= 2 && isLooking) {
+                this.mc.options.forwardKey.setPressed(false);
+                this.movementTarget = livingEntity;
+            }
         }
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.sprintTap) {
-            this.mc.options.sprintKey.setPressed(true);
-            this.sprintTap = false;
-        }
+        if (this.movementTarget != null) {
+            final boolean isLooking = RotationUtil.isEntityLookingAtEntity(this.mc.player, this.movementTarget, 80);
+            final double speed = MovementUtil.getSpeedRelatedToYaw(mc.player.getYaw());
 
-        if (this.mc.player != null && this.movementTarget != null && this.mc.player.distanceTo(this.movementTarget) >= 3.1) {
-            this.mc.options.forwardKey.setPressed(true);
-            this.movementTarget = null;
+            if (speed < 0.3D || !isLooking) {
+                this.mc.options.forwardKey.setPressed(true);
+                this.movementTarget = null;
+            }
         }
     }
 

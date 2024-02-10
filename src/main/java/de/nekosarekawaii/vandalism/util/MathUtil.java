@@ -38,4 +38,10 @@ public class MathUtil {
         return 1 / (1 + Math.exp(-x));
     }
 
+    public static double densityFunction(double x, double mean, double std) {
+        final double firstPart = 1.0 / (std * Math.sqrt(2 * Math.PI));
+        final double exponent = -Math.pow(x - mean, 2) / (2 * Math.pow(std, 2));
+        return firstPart * Math.exp(exponent);
+    }
+
 }

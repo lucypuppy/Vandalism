@@ -21,9 +21,12 @@ package de.nekosarekawaii.vandalism.util.click.impl;
 import de.florianmichael.rclasses.common.RandomUtils;
 import de.florianmichael.rclasses.math.Arithmetics;
 import de.florianmichael.rclasses.math.timer.MSTimer;
+import de.florianmichael.rclasses.pattern.evicting.EvictingList;
 import de.nekosarekawaii.vandalism.util.MathUtil;
 import de.nekosarekawaii.vandalism.util.click.Clicker;
+import org.joml.Vector4d;
 
+import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class BoxMuellerClicker extends Clicker {
@@ -38,6 +41,7 @@ public class BoxMuellerClicker extends Clicker {
     private final MSTimer msTimer = new MSTimer();
     private float partialDelays;
     private float cpsUpdatePossibility;
+    private final EvictingList<Vector4d> cpsHistory = new EvictingList<>(new ArrayList<>(), 200);
 
     @Override
     public void onUpdate() {
@@ -55,9 +59,17 @@ public class BoxMuellerClicker extends Clicker {
             this.clickAction.accept(false);
 
             if (RandomUtils.randomInt(0, 100) <= this.cpsUpdatePossibility || this.cps < this.minCps) {
-                final double gaussian = ThreadLocalRandom.current().nextGaussian(this.mean, this.std);
-                final double gaussianPercentage = MathUtil.normalizeGaussian(gaussian, this.mean, this.std);
-                this.cps = (float) Arithmetics.interpolate(this.minCps, this.maxCps, gaussianPercentage);
+                while (true) {
+                    final double gaussian = ThreadLocalRandom.current().nextGaussian(this.mean, this.std);
+                    final double gaussianPercentage = MathUtil.normalizeGaussian(gaussian, this.mean, this.std);
+                    final double gaussianDensity = MathUtil.densityFunction(gaussian, this.mean, this.std) * this.mean;
+
+                    if (gaussianPercentage < gaussianDensity) {
+                        this.cps = (float) Arithmetics.interpolate(this.minCps, this.maxCps, gaussianPercentage);
+                        this.cpsHistory.add(new Vector4d(this.cps, gaussian, gaussianPercentage, gaussianDensity));
+                        break;
+                    }
+                }
             }
 
             final float delay = 1000.0f / this.cps;
@@ -86,6 +98,10 @@ public class BoxMuellerClicker extends Clicker {
 
     public void setCpsUpdatePossibility(final float possibility) {
         this.cpsUpdatePossibility = possibility;
+    }
+
+    public EvictingList<Vector4d> getCpsHistory() {
+        return cpsHistory;
     }
 
 }
