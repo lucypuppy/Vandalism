@@ -57,18 +57,16 @@ public class ChatSettings extends ValueGroup {
     public final BooleanValue moreChatInput = new BooleanValue(
             this,
             "More Chat Input",
-            "If enabled, you can increase or decrease the max chat input length.",
+            "Allows you to type as much as you want in the chat input field.",
             true
     );
 
-    public final IntegerValue moreChatInputMaxLength = new IntegerValue(
+    public final BooleanValue moreChatInputSuggestions = new BooleanValue(
             this,
-            "More Chat Input Max Length",
-            "Allows you to change the max chat input length.",
-            1000,
-            1,
-            10000
-    ).visibleCondition(this.moreChatInput::getValue);
+            "More Chat Input Suggestions",
+            "Shows so much chat input suggestions as possible.",
+            true
+    );
 
     public final BooleanValue moreChatHistory = new BooleanValue(
             this,
@@ -80,27 +78,11 @@ public class ChatSettings extends ValueGroup {
     public final IntegerValue moreChatHistoryMaxLength = new IntegerValue(
             this,
             "More Chat History Max Length",
-            "Allows you to change the max chat history.",
+            "Allows you to change the max chat history length.",
             500,
             100,
             Short.MAX_VALUE / 2
     ).visibleCondition(this.moreChatHistory::getValue);
-
-    public final BooleanValue moreChatInputSuggestions = new BooleanValue(
-            this,
-            "More Chat Input Suggestions",
-            "If enabled, you can increase or decrease the max chat input suggestions.",
-            true
-    );
-
-    public final IntegerValue moreChatInputSuggestionsMaxLength = new IntegerValue(
-            this,
-            "More Chat Input Suggestions Max Length",
-            "Allows you to change the max chat input suggestions.",
-            39,
-            10,
-            50
-    ).visibleCondition(this.moreChatInputSuggestions::getValue);
 
     public ChatSettings(final ClientSettings parent) {
         super(parent, "Chat", "Chat related settings.");

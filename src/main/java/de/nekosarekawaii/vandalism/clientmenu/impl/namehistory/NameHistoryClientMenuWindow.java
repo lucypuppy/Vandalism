@@ -119,7 +119,7 @@ public class NameHistoryClientMenuWindow extends ClientMenuWindow {
         );
         final String usernameValue = this.username.get();
         if (!usernameValue.isBlank() && usernameValue.length() > 2 && usernameValue.length() < 17) {
-            if (ImGui.button("Get##namehistoryget")) {
+            if (ImGui.button("Get##namehistoryget", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                 this.clear();
                 this.lastUsername = usernameValue;
                 this.executor.submit(() -> {
@@ -193,18 +193,16 @@ public class NameHistoryClientMenuWindow extends ClientMenuWindow {
                     this.delayedResetState();
                 });
             }
-            ImGui.sameLine();
         }
         if (!this.lastUsername.isBlank() && !this.lastUUID.isBlank()) {
-            if (ImGui.button("Copy UUID##namehistorycopyuuid")) {
+            if (ImGui.button("Copy UUID##namehistorycopyuuid", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
                 this.mc.keyboard.setClipboard(this.lastUUID);
             }
             ImGui.sameLine();
-            if (ImGui.button("Copy UUID Array##namehistorycopyuuidarray")) {
+            if (ImGui.button("Copy UUID Array##namehistorycopyuuidarray", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                 this.mc.keyboard.setClipboard(Arrays.toString(Uuids.toIntArray(UUID.fromString(this.lastUUID))));
             }
-            ImGui.sameLine();
-            if (ImGui.button("Copy Data##namehistorycopydata")) {
+            if (ImGui.button("Copy Data##namehistorycopydata", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                 final StringBuilder dataBuilder = new StringBuilder("[Data for " + this.lastUsername + "]\n\n");
                 dataBuilder
                         .append("[UUID]\n")
@@ -220,8 +218,7 @@ public class NameHistoryClientMenuWindow extends ClientMenuWindow {
             }
         }
         if (!this.names.isEmpty()) {
-            ImGui.sameLine();
-            if (ImGui.button("Clear##namehistoryclear")) {
+            if (ImGui.button("Clear##namehistoryclear", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                 this.clear();
             }
             ImGui.separator();
@@ -249,7 +246,7 @@ public class NameHistoryClientMenuWindow extends ClientMenuWindow {
                             case ACCURATE -> ImGui.textWrapped(name.accurate());
                             case ACTIONS -> {
                                 ImGui.spacing();
-                                if (ImGui.button("Copy Data##namehistorycopydata" + name.username(), 0, 28)) {
+                                if (ImGui.button("Copy Data##namehistorycopydata" + name.username(), ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                                     this.mc.keyboard.setClipboard(
                                             "Username: " + name.username() +
                                                     " | Date: " + name.date() +
