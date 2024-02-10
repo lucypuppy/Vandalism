@@ -24,6 +24,7 @@ import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.RenderUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
@@ -34,13 +35,15 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.awt.*;
 
 @Mixin(value = ChatScreen.class, priority = 9999)
-public abstract class MixinChatScreen implements MinecraftWrapper {
+public abstract class MixinChatScreen extends Screen implements MinecraftWrapper {
 
     @Shadow
     protected TextFieldWidget chatField;
@@ -51,12 +54,27 @@ public abstract class MixinChatScreen implements MinecraftWrapper {
     @Unique
     private static final Style vandalism$RED_COLORED_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(Color.RED.getRGB()));
 
+    protected MixinChatScreen(Text title) {
+        super(title);
+    }
+
     @Inject(method = "init", at = @At(value = "RETURN"))
     private void moreChatInput(final CallbackInfo ci) {
         this.vandalism$realMaxLength = this.chatField.getMaxLength();
         final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
         if (chatSettings.moreChatInput.getValue()) {
             this.chatField.setMaxLength(Integer.MAX_VALUE);
+        }
+    }
+
+
+    @ModifyConstant(method = "init", constant = @Constant(intValue = 10))
+    private int moreChatInputSuggestions(int constant) {
+        final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
+        if (chatSettings.moreChatInputSuggestions.getValue()) {
+            return (height - 12 - 3) / 12;
+        } else {
+            return constant;
         }
     }
 
