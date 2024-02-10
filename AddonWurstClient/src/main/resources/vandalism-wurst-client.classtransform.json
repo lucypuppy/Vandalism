@@ -1,5 +1,5 @@
 {
-  "package": "de.nekosarekawaii.vandalism.addonwurstclient.transformer",
+  "package": "de.nekosarekawaii.vandalism.addonwurstclient.injection.transformer",
   "java": [
   ],
   "mixins": [
