@@ -23,7 +23,6 @@ import com.mojang.authlib.yggdrasil.YggdrasilEnvironment;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.util.common.StaticEncryptionUtil;
-import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
@@ -82,7 +81,7 @@ public abstract class AbstractTokenBasedAccount extends AbstractAccount {
             @Override
             public void displayFactory() {
                 ImGui.inputText("Token", this.token, ImGuiInputTextFlags.CallbackResize | ImGuiInputTextFlags.Password);
-                if (ImUtils.subButton("Open service")) {
+                if (ImGui.button("Open service", 255, ImGui.getTextLineHeightWithSpacing())) {
                     Util.getOperatingSystem().open(AbstractTokenBasedAccount.this.serviceUrl);
                 }
             }

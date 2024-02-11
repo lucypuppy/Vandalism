@@ -21,15 +21,12 @@ package de.nekosarekawaii.vandalism.base.account.type.microsoft;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.base.account.template.AbstractMicrosoftAccount;
-import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import net.minecraft.util.Util;
 import net.raphimc.minecraftauth.MinecraftAuth;
 import net.raphimc.minecraftauth.step.AbstractStep;
 import net.raphimc.minecraftauth.step.java.session.StepFullJavaSession;
 import net.raphimc.minecraftauth.step.msa.StepMsaDeviceCode;
-import net.raphimc.minecraftauth.util.MicrosoftConstants;
-import org.apache.http.impl.client.CloseableHttpClient;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -48,10 +45,10 @@ public class MSDeviceCodeAccount extends AbstractMicrosoftAccount {
                 final String[] split = this.state.split(OPEN_URL);
                 if (split.length == 2) {
                     final String url = split[1];
-                    if (ImUtils.subButton("Open URL")) {
+                    if (ImGui.button("Open URL", 255, ImGui.getTextLineHeightWithSpacing())) {
                         Util.getOperatingSystem().open(url);
                     }
-                    if (ImUtils.subButton("Copy URL")) {
+                    if (ImGui.button("Copy URL", 255, ImGui.getTextLineHeightWithSpacing())) {
                         mc.keyboard.setClipboard(url);
                     }
                 }

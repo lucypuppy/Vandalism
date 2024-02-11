@@ -25,7 +25,6 @@ import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.util.common.StaticEncryptionUtil;
 import de.nekosarekawaii.vandalism.util.common.UUIDUtil;
-import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
@@ -122,7 +121,7 @@ public class SessionAccount extends AbstractAccount {
                 ImGui.inputText("XUID", this.xuid, ImGuiInputTextFlags.CallbackResize);
                 ImGui.inputText("Client ID", this.clientId, ImGuiInputTextFlags.CallbackResize);
                 if (!name.isEmpty()) {
-                    if (ImUtils.subButton("Get Offline UUID")) {
+                    if (ImGui.button("Get Offline UUID", 255, ImGui.getTextLineHeightWithSpacing())) {
                         this.uuid.set(Uuids.getOfflinePlayerUuid(name).toString());
                     }
                 }
