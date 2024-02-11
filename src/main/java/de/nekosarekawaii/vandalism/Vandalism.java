@@ -46,8 +46,6 @@ import java.io.File;
  * TODO: NekosAreKawaii <br>
  *  - Remove duplicated code by creating a new template for modules which uses packets or something like that
  *  - Add Access Violation crash item to CrashItemCreativeTab
- *  - Add 1.20.2 / maybe 1.20.3 instant crash crash item to CrashItemCreativeTab
- *  - Add Server Instant Crash Sign to CrashItemCreativeTab
  *  - Add Version Range to the creative tabs
  *  - Change behavior of the echolocation module to use it as a chunk load detector
  *  - Fix spaces in the text rendering when using the "deutsch macher" module
