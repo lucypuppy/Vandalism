@@ -23,10 +23,7 @@ import de.nekosarekawaii.vandalism.base.event.cancellable.network.OutgoingPacket
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.BukkitModuleMode;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.CreativeModuleMode;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.CubeCraftModuleMode;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.MotionModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.*;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
@@ -39,7 +36,9 @@ public class FlightModule extends AbstractModule implements OutgoingPacketListen
             new CreativeModuleMode(),
             new MotionModuleMode(),
             new BukkitModuleMode(),
-            new CubeCraftModuleMode()
+            new CubeCraftModuleMode(),
+            new CubeCraft2ModuleMode(),
+            new VerusFireModuleMode()
     );
 
     private final BooleanValue antiKick = new BooleanValue(

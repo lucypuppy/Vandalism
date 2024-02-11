@@ -25,6 +25,7 @@ import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener
 import de.nekosarekawaii.vandalism.base.event.normal.player.RaytraceListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.RotationListener;
 import de.nekosarekawaii.vandalism.base.event.normal.render.Render2DListener;
+import de.nekosarekawaii.vandalism.base.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.base.value.impl.number.BezierValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
@@ -43,6 +44,7 @@ import de.nekosarekawaii.vandalism.util.click.Clicker;
 import de.nekosarekawaii.vandalism.util.click.impl.BezierClicker;
 import de.nekosarekawaii.vandalism.util.click.impl.BoxMuellerClicker;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Hand;
@@ -54,7 +56,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class KillAuraModule extends AbstractModule implements PlayerUpdateListener, Render2DListener, RotationListener, RaytraceListener {
+public class KillAuraModule extends AbstractModule implements PlayerUpdateListener, Render2DListener, Render3DListener, RotationListener, RaytraceListener {
 
     private final ValueGroup targetSelectionGroup = new ValueGroup(
             this,
@@ -347,7 +349,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(
                 this,
-                PlayerUpdateEvent.ID, Render2DEvent.ID, RotationEvent.ID, RaytraceEvent.ID
+                PlayerUpdateEvent.ID, Render2DEvent.ID, RotationEvent.ID, RaytraceEvent.ID, Render3DEvent.ID
         );
     }
 
@@ -355,7 +357,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(
                 this,
-                PlayerUpdateEvent.ID, Render2DEvent.ID, RotationEvent.ID, RaytraceEvent.ID
+                PlayerUpdateEvent.ID, Render2DEvent.ID, RotationEvent.ID, RaytraceEvent.ID, Render3DEvent.ID
         );
 
         this.rotationListener.resetRotation();
@@ -381,11 +383,13 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         this.isLooking = Math.abs(MathHelper.wrapDegrees(pseudoRotation.getYaw()) - MathHelper.wrapDegrees(this.target.getYaw())) <= 80.0 &&
                 this.mc.player.getPos().distanceTo(this.target.getPos()) <= 6.0;
 
-        final Vec3d eyePos = mc.player.getEyePos();
-        final HitResult raytrace = WorldUtil.raytrace(this.rotationListener.getRotation(), Math.pow(preHit.getValue() ? this.getAimRange() : this.getRange(), 2));
-        this.raytraceDistance = raytrace != null ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
 
-        if (this.raytraceDistance > (this.preHit.getValue() ? this.getAimRange() : this.getRange()) || this.raytraceDistance <= 0) {
+        final double raytraceReach = this.preHit.getValue() && this.clickType.getValue() != ClickType.COOLDOWN ? this.getAimRange() : this.getRange();
+        final Vec3d eyePos = mc.player.getEyePos();
+        final HitResult raytrace = WorldUtil.raytrace(this.rotationListener.getRotation(), Math.pow(raytraceReach, 2));
+        this.raytraceDistance = raytrace != null && raytrace.getType() != HitResult.Type.MISS ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
+
+        if (this.raytraceDistance > raytraceReach || this.raytraceDistance <= 0) {
             stopBlocking(BlockState.ERROR);
             return;
         }
@@ -399,7 +403,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     public void onRotation(final RotationEvent event) {
         this.updateTarget();
 
-        if (this.raytraceDistance <= (this.preHit.getValue() ? this.getAimRange() : this.getRange()) && this.raytraceDistance > 0) {
+        if (this.raytraceDistance <= this.getAimRange() && this.raytraceDistance > 0) {
             this.clickType.getValue().getClicker().onRotate();
         }
 
@@ -529,9 +533,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                     this.lastPossibleHit = System.currentTimeMillis();
                 }
 
-                if ((this.preHit.getValue() && this.clickType.getValue() != ClickType.COOLDOWN) || possibleHit) {
-                    this.hit();
-                }
+                this.hit();
             }
         });
     }
@@ -593,6 +595,45 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
     public Entity getTarget() {
         return this.target;
+    }
+
+    @Override
+    public void onRender3D(float tickDelta, long limitTime, MatrixStack matrixStack) {
+        //    if (this.clickType.getValue().getClicker() instanceof final BoxMuellerClicker boxMuellerClicker) {
+        //        final List<Vector4d> cpsHistory = boxMuellerClicker.getCpsHistory().getNormalList();
+//
+        //        if (cpsHistory.size() < 5) {
+        //            return;
+        //        }
+//
+        //        final Double[] x = new Double[cpsHistory.size()];
+        //        final Double[] y1 = new Double[cpsHistory.size()];
+        //        final Double[] y2 = new Double[cpsHistory.size()];
+        //        final Double[] y3 = new Double[cpsHistory.size()];
+        //        final Double[] y4 = new Double[cpsHistory.size()];
+//
+        //        for (int i = 0; i < cpsHistory.size(); i++) {
+        //            final Vector4d cps = cpsHistory.get(i);
+        //            x[i] = (double) i;
+        //            y1[i] = cps.x;
+        //            y2[i] = cps.y;
+        //            y3[i] = cps.z;
+        //            y4[i] = cps.w;
+        //        }
+//
+        //        ImLoader.draw(() -> {
+        //            if (ImGui.begin("CPS History")) {
+        //                if (ImPlot.beginPlot("CPS History")) {
+        //                    ImPlot.plotLine("CPS", x, y1);
+        //                    ImPlot.plotLine("Gaussian", x, y2);
+        //                    ImPlot.plotLine("Gaussian Percentage", x, y3);
+        //                    ImPlot.plotLine("Gaussian Density", x, y4);
+        //                    ImPlot.endPlot();
+        //                }
+        //            }
+        //            ImGui.end();
+        //        });
+        //    }
     }
 
     private enum SmoothingType implements IName {
