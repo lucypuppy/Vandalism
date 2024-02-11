@@ -67,10 +67,10 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
                 AccountManager.ACCOUNT_TYPES.forEach((account, factory) -> {
                     if (ImGui.beginMenu(account.getType())) {
                         factory.displayFactory();
-                        if (ImUtils.subButton("Add")) {
+                        if (ImGui.button("Add", 255, ImGui.getTextLineHeightWithSpacing())) {
                             recallAccount(factory, accountManager::add);
                         }
-                        if (ImUtils.subButton("Login")) {
+                        if (ImGui.button("Login", 255, ImGui.getTextLineHeightWithSpacing())) {
                             recallAccount(factory, AbstractAccount::logIn);
                         }
                         ImGui.endMenu();

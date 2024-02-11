@@ -21,7 +21,6 @@ package de.nekosarekawaii.vandalism.base.account.type.microsoft;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.base.account.template.AbstractMicrosoftAccount;
-import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import net.minecraft.util.Util;
 import net.raphimc.minecraftauth.MinecraftAuth;
@@ -44,19 +43,21 @@ public class MSLocalWebserverAccount extends AbstractMicrosoftAccount {
             .buildMinecraftJavaProfileStep(true);
 
     private static final AccountFactory FACTORY = new AccountFactory() {
+
         private String state;
 
         @Override
         public void displayFactory() {
-            ImGui.text(this.state == null ? "Click the button below to get a device code." : this.state);
+            ImGui.textWrapped(this.state == null ? "Click the button below to get a device code." : this.state);
             if (this.state != null && this.state.startsWith(OPEN_URL)) {
                 final String[] split = this.state.split(OPEN_URL);
                 if (split.length == 2) {
                     final String url = split[1];
-                    if (ImUtils.subButton("Open URL")) {
+                    //System.out.println("URL: " + url);
+                    if (ImGui.button("Open URL", 255, ImGui.getTextLineHeightWithSpacing())) {
                         Util.getOperatingSystem().open(url);
                     }
-                    if (ImUtils.subButton("Copy URL")) {
+                    if (ImGui.button("Copy URL", 255, ImGui.getTextLineHeightWithSpacing())) {
                         mc.keyboard.setClipboard(url);
                     }
                 }
@@ -81,6 +82,7 @@ public class MSLocalWebserverAccount extends AbstractMicrosoftAccount {
                     return null;
                 }
             });
+
         }
 
     };
@@ -89,7 +91,7 @@ public class MSLocalWebserverAccount extends AbstractMicrosoftAccount {
         super("local-webserver", FACTORY);
     }
 
-    public MSLocalWebserverAccount(String tokenChain) {
+    public MSLocalWebserverAccount(final String tokenChain) {
         super("local-webserver", FACTORY, tokenChain);
     }
 
@@ -97,4 +99,5 @@ public class MSLocalWebserverAccount extends AbstractMicrosoftAccount {
     public AbstractStep<?, StepFullJavaSession.FullJavaSession> getStep() {
         return JAVA_LOCAL_WEBSERVER_LOGIN;
     }
+
 }

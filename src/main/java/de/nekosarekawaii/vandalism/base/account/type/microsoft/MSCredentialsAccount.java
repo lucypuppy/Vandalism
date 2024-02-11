@@ -28,8 +28,6 @@ import net.raphimc.minecraftauth.MinecraftAuth;
 import net.raphimc.minecraftauth.step.AbstractStep;
 import net.raphimc.minecraftauth.step.java.session.StepFullJavaSession;
 import net.raphimc.minecraftauth.step.msa.StepCredentialsMsaCode;
-import net.raphimc.minecraftauth.util.MicrosoftConstants;
-import org.apache.http.impl.client.CloseableHttpClient;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -47,6 +45,16 @@ public class MSCredentialsAccount extends AbstractMicrosoftAccount {
             ImGui.text(this.state == null ? "Please enter your credentials." : this.state);
             ImGui.inputText("Email", this.email, ImGuiInputTextFlags.CallbackResize);
             ImGui.inputText("Password", this.password, ImGuiInputTextFlags.CallbackResize | ImGuiInputTextFlags.Password);
+            if (ImGui.button("Paste", 255, ImGui.getTextLineHeightWithSpacing())) {
+                final String clipboard = mc.keyboard.getClipboard();
+                if (clipboard != null) {
+                    final String[] split = clipboard.split(":");
+                    if (split.length == 2) {
+                        this.email.set(split[0]);
+                        this.password.set(split[1]);
+                    }
+                }
+            }
         }
 
         @Override
