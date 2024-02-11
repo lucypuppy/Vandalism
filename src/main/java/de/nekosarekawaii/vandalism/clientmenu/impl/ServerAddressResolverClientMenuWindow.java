@@ -74,7 +74,7 @@ public class ServerAddressResolverClientMenuWindow extends ClientMenuWindow {
                         this.hostname.get().contains(".") &&
                         this.hostname.get().indexOf(".") < this.hostname.get().length() - 2
         ) {
-            if (ImGui.button("Resolve Server Address##serveraddressresolverresolve", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
+            if (ImGui.button("Resolve Server Address##serveraddressresolverresolve", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                 this.lastData.clear();
                 Executors.newSingleThreadExecutor().submit(() -> {
                     try {
@@ -92,7 +92,6 @@ public class ServerAddressResolverClientMenuWindow extends ClientMenuWindow {
                     }
                 });
             }
-            ImGui.sameLine();
         }
         if (!this.lastData.get().isBlank()) {
             if (ImGui.button("Clear##serveraddressresolverclear", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
