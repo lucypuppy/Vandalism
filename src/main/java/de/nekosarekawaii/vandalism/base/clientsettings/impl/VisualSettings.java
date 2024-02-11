@@ -18,9 +18,12 @@
 
 package de.nekosarekawaii.vandalism.base.clientsettings.impl;
 
+import de.florianmichael.rclasses.common.StringUtils;
+import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 
 public class VisualSettings extends ValueGroup {
@@ -49,6 +52,47 @@ public class VisualSettings extends ValueGroup {
             0.1f,
             1.0f
     );
+
+    public final BooleanValue showOwnDisplayName = new BooleanValue(
+            this,
+            "Show Own Display Name",
+            "If activated allows you to see your own display name.",
+            true
+    );
+
+    public final BooleanValue customDisplayNameVisibility = new BooleanValue(
+            this,
+            "Custom Display Name Visibility",
+            "If activated allows you to customize the display name visibility.",
+            false
+    );
+
+    public final EnumModeValue<DisplayNameVisibility> displayNameVisibilityMode = new EnumModeValue<>(
+            this,
+            "Display Name Visibility Mode",
+            "Here you can change the display name visibility mode.",
+            DisplayNameVisibility.SHOW_ALL,
+            DisplayNameVisibility.values()
+    ).visibleCondition(this.customDisplayNameVisibility::getValue);
+
+    public enum DisplayNameVisibility implements IName {
+
+        SHOW_ALL,
+        HIDE_ALL,
+        HIDE_FRIENDS;
+
+        private final String name;
+
+        DisplayNameVisibility() {
+            this.name = StringUtils.normalizeEnumName(this.name());
+        }
+
+        @Override
+        public String getName() {
+            return this.name;
+        }
+
+    }
 
     public VisualSettings(final ClientSettings parent) {
         super(parent, "Visual", "Visual related settings.");

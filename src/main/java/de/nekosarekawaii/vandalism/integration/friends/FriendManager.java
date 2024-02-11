@@ -41,7 +41,6 @@ public class FriendManager extends Storage<Friend> implements TargetListener, Te
         // No op
     }
 
-
     @Override
     public void onTarget(final TargetEvent event) {
         if (Vandalism.getInstance().getClientSettings().getTargetSettings().ignoreFriends.getValue()) {

@@ -19,6 +19,7 @@
     "clientsettings.MixinDeathScreen",
     "clientsettings.MixinDisconnectedScreen",
     "clientsettings.MixinDownloadingTerrainScreen",
+    "clientsettings.MixinEntityRenderer",
     "clientsettings.MixinGameMenuScreen",
     "clientsettings.MixinGameRenderer",
     "clientsettings.MixinGenericContainerScreen",
