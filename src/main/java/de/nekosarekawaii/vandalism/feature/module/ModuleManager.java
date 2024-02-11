@@ -34,6 +34,7 @@ import de.nekosarekawaii.vandalism.feature.module.impl.combat.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.development.TestModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.consolespammer.ConsoleSpammerModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.disabler.DisablerModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.godmode.GodModeModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.servercrasher.ServerCrasherModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.*;
@@ -136,7 +137,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new AutoClickerModule(),
                 new SprintTapModule(),
                 new CraftCarryModule(),
-                new FakeLagModule()
+                new FakeLagModule(),
+                new DisablerModule()
         );
         this.configManager.add(new ModulesConfig(this));
     }
