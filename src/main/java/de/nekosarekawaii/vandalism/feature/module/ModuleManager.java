@@ -139,7 +139,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new SprintTapModule(),
                 new CraftCarryModule(),
                 new FakeLagModule(),
-                new DisablerModule()
+                new DisablerModule(),
+                new TeleportModule()
         );
         this.configManager.add(new ModulesConfig(this));
     }
