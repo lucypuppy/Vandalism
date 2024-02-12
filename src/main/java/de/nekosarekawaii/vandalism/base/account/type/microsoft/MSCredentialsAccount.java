@@ -42,7 +42,7 @@ public class MSCredentialsAccount extends AbstractMicrosoftAccount {
 
         @Override
         public void displayFactory() {
-            ImGui.text(this.state == null ? "Please enter your credentials." : this.state);
+            ImGui.textWrapped(this.state == null ? "Please enter your credentials." : this.state);
             ImGui.inputText("Email", this.email, ImGuiInputTextFlags.CallbackResize);
             ImGui.inputText("Password", this.password, ImGuiInputTextFlags.CallbackResize | ImGuiInputTextFlags.Password);
             if (ImGui.button("Paste", 255, ImGui.getTextLineHeightWithSpacing())) {

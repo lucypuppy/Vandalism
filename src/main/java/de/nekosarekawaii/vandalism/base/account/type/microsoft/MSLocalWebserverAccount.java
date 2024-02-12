@@ -53,7 +53,6 @@ public class MSLocalWebserverAccount extends AbstractMicrosoftAccount {
                 final String[] split = this.state.split(OPEN_URL);
                 if (split.length == 2) {
                     final String url = split[1];
-                    //System.out.println("URL: " + url);
                     if (ImGui.button("Open URL", 255, ImGui.getTextLineHeightWithSpacing())) {
                         Util.getOperatingSystem().open(url);
                     }
