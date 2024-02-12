@@ -42,7 +42,7 @@ public class GroundSpoofModuleMode extends ModuleMulti<NoFallModule> implements 
 
     @Override
     public void onOutgoingPacket(OutgoingPacketEvent event) {
-        if (event.packet instanceof final PlayerMoveC2SPacket playerPacket && this.mc.player.fallDistance > 2.0f) {
+        if (event.packet instanceof final PlayerMoveC2SPacket playerPacket && this.mc.player.fallDistance > 3.0f) {
             playerPacket.onGround = true;
         }
     }
