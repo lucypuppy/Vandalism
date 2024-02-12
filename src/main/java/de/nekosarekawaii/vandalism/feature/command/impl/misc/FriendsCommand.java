@@ -25,14 +25,14 @@ import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.feature.command.arguments.FriendArgumentType;
 import de.nekosarekawaii.vandalism.feature.command.arguments.PlayerArgumentType;
 import de.nekosarekawaii.vandalism.integration.friends.Friend;
-import de.nekosarekawaii.vandalism.integration.friends.FriendManager;
+import de.nekosarekawaii.vandalism.integration.friends.FriendsManager;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.command.CommandSource;
 
-public class FriendCommand extends AbstractCommand {
+public class FriendsCommand extends AbstractCommand {
 
-    public FriendCommand() {
-        super("Manage your client friends.", Category.MISC, "friend", "friends");
+    public FriendsCommand() {
+        super("Manage your client friends.", Category.MISC, "friends", "friend");
     }
 
     @Override
@@ -48,19 +48,19 @@ public class FriendCommand extends AbstractCommand {
             return SINGLE_SUCCESS;
         })))).then(literal("remove").then(argument("friend", FriendArgumentType.create()).executes(context -> {
             final Friend friend = FriendArgumentType.get(context);
-            Vandalism.getInstance().getFriendManager().remove(friend);
+            Vandalism.getInstance().getFriendsManager().remove(friend);
             ChatUtil.infoChatMessage("Removed " + friend.getName() + " as a friend.");
             return SINGLE_SUCCESS;
         }))).then(literal("list").executes(context -> {
-            if (Vandalism.getInstance().getFriendManager().getList().isEmpty()) {
+            if (Vandalism.getInstance().getFriendsManager().getList().isEmpty()) {
                 ChatUtil.infoChatMessage("You don't have any friends :p");
                 return SINGLE_SUCCESS;
             }
-            ChatUtil.infoChatMessage("Your friends: " + String.join(", ", Vandalism.getInstance().getFriendManager().getList().stream().map(friend -> friend.getName() + (!friend.getName().equals(friend.getAlias()) ? " (" + friend.getAlias() + ")" : "")).toList()));
+            ChatUtil.infoChatMessage("Your friends: " + String.join(", ", Vandalism.getInstance().getFriendsManager().getList().stream().map(friend -> friend.getName() + (!friend.getName().equals(friend.getAlias()) ? " (" + friend.getAlias() + ")" : "")).toList()));
             return SINGLE_SUCCESS;
         })).then(literal("clear").executes(context -> {
-            int amount = Vandalism.getInstance().getFriendManager().getList().size();
-            Vandalism.getInstance().getFriendManager().getList().clear();
+            int amount = Vandalism.getInstance().getFriendsManager().getList().size();
+            Vandalism.getInstance().getFriendsManager().getList().clear();
             ChatUtil.infoChatMessage("Cleared " + amount + " friends.");
             return SINGLE_SUCCESS;
         })).then(literal("alias").then(literal("set").then(argument("friend", FriendArgumentType.create()).then(argument("alias", StringArgumentType.word()).executes(context -> {
@@ -78,14 +78,14 @@ public class FriendCommand extends AbstractCommand {
     }
 
     private void addFriend(final String name, final String alias) {
-        final FriendManager friendManager = Vandalism.getInstance().getFriendManager();
-        for (final Friend friend : friendManager.getList()) {
+        final FriendsManager friendsManager = Vandalism.getInstance().getFriendsManager();
+        for (final Friend friend : friendsManager.getList()) {
             if (friend.getName().equalsIgnoreCase(name)) {
                 ChatUtil.errorChatMessage("You already have a friend with the name " + name + ".");
                 return;
             }
         }
-        friendManager.add(new Friend(name, alias));
+        friendsManager.add(new Friend(name, alias));
         ChatUtil.infoChatMessage("Added " + name + (!name.equals(alias) ? " (" + alias + ")" : "") + " as a friend.");
     }
 

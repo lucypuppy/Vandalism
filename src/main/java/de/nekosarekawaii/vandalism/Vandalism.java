@@ -30,7 +30,7 @@ import de.nekosarekawaii.vandalism.feature.command.CommandManager;
 import de.nekosarekawaii.vandalism.feature.creativetab.CreativeTabManager;
 import de.nekosarekawaii.vandalism.feature.module.ModuleManager;
 import de.nekosarekawaii.vandalism.feature.script.ScriptManager;
-import de.nekosarekawaii.vandalism.integration.friends.FriendManager;
+import de.nekosarekawaii.vandalism.integration.friends.FriendsManager;
 import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationListener;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerListManager;
@@ -125,7 +125,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     private ServerListManager serverListManager;
     private HUDManager hudManager;
     private SpotifyManager spotifyManager;
-    private FriendManager friendManager;
+    private FriendsManager friendsManager;
 
     //Features
     private ModuleManager moduleManager;
@@ -189,7 +189,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
         this.spotifyManager = new SpotifyManager(this.configManager, this.hudManager);
 
-        this.friendManager = new FriendManager(this.configManager);
+        this.friendsManager = new FriendsManager(this.configManager);
 
         //Features
         this.moduleManager = new ModuleManager(this.eventSystem, this.configManager, this.clientMenuManager);
@@ -291,8 +291,8 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         return spotifyManager;
     }
 
-    public FriendManager getFriendManager() {
-        return friendManager;
+    public FriendsManager getFriendsManager() {
+        return friendsManager;
     }
 
 }

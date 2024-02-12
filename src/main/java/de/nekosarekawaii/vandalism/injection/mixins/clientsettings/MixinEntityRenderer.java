@@ -22,7 +22,7 @@ import com.mojang.authlib.GameProfile;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.VisualSettings;
 import de.nekosarekawaii.vandalism.integration.friends.Friend;
-import de.nekosarekawaii.vandalism.integration.friends.FriendManager;
+import de.nekosarekawaii.vandalism.integration.friends.FriendsManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
@@ -61,8 +61,8 @@ public abstract class MixinEntityRenderer {
                     if (entity instanceof final PlayerEntity playerEntity) {
                         final GameProfile gameProfile = playerEntity.getGameProfile();
                         if (gameProfile != null) {
-                            final FriendManager friendManager = Vandalism.getInstance().getFriendManager();
-                            for (final Friend friend : friendManager.getList()) {
+                            final FriendsManager friendsManager = Vandalism.getInstance().getFriendsManager();
+                            for (final Friend friend : friendsManager.getList()) {
                                 if (friend.getName().equalsIgnoreCase(gameProfile.getName())) {
                                     return false;
                                 }

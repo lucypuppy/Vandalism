@@ -28,9 +28,9 @@ import de.nekosarekawaii.vandalism.integration.friends.config.FriendConfig;
 import net.minecraft.entity.player.PlayerEntity;
 import org.apache.commons.lang3.StringUtils;
 
-public class FriendManager extends Storage<Friend> implements TargetListener, TextDrawListener {
+public class FriendsManager extends Storage<Friend> implements TargetListener, TextDrawListener {
 
-    public FriendManager(final ConfigManager configManager) {
+    public FriendsManager(final ConfigManager configManager) {
         configManager.add(new FriendConfig(this));
         Vandalism.getInstance().getEventSystem().subscribe(TargetEvent.ID, this);
         Vandalism.getInstance().getEventSystem().subscribe(TextDrawEvent.ID, this);

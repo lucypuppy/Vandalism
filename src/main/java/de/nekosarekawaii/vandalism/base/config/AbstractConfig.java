@@ -41,28 +41,40 @@ public abstract class AbstractConfig<T extends JsonElement> {
     }
 
     public void save() {
+        this.save(this.file);
+    }
+
+    public boolean save(final File file) {
         try {
-            this.file.delete();
-            this.file.createNewFile();
-            try (final FileWriter fw = new FileWriter(this.file)) {
+            file.delete();
+            file.createNewFile();
+            try (final FileWriter fw = new FileWriter(file)) {
                 fw.write(GSON.toJson(save0()));
                 fw.flush();
+                return true;
             } catch (Exception e) {
-                Vandalism.getInstance().getLogger().error("Failed to save config " + this.file.getName(), e);
+                Vandalism.getInstance().getLogger().error("Failed to save config " + file.getName(), e);
             }
         } catch (IOException e) {
-            Vandalism.getInstance().getLogger().error("Failed to create config " + this.file.getName(), e);
+            Vandalism.getInstance().getLogger().error("Failed to create config " + file.getName(), e);
         }
+        return false;
     }
 
     public void load() {
-        if (this.file.exists()) {
-            try (final FileReader fr = new FileReader(this.file)) {
+        this.load(this.file);
+    }
+
+    public boolean load(final File file) {
+        if (file.exists()) {
+            try (final FileReader fr = new FileReader(file)) {
                 load0(GSON.fromJson(fr, this.nodeType));
+                return true;
             } catch (Exception e) {
-                Vandalism.getInstance().getLogger().error("Failed to load config " + this.file.getName(), e);
+                Vandalism.getInstance().getLogger().error("Failed to load config " + file.getName(), e);
             }
         }
+        return false;
     }
 
     public abstract T save0();

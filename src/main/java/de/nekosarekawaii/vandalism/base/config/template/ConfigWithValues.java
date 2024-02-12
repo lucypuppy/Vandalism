@@ -67,6 +67,15 @@ public class ConfigWithValues extends AbstractConfig<JsonObject> {
         }
     }
 
+    private static String getValueTree(final Value<?> value) {
+        final ValueParent parent = value.getParent();
+        if (parent instanceof final ValueGroup valueGroup) {
+            return getValueTree(valueGroup) + "/" + value.getName();
+        } else {
+            return value.getName();
+        }
+    }
+
     public static void loadValues(final JsonObject targetNode, final List<Value<?>> values) {
         for (final Value<?> value : values) {
             if (!targetNode.has(value.getName())) {
@@ -76,18 +85,7 @@ public class ConfigWithValues extends AbstractConfig<JsonObject> {
                 value.load(targetNode);
             }
             catch (Throwable t) {
-                String parentName = "";
-                final ValueParent parent = value.getParent();
-                if (parent != null) {
-                    if (parent instanceof final ValueGroup valueGroup) {
-                        final ValueParent grandParent = valueGroup.getParent();
-                        if (grandParent != null) {
-                            parentName = grandParent.getName() + "/";
-                        }
-                    }
-                    parentName += parent.getName() + "/";
-                }
-                Vandalism.getInstance().getLogger().error("Failed to load value: " + parentName + value.getName(), t);
+                Vandalism.getInstance().getLogger().error("Failed to load value: " + getValueTree(value), t);
             }
         }
     }
