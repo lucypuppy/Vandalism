@@ -40,12 +40,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class ConfigCommand extends AbstractCommand {
 
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-
     private static final File CONFIGS_DIR = new File(Vandalism.getInstance().getRunDirectory(), "configs");
+    private static final Pattern INVALID_FILE_NAME_PATTERN = Pattern.compile("[^a-zA-Z0-9_.-]");
 
     public ConfigCommand() {
         super("Let's you load, save or delete configs.", Category.MISC, "config", "configs");
@@ -61,25 +62,11 @@ public class ConfigCommand extends AbstractCommand {
         builder.then(literal("save").then(argument("config-name", StringArgumentType.string()).executes(context -> {
             final String name = StringArgumentType.getString(context, "config-name");
             try {
-                // Check if the name is valid
-                // I don't know if this is the best way to do it, but it works
-                if (
-                        name.isBlank() ||
-                                name.contains(" ") ||
-                                name.contains(".") ||
-                                name.contains("/") ||
-                                name.contains("\\") ||
-                                name.contains(":") ||
-                                name.contains("?") ||
-                                name.contains("*") ||
-                                name.contains("\"") ||
-                                name.contains("<") ||
-                                name.contains(">") ||
-                                name.contains("|")
-                ) {
-                    ChatUtil.errorChatMessage("Invalid config name.");
+                if (INVALID_FILE_NAME_PATTERN.matcher(name).find()) {
+                    ChatUtil.errorChatMessage("Invalid configuration name.");
                     return SINGLE_SUCCESS;
                 }
+
                 ChatUtil.infoChatMessage("Saving config " + name + "...");
                 final File file = new File(CONFIGS_DIR, name + ".json");
                 try {
