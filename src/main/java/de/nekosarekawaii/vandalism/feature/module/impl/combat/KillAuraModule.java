@@ -113,8 +113,11 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             2.0
     ).visibleCondition(this.firstHitExtender::getValue);
 
-    private final SeparatorValue reach = new SeparatorValue(this.targetSelectionGroup, "Reach",
-            "Settings for the reach.");
+    private final SeparatorValue reach = new SeparatorValue(
+            this.targetSelectionGroup,
+            "Reach",
+            "Settings for the reach."
+    );
 
     private final EnumModeValue<SelectionMode> selectionMode = new EnumModeValue<>(
             this.targetSelectionGroup,
@@ -156,18 +159,17 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             5.0f,
             1.0f,
             10.0f
-    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
-            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+    )
+    .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
+    .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
 
     private final FloatValue mean = new FloatValue(
-            this.clicking,
-            "Mean",
+            this.clicking, "Mean",
             "The mean for the Box-Mueller clicker.",
-            15.0f,
-            1.0f,
-            30.0f
-    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
-            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+            15.0f, 1.0f, 30.0f
+    )
+    .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
+    .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
 
     private final IntegerValue minCps = new IntegerValue(
             this.clicking,
@@ -176,8 +178,9 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             10,
             1,
             20
-    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
-            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+    )
+    .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
+    .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
 
     private final IntegerValue maxCps = new IntegerValue(
             this.clicking,
@@ -186,8 +189,9 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             20,
             1,
             30
-    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
-            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+    )
+    .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
+    .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
 
     private final BezierValue cpsBezier = new BezierValue(
             this.clicking,
@@ -276,8 +280,11 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             100
     );
 
-    private final SeparatorValue moveFixSeparator = new SeparatorValue(this.rotationGroup, "MoveFixSeparator",
-            "Settings for the movement fix.");
+    private final SeparatorValue movementFixSeparator = new SeparatorValue(
+            this.rotationGroup,
+            "Movement Fix Separator",
+            "Settings for the movement fix."
+    );
 
     private final BooleanValue movementFix = new BooleanValue(
             this.rotationGroup,
@@ -382,7 +389,6 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         final Rotation pseudoRotation = Rotation.Builder.build(this.mc.player.getPos(), this.target.getEyePos());
         this.isLooking = Math.abs(MathHelper.wrapDegrees(pseudoRotation.getYaw()) - MathHelper.wrapDegrees(this.target.getYaw())) <= 80.0 &&
                 this.mc.player.getPos().distanceTo(this.target.getPos()) <= 6.0;
-
 
         final double raytraceReach = this.preHit.getValue() && this.clickType.getValue() != ClickType.COOLDOWN ? this.getAimRange() : this.getRange();
         final Vec3d eyePos = mc.player.getEyePos();
