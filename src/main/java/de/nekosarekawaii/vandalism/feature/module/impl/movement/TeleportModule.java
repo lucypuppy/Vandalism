@@ -22,15 +22,11 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
-import net.minecraft.block.BlockState;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.shape.VoxelShape;
 
 public class TeleportModule extends AbstractModule implements PlayerUpdateListener {
 
@@ -64,39 +60,26 @@ public class TeleportModule extends AbstractModule implements PlayerUpdateListen
         HitResult result = mc.player.raycast(maxDistance.getValue(), mc.getTickDelta(), false);
         if (result.getType() == HitResult.Type.BLOCK) {
             BlockPos pos = ((BlockHitResult) result).getBlockPos();
-            Direction side = ((BlockHitResult) result).getSide();
 
-            BlockState state = mc.world.getBlockState(pos);
-
-            VoxelShape shape = state.getCollisionShape(mc.world, pos);
-            if (shape.isEmpty()) shape = state.getOutlineShape(mc.world, pos);
-
-            double height = shape.isEmpty() ? 1 : shape.getMax(Direction.Axis.Y);
-
-//            mc.player.setPosition(pos.getX() + 0.5 + side.getOffsetX(), pos.getY() + height, pos.getZ() + 0.5 + side.getOffsetZ());
-
-            Vec3d finalPos = new Vec3d(pos.getX() + 0.5 + side.getOffsetX(), pos.getY() + height, pos.getZ() + 0.5 + side.getOffsetZ());
+            Vec3d finalPos = new Vec3d(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
 
 
-            double distance = mc.player.getPos().distanceTo(result.getPos());
+            double dis = mc.player.getPos().distanceTo(result.getPos());
 
-            int steps = (int) Math.ceil(distance / 9);
-
-
-            Vec3d lastPos = mc.player.getPos();
-            for (int i = 1; i <= steps; i++) {
-                ChatUtil.chatMessage(i + " " + steps + " " + distance);
-                Vec3d newPos = new Vec3d(
-                        lastPos.getX() + i * (finalPos.x - mc.player.getX()),
-                        lastPos.getY() + i * (finalPos.y - mc.player.getY()),
-                        lastPos.getZ() + i * (finalPos.z - mc.player.getZ())
+            for (double d = 0.0D; d < dis; d += 2.0D) {
+                teleportNormal(
+                        mc.player.getX() + (finalPos.x - (double) mc.player.getHorizontalFacing().getOffsetX() - mc.player.getX()) * d / dis,
+                        mc.player.getY() + (finalPos.y - mc.player.getY()) * d / dis,
+                        mc.player.getZ() + (finalPos.z - (double) mc.player.getHorizontalFacing().getOffsetZ() - mc.player.getZ()) * d / dis
                 );
-
-                mc.player.updatePosition(newPos.x, newPos.y, newPos.z);
-                mc.getNetworkHandler().getConnection().channel.writeAndFlush(new PlayerMoveC2SPacket.PositionAndOnGround(newPos.x, newPos.y, newPos.z, mc.player.isOnGround()));
-                lastPos = newPos;
             }
+            teleportNormal(finalPos.x, finalPos.y, finalPos.z);
             mc.options.useKey.setPressed(false);
         }
+    }
+
+    public static void teleportNormal(double x, double y, double z) {
+        mc.getNetworkHandler().getConnection().channel.writeAndFlush(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, true));
+        mc.player.setPosition(x, y, z);
     }
 }
