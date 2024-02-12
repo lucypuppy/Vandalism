@@ -53,7 +53,7 @@ public class ClientSettingsClientMenuWindow extends ClientMenuWindow {
                     final String id = "##" + name + "settings";
                     if (ImGui.beginTabItem(name + id + "tab")) {
                         ImGui.pushStyleColor(ImGuiCol.ChildBg, 0.0f, 0.0f, 0.0f, 0.0f);
-                        ImGui.beginChild(id + "values", ImGui.getColumnWidth(), (- ImGui.getTextLineHeightWithSpacing()) * 2, true);
+                        ImGui.beginChild(id + "values", ImGui.getColumnWidth(), (- ImGui.getTextLineHeightWithSpacing()) * 3, true);
                         valueGroup.renderValues();
                         ImGui.endChild();
                         ImGui.popStyleColor();

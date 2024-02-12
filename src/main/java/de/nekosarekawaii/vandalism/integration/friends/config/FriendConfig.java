@@ -23,22 +23,22 @@ import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.AbstractConfig;
 import de.nekosarekawaii.vandalism.integration.friends.Friend;
-import de.nekosarekawaii.vandalism.integration.friends.FriendManager;
+import de.nekosarekawaii.vandalism.integration.friends.FriendsManager;
 
 public class FriendConfig extends AbstractConfig<JsonObject> {
 
-    private final FriendManager friendManager;
+    private final FriendsManager friendsManager;
 
-    public FriendConfig(final FriendManager friendManager) {
-        super(JsonObject.class, "friend");
-        this.friendManager = friendManager;
+    public FriendConfig(final FriendsManager friendsManager) {
+        super(JsonObject.class, "friends");
+        this.friendsManager = friendsManager;
     }
 
     @Override
     public JsonObject save0() {
         final JsonObject mainNode = new JsonObject();
         final JsonArray friendsNode = new JsonArray();
-        for (final Friend friend : this.friendManager.getList()) {
+        for (final Friend friend : this.friendsManager.getList()) {
             final JsonObject friendNode = new JsonObject();
             friendNode.addProperty("name", friend.getName());
             friendNode.addProperty("alias", friend.getAlias());
@@ -57,7 +57,7 @@ public class FriendConfig extends AbstractConfig<JsonObject> {
                 final JsonObject friendNode = friendsNode.get(i).getAsJsonObject();
                 final String name = friendNode.get("name").getAsString();
                 final String alias = friendNode.get("alias").getAsString();
-                this.friendManager.add(new Friend(name, alias));
+                this.friendsManager.add(new Friend(name, alias));
             } catch (Exception e) {
                 Vandalism.getInstance().getLogger().error("Failed to load friend from config.", e);
             }

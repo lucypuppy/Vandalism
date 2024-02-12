@@ -1,0 +1,167 @@
+/*
+ * This file is part of Vandalism - https://github.com/VandalismDevelopment/Vandalism
+ * Copyright (C) 2023-2024 NekosAreKawaii, Verschlxfene, FooFieOwO and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package de.nekosarekawaii.vandalism.feature.command.impl.misc;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import de.florianmichael.rclasses.common.StringUtils;
+import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
+import de.nekosarekawaii.vandalism.base.value.Value;
+import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.command.arguments.ConfigArgumentType;
+import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.ModuleManager;
+import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import net.minecraft.command.CommandSource;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ConfigCommand extends AbstractCommand {
+
+    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+
+    private static final File CONFIGS_DIR = new File(Vandalism.getInstance().getRunDirectory(), "configs");
+
+    public ConfigCommand() {
+        super("Let's you load, save or delete configs.", Category.MISC, "config", "configs");
+        if (!CONFIGS_DIR.exists()) {
+            if (!CONFIGS_DIR.mkdirs()) {
+                Vandalism.getInstance().getLogger().error("Failed to create configs directory.");
+            }
+        }
+    }
+
+    @Override
+    public void build(final LiteralArgumentBuilder<CommandSource> builder) {
+        builder.then(literal("save").then(argument("config-name", StringArgumentType.string()).executes(context -> {
+            final String name = StringArgumentType.getString(context, "config-name");
+            try {
+                // Check if the name is valid
+                // I don't know if this is the best way to do it, but it works
+                if (
+                        name.isBlank() ||
+                                name.contains(" ") ||
+                                name.contains(".") ||
+                                name.contains("/") ||
+                                name.contains("\\") ||
+                                name.contains(":") ||
+                                name.contains("?") ||
+                                name.contains("*") ||
+                                name.contains("\"") ||
+                                name.contains("<") ||
+                                name.contains(">") ||
+                                name.contains("|")
+                ) {
+                    ChatUtil.errorChatMessage("Invalid config name.");
+                    return SINGLE_SUCCESS;
+                }
+                ChatUtil.infoChatMessage("Saving config " + name + "...");
+                final File file = new File(CONFIGS_DIR, name + ".json");
+                try {
+                    file.delete();
+                    file.createNewFile();
+                    final ModuleManager moduleManager = Vandalism.getInstance().getModuleManager();
+                    final JsonObject modulesJsonObject = new JsonObject();
+                    for (final AbstractModule module : moduleManager.getList()) {
+                        final List<Value<?>> values = new ArrayList<>();
+                        for (final Value<?> value : module.getValues()) {
+                            if (module.getDefaultValues().contains(value)) {
+                                continue;
+                            }
+                            values.add(value);
+                        }
+                        final JsonObject valuesJsonObject = new JsonObject();
+                        ConfigWithValues.saveValues(valuesJsonObject, values);
+                        final JsonObject jsonObject = new JsonObject();
+                        jsonObject.add("values", valuesJsonObject);
+                        modulesJsonObject.add(module.getName(), jsonObject);
+                    }
+                    try (final FileWriter fw = new FileWriter(file)) {
+                        fw.write(GSON.toJson(modulesJsonObject));
+                        fw.flush();
+                        ChatUtil.infoChatMessage("Config " + name + " has been saved.");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        ChatUtil.errorChatMessage("Failed to save config " + name + ".");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    ChatUtil.errorChatMessage("Failed to create config " + name + ".");
+                }
+            } catch (Exception e) {
+                ChatUtil.errorChatMessage("Failed to save config " + name + ".");
+                e.printStackTrace();
+            }
+            return SINGLE_SUCCESS;
+        })));
+        builder.then(literal("load").then(argument("config-name", ConfigArgumentType.create(CONFIGS_DIR)).executes(context -> {
+            final File file = ConfigArgumentType.get(context);
+            final String name = StringUtils.replaceLast(file.getName(), ".json", "");
+            ChatUtil.infoChatMessage("Loading config " + name + "...");
+            if (file.exists()) {
+                try (final FileReader fr = new FileReader(file)) {
+                    final ModuleManager moduleManager = Vandalism.getInstance().getModuleManager();
+                    final JsonObject jsonObject = GSON.fromJson(fr, JsonObject.class);
+                    for (final AbstractModule module : moduleManager.getList()) {
+                        final String moduleName = module.getName();
+                        if (!jsonObject.has(moduleName)) {
+                            continue;
+                        }
+                        final JsonObject moduleJsonObject = jsonObject.getAsJsonObject(moduleName);
+                        if (moduleJsonObject.has("values")) {
+                            ConfigWithValues.loadValues(moduleJsonObject.getAsJsonObject("values"), module.getValues());
+                        }
+                    }
+                    ChatUtil.infoChatMessage("Config " + name + " has been loaded.");
+                } catch (Exception e) {
+                    Vandalism.getInstance().getLogger().error("Failed to load config " + file.getName(), e);
+                }
+            } else {
+                ChatUtil.errorChatMessage("Config " + name + " does not exist.");
+            }
+            return SINGLE_SUCCESS;
+        })));
+        builder.then(literal("delete").then(argument("config-name", ConfigArgumentType.create(CONFIGS_DIR)).executes(context -> {
+            try {
+                final File file = ConfigArgumentType.get(context);
+                final String name = StringUtils.replaceLast(file.getName(), ".json", "");
+                ChatUtil.infoChatMessage("Deleting config " + name + "...");
+                if (file.delete()) {
+                    ChatUtil.infoChatMessage("Config " + name + " has been deleted.");
+                } else {
+                    ChatUtil.errorChatMessage("Failed to delete config " + name + ".");
+                }
+            } catch (Exception e) {
+                ChatUtil.errorChatMessage("Failed to delete config.");
+                e.printStackTrace();
+            }
+            return SINGLE_SUCCESS;
+        })));
+    }
+
+}

@@ -49,7 +49,7 @@ public class FriendArgumentType implements ArgumentType<Friend> {
     @Override
     public Friend parse(final StringReader reader) throws CommandSyntaxException {
         final String friendName = reader.readUnquotedString();
-        for (final Friend friend : Vandalism.getInstance().getFriendManager().getList()) {
+        for (final Friend friend : Vandalism.getInstance().getFriendsManager().getList()) {
             if (friend.getName().equalsIgnoreCase(friendName)) {
                 return friend;
             }
@@ -59,7 +59,7 @@ public class FriendArgumentType implements ArgumentType<Friend> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
-        return CommandSource.suggestMatching(Vandalism.getInstance().getFriendManager().getList().stream().map(Friend::getName), builder);
+        return CommandSource.suggestMatching(Vandalism.getInstance().getFriendsManager().getList().stream().map(Friend::getName), builder);
     }
 
 }

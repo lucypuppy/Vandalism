@@ -79,7 +79,7 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
                 color = betterTabListModule.selfColor.getColor().getRGB();
             }
             else {
-                for (final Friend friend : Vandalism.getInstance().getFriendManager().getList()) {
+                for (final Friend friend : Vandalism.getInstance().getFriendsManager().getList()) {
                     if (betterTabListModule.highlightFriends.getValue() && profile.getName().equalsIgnoreCase(friend.getName())) {
                         color = betterTabListModule.friendsColor.getColor().getRGB();
                         break;

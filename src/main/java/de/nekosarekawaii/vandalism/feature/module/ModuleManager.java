@@ -87,6 +87,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     @Override
     public void init() {
         this.add(
+                new TestModule(), // Leave this here because it fixes issues with the module config
+
                 this.modPacketBlockerModule = new ModPacketBlockerModule(),
                 this.exploitFixerModule = new ExploitFixerModule(),
                 this.trueSightModule = new TrueSightModule(),
@@ -99,7 +101,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.tickBaseModule = new TickBaseModule(this.killAuraModule),
                 new BackTrackModule(this.killAuraModule),
                 new NoSlow(),
-                new TestModule(),
                 new PacketManagerModule(),
                 new ServerCrasherModule(),
                 new BungeeCordSpooferModule(),
