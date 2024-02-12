@@ -82,7 +82,7 @@ public class ClientSettingsClientMenuWindow extends ClientMenuWindow {
                                     }
                                 }
                                 catch (Exception exception) {
-                                    Vandalism.getInstance().getLogger().error("Failed to paste module config from clipboard.", exception);
+                                    Vandalism.getInstance().getLogger().error("Failed to paste settings from clipboard.", exception);
                                 }
                             }
                         }
