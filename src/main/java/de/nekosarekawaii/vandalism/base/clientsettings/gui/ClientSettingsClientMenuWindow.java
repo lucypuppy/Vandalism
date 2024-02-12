@@ -18,7 +18,11 @@
 
 package de.nekosarekawaii.vandalism.base.clientsettings.gui;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
+import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
@@ -26,6 +30,8 @@ import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import net.minecraft.client.gui.DrawContext;
+
+import java.util.List;
 
 public class ClientSettingsClientMenuWindow extends ClientMenuWindow {
 
@@ -39,6 +45,7 @@ public class ClientSettingsClientMenuWindow extends ClientMenuWindow {
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         ImGui.begin(this.getName());
+        ImGui.spacing();
         if (ImGui.beginTabBar("##clientsettings")) {
             for (final Value<?> value : this.clientSettings.getValues()) {
                 if (value instanceof final ValueGroup valueGroup) {
@@ -46,10 +53,39 @@ public class ClientSettingsClientMenuWindow extends ClientMenuWindow {
                     final String id = "##" + name + "settings";
                     if (ImGui.beginTabItem(name + id + "tab")) {
                         ImGui.pushStyleColor(ImGuiCol.ChildBg, 0.0f, 0.0f, 0.0f, 0.0f);
-                        ImGui.beginChild(id + "values", ImGui.getColumnWidth(), -ImGui.getTextLineHeightWithSpacing(), true);
+                        ImGui.beginChild(id + "values", ImGui.getColumnWidth(), (- ImGui.getTextLineHeightWithSpacing()) * 2, true);
                         valueGroup.renderValues();
                         ImGui.endChild();
                         ImGui.popStyleColor();
+                        ImGui.separator();
+                        final List<Value<?>> values = valueGroup.getValues();
+                        if (ImGui.button("Copy " + name + " Settings" + id + "copysettingsbutton", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
+                            final JsonObject jsonObject = new JsonObject();
+                            jsonObject.addProperty("settings", name);
+                            final JsonObject valuesJsonObject = new JsonObject();
+                            ConfigWithValues.saveValues(valuesJsonObject, values);
+                            jsonObject.add("values", valuesJsonObject);
+                            this.mc.keyboard.setClipboard(jsonObject.toString());
+                        }
+                        ImGui.sameLine();
+                        if (ImGui.button("Paste " + name + " Settings" + id + "pastesettingsbutton", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                            final String clipboard = this.mc.keyboard.getClipboard();
+                            if (clipboard != null && !clipboard.isBlank()) {
+                                try {
+                                    final JsonObject jsonObject = JsonParser.parseString(clipboard).getAsJsonObject();
+                                    if (jsonObject.has("settings")) {
+                                        if (jsonObject.get("settings").getAsString().equals(name)) {
+                                            if (jsonObject.has("values")) {
+                                                ConfigWithValues.loadValues(jsonObject.getAsJsonObject("values"), values);
+                                            }
+                                        }
+                                    }
+                                }
+                                catch (Exception exception) {
+                                    Vandalism.getInstance().getLogger().error("Failed to paste module config from clipboard.", exception);
+                                }
+                            }
+                        }
                         if (ImUtils.subButton("Reset " + name + " Settings" + id + "button")) {
                             for (final Value<?> valueGroupValue : valueGroup.getValues()) {
                                 valueGroupValue.resetValue();

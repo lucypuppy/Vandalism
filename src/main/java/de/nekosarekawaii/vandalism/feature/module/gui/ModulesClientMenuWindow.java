@@ -204,7 +204,7 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
                 this.mc.keyboard.setClipboard(jsonObject.toString());
             }
             ImGui.sameLine();
-            if ((ImGui.button("Paste Config" + moduleId + "pasteconfigbutton", 150, ImGui.getTextLineHeightWithSpacing()))) {
+            if (ImGui.button("Paste Config" + moduleId + "pasteconfigbutton", 150, ImGui.getTextLineHeightWithSpacing())) {
                 final String clipboard = this.mc.keyboard.getClipboard();
                 if (clipboard != null && !clipboard.isBlank()) {
                     final List<Value<?>> values = new ArrayList<>();
