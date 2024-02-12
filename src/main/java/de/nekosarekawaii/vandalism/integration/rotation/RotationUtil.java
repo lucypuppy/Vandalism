@@ -36,15 +36,23 @@ public class RotationUtil implements MinecraftWrapper {
         final float width = (entity.getWidth() + 0.2f) / 2f;
         final float height = entity.getHeight() + 0.2f;
         final double eyePosY = entity.getY() - 0.1;
+
         if (player.getZ() < entity.getZ() - width || player.getZ() > entity.getZ() + width) {
             sides.add((byte) 0); //x
         }
+
         if (player.getX() < entity.getX() - width || player.getX() > entity.getX() + width) {
             sides.add((byte) 1); //z
         }
+
         if (player.getY() + player.getEyeHeight(player.getPose()) < eyePosY || player.getY() + player.getEyeHeight(player.getPose()) > eyePosY + height) {
             sides.add((byte) 2); //y
         }
+
+        if (player.getBoundingBox().intersects(entity.getBoundingBox())) {
+            sides.add((byte) 3); //inside
+        }
+
         return sides;
     }
 
@@ -92,6 +100,10 @@ public class RotationUtil implements MinecraftWrapper {
                     points.add(new Vec3d(entity.getX() + xOff, targetPosY + y, entity.getZ() - targetWidth / 2 + x));
                 }
             }
+        }
+
+        if (visibleSides.contains((byte) 3)) {
+            points.add(new Vec3d(entity.getX(), entity.getEyeY(), entity.getZ()));
         }
 
         Collections.shuffle(points);
