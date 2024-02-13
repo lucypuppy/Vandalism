@@ -98,9 +98,6 @@ import java.io.File;
  *  - Fix SprintTap letting go W key sometimes (maybe bc of tickbase)
  *  - Add more stuff to fake lag (Ideas off clumsy)
  * <br><br>
- * TODO: Snow <br>
- *  - Implement ServerDiscoveryClientMenuWindow#renderServerPopup "Add to server list" feature
- * <br><br>
  * TODO: simon <br>
  *  - Add minecraft server pinger in DirectConnectScreen, GameMenuScreen and DisconnectedScreen
  *  - Add a better Autoblock to Killaura with FooFieOwO
