@@ -100,7 +100,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.killAuraModule = new KillAuraModule(),
                 this.tickBaseModule = new TickBaseModule(this.killAuraModule),
                 new BackTrackModule(this.killAuraModule),
-                new NoSlow(),
+                new NoSlowModule(),
                 new PacketManagerModule(),
                 new ServerCrasherModule(),
                 new BungeeCordSpooferModule(),

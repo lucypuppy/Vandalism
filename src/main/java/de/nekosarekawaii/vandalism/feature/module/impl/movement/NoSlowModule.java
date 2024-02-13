@@ -27,7 +27,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.SwordItem;
 
-public class NoSlow extends AbstractModule implements PlayerSlowdownListener {
+public class NoSlowModule extends AbstractModule implements PlayerSlowdownListener {
 
     private final ValueGroup swordSlowDown = new ValueGroup(this, "Sword", "Sword Slowdown settings.");
 
@@ -109,7 +109,7 @@ public class NoSlow extends AbstractModule implements PlayerSlowdownListener {
             1.0f
     );
 
-    public NoSlow() {
+    public NoSlowModule() {
         super(
                 "No Slow",
                 "Modifies the slowdown in certain conditions.",

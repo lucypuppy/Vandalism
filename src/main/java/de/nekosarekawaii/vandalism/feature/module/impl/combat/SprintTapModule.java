@@ -30,6 +30,7 @@ import net.minecraft.entity.LivingEntity;
 public class SprintTapModule extends AbstractModule implements AttackListener, PlayerUpdateListener {
 
     private Entity movementTarget = null;
+    private LivingEntity lastTarget = null;
 
     public SprintTapModule() {
         super(
@@ -68,11 +69,11 @@ public class SprintTapModule extends AbstractModule implements AttackListener, P
         if (this.mc.player == null) {
             return;
         }
-
         if (event.target instanceof final LivingEntity livingEntity && this.movementTarget == null) {
+            this.lastTarget = livingEntity;
             final boolean isLooking = RotationUtil.isEntityLookingAtEntity(this.mc.player, livingEntity, 80);
 
-            if (MovementUtil.isMoving() && livingEntity.hurtTime <= 2 && isLooking) {
+            if (MovementUtil.isMoving() && (livingEntity.hurtTime <= 2 || livingEntity.hurtTime == 9) && isLooking) {
                 this.mc.options.forwardKey.setPressed(false);
                 this.movementTarget = livingEntity;
             }
@@ -88,6 +89,15 @@ public class SprintTapModule extends AbstractModule implements AttackListener, P
             if (speed < 0.3D || !isLooking) {
                 this.mc.options.forwardKey.setPressed(true);
                 this.movementTarget = null;
+            }
+
+            if (this.lastTarget == null)
+                return;
+
+            if(this.lastTarget.hurtTime == 10 || this.lastTarget.hurtTime == 8){
+                this.mc.options.forwardKey.setPressed(true);
+                if(this.lastTarget.hurtTime == 8)
+                    this.lastTarget = null;
             }
         }
     }
