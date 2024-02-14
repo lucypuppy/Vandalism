@@ -25,6 +25,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.TickBaseModule;
+import de.nekosarekawaii.vandalism.injection.access.IRenderTickCounter;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
 import de.nekosarekawaii.vandalism.util.click.CPSTracker;
 import de.nekosarekawaii.vandalism.util.game.ServerUtil;
@@ -165,6 +166,12 @@ public class InfoHUDElement extends HUDElement {
             true
     );
 
+    private final BooleanValue clientTPS = new BooleanValue(
+            this,
+            "Client TPS",
+            "Shows the current client TPS.",
+            true
+    );
 
     public final CPSTracker leftClick = new CPSTracker();
     public final CPSTracker rightClick = new CPSTracker();
@@ -215,8 +222,8 @@ public class InfoHUDElement extends HUDElement {
                     "Position",
                     String.format(
                             positionDecimalPlaces + ", " +
-                            positionDecimalPlaces + ", " +
-                            positionDecimalPlaces,
+                                    positionDecimalPlaces + ", " +
+                                    positionDecimalPlaces,
                             posX, posY, posZ
                     )
             );
@@ -323,6 +330,10 @@ public class InfoHUDElement extends HUDElement {
             if (tickBaseModule.isActive()) {
                 infoMap.put("Tick Base Charge", tickBaseModule.getCharge() + " ticks");
             }
+        }
+
+        if (this.clientTPS.getValue()) {
+            infoMap.put("Client TPS", ((IRenderTickCounter) mc.renderTickCounter).vandalism$getTPS() + " TPS");
         }
 
         int width = 0, height = 0;

@@ -18,24 +18,53 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.util;
 
+import de.nekosarekawaii.vandalism.injection.access.IRenderTickCounter;
 import de.nekosarekawaii.vandalism.util.game.TimerHack;
 import net.minecraft.client.render.RenderTickCounter;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(RenderTickCounter.class)
-public abstract class MixinRenderTickCounter {
+public abstract class MixinRenderTickCounter implements IRenderTickCounter {
 
     @Shadow
     public float lastFrameDuration;
 
+    @Shadow
+    private long prevTimeMillis;
+
+    @Unique
+    private float delta;
+
+    @Unique
+    private float tps;
+
     @Inject(method = "beginRenderTick", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/RenderTickCounter;prevTimeMillis:J", opcode = Opcodes.PUTFIELD))
     private void beginRenderTick(final long timeMillis, final CallbackInfoReturnable<Integer> info) {
         this.lastFrameDuration *= TimerHack.getSpeed();
+    }
+
+    @Inject(method = "beginRenderTick", at = @At("HEAD"))
+    private void beginRenderTickHead(final long timeMillis, final CallbackInfoReturnable<Integer> info) {
+        this.delta = timeMillis - this.prevTimeMillis;
+    }
+
+    @Inject(method = "beginRenderTick", at = @At("RETURN"))
+    private void beginRenderTickReturn(final long timeMillis, final CallbackInfoReturnable<Integer> info) {
+        if (this.delta % 9 != 0) { // Filter the inaccuracy
+            final float tickTime = this.delta / this.lastFrameDuration;
+            this.tps = 1000.0F / tickTime;
+        }
+    }
+
+    @Override
+    public float vandalism$getTPS() {
+        return this.tps;
     }
 
 }
