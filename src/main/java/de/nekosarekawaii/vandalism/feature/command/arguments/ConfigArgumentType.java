@@ -26,6 +26,7 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import de.florianmichael.rclasses.common.StringUtils;
+import de.nekosarekawaii.vandalism.feature.command.impl.misc.ConfigCommand;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.Text;
 
@@ -68,21 +69,7 @@ public class ConfigArgumentType implements ArgumentType<File> {
         if (configName.isBlank()) {
             throw EMPTY.createWithContext(reader, configName);
         }
-        // Check if the config name is valid
-        // I don't know if this is the best way to do it, but it works
-        if (
-                        configName.contains(" ") ||
-                        configName.contains(".") ||
-                        configName.contains("/") ||
-                        configName.contains("\\") ||
-                        configName.contains(":") ||
-                        configName.contains("?") ||
-                        configName.contains("*") ||
-                        configName.contains("\"") ||
-                        configName.contains("<") ||
-                        configName.contains(">") ||
-                        configName.contains("|")
-        ) {
+        if (ConfigCommand.INVALID_CONFIG_NAME_PATTERN.matcher(configName).find()) {
             throw INVALID.createWithContext(reader, configName);
         }
         if (this.path != null && this.path.isDirectory()) {
