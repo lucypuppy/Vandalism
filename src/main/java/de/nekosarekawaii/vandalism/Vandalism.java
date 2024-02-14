@@ -45,7 +45,6 @@ import java.io.File;
 /**
  * TODO: NekosAreKawaii <br>
  *  - Remove duplicated code by creating a new template for modules which uses packets or something like that
- *  - Add Access Violation crash item to CrashItemCreativeTab
  *  - Add Version Range to the creative tabs
  *  - Change behavior of the echolocation module to use it as a chunk load detector
  *  - Fix spaces in the text rendering when using the "deutsch macher" module
@@ -83,7 +82,6 @@ import java.io.File;
  *      - Fix HUDElement#calculatePosition
  *      - Fix module list out of screen rendering when the alignment is for example at the bottom of the screen
  *  - Add lag engine to fix countless BackTrack issues
- *  - Remove useless settings (ChatSettings)
  *  - Ensure MCConstants class file is used
  *  - Rework wurst integration with ASM
  *  - Rework bezier curve
