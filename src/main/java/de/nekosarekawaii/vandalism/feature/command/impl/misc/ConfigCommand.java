@@ -44,9 +44,11 @@ import java.util.regex.Pattern;
 
 public class ConfigCommand extends AbstractCommand {
 
-    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+
+    public static final Pattern INVALID_CONFIG_NAME_PATTERN = Pattern.compile("[^a-zA-Z0-9_.-]");
+
     private static final File CONFIGS_DIR = new File(Vandalism.getInstance().getRunDirectory(), "configs");
-    private static final Pattern INVALID_FILE_NAME_PATTERN = Pattern.compile("[^a-zA-Z0-9_.-]");
 
     public ConfigCommand() {
         super("Let's you load, save or delete configs.", Category.MISC, "config", "configs");
@@ -62,11 +64,10 @@ public class ConfigCommand extends AbstractCommand {
         builder.then(literal("save").then(argument("config-name", StringArgumentType.string()).executes(context -> {
             final String name = StringArgumentType.getString(context, "config-name");
             try {
-                if (INVALID_FILE_NAME_PATTERN.matcher(name).find()) {
-                    ChatUtil.errorChatMessage("Invalid configuration name.");
+                if (INVALID_CONFIG_NAME_PATTERN.matcher(name).find()) {
+                    ChatUtil.errorChatMessage("Invalid config name.");
                     return SINGLE_SUCCESS;
                 }
-
                 ChatUtil.infoChatMessage("Saving config " + name + "...");
                 final File file = new File(CONFIGS_DIR, name + ".json");
                 try {
