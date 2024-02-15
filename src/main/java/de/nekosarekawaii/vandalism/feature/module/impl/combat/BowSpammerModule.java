@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
@@ -25,7 +26,6 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
-import net.raphimc.vialoader.util.VersionEnum;
 import net.raphimc.vialoader.util.VersionRange;
 
 public class BowSpammerModule extends AbstractModule implements PlayerUpdateListener {
@@ -51,8 +51,12 @@ public class BowSpammerModule extends AbstractModule implements PlayerUpdateList
     private final MSTimer shootTimer = new MSTimer();
 
     public BowSpammerModule() {
-        super("Bow Spammer", "Lets you spam arrows with a bow.", Category.COMBAT, VersionRange.single(VersionEnum.r1_8));
-
+        super(
+                "Bow Spammer",
+                "Lets you spam arrows with a bow.",
+                Category.COMBAT,
+                VersionRange.single(ProtocolVersion.v1_8)
+        );
         this.deactivateAfterSessionDefault();
     }
 

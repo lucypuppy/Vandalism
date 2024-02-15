@@ -18,10 +18,10 @@
 
 package de.nekosarekawaii.vandalism.feature;
 
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
-import net.raphimc.vialoader.util.VersionEnum;
 import net.raphimc.vialoader.util.VersionRange;
 
 public abstract class Feature implements IName, MinecraftWrapper {
@@ -77,7 +77,7 @@ public abstract class Feature implements IName, MinecraftWrapper {
         return this.supportedVersions;
     }
 
-    public boolean isSupportedVersion(final VersionEnum version) {
+    public boolean isSupportedVersion(final ProtocolVersion version) {
         //Using null as a wildcard instead of VersionRange.all() is faster
         if (this.supportedVersions == null) {
             return true;
