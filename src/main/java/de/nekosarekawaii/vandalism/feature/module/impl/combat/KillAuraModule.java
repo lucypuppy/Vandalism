@@ -160,16 +160,16 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             1.0f,
             10.0f
     )
-    .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
-    .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+            .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
+            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
 
     private final FloatValue mean = new FloatValue(
             this.clicking, "Mean",
             "The mean for the Box-Mueller clicker.",
             15.0f, 1.0f, 30.0f
     )
-    .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
-    .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+            .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
+            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
 
     private final IntegerValue minCps = new IntegerValue(
             this.clicking,
@@ -179,8 +179,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             1,
             20
     )
-    .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
-    .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+            .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
+            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
 
     private final IntegerValue maxCps = new IntegerValue(
             this.clicking,
@@ -190,8 +190,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             1,
             30
     )
-    .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
-    .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+            .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
+            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
 
     private final BezierValue cpsBezier = new BezierValue(
             this.clicking,
@@ -499,6 +499,10 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         }
 
         this.target = entities.get(this.targetIndex);
+    }
+
+    public BooleanValue getPreHit() {
+        return preHit;
     }
 
     public double getAimRange() {

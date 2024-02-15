@@ -18,14 +18,28 @@
 
 package de.nekosarekawaii.vandalism.util.click.impl;
 
+import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.feature.module.impl.combat.KillAuraModule;
 import de.nekosarekawaii.vandalism.util.click.Clicker;
 import de.nekosarekawaii.vandalism.util.game.TimerHack;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.hit.HitResult;
 
 public class CooldownClicker extends Clicker {
 
     @Override
     public void onUpdate() {
+        if(mc.crosshairTarget == null || mc.crosshairTarget.getType() != HitResult.Type.ENTITY) {
+            this.clickAction.accept(false);
+            return;
+        }
+        EntityHitResult entityHitResult = (EntityHitResult) mc.crosshairTarget;
+        KillAuraModule killAuraModule = Vandalism.getInstance().getModuleManager().getKillAuraModule();
+        if(entityHitResult.getEntity().distanceTo(mc.player) > (killAuraModule.getPreHit().getValue() ? killAuraModule.getAimRange() : killAuraModule.getRange())) {
+            this.clickAction.accept(false);
+            return;
+        }
         final float baseAttackDamage = (float) this.mc.player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
 
         float additionalBaseDelayOffset = 0;
