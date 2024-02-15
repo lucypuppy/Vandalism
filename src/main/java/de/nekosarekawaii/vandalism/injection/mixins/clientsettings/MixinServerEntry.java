@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
-import de.florianmichael.viafabricplus.protocolhack.ProtocolHack;
+import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.util.game.ServerUtil;
 import net.minecraft.client.font.TextRenderer;
@@ -76,7 +76,7 @@ public abstract class MixinServerEntry {
                         y + textRenderer.fontHeight,
                         -1
                 );
-                if (this.server.protocolVersion != ProtocolHack.getTargetVersion().getVersion()) {
+                if (this.server.protocolVersion != ProtocolTranslator.getTargetVersion().getVersion()) {
                     instance.drawTextWithShadow(
                             textRenderer,
                             vandalism$INCOMPATIBLE_PROTOCOL_TEXT,
