@@ -140,7 +140,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new CraftCarryModule(),
                 new FakeLagModule(),
                 new DisablerModule(),
-                new TeleportModule()
+                new TeleportModule(),
+                new SignExploitsModule()
         );
         this.configManager.add(new ModulesConfig(this));
     }

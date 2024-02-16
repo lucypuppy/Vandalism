@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.base.value.impl.awt;
+package de.nekosarekawaii.vandalism.base.value.impl.misc;
 
 import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.Vandalism;
