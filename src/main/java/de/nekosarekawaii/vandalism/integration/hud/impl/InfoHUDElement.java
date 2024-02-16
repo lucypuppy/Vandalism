@@ -31,6 +31,7 @@ import de.nekosarekawaii.vandalism.util.click.CPSTracker;
 import de.nekosarekawaii.vandalism.util.game.ServerUtil;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.network.ServerInfo;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -289,10 +290,13 @@ public class InfoHUDElement extends HUDElement {
 
         if (this.serverVersion.getValue()) {
             String value = "unknown";
-            if (ServerUtil.lastServerExists() && this.mc.player != null && !this.mc.isInSingleplayer()) {
-                final Text version = ServerUtil.getLastServerInfo().version;
-                if (version != null) {
-                    value = ServerUtil.fixVersionName(version.getString());
+            if (this.mc.player != null && !this.mc.isInSingleplayer()) {
+                final ServerInfo currentServerInfo = this.mc.getCurrentServerEntry();
+                if (currentServerInfo != null) {
+                    final Text version = currentServerInfo.version;
+                    if (version != null) {
+                        value = ServerUtil.fixVersionName(version.getString());
+                    }
                 }
             }
             infoMap.put("Server Version", value);
@@ -300,10 +304,10 @@ public class InfoHUDElement extends HUDElement {
 
         if (this.serverAddress.getValue()) {
             String value = "unknown";
-            if (ServerUtil.lastServerExists() && this.mc.player != null && !this.mc.isInSingleplayer()) {
-                final String address = ServerUtil.getLastServerInfo().address;
-                if (address != null) {
-                    value = address;
+            if (this.mc.player != null && !this.mc.isInSingleplayer()) {
+                final ServerInfo currentServerInfo = this.mc.getCurrentServerEntry();
+                if (currentServerInfo != null) {
+                    value = currentServerInfo.address;
                 }
             }
             infoMap.put("Server Address", value);

@@ -44,6 +44,7 @@ public class KickItemsCreativeTab extends AbstractCreativeTab {
         items.add(withClientSide(createKickHead(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Head")));
         items.add(withClientSide(createKickHeadV2(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Head V2")));
         items.add(withClientSide(createKickStand(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Kick Stand")));
+        items.add(withClientSide(createKickStandV2(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Kick Stand V2")));
         items.add(withClientSide(createKickKnowledgeBook(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Kick Knowledge Book")));
     }
 
@@ -77,6 +78,30 @@ public class KickItemsCreativeTab extends AbstractCreativeTab {
     }
 
     private static ItemStack createKickStand() {
+        final ItemStack item = new ItemStack(Items.ARMOR_STAND);
+        final NbtCompound base = new NbtCompound();
+        final NbtCompound entityTag = new NbtCompound();
+        final NbtList equipment = new NbtList();
+        final NbtCompound emptyEquipment = new NbtCompound();
+        for (int i = 0; i < 4; i++) {
+            equipment.add(emptyEquipment);
+        }
+        final NbtCompound helmet = new NbtCompound();
+        helmet.putByte("Count", (byte) 1);
+        helmet.putString("id", "leather_helmet");
+        final NbtCompound helmetTag = new NbtCompound();
+        final NbtCompound display = new NbtCompound();
+        display.putInt("color", Integer.MAX_VALUE);
+        helmetTag.put("display", display);
+        helmet.put("tag", helmetTag);
+        equipment.add(helmet);
+        entityTag.put("Equipment", equipment);
+        base.put("EntityTag", entityTag);
+        item.setNbt(base);
+        return item;
+    }
+
+    private static ItemStack createKickStandV2() {
         final ItemStack item = new ItemStack(Items.ARMOR_STAND);
         final NbtCompound base = new NbtCompound();
         final NbtCompound entityTag = new NbtCompound();

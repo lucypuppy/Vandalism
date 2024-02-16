@@ -67,6 +67,7 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
         items.add(withClientSide(createGhostBlock(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Ghost Block")));
         items.add(withClientSide(createWardenSummonBlock(), Text.literal(Formatting.DARK_AQUA + Formatting.BOLD.toString() + "Warden Summon Block")));
         items.add(withClientSide(createUnstableTNTBlock(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Unstable TNT Block")));
+        items.add(withClientSide(createGroundBugBoots(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Ground Bug Boots")));
     }
 
     private static ItemStack createTrollPotion(final ItemStack origin) {
@@ -281,6 +282,34 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
         final NbtCompound blockStateTag = new NbtCompound();
         blockStateTag.putString("unstable", "true");
         base.put("BlockStateTag", blockStateTag);
+        item.setNbt(base);
+        return item;
+    }
+
+    private static ItemStack createGroundBugBoots() {
+        final ItemStack item = new ItemStack(Items.FURNACE);
+        final NbtCompound base = new NbtCompound();
+        final NbtCompound blockEntityTag = new NbtCompound();
+        final NbtList items = new NbtList();
+        final NbtCompound firstSlot = new NbtCompound();
+        firstSlot.putByte("Slot", (byte) 0);
+        firstSlot.putString("id", "diamond_boots");
+        firstSlot.putByte("Count", (byte) 1);
+        final NbtCompound tag = new NbtCompound();
+        final NbtList attributeModifiers = new NbtList();
+        final NbtCompound attributeModifier = new NbtCompound();
+        attributeModifier.putString("AttributeName", "generic.movementSpeed");
+        attributeModifier.putString("Name", " ");
+        attributeModifier.putDouble("Amount", Double.NaN);
+        attributeModifier.putInt("Operation", 0);
+        attributeModifier.putLong("UUIDLeast", 1);
+        attributeModifier.putLong("UUIDMost", 1);
+        attributeModifiers.add(attributeModifier);
+        tag.put("AttributeModifiers", attributeModifiers);
+        firstSlot.put("tag", tag);
+        items.add(firstSlot);
+        blockEntityTag.put("Items", items);
+        base.put("BlockEntityTag", blockEntityTag);
         item.setNbt(base);
         return item;
     }

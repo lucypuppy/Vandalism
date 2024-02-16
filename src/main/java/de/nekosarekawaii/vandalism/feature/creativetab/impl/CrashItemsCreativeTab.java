@@ -47,6 +47,7 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
     public void exposeItems(final List<ItemStack> items) {
         items.add(withClientSide(createClientInstantCrashSkull(CRASH_SKULL_1), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Skull")));
         items.add(withClientSide(createClientInstantCrashSkull(CRASH_SKULL_2), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Skull V2")));
+        items.add(withClientSide(createClientInstantCrashSkullV3(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Skull V3")));
         items.add(withClientSide(createClientInstantCrashSign("translation.test.invalid"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign")));
         items.add(withClientSide(createClientInstantCrashSign("translation.test.invalid2"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign V2")));
         items.add(withClientSide(createClientInstantCrashBook("translation.test.invalid"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Book")));
@@ -77,6 +78,27 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
         skullOwner.put("Properties", properties);
         skullOwner.putString("Name", "ed0cinU");
         base.put("SkullOwner", skullOwner);
+        item.setNbt(base);
+        return item;
+    }
+
+    private static ItemStack createClientInstantCrashSkullV3() {
+        final ItemStack item = new ItemStack(Items.HOPPER);
+        final NbtCompound base = new NbtCompound();
+        final NbtCompound blockEntityTag = new NbtCompound();
+        final NbtList items = new NbtList();
+        final NbtCompound firstSlot = new NbtCompound();
+        firstSlot.putByte("Slot", (byte) 0);
+        firstSlot.putString("id", "skull");
+        firstSlot.putByte("Count", (byte) 1);
+        final NbtCompound skullOwner = new NbtCompound();
+        final NbtCompound id = new NbtCompound();
+        id.putString("Id", "0");
+        skullOwner.put("SkullOwner", id);
+        firstSlot.put("tag", skullOwner);
+        items.add(firstSlot);
+        blockEntityTag.put("Items", items);
+        base.put("BlockEntityTag", blockEntityTag);
         item.setNbt(base);
         return item;
     }
