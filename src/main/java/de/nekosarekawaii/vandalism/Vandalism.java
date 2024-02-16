@@ -69,6 +69,7 @@ import java.io.File;
  *      - (Search for FriendManager#getList())
  * <br><br>
  * TODO: Verschlxfene <br>
+ *  - Fix SignExploits#onOutgoingPacket -> CRASH something is wrong with the json
  *  - Delete MixinParticleManager
  *  - Add Proxy manager
  *  - Rewrite MovementUtil#getFixedMoveInputs to prevent bruteforcing inputs
