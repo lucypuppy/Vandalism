@@ -54,32 +54,29 @@ public class TeleportModule extends AbstractModule implements PlayerUpdateListen
     }
 
     @Override
-    public void onPrePlayerUpdate(PlayerUpdateEvent event) {
-        if (mc.player.isUsingItem() || !mc.options.useKey.isPressed()) return;
-
-        HitResult result = mc.player.raycast(maxDistance.getValue(), mc.getTickDelta(), false);
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        if (this.mc.player.isUsingItem() || !this.mc.options.useKey.isPressed()) {
+            return;
+        }
+        final HitResult result = this.mc.player.raycast(this.maxDistance.getValue(), mc.getTickDelta(), false);
         if (result.getType() == HitResult.Type.BLOCK) {
-            BlockPos pos = ((BlockHitResult) result).getBlockPos();
-
-            Vec3d finalPos = new Vec3d(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
-
-
-            double dis = mc.player.getPos().distanceTo(result.getPos());
-
+            final BlockPos pos = ((BlockHitResult) result).getBlockPos();
+            final Vec3d finalPos = new Vec3d(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
+            final double dis = mc.player.getPos().distanceTo(result.getPos());
             for (double d = 0.0D; d < dis; d += 2.0D) {
-                teleportNormal(
-                        mc.player.getX() + (finalPos.x - (double) mc.player.getHorizontalFacing().getOffsetX() - mc.player.getX()) * d / dis,
-                        mc.player.getY() + (finalPos.y - mc.player.getY()) * d / dis,
-                        mc.player.getZ() + (finalPos.z - (double) mc.player.getHorizontalFacing().getOffsetZ() - mc.player.getZ()) * d / dis
-                );
+                final double x = this.mc.player.getX() + (finalPos.x - (double) this.mc.player.getHorizontalFacing().getOffsetX() - this.mc.player.getX()) * d / dis;
+                final double y = this.mc.player.getY() + (finalPos.y - this.mc.player.getY()) * d / dis;
+                final double z = this.mc.player.getZ() + (finalPos.z - (double) this.mc.player.getHorizontalFacing().getOffsetZ() - this.mc.player.getZ()) * d / dis;
+                this.mc.getNetworkHandler().getConnection().channel.writeAndFlush(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, true));
+                this.mc.player.setPosition(x, y, z);
             }
-            teleportNormal(finalPos.x, finalPos.y, finalPos.z);
-            mc.options.useKey.setPressed(false);
+            final double x = finalPos.x;
+            final double y = finalPos.y;
+            final double z = finalPos.z;
+            this.mc.getNetworkHandler().getConnection().channel.writeAndFlush(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, true));
+            this.mc.player.setPosition(x, y, z);
+            this.mc.options.useKey.setPressed(false);
         }
     }
 
-    public static void teleportNormal(double x, double y, double z) {
-        mc.getNetworkHandler().getConnection().channel.writeAndFlush(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, true));
-        mc.player.setPosition(x, y, z);
-    }
 }

@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.integration.hud.impl;
 
 import de.florianmichael.rclasses.math.geometry.Alignment;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.value.impl.awt.ColorValue;
+import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
@@ -170,7 +170,7 @@ public class InfoHUDElement extends HUDElement {
             this,
             "Client TPS",
             "Shows the current client TPS.",
-            true
+            false
     );
 
     public final CPSTracker leftClick = new CPSTracker();
