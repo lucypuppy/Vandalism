@@ -160,7 +160,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
         if (//@formatter:off
                 packet instanceof GameMessageS2CPacket || packet instanceof PlaySoundS2CPacket ||
                         this.targetEntity == null || this.realTargetPosition == null ||
-                        this.mc.player == null || this.mc.world == null || event.isCancelled() //Ingore already cancelled packets
+                        this.mc.player == null || this.mc.world == null || event.isCancelled() //Ignore already cancelled packets
         ) {//@formatter:on
             return;
         }

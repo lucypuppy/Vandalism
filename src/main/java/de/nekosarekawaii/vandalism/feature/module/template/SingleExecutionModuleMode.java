@@ -16,25 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.impl.exploit.disabler;
+package de.nekosarekawaii.vandalism.feature.module.template;
 
+import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.feature.module.impl.exploit.disabler.impl.CubeCraftModuleMode;
-import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
 
-public class DisablerModule extends AbstractModule {
+public abstract class SingleExecutionModuleMode<M extends AbstractModule> extends ModuleMulti<M> {
 
-    public final ModuleModeValue<DisablerModule> mode = new ModuleModeValue<>(
+    protected final IntegerValue times = new IntegerValue(
             this,
-            "Mode",
-            "The current disabler mode.",
-            new CubeCraftModuleMode()
+            "Times",
+            "The amount of times the function should be executed.",
+            1,
+            1,
+            100
     );
 
-    public DisablerModule() {
-        super("Disabler",
-                "Disables some anti cheats.",
-                Category.EXPLOIT
-        );
+    public SingleExecutionModuleMode(final String name, final M parent) {
+        super(name, parent);
     }
+
+    protected abstract void onExecute();
+
+    @Override
+    public void onActivate() {
+        for (int i = 0; i < this.times.getValue(); i++) {
+            this.onExecute();
+        }
+        this.parent.deactivate();
+    }
+
 }
