@@ -45,7 +45,6 @@ import java.io.File;
 /**
  * TODO: NekosAreKawaii <br>
  *  - Fix true sight when holding an barrier block in hand
- *  - Remove duplicated code by creating a new template for modules which uses packets or something like that
  *  - Add Version Range to the creative tabs
  *  - Change behavior of the echolocation module to use it as a chunk load detector
  *  - Fix spaces in the text rendering when using the "deutsch macher" module
