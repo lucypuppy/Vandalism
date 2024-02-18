@@ -68,7 +68,7 @@ public class FlightModule extends AbstractModule implements OutgoingPacketListen
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (this.mode.getValue() instanceof CreativeModuleMode || this.mode.getValue() instanceof MotionModuleMode) {
             if (this.antiKick.getValue()) {
-                if (this.mc.player.fallDistance > 1.0f) {
+                if (!this.mc.player.isOnGround()) {
                     this.mc.player.ticksSinceLastPositionPacketSent = 20;
                 }
             }
@@ -80,7 +80,7 @@ public class FlightModule extends AbstractModule implements OutgoingPacketListen
         if (this.mode.getValue() instanceof CreativeModuleMode || this.mode.getValue() instanceof MotionModuleMode) {
             if (event.packet instanceof final PlayerMoveC2SPacket playerMoveC2SPacket) {
                 if (this.antiKick.getValue()) {
-                    if (this.mc.player.fallDistance > 1.0f) {
+                    if (!this.mc.player.isOnGround()) {
                         if (this.mc.player.age % 2 == 0) {
                             playerMoveC2SPacket.y = playerMoveC2SPacket.y - 0.1;
                         }
