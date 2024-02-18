@@ -95,7 +95,7 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
     public void hookBetterTabListModule(PlayerListEntry entry, CallbackInfoReturnable<Text> cir) {
         final var betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
 
-        if (betterTabListModule.isActive() && betterTabListModule.moreInfo.getValue()) {
+        if (betterTabListModule.isActive() && betterTabListModule.showGameMode.getValue()) {
             final var color = betterTabListModule.getColorFromGameMode(entry.getGameMode().getId());
 
             cir.setReturnValue(Text.literal("").append(
@@ -109,7 +109,7 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
     @Inject(method = "renderLatencyIcon", at = @At("HEAD"), cancellable = true)
     public void hookBetterTabListModule(DrawContext context, int width, int x, int y, PlayerListEntry entry, CallbackInfo ci) {
         final var betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
-        if (betterTabListModule.isActive() && betterTabListModule.moreInfo.getValue()) {
+        if (betterTabListModule.isActive() && betterTabListModule.showAccuratePing.getValue()) {
             final var matrices = context.getMatrices();
             matrices.push();
             matrices.translate(x + width - 6, y + client.textRenderer.fontHeight / 2f, 0);
