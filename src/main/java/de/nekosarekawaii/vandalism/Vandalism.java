@@ -47,7 +47,6 @@ import java.io.File;
  *  - Fix true sight when holding an barrier block in hand
  *  - Add Version Range to the creative tabs
  *  - Change behavior of the echolocation module to use it as a chunk load detector
- *  - Fix spaces in the text rendering when using the "deutsch macher" module
  *  - Protector Module:
  *      - Add protection for custom rank prefixes
  *      - Add protection for skins
