@@ -62,7 +62,7 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         final var moduleManager = Vandalism.getInstance().getModuleManager();
         if (!moduleManager.getList().isEmpty()) {
-            final float width = 185, minHeight = 140, maxHeight = 415;
+            final float width = 185, minHeight = 140, maxHeight = Vandalism.getInstance().getClientSettings().getMenuSettings().moduleTabMaxHeight.getValue();
             final int windowFlags = ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse;
             ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
             final String modulesIdentifier = "##modules", modulesSearchIdentifier = modulesIdentifier + "search";
