@@ -59,7 +59,6 @@ import java.io.File;
  *  - Fix better tab list module duplicated highlighting of friends & self
  *  - Rewrite EnhancedServerList
  *  - Fix offsets for the new "teleport" method in the fov fucker module
- *  - Make the width and height customizable or use calculations in the modules im window for the tabs
  *  - Fix module tabs display (no stacking) when the client starts the first time
  *  - Fix ClientMenuScreen#close because it could break the entire game
  *  - Add anti vanish via. the player list hud

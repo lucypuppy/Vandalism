@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.base.clientsettings.impl;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
@@ -50,6 +51,15 @@ public class MenuSettings extends ValueGroup {
             "Script Execution Logging",
             "Activates/Deactivates the logging for the script execution.",
             false
+    );
+
+    public final FloatValue moduleTabMaxHeight = new FloatValue(
+            this,
+            "Module Tab Max Height",
+            "The maximum height of the module tab.",
+            415f,
+            715f,
+            915f
     );
 
     public final BooleanValue customBackground = new BooleanValue(
