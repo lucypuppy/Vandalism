@@ -50,7 +50,7 @@ public abstract class MixinWurstClient implements IWurstClient {
         return keyBinding;
     }
 
-    @ModifyArgs(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;<init>(Ljava/lang/String;Lnet/minecraft/client/util/InputUtil$Type;ILjava/lang/String;)V"), remap = false)
+    @ModifyArgs(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;<init>(Ljava/lang/String;Lnet/minecraft/client/util/InputUtil$Type;ILjava/lang/String;)V"))
     private void forceWurstZoomKeyBindingToUnknownKey(final Args args) {
         args.set(2, GLFW.GLFW_KEY_UNKNOWN);
     }
