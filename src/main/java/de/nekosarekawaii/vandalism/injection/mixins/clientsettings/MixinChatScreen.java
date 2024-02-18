@@ -67,12 +67,11 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
         }
     }
 
-
     @ModifyConstant(method = "init", constant = @Constant(intValue = 10))
     private int moreChatInputSuggestions(int constant) {
         final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
         if (chatSettings.moreChatInputSuggestions.getValue()) {
-            return (height - 12 - 3) / 12;
+            return (this.height - 12 - 3) / 12;
         } else {
             return constant;
         }
