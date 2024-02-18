@@ -32,7 +32,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(value = ChatUtils.class)
 public abstract class MixinChatUtils {
 
-    @Redirect(method = "message", at = @At(value = "INVOKE", target = "Lnet/minecraft/text/Text;literal(Ljava/lang/String;)Lnet/minecraft/text/MutableText;"), remap = false)
+    @Redirect(method = "message", at = @At(value = "INVOKE", target = "Lnet/minecraft/text/Text;literal(Ljava/lang/String;)Lnet/minecraft/text/MutableText;"))
     private static MutableText fixWurstCommandPrefix(String input) {
         for (final Command cmd : WurstClient.INSTANCE.getCmds().getAllCmds()) {
             final String cmdName = cmd.getName();
