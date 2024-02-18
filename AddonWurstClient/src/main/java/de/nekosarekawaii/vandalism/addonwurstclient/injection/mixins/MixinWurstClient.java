@@ -34,7 +34,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.util.ArrayList;
 
-@Mixin(value = WurstClient.class, remap = false)
+@Mixin(value = WurstClient.class)
 public abstract class MixinWurstClient implements IWurstClient {
 
     @Shadow public abstract void setEnabled(boolean enabled);
@@ -59,7 +59,7 @@ public abstract class MixinWurstClient implements IWurstClient {
     }
 
     @Override
-    public void vandalism$setTrackedEnabled(boolean enabled) {
+    public void vandalism$setTrackedEnabled(final boolean enabled) {
         if (!enabled) {
             //When the client is about to disable, store the enabled hacks
             //and create a new instance of the list
@@ -88,6 +88,5 @@ public abstract class MixinWurstClient implements IWurstClient {
     public void vandalism$setSilentEnabled(boolean enabled) {
         this.enabled = enabled;
     }
-
 
 }
