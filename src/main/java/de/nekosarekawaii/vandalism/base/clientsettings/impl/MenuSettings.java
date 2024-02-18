@@ -58,7 +58,7 @@ public class MenuSettings extends ValueGroup {
             "Module Tab Max Height",
             "The maximum height of the module tab.",
             415f,
-            715f,
+            415f,
             915f
     );
 
