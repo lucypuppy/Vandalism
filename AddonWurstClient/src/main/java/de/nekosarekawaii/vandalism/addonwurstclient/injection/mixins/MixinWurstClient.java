@@ -37,9 +37,11 @@ import java.util.ArrayList;
 @Mixin(value = WurstClient.class)
 public abstract class MixinWurstClient implements IWurstClient {
 
-    @Shadow public abstract void setEnabled(boolean enabled);
+    @Shadow(remap = false)
+    public abstract void setEnabled(boolean enabled);
 
-    @Shadow private boolean enabled;
+    @Shadow(remap = false)
+    private boolean enabled;
 
     @Redirect(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/fabricmc/fabric/api/client/keybinding/v1/KeyBindingHelper;registerKeyBinding(Lnet/minecraft/client/option/KeyBinding;)Lnet/minecraft/client/option/KeyBinding;"))
     private KeyBinding cancelWurstZoomKeyBinding(final KeyBinding keyBinding) {
@@ -48,7 +50,7 @@ public abstract class MixinWurstClient implements IWurstClient {
         return keyBinding;
     }
 
-    @ModifyArgs(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;<init>(Ljava/lang/String;Lnet/minecraft/client/util/InputUtil$Type;ILjava/lang/String;)V"))
+    @ModifyArgs(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;<init>(Ljava/lang/String;Lnet/minecraft/client/util/InputUtil$Type;ILjava/lang/String;)V"), remap = false)
     private void forceWurstZoomKeyBindingToUnknownKey(final Args args) {
         args.set(2, GLFW.GLFW_KEY_UNKNOWN);
     }

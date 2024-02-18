@@ -24,10 +24,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = WurstInitializer.class, remap = false)
+@Mixin(value = WurstInitializer.class)
 public abstract class MixinWurstInitializer {
 
-    @Inject(method = "onInitialize", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "onInitialize", at = @At("HEAD"), cancellable = true, remap = false)
     private void cancelWurstInitialization(final CallbackInfo ci) {
         //Cancel Wurst initialization because we are moving it to load after the client has been initialized, counterpart in AddonWurstClient.java
         ci.cancel();

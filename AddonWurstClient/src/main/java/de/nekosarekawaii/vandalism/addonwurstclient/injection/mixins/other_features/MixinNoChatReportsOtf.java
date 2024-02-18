@@ -31,41 +31,41 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = NoChatReportsOtf.class, remap = false)
+@Mixin(value = NoChatReportsOtf.class)
 public abstract class MixinNoChatReportsOtf {
 
-    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/wurstclient/other_features/NoChatReportsOtf;addSetting(Lnet/wurstclient/settings/Setting;)V"))
+    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/wurstclient/other_features/NoChatReportsOtf;addSetting(Lnet/wurstclient/settings/Setting;)V"), remap = false)
     private void removeWurstNoChatReportsDisableSignaturesSetting(final NoChatReportsOtf instance, final Setting setting) {}
 
-    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/fabricmc/fabric/api/event/Event;register(Ljava/lang/Object;)V"))
+    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/fabricmc/fabric/api/event/Event;register(Ljava/lang/Object;)V"), remap = false)
     private void removeWurstNoChatReportsClientLoginConnectionEventRegister(final Event instance, final Object t) {}
 
-    @Inject(method = "onUpdate", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "onUpdate", at = @At("HEAD"), cancellable = true, remap = false)
     private void cancelWurstNoChatReportsUpdateEvent(final CallbackInfo ci) {
         ci.cancel();
     }
 
-    @Inject(method = "onLoginStart", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "onLoginStart", at = @At("HEAD"), cancellable = true, remap = false)
     private void cancelWurstNoChatReportsLoginStartEvent(final CallbackInfo ci) {
         ci.cancel();
     }
 
-    @Inject(method = "isEnabled", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "isEnabled", at = @At("HEAD"), cancellable = true, remap = false)
     private void forceDisableWurstNoChatReports(final CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(false);
     }
 
-    @Inject(method = "isActive", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "isActive", at = @At("HEAD"), cancellable = true, remap = false)
     private void forceDeactivateWurstNoChatReports(final CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(false);
     }
 
-    @Inject(method = "doPrimaryAction", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "doPrimaryAction", at = @At("HEAD"), cancellable = true, remap = false)
     private void cancelWurstNoChatReportsPrimaryAction(final CallbackInfo ci) {
         ci.cancel();
     }
 
-    @Inject(method = "modifyIndicator", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "modifyIndicator", at = @At("HEAD"), cancellable = true, remap = false)
     private void cancelWurstNoChatReportsModifyIndicator(final Text message, final MessageSignatureData signature, final MessageIndicator indicator, final CallbackInfoReturnable<MessageIndicator> cir) {
         cir.setReturnValue(indicator);
     }

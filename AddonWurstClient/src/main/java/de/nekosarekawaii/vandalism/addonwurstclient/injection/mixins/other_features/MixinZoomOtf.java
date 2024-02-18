@@ -27,21 +27,21 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = ZoomOtf.class, remap = false)
+@Mixin(value = ZoomOtf.class)
 public abstract class MixinZoomOtf {
 
-    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/wurstclient/other_features/ZoomOtf;addSetting(Lnet/wurstclient/settings/Setting;)V", ordinal = 0))
+    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/wurstclient/other_features/ZoomOtf;addSetting(Lnet/wurstclient/settings/Setting;)V", ordinal = 0), remap = false)
     private void removeWurstZoomLevelSetting(final ZoomOtf instance, final Setting setting) {}
 
-    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/wurstclient/other_features/ZoomOtf;addSetting(Lnet/wurstclient/settings/Setting;)V", ordinal = 1))
+    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/wurstclient/other_features/ZoomOtf;addSetting(Lnet/wurstclient/settings/Setting;)V", ordinal = 1), remap = false)
     private void removeWurstZoomScrollSetting(final ZoomOtf instance, final Setting setting) {}
 
-    @Inject(method = "onMouseScroll", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "onMouseScroll", at = @At("HEAD"), cancellable = true, remap = false)
     private void cancelWurstZoomMouseScrollEvent(final CallbackInfo ci) {
         ci.cancel();
     }
 
-    @Inject(method = "changeFovBasedOnZoom", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "changeFovBasedOnZoom", at = @At("HEAD"), cancellable = true, remap = false)
     private void cancelWurstZoomFOVChange(final double fov, final CallbackInfoReturnable<Double> cir) {
         cir.setReturnValue(fov);
     }
