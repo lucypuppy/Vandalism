@@ -239,7 +239,7 @@ public class DeutschMacherModule extends AbstractModule implements TextDrawListe
 
     @Override
     public void onTextDraw(final TextDrawEvent event) {
-        event.text = this.toDeutscheZahlen(event.text);
+        event.text = this.toDeutscheZahlen(event.text).replace(",", "komma");
     }
 
 }
