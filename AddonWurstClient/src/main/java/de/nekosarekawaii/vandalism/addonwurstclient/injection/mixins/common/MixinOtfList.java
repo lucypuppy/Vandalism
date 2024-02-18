@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
 
-@Mixin(value = OtfList.class, remap = false)
+@Mixin(value = OtfList.class)
 public abstract class MixinOtfList {
 
     @Unique
@@ -42,7 +42,7 @@ public abstract class MixinOtfList {
             NoChatReportsOtf.class
     );
 
-    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/util/TreeMap;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"))
+    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/util/TreeMap;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"), remap = false)
     private Object disableSomeWurstOtherFeatures(TreeMap instance, Object key, Object value) {
         if (vandalism_DISABLED_OTFS.contains(value.getClass())) {
             return value;

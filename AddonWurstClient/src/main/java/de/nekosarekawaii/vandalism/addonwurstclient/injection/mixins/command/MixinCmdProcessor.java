@@ -25,10 +25,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = CmdProcessor.class, remap = false)
+@Mixin(value = CmdProcessor.class)
 public abstract class MixinCmdProcessor {
 
-    @Inject(method = "onSentMessage", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "onSentMessage", at = @At("HEAD"), cancellable = true, remap = false)
     private void cancelWurstCommandHandling(final ChatOutputListener.ChatOutputEvent event, final CallbackInfo ci) {
         ci.cancel();
     }

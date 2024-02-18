@@ -25,15 +25,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = WurstAnalytics.class, remap = false)
+@Mixin(value = WurstAnalytics.class)
 public abstract class MixinWurstAnalytics {
 
-    @Inject(method = "isEnabled", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "isEnabled", at = @At("HEAD"), cancellable = true, remap = false)
     private void cancelWurstAnalytics(final CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(false);
     }
 
-    @Inject(method = "setEnabled", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "setEnabled", at = @At("HEAD"), cancellable = true, remap = false)
     public void cancelWurstAnalytics(final boolean enabled, final CallbackInfo ci) {
         ci.cancel();
     }

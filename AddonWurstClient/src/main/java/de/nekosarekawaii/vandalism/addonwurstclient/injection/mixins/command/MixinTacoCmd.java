@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-@Mixin(value = TacoCmd.class, remap = false)
+@Mixin(value = TacoCmd.class)
 public abstract class MixinTacoCmd {
 
     @ModifyArgs(method = "onRenderGUI", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIFFIIII)V"), remap = false)
