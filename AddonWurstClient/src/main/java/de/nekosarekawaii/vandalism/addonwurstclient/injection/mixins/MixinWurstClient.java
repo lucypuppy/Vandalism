@@ -53,7 +53,7 @@ public abstract class MixinWurstClient implements IWurstClient {
         args.set(2, GLFW.GLFW_KEY_UNKNOWN);
     }
 
-    @Redirect(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/wurstclient/analytics/WurstAnalytics;trackPageView(Ljava/lang/String;Ljava/lang/String;)V", remap = false))
+    @Redirect(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/wurstclient/analytics/WurstAnalytics;trackPageView(Ljava/lang/String;Ljava/lang/String;)V"), remap = false)
     private void ignoreTrackPageView(final WurstAnalytics instance, final String url, final String title) {
         //Prevents the client from crashing...
     }
