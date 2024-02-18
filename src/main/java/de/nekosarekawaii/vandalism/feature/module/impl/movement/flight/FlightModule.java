@@ -68,7 +68,9 @@ public class FlightModule extends AbstractModule implements OutgoingPacketListen
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (this.mode.getValue() instanceof CreativeModuleMode || this.mode.getValue() instanceof MotionModuleMode) {
             if (this.antiKick.getValue()) {
-                this.mc.player.ticksSinceLastPositionPacketSent = 20;
+                if (this.mc.player.fallDistance > 1.0f) {
+                    this.mc.player.ticksSinceLastPositionPacketSent = 20;
+                }
             }
         }
     }
@@ -77,8 +79,12 @@ public class FlightModule extends AbstractModule implements OutgoingPacketListen
     public void onOutgoingPacket(final OutgoingPacketEvent event) {
         if (this.mode.getValue() instanceof CreativeModuleMode || this.mode.getValue() instanceof MotionModuleMode) {
             if (event.packet instanceof final PlayerMoveC2SPacket playerMoveC2SPacket) {
-                if (this.antiKick.getValue() && this.mc.player.age % 2 == 0) {
-                    playerMoveC2SPacket.y = playerMoveC2SPacket.y - 0.1;
+                if (this.antiKick.getValue()) {
+                    if (this.mc.player.fallDistance > 1.0f) {
+                        if (this.mc.player.age % 2 == 0) {
+                            playerMoveC2SPacket.y = playerMoveC2SPacket.y - 0.1;
+                        }
+                    }
                 }
             }
         }
