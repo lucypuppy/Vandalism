@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "vandalism-baritone",
+  "version": "${version}",
+  "name": "Vandalism-Baritone",
+  "description": "Implementation of the Baritone for Vandalism.",
+  "authors": [
+    "NekosAreKawaii"
+  ],
+  "license": "GPL-v3",
+  "environment": "client",
+  "mixins": [
+    "vandalism-baritone.mixins.json"
+  ],
+  "entrypoints": {
+    "vandalism:onLaunch": [
+      "de.nekosarekawaii.vandalism.addonbaritone.AddonBaritone"
+    ]
+  },
+  "depends": {
+    "vandalism": "*",
+    "wurst": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "parent": "vandalism"
+    },
+    "afl:classtransform": "vandalism-baritone.classtransform.json"
+  }
+}
