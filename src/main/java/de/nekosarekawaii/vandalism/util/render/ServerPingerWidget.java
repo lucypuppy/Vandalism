@@ -76,8 +76,14 @@ public class ServerPingerWidget implements MinecraftWrapper {
         if (!menuSettings.serverPingerWidget.getValue()) return;
         final ServerList serverList = new ServerList(mc);
         currentServerInfo.online = false;
+        currentServerInfo.name += "\uE48D";
         serverList.add(currentServerInfo, false);
         WIDGET.setServers(serverList);
+        PING_TIMER.reset();
+    }
+
+    public static boolean shouldSave(final ServerInfo serverInfo) {
+        return !serverInfo.name.contains("\uE48D");
     }
 
 }
