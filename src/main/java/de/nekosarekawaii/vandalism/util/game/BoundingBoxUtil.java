@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.util.game;
 
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 
+@Deprecated
 public class BoundingBoxUtil implements MinecraftWrapper {
 
     public static boolean isOnGround(final double height) {

@@ -34,11 +34,13 @@ import net.minecraft.world.RaycastContext;
 
 public class WorldUtil implements MinecraftWrapper {
 
+    @Deprecated
     public enum Dimension {
         OVERWORLD, NETHER, END
     }
 
     //We don't need any other dimensions since this client isn't intended to be compatible with mod packs.
+    @Deprecated
     public static Dimension getDimension() {
         return switch (mc.world.getRegistryKey().getValue().getPath()) {
             case "the_nether" -> Dimension.NETHER;

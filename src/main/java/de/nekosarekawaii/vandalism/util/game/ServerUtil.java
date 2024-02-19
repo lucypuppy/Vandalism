@@ -59,6 +59,7 @@ public class ServerUtil implements MinecraftWrapper {
         GAME_MENU_SCREEN.disconnect();
     }
 
+    @Deprecated
     public static String fixVersionName(final String input) {
         if (input.contains(" ")) {
             final String[] data = input.split(" ");
