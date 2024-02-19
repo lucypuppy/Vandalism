@@ -35,7 +35,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.TreeMap;
 
-@Mixin(value = CmdList.class, remap = false)
+@Mixin(value = CmdList.class)
 public abstract class MixinCmdList {
 
     @Unique
@@ -47,7 +47,7 @@ public abstract class MixinCmdList {
         }
     }
 
-    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/util/TreeMap;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"))
+    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/util/TreeMap;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"), remap = false)
     private Object registerWurstCommands(TreeMap instance, Object key, Object value) {
         final Command command = (Command) value;
         Vandalism.getInstance().getCommandManager().add(new AbstractCommand(command.getDescription(), Feature.Category.MISC, "wurst" + command.getName().substring(1)) {

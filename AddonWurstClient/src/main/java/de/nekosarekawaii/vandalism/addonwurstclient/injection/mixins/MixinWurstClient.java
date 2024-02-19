@@ -34,12 +34,14 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.util.ArrayList;
 
-@Mixin(value = WurstClient.class, remap = false)
+@Mixin(value = WurstClient.class)
 public abstract class MixinWurstClient implements IWurstClient {
 
-    @Shadow public abstract void setEnabled(boolean enabled);
+    @Shadow(remap = false)
+    public abstract void setEnabled(boolean enabled);
 
-    @Shadow private boolean enabled;
+    @Shadow(remap = false)
+    private boolean enabled;
 
     @Redirect(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/fabricmc/fabric/api/client/keybinding/v1/KeyBindingHelper;registerKeyBinding(Lnet/minecraft/client/option/KeyBinding;)Lnet/minecraft/client/option/KeyBinding;"))
     private KeyBinding cancelWurstZoomKeyBinding(final KeyBinding keyBinding) {
@@ -53,13 +55,13 @@ public abstract class MixinWurstClient implements IWurstClient {
         args.set(2, GLFW.GLFW_KEY_UNKNOWN);
     }
 
-    @Redirect(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/wurstclient/analytics/WurstAnalytics;trackPageView(Ljava/lang/String;Ljava/lang/String;)V", remap = false))
+    @Redirect(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/wurstclient/analytics/WurstAnalytics;trackPageView(Ljava/lang/String;Ljava/lang/String;)V"), remap = false)
     private void ignoreTrackPageView(final WurstAnalytics instance, final String url, final String title) {
         //Prevents the client from crashing...
     }
 
     @Override
-    public void vandalism$setTrackedEnabled(boolean enabled) {
+    public void vandalism$setTrackedEnabled(final boolean enabled) {
         if (!enabled) {
             //When the client is about to disable, store the enabled hacks
             //and create a new instance of the list
@@ -88,6 +90,5 @@ public abstract class MixinWurstClient implements IWurstClient {
     public void vandalism$setSilentEnabled(boolean enabled) {
         this.enabled = enabled;
     }
-
 
 }

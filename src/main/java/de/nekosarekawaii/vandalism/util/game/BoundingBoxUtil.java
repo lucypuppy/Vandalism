@@ -16,21 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.addonwurstclient.injection.mixins;
+package de.nekosarekawaii.vandalism.util.game;
 
-import net.wurstclient.WurstInitializer;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 
-@Mixin(value = WurstInitializer.class)
-public abstract class MixinWurstInitializer {
+public class BoundingBoxUtil implements MinecraftWrapper {
 
-    @Inject(method = "onInitialize", at = @At("HEAD"), cancellable = true, remap = false)
-    private void cancelWurstInitialization(final CallbackInfo ci) {
-        //Cancel Wurst initialization because we are moving it to load after the client has been initialized, counterpart in AddonWurstClient.java
-        ci.cancel();
+    public static boolean isOnGround(final double height) {
+        if (mc.world == null || mc.player == null) {
+            return false;
+        }
+        return mc.world.getBlockCollisions(mc.player, mc.player.getBoundingBox().offset(0.0D, -height, 0.0D)).iterator().hasNext();
     }
 
 }

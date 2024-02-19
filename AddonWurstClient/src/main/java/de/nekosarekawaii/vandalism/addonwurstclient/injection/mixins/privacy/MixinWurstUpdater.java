@@ -25,15 +25,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = WurstUpdater.class, remap = false)
+@Mixin(value = WurstUpdater.class)
 public abstract class MixinWurstUpdater {
 
-    @Inject(method = {"onUpdate", "checkForUpdates"}, at = @At("HEAD"), cancellable = true)
+    @Inject(method = {"onUpdate", "checkForUpdates"}, at = @At("HEAD"), cancellable = true, remap = false)
     private void cancelWurstUpdater(final CallbackInfo ci) {
         ci.cancel();
     }
 
-    @Inject(method = "isOutdated", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "isOutdated", at = @At("HEAD"), cancellable = true, remap = false)
     private void wurstIsNeverOutdated(final CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(false);
     }

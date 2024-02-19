@@ -46,7 +46,7 @@ public abstract class MixinHackListHUD {
         return result;
     }
 
-    @Inject(method = "updateState", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "updateState", at = @At("HEAD"), cancellable = true, remap = false)
     private void redirectWurstHackListEntry(final Hack hack, final CallbackInfo ci) {
         final String name;
         if (vandalism_NORMAL_HACK_NAMES.containsKey(hack.getName())) {
@@ -61,7 +61,7 @@ public abstract class MixinHackListHUD {
         ci.cancel();
     }
 
-    @Inject(method = "onUpdate", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "onUpdate", at = @At("HEAD"), cancellable = true, remap = false)
     private void disableWurstHackListUpdates(final CallbackInfo ci) {
         ci.cancel();
     }

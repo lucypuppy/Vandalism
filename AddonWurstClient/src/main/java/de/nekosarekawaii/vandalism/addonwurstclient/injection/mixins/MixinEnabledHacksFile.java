@@ -28,10 +28,10 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-@Mixin(value = EnabledHacksFile.class, remap = false)
+@Mixin(value = EnabledHacksFile.class)
 public abstract class MixinEnabledHacksFile {
 
-    @Redirect(method = "createJson", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0))
+    @Redirect(method = "createJson", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0), remap = false)
     public <T extends Hack> Stream<T> useStoredEnabledData(Stream<T> instance, Predicate<? super T> predicate) {
         if (AddonWurstClient.enabledHacks != null) {
             //If the client is disabled and stored enabled hacks, we save

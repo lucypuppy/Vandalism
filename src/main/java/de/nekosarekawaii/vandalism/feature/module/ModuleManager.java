@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.pattern.storage.named.NamedStorage;
+import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.base.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.base.event.normal.game.ShutdownProcessListener;
@@ -86,9 +87,13 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
     @Override
     public void init() {
+        if (FabricBootstrap.IS_DEV_ENVIRONMENT) {
+            this.add(
+                    new TestModule()
+            );
+        }
         this.add(
-                new TestModule(), // Leave this here because it fixes issues with the module config
-
+                new CraftCarryModule(),
                 this.modPacketBlockerModule = new ModPacketBlockerModule(),
                 this.exploitFixerModule = new ExploitFixerModule(),
                 this.trueSightModule = new TrueSightModule(),
@@ -137,7 +142,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new EcholocationModule(),
                 new AutoClickerModule(),
                 new SprintTapModule(),
-                new CraftCarryModule(),
                 new FakeLagModule(),
                 new DisablerModule(),
                 new TeleportModule(),

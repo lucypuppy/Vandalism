@@ -24,15 +24,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = JGoogleAnalyticsTracker.class, remap = false)
+@Mixin(value = JGoogleAnalyticsTracker.class)
 public abstract class MixinJGoogleAnalyticsTracker {
 
-    @Inject(method = {"startBackgroundThread", "createBuilder"}, at = @At("HEAD"), cancellable = true)
+    @Inject(method = {"startBackgroundThread", "createBuilder"}, at = @At("HEAD"), cancellable = true, remap = false)
     private void cancelWurstJGoogleAnalyticsTrackerThread(final CallbackInfo ci) {
         ci.cancel();
     }
 
-    @Inject(method = "stopBackgroundThread", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "stopBackgroundThread", at = @At("HEAD"), cancellable = true, remap = false)
     private static void cancelWurstJGoogleAnalyticsTrackerStopThread(final CallbackInfo ci) {
         ci.cancel();
     }

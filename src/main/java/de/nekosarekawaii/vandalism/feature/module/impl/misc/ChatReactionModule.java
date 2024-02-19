@@ -22,9 +22,11 @@ import de.florianmichael.rclasses.common.RandomUtils;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.ChatReceiveListener;
+import de.nekosarekawaii.vandalism.base.value.impl.rendering.ButtonValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.script.parse.ScriptVariable;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.util.Util;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -38,6 +40,14 @@ public class ChatReactionModule extends AbstractModule implements ChatReceiveLis
     private final Map<String[], String[]> contentMap = new HashMap<>();
 
     private final File contentFile = new File(Vandalism.getInstance().getRunDirectory(), "chat_reaction.txt");
+
+    private final ButtonValue openFileButton = new ButtonValue(this, "Open File", "Opens the chat reaction file.", buttonValue -> {
+        try {
+            Util.getOperatingSystem().open(this.contentFile);
+        } catch (Exception e) {
+            Vandalism.getInstance().getLogger().error("Failed to open chat reaction file!", e);
+        }
+    });
 
     public ChatReactionModule() {
         super(

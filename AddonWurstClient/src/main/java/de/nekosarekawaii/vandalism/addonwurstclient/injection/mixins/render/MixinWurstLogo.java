@@ -32,7 +32,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = WurstLogo.class, remap = false)
+@Mixin(value = WurstLogo.class)
 public abstract class MixinWurstLogo {
 
     @Shadow
@@ -59,7 +59,7 @@ public abstract class MixinWurstLogo {
         instance.drawTexture(texture, watermarkHUDElement.getX() + 30, watermarkHUDElement.getY() + 30, u, v, width, height, textureWidth, textureHeight);
     }
 
-    @Inject(method = "getVersionString", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "getVersionString", at = @At("RETURN"), cancellable = true, remap = false)
     private void changeWurstLogoVersionString(final CallbackInfoReturnable<String> cir) {
         cir.setReturnValue("");
     }

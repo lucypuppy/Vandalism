@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.base.clientsettings.impl;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
@@ -50,6 +51,15 @@ public class MenuSettings extends ValueGroup {
             "Script Execution Logging",
             "Activates/Deactivates the logging for the script execution.",
             false
+    );
+
+    public final FloatValue moduleTabMaxHeight = new FloatValue(
+            this,
+            "Module Tab Max Height",
+            "The maximum height of the module tab.",
+            415f,
+            415f,
+            915f
     );
 
     public final BooleanValue customBackground = new BooleanValue(
@@ -159,6 +169,22 @@ public class MenuSettings extends ValueGroup {
             "Adds more buttons to the disconnected screen.",
             true
     );
+
+    public final BooleanValue autoReconnect = new BooleanValue(
+            this,
+            "Auto Reconnect",
+            "Automatically reconnects to the last server when you get disconnected.",
+            true
+    ).visibleCondition(this.moreDisconnectedScreenButtons::getValue);
+
+    public final IntegerValue autoReconnectDelay = new IntegerValue(
+            this,
+            "Auto Reconnect Delay",
+            "The delay in seconds before the auto reconnect does its job.",
+            5,
+            1,
+            60
+    ).visibleCondition(this.autoReconnect::getValue);
 
     public final BooleanValue forceEnableReconfiguartionDisconnectButton = new BooleanValue(
             this,
