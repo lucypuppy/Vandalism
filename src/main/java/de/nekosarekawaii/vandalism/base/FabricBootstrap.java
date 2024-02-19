@@ -31,6 +31,7 @@ public class FabricBootstrap implements ClientModInitializer {
     public static String MOD_ID, MOD_NAME, MOD_AUTHORS, MOD_VERSION;
     public static Identifier MOD_LOGO, MOD_ICON;
     public static String WINDOW_TITLE;
+    public static boolean IS_DEV_ENVIRONMENT;
 
     @Override
     public void onInitializeClient() {
@@ -40,6 +41,7 @@ public class FabricBootstrap implements ClientModInitializer {
             FabricBootstrap.MOD_VERSION = modContainer.getMetadata().getVersion().getFriendlyString();
         });
         FabricBootstrap.WINDOW_TITLE = MOD_NAME;
+        FabricBootstrap.IS_DEV_ENVIRONMENT = FabricLoader.getInstance().isDevelopmentEnvironment();
         Vandalism.getInstance().getEventSystem().subscribe(Vandalism.getInstance(),
                 MinecraftBoostrapListener.MinecraftBootstrapEvent.ID,
                 ShutdownProcessListener.ShutdownProcessEvent.ID

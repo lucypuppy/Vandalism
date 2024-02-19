@@ -24,10 +24,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = WurstLogoOtf.Visibility.class, remap = false)
+@Mixin(value = WurstLogoOtf.Visibility.class)
 public abstract class MixinWurstLogoOtf_Visibility {
 
-    @Inject(method = "toString", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "toString", at = @At("RETURN"), cancellable = true, remap = false)
     private void renameWurstLogoSetting(final CallbackInfoReturnable<String> cir) {
         if (cir.getReturnValue().contains("outdated")) {
             cir.setReturnValue("Never");

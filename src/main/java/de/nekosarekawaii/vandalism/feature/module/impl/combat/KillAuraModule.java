@@ -44,13 +44,16 @@ import de.nekosarekawaii.vandalism.util.click.Clicker;
 import de.nekosarekawaii.vandalism.util.click.impl.BezierClicker;
 import de.nekosarekawaii.vandalism.util.click.impl.BoxMuellerClicker;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
+import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.GameMode;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -132,6 +135,13 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             "Switch Target",
             "Whether the target should be switched.",
             true
+    );
+
+    private final BooleanValue ignoreCreativePlayers = new BooleanValue(
+            this.targetSelectionGroup,
+            "Ignore Creative Players",
+            "Whether creative players should be ignored.",
+            false
     );
 
     private final ValueGroup clicking = new ValueGroup(
@@ -407,6 +417,10 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
     @Override
     public void onRotation(final RotationEvent event) {
+        if (mc.player == null || mc.interactionManager.getCurrentGameMode() == GameMode.SPECTATOR) {
+            return;
+        }
+
         this.updateTarget();
 
         if (this.raytraceDistance <= this.getAimRange()) {
@@ -466,12 +480,18 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         final List<Entity> entities = new ArrayList<>();
 
         for (final Entity entity : this.mc.world.getEntities()) {
-            if (
-                    WorldUtil.isTarget(entity) &&
+            if (WorldUtil.isTarget(entity) &&
                             this.mc.player.distanceTo(entity) <= getAimRange() + 1.0 &&
-                            entity.getWidth() > 0.0 && entity.getHeight() > 0.0
-            ) {
-                entities.add(entity);
+                    entity.getWidth() > 0.0 && entity.getHeight() > 0.0) {
+                PlayerListEntry playerListEntry = null;
+
+                if (entity instanceof PlayerEntity player) {
+                    playerListEntry = mc.getNetworkHandler().getPlayerListEntry(player.getUuid());
+                }
+
+                if (playerListEntry == null || !this.ignoreCreativePlayers.getValue() || !playerListEntry.getGameMode().isCreative()) {
+                    entities.add(entity);
+                }
             }
         }
 

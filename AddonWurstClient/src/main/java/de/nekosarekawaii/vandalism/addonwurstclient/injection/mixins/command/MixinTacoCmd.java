@@ -24,10 +24,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-@Mixin(value = TacoCmd.class, remap = false)
+@Mixin(value = TacoCmd.class)
 public abstract class MixinTacoCmd {
 
-    @ModifyArgs(method = "onRenderGUI", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIFFIIII)V"), remap = false)
+    @ModifyArgs(method = "onRenderGUI", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIFFIIII)V"))
     private void moveWurstTaco(final Args args) {
         args.set(1, (int) args.get(1) + 64);
         args.set(2, (int) args.get(2) + 18);

@@ -18,9 +18,11 @@
 
 package de.nekosarekawaii.vandalism.clientmenu.base;
 
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.integration.hud.gui.HUDClientMenuWindow;
 import de.nekosarekawaii.vandalism.util.imgui.ImLoader;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -51,6 +53,12 @@ public class ClientMenuScreen extends Screen {
                             for (final ClientMenuWindow clientMenuWindow : this.clientMenuManager.getByCategory(category)) {
                                 if (ImGui.checkbox(clientMenuWindow.getName(), clientMenuWindow.isActive())) {
                                     clientMenuWindow.toggle();
+                                }
+                            }
+                            if (category == ClientMenuWindow.Category.CONFIG) {
+                                ImGui.separator();
+                                if (ImUtils.subButton("Save Configs")) {
+                                    Vandalism.getInstance().getConfigManager().save();
                                 }
                             }
                             ImGui.endMenu();

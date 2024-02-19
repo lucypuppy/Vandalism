@@ -29,7 +29,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = FriendsCmd.class, remap = false)
+@Mixin(value = FriendsCmd.class)
 public abstract class MixinFriendsCmd extends Command {
 
     @Unique
@@ -43,12 +43,12 @@ public abstract class MixinFriendsCmd extends Command {
         super(name, description, syntax);
     }
 
-    @Redirect(method = "<init>()V", at = @At(value = "INVOKE", target = "Lnet/wurstclient/commands/FriendsCmd;addSetting(Lnet/wurstclient/settings/Setting;)V"))
+    @Redirect(method = "<init>()V", at = @At(value = "INVOKE", target = "Lnet/wurstclient/commands/FriendsCmd;addSetting(Lnet/wurstclient/settings/Setting;)V"), remap = false)
     private void forceWurstMiddleClickFriendsDefaultDisabled(final FriendsCmd instance, final Setting setting) {
         this.addSetting(vandalism_MIDDLE_CLICK_FRIENDS);
     }
 
-    @Inject(method = "getMiddleClickFriends", at = @At(value = "RETURN"), cancellable = true)
+    @Inject(method = "getMiddleClickFriends", at = @At(value = "RETURN"), cancellable = true, remap = false)
     private void returnNewMiddleClickFriends(final CallbackInfoReturnable<CheckboxSetting> cir) {
         cir.setReturnValue(vandalism_MIDDLE_CLICK_FRIENDS);
     }
