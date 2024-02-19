@@ -5,8 +5,7 @@
   "name": "Vandalism-Wurst-Client",
   "description": "Implementation of the Wurst client for Vandalism.",
   "authors": [
-    "NekosAreKawaii",
-    "Snow"
+    "NekosAreKawaii"
   ],
   "license": "GPL-v3",
   "environment": "client",
