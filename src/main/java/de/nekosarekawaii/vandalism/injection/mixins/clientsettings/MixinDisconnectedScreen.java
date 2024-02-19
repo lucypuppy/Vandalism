@@ -114,7 +114,9 @@ public abstract class MixinDisconnectedScreen extends Screen {
             final int x = this.width / 2;
             final int y = 15;
             final int y2 = y + this.textRenderer.fontHeight + 2;
-            context.drawCenteredTextWithShadow(this.textRenderer, "Reconnecting in " + (remainingTime < 10 ? "0" + remainingTime : remainingTime), x, y, -1);
+            context.drawCenteredTextWithShadow(this.textRenderer, "Reconnecting in " + (
+                    menuSettings.autoReconnectShowZero.getValue() && remainingTime < 10 ? "0" + remainingTime : remainingTime
+            ), x, y, -1);
             context.drawCenteredTextWithShadow(this.textRenderer, LoadingDisplay.get(Util.getMeasuringTimeMs()), x, y2, -1);
         }
         ServerPingerWidget.draw(ServerUtil.getLastServerInfo(), context, mouseX, mouseY, delta, this.height - 55);
