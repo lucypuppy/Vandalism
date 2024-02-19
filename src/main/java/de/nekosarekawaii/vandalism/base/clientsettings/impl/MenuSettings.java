@@ -163,6 +163,13 @@ public class MenuSettings extends ValueGroup {
             true
     );
 
+    public final BooleanValue disconnectedScreenCopyData = new BooleanValue(
+            this,
+            "Disconnected Screen Copy Data",
+            "Allows you to copy the disconnect data by pressing the ctrl and c.",
+            true
+    );
+
     public final BooleanValue moreDisconnectedScreenButtons = new BooleanValue(
             this,
             "More Disconnected Buttons",
@@ -200,6 +207,21 @@ public class MenuSettings extends ValueGroup {
             false
     );
 
+    public final BooleanValue serverPingerWidget = new BooleanValue(
+            this,
+            "Server Pinger Widget",
+            "Activates/Deactivates the server pinger widget.",
+            true
+    );
+
+    public final IntegerValue serverPingerWidgetDelay = new IntegerValue(
+            this,
+            "Server Pinger Widget Delay",
+            "The delay in milliseconds before the server pinger widget pings the server again.",
+            5000,
+            1000,
+            30000
+    ).visibleCondition(this.serverPingerWidget::getValue);
 
     public MenuSettings(final ClientSettings parent) {
         super(parent, "Menu", "Menu related settings.");

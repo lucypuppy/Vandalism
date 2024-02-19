@@ -110,3 +110,5 @@ accessible field net/minecraft/client/MinecraftClient renderTickCounter Lnet/min
 accessible field net/minecraft/client/render/RenderTickCounter tickTime F
 accessible field net/minecraft/network/ClientConnection packetsSentCounter I
 accessible method net/minecraft/network/ClientConnection sendInternal (Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/PacketCallbacks;Z)V
+accessible class net/minecraft/client/gui/widget/EntryListWidget$Entry
+accessible method net/minecraft/client/gui/widget/EntryListWidget addEntry (Lnet/minecraft/client/gui/widget/EntryListWidget$Entry;)I
