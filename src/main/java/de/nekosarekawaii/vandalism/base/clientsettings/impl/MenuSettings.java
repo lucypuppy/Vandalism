@@ -196,7 +196,7 @@ public class MenuSettings extends ValueGroup {
     public final BooleanValue autoReconnectShowZero = new BooleanValue(
             this,
             "Auto Reconnect Show Zero",
-            "Shows 0 before the remaining time if the remaining time is lower than 0.",
+            "Shows 0 before the remaining time if the remaining time is lower than 10.",
             true
     ).visibleCondition(this.autoReconnect::getValue);
 
