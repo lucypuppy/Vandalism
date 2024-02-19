@@ -23,6 +23,7 @@ import de.florianmichael.rclasses.io.debugging.ByteCountDataOutput;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.render.TooltipDrawListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.render.InputType;
 import de.nekosarekawaii.vandalism.util.render.tooltip.impl.BannerTooltipComponent;
 import de.nekosarekawaii.vandalism.util.render.tooltip.impl.ContainerTooltipComponent;
 import de.nekosarekawaii.vandalism.util.render.tooltip.impl.MapTooltipComponent;
@@ -31,13 +32,17 @@ import net.minecraft.block.Block;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.entity.BannerPattern;
 import net.minecraft.block.entity.BannerPatterns;
+import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.item.TooltipData;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.entry.RegistryEntryList;
+import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
@@ -45,11 +50,14 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
+import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
 
 public class BetterTooltipsModule extends AbstractModule implements TooltipDrawListener {
 
@@ -91,19 +99,23 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
         drawBytesTooltip(tooltipData, itemStack);
     }
 
-    private void drawBytesTooltip(List<TooltipData> tooltipData, ItemStack itemStack) {
+    private void drawBytesTooltip(final List<TooltipData> tooltipData, final ItemStack itemStack) {
         try {
             itemStack.writeNbt(new NbtCompound()).write(ByteCountDataOutput.INSTANCE);
             final int byteCount = ByteCountDataOutput.INSTANCE.getCount();
             ByteCountDataOutput.INSTANCE.reset();
-            tooltipData.add(new TextTooltipComponent(Text.literal(StringUtils.formatBytes(byteCount))
-                    .formatted(Formatting.GRAY).asOrderedText()));
+            tooltipData.add(new TextTooltipComponent(Text.literal(
+                            StringUtils.formatBytes(byteCount)
+                    ).formatted(
+                            Formatting.GRAY
+                    ).asOrderedText())
+            );
         } catch (IOException e) {
             Vandalism.getInstance().getLogger().error("Failed to write item stack to nbt.", e);
         }
     }
 
-    private void drawCompassTooltip(List<TooltipData> tooltipData, ItemStack itemStack) {
+    private void drawCompassTooltip(final List<TooltipData> tooltipData, final ItemStack itemStack) {
         final NbtCompound nbt = itemStack.getNbt();
         if (nbt == null) {
             return;
@@ -117,8 +129,11 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
         final BlockPos pos = globalPos.getPos();
         final Text posText = Text.literal(String.format("X: %d, Y: %d, Z: %d", pos.getX(), pos.getY(), pos.getZ())).formatted(Formatting.GOLD);
         final Text position = Text.literal("Position: ").formatted(Formatting.GRAY).append(posText);
-        final Text dimension = Text.literal("Dimension: ").formatted(Formatting.GRAY)
-                .append(Text.literal(globalPos.getDimension().getValue().toString()).formatted(Formatting.GOLD));
+        final Text dimension = Text.literal("Dimension: ").formatted(Formatting.GRAY).append(
+                Text.literal(
+                        globalPos.getDimension().getValue().toString()
+                ).formatted(Formatting.GOLD)
+        );
 
         tooltipData.add(new TextTooltipComponent(position.asOrderedText()));
         tooltipData.add(new TextTooltipComponent(dimension.asOrderedText()));
@@ -135,14 +150,20 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
                 final ItemStack bannerItem = new ItemStack(Items.GRAY_BANNER);
 
                 bannerItem.getOrCreateSubNbt("BlockEntityTag").put("Patterns",
-                        new BannerPattern.Patterns().add(BannerPatterns.BASE,
-                                DyeColor.BLACK).add(bannerPattern, DyeColor.WHITE).toNbt());
+                        new BannerPattern.Patterns().add(
+                                BannerPatterns.BASE,
+                                DyeColor.BLACK
+                        ).add(
+                                bannerPattern,
+                                DyeColor.WHITE
+                        ).toNbt()
+                );
                 tooltipData.add(new BannerTooltipComponent(bannerItem));
             }
         }
     }
 
-    private void drawContainerTooltip(List<TooltipData> tooltipData, ItemStack itemStack, Item item) {
+    private void drawContainerTooltip(final List<TooltipData> tooltipData, final ItemStack itemStack, final Item item) {
         final NbtCompound compoundTag = itemStack.getSubNbt("BlockEntityTag");
 
         if (compoundTag != null && compoundTag.contains("Items", 9) && item instanceof BlockItem blockItem) {
@@ -163,9 +184,100 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
 
             final DefaultedList<ItemStack> itemStacks = DefaultedList.ofSize(27, ItemStack.EMPTY);
             Inventories.readNbt(compoundTag, itemStacks);
+            if (!itemStacks.isEmpty()) {
+                tooltipData.add(new TextTooltipComponent(Text.literal("(Press alt to open inventory)").setStyle(Style.EMPTY.withFormatting(Formatting.GRAY)).asOrderedText()));
+                tooltipData.add(new ContainerTooltipComponent(itemStacks, color));
+                if (InputType.isPressed(GLFW.GLFW_KEY_LEFT_ALT)) {
+                    final Inventory inventory = new Inventory() {
 
-            tooltipData.add(new TextTooltipComponent(Text.literal("(Press alt to open inventory)").setStyle(Style.EMPTY.withFormatting(Formatting.GRAY)).asOrderedText()));
-            tooltipData.add(new ContainerTooltipComponent(itemStacks, color));
+                        @Override
+                        public void clear() {}
+
+                        @Override
+                        public int size() {
+                            return itemStacks.size();
+                        }
+
+                        @Override
+                        public boolean isEmpty() {
+                            return itemStacks.isEmpty();
+                        }
+
+                        @Override
+                        public ItemStack getStack(final int slot) {
+                            return itemStacks.get(slot);
+                        }
+
+                        @Override
+                        public ItemStack removeStack(final int slot, final int amount) {
+                            return null;
+                        }
+
+                        @Override
+                        public ItemStack removeStack(final int slot) {
+                            return null;
+                        }
+
+                        @Override
+                        public void setStack(final int slot, final ItemStack stack) {}
+
+                        @Override
+                        public int getMaxCountPerStack() {
+                            return 128;
+                        }
+
+                        @Override
+                        public void markDirty() {}
+
+                        @Override
+                        public boolean canPlayerUse(final PlayerEntity player) {
+                            return false;
+                        }
+
+                        @Override
+                        public void onOpen(final PlayerEntity player) {}
+
+                        @Override
+                        public void onClose(final PlayerEntity player) {}
+
+                        @Override
+                        public boolean isValid(final int slot, final ItemStack stack) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean canTransferTo(final Inventory hopperInventory, final int slot, final ItemStack stack) {
+                            return false;
+                        }
+
+                        @Override
+                        public int count(final Item item) {
+                            return Inventory.super.count(item);
+                        }
+
+                        @Override
+                        public boolean containsAny(final Set<Item> items) {
+                            return Inventory.super.containsAny(items);
+                        }
+
+                        @Override
+                        public boolean containsAny(final Predicate<ItemStack> predicate) {
+                            return Inventory.super.containsAny(predicate);
+                        }
+
+                    };
+                    final GenericContainerScreenHandler genericContainerScreen = GenericContainerScreenHandler.createGeneric9x3(
+                            0,
+                            this.mc.player.getInventory(),
+                            inventory
+                    );
+                    this.mc.setScreen(new GenericContainerScreen(
+                            genericContainerScreen,
+                            this.mc.player.getInventory(),
+                            Text.of(itemStack.getName())
+                    ));
+                }
+            }
         }
     }
 
