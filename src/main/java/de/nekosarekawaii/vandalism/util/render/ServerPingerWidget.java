@@ -49,6 +49,9 @@ public class ServerPingerWidget implements MinecraftWrapper {
     private static final int ELEMENT_WIDTH = 304;
     private static final int ELEMENT_HEIGHT = 42;
 
+    @Deprecated
+    private static final String SHIT = "§ö§1§3";
+
     public static void draw(final ServerInfo currentServerInfo, final DrawContext context, final int mouseX, final int mouseY, final float delta, final int startY) {
         if (currentServerInfo == null) return;
         final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
@@ -76,14 +79,16 @@ public class ServerPingerWidget implements MinecraftWrapper {
         if (!menuSettings.serverPingerWidget.getValue()) return;
         final ServerList serverList = new ServerList(mc);
         currentServerInfo.online = false;
-        currentServerInfo.name += "\uE48D";
+        if (!currentServerInfo.name.contains(SHIT)) {
+            currentServerInfo.name += SHIT;
+        }
         serverList.add(currentServerInfo, false);
         WIDGET.setServers(serverList);
         PING_TIMER.reset();
     }
 
     public static boolean shouldSave(final ServerInfo serverInfo) {
-        return !serverInfo.name.contains("\uE48D");
+        return !serverInfo.name.contains(SHIT);
     }
 
 }
