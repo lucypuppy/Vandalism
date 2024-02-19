@@ -18,6 +18,8 @@
 
 package de.nekosarekawaii.vandalism.feature.module.template;
 
+import com.google.gson.JsonObject;
+import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.base.value.template.ValueModeGeneric;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import imgui.ImGui;
@@ -41,6 +43,31 @@ public class ModuleModeValue<T extends AbstractModule> extends ValueModeGeneric<
                 newValue.onActivate();
             }
         });
+    }
+
+    @Override
+    public void save(JsonObject mainNode) {
+        super.save(mainNode);
+        for (ModuleMulti<T> option : getOptions()) {
+            if (option.getValues().isEmpty()) {
+                continue;
+            }
+            final JsonObject optionNode = new JsonObject();
+            ConfigWithValues.saveValues(optionNode, option.getValues());
+
+            mainNode.add(option.getName(), optionNode);
+        }
+    }
+
+    @Override
+    public void load(JsonObject mainNode) {
+        super.load(mainNode);
+        for (ModuleMulti<T> option : getOptions()) {
+            final JsonObject optionNode = mainNode.getAsJsonObject(option.getName());
+            if (optionNode != null) {
+                ConfigWithValues.loadValues(optionNode, option.getValues());
+            }
+        }
     }
 
     @Override
