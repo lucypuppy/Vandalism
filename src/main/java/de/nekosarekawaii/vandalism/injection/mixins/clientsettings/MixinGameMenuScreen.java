@@ -19,7 +19,9 @@
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.util.ServerPingerWidget;
 import de.nekosarekawaii.vandalism.util.game.ServerUtil;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
@@ -30,6 +32,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(GameMenuScreen.class)
@@ -45,6 +48,19 @@ public abstract class MixinGameMenuScreen extends Screen {
 
     protected MixinGameMenuScreen(final Text ignored) {
         super(ignored);
+    }
+
+    @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/GameMenuScreen;addDrawableChild(Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;"), cancellable = true)
+    private void removeTitleText(final CallbackInfo ci) {
+        if (Vandalism.getInstance().getClientSettings().getMenuSettings().serverPingerWidget.getValue()) {
+            ci.cancel();
+        }
+        ServerPingerWidget.ping(this.client.getCurrentServerEntry());
+    }
+
+    @Inject(method = "render", at = @At(value = "RETURN"))
+    private void drawServerPingerWidget(final DrawContext context, final int mouseX, final int mouseY, final float delta, final CallbackInfo ci) {
+        ServerPingerWidget.draw(this.client.getCurrentServerEntry(), context, mouseX, mouseY, delta, 10);
     }
 
     @Inject(method = "createUrlButton", at = @At(value = "HEAD"), cancellable = true)

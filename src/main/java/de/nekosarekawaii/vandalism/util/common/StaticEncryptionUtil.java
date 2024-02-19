@@ -27,7 +27,6 @@ import java.security.spec.InvalidKeySpecException;
 /**
  * Static Encryption util to encrypt and decrypt strings over multiple game sessions.
  */
-@Deprecated
 public class StaticEncryptionUtil {
 
     /**

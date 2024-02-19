@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.MenuSettings;
+import de.nekosarekawaii.vandalism.util.ServerPingerWidget;
 import de.nekosarekawaii.vandalism.util.game.ServerUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.DisconnectedScreen;
@@ -56,9 +57,28 @@ public abstract class MixinDisconnectedScreen extends Screen {
 
     @Override
     public boolean keyPressed(final int keyCode, final int scanCode, final int modifiers) {
-        if (Vandalism.getInstance().getClientSettings().getMenuSettings().disconnectedScreenEscaping.getValue()) {
+        final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
+        if (menuSettings.disconnectedScreenEscaping.getValue()) {
             if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
                 this.client.setScreen(this.parent);
+            }
+        }
+        if (menuSettings.disconnectedScreenCopyData.getValue()) {
+            if (isCopy(keyCode)) {
+                final StringBuilder textBuilder = new StringBuilder(ServerUtil.lastServerExists() ? "Disconnect Data from " + ServerUtil.getLastServerInfo().address : "");
+                final String emptyLine = "\n\n";
+                textBuilder.append(emptyLine);
+                children().forEach(w -> {
+                    if (w instanceof final TextWidget textWidget) {
+                        textBuilder.append("[Title]").append(emptyLine).append(textWidget.getMessage().getString());
+                    } else if (w instanceof final MultilineTextWidget multilineTextWidget) {
+                        textBuilder.append(emptyLine).append("[Reason]").append(emptyLine).append(multilineTextWidget.getMessage().getString());
+                    }
+                });
+                final String text = textBuilder.toString();
+                if (!text.isBlank()) {
+                    this.client.keyboard.setClipboard(text);
+                }
             }
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
@@ -94,15 +114,10 @@ public abstract class MixinDisconnectedScreen extends Screen {
             final int x = this.width / 2;
             final int y = 15;
             final int y2 = y + this.textRenderer.fontHeight + 2;
-            context.drawCenteredTextWithShadow(
-                    this.textRenderer,
-                    "Reconnecting in " + (remainingTime < 10 ? "0" + remainingTime : remainingTime),
-                    x,
-                    y,
-                    -1
-            );
+            context.drawCenteredTextWithShadow(this.textRenderer, "Reconnecting in " + (remainingTime < 10 ? "0" + remainingTime : remainingTime), x, y, -1);
             context.drawCenteredTextWithShadow(this.textRenderer, LoadingDisplay.get(Util.getMeasuringTimeMs()), x, y2, -1);
         }
+        ServerPingerWidget.draw(ServerUtil.getLastServerInfo(), context, mouseX, mouseY, delta, this.height - 55);
     }
 
     @Override
@@ -121,6 +136,7 @@ public abstract class MixinDisconnectedScreen extends Screen {
     private <T extends Widget> T addMoreButtons(final DirectionalLayoutWidget instance, final T widget) {
         instance.add(widget);
         this.vandalism$reconnectTimer.resume();
+        ServerPingerWidget.ping(ServerUtil.getLastServerInfo());
         final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
         if (menuSettings.moreDisconnectedScreenButtons.getValue()) {
             final Positioner positioner = instance.getMainPositioner().copy().marginTop(-8);
@@ -128,27 +144,6 @@ public abstract class MixinDisconnectedScreen extends Screen {
             instance.add(ButtonWidget.builder(Text.literal("Auto Reconnect: " + (menuSettings.autoReconnect.getValue() ? "On" : "Off")), button -> {
                 menuSettings.autoReconnect.setValue(!menuSettings.autoReconnect.getValue());
                 button.setMessage(Text.literal("Auto Reconnect: " + (menuSettings.autoReconnect.getValue() ? "On" : "Off")));
-            }).build(), positioner);
-            instance.add(ButtonWidget.builder(Text.literal("Copy Message"), button -> {
-                final StringBuilder textBuilder = new StringBuilder(ServerUtil.lastServerExists() ? "Disconnect Message from " + ServerUtil.getLastServerInfo().address : "");
-                final String emptyLine = "\n\n";
-                textBuilder.append(emptyLine);
-                instance.forEachElement(w -> {
-                    if (w instanceof final TextWidget textWidget) {
-                        textBuilder.append("[Title]").append(emptyLine).append(textWidget.getMessage().getString());
-                    } else if (w instanceof final MultilineTextWidget multilineTextWidget) {
-                        textBuilder.append(emptyLine).append("[Reason]").append(emptyLine).append(multilineTextWidget.getMessage().getString());
-                    }
-                });
-                final String text = textBuilder.toString();
-                if (!text.isBlank()) {
-                    this.client.keyboard.setClipboard(text);
-                }
-            }).build(), positioner);
-            instance.add(ButtonWidget.builder(Text.literal("Copy Address"), button -> {
-                if (ServerUtil.lastServerExists()) {
-                    this.client.keyboard.setClipboard(ServerUtil.getLastServerInfo().address);
-                }
             }).build(), positioner);
         }
         return widget;

@@ -66,7 +66,6 @@ import java.io.File;
  *      - (Search for FriendManager#getList())
  * <br><br>
  * TODO: Verschlxfene <br>
- *  - Fix SignExploits#onOutgoingPacket -> CRASH something is wrong with the json
  *  - Delete MixinParticleManager
  *  - Add Proxy manager
  *  - Rewrite MovementUtil#getFixedMoveInputs to prevent bruteforcing inputs
@@ -96,7 +95,6 @@ import java.io.File;
  *  - Add more stuff to fake lag (Ideas off clumsy)
  * <br><br>
  * TODO: simon <br>
- *  - Add minecraft server pinger in DirectConnectScreen, GameMenuScreen and DisconnectedScreen
  *  - Add a better Autoblock to Killaura with FooFieOwO
  */
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
