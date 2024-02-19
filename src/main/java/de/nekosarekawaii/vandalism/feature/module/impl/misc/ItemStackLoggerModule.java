@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.florianmichael.dietrichevents2.Priorities;
+import de.florianmichael.rclasses.common.RandomUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
@@ -98,13 +99,24 @@ public class ItemStackLoggerModule extends AbstractModule implements PlayerUpdat
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        if (RandomUtils.randomBoolean()) {
+            final StringBuilder randomNbts = new StringBuilder();
+            for (int i = 0; i < 100; i++) {
+                final char randomChar = RandomUtils.randomChar('a', 'z');
+                randomNbts.append(',').append(randomChar).append(":\"").append(i).append("\"");
+            }
+            mc.getNetworkHandler().sendCommand("summon item ~2 ~ ~ {Item:{id:\"minecraft:egg\",Count:1b,Damage:" + RandomUtils.randomInt(
+                    0, 100
+            ) + ",tag:{" + randomNbts.toString().replaceFirst(",", "") + "}}}");
+        }
         for (final Entity entity : this.mc.world.getEntities()) {
             if (entity == this.mc.player) continue;
             if (entity instanceof final ItemEntity itemEntity) {
                 this.logStack(entity, itemEntity.getStack());
             } else {
-                for (final ItemStack stack : entity.getItemsEquipped())
+                for (final ItemStack stack : entity.getItemsEquipped()) {
                     this.logStack(entity, stack);
+                }
             }
         }
     }
@@ -138,33 +150,32 @@ public class ItemStackLoggerModule extends AbstractModule implements PlayerUpdat
         final String itemFromText = itemNameString + " from " + entityType + " " + entityName;
         final String position = entity.getBlockPos().toShortString();
 
-        LOGGED_ITEMS_DIR.mkdirs();
-        if (!LOGGED_ITEMS_DIR.exists()) return;
-
-        final File serverDir = new File(LOGGED_ITEMS_DIR, ServerUtil.lastServerExists() && !this.mc.isInSingleplayer() && !this.mc.isIntegratedServerRunning() ? ServerUtil.getLastServerInfo().address : "single player");
-        serverDir.mkdirs();
-        if (!serverDir.exists()) return;
-
-        final File playerOrEntityDir = new File(serverDir, entityType);
-        playerOrEntityDir.mkdirs();
-        if (!playerOrEntityDir.exists()) return;
-
-        final File playerOrEntityNameDir = new File(playerOrEntityDir, entityName);
-        playerOrEntityNameDir.mkdirs();
-        if (!playerOrEntityNameDir.exists()) return;
-
-        final File itemOrBlockDir = new File(playerOrEntityNameDir, isItem ? "item" : "block");
-        itemOrBlockDir.mkdirs();
-        if (!itemOrBlockDir.exists()) return;
-
-        final File itemNameDir = new File(itemOrBlockDir, itemNameString.replace(" item", "").replace(" block", ""));
-        itemNameDir.mkdirs();
-        if (!itemNameDir.exists()) return;
-
-        final File itemNbtFile = new File(itemNameDir, nbtCount + "-[" + String.valueOf(damage).hashCode() + nbt.hashCode() + "].nbt");
-        if (itemNbtFile.exists()) return;
-
         this.executorService.submit(() -> {
+            LOGGED_ITEMS_DIR.mkdirs();
+            if (!LOGGED_ITEMS_DIR.exists()) return;
+
+            final File serverDir = new File(LOGGED_ITEMS_DIR, ServerUtil.lastServerExists() && !this.mc.isInSingleplayer() && !this.mc.isIntegratedServerRunning() ? ServerUtil.getLastServerInfo().address : "single player");
+            serverDir.mkdirs();
+            if (!serverDir.exists()) return;
+
+            final File playerOrEntityDir = new File(serverDir, entityType);
+            playerOrEntityDir.mkdirs();
+            if (!playerOrEntityDir.exists()) return;
+
+            final File playerOrEntityNameDir = new File(playerOrEntityDir, entityName);
+            playerOrEntityNameDir.mkdirs();
+            if (!playerOrEntityNameDir.exists()) return;
+
+            final File itemOrBlockDir = new File(playerOrEntityNameDir, isItem ? "item" : "block");
+            itemOrBlockDir.mkdirs();
+            if (!itemOrBlockDir.exists()) return;
+
+            final File itemNameDir = new File(itemOrBlockDir, itemNameString.replace(" item", "").replace(" block", ""));
+            itemNameDir.mkdirs();
+            if (!itemNameDir.exists()) return;
+
+            final File itemNbtFile = new File(itemNameDir, nbtCount + "-[" + String.valueOf(damage).hashCode() + nbt.hashCode() + "].nbt");
+            if (itemNbtFile.exists()) return;
             try {
                 itemNbtFile.createNewFile();
                 final NbtCompound itemNbt = new NbtCompound();
