@@ -26,6 +26,21 @@
     "modmenu": {
       "parent": "vandalism"
     },
-    "afl:classtransform": "vandalism-wurst-client.classtransform.json"
+    "afl:classtransform": "vandalism-wurst-client.classtransform.json",
+    "afl:unmixer": {
+      "net/wurstclient/mixin": [
+        "GameMenuScreenMixin",
+        "ShulkerBoxScreenMixin",
+        "GenericContainerScreenMixin",
+        "MultiplayerScreenMixin",
+        "TitleScreenMixin",
+        "DisconnectedScreenMixin",
+        "DisconnectedRealmsScreenMixin",
+        "StatsScreenMixin",
+        "PlayerSkinProviderMixin",
+        "EntityRendererMixin",
+        "PlayerInventoryMixin"
+      ]
+    }
   }
 }
