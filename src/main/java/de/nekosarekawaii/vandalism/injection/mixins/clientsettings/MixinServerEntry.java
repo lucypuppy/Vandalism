@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.util.game.ServerUtil;
+import de.nekosarekawaii.vandalism.util.render.ServerPingerWidget;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
@@ -34,6 +35,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(MultiplayerServerListWidget.ServerEntry.class)
@@ -88,6 +90,13 @@ public abstract class MixinServerEntry {
             }
         }
         return x;
+    }
+
+    @Inject(method = "saveFile", at = @At("HEAD"), cancellable = true)
+    private void disableSavingWhileUsingServerPingerWidget(final CallbackInfo ci) {
+        if (!ServerPingerWidget.shouldSave(this.server)) {
+            ci.cancel();
+        }
     }
 
 }
