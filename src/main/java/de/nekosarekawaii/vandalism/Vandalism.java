@@ -85,7 +85,6 @@ import java.io.File;
  *  - Fix bukkit fly not working at all
  *  - Rewrite commands to use generic expressions (like #SpawnEgg, #Book)
  *  - Add anti vanish via. the player list hud
- *  - Fix better tab list module duplicated highlighting of friends & self
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Check AimPointMover#generatePointsAround (this might be bad FooFieOwO)

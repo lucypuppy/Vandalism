@@ -51,14 +51,6 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
 
     @Shadow @Final private MinecraftClient client;
 
-    @Unique
-    private PlayerListEntry vandalism$trackedEntry;
-
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V", ordinal = 2, shift = At.Shift.BEFORE))
-    public void trackEntry(DrawContext context, int scaledWindowWidth, Scoreboard scoreboard, ScoreboardObjective objective, CallbackInfo ci, @Local(ordinal = 0) List<PlayerListEntry> list, @Local(ordinal = 15) int w) {
-        vandalism$trackedEntry = list.get(w);
-    }
-
     @ModifyConstant(constant = @Constant(longValue = 80L), method = "collectPlayerEntries")
     private long hookBetterTabListModule(final long count) {
         final var betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
@@ -70,10 +62,13 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
         }
     }
 
+    @Unique
+    private int vandalism$index;
+
     @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V", ordinal = 2))
-    public void hookBetterTabListModule(DrawContext instance, int x1, int y1, int x2, int y2, int color, Operation<Void> original) {
+    public void hookBetterTabListModule(DrawContext instance, int x1, int y1, int x2, int y2, int color, Operation<Void> original, @Local(ordinal = 0) List<PlayerListEntry> list) {
         final var betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
-        final GameProfile profile = vandalism$trackedEntry.getProfile();
+        final GameProfile profile = list.get(vandalism$index).getProfile();
         if (betterTabListModule.isActive()) {
             if (betterTabListModule.highlightSelf.getValue() && this.mc.player != null && profile.getId().equals(this.mc.player.getGameProfile().getId())) {
                 color = betterTabListModule.selfColor.getColor().getRGB();
@@ -89,6 +84,9 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
         }
 
         original.call(instance, x1, y1, x2, y2, color);
+
+        vandalism$index++;
+        if (vandalism$index >= list.size()) vandalism$index = 0;
     }
 
     @Inject(method = "getPlayerName", at = @At("RETURN"), cancellable = true)
