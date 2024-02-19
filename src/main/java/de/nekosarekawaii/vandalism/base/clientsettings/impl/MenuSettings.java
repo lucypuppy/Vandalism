@@ -170,6 +170,22 @@ public class MenuSettings extends ValueGroup {
             true
     );
 
+    public final BooleanValue autoReconnect = new BooleanValue(
+            this,
+            "Auto Reconnect",
+            "Automatically reconnects to the last server when you get disconnected.",
+            true
+    ).visibleCondition(this.moreDisconnectedScreenButtons::getValue);
+
+    public final IntegerValue autoReconnectDelay = new IntegerValue(
+            this,
+            "Auto Reconnect Delay",
+            "The delay in seconds before the auto reconnect does its job.",
+            5,
+            1,
+            60
+    ).visibleCondition(this.autoReconnect::getValue);
+
     public final BooleanValue forceEnableReconfiguartionDisconnectButton = new BooleanValue(
             this,
             "Force Enable Reconfiguration Disconnect Button",
