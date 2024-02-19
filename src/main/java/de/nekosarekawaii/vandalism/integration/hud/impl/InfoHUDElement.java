@@ -317,7 +317,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             if (this.mc.getNetworkHandler() != null) {
                 final String brand = this.mc.getNetworkHandler().getBrand();
                 if (brand != null) {
-                    value = brand.replaceFirst("\\(.*?\\) ", "");
+                    value = brand.replaceAll("\\(.*?\\)", "");
                 }
             }
             infoMap.put("Server Brand", value);
