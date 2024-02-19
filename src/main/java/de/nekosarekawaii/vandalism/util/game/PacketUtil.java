@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.RejectedExecutionException;
 
+@Deprecated
 public class PacketUtil {
 
     public static void receivePacket(final Packet<?> packet) {

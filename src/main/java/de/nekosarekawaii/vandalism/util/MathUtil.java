@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.util;
 
+@Deprecated
 public class MathUtil {
 
     public static float cubicBezier(float p0, float p1, float p2, float p3, float t) {
