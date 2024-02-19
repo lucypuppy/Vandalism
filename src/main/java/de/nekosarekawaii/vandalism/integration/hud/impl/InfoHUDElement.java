@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.integration.hud.impl;
 
 import de.florianmichael.rclasses.math.geometry.Alignment;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.event.cancellable.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
@@ -31,7 +32,10 @@ import de.nekosarekawaii.vandalism.util.click.CPSTracker;
 import de.nekosarekawaii.vandalism.util.game.ServerUtil;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.network.ServerInfo;
+import net.minecraft.network.packet.s2c.common.KeepAliveS2CPacket;
+import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -39,7 +43,7 @@ import java.awt.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class InfoHUDElement extends HUDElement {
+public class InfoHUDElement extends HUDElement implements IncomingPacketListener {
 
     private final BooleanValue shadow = new BooleanValue(
             this,
@@ -76,25 +80,26 @@ public class InfoHUDElement extends HUDElement {
             true
     );
 
-    private final BooleanValue position = new BooleanValue(
+
+    private final ValueGroup positionElements = new ValueGroup(
             this,
+            "Position Elements",
+            "Elements that are shown in the position category."
+    );
+
+    private final BooleanValue position = new BooleanValue(
+            this.positionElements,
             "Position",
             "Shows the current position.",
             true
     );
 
     private final BooleanValue dimensionalPosition = new BooleanValue(
-            this,
+            this.positionElements,
             "Dimensional Position",
             "Shows the current position of the dimension you are currently playing in.",
             true
     );
-
-    private final ValueGroup positionElements = new ValueGroup(
-            this,
-            "Position Elements",
-            "Elements that are shown in the position category."
-    ).visibleCondition(this.position::getValue);
 
     private final IntegerValue positionDecimalPlaces = new IntegerValue(
             this.positionElements,
@@ -103,7 +108,7 @@ public class InfoHUDElement extends HUDElement {
             2,
             1,
             15
-    ).visibleCondition(this.position::getValue);
+    ).visibleCondition(() -> this.position.getValue() || this.dimensionalPosition.getValue());
 
     private final BooleanValue difficulty = new BooleanValue(
             this,
@@ -146,6 +151,13 @@ public class InfoHUDElement extends HUDElement {
             true
     );
 
+    private final BooleanValue ping = new BooleanValue(
+            this,
+            "Ping",
+            "Shows your current ping.",
+            true
+    );
+
     private final BooleanValue packetsSent = new BooleanValue(
             this,
             "Packets Sent",
@@ -160,6 +172,13 @@ public class InfoHUDElement extends HUDElement {
             true
     );
 
+    private final BooleanValue lagMeter = new BooleanValue(
+            this,
+            "Lag Meter",
+            "Shows the current server lags in seconds.",
+            true
+    );
+
     private final BooleanValue tickBaseCharge = new BooleanValue(
             this,
             "Tick Base Charge",
@@ -167,8 +186,14 @@ public class InfoHUDElement extends HUDElement {
             true
     );
 
-    private final BooleanValue clientTPS = new BooleanValue(
+    private final ValueGroup debugElements = new ValueGroup(
             this,
+            "Debug Elements",
+            "Elements that are shown in the debug category."
+    );
+
+    private final BooleanValue clientTPS = new BooleanValue(
+            this.debugElements,
             "Client TPS",
             "Shows the current client TPS.",
             false
@@ -177,8 +202,18 @@ public class InfoHUDElement extends HUDElement {
     public final CPSTracker leftClick = new CPSTracker();
     public final CPSTracker rightClick = new CPSTracker();
 
+    private long lastUpdate = System.currentTimeMillis();
+
     public InfoHUDElement() {
         super("Info", 2, 60);
+        Vandalism.getInstance().getEventSystem().subscribe(IncomingPacketEvent.ID, this);
+    }
+
+    @Override
+    public void onIncomingPacket(final IncomingPacketEvent event) {
+        if (event.packet instanceof KeepAliveS2CPacket || event.packet instanceof WorldTimeUpdateS2CPacket) {
+            this.lastUpdate = System.currentTimeMillis();
+        }
     }
 
     @Override
@@ -313,6 +348,17 @@ public class InfoHUDElement extends HUDElement {
             infoMap.put("Server Address", value);
         }
 
+        if (this.ping.getValue()) {
+            String value = "unknown";
+            if (this.mc.getNetworkHandler() != null) {
+                final PlayerListEntry playerListEntry = this.mc.getNetworkHandler().getPlayerListEntry(this.mc.player.getGameProfile().getId());
+                if (playerListEntry != null) {
+                    value = String.valueOf(playerListEntry.getLatency());
+                }
+            }
+            infoMap.put("Ping", value + " ms");
+        }
+
         if (this.packetsSent.getValue()) {
             String value = "unknown";
             if (this.mc.getNetworkHandler() != null) {
@@ -329,15 +375,22 @@ public class InfoHUDElement extends HUDElement {
             infoMap.put("Packets Received", value);
         }
 
+        if (this.lagMeter.getValue()) {
+            final long lagMillis = this.mc.getNetworkHandler() != null ? System.currentTimeMillis() - this.lastUpdate : 0L;
+            if (lagMillis > 2000L || !inGame) {
+                infoMap.put("Lags", lagMillis + " ms");
+            }
+        }
+
         if (this.tickBaseCharge.getValue()) {
             final TickBaseModule tickBaseModule = Vandalism.getInstance().getModuleManager().getTickBaseModule();
-            if (tickBaseModule.isActive()) {
-                infoMap.put("Tick Base Charge", tickBaseModule.getCharge() + " ticks");
+            if (tickBaseModule.isActive() || !inGame) {
+                infoMap.put("Tick Base Charge", (inGame ? tickBaseModule.getCharge() : 0) + " t");
             }
         }
 
         if (this.clientTPS.getValue()) {
-            infoMap.put("Client TPS", ((IRenderTickCounter) mc.renderTickCounter).vandalism$getTPS() + " TPS");
+            infoMap.put("Client TPS", ((IRenderTickCounter) this.mc.renderTickCounter).vandalism$getTPS() + " TPS");
         }
 
         int width = 0, height = 0;
