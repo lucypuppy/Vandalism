@@ -25,6 +25,7 @@ import de.nekosarekawaii.vandalism.base.event.cancellable.render.ScreenListener;
 import de.nekosarekawaii.vandalism.base.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.base.event.normal.render.Render2DListener;
 import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
+import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuScreen;
 import de.nekosarekawaii.vandalism.integration.hud.config.HUDConfig;
 import de.nekosarekawaii.vandalism.integration.hud.gui.HUDClientMenuWindow;
 import de.nekosarekawaii.vandalism.integration.hud.impl.InfoHUDElement;
@@ -58,6 +59,10 @@ public class HUDManager extends Storage<HUDElement> implements Render2DListener,
 
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
+        final HUDClientMenuWindow hudImWindow = Vandalism.getInstance().getClientMenuManager().getByClass(HUDClientMenuWindow.class);
+        if (this.mc.currentScreen instanceof ClientMenuScreen && hudImWindow.isActive()) {
+            return;
+        }
         for (final HUDElement hudElement : this.getList()) {
             if (!hudElement.isActive()) {
                 continue;

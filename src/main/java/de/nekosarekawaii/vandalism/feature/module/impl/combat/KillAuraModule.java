@@ -137,10 +137,10 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             true
     );
 
-    private final BooleanValue ignoreCreative = new BooleanValue(
+    private final BooleanValue ignoreCreativePlayers = new BooleanValue(
             this.targetSelectionGroup,
-            "Ignore Creative",
-            "Ignore if in Creative.",
+            "Ignore Creative Players",
+            "Whether creative players should be ignored.",
             false
     );
 
@@ -489,7 +489,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                     playerListEntry = mc.getNetworkHandler().getPlayerListEntry(player.getUuid());
                 }
 
-                if (playerListEntry == null || !this.ignoreCreative.getValue() || !playerListEntry.getGameMode().isCreative()) {
+                if (playerListEntry == null || !this.ignoreCreativePlayers.getValue() || !playerListEntry.getGameMode().isCreative()) {
                     entities.add(entity);
                 }
             }
