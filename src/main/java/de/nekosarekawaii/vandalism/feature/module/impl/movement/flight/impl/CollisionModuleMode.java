@@ -20,58 +20,31 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.network.BlockCollisionShapeListener;
-import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.FlightModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
-import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 import net.minecraft.block.Blocks;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShapes;
 
-public class VerusFireModuleMode extends ModuleMulti<FlightModule> implements PlayerUpdateListener, BlockCollisionShapeListener {
+public class CollisionModuleMode extends ModuleMulti<FlightModule> implements BlockCollisionShapeListener {
 
-    private boolean wasOnFire = false;
 
-    public VerusFireModuleMode() {
-        super("Verus Fire");
+    public CollisionModuleMode() {
+        super("Collision");
     }
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, BlockCollisionShapeEvent.ID);
-        ChatUtil.infoChatMessage("You need to be on fire once for it to work.");
-        wasOnFire = false;
+        Vandalism.getInstance().getEventSystem().subscribe(this, BlockCollisionShapeEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, BlockCollisionShapeEvent.ID);
-        wasOnFire = false;
-    }
-
-    @Override
-    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (mc.player != null && mc.player.isOnFire()/* && mc.player.getFireTicks() > 3*/)
-            wasOnFire = true;
-        if (!wasOnFire)
-            return;
-//
-        double motionX = 0;
-        double motionZ = 0;
-        final double motionY = this.mc.options.jumpKey.isPressed() ? 0.2 : this.mc.options.sneakKey.isPressed() ? -0.2 : 0;
-        if (MovementUtil.isMoving()) {
-            final Vec3d speedVelocity = MovementUtil.setSpeed(0.1);
-            motionX = speedVelocity.x;
-            motionZ = speedVelocity.z;
-        }
-        mc.player.setVelocity(0, 0, 0);
-        this.mc.player.setPos(mc.player.getX() + motionX, mc.player.getY() + motionY, mc.player.getZ() + motionZ);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, BlockCollisionShapeEvent.ID);
     }
 
     @Override
     public void onBlockCollisionShape(BlockCollisionShapeEvent event) {
-        if (event.block == Blocks.AIR) {
+        if (event.block == Blocks.AIR && event.pos.getY() < mc.player.getY()) {
             final double minX = 0, minY = 0, minZ = 0, maxX = 1, maxZ = 1;
             double maxY = 1;
             event.shape = VoxelShapes.cuboid(

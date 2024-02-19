@@ -39,7 +39,7 @@ public class FlightModule extends AbstractModule implements OutgoingPacketListen
             new BukkitModuleMode(),
             new CubeCraftModuleMode(),
             new CubeCraft2ModuleMode(),
-            new VerusFireModuleMode()
+            new CollisionModuleMode()
     );
 
     private final BooleanValue antiKick = new BooleanValue(
