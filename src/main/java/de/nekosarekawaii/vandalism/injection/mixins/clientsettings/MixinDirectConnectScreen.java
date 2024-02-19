@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
-import de.nekosarekawaii.vandalism.util.ServerPingerWidget;
+import de.nekosarekawaii.vandalism.util.render.ServerPingerWidget;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.multiplayer.DirectConnectScreen;
