@@ -26,6 +26,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
 import net.minecraft.client.network.ServerInfo;
+import net.minecraft.client.option.ServerList;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Final;
@@ -90,6 +91,43 @@ public abstract class MixinServerEntry {
             }
         }
         return x;
+    }
+
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/ServerList;size()I"))
+    private int return0WhileUsingServerPingerWidget(final ServerList instance) {
+        if (!ServerPingerWidget.shouldSave(this.server)) {
+            return 0;
+        }
+        return instance.size();
+    }
+
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V"))
+    private void dontRenderWhileUsingServerPingerWidget(final DrawContext instance, final int x1, final int y1, final int x2, final int y2, final int color) {
+        if (!ServerPingerWidget.shouldSave(this.server)) {
+            return;
+        }
+        instance.fill(x1, y1, x2, y2, color);
+    }
+
+    @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
+    private void disableKeyPressingWhileUsingServerPingerWidget(final int keyCode, final int scanCode, final int modifiers, final CallbackInfoReturnable<Boolean> cir) {
+        if (!ServerPingerWidget.shouldSave(this.server)) {
+            cir.setReturnValue(false);
+        }
+    }
+
+    @Inject(method = "canConnect", at = @At("HEAD"), cancellable = true)
+    private void disableConnectingWhileUsingServerPingerWidget(final CallbackInfoReturnable<Boolean> cir) {
+        if (!ServerPingerWidget.shouldSave(this.server)) {
+            cir.setReturnValue(false);
+        }
+    }
+
+    @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
+    private void disableMouseClickingWhileUsingServerPingerWidget(final double mouseX, final double mouseY, final int button, final CallbackInfoReturnable<Boolean> cir) {
+        if (!ServerPingerWidget.shouldSave(this.server)) {
+            cir.setReturnValue(false);
+        }
     }
 
     @Inject(method = "saveFile", at = @At("HEAD"), cancellable = true)
