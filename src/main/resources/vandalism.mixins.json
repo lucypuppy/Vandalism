@@ -38,6 +38,7 @@
     "clientsettings.MixinServerList",
     "clientsettings.MixinSharedConstants",
     "clientsettings.MixinShulkerBoxScreen",
+    "clientsettings.MixinSliderWidget",
     "clientsettings.MixinStringHelper",
     "clientsettings.MixinTelemetryManager",
     "clientsettings.MixinTridentItem",
