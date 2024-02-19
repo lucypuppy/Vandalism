@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.feature.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import de.florianmichael.rclasses.pattern.storage.Storage;
+import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.feature.command.impl.development.TestCommand;
 import de.nekosarekawaii.vandalism.feature.command.impl.exploit.*;
 import de.nekosarekawaii.vandalism.feature.command.impl.misc.*;
@@ -42,13 +43,15 @@ public class CommandManager extends Storage<AbstractCommand> implements Minecraf
     private final CommandDispatcher<CommandSource> commandDispatcher = new CommandDispatcher<>();
 
     public CommandManager() {
-        setAddConsumer(command -> command.publish(this.commandDispatcher));
+        this.setAddConsumer(command -> command.publish(this.commandDispatcher));
     }
 
     @Override
     public void init() {
-        add(
-                new TestCommand(),
+        if (FabricBootstrap.IS_DEV_ENVIRONMENT) {
+            this.add(new TestCommand());
+        }
+        this.add(
                 new ChatClearCommand(),
                 new ModuleCommand(),
                 new ScriptCommand(),
