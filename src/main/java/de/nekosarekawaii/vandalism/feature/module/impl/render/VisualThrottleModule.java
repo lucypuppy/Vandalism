@@ -64,6 +64,54 @@ public class VisualThrottleModule extends AbstractModule {
             1000
     ).visibleCondition(this.blockTooManyParticles::getValue);
 
+    public final BooleanValue blockTooManyTranslateTexts = new BooleanValue(
+            this,
+            "Block too many translate texts",
+            "If activated blocks too many translate texts.",
+            true
+    );
+
+    public final IntegerValue translateTextDepthLimit = new IntegerValue(
+            this,
+            "Translate text depth limit",
+            "Set the depth limit for the translate text method to block too many text glyphs.",
+            1000,
+            200,
+            1000
+    ).visibleCondition(this.blockTooManyTranslateTexts::getValue);
+
+    public final BooleanValue blockTooManyTextGlyphs = new BooleanValue(
+            this,
+            "Block too many text glyphs",
+            "If activated blocks too many text glyphs.",
+            true
+    );
+
+    public final IntegerValue countToBlockTextGlyphs = new IntegerValue(
+            this,
+            "Count to block text glyphs",
+            "Set the count to block the text glyphs.",
+            1000,
+            1000,
+            10000
+    ).visibleCondition(this.blockTooManyTextGlyphs::getValue);
+
+    public final BooleanValue blockTooLongTexts = new BooleanValue(
+            this,
+            "Block too long texts",
+            "If activated blocks too long texts.",
+            true
+    );
+
+    public final IntegerValue countToBlockTooLongTexts = new IntegerValue(
+            this,
+            "Count to block too long texts",
+            "Set the count to block the too long texts.",
+            1000,
+            1000,
+            10000
+    ).visibleCondition(this.blockTooLongTexts::getValue);
+
     public final BooleanValue modifyDisplayNameLength = new BooleanValue(
             this,
             "Modify display name length",
