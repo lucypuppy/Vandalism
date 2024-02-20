@@ -92,7 +92,7 @@ public class VisualThrottleModule extends AbstractModule {
             "Count to block text glyphs",
             "Set the count to block the text glyphs.",
             1000,
-            1000,
+            100,
             10000
     ).visibleCondition(this.blockTooManyTextGlyphs::getValue);
 
@@ -108,7 +108,7 @@ public class VisualThrottleModule extends AbstractModule {
             "Count to block too long texts",
             "Set the count to block the too long texts.",
             1000,
-            1000,
+            100,
             10000
     ).visibleCondition(this.blockTooLongTexts::getValue);
 
