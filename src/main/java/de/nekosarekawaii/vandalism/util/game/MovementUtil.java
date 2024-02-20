@@ -29,57 +29,47 @@ public class MovementUtil implements MinecraftWrapper {
 
     private static final float[] POSSIBLE_MOVEMENTS = new float[]{-1f, 0.0f, 1f};
 
+
     /**
      * Get the direction of in which the player is looking.
      *
      * @return The direction in which the player is looking.
      */
     public static double getDirection() {
-        return getDirection(true);
+        return getDirection(mc.player.getYaw());
     }
 
     /**
      * Get the direction of in which the player is looking.
      *
-     * @param directionOffset The offset to use.
+     * @param rotationYaw The rotation yaw to use.
      * @return The direction in which the player is looking.
      */
-    public static double getDirection(final float directionOffset) {
-        return getDirection(directionOffset, true);
-    }
+    public static double getDirection(float rotationYaw) {
+        final float moveForward = mc.player.forwardSpeed;
+        final float moveStrafing = mc.player.sidewaysSpeed;
 
-    /**
-     * Get the direction of in which the player is looking.
-     *
-     * @param movingCheck If the player is moving.
-     * @return The direction in which the player is looking.
-     */
-    public static double getDirection(final boolean movingCheck) {
-        return getDirection(0, movingCheck);
-    }
+        if (moveForward < 0F) rotationYaw += 180F;
 
-    /**
-     * Get the direction of in which the player is looking.
-     *
-     * @param directionOffset The offset to use.
-     * @param movingCheck     If the player is moving.
-     * @return The direction in which the player is looking.
-     */
-    public static double getDirection(final float directionOffset, final boolean movingCheck) {
-        if (mc.player == null) return 0;
-        if (movingCheck && !isMoving()) return Math.toRadians(mc.player.getYaw() + 90.0f);
-        final float offset = (180.0f + directionOffset);
-        return (Math.atan2(mc.player.forwardSpeed, mc.player.sidewaysSpeed) / Math.PI * offset + mc.player.getYaw()) * Math.PI / offset;
+        float forward = 1F;
+
+        if (moveForward < 0F) forward = -0.5F;
+        else if (moveForward > 0F) forward = 0.5F;
+
+        if (moveStrafing > 0F) rotationYaw -= 90F * forward;
+        if (moveStrafing < 0F) rotationYaw += 90F * forward;
+
+        return Math.toRadians(rotationYaw);
     }
 
     /**
      * Set the speed of the player.
      *
-     * @param speed The speed to set.
+     * @param speed  The speed to set.
      * @return The new velocity of the player.
      */
     public static Vec3d setSpeed(final double speed) {
-        return setSpeed(speed, 0);
+        return setSpeed(mc.player, speed, mc.player.getYaw());
     }
 
     /**
@@ -90,7 +80,7 @@ public class MovementUtil implements MinecraftWrapper {
      * @return The new velocity of the player.
      */
     public static Vec3d setSpeed(final double speed, final float offset) {
-        return setSpeed(mc.player, speed, offset);
+        return setSpeed(mc.player, speed, mc.player.getYaw() + offset);
     }
 
     /**
@@ -98,23 +88,12 @@ public class MovementUtil implements MinecraftWrapper {
      *
      * @param entity The entity to set the speed of.
      * @param speed  The speed to set.
+     * @param yaw The yaw to use.
      * @return The new velocity of the entity.
      */
-    public static Vec3d setSpeed(final Entity entity, final double speed) {
-        return setSpeed(entity, speed, 0);
-    }
-
-    /**
-     * Set the speed of an entity.
-     *
-     * @param entity The entity to set the speed of.
-     * @param speed  The speed to set.
-     * @param offset The offset to use.
-     * @return The new velocity of the entity.
-    public    */
-    static Vec3d setSpeed(final Entity entity, final double speed, final float offset) {
-        final double direction = getDirection(offset);
-        entity.setVelocity(Math.cos(direction) * speed, entity.getVelocity().getY(), Math.sin(direction) * speed);
+    public static Vec3d setSpeed(final Entity entity, final double speed, final float yaw) {
+        final double direction = getDirection(yaw);
+        entity.setVelocity(-Math.sin(direction) * speed, entity.getVelocity().getY(), Math.cos(direction) * speed);
         return entity.getVelocity();
     }
 
@@ -180,7 +159,7 @@ public class MovementUtil implements MinecraftWrapper {
      */
     public static void clip(final double vertical, final double horizontal) {
         if (mc.player == null) return;
-        final double direction = getDirection(false);
+        final double direction = getDirection();
         mc.player.setPos(mc.player.getX() - Math.sin(direction) * horizontal, mc.player.getY() + vertical, mc.player.getZ() + Math.cos(direction) * horizontal);
     }
 
@@ -280,6 +259,10 @@ public class MovementUtil implements MinecraftWrapper {
         }
 
         return -1.0;
+    }
+
+    public static double roundToGround(final double posY) {
+        return Math.round(posY / 0.015625) * 0.015625;
     }
 
 }
