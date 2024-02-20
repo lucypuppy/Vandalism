@@ -84,6 +84,7 @@ public class ServerPingerWidget implements MinecraftWrapper {
     }
 
     public static void ping(final ServerInfo currentServerInfo) {
+        if (currentServerInfo == null) return;
         final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
         if (!menuSettings.serverPingerWidget.getValue()) return;
         final ServerList serverList = new ServerList(mc);

@@ -92,7 +92,9 @@
     "module.MixinPlayerListHud",
     "module.MixinSodiumWorldRenderer",
     "module.MixinStructureBlockBlockEntityRenderer",
+    "module.MixinTextRendererDrawer",
     "module.MixinTextureUrlChecker",
+    "module.MixinTranslatableTextContent",
     "module.MixinWorldRenderer",
     "util.MixinConnectScreen",
     "util.MixinDrawContext",
@@ -102,5 +104,8 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+    "module.MixinTextVisitFactory"
+  ]
 }

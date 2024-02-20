@@ -212,6 +212,8 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         mc.getWindow().setTitle(FabricBootstrap.WINDOW_TITLE);
 
         VandalismAddonLauncher.call(addon -> addon.onLateLaunch(this));
+
+        FabricBootstrap.INITIALIZED = true;
     }
 
     @Override
