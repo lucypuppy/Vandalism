@@ -68,7 +68,7 @@ public class VisualThrottleModule extends AbstractModule {
             this,
             "Block too many translate texts",
             "If activated blocks too many translate texts.",
-            true
+            false
     );
 
     public final IntegerValue translateTextDepthLimit = new IntegerValue(
@@ -84,7 +84,7 @@ public class VisualThrottleModule extends AbstractModule {
             this,
             "Block too many text glyphs",
             "If activated blocks too many text glyphs.",
-            true
+            false
     );
 
     public final IntegerValue countToBlockTextGlyphs = new IntegerValue(
@@ -100,7 +100,7 @@ public class VisualThrottleModule extends AbstractModule {
             this,
             "Block too long texts",
             "If activated blocks too long texts.",
-            true
+            false
     );
 
     public final IntegerValue countToBlockTooLongTexts = new IntegerValue(
