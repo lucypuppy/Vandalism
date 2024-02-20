@@ -38,6 +38,7 @@
     "clientsettings.MixinServerList",
     "clientsettings.MixinSharedConstants",
     "clientsettings.MixinShulkerBoxScreen",
+    "clientsettings.MixinSliderWidget",
     "clientsettings.MixinStringHelper",
     "clientsettings.MixinTelemetryManager",
     "clientsettings.MixinTridentItem",
@@ -67,6 +68,7 @@
     "fix.imgui.MixinImGuiImplGlfw",
     "fix.imnbt.MixinMainWindow",
     "fix.minecraft.MixinAccessibilityOnboardingScreen",
+    "fix.minecraft.MixinBufferBuilder",
     "fix.minecraft.MixinModStatus",
     "fix.minecraft.MixinMultiplayerScreen",
     "fix.minecraft.MixinPackScreen",
@@ -90,7 +92,9 @@
     "module.MixinPlayerListHud",
     "module.MixinSodiumWorldRenderer",
     "module.MixinStructureBlockBlockEntityRenderer",
+    "module.MixinTextRendererDrawer",
     "module.MixinTextureUrlChecker",
+    "module.MixinTranslatableTextContent",
     "module.MixinWorldRenderer",
     "util.MixinConnectScreen",
     "util.MixinDrawContext",
@@ -100,5 +104,8 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+    "module.MixinTextVisitFactory"
+  ]
 }

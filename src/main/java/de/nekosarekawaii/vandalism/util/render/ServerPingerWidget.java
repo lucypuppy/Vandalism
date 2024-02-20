@@ -29,15 +29,19 @@ import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.ServerList;
+import net.minecraft.text.Text;
 
 import java.awt.*;
+import java.util.List;
 
 public class ServerPingerWidget implements MinecraftWrapper {
 
     private static final MSTimer PING_TIMER = new MSTimer();
 
+    private static final MultiplayerScreen FAKE_MULTIPLAYER_SCREEN = new MultiplayerScreen(new TitleScreen());
+
     private static final MultiplayerServerListWidget WIDGET = new MultiplayerServerListWidget(
-            new MultiplayerScreen(new TitleScreen()),
+            FAKE_MULTIPLAYER_SCREEN,
             MinecraftClient.getInstance(),
             1,
             50,
@@ -48,6 +52,9 @@ public class ServerPingerWidget implements MinecraftWrapper {
     private static final int MAGICAL_OFFSET = 2;
     private static final int ELEMENT_WIDTH = 304;
     private static final int ELEMENT_HEIGHT = 42;
+
+    @Deprecated
+    private static final String SHIT = "§ö§1§3";
 
     public static void draw(final ServerInfo currentServerInfo, final DrawContext context, final int mouseX, final int mouseY, final float delta, final int startY) {
         if (currentServerInfo == null) return;
@@ -65,19 +72,33 @@ public class ServerPingerWidget implements MinecraftWrapper {
         final int y2 = WIDGET.getY() + ELEMENT_HEIGHT;
         final float progress = (ELEMENT_WIDTH / 100f) * PING_TIMER.getDelta() * (100f / pingDelay);
         context.enableScissor(x, y, x2, y2 + MAGICAL_OFFSET);
-        WIDGET.render(context, -1, -1, delta);
+        WIDGET.render(context, mouseX, mouseY, delta);
         context.drawHorizontalLine(x, x2, y2 + 1, Color.GRAY.getRGB());
         context.drawHorizontalLine(x, (int) (x + progress), y2 + 1, Color.GREEN.getRGB());
         context.disableScissor();
+        final List<Text> tooltip = FAKE_MULTIPLAYER_SCREEN.multiplayerScreenTooltip;
+        if (tooltip != null) {
+            context.drawTooltip(mc.textRenderer, tooltip, mouseX, mouseY);
+        }
+        FAKE_MULTIPLAYER_SCREEN.multiplayerScreenTooltip = null;
     }
 
     public static void ping(final ServerInfo currentServerInfo) {
+        if (currentServerInfo == null) return;
         final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
         if (!menuSettings.serverPingerWidget.getValue()) return;
         final ServerList serverList = new ServerList(mc);
         currentServerInfo.online = false;
+        if (!currentServerInfo.name.contains(SHIT)) {
+            currentServerInfo.name += SHIT;
+        }
         serverList.add(currentServerInfo, false);
         WIDGET.setServers(serverList);
+        PING_TIMER.reset();
+    }
+
+    public static boolean shouldSave(final ServerInfo serverInfo) {
+        return !serverInfo.name.contains(SHIT);
     }
 
 }

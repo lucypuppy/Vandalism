@@ -13,8 +13,11 @@ allprojects {
 
     configurations {
         jij // jar in jar configuration
-        api.extendsFrom jij
-        implementation.extendsFrom jij
+        modJij // jar in jar configuration for mods
+
+        include.extendsFrom modJij
+        modImplementation.extendsFrom modJij
+        modCompileOnlyApi.extendsFrom modJij
     }
 
     repositories {
@@ -154,7 +157,7 @@ loom {
 }
 
 dependencies {
-    modImplementation modCompileOnlyApi("de.florianmichael:AsmFabricLoader:${project.asmfabricloader_version}")
+    modJij "de.florianmichael:AsmFabricLoader:${project.asmfabricloader_version}"
     jij "de.florianmichael:DietrichEvents2:${project.dietrichevents2_version}"
     jij "de.florianmichael:WaybackAuthLib:${project.waybackauthlib_version}"
     jij ("de.florianmichael.rclasses:all:${project.rclasses_version}") {

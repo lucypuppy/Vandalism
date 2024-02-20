@@ -8,5 +8,6 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-include "AddonWurstClient"
+
+include "AddonWurstClient", "AddonBaritone"
 

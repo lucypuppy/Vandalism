@@ -18,7 +18,9 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.util.render.ServerPingerWidget;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.multiplayer.DirectConnectScreen;
@@ -29,6 +31,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(DirectConnectScreen.class)
@@ -51,7 +54,14 @@ public abstract class MixinDirectConnectScreen extends Screen {
     private void drawServerPingerWidget(final DrawContext context, final int mouseX, final int mouseY, final float delta, final CallbackInfo ci) {
         final String address = this.addressField.getText();
         if (address.isEmpty()) return;
-        ServerPingerWidget.draw(new ServerInfo(address, address, ServerInfo.ServerType.OTHER), context, mouseX, mouseY, delta, 10);
+        ServerPingerWidget.draw(new ServerInfo(address, address, ServerInfo.ServerType.OTHER), context, mouseX, mouseY, delta, 30);
+    }
+
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawCenteredTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;III)V"))
+    private void removeTitle(final DrawContext instance, final TextRenderer textRenderer, final Text text, final int centerX, final int y, final int color) {
+        if (!Vandalism.getInstance().getClientSettings().getMenuSettings().serverPingerWidget.getValue()) {
+            instance.drawCenteredTextWithShadow(textRenderer, text, centerX, y, color);
+        }
     }
 
 }
