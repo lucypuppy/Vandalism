@@ -5,8 +5,7 @@
   "name": "Vandalism-Wurst-Client",
   "description": "Implementation of the Wurst client for Vandalism.",
   "authors": [
-    "NekosAreKawaii",
-    "Snow"
+    "NekosAreKawaii"
   ],
   "license": "GPL-v3",
   "environment": "client",
@@ -28,7 +27,7 @@
     },
     "afl:classtransform": "vandalism-wurst-client.classtransform.json",
     "afl:unmixer": {
-      "net/wurstclient/mixin": [
+      "net.wurstclient.mixin": [
         "GameMenuScreenMixin",
         "ShulkerBoxScreenMixin",
         "GenericContainerScreenMixin",

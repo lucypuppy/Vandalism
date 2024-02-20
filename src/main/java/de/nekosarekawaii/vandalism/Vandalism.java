@@ -56,12 +56,10 @@ import java.io.File;
  *  - Fix spotify menu control buttons
  *  - Use <a href="https://github.com/EvilCodeZ/JNI4J/tree/main">JNI4J</a> to improve the packet manager logging for fields
  *  - Fix vanilla title texts being displayed after leaving a server
- *  - Fix better tab list module duplicated highlighting of friends & self
  *  - Rewrite EnhancedServerList
  *  - Fix offsets for the new "teleport" method in the fov fucker module
  *  - Fix module tabs display (no stacking) when the client starts the first time
  *  - Fix ClientMenuScreen#close because it could break the entire game
- *  - Add anti vanish via. the player list hud
  *  - Use hashmap storage when it has been added to rclasses instead of a default storage because that would improve the performance
  *      - (Search for FriendManager#getList())
  * <br><br>
@@ -85,6 +83,8 @@ import java.io.File;
  *  - Rework bezier curve
  *  - Rework parts of NoSlow
  *  - Fix bukkit fly not working at all
+ *  - Rewrite commands to use generic expressions (like #SpawnEgg, #Book)
+ *  - Add anti vanish via. the player list hud
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Fix SprintModule to be compatible with the rotation listener and also the backwards direction (ask Verschlxfene)
@@ -211,6 +211,8 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         mc.getWindow().setTitle(FabricBootstrap.WINDOW_TITLE);
 
         VandalismAddonLauncher.call(addon -> addon.onLateLaunch(this));
+
+        FabricBootstrap.INITIALIZED = true;
     }
 
     @Override

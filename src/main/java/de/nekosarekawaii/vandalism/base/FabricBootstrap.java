@@ -32,6 +32,7 @@ public class FabricBootstrap implements ClientModInitializer {
     public static Identifier MOD_LOGO, MOD_ICON; // Initialize these in the main class
     public static String WINDOW_TITLE;
     public static boolean IS_DEV_ENVIRONMENT;
+    public static boolean INITIALIZED = false;
 
     @Override
     public void onInitializeClient() {

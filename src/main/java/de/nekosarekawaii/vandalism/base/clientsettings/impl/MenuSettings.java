@@ -193,6 +193,13 @@ public class MenuSettings extends ValueGroup {
             60
     ).visibleCondition(this.autoReconnect::getValue);
 
+    public final BooleanValue autoReconnectShowZero = new BooleanValue(
+            this,
+            "Auto Reconnect Show Zero",
+            "Shows 0 before the remaining time if the remaining time is lower than 10.",
+            true
+    ).visibleCondition(this.autoReconnect::getValue);
+
     public final BooleanValue forceEnableReconfiguartionDisconnectButton = new BooleanValue(
             this,
             "Force Enable Reconfiguration Disconnect Button",
