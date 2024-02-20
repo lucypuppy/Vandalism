@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.util.game;
 
+import de.nekosarekawaii.vandalism.util.MinecraftConstants;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffects;
@@ -262,7 +263,7 @@ public class MovementUtil implements MinecraftWrapper {
     }
 
     public static double roundToGround(final double posY) {
-        return Math.round(posY / 0.015625) * 0.015625;
+        return Math.round(posY / MinecraftConstants.MAGIC_ON_GROUND_MODULO_FACTOR) * MinecraftConstants.MAGIC_ON_GROUND_MODULO_FACTOR;
     }
 
 }
