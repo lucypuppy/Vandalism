@@ -22,6 +22,7 @@ import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import de.nekosarekawaii.vandalism.Vandalism;
+import net.minecraft.client.MinecraftClient;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -88,6 +89,15 @@ public class ServerListManager {
         final ServerList serverList = this.get(name);
         if (serverList == null) {
             return;
+        }
+        final File runDirectory = MinecraftClient.getInstance().runDirectory;
+        final File serverListFile = new File(runDirectory, serverList.getName() + ".dat");
+        if (serverListFile.exists()) {
+            serverListFile.delete();
+        }
+        final File serverListFileOld = new File(runDirectory, serverList.getName() + ".dat_old");
+        if (serverListFileOld.exists()) {
+            serverListFileOld.delete();
         }
         this.serverLists.remove(serverList);
         if (this.selectedServerList != null && this.selectedServerList.getName().equals(name)) {

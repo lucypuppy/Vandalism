@@ -29,13 +29,16 @@ import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiComboFlags;
+import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import imgui.type.ImString;
 import net.minecraft.SharedConstants;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ServerInfo;
+import net.minecraft.client.option.ServerList;
 import net.minecraft.util.Formatting;
 
 import java.time.Instant;
@@ -95,7 +98,7 @@ public class ServerDiscoveryClientMenuWindow extends ClientMenuWindow {
                 ImGui.inputInt("Max players", this.maxPlayers, 1);
                 ImGui.inputInt("Min online players", this.minOnlinePlayers, 1);
                 ImGui.inputInt("Max online players", this.maxOnlinePlayers, 1);
-                ImGui.inputInt("Protocol", this.maxOnlinePlayers, 1);
+                ImGui.inputInt("Protocol", this.protocol, 1);
                 ImGui.checkbox("Ignore modded", this.ignoreModded);
                 ImGui.checkbox("Only bungee spoofable", this.onlyBungeeSpoofable);
                 if (ImUtils.subButton("Get")) {
@@ -150,10 +153,27 @@ public class ServerDiscoveryClientMenuWindow extends ClientMenuWindow {
             ImGui.setNextItemWidth(-1);
             ImGui.inputText("##serverSearchField", this.serversSearchField);
             ImGui.separator();
+            if (ImUtils.subButton("Add all servers")) {
+                final ServerList serverList = new ServerList(MinecraftClient.getInstance());
+                serverList.loadFile();
+                int i = 0;
+                for (final ServersResponse.Server server : this.servers) {
+                    i++;
+                    serverList.add(new ServerInfo(
+                            "Server Discovery (" + (i < 10 ? "0" + i : i) + ")",
+                            server.server,
+                            ServerInfo.ServerType.OTHER
+                    ), false);
+                }
+                serverList.saveFile();
+            }
             ImGui.beginChild("##servers", -1, -1, true, ImGuiWindowFlags.HorizontalScrollbar);
+            int i = 0;
             for (final ServersResponse.Server serverEntry : this.servers) {
+                i++;
                 final String address = serverEntry.server;
                 final boolean cracked = serverEntry.cracked;
+                final boolean isLastServer = ServerUtil.lastServerExists() && ServerUtil.getLastServerInfo().address.equals(address);
                 final StringBuilder dataString = new StringBuilder();
                 String description = Formatting.strip(serverEntry.description);
                 if (description != null && !description.isEmpty()) {
@@ -200,18 +220,40 @@ public class ServerDiscoveryClientMenuWindow extends ClientMenuWindow {
                 if (!this.serversSearchField.get().isBlank() && !(StringUtils.contains(data, this.serversSearchField.get()))) {
                     continue;
                 }
-                if (cracked) {
-                    final float[] color = { 0.1f, 0.8f, 0.1f, 0.30f };
+                final boolean shouldHighlight = cracked || isLastServer;
+                if (shouldHighlight) {
+                    float[] color = { 0.1f, 0.8f, 0.1f, 0.30f };
+                    if (isLastServer) {
+                        color = new float[]{ 0.8f, 0.1f, 0.1f, 0.30f };
+                    }
                     ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], color[3]);
                     ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], color[3] - 0.1f);
                     ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
                 }
-                if (ImGui.button("##serverEntry" + address, ImGui.getColumnWidth() - 8, 90)) {
+                final String id = "##serverEntry" + address;
+                if (ImGui.button(id, ImGui.getColumnWidth() - 8, 90)) {
                     ServerUtil.setLastServerInfo(new ServerInfo(address, address, ServerInfo.ServerType.OTHER));
                     ServerUtil.connectToLastServer();
                 }
-                if (cracked) {
+                if (shouldHighlight) {
                     ImGui.popStyleColor(3);
+                }
+                if (ImGui.beginPopupContextItem(id + "popup", ImGuiPopupFlags.MouseButtonRight)) {
+                    final int buttonWidth = 150, buttonHeight = 28;
+                    if (ImGui.button("Add to the Server List" + id + "addtoserverlist", buttonWidth, buttonHeight)) {
+                        final ServerList serverList = new ServerList(MinecraftClient.getInstance());
+                        serverList.loadFile();
+                        serverList.add(new ServerInfo(
+                                "Server Discovery (" + (i < 10 ? "0" + i : i) + ")",
+                                address,
+                                ServerInfo.ServerType.OTHER
+                        ), false);
+                        serverList.saveFile();
+                    }
+                    if (ImGui.button("Copy Data" + id + "copydata", buttonWidth, buttonHeight)) {
+                        this.mc.keyboard.setClipboard(data);
+                    }
+                    ImGui.endPopup();
                 }
                 ImGui.sameLine(10);
                 ImGui.text(data);

@@ -113,3 +113,4 @@ accessible method net/minecraft/network/ClientConnection sendInternal (Lnet/mine
 accessible class net/minecraft/client/gui/widget/EntryListWidget$Entry
 accessible method net/minecraft/client/gui/widget/EntryListWidget addEntry (Lnet/minecraft/client/gui/widget/EntryListWidget$Entry;)I
 accessible field net/minecraft/client/gui/screen/multiplayer/MultiplayerScreen multiplayerScreenTooltip Ljava/util/List;
+accessible field net/minecraft/client/option/ServerList servers Ljava/util/List;
