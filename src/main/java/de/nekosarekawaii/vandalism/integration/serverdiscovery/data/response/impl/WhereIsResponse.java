@@ -33,6 +33,13 @@ public class WhereIsResponse extends Response {
         public String name;
         public Integer last_seen;
 
+        public Record() {
+            this.server = "";
+            this.uuid = "";
+            this.name = "";
+            this.last_seen = 0;
+        }
+
         @Override
         public String toString() {
             return "Record{" +
