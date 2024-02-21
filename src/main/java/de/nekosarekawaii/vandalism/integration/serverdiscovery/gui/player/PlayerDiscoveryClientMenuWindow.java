@@ -118,7 +118,21 @@ public class PlayerDiscoveryClientMenuWindow extends ClientMenuWindow {
                                 this.state.set(usernameValue + " not found on any server.");
                             } else {
                                 this.state.set("Found " + usernameValue + " on " + data.size() + " server(s).");
-                                this.records.addAll(data);
+                                for (final WhereIsResponse.Record record : data) {
+                                    boolean contains = false;
+                                    for (final WhereIsResponse.Record containedRecord : this.records) {
+                                        if (containedRecord.server.equals(record.server)) {
+                                            contains = true;
+                                            if (record.last_seen < containedRecord.last_seen) {
+                                                containedRecord.last_seen = record.last_seen;
+                                            }
+                                            break;
+                                        }
+                                    }
+                                    if (!contains) {
+                                        this.records.add(record);
+                                    }
+                                }
                             }
                         }
                     }
