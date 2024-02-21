@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
+import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.util.render.ServerPingerWidget;
 import net.minecraft.client.font.TextRenderer;
@@ -29,6 +30,7 @@ import net.minecraft.client.network.ServerInfo;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -38,6 +40,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinDirectConnectScreen extends Screen {
 
     @Shadow private TextFieldWidget addressField;
+
+    @Unique
+    private final MSTimer vandalism$pingTimer = new MSTimer();
+
+    @Unique
+    private String vandalism$lastAddress = "";
 
     protected MixinDirectConnectScreen(final Text ignored) {
         super(ignored);
@@ -61,6 +69,28 @@ public abstract class MixinDirectConnectScreen extends Screen {
     private void removeTitle(final DrawContext instance, final TextRenderer textRenderer, final Text text, final int centerX, final int y, final int color) {
         if (!Vandalism.getInstance().getClientSettings().getMenuSettings().serverPingerWidget.getValue()) {
             instance.drawCenteredTextWithShadow(textRenderer, text, centerX, y, color);
+        }
+    }
+
+    @Inject(method = "onAddressFieldChanged", at = @At(value = "RETURN"))
+    private void resetPingTimer(final CallbackInfo ci) {
+        if (Vandalism.getInstance().getClientSettings().getMenuSettings().serverPingerWidget.getValue()) {
+            this.vandalism$pingTimer.reset();
+        }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (Vandalism.getInstance().getClientSettings().getMenuSettings().serverPingerWidget.getValue()) {
+            if (this.vandalism$pingTimer.hasReached(1000, true)) {
+                final String address = this.addressField.getText();
+                if (address.isEmpty()) return;
+                if (address.equals(this.vandalism$lastAddress)) return;
+                this.vandalism$lastAddress = address;
+                ServerPingerWidget.ping(new ServerInfo(address, address, ServerInfo.ServerType.OTHER));
+                this.vandalism$pingTimer.reset();
+            }
         }
     }
 
