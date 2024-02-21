@@ -18,7 +18,9 @@
 
 package de.nekosarekawaii.vandalism.integration.serverdiscovery.gui.server;
 
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.florianmichael.rclasses.common.StringUtils;
+import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.integration.serverdiscovery.ServerDiscoveryUtil;
 import de.nekosarekawaii.vandalism.integration.serverdiscovery.data.request.impl.ServersRequest;
@@ -40,6 +42,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.ServerList;
 import net.minecraft.util.Formatting;
+import net.raphimc.viaaprilfools.api.AprilFoolsProtocolVersion;
+import net.raphimc.viabedrock.api.BedrockProtocolVersion;
+import net.raphimc.vialoader.util.ProtocolVersionList;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -53,7 +58,7 @@ import java.util.concurrent.Executors;
 public class ServersTab implements MinecraftWrapper {
 
     private final ImInt asn = new ImInt(0);
-    private final ImString countryCode = new ImString();
+    private Country country = Country.ANY;
     private final ImBoolean cracked = new ImBoolean(false);
     private final ImString description = new ImString();
     private ServersRequest.Software software = ServersRequest.Software.ANY;
@@ -61,7 +66,7 @@ public class ServersTab implements MinecraftWrapper {
     private final ImInt maxPlayers = new ImInt(-1);
     private final ImInt minOnlinePlayers = new ImInt(0);
     private final ImInt maxOnlinePlayers = new ImInt(-1);
-    private final ImInt protocol = new ImInt(SharedConstants.getProtocolVersion());
+    private int protocol = SharedConstants.getProtocolVersion();
     private final ImBoolean ignoreModded = new ImBoolean(false);
     private final ImBoolean onlyBungeeSpoofable = new ImBoolean(false);
 
@@ -78,14 +83,21 @@ public class ServersTab implements MinecraftWrapper {
         if (ImGui.beginMenu("Tab Config")) {
             ImGui.separator();
             ImGui.inputInt("ASN", this.asn, 1);
-            ImGui.inputText("Country Code", this.countryCode);
+            if (ImGui.beginCombo("Country", this.country.getCountryName(), ImGuiComboFlags.HeightLargest)) {
+                for (final Country country : Country.values()) {
+                    if (ImGui.selectable(country.getCountryName(), country.equals(this.country))) {
+                        this.country = country;
+                    }
+                }
+                ImGui.endCombo();
+            }
             ImGui.checkbox("Cracked", this.cracked);
             ImGui.inputText("Description", this.description);
             if (ImGui.beginCombo("Software", this.software.getName(), ImGuiComboFlags.HeightLargest)) {
-                for (final ServersRequest.Software mode : ServersRequest.Software.values()) {
-                    final String modeString = mode.getName();
-                    if (ImGui.selectable(modeString, modeString.equals(this.software.getName()))) {
-                        this.software = mode;
+                for (final ServersRequest.Software software : ServersRequest.Software.values()) {
+                    final String softwareName = software.getName();
+                    if (ImGui.selectable(softwareName, softwareName.equals(this.software.getName()))) {
+                        this.software = software;
                     }
                 }
                 ImGui.endCombo();
@@ -94,14 +106,30 @@ public class ServersTab implements MinecraftWrapper {
             ImGui.inputInt("Max Players", this.maxPlayers, 1);
             ImGui.inputInt("Min Online Players", this.minOnlinePlayers, 1);
             ImGui.inputInt("Max Online Players", this.maxOnlinePlayers, 1);
-            ImGui.inputInt("Protocol", this.protocol, 1);
+            if (ImGui.beginCombo("Version", ProtocolVersion.getProtocol(this.protocol).getName(), ImGuiComboFlags.HeightLargest)) {
+                for (final ProtocolVersion protocolVersion : ProtocolVersionList.getProtocolsNewToOld()) {
+                    if (
+                            protocolVersion.olderThan(ProtocolVersion.v1_8) ||
+                            AprilFoolsProtocolVersion.PROTOCOLS.contains(protocolVersion) ||
+                            protocolVersion.equals(BedrockProtocolVersion.bedrockLatest) ||
+                            protocolVersion.equals(ProtocolTranslator.AUTO_DETECT_PROTOCOL)
+                    ) {
+                        continue;
+                    }
+                    final String protocolVersionName = protocolVersion.getName();
+                    if (ImGui.selectable(protocolVersionName, protocolVersionName.equals(ProtocolVersion.getProtocol(this.protocol).getName()))) {
+                        this.protocol = protocolVersion.getVersion();
+                    }
+                }
+                ImGui.endCombo();
+            }
             ImGui.checkbox("Ignore Modded", this.ignoreModded);
             ImGui.checkbox("Only Bungee Spoofable", this.onlyBungeeSpoofable);
             if (ImUtils.subButton("Get")) {
                 this.servers.clear();
                 final ServersRequest serversRequest = new ServersRequest(
                         this.asn.get(),
-                        this.countryCode.get(),
+                        this.country == Country.ANY ? "" : this.country.name(),
                         this.cracked.get(),
                         this.description.get(),
                         this.software,
@@ -110,7 +138,7 @@ public class ServersTab implements MinecraftWrapper {
                         this.minOnlinePlayers.get(),
                         this.maxOnlinePlayers.get(),
                         (int) System.currentTimeMillis(),
-                        this.protocol.get(),
+                        this.protocol,
                         this.ignoreModded.get(),
                         this.onlyBungeeSpoofable.get()
                 );
