@@ -210,6 +210,9 @@ public class PlayerDiscoveryClientMenuWindow extends ClientMenuWindow {
                         ), false);
                         serverList.saveFile();
                     }
+                    if (ImGui.button("Copy Address" + playerEntryId + "copyaddress", buttonWidth, buttonHeight)) {
+                        this.mc.keyboard.setClipboard(address);
+                    }
                     if (ImGui.button("Copy Data" + playerEntryId + "copydata", buttonWidth, buttonHeight)) {
                         this.mc.keyboard.setClipboard(data);
                     }
