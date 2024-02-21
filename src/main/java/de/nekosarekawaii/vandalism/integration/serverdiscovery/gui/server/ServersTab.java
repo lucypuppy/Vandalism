@@ -265,6 +265,9 @@ public class ServersTab implements MinecraftWrapper {
                             ), false);
                             serverList.saveFile();
                         }
+                        if (ImGui.button("Copy Address" + serverEntryId + "copyaddress", buttonWidth, buttonHeight)) {
+                            this.mc.keyboard.setClipboard(address);
+                        }
                         if (ImGui.button("Copy Data" + serverEntryId + "copydata", buttonWidth, buttonHeight)) {
                             this.mc.keyboard.setClipboard(data);
                         }
