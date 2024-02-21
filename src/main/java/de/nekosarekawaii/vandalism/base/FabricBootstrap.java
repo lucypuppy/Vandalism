@@ -33,6 +33,7 @@ public class FabricBootstrap implements ClientModInitializer {
     public static String WINDOW_TITLE;
     public static boolean IS_DEV_ENVIRONMENT;
     public static boolean INITIALIZED = false;
+    public static boolean SHUTTING_DOWN = false;
 
     @Override
     public void onInitializeClient() {

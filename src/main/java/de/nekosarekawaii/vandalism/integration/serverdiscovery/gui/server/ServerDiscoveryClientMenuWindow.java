@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.integration.serverdiscovery.gui;
+package de.nekosarekawaii.vandalism.integration.serverdiscovery.gui.server;
 
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
-import de.nekosarekawaii.vandalism.integration.serverdiscovery.gui.servers.ServersTab;
 import imgui.ImGui;
 import imgui.flag.ImGuiTabBarFlags;
 import imgui.flag.ImGuiWindowFlags;

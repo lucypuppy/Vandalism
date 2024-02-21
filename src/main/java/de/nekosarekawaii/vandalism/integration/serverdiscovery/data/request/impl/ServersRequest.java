@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.integration.serverdiscovery.data.request.imp
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.integration.serverdiscovery.data.request.Request;
 import de.nekosarekawaii.vandalism.integration.serverdiscovery.data.response.impl.ServersResponse;
 
@@ -85,7 +86,18 @@ public class ServersRequest extends Request<ServersResponse> {
         BUKKIT,
         SPIGOT,
         PAPER,
-        VANILLA
+        VANILLA;
+
+        private final String name;
+
+        Software() {
+            this.name = StringUtils.normalizeEnumName(this.name());
+        }
+
+        public String getName() {
+            return this.name;
+        }
+
     }
 
     @Override

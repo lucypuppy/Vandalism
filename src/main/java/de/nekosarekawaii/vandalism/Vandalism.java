@@ -216,7 +216,9 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
     @Override
     public void onShutdownProcess() {
-        configManager.save();
+        Vandalism.getInstance().getLogger().info("Shutting down...");
+        this.configManager.save();
+        FabricBootstrap.SHUTTING_DOWN = true;
     }
 
     public static Vandalism getInstance() {

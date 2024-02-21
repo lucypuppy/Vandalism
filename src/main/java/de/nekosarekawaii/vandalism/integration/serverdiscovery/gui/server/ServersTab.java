@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.integration.serverdiscovery.gui.servers;
+package de.nekosarekawaii.vandalism.integration.serverdiscovery.gui.server;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
@@ -24,7 +24,6 @@ import de.nekosarekawaii.vandalism.integration.serverdiscovery.ServerDiscoveryUt
 import de.nekosarekawaii.vandalism.integration.serverdiscovery.data.request.impl.ServersRequest;
 import de.nekosarekawaii.vandalism.integration.serverdiscovery.data.response.Response;
 import de.nekosarekawaii.vandalism.integration.serverdiscovery.data.response.impl.ServersResponse;
-import de.nekosarekawaii.vandalism.integration.serverdiscovery.gui.ServerDiscoveryClientMenuWindow;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.ServerUtil;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
@@ -82,10 +81,10 @@ public class ServersTab implements MinecraftWrapper {
             ImGui.inputText("Country Code", this.countryCode);
             ImGui.checkbox("Cracked", this.cracked);
             ImGui.inputText("Description", this.description);
-            if (ImGui.beginCombo(this.software.name(), this.software.name(), ImGuiComboFlags.HeightLargest)) {
+            if (ImGui.beginCombo("Software", this.software.getName(), ImGuiComboFlags.HeightLargest)) {
                 for (final ServersRequest.Software mode : ServersRequest.Software.values()) {
-                    final String modeString = mode.name();
-                    if (ImGui.selectable(modeString, modeString.equals(this.software.name()))) {
+                    final String modeString = mode.getName();
+                    if (ImGui.selectable(modeString, modeString.equals(this.software.getName()))) {
                         this.software = mode;
                     }
                 }
