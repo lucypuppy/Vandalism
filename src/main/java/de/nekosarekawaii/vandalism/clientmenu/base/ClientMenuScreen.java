@@ -62,7 +62,7 @@ public class ClientMenuScreen extends Screen {
                                     Vandalism.getInstance().getConfigManager().save();
                                 }
                             } else if (category == ClientMenuWindow.Category.SERVER) {
-                                if (ServerUtil.lastServerExists()) {
+                                if (ServerUtil.lastServerExists() && this.client.getCurrentServerEntry() == null) {
                                     ImGui.separator();
                                     if (ImUtils.subButton("Connect to last server")) {
                                         ServerUtil.connectToLastServer();
