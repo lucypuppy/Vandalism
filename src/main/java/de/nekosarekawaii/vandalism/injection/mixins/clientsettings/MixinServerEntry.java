@@ -87,6 +87,9 @@ public abstract class MixinServerEntry {
         if (ServerPingerWidget.IN_USE) {
             return 0;
         }
+        if (instance == null) {
+            return 0;
+        }
         return instance.size();
     }
 
