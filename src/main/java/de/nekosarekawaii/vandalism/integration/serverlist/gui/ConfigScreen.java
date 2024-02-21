@@ -26,6 +26,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
@@ -35,17 +36,24 @@ import java.awt.*;
 public class ConfigScreen extends Screen {
 
     private final Screen parent;
-    private ButtonWidget removeBtn;
+
+    private final ServerList initialServerList;
+
+    private ButtonWidget cleanBtn;
+    private ButtonWidget clearBtn;
+    private ButtonWidget deleteBtn;
 
     public ConfigScreen(final Screen parent) {
         super(Text.literal("Config"));
         this.parent = parent;
+        this.initialServerList = Vandalism.getInstance().getServerListManager().getSelectedServerList();
     }
 
     @Override
     protected void init() {
         this.addDrawableChild(new SlotList(this.client, this.width, this.height, 32, 64, this.textRenderer.fontHeight + 4));
-        this.removeBtn = this.addDrawableChild(ButtonWidget.builder(Text.literal("Remove"), button -> {
+        final int buttonWidth = 60;
+        this.deleteBtn = this.addDrawableChild(ButtonWidget.builder(Text.literal("Delete"), button -> {
             final ServerListManager serverListManager = Vandalism.getInstance().getServerListManager();
             final ServerList selectedServerList = serverListManager.getSelectedServerList();
             if (this.client != null && !selectedServerList.isDefault()) {
@@ -55,18 +63,31 @@ public class ConfigScreen extends Screen {
                     }
                     this.client.setScreen(new ConfigScreen(this.parent));
                 },
-                        Text.literal("Are you sure you want to remove this server list?"),
+                        Text.literal("Are you sure you want to delete this server list?"),
                         Text.literal("'" + selectedServerList.getName() + " (" + selectedServerList.getSize() + ")' " + "will be lost forever! (A long time!)"),
                         ScreenTexts.YES, ScreenTexts.NO
                 ));
             }
-        }).width(74).build());
+        }).width(buttonWidth).build());
         final GridWidget gridWidget = new GridWidget();
         final GridWidget.Adder adder = gridWidget.createAdder(1);
         final AxisGridWidget axisGrid = adder.add(new AxisGridWidget(308, 20, AxisGridWidget.DisplayAxis.HORIZONTAL));
-        axisGrid.add(this.addDrawableChild(ButtonWidget.builder(Text.literal("Add"), button -> MinecraftClient.getInstance().setScreen(new AddServerListScreen(this.parent))).width(74).build()));
-        axisGrid.add(this.removeBtn);
-        axisGrid.add(this.addDrawableChild(ButtonWidget.builder(ScreenTexts.BACK, button -> close()).width(74).build()));
+        axisGrid.add(this.addDrawableChild(ButtonWidget.builder(Text.literal("Add"), button -> MinecraftClient.getInstance().setScreen(new AddServerListScreen(this.parent))).width(buttonWidth).build()));
+        this.cleanBtn = axisGrid.add(this.addDrawableChild(ButtonWidget.builder(Text.literal("Clean"), button -> {
+            if (this.parent instanceof final MultiplayerScreen multiplayerScreen) {
+                final net.minecraft.client.option.ServerList serverList = multiplayerScreen.getServerList();
+                serverList.servers.removeIf(server -> server.ping <= 0L);
+                serverList.saveFile();
+            }
+        }).width(buttonWidth).build()));
+        this.clearBtn = axisGrid.add(this.addDrawableChild(ButtonWidget.builder(Text.literal("Clear"), button -> {
+            final net.minecraft.client.option.ServerList serverList = new net.minecraft.client.option.ServerList(MinecraftClient.getInstance());
+            serverList.servers.clear();
+            serverList.hiddenServers.clear();
+            serverList.saveFile();
+        }).width(buttonWidth).build()));
+        axisGrid.add(this.deleteBtn);
+        axisGrid.add(this.addDrawableChild(ButtonWidget.builder(ScreenTexts.BACK, button -> close()).width(buttonWidth).build()));
         gridWidget.refreshPositions();
         SimplePositioningWidget.setPos(gridWidget, 0, this.height - 64, this.width, 64);
     }
@@ -79,7 +100,10 @@ public class ConfigScreen extends Screen {
 
     @Override
     public void tick() {
-        this.removeBtn.active = !Vandalism.getInstance().getServerListManager().getSelectedServerList().isDefault();
+        final ServerList selectedServerList = Vandalism.getInstance().getServerListManager().getSelectedServerList();
+        this.cleanBtn.active = selectedServerList.getName().equals(this.initialServerList.getName()) && selectedServerList.getSize() > 0;
+        this.clearBtn.active = selectedServerList.getSize() > 0;
+        this.deleteBtn.active = !selectedServerList.isDefault();
     }
 
     @Override

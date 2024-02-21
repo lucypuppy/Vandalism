@@ -26,6 +26,8 @@ import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.util.common.StaticEncryptionUtil;
 import de.nekosarekawaii.vandalism.util.common.UUIDUtil;
 import imgui.ImGui;
+import imgui.ImGuiInputTextCallbackData;
+import imgui.callback.ImGuiInputTextCallback;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
 import net.minecraft.client.session.Session;
@@ -36,6 +38,22 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class SessionAccount extends AbstractAccount {
+
+    private static final ImGuiInputTextCallback USERNAME_NAME_FILTER = new ImGuiInputTextCallback() {
+
+        @Override
+        public void accept(final ImGuiInputTextCallbackData imGuiInputTextCallbackData) {
+            if (imGuiInputTextCallbackData.getEventChar() == 0) return;
+            if (
+                    !Character.isLetterOrDigit(imGuiInputTextCallbackData.getEventChar()) &&
+                            imGuiInputTextCallbackData.getEventChar() != '_' &&
+                            imGuiInputTextCallbackData.getEventChar() != '§'
+            ) {
+                imGuiInputTextCallbackData.setEventChar((char) 0);
+            }
+        }
+
+    };
 
     private String name;
     private String uuid;
@@ -114,7 +132,7 @@ public class SessionAccount extends AbstractAccount {
 
             @Override
             public void displayFactory() {
-                ImGui.inputText("Name", this.name, ImGuiInputTextFlags.CallbackResize);
+                ImGui.inputText("Name", this.name, ImGuiInputTextFlags.CallbackCharFilter, USERNAME_NAME_FILTER);
                 ImGui.inputText("UUID", this.uuid, ImGuiInputTextFlags.CallbackResize);
                 final String name = this.name.get();
                 ImGui.inputText("Access Token", this.accessToken, ImGuiInputTextFlags.CallbackResize | ImGuiInputTextFlags.Password);
