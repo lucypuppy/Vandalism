@@ -83,10 +83,10 @@ public class ServersRequest extends Request<ServersResponse> {
 
     public enum Software {
         ANY,
+        VANILLA,
         BUKKIT,
         SPIGOT,
-        PAPER,
-        VANILLA;
+        PAPER;
 
         private final String name;
 
