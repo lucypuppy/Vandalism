@@ -129,6 +129,7 @@ public class ClientMenuScreen extends Screen {
             return;
         }
         this.client.setScreen(this.prevScreen);
+        ImLoader.forceUpdateMouse();
     }
 
 }

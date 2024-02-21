@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.util.imgui;
 
+import de.nekosarekawaii.vandalism.injection.access.IImGuiImplGlfw;
 import imgui.*;
 import imgui.extension.implot.ImPlot;
 import imgui.flag.ImGuiCol;
@@ -28,8 +29,9 @@ import net.minecraft.client.MinecraftClient;
 import java.io.File;
 
 public class ImLoader {
-    private static final ImGuiImplGl3 imGuiImplGl3 = new ImGuiImplGl3();
-    private static final ImGuiImplGlfw imGuiImplGlfw = new ImGuiImplGlfw();
+
+    private static final ImGuiImplGl3 IM_GUI_IMPL_GL_3 = new ImGuiImplGl3();
+    private static final ImGuiImplGlfw IM_GUI_IMPL_GLFW = new ImGuiImplGlfw();
 
     public static void init(final File runDirectory) {
         ImGui.createContext();
@@ -42,12 +44,12 @@ public class ImLoader {
         loadFonts(io);
         pushStyle();
 
-        imGuiImplGlfw.init(MinecraftClient.getInstance().getWindow().getHandle(), true);
-        imGuiImplGl3.init();
+        IM_GUI_IMPL_GLFW.init(MinecraftClient.getInstance().getWindow().getHandle(), true);
+        IM_GUI_IMPL_GL_3.init();
     }
 
     public static void draw(final Runnable runnable) {
-        imGuiImplGlfw.newFrame();
+        IM_GUI_IMPL_GLFW.newFrame();
         ImGui.newFrame();
 
         runnable.run();
@@ -55,7 +57,7 @@ public class ImLoader {
         ImGui.endFrame();
         ImGui.render();
 
-        imGuiImplGl3.renderDrawData(ImGui.getDrawData());
+        IM_GUI_IMPL_GL_3.renderDrawData(ImGui.getDrawData());
     }
 
     protected static void loadFonts(final ImGuiIO io) {
@@ -135,6 +137,10 @@ public class ImLoader {
         colors[ImGuiCol.ResizeGripHovered] = new float[]{0.56f, 0.56f, 0.58f, 1.00f};
         colors[ImGuiCol.ResizeGripActive] = new float[]{0.06f, 0.05f, 0.07f, 1.00f};
         style.setColors(colors);
+    }
+
+    public static void forceUpdateMouse() {
+        ((IImGuiImplGlfw) IM_GUI_IMPL_GLFW).vandalism$forceUpdateMouseCursor();
     }
 
 }
