@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.Vandalism;
@@ -26,6 +27,7 @@ import de.nekosarekawaii.vandalism.base.event.normal.player.RaytraceListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.RotationListener;
 import de.nekosarekawaii.vandalism.base.event.normal.render.Render2DListener;
 import de.nekosarekawaii.vandalism.base.event.normal.render.Render3DListener;
+import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.BezierValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
@@ -45,16 +47,19 @@ import de.nekosarekawaii.vandalism.util.click.impl.BezierClicker;
 import de.nekosarekawaii.vandalism.util.click.impl.BoxMuellerClicker;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -336,6 +341,33 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             "Whether you should resprint after attack.",
             true
     );
+
+    private final ValueGroup renderGroup = new ValueGroup(
+            this,
+            "Render",
+            "Settings for aura render stuff."
+    );
+
+    private final BooleanValue targetESP = new BooleanValue(
+            this.renderGroup,
+            "Target ESP",
+            "Whether to render the target ESP.",
+            true
+    );
+
+    private final ColorValue targetColor1 = new ColorValue(
+            this.renderGroup,
+            "First Target Color",
+            "The first color of the target ESP.",
+            new Color(0x00FF00)
+    ).visibleCondition(this.targetESP::getValue);
+
+    private final ColorValue targetColor2 = new ColorValue(
+            this.renderGroup,
+            "Second Target Color",
+            "The second color of the target ESP.",
+            new Color(0x00FF00)
+    ).visibleCondition(this.targetESP::getValue);
 
     private Entity target;
     private int targetIndex = 0;
@@ -664,6 +696,66 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         //            ImGui.end();
         //        });
         //    }
+
+        if (!this.targetESP.getValue() || this.getTarget() == null) {
+            return;
+        }
+
+        final Vec3d pos = this.getTarget().getPos();
+
+        if (this.getTarget() instanceof final LivingEntity entity) {
+            matrixStack.push();
+
+            final Box box = new Box(
+                    pos.x - entity.getWidth() / 2f,
+                    pos.y + entity.getHeight()/2 + Math.sin(System.currentTimeMillis()*0.005)*0.9,
+                    pos.z - entity.getWidth() / 2f,
+                    pos.x + entity.getWidth() / 2f,
+                    pos.y + entity.getHeight()/2+0.11 + Math.sin(System.currentTimeMillis()*0.005)*0.9,
+                    pos.z + entity.getWidth() / 2f
+            );
+
+            final Box box2 = new Box(
+                    pos.x - entity.getWidth() / 2f,
+                    pos.y + entity.getHeight()/2 + Math.sin(System.currentTimeMillis()*0.005+Math.PI)*0.9,
+                    pos.z - entity.getWidth() / 2f,
+                    pos.x + entity.getWidth() / 2f,
+                    pos.y + entity.getHeight()/2+0.11 + Math.sin(System.currentTimeMillis()*0.005+Math.PI)*0.9,
+                    pos.z + entity.getWidth() / 2f
+            );
+
+            final Vec3d center = box.getCenter();
+            final Vec3d center2 = box2.getCenter();
+
+            final Vec3d camPos = this.mc.gameRenderer.getCamera().getPos();
+            matrixStack.translate(-camPos.x, -camPos.y, -camPos.z);
+
+            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+            RenderSystem.disableCull();
+            final Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder bufferBuilder = tessellator.getBuffer();
+            bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
+            int points = 24;
+            for(int i = 0; i <= points; i++) {
+                double angle = (i / (double) points) * Math.PI * 2;
+                double radius = this.getTarget().getWidth();
+                double x = Math.cos(angle) * radius;
+                double z = Math.sin(angle) * radius;
+                bufferBuilder.vertex(matrixStack.peek().getPositionMatrix(), (float) (center.x + x), (float) center.y, (float) (center.z + z)).color(targetColor1.getColor().getRGB()).next();
+            }
+            tessellator.draw();
+
+            bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
+            for(int i = 0; i <= points; i++) {
+                double angle = (i / (double) points) * Math.PI * 2;
+                double radius = this.getTarget().getWidth();
+                double x = Math.cos(angle) * radius;
+                double z = Math.sin(angle) * radius;
+                bufferBuilder.vertex(matrixStack.peek().getPositionMatrix(), (float) (center2.x + x), (float) center2.y, (float) (center2.z + z)).color(targetColor2.getColor().getRGB()).next();
+            }
+            tessellator.draw();
+            RenderSystem.enableCull();
+        }
     }
 
     private enum SmoothingType implements IName {
