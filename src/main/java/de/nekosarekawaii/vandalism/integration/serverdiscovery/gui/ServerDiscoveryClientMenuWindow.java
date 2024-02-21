@@ -18,57 +18,26 @@
 
 package de.nekosarekawaii.vandalism.integration.serverdiscovery.gui;
 
-import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
-import de.nekosarekawaii.vandalism.integration.serverdiscovery.ServerDiscoveryUtil;
-import de.nekosarekawaii.vandalism.integration.serverdiscovery.data.request.impl.ServersRequest;
-import de.nekosarekawaii.vandalism.integration.serverdiscovery.data.response.Response;
-import de.nekosarekawaii.vandalism.integration.serverdiscovery.data.response.impl.ServersResponse;
-import de.nekosarekawaii.vandalism.util.game.ServerUtil;
-import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.integration.serverdiscovery.gui.servers.ServersTab;
 import imgui.ImGui;
-import imgui.flag.ImGuiCol;
-import imgui.flag.ImGuiComboFlags;
-import imgui.flag.ImGuiPopupFlags;
+import imgui.flag.ImGuiTabBarFlags;
 import imgui.flag.ImGuiWindowFlags;
-import imgui.type.ImBoolean;
-import imgui.type.ImInt;
 import imgui.type.ImString;
-import net.minecraft.SharedConstants;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.network.ServerInfo;
-import net.minecraft.client.option.ServerList;
-import net.minecraft.util.Formatting;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ServerDiscoveryClientMenuWindow extends ClientMenuWindow {
 
-    private final List<ServersResponse.Server> servers = new ArrayList<>();
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private static final String DEFAULT_SERVER_TAB_NAME = "Server Tab";
 
-    private final ImString serversSearchField = new ImString();
+    private final ConcurrentHashMap<String, ServersTab> serversTabs = new ConcurrentHashMap<>();
 
-    private final ImInt asn = new ImInt(0);
-    private final ImString countryCode = new ImString();
-    private final ImBoolean cracked = new ImBoolean(false);
-    private final ImString description = new ImString();
-    private ServersRequest.Software software = ServersRequest.Software.ANY;
-    private final ImInt minPlayers = new ImInt(0);
-    private final ImInt maxPlayers = new ImInt(-1);
-    private final ImInt minOnlinePlayers = new ImInt(0);
-    private final ImInt maxOnlinePlayers = new ImInt(-1);
-    private final ImInt protocol = new ImInt(SharedConstants.getProtocolVersion());
-    private final ImBoolean ignoreModded = new ImBoolean(false);
-    private final ImBoolean onlyBungeeSpoofable = new ImBoolean(false);
+    private final ImString serverTabName = new ImString();
+
+    private String currentServerTab = "";
 
     public ServerDiscoveryClientMenuWindow() {
         super("Server Discovery", Category.SERVER);
@@ -78,189 +47,55 @@ public class ServerDiscoveryClientMenuWindow extends ClientMenuWindow {
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         ImGui.begin(this.getName(), ImGuiWindowFlags.MenuBar);
         if (ImGui.beginMenuBar()) {
-            if (ImGui.beginMenu("Servers")) {
-                ImGui.text("Servers: " + this.servers.size());
-                ImGui.separator();
-                ImGui.inputInt("ASN", this.asn, 1);
-                ImGui.inputText("Country Code", this.countryCode);
-                ImGui.checkbox("Cracked", this.cracked);
-                ImGui.inputText("Description", this.description);
-                if (ImGui.beginCombo(this.software.name(), this.software.name(), ImGuiComboFlags.HeightLargest)) {
-                    for (final ServersRequest.Software mode : ServersRequest.Software.values()) {
-                        final String modeString = mode.name();
-                        if (ImGui.selectable(modeString, modeString.equals(this.software.name()))) {
-                            this.software = mode;
-                        }
+            if (ImGui.button("Create")) {
+                String name = this.serverTabName.get();
+                if (name.isEmpty()) {
+                    name = DEFAULT_SERVER_TAB_NAME;
+                }
+                if (this.serversTabs.containsKey(name)) {
+                    int i = 2;
+                    while (this.serversTabs.containsKey(name + " " + i)) {
+                        i++;
                     }
-                    ImGui.endCombo();
+                    name = name + " " + i;
                 }
-                ImGui.inputInt("Min players", this.minPlayers, 1);
-                ImGui.inputInt("Max players", this.maxPlayers, 1);
-                ImGui.inputInt("Min online players", this.minOnlinePlayers, 1);
-                ImGui.inputInt("Max online players", this.maxOnlinePlayers, 1);
-                ImGui.inputInt("Protocol", this.protocol, 1);
-                ImGui.checkbox("Ignore modded", this.ignoreModded);
-                ImGui.checkbox("Only bungee spoofable", this.onlyBungeeSpoofable);
-                if (ImUtils.subButton("Get")) {
-                    this.servers.clear();
-                    final ServersRequest serversRequest = new ServersRequest(
-                            this.asn.get(),
-                            this.countryCode.get(),
-                            this.cracked.get(),
-                            this.description.get(),
-                            this.software,
-                            this.minPlayers.get(),
-                            this.maxPlayers.get(),
-                            this.minOnlinePlayers.get(),
-                            this.maxOnlinePlayers.get(),
-                            (int) System.currentTimeMillis(),
-                            this.protocol.get(),
-                            this.ignoreModded.get(),
-                            this.onlyBungeeSpoofable.get()
-                    );
-                    this.executorService.submit(() -> {
-                        serversRequest.ignore_modded = true;
-                        final Response response = ServerDiscoveryUtil.request(serversRequest);
-                        if (response instanceof final ServersResponse serversResponse) {
-                            ServersResponse.Server server = new ServersResponse.Server();
-                            if (serversResponse.isError()) {
-                                server.version = "Response failed due to " + serversResponse.error;
-                            }
-                            else if (serversResponse.data == null || serversResponse.data.isEmpty()) {
-                                server.version = "No servers found!";
-                            }
-                            else {
-                                this.servers.addAll(serversResponse.data);
-                                server = null;
-                            }
-                            if (server != null) {
-                                this.servers.add(server);
-                            }
-                        }
-                    });
-                }
-                if (!this.servers.isEmpty()) {
-                    if (ImUtils.subButton("Clear")) {
-                        this.servers.clear();
-                    }
-                }
-                ImGui.endMenu();
+                this.serversTabs.put(name, new ServersTab());
+                this.serverTabName.set("");
             }
+            for (final Map.Entry<String, ServersTab> entry : this.serversTabs.entrySet()) {
+                entry.getValue().renderMenu(entry.getKey());
+            }
+            if (!this.currentServerTab.isEmpty()) {
+                if (ImGui.button("Close Tab")) {
+                    this.serversTabs.remove(this.currentServerTab);
+                    this.currentServerTab = "";
+                }
+            }
+            ImGui.text("Enter Name:");
+            ImGui.setNextItemWidth(-1);
+            ImGui.inputText("##newServerTabName", this.serverTabName);
             ImGui.endMenuBar();
         }
-        if (!this.servers.isEmpty()) {
-            ImGui.text("Search for Servers");
-            ImGui.setNextItemWidth(-1);
-            ImGui.inputText("##serverSearchField", this.serversSearchField);
-            ImGui.separator();
-            if (ImUtils.subButton("Add all servers")) {
-                final ServerList serverList = new ServerList(MinecraftClient.getInstance());
-                serverList.loadFile();
-                int i = 0;
-                for (final ServersResponse.Server server : this.servers) {
-                    i++;
-                    serverList.add(new ServerInfo(
-                            "Server Discovery (" + (i < 10 ? "0" + i : i) + ")",
-                            server.server,
-                            ServerInfo.ServerType.OTHER
-                    ), false);
+        if (!this.serversTabs.isEmpty()) {
+            if (ImGui.beginTabBar("##serversTabBar", ImGuiTabBarFlags.AutoSelectNewTabs)) {
+                for (final Map.Entry<String, ServersTab> entry : this.serversTabs.entrySet()) {
+                    final String name = entry.getKey();
+                    if (entry.getValue().render(name)) {
+                        this.currentServerTab = name;
+                    }
                 }
-                serverList.saveFile();
+                ImGui.endTabBar();
             }
-            ImGui.beginChild("##servers", -1, -1, true, ImGuiWindowFlags.HorizontalScrollbar);
-            int i = 0;
-            for (final ServersResponse.Server serverEntry : this.servers) {
-                i++;
-                final String address = serverEntry.server;
-                final boolean cracked = serverEntry.cracked;
-                final boolean isLastServer = ServerUtil.lastServerExists() && ServerUtil.getLastServerInfo().address.equals(address);
-                final StringBuilder dataString = new StringBuilder();
-                String description = Formatting.strip(serverEntry.description);
-                if (description != null && !description.isEmpty()) {
-                    final String colorCodePrefix = String.valueOf(Formatting.FORMATTING_CODE_PREFIX);
-                    if (description.contains(colorCodePrefix)) {
-                        description = description.replace(colorCodePrefix, "");
-                    }
-                    if (description.contains("    ")) {
-                        description = description.replace("    ", " ");
-                    }
-                    if (description.contains("\n")) {
-                        description = description.replace("\n", " ");
-                    }
-                    if (description.contains("\t")) {
-                        description = description.replace("\t", " ");
-                    }
-                    if (!description.isEmpty()) {
-                        dataString.append("Description: ");
-                        final int maxLength = 200;
-                        if (description.length() > maxLength) {
-                            description = description.substring(0, maxLength);
-                            description += "...";
-                        }
-                        dataString.append(description);
-                    }
-                }
-                dataString.append("\n");
-                dataString.append("Version: ");
-                dataString.append(serverEntry.version);
-                dataString.append("\n");
-                dataString.append("Protocol: ");
-                dataString.append(serverEntry.protocol);
-                dataString.append("\n");
-                dataString.append("Players: ");
-                dataString.append(serverEntry.online_players);
-                dataString.append("/");
-                dataString.append(serverEntry.max_players);
-                dataString.append("\n");
-                dataString.append("Last Seen: ");
-                dataString.append(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(
-                        Instant.ofEpochSecond(serverEntry.last_seen).atZone(ZoneId.systemDefault()).toLocalDateTime()
-                ));
-                final String data = dataString.toString();
-                if (!this.serversSearchField.get().isBlank() && !(StringUtils.contains(data, this.serversSearchField.get()))) {
-                    continue;
-                }
-                final boolean shouldHighlight = cracked || isLastServer;
-                if (shouldHighlight) {
-                    float[] color = { 0.1f, 0.8f, 0.1f, 0.30f };
-                    if (isLastServer) {
-                        color = new float[]{ 0.8f, 0.1f, 0.1f, 0.30f };
-                    }
-                    ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], color[3]);
-                    ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], color[3] - 0.1f);
-                    ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
-                }
-                final String id = "##serverEntry" + address;
-                if (ImGui.button(id, ImGui.getColumnWidth() - 8, 90)) {
-                    ServerUtil.setLastServerInfo(new ServerInfo(address, address, ServerInfo.ServerType.OTHER));
-                    ServerUtil.connectToLastServer();
-                }
-                if (shouldHighlight) {
-                    ImGui.popStyleColor(3);
-                }
-                if (ImGui.beginPopupContextItem(id + "popup", ImGuiPopupFlags.MouseButtonRight)) {
-                    final int buttonWidth = 150, buttonHeight = 28;
-                    if (ImGui.button("Add to the Server List" + id + "addtoserverlist", buttonWidth, buttonHeight)) {
-                        final ServerList serverList = new ServerList(MinecraftClient.getInstance());
-                        serverList.loadFile();
-                        serverList.add(new ServerInfo(
-                                "Server Discovery (" + (i < 10 ? "0" + i : i) + ")",
-                                address,
-                                ServerInfo.ServerType.OTHER
-                        ), false);
-                        serverList.saveFile();
-                    }
-                    if (ImGui.button("Copy Data" + id + "copydata", buttonWidth, buttonHeight)) {
-                        this.mc.keyboard.setClipboard(data);
-                    }
-                    ImGui.endPopup();
-                }
-                ImGui.sameLine(10);
-                ImGui.text(data);
-            }
-            ImGui.endChild();
+        }
+        else {
+            ImGui.text("Press create to create a new server tab.");
         }
         ImGui.end();
+    }
+
+
+    public boolean isCurrentServerTab(final String name) {
+        return this.currentServerTab.equals(name);
     }
 
 }

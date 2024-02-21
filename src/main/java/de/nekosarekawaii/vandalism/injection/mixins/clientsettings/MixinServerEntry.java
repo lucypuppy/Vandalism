@@ -84,7 +84,7 @@ public abstract class MixinServerEntry {
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/ServerList;size()I"))
     private int return0WhileUsingServerPingerWidget(final ServerList instance) {
-        if (!ServerPingerWidget.shouldSave(this.server)) {
+        if (ServerPingerWidget.IN_USE) {
             return 0;
         }
         return instance.size();
@@ -92,7 +92,7 @@ public abstract class MixinServerEntry {
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V"))
     private void dontRenderWhileUsingServerPingerWidget(final DrawContext instance, final int x1, final int y1, final int x2, final int y2, final int color) {
-        if (!ServerPingerWidget.shouldSave(this.server)) {
+        if (ServerPingerWidget.IN_USE) {
             return;
         }
         instance.fill(x1, y1, x2, y2, color);
@@ -100,28 +100,28 @@ public abstract class MixinServerEntry {
 
     @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
     private void disableKeyPressingWhileUsingServerPingerWidget(final int keyCode, final int scanCode, final int modifiers, final CallbackInfoReturnable<Boolean> cir) {
-        if (!ServerPingerWidget.shouldSave(this.server)) {
+        if (ServerPingerWidget.IN_USE) {
             cir.setReturnValue(false);
         }
     }
 
     @Inject(method = "canConnect", at = @At("HEAD"), cancellable = true)
     private void disableConnectingWhileUsingServerPingerWidget(final CallbackInfoReturnable<Boolean> cir) {
-        if (!ServerPingerWidget.shouldSave(this.server)) {
+        if (ServerPingerWidget.IN_USE) {
             cir.setReturnValue(false);
         }
     }
 
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
     private void disableMouseClickingWhileUsingServerPingerWidget(final double mouseX, final double mouseY, final int button, final CallbackInfoReturnable<Boolean> cir) {
-        if (!ServerPingerWidget.shouldSave(this.server)) {
+        if (ServerPingerWidget.IN_USE) {
             cir.setReturnValue(false);
         }
     }
 
     @Inject(method = "saveFile", at = @At("HEAD"), cancellable = true)
     private void disableSavingWhileUsingServerPingerWidget(final CallbackInfo ci) {
-        if (!ServerPingerWidget.shouldSave(this.server)) {
+        if (ServerPingerWidget.IN_USE) {
             ci.cancel();
         }
     }

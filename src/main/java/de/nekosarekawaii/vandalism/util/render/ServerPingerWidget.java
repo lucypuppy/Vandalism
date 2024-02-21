@@ -53,13 +53,13 @@ public class ServerPingerWidget implements MinecraftWrapper {
     private static final int ELEMENT_WIDTH = 304;
     private static final int ELEMENT_HEIGHT = 42;
 
-    @Deprecated
-    private static final String SHIT = "§ö§1§3";
+    public static boolean IN_USE = false;
 
     public static void draw(final ServerInfo currentServerInfo, final DrawContext context, final int mouseX, final int mouseY, final float delta, final int startY) {
         if (currentServerInfo == null) return;
         final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
         if (!menuSettings.serverPingerWidget.getValue()) return;
+        IN_USE = true;
         WIDGET.setY(startY);
         final int pingDelay = menuSettings.serverPingerWidgetDelay.getValue();
         if (PING_TIMER.hasReached(pingDelay, true)) {
@@ -81,24 +81,20 @@ public class ServerPingerWidget implements MinecraftWrapper {
             context.drawTooltip(mc.textRenderer, tooltip, mouseX, mouseY);
         }
         FAKE_MULTIPLAYER_SCREEN.multiplayerScreenTooltip = null;
+        IN_USE = false;
     }
 
     public static void ping(final ServerInfo currentServerInfo) {
         if (currentServerInfo == null) return;
         final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
         if (!menuSettings.serverPingerWidget.getValue()) return;
+        IN_USE = true;
         final ServerList serverList = new ServerList(mc);
         currentServerInfo.online = false;
-        if (!currentServerInfo.name.contains(SHIT)) {
-            currentServerInfo.name += SHIT;
-        }
         serverList.add(currentServerInfo, false);
         WIDGET.setServers(serverList);
         PING_TIMER.reset();
-    }
-
-    public static boolean shouldSave(final ServerInfo serverInfo) {
-        return !serverInfo.name.contains(SHIT);
+        IN_USE = false;
     }
 
 }
