@@ -37,6 +37,17 @@ public class ServersResponse extends Response {
         public Integer protocol;
         public String version;
 
+        public Server() {
+            this.server = "";
+            this.cracked = false;
+            this.description = "";
+            this.last_seen = 0;
+            this.max_players = 0;
+            this.online_players = 0;
+            this.protocol = 0;
+            this.version = "";
+        }
+
         @Override
         public String toString() {
             return "Server{" +
