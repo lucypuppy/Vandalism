@@ -59,7 +59,6 @@ import java.io.File;
  *  - Rewrite EnhancedServerList
  *  - Fix offsets for the new "teleport" method in the fov fucker module
  *  - Fix module tabs display (no stacking) when the client starts the first time
- *  - Fix ClientMenuScreen#close because it could break the entire game
  *  - Use hashmap storage when it has been added to rclasses instead of a default storage because that would improve the performance
  *      - (Search for FriendManager#getList())
  * <br><br>
