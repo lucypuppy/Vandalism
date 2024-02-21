@@ -1,0 +1,224 @@
+/*
+ * This file is part of Vandalism - https://github.com/VandalismDevelopment/Vandalism
+ * Copyright (C) 2023-2024 NekosAreKawaii, Verschlxfene, FooFieOwO and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package de.nekosarekawaii.vandalism.integration.serverdiscovery.gui;
+
+import de.florianmichael.rclasses.common.StringUtils;
+import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
+import de.nekosarekawaii.vandalism.integration.serverdiscovery.ServerDiscoveryUtil;
+import de.nekosarekawaii.vandalism.integration.serverdiscovery.data.request.impl.ServersRequest;
+import de.nekosarekawaii.vandalism.integration.serverdiscovery.data.response.Response;
+import de.nekosarekawaii.vandalism.integration.serverdiscovery.data.response.impl.ServersResponse;
+import de.nekosarekawaii.vandalism.util.game.ServerUtil;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
+import imgui.ImGui;
+import imgui.flag.ImGuiCol;
+import imgui.flag.ImGuiComboFlags;
+import imgui.flag.ImGuiWindowFlags;
+import imgui.type.ImBoolean;
+import imgui.type.ImInt;
+import imgui.type.ImString;
+import net.minecraft.SharedConstants;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.network.ServerInfo;
+import net.minecraft.util.Formatting;
+
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class ServerDiscoveryClientMenuWindow extends ClientMenuWindow {
+
+    private final List<ServersResponse.Server> servers = new ArrayList<>();
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+    private final ImString serversSearchField = new ImString();
+
+    private final ImInt asn = new ImInt(0);
+    private final ImString countryCode = new ImString();
+    private final ImBoolean cracked = new ImBoolean(false);
+    private final ImString description = new ImString();
+    private ServersRequest.Software software = ServersRequest.Software.ANY;
+    private final ImInt minPlayers = new ImInt(0);
+    private final ImInt maxPlayers = new ImInt(-1);
+    private final ImInt minOnlinePlayers = new ImInt(0);
+    private final ImInt maxOnlinePlayers = new ImInt(-1);
+    private final ImInt protocol = new ImInt(SharedConstants.getProtocolVersion());
+    private final ImBoolean ignoreModded = new ImBoolean(false);
+    private final ImBoolean onlyBungeeSpoofable = new ImBoolean(false);
+
+    public ServerDiscoveryClientMenuWindow() {
+        super("Server Discovery", Category.SERVER);
+    }
+
+    @Override
+    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        ImGui.begin(this.getName(), ImGuiWindowFlags.MenuBar);
+        if (ImGui.beginMenuBar()) {
+            if (ImGui.beginMenu("Servers")) {
+                ImGui.text("Servers: " + this.servers.size());
+                ImGui.separator();
+                ImGui.inputInt("ASN", this.asn, 1);
+                ImGui.inputText("Country Code", this.countryCode);
+                ImGui.checkbox("Cracked", this.cracked);
+                ImGui.inputText("Description", this.description);
+                if (ImGui.beginCombo(this.software.name(), this.software.name(), ImGuiComboFlags.HeightLargest)) {
+                    for (final ServersRequest.Software mode : ServersRequest.Software.values()) {
+                        final String modeString = mode.name();
+                        if (ImGui.selectable(modeString, modeString.equals(this.software.name()))) {
+                            this.software = mode;
+                        }
+                    }
+                    ImGui.endCombo();
+                }
+                ImGui.inputInt("Min players", this.minPlayers, 1);
+                ImGui.inputInt("Max players", this.maxPlayers, 1);
+                ImGui.inputInt("Min online players", this.minOnlinePlayers, 1);
+                ImGui.inputInt("Max online players", this.maxOnlinePlayers, 1);
+                ImGui.inputInt("Protocol", this.maxOnlinePlayers, 1);
+                ImGui.checkbox("Ignore modded", this.ignoreModded);
+                ImGui.checkbox("Only bungee spoofable", this.onlyBungeeSpoofable);
+                if (ImUtils.subButton("Get")) {
+                    this.servers.clear();
+                    final ServersRequest serversRequest = new ServersRequest(
+                            this.asn.get(),
+                            this.countryCode.get(),
+                            this.cracked.get(),
+                            this.description.get(),
+                            this.software,
+                            this.minPlayers.get(),
+                            this.maxPlayers.get(),
+                            this.minOnlinePlayers.get(),
+                            this.maxOnlinePlayers.get(),
+                            (int) System.currentTimeMillis(),
+                            this.protocol.get(),
+                            this.ignoreModded.get(),
+                            this.onlyBungeeSpoofable.get()
+                    );
+                    this.executorService.submit(() -> {
+                        serversRequest.ignore_modded = true;
+                        final Response response = ServerDiscoveryUtil.request(serversRequest);
+                        if (response instanceof final ServersResponse serversResponse) {
+                            ServersResponse.Server server = new ServersResponse.Server();
+                            if (serversResponse.isError()) {
+                                server.version = "Response failed due to " + serversResponse.error;
+                            }
+                            else if (serversResponse.data == null || serversResponse.data.isEmpty()) {
+                                server.version = "No servers found!";
+                            }
+                            else {
+                                this.servers.addAll(serversResponse.data);
+                                server = null;
+                            }
+                            if (server != null) {
+                                this.servers.add(server);
+                            }
+                        }
+                    });
+                }
+                if (!this.servers.isEmpty()) {
+                    if (ImUtils.subButton("Clear")) {
+                        this.servers.clear();
+                    }
+                }
+                ImGui.endMenu();
+            }
+            ImGui.endMenuBar();
+        }
+        if (!this.servers.isEmpty()) {
+            ImGui.text("Search for Servers");
+            ImGui.setNextItemWidth(-1);
+            ImGui.inputText("##serverSearchField", this.serversSearchField);
+            ImGui.separator();
+            ImGui.beginChild("##servers", -1, -1, true, ImGuiWindowFlags.HorizontalScrollbar);
+            for (final ServersResponse.Server serverEntry : this.servers) {
+                final String address = serverEntry.server;
+                final boolean cracked = serverEntry.cracked;
+                final StringBuilder dataString = new StringBuilder();
+                String description = Formatting.strip(serverEntry.description);
+                if (description != null && !description.isEmpty()) {
+                    final String colorCodePrefix = String.valueOf(Formatting.FORMATTING_CODE_PREFIX);
+                    if (description.contains(colorCodePrefix)) {
+                        description = description.replace(colorCodePrefix, "");
+                    }
+                    if (description.contains("    ")) {
+                        description = description.replace("    ", " ");
+                    }
+                    if (description.contains("\n")) {
+                        description = description.replace("\n", " ");
+                    }
+                    if (description.contains("\t")) {
+                        description = description.replace("\t", " ");
+                    }
+                    if (!description.isEmpty()) {
+                        dataString.append("Description: ");
+                        final int maxLength = 200;
+                        if (description.length() > maxLength) {
+                            description = description.substring(0, maxLength);
+                            description += "...";
+                        }
+                        dataString.append(description);
+                    }
+                }
+                dataString.append("\n");
+                dataString.append("Version: ");
+                dataString.append(serverEntry.version);
+                dataString.append("\n");
+                dataString.append("Protocol: ");
+                dataString.append(serverEntry.protocol);
+                dataString.append("\n");
+                dataString.append("Players: ");
+                dataString.append(serverEntry.online_players);
+                dataString.append("/");
+                dataString.append(serverEntry.max_players);
+                dataString.append("\n");
+                dataString.append("Last Seen: ");
+                dataString.append(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(
+                        Instant.ofEpochSecond(serverEntry.last_seen).atZone(ZoneId.systemDefault()).toLocalDateTime()
+                ));
+                final String data = dataString.toString();
+                if (!this.serversSearchField.get().isBlank() && !(StringUtils.contains(data, this.serversSearchField.get()))) {
+                    continue;
+                }
+                if (cracked) {
+                    final float[] color = { 0.1f, 0.8f, 0.1f, 0.30f };
+                    ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], color[3]);
+                    ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], color[3] - 0.1f);
+                    ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
+                }
+                if (ImGui.button("##serverEntry" + address, ImGui.getColumnWidth() - 8, 90)) {
+                    ServerUtil.setLastServerInfo(new ServerInfo(address, address, ServerInfo.ServerType.OTHER));
+                    ServerUtil.connectToLastServer();
+                }
+                if (cracked) {
+                    ImGui.popStyleColor(3);
+                }
+                ImGui.sameLine(10);
+                ImGui.text(data);
+            }
+            ImGui.endChild();
+        }
+        ImGui.end();
+    }
+
+}

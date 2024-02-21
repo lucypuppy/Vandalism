@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.integration.spotify;
+package de.nekosarekawaii.vandalism.integration.spotify.data;
 
 import java.util.HashMap;
 

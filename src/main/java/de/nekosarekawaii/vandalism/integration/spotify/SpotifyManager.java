@@ -29,6 +29,8 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
 import de.nekosarekawaii.vandalism.integration.spotify.config.SpotifyConfig;
+import de.nekosarekawaii.vandalism.integration.spotify.data.SpotifyData;
+import de.nekosarekawaii.vandalism.integration.spotify.data.StatusMessages;
 import de.nekosarekawaii.vandalism.integration.spotify.hud.SpotifyHUDElement;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
