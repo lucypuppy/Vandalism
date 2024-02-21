@@ -29,6 +29,7 @@ import imgui.type.ImInt;
 import imgui.type.ImString;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
 
 import java.net.InetSocketAddress;
@@ -110,6 +111,16 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
                     ImGuiInputTextFlags.CallbackCharFilter,
                     HOSTNAME_FILTER
             );
+            if (ImGui.button("Clear##portscannerclearhostname", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                this.hostname.clear();
+            }
+            ImGui.sameLine();
+            final ServerInfo currentServer = this.mc.getCurrentServerEntry();
+            if (currentServer != null) {
+                if (ImGui.button("Use Current Server##portscannerusecurrentserver", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                    this.hostname.set(currentServer.address);
+                }
+            }
         }
         if (
                 !this.hostname.get().isBlank() &&
@@ -155,6 +166,9 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
                 if (ImGui.button("Start##portscannerstart", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                     this.reset();
                     this.state.set(State.RUNNING.getMessage());
+                    final ServerAddress serverAddress = ServerAddress.parse(this.hostname.get());
+                    final String resolvedAddress = serverAddress.getAddress();
+                    final int resolvedPort = serverAddress.getPort();
                     for (int i = 0; i < this.threads.get(); i++) {
                         Executors.newSingleThreadExecutor().submit(() -> {
                             try {
@@ -163,7 +177,7 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
                                     final int port = this.currentPort;
                                     try {
                                         final Socket socket = new Socket();
-                                        socket.connect(new InetSocketAddress(this.hostname.get(), port), 500);
+                                        socket.connect(new InetSocketAddress(resolvedAddress, resolvedPort), 500);
                                         socket.close();
                                         synchronized (this.ports) {
                                             if (!this.ports.containsKey(port)) {

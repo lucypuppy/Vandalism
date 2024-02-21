@@ -18,23 +18,44 @@
 
 package de.nekosarekawaii.vandalism.util.render;
 
+import com.google.gson.JsonSyntaxException;
 import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.MenuSettings;
+import de.nekosarekawaii.vandalism.clientmenu.impl.port.PortResult;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import net.lenni0451.mcping.MCPing;
+import net.lenni0451.mcping.exception.ConnectTimeoutException;
+import net.lenni0451.mcping.exception.ConnectionRefusedException;
+import net.lenni0451.mcping.exception.DataReadException;
+import net.lenni0451.mcping.exception.PacketReadException;
+import net.lenni0451.mcping.responses.MCPingResponse;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
+import net.minecraft.client.network.MultiplayerServerListPinger;
+import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.ServerList;
+import net.minecraft.screen.ScreenTexts;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import java.awt.*;
+import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 
 public class ServerPingerWidget implements MinecraftWrapper {
+
+    private static final String Base64_START = "data:image/png;base64,";
 
     private static final MSTimer PING_TIMER = new MSTimer();
 
@@ -55,11 +76,20 @@ public class ServerPingerWidget implements MinecraftWrapper {
 
     public static boolean IN_USE = false;
 
+    private static void setServerInfo(final ServerInfo serverInfo) {
+        if (serverInfo == null) return;
+        final ServerList serverList = new ServerList(mc);
+        serverList.add(serverInfo, false);
+        WIDGET.setServers(serverList);
+    }
+
     public static void draw(final ServerInfo currentServerInfo, final DrawContext context, final int mouseX, final int mouseY, final float delta, final int startY) {
         if (currentServerInfo == null) return;
         final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
         if (!menuSettings.serverPingerWidget.getValue()) return;
+        if (WIDGET.servers.isEmpty()) return;
         IN_USE = true;
+        currentServerInfo.online = true;
         WIDGET.setY(startY);
         final int pingDelay = menuSettings.serverPingerWidgetDelay.getValue();
         if (PING_TIMER.hasReached(pingDelay, true)) {
@@ -89,10 +119,79 @@ public class ServerPingerWidget implements MinecraftWrapper {
         final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
         if (!menuSettings.serverPingerWidget.getValue()) return;
         IN_USE = true;
-        final ServerList serverList = new ServerList(mc);
-        currentServerInfo.online = false;
-        serverList.add(currentServerInfo, false);
-        WIDGET.setServers(serverList);
+        currentServerInfo.online = true;
+        currentServerInfo.playerCountLabel = ScreenTexts.EMPTY;
+        currentServerInfo.label = Text.translatable("multiplayer.status.pinging");
+        currentServerInfo.ping = -2L;
+        currentServerInfo.playerListSummary = Collections.emptyList();
+        currentServerInfo.setFavicon(null);
+        setServerInfo(currentServerInfo);
+        final ServerAddress serverAddress = ServerAddress.parse(currentServerInfo.address);
+        final String resolvedAddress = serverAddress.getAddress();
+        final int resolvedPort = serverAddress.getPort();
+        MCPing.pingModern(SharedConstants.getProtocolVersion())
+                .address(resolvedAddress, resolvedPort)
+                .timeout(menuSettings.serverPingerWidgetDelay.getValue(), menuSettings.serverPingerWidgetDelay.getValue())
+                .exceptionHandler(t -> {
+                    currentServerInfo.ping = -1L;
+                    if (t instanceof UnknownHostException) {
+                        currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.UNKNOWN_HOST.getMessage());
+                    } else if (t instanceof ConnectionRefusedException) {
+                        currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.CONNECTION_REFUSED.getMessage());
+                    } else if (t instanceof ConnectTimeoutException) {
+                        currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.CONNECTION_TIMED_OUT.getMessage());
+                    } else if (t instanceof DataReadException) {
+                        currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.DATA_READ_FAILED.getMessage());
+                    } else if (t instanceof PacketReadException) {
+                        currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.PACKET_READ_FAILED.getMessage());
+                    } else {
+                        currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.FAILED.getMessage());
+                        Vandalism.getInstance().getLogger().error("Failed to ping server: " + currentServerInfo.address, t);
+                    }
+                    setServerInfo(currentServerInfo);
+                })
+                .finishHandler(response -> {
+                    currentServerInfo.ping = response.server.ping;
+                    final String descriptionString = response.description;
+                    try {
+                        final MutableText description = Text.Serialization.fromJson(descriptionString);
+                        if (description != null) {
+                            currentServerInfo.label = description;
+                        }
+                    } catch (JsonSyntaxException ignored) {
+                        currentServerInfo.label = Text.literal(descriptionString);
+                    }
+                    final String base64FaviconString = response.favicon;
+                    if (base64FaviconString != null) {
+                        if (!base64FaviconString.startsWith(Base64_START)) {
+                            Vandalism.getInstance().getLogger().error("Server " + currentServerInfo.address + " has responded with an unknown base64 server icon format.");
+                        } else {
+                            try {
+                                final String faviconString = base64FaviconString.substring(Base64_START.length()).replaceAll("\n", "");
+                                currentServerInfo.setFavicon(Base64.getDecoder().decode(faviconString.getBytes(StandardCharsets.UTF_8)));
+                            } catch (IllegalArgumentException e) {
+                                Vandalism.getInstance().getLogger().error("Server " + currentServerInfo.address + " has responded with an malformed base64 server icon.", e);
+                            }
+                        }
+                    }
+                    final int playersOnline = response.players.online;
+                    final int maxPlayers = response.players.max;
+                    currentServerInfo.playerCountLabel = MultiplayerServerListPinger.createPlayerCountText(playersOnline, maxPlayers);
+                    final MCPingResponse.Players.Player[] players = response.players.sample;
+                    if (players.length > 0) {
+                        final List<Text> list = new ArrayList<>(players.length);
+                        for (final MCPingResponse.Players.Player player : response.players.sample) {
+                            list.add(Text.literal(player.name));
+                        }
+                        if (players.length < playersOnline) {
+                            list.add(Text.translatable("multiplayer.status.and_more", playersOnline - players.length));
+                        }
+                        currentServerInfo.playerListSummary = list;
+                    } else {
+                        currentServerInfo.playerListSummary = List.of();
+                    }
+                    setServerInfo(currentServerInfo);
+                }).getAsync();
         PING_TIMER.reset();
         IN_USE = false;
     }
