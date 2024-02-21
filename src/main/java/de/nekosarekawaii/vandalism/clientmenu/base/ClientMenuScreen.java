@@ -125,11 +125,14 @@ public class ClientMenuScreen extends Screen {
 
     @Override
     public void close() {
-        if (this.client.player == null && this.prevScreen == null) {
-            return;
+        ImLoader.forceUpdateMouse();
+        if (this.prevScreen == null) {
+            this.client.mouse.lockCursor();
+            if (this.client.player == null) {
+                return;
+            }
         }
         this.client.setScreen(this.prevScreen);
-        ImLoader.forceUpdateMouse();
     }
 
 }
