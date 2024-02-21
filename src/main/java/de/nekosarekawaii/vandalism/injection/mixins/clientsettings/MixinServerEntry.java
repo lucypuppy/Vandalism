@@ -23,6 +23,7 @@ import de.nekosarekawaii.vandalism.util.game.ServerUtil;
 import de.nekosarekawaii.vandalism.util.render.ServerPingerWidget;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.ServerList;
@@ -44,6 +45,8 @@ public abstract class MixinServerEntry {
     @Shadow
     @Final
     private ServerInfo server;
+
+    @Shadow @Final private MultiplayerScreen screen;
 
     @Inject(method = "protocolVersionMatches", at = @At(value = "RETURN"), cancellable = true)
     private void forceProtocolVersionMatches(final CallbackInfoReturnable<Boolean> cir) {
@@ -125,6 +128,10 @@ public abstract class MixinServerEntry {
     @Inject(method = "saveFile", at = @At("HEAD"), cancellable = true)
     private void disableSavingWhileUsingServerPingerWidget(final CallbackInfo ci) {
         if (ServerPingerWidget.IN_USE) {
+            ci.cancel();
+            return;
+        }
+        if (this.screen.getServerList() == null) {
             ci.cancel();
         }
     }
