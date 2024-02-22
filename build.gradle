@@ -153,7 +153,7 @@ base {
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/" + maven_name + ".accesswidener")
+    accessWidenerPath = file("src/main/resources/" + maven_name.toLowerCase() + ".accesswidener")
 }
 
 dependencies {
