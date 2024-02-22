@@ -455,11 +455,11 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
         this.updateTarget();
 
-        if (this.raytraceDistance <= this.getAimRange()) {
-            this.clickType.getValue().getClicker().onRotate();
-        }
-
         if (this.target != null) {
+            if (this.raytraceDistance <= this.getAimRange()) {
+                this.clickType.getValue().getClicker().onRotate();
+            }
+
             final Rotation rotation = Rotation.Builder.build(
                     this.target,
                     this.getAimRange(),
@@ -513,7 +513,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
         for (final Entity entity : this.mc.world.getEntities()) {
             if (WorldUtil.isTarget(entity) &&
-                            this.mc.player.distanceTo(entity) <= getAimRange() + 1.0 &&
+                    this.mc.player.distanceTo(entity) <= getAimRange() + 1.0 &&
                     entity.getWidth() > 0.0 && entity.getHeight() > 0.0) {
                 PlayerListEntry playerListEntry = null;
 
@@ -755,6 +755,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             }
             tessellator.draw();
             RenderSystem.enableCull();
+            matrixStack.pop();
         }
     }
 
