@@ -165,63 +165,6 @@ public class MovementUtil implements MinecraftWrapper {
     }
 
     /**
-     * Get the fixed move inputs.
-     *
-     * @param yaw The yaw to use.
-     * @return The fixed move inputs.
-     */
-    public static float[] getFixedMoveInputs(final float yaw) {
-        final float[] inputs = new float[2];
-        if (Math.abs(mc.player.forwardSpeed) > 0f || Math.abs(mc.player.sidewaysSpeed) > 0f) {
-            final float wantedYaw = getInputAngle(mc.player.getYaw());
-            Vec3d movementInput;
-            final float currentDX = MathHelper.sin((float) Math.toRadians(yaw));
-            final float currentDZ = MathHelper.cos((float) Math.toRadians(yaw));
-            //as seen here
-            float currentBestForward = 1.0f;
-            float currentBestStrafing = 0.0f;
-            //the current best difference between any found combination and wantedYaw,
-            //initialized to be 180 because that's the maximum value a difference can
-            //be after being passed through MathHelper::wrapAngleToA18_float
-            float currentBestDiff = Float.MAX_VALUE;
-            //use this and not just hardcode 0.98f, because moveForward and moveStrafing
-            //is also dependent on whether the player is sneaking or using an item
-            final float mag = Math.max(Math.abs(mc.player.forwardSpeed), Math.abs(mc.player.sidewaysSpeed));
-            //loop through all possible combinations of player.moveForward and player.moveStrafing
-            for (final float forward : POSSIBLE_MOVEMENTS) {
-                for (final float strafing : POSSIBLE_MOVEMENTS) {
-                    //don't do anything when the combination would make the player stand still
-                    //(this would mess sin and cos)
-                    if (forward == 0.0f && strafing == 0.0f) continue;
-                    movementInput = new Vec3d(forward, mc.player.upwardSpeed, strafing);
-                    //Vec3d vec3d = (d > 1.0 ? movementInput.normalize() : movementInput).multiply((double)speed);
-                    //motionX and motionZ the player would have with
-                    //the current combination of moveForward and moveStrafing
-                    //vec3d.x * (double)g - vec3d.z * (double)f
-                    final float mX = (float) (movementInput.x * currentDZ - movementInput.z * currentDX);
-                    //vec3d.z * (double)g + vec3d.x * (double)f
-                    final float mZ = (float) (movementInput.z * currentDZ + movementInput.x * currentDX);
-                    //the yaw angle relative to the players rotation this
-                    //motion would make the player walk towards
-                    final float angle = (float) (Math.atan2(mZ, mX) * 180.0d / Math.PI - 90.0f);
-                    //and the difference of it to the wanted yaw relative to the player
-                    final float diff = Math.abs(MathHelper.wrapDegrees(angle - wantedYaw));
-                    //set combination, if signed distance between
-                    //wantedYaw and angle is lower than the last best difference
-                    if (diff < currentBestDiff) {
-                        currentBestForward = forward;
-                        currentBestStrafing = strafing;
-                        currentBestDiff = diff;
-                    }
-                }
-            }
-            inputs[0] = (currentBestForward * mag);
-            inputs[1] = (currentBestStrafing * mag);
-        }
-        return inputs;
-    }
-
-    /**
      * Get the input angle.
      *
      * @param yaw The yaw to use.
