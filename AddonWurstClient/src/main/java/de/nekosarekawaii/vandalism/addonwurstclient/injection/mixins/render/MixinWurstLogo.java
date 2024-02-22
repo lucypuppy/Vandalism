@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.addonwurstclient.injection.mixins.render;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.integration.hud.impl.WatermarkHUDElement;
+import de.nekosarekawaii.vandalism.feature.hud.impl.WatermarkHUDElement;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
