@@ -37,8 +37,10 @@ import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import imgui.type.ImString;
+import net.lenni0451.mcping.MCPing;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.ServerList;
 import net.minecraft.util.Formatting;
@@ -50,8 +52,8 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -59,6 +61,7 @@ public class ServersTab implements MinecraftWrapper {
 
     private final ImInt asn = new ImInt(0);
     private Country country = Country.ANY;
+    private final ImString countrySearch = new ImString();
     private final ImBoolean cracked = new ImBoolean(false);
     private final ImString description = new ImString();
     private ServersRequest.Software software = ServersRequest.Software.ANY;
@@ -73,7 +76,10 @@ public class ServersTab implements MinecraftWrapper {
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private boolean waitingForResponse = false;
     private final ImString serversSearchField = new ImString();
-    private final List<ServersResponse.Server> servers = new ArrayList<>();
+    private final List<ServersResponse.Server> servers = new CopyOnWriteArrayList<>();
+
+    private int checkedServers = -1;
+    private int lastMaxServers = -1;
 
     public void renderMenu(final String name) {
         final ServerDiscoveryClientMenuWindow serverDiscoveryClientMenuWindow = Vandalism.getInstance().getClientMenuManager().getByClass(ServerDiscoveryClientMenuWindow.class);
@@ -81,11 +87,22 @@ public class ServersTab implements MinecraftWrapper {
             return;
         }
         if (ImGui.beginMenu("Tab Config")) {
+            final String id = "##" + name;
             ImGui.separator();
             ImGui.inputInt("ASN", this.asn, 1);
             if (ImGui.beginCombo("Country", this.country.getCountryName(), ImGuiComboFlags.HeightLargest)) {
+                ImGui.separator();
+                ImGui.text("Search for Country");
+                ImGui.setNextItemWidth(Math.max(350, ImGui.getColumnWidth()));
+                ImGui.inputText(id + "countrySearch", this.countrySearch);
+                ImGui.separator();
+                ImGui.spacing();
                 for (final Country country : Country.values()) {
-                    if (ImGui.selectable(country.getCountryName(), country.equals(this.country))) {
+                    final String countryName = country.getCountryName();
+                    if (this.countrySearch.isNotEmpty() && !StringUtils.contains(countryName, this.countrySearch.get())) {
+                        continue;
+                    }
+                    if (ImGui.selectable(countryName, country.equals(this.country))) {
                         this.country = country;
                     }
                 }
@@ -125,48 +142,50 @@ public class ServersTab implements MinecraftWrapper {
             }
             ImGui.checkbox("Ignore Modded", this.ignoreModded);
             ImGui.checkbox("Only Bungee Spoofable", this.onlyBungeeSpoofable);
-            if (ImUtils.subButton("Get")) {
-                this.servers.clear();
-                final ServersRequest serversRequest = new ServersRequest(
-                        this.asn.get(),
-                        this.country == Country.ANY ? "" : this.country.name(),
-                        this.cracked.get(),
-                        this.description.get(),
-                        this.software,
-                        this.minPlayers.get(),
-                        this.maxPlayers.get(),
-                        this.minOnlinePlayers.get(),
-                        this.maxOnlinePlayers.get(),
-                        (int) System.currentTimeMillis(),
-                        this.protocol,
-                        this.ignoreModded.get(),
-                        this.onlyBungeeSpoofable.get()
-                );
-                this.executorService.submit(() -> {
-                    this.waitingForResponse = true;
-                    final Response response = ServerDiscoveryUtil.request(serversRequest);
-                    ServersResponse.Server server = new ServersResponse.Server();
-                    if (response == null) {
-                        server.version = "Every API User is rate limited!";
-                    } else if (response instanceof final ServersResponse serversResponse) {
-                        if (serversResponse.isError()) {
-                            server.version = "Response failed due to " + serversResponse.error;
-                        } else if (serversResponse.data == null || serversResponse.data.isEmpty()) {
-                            server.version = "No servers found!";
-                        } else {
-                            this.servers.addAll(serversResponse.data);
-                            server = null;
-                        }
-                    }
-                    if (server != null) {
-                        this.servers.add(server);
-                    }
-                    this.waitingForResponse = false;
-                });
-            }
-            if (!this.servers.isEmpty()) {
-                if (ImUtils.subButton("Clear")) {
+            if (!this.waitingForResponse) {
+                if (ImUtils.subButton("Get")) {
                     this.servers.clear();
+                    final ServersRequest serversRequest = new ServersRequest(
+                            this.asn.get(),
+                            this.country == Country.ANY ? "" : this.country.name(),
+                            this.cracked.get(),
+                            this.description.get(),
+                            this.software,
+                            this.minPlayers.get(),
+                            this.maxPlayers.get(),
+                            this.minOnlinePlayers.get(),
+                            this.maxOnlinePlayers.get(),
+                            (int) System.currentTimeMillis(),
+                            this.protocol,
+                            this.ignoreModded.get(),
+                            this.onlyBungeeSpoofable.get()
+                    );
+                    this.executorService.submit(() -> {
+                        this.waitingForResponse = true;
+                        final Response response = ServerDiscoveryUtil.request(serversRequest);
+                        ServersResponse.Server server = new ServersResponse.Server();
+                        if (response == null) {
+                            server.version = "Every API User is rate limited!";
+                        } else if (response instanceof final ServersResponse serversResponse) {
+                            if (serversResponse.isError()) {
+                                server.version = "Response failed due to " + serversResponse.error;
+                            } else if (serversResponse.data == null || serversResponse.data.isEmpty()) {
+                                server.version = "No servers found!";
+                            } else {
+                                this.servers.addAll(serversResponse.data);
+                                server = null;
+                            }
+                        }
+                        if (server != null) {
+                            this.servers.add(server);
+                        }
+                        this.waitingForResponse = false;
+                    });
+                }
+                if (!this.servers.isEmpty()) {
+                    if (ImUtils.subButton("Clear")) {
+                        this.servers.clear();
+                    }
                 }
             }
             ImGui.endMenu();
@@ -196,6 +215,25 @@ public class ServersTab implements MinecraftWrapper {
                 ImGui.setNextItemWidth(-1);
                 ImGui.inputText("##serverSearchField", this.serversSearchField);
                 ImGui.separator();
+                if (ImUtils.subButton("Remove Offline Servers")) {
+                    this.checkedServers = 0;
+                    this.lastMaxServers = this.servers.size();
+                    this.executorService.submit(() -> {
+                        for (final ServersResponse.Server server : this.servers) {
+                            final ServerAddress serverAddress = ServerAddress.parse(server.server);
+                            final String resolvedAddress = serverAddress.getAddress();
+                            final int resolvedPort = serverAddress.getPort();
+                            MCPing.pingModern(this.protocol)
+                                    .address(resolvedAddress, resolvedPort)
+                                    .timeout(5000, 5000)
+                                    .exceptionHandler(t -> {
+                                        this.servers.remove(server);
+                                        this.checkedServers++;
+                                    })
+                                    .finishHandler(response -> this.checkedServers++).getAsync();
+                        }
+                    });
+                }
                 if (ImUtils.subButton("Add all servers")) {
                     final ServerList serverList = new ServerList(MinecraftClient.getInstance());
                     serverList.loadFile();
@@ -209,6 +247,15 @@ public class ServersTab implements MinecraftWrapper {
                         ), false);
                     }
                     serverList.saveFile();
+                }
+                if (this.checkedServers > -1) {
+                    ImGui.text("Offline Removal Progress");
+                    ImGui.progressBar((float) this.checkedServers / (float) this.lastMaxServers);
+                    ImGui.text(this.checkedServers + " / " + this.lastMaxServers);
+                    ImGui.separator();
+                    if (this.checkedServers >= this.lastMaxServers) {
+                        this.checkedServers = -1;
+                    }
                 }
                 ImGui.beginChild("##servers", -1, -1, true, ImGuiWindowFlags.HorizontalScrollbar);
                 int i = 0;
