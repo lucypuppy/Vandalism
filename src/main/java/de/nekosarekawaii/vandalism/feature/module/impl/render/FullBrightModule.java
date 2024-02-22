@@ -23,7 +23,7 @@ import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 public class FullBrightModule extends AbstractModule {
 
     public FullBrightModule() {
-        super("FullBright", "Makes your game brighter", Category.RENDER);
+        super("Full Bright", "Increases the brightness of the game which then allows you to see more in the dark.", Category.RENDER);
     }
 
 }
