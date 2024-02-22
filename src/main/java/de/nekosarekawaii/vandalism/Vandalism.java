@@ -81,7 +81,7 @@ import java.io.File;
  *  - Fix bukkit fly not working at all
  *  - Rewrite commands to use generic expressions (like #SpawnEgg, #Book)
  *  - Add anti vanish via. the player list hud
- *  - Delete integration package and ModuleManager class
+ *  - Delete ModuleManager class
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Fix SprintModule to be compatible with the rotation listener and also the backwards direction (ask Verschlxfene)
@@ -111,7 +111,6 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     //Integration
     private RotationListener rotationListener;
     private ServerListManager serverListManager;
-    private HUDManager hudManager;
     private FriendsManager friendsManager;
 
     //Features
@@ -119,6 +118,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     private CommandManager commandManager;
     private ScriptManager scriptManager;
     private CreativeTabManager creativeTabManager;
+    private HUDManager hudManager;
 
     public void printStartup() {
         this.logger.info("");
@@ -171,9 +171,6 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.serverListManager = new ServerListManager(this.runDirectory);
         this.serverListManager.loadConfig();
 
-        this.hudManager = new HUDManager(this.configManager, this.clientMenuManager);
-        this.hudManager.init();
-
         this.friendsManager = new FriendsManager(this.configManager);
 
         //Features
@@ -188,6 +185,9 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
         this.creativeTabManager = new CreativeTabManager();
         this.creativeTabManager.init();
+
+        this.hudManager = new HUDManager(this.configManager, this.clientMenuManager);
+        this.hudManager.init();
 
         // Cause of the menu category button order this needs to be called
         // after every default menu has been added and before the addons are loaded
