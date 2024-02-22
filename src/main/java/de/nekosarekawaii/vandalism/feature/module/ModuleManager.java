@@ -145,7 +145,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new FakeLagModule(),
                 new DisablerModule(),
                 new TeleportModule(),
-                new SignExploitsModule()
+                new SignExploitsModule(),
+                new FullBrightModule()
         );
         this.configManager.add(new ModulesConfig(this));
     }
