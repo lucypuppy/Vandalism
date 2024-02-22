@@ -46,6 +46,15 @@ public class ServerDiscoveryClientMenuWindow extends ClientMenuWindow {
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         ImGui.begin(this.getName(), ImGuiWindowFlags.MenuBar);
         if (ImGui.beginMenuBar()) {
+            for (final Map.Entry<String, ServersTab> entry : this.serversTabs.entrySet()) {
+                entry.getValue().renderMenu(entry.getKey());
+            }
+            if (!this.currentServerTab.isEmpty()) {
+                if (ImGui.button("Close Tab")) {
+                    this.serversTabs.remove(this.currentServerTab);
+                    this.currentServerTab = "";
+                }
+            }
             if (ImGui.button("Create")) {
                 String name = this.serverTabName.get();
                 if (name.isEmpty()) {
@@ -60,15 +69,6 @@ public class ServerDiscoveryClientMenuWindow extends ClientMenuWindow {
                 }
                 this.serversTabs.put(name, new ServersTab());
                 this.serverTabName.set("");
-            }
-            for (final Map.Entry<String, ServersTab> entry : this.serversTabs.entrySet()) {
-                entry.getValue().renderMenu(entry.getKey());
-            }
-            if (!this.currentServerTab.isEmpty()) {
-                if (ImGui.button("Close Tab")) {
-                    this.serversTabs.remove(this.currentServerTab);
-                    this.currentServerTab = "";
-                }
             }
             ImGui.text("Enter Name:");
             ImGui.setNextItemWidth(-1);
