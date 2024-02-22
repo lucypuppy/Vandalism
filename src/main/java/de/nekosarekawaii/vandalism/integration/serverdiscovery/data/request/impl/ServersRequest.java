@@ -26,6 +26,8 @@ import de.nekosarekawaii.vandalism.integration.serverdiscovery.data.response.imp
 
 public class ServersRequest extends Request<ServersResponse> {
 
+    public static final int ANY_PROTOCOL = -1;
+
     public int asn;
     public String country_code;
     public boolean cracked;
@@ -126,7 +128,9 @@ public class ServersRequest extends Request<ServersResponse> {
         jsonObject.add("max_players", this.max_players);
         jsonObject.addProperty("online_after", this.online_after);
         jsonObject.add("online_players", this.online_players);
-        jsonObject.addProperty("protocol", this.protocol);
+        if (this.protocol != ANY_PROTOCOL) {
+            jsonObject.addProperty("protocol", this.protocol);
+        }
         jsonObject.addProperty("ignore_modded", this.ignore_modded);
         jsonObject.addProperty("only_bungeespoofable", this.only_bungeespoofable);
         jsonObject.addProperty("software", this.software.name().toLowerCase());

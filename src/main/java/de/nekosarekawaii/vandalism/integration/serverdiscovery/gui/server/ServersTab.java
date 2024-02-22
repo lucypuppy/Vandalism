@@ -38,7 +38,6 @@ import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import imgui.type.ImString;
 import net.lenni0451.mcping.MCPing;
-import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
@@ -52,6 +51,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
@@ -69,7 +69,8 @@ public class ServersTab implements MinecraftWrapper {
     private final ImInt maxPlayers = new ImInt(-1);
     private final ImInt minOnlinePlayers = new ImInt(0);
     private final ImInt maxOnlinePlayers = new ImInt(-1);
-    private int protocol = SharedConstants.getProtocolVersion();
+
+    private int protocol = ServersRequest.ANY_PROTOCOL;
     private final ImBoolean ignoreModded = new ImBoolean(false);
     private final ImBoolean onlyBungeeSpoofable = new ImBoolean(false);
 
@@ -123,7 +124,9 @@ public class ServersTab implements MinecraftWrapper {
             ImGui.inputInt("Max Players", this.maxPlayers, 1);
             ImGui.inputInt("Min Online Players", this.minOnlinePlayers, 1);
             ImGui.inputInt("Max Online Players", this.maxOnlinePlayers, 1);
-            if (ImGui.beginCombo("Version", ProtocolVersion.getProtocol(this.protocol).getName(), ImGuiComboFlags.HeightLargest)) {
+            if (ImGui.beginCombo("Version", this.protocol == ServersRequest.ANY_PROTOCOL ? "Any" : ProtocolVersion.getProtocol(this.protocol).getName(), ImGuiComboFlags.HeightLargest)) {
+                final List<Integer> protocols = new ArrayList<>();
+                protocols.add(ServersRequest.ANY_PROTOCOL);
                 for (final ProtocolVersion protocolVersion : ProtocolVersionList.getProtocolsNewToOld()) {
                     if (
                             protocolVersion.olderThan(ProtocolVersion.v1_8) ||
@@ -133,9 +136,19 @@ public class ServersTab implements MinecraftWrapper {
                     ) {
                         continue;
                     }
-                    final String protocolVersionName = protocolVersion.getName();
-                    if (ImGui.selectable(protocolVersionName, protocolVersionName.equals(ProtocolVersion.getProtocol(this.protocol).getName()))) {
-                        this.protocol = protocolVersion.getVersion();
+                    protocols.add(protocolVersion.getVersion());
+                }
+                for (final Integer protocol : protocols) {
+                    if (protocol == ServersRequest.ANY_PROTOCOL) {
+                        if (ImGui.selectable("Any", this.protocol == ServersRequest.ANY_PROTOCOL)) {
+                            this.protocol = protocol;
+                        }
+                    }
+                    else {
+                        final String protocolVersionName = ProtocolVersion.getProtocol(protocol).getName();
+                        if (ImGui.selectable(protocolVersionName, protocolVersionName.equals(ProtocolVersion.getProtocol(this.protocol).getName()))) {
+                            this.protocol = protocol;
+                        }
                     }
                 }
                 ImGui.endCombo();
@@ -215,24 +228,26 @@ public class ServersTab implements MinecraftWrapper {
                 ImGui.setNextItemWidth(-1);
                 ImGui.inputText("##serverSearchField", this.serversSearchField);
                 ImGui.separator();
-                if (ImUtils.subButton("Remove Offline Servers")) {
-                    this.checkedServers = 0;
-                    this.lastMaxServers = this.servers.size();
-                    this.executorService.submit(() -> {
-                        for (final ServersResponse.Server server : this.servers) {
-                            final ServerAddress serverAddress = ServerAddress.parse(server.server);
-                            final String resolvedAddress = serverAddress.getAddress();
-                            final int resolvedPort = serverAddress.getPort();
-                            MCPing.pingModern(this.protocol)
-                                    .address(resolvedAddress, resolvedPort)
-                                    .timeout(5000, 5000)
-                                    .exceptionHandler(t -> {
-                                        this.servers.remove(server);
-                                        this.checkedServers++;
-                                    })
-                                    .finishHandler(response -> this.checkedServers++).getAsync();
-                        }
-                    });
+                if (this.checkedServers < 0) {
+                    if (ImUtils.subButton("Remove Offline Servers")) {
+                        this.checkedServers = 0;
+                        this.lastMaxServers = this.servers.size();
+                        this.executorService.submit(() -> {
+                            for (final ServersResponse.Server server : this.servers) {
+                                final ServerAddress serverAddress = ServerAddress.parse(server.server);
+                                final String resolvedAddress = serverAddress.getAddress();
+                                final int resolvedPort = serverAddress.getPort();
+                                MCPing.pingModern(this.protocol)
+                                        .address(resolvedAddress, resolvedPort)
+                                        .timeout(5000, 5000)
+                                        .exceptionHandler(t -> {
+                                            this.servers.remove(server);
+                                            this.checkedServers++;
+                                        })
+                                        .finishHandler(response -> this.checkedServers++).getAsync();
+                            }
+                        });
+                    }
                 }
                 if (ImUtils.subButton("Add all servers")) {
                     final ServerList serverList = new ServerList(MinecraftClient.getInstance());
