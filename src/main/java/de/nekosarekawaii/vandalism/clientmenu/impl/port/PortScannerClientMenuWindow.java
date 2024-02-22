@@ -105,16 +105,14 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
             ImGui.text(this.checkedPort + " / " + this.maxPort.get());
             ImGui.separator();
         } else {
+            ImGui.text("Hostname");
+            ImGui.setNextItemWidth(-1);
             ImGui.inputText(
-                    "Hostname##portscannerhostname",
+                    "##portscannerhostname",
                     this.hostname,
                     ImGuiInputTextFlags.CallbackCharFilter,
                     HOSTNAME_FILTER
             );
-            if (ImGui.button("Clear##portscannerclearhostname", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
-                this.hostname.clear();
-            }
-            ImGui.sameLine();
             final ServerInfo currentServer = this.mc.getCurrentServerEntry();
             if (currentServer != null) {
                 if (ImGui.button("Use Current Server##portscannerusecurrentserver", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {

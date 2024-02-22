@@ -110,7 +110,7 @@ public class ServerPingerWidget implements MinecraftWrapper {
         if (tooltip != null) {
             context.drawTooltip(mc.textRenderer, tooltip, mouseX, mouseY);
         }
-        FAKE_MULTIPLAYER_SCREEN.multiplayerScreenTooltip = null;
+        FAKE_MULTIPLAYER_SCREEN.setMultiplayerScreenTooltip(null);
         IN_USE = false;
     }
 
