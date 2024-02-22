@@ -34,7 +34,6 @@ import de.nekosarekawaii.vandalism.integration.friends.FriendsManager;
 import de.nekosarekawaii.vandalism.feature.hud.HUDManager;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationListener;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerListManager;
-import de.nekosarekawaii.vandalism.thirdparty.spotify.SpotifyManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -83,7 +82,6 @@ import java.io.File;
  *  - Rewrite commands to use generic expressions (like #SpawnEgg, #Book)
  *  - Add anti vanish via. the player list hud
  *  - Delete integration package and ModuleManager class
- *  - Move thirdparty package away from the base mod
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Fix SprintModule to be compatible with the rotation listener and also the backwards direction (ask Verschlxfene)
@@ -114,7 +112,6 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     private RotationListener rotationListener;
     private ServerListManager serverListManager;
     private HUDManager hudManager;
-    private SpotifyManager spotifyManager;
     private FriendsManager friendsManager;
 
     //Features
@@ -176,8 +173,6 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
         this.hudManager = new HUDManager(this.configManager, this.clientMenuManager);
         this.hudManager.init();
-
-        this.spotifyManager = new SpotifyManager(this.configManager, this.hudManager);
 
         this.friendsManager = new FriendsManager(this.configManager);
 
@@ -279,10 +274,6 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
     public HUDManager getHudManager() {
         return hudManager;
-    }
-
-    public SpotifyManager getSpotifyManager() {
-        return spotifyManager;
     }
 
     public FriendsManager getFriendsManager() {
