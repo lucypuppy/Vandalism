@@ -59,7 +59,7 @@ public abstract class MixinChatInputSuggestor {
     @Shadow
     protected abstract void showCommandSuggestions();
 
-    @Inject(method = "refresh", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/StringReader;canRead()Z"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "refresh", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/StringReader;canRead()Z"), cancellable = true, remap = false, locals = LocalCapture.CAPTURE_FAILHARD)
     public void suggestClientCommands(final CallbackInfo ci, final String string, final StringReader reader) {
         final CommandManager commandManager = Vandalism.getInstance().getCommandManager();
         final String prefix = Vandalism.getInstance().getClientSettings().getChatSettings().commandPrefix.getValue();
