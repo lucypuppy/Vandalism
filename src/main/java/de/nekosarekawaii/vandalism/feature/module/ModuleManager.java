@@ -154,54 +154,33 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
     @Override
     public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        //Cancel if the key is unknown to prevent the module from being toggled multiple times.
-        if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN) {
-            return;
-        }
-        for (final AbstractModule module : this.getList()) {
-            if (module.getKeyBind().isPressed(key)) {
-                module.toggle();
-            }
+        if (action == GLFW.GLFW_PRESS || key != GLFW.GLFW_KEY_UNKNOWN) {
+            this.getList().stream().filter(m -> m.getKeyBind().isPressed(key)).findAny().ifPresent(AbstractModule::toggle);
         }
     }
 
     @Override
     public void onShutdownProcess() {
-        for (final AbstractModule module : this.getList()) {
-            if (module.isActive() && module.isDeactivateOnShutdown()) {
-                module.deactivate();
-            }
-        }
+        this.getList().stream().filter(m -> m.isActive() && m.isDeactivateOnShutdown()).forEach(AbstractModule::deactivate);
     }
 
     @Override
     public void onDisconnect(final ClientConnection clientConnection, final Text disconnectReason) {
         //There is a thing called pinging a server
         if (this.mc.getNetworkHandler() != null && Objects.equals(clientConnection, this.mc.getNetworkHandler().getConnection())) {
-            for (final AbstractModule module : this.getList()) {
-                if (module.isActive() && module.isDeactivateOnQuit()) {
-                    module.deactivate();
-                }
-            }
+            this.getList().stream().filter(m -> m.isActive() && m.isDeactivateOnQuit()).forEach(AbstractModule::deactivate);
         }
     }
 
     @Override
     public void onPreWorldLoad() {
-        for (final AbstractModule module : this.getList()) {
-            if (module.isActive() && module.isDeactivateOnWorldLoad()) {
-                module.deactivate();
-            }
-        }
+        this.getList().stream().filter(m -> m.isActive() && m.isDeactivateOnWorldLoad()).forEach(AbstractModule::deactivate);
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (!this.mc.player.isDead()) return;
-        for (final AbstractModule module : this.getList()) {
-            if (module.isActive() && module.isDeactivateOnDeath()) {
-                module.deactivate();
-            }
+        if (this.mc.player.isDead()) {
+            this.getList().stream().filter(m -> m.isActive() && m.isDeactivateOnDeath()).forEach(AbstractModule::deactivate);
         }
     }
 
