@@ -83,6 +83,7 @@ import java.io.File;
  *  - Rewrite commands to use generic expressions (like #SpawnEgg, #Book)
  *  - Add anti vanish via. the player list hud
  *  - Delete integration package and ModuleManager class
+ *  - Move thirdparty package away from the base mod
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Fix SprintModule to be compatible with the rotation listener and also the backwards direction (ask Verschlxfene)
