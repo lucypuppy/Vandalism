@@ -20,11 +20,15 @@ package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 
 public class FullBrightModule extends AbstractModule implements PlayerUpdateListener {
+
+    public final BooleanValue lightModulation = new BooleanValue(this, "Light Modulation", "Modulates the light color, otherwise will use night vision", true);
+
     public FullBrightModule() {
         super("FullBright", "Makes your game brighter", Category.RENDER);
     }
@@ -37,12 +41,15 @@ public class FullBrightModule extends AbstractModule implements PlayerUpdateList
     @Override
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
-        mc.player.removeStatusEffectInternal(StatusEffects.NIGHT_VISION);
+        if (!lightModulation.getValue()) {
+            mc.player.removeStatusEffectInternal(StatusEffects.NIGHT_VISION);
+        }
     }
 
     @Override
     public void onPostPlayerUpdate(PlayerUpdateEvent event) {
-        if (mc.player == null) return;
-        mc.player.addStatusEffect(new StatusEffectInstance(StatusEffects.NIGHT_VISION, 1000000, 0, false, false, false));
+        if (!lightModulation.getValue()) {
+            mc.player.addStatusEffect(new StatusEffectInstance(StatusEffects.NIGHT_VISION, 1000000, 0, false, false, false));
+        }
     }
 }

@@ -73,6 +73,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     private ESPModule espModule;
     private KillAuraModule killAuraModule;
     private TickBaseModule tickBaseModule;
+    private FullBrightModule fullBrightModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
         this.configManager = configManager;
@@ -146,7 +147,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new DisablerModule(),
                 new TeleportModule(),
                 new SignExploitsModule(),
-                new FullBrightModule()
+                fullBrightModule = new FullBrightModule()
         );
         this.configManager.add(new ModulesConfig(this));
     }
@@ -248,4 +249,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
         return tickBaseModule;
     }
 
+    public FullBrightModule getFullBrightModule() {
+        return fullBrightModule;
+    }
 }

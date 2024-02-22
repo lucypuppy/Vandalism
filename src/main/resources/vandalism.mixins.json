@@ -86,6 +86,7 @@
     "module.MixinFeatureRenderer",
     "module.MixinIllusionerEntityRenderer",
     "module.MixinInGameHud",
+    "module.MixinLightmapTextureManager",
     "module.MixinLivingEntityRenderer",
     "module.MixinMinecraftClient",
     "module.MixinParticleManager",
