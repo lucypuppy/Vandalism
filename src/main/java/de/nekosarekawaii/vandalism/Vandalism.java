@@ -65,13 +65,11 @@ import java.io.File;
  * TODO: Verschlxfene <br>
  *  - Delete MixinParticleManager
  *  - Add Proxy manager
- *  - Rewrite MovementUtil#getFixedMoveInputs to prevent bruteforcing inputs
  *  - Rewrite GCD fix to be accurate
  *  - Implement uncharge speed into tickbase
  *  - Add support for multiple presses on tick in KeyBindSetting
  *  - Delete TickBaseModule#worldTicker and replace with worldTick()
  *  - Add working defensive and counter mode to Tickbase
- *  - Add config save thread
  *  - Fix Game server pinger (ensure pings are on different threads)
  *  - Fix calculations for the HUD:
  *      - Fix HUDElement#calculatePosition
@@ -84,6 +82,7 @@ import java.io.File;
  *  - Fix bukkit fly not working at all
  *  - Rewrite commands to use generic expressions (like #SpawnEgg, #Book)
  *  - Add anti vanish via. the player list hud
+ *  - Delete integration package and ModuleManager class
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Fix SprintModule to be compatible with the rotation listener and also the backwards direction (ask Verschlxfene)
