@@ -35,7 +35,7 @@ public class CubeCraftModuleMode extends ModuleMulti<FlightModule> implements Pl
     private boolean canLongJump = false;
 
     public CubeCraftModuleMode() {
-        super("Cube Craft");
+        super("CubeCraft");
     }
 
     private void reset() {

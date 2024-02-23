@@ -28,7 +28,7 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 public class CubeCraftModuleMode extends ModuleMulti<NoFallModule> implements OutgoingPacketListener {
 
     public CubeCraftModuleMode() {
-        super("Cubecraft Ground");
+        super("CubeCraft Ground");
     }
 
     @Override
