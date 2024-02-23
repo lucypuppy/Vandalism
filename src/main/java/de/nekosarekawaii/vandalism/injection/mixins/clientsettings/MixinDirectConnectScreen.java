@@ -51,13 +51,6 @@ public abstract class MixinDirectConnectScreen extends Screen {
         super(ignored);
     }
 
-    @Inject(method = "init", at = @At(value = "RETURN"))
-    private void initServerPingerWidget(final CallbackInfo ci) {
-        final String address = this.addressField.getText();
-        if (address.isEmpty()) return;
-        ServerPingerWidget.ping(new ServerInfo(address, address, ServerInfo.ServerType.OTHER));
-    }
-
     @Inject(method = "render", at = @At(value = "RETURN"))
     private void drawServerPingerWidget(final DrawContext context, final int mouseX, final int mouseY, final float delta, final CallbackInfo ci) {
         final String address = this.addressField.getText();
