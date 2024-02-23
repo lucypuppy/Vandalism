@@ -25,7 +25,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.*;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
-import de.nekosarekawaii.vandalism.util.game.BoundingBoxUtil;
+import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
 public class FlightModule extends AbstractModule implements OutgoingPacketListener, PlayerUpdateListener {
@@ -71,7 +71,7 @@ public class FlightModule extends AbstractModule implements OutgoingPacketListen
             return;
         }
         if (this.mode.getValue() instanceof CreativeModuleMode || this.mode.getValue() instanceof MotionModuleMode) {
-            if (!BoundingBoxUtil.isOnGround(0.1)) {
+            if (!WorldUtil.isOnGround(0.1)) {
                 this.mc.player.ticksSinceLastPositionPacketSent = 20;
             }
         }
@@ -84,7 +84,7 @@ public class FlightModule extends AbstractModule implements OutgoingPacketListen
         }
         if (this.mode.getValue() instanceof CreativeModuleMode || this.mode.getValue() instanceof MotionModuleMode) {
             if (event.packet instanceof final PlayerMoveC2SPacket playerMoveC2SPacket) {
-                if (!BoundingBoxUtil.isOnGround(0.1) && this.mc.player.age % 2 == 0) {
+                if (!WorldUtil.isOnGround(0.1) && this.mc.player.age % 2 == 0) {
                     playerMoveC2SPacket.y = playerMoveC2SPacket.y - 0.1;
                 }
             }
