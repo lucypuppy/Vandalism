@@ -21,9 +21,11 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.event.normal.player.CanSprintListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerSlowdownListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.item.*;
@@ -31,7 +33,7 @@ import net.minecraft.item.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NoSlowModule extends AbstractModule implements PlayerSlowdownListener {
+public class NoSlowModule extends AbstractModule implements PlayerSlowdownListener, CanSprintListener {
 
     private static final String FORWARD = "Forward";
 
@@ -39,6 +41,12 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
 
     private static final List<Item> ITEMS = new ArrayList<>();
 
+    private final BooleanValue forceHungerSprint = new BooleanValue(
+            this,
+            "Force Hunger Sprint",
+            "Forces sprinting when the player is hungry.",
+            false
+    );
     private final ValueGroup foodSlowDown = new ValueGroup(this, "Food", "Food Slowdown settings.");
 
     private final FloatValue foodForwardMultiplier = new FloatValue(
@@ -154,8 +162,7 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
             final ValueGroup group = new ValueGroup(this, name, name + " settings.");
             if (item instanceof ShieldItem) {
                 group.visibleCondition(() -> ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_8));
-            }
-            else if (item instanceof TridentItem) {
+            } else if (item instanceof TridentItem) {
                 group.visibleCondition(() -> ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_12));
             }
             new FloatValue(
@@ -267,13 +274,19 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
     }
 
     @Override
+    public void onCanSprint(CanSprintEvent event) {
+        if (forceHungerSprint.getValue()) {
+            event.canSprint = true;
+        }
+    }
+
+    @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(PlayerSlowdownEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerSlowdownEvent.ID, CanSprintEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(PlayerSlowdownEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerSlowdownEvent.ID, CanSprintEvent.ID);
     }
-
 }
