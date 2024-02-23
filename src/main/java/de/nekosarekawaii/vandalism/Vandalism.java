@@ -66,7 +66,6 @@ import java.io.File;
  *  - Add Proxy manager
  *  - Rewrite GCD fix to be accurate
  *  - Implement uncharge speed into tickbase
- *  - Add support for multiple presses on tick in KeyBindSetting
  *  - Delete TickBaseModule#worldTicker and replace with worldTick()
  *  - Add working defensive and counter mode to Tickbase
  *  - Fix Game server pinger (ensure pings are on different threads)
