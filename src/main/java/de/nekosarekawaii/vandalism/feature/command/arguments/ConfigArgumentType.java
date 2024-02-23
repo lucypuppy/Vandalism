@@ -77,7 +77,10 @@ public class ConfigArgumentType implements ArgumentType<File> {
             if (filesInDirectory != null) {
                 for (final File file : filesInDirectory) {
                     if (file.isFile() && file.getName().endsWith(".json")) {
-                        return file;
+                        final String name = StringUtils.replaceLast(file.getName(), ".json", "");
+                        if (name.equals(configName)) {
+                            return file;
+                        }
                     }
                 }
             }
