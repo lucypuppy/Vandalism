@@ -24,7 +24,7 @@ import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.request.
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.response.Response;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.response.impl.WhereIsResponse;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
-import de.nekosarekawaii.vandalism.util.game.ServerUtil;
+import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
@@ -172,7 +172,7 @@ public class PlayerDiscoveryClientMenuWindow extends ClientMenuWindow {
                 }
                 i++;
                 final String playerEntryId = "##playerentry" + address + i;
-                final boolean isLastServer = ServerUtil.lastServerExists() && ServerUtil.getLastServerInfo().address.equals(address);
+                final boolean isLastServer = ServerConnectionUtil.lastServerExists() && ServerConnectionUtil.getLastServerInfo().address.equals(address);
                 if (isLastServer) {
                     final float[] color = new float[]{ 0.8f, 0.1f, 0.1f, 0.30f };
                     ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], color[3]);
@@ -180,8 +180,7 @@ public class PlayerDiscoveryClientMenuWindow extends ClientMenuWindow {
                     ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
                 }
                 if (ImGui.button(playerEntryId, ImGui.getColumnWidth() - 8, 75)) {
-                    ServerUtil.setLastServerInfo(new ServerInfo(address, address, ServerInfo.ServerType.OTHER));
-                    ServerUtil.connectToLastServer();
+                    ServerConnectionUtil.connect(address);
                 }
                 if (isLastServer) {
                     ImGui.popStyleColor(3);

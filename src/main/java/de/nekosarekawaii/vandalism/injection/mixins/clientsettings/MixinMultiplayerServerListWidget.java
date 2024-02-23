@@ -18,7 +18,8 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
-import de.nekosarekawaii.vandalism.Vandalism;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
 import net.minecraft.client.gui.widget.EntryListWidget;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,7 +31,7 @@ public abstract class MixinMultiplayerServerListWidget {
 
     @Redirect(method = "updateEntries", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerServerListWidget;addEntry(Lnet/minecraft/client/gui/widget/EntryListWidget$Entry;)I"))
     private int removeScanningEntry(final MultiplayerServerListWidget instance, final EntryListWidget.Entry entry) {
-        if (Vandalism.getInstance().getClientSettings().getMenuSettings().serverPingerWidget.getValue()) {
+        if (!(MinecraftClient.getInstance().currentScreen instanceof MultiplayerScreen)) {
             return 0;
         }
         return instance.addEntry((MultiplayerServerListWidget.Entry) entry);

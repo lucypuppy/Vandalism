@@ -27,7 +27,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.rendering.ButtonValue;
 import de.nekosarekawaii.vandalism.feature.command.impl.misc.NbtCommand;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
-import de.nekosarekawaii.vandalism.util.game.ServerUtil;
+import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -154,7 +154,7 @@ public class ItemStackLoggerModule extends AbstractModule implements PlayerUpdat
             LOGGED_ITEMS_DIR.mkdirs();
             if (!LOGGED_ITEMS_DIR.exists()) return;
 
-            final File serverDir = new File(LOGGED_ITEMS_DIR, ServerUtil.lastServerExists() && !this.mc.isInSingleplayer() && !this.mc.isIntegratedServerRunning() ? ServerUtil.getLastServerInfo().address : "single player");
+            final File serverDir = new File(LOGGED_ITEMS_DIR, ServerConnectionUtil.lastServerExists() && !this.mc.isInSingleplayer() && !this.mc.isIntegratedServerRunning() ? ServerConnectionUtil.getLastServerInfo().address : "single player");
             serverDir.mkdirs();
             if (!serverDir.exists()) return;
 

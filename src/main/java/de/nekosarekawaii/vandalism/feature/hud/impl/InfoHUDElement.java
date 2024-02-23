@@ -25,11 +25,11 @@ import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
+import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.TickBaseModule;
 import de.nekosarekawaii.vandalism.injection.access.IRenderTickCounter;
-import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
+import de.nekosarekawaii.vandalism.integration.serverlist.ServerDataUtil;
 import de.nekosarekawaii.vandalism.util.click.CPSTracker;
-import de.nekosarekawaii.vandalism.util.game.ServerUtil;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.PlayerListEntry;
@@ -330,7 +330,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
                 if (currentServerInfo != null) {
                     final Text version = currentServerInfo.version;
                     if (version != null) {
-                        value = ServerUtil.fixVersionName(version.getString());
+                        value = ServerDataUtil.fixVersionName(version.getString());
                     }
                 }
             }

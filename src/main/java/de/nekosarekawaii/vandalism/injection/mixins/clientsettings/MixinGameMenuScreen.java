@@ -19,8 +19,9 @@
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.util.game.ServerUtil;
-import de.nekosarekawaii.vandalism.util.render.ServerPingerWidget;
+import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
+import de.nekosarekawaii.vandalism.integration.serverlist.ServerPingerWidget;
+import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -52,15 +53,19 @@ public abstract class MixinGameMenuScreen extends Screen {
 
     @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/GameMenuScreen;addDrawableChild(Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;"), cancellable = true)
     private void removeTitleText(final CallbackInfo ci) {
-        if (Vandalism.getInstance().getClientSettings().getMenuSettings().serverPingerWidget.getValue()) {
+        final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
+        if (enhancedServerListSettings.enhancedServerList.getValue() && enhancedServerListSettings.serverPingerWidget.getValue()) {
             ci.cancel();
+            ServerPingerWidget.ping(this.client.getCurrentServerEntry());
         }
-        ServerPingerWidget.ping(this.client.getCurrentServerEntry());
     }
 
     @Inject(method = "render", at = @At(value = "RETURN"))
     private void drawServerPingerWidget(final DrawContext context, final int mouseX, final int mouseY, final float delta, final CallbackInfo ci) {
-        ServerPingerWidget.draw(this.client.getCurrentServerEntry(), context, mouseX, mouseY, delta, 10);
+        final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
+        if (enhancedServerListSettings.enhancedServerList.getValue() && enhancedServerListSettings.serverPingerWidget.getValue()) {
+            ServerPingerWidget.draw(this.client.getCurrentServerEntry(), context, mouseX, mouseY, delta, 10);
+        }
     }
 
     @Inject(method = "createUrlButton", at = @At(value = "HEAD"), cancellable = true)
@@ -71,7 +76,7 @@ public abstract class MixinGameMenuScreen extends Screen {
         if (text == SEND_FEEDBACK_TEXT) {
             cir.setReturnValue(ButtonWidget.builder(Text.translatable("menu.multiplayer"), b -> this.client.setScreen(new MultiplayerScreen(this))).width(98).build());
         } else if (text == REPORT_BUGS_TEXT && !this.client.isInSingleplayer()) {
-            final ButtonWidget button = ButtonWidget.builder(Text.literal("Reconnect"), b -> ServerUtil.connectToLastServer()).width(98).build();
+            final ButtonWidget button = ButtonWidget.builder(Text.literal("Reconnect"), b -> ServerConnectionUtil.connectToLastServer()).width(98).build();
             cir.setReturnValue(button);
         }
     }

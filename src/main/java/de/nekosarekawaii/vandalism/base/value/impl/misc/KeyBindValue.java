@@ -23,7 +23,6 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
-import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.render.InputType;
 import imgui.ImGui;
 import net.minecraft.client.MinecraftClient;
@@ -64,17 +63,19 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
     @Override
     public void render() {
         final String id = "##" + this.getName() + this.getParent().getName();
+        final float width = 200;
+        final float height = ImGui.getTextLineHeightWithSpacing();
         if (!this.waitingForInput) {
-            if (ImUtils.subButton(InputType.getKeyName(this.getValue()) + id)) {
+            if (ImGui.button(InputType.getKeyName(this.getValue()) + id, width, height)) {
                 this.waitingForInput = true;
                 Vandalism.getInstance().getEventSystem().subscribe(KeyboardInputEvent.ID, this);
             }
         } else {
             ImGui.textWrapped("Listening for key input...");
-            if (ImUtils.subButton("Cancel" + id + "cancel")) {
+            if (ImGui.button("Cancel" + id + "cancel", width, height)) {
                 this.finishInput();
             }
-            if (ImUtils.subButton("Reset" + id + "reset")) {
+            if (ImGui.button("Reset" + id + "reset", width, height)) {
                 this.finishInput();
                 this.resetValue();
             }

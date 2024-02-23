@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.clientmenu.impl.widget;
 
 import com.google.gson.JsonSyntaxException;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
-import de.nekosarekawaii.vandalism.util.game.ServerUtil;
+import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import imgui.ImGui;
 import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiTableFlags;
@@ -131,8 +131,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                         ImGui.separator();
                         ImGui.spacing();
                         if (ImGui.button("Connect" + uniqueId + "connect", buttonWidth, buttonHeight)) {
-                            ServerUtil.setLastServerInfo(new ServerInfo(address, address, ServerInfo.ServerType.OTHER));
-                            ServerUtil.connectToLastServer();
+                            ServerConnectionUtil.connect(address);
                         }
                         if (ImGui.button("Add to the Server List" + uniqueId + "addtoserverlist", buttonWidth, buttonHeight)) {
                             final net.minecraft.client.option.ServerList serverList = new net.minecraft.client.option.ServerList(MinecraftClient.getInstance());

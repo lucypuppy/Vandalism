@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.util;
 
-import de.nekosarekawaii.vandalism.util.game.ServerUtil;
+import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
@@ -34,7 +34,7 @@ public abstract class MixinConnectScreen {
 
     @Inject(method = "connect(Lnet/minecraft/client/gui/screen/Screen;Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/network/ServerAddress;Lnet/minecraft/client/network/ServerInfo;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/ConnectScreen;connect(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/network/ServerAddress;Lnet/minecraft/client/network/ServerInfo;)V"))
     private static void syncLastServerInfo(final Screen screen, final MinecraftClient client, final ServerAddress address, final ServerInfo info, final boolean quickPlay, final CallbackInfo ci) {
-        ServerUtil.setLastServerInfo(info);
+        ServerConnectionUtil.setLastServerInfo(info);
     }
 
 }

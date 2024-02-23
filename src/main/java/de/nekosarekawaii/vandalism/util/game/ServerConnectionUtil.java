@@ -25,18 +25,17 @@ import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
+import net.minecraft.util.Pair;
 
-public class ServerUtil implements MinecraftWrapper {
+public class ServerConnectionUtil implements MinecraftWrapper {
 
     private static GameMenuScreen GAME_MENU_SCREEN = null;
+
     private static ServerInfo LAST_SERVER_INFO = null;
 
     public static void connectToLastServer() {
         if (LAST_SERVER_INFO == null) return;
-        if (mc.world != null) {
-            disconnect();
-        }
-        ConnectScreen.connect(new MultiplayerScreen(new TitleScreen()), mc, ServerAddress.parse(LAST_SERVER_INFO.address), LAST_SERVER_INFO, false);
+        connect(LAST_SERVER_INFO.address);
     }
 
     public static boolean lastServerExists() {
@@ -51,6 +50,13 @@ public class ServerUtil implements MinecraftWrapper {
         LAST_SERVER_INFO = serverInfo;
     }
 
+    public static void connect(final String address) {
+        if (mc.world != null) {
+            disconnect();
+        }
+        ConnectScreen.connect(new MultiplayerScreen(new TitleScreen()), mc, ServerAddress.parse(address), null, false);
+    }
+
     public static void disconnect() {
         if (GAME_MENU_SCREEN == null) {
             GAME_MENU_SCREEN = new GameMenuScreen(false);
@@ -59,23 +65,31 @@ public class ServerUtil implements MinecraftWrapper {
         GAME_MENU_SCREEN.disconnect();
     }
 
-    @Deprecated
-    public static String fixVersionName(final String input) {
-        if (input.contains(" ")) {
-            final String[] data = input.split(" ");
-            if (data.length > 1) {
-                final String name = data[0];
-                String versionRange = input.substring(name.length() + 1);
-                if (versionRange.contains(", ")) {
-                    final String[] versions = versionRange.split(", ");
-                    if (versions.length > 1) {
-                        versionRange = versions[0] + "-" + versions[versions.length - 1];
-                    }
-                }
-                return name + " " + versionRange;
+    public static Pair<String, Integer> resolveServerAddress(final String hostname) {
+        try {
+            final net.lenni0451.mcping.ServerAddress serverAddress = net.lenni0451.mcping.ServerAddress.parse(hostname, 25565);
+            serverAddress.resolve();
+            String address = serverAddress.getSocketAddress().toString();
+            if (address.contains("./")) {
+                address = address.replace("./", "/");
             }
+            if (address.contains("/")) {
+                address = address.replace("/", " ");
+            }
+            if (address.contains(" ")) {
+                address = address.split(" ")[1];
+            }
+            if (address.contains(":")) {
+                address = address.split(":")[0];
+            }
+            return new Pair<>(address, serverAddress.getPort());
+        } catch (Exception e) {
+            final String[] split = hostname.split(":");
+            if (split.length == 2) {
+                return new Pair<>(split[0], Integer.parseInt(split[1]));
+            }
+            return new Pair<>(hostname, 25565);
         }
-        return input;
     }
 
 }
