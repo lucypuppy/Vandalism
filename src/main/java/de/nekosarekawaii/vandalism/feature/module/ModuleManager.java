@@ -105,6 +105,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.espModule = new ESPModule(),
                 this.killAuraModule = new KillAuraModule(),
                 this.tickBaseModule = new TickBaseModule(this.killAuraModule),
+                this.fullBrightModule = new FullBrightModule(),
                 new BackTrackModule(this.killAuraModule),
                 new NoSlowModule(),
                 new PacketManagerModule(),
@@ -147,7 +148,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new DisablerModule(),
                 new TeleportModule(),
                 new SignExploitsModule(),
-                fullBrightModule = new FullBrightModule()
+                new ScaffoldModule()
         );
         this.configManager.add(new ModulesConfig(this));
     }

@@ -41,3 +41,5 @@ replay_*.log
 *.jfr
 /logs/*
 qodana.yaml
+/move.bat
+/pull.bat
