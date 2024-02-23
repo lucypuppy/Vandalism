@@ -35,7 +35,7 @@ public abstract class MixinReconfigurationScreen {
 
     @Inject(method = "init", at = @At("TAIL"))
     private void forceEnableRespawnButton(final CallbackInfo ci) {
-        if (Vandalism.getInstance().getClientSettings().getMenuSettings().forceEnableReconfiguartionDisconnectButton.getValue()) {
+        if (Vandalism.getInstance().getClientSettings().getMenuSettings().forceEnableReconfigurationDisconnectButton.getValue()) {
             this.disconnectButton.active = true;
         }
     }

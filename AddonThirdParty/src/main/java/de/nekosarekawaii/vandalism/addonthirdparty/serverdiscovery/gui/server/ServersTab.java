@@ -27,7 +27,7 @@ import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.request.
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.response.Response;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.response.impl.ServersResponse;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
-import de.nekosarekawaii.vandalism.util.game.ServerUtil;
+import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
@@ -39,10 +39,10 @@ import imgui.type.ImInt;
 import imgui.type.ImString;
 import net.lenni0451.mcping.MCPing;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.ServerList;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Pair;
 import net.raphimc.viaaprilfools.api.AprilFoolsProtocolVersion;
 import net.raphimc.viabedrock.api.BedrockProtocolVersion;
 import net.raphimc.vialoader.util.ProtocolVersionList;
@@ -208,9 +208,9 @@ public class ServersTab implements MinecraftWrapper {
     public boolean render(final String name) {
         boolean isSelected = false;
         boolean containsLastServer = false;
-        if (ServerUtil.lastServerExists()) {
+        if (ServerConnectionUtil.lastServerExists()) {
             for (final ServersResponse.Server server : this.servers) {
-                if (ServerUtil.getLastServerInfo().address.equals(server.server)) {
+                if (ServerConnectionUtil.getLastServerInfo().address.equals(server.server)) {
                     containsLastServer = true;
                     break;
                 }
@@ -234,9 +234,9 @@ public class ServersTab implements MinecraftWrapper {
                         this.lastMaxServers = this.servers.size();
                         this.executorService.submit(() -> {
                             for (final ServersResponse.Server server : this.servers) {
-                                final ServerAddress serverAddress = ServerAddress.parse(server.server);
-                                final String resolvedAddress = serverAddress.getAddress();
-                                final int resolvedPort = serverAddress.getPort();
+                                final Pair<String, Integer> serverAddress = ServerConnectionUtil.resolveServerAddress(server.server);
+                                final String resolvedAddress = serverAddress.getLeft();
+                                final int resolvedPort = serverAddress.getRight();
                                 MCPing.pingModern(this.protocol)
                                         .address(resolvedAddress, resolvedPort)
                                         .timeout(5000, 5000)
@@ -278,7 +278,7 @@ public class ServersTab implements MinecraftWrapper {
                     i++;
                     final String address = serverEntry.server;
                     final boolean cracked = serverEntry.cracked;
-                    final boolean isLastServer = ServerUtil.lastServerExists() && ServerUtil.getLastServerInfo().address.equals(address);
+                    final boolean isLastServer = ServerConnectionUtil.lastServerExists() && ServerConnectionUtil.getLastServerInfo().address.equals(address);
                     final StringBuilder dataString = new StringBuilder();
                     String description = Formatting.strip(serverEntry.description);
                     if (description != null && !description.isEmpty()) {
@@ -337,8 +337,7 @@ public class ServersTab implements MinecraftWrapper {
                     }
                     final String serverEntryId = "##serverEntry" + address;
                     if (ImGui.button(serverEntryId, ImGui.getColumnWidth() - 8, 90)) {
-                        ServerUtil.setLastServerInfo(new ServerInfo(address, address, ServerInfo.ServerType.OTHER));
-                        ServerUtil.connectToLastServer();
+                        ServerConnectionUtil.connect(address);
                     }
                     if (shouldHighlight) {
                         ImGui.popStyleColor(3);

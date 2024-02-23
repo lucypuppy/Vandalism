@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.clientmenu.base;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.feature.hud.gui.HUDClientMenuWindow;
-import de.nekosarekawaii.vandalism.util.game.ServerUtil;
+import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import de.nekosarekawaii.vandalism.util.imgui.ImLoader;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
@@ -62,10 +62,10 @@ public class ClientMenuScreen extends Screen {
                                     Vandalism.getInstance().getConfigManager().save();
                                 }
                             } else if (category == ClientMenuWindow.Category.SERVER) {
-                                if (ServerUtil.lastServerExists() && this.client.getCurrentServerEntry() == null) {
+                                if (ServerConnectionUtil.lastServerExists() && this.client.getCurrentServerEntry() == null) {
                                     ImGui.separator();
                                     if (ImUtils.subButton("Connect to last server")) {
-                                        ServerUtil.connectToLastServer();
+                                        ServerConnectionUtil.connectToLastServer();
                                     }
                                 }
                             }

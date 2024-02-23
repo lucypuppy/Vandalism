@@ -18,10 +18,11 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
-import de.nekosarekawaii.vandalism.util.game.ServerUtil;
-import de.nekosarekawaii.vandalism.util.render.ServerPingerWidget;
+import de.nekosarekawaii.vandalism.integration.serverlist.ServerDataUtil;
+import de.nekosarekawaii.vandalism.integration.serverlist.ServerPingerWidget;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
@@ -39,6 +40,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Mixin(MultiplayerServerListWidget.ServerEntry.class)
 public abstract class MixinServerEntry {
@@ -86,10 +90,10 @@ public abstract class MixinServerEntry {
             if (enhancedServerListSettings.enhancedServerList.getValue()) {
                 if (enhancedServerListSettings.multiplayerScreenServerInformation.getValue()) {
                     final int textX = x + textRenderer.getWidth(text) + 22;
-                    instance.drawTextWithShadow(textRenderer, vandalism$VERSION_TEXT + ServerUtil.fixVersionName(this.server.version.getString()), textX, y, -1);
+                    instance.drawTextWithShadow(textRenderer, vandalism$VERSION_TEXT + ServerDataUtil.fixVersionName(this.server.version.getString()), textX, y, -1);
                     instance.drawTextWithShadow(
                             textRenderer,
-                            vandalism$PROTOCOL_TEXT + this.server.protocolVersion,
+                            vandalism$PROTOCOL_TEXT + ProtocolVersion.getProtocol(this.server.protocolVersion),
                             textX,
                             y + textRenderer.fontHeight,
                             -1
@@ -149,6 +153,11 @@ public abstract class MixinServerEntry {
         if (this.screen.getServerList() == null) {
             ci.cancel();
         }
+    }
+
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerScreen;setMultiplayerScreenTooltip(Ljava/util/List;)V", ordinal = 0))
+    private void attachAdditionalTooltipData(final MultiplayerScreen instance, final List<Text> tooltip) {
+        instance.setMultiplayerScreenTooltip(ServerDataUtil.attachAdditionalTooltipData(new ArrayList<>(tooltip), this.server));
     }
 
 }

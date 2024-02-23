@@ -193,14 +193,7 @@ public class MenuSettings extends ValueGroup {
             60
     ).visibleCondition(this.autoReconnect::getValue);
 
-    public final BooleanValue autoReconnectShowZero = new BooleanValue(
-            this,
-            "Auto Reconnect Show Zero",
-            "Shows 0 before the remaining time if the remaining time is lower than 10.",
-            true
-    ).visibleCondition(this.autoReconnect::getValue);
-
-    public final BooleanValue forceEnableReconfiguartionDisconnectButton = new BooleanValue(
+    public final BooleanValue forceEnableReconfigurationDisconnectButton = new BooleanValue(
             this,
             "Force Enable Reconfiguration Disconnect Button",
             "Forces the disconnect button of the reconfiguration screen to be enabled.",
@@ -213,22 +206,6 @@ public class MenuSettings extends ValueGroup {
             "Forces the respawn button to be enabled.",
             false
     );
-
-    public final BooleanValue serverPingerWidget = new BooleanValue(
-            this,
-            "Server Pinger Widget",
-            "Activates/Deactivates the server pinger widget.",
-            true
-    );
-
-    public final IntegerValue serverPingerWidgetDelay = new IntegerValue(
-            this,
-            "Server Pinger Widget Delay",
-            "The delay in milliseconds before the server pinger widget pings the server again.",
-            5000,
-            1000,
-            30000
-    ).visibleCondition(this.serverPingerWidget::getValue);
 
     public MenuSettings(final ClientSettings parent) {
         super(parent, "Menu", "Menu related settings.");

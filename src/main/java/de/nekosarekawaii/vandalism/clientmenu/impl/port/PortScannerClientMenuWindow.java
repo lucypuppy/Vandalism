@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.clientmenu.impl.port;
 
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.clientmenu.impl.widget.ServerInfosTableColumn;
+import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
@@ -29,8 +30,8 @@ import imgui.type.ImInt;
 import imgui.type.ImString;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
+import net.minecraft.util.Pair;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -164,9 +165,9 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
                 if (ImGui.button("Start##portscannerstart", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                     this.reset();
                     this.state.set(State.RUNNING.getMessage());
-                    final ServerAddress serverAddress = ServerAddress.parse(this.hostname.get());
-                    final String resolvedAddress = serverAddress.getAddress();
-                    final int resolvedPort = serverAddress.getPort();
+                    final Pair<String, Integer> serverAddress = ServerConnectionUtil.resolveServerAddress(this.hostname.get());
+                    final String resolvedAddress = serverAddress.getLeft();
+                    final int resolvedPort = serverAddress.getRight();
                     for (int i = 0; i < this.threads.get(); i++) {
                         Executors.newSingleThreadExecutor().submit(() -> {
                             try {

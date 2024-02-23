@@ -39,6 +39,29 @@ public class EnhancedServerListSettings extends ValueGroup {
         }
     });
 
+    public final BooleanValue serverPingerWidget = new BooleanValue(
+            this,
+            "Server Pinger Widget",
+            "Activates/Deactivates the server pinger widget.",
+            true
+    ).visibleCondition(this.enhancedServerList::getValue);
+
+    public final IntegerValue serverPingerWidgetDelay = new IntegerValue(
+            this,
+            "Server Pinger Widget Delay",
+            "The delay in milliseconds before the server pinger widget pings the server again.",
+            5000,
+            1000,
+            30000
+    ).visibleCondition(() -> this.enhancedServerList.getValue() && this.serverPingerWidget.getValue());
+
+    public final BooleanValue morePingTooltipServerInformation = new BooleanValue(
+            this,
+            "More Ping Tooltip Server Information",
+            "If activated the Game shows more server information in the ping tooltip.",
+            true
+    ).visibleCondition(this.enhancedServerList::getValue);
+
     public final BooleanValue renderAddressAsDefaultServerName = new BooleanValue(
             this,
             "Render Address as Default Server Name",

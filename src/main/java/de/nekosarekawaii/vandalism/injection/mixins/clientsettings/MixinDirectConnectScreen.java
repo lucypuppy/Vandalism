@@ -20,7 +20,8 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.util.render.ServerPingerWidget;
+import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
+import de.nekosarekawaii.vandalism.integration.serverlist.ServerPingerWidget;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -39,7 +40,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(DirectConnectScreen.class)
 public abstract class MixinDirectConnectScreen extends Screen {
 
-    @Shadow private TextFieldWidget addressField;
+    @Shadow
+    private TextFieldWidget addressField;
 
     @Unique
     private final MSTimer vandalism$pingTimer = new MSTimer();
@@ -60,14 +62,17 @@ public abstract class MixinDirectConnectScreen extends Screen {
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawCenteredTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;III)V"))
     private void removeTitle(final DrawContext instance, final TextRenderer textRenderer, final Text text, final int centerX, final int y, final int color) {
-        if (!Vandalism.getInstance().getClientSettings().getMenuSettings().serverPingerWidget.getValue()) {
-            instance.drawCenteredTextWithShadow(textRenderer, text, centerX, y, color);
+        final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
+        if (enhancedServerListSettings.enhancedServerList.getValue() && enhancedServerListSettings.serverPingerWidget.getValue()) {
+            return;
         }
+        instance.drawCenteredTextWithShadow(textRenderer, text, centerX, y, color);
     }
 
     @Inject(method = "onAddressFieldChanged", at = @At(value = "RETURN"))
     private void resetPingTimer(final CallbackInfo ci) {
-        if (Vandalism.getInstance().getClientSettings().getMenuSettings().serverPingerWidget.getValue()) {
+        final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
+        if (enhancedServerListSettings.enhancedServerList.getValue() && enhancedServerListSettings.serverPingerWidget.getValue()) {
             this.vandalism$pingTimer.reset();
         }
     }
@@ -75,7 +80,8 @@ public abstract class MixinDirectConnectScreen extends Screen {
     @Override
     public void tick() {
         super.tick();
-        if (Vandalism.getInstance().getClientSettings().getMenuSettings().serverPingerWidget.getValue()) {
+        final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
+        if (enhancedServerListSettings.enhancedServerList.getValue() && enhancedServerListSettings.serverPingerWidget.getValue()) {
             if (this.vandalism$pingTimer.hasReached(1000, true)) {
                 final String address = this.addressField.getText();
                 if (address.isEmpty()) return;

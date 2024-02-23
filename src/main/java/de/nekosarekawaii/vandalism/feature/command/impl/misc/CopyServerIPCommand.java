@@ -22,7 +22,7 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
-import de.nekosarekawaii.vandalism.util.game.ServerUtil;
+import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import net.minecraft.command.CommandSource;
 
 public class CopyServerIPCommand extends AbstractCommand {
@@ -59,7 +59,7 @@ public class CopyServerIPCommand extends AbstractCommand {
             ChatUtil.errorChatMessage("You are in Single-player.");
             return;
         }
-        this.mc.keyboard.setClipboard(ServerUtil.getLastServerInfo().address + (entireAddress ? " | " + this.mc.getNetworkHandler().getConnection().getAddress().toString() : ""));
+        this.mc.keyboard.setClipboard(ServerConnectionUtil.getLastServerInfo().address + (entireAddress ? " | " + this.mc.getNetworkHandler().getConnection().getAddress().toString() : ""));
         ChatUtil.infoChatMessage("Server IP copied into the Clipboard.");
     }
 
