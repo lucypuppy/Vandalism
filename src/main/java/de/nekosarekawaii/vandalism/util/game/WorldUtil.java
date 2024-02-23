@@ -110,4 +110,13 @@ public class WorldUtil implements MinecraftWrapper {
         return event.isTarget;
     }
 
+    public static boolean isOnGround(final double offset) {
+        if (mc.world == null || mc.player == null) {
+            return false;
+        }
+
+        return mc.world.getBlockCollisions(mc.player,
+                mc.player.getBoundingBox().offset(0.0D, -offset, 0.0D)).iterator().hasNext();
+    }
+
 }

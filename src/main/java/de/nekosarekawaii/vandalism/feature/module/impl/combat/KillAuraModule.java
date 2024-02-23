@@ -479,9 +479,9 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
                 if (this.rotationListener.getRotation() == null) {
                     final Rotation playerRotation = new Rotation(this.mc.player.getYaw(), this.mc.player.getPitch());
-                    rotationPercentage = RotationUtil.calculateRotationPercentage(playerRotation, rotation, true);
+                    rotationPercentage = RotationUtil.calculateRotationPercentage(playerRotation.getYaw(), rotation.getYaw(), true);
                 } else {
-                    rotationPercentage = RotationUtil.calculateRotationPercentage(rotationListener.getRotation(), rotation, true);
+                    rotationPercentage = RotationUtil.calculateRotationPercentage(rotationListener.getRotation().getYaw(), rotation.getYaw(), true);
                 }
 
                 rotateSpeed = this.rotationSpeedBezier.getValue(rotationPercentage);
