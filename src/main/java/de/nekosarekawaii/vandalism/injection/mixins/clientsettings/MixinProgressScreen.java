@@ -39,7 +39,7 @@ public abstract class MixinProgressScreen extends Screen {
     private static final String vandalism$CANCEL_MESSAGE = "Press [ESC] to cancel.";
 
     @Unique
-    private static final String vandalism$SHUTDOWN_MESSAGE = "Vandalism is shutting down...";
+    private static final String vandalism$SHUTDOWN_MESSAGE = FabricBootstrap.MOD_NAME + " is shutting down...";
 
     protected MixinProgressScreen(final Text ignored) {
         super(ignored);

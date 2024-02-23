@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
 import de.nekosarekawaii.vandalism.util.game.ServerUtil;
 import de.nekosarekawaii.vandalism.util.render.ServerPingerWidget;
 import net.minecraft.client.font.TextRenderer;
@@ -64,12 +65,26 @@ public abstract class MixinServerEntry {
     @Unique
     private static final String vandalism$PROTOCOL_TEXT = Formatting.DARK_AQUA + Formatting.BOLD.toString() + "Protocol" + Formatting.DARK_GRAY + Formatting.BOLD + "> " + Formatting.AQUA;
 
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;IIIZ)I"))
+    private int renderAddressAsDefaultServerName(final DrawContext instance, final TextRenderer textRenderer, String text, final int x, final int y, final int color, final boolean shadow) {
+        final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
+        if (enhancedServerListSettings.enhancedServerList.getValue()) {
+            if (enhancedServerListSettings.renderAddressAsDefaultServerName.getValue()) {
+                if (this.server.name.isEmpty()) {
+                    text = this.server.address;
+                }
+            }
+        }
+        return instance.drawText(textRenderer, text, x, y, color, shadow);
+    }
+
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;IIIZ)I"))
-    private int vandalism$applyAdditionalServerInformation(final DrawContext instance, final TextRenderer textRenderer, final Text text, final int x, final int y, final int color, final boolean shadow) {
+    private int applyAdditionalServerInformation(final DrawContext instance, final TextRenderer textRenderer, final Text text, final int x, final int y, final int color, final boolean shadow) {
         instance.drawText(textRenderer, text, x, y, color, shadow);
         if (this.server.ping >= 0) {
-            if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().enhancedServerList.getValue()) {
-                if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().multiplayerScreenServerInformation.getValue()) {
+            final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
+            if (enhancedServerListSettings.enhancedServerList.getValue()) {
+                if (enhancedServerListSettings.multiplayerScreenServerInformation.getValue()) {
                     final int textX = x + textRenderer.getWidth(text) + 22;
                     instance.drawTextWithShadow(textRenderer, vandalism$VERSION_TEXT + ServerUtil.fixVersionName(this.server.version.getString()), textX, y, -1);
                     instance.drawTextWithShadow(

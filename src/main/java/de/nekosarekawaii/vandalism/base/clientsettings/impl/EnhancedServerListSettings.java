@@ -39,6 +39,13 @@ public class EnhancedServerListSettings extends ValueGroup {
         }
     });
 
+    public final BooleanValue renderAddressAsDefaultServerName = new BooleanValue(
+            this,
+            "Render Address as Default Server Name",
+            "If activated the Game renders the Server Address as the Default Server Name.",
+            true
+    ).visibleCondition(this.enhancedServerList::getValue);
+
     public final BooleanValue multiplayerScreenServerInformation = new BooleanValue(
             this,
             "Multiplayer Screen Server Information",
