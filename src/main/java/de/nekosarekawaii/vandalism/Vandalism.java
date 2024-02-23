@@ -28,10 +28,10 @@ import de.nekosarekawaii.vandalism.base.event.normal.game.ShutdownProcessListene
 import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.feature.command.CommandManager;
 import de.nekosarekawaii.vandalism.feature.creativetab.CreativeTabManager;
+import de.nekosarekawaii.vandalism.feature.hud.HUDManager;
 import de.nekosarekawaii.vandalism.feature.module.ModuleManager;
 import de.nekosarekawaii.vandalism.feature.script.ScriptManager;
 import de.nekosarekawaii.vandalism.integration.friends.FriendsManager;
-import de.nekosarekawaii.vandalism.feature.hud.HUDManager;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationListener;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerListManager;
 import net.minecraft.client.MinecraftClient;
@@ -211,9 +211,9 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
     @Override
     public void onShutdownProcess() {
+        FabricBootstrap.SHUTTING_DOWN = true;
         Vandalism.getInstance().getLogger().info("Shutting down...");
         this.configManager.save();
-        FabricBootstrap.SHUTTING_DOWN = true;
     }
 
     public static Vandalism getInstance() {

@@ -18,39 +18,33 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.fix.minecraft;
 
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
-import net.minecraft.client.gui.screen.GameMenuScreen;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
+import net.minecraft.client.gui.screen.multiplayer.AddServerScreen;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(MultiplayerScreen.class)
-public abstract class MixinMultiplayerScreen extends Screen implements MinecraftWrapper {
+@Mixin(AddServerScreen.class)
+public abstract class MixinAddServerScreen extends Screen {
 
-    @Shadow
-    private Screen parent;
+    @Shadow private TextFieldWidget addressField;
 
-    protected MixinMultiplayerScreen(final Text ignored) {
+    protected MixinAddServerScreen(final Text ignored) {
         super(ignored);
     }
 
-    @Inject(method = "tick", at = @At("HEAD"))
-    private void fixInvalidParentScreen(final CallbackInfo ci) {
-        if (this.parent instanceof GameMenuScreen && this.mc.player == null) {
-            this.parent = new TitleScreen();
-        }
+    @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/AddServerScreen;setInitialFocus(Lnet/minecraft/client/gui/Element;)V"))
+    private void setInitialFocusToAddressField(final AddServerScreen instance, final Element element) {
+        this.setInitialFocus(this.addressField);
     }
 
-    @Redirect(method = "method_19916", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resource/language/I18n;translate(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;"))
-    private String replaceDefaultServerNameWithEmptyString(final String key, final Object[] args) {
-        return "";
+    @Redirect(method = "updateAddButton", at = @At(value = "INVOKE", target = "Ljava/lang/String;isEmpty()Z"))
+    private boolean allowEmptyServerNames(final String instance) {
+        return false;
     }
 
 }
