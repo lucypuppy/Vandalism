@@ -54,7 +54,13 @@ public class ServerConnectionUtil implements MinecraftWrapper {
         if (mc.world != null) {
             disconnect();
         }
-        ConnectScreen.connect(new MultiplayerScreen(new TitleScreen()), mc, ServerAddress.parse(address), null, false);
+        ConnectScreen.connect(
+                new MultiplayerScreen(new TitleScreen()),
+                mc,
+                ServerAddress.parse(address),
+                new ServerInfo(address, address, ServerInfo.ServerType.OTHER),
+                false
+        );
     }
 
     public static void disconnect() {
