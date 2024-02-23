@@ -66,7 +66,6 @@ import java.io.File;
  *  - Add Proxy manager
  *  - Rewrite GCD fix to be accurate
  *  - Implement uncharge speed into tickbase
- *  - Add support for multiple presses on tick in KeyBindSetting
  *  - Delete TickBaseModule#worldTicker and replace with worldTick()
  *  - Add working defensive and counter mode to Tickbase
  *  - Fix Game server pinger (ensure pings are on different threads)
@@ -75,8 +74,6 @@ import java.io.File;
  *      - Fix module list out of screen rendering when the alignment is for example at the bottom of the screen
  *  - Add lag engine to fix countless BackTrack issues
  *  - Ensure MCConstants class file is used
- *  - Rework wurst integration with ASM
- *  - Rework bezier curve
  *  - Rework parts of NoSlow
  *  - Fix bukkit fly not working at all
  *  - Rewrite commands to use generic expressions (like #SpawnEgg, #Book)
