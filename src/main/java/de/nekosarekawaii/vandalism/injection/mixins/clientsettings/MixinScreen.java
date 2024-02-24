@@ -27,10 +27,11 @@ import net.minecraft.client.gui.screen.Screen;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.awt.*;
 
 @Mixin(Screen.class)
 public abstract class MixinScreen {
@@ -41,8 +42,8 @@ public abstract class MixinScreen {
 
     @Shadow @Nullable protected MinecraftClient client;
 
-    @Unique
-    private void vandalism$drawBackground(final CallbackInfo ci, final DrawContext context) {
+    @Inject(method = "renderBackgroundTexture", at = @At("HEAD"), cancellable = true)
+    private void drawCustomBackgroundInGui(final DrawContext context, final CallbackInfo ci) {
         final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
         if (menuSettings.customBackground.getValue()) {
             ci.cancel();
@@ -56,14 +57,20 @@ public abstract class MixinScreen {
         }
     }
 
-    @Inject(method = "renderBackgroundTexture", at = @At("HEAD"), cancellable = true)
-    private void drawCustomBackground1(final DrawContext context, final CallbackInfo ci) {
-        vandalism$drawBackground(ci, context);
-    }
-
     @Inject(method = "renderInGameBackground", at = @At("HEAD"), cancellable = true)
-    private void drawCustomBackground2(final DrawContext context, final CallbackInfo ci) {
-        vandalism$drawBackground(ci, context);
+    private void drawCustomBackgroundInGame(final DrawContext context, final CallbackInfo ci) {
+        final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
+        if (menuSettings.customBackground.getValue()) {
+            ci.cancel();
+            context.fillGradient(
+                    0,
+                    0,
+                    this.width,
+                    this.height,
+                    ColorUtils.withAlpha(Color.BLACK, 100).getRGB(),
+                    ColorUtils.withAlpha(menuSettings.customBackgroundColor.getColor(), this.client.player == null ? 255 : 100).getRGB()
+            );
+        }
     }
 
 }
