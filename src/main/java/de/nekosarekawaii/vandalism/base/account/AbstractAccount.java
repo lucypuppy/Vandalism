@@ -27,9 +27,9 @@ import com.mojang.authlib.yggdrasil.YggdrasilEnvironment;
 import de.florianmichael.rclasses.common.TimeFormatter;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.normal.internal.UpdateSessionListener;
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.common.StaticEncryptionUtil;
 import de.nekosarekawaii.vandalism.util.render.PlayerSkinRenderer;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.SocialInteractionsManager;
 import net.minecraft.client.realms.RealmsClient;
@@ -135,6 +135,7 @@ public abstract class AbstractAccount implements MinecraftWrapper {
                 } else {
                     this.setStatus("Failed to update UserApiService");
                 }
+                Vandalism.getInstance().getAccountManager().setCurrentAccount(this);
             } catch (Throwable t) {
                 throw new RuntimeException(t);
             }

@@ -80,8 +80,10 @@ public abstract class AbstractTokenBasedAccount extends AbstractAccount {
 
             @Override
             public void displayFactory() {
-                ImGui.inputText("Token", this.token, ImGuiInputTextFlags.CallbackResize | ImGuiInputTextFlags.Password);
-                if (ImGui.button("Open service", 255, ImGui.getTextLineHeightWithSpacing())) {
+                ImGui.text("Token");
+                ImGui.setNextItemWidth(ImGui.getColumnWidth() - 4f);
+                ImGui.inputText("##accountToken", this.token, ImGuiInputTextFlags.CallbackResize | ImGuiInputTextFlags.Password);
+                if (ImGui.button("Open service", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
                     Util.getOperatingSystem().open(AbstractTokenBasedAccount.this.serviceUrl);
                 }
             }

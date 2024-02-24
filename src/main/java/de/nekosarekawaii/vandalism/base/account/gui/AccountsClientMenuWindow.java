@@ -27,13 +27,10 @@ import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.render.PlayerSkinRenderer;
 import imgui.ImGui;
 import imgui.flag.ImGuiMouseButton;
-import imgui.flag.ImGuiWindowFlags;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.session.Session;
 
 import java.util.function.Consumer;
-
-import static de.nekosarekawaii.vandalism.util.imgui.ImUtils.subButton;
 
 public class AccountsClientMenuWindow extends ClientMenuWindow {
 
@@ -50,36 +47,83 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
     private void recallAccount(final AccountFactory factory, final Consumer<AbstractAccount> account) {
         factory.make().whenComplete((abstractAccount, throwable) -> {
             if (abstractAccount == null) {
-                Vandalism.getInstance().getLogger().error("Failed to create account");
+                Vandalism.getInstance().getLogger().error("Failed to create account.");
                 return;
             }
             if (throwable != null) {
-                Vandalism.getInstance().getLogger().error("Failed to create account", throwable);
+                Vandalism.getInstance().getLogger().error("Failed to create account.", throwable);
             } else {
                 account.accept(abstractAccount);
             }
         });
     }
 
-    protected void renderMenuBar(final AccountManager accountManager) {
-        if (ImGui.beginMenuBar()) {
-            if (ImGui.beginMenu("Add Account")) {
-                AccountManager.ACCOUNT_TYPES.forEach((account, factory) -> {
-                    if (ImGui.beginMenu(account.getType())) {
-                        factory.displayFactory();
-                        if (ImGui.button("Add", 255, ImGui.getTextLineHeightWithSpacing())) {
-                            recallAccount(factory, accountManager::add);
+    private AbstractAccount hoveredAccount;
+
+    @Override
+    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        ImGui.begin(this.getName());
+        if (ImGui.beginTabBar("##accountsTabBar")) {
+            if (ImGui.beginTabItem("Accounts")) {
+                for (final AbstractAccount account : this.accountManager.getList()) {
+                    if (account == null) continue;
+                    final PlayerSkinRenderer accountPlayerSkin = account.getPlayerSkin();
+                    if (accountPlayerSkin != null) {
+                        final int playerSkinId = accountPlayerSkin.getGlId();
+                        if (playerSkinId != -1) {
+                            ImUtils.texture(playerSkinId, ACCOUNT_ENTRY_CONTENT_WIDTH, ACCOUNT_ENTRY_CONTENT_HEIGHT, 8f, 8f, 15.5f, 15f);
+                            ImGui.sameLine(15);
+                            ImUtils.texture(playerSkinId, ACCOUNT_ENTRY_CONTENT_WIDTH, ACCOUNT_ENTRY_CONTENT_HEIGHT, 39.5f, 8f, 47.1f, 14.8f);
+                            ImGui.sameLine();
                         }
-                        if (ImGui.button("Login", 255, ImGui.getTextLineHeightWithSpacing())) {
-                            recallAccount(factory, AbstractAccount::logIn);
-                        }
-                        ImGui.endMenu();
                     }
-                });
-                ImGui.endMenu();
+                    if (ImGui.button(account.getDisplayName() + " (" + (account.getStatus() == null ? "Idle" : account.getStatus()) + ")", ImGui.getColumnWidth(), ACCOUNT_ENTRY_CONTENT_HEIGHT + 1f)) {
+                        try {
+                            account.logIn();
+                            account.setStatus("Logged in");
+                        } catch (Throwable throwable) {
+                            account.setStatus("Error: " + throwable.getMessage());
+                        }
+                    }
+                    if (ImGui.isItemHovered() && ImGui.isItemClicked(ImGuiMouseButton.Right)) {
+                        this.hoveredAccount = account;
+                        ImGui.openPopup("account-popup");
+                    }
+                }
+                if (ImGui.beginPopupContextItem("account-popup")) {
+                    ImGui.setNextItemWidth(400f); //Just some magic value to make the popup look good
+                    if (ImUtils.subButton("Delete account")) {
+                        ImGui.closeCurrentPopup();
+                        Vandalism.getInstance().getAccountManager().remove(this.hoveredAccount);
+                        this.hoveredAccount = null;
+                    }
+                    if (this.hoveredAccount != null) {
+                        if (ImUtils.subButton("Copy Name")) {
+                            this.mc.keyboard.setClipboard(this.hoveredAccount.getDisplayName());
+                        }
+                        final Session session = this.hoveredAccount.getSession();
+                        if (session != null) {
+                            if (session.getUuidOrNull() != null && ImUtils.subButton("Copy UUID")) {
+                                this.mc.keyboard.setClipboard(session.getUuidOrNull().toString());
+                            }
+                            if (ImUtils.subButton("Copy Access token")) {
+                                this.mc.keyboard.setClipboard(session.getAccessToken());
+                            }
+                            ImGui.text("Account Type: " + this.hoveredAccount.getType());
+                            if (this.hoveredAccount.getLastLogin() != null) {
+                                ImGui.text("Last Login: " + this.hoveredAccount.getLastLogin());
+                            }
+                            if (this.hoveredAccount.getSession().getUuidOrNull() != null) {
+                                ImGui.text("Account UUID: " + session.getUuidOrNull());
+                            }
+                        }
+                    }
+                    ImGui.endPopup();
+                }
+                ImGui.endTabItem();
             }
-            if (ImGui.beginMenu("Current Account")) {
-                final AbstractAccount currentAccount = accountManager.getCurrentAccount();
+            if (ImGui.beginTabItem("Current Account")) {
+                final AbstractAccount currentAccount = this.accountManager.getCurrentAccount();
                 ImGui.text("Account Type: " + currentAccount.getType());
                 ImGui.text("Account Name: " + currentAccount.getDisplayName());
                 if (currentAccount.getSession().getUuidOrNull() != null) {
@@ -99,84 +143,41 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
                             "Client ID: " + clientId + "\n"
                     );
                 }
-                if (subButton("Logout")) {
+                if (ImUtils.subButton("Logout")) {
                     try {
-                        accountManager.logOut();
+                        this.accountManager.logOut();
                     } catch (Throwable t) {
                         Vandalism.getInstance().getLogger().error("Failed to logout from account.", t);
                     }
                 }
-                ImGui.endMenu();
+                ImGui.endTabItem();
             }
-            ImGui.endMenuBar();
+            if (ImGui.beginTabItem("Add")) {
+                AccountManager.ACCOUNT_TYPES.forEach((account, factory) -> {
+                    if (ImGui.treeNodeEx(account.getType() + "##" + account.getType() + "AddAccount")) {
+                        factory.displayFactory();
+                        if (ImGui.button("Add", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
+                            this.recallAccount(factory, this.accountManager::add);
+                        }
+                        ImGui.treePop();
+                    }
+                });
+                ImGui.endTabItem();
+            }
+            if (ImGui.beginTabItem("Direct Login")) {
+                AccountManager.ACCOUNT_TYPES.forEach((account, factory) -> {
+                    if (ImGui.treeNodeEx(account.getType() + "##" + account.getType() + "DirectLoginAccount")) {
+                        factory.displayFactory();
+                        if (ImGui.button("Login", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
+                            this.recallAccount(factory, AbstractAccount::logIn);
+                        }
+                        ImGui.treePop();
+                    }
+                });
+                ImGui.endTabItem();
+            }
+            ImGui.endTabBar();
         }
-    }
-
-    private AbstractAccount hoveredAccount;
-
-    protected void renderAccountPopup() {
-        if (ImGui.beginPopupContextItem("account-popup")) {
-            ImGui.setNextItemWidth(400f); //Just some magic value to make the popup look good
-            if (subButton("Delete account")) {
-                ImGui.closeCurrentPopup();
-                Vandalism.getInstance().getAccountManager().remove(this.hoveredAccount);
-                this.hoveredAccount = null;
-            }
-            if (this.hoveredAccount != null) {
-                if (subButton("Copy Name")) {
-                    this.mc.keyboard.setClipboard(this.hoveredAccount.getDisplayName());
-                }
-                final Session session = this.hoveredAccount.getSession();
-                if (session != null) {
-                    if (session.getUuidOrNull() != null && subButton("Copy UUID")) {
-                        this.mc.keyboard.setClipboard(session.getUuidOrNull().toString());
-                    }
-                    if (subButton("Copy Access token")) {
-                        this.mc.keyboard.setClipboard(session.getAccessToken());
-                    }
-                    ImGui.text("Account type: " + this.hoveredAccount.getType());
-                    if (this.hoveredAccount.getLastLogin() != null) {
-                        ImGui.text("Last login: " + this.hoveredAccount.getLastLogin());
-                    }
-                    if (this.hoveredAccount.getSession().getUuidOrNull() != null) {
-                        ImGui.text("Account UUID: " + session.getUuidOrNull());
-                    }
-                }
-            }
-            ImGui.endPopup();
-        }
-    }
-
-    @Override
-    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        ImGui.begin(this.getName(), ImGuiWindowFlags.MenuBar);
-        this.renderMenuBar(this.accountManager);
-        for (final AbstractAccount account : this.accountManager.getList()) {
-            if (account == null) continue;
-            final PlayerSkinRenderer accountPlayerSkin = account.getPlayerSkin();
-            if (accountPlayerSkin != null) {
-                final int playerSkinId = accountPlayerSkin.getGlId();
-                if (playerSkinId != -1) {
-                    ImUtils.texture(playerSkinId, ACCOUNT_ENTRY_CONTENT_WIDTH, ACCOUNT_ENTRY_CONTENT_HEIGHT, 8f, 8f, 15.5f, 15f);
-                    ImGui.sameLine(15);
-                    ImUtils.texture(playerSkinId, ACCOUNT_ENTRY_CONTENT_WIDTH, ACCOUNT_ENTRY_CONTENT_HEIGHT, 39.5f, 8f, 47.1f, 14.8f);
-                    ImGui.sameLine();
-                }
-            }
-            if (ImGui.button(account.getDisplayName() + " (" + (account.getStatus() == null ? "Idle" : account.getStatus()) + ")", ImGui.getColumnWidth(), ACCOUNT_ENTRY_CONTENT_HEIGHT + 1f)) {
-                try {
-                    this.accountManager.logIn(account);
-                    account.setStatus("Logged in");
-                } catch (Throwable throwable) {
-                    account.setStatus("Error: " + throwable.getMessage());
-                }
-            }
-            if (ImGui.isItemHovered() && ImGui.isItemClicked(ImGuiMouseButton.Right)) {
-                this.hoveredAccount = account;
-                ImGui.openPopup("account-popup");
-            }
-        }
-        this.renderAccountPopup();
         ImGui.end();
     }
 

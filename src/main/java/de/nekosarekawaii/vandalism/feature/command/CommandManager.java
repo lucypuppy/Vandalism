@@ -78,7 +78,6 @@ public class CommandManager extends Storage<AbstractCommand> implements Minecraf
                 new InventoryClearCommand(),
                 new CopyInvisibleCharCommand(),
                 new CopyUsernameCommand(),
-                new CreativeItemControlCommand(),
                 new EnchantCommand(),
                 new FlipCommand(),
                 new ClientsideGameModeCommand(),

@@ -41,14 +41,15 @@ public class MSDeviceCodeAccount extends AbstractMicrosoftAccount {
         @Override
         public void displayFactory() {
             ImGui.textWrapped(this.state == null ? "Click the button below to get a device code." : this.state);
+            ImGui.spacing();
             if (this.state != null && this.state.startsWith(OPEN_URL)) {
                 final String[] split = this.state.split(OPEN_URL);
                 if (split.length == 2) {
                     final String url = split[1];
-                    if (ImGui.button("Open URL", 255, ImGui.getTextLineHeightWithSpacing())) {
+                    if (ImGui.button("Open URL", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
                         Util.getOperatingSystem().open(url);
                     }
-                    if (ImGui.button("Copy URL", 255, ImGui.getTextLineHeightWithSpacing())) {
+                    if (ImGui.button("Copy URL", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
                         mc.keyboard.setClipboard(url);
                     }
                 }
