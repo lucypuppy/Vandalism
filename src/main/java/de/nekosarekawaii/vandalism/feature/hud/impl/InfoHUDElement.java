@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.feature.hud.impl;
 
 import de.florianmichael.rclasses.math.geometry.Alignment;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.cancellable.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;

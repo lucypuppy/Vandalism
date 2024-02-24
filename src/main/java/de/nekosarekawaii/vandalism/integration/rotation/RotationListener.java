@@ -21,8 +21,8 @@ package de.nekosarekawaii.vandalism.integration.rotation;
 import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.RotationSettings;
-import de.nekosarekawaii.vandalism.base.event.cancellable.network.OutgoingPacketListener;
-import de.nekosarekawaii.vandalism.base.event.normal.player.StrafeListener;
+import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
+import de.nekosarekawaii.vandalism.event.normal.player.StrafeListener;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationGCD;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
 import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
@@ -30,7 +30,7 @@ import de.nekosarekawaii.vandalism.util.render.RenderUtil;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.MathHelper;
 
-public class RotationListener implements OutgoingPacketListener, StrafeListener, MinecraftWrapper, de.nekosarekawaii.vandalism.base.event.normal.player.RotationListener {
+public class RotationListener implements OutgoingPacketListener, StrafeListener, MinecraftWrapper, de.nekosarekawaii.vandalism.event.normal.player.RotationListener {
 
     private Rotation rotation;
     private Rotation targetRotation;

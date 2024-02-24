@@ -19,8 +19,8 @@
 package de.nekosarekawaii.vandalism.base;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.normal.game.MinecraftBoostrapListener;
-import de.nekosarekawaii.vandalism.base.event.normal.game.ShutdownProcessListener;
+import de.nekosarekawaii.vandalism.event.normal.game.MinecraftBoostrapListener;
+import de.nekosarekawaii.vandalism.event.normal.game.ShutdownProcessListener;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.Person;

@@ -20,12 +20,12 @@ package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.florianmichael.dietrichevents2.StateTypes;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.cancellable.render.ScreenListener;
-import de.nekosarekawaii.vandalism.base.event.normal.game.MinecraftBoostrapListener;
-import de.nekosarekawaii.vandalism.base.event.normal.game.ShutdownProcessListener;
-import de.nekosarekawaii.vandalism.base.event.normal.game.TickTimeListener;
-import de.nekosarekawaii.vandalism.base.event.normal.game.TimeTravelListener;
-import de.nekosarekawaii.vandalism.base.event.normal.network.WorldListener;
+import de.nekosarekawaii.vandalism.event.cancellable.render.ScreenListener;
+import de.nekosarekawaii.vandalism.event.normal.game.MinecraftBoostrapListener;
+import de.nekosarekawaii.vandalism.event.normal.game.ShutdownProcessListener;
+import de.nekosarekawaii.vandalism.event.normal.game.TickTimeListener;
+import de.nekosarekawaii.vandalism.event.normal.game.TimeTravelListener;
+import de.nekosarekawaii.vandalism.event.normal.network.WorldListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.world.ClientWorld;

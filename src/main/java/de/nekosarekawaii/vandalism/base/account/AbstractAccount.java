@@ -26,7 +26,7 @@ import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilEnvironment;
 import de.florianmichael.rclasses.common.TimeFormatter;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.normal.internal.UpdateSessionListener;
+import de.nekosarekawaii.vandalism.event.normal.internal.UpdateSessionListener;
 import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.common.StaticEncryptionUtil;
 import de.nekosarekawaii.vandalism.util.render.PlayerSkinRenderer;
