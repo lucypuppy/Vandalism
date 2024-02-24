@@ -18,7 +18,6 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
-import de.florianmichael.rclasses.common.color.ColorUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.MenuSettings;
 import net.minecraft.client.MinecraftClient;
@@ -31,16 +30,20 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.awt.*;
-
 @Mixin(Screen.class)
 public abstract class MixinScreen {
 
-    @Shadow public int width;
+    @Shadow
+    public int width;
 
-    @Shadow public int height;
+    @Shadow
+    public int height;
 
-    @Shadow @Nullable protected MinecraftClient client;
+    @Shadow
+    @Nullable
+    protected MinecraftClient client;
+
+    @Shadow public abstract void renderBackgroundTexture(DrawContext context);
 
     @Inject(method = "renderBackgroundTexture", at = @At("HEAD"), cancellable = true)
     private void drawCustomBackgroundInGui(final DrawContext context, final CallbackInfo ci) {
@@ -52,7 +55,7 @@ public abstract class MixinScreen {
                     0,
                     this.width,
                     this.height,
-                    ColorUtils.withAlpha(menuSettings.customBackgroundColor.getColor(), this.client.player == null ? 255 : 100).getRGB()
+                    menuSettings.customBackgroundColor.getColor().getRGB()
             );
         }
     }
@@ -62,14 +65,19 @@ public abstract class MixinScreen {
         final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
         if (menuSettings.inGameCustomBackground.getValue()) {
             ci.cancel();
-            context.fillGradient(
-                    0,
-                    0,
-                    this.width,
-                    this.height,
-                    ColorUtils.withAlpha(Color.BLACK, 100).getRGB(),
-                    ColorUtils.withAlpha(menuSettings.inGameCustomBackgroundColor.getColor(), this.client.player == null ? 255 : 100).getRGB()
-            );
+            if (this.client.player == null) {
+                this.renderBackgroundTexture(context);
+            }
+            else {
+                context.fillGradient(
+                        0,
+                        0,
+                        this.width,
+                        this.height,
+                        menuSettings.inGameCustomBackgroundColorTop.getColor().getRGB(),
+                        menuSettings.inGameCustomBackgroundColorBottom.getColor().getRGB()
+                );
+            }
         }
     }
 
