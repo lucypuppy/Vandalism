@@ -16,15 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.request.impl;
+package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response;
 
-import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.response.impl.UserInfoResponse;
-import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.request.Request;
-
-public class UserInfoRequest extends Request<UserInfoResponse> {
-
-    public UserInfoRequest() {
-        super(UserInfoResponse.class, "user_info");
-    }
-
-}
+public abstract class Response {}

@@ -16,16 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.clientmenu.impl.namehistory;
+package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.impl;
 
-import de.florianmichael.rclasses.common.StringUtils;
+import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.Request;
+import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.impl.UserInfoResponse;
 
-public enum NamesTableColumn {
+public class UserInfoRequest extends Request<UserInfoResponse> {
 
-    USERNAME, DATE, ACCURATE, ACTIONS;
-
-    public String getName() {
-        return StringUtils.normalizeEnumName(this.name());
+    public UserInfoRequest() {
+        super(UserInfoResponse.class, "user_info");
     }
 
 }

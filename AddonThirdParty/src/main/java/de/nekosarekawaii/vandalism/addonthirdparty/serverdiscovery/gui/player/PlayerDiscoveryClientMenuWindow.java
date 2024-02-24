@@ -20,9 +20,9 @@ package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.gui.player;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.ServerDiscoveryUtil;
-import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.request.impl.WhereIsRequest;
-import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.response.Response;
-import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.response.impl.WhereIsResponse;
+import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.impl.WhereIsRequest;
+import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.Response;
+import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.impl.WhereIsResponse;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;

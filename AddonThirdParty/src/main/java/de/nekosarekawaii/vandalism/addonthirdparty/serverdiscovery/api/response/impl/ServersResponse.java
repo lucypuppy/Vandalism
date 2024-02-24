@@ -16,51 +16,63 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.response.impl;
+package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.impl;
 
-import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.response.Response;
+import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.Response;
 
 import java.util.List;
 
-public class WhereIsResponse extends Response {
+public class ServersResponse extends Response {
 
     public String error;
 
-    public static class Record {
+    public static class Server {
 
         public String server;
-        public String uuid;
-        public String name;
+        public Boolean cracked;
+        public String description;
         public Integer last_seen;
+        public Integer max_players;
+        public Integer online_players;
+        public Integer protocol;
+        public String version;
 
-        public Record() {
+        public Server() {
             this.server = "";
-            this.uuid = "";
-            this.name = "";
+            this.cracked = false;
+            this.description = "";
             this.last_seen = 0;
+            this.max_players = 0;
+            this.online_players = 0;
+            this.protocol = 0;
+            this.version = "";
         }
 
         @Override
         public String toString() {
-            return "Record{" +
+            return "Server{" +
                     "server='" + this.server + '\'' +
-                    ", uuid='" + this.uuid + '\'' +
-                    ", name='" + this.name + '\'' +
+                    ", cracked=" + this.cracked +
+                    ", description='" + this.description + '\'' +
                     ", last_seen=" + this.last_seen +
+                    ", max_players=" + this.max_players +
+                    ", online_players=" + this.online_players +
+                    ", protocol=" + this.protocol +
+                    ", version='" + this.version + '\'' +
                     '}';
         }
 
     }
 
-    public List<Record> data;
+    public List<Server> data;
 
     public boolean isError() {
-        return this.error != null;
+        return error != null;
     }
 
     @Override
     public String toString() {
-        return "WhereIsResponse{" +
+        return "ServersResponse{" +
                 "error='" + this.error + '\'' +
                 ", data=" + this.data +
                 '}';

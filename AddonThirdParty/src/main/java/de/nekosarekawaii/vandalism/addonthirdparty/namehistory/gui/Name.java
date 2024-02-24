@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.response;
+package de.nekosarekawaii.vandalism.addonthirdparty.namehistory.gui;
 
-public abstract class Response {}
+public record Name(String username, String date, String accurate) {
+}

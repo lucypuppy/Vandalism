@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.clientmenu.impl.namehistory;
+package de.nekosarekawaii.vandalism.addonthirdparty.namehistory.gui;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
