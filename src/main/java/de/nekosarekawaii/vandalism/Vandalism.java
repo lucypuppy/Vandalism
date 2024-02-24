@@ -24,9 +24,9 @@ import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
 import de.nekosarekawaii.vandalism.base.account.AccountManager;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
+import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.event.normal.game.MinecraftBoostrapListener;
 import de.nekosarekawaii.vandalism.event.normal.game.ShutdownProcessListener;
-import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.feature.command.CommandManager;
 import de.nekosarekawaii.vandalism.feature.creativetab.CreativeTabManager;
 import de.nekosarekawaii.vandalism.feature.hud.HUDManager;
@@ -87,7 +87,8 @@ import java.io.File;
  *  - KillAura#onPrePlayerUpdate | Frame event (entity renderer set angles) -> rotate / Mouse event -> attack
  *  - Add more stuff to fake lag (Ideas off clumsy)
  *  - Fix backwards sprint not working
- *  - Add hunger to noslow
+ *  - Keksbye, Simon, FooFieOwO this is fixed find a new way for to bypasss a cubecraft disabler
+ *  - Fix autoblock blocking without sword
  * <br><br>
  * TODO: simon <br>
  *  - Add a better Autoblock to Killaura with FooFieOwO
