@@ -58,6 +58,9 @@ public class ServerDataUtil {
         final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
         if (enhancedServerListSettings.enhancedServerList.getValue()) {
             if (enhancedServerListSettings.morePingTooltipServerInformation.getValue()) {
+                tooltip.clear();
+                tooltip.add(Text.literal("Server Info"));
+                tooltip.add(Text.literal("Ping: " + Math.max(serverInfo.ping, 0) + " ms"));
                 tooltip.add(Text.literal("Version: " + serverInfo.version.getString()));
                 final int protocol = serverInfo.protocolVersion;
                 final ProtocolVersion protocolVersion = ProtocolVersion.getProtocol(protocol);
@@ -65,6 +68,10 @@ public class ServerDataUtil {
                 tooltip.add(Text.literal("Protocol: " + protocolName + (!protocolName.contains("(") ? " (" + protocol + ")" : "")));
                 final String address = serverInfo.address;
                 if (LAST_SERVER_ADDRESS.equals(address) && LAST_SERVER_ADDRESS_INFO != null) {
+                    final IPAddressInfo.Location location = LAST_SERVER_ADDRESS_INFO.getLocation();
+                    if (location != null) {
+                        tooltip.add(Text.literal("Country: " + location.getCountry() + " (" + location.getCountryCode() + ")"));
+                    }
                     final IPAddressInfo.Company company = LAST_SERVER_ADDRESS_INFO.getCompany();
                     if (company != null) {
                         tooltip.add(Text.literal("Company: " + company.getName()));
@@ -75,10 +82,6 @@ public class ServerDataUtil {
                         tooltip.add(Text.literal("Organization: " + asn.getOrg()));
                         tooltip.add(Text.literal("Description: " + asn.getDescr()));
                         tooltip.add(Text.literal("ASN: " + asn.getAsn()));
-                    }
-                    final IPAddressInfo.Location location = LAST_SERVER_ADDRESS_INFO.getLocation();
-                    if (location != null) {
-                        tooltip.add(Text.literal("Country: " + location.getCountry() + " (" + location.getCountryCode() + ")"));
                     }
                 }
                 if (LAST_SERVER_INFO_FETCH_TIMER.hasReached(2000, true)) {
