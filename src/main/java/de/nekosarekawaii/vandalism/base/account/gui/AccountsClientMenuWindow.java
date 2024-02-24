@@ -107,7 +107,7 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
                             ImGui.sameLine();
                         }
                     }
-                    if (ImGui.button(account.getDisplayName() + " (" + (account.getStatus() == null ? "Idle" : account.getStatus()) + ")", ImGui.getColumnWidth(), ACCOUNT_ENTRY_CONTENT_HEIGHT + 1f)) {
+                    if (ImGui.button("##account" + account.getDisplayName() + account.getType(), ImGui.getColumnWidth(), ACCOUNT_ENTRY_CONTENT_HEIGHT)) {
                         try {
                             account.logIn();
                             account.setStatus("Logged in");
@@ -119,10 +119,22 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
                         this.hoveredAccount = account;
                         ImGui.openPopup("account-popup");
                     }
+                    //account.getDisplayName() + " [" + account.getType() + "] (" + (account.getStatus() == null ? "Idle" : account.getStatus()) + ")"
+                    ImGui.sameLine(95);
+                    final StringBuilder data = new StringBuilder();
+                    data.append("Name: ");
+                    data.append(account.getDisplayName());
+                    data.append("\n");
+                    data.append("Type: ");
+                    data.append(account.getType());
+                    data.append("\n");
+                    data.append("Status: ");
+                    data.append(account.getStatus() == null ? "Idle" : account.getStatus());
+                    ImGui.text(data.toString());
                 }
                 if (ImGui.beginPopupContextItem("account-popup")) {
-                    ImGui.setNextItemWidth(400f); //Just some magic value to make the popup look good
-                    if (ImUtils.subButton("Delete account")) {
+                    ImGui.setNextItemWidth(400f);
+                    if (ImUtils.subButton("Delete")) {
                         ImGui.closeCurrentPopup();
                         Vandalism.getInstance().getAccountManager().remove(this.hoveredAccount);
                         this.hoveredAccount = null;
@@ -139,12 +151,12 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
                             if (ImUtils.subButton("Copy Access token")) {
                                 this.mc.keyboard.setClipboard(session.getAccessToken());
                             }
-                            ImGui.text("Account Type: " + this.hoveredAccount.getType());
+                            ImGui.text("Type: " + this.hoveredAccount.getType());
                             if (this.hoveredAccount.getLastLogin() != null) {
                                 ImGui.text("Last Login: " + this.hoveredAccount.getLastLogin());
                             }
                             if (this.hoveredAccount.getSession().getUuidOrNull() != null) {
-                                ImGui.text("Account UUID: " + session.getUuidOrNull());
+                                ImGui.text("UUID: " + session.getUuidOrNull());
                             }
                         }
                     }
