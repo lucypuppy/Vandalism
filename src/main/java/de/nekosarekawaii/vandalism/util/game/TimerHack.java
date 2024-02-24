@@ -18,7 +18,6 @@
 
 package de.nekosarekawaii.vandalism.util.game;
 
-@Deprecated
 public class TimerHack {
 
     private static final float DEFAULT_TIMER_SPEED = 1.0f;

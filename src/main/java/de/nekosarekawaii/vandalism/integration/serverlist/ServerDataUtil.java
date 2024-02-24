@@ -109,7 +109,6 @@ public class ServerDataUtil {
         return tooltip;
     }
 
-    @Deprecated
     public static String fixVersionName(final String input) {
         if (input.contains(" ")) {
             final String[] data = input.split(" ");
