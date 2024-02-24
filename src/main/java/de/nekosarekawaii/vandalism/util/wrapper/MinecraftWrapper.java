@@ -19,9 +19,16 @@
 package de.nekosarekawaii.vandalism.util.wrapper;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.network.ClientConnection;
+
+import java.util.Objects;
 
 public interface MinecraftWrapper {
 
     MinecraftClient mc = MinecraftClient.getInstance();
+
+    default boolean isPlayingConnection(final ClientConnection connection) {
+        return this.mc.getNetworkHandler() != null && Objects.equals(connection, this.mc.getNetworkHandler().getConnection());
+    }
 
 }
