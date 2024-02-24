@@ -16,8 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism;
+package de.nekosarekawaii.vandalism.base;
 
+import de.nekosarekawaii.vandalism.Vandalism;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.util.function.Consumer;

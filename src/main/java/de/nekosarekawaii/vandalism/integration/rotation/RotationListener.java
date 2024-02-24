@@ -25,7 +25,7 @@ import de.nekosarekawaii.vandalism.base.event.cancellable.network.OutgoingPacket
 import de.nekosarekawaii.vandalism.base.event.normal.player.StrafeListener;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationGCD;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.RenderUtil;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.MathHelper;

@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.feature;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.florianmichael.rclasses.pattern.functional.IName;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.raphimc.vialoader.util.VersionRange;
 
 public abstract class Feature implements IName, MinecraftWrapper {

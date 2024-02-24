@@ -32,7 +32,7 @@ import de.nekosarekawaii.vandalism.clientmenu.impl.ServerPingerClientMenuWindow;
 import de.nekosarekawaii.vandalism.clientmenu.impl.namehistory.NameHistoryClientMenuWindow;
 import de.nekosarekawaii.vandalism.clientmenu.impl.port.PortScannerClientMenuWindow;
 import de.nekosarekawaii.vandalism.clientmenu.impl.nbteditor.gui.NbtEditorClientMenuWindow;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.imgui.ImLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;

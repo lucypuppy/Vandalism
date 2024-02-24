@@ -31,7 +31,7 @@ import de.nekosarekawaii.vandalism.feature.hud.gui.HUDClientMenuWindow;
 import de.nekosarekawaii.vandalism.feature.hud.impl.InfoHUDElement;
 import de.nekosarekawaii.vandalism.feature.hud.impl.ModuleListHUDElement;
 import de.nekosarekawaii.vandalism.feature.hud.impl.WatermarkHUDElement;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 
 public class HUDManager extends Storage<HUDElement> implements Render2DListener, ScreenListener, KeyboardInputListener, MinecraftWrapper {

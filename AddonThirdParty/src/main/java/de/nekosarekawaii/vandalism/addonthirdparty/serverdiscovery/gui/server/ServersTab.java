@@ -26,7 +26,7 @@ import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.ServerDiscove
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.request.impl.ServersRequest;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.response.Response;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.response.impl.ServersResponse;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;

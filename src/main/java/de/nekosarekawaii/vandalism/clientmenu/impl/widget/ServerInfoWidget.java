@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.clientmenu.impl.widget;
 
 import com.google.gson.JsonSyntaxException;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import imgui.ImGui;
 import imgui.flag.ImGuiPopupFlags;

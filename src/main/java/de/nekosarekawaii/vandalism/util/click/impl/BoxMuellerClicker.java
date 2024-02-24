@@ -22,7 +22,7 @@ import de.florianmichael.rclasses.common.RandomUtils;
 import de.florianmichael.rclasses.math.Arithmetics;
 import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.florianmichael.rclasses.pattern.evicting.EvictingList;
-import de.nekosarekawaii.vandalism.util.MathUtil;
+import de.nekosarekawaii.vandalism.util.common.MathUtil;
 import de.nekosarekawaii.vandalism.util.click.Clicker;
 import org.joml.Vector4d;
 

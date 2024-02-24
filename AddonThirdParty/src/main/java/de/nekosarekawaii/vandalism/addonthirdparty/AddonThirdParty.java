@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.addonthirdparty;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.VandalismAddonLauncher;
+import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.gui.player.PlayerDiscoveryClientMenuWindow;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.gui.server.ServerDiscoveryClientMenuWindow;
 import de.nekosarekawaii.vandalism.addonthirdparty.spotify.SpotifyManager;

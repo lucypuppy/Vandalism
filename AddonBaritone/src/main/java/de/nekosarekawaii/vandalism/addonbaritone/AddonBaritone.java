@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.addonbaritone;
 
 import baritone.Baritone;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.VandalismAddonLauncher;
+import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
 
 public class AddonBaritone implements VandalismAddonLauncher {
 

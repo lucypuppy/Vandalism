@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util;
+package de.nekosarekawaii.vandalism.integration;
 
 import com.viaversion.viaversion.api.minecraft.Position;
 import com.viaversion.viaversion.api.protocol.packet.PacketWrapper;
@@ -26,7 +26,7 @@ import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import net.minecraft.util.math.BlockPos;
 
-public class ViaVersionUtil {
+public class ViaFabricPlusAccess {
 
     private static Position toPosition(final BlockPos pos) {
         return new Position(pos.getX(), pos.getY(), pos.getZ());
