@@ -76,7 +76,7 @@ import java.io.File;
  *      - Fix module list out of screen rendering when the alignment is for example at the bottom of the screen
  *  - Add lag engine to fix countless BackTrack issues
  *  - Improve bukkit fly not working at all
- *  - Fix SprintModule to be compatible with the rotation listener and also the backwards direction (ask Verschlxfene)
+ *  - Fix SprintModule to be compatible with the rotation listener and also the backwards direction
  *  - KillAura#onPrePlayerUpdate | Frame event (entity renderer set angles) -> rotate / Mouse event -> attack
  *  - Add more stuff to fake lag (Ideas off clumsy)
  *  - Fix backwards sprint not working
