@@ -20,11 +20,11 @@ package de.nekosarekawaii.vandalism.feature.hud.impl;
 
 import de.florianmichael.rclasses.math.geometry.Alignment;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
+import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.TickBaseModule;
 import de.nekosarekawaii.vandalism.injection.access.IRenderTickCounter;
@@ -376,7 +376,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         }
 
         if (this.lagMeter.getValue()) {
-            final long lagMillis = this.mc.getNetworkHandler() != null ? System.currentTimeMillis() - this.lastUpdate : 0L;
+            final long lagMillis = this.mc.getNetworkHandler() != null && !(this.mc.isInSingleplayer() && this.mc.isPaused()) ? System.currentTimeMillis() - this.lastUpdate : 0L;
             if (lagMillis > 2000L || !inGame) {
                 infoMap.put("Lags", lagMillis + " ms");
             }
