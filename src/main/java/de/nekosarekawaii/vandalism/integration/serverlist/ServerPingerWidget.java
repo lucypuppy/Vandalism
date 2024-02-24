@@ -126,6 +126,7 @@ public class ServerPingerWidget implements MinecraftWrapper {
         final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
         if (enhancedServerListSettings.enhancedServerList.getValue() && enhancedServerListSettings.serverPingerWidget.getValue()) {
             IN_USE = true;
+            PING_TIMER.reset();
             currentServerInfo.online = true;
             currentServerInfo.playerCountLabel = ScreenTexts.EMPTY;
             currentServerInfo.label = Text.translatable("multiplayer.status.pinging");

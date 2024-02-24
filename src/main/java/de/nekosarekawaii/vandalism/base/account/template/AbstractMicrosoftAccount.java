@@ -20,7 +20,6 @@ package de.nekosarekawaii.vandalism.base.account.template;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.util.common.StaticEncryptionUtil;
@@ -70,7 +69,7 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
 
     public void initWithExistingSession(final StepFullJavaSession.FullJavaSession session) throws Throwable {
         this.session = session;
-        Vandalism.getInstance().getAccountManager().logIn(this);
+        this.logIn();
     }
 
     @Override

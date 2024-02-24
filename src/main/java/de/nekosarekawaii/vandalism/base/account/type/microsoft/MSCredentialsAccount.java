@@ -43,9 +43,14 @@ public class MSCredentialsAccount extends AbstractMicrosoftAccount {
         @Override
         public void displayFactory() {
             ImGui.textWrapped(this.state == null ? "Please enter your credentials." : this.state);
-            ImGui.inputText("Email", this.email, ImGuiInputTextFlags.CallbackResize);
-            ImGui.inputText("Password", this.password, ImGuiInputTextFlags.CallbackResize | ImGuiInputTextFlags.Password);
-            if (ImGui.button("Paste", 255, ImGui.getTextLineHeightWithSpacing())) {
+            ImGui.spacing();
+            ImGui.text("Email");
+            ImGui.setNextItemWidth(ImGui.getColumnWidth() - 4f);
+            ImGui.inputText("##msCredentialAccounEmail", this.email, ImGuiInputTextFlags.CallbackResize);
+            ImGui.text("Password");
+            ImGui.setNextItemWidth(ImGui.getColumnWidth() - 4f);
+            ImGui.inputText("##msCredentialAccountPassword", this.password, ImGuiInputTextFlags.CallbackResize | ImGuiInputTextFlags.Password);
+            if (ImGui.button("Paste", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
                 final String clipboard = mc.keyboard.getClipboard();
                 if (clipboard != null) {
                     final String[] split = clipboard.split(":");

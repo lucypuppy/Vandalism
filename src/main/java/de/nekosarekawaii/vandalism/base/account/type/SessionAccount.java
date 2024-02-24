@@ -132,17 +132,27 @@ public class SessionAccount extends AbstractAccount {
 
             @Override
             public void displayFactory() {
-                ImGui.inputText("Name", this.name, ImGuiInputTextFlags.CallbackCharFilter, USERNAME_NAME_FILTER);
-                ImGui.inputText("UUID", this.uuid, ImGuiInputTextFlags.CallbackResize);
+                ImGui.text("Name");
+                ImGui.setNextItemWidth(ImGui.getColumnWidth() - 4f);
+                ImGui.inputText("##sessionAccountName", this.name, ImGuiInputTextFlags.CallbackCharFilter, USERNAME_NAME_FILTER);
+                ImGui.text("UUID");
+                ImGui.setNextItemWidth(ImGui.getColumnWidth() - 4f);
+                ImGui.inputText("##sessionAccountUUID", this.uuid, ImGuiInputTextFlags.CallbackResize);
                 final String name = this.name.get();
-                ImGui.inputText("Access Token", this.accessToken, ImGuiInputTextFlags.CallbackResize | ImGuiInputTextFlags.Password);
-                ImGui.inputText("XUID", this.xuid, ImGuiInputTextFlags.CallbackResize);
-                ImGui.inputText("Client ID", this.clientId, ImGuiInputTextFlags.CallbackResize);
                 if (!name.isEmpty()) {
-                    if (ImGui.button("Get Offline UUID", 255, ImGui.getTextLineHeightWithSpacing())) {
+                    if (ImGui.button("Use Offline UUID", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
                         this.uuid.set(Uuids.getOfflinePlayerUuid(name).toString());
                     }
                 }
+                ImGui.text("Access Token");
+                ImGui.setNextItemWidth(ImGui.getColumnWidth() - 4f);
+                ImGui.inputText("##sessionAccountAccess Token", this.accessToken, ImGuiInputTextFlags.CallbackResize | ImGuiInputTextFlags.Password);
+                ImGui.text("XUID");
+                ImGui.setNextItemWidth(ImGui.getColumnWidth() - 4f);
+                ImGui.inputText("##sessionAccountXUID", this.xuid, ImGuiInputTextFlags.CallbackResize);
+                ImGui.text("Client ID");
+                ImGui.setNextItemWidth(ImGui.getColumnWidth() - 4f);
+                ImGui.inputText("##sessionAccountClient ID", this.clientId, ImGuiInputTextFlags.CallbackResize);
             }
 
             @Override

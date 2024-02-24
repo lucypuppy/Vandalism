@@ -41,11 +41,12 @@ public class AccountManager extends Storage<AbstractAccount> {
 
     public AccountManager(final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
         Arrays.asList(
+                new SessionAccount(),
+
                 new MSDeviceCodeAccount(),
                 new MSLocalWebserverAccount(),
                 new MSCredentialsAccount(),
 
-                new SessionAccount(),
                 new EasyMCAccount()
         ).forEach(account -> ACCOUNT_TYPES.put(account, account.factory()));
         configManager.add(new AccountsConfig(this));
@@ -67,9 +68,8 @@ public class AccountManager extends Storage<AbstractAccount> {
         );
     }
 
-    public void logIn(final AbstractAccount account) throws Throwable {
-        account.logIn();
-        this.currentAccount = account;
+    public void setCurrentAccount(final AbstractAccount currentAccount) {
+        this.currentAccount = currentAccount;
     }
 
     public AbstractAccount getCurrentAccount() {
@@ -77,7 +77,7 @@ public class AccountManager extends Storage<AbstractAccount> {
     }
 
     public void logOut() throws Throwable {
-        this.logIn(this.firstAccount);
+        this.firstAccount.logIn();
     }
 
 }
