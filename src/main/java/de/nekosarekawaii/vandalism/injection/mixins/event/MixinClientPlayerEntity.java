@@ -20,9 +20,9 @@ package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.florianmichael.dietrichevents2.StateTypes;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.normal.player.CanSprintListener;
-import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerSlowdownListener;
-import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.event.normal.player.CanSprintListener;
+import de.nekosarekawaii.vandalism.event.normal.player.PlayerSlowdownListener;
+import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.input.Input;
 import net.minecraft.client.network.ClientPlayerEntity;

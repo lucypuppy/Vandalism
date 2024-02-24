@@ -20,9 +20,9 @@ package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
 import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.cancellable.network.IncomingPacketListener;
-import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.base.event.normal.render.Render3DListener;
+import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;

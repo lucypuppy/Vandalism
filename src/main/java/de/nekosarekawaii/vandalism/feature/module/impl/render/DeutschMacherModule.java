@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.normal.render.TextDrawListener;
+import de.nekosarekawaii.vandalism.event.normal.render.TextDrawListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.util.Formatting;
 

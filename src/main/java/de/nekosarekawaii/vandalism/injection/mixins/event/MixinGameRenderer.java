@@ -19,9 +19,9 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.normal.player.RaytraceListener;
-import de.nekosarekawaii.vandalism.base.event.normal.player.RotationListener;
-import de.nekosarekawaii.vandalism.base.event.normal.render.Render3DListener;
+import de.nekosarekawaii.vandalism.event.normal.player.RaytraceListener;
+import de.nekosarekawaii.vandalism.event.normal.player.RotationListener;
+import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.injection.access.IGameRenderer;
 import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.client.network.ClientPlayerInteractionManager;

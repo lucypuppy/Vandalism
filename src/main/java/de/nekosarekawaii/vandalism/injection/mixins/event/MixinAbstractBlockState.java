@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.normal.network.BlockCollisionShapeListener;
+import de.nekosarekawaii.vandalism.event.normal.network.BlockCollisionShapeListener;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

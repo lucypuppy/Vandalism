@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.normal.render.Render2DListener;
+import de.nekosarekawaii.vandalism.event.normal.render.Render2DListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.DebugHud;

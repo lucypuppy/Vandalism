@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.cancellable.render.CameraClipRaytraceListener;
+import de.nekosarekawaii.vandalism.event.cancellable.render.CameraClipRaytraceListener;
 import net.minecraft.client.render.Camera;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

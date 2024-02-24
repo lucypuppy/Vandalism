@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 import de.florianmichael.rclasses.common.RandomUtils;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.normal.player.ChatReceiveListener;
+import de.nekosarekawaii.vandalism.event.normal.player.ChatReceiveListener;
 import de.nekosarekawaii.vandalism.base.value.impl.rendering.ButtonValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.script.parse.ScriptVariable;

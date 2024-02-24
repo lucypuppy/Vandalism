@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.base.value.impl.misc;
 
 import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.normal.game.KeyboardInputListener;
+import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.util.render.InputType;

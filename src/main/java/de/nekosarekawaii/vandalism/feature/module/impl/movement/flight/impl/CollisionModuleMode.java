@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.normal.network.BlockCollisionShapeListener;
+import de.nekosarekawaii.vandalism.event.normal.network.BlockCollisionShapeListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.FlightModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
 import net.minecraft.block.Blocks;

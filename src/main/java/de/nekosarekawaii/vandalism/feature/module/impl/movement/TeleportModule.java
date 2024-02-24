@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;

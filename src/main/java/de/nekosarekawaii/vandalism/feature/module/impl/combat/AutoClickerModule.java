@@ -19,8 +19,8 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.event.normal.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.base.event.normal.player.RotationListener;
+import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.event.normal.player.RotationListener;
 import de.nekosarekawaii.vandalism.base.value.impl.number.BezierValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
