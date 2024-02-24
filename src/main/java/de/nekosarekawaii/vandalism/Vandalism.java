@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
+import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
 import de.nekosarekawaii.vandalism.base.account.AccountManager;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;

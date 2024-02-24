@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.clientmenu.base;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.florianmichael.rclasses.pattern.functional.IName;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 
 public class ClientMenuWindow implements IName, MinecraftWrapper {

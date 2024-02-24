@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.util.render.tooltip.impl;
 
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.tooltip.ConvertibleTooltipData;
 import net.minecraft.block.entity.BannerBlockEntity;
 import net.minecraft.client.font.TextRenderer;

@@ -28,7 +28,7 @@ import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.feature.script.gui.ScriptsClientMenuWindow;
 import de.nekosarekawaii.vandalism.feature.script.parse.ScriptParser;
 import de.nekosarekawaii.vandalism.feature.script.parse.command.ScriptCommand;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.util.Pair;
 import org.lwjgl.glfw.GLFW;

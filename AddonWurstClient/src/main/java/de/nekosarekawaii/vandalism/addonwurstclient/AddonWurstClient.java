@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.addonwurstclient;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.VandalismAddonLauncher;
+import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
 import de.nekosarekawaii.vandalism.addonwurstclient.injection.access.IWurstClient;
 import de.nekosarekawaii.vandalism.addonwurstclient.module.WurstClientModule;
 import net.wurstclient.WurstClient;

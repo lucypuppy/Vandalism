@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.fix.imgui;
 
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuScreen;
 import de.nekosarekawaii.vandalism.injection.access.IImGuiImplGlfw;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import imgui.flag.ImGuiMouseCursor;
 import imgui.glfw.ImGuiImplGlfw;
 import org.lwjgl.glfw.GLFW;

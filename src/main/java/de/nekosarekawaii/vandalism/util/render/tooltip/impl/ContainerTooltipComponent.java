@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.util.render.tooltip.impl;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.tooltip.ConvertibleTooltipData;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;

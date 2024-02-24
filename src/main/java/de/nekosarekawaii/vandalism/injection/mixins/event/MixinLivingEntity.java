@@ -23,7 +23,7 @@ import com.llamalad7.mixinextras.sugar.ref.LocalFloatRef;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.event.normal.player.MoveFlyingListener;
 import de.nekosarekawaii.vandalism.base.event.normal.player.StrafeListener;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

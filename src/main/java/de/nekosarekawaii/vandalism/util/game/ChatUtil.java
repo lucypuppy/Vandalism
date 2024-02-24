@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.util.game;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
