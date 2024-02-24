@@ -22,12 +22,12 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.pattern.storage.named.NamedStorage;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
+import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.event.normal.game.ShutdownProcessListener;
 import de.nekosarekawaii.vandalism.event.normal.network.DisconnectListener;
 import de.nekosarekawaii.vandalism.event.normal.network.WorldListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.config.ModulesConfig;
 import de.nekosarekawaii.vandalism.feature.module.gui.ModulesClientMenuWindow;
@@ -103,9 +103,9 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.fastUseModule = new FastUseModule(),
                 this.illegalInteractionModule = new IllegalInteractionModule(),
                 this.espModule = new ESPModule(),
+                this.fullBrightModule = new FullBrightModule(),
                 this.killAuraModule = new KillAuraModule(),
                 this.tickBaseModule = new TickBaseModule(this.killAuraModule),
-                this.fullBrightModule = new FullBrightModule(),
                 new BackTrackModule(this.killAuraModule),
                 new NoSlowModule(),
                 new PacketManagerModule(),
@@ -167,7 +167,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
     @Override
     public void onDisconnect(final ClientConnection clientConnection, final Text disconnectReason) {
-        if (this.isPlayingConnection(clientConnection)) {
+        //There is a thing called pinging a server
+        if (this.mc.getNetworkHandler() != null && Objects.equals(clientConnection, this.mc.getNetworkHandler().getConnection())) {
             this.getList().stream().filter(m -> m.isActive() && m.isDeactivateOnQuit()).forEach(AbstractModule::deactivate);
         }
     }
@@ -231,4 +232,5 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     public FullBrightModule getFullBrightModule() {
         return fullBrightModule;
     }
+
 }

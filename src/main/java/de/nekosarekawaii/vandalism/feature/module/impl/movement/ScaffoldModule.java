@@ -32,10 +32,12 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
 public class ScaffoldModule extends AbstractModule implements PlayerUpdateListener, RotationListener {
+
     private BlockPos pos = null;
 
     public ScaffoldModule() {
         super("Scaffold", "Places blocks underneath you.", Category.MOVEMENT);
+        this.markExperimental();
     }
 
     @Override
@@ -92,4 +94,5 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
         ChatUtil.chatMessage(theChosenOne + "");
         return theChosenOne;
     }
+
 }
