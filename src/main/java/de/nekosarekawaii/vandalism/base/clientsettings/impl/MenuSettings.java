@@ -76,6 +76,20 @@ public class MenuSettings extends ValueGroup {
             new Color(54, 54, 54, 255)
     ).visibleCondition(this.customBackground::getValue);
 
+    public final BooleanValue inGameCustomBackground = new BooleanValue(
+            this,
+            "In-Game Custom Background",
+            "Activates/Deactivates the use of a custom background in-game.",
+            true
+    );
+
+    public final ColorValue inGameCustomBackgroundColor = new ColorValue(
+            this,
+            "In-Game Custom Background Color",
+            "The color of the custom background in-game.",
+            new Color(168, 10, 225, 255)
+    ).visibleCondition(this.inGameCustomBackground::getValue);
+
     public final BooleanValue customWidgets = new BooleanValue(
             this,
             "Custom Widgets",

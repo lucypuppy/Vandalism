@@ -60,7 +60,7 @@ public abstract class MixinScreen {
     @Inject(method = "renderInGameBackground", at = @At("HEAD"), cancellable = true)
     private void drawCustomBackgroundInGame(final DrawContext context, final CallbackInfo ci) {
         final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
-        if (menuSettings.customBackground.getValue()) {
+        if (menuSettings.inGameCustomBackground.getValue()) {
             ci.cancel();
             context.fillGradient(
                     0,
@@ -68,7 +68,7 @@ public abstract class MixinScreen {
                     this.width,
                     this.height,
                     ColorUtils.withAlpha(Color.BLACK, 100).getRGB(),
-                    ColorUtils.withAlpha(menuSettings.customBackgroundColor.getColor(), this.client.player == null ? 255 : 100).getRGB()
+                    ColorUtils.withAlpha(menuSettings.inGameCustomBackgroundColor.getColor(), this.client.player == null ? 255 : 100).getRGB()
             );
         }
     }
