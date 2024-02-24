@@ -61,26 +61,7 @@ import java.io.File;
  *  - Fix module tabs display (no stacking) when the client starts the first time
  *  - Use hashmap storage when it has been added to rclasses instead of a default storage because that would improve the performance
  *      - (Search for FriendManager#getList())
- * <br><br>
- * TODO: Verschlxfene <br>
- *  - Delete MixinParticleManager
- *  - Add Proxy manager
- *  - Rewrite GCD fix to be accurate
- *  - Implement uncharge speed into tickbase
- *  - Delete TickBaseModule#worldTicker and replace with worldTick()
- *  - Add working defensive and counter mode to Tickbase
- *  - Fix Game server pinger (ensure pings are on different threads)
- *  - Fix calculations for the HUD:
- *      - Fix HUDElement#calculatePosition
- *      - Fix module list out of screen rendering when the alignment is for example at the bottom of the screen
- *  - Add lag engine to fix countless BackTrack issues
- *  - Ensure MCConstants class file is used
- *  - Fix bukkit fly not working at all
- *  - Rewrite commands to use generic expressions (like #SpawnEgg, #Book)
  *  - Add anti vanish via. the player list hud
- *  - Delete ModuleManager class
- *  - Move CreativeItemControlCommand into creative tabs
- *
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Fix SprintModule to be compatible with the rotation listener and also the backwards direction (ask Verschlxfene)
