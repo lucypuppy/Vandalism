@@ -19,10 +19,10 @@
 package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.request.Request;
-import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.request.impl.UserInfoRequest;
-import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.response.Response;
-import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.response.impl.UserInfoResponse;
+import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.Request;
+import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.impl.UserInfoRequest;
+import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.Response;
+import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.impl.UserInfoResponse;
 import net.minecraft.util.Pair;
 
 import java.util.Arrays;

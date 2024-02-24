@@ -16,13 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.request.impl;
+package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.impl;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.florianmichael.rclasses.common.StringUtils;
-import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.response.impl.ServersResponse;
-import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.request.Request;
+import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.Request;
+import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.impl.ServersResponse;
 
 public class ServersRequest extends Request<ServersResponse> {
 

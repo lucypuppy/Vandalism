@@ -19,11 +19,12 @@
 package de.nekosarekawaii.vandalism.addonthirdparty;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
+import de.nekosarekawaii.vandalism.addonthirdparty.namehistory.gui.NameHistoryClientMenuWindow;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.gui.player.PlayerDiscoveryClientMenuWindow;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.gui.server.ServerDiscoveryClientMenuWindow;
 import de.nekosarekawaii.vandalism.addonthirdparty.spotify.SpotifyManager;
 import de.nekosarekawaii.vandalism.addonthirdparty.spotify.gui.SpotifyClientMenuWindow;
+import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
 
 public class AddonThirdParty implements VandalismAddonLauncher {
 
@@ -39,6 +40,7 @@ public class AddonThirdParty implements VandalismAddonLauncher {
         vandalism.getClientMenuManager().add(
                 new ServerDiscoveryClientMenuWindow(),
                 new PlayerDiscoveryClientMenuWindow(),
+                new NameHistoryClientMenuWindow(),
                 new SpotifyClientMenuWindow()
         );
     }

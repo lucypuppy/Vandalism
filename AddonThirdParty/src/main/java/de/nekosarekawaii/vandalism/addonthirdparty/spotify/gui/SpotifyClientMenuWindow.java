@@ -19,12 +19,10 @@
 package de.nekosarekawaii.vandalism.addonthirdparty.spotify.gui;
 
 import de.florianmichael.rclasses.math.Percentage;
-import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.addonthirdparty.AddonThirdParty;
+import de.nekosarekawaii.vandalism.addonthirdparty.spotify.SpotifyManager;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
-import de.nekosarekawaii.vandalism.addonthirdparty.spotify.SpotifyManager;
-import de.nekosarekawaii.vandalism.addonthirdparty.spotify.data.SpotifyData;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;

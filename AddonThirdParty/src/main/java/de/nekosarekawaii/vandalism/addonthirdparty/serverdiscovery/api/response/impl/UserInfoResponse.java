@@ -16,13 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.response.impl;
+package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.impl;
 
-import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.request.Request;
-import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.request.impl.ServerInfoRequest;
-import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.request.impl.ServersRequest;
-import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.request.impl.WhereIsRequest;
-import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.data.response.Response;
+import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.Request;
+import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.impl.ServerInfoRequest;
+import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.impl.ServersRequest;
+import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.impl.WhereIsRequest;
+import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.Response;
 
 public class UserInfoResponse extends Response {
 
