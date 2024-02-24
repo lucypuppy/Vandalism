@@ -20,7 +20,6 @@ package de.nekosarekawaii.vandalism.util.game;
 
 import de.florianmichael.rclasses.math.timer.MSTimer;
 
-@Deprecated
 public class ParticleTracker {
 
     private final String particleId;
