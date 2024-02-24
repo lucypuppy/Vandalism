@@ -74,7 +74,6 @@ import java.io.File;
  *      - Fix module list out of screen rendering when the alignment is for example at the bottom of the screen
  *  - Add lag engine to fix countless BackTrack issues
  *  - Ensure MCConstants class file is used
- *  - Rework parts of NoSlow
  *  - Fix bukkit fly not working at all
  *  - Rewrite commands to use generic expressions (like #SpawnEgg, #Book)
  *  - Add anti vanish via. the player list hud

@@ -40,6 +40,3 @@ replay_*.log
 *.hprof
 *.jfr
 /logs/*
-qodana.yaml
-/move.bat
-/pull.bat
