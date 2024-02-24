@@ -64,6 +64,36 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         ImGui.begin(this.getName());
         if (ImGui.beginTabBar("##accountsTabBar")) {
+            if (ImGui.beginTabItem("Current Account")) {
+                final AbstractAccount currentAccount = this.accountManager.getCurrentAccount();
+                ImGui.text("Account Type: " + currentAccount.getType());
+                ImGui.text("Account Name: " + currentAccount.getDisplayName());
+                if (currentAccount.getSession().getUuidOrNull() != null) {
+                    ImGui.text("Account UUID: " + currentAccount.getSession().getUuidOrNull());
+                }
+                if (ImUtils.subButton("Copy")) {
+                    final String name = currentAccount.getDisplayName();
+                    final String uuid = currentAccount.getSession().getUuidOrNull().toString();
+                    final String accessToken = currentAccount.getSession().getAccessToken();
+                    final String xuid = currentAccount.getSession().getXuid().orElse("Not available");
+                    final String clientId = currentAccount.getSession().getClientId().orElse("Not available");
+                    this.mc.keyboard.setClipboard(
+                            "Name: " + name + "\n" +
+                                    "UUID: " + uuid + "\n" +
+                                    "Access Token: " + accessToken + "\n" +
+                                    "XUID: " + xuid + "\n" +
+                                    "Client ID: " + clientId + "\n"
+                    );
+                }
+                if (ImUtils.subButton("Logout")) {
+                    try {
+                        this.accountManager.logOut();
+                    } catch (Throwable t) {
+                        Vandalism.getInstance().getLogger().error("Failed to logout from account.", t);
+                    }
+                }
+                ImGui.endTabItem();
+            }
             if (ImGui.beginTabItem("Accounts")) {
                 for (final AbstractAccount account : this.accountManager.getList()) {
                     if (account == null) continue;
@@ -122,37 +152,7 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
                 }
                 ImGui.endTabItem();
             }
-            if (ImGui.beginTabItem("Current Account")) {
-                final AbstractAccount currentAccount = this.accountManager.getCurrentAccount();
-                ImGui.text("Account Type: " + currentAccount.getType());
-                ImGui.text("Account Name: " + currentAccount.getDisplayName());
-                if (currentAccount.getSession().getUuidOrNull() != null) {
-                    ImGui.text("Account UUID: " + currentAccount.getSession().getUuidOrNull());
-                }
-                if (ImUtils.subButton("Copy")) {
-                    final String name = currentAccount.getDisplayName();
-                    final String uuid = currentAccount.getSession().getUuidOrNull().toString();
-                    final String accessToken = currentAccount.getSession().getAccessToken();
-                    final String xuid = currentAccount.getSession().getXuid().orElse("Not available");
-                    final String clientId = currentAccount.getSession().getClientId().orElse("Not available");
-                    this.mc.keyboard.setClipboard(
-                            "Name: " + name + "\n" +
-                            "UUID: " + uuid + "\n" +
-                            "Access Token: " + accessToken + "\n" +
-                            "XUID: " + xuid + "\n" +
-                            "Client ID: " + clientId + "\n"
-                    );
-                }
-                if (ImUtils.subButton("Logout")) {
-                    try {
-                        this.accountManager.logOut();
-                    } catch (Throwable t) {
-                        Vandalism.getInstance().getLogger().error("Failed to logout from account.", t);
-                    }
-                }
-                ImGui.endTabItem();
-            }
-            if (ImGui.beginTabItem("Add")) {
+            if (ImGui.beginTabItem("Add Account")) {
                 AccountManager.ACCOUNT_TYPES.forEach((account, factory) -> {
                     if (ImGui.treeNodeEx(account.getType() + "##" + account.getType() + "AddAccount")) {
                         factory.displayFactory();
