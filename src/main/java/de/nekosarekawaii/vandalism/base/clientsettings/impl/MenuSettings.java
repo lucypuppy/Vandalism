@@ -83,11 +83,18 @@ public class MenuSettings extends ValueGroup {
             true
     );
 
-    public final ColorValue inGameCustomBackgroundColor = new ColorValue(
+    public final ColorValue inGameCustomBackgroundColorTop = new ColorValue(
             this,
-            "In-Game Custom Background Color",
-            "The color of the custom background in-game.",
-            new Color(168, 10, 225, 255)
+            "In-Game Custom Background Color Top",
+            "The color of the custom background in-game at the top.",
+            new Color(0, 0, 0, 100)
+    ).visibleCondition(this.inGameCustomBackground::getValue);
+
+    public final ColorValue inGameCustomBackgroundColorBottom = new ColorValue(
+            this,
+            "In-Game Custom Background Color Bottom",
+            "The color of the custom background in-game at the bottom.",
+            new Color(168, 10, 225, 150)
     ).visibleCondition(this.inGameCustomBackground::getValue);
 
     public final BooleanValue customWidgets = new BooleanValue(
