@@ -36,4 +36,11 @@ public abstract class MixinClientConnection {
         }
     }
 
+    @Inject(method = "exceptionCaught", at = @At("HEAD"))
+    private void printPacketErrorsInConsole(final ChannelHandlerContext context, final Throwable ex, final CallbackInfo ci) {
+        if (Vandalism.getInstance().getClientSettings().getNetworkingSettings().printPacketErrorsInConsole.getValue()) {
+            Vandalism.getInstance().getLogger().error("Networking packet error.", ex);
+        }
+    }
+
 }
