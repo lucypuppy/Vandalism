@@ -95,7 +95,7 @@ public class PortResult {
         this.resetState();
     }
 
-    public void ping() {
+    public void ping(final Runnable onFinished) {
         if (!this.hostname.isBlank()) {
             this.clear();
             MCPing.pingModern(SharedConstants.getProtocolVersion())
@@ -120,6 +120,7 @@ public class PortResult {
                     .finishHandler(response -> {
                         this.serverInfoWidget.setMcPingResponse(response);
                         this.currentState = PingState.SUCCESS;
+                        onFinished.run();
                     }).getAsync();
             this.currentState = PingState.WAITING_RESPONSE;
             MCPing.pingQuery()
@@ -140,7 +141,6 @@ public class PortResult {
                             this.currentQueryState = PingState.PACKET_READ_FAILED;
                         } else {
                             this.currentQueryState = PingState.FAILED;
-                            Vandalism.getInstance().getLogger().error("Failed to ping query " + this.hostname + ":" + this.port, t);
                         }
                     })
                     .finishHandler(response -> {
