@@ -24,6 +24,7 @@ import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.base.value.Value;
+import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
@@ -194,6 +195,9 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
                     if (module.getDefaultValues().contains(value)) {
                         continue;
                     }
+                    if (value instanceof KeyBindValue) {
+                        continue;
+                    }
                     values.add(value);
                 }
                 final JsonObject jsonObject = new JsonObject();
@@ -210,6 +214,9 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
                     final List<Value<?>> values = new ArrayList<>();
                     for (final Value<?> value : module.getValues()) {
                         if (module.getDefaultValues().contains(value)) {
+                            continue;
+                        }
+                        if (value instanceof KeyBindValue) {
                             continue;
                         }
                         values.add(value);

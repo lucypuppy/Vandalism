@@ -20,9 +20,10 @@ package de.nekosarekawaii.vandalism.base.value.impl.misc;
 
 import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
+import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.render.InputType;
 import imgui.ImGui;
 import net.minecraft.client.MinecraftClient;
@@ -72,10 +73,10 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
             }
         } else {
             ImGui.textWrapped("Listening for key input...");
-            if (ImGui.button("Cancel" + id + "cancel", width, height)) {
+            if (ImUtils.subButton("Cancel" + id + "cancel")) {
                 this.finishInput();
             }
-            if (ImGui.button("Reset" + id + "reset", width, height)) {
+            if (ImUtils.subButton("Reset" + id + "reset")) {
                 this.finishInput();
                 this.resetValue();
             }
