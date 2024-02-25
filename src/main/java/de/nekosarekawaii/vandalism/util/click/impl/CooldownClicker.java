@@ -18,7 +18,6 @@
 
 package de.nekosarekawaii.vandalism.util.click.impl;
 
-import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.combat.KillAuraModule;
 import de.nekosarekawaii.vandalism.util.click.Clicker;
 import de.nekosarekawaii.vandalism.util.game.TimerHack;
@@ -28,6 +27,8 @@ import net.minecraft.util.hit.HitResult;
 
 public class CooldownClicker extends Clicker {
 
+    private KillAuraModule killAuraModule;
+
     @Override
     public void onUpdate() {
         if(mc.crosshairTarget == null || mc.crosshairTarget.getType() != HitResult.Type.ENTITY) {
@@ -35,8 +36,7 @@ public class CooldownClicker extends Clicker {
             return;
         }
         EntityHitResult entityHitResult = (EntityHitResult) mc.crosshairTarget;
-        KillAuraModule killAuraModule = Vandalism.getInstance().getModuleManager().getKillAuraModule();
-        if(entityHitResult.getEntity().distanceTo(mc.player) > (killAuraModule.getPreHit().getValue() ? killAuraModule.getAimRange() : killAuraModule.getRange())) {
+        if(killAuraModule == null || entityHitResult.getEntity().distanceTo(mc.player) > (killAuraModule.getPreHit().getValue() ? killAuraModule.getAimRange() : killAuraModule.getRange())) {
             this.clickAction.accept(false);
             return;
         }
@@ -62,6 +62,10 @@ public class CooldownClicker extends Clicker {
     @Override
     public void onRotate() {
 
+    }
+
+    public void setKillAuraModule(KillAuraModule killAuraModule) {
+        this.killAuraModule = killAuraModule;
     }
 
 }
