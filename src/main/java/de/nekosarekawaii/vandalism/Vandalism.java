@@ -66,6 +66,7 @@ import java.io.File;
  *  - Fix Game server pinger (ensure pings are on different threads)
  *  - Add Proxy manager
  *  - Fix MixinParticleManager
+ *  - Add scroll state saving to the multiplayer screen and anti auto refresh
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Rewrite GCD fix to be accurate
