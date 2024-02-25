@@ -25,6 +25,7 @@ import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.util.common.StaticEncryptionUtil;
 import de.nekosarekawaii.vandalism.util.common.UUIDUtil;
+import de.nekosarekawaii.vandalism.util.game.NameGenerationUtil;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
@@ -135,6 +136,9 @@ public class SessionAccount extends AbstractAccount {
                 ImGui.text("Name");
                 ImGui.setNextItemWidth(ImGui.getColumnWidth() - 4f);
                 ImGui.inputText("##sessionAccountName", this.name, ImGuiInputTextFlags.CallbackCharFilter, USERNAME_NAME_FILTER);
+                if (ImGui.button("Use Random Name", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
+                    this.name.set(NameGenerationUtil.generateUsername());
+                }
                 ImGui.text("UUID");
                 ImGui.setNextItemWidth(ImGui.getColumnWidth() - 4f);
                 ImGui.inputText("##sessionAccountUUID", this.uuid, ImGuiInputTextFlags.CallbackResize);
