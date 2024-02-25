@@ -20,16 +20,23 @@ package de.nekosarekawaii.vandalism.base.clientsettings.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
-import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
+import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
 public class NetworkingSettings extends ValueGroup implements KeyboardInputListener {
+
+    public final BooleanValue printPacketErrorsInConsole = new BooleanValue(
+            this,
+            "Print Packet Errors in Console",
+            "Prints packet errors in the console.",
+            false
+    );
 
     public final BooleanValue changeBrand = new BooleanValue(
             this,

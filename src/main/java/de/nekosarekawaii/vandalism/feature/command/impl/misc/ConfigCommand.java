@@ -21,12 +21,14 @@ package de.nekosarekawaii.vandalism.feature.command.impl.misc;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.base.value.Value;
+import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.feature.command.arguments.ConfigArgumentType;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
@@ -76,9 +78,15 @@ public class ConfigCommand extends AbstractCommand {
                     final ModuleManager moduleManager = Vandalism.getInstance().getModuleManager();
                     final JsonObject modulesJsonObject = new JsonObject();
                     for (final AbstractModule module : moduleManager.getList()) {
+                        if (module.getCategory() == Category.RENDER) {
+                            continue;
+                        }
                         final List<Value<?>> values = new ArrayList<>();
                         for (final Value<?> value : module.getValues()) {
                             if (module.getDefaultValues().contains(value)) {
+                                continue;
+                            }
+                            if (value instanceof KeyBindValue) {
                                 continue;
                             }
                             values.add(value);
@@ -87,6 +95,7 @@ public class ConfigCommand extends AbstractCommand {
                         ConfigWithValues.saveValues(valuesJsonObject, values);
                         final JsonObject jsonObject = new JsonObject();
                         jsonObject.add("values", valuesJsonObject);
+                        jsonObject.addProperty("active", module.isActive());
                         modulesJsonObject.add(module.getName(), jsonObject);
                     }
                     try (final FileWriter fw = new FileWriter(file)) {
@@ -94,46 +103,27 @@ public class ConfigCommand extends AbstractCommand {
                         fw.flush();
                         ChatUtil.infoChatMessage("Config " + name + " has been saved.");
                     } catch (Exception e) {
-                        e.printStackTrace();
-                        ChatUtil.errorChatMessage("Failed to save config " + name + ".");
+                        ChatUtil.errorChatMessage("Failed to save config: " + name);
+                        Vandalism.getInstance().getLogger().error("Failed to save config: " + name, e);
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
-                    ChatUtil.errorChatMessage("Failed to create config " + name + ".");
+                    ChatUtil.errorChatMessage("Failed to create config: " + name);
+                    Vandalism.getInstance().getLogger().error("Failed to create config: " + name, e);
                 }
             } catch (Exception e) {
-                ChatUtil.errorChatMessage("Failed to save config " + name + ".");
-                e.printStackTrace();
+                ChatUtil.errorChatMessage("Failed to save config: " + name);
+                Vandalism.getInstance().getLogger().error("Failed to save config: " + name, e);
             }
             return SINGLE_SUCCESS;
         })));
         builder.then(literal("load").then(argument("config-name", ConfigArgumentType.create(CONFIGS_DIR)).executes(context -> {
-            final File file = ConfigArgumentType.get(context);
-            final String name = StringUtils.replaceLast(file.getName(), ".json", "");
-            ChatUtil.infoChatMessage("Loading config " + name + "...");
-            if (file.exists()) {
-                try (final FileReader fr = new FileReader(file)) {
-                    final ModuleManager moduleManager = Vandalism.getInstance().getModuleManager();
-                    final JsonObject jsonObject = GSON.fromJson(fr, JsonObject.class);
-                    for (final AbstractModule module : moduleManager.getList()) {
-                        final String moduleName = module.getName();
-                        if (!jsonObject.has(moduleName)) {
-                            continue;
-                        }
-                        final JsonObject moduleJsonObject = jsonObject.getAsJsonObject(moduleName);
-                        if (moduleJsonObject.has("values")) {
-                            ConfigWithValues.loadValues(moduleJsonObject.getAsJsonObject("values"), module.getValues());
-                        }
-                    }
-                    ChatUtil.infoChatMessage("Config " + name + " has been loaded.");
-                } catch (Exception e) {
-                    Vandalism.getInstance().getLogger().error("Failed to load config " + file.getName(), e);
-                }
-            } else {
-                ChatUtil.errorChatMessage("Config " + name + " does not exist.");
-            }
+            this.loadConfig(ConfigArgumentType.get(context), true);
             return SINGLE_SUCCESS;
         })));
+        builder.then(literal("load").then(argument("config-name", ConfigArgumentType.create(CONFIGS_DIR)).then(argument("activate-modules", BoolArgumentType.bool()).executes(context -> {
+            this.loadConfig(ConfigArgumentType.get(context), BoolArgumentType.getBool(context, "activate-modules"));
+            return SINGLE_SUCCESS;
+        }))));
         builder.then(literal("delete").then(argument("config-name", ConfigArgumentType.create(CONFIGS_DIR)).executes(context -> {
             try {
                 final File file = ConfigArgumentType.get(context);
@@ -146,10 +136,45 @@ public class ConfigCommand extends AbstractCommand {
                 }
             } catch (Exception e) {
                 ChatUtil.errorChatMessage("Failed to delete config.");
-                e.printStackTrace();
+                Vandalism.getInstance().getLogger().error("Failed to delete config.", e);
             }
             return SINGLE_SUCCESS;
         })));
+    }
+
+    private void loadConfig(final File file, final boolean activateModules) {
+        final String name = StringUtils.replaceLast(file.getName(), ".json", "");
+        ChatUtil.infoChatMessage("Loading config " + name + "...");
+        if (file.exists()) {
+            try (final FileReader fr = new FileReader(file)) {
+                final ModuleManager moduleManager = Vandalism.getInstance().getModuleManager();
+                final JsonObject jsonObject = GSON.fromJson(fr, JsonObject.class);
+                for (final AbstractModule module : moduleManager.getList()) {
+                    final String moduleName = module.getName();
+                    if (!jsonObject.has(moduleName)) {
+                        continue;
+                    }
+                    final JsonObject moduleJsonObject = jsonObject.getAsJsonObject(moduleName);
+                    if (activateModules) {
+                        if (moduleJsonObject.has("active")) {
+                            if (moduleJsonObject.get("active").getAsBoolean()) {
+                                module.activate();
+                            } else {
+                                module.deactivate();
+                            }
+                        }
+                    }
+                    if (moduleJsonObject.has("values")) {
+                        ConfigWithValues.loadValues(moduleJsonObject.getAsJsonObject("values"), module.getValues());
+                    }
+                }
+                ChatUtil.infoChatMessage("Config " + name + " has been loaded.");
+            } catch (Exception e) {
+                Vandalism.getInstance().getLogger().error("Failed to load config " + file.getName(), e);
+            }
+        } else {
+            ChatUtil.errorChatMessage("Config " + name + " does not exist.");
+        }
     }
 
 }
