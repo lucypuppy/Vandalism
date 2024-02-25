@@ -19,7 +19,7 @@
   },
   "depends": {
     "vandalism": "*",
-    "wurst": "*"
+    "baritone": "*"
   },
   "custom": {
     "modmenu": {
