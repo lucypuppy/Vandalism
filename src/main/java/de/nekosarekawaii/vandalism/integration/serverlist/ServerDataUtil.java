@@ -61,7 +61,7 @@ public class ServerDataUtil {
                 tooltip.clear();
                 tooltip.add(Text.literal("Server Info"));
                 tooltip.add(Text.literal("Ping: " + Math.max(serverInfo.ping, 0) + " ms"));
-                tooltip.add(Text.literal("Version: " + serverInfo.version.getString()));
+                tooltip.add(Text.literal("Version: " + ServerDataUtil.fixVersionName(serverInfo.version.getString())));
                 final int protocol = serverInfo.protocolVersion;
                 final ProtocolVersion protocolVersion = ProtocolVersion.getProtocol(protocol);
                 final String protocolName = protocolVersion.getName();
