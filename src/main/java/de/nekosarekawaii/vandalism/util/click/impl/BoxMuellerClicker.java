@@ -22,8 +22,12 @@ import de.florianmichael.rclasses.common.RandomUtils;
 import de.florianmichael.rclasses.math.Arithmetics;
 import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.florianmichael.rclasses.pattern.evicting.EvictingList;
-import de.nekosarekawaii.vandalism.util.common.MathUtil;
+import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.feature.module.impl.combat.KillAuraModule;
 import de.nekosarekawaii.vandalism.util.click.Clicker;
+import de.nekosarekawaii.vandalism.util.common.MathUtil;
+import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.hit.HitResult;
 import org.joml.Vector4d;
 
 import java.util.ArrayList;
@@ -45,6 +49,16 @@ public class BoxMuellerClicker extends Clicker {
 
     @Override
     public void onUpdate() {
+        if(mc.crosshairTarget == null || mc.crosshairTarget.getType() != HitResult.Type.ENTITY) {
+            this.clickAction.accept(false);
+            return;
+        }
+        EntityHitResult entityHitResult = (EntityHitResult) mc.crosshairTarget;
+        KillAuraModule killAuraModule = Vandalism.getInstance().getModuleManager().getKillAuraModule();
+        if(entityHitResult.getEntity().distanceTo(mc.player) > (killAuraModule.getPreHit().getValue() ? killAuraModule.getAimRange() : killAuraModule.getRange())) {
+            this.clickAction.accept(false);
+            return;
+        }
         final int extra = RandomUtils.randomInt(-1, 1);
 
         while (this.clicks + extra > 0) {
