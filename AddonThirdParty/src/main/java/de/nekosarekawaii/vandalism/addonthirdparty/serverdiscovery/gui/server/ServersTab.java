@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.gui.server;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.florianmichael.rclasses.common.StringUtils;
+import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.ServerDiscoveryUtil;
@@ -81,6 +82,8 @@ public class ServersTab implements MinecraftWrapper {
 
     private int checkedServers = -1;
     private int lastMaxServers = -1;
+
+    private final MSTimer checkTimeout = new MSTimer();
 
     public void renderMenu(final String name) {
         final ServerDiscoveryClientMenuWindow serverDiscoveryClientMenuWindow = Vandalism.getInstance().getClientMenuManager().getByClass(ServerDiscoveryClientMenuWindow.class);
@@ -160,7 +163,7 @@ public class ServersTab implements MinecraftWrapper {
                     this.servers.clear();
                     final ServersRequest serversRequest = new ServersRequest(
                             this.asn.get(),
-                            this.country == Country.ANY ? "" : this.country.name(),
+                            this.country,
                             this.cracked.get(),
                             this.description.get(),
                             this.software,
@@ -168,7 +171,6 @@ public class ServersTab implements MinecraftWrapper {
                             this.maxPlayers.get(),
                             this.minOnlinePlayers.get(),
                             this.maxOnlinePlayers.get(),
-                            (int) System.currentTimeMillis(),
                             this.protocol,
                             this.ignoreModded.get(),
                             this.onlyBungeeSpoofable.get()
@@ -232,6 +234,7 @@ public class ServersTab implements MinecraftWrapper {
                     if (ImUtils.subButton("Remove Offline Servers")) {
                         this.checkedServers = 0;
                         this.lastMaxServers = this.servers.size();
+                        this.checkTimeout.reset();
                         this.executorService.submit(() -> {
                             for (final ServersResponse.Server server : this.servers) {
                                 final Pair<String, Integer> serverAddress = ServerConnectionUtil.resolveServerAddress(server.server);
@@ -243,6 +246,7 @@ public class ServersTab implements MinecraftWrapper {
                                         .exceptionHandler(t -> {
                                             this.servers.remove(server);
                                             this.checkedServers++;
+                                            Vandalism.getInstance().getLogger().info("Removed offline server " + resolvedAddress + ":" + resolvedPort);
                                         })
                                         .finishHandler(response -> this.checkedServers++).getAsync();
                             }
@@ -269,6 +273,9 @@ public class ServersTab implements MinecraftWrapper {
                     ImGui.text(this.checkedServers + " / " + this.lastMaxServers);
                     ImGui.separator();
                     if (this.checkedServers >= this.lastMaxServers) {
+                        this.checkedServers = -1;
+                    }
+                    else if (this.checkTimeout.hasReached(60000, true)) {
                         this.checkedServers = -1;
                     }
                 }
