@@ -80,7 +80,6 @@ import java.io.File;
  *  - Fix SprintModule to be compatible with the rotation listener and also the backwards direction
  *  - KillAura#onPrePlayerUpdate | Frame event (entity renderer set angles) -> rotate / Mouse event -> attack
  *  - Add more stuff to fake lag (Ideas off clumsy)
- *  - Fix backwards sprint not working
  *  - Keksbye, Simon, FooFieOwO this is fixed find a new way for to bypasss a cubecraft disabler
  *  - Fix autoblock blocking without sword
  * <br><br>
