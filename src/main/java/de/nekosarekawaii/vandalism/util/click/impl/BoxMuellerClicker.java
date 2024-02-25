@@ -22,7 +22,6 @@ import de.florianmichael.rclasses.common.RandomUtils;
 import de.florianmichael.rclasses.math.Arithmetics;
 import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.florianmichael.rclasses.pattern.evicting.EvictingList;
-import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.combat.KillAuraModule;
 import de.nekosarekawaii.vandalism.util.click.Clicker;
 import de.nekosarekawaii.vandalism.util.common.MathUtil;
@@ -34,6 +33,8 @@ import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class BoxMuellerClicker extends Clicker {
+
+    private KillAuraModule killAuraModule;
 
     private int delay;
     private float mean;
@@ -54,8 +55,7 @@ public class BoxMuellerClicker extends Clicker {
             return;
         }
         EntityHitResult entityHitResult = (EntityHitResult) mc.crosshairTarget;
-        KillAuraModule killAuraModule = Vandalism.getInstance().getModuleManager().getKillAuraModule();
-        if(entityHitResult.getEntity().distanceTo(mc.player) > (killAuraModule.getPreHit().getValue() ? killAuraModule.getAimRange() : killAuraModule.getRange())) {
+        if(killAuraModule == null || entityHitResult.getEntity().distanceTo(mc.player) > (killAuraModule.getPreHit().getValue() ? killAuraModule.getAimRange() : killAuraModule.getRange())) {
             this.clickAction.accept(false);
             return;
         }
@@ -116,6 +116,10 @@ public class BoxMuellerClicker extends Clicker {
 
     public EvictingList<Vector4d> getCpsHistory() {
         return cpsHistory;
+    }
+
+    public void setKillAuraModule(KillAuraModule killAuraModule) {
+        this.killAuraModule = killAuraModule;
     }
 
 }
