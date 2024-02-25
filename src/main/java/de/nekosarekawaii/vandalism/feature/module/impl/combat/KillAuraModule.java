@@ -22,11 +22,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.event.normal.player.RaytraceListener;
-import de.nekosarekawaii.vandalism.event.normal.player.RotationListener;
-import de.nekosarekawaii.vandalism.event.normal.render.Render2DListener;
-import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.BezierValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
@@ -36,6 +31,11 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.rendering.SeparatorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
+import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.event.normal.player.RaytraceListener;
+import de.nekosarekawaii.vandalism.event.normal.player.RotationListener;
+import de.nekosarekawaii.vandalism.event.normal.render.Render2DListener;
+import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
@@ -45,6 +45,7 @@ import de.nekosarekawaii.vandalism.util.click.ClickType;
 import de.nekosarekawaii.vandalism.util.click.Clicker;
 import de.nekosarekawaii.vandalism.util.click.impl.BezierClicker;
 import de.nekosarekawaii.vandalism.util.click.impl.BoxMuellerClicker;
+import de.nekosarekawaii.vandalism.util.click.impl.CooldownClicker;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.render.*;
@@ -575,16 +576,17 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
     private void updateClicker(final Clicker clicker) {
         if (clicker instanceof final BoxMuellerClicker boxMuellerClicker) {
+            boxMuellerClicker.setKillAuraModule(this);
             boxMuellerClicker.setStd(this.std.getValue());
             boxMuellerClicker.setMean(this.mean.getValue());
             boxMuellerClicker.setMinCps(this.minCps.getValue());
             boxMuellerClicker.setMaxCps(this.maxCps.getValue());
             boxMuellerClicker.setCpsUpdatePossibility(this.updatePossibility.getValue());
-        }
-
-        if (clicker instanceof final BezierClicker bezierClicker) {
+        } else if (clicker instanceof final BezierClicker bezierClicker) {
             bezierClicker.setBezierValue(this.cpsBezier);
             bezierClicker.setCpsUpdatePossibility(this.updatePossibility.getValue());
+        }else if(clicker instanceof final CooldownClicker cooldownClicker) {
+            cooldownClicker.setKillAuraModule(this);
         }
 
         clicker.setClickAction(attack -> {
