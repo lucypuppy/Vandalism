@@ -26,6 +26,7 @@ import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.render.PlayerSkinRenderer;
 import imgui.ImGui;
+import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiMouseButton;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.session.Session;
@@ -107,7 +108,15 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
                             ImGui.sameLine();
                         }
                     }
-                    if (ImGui.button("##account" + account.getDisplayName() + account.getType(), ImGui.getColumnWidth(), ACCOUNT_ENTRY_CONTENT_HEIGHT)) {
+                    final String playerName = account.getDisplayName();
+                    final boolean isCurrentAccount = this.mc.getGameProfile().getName().equals(playerName);
+                    if (isCurrentAccount) {
+                        final float[] color = {0.1f, 0.8f, 0.1f, 0.30f};
+                        ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], color[3]);
+                        ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], color[3] - 0.1f);
+                        ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
+                    }
+                    if (ImGui.button("##account" + playerName + account.getType(), ImGui.getColumnWidth(), ACCOUNT_ENTRY_CONTENT_HEIGHT)) {
                         try {
                             account.logIn();
                             account.setStatus("Logged in");
@@ -115,11 +124,13 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
                             account.setStatus("Error: " + throwable.getMessage());
                         }
                     }
+                    if (isCurrentAccount) {
+                        ImGui.popStyleColor(3);
+                    }
                     if (ImGui.isItemHovered() && ImGui.isItemClicked(ImGuiMouseButton.Right)) {
                         this.hoveredAccount = account;
                         ImGui.openPopup("account-popup");
                     }
-                    //account.getDisplayName() + " [" + account.getType() + "] (" + (account.getStatus() == null ? "Idle" : account.getStatus()) + ")"
                     ImGui.sameLine(95);
                     final StringBuilder data = new StringBuilder();
                     data.append("Name: ");
