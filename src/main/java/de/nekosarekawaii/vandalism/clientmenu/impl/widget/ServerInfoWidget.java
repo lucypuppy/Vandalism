@@ -19,8 +19,9 @@
 package de.nekosarekawaii.vandalism.clientmenu.impl.widget;
 
 import com.google.gson.JsonSyntaxException;
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.integration.serverlist.ServerDataUtil;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import imgui.ImGui;
 import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiTableFlags;
@@ -156,7 +157,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                             serverInfoBuilder.append("Resolved Server Address: ").append(resolvedServerAddress).append('\n');
                             if (this.mcPingResponse.version != null) {
                                 serverInfoBuilder.append("Protocol: ").append(this.mcPingResponse.version.protocol).append('\n');
-                                serverInfoBuilder.append("Version: ").append(this.mcPingResponse.version.name).append('\n');
+                                serverInfoBuilder.append("Version: ").append(ServerDataUtil.fixVersionName(this.mcPingResponse.version.name)).append('\n');
                             }
                             if (this.mcPingResponse.players != null) {
                                 serverInfoBuilder.append("Players: ");

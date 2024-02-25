@@ -19,11 +19,10 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.florianmichael.dietrichevents2.Priorities;
-import de.florianmichael.rclasses.common.RandomUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.rendering.ButtonValue;
+import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.command.impl.misc.NbtCommand;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
@@ -99,16 +98,6 @@ public class ItemStackLoggerModule extends AbstractModule implements PlayerUpdat
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (RandomUtils.randomBoolean()) {
-            final StringBuilder randomNbts = new StringBuilder();
-            for (int i = 0; i < 100; i++) {
-                final char randomChar = RandomUtils.randomChar('a', 'z');
-                randomNbts.append(',').append(randomChar).append(":\"").append(i).append("\"");
-            }
-            mc.getNetworkHandler().sendCommand("summon item ~2 ~ ~ {Item:{id:\"minecraft:egg\",Count:1b,Damage:" + RandomUtils.randomInt(
-                    0, 100
-            ) + ",tag:{" + randomNbts.toString().replaceFirst(",", "") + "}}}");
-        }
         for (final Entity entity : this.mc.world.getEntities()) {
             if (entity == this.mc.player) continue;
             if (entity instanceof final ItemEntity itemEntity) {

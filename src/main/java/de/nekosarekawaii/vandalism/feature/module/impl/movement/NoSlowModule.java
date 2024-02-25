@@ -21,17 +21,18 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.player.CanSprintListener;
-import de.nekosarekawaii.vandalism.event.normal.player.PlayerSlowdownListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
+import de.nekosarekawaii.vandalism.event.normal.player.CanSprintListener;
+import de.nekosarekawaii.vandalism.event.normal.player.PlayerSlowdownListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.item.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 public class NoSlowModule extends AbstractModule implements PlayerSlowdownListener, CanSprintListener {
 
@@ -187,7 +188,8 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
     private float getValue(final float defaultValue, final Item item, final String name) {
         for (final Value<?> value : this.getValues()) {
             if (value instanceof final ValueGroup valueGroup) {
-                if (valueGroup.isVisible().getAsBoolean()) {
+                final BooleanSupplier visible = valueGroup.isVisible();
+                if (visible != null && visible.getAsBoolean()) {
                     if (valueGroup.getName().equals(item.getTranslationKey())) {
                         for (final Value<?> value1 : valueGroup.getValues()) {
                             if (value1 instanceof final FloatValue floatValue) {
