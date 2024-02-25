@@ -27,6 +27,7 @@ import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -53,7 +54,9 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
 
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
-        this.pos = getPlaceBlock(4);
+        this.pos = getPlaceBlock(3);
+        if(mc.world.getBlockState(mc.player.getBlockPos().add(0, -1, 0)).getBlock() == Blocks.AIR)
+            mc.doItemUse();
     }
 
     @Override
@@ -64,9 +67,8 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
     @Override
     public void onRotation(RotationEvent event) {
         if (pos != null) {
-            Rotation rotation = Rotation.Builder.build(new Vec3d(pos.getX(), pos.getY(), pos.getZ()), mc.player.getEyePos());
+            Rotation rotation = Rotation.Builder.build(new Vec3d(pos.getX()+0.5, pos.getY()-2.5, pos.getZ()+0.5), mc.player.getEyePos());
             Vandalism.getInstance().getRotationListener().setRotation(rotation, RotationPriority.HIGH, 80f, 0, false);
-
         }
     }
 
@@ -80,7 +82,7 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
                     BlockPos pos = mc.player.getBlockPos().add(x, y, z);
                     BlockState state = mc.world.getBlockState(pos);
                     Block block = state.getBlock();
-                    pos.offset(Direction.EAST);
+//                    pos = pos.offset(reverseDirection(mc.player.getHorizontalFacing()));
                     if (state.isSolidBlock(mc.world, pos)) {
                         double currentDistance = mc.player.getBlockPos().getSquaredDistance(pos);
                         if (distance == -1 || currentDistance < distance) {
@@ -93,6 +95,25 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
         }
         ChatUtil.chatMessage(theChosenOne + "");
         return theChosenOne;
+    }
+
+    private Direction reverseDirection(Direction direction) {
+        switch (direction) {
+            case NORTH:
+                return Direction.SOUTH;
+            case SOUTH:
+                return Direction.NORTH;
+            case EAST:
+                return Direction.WEST;
+            case WEST:
+                return Direction.EAST;
+            case UP:
+                return Direction.DOWN;
+            case DOWN:
+                return Direction.UP;
+            default:
+                return Direction.NORTH;
+        }
     }
 
 }
