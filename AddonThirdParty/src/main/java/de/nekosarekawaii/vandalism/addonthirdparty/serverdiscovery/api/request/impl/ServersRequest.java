@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.Request;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.impl.ServersResponse;
+import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.gui.server.Country;
 
 public class ServersRequest extends Request<ServersResponse> {
 
@@ -42,16 +43,16 @@ public class ServersRequest extends Request<ServersResponse> {
     public boolean only_bungeespoofable;
     public Software software;
 
-    public ServersRequest(final int asn, final String country_code, final boolean cracked, final String description, final Software software, final int min_players, final int max_players, final int min_online_players, final int max_online_players, final int online_after, final int protocol, final boolean ignore_modded, final boolean only_bungeespoofable) {
+    public ServersRequest(final int asn, final Country country, final boolean cracked, final String description, final Software software, final int min_players, final int max_players, final int min_online_players, final int max_online_players, final int protocol, final boolean ignore_modded, final boolean only_bungeespoofable) {
         super(ServersResponse.class, "servers");
         this.asn = asn;
-        this.country_code = country_code;
+        this.country_code = country == Country.ANY ? "" : country.name();
         this.cracked = cracked;
         this.description = description;
         this.software = software;
         this.setMaxPlayers(min_players, max_players);
         this.setOnlinePlayers(min_online_players, max_online_players);
-        this.online_after = online_after;
+        this.online_after = (int) System.currentTimeMillis();
         this.protocol = protocol;
         this.ignore_modded = ignore_modded;
         this.only_bungeespoofable = only_bungeespoofable;
