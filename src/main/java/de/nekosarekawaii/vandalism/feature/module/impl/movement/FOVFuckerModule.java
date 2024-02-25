@@ -27,6 +27,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -135,7 +136,7 @@ public class FOVFuckerModule extends AbstractModule implements PlayerUpdateListe
         if (this.target == null) {
             final Stream<AbstractClientPlayerEntity> players = this.mc.world.getPlayers().stream();
             this.target = players.sorted(Comparator.comparingDouble(player -> this.mc.player.distanceTo(player))).
-                    filter(player -> this.mc.player != player && this.mc.player.distanceTo(player) <= this.maxDistance.getValue()).
+                    filter(player -> this.mc.player != player && this.mc.player.distanceTo(player) <= this.maxDistance.getValue() && WorldUtil.isTarget(player)).
                     findFirst().
                     orElse(null);
 
