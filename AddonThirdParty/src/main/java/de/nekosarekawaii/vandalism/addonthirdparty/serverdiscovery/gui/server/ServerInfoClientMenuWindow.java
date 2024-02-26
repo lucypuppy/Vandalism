@@ -257,6 +257,12 @@ public class ServerInfoClientMenuWindow extends ClientMenuWindow {
                         Vandalism.getInstance().getAccountManager().add(sessionAccount);
                         sessionAccount.logIn();
                     }
+                    if (ImGui.button("Copy Name##serverinfoplayer" + playerName + "copyname", buttonWidth, buttonHeight)) {
+                        this.mc.keyboard.setClipboard(playerName);
+                    }
+                    if (ImGui.button("Copy UUID##serverinfoplayer" + playerName + "copyuuid", buttonWidth, buttonHeight)) {
+                        this.mc.keyboard.setClipboard(player.uuid);
+                    }
                     if (ImGui.button("Copy Data##serverinfoplayer" + playerName + "copydata", buttonWidth, buttonHeight)) {
                         this.mc.keyboard.setClipboard(playerData);
                     }
