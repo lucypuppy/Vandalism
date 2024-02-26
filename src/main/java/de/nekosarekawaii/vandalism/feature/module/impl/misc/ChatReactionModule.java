@@ -169,7 +169,12 @@ public class ChatReactionModule extends AbstractModule implements ChatReceiveLis
                     if (answer.contains("%target%") && !target.equals("%target%")) {
                         answer = answer.replace("%target%", target);
                     }
-                    this.mc.getNetworkHandler().sendChatMessage(answer);
+                    if (answer.startsWith("/")) {
+                        this.mc.getNetworkHandler().sendChatCommand(answer.substring(1));
+                    }
+                    else {
+                        this.mc.getNetworkHandler().sendChatMessage(answer);
+                    }
                     break;
                 }
             }
