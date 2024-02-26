@@ -19,31 +19,51 @@
 package de.nekosarekawaii.vandalism.addonwurstclient;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
 import de.nekosarekawaii.vandalism.addonwurstclient.injection.access.IWurstClient;
 import de.nekosarekawaii.vandalism.addonwurstclient.module.WurstClientModule;
+import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
+import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
+import de.nekosarekawaii.vandalism.feature.hud.impl.WatermarkHUDElement;
 import net.wurstclient.WurstClient;
 
 import java.util.List;
 
 public class AddonWurstClient implements VandalismAddonLauncher {
 
+    private static AddonWurstClient instance;
+
     //Temporary list to store the enabled hacks when the user disables the WurstClient module
     public static List<String> enabledHacks;
 
     private WurstClientModule module;
 
+    public IntegerValue wurstOffsetX;
+    public IntegerValue wurstOffsetY;
+
     @Override
     public void onLaunch(final Vandalism vandalism) {
+        instance = this;
+
         //Initialize WurstClient, counterpart in MixinWurstInitializer.java
         WurstClient.INSTANCE.initialize();
 
         vandalism.getModuleManager().add(this.module = new WurstClientModule());
+
+
+        final WatermarkHUDElement watermarkHUDElement = vandalism.getHudManager().watermarkHUDElement;
+        this.wurstOffsetX = new IntegerValue(watermarkHUDElement, "Wurst Offset X", "",
+                30, -512, 1024);
+        this.wurstOffsetY = new IntegerValue(watermarkHUDElement, "Wurst Offset Y", "",
+                30, -512, 1024);
     }
 
     @Override
     public void onLateLaunch(final Vandalism vandalism) {
         ((IWurstClient) (Object) WurstClient.INSTANCE).vandalism$setSilentEnabled(this.module.isActive());
+    }
+
+    public static AddonWurstClient getInstance() {
+        return instance;
     }
 
 }

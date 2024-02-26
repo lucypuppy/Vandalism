@@ -35,7 +35,7 @@ public class GroundSpoofModuleMode extends ModuleMulti<NoFallModule> implements 
 
     private final EnumModeValue<Mode> mode = new EnumModeValue<>(
             this,
-            "Mode",
+            "Spoof Mode",
             "The current ground spoof mode.",
             Mode.ON_GROUND,
             Mode.values()
