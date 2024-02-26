@@ -226,12 +226,12 @@ public class ServersTab implements MinecraftWrapper {
         if (ImGui.beginTabItem(name + "##serversTab" + name)) {
             isSelected = true;
             if (!this.servers.isEmpty() && !this.waitingForResponse) {
-                ImGui.text("Search for Servers");
+                ImGui.text("Search for servers");
                 ImGui.setNextItemWidth(-1);
                 ImGui.inputText("##serverSearchField", this.serversSearchField);
                 ImGui.separator();
                 if (this.checkedServers < 0) {
-                    if (ImUtils.subButton("Remove Offline Servers")) {
+                    if (ImUtils.subButton("Remove offline servers")) {
                         this.checkedServers = 0;
                         this.lastMaxServers = this.servers.size();
                         this.checkTimeout.reset();

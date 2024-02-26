@@ -70,6 +70,7 @@ public class BoxMuellerClicker extends Clicker {
         }
     }
 
+
     @Override
     public void onRotate() {
         if (this.msTimer.hasReached(this.delay, true)) {

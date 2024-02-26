@@ -41,11 +41,11 @@ public class PortResult {
 
     private final MSTimer stateTimer = new MSTimer();
 
-    public PortResult(final int port, final String hostname) {
+    public PortResult(final int port, final String address) {
         this.port = port;
-        this.hostname = hostname;
+        this.hostname = address;
         this.serverInfoWidget = new ServerInfoWidget();
-        this.serverInfoWidget.setHostname(hostname);
+        this.serverInfoWidget.setAddress(address);
         this.clear();
     }
 
