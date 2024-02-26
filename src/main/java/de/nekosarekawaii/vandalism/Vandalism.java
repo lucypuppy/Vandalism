@@ -179,7 +179,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.creativeTabManager = new CreativeTabManager();
         this.creativeTabManager.init();
 
-        this.hudManager = new HUDManager(this.configManager, this.clientMenuManager);
+        this.hudManager = new HUDManager(this.configManager, this.clientMenuManager, this.runDirectory);
         this.hudManager.init();
 
         // Cause of the menu category button order this needs to be called

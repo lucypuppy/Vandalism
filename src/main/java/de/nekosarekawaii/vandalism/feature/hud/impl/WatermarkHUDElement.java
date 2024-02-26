@@ -18,36 +18,93 @@
 
 package de.nekosarekawaii.vandalism.feature.hud.impl;
 
+import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
+import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
 import de.nekosarekawaii.vandalism.util.render.GLStateTracker;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.texture.NativeImage;
+import net.minecraft.client.texture.NativeImageBackedTexture;
+import net.minecraft.util.Identifier;
 
 import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 public class WatermarkHUDElement extends HUDElement {
 
-    private static final int IMAGE_WIDTH = 156, IMAGE_HEIGHT = 44;
+    private final EnumModeValue<LogoSelection> logoSelection;
+    private final IntegerValue imageWidth;
+    private final IntegerValue imageHeight;
 
-    private final ColorValue color = new ColorValue(
-            this,
-            "Color",
-            "The color of the watermark.",
-            Color.WHITE
-    );
+    private final ColorValue color;
 
-    public WatermarkHUDElement() {
+    public WatermarkHUDElement(final File logoDirectory) {
         super(
                 "Watermark",
                 2,
                 4
         );
+
+        final File[] files = logoDirectory.listFiles();
+        final LogoSelection[] logoSelections = new LogoSelection[files.length + 1];
+        logoSelections[0] = new LogoSelection();
+
+        for (int i = 0; i < files.length; i++) {
+            final File file = files[i];
+
+            if (file.getName().endsWith(".png") || file.getName().endsWith(".jpg")) {
+                try {
+                    logoSelections[i + 1] = new LogoSelection(file);
+                } catch (IOException ignored) {
+                }
+            }
+        }
+
+        this.logoSelection = new EnumModeValue<>(
+                this,
+                "Logo",
+                "The watermark image.",
+                logoSelections[0],
+                logoSelections
+        );
+
+        this.imageWidth = new IntegerValue(
+                this,
+                "Image Width",
+                "The width of the watermark image.",
+                156,
+                64,
+                1024
+        );
+
+        this.imageHeight = new IntegerValue(
+                this,
+                "Image Height",
+                "The height of the watermark image.",
+                44,
+                64,
+                1024
+        );
+
+        this.color = new ColorValue(
+                this,
+                "Color",
+                "The color of the watermark.",
+                Color.WHITE
+        );
     }
 
     @Override
     public void onRender(final DrawContext context, final float delta, final boolean inGame) {
-        this.mc.getTextureManager().getTexture(FabricBootstrap.MOD_LOGO).setFilter(
+        final Identifier identifier = this.logoSelection.getValue().getIdentifier();
+
+        this.mc.getTextureManager().getTexture(identifier).setFilter(
                 true,
                 true
         );
@@ -60,20 +117,48 @@ public class WatermarkHUDElement extends HUDElement {
                 selectedColor.getAlpha() / 255f
         );
         context.drawTexture(
-                FabricBootstrap.MOD_LOGO,
+                identifier,
                 this.x,
                 this.y,
                 0,
                 0,
-                IMAGE_WIDTH,
-                IMAGE_HEIGHT,
-                IMAGE_WIDTH,
-                IMAGE_HEIGHT
+                this.imageWidth.getValue(),
+                this.imageHeight.getValue(),
+                this.imageWidth.getValue(),
+                this.imageHeight.getValue()
         );
         context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         GLStateTracker.BLEND.revert();
-        this.width = IMAGE_WIDTH;
-        this.height = IMAGE_HEIGHT;
+        this.width = this.imageWidth.getValue();
+        this.height = this.imageHeight.getValue();
+    }
+
+    private class LogoSelection implements IName, MinecraftWrapper {
+
+        private final Identifier identifier;
+        private final String name;
+
+        public LogoSelection(final File file) throws IOException {
+            this.name = file.getName();
+            this.identifier = new Identifier(FabricBootstrap.MOD_ID, "logo_" + this.name.replace(" ", "_"));
+
+            this.mc.getTextureManager().registerTexture(this.identifier,
+                    new NativeImageBackedTexture(NativeImage.read(new FileInputStream(file))));
+        }
+
+        public LogoSelection() {
+            this.identifier = FabricBootstrap.MOD_LOGO;
+            this.name = "Default";
+        }
+
+        public Identifier getIdentifier() {
+            return identifier;
+        }
+
+        @Override
+        public String getName() {
+            return this.name;
+        }
     }
 
 }
