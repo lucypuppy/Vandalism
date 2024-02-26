@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.gui.server;
 
+import com.mojang.authlib.GameProfile;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.ServerDiscoveryUtil;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.impl.ServerInfoRequest;
@@ -201,7 +202,8 @@ public class ServerInfoClientMenuWindow extends ClientMenuWindow {
                         Instant.ofEpochSecond(player.last_seen).atZone(ZoneId.systemDefault()).toLocalDateTime()
                 ));
                 final String playerData = playerString.toString();
-                final boolean isCurrentAccount = this.mc.getGameProfile().getName().equals(playerName);
+                final GameProfile gameProfile = this.mc.getGameProfile();
+                final boolean isCurrentAccount = gameProfile.getName().equals(playerName) && gameProfile.getId().toString().equals(player.uuid);
                 if (isCurrentAccount) {
                     final float[] color = {0.1f, 0.8f, 0.1f, 0.30f};
                     ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], color[3]);
