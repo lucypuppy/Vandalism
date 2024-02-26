@@ -190,7 +190,7 @@ public class ServerPingerClientMenuWindow extends ClientMenuWindow {
     private void ping() {
         if (!this.hostname.get().isBlank()) {
             this.clear();
-            this.serverInfoWidget.setHostname(this.hostname.get());
+            this.serverInfoWidget.setAddress(this.hostname.get());
             this.currentState = State.WAITING_RESPONSE;
             this.currentQueryState = State.WAITING_RESPONSE;
             MCPing.pingModern(this.protocol.get())

@@ -41,7 +41,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
 
     private boolean showMods, showPlayerList, showPlugins;
 
-    private String hostname, motd;
+    private String address, motd;
 
     public ServerInfoWidget() {
         this.mcPingResponse = null;
@@ -52,8 +52,8 @@ public class ServerInfoWidget implements MinecraftWrapper {
         this.queryPingResponse = null;
     }
 
-    public void setHostname(final String hostname) {
-        this.hostname = hostname;
+    public void setAddress(final String address) {
+        this.address = address;
     }
 
     public void setMcPingResponse(final MCPingResponse mcPingResponse) {
@@ -86,18 +86,11 @@ public class ServerInfoWidget implements MinecraftWrapper {
             ImGui.tableSetColumnIndex(i);
             final ServerInfosTableColumn serverInfosTableColumn = serverInfosTableColumns[i];
             switch (serverInfosTableColumn) {
-                case SERVER_ADDRESS -> {
-                    ImGui.textWrapped(this.hostname);
+                case ADDRESS -> {
+                    ImGui.textWrapped(this.address);
                 }
                 case PORT -> {
                     ImGui.textWrapped(String.valueOf(this.mcPingResponse.server.port));
-                }
-                case RESOLVED_SERVER_ADDRESS -> {
-                    String resolvedServerAddress = this.mcPingResponse.server.ip;
-                    if (resolvedServerAddress.endsWith(".")) {
-                        resolvedServerAddress = resolvedServerAddress.substring(0, resolvedServerAddress.length() - 1);
-                    }
-                    ImGui.textWrapped(resolvedServerAddress);
                 }
                 case PROTOCOL -> {
                     if (this.mcPingResponse.version != null) {
@@ -127,7 +120,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                     final int buttonWidth = 150, buttonHeight = 28;
                     ImGui.button("..." + uniqueId + "actions", -1, 25);
                     if (ImGui.beginPopupContextItem(uniqueId + "popup", ImGuiPopupFlags.MouseButtonLeft)) {
-                        final String address = this.hostname + ':' + this.mcPingResponse.server.port;
+                        final String address = this.address + ':' + this.mcPingResponse.server.port;
                         ImGui.text(address);
                         ImGui.separator();
                         ImGui.spacing();
