@@ -55,6 +55,7 @@ public class ChatReactionModule extends AbstractModule implements ChatReceiveLis
                 "If activated the client will react to certain words in the chat and will answer with a certain message.",
                 Category.MISC
         );
+        this.markExperimental();
         this.setup();
     }
 
