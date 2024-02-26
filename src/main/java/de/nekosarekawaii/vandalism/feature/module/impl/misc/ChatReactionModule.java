@@ -18,28 +18,31 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
+import com.google.gson.*;
 import de.florianmichael.rclasses.common.RandomUtils;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.player.ChatReceiveListener;
 import de.nekosarekawaii.vandalism.base.value.impl.rendering.ButtonValue;
+import de.nekosarekawaii.vandalism.event.normal.player.ChatReceiveListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.script.parse.ScriptVariable;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.util.Util;
 
 import java.io.File;
-import java.io.PrintWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ChatReactionModule extends AbstractModule implements ChatReceiveListener {
 
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+
     private final Map<String[], String[]> contentMap = new HashMap<>();
 
-    private final File contentFile = new File(Vandalism.getInstance().getRunDirectory(), "chat_reaction.txt");
+    private final File contentFile = new File(Vandalism.getInstance().getRunDirectory(), "chat-reaction.json");
 
     private final ButtonValue openFileButton = new ButtonValue(this, "Open File", "Opens the chat reaction file.", buttonValue -> {
         try {
@@ -55,6 +58,7 @@ public class ChatReactionModule extends AbstractModule implements ChatReceiveLis
                 "If activated the client will react to certain words in the chat and will answer with a certain message.",
                 Category.MISC
         );
+        this.setup();
     }
 
     @Override
@@ -71,38 +75,65 @@ public class ChatReactionModule extends AbstractModule implements ChatReceiveLis
 
     private void setup() {
         if (!this.contentFile.exists()) {
-            try {
-                final PrintWriter printWriter = new PrintWriter(this.contentFile);
-                printWriter.println("'%mod_name%', 'best client' > '%mod_name% is the best client!', 'I love %mod_name%!'");
-                printWriter.println("'cool', 'nice', 'awesome' > '%target% nice', '%target% cool', '%target% awesome'");
-                printWriter.close();
+            try (final FileWriter fw = new FileWriter(this.contentFile)) {
+                final JsonObject jsonObject = new JsonObject();
+                final JsonArray reactions = new JsonArray();
+
+                final JsonObject reaction1 = new JsonObject();
+                final JsonArray reaction1Triggers = new JsonArray();
+                reaction1Triggers.add("%mod_name%");
+                reaction1Triggers.add("best client");
+                final JsonArray reaction1Responses = new JsonArray();
+                reaction1Responses.add("%mod_name% is the best client!");
+                reaction1Responses.add("I love %mod_name%!");
+                reaction1.add("triggers", reaction1Triggers);
+                reaction1.add("responses", reaction1Responses);
+                reactions.add(reaction1);
+
+                final JsonObject reaction2 = new JsonObject();
+                final JsonArray reaction2Triggers = new JsonArray();
+                reaction2Triggers.add("cool");
+                reaction2Triggers.add("nice");
+                reaction2Triggers.add("awesome");
+                final JsonArray reaction2Responses = new JsonArray();
+                reaction2Responses.add("%target% nice");
+                reaction2Responses.add("%target% cool");
+                reaction2Responses.add("%target% awesome");
+                reaction2.add("triggers", reaction2Triggers);
+                reaction2.add("responses", reaction2Responses);
+                reactions.add(reaction2);
+
+                jsonObject.add("reactions", reactions);
+
+                fw.write(GSON.toJson(jsonObject));
+                fw.flush();
             } catch (Exception e) {
                 Vandalism.getInstance().getLogger().error("Failed to create chat reaction file!", e);
             }
         }
         if (this.contentMap.isEmpty()) {
-            try {
-                final Scanner scanner = new Scanner(this.contentFile);
-                while (scanner.hasNextLine()) {
-                    final String line = scanner.nextLine();
-                    if (line.contains(">")) {
-                        final String[] parts = line.split(">");
-                        String triggersString = parts[0].trim();
-                        String responsesString = parts[1].trim();
-                        triggersString = triggersString.substring(1, triggersString.length() - 1);
-                        responsesString = responsesString.substring(1, responsesString.length() - 1);
-                        final String[] triggers = triggersString.split("', '");
-                        final String[] responses = responsesString.split("', '");
-                        for (int i = 0; i < triggers.length; i++) {
-                            triggers[i] = triggers[i].trim();
+            try (final FileReader fr = new FileReader(this.contentFile)) {
+                final JsonObject jsonObject = GSON.fromJson(fr, JsonObject.class);
+                if (jsonObject.has("reactions")) {
+                    final JsonArray reactions = jsonObject.getAsJsonArray("reactions");
+                    for (final JsonElement reactionElement : reactions) {
+                        final JsonObject reaction = reactionElement.getAsJsonObject();
+                        if (!reaction.has("triggers") || !reaction.has("responses")) {
+                            continue;
                         }
-                        for (int i = 0; i < responses.length; i++) {
-                            responses[i] = responses[i].trim();
+                        final JsonArray triggers = reaction.getAsJsonArray("triggers");
+                        final JsonArray responses = reaction.getAsJsonArray("responses");
+                        final String[] triggersArray = new String[triggers.size()];
+                        final String[] responsesArray = new String[responses.size()];
+                        for (int i = 0; i < triggers.size(); i++) {
+                            triggersArray[i] = triggers.get(i).getAsString();
                         }
-                        this.contentMap.put(triggers, responses);
+                        for (int i = 0; i < responses.size(); i++) {
+                            responsesArray[i] = responses.get(i).getAsString();
+                        }
+                        this.contentMap.put(triggersArray, responsesArray);
                     }
                 }
-                scanner.close();
             } catch (Exception e) {
                 Vandalism.getInstance().getLogger().error("Failed to load chat reaction file!", e);
             }
@@ -128,20 +159,22 @@ public class ChatReactionModule extends AbstractModule implements ChatReceiveLis
                 break;
             }
         }
-        final String target = targetName.get();
-        if (target.equals("%target%")) {
-            return;
-        }
         this.setup();
-        this.contentMap.forEach((words, answers) -> {
-            for (final String word : words) {
-                if (StringUtils.contains(ScriptVariable.applyReplacements(message), word)) {
-                    String answer = answers.length == 1 ? answers[0] : answers[RandomUtils.randomInt(0, answers.length)];
+        this.contentMap.forEach((triggers, responses) -> {
+            for (final String trigger : triggers) {
+                if (StringUtils.contains(ScriptVariable.applyReplacements(message), trigger)) {
+                    String answer = responses.length == 1 ? responses[0] : responses[RandomUtils.randomInt(0, responses.length)];
                     answer = ScriptVariable.applyReplacements(answer);
-                    if (answer.contains("%target%")) {
+                    final String target = targetName.get();
+                    if (answer.contains("%target%") && !target.equals("%target%")) {
                         answer = answer.replace("%target%", target);
                     }
-                    this.mc.getNetworkHandler().sendChatMessage(answer);
+                    if (answer.startsWith("/")) {
+                        this.mc.getNetworkHandler().sendChatCommand(answer.substring(1));
+                    }
+                    else {
+                        this.mc.getNetworkHandler().sendChatMessage(answer);
+                    }
                     break;
                 }
             }

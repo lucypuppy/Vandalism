@@ -148,8 +148,8 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
         final NbtCompound base = new NbtCompound();
         final NbtCompound entityTag = new NbtCompound();
         final NbtList power = new NbtList();
-        power.add(NbtDouble.of(1.0E43));
         power.add(NbtDouble.of(0));
+        power.add(NbtDouble.of(-1.0E43));
         power.add(NbtDouble.of(0));
         entityTag.put("power", power);
         entityTag.putString("id", "minecraft:small_fireball");

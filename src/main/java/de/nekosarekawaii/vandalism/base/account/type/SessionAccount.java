@@ -136,14 +136,16 @@ public class SessionAccount extends AbstractAccount {
                 ImGui.text("Name");
                 ImGui.setNextItemWidth(ImGui.getColumnWidth() - 4f);
                 ImGui.inputText("##sessionAccountName", this.name, ImGuiInputTextFlags.CallbackCharFilter, USERNAME_NAME_FILTER);
-                if (ImGui.button("Use Random Name", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
-                    this.name.set(NameGenerationUtil.generateUsername());
+                final String name = this.name.get();
+                if (name.isEmpty()) {
+                    if (ImGui.button("Use Random Name", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
+                        this.name.set(NameGenerationUtil.generateUsername());
+                    }
                 }
                 ImGui.text("UUID");
                 ImGui.setNextItemWidth(ImGui.getColumnWidth() - 4f);
                 ImGui.inputText("##sessionAccountUUID", this.uuid, ImGuiInputTextFlags.CallbackResize);
-                final String name = this.name.get();
-                if (!name.isEmpty()) {
+                if (!name.isEmpty() && this.uuid.isEmpty()) {
                     if (ImGui.button("Use Offline UUID", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
                         this.uuid.set(Uuids.getOfflinePlayerUuid(name).toString());
                     }

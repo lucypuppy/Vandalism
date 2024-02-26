@@ -26,10 +26,8 @@ import net.lenni0451.mcping.exception.ConnectTimeoutException;
 import net.lenni0451.mcping.exception.ConnectionRefusedException;
 import net.lenni0451.mcping.exception.DataReadException;
 import net.lenni0451.mcping.exception.PacketReadException;
-import net.lenni0451.mcping.responses.MCPingResponse;
 import net.minecraft.SharedConstants;
 
-import java.net.BindException;
 import java.net.UnknownHostException;
 
 public class PortResult {
@@ -39,7 +37,7 @@ public class PortResult {
 
     private final ServerInfoWidget serverInfoWidget;
 
-    private PingState currentState, currentQueryState;
+    private PingState currentState;
 
     private final MSTimer stateTimer = new MSTimer();
 
@@ -59,16 +57,8 @@ public class PortResult {
         return this.hostname;
     }
 
-    public MCPingResponse getMcPingResponse() {
-        return this.serverInfoWidget.getMcPingResponse();
-    }
-
     public PingState getCurrentState() {
         return this.currentState;
-    }
-
-    public PingState getCurrentQueryState() {
-        return this.currentQueryState;
     }
 
     public void renderTableEntry() {
@@ -86,12 +76,10 @@ public class PortResult {
 
     private void resetState() {
         this.currentState = PingState.WAITING_INPUT;
-        this.currentQueryState = PingState.WAITING_INPUT;
     }
 
     private void clear() {
         this.serverInfoWidget.setMcPingResponse(null);
-        this.serverInfoWidget.setQueryPingResponse(null);
         this.resetState();
     }
 
@@ -121,33 +109,8 @@ public class PortResult {
                         this.serverInfoWidget.setMcPingResponse(response);
                         this.currentState = PingState.SUCCESS;
                         onFinished.run();
-                    }).getAsync();
+                    }).getSync();
             this.currentState = PingState.WAITING_RESPONSE;
-            MCPing.pingQuery()
-                    .address(this.hostname, this.port)
-                    .timeout(5000, 5000)
-                    .exceptionHandler(t -> {
-                        if (t instanceof BindException) {
-                            this.currentQueryState = PingState.BIND_FAILED;
-                        } else if (t instanceof UnknownHostException) {
-                            this.currentQueryState = PingState.UNKNOWN_HOST;
-                        } else if (t instanceof ConnectionRefusedException) {
-                            this.currentQueryState = PingState.CONNECTION_REFUSED;
-                        } else if (t instanceof ConnectTimeoutException) {
-                            this.currentQueryState = PingState.CONNECTION_TIMED_OUT;
-                        } else if (t instanceof DataReadException) {
-                            this.currentQueryState = PingState.DATA_READ_FAILED;
-                        } else if (t instanceof PacketReadException) {
-                            this.currentQueryState = PingState.PACKET_READ_FAILED;
-                        } else {
-                            this.currentQueryState = PingState.FAILED;
-                        }
-                    })
-                    .finishHandler(response -> {
-                        this.serverInfoWidget.setQueryPingResponse(response);
-                        this.currentQueryState = PingState.SUCCESS;
-                    }).getAsync();
-            this.currentQueryState = PingState.WAITING_RESPONSE;
         } else this.currentState = PingState.WAITING_INPUT;
     }
 
