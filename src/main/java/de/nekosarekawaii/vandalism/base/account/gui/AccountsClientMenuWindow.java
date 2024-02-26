@@ -63,14 +63,16 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
 
     private AbstractAccount hoveredAccount;
 
-    private void renderHoveredAccountPopup() {
+    private void renderHoveredAccountPopup(final boolean allowDelete) {
         if (this.hoveredAccount == null) return;
         if (ImGui.beginPopupContextItem("account-popup")) {
             ImGui.setNextItemWidth(400f);
-            if (ImUtils.subButton("Delete")) {
-                ImGui.closeCurrentPopup();
-                Vandalism.getInstance().getAccountManager().remove(this.hoveredAccount);
-                this.hoveredAccount = null;
+            if (allowDelete) {
+                if (ImUtils.subButton("Delete")) {
+                    ImGui.closeCurrentPopup();
+                    Vandalism.getInstance().getAccountManager().remove(this.hoveredAccount);
+                    this.hoveredAccount = null;
+                }
             }
             if (this.hoveredAccount != null) {
                 if (ImUtils.subButton("Copy Name")) {
@@ -97,7 +99,7 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
         }
     }
 
-    private void renderAccountEntry(final AbstractAccount account) {
+    private void renderAccount(final AbstractAccount account, final boolean isEntry) {
         if (account == null) return;
         final PlayerSkinRenderer accountPlayerSkin = account.getPlayerSkin();
         if (accountPlayerSkin != null) {
@@ -120,11 +122,13 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
             ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
         }
         if (ImGui.button("##account" + playerName + account.getType(), ImGui.getColumnWidth(), ACCOUNT_ENTRY_CONTENT_HEIGHT)) {
-            try {
-                account.logIn();
-                account.setStatus("Logged in");
-            } catch (Throwable throwable) {
-                account.setStatus("Error: " + throwable.getMessage());
+            if (isEntry) {
+                try {
+                    account.logIn();
+                    account.setStatus("Logged in");
+                } catch (Throwable throwable) {
+                    account.setStatus("Error: " + throwable.getMessage());
+                }
             }
         }
         if (isCurrentAccount) {
@@ -154,8 +158,8 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
             if (ImGui.beginTabItem("Current Account")) {
                 final AbstractAccount currentAccount = this.accountManager.getCurrentAccount();
                 if (currentAccount != null) {
-                    this.renderAccountEntry(currentAccount);
-                    this.renderHoveredAccountPopup();
+                    this.renderAccount(currentAccount, false);
+                    this.renderHoveredAccountPopup(false);
                     if (ImUtils.subButton("Logout")) {
                         try {
                             this.accountManager.logOut();
@@ -168,9 +172,9 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
             }
             if (ImGui.beginTabItem("Accounts")) {
                 for (final AbstractAccount account : this.accountManager.getList()) {
-                    this.renderAccountEntry(account);
+                    this.renderAccount(account, true);
                 }
-                this.renderHoveredAccountPopup();
+                this.renderHoveredAccountPopup(true);
                 ImGui.endTabItem();
             }
             if (ImGui.beginTabItem("Add Account")) {
