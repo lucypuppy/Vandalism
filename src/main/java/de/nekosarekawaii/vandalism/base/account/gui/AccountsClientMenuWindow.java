@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.base.account.gui;
 
+import com.mojang.authlib.GameProfile;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
@@ -31,6 +32,7 @@ import imgui.flag.ImGuiMouseButton;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.session.Session;
 
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class AccountsClientMenuWindow extends ClientMenuWindow {
@@ -109,7 +111,9 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
                         }
                     }
                     final String playerName = account.getDisplayName();
-                    final boolean isCurrentAccount = this.mc.getGameProfile().getName().equals(playerName);
+                    final UUID playerUuid = account.getSession().getUuidOrNull();
+                    final GameProfile gameProfile = this.mc.getGameProfile();
+                    final boolean isCurrentAccount = gameProfile.getName().equals(playerName) && gameProfile.getId().equals(playerUuid);
                     if (isCurrentAccount) {
                         final float[] color = {0.1f, 0.8f, 0.1f, 0.30f};
                         ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], color[3]);

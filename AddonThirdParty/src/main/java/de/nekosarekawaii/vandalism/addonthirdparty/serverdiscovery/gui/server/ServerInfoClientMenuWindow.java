@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.gui.server;
 
+import com.mojang.authlib.GameProfile;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.ServerDiscoveryUtil;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.impl.ServerInfoRequest;
@@ -37,6 +38,7 @@ import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.network.ServerInfo;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Pair;
 
@@ -98,6 +100,12 @@ public class ServerInfoClientMenuWindow extends ClientMenuWindow {
                 ImGuiInputTextFlags.CallbackCharFilter,
                 IP_FILTER
         );
+        final ServerInfo currentServer = this.mc.getCurrentServerEntry();
+        if (currentServer != null) {
+            if (ImGui.button("Use Current Server##serverinfousecurrentserver", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                this.ip.set(currentServer.address);
+            }
+        }
         final String ipValue = this.ip.get();
         if (!ipValue.isBlank()) {
             if (ImUtils.subButton("Get##serverinfoddatarequest")) {
@@ -201,7 +209,8 @@ public class ServerInfoClientMenuWindow extends ClientMenuWindow {
                         Instant.ofEpochSecond(player.last_seen).atZone(ZoneId.systemDefault()).toLocalDateTime()
                 ));
                 final String playerData = playerString.toString();
-                final boolean isCurrentAccount = this.mc.getGameProfile().getName().equals(playerName);
+                final GameProfile gameProfile = this.mc.getGameProfile();
+                final boolean isCurrentAccount = gameProfile.getName().equals(playerName) && gameProfile.getId().toString().equals(player.uuid);
                 if (isCurrentAccount) {
                     final float[] color = {0.1f, 0.8f, 0.1f, 0.30f};
                     ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], color[3]);
@@ -247,6 +256,12 @@ public class ServerInfoClientMenuWindow extends ClientMenuWindow {
                         );
                         Vandalism.getInstance().getAccountManager().add(sessionAccount);
                         sessionAccount.logIn();
+                    }
+                    if (ImGui.button("Copy Name##serverinfoplayer" + playerName + "copyname", buttonWidth, buttonHeight)) {
+                        this.mc.keyboard.setClipboard(playerName);
+                    }
+                    if (ImGui.button("Copy UUID##serverinfoplayer" + playerName + "copyuuid", buttonWidth, buttonHeight)) {
+                        this.mc.keyboard.setClipboard(player.uuid);
                     }
                     if (ImGui.button("Copy Data##serverinfoplayer" + playerName + "copydata", buttonWidth, buttonHeight)) {
                         this.mc.keyboard.setClipboard(playerData);

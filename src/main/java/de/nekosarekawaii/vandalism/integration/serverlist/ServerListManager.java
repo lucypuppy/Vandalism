@@ -24,7 +24,10 @@ import com.google.gson.stream.JsonToken;
 import de.nekosarekawaii.vandalism.Vandalism;
 import net.minecraft.client.MinecraftClient;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,7 +141,7 @@ public class ServerListManager {
                 }
             }
             jsonReader.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             Vandalism.getInstance().getLogger().error("Failed to load enhanced server list config.", e);
         }
     }
@@ -158,7 +161,7 @@ public class ServerListManager {
             configObject.add("serverLists", serverListsArray);
             printWriter.println(GSON.toJson(configObject));
             printWriter.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             Vandalism.getInstance().getLogger().error("Failed to save enhanced server list config.", e);
         }
     }

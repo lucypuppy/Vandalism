@@ -147,7 +147,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                         if (ImGui.button("Copy Address" + uniqueId + "copyaddress", buttonWidth, buttonHeight)) {
                             this.mc.keyboard.setClipboard(address);
                         }
-                        if (ImGui.button("Copy Info" + uniqueId + "copyinfo", buttonWidth, buttonHeight)) {
+                        if (ImGui.button("Copy Data" + uniqueId + "copydata", buttonWidth, buttonHeight)) {
                             final StringBuilder serverInfoBuilder = new StringBuilder();
                             serverInfoBuilder.append("Server Address: ").append(address).append('\n');
                             String resolvedServerAddress = this.mcPingResponse.server.ip;
