@@ -38,6 +38,7 @@ import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.network.ServerInfo;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Pair;
 
@@ -99,6 +100,12 @@ public class ServerInfoClientMenuWindow extends ClientMenuWindow {
                 ImGuiInputTextFlags.CallbackCharFilter,
                 IP_FILTER
         );
+        final ServerInfo currentServer = this.mc.getCurrentServerEntry();
+        if (currentServer != null) {
+            if (ImGui.button("Use Current Server##serverinfousecurrentserver", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                this.ip.set(currentServer.address);
+            }
+        }
         final String ipValue = this.ip.get();
         if (!ipValue.isBlank()) {
             if (ImUtils.subButton("Get##serverinfoddatarequest")) {
