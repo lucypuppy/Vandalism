@@ -50,17 +50,20 @@ public class BoxMuellerClicker extends Clicker {
 
     @Override
     public void onUpdate() {
-        if(mc.crosshairTarget == null || mc.crosshairTarget.getType() != HitResult.Type.ENTITY) {
+        if (mc.crosshairTarget == null || mc.crosshairTarget.getType() != HitResult.Type.ENTITY) {
             this.clickAction.accept(false);
+            this.clicks = 0;
             return;
         }
-        EntityHitResult entityHitResult = (EntityHitResult) mc.crosshairTarget;
-        if(killAuraModule == null || entityHitResult.getEntity().distanceTo(mc.player) > (killAuraModule.getPreHit().getValue() ? killAuraModule.getAimRange() : killAuraModule.getRange())) {
-            this.clickAction.accept(false);
-            return;
-        }
-        final int extra = RandomUtils.randomInt(-1, 1);
 
+        final EntityHitResult entityHitResult = (EntityHitResult) mc.crosshairTarget;
+        if (killAuraModule == null || entityHitResult.getEntity().distanceTo(mc.player) > (killAuraModule.getPreHit().getValue() ? killAuraModule.getAimRange() : killAuraModule.getRange())) {
+            this.clickAction.accept(false);
+            this.clicks = 0;
+            return;
+        }
+
+        final int extra = RandomUtils.randomInt(-1, 1);
         while (this.clicks + extra > 0) {
             this.clickAction.accept(true);
             this.clicks--;
@@ -73,12 +76,15 @@ public class BoxMuellerClicker extends Clicker {
             this.clickAction.accept(false);
 
             if (RandomUtils.randomInt(0, 100) <= this.cpsUpdatePossibility || this.cps < this.minCps) {
+                int depth = 0;
+
                 while (true) {
                     final double gaussian = ThreadLocalRandom.current().nextGaussian(this.mean, this.std);
                     final double gaussianPercentage = MathUtil.normalizeGaussian(gaussian, this.mean, this.std);
                     final double gaussianDensity = MathUtil.densityFunction(gaussian, this.mean, this.std) * this.mean;
+                    depth++;
 
-                    if (gaussianPercentage < gaussianDensity) {
+                    if (depth > 5 || gaussianPercentage < gaussianDensity) {
                         this.cps = (float) Arithmetics.interpolate(this.minCps, this.maxCps, gaussianPercentage);
                         this.cpsHistory.add(new Vector4d(this.cps, gaussian, gaussianPercentage, gaussianDensity));
                         break;
