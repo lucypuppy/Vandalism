@@ -18,7 +18,10 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.nofall.impl;
 
+import de.florianmichael.rclasses.common.StringUtils;
+import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.nofall.NoFallModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
@@ -29,6 +32,14 @@ public class GroundSpoofModuleMode extends ModuleMulti<NoFallModule> implements 
     public GroundSpoofModuleMode() {
         super("Ground Spoof");
     }
+
+    private final EnumModeValue<Mode> mode = new EnumModeValue<>(
+            this,
+            "Mode",
+            "The current ground spoof mode.",
+            Mode.ON_GROUND,
+            Mode.values()
+    );
 
     @Override
     public void onActivate() {
@@ -42,8 +53,30 @@ public class GroundSpoofModuleMode extends ModuleMulti<NoFallModule> implements 
 
     @Override
     public void onOutgoingPacket(OutgoingPacketEvent event) {
-        if (event.packet instanceof final PlayerMoveC2SPacket playerPacket && this.mc.player.fallDistance > 3.0f) {
-            playerPacket.onGround = true;
+        if (mode.getValue() == Mode.ON_GROUND) {
+            if (event.packet instanceof final PlayerMoveC2SPacket playerPacket && this.mc.player.fallDistance > 3.0f) {
+                playerPacket.onGround = true;
+            }
+        } else {
+            if (event.packet instanceof final PlayerMoveC2SPacket playerPacket) {
+                playerPacket.onGround = false;
+            }
         }
+    }
+
+    private enum Mode implements IName {
+        ON_GROUND, NO_GROUND;
+
+        private final String name;
+
+        Mode() {
+            this.name = StringUtils.normalizeEnumName(this.name());
+        }
+
+        @Override
+        public String getName() {
+            return this.name;
+        }
+
     }
 }

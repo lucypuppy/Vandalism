@@ -222,7 +222,7 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
                 ImGui.separator();
             }
             if (this.currentPortResult < 0) {
-                if (ImGui.button("Ping all ports##portspingallportscanner", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
+                if (ImGui.button("Ping all ports##portspingallportscanner", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                     this.portResults.clear();
                     new Thread(() -> {
                         this.currentPortResult = 0;
@@ -245,7 +245,7 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
             if (!this.portResults.isEmpty()) {
                 if (this.currentPortResult < 0) {
                     ImGui.sameLine();
-                    if (ImGui.button("Add all servers##portsaddallserversportscanner", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                    if (ImGui.button("Add all servers##portsaddallserversportscanner", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
                         final net.minecraft.client.option.ServerList serverList = new net.minecraft.client.option.ServerList(MinecraftClient.getInstance());
                         serverList.loadFile();
                         for (final PortResult portResult : this.portResults) {
