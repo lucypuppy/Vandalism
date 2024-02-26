@@ -163,28 +163,26 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
                     this.state.set(State.RUNNING.getMessage());
                     final Pair<String, Integer> serverAddress = ServerConnectionUtil.resolveServerAddress(this.hostname.get());
                     final String resolvedAddress = serverAddress.getLeft();
-                    for (int i = 0; i < this.threads.get(); i++) {
-                        Executors.newSingleThreadExecutor().submit(() -> {
-                            try {
-                                while (this.isRunning() && this.currentPort < this.maxPort.get()) {
-                                    this.currentPort++;
-                                    final int port = this.currentPort;
-                                    synchronized (this.ports) {
-                                        if (!this.ports.containsKey(port)) {
-                                            final PortResult portResult = new PortResult(port, resolvedAddress);
-                                            portResult.ping(() -> this.ports.put(port, portResult));
-                                        }
-                                    }
-                                    if (this.checkedPort < port) {
-                                        this.checkedPort = port;
+                    Executors.newFixedThreadPool(this.threads.get()).submit(() -> {
+                        try {
+                            while (this.isRunning() && this.currentPort < this.maxPort.get()) {
+                                this.currentPort++;
+                                final int port = this.currentPort;
+                                synchronized (this.ports) {
+                                    if (!this.ports.containsKey(port)) {
+                                        final PortResult portResult = new PortResult(port, resolvedAddress);
+                                        portResult.ping(() -> this.ports.put(port, portResult));
                                     }
                                 }
-                                this.stop();
-                            } catch (Exception e) {
-                                this.state.set(State.FAILED.getMessage() + e.getClass().getSimpleName() + ": " + e.getMessage());
+                                if (this.checkedPort < port) {
+                                    this.checkedPort = port;
+                                }
                             }
-                        });
-                    }
+                            this.stop();
+                        } catch (Exception e) {
+                            this.state.set(State.FAILED.getMessage() + e.getClass().getSimpleName() + ": " + e.getMessage());
+                        }
+                    });
                 }
                 ImGui.spacing();
             }
