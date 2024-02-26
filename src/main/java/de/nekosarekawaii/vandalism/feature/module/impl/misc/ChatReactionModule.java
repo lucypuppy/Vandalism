@@ -21,8 +21,8 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 import de.florianmichael.rclasses.common.RandomUtils;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.player.ChatReceiveListener;
 import de.nekosarekawaii.vandalism.base.value.impl.rendering.ButtonValue;
+import de.nekosarekawaii.vandalism.event.normal.player.ChatReceiveListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.script.parse.ScriptVariable;
 import net.minecraft.client.network.PlayerListEntry;
@@ -55,6 +55,7 @@ public class ChatReactionModule extends AbstractModule implements ChatReceiveLis
                 "If activated the client will react to certain words in the chat and will answer with a certain message.",
                 Category.MISC
         );
+        this.setup();
     }
 
     @Override
