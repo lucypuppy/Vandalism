@@ -117,7 +117,7 @@ public abstract class AbstractAccount implements MinecraftWrapper {
     public void updateSession(final Session session) {
         final UpdateSessionListener.UpdateSessionEvent event = new UpdateSessionListener.UpdateSessionEvent(this.session, session);
         Vandalism.getInstance().getEventSystem().postInternal(UpdateSessionListener.UpdateSessionEvent.ID, event);
-        this.session = event.newSession; //Allow the event to change the session
+        this.session = event.newSession; // Allow the event to change the session
         this.playerSkin = new PlayerSkinRenderer(session.getUuidOrNull());
         this.lastLogin = TimeFormatter.currentDateTime();
     }
@@ -129,7 +129,7 @@ public abstract class AbstractAccount implements MinecraftWrapper {
     public void logIn() {
         CompletableFuture.runAsync(() -> {
             try {
-                this.logIn0(); //Set the game session and reload the skins
+                this.logIn0(); // Set the game session and reload the skins
                 if (reloadProfileKeys(this.session, getEnvironment())) {
                     this.setStatus("Updated session and logged in");
                 } else {
@@ -145,8 +145,8 @@ public abstract class AbstractAccount implements MinecraftWrapper {
 
     public static boolean reloadProfileKeys(final Session session, final Environment environment) {
         final YggdrasilAuthenticationService authenticationService = new YggdrasilAuthenticationService(mc.getNetworkProxy(), environment);
-        mc.session = session; //We already did that in normal cases, but for people who use this as API we need to do it again
-        mc.getSplashTextLoader().session = session; //We will never know, right?
+        mc.session = session; // We already did that in normal cases, but for people who use this as API we need to do it again
+        mc.getSplashTextLoader().session = session; // We will never know, right?
         mc.sessionService = authenticationService.createMinecraftSessionService();
         if (session.getAccountType().equals(Session.AccountType.MSA)) {
             final UserApiService userApiService = authenticationService.createUserApiService(session.getAccessToken());
@@ -165,8 +165,8 @@ public abstract class AbstractAccount implements MinecraftWrapper {
             mc.realmsPeriodicCheckers = new RealmsPeriodicCheckers(RealmsClient.createRealmsClient(mc));
             return userApiService != UserApiService.OFFLINE;
         } else {
-            //Legacy account types doesn't need reloading the profile since we can't get the required fields (access token) for it
-            //So we just skip it
+            // Legacy account types doesn't need reloading the profile since we can't get the required fields (access token) for it
+            // So we just skip it
             return true;
         }
     }

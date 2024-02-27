@@ -18,19 +18,15 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
-import de.florianmichael.rclasses.common.color.ColorUtils;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-
-import java.awt.*;
 
 public class ESPModule extends AbstractModule {
 
     public final ColorValue outlineColor = new ColorValue(
             this,
             "Color",
-            "The color of the outline.",
-            ColorUtils.withAlpha(Color.WHITE, 200)
+            "The color of the outline."
     );
 
     public ESPModule() {

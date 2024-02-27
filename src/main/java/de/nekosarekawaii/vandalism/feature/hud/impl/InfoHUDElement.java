@@ -39,7 +39,6 @@ import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.awt.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -55,8 +54,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
     private final ColorValue color = new ColorValue(
             this,
             "Color",
-            "The color of the text.",
-            Color.WHITE
+            "The color of the text."
     );
 
     private final BooleanValue fps = new BooleanValue(
@@ -205,7 +203,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
     private long lastUpdate = System.currentTimeMillis();
 
     public InfoHUDElement() {
-        super("Info", 2, 60);
+        super("Info", 0, 136);
         Vandalism.getInstance().getEventSystem().subscribe(IncomingPacketEvent.ID, this);
     }
 

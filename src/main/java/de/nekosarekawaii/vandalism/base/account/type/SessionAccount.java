@@ -102,7 +102,7 @@ public class SessionAccount extends AbstractAccount {
 
     @Override
     public void save0(final JsonObject mainNode) throws Throwable {
-        //Every account stores the last input from updateSession(), but we still have to save and load our own account data
+        // Every account stores the last input from updateSession(), but we still have to save and load our own account data
         mainNode.addProperty("name", this.name);
         mainNode.addProperty("uuid", this.uuid);
         mainNode.addProperty("accessToken", StaticEncryptionUtil.encrypt(this.name, this.accessToken));
@@ -112,7 +112,7 @@ public class SessionAccount extends AbstractAccount {
 
     @Override
     public void load0(final JsonObject mainNode) throws Throwable {
-        //Every account stores the last input from updateSession(), but we still have to save and load our own account data
+        // Every account stores the last input from updateSession(), but we still have to save and load our own account data
         this.name = mainNode.get("name").getAsString();
         this.uuid = mainNode.get("uuid").getAsString();
         this.accessToken = StaticEncryptionUtil.decrypt(this.name, mainNode.get("accessToken").getAsString());

@@ -197,12 +197,16 @@ public class ServerInfoClientMenuWindow extends ClientMenuWindow {
             ImGui.separator();
             for (final ServerInfoResponse.Player player : this.serverInfo.players) {
                 final String playerName = player.name;
+                final String playerUUID = player.uuid;
+                if (playerName.equals("Anonymous Player") && playerUUID.equals("00000000-0000-0000-0000-000000000000")) {
+                    continue;
+                }
                 final StringBuilder playerString = new StringBuilder();
                 playerString.append("Name: ");
                 playerString.append(playerName);
                 playerString.append("\n");
                 playerString.append("UUID: ");
-                playerString.append(player.uuid);
+                playerString.append(playerUUID);
                 playerString.append("\n");
                 playerString.append("Last Seen: ");
                 playerString.append(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(
@@ -210,7 +214,7 @@ public class ServerInfoClientMenuWindow extends ClientMenuWindow {
                 ));
                 final String playerData = playerString.toString();
                 final GameProfile gameProfile = this.mc.getGameProfile();
-                final boolean isCurrentAccount = gameProfile.getName().equals(playerName) && gameProfile.getId().toString().equals(player.uuid);
+                final boolean isCurrentAccount = gameProfile.getName().equals(playerName) && gameProfile.getId().toString().equals(playerUUID);
                 if (isCurrentAccount) {
                     final float[] color = {0.1f, 0.8f, 0.1f, 0.30f};
                     ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], color[3]);
@@ -222,7 +226,7 @@ public class ServerInfoClientMenuWindow extends ClientMenuWindow {
                     try {
                         uuid = UUIDUtil.getUUIDFromName(playerName);
                     } catch (Exception e) {
-                        uuid = player.uuid;
+                        uuid = playerUUID;
                         Vandalism.getInstance().getLogger().error("Failed to get UUID of the player: \"" + playerName + "\" (using fallback UUID).");
                     }
                     final SessionAccount sessionAccount = new SessionAccount(
@@ -244,7 +248,7 @@ public class ServerInfoClientMenuWindow extends ClientMenuWindow {
                         try {
                             uuid = UUIDUtil.getUUIDFromName(playerName);
                         } catch (Exception e) {
-                            uuid = player.uuid;
+                            uuid = playerUUID;
                             Vandalism.getInstance().getLogger().error("Failed to get UUID of the player: \"" + playerName + "\" (using fallback UUID).");
                         }
                         final SessionAccount sessionAccount = new SessionAccount(
@@ -261,7 +265,7 @@ public class ServerInfoClientMenuWindow extends ClientMenuWindow {
                         this.mc.keyboard.setClipboard(playerName);
                     }
                     if (ImGui.button("Copy UUID##serverinfoplayer" + playerName + "copyuuid", buttonWidth, buttonHeight)) {
-                        this.mc.keyboard.setClipboard(player.uuid);
+                        this.mc.keyboard.setClipboard(playerUUID);
                     }
                     if (ImGui.button("Copy Data##serverinfoplayer" + playerName + "copydata", buttonWidth, buttonHeight)) {
                         this.mc.keyboard.setClipboard(playerData);

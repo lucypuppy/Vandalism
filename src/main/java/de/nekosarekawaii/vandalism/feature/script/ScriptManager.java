@@ -22,14 +22,14 @@ import de.florianmichael.rclasses.pattern.storage.named.NamedStorage;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
+import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
 import de.nekosarekawaii.vandalism.feature.script.gui.ScriptsClientMenuWindow;
 import de.nekosarekawaii.vandalism.feature.script.parse.ScriptParser;
 import de.nekosarekawaii.vandalism.feature.script.parse.command.ScriptCommand;
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.util.Pair;
 import org.lwjgl.glfw.GLFW;
 
@@ -101,7 +101,7 @@ public class ScriptManager extends NamedStorage<Script> implements PlayerUpdateL
 
     @Override
     public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        //Cancel if the key is unknown to prevent the script from being executed multiple times.
+        // Cancel if the key is unknown to prevent the script from being executed multiple times.
         if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN) {
             return;
         }
