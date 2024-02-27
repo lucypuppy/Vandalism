@@ -21,14 +21,17 @@ package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.event.normal.network.WorldListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.PacketUtil;
+import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.debug.DebugRenderer;
@@ -42,9 +45,11 @@ import net.minecraft.network.packet.s2c.play.*;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class BackTrackModule extends AbstractModule implements PlayerUpdateListener, IncomingPacketListener, Render3DListener {
+public class BackTrackModule extends AbstractModule implements PlayerUpdateListener,
+        IncomingPacketListener, Render3DListener, WorldListener {
 
     public final IntegerValue pingSpoof = new IntegerValue(
             this,
@@ -53,6 +58,14 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
             60,
             0,
             1000);
+
+    public final FloatValue backTrackRange = new FloatValue(
+            this,
+            "Back Track Range",
+            "The range to back track the target.",
+            10.0f,
+            3.0f,
+            20.0f);
 
     private final ValueGroup resyncGroup = new ValueGroup(this, "Resync", "Resync options.");
 
@@ -92,20 +105,15 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
             10.0
     ).visibleCondition(this.resyncOnDistanceToPlayer::getValue);
 
-    private TrackedPosition realTargetPosition;
-    private Entity targetEntity;
-
-    private final KillAuraModule killAuraModule;
-
+    private final HashMap<Integer, TrackedPosition> backTrackedEntities = new HashMap<>();
     private final ConcurrentLinkedQueue<DelayedPacket> packets = new ConcurrentLinkedQueue<>();
 
-    public BackTrackModule(final KillAuraModule killAuraModule) {
+    public BackTrackModule() {
         super(
                 "Back Track",
                 "Allows you to back track entities.",
                 Category.COMBAT
         );
-        this.killAuraModule = killAuraModule;
     }
 
     @Override
@@ -113,7 +121,8 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
         Vandalism.getInstance().getEventSystem().subscribe(
                 this,
                 PlayerUpdateEvent.ID,
-                Render3DEvent.ID
+                Render3DEvent.ID,
+                WorldLoadEvent.ID
         );
 
         Vandalism.getInstance().getEventSystem().subscribe(
@@ -129,27 +138,28 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
                 this,
                 PlayerUpdateEvent.ID,
                 IncomingPacketEvent.ID,
-                Render3DEvent.ID
+                Render3DEvent.ID,
+                WorldLoadEvent.ID
         );
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        this.targetEntity = this.killAuraModule.getTarget();
-
-        if (!this.killAuraModule.isActive() || this.targetEntity == null) {
-            this.targetEntity = null;
-            this.realTargetPosition = null;
-
-            this.handlePackets(true);
-            return;
-        }
-
-        this.handlePackets(false);
-
-        if (this.realTargetPosition == null) {
-            this.realTargetPosition = new TrackedPosition();
-            this.realTargetPosition.setPos(this.targetEntity.getPos());
+        for (final Entity entity : this.mc.world.getEntities()) {
+            if (WorldUtil.isTarget(entity)
+                    && entity.getWidth() > 0.0
+                    && entity.getHeight() > 0.0
+                    && entity instanceof final LivingEntity livingEntity) {
+                if (this.mc.player.distanceTo(livingEntity) <= backTrackRange.getValue()) {
+                    if (!this.backTrackedEntities.containsKey(livingEntity.getId())) {
+                        final TrackedPosition trackedPosition = new TrackedPosition();
+                        trackedPosition.setPos(entity.getPos());
+                        this.backTrackedEntities.put(livingEntity.getId(), trackedPosition);
+                    }
+                } else {
+                    this.backTrackedEntities.remove(livingEntity.getId());
+                }
+            }
         }
     }
 
@@ -159,8 +169,11 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
 
         if (//@formatter:off
                 packet instanceof GameMessageS2CPacket || packet instanceof PlaySoundS2CPacket ||
-                        this.targetEntity == null || this.realTargetPosition == null ||
-                        this.mc.player == null || this.mc.world == null || event.isCancelled() // Ignore already cancelled packets
+                        packet instanceof LightUpdateS2CPacket ||
+                        packet instanceof ChunkDataS2CPacket ||
+                        packet instanceof PlayerRespawnS2CPacket ||
+                        this.backTrackedEntities.isEmpty() || this.mc.player == null ||
+                        this.mc.world == null || event.isCancelled() //Ignore already cancelled packets
         ) {//@formatter:on
             return;
         }
@@ -177,35 +190,31 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
             }
         }
 
-        boolean move = false;
-        if (packet instanceof final EntityS2CPacket entityS2CPacket && entityS2CPacket.id == this.targetEntity.getId()) {
-            this.realTargetPosition.setPos(
-                    this.realTargetPosition.withDelta(
+        boolean shouldCancel = false;
+        if (packet instanceof final EntityS2CPacket entityS2CPacket && this.backTrackedEntities.containsKey(entityS2CPacket.id)) {
+            final TrackedPosition trackedPosition = this.backTrackedEntities.get(entityS2CPacket.id);
+            trackedPosition.setPos(
+                    trackedPosition.withDelta(
                             entityS2CPacket.getDeltaX(),
                             entityS2CPacket.getDeltaY(),
                             entityS2CPacket.getDeltaZ()
                     )
             );
-            move = true;
-        } else if (packet instanceof final EntityPositionS2CPacket positionS2CPacket && positionS2CPacket.getId() == this.targetEntity.getId()) {
-            this.realTargetPosition.setPos(new Vec3d(positionS2CPacket.getX(), positionS2CPacket.getY(), positionS2CPacket.getZ()));
-            move = true;
+
+            if (this.checkForResync(trackedPosition, entityS2CPacket.id)) {
+                shouldCancel = true;
+            }
+        } else if (packet instanceof final EntityPositionS2CPacket positionS2CPacket && this.backTrackedEntities.containsKey(positionS2CPacket.getId())) {
+            final TrackedPosition trackedPosition = this.backTrackedEntities.get(positionS2CPacket.getId());
+            trackedPosition.setPos(new Vec3d(positionS2CPacket.getX(), positionS2CPacket.getY(), positionS2CPacket.getZ()));
+
+            if (this.checkForResync(trackedPosition, positionS2CPacket.getId())) {
+                shouldCancel = true;
+            }
         }
 
-        if (move) {
-            final double distanceToOrigin = this.mc.player.distanceTo(this.targetEntity);
-            final double distanceToRealPos = this.mc.player.getPos().distanceTo(this.realTargetPosition.pos);
-            final double distanceOriginToRealPos = this.targetEntity.getPos().distanceTo(this.realTargetPosition.pos);
-
-            final boolean condition1 = this.resyncIfCloserToReal.getValue() && distanceToOrigin > distanceToRealPos;
-            final boolean condition2 = this.resyncOnDistanceToOrigin.getValue() && distanceOriginToRealPos > this.maxDistanceToOrigin.getValue();
-            final boolean condition3 = this.resyncOnDistanceToPlayer.getValue() && distanceToRealPos > this.maxDistanceToPlayer.getValue();
-
-            if (condition1 || condition2 || condition3) {
-                // ChatUtil.infoChatMessage("Resynced target. {" + condition1 + ", " + condition2 + ", " + condition3 + "}");
-                handlePackets(true);
-                return;
-            }
+        if (shouldCancel) {
+            return;
         }
 
         this.packets.add(new DelayedPacket(packet, System.currentTimeMillis()));
@@ -223,16 +232,25 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
 
     @Override
     public void onRender3D(final float tickDelta, final long limitTime, final MatrixStack matrixStack) {
-        if (this.targetEntity == null) {
+        if (this.backTrackedEntities.isEmpty()) {
             return;
         }
 
-        final Vec3d pos = this.realTargetPosition.pos;
-        if (pos.distanceTo(this.targetEntity.getPos()) < 0.1) {
-            return;
-        }
+        this.handlePackets(this.backTrackedEntities.isEmpty());
 
-        if (this.targetEntity instanceof final LivingEntity entity) {
+        for (var test : this.backTrackedEntities.entrySet()) {
+            final Entity entity = this.mc.world.getEntityById(test.getKey());
+            final Vec3d pos = test.getValue().pos;
+
+            if (entity == null) {
+                this.backTrackedEntities.remove(test.getKey());
+                return;
+            }
+
+            if (pos.distanceTo(entity.getPos()) < 0.1) {
+                return;
+            }
+
             matrixStack.push();
 
             final Box box = new Box(
@@ -271,7 +289,36 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
         }
     }
 
-    // @formatter:off
+    private boolean checkForResync(final TrackedPosition trackedPosition, final int id) {
+        final Entity entity = this.mc.world.getEntityById(id);
+        if (entity == null)
+            return false;
+
+        final double distanceToOrigin = this.mc.player.distanceTo(entity);
+        final double distanceToRealPos = this.mc.player.getPos().distanceTo(trackedPosition.pos);
+        final double distanceOriginToRealPos = entity.getPos().distanceTo(trackedPosition.pos);
+
+        final boolean condition1 = this.resyncIfCloserToReal.getValue() && distanceToOrigin > distanceToRealPos;
+        final boolean condition2 = this.resyncOnDistanceToOrigin.getValue() && distanceOriginToRealPos > this.maxDistanceToOrigin.getValue();
+        final boolean condition3 = this.resyncOnDistanceToPlayer.getValue() && distanceToRealPos > this.maxDistanceToPlayer.getValue();
+
+        if (condition1 || condition2 || condition3) {
+            //ChatUtil.infoChatMessage("Resynced target. {" + condition1 + ", " + condition2 + ", " + condition3 + "}");
+            handlePackets(true);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void onPreWorldLoad() {
+        //handlePackets(true);
+        this.backTrackedEntities.clear();
+    }
+
+    //@formatter:off
     private record DelayedPacket(Packet<?> packet, long time) {}
-    // @formatter:on
+    //@formatter:on
+
 }
