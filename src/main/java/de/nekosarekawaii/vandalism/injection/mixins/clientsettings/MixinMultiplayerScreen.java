@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerList;
 import de.nekosarekawaii.vandalism.integration.serverlist.gui.ConfigScreen;
 import de.nekosarekawaii.vandalism.util.common.UUIDUtil;
@@ -40,9 +41,11 @@ import net.minecraft.text.Text;
 import net.minecraft.util.profiler.PerformanceLog;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
@@ -62,12 +65,40 @@ public abstract class MixinMultiplayerScreen extends Screen {
     @Shadow
     protected MultiplayerServerListWidget serverListWidget;
 
+    @Unique
+    private static net.minecraft.client.option.ServerList vanddalism$SERVER_LIST;
+
     protected MixinMultiplayerScreen(final Text title) {
         super(title);
     }
 
+    @Inject(method = "refresh", at = @At("HEAD"))
+    private void modifyRefresh(final CallbackInfo ci) {
+        vanddalism$SERVER_LIST = null;
+    }
+
+    @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerServerListWidget;setServers(Lnet/minecraft/client/option/ServerList;)V"))
+    private void modifyInitHead(MultiplayerServerListWidget instance, net.minecraft.client.option.ServerList servers) {
+        final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
+        if (enhancedServerListSettings.enhancedServerList.getValue() && enhancedServerListSettings.cacheServerList.getValue()){
+            if (vanddalism$SERVER_LIST != null) {
+                servers = vanddalism$SERVER_LIST;
+                for (final ServerInfo server : servers.servers) {
+                    server.online = true;
+                }
+            }
+            else {
+                vanddalism$SERVER_LIST = servers;
+            }
+        }
+        else {
+            vanddalism$SERVER_LIST = null;
+        }
+        instance.setServers(servers);
+    }
+
     @Inject(method = "init", at = @At("RETURN"))
-    private void addEnhancedServerListButton(final CallbackInfo ci) {
+    private void modifyInitReturn(final CallbackInfo ci) {
         if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().enhancedServerList.getValue()) {
             this.addDrawableChild(ButtonWidget.builder(Text.literal("Server Lists"), button -> {
                 if (this.client != null) {
@@ -98,9 +129,10 @@ public abstract class MixinMultiplayerScreen extends Screen {
 
     @Override
     public boolean keyPressed(final int keyCode, final int scanCode, final int modifiers) {
-        if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().enhancedServerList.getValue()) {
-            if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().kickAllPlayersKey.getValue() == keyCode) {
-                if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().kickAllPlayers.getValue()) {
+        final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
+        if (enhancedServerListSettings.enhancedServerList.getValue()) {
+            if (enhancedServerListSettings.kickAllPlayersKey.getValue() == keyCode) {
+                if (enhancedServerListSettings.kickAllPlayers.getValue()) {
                     final MultiplayerServerListWidget.Entry selectedEntry = this.serverListWidget.getSelectedOrNull();
                     if (selectedEntry instanceof final MultiplayerServerListWidget.ServerEntry selectedServerEntry) {
                         final ServerInfo serverInfo = selectedServerEntry.getServer();
@@ -114,8 +146,8 @@ public abstract class MixinMultiplayerScreen extends Screen {
                             }
                             MCPing.pingModern(ProtocolTranslator.getTargetVersion().getVersion()).address(host, port)
                                     .timeout(
-                                            Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().kickAllPlayersPingConnectionTimeout.getValue(),
-                                            Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().kickAllPlayersPingReadTimeout.getValue()
+                                            enhancedServerListSettings.kickAllPlayersPingConnectionTimeout.getValue(),
+                                            enhancedServerListSettings.kickAllPlayersPingReadTimeout.getValue()
                                     )
                                     .exceptionHandler(t -> Vandalism.getInstance().getLogger().error("Failed to kick any player cause of an error while pinging the server.", t))
                                     .finishHandler(response -> {
@@ -150,7 +182,7 @@ public abstract class MixinMultiplayerScreen extends Screen {
                                                                 clientConnection.send(new HandshakeC2SPacket(response.server.protocol, response.server.ip, response.server.port, ConnectionIntent.LOGIN));
                                                                 clientConnection.send(new LoginHelloC2SPacket(name, UUID.fromString(uuid)));
                                                                 Vandalism.getInstance().getLogger().info("Player " + name + " should be kicked.");
-                                                                Thread.sleep(Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().kickAllPlayersKickDelay.getValue());
+                                                                Thread.sleep(enhancedServerListSettings.kickAllPlayersKickDelay.getValue());
                                                             } catch (Exception e) {
                                                                 Vandalism.getInstance().getLogger().error("Failed to kick the player: \"" + name + "\"", e);
                                                             }
@@ -169,7 +201,7 @@ public abstract class MixinMultiplayerScreen extends Screen {
                     }
                 }
             }
-            if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().pasteServerKey.getValue() == keyCode) {
+            if (enhancedServerListSettings.pasteServerKey.getValue() == keyCode) {
                 String clipboard = this.client.keyboard.getClipboard();
                 if (clipboard != null && !clipboard.isBlank()) {
                     clipboard = clipboard.replaceAll("[^a-zA-Z0-9.:-_]", "");
@@ -180,19 +212,19 @@ public abstract class MixinMultiplayerScreen extends Screen {
                     );
                     this.serverList.add(serverInfo, false);
                     this.serverList.saveFile();
-                    this.refresh();
+                    this.serverListWidget.setServers(this.serverList);
                 }
             }
             final MultiplayerServerListWidget.Entry selectedEntry = this.serverListWidget.getSelectedOrNull();
             if (selectedEntry instanceof final MultiplayerServerListWidget.ServerEntry selectedServerEntry) {
                 final ServerInfo serverInfo = selectedServerEntry.getServer();
-                if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().copyServerKey.getValue() == keyCode) {
+                if (enhancedServerListSettings.copyServerKey.getValue() == keyCode) {
                     this.client.keyboard.setClipboard(serverInfo.address);
                 }
-                if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().deleteServerKey.getValue() == keyCode) {
+                if (enhancedServerListSettings.deleteServerKey.getValue() == keyCode) {
                     this.serverList.remove(serverInfo);
                     this.serverList.saveFile();
-                    this.refresh();
+                    this.serverListWidget.setServers(this.serverList);
                 }
             }
         }
