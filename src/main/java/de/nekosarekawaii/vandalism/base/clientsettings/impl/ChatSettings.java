@@ -40,6 +40,13 @@ public class ChatSettings extends ValueGroup {
             true
     );
 
+    public final BooleanValue displayAccountHead = new BooleanValue(
+            this,
+            "Display Account Head",
+            "Displays the head of your current account at the bottom left.",
+            true
+    );
+
     public final BooleanValue allowColorChar = new BooleanValue(
             this,
             "Allow Color Char",
