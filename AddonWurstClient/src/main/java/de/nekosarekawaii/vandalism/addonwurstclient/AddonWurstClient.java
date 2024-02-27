@@ -32,7 +32,7 @@ public class AddonWurstClient implements VandalismAddonLauncher {
 
     private static AddonWurstClient instance;
 
-    //Temporary list to store the enabled hacks when the user disables the WurstClient module
+    // Temporary list to store the enabled hacks when the user disables the WurstClient module
     public static List<String> enabledHacks;
 
     private WurstClientModule module;
@@ -44,7 +44,7 @@ public class AddonWurstClient implements VandalismAddonLauncher {
     public void onLaunch(final Vandalism vandalism) {
         instance = this;
 
-        //Initialize WurstClient, counterpart in MixinWurstInitializer.java
+        // Initialize WurstClient, counterpart in MixinWurstInitializer.java
         WurstClient.INSTANCE.initialize();
 
         vandalism.getModuleManager().add(this.module = new WurstClientModule());

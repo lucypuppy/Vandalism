@@ -20,13 +20,13 @@ package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
 import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
-import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
+import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.PacketUtil;
 import net.minecraft.client.render.Tessellator;
@@ -160,7 +160,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
         if (//@formatter:off
                 packet instanceof GameMessageS2CPacket || packet instanceof PlaySoundS2CPacket ||
                         this.targetEntity == null || this.realTargetPosition == null ||
-                        this.mc.player == null || this.mc.world == null || event.isCancelled() //Ignore already cancelled packets
+                        this.mc.player == null || this.mc.world == null || event.isCancelled() // Ignore already cancelled packets
         ) {//@formatter:on
             return;
         }
@@ -202,7 +202,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
             final boolean condition3 = this.resyncOnDistanceToPlayer.getValue() && distanceToRealPos > this.maxDistanceToPlayer.getValue();
 
             if (condition1 || condition2 || condition3) {
-                //ChatUtil.infoChatMessage("Resynced target. {" + condition1 + ", " + condition2 + ", " + condition3 + "}");
+                // ChatUtil.infoChatMessage("Resynced target. {" + condition1 + ", " + condition2 + ", " + condition3 + "}");
                 handlePackets(true);
                 return;
             }
@@ -271,7 +271,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
         }
     }
 
-    //@formatter:off
+    // @formatter:off
     private record DelayedPacket(Packet<?> packet, long time) {}
-    //@formatter:on
+    // @formatter:on
 }

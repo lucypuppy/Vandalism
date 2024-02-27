@@ -198,12 +198,12 @@ public class FOVFuckerModule extends AbstractModule implements PlayerUpdateListe
             if (yawDiff >= -157.5f && yawDiff <= -22.5f) ++strafe;
         }
 
-        //offsets
+        // offsets
         final double hOffset = this.targetHPosOffset.getValue();
         final double xOffset = Math.sin(direction) * hOffset;
         final double zOffset = Math.cos(direction) * hOffset;
 
-        //positions
+        // positions
         double x = this.target.getX(), z = this.target.getZ();
         if (!this.alwaysFOV.getValue()) {
             x += xOffset;

@@ -29,7 +29,7 @@ import net.minecraft.util.Identifier;
 public class FabricBootstrap implements ClientModInitializer {
 
     public static String MOD_ID, MOD_NAME, MOD_AUTHORS, MOD_VERSION;
-    public static Identifier MOD_LOGO, MOD_ICON; // Initialize these in the main class
+    public static Identifier MOD_LOGO, MOD_ICON; //  Initialize these in the main class
     public static String WINDOW_TITLE;
     public static boolean IS_DEV_ENVIRONMENT;
     public static boolean INITIALIZED = false;
