@@ -63,20 +63,22 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
 
     @Inject(method = "init", at = @At(value = "RETURN"))
     private void customChatInputField(final CallbackInfo ci) {
+        this.chatField.setWidth(this.width - 13); // Fix for the chat input field width
         this.vandalism$realMaxLength = this.chatField.getMaxLength();
         final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
         if (chatSettings.moreChatInput.getValue()) {
             this.chatField.setMaxLength(Integer.MAX_VALUE);
         }
-        if (Vandalism.getInstance().getClientSettings().getChatSettings().displayAccountHead.getValue()) {
-            this.chatField.setX(18);
+        if (chatSettings.displayAccountHead.getValue()) {
+            final int xOffset = 18;
+            this.chatField.setX(xOffset);
+            this.chatField.setWidth(this.chatField.getWidth() - xOffset);
         }
     }
 
     @ModifyConstant(method = "init", constant = @Constant(intValue = 10))
     private int moreChatInputSuggestions(final int constant) {
-        final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
-        if (chatSettings.moreChatInputSuggestions.getValue()) {
+        if (Vandalism.getInstance().getClientSettings().getChatSettings().moreChatInputSuggestions.getValue()) {
             return (this.height - 12 - 3) / 12;
         } else {
             return constant;
@@ -87,6 +89,7 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
     private void modifyChatFieldBackground(final Args args) {
         if (Vandalism.getInstance().getClientSettings().getChatSettings().displayAccountHead.getValue()) {
             args.set(0, this.chatField.getX() - 2);
+
         }
     }
 
@@ -95,9 +98,8 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
         final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
         if (chatSettings.displayTypedChars.getValue()) {
             final int currentLength = this.chatField.getText().length();
-            final MutableText text = Text.literal("" + currentLength + Formatting.DARK_GRAY + " / ");
+            final MutableText text = Text.literal(String.valueOf(currentLength) + Formatting.DARK_GRAY + " / ");
             text.append(Text.literal(String.valueOf(this.vandalism$realMaxLength)).setStyle(vandalism$RED_COLORED_STYLE));
-            text.append(Text.literal(Formatting.DARK_GRAY + " (" + Formatting.DARK_RED + this.chatField.getMaxLength() + Formatting.DARK_GRAY + ")"));
             final int x = this.chatField.getX() + this.chatField.getWidth() - this.mc.textRenderer.getWidth(text) - 2;
             final int y = this.chatField.getY() - this.mc.textRenderer.fontHeight - 2;
             final Color color = RenderUtil.interpolateColor(
