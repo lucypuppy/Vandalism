@@ -20,8 +20,8 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 
 public class SprintModule extends AbstractModule implements PlayerUpdateListener {
@@ -38,7 +38,7 @@ public class SprintModule extends AbstractModule implements PlayerUpdateListener
     }
 
     @Override
-    public void onActivate() { // Low Priority so other modules can easly override this.
+    public void onActivate() { //  Low Priority so other modules can easly override this.
         Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this, Priorities.LOW);
     }
 

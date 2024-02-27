@@ -16,22 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.injection.mixins.fix.minecraft;
+package de.nekosarekawaii.vandalism.addonwurstclient.injection.mixins.other_features;
 
-import net.minecraft.client.util.Window;
+import net.wurstclient.other_features.WurstLogoOtf;
+import net.wurstclient.settings.Setting;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(Window.class)
-public abstract class MixinWindow {
+@Mixin(WurstLogoOtf.class)
+public abstract class MixinWurstLogoOtf {
 
-    @Inject(method = "logGlError", at = @At("HEAD"))
-    public void forceLogGlErrors(final int error, final long description, final CallbackInfo ci) {
-        // Causes the JVM to actually show the caller tree of the native method, added in MC 1.13 with LWJGL 3 we can finally see
-        // Proper stack traces when calling native gl functions
-        new IllegalStateException().printStackTrace();
-    }
+    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/wurstclient/other_features/WurstLogoOtf;addSetting(Lnet/wurstclient/settings/Setting;)V", ordinal = 0), remap = false)
+    private void removeWurstLogoBackgroundColorSetting(final WurstLogoOtf instance, final Setting setting) {}
+
+    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/wurstclient/other_features/WurstLogoOtf;addSetting(Lnet/wurstclient/settings/Setting;)V", ordinal = 1), remap = false)
+    private void removeWurstLogoTextColorSetting(final WurstLogoOtf instance, final Setting setting) {}
 
 }

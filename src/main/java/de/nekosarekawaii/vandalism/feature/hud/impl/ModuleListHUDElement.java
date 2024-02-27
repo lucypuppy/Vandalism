@@ -19,15 +19,14 @@
 package de.nekosarekawaii.vandalism.feature.hud.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.internal.ModuleToggleListener;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.event.normal.internal.ModuleToggleListener;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
+import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.client.gui.DrawContext;
 
-import java.awt.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -56,8 +55,8 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
             this,
             "Height Offset",
             "The height offset of the text.",
-            0,
-            0,
+            -1,
+            -1,
             5
     );
 
@@ -80,12 +79,11 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
     private final ColorValue color = new ColorValue(
             this,
             "Color",
-            "The color of the text.",
-            Color.WHITE
+            "The color of the text."
     );
 
     public ModuleListHUDElement() {
-        super("Module List", 2, 180);
+        super("Module List", 861, 1);
         Vandalism.getInstance().getEventSystem().subscribe(ModuleToggleEvent.ID, this);
     }
 

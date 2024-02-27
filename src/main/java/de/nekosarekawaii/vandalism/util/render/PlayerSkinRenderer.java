@@ -19,34 +19,41 @@
 package de.nekosarekawaii.vandalism.util.render;
 
 import com.mojang.authlib.yggdrasil.ProfileResult;
-import net.minecraft.client.MinecraftClient;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.client.util.DefaultSkinHelper;
+import net.minecraft.util.Identifier;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class PlayerSkinRenderer {
+public class PlayerSkinRenderer implements MinecraftWrapper {
 
     private static final ExecutorService SKIN_LOADER = Executors.newSingleThreadExecutor();
 
     private int glId;
+    private Identifier skin;
 
     public PlayerSkinRenderer(final UUID uuid) {
         this.glId = -1;
+        this.skin = null;
         CompletableFuture.supplyAsync(() -> {
-            final ProfileResult result = MinecraftClient.getInstance().getSessionService().fetchProfile(uuid, false);
+            final ProfileResult result = this.mc.getSessionService().fetchProfile(uuid, false);
             if (result == null) return null;
             return result.profile();
         }, SKIN_LOADER).thenComposeAsync(profile -> {
             if (profile == null) return CompletableFuture.completedFuture(DefaultSkinHelper.getSkinTextures(uuid));
-            return MinecraftClient.getInstance().getSkinProvider().fetchSkinTextures(profile);
-        }, MinecraftClient.getInstance()).thenAcceptAsync(skin -> this.glId = RenderUtil.getGlId(skin.texture()), MinecraftClient.getInstance());
+            return this.mc.getSkinProvider().fetchSkinTextures(profile);
+        }, this.mc).thenAcceptAsync(skin -> this.glId = RenderUtil.getGlId(this.skin = skin.texture()), this.mc);
     }
 
     public int getGlId() {
         return this.glId;
     }
 
+    public Identifier getSkin() {
+        return this.skin;
+    }
+    
 }
