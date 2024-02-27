@@ -39,6 +39,13 @@ public class EnhancedServerListSettings extends ValueGroup {
         }
     });
 
+    public final BooleanValue cacheServerList = new BooleanValue(
+            this,
+            "Cache Server List",
+            "If activated the Game caches the server list.",
+            true
+    ).visibleCondition(this.enhancedServerList::getValue);
+
     public final BooleanValue serverPingerWidget = new BooleanValue(
             this,
             "Server Pinger Widget",
