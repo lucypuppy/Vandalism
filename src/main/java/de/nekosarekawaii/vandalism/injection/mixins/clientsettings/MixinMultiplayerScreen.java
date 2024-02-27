@@ -169,9 +169,6 @@ public abstract class MixinMultiplayerScreen extends Screen {
                     }
                 }
             }
-            if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().refreshServerListKey.getValue() == keyCode) {
-                this.refresh();
-            }
             if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().pasteServerKey.getValue() == keyCode) {
                 String clipboard = this.client.keyboard.getClipboard();
                 if (clipboard != null && !clipboard.isBlank()) {

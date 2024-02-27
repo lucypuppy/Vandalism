@@ -76,14 +76,6 @@ public class EnhancedServerListSettings extends ValueGroup {
             true
     ).visibleCondition(this.enhancedServerList::getValue);
 
-    public final KeyBindValue refreshServerListKey = new KeyBindValue(
-            this,
-            "Refresh Server List Key",
-            "Change the key to refresh the server list.",
-            GLFW.GLFW_KEY_F5,
-            false
-    ).visibleCondition(this.enhancedServerList::getValue);
-
     public final KeyBindValue pasteServerKey = new KeyBindValue(
             this,
             "Paste Server Key",
