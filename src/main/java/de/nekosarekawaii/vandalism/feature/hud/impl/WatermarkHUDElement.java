@@ -47,11 +47,7 @@ public class WatermarkHUDElement extends HUDElement {
     private final ColorValue color;
 
     public WatermarkHUDElement(final File logoDirectory) {
-        super(
-                "Watermark",
-                2,
-                4
-        );
+        super("Watermark", 0, 0);
 
         final File[] files = logoDirectory.listFiles();
         final List<LogoSelection> logoSelections = new ArrayList<>();
@@ -79,7 +75,7 @@ public class WatermarkHUDElement extends HUDElement {
                 this,
                 "Image Width",
                 "The width of the watermark image.",
-                156,
+                150,
                 64,
                 1024
         );
@@ -88,7 +84,7 @@ public class WatermarkHUDElement extends HUDElement {
                 this,
                 "Image Height",
                 "The height of the watermark image.",
-                44,
+                150,
                 64,
                 1024
         );
@@ -151,7 +147,7 @@ public class WatermarkHUDElement extends HUDElement {
         }
 
         public LogoSelection() {
-            this.identifier = FabricBootstrap.MOD_LOGO;
+            this.identifier = FabricBootstrap.MOD_ICON;
             this.name = "Default";
         }
 

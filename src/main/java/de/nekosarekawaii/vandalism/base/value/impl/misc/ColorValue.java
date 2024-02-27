@@ -65,20 +65,28 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
             10
     ).visibleCondition(() -> this.mode.getValue() == ColorMode.TWO_COLOR_FADE);
 
-    private static final Color DEFAULT_MAIN_COLOR_FADE = new Color(74, 0, 224);
-    private static final Color DEFAULT_SECONDARY_COLOR_FADE = new Color(142, 45, 226);
+    private static final Color DEFAULT_MAIN_COLOR_FADE = new Color(125, 66, 246, 255);
+    private static final Color DEFAULT_SECONDARY_COLOR_FADE = new Color(209, 156, 255, 255);
 
     private Color mainColorFade;
     private Color secondaryColorFade;
 
-    public ColorValue(ValueParent parent, String name, String description, HSBColor defaultValue) {
-        super(parent, name, description, defaultValue);
-        this.mainColorFade = DEFAULT_MAIN_COLOR_FADE;
-        this.secondaryColorFade = DEFAULT_SECONDARY_COLOR_FADE;
+    public ColorValue(ValueParent parent, String name, String description) {
+        this(parent, name, description, DEFAULT_MAIN_COLOR_FADE);
     }
 
     public ColorValue(ValueParent parent, String name, String description, Color defaultValue) {
         this(parent, name, description, new HSBColor(defaultValue));
+    }
+
+    public ColorValue(ValueParent parent, String name, String description, HSBColor defaultValue) {
+        this(parent, name, description, defaultValue, DEFAULT_MAIN_COLOR_FADE, DEFAULT_SECONDARY_COLOR_FADE);
+    }
+
+    public ColorValue(ValueParent parent, String name, String description, HSBColor defaultValue, Color mainColorFade, Color secondaryColorFade) {
+        super(parent, name, description, defaultValue);
+        this.mainColorFade = mainColorFade;
+        this.secondaryColorFade = secondaryColorFade;
     }
 
     @Override
@@ -111,6 +119,34 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
             value.save(valueNode);
         }
         mainNode.add(getName(), valueNode);
+    }
+
+    public EnumModeValue<ColorMode> getMode() {
+        return this.mode;
+    }
+
+    public IntegerValue getRainbowSpeed() {
+        return this.rainbowSpeed;
+    }
+
+    public IntegerValue getTwoColorSpeed() {
+        return this.twoColorSpeed;
+    }
+
+    public Color getMainColorFade() {
+        return this.mainColorFade;
+    }
+
+    public void setMainColorFade(final Color mainColorFade) {
+        this.mainColorFade = mainColorFade;
+    }
+
+    public Color getSecondaryColorFade() {
+        return this.secondaryColorFade;
+    }
+
+    public void setSecondaryColorFade(final Color secondaryColorFade) {
+        this.secondaryColorFade = secondaryColorFade;
     }
 
     public HSBColor getValue(final int offset) {
@@ -212,7 +248,7 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
         super.resetValue();
     }
 
-    private enum ColorMode implements IName {
+    public enum ColorMode implements IName {
 
         STATIC,
         RAINBOW,
