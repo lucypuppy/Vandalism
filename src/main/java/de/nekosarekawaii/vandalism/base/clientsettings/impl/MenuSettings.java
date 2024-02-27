@@ -73,7 +73,7 @@ public class MenuSettings extends ValueGroup {
             this,
             "Custom Background Color",
             "The color of the custom background.",
-            new Color(54, 54, 54, 255)
+            new Color(69, 17, 89, 255)
     ).visibleCondition(this.customBackground::getValue);
 
     public final BooleanValue inGameCustomBackground = new BooleanValue(
@@ -87,7 +87,7 @@ public class MenuSettings extends ValueGroup {
             this,
             "In-Game Custom Background Color Top",
             "The color of the custom background in-game at the top.",
-            new Color(0, 0, 0, 100)
+            new Color(0, 0, 0, 94)
     ).visibleCondition(this.inGameCustomBackground::getValue);
 
     public final ColorValue inGameCustomBackgroundColorBottom = new ColorValue(
@@ -114,14 +114,14 @@ public class MenuSettings extends ValueGroup {
             this.customWidgetsSettings,
             "Custom Widgets Main Color",
             "The main color of the custom widgets.",
-            new Color(217, 215, 215, 100)
+            new Color(175, 26, 189, 98)
     ).visibleCondition(this.customWidgets::getValue);
 
     public final ColorValue customWidgetsSecondaryColor = new ColorValue(
             this.customWidgetsSettings,
             "Custom Widgets Secondary Color",
             "The secondary color of the custom widgets.",
-            new Color(25, 25, 25, 232)
+            new Color(255, 255, 255, 212)
     ).visibleCondition(this.customWidgets::getValue);
 
     public final IntegerValue customWidgetsOutlineWidth = new IntegerValue(

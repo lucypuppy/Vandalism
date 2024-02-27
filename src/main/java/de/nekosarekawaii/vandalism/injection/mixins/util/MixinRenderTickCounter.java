@@ -56,7 +56,7 @@ public abstract class MixinRenderTickCounter implements IRenderTickCounter {
 
     @Inject(method = "beginRenderTick", at = @At("RETURN"))
     private void beginRenderTickReturn(final long timeMillis, final CallbackInfoReturnable<Integer> info) {
-        if (this.delta % 9 != 0) { // Filter the inaccuracy
+        if (this.delta % 9 != 0) { //  Filter the inaccuracy
             final float tickTime = this.delta / this.lastFrameDuration;
             this.tps = 1000.0F / tickTime;
         }

@@ -40,6 +40,7 @@ public class ServerDiscoveryClientMenuWindow extends ClientMenuWindow {
 
     public ServerDiscoveryClientMenuWindow() {
         super("Server Discovery", Category.SERVER);
+        this.serversTabs.put(DEFAULT_SERVER_TAB_NAME, new ServersTab());
     }
 
     @Override

@@ -32,7 +32,7 @@ public class AddonWurstClient implements VandalismAddonLauncher {
 
     private static AddonWurstClient instance;
 
-    //Temporary list to store the enabled hacks when the user disables the WurstClient module
+    // Temporary list to store the enabled hacks when the user disables the WurstClient module
     public static List<String> enabledHacks;
 
     private WurstClientModule module;
@@ -44,7 +44,7 @@ public class AddonWurstClient implements VandalismAddonLauncher {
     public void onLaunch(final Vandalism vandalism) {
         instance = this;
 
-        //Initialize WurstClient, counterpart in MixinWurstInitializer.java
+        // Initialize WurstClient, counterpart in MixinWurstInitializer.java
         WurstClient.INSTANCE.initialize();
 
         vandalism.getModuleManager().add(this.module = new WurstClientModule());
@@ -52,9 +52,9 @@ public class AddonWurstClient implements VandalismAddonLauncher {
 
         final WatermarkHUDElement watermarkHUDElement = vandalism.getHudManager().watermarkHUDElement;
         this.wurstOffsetX = new IntegerValue(watermarkHUDElement, "Wurst Offset X", "",
-                30, -512, 1024);
+                86, -512, 1024);
         this.wurstOffsetY = new IntegerValue(watermarkHUDElement, "Wurst Offset Y", "",
-                30, -512, 1024);
+                131, -512, 1024);
     }
 
     @Override

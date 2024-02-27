@@ -19,8 +19,8 @@
 package de.nekosarekawaii.vandalism.integration.rotation;
 
 import de.nekosarekawaii.vandalism.integration.rotation.enums.HitBoxSelectMode;
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 
@@ -60,7 +60,7 @@ public class AimPointMover implements MinecraftWrapper {
                 hitablePointsInCircle.sort(Comparator.comparingDouble(lastPoint::distanceTo));
             }
 
-            //Let the point travel around in the circle generated around the besthitvec and let ot travel smoothly
+            // Let the point travel around in the circle generated around the besthitvec and let ot travel smoothly
             rotationPoint = hitablePointsInCircle.get(0);
         }
 
@@ -80,14 +80,14 @@ public class AimPointMover implements MinecraftWrapper {
             double z = center.z;
 
             switch (this.mode) {
-                case CIRCULAR: // Circular
+                case CIRCULAR: //  Circular
                     double azimuthalAngle = i * goldenAngleIncrement;
-                    double polarAngle = Math.acos(2 * Math.random() - 1); // Random polar angle,
+                    double polarAngle = Math.acos(2 * Math.random() - 1); //  Random polar angle,
                     x = center.x + dynamicWidth * Math.sin(polarAngle) * Math.cos(azimuthalAngle);
                     y = center.y + dynamicWidth * Math.sin(polarAngle) * Math.sin(azimuthalAngle);
                     z = center.z + dynamicWidth * Math.cos(polarAngle);
                     break;
-                case SQUARE: // Square
+                case SQUARE: //  Square
                     x = center.x + dynamicWidth * (Math.random() - 0.5);
                     y = center.y + dynamicHeight * (Math.random() - 0.5);
                     z = center.z + dynamicWidth * (Math.random() - 0.5);
