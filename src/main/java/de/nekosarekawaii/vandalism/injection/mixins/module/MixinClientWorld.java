@@ -22,35 +22,52 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.render.TrueSightModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.particle.BlockStateParticleEffect;
+import net.minecraft.particle.ParticleEffect;
+import net.minecraft.world.GameMode;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientWorld.class)
 public abstract class MixinClientWorld {
 
-    @Inject(method = "getBlockParticle", at = @At(value = "HEAD"), cancellable = true)
-    private void hookTrueSight(final CallbackInfoReturnable<Block> cir) {
-        final TrueSightModule trueSightModule = Vandalism.getInstance().getModuleManager().getTrueSightModule();
-        final Block block = cir.getReturnValue();
-        if (block != null && trueSightModule.isActive() && trueSightModule.markerBlocks.isSelected(block.asItem())) {
-            cir.setReturnValue(null);
+    @Redirect(method = "getBlockParticle", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;getCurrentGameMode()Lnet/minecraft/world/GameMode;"))
+    private GameMode hookTrueSight(final ClientPlayerInteractionManager instance) {
+        if (Vandalism.getInstance().getModuleManager().getTrueSightModule().isActive()) {
+            return GameMode.CREATIVE;
         }
+        return instance.getCurrentGameMode();
     }
 
-    @Redirect(method = "randomBlockDisplayTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;", ordinal = 1))
-    private Block hookTrueSight(final BlockState instance) {
+    @Redirect(method = "getBlockParticle", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
+    private Item hookTrueSight(final ItemStack instance) {
+        if (Vandalism.getInstance().getModuleManager().getTrueSightModule().isActive()) {
+            return Items.BARRIER;
+        }
+        return instance.getItem();
+    }
+
+    @Redirect(method = "randomBlockDisplayTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;addParticle(Lnet/minecraft/particle/ParticleEffect;DDDDDD)V"))
+    private void hookTrueSight(final ClientWorld instance, final ParticleEffect parameters, final double x, final double y, final double z, final double velocityX, final double velocityY, final double velocityZ) {
         final TrueSightModule trueSightModule = Vandalism.getInstance().getModuleManager().getTrueSightModule();
-        final Block block = instance.getBlock();
-        if (trueSightModule.isActive() && trueSightModule.markerBlocks.isSelected(block.asItem())) {
-            if (ClientWorld.BLOCK_MARKER_ITEMS.contains(block.asItem())) {
-                return null;
+        if (parameters instanceof final BlockStateParticleEffect particleEffect) {
+            final BlockState blockState = particleEffect.getBlockState();
+            if (blockState != null) {
+                final Block block = blockState.getBlock();
+                if (block != null) {
+                    if (trueSightModule.isActive() && !trueSightModule.markerBlocks.isSelected(block.asItem())) {
+                        return;
+                    }
+                }
             }
         }
-        return block;
+        instance.addParticle(parameters, x, y, z, velocityX, velocityY, velocityZ);
     }
 
 }
