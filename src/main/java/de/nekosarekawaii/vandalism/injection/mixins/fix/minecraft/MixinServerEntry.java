@@ -16,25 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
+package de.nekosarekawaii.vandalism.injection.mixins.fix.minecraft;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
-import net.minecraft.client.gui.widget.EntryListWidget;
+import net.minecraft.text.OrderedText;
+import net.minecraft.text.StringVisitable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(MultiplayerServerListWidget.class)
-public abstract class MixinMultiplayerServerListWidget {
+import java.util.List;
 
-    @Redirect(method = "updateEntries", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerServerListWidget;addEntry(Lnet/minecraft/client/gui/widget/EntryListWidget$Entry;)I"))
-    private int removeScanningEntry(final MultiplayerServerListWidget instance, final EntryListWidget.Entry entry) {
-        if (!(MinecraftClient.getInstance().currentScreen instanceof MultiplayerScreen)) {
-            return 0;
+@Mixin(MultiplayerServerListWidget.ServerEntry.class)
+public abstract class MixinServerEntry {
+
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;wrapLines(Lnet/minecraft/text/StringVisitable;I)Ljava/util/List;"))
+    private List<OrderedText> fixNPE(final TextRenderer instance, final StringVisitable text, final int width) {
+        if (text == null) {
+            return List.of();
         }
-        return instance.addEntry((MultiplayerServerListWidget.Entry) entry);
+        return instance.wrapLines(text, width);
     }
 
 }
