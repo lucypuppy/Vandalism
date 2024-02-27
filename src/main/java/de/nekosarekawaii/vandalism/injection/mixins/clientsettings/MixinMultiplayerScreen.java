@@ -47,6 +47,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.net.InetSocketAddress;
@@ -127,8 +128,8 @@ public abstract class MixinMultiplayerScreen extends Screen {
         args.set(1, title);
     }
 
-    @Override
-    public boolean keyPressed(final int keyCode, final int scanCode, final int modifiers) {
+    @Inject(method = "keyPressed", at = @At("HEAD"))
+    private void addMoreKeys(final int keyCode, final int scanCode, final int modifiers, final CallbackInfoReturnable<Boolean> cir) {
         final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
         if (enhancedServerListSettings.enhancedServerList.getValue()) {
             if (enhancedServerListSettings.kickAllPlayersKey.getValue() == keyCode) {
@@ -228,7 +229,6 @@ public abstract class MixinMultiplayerScreen extends Screen {
                 }
             }
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
 }
