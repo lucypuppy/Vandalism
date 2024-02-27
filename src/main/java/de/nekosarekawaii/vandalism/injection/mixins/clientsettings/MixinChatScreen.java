@@ -63,16 +63,21 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
 
     @Inject(method = "init", at = @At(value = "RETURN"))
     private void customChatInputField(final CallbackInfo ci) {
-        this.chatField.setWidth(this.width - 13); //  Fix for the chat input field width
-        this.vandalism$realMaxLength = this.chatField.getMaxLength();
         final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
+        final boolean fixChatFieldWidth = chatSettings.fixChatFieldWidth.getValue();
+        if (fixChatFieldWidth) {
+            this.chatField.setWidth(this.width - 13);
+        }
+        this.vandalism$realMaxLength = this.chatField.getMaxLength();
         if (chatSettings.moreChatInput.getValue()) {
             this.chatField.setMaxLength(Integer.MAX_VALUE);
         }
         if (chatSettings.displayAccountHead.getValue()) {
             final int xOffset = 18;
             this.chatField.setX(xOffset);
-            this.chatField.setWidth(this.chatField.getWidth() - xOffset);
+            if (fixChatFieldWidth) {
+                this.chatField.setWidth(this.chatField.getWidth() - xOffset);
+            }
         }
     }
 
