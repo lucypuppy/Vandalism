@@ -73,12 +73,12 @@ public abstract class MixinMultiplayerScreen extends Screen {
     }
 
     @Inject(method = "refresh", at = @At("HEAD"))
-    private void modifyRefresh(final CallbackInfo ci) {
+    private void resetServerList(final CallbackInfo ci) {
         vanddalism$SERVER_LIST = null;
     }
 
     @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerServerListWidget;setServers(Lnet/minecraft/client/option/ServerList;)V"))
-    private void modifyInitHead(MultiplayerServerListWidget instance, net.minecraft.client.option.ServerList servers) {
+    private void cacheServerList(MultiplayerServerListWidget instance, net.minecraft.client.option.ServerList servers) {
         final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
         if (enhancedServerListSettings.enhancedServerList.getValue() && enhancedServerListSettings.cacheServerList.getValue()){
             if (vanddalism$SERVER_LIST != null) {
@@ -98,7 +98,7 @@ public abstract class MixinMultiplayerScreen extends Screen {
     }
 
     @Inject(method = "init", at = @At("RETURN"))
-    private void modifyInitReturn(final CallbackInfo ci) {
+    private void addServerListsButton(final CallbackInfo ci) {
         if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().enhancedServerList.getValue()) {
             this.addDrawableChild(ButtonWidget.builder(Text.literal("Server Lists"), button -> {
                 if (this.client != null) {
