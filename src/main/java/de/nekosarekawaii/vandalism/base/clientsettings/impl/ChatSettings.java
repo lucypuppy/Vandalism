@@ -33,10 +33,24 @@ public class ChatSettings extends ValueGroup {
             "."
     );
 
+    public final BooleanValue fixChatFieldWidth = new BooleanValue(
+            this,
+            "Fix Chat Field Width",
+            "Fixes the chat field width to the screen width.",
+            true
+    );
+
     public final BooleanValue displayTypedChars = new BooleanValue(
             this,
             "Display Typed Chars",
             "Displays the current char count of the chat input field.",
+            true
+    );
+
+    public final BooleanValue displayAccountHead = new BooleanValue(
+            this,
+            "Display Account Head",
+            "Displays the head of your current account at the bottom left.",
             true
     );
 

@@ -39,6 +39,13 @@ public class EnhancedServerListSettings extends ValueGroup {
         }
     });
 
+    public final BooleanValue cacheServerList = new BooleanValue(
+            this,
+            "Cache Server List",
+            "If activated the Game caches the server list.",
+            true
+    ).visibleCondition(this.enhancedServerList::getValue);
+
     public final BooleanValue serverPingerWidget = new BooleanValue(
             this,
             "Server Pinger Widget",
@@ -74,14 +81,6 @@ public class EnhancedServerListSettings extends ValueGroup {
             "Multiplayer Screen Server Information",
             "If activated the Game shows all necessary server information behind a server list entry.",
             true
-    ).visibleCondition(this.enhancedServerList::getValue);
-
-    public final KeyBindValue refreshServerListKey = new KeyBindValue(
-            this,
-            "Refresh Server List Key",
-            "Change the key to refresh the server list.",
-            GLFW.GLFW_KEY_F5,
-            false
     ).visibleCondition(this.enhancedServerList::getValue);
 
     public final KeyBindValue pasteServerKey = new KeyBindValue(

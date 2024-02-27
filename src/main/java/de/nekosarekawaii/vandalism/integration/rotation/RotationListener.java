@@ -25,8 +25,8 @@ import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListe
 import de.nekosarekawaii.vandalism.event.normal.player.StrafeListener;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationGCD;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.RenderUtil;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.MathHelper;
 
@@ -45,7 +45,7 @@ public class RotationListener implements OutgoingPacketListener, StrafeListener,
     public RotationListener() {
         Vandalism.getInstance().getEventSystem().subscribe(this, OutgoingPacketEvent.ID, StrafeEvent.ID);
 
-        // Priority is low because we want to calculate the rotation after the module set it.
+        //  Priority is low because we want to calculate the rotation after the module set it.
         Vandalism.getInstance().getEventSystem().subscribe(RotationEvent.ID, this, Priorities.LOW);
     }
 
@@ -99,7 +99,7 @@ public class RotationListener implements OutgoingPacketListener, StrafeListener,
         if (this.rotation == null || !this.movementFix)
             return;
 
-        // Thanks mojang...
+        //  Thanks mojang...
         if (event.type == StrafeListener.Type.JUMP) {
             event.yaw = (float) Math.toRadians(this.rotation.getYaw());
             return;

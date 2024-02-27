@@ -66,7 +66,7 @@ import java.io.File;
  *  - Fix Game server pinger (ensure pings are on different threads)
  *  - Add Proxy manager
  *  - Fix MixinParticleManager
- *  - Add scroll state saving to the multiplayer screen and anti auto refresh
+ *  - Add scroll state saving to the multiplayer screen
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Rewrite GCD fix to be accurate
@@ -93,7 +93,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     private final DietrichEvents2 eventSystem = new DietrichEvents2(37 /* This value has to be incremented for every new event */, Throwable::printStackTrace);
     private final Logger logger = LoggerFactory.getLogger(FabricBootstrap.MOD_NAME);
 
-    //Base handlers
+    // Base handlers
     private File runDirectory;
 
     private ConfigManager configManager;
@@ -101,12 +101,12 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     private ClientSettings clientSettings;
     private AccountManager accountManager;
 
-    //Integration
+    // Integration
     private RotationListener rotationListener;
     private ServerListManager serverListManager;
     private FriendsManager friendsManager;
 
-    //Features
+    // Features
     private ModuleManager moduleManager;
     private CommandManager commandManager;
     private ScriptManager scriptManager;
@@ -143,7 +143,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.printStartup();
         mc.getWindow().setTitle(String.format("Starting %s...", FabricBootstrap.WINDOW_TITLE));
 
-        //Base handlers
+        // Base handlers
         FabricBootstrap.MOD_LOGO = new Identifier(FabricBootstrap.MOD_ID, "textures/logo.png");
         FabricBootstrap.MOD_ICON = new Identifier(FabricBootstrap.MOD_ID, "textures/icon/icon_1024x1024.png");
 
@@ -158,7 +158,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.accountManager = new AccountManager(this.configManager, this.clientMenuManager);
         this.accountManager.init();
 
-        //Integration
+        // Integration
         this.rotationListener = new RotationListener();
 
         this.serverListManager = new ServerListManager(this.runDirectory);
@@ -166,7 +166,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
         this.friendsManager = new FriendsManager(this.configManager);
 
-        //Features
+        // Features
         this.moduleManager = new ModuleManager(this.eventSystem, this.configManager, this.clientMenuManager);
         this.moduleManager.init();
 
@@ -179,16 +179,16 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.creativeTabManager = new CreativeTabManager();
         this.creativeTabManager.init();
 
-        this.hudManager = new HUDManager(this.configManager, this.clientMenuManager);
+        this.hudManager = new HUDManager(this.configManager, this.clientMenuManager, this.runDirectory);
         this.hudManager.init();
 
-        // Cause of the menu category button order this needs to be called
-        // after every default menu has been added and before the addons are loaded
+        //  Cause of the menu category button order this needs to be called
+        //  after every default menu has been added and before the addons are loaded
         this.clientMenuManager.init();
 
         VandalismAddonLauncher.call(addon -> addon.onLaunch(this));
 
-        //We have to load the config files after all systems have been initialized
+        // We have to load the config files after all systems have been initialized
         this.configManager.init();
 
         this.logger.info("");

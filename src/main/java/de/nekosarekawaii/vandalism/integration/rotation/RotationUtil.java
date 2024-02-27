@@ -18,8 +18,8 @@
 
 package de.nekosarekawaii.vandalism.integration.rotation;
 
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
@@ -38,19 +38,19 @@ public class RotationUtil implements MinecraftWrapper {
         final double eyePosY = entity.getY() - 0.1;
 
         if (player.getZ() < entity.getZ() - width || player.getZ() > entity.getZ() + width) {
-            sides.add((byte) 0); //x
+            sides.add((byte) 0); // x
         }
 
         if (player.getX() < entity.getX() - width || player.getX() > entity.getX() + width) {
-            sides.add((byte) 1); //z
+            sides.add((byte) 1); // z
         }
 
         if (player.getY() + player.getEyeHeight(player.getPose()) < eyePosY || player.getY() + player.getEyeHeight(player.getPose()) > eyePosY + height) {
-            sides.add((byte) 2); //y
+            sides.add((byte) 2); // y
         }
 
         if (player.getBoundingBox().intersects(entity.getBoundingBox())) {
-            sides.add((byte) 3); //inside
+            sides.add((byte) 3); // inside
         }
 
         return sides;
@@ -63,7 +63,7 @@ public class RotationUtil implements MinecraftWrapper {
         final double targetHeight = entity.getHeight() + 0.2;
         final double targetWidth = entity.getWidth();
 
-        // If the entity has no width or height we can ignore it to fix the out of memory crash
+        //  If the entity has no width or height we can ignore it to fix the out of memory crash
         if (targetWidth <= 0.0 || targetHeight <= 0.2) {
             return points;
         }
@@ -75,7 +75,7 @@ public class RotationUtil implements MinecraftWrapper {
          */
         final double horDist = targetWidth / aimPoints;
         final double vertDist = targetHeight / aimPoints;
-        if (visibleSides.contains((byte) 0)) { //x
+        if (visibleSides.contains((byte) 0)) { // x
             for (double y = 0; y <= targetHeight; y += vertDist) {
                 for (double x = 0; x <= targetWidth; x += horDist) {
                     double zOff = (player.getZ() > entity.getZ() ? targetWidth / 2 : -targetWidth / 2);
@@ -84,7 +84,7 @@ public class RotationUtil implements MinecraftWrapper {
             }
         }
 
-        if (visibleSides.contains((byte) 2)) { //y
+        if (visibleSides.contains((byte) 2)) { // y
             for (double y = 0; y <= targetWidth; y += horDist) {
                 for (double x = 0; x <= targetWidth; x += horDist) {
                     double yOff = (player.getEyeY() < targetPosY ? 0 : targetHeight);
@@ -93,7 +93,7 @@ public class RotationUtil implements MinecraftWrapper {
             }
         }
 
-        if (visibleSides.contains((byte) 1)) { //z
+        if (visibleSides.contains((byte) 1)) { // z
             for (double y = 0; y <= targetHeight; y += vertDist) {
                 for (double x = 0; x <= targetWidth; x += horDist) {
                     double xOff = (player.getX() > entity.getX() ? targetWidth / 2 : -targetWidth / 2);
@@ -110,7 +110,7 @@ public class RotationUtil implements MinecraftWrapper {
         return points;
     }
 
-    //hashmap, collect all damageable points in one list
+    // hashmap, collect all damageable points in one list
     public static Vec3d findClosestVisiblePoint(List<Vec3d> aimPoints, Entity e, double range) {
         double tempDist = Double.MAX_VALUE;
         Vec3d closestPoint = null;
@@ -136,7 +136,7 @@ public class RotationUtil implements MinecraftWrapper {
         return 1.0f - (diff / (yaw ? 180.0f : 90.0f));
     }
 
-    // correlation can overaim/underaim, i recomend to set it at around 0.2f
+    //  correlation can overaim/underaim, i recomend to set it at around 0.2f
     public static Rotation rotationDistribution(final Rotation rotation, final Rotation lastRotation, final float rotateSpeed, final float correlationStrength) {
         if (rotateSpeed > 0) {
             final float lastYaw = lastRotation.getYaw();
@@ -151,11 +151,11 @@ public class RotationUtil implements MinecraftWrapper {
                 final double maxYaw = rotateSpeed * distributionYaw;
                 final double maxPitch = rotateSpeed * distributionPitch;
 
-                // Introduce correlation between yaw and pitch
+                //  Introduce correlation between yaw and pitch
                 final float moveYaw = (float) Math.max(Math.min(deltaYaw, maxYaw), -maxYaw);
                 final float movePitch = (float) Math.max(Math.min(deltaPitch, maxPitch), -maxPitch);
 
-                // Apply correlation (reverse the effect)
+                //  Apply correlation (reverse the effect)
                 float correlatedMoveYaw = moveYaw;
                 float correlatedMovePitch = movePitch;
 

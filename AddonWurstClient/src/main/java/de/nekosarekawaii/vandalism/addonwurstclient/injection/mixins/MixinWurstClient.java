@@ -45,8 +45,8 @@ public abstract class MixinWurstClient implements IWurstClient {
 
     @Redirect(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/fabricmc/fabric/api/client/keybinding/v1/KeyBindingHelper;registerKeyBinding(Lnet/minecraft/client/option/KeyBinding;)Lnet/minecraft/client/option/KeyBinding;"))
     private KeyBinding cancelWurstZoomKeyBinding(final KeyBinding keyBinding) {
-        //Prevent the FAPI from loading the keybinding as we are loading the WurstClient to late for the FAPI
-        //Since we don't need this keybinding anyway, we can just get rid of it
+        // Prevent the FAPI from loading the keybinding as we are loading the WurstClient to late for the FAPI
+        // Since we don't need this keybinding anyway, we can just get rid of it
         return keyBinding;
     }
 
@@ -57,14 +57,14 @@ public abstract class MixinWurstClient implements IWurstClient {
 
     @Redirect(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/wurstclient/analytics/WurstAnalytics;trackPageView(Ljava/lang/String;Ljava/lang/String;)V"), remap = false)
     private void ignoreTrackPageView(final WurstAnalytics instance, final String url, final String title) {
-        //Prevents the client from crashing...
+        // Prevents the client from crashing...
     }
 
     @Override
     public void vandalism$setTrackedEnabled(final boolean enabled) {
         if (!enabled) {
-            //When the client is about to disable, store the enabled hacks
-            //and create a new instance of the list
+            // When the client is about to disable, store the enabled hacks
+            // and create a new instance of the list
             AddonWurstClient.enabledHacks = new ArrayList<>();
             for (Hack allHax : WurstClient.INSTANCE.getHax().getAllHax()) {
                 if (allHax.isEnabled()) {
@@ -72,8 +72,8 @@ public abstract class MixinWurstClient implements IWurstClient {
                 }
             }
         } else if (AddonWurstClient.enabledHacks != null) {
-            //If the client is about to enable, check if it was previously disabled and
-            //stored enabled modules, then enable them again
+            // If the client is about to enable, check if it was previously disabled and
+            // stored enabled modules, then enable them again
             for (Hack allHax : WurstClient.INSTANCE.getHax().getAllHax()) {
                 if (AddonWurstClient.enabledHacks.contains(allHax.getName())) {
                     allHax.setEnabled(true);
@@ -82,7 +82,7 @@ public abstract class MixinWurstClient implements IWurstClient {
             AddonWurstClient.enabledHacks = null;
         }
 
-        //Do the normal enable/disable stuff
+        // Do the normal enable/disable stuff
         this.setEnabled(enabled);
     }
 
