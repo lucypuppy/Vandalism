@@ -35,6 +35,8 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WatermarkHUDElement extends HUDElement {
 
@@ -52,16 +54,15 @@ public class WatermarkHUDElement extends HUDElement {
         );
 
         final File[] files = logoDirectory.listFiles();
-        final LogoSelection[] logoSelections = new LogoSelection[files.length + 1];
-        logoSelections[0] = new LogoSelection();
-
-        for (int i = 0; i < files.length; i++) {
-            final File file = files[i];
-
-            if (file.getName().endsWith(".png") || file.getName().endsWith(".jpg")) {
-                try {
-                    logoSelections[i + 1] = new LogoSelection(file);
-                } catch (IOException ignored) {
+        final List<LogoSelection> logoSelections = new ArrayList<>();
+        logoSelections.add(new LogoSelection());
+        if (files != null) {
+            for (final File file : files) {
+                if (file.getName().endsWith(".png") || file.getName().endsWith(".jpg") || file.getName().endsWith(".jpeg")) {
+                    try {
+                        logoSelections.add(new LogoSelection(file));
+                    } catch (IOException ignored) {
+                    }
                 }
             }
         }
@@ -70,8 +71,8 @@ public class WatermarkHUDElement extends HUDElement {
                 this,
                 "Logo",
                 "The watermark image.",
-                logoSelections[0],
-                logoSelections
+                logoSelections.get(0),
+                logoSelections.toArray(new LogoSelection[0])
         );
 
         this.imageWidth = new IntegerValue(
@@ -103,7 +104,6 @@ public class WatermarkHUDElement extends HUDElement {
     @Override
     public void onRender(final DrawContext context, final float delta, final boolean inGame) {
         final Identifier identifier = this.logoSelection.getValue().getIdentifier();
-
         this.mc.getTextureManager().getTexture(identifier).setFilter(
                 true,
                 true
@@ -133,7 +133,7 @@ public class WatermarkHUDElement extends HUDElement {
         this.height = this.imageHeight.getValue();
     }
 
-    private class LogoSelection implements IName, MinecraftWrapper {
+    private static class LogoSelection implements IName, MinecraftWrapper {
 
         private final Identifier identifier;
         private final String name;
@@ -141,9 +141,13 @@ public class WatermarkHUDElement extends HUDElement {
         public LogoSelection(final File file) throws IOException {
             this.name = file.getName();
             this.identifier = new Identifier(FabricBootstrap.MOD_ID, "logo_" + this.name.replace(" ", "_"));
-
-            this.mc.getTextureManager().registerTexture(this.identifier,
-                    new NativeImageBackedTexture(NativeImage.read(new FileInputStream(file))));
+            try (final FileInputStream fileInputStream = new FileInputStream(file)) {
+                this.mc.getTextureManager().registerTexture(
+                        this.identifier,
+                        new NativeImageBackedTexture(NativeImage.read(fileInputStream))
+                );
+            }
+            catch (Exception ignored) {}
         }
 
         public LogoSelection() {
@@ -152,13 +156,14 @@ public class WatermarkHUDElement extends HUDElement {
         }
 
         public Identifier getIdentifier() {
-            return identifier;
+            return this.identifier;
         }
 
         @Override
         public String getName() {
             return this.name;
         }
+
     }
 
 }
