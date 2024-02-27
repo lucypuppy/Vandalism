@@ -78,7 +78,7 @@ public abstract class MixinMultiplayerScreen extends Screen {
     }
 
     @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerServerListWidget;setServers(Lnet/minecraft/client/option/ServerList;)V"))
-    private void cacheServerList(MultiplayerServerListWidget instance, net.minecraft.client.option.ServerList servers) {
+    private void cacheServerList(final MultiplayerServerListWidget instance, net.minecraft.client.option.ServerList servers) {
         final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
         if (enhancedServerListSettings.enhancedServerList.getValue() && enhancedServerListSettings.cacheServerList.getValue()){
             if (vanddalism$SERVER_LIST != null) {
