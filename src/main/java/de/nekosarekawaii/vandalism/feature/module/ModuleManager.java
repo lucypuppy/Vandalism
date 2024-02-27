@@ -106,7 +106,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.fullBrightModule = new FullBrightModule(),
                 this.killAuraModule = new KillAuraModule(),
                 this.tickBaseModule = new TickBaseModule(this.killAuraModule),
-                new BackTrackModule(this.killAuraModule),
+                new BackTrackModule(),
                 new NoSlowModule(),
                 new PacketManagerModule(),
                 new ServerCrasherModule(),
