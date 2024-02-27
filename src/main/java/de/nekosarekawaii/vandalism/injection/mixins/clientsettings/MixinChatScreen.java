@@ -57,27 +57,22 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
     @Unique
     private static final Style vandalism$RED_COLORED_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(Color.RED.getRGB()));
 
-    protected MixinChatScreen(Text title) {
-        super(title);
+    protected MixinChatScreen(final Text ignored) {
+        super(ignored);
     }
 
     @Inject(method = "init", at = @At(value = "RETURN"))
     private void customChatInputField(final CallbackInfo ci) {
         final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
-        final boolean fixChatFieldWidth = chatSettings.fixChatFieldWidth.getValue();
-        if (fixChatFieldWidth) {
-            this.chatField.setWidth(this.width - 13);
-        }
         this.vandalism$realMaxLength = this.chatField.getMaxLength();
         if (chatSettings.moreChatInput.getValue()) {
             this.chatField.setMaxLength(Integer.MAX_VALUE);
         }
         if (chatSettings.displayAccountHead.getValue()) {
-            final int xOffset = 18;
-            this.chatField.setX(xOffset);
-            if (fixChatFieldWidth) {
-                this.chatField.setWidth(this.chatField.getWidth() - xOffset);
-            }
+            this.chatField.setX(20);
+        }
+        if (chatSettings.fixChatFieldWidth.getValue()) {
+            this.chatField.setWidth(this.chatField.getWidth() - this.chatField.getX() - 5);
         }
     }
 
@@ -94,7 +89,7 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
     private void modifyChatFieldBackground(final Args args) {
         if (Vandalism.getInstance().getClientSettings().getChatSettings().displayAccountHead.getValue()) {
             args.set(0, this.chatField.getX() - 2);
-
+            args.set(3, this.height - 1);
         }
     }
 
@@ -105,7 +100,7 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
             final int currentLength = this.chatField.getText().length();
             final MutableText text = Text.literal(String.valueOf(currentLength) + Formatting.DARK_GRAY + " / ");
             text.append(Text.literal(String.valueOf(this.vandalism$realMaxLength)).setStyle(vandalism$RED_COLORED_STYLE));
-            final int x = this.chatField.getX() + this.chatField.getWidth() - this.mc.textRenderer.getWidth(text) - 2;
+            final int x = this.width - 2 - this.mc.textRenderer.getWidth(text) - 2;
             final int y = this.chatField.getY() - this.mc.textRenderer.fontHeight - 2;
             final Color color = RenderUtil.interpolateColor(
                     Color.GREEN,
@@ -123,7 +118,7 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
                     final Identifier playerSkin = accountPlayerSkin.getSkin();
                     if (playerSkin != null) {
                         GLStateTracker.BLEND.save(true);
-                        PlayerSkinDrawer.draw(context, playerSkin, 0, this.chatField.getY() - 4, 15, true, false);
+                        PlayerSkinDrawer.draw(context, playerSkin, 1, this.chatField.getY() - 4, 15, true, false);
                         GLStateTracker.BLEND.revert();
                     }
                 }
