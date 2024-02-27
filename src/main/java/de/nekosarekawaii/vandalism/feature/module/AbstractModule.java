@@ -19,13 +19,13 @@
 package de.nekosarekawaii.vandalism.feature.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.internal.ModuleToggleListener;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.rendering.SeparatorValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
+import de.nekosarekawaii.vandalism.event.normal.internal.ModuleToggleListener;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
@@ -51,9 +51,9 @@ public abstract class AbstractModule extends Feature implements ValueParent {
     ).onValueChange((oldValue, newValue) -> {
         final ModuleToggleListener.ModuleToggleEvent event = new ModuleToggleListener.ModuleToggleEvent(this, newValue);
         Vandalism.getInstance().getEventSystem().postInternal(ModuleToggleListener.ModuleToggleEvent.ID, event);
-        //Allows the event to change the active state of the module
-        //It's important that people don't use the setActive method from the module itself in the event
-        //because that would cause an infinite loop
+        // Allows the event to change the active state of the module
+        // It's important that people don't use the setActive method from the module itself in the event
+        // because that would cause an infinite loop
         newValue = event.active;
         if (oldValue != newValue) {
             if (newValue) {

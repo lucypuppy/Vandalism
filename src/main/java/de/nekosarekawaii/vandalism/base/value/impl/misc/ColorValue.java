@@ -165,7 +165,7 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
                     Math.sin((System.currentTimeMillis() / 1000.0d) * this.twoColorSpeed.getValue() + offset * 0.002d) * 0.5d + 0.5d
             ));
         }
-        //Do another super.getValue() because the value might have changed.
+        // Do another super.getValue() because the value might have changed.
         return super.getValue();
     }
 
