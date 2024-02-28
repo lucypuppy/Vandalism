@@ -49,10 +49,6 @@ public class ServerConnectionUtil implements MinecraftWrapper {
         connect(LAST_SERVER_INFO);
     }
 
-    public static void reconnect() {
-        connect(mc.getCurrentServerEntry());
-    }
-
     public static void connect(final String address) {
         connect(new ServerInfo("", address, ServerInfo.ServerType.OTHER));
     }
