@@ -24,15 +24,19 @@ import de.nekosarekawaii.vandalism.event.normal.player.RotationListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
-import net.minecraft.block.Block;
+import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
 public class ScaffoldModule extends AbstractModule implements PlayerUpdateListener, RotationListener {
 
     private BlockPos pos = null;
+    private Direction direction = null;
+    private Rotation rotation = null;
 
     public ScaffoldModule() {
         super("Scaffold", "Places blocks underneath you.", Category.MOVEMENT);
@@ -53,8 +57,19 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
         this.pos = getPlaceBlock(3);
-        if(mc.world.getBlockState(mc.player.getBlockPos().add(0, -1, 0)).getBlock() == Blocks.AIR) {
+        if (pos == null) {
+            return;
+        }
+
+        this.direction = getDirection(mc.player.getPos(), pos);
+        if (this.direction == null || this.rotation == null) {
+            return;
+        }
+
+        final BlockHitResult raycastBlocks = WorldUtil.raytraceBlocks(this.rotation, 5.0);
+        if (raycastBlocks.getSide() == this.direction) {
             mc.doItemUse();
+            ChatUtil.infoChatMessage("Place");
         }
     }
 
@@ -65,9 +80,14 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
 
     @Override
     public void onRotation(RotationEvent event) {
-        if (pos != null) {
-            Rotation rotation = Rotation.Builder.build(new Vec3d(pos.getX()+0.5, pos.getY()-2.5, pos.getZ()+0.5), mc.player.getEyePos());
-            Vandalism.getInstance().getRotationListener().setRotation(rotation, RotationPriority.HIGH, 80f, 0, false);
+        if (this.pos != null) {
+            this.rotation = rotation(pos);
+
+            if (this.rotation == null) {
+                return;
+            }
+
+            Vandalism.getInstance().getRotationListener().setRotation(this.rotation, RotationPriority.HIGH, 80f, 0, false);
         }
     }
 
@@ -76,11 +96,11 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
         BlockPos theChosenOne = null;
 
         for (int x = -scanRange; x < scanRange; x++) {
-            for (int y = -scanRange; y < scanRange; y++) {
+            for (int y = -scanRange; y < 0; y++) {
                 for (int z = -scanRange; z < scanRange; z++) {
                     BlockPos pos = mc.player.getBlockPos().add(x, y, z);
                     BlockState state = mc.world.getBlockState(pos);
-                    Block block = state.getBlock();
+
                     if (state.isSolidBlock(mc.world, pos)) {
                         double currentDistance = mc.player.getBlockPos().getSquaredDistance(pos);
                         if (distance == -1 || currentDistance < distance) {
@@ -91,7 +111,40 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
                 }
             }
         }
+
         return theChosenOne;
+    }
+
+    private Rotation rotation(final BlockPos blockPos) {
+        Rotation rotation = null;
+
+        for (int yaw = -45; yaw < 45; yaw++) {
+            for (int pitch = 60; pitch < 90; pitch++) {
+                Rotation currentRotation = new Rotation(mc.player.getYaw() - (180 + yaw), pitch);
+                final BlockHitResult raycastBlocks = WorldUtil.raytraceBlocks(currentRotation, 5.0);
+
+                if (raycastBlocks.getSide() != this.direction || !raycastBlocks.getBlockPos().equals(blockPos)) {
+                    continue;
+                }
+
+                rotation = currentRotation;
+            }
+        }
+
+        return rotation;
+
+    }
+
+    public static Direction getDirection(Vec3d playerPos, BlockPos blockpos) {
+        final double dx = (blockpos.getX() + 0.5) - playerPos.x;
+        final double dz = (blockpos.getZ() + 0.5) - playerPos.z;
+        final double maxAxis = Math.max(Math.abs(dx), Math.abs(dz));
+
+        if (maxAxis == Math.abs(dx)) {
+            return dx > 0 ? Direction.WEST : Direction.EAST;
+        }
+
+        return dz > 0 ? Direction.NORTH : Direction.SOUTH;
     }
 
 }
