@@ -58,7 +58,7 @@ public class BoxMuellerClicker extends Clicker {
             }
 
             final EntityHitResult entityHitResult = (EntityHitResult) mc.crosshairTarget;
-            if (killAuraModule == null || entityHitResult.getEntity().distanceTo(mc.player) > (killAuraModule.getPreHit().getValue() ? killAuraModule.getAimRange() : killAuraModule.getRange())) {
+            if (killAuraModule == null || entityHitResult.getEntity().distanceTo(mc.player) > killAuraModule.getAimRange()) {
                 this.clickAction.accept(false);
                 this.clicks = 0;
                 return;
