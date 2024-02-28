@@ -76,7 +76,7 @@ public abstract class MixinGameMenuScreen extends Screen {
         if (text == SEND_FEEDBACK_TEXT) {
             cir.setReturnValue(ButtonWidget.builder(Text.translatable("menu.multiplayer"), b -> this.client.setScreen(new MultiplayerScreen(this))).width(98).build());
         } else if (text == REPORT_BUGS_TEXT && !this.client.isInSingleplayer()) {
-            final ButtonWidget button = ButtonWidget.builder(Text.literal("Reconnect"), b -> ServerConnectionUtil.connectToLastServer()).width(98).build();
+            final ButtonWidget button = ButtonWidget.builder(Text.literal("Reconnect"), b -> ServerConnectionUtil.connect(this.client.getCurrentServerEntry())).width(98).build();
             cir.setReturnValue(button);
         }
     }
