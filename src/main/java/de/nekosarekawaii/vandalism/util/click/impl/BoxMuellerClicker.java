@@ -50,17 +50,25 @@ public class BoxMuellerClicker extends Clicker {
 
     @Override
     public void onUpdate() {
-        if (mc.crosshairTarget == null || mc.crosshairTarget.getType() != HitResult.Type.ENTITY) {
-            this.clickAction.accept(false);
-            this.clicks = 0;
-            return;
-        }
+        if(!killAuraModule.getPreHit().getValue()) {
+            if (mc.crosshairTarget == null || mc.crosshairTarget.getType() != HitResult.Type.ENTITY) {
+                this.clickAction.accept(false);
+                this.clicks = 0;
+                return;
+            }
 
-        final EntityHitResult entityHitResult = (EntityHitResult) mc.crosshairTarget;
-        if (killAuraModule == null || entityHitResult.getEntity().distanceTo(mc.player) > (killAuraModule.getPreHit().getValue() ? killAuraModule.getAimRange() : killAuraModule.getRange())) {
-            this.clickAction.accept(false);
-            this.clicks = 0;
-            return;
+            final EntityHitResult entityHitResult = (EntityHitResult) mc.crosshairTarget;
+            if (killAuraModule == null || entityHitResult.getEntity().distanceTo(mc.player) > (killAuraModule.getPreHit().getValue() ? killAuraModule.getAimRange() : killAuraModule.getRange())) {
+                this.clickAction.accept(false);
+                this.clicks = 0;
+                return;
+            }
+        } else {
+            if(killAuraModule == null || killAuraModule.getTarget() == null) {
+                this.clickAction.accept(false);
+                this.clicks = 0;
+                return;
+            }
         }
 
         final int extra = RandomUtils.randomInt(-1, 1);
