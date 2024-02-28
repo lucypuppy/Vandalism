@@ -62,7 +62,7 @@ public abstract class MixinDownloadingTerrainScreen extends Screen {
         if (!FabricBootstrap.SHUTTING_DOWN) {
             if (Vandalism.getInstance().getClientSettings().getMenuSettings().downloadingTerrainScreenEscaping.getValue()) {
                 if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-                    ServerConnectionUtil.disconnect();
+                    ServerConnectionUtil.disconnect("Manually disconnected from server.");
                     return true;
                 }
             }
