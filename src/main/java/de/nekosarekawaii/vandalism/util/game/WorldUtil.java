@@ -102,6 +102,20 @@ public class WorldUtil implements MinecraftWrapper {
         return distance <= rangeSquared && (raycastBlocks == null || raycastBlocks.getType() == HitResult.Type.MISS);
     }
 
+    public static BlockHitResult raytraceBlocks(final Rotation rotation, final double range) {
+        final Vec3d eyePos = mc.player.getEyePos();
+        final Vec3d rotationVector = rotation.getVector();
+        final Vec3d targetVec = eyePos.add(rotationVector.x * range, rotationVector.y * range, rotationVector.z * range);
+
+        return mc.world.raycast(new RaycastContext(
+                eyePos,
+                targetVec,
+                RaycastContext.ShapeType.OUTLINE,
+                RaycastContext.FluidHandling.NONE,
+                mc.player
+        ));
+    }
+
     public static boolean isTarget(final Entity entity) {
         final var event = new TargetListener.TargetEvent(entity);
         Vandalism.getInstance().getEventSystem().postInternal(TargetListener.TargetEvent.ID, event);
