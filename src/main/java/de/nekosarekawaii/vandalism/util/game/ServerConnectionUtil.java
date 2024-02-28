@@ -23,8 +23,10 @@ import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
+import net.minecraft.text.Text;
 import net.minecraft.util.Pair;
 
 public class ServerConnectionUtil implements MinecraftWrapper {
@@ -51,9 +53,6 @@ public class ServerConnectionUtil implements MinecraftWrapper {
     }
 
     public static void connect(final String address) {
-        if (mc.world != null) {
-            disconnect();
-        }
         ConnectScreen.connect(
                 new MultiplayerScreen(new TitleScreen()),
                 mc,
@@ -64,11 +63,16 @@ public class ServerConnectionUtil implements MinecraftWrapper {
     }
 
     public static void disconnect() {
-        if (GAME_MENU_SCREEN == null) {
-            GAME_MENU_SCREEN = new GameMenuScreen(false);
-            GAME_MENU_SCREEN.init(mc, mc.getWindow().getScaledWidth(), mc.getWindow().getScaledHeight());
+        disconnect("Disconnected from the server.");
+    }
+
+    public static void disconnect(final String reason) {
+        final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
+        if (networkHandler != null) {
+            networkHandler.getConnection().disconnect(
+                    Text.literal(reason)
+            );
         }
-        GAME_MENU_SCREEN.disconnect();
     }
 
     public static Pair<String, Integer> resolveServerAddress(final String hostname) {

@@ -25,8 +25,8 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
+import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import net.minecraft.client.ClientBrandRetriever;
-import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
 public class NetworkingSettings extends ValueGroup implements KeyboardInputListener {
@@ -103,11 +103,7 @@ public class NetworkingSettings extends ValueGroup implements KeyboardInputListe
     @Override
     public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         if (key == this.forceDisconnectKey.getValue() && action == GLFW.GLFW_PRESS) {
-            if (NetworkingSettings.this.mc.getNetworkHandler() != null) {
-                NetworkingSettings.this.mc.getNetworkHandler().getConnection().disconnect(
-                        Text.literal("Manual force disconnect.")
-                );
-            }
+            ServerConnectionUtil.disconnect("Manually disconnected from the server.");
         }
     }
 
