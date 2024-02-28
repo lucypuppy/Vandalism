@@ -86,7 +86,7 @@ public class SprintTapModule extends AbstractModule implements AttackListener, P
             final boolean isLooking = RotationUtil.isEntityLookingAtEntity(this.mc.player, this.movementTarget, 80);
             final double speed = MovementUtil.getSpeedRelatedToYaw(mc.player.getYaw());
 
-            if (MovementUtil.isMoving() && (speed < 0.3D || !isLooking)) {
+            if (speed < 0.3D || !isLooking) {
                 this.mc.options.forwardKey.setPressed(true);
                 this.movementTarget = null;
             }

@@ -16,6 +16,7 @@
     "clientsettings.MixinClientBrandRetriever",
     "clientsettings.MixinClientConnection",
     "clientsettings.MixinClientPlayerInteractionManager",
+    "clientsettings.MixinConnectScreen",
     "clientsettings.MixinDeathScreen",
     "clientsettings.MixinDirectConnectScreen",
     "clientsettings.MixinDisconnectedScreen",
@@ -97,6 +98,7 @@
     "module.MixinStructureBlockBlockEntityRenderer",
     "module.MixinTextRendererDrawer",
     "module.MixinTextureUrlChecker",
+    "module.MixinTextVisitFactory",
     "module.MixinTranslatableTextContent",
     "module.MixinWorldRenderer",
     "util.MixinConnectScreen",
@@ -107,8 +109,5 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "mixins": [
-    "module.MixinTextVisitFactory"
-  ]
+  }
 }
