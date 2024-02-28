@@ -44,7 +44,6 @@ import java.io.File;
 
 /**
  * TODO: NekosAreKawaii <br>
- *  - Fix true sight when holding an barrier block in hand
  *  - Add Version Range to the creative tabs
  *  - Change behavior of the echolocation module to use it as a chunk load detector
  *  - Protector Module:
@@ -55,7 +54,6 @@ import java.io.File;
  *      - Add protection for account manager
  *  - Fix spotify menu control buttons
  *  - Use <a href="https://github.com/EvilCodeZ/JNI4J/tree/main">JNI4J</a> to improve the packet manager logging for fields
- *  - Fix vanilla title texts being displayed after leaving a server
  *  - Rewrite EnhancedServerList
  *  - Fix offsets for the new "teleport" method in the fov fucker module
  *  - Fix module tabs display (no stacking) when the client starts the first time

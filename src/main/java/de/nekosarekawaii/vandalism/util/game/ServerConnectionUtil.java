@@ -19,24 +19,18 @@
 package de.nekosarekawaii.vandalism.util.game;
 
 import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
-import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
+import net.minecraft.text.Text;
 import net.minecraft.util.Pair;
 
 public class ServerConnectionUtil implements MinecraftWrapper {
 
-    private static GameMenuScreen GAME_MENU_SCREEN = null;
-
     private static ServerInfo LAST_SERVER_INFO = null;
-
-    public static void connectToLastServer() {
-        if (LAST_SERVER_INFO == null) return;
-        connect(LAST_SERVER_INFO.address);
-    }
 
     public static boolean lastServerExists() {
         return LAST_SERVER_INFO != null;
@@ -50,25 +44,37 @@ public class ServerConnectionUtil implements MinecraftWrapper {
         LAST_SERVER_INFO = serverInfo;
     }
 
+    public static void connectToLastServer() {
+        if (LAST_SERVER_INFO == null) return;
+        connect(LAST_SERVER_INFO);
+    }
+
     public static void connect(final String address) {
-        if (mc.world != null) {
-            disconnect();
-        }
+        connect(new ServerInfo("", address, ServerInfo.ServerType.OTHER));
+    }
+
+    public static void connect(final ServerInfo serverInfo) {
+        if (serverInfo == null) return;
         ConnectScreen.connect(
                 new MultiplayerScreen(new TitleScreen()),
                 mc,
-                ServerAddress.parse(address),
-                new ServerInfo(address, address, ServerInfo.ServerType.OTHER),
+                ServerAddress.parse(serverInfo.address),
+                serverInfo,
                 false
         );
     }
 
     public static void disconnect() {
-        if (GAME_MENU_SCREEN == null) {
-            GAME_MENU_SCREEN = new GameMenuScreen(false);
-            GAME_MENU_SCREEN.init(mc, mc.getWindow().getScaledWidth(), mc.getWindow().getScaledHeight());
+        disconnect("Disconnected from the server.");
+    }
+
+    public static void disconnect(final String reason) {
+        final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
+        if (networkHandler != null) {
+            networkHandler.getConnection().disconnect(
+                    Text.literal(reason)
+            );
         }
-        GAME_MENU_SCREEN.disconnect();
     }
 
     public static Pair<String, Integer> resolveServerAddress(final String hostname) {
