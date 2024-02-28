@@ -19,7 +19,6 @@
 package de.nekosarekawaii.vandalism.util.game;
 
 import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
-import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
@@ -31,14 +30,7 @@ import net.minecraft.util.Pair;
 
 public class ServerConnectionUtil implements MinecraftWrapper {
 
-    private static GameMenuScreen GAME_MENU_SCREEN = null;
-
     private static ServerInfo LAST_SERVER_INFO = null;
-
-    public static void connectToLastServer() {
-        if (LAST_SERVER_INFO == null) return;
-        connect(LAST_SERVER_INFO.address);
-    }
 
     public static boolean lastServerExists() {
         return LAST_SERVER_INFO != null;
@@ -52,12 +44,26 @@ public class ServerConnectionUtil implements MinecraftWrapper {
         LAST_SERVER_INFO = serverInfo;
     }
 
+    public static void connectToLastServer() {
+        if (LAST_SERVER_INFO == null) return;
+        connect(LAST_SERVER_INFO);
+    }
+
+    public static void reconnect() {
+        connect(mc.getCurrentServerEntry());
+    }
+
     public static void connect(final String address) {
+        connect(new ServerInfo("", address, ServerInfo.ServerType.OTHER));
+    }
+
+    public static void connect(final ServerInfo serverInfo) {
+        if (serverInfo == null) return;
         ConnectScreen.connect(
                 new MultiplayerScreen(new TitleScreen()),
                 mc,
-                ServerAddress.parse(address),
-                new ServerInfo(address, address, ServerInfo.ServerType.OTHER),
+                ServerAddress.parse(serverInfo.address),
+                serverInfo,
                 false
         );
     }
