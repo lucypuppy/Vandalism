@@ -28,6 +28,13 @@ import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 
 public class VisualSettings extends ValueGroup {
 
+    public final BooleanValue fixTitleTextsOnConnect = new BooleanValue(
+            this,
+            "Fix Title Texts On Connect",
+            "If activated fixes the title texts when connecting to a server.",
+            true
+    );
+
     public final BooleanValue customBobView = new BooleanValue(
             this,
             "Custom Bob View",
