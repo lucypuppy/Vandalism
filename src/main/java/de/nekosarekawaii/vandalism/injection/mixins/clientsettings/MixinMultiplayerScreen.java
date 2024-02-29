@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
+import de.nekosarekawaii.vandalism.integration.serverlist.ServerDataUtil;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerList;
 import de.nekosarekawaii.vandalism.integration.serverlist.gui.ConfigScreen;
 import de.nekosarekawaii.vandalism.util.common.UUIDUtil;
@@ -67,7 +68,7 @@ public abstract class MixinMultiplayerScreen extends Screen {
     protected MultiplayerServerListWidget serverListWidget;
 
     @Unique
-    private static net.minecraft.client.option.ServerList vanddalism$SERVER_LIST;
+    private static net.minecraft.client.option.ServerList vandalism$SERVER_LIST;
 
     protected MixinMultiplayerScreen(final Text title) {
         super(title);
@@ -75,25 +76,25 @@ public abstract class MixinMultiplayerScreen extends Screen {
 
     @Inject(method = "refresh", at = @At("HEAD"))
     private void resetServerList(final CallbackInfo ci) {
-        vanddalism$SERVER_LIST = null;
+        vandalism$SERVER_LIST = null;
     }
 
     @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerServerListWidget;setServers(Lnet/minecraft/client/option/ServerList;)V"))
     private void cacheServerList(final MultiplayerServerListWidget instance, net.minecraft.client.option.ServerList servers) {
         final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
         if (enhancedServerListSettings.enhancedServerList.getValue() && enhancedServerListSettings.cacheServerList.getValue()){
-            if (vanddalism$SERVER_LIST != null) {
-                servers = vanddalism$SERVER_LIST;
+            if (vandalism$SERVER_LIST != null) {
+                servers = vandalism$SERVER_LIST;
                 for (final ServerInfo server : servers.servers) {
                     server.online = true;
                 }
             }
             else {
-                vanddalism$SERVER_LIST = servers;
+                vandalism$SERVER_LIST = servers;
             }
         }
         else {
-            vanddalism$SERVER_LIST = null;
+            vandalism$SERVER_LIST = null;
         }
         instance.setServers(servers);
     }
@@ -205,7 +206,7 @@ public abstract class MixinMultiplayerScreen extends Screen {
             if (enhancedServerListSettings.pasteServerKey.getValue() == keyCode) {
                 String clipboard = this.client.keyboard.getClipboard();
                 if (clipboard != null && !clipboard.isBlank()) {
-                    clipboard = clipboard.replaceAll("[^a-zA-Z0-9.:-_]", "");
+                    clipboard = ServerDataUtil.fixAddress(clipboard);
                     final ServerInfo serverInfo = new ServerInfo(
                             "Copied from Clipboard",
                             clipboard,
