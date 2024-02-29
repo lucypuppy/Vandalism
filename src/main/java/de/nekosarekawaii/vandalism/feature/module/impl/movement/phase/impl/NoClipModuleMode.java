@@ -19,10 +19,10 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.phase.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.network.BlockCollisionShapeListener;
-import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
+import de.nekosarekawaii.vandalism.event.normal.network.BlockCollisionShapeListener;
+import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.phase.PhaseModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
@@ -72,7 +72,7 @@ public class NoClipModuleMode extends ModuleMulti<PhaseModule> implements Player
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (!this.mc.player.getBlockStateAtPos().isAir() && this.mc.player.isOnGround()) {
+        if (this.mc.player.getBlockStateAtPos().isAir()) {
             return;
         }
         this.mc.player.setVelocity(
@@ -81,7 +81,9 @@ public class NoClipModuleMode extends ModuleMulti<PhaseModule> implements Player
                 0
         );
         if (MovementUtil.isMoving()) {
-            MovementUtil.clip(0, this.mc.player.forwardSpeed > 0 ? 1 : this.mc.player.forwardSpeed < 0 ? -1 : 0);
+            final double combinedSpeed = Math.sqrt(mc.player.forwardSpeed * mc.player.forwardSpeed + mc.player.sidewaysSpeed * mc.player.sidewaysSpeed);
+            final double direction = Math.toRadians(MovementUtil.getInputAngle(mc.player.getYaw()));
+            MovementUtil.clip(direction, 0, combinedSpeed);
         }
     }
 
