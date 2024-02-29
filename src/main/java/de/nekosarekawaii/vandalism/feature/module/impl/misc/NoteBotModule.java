@@ -180,6 +180,12 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
 
     public NoteBotModule() {
         super("Note Bot", "Plays note block songs.", Category.MISC);
+        if (NOTE_BLOCK_SONGS_DIR.exists()) {
+            if (NOTE_BLOCK_SONGS_DIR.isFile()) {
+                NOTE_BLOCK_SONGS_DIR.delete();
+            }
+            NOTE_BLOCK_SONGS_DIR.mkdirs();
+        }
         this.deactivateAfterSessionDefault();
         this.reset();
         this.searchFile = null;
