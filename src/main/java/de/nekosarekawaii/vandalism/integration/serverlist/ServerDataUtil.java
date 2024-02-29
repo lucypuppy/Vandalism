@@ -109,7 +109,8 @@ public class ServerDataUtil {
         return tooltip;
     }
 
-    public static String fixVersionName(final String input) {
+    public static String fixVersionName(String input) {
+        input = input.replaceAll(" +", " ");
         if (input.contains(" ")) {
             final String[] data = input.split(" ");
             if (data.length > 1) {
