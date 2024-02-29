@@ -56,6 +56,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
     private final static File NOTE_BLOCK_SONGS_DIR = new File(Vandalism.getInstance().getRunDirectory(), "note-block-songs");
     private final ImString searchText = new ImString();
     private File searchFile;
+    private boolean playing = false;
 
     private void renderSongFile(final File dir, final File file) {
         final SongFormat songFormat = NoteBlockLib.getFormat(file.toPath());
@@ -205,6 +206,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
     }
 
     private void play(final File songFile, final boolean play) throws Exception {
+        this.playing = play;
         final Song<?, ?, ?> song = NoteBlockLib.readSong(songFile);
         this.reset();
         final SongView<?> view = song.getView();
@@ -309,14 +311,16 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
             this.songPlayer.stop();
         }
         this.songPlayer = null;
-        final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
-        switch (this.mode.getValue()) {
-            case COMMAND -> {
-                if (networkHandler != null && this.mc.player != null) {
-                    networkHandler.sendChatCommand("bossbar remove minecraft:notebot");
+        if (this.playing) {
+            final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
+            switch (this.mode.getValue()) {
+                case COMMAND -> {
+                    if (networkHandler != null && this.mc.player != null) {
+                        networkHandler.sendChatCommand("bossbar remove minecraft:notebot");
+                    }
                 }
+                default -> {}
             }
-            default -> {}
         }
     }
 
