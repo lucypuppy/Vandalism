@@ -184,6 +184,8 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
             if (NOTE_BLOCK_SONGS_DIR.isFile()) {
                 NOTE_BLOCK_SONGS_DIR.delete();
             }
+        }
+        if (!NOTE_BLOCK_SONGS_DIR.exists()) {
             NOTE_BLOCK_SONGS_DIR.mkdirs();
         }
         this.deactivateAfterSessionDefault();
