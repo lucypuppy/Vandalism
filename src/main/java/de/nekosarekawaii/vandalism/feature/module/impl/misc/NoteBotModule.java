@@ -27,6 +27,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.type.ImString;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -56,6 +57,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
     private final static File NOTE_BLOCK_SONGS_DIR = new File(Vandalism.getInstance().getRunDirectory(), "note-block-songs");
     private final ImString searchText = new ImString();
     private File searchFile;
+    private boolean playing = false;
 
     private void renderSongFile(final File dir, final File file) {
         final SongFormat songFormat = NoteBlockLib.getFormat(file.toPath());
@@ -64,9 +66,8 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         if (this.currentSongFile == null || !this.currentSongFile.getAbsolutePath().equals(file.getAbsolutePath())) {
             ImGui.separator();
             ImGui.text(file.getName());
-            ImGui.separator();
             if (this.mc.player != null) {
-                if (ImGui.button("Play##" + identifier + "play")) {
+                if (ImGui.button("Play##" + identifier + "play", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
                     try {
                         this.play(file, true);
                     } catch (final Exception e) {
@@ -74,7 +75,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
                     }
                 }
                 ImGui.sameLine();
-                if (ImGui.button("Preview##" + identifier + "preview")) {
+                if (ImGui.button("Preview##" + identifier + "preview", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                     try {
                         this.play(file, false);
                     } catch (final Exception e) {
@@ -166,8 +167,24 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         if (!NOTE_BLOCK_SONGS_DIR.exists()) {
             NOTE_BLOCK_SONGS_DIR.mkdirs();
         }
-        ImGui.inputText("##noteblocksongsearch", this.searchText);
+        ImGui.spacing();
+        if (this.currentSongFile != null) {
+            if (ImUtils.subButton("Stop##noteblockstop")) {
+                this.reset();
+            }
+            ImGui.separator();
+            ImGui.text("Currently playing");
+            final String title = this.currentSongFile.getName();
+            if (!title.isEmpty()) {
+                ImGui.textWrapped("Name: " + Files.getNameWithoutExtension(title));
+            }
+            final SongPlayer songPlayer = this.songPlayer;
+            ImGui.textWrapped("Duration: " + (songPlayer.getTick() * 50) / 1000 + "s / " + (songPlayer.getSongView().getLength() * 50) / 1000 + "s");
+        }
         ImGui.separator();
+        ImGui.text("Search for a song");
+        ImGui.setNextItemWidth(-1);
+        ImGui.inputText("##noteblocksongsearch", this.searchText);
         ImGui.spacing();
         if (this.searchText.get().isBlank()) {
             this.renderSongDir(NOTE_BLOCK_SONGS_DIR);
@@ -205,6 +222,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
     }
 
     private void play(final File songFile, final boolean play) throws Exception {
+        this.playing = play;
         final Song<?, ?, ?> song = NoteBlockLib.readSong(songFile);
         this.reset();
         final SongView<?> view = song.getView();
@@ -309,14 +327,16 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
             this.songPlayer.stop();
         }
         this.songPlayer = null;
-        final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
-        switch (this.mode.getValue()) {
-            case COMMAND -> {
-                if (networkHandler != null && this.mc.player != null) {
-                    networkHandler.sendChatCommand("bossbar remove minecraft:notebot");
+        if (this.playing) {
+            final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
+            switch (this.mode.getValue()) {
+                case COMMAND -> {
+                    if (networkHandler != null && this.mc.player != null) {
+                        networkHandler.sendChatCommand("bossbar remove minecraft:notebot");
+                    }
                 }
+                default -> {}
             }
-            default -> {}
         }
     }
 
