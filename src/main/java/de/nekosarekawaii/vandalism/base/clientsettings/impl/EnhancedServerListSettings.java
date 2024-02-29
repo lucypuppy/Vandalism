@@ -39,6 +39,13 @@ public class EnhancedServerListSettings extends ValueGroup {
         }
     });
 
+    public final BooleanValue directConnectAddressFix = new BooleanValue(
+            this,
+            "Direct Connect Address Fix",
+            "Fixes invalid addresses in the direct connect screen.",
+            true
+    ).visibleCondition(this.enhancedServerList::getValue);
+
     public final BooleanValue cacheServerList = new BooleanValue(
             this,
             "Cache Server List",

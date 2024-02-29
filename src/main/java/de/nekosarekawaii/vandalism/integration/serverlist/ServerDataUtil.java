@@ -128,4 +128,11 @@ public class ServerDataUtil {
         return input;
     }
 
+    public static String fixAddress(String input) {
+        input = input.replaceAll("[^a-zA-Z0-9.:-_]", "");
+        input = input.replace("<", "");
+        input = input.replace(">", "");
+        return input;
+    }
+
 }
