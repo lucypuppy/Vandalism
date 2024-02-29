@@ -158,10 +158,22 @@ public class MovementUtil implements MinecraftWrapper {
      * @param vertical   The vertical value.
      * @param horizontal The horizontal value.
      */
+    public static void clip(final double direction, final double vertical, final double horizontal) {
+        if (mc.player == null) return;
+        mc.player.setPos(mc.player.getX() - Math.sin(direction) * horizontal, mc.player.getY() + vertical, mc.player.getZ() + Math.cos(direction) * horizontal);
+    }
+
+    /**
+     * Clip the player.
+     *
+     * @param vertical   The vertical value.
+     * @param horizontal The horizontal value.
+     */
+
     public static void clip(final double vertical, final double horizontal) {
         if (mc.player == null) return;
-        final double direction = getDirection();
-        mc.player.setPos(mc.player.getX() - Math.sin(direction) * horizontal, mc.player.getY() + vertical, mc.player.getZ() + Math.cos(direction) * horizontal);
+        final double direction = Math.toRadians(mc.player.getYaw());
+        clip(direction, vertical, horizontal);
     }
 
     /**
