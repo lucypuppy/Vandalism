@@ -66,9 +66,8 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         if (this.currentSongFile == null || !this.currentSongFile.getAbsolutePath().equals(file.getAbsolutePath())) {
             ImGui.separator();
             ImGui.text(file.getName());
-            ImGui.separator();
             if (this.mc.player != null) {
-                if (ImGui.button("Play##" + identifier + "play")) {
+                if (ImGui.button("Play##" + identifier + "play", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
                     try {
                         this.play(file, true);
                     } catch (final Exception e) {
@@ -76,7 +75,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
                     }
                 }
                 ImGui.sameLine();
-                if (ImGui.button("Preview##" + identifier + "preview")) {
+                if (ImGui.button("Preview##" + identifier + "preview", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                     try {
                         this.play(file, false);
                     } catch (final Exception e) {
