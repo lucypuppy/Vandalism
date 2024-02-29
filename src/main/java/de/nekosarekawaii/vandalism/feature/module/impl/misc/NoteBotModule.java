@@ -182,6 +182,8 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
             final SongPlayer songPlayer = this.songPlayer;
             ImGui.textWrapped("Duration: " + (songPlayer.getTick() * 50) / 1000 + "s / " + (songPlayer.getSongView().getLength() * 50) / 1000 + "s");
         }
+        ImGui.separator();
+        ImGui.text("Search for a song");
         ImGui.setNextItemWidth(-1);
         ImGui.inputText("##noteblocksongsearch", this.searchText);
         ImGui.spacing();
