@@ -278,10 +278,10 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
                             mc.execute(() -> player.playSound(sound, nbsNote.getVolume() / 100F, pitch));
                         }
                     } else {
-                        Vandalism.getInstance().getLogger().warn("Failed to find mc instrument: " + instrument.name());
+                        ChatUtil.errorChatMessage("Failed to find mc instrument: " + instrument.name());
                     }
                 } else {
-                    Vandalism.getInstance().getLogger().warn("Failed to find instrument: " + note.getInstrument());
+                    ChatUtil.errorChatMessage("Failed to find instrument: " + note.getInstrument());
                 }
             }
 
