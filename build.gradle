@@ -181,6 +181,8 @@ dependencies {
 
     jij "org.jsoup:jsoup:${project.jsoup_version}"
 
+    jij "net.raphimc:NoteBlockLib:${project.noteblocklib_version}"
+
     // Fabric's jar in jar system doesn't support transitive dependencies, so we have to manually add them
     afterEvaluate {
         configurations.jij.incoming.resolutionResult.allDependencies {

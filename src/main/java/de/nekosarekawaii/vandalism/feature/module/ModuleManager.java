@@ -148,7 +148,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new DisablerModule(),
                 new TeleportModule(),
                 new SignExploitsModule(),
-                new ScaffoldModule()
+                new ScaffoldModule(),
+                new NoteBotModule()
         );
         this.configManager.add(new ModulesConfig(this));
     }
