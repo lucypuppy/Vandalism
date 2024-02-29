@@ -27,6 +27,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.type.ImString;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -167,8 +168,22 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         if (!NOTE_BLOCK_SONGS_DIR.exists()) {
             NOTE_BLOCK_SONGS_DIR.mkdirs();
         }
+        ImGui.spacing();
+        if (this.currentSongFile != null) {
+            if (ImUtils.subButton("Stop##noteblockstop")) {
+                this.reset();
+            }
+            ImGui.separator();
+            ImGui.text("Currently playing");
+            final String title = this.currentSongFile.getName();
+            if (!title.isEmpty()) {
+                ImGui.textWrapped("Name: " + Files.getNameWithoutExtension(title));
+            }
+            final SongPlayer songPlayer = this.songPlayer;
+            ImGui.textWrapped("Duration: " + (songPlayer.getTick() * 50) / 1000 + "s / " + (songPlayer.getSongView().getLength() * 50) / 1000 + "s");
+        }
+        ImGui.setNextItemWidth(-1);
         ImGui.inputText("##noteblocksongsearch", this.searchText);
-        ImGui.separator();
         ImGui.spacing();
         if (this.searchText.get().isBlank()) {
             this.renderSongDir(NOTE_BLOCK_SONGS_DIR);
