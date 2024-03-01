@@ -110,6 +110,7 @@ public class ChatUtil implements MinecraftWrapper {
 
     public static void sendChatMessage(final String message) {
         final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
+        if (networkHandler == null) return;
         final Instant instant = Instant.now();
         final long l = NetworkEncryptionUtils.SecureRandomUtil.nextLong();
         final LastSeenMessagesCollector.LastSeenMessages lastSeenMessages = networkHandler.lastSeenMessagesCollector.collect();
