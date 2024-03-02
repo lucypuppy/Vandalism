@@ -68,7 +68,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     private TrueSightModule trueSightModule;
     private VisualThrottleModule visualThrottleModule;
     private BetterTabListModule betterTabListModule;
-    private FastUseModule fastUseModule;
+    private FastPlaceModule fastPlaceModule;
     private IllegalInteractionModule illegalInteractionModule;
     private ESPModule espModule;
     private KillAuraModule killAuraModule;
@@ -101,7 +101,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.trueSightModule = new TrueSightModule(),
                 this.visualThrottleModule = new VisualThrottleModule(),
                 this.betterTabListModule = new BetterTabListModule(),
-                this.fastUseModule = new FastUseModule(),
+                this.fastPlaceModule = new FastPlaceModule(),
                 this.illegalInteractionModule = new IllegalInteractionModule(),
                 this.espModule = new ESPModule(),
                 this.fullBrightModule = new FullBrightModule(),
@@ -215,8 +215,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
         return illegalInteractionModule;
     }
 
-    public FastUseModule getFastUseModule() {
-        return fastUseModule;
+    public FastPlaceModule getFastPlaceModule() {
+        return fastPlaceModule;
     }
 
     public ESPModule getEspModule() {
