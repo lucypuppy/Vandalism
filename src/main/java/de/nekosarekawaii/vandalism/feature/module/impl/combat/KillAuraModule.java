@@ -513,6 +513,9 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         final List<Entity> entities = new ArrayList<>();
 
         for (final Entity entity : this.mc.world.getEntities()) {
+            if (entity == this.mc.player || entity == this.mc.player.getVehicle()) {
+                continue;
+            }
             if (WorldUtil.isTarget(entity) &&
                     this.mc.player.distanceTo(entity) <= getAimRange() + 1.0 &&
                     entity.getWidth() > 0.0 && entity.getHeight() > 0.0) {
