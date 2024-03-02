@@ -376,7 +376,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         if (this.lagMeter.getValue()) {
             final long lagMillis = this.mc.getNetworkHandler() != null && !(this.mc.isInSingleplayer() && this.mc.isPaused()) ? System.currentTimeMillis() - this.lastUpdate : 0L;
             if (lagMillis > 2000L || !inGame) {
-                infoMap.put("Lags", lagMillis + " ms");
+                infoMap.put("Lag", lagMillis + " ms");
             }
         }
 

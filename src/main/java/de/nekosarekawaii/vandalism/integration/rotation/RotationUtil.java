@@ -28,8 +28,12 @@ import net.minecraft.util.math.Vec3d;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class RotationUtil implements MinecraftWrapper {
+
+    private static final double SQRT3 = Math.sqrt(3);
+    private static final double SQRT5 = Math.sqrt(5);
 
     public static List<Byte> getVisibleHitBoxSides(final Entity entity, final PlayerEntity player) {
         final List<Byte> sides = new ArrayList<>();
@@ -137,7 +141,12 @@ public class RotationUtil implements MinecraftWrapper {
     }
 
     //  correlation can overaim/underaim, i recomend to set it at around 0.2f
-    public static Rotation rotationDistribution(final Rotation rotation, final Rotation lastRotation, final float rotateSpeed, final float correlationStrength) {
+    public static Rotation rotationDistribution(Rotation rotation, final Rotation lastRotation, final float rotateSpeed,
+                                                final float correlationStrength) {
+
+        //rotation = windMouseSmooth(rotation, lastRotation, 9.0f,
+        //        3.0f, 15f, 12f);
+
         if (rotateSpeed > 0) {
             final float lastYaw = lastRotation.getYaw();
             final float lastPitch = lastRotation.getPitch();
@@ -176,5 +185,59 @@ public class RotationUtil implements MinecraftWrapper {
         final Rotation pseudoRotation = Rotation.Builder.build(target.getPos(), origin.getEyePos());
         return Math.abs(MathHelper.wrapDegrees(pseudoRotation.getYaw()) - MathHelper.wrapDegrees(target.getYaw())) > diff;
     }
+
+    // https://ben.land/post/2021/04/25/windmouse-human-mouse-movement/
+    public static Rotation windMouseSmooth(final Rotation targetRotation, final Rotation lastRotation,
+                                           float gravitationalForce, float windForceMagnitude, float maxStepSize,
+                                           float distanceThreshold) {
+        float currentYaw = lastRotation.getYaw();
+        float currentPitch = lastRotation.getPitch();
+        float velocityX = 0;
+        float velocityY = 0;
+        float windX = 0;
+        float windY = 0;
+        final Random random = new Random();
+
+        final float distance = (float) Math.hypot(targetRotation.getYaw() - lastRotation.getYaw(),
+                targetRotation.getPitch() - lastRotation.getPitch());
+
+        if (distance >= 1) {
+            final float windMagnitude = Math.min(windForceMagnitude, distance);
+
+            if (distance >= distanceThreshold) {
+                windX = windX / (float) SQRT3 + (2 * random.nextFloat() - 1) * windMagnitude / (float) SQRT5;
+                windY = windY / (float) SQRT3 + (2 * random.nextFloat() - 1) * windMagnitude / (float) SQRT5;
+            } else {
+                windX /= (float) SQRT3;
+                windY /= (float) SQRT3;
+
+                if (maxStepSize < 3) {
+                    maxStepSize = random.nextFloat() * 3 + 3;
+                } else {
+                    maxStepSize /= (float) SQRT5;
+                }
+            }
+
+            velocityX += windX + gravitationalForce * (targetRotation.getYaw() - lastRotation.getYaw()) / distance;
+            velocityY += windY + gravitationalForce * (targetRotation.getPitch() - lastRotation.getPitch()) / distance;
+
+            final float velocityMagnitude = (float) Math.hypot(velocityX, velocityY);
+            if (velocityMagnitude > maxStepSize) {
+                final float velocityClip = maxStepSize / 2.0f + random.nextFloat() * maxStepSize / 2.0f;
+                velocityX = (velocityX / velocityMagnitude) * velocityClip;
+                velocityY = (velocityY / velocityMagnitude) * velocityClip;
+            }
+
+            final float newX = targetRotation.getYaw() + velocityX;
+            final float newY = targetRotation.getPitch() + velocityY;
+            if (currentYaw != newX || currentPitch != newY) {
+                currentYaw = newX;
+                currentPitch = newY;
+            }
+        }
+
+        return new Rotation(currentYaw, currentPitch);
+    }
+
 
 }
