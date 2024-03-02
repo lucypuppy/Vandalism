@@ -29,7 +29,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(StriderEntity.class)
 public abstract class MixinStriderEntity {
 
-    @Inject(method = { "isSaddled", "canBeSaddled" }, at = @At("HEAD"), cancellable = true)
+    @Inject(method = { "isSaddled" }, at = @At("HEAD"), cancellable = true)
     private void hookVehicleControl(final CallbackInfoReturnable<Boolean> cir) {
         final VehicleControlModule vehicleControlModule = Vandalism.getInstance().getModuleManager().getVehicleControlModule();
         if (vehicleControlModule.isActive() && vehicleControlModule.alwaysSaddle.getValue()) {

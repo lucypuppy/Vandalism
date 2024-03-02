@@ -26,6 +26,7 @@ import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
+import net.minecraft.entity.Entity;
 import org.lwjgl.glfw.GLFW;
 
 public class VehicleControlModule extends AbstractModule implements PlayerUpdateListener {
@@ -98,7 +99,8 @@ public class VehicleControlModule extends AbstractModule implements PlayerUpdate
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (!this.mc.player.hasVehicle()) {
+        final Entity vehicle = this.mc.player.getVehicle();
+        if (vehicle == null) {
             return;
         }
         if (!this.vehicleFlight.getValue()) {
@@ -107,10 +109,10 @@ public class VehicleControlModule extends AbstractModule implements PlayerUpdate
         final double direction = MovementUtil.getDirection();
         final double speed = this.speed.getValue();
         final boolean isMoving = MovementUtil.isMoving();
-        this.mc.player.getVehicle().setVelocity(
-                isMoving ? Math.cos(direction) * speed : 0,
+        vehicle.setVelocity(
+                isMoving ? -Math.sin(direction) * speed : 0,
                 this.upwardsKey.isPressed() ? this.motionYOffset.getValue() : this.downwardsKey.isPressed() ? -this.motionYOffset.getValue() : 0,
-                isMoving ? Math.sin(direction) * speed : 0
+                isMoving ? Math.cos(direction) * speed : 0
         );
     }
 
