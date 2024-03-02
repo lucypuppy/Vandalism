@@ -80,6 +80,8 @@ public class ServersTab implements MinecraftWrapper {
     private final ImString serversSearchField = new ImString();
     private final List<ServersResponse.Server> servers = new CopyOnWriteArrayList<>();
 
+    private String lastAddress = "";
+
     private int checkedServers = -1;
     private int lastMaxServers = -1;
 
@@ -285,7 +287,7 @@ public class ServersTab implements MinecraftWrapper {
                     i++;
                     final String address = serverEntry.server;
                     final boolean cracked = serverEntry.cracked;
-                    final boolean isLastServer = ServerConnectionUtil.lastServerExists() && ServerConnectionUtil.getLastServerInfo().address.equals(address);
+                    final boolean isLastServer = ServerConnectionUtil.lastServerExists() && ServerConnectionUtil.getLastServerInfo().address.equals(address) || this.lastAddress.equals(address);
                     final StringBuilder dataString = new StringBuilder();
                     String description = Formatting.strip(serverEntry.description);
                     if (description != null && !description.isEmpty()) {
@@ -344,6 +346,7 @@ public class ServersTab implements MinecraftWrapper {
                     }
                     final String serverEntryId = "##serverEntry" + address;
                     if (ImGui.button(serverEntryId, ImGui.getColumnWidth() - 8, 90)) {
+                        this.lastAddress = address;
                         ServerConnectionUtil.connect(address);
                     }
                     if (shouldHighlight) {

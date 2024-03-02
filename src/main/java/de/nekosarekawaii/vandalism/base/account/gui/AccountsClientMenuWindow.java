@@ -80,18 +80,23 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
                 }
                 final Session session = this.hoveredAccount.getSession();
                 if (session != null) {
-                    if (session.getUuidOrNull() != null && ImUtils.subButton("Copy UUID")) {
-                        this.mc.keyboard.setClipboard(session.getUuidOrNull().toString());
+                    final UUID uuid = session.getUuidOrNull();
+                    final boolean uuidAvailable = uuid != null;
+                    if (uuidAvailable) {
+                        if (ImUtils.subButton("Copy UUID")) {
+                            this.mc.keyboard.setClipboard(uuid.toString());
+                        }
                     }
                     if (ImUtils.subButton("Copy Access token")) {
                         this.mc.keyboard.setClipboard(session.getAccessToken());
                     }
                     ImGui.text("Type: " + this.hoveredAccount.getType());
-                    if (this.hoveredAccount.getLastLogin() != null) {
-                        ImGui.text("Last Login: " + this.hoveredAccount.getLastLogin());
+                    final String lastLogin = this.hoveredAccount.getLastLogin();
+                    if (lastLogin != null) {
+                        ImGui.text("Last Login: " + lastLogin);
                     }
-                    if (this.hoveredAccount.getSession().getUuidOrNull() != null) {
-                        ImGui.text("UUID: " + session.getUuidOrNull());
+                    if (uuidAvailable) {
+                        ImGui.text("UUID: " + uuid);
                     }
                 }
             }
@@ -101,6 +106,9 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
 
     private void renderAccount(final AbstractAccount account, final boolean isEntry) {
         if (account == null) return;
+        final Session session = account.getSession();
+        if (session == null) return;
+        final UUID playerUuid = session.getUuidOrNull();
         final PlayerSkinRenderer accountPlayerSkin = account.getPlayerSkin();
         if (accountPlayerSkin != null) {
             final int playerSkinId = accountPlayerSkin.getGlId();
@@ -112,7 +120,6 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
             }
         }
         final String playerName = account.getDisplayName();
-        final UUID playerUuid = account.getSession().getUuidOrNull();
         final GameProfile gameProfile = this.mc.getGameProfile();
         final boolean isCurrentAccount = gameProfile.getName().equals(playerName) && gameProfile.getId().equals(playerUuid);
         if (isCurrentAccount) {

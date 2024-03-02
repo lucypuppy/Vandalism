@@ -41,6 +41,9 @@ public abstract class SingleExecutionModuleMode<M extends AbstractModule> extend
     @Override
     public void onActivate() {
         for (int i = 0; i < this.times.getValue(); i++) {
+            if (this.mc.player == null) {
+                continue;
+            }
             this.onExecute();
         }
         this.parent.deactivate();

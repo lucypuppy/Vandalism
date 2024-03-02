@@ -109,7 +109,8 @@ public class ServerDataUtil {
         return tooltip;
     }
 
-    public static String fixVersionName(final String input) {
+    public static String fixVersionName(String input) {
+        input = input.replaceAll(" +", " ");
         if (input.contains(" ")) {
             final String[] data = input.split(" ");
             if (data.length > 1) {
@@ -124,6 +125,13 @@ public class ServerDataUtil {
                 return name + " " + versionRange;
             }
         }
+        return input;
+    }
+
+    public static String fixAddress(String input) {
+        input = input.replaceAll("[^a-zA-Z0-9.:-_]", "");
+        input = input.replace("<", "");
+        input = input.replace(">", "");
         return input;
     }
 
