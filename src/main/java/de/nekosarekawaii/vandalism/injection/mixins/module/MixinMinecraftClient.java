@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.module.impl.misc.FastUseModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.misc.FastPlaceModule;
 import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
@@ -43,8 +43,8 @@ public abstract class MixinMinecraftClient implements MinecraftWrapper {
 
     @ModifyConstant(method = "doItemUse", constant = @Constant(intValue = 4))
     private int hookFastUse(final int value) {
-        final FastUseModule fastUseModule = Vandalism.getInstance().getModuleManager().getFastUseModule();
-        if (fastUseModule.isActive()) return fastUseModule.itemUseCooldown.getValue();
+        final FastPlaceModule fastPlaceModule = Vandalism.getInstance().getModuleManager().getFastPlaceModule();
+        if (fastPlaceModule.isActive()) return fastPlaceModule.cooldown.getValue();
         return value;
     }
 

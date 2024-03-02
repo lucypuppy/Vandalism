@@ -21,19 +21,19 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 
-public class FastUseModule extends AbstractModule {
+public class FastPlaceModule extends AbstractModule {
 
-    public final IntegerValue itemUseCooldown = new IntegerValue(
+    public final IntegerValue cooldown = new IntegerValue(
             this,
-            "Item Use Cooldown",
-            "Here you can input the custom use cooldown value.",
+            "Cooldown",
+            "Here you can input the cooldown value.",
             0,
             0,
             3
     );
 
-    public FastUseModule() {
-        super("Fast Use", "Allows you to use items faster.", Category.MISC);
+    public FastPlaceModule() {
+        super("Fast Place", "Allows you to place blocks faster and to throw throwable items faster.", Category.MISC);
     }
 
 }
