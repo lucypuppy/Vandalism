@@ -67,43 +67,48 @@ public class ServerDataUtil {
                 final String protocolName = protocolVersion.getName();
                 tooltip.add(Text.literal("Protocol: " + protocolName + (!protocolName.contains("(") ? " (" + protocol + ")" : "")));
                 final String address = serverInfo.address;
-                if (address.equals("0") || address.equals("localhost") || address.equals("127.0.0.1") || address.equals("0.0.0.0")) {
-                    if (LAST_SERVER_ADDRESS.equals(address) && LAST_SERVER_ADDRESS_INFO != null) {
-                        final IPAddressInfo.Location location = LAST_SERVER_ADDRESS_INFO.getLocation();
-                        if (location != null) {
-                            tooltip.add(Text.literal("Country: " + location.getCountry() + " (" + location.getCountryCode() + ")"));
-                        }
-                        final IPAddressInfo.Company company = LAST_SERVER_ADDRESS_INFO.getCompany();
-                        if (company != null) {
-                            tooltip.add(Text.literal("Company: " + company.getName()));
-                        }
-                        final IPAddressInfo.ASN asn = LAST_SERVER_ADDRESS_INFO.getAsn();
-                        if (asn != null) {
-                            tooltip.add(Text.literal("Domain: " + asn.getDomain()));
-                            tooltip.add(Text.literal("Organization: " + asn.getOrg()));
-                            tooltip.add(Text.literal("Description: " + asn.getDescr()));
-                            tooltip.add(Text.literal("ASN: " + asn.getAsn()));
-                        }
+                String addressWithoutPort = address;
+                if (address.contains(":")) {
+                    addressWithoutPort = addressWithoutPort.split(":")[0];
+                }
+                if (addressWithoutPort.equals("0") || addressWithoutPort.equals("localhost") || addressWithoutPort.equals("127.0.0.1") || addressWithoutPort.equals("0.0.0.0")) {
+                    return tooltip;
+                }
+                if (LAST_SERVER_ADDRESS.equals(address) && LAST_SERVER_ADDRESS_INFO != null) {
+                    final IPAddressInfo.Location location = LAST_SERVER_ADDRESS_INFO.getLocation();
+                    if (location != null) {
+                        tooltip.add(Text.literal("Country: " + location.getCountry() + " (" + location.getCountryCode() + ")"));
                     }
-                    if (LAST_SERVER_INFO_FETCH_TIMER.hasReached(2000, true)) {
-                        if (!LAST_SERVER_ADDRESS.equals(address)) {
-                            LAST_SERVER_ADDRESS = serverInfo.address;
-                            EXECUTOR_SERVICE.submit(() -> {
-                                final Pair<String, Integer> serverAddress = ServerConnectionUtil.resolveServerAddress(address);
-                                final String resolvedAddress = serverAddress.getLeft();
-                                try {
-                                    LAST_SERVER_ADDRESS_INFO = GSON.fromJson(HttpClient.newHttpClient().send(
-                                            HttpRequest.newBuilder().uri(URI.create(IP_API_URL + resolvedAddress))
-                                                    .headers("Content-Type", "application/json")
-                                                    .GET()
-                                                    .build(),
-                                            HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8)
-                                    ).body(), IPAddressInfo.class);
-                                } catch (Exception e) {
-                                    Vandalism.getInstance().getLogger().error("Failed to get ip information from: " + resolvedAddress, e);
-                                }
-                            });
-                        }
+                    final IPAddressInfo.Company company = LAST_SERVER_ADDRESS_INFO.getCompany();
+                    if (company != null) {
+                        tooltip.add(Text.literal("Company: " + company.getName()));
+                    }
+                    final IPAddressInfo.ASN asn = LAST_SERVER_ADDRESS_INFO.getAsn();
+                    if (asn != null) {
+                        tooltip.add(Text.literal("Domain: " + asn.getDomain()));
+                        tooltip.add(Text.literal("Organization: " + asn.getOrg()));
+                        tooltip.add(Text.literal("Description: " + asn.getDescr()));
+                        tooltip.add(Text.literal("ASN: " + asn.getAsn()));
+                    }
+                }
+                if (LAST_SERVER_INFO_FETCH_TIMER.hasReached(2000, true)) {
+                    if (!LAST_SERVER_ADDRESS.equals(address)) {
+                        LAST_SERVER_ADDRESS = serverInfo.address;
+                        EXECUTOR_SERVICE.submit(() -> {
+                            final Pair<String, Integer> serverAddress = ServerConnectionUtil.resolveServerAddress(address);
+                            final String resolvedAddress = serverAddress.getLeft();
+                            try {
+                                LAST_SERVER_ADDRESS_INFO = GSON.fromJson(HttpClient.newHttpClient().send(
+                                        HttpRequest.newBuilder().uri(URI.create(IP_API_URL + resolvedAddress))
+                                                .headers("Content-Type", "application/json")
+                                                .GET()
+                                                .build(),
+                                        HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8)
+                                ).body(), IPAddressInfo.class);
+                            } catch (Exception e) {
+                                Vandalism.getInstance().getLogger().error("Failed to get ip information from: " + resolvedAddress, e);
+                            }
+                        });
                     }
                 }
             }
