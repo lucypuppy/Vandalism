@@ -27,14 +27,14 @@ import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 
-public class SprintTapModule extends AbstractModule implements AttackListener, PlayerUpdateListener {
+public class WTapModule extends AbstractModule implements AttackListener, PlayerUpdateListener {
 
     private Entity movementTarget = null;
     private LivingEntity lastTarget = null;
 
-    public SprintTapModule() {
+    public WTapModule() {
         super(
-                "Sprint Tap",
+                "W Tap",
                 "Automatically sprints and un-sprints when you are in combat which applies more velocity to your target.",
                 Category.COMBAT
         );
@@ -84,20 +84,22 @@ public class SprintTapModule extends AbstractModule implements AttackListener, P
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (this.movementTarget != null) {
             final boolean isLooking = RotationUtil.isEntityLookingAtEntity(this.mc.player, this.movementTarget, 80);
-            final double speed = MovementUtil.getSpeedRelatedToYaw(mc.player.getYaw());
+            final double speed = MovementUtil.getSpeedRelatedToYaw(this.mc.player.getYaw());
 
             if (speed < 0.3D || !isLooking) {
                 this.mc.options.forwardKey.setPressed(true);
                 this.movementTarget = null;
             }
 
-            if (this.lastTarget == null)
+            if (this.lastTarget == null) {
                 return;
+            }
 
-            if(this.lastTarget.hurtTime == 10 || this.lastTarget.hurtTime == 8){
+            if (this.lastTarget.hurtTime == 10 || this.lastTarget.hurtTime == 8) {
                 this.mc.options.forwardKey.setPressed(true);
-                if(this.lastTarget.hurtTime == 8)
+                if (this.lastTarget.hurtTime == 8) {
                     this.lastTarget = null;
+                }
             }
         }
     }

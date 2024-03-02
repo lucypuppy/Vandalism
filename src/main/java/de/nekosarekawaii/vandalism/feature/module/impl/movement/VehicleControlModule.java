@@ -19,49 +19,71 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
+import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 import org.lwjgl.glfw.GLFW;
 
-public class VehicleFlightModule extends AbstractModule implements PlayerUpdateListener {
+public class VehicleControlModule extends AbstractModule implements PlayerUpdateListener {
+
+    public final BooleanValue alwaysSaddle = new BooleanValue(
+            this,
+            "Always Saddle",
+            "Allows you to ride entities that don't have a saddle.",
+            true
+    );
+
+    private final BooleanValue vehicleFlight = new BooleanValue(
+            this,
+            "Vehicle Flight",
+            "Allows you to fly with a vehicle.",
+            true
+    );
+
+    private final ValueGroup vehicleFlightGroup = new ValueGroup(
+            this,
+            "Vehicle Flight Group",
+            "The group for the vehicle flight settings."
+    ).visibleCondition(this.vehicleFlight::getValue);
 
     private final DoubleValue speed = new DoubleValue(
-            this,
+            this.vehicleFlightGroup,
             "Speed",
             "The speed of the vehicle flight.",
             1.2,
             1.0,
             5.0
-    );
+    ).visibleCondition(this.vehicleFlight::getValue);
 
     private final DoubleValue motionYOffset = new DoubleValue(
-            this,
+            this.vehicleFlightGroup,
             "Motion Y Offset",
             "The motion y offset of the vehicle flight.",
             0.5,
             0.1,
             2.0
-    );
+    ).visibleCondition(this.vehicleFlight::getValue);
 
     private final KeyBindValue upwardsKey = new KeyBindValue(
-            this,
+            this.vehicleFlightGroup,
             "Upwards Key",
             "The key to fly upwards.",
             GLFW.GLFW_KEY_SPACE
-    );
+    ).visibleCondition(this.vehicleFlight::getValue);
 
     private final KeyBindValue downwardsKey = new KeyBindValue(
-            this,
+            this.vehicleFlightGroup,
             "Downwards Key",
             "The key to fly downwards.",
             GLFW.GLFW_KEY_LEFT_SHIFT
-    );
+    ).visibleCondition(this.vehicleFlight::getValue);
 
-    public VehicleFlightModule() {
-        super("Vehicle Flight", "Allows you to fly with a vehicle.", Category.MOVEMENT);
+    public VehicleControlModule() {
+        super("Vehicle Control", "Allows you to customize the vehicle movement.", Category.MOVEMENT);
     }
 
     @Override
@@ -77,6 +99,9 @@ public class VehicleFlightModule extends AbstractModule implements PlayerUpdateL
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (!this.mc.player.hasVehicle()) {
+            return;
+        }
+        if (!this.vehicleFlight.getValue()) {
             return;
         }
         final double direction = MovementUtil.getDirection();

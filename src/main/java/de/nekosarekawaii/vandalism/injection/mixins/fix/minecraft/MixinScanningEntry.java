@@ -18,33 +18,24 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.fix.minecraft;
 
+import de.nekosarekawaii.vandalism.integration.serverlist.ServerPingerWidget;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
-import net.minecraft.client.gui.widget.EntryListWidget;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.List;
-import java.util.function.Consumer;
+@Mixin(MultiplayerServerListWidget.ScanningEntry.class)
+public abstract class MixinScanningEntry {
 
-@Mixin(MultiplayerServerListWidget.class)
-public abstract class MixinMultiplayerServerListWidget {
-
-    @Redirect(method = "updateEntries", at = @At(value = "INVOKE", target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V", ordinal = 1))
-    private void removeLanServers(final List instance, final Consumer consumer) {
-        if (MinecraftClient.getInstance().currentScreen instanceof MultiplayerScreen) {
-            instance.forEach(consumer);
+    @Inject(method = "render", at = @At("HEAD"), cancellable = true)
+    private void removeLanServers(final DrawContext context, final int index, final int y, final int x, final int entryWidth, final int entryHeight, final int mouseX, final int mouseY, final boolean hovered, final float tickDelta, final CallbackInfo ci) {
+        if (!(MinecraftClient.getInstance().currentScreen instanceof MultiplayerScreen) || ServerPingerWidget.IN_USE) {
+            ci.cancel();
         }
-    }
-
-    @Redirect(method = "updateEntries", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerServerListWidget;addEntry(Lnet/minecraft/client/gui/widget/EntryListWidget$Entry;)I"))
-    private int removeScanningEntry(final MultiplayerServerListWidget instance, final EntryListWidget.Entry entry) {
-        if (!(MinecraftClient.getInstance().currentScreen instanceof MultiplayerScreen)) {
-            return 0;
-        }
-        return instance.addEntry((MultiplayerServerListWidget.Entry) entry);
     }
 
 }
