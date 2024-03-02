@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
+import de.nekosarekawaii.vandalism.integration.serverlist.ServerDataUtil;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerPingerWidget;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -81,14 +82,24 @@ public abstract class MixinDirectConnectScreen extends Screen {
     public void tick() {
         super.tick();
         final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
-        if (enhancedServerListSettings.enhancedServerList.getValue() && enhancedServerListSettings.serverPingerWidget.getValue()) {
-            if (this.vandalism$pingTimer.hasReached(1000, true)) {
-                final String address = this.addressField.getText();
-                if (address.isEmpty()) return;
-                if (address.equals(this.vandalism$lastAddress)) return;
-                this.vandalism$lastAddress = address;
-                ServerPingerWidget.ping(new ServerInfo(address, address, ServerInfo.ServerType.OTHER));
-                this.vandalism$pingTimer.reset();
+        if (enhancedServerListSettings.enhancedServerList.getValue()) {
+            String address = this.addressField.getText();
+            if (address != null && !address.isBlank()) {
+                if (enhancedServerListSettings.directConnectAddressFix.getValue()) {
+                    final String oldAddress = address;
+                    address = ServerDataUtil.fixAddress(address);
+                    if (!oldAddress.equals(address)) {
+                        this.addressField.setText(address);
+                    }
+                }
+                if (enhancedServerListSettings.serverPingerWidget.getValue()) {
+                    if (this.vandalism$pingTimer.hasReached(1000, true)) {
+                        if (address.equals(this.vandalism$lastAddress)) return;
+                        this.vandalism$lastAddress = address;
+                        ServerPingerWidget.ping(new ServerInfo(address, address, ServerInfo.ServerType.OTHER));
+                        this.vandalism$pingTimer.reset();
+                    }
+                }
             }
         }
     }

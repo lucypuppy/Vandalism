@@ -26,7 +26,6 @@ import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.impl.ServerInfoResponse;
 import de.nekosarekawaii.vandalism.base.account.type.SessionAccount;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
-import de.nekosarekawaii.vandalism.util.common.UUIDUtil;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
@@ -222,16 +221,9 @@ public class ServerInfoClientMenuWindow extends ClientMenuWindow {
                     ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
                 }
                 if (ImGui.button("##serverinfoplayer" + playerName, ImGui.getColumnWidth() - 8, 60)) {
-                    String uuid;
-                    try {
-                        uuid = UUIDUtil.getUUIDFromName(playerName);
-                    } catch (Exception e) {
-                        uuid = playerUUID;
-                        Vandalism.getInstance().getLogger().error("Failed to get UUID of the player: \"" + playerName + "\" (using fallback UUID).");
-                    }
                     final SessionAccount sessionAccount = new SessionAccount(
                             playerName,
-                            uuid,
+                            playerUUID,
                             "",
                             "",
                             ""
@@ -244,16 +236,9 @@ public class ServerInfoClientMenuWindow extends ClientMenuWindow {
                 if (ImGui.beginPopupContextItem("##serverinfoplayer" + playerName + "popup", ImGuiPopupFlags.MouseButtonRight)) {
                     final int buttonWidth = 150, buttonHeight = 28;
                     if (ImGui.button("Add##serverinfoplayer" + playerName + "add", buttonWidth, buttonHeight)) {
-                        String uuid;
-                        try {
-                            uuid = UUIDUtil.getUUIDFromName(playerName);
-                        } catch (Exception e) {
-                            uuid = playerUUID;
-                            Vandalism.getInstance().getLogger().error("Failed to get UUID of the player: \"" + playerName + "\" (using fallback UUID).");
-                        }
                         final SessionAccount sessionAccount = new SessionAccount(
                                 playerName,
-                                uuid,
+                                playerUUID,
                                 "",
                                 "",
                                 ""

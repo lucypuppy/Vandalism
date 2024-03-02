@@ -63,7 +63,11 @@ import java.io.File;
  *  - Ensure MCConstants class file is used
  *  - Fix Game server pinger (ensure pings are on different threads)
  *  - Add Proxy manager
- *  - Fix MixinParticleManager
+ *  - Fix VisualThrottleModule blockTooManyParticles
+ *  - Fix VisualThrottleModule blockTooManyTranslateTexts
+ *  - Fix VisualThrottleModule translateTextDepthLimit
+ *  - Fix VisualThrottleModule blockTooManyTextGlyphs
+ *  - Fix VisualThrottleModule blockTooLongTexts
  *  - Add scroll state saving to the multiplayer screen
  * <br><br>
  * TODO: FooFieOwO <br>

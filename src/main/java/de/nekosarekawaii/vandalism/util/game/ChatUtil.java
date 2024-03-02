@@ -21,10 +21,17 @@ package de.nekosarekawaii.vandalism.util.game;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.network.encryption.NetworkEncryptionUtils;
+import net.minecraft.network.message.LastSeenMessagesCollector;
+import net.minecraft.network.message.MessageBody;
+import net.minecraft.network.message.MessageSignatureData;
+import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
 import java.awt.*;
+import java.time.Instant;
 import java.util.Optional;
 
 public class ChatUtil implements MinecraftWrapper {
@@ -99,6 +106,16 @@ public class ChatUtil implements MinecraftWrapper {
 
     public static void chatMessage(final Text message, final boolean prefix) {
         mc.inGameHud.getChatHud().addMessage(prefix ? CHAT_PREFIX.copy().append(message) : message);
+    }
+
+    public static void sendChatMessage(final String message) {
+        final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
+        if (networkHandler == null) return;
+        final Instant instant = Instant.now();
+        final long l = NetworkEncryptionUtils.SecureRandomUtil.nextLong();
+        final LastSeenMessagesCollector.LastSeenMessages lastSeenMessages = networkHandler.lastSeenMessagesCollector.collect();
+        final MessageSignatureData messageSignatureData = networkHandler.messagePacker.pack(new MessageBody(message, instant, l, lastSeenMessages.lastSeen()));
+        networkHandler.sendPacket(new ChatMessageC2SPacket(message, instant, l, messageSignatureData, lastSeenMessages.update()));
     }
 
     public static Text trimText(final Text text, final int length) {
