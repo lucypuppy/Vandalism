@@ -85,9 +85,6 @@ public abstract class MixinMultiplayerScreen extends Screen {
         if (enhancedServerListSettings.enhancedServerList.getValue() && enhancedServerListSettings.cacheServerList.getValue()){
             if (vandalism$SERVER_LIST != null) {
                 servers = vandalism$SERVER_LIST;
-                for (final ServerInfo server : servers.servers) {
-                    server.online = true;
-                }
             }
             else {
                 vandalism$SERVER_LIST = servers;

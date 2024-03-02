@@ -74,6 +74,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     private KillAuraModule killAuraModule;
     private TickBaseModule tickBaseModule;
     private FullBrightModule fullBrightModule;
+    private VehicleControlModule vehicleControlModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
         this.configManager = configManager;
@@ -106,6 +107,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.fullBrightModule = new FullBrightModule(),
                 this.killAuraModule = new KillAuraModule(),
                 this.tickBaseModule = new TickBaseModule(this.killAuraModule),
+                this.vehicleControlModule = new VehicleControlModule(),
                 new BackTrackModule(),
                 new NoSlowModule(),
                 new PacketManagerModule(),
@@ -129,7 +131,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new PushVelocityModule(),
                 new SpeedModule(),
                 new TimerModule(),
-                new SprintModule(),
+                new AutoSprintModule(),
                 new StepModule(),
                 new VelocityModule(),
                 new AmbienceModule(),
@@ -140,10 +142,9 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new VehicleOneHitModule(),
                 new LongJumpModule(),
                 new ChatReactionModule(),
-                new VehicleFlightModule(),
                 new EcholocationModule(),
                 new AutoClickerModule(),
-                new SprintTapModule(),
+                new WTapModule(),
                 new FakeLagModule(),
                 new DisablerModule(),
                 new TeleportModule(),
@@ -232,6 +233,10 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
     public FullBrightModule getFullBrightModule() {
         return fullBrightModule;
+    }
+
+    public VehicleControlModule getVehicleControlModule() {
+        return vehicleControlModule;
     }
 
 }

@@ -24,7 +24,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 
-public class SprintModule extends AbstractModule implements PlayerUpdateListener {
+public class AutoSprintModule extends AbstractModule implements PlayerUpdateListener {
 
     private final BooleanValue legit = new BooleanValue(
             this,
@@ -33,35 +33,32 @@ public class SprintModule extends AbstractModule implements PlayerUpdateListener
             true
     );
 
-    public SprintModule() {
-        super("Sprint", "Automatically let's you sprint!", Category.MOVEMENT);
+    public AutoSprintModule() {
+        super("Auto Sprint", "Automatically let's you sprint!", Category.MOVEMENT);
     }
 
     @Override
-    public void onActivate() { //  Low Priority so other modules can easly override this.
+    public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this, Priorities.LOW);
     }
 
     @Override
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
-
-        if (this.mc.player != null)
-            this.mc.player.setSprinting(mc.options.sprintKey.isPressed());
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        mc.options.sprintKey.setPressed(true);
-
-        if (legit.getValue()) {
+        if (this.legit.getValue()) {
+            this.mc.options.sprintKey.setPressed(true);
             return;
         }
-
-        if (!mc.player.horizontalCollision
-                && !mc.player.isSneaking()
-                && !mc.player.isSprinting()
-                && (Math.abs(mc.player.input.movementForward) >= 0.8F || Math.abs(mc.player.sidewaysSpeed) >= 0.8F)) {
+        if (
+                !this.mc.player.horizontalCollision &&
+                !this.mc.player.isSneaking() &&
+                !this.mc.player.isSprinting() &&
+                (Math.abs(this.mc.player.input.movementForward) >= 0.8F || Math.abs(this.mc.player.sidewaysSpeed) >= 0.8F)
+        ) {
             this.mc.player.setSprinting(true);
         }
     }

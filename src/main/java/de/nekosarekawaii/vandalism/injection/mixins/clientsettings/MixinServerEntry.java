@@ -74,10 +74,17 @@ public abstract class MixinServerEntry {
         final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
         if (enhancedServerListSettings.enhancedServerList.getValue()) {
             if (enhancedServerListSettings.renderAddressAsDefaultServerName.getValue()) {
-                if (this.server.name.isEmpty()) {
-                    text = this.server.address;
+                final ServerInfo server = this.server;
+                if (server != null) {
+                    final String name = server.name;
+                    if (name == null || name.isEmpty()) {
+                        text = server.address;
+                    }
                 }
             }
+        }
+        if (text == null) {
+            return 0;
         }
         return instance.drawText(textRenderer, text, x, y, color, shadow);
     }
