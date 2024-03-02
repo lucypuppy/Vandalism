@@ -168,13 +168,14 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
             NOTE_BLOCK_SONGS_DIR.mkdirs();
         }
         ImGui.spacing();
-        if (this.currentSongFile != null) {
+        final File currentSong = this.currentSongFile;
+        if (currentSong != null) {
             if (ImUtils.subButton("Stop##noteblockstop")) {
                 this.reset();
             }
             ImGui.separator();
             ImGui.text("Currently playing");
-            final String title = this.currentSongFile.getName();
+            final String title = currentSong.getName();
             if (!title.isEmpty()) {
                 ImGui.textWrapped("Name: " + Files.getNameWithoutExtension(title));
             }
