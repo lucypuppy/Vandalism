@@ -20,10 +20,13 @@ package de.nekosarekawaii.vandalism.integration;
 
 import com.viaversion.viaversion.api.minecraft.Position;
 import com.viaversion.viaversion.api.protocol.packet.PacketWrapper;
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import com.viaversion.viaversion.api.type.Type;
 import com.viaversion.viaversion.protocols.protocol1_8.ServerboundPackets1_8;
 import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
+import de.florianmichael.viafabricplus.protocoltranslator.translator.ItemTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
 public class ViaFabricPlusAccess {
@@ -44,6 +47,22 @@ public class ViaFabricPlusAccess {
         }
         catch (Exception e) {
             Vandalism.getInstance().getLogger().error("An error occurred while sending a 1.8 sign update packet.", e);
+        }
+    }
+
+    public static void send1_8BlockPlacePacket(final BlockPos pos, final int face, final ItemStack item, final float cX, final float cY, final float cZ) {
+        final PacketWrapper packet = PacketWrapper.create(ServerboundPackets1_8.PLAYER_BLOCK_PLACEMENT, ProtocolTranslator.getPlayNetworkUserConnection());
+        packet.write(Type.POSITION1_8, toPosition(pos));
+        packet.write(Type.UNSIGNED_BYTE, (short) face);
+        packet.write(Type.ITEM, ItemTranslator.mcToVia(item, ProtocolVersion.v1_8));
+        packet.write(Type.UNSIGNED_BYTE, (short) cX);
+        packet.write(Type.UNSIGNED_BYTE, (short) cY);
+        packet.write(Type.UNSIGNED_BYTE, (short) cZ);
+        try {
+            packet.sendToServerRaw();
+        }
+        catch (Exception e) {
+            Vandalism.getInstance().getLogger().error("An error occurred while sending a 1.8 block place packet.", e);
         }
     }
 
