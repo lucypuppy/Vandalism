@@ -108,6 +108,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.killAuraModule = new KillAuraModule(),
                 this.tickBaseModule = new TickBaseModule(this.killAuraModule),
                 this.vehicleControlModule = new VehicleControlModule(),
+                new FakeLagModule(this.killAuraModule),
                 new BackTrackModule(),
                 new NoSlowModule(),
                 new PacketManagerModule(),
@@ -145,13 +146,13 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new EcholocationModule(),
                 new AutoClickerModule(),
                 new WTapModule(),
-                new FakeLagModule(),
                 new DisablerModule(),
                 new TeleportModule(),
                 new SignExploitsModule(),
                 new ScaffoldModule(),
                 new NoteBotModule(),
-                new MiddleClickFriendsModule()
+                new MiddleClickFriendsModule(),
+                new DetectAdsModule()
         );
         this.configManager.add(new ModulesConfig(this));
     }
