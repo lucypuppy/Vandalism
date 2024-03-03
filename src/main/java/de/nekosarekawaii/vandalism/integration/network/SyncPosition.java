@@ -16,38 +16,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util;
+package de.nekosarekawaii.vandalism.integration.network;
 
 import net.minecraft.entity.TrackedPosition;
 import net.minecraft.util.math.Vec3d;
 
-public class NetworkEntity {
+public class SyncPosition extends TrackedPosition {
 
-    public final TrackedPosition trackedPosition = new TrackedPosition();
-    public Vec3d pos, lastPos;
-    public int lerpSteps;
+    private Vec3d newPos;
+    private int lerpSteps;
 
-    public NetworkEntity() {
-        this.pos = new Vec3d(0, 0, 0);
-        this.lastPos = new Vec3d(0, 0, 0);
+    public SyncPosition(Vec3d pos) {
+        super();
+        this.newPos = pos;
     }
 
-    public void setPosLerp(Vec3d pos) {
-        this.trackedPosition.pos = pos;
+    public SyncPosition() {
+        this(Vec3d.ZERO);
+    }
 
-        if (this.pos == null) {
-            this.pos = pos;
+    public void setPos(Vec3d pos, boolean lerp) {
+        if (lerp) {
+            this.newPos = pos;
+            this.lerpSteps = 3;
+            return;
         }
 
-        this.lerpSteps = 3; // This is 3 in the minecraft code so i also hardcode this
+        this.pos = pos;
+        this.newPos = pos;
+        this.lerpSteps = 0;
     }
 
     public void onLivingUpdate() {
-        if (this.lerpSteps > 0 && this.pos != null && this.trackedPosition.pos != null) {
-            final Vec3d newPos = this.trackedPosition.pos;
-            final double x = this.pos.x + (newPos.x - this.pos.x) / (double) this.lerpSteps;
-            final double y = this.pos.y + (newPos.y - this.pos.y) / (double) this.lerpSteps;
-            final double z = this.pos.z + (newPos.z - this.pos.z) / (double) this.lerpSteps;
+        if (this.lerpSteps > 0) {
+            final double x = this.pos.x + (this.newPos.x - this.pos.x) / (double) this.lerpSteps;
+            final double y = this.pos.y + (this.newPos.y - this.pos.y) / (double) this.lerpSteps;
+            final double z = this.pos.z + (this.newPos.z - this.pos.z) / (double) this.lerpSteps;
             --this.lerpSteps;
 
             this.pos = new Vec3d(x, y, z);
