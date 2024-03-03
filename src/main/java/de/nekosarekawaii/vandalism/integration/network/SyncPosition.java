@@ -28,7 +28,8 @@ public class SyncPosition extends TrackedPosition {
 
     public SyncPosition(Vec3d pos) {
         super();
-        this.newPos = pos;
+        this.pos = pos;
+        this.newPos = Vec3d.ZERO;
     }
 
     public SyncPosition() {
