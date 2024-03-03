@@ -118,6 +118,7 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
     @Override
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID);
+        updateClicker(this.clickType.getValue().getClicker());
     }
 
     @Override
@@ -133,7 +134,8 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
 
     @Override
     public void onRotation(RotationEvent event) {
-        this.clickType.getValue().getClicker().onRotate();
+        if(mc.options.attackKey.isPressed())
+            this.clickType.getValue().getClicker().onRotate();
     }
 
     private void updateClicker(final Clicker clicker) {
@@ -143,6 +145,7 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
             boxMuellerClicker.setMinCps(this.minCps.getValue());
             boxMuellerClicker.setMaxCps(this.maxCps.getValue());
             boxMuellerClicker.setCpsUpdatePossibility(this.updatePossibility.getValue());
+            boxMuellerClicker.setKillAuraModule(null);
         }
 
         if (clicker instanceof final BezierClicker bezierClicker) {

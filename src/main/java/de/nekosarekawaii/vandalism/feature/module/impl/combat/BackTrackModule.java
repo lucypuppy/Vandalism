@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
 import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
@@ -45,6 +46,7 @@ import net.minecraft.network.packet.s2c.play.*;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -66,6 +68,12 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
             10.0f,
             3.0f,
             20.0f);
+
+    private final ColorValue realColor = new ColorValue(
+            this,
+            "Real Color",
+            "The color of the real position.",
+            new Color(255, 0, 0, 102));
 
     private final ValueGroup resyncGroup = new ValueGroup(this, "Resync", "Resync options.");
 
@@ -279,7 +287,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
                     matrixStack,
                     immediate,
                     minX, box.minY, minZ, maxX, box.maxY, maxZ,
-                    1.0f, 0.0f, 0.0f, 0.4f
+                    (float) realColor.getColor().getRed() /255, (float) realColor.getColor().getGreen() /255, (float) realColor.getColor().getBlue() /255, (float) realColor.getColor().getAlpha() /255
             );
             matrixStack.pop();
 

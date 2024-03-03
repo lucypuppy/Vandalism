@@ -401,6 +401,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 this,
                 PlayerUpdateEvent.ID, Render2DEvent.ID, RotationEvent.ID, RaytraceEvent.ID, Render3DEvent.ID
         );
+        updateClicker(this.clickType.getValue().getClicker());
     }
 
     @Override
