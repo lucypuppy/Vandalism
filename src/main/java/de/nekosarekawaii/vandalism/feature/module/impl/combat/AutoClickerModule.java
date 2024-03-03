@@ -19,12 +19,12 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.event.normal.player.RotationListener;
 import de.nekosarekawaii.vandalism.base.value.impl.number.BezierValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
+import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.event.normal.player.RotationListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.click.ClickType;
 import de.nekosarekawaii.vandalism.util.click.Clicker;
@@ -127,7 +127,8 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        this.clickType.getValue().getClicker().onUpdate();
+        if(mc.options.attackKey.isPressed())
+            this.clickType.getValue().getClicker().onUpdate();
     }
 
     @Override
