@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.util.game;
 
 import de.florianmichael.rclasses.common.StringUtils;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -77,6 +78,10 @@ public class ChatUtil implements MinecraftWrapper {
     }
 
     public static void warningChatMessage(final Text message) {
+        if (mc.inGameHud == null) {
+            Vandalism.getInstance().getLogger().warn(message.getString());
+            return;
+        }
         chatMessage(Type.WARNING.getPrefix().copy().append(message));
     }
 
@@ -85,6 +90,10 @@ public class ChatUtil implements MinecraftWrapper {
     }
 
     public static void errorChatMessage(final Text message) {
+        if (mc.inGameHud == null) {
+            Vandalism.getInstance().getLogger().error(message.getString());
+            return;
+        }
         chatMessage(Type.ERROR.getPrefix().copy().append(message));
     }
 
@@ -105,6 +114,10 @@ public class ChatUtil implements MinecraftWrapper {
     }
 
     public static void chatMessage(final Text message, final boolean prefix) {
+        if (mc.inGameHud == null) {
+            Vandalism.getInstance().getLogger().info(message.getString());
+            return;
+        }
         mc.inGameHud.getChatHud().addMessage(prefix ? CHAT_PREFIX.copy().append(message) : message);
     }
 
