@@ -87,7 +87,8 @@ public class CommandManager extends Storage<AbstractCommand> implements Minecraf
                 new ExploitBookCommand(),
                 new ToggleModuleCommand(),
                 new CopySignTextCommand(),
-                new MVOptimizerCommand()
+                new MVOptimizerCommand(),
+                new SkillSpamCommand()
         );
     }
 
