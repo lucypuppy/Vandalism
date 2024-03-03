@@ -25,6 +25,7 @@ import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.event.normal.internal.TargetListener;
 import de.nekosarekawaii.vandalism.event.normal.render.TextDrawListener;
 import de.nekosarekawaii.vandalism.integration.friends.config.FriendConfig;
+import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import org.apache.commons.lang3.StringUtils;
 
@@ -63,6 +64,46 @@ public class FriendsManager extends Storage<Friend> implements TargetListener, T
         for (final Friend friend : this.getList()) {
             event.text = StringUtils.replace(event.text, friend.getName(), friend.getAlias());
         }
+    }
+
+    public void addFriend(final String name, final String alias) {
+        for (final Friend friend : this.getList()) {
+            if (friend.getName().equalsIgnoreCase(name)) {
+                ChatUtil.errorChatMessage("You already have a friend with the name " + name + ".");
+                return;
+            }
+        }
+        this.add(new Friend(name, alias));
+        ChatUtil.infoChatMessage("Added " + name + (!name.equals(alias) ? " (" + alias + ")" : "") + " as a friend.");
+    }
+
+    public void removeFriend(final String name) {
+        for (final Friend friend : this.getList()) {
+            if (friend.getName().equalsIgnoreCase(name)) {
+                this.remove(friend);
+                ChatUtil.infoChatMessage("Removed " + name + " as a friend.");
+                return;
+            }
+        }
+        ChatUtil.errorChatMessage("You don't have a friend with the name " + name + ".");
+    }
+
+    public void removeFriend(final Friend friend) {
+        if (this.getList().contains(friend)) {
+            this.remove(friend);
+            ChatUtil.infoChatMessage("Removed " + friend.getName() + " as a friend.");
+            return;
+        }
+        ChatUtil.errorChatMessage("You don't have a friend with the name " + friend.getName() + ".");
+    }
+
+    public boolean isFriend(final String name) {
+        for (final Friend friend : this.getList()) {
+            if (friend.getName().equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
