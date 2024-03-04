@@ -69,7 +69,6 @@ import java.io.File;
  *  - Fix VisualThrottleModule blockTooManyTextGlyphs
  *  - Fix VisualThrottleModule blockTooLongTexts
  *  - Add scroll state saving to the multiplayer screen
- *  - Send multiple requests to server seeker api to get more servers that are working (if the api returns less than 100 at the first rq don't do it)
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Rewrite GCD fix to be accurate
