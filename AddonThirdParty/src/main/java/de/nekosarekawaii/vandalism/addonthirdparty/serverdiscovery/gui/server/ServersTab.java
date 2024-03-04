@@ -228,6 +228,8 @@ public class ServersTab implements MinecraftWrapper {
         if (ImGui.beginTabItem(name + "##serversTab" + name)) {
             isSelected = true;
             if (!this.servers.isEmpty() && !this.waitingForResponse) {
+                ImGui.text("Found " + this.servers.size() + " server/s.");
+                ImGui.spacing();
                 ImGui.text("Search for servers");
                 ImGui.setNextItemWidth(-1);
                 ImGui.inputText("##serverSearchField", this.serversSearchField);
