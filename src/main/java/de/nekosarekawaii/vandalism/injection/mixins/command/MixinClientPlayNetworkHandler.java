@@ -21,8 +21,10 @@ package de.nekosarekawaii.vandalism.injection.mixins.command;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -35,7 +37,7 @@ public abstract class MixinClientPlayNetworkHandler implements MinecraftWrapper 
     @Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
     private void executeClientCommands(final String message, final CallbackInfo ci) {
         final String prefix = Vandalism.getInstance().getClientSettings().getChatSettings().commandPrefix.getValue();
-        if (message.startsWith(prefix)) {
+        if (message.startsWith(prefix) && MinecraftClient.getInstance().currentScreen instanceof ChatScreen) {
             try {
                 Vandalism.getInstance().getCommandManager().getCommandDispatcher().execute(message.substring(prefix.length()), AbstractCommand.COMMAND_SOURCE);
             } catch (CommandSyntaxException e) {
