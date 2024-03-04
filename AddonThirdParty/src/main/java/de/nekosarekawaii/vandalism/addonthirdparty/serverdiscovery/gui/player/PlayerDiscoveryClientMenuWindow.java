@@ -73,6 +73,8 @@ public class PlayerDiscoveryClientMenuWindow extends ClientMenuWindow {
 
     private final ImString searchField;
 
+    private boolean waitingForResponse;
+
     public PlayerDiscoveryClientMenuWindow() {
         super("Player Discovery", Category.SERVER);
         this.username = new ImString(16);
@@ -80,6 +82,7 @@ public class PlayerDiscoveryClientMenuWindow extends ClientMenuWindow {
         this.resetState();
         this.executor = Executors.newSingleThreadExecutor();
         this.searchField = new ImString();
+        this.waitingForResponse = false;
     }
 
     private void resetState() {
@@ -100,11 +103,12 @@ public class PlayerDiscoveryClientMenuWindow extends ClientMenuWindow {
                 USERNAME_NAME_FILTER
         );
         final String usernameValue = this.username.get();
-        if (!usernameValue.isBlank() && usernameValue.length() > 2 && usernameValue.length() < 17) {
+        if (!usernameValue.isBlank() && usernameValue.length() > 2 && usernameValue.length() < 17 && !this.waitingForResponse) {
             if (ImUtils.subButton("Search##playerdiscoverysearch")) {
                 this.state.set("Searching for " + usernameValue + "...");
                 this.records.clear();
                 this.executor.submit(() -> {
+                    this.waitingForResponse = true;
                     final Response response = ServerDiscoveryUtil.request(new WhereIsRequest(usernameValue));
                     if (response == null) {
                         this.state.set("Every API User is rate limited!");
@@ -136,6 +140,7 @@ public class PlayerDiscoveryClientMenuWindow extends ClientMenuWindow {
                             }
                         }
                     }
+                    this.waitingForResponse = false;
                 });
             }
         }

@@ -73,6 +73,8 @@ public class ServerInfoClientMenuWindow extends ClientMenuWindow {
     private ServerInfoResponse serverInfo;
     private String lastIP;
 
+    private boolean waitingForResponse;
+
     public ServerInfoClientMenuWindow() {
         super("Server Info", Category.SERVER);
         this.ip = new ImString(253);
@@ -80,6 +82,8 @@ public class ServerInfoClientMenuWindow extends ClientMenuWindow {
         this.resetState();
         this.executor = Executors.newSingleThreadExecutor();
         this.serverInfo = null;
+        this.lastIP = "";
+        this.waitingForResponse = false;
     }
 
     private void resetState() {
@@ -95,23 +99,26 @@ public class ServerInfoClientMenuWindow extends ClientMenuWindow {
         ImGui.spacing();
         ImGui.text("IP");
         ImGui.setNextItemWidth(-1);
-        ImGui.inputText("##serverinfoip", this.ip,
+        ImGui.inputText(
+                "##serverinfoip",
+                this.ip,
                 ImGuiInputTextFlags.CallbackCharFilter,
                 IP_FILTER
         );
         final ServerInfo currentServer = this.mc.getCurrentServerEntry();
-        if (currentServer != null) {
+        if (currentServer != null && !this.waitingForResponse) {
             if (ImGui.button("Use Current Server##serverinfousecurrentserver", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                 this.ip.set(currentServer.address);
             }
         }
         final String ipValue = this.ip.get();
-        if (!ipValue.isBlank()) {
+        if (!ipValue.isBlank() && !this.waitingForResponse) {
             if (ImUtils.subButton("Get##serverinfoddatarequest")) {
                 this.state.set("Requesting data for " + ipValue + "...");
                 this.serverInfo = null;
                 this.lastIP = ipValue;
                 this.executor.submit(() -> {
+                    this.waitingForResponse = true;
                     final Pair<String, Integer> resolvedAddress = ServerConnectionUtil.resolveServerAddress(ipValue);
                     final String ip = resolvedAddress.getLeft();
                     final int port = resolvedAddress.getRight();
@@ -126,6 +133,7 @@ public class ServerInfoClientMenuWindow extends ClientMenuWindow {
                             this.state.set("Success!");
                         }
                     }
+                    this.waitingForResponse = false;
                 });
             }
         }
