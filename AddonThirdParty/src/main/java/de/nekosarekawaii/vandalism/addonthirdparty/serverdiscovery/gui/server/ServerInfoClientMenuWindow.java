@@ -197,7 +197,7 @@ public class ServerInfoClientMenuWindow extends ClientMenuWindow {
             for (final ServerInfoResponse.Player player : this.serverInfo.players) {
                 final String playerName = player.name;
                 final String playerUUID = player.uuid;
-                if (playerName.equals("Anonymous Player") && playerUUID.equals("00000000-0000-0000-0000-000000000000")) {
+                if (playerName.equals("Anonymous Player") || playerUUID.equals("00000000-0000-0000-0000-000000000000")) {
                     continue;
                 }
                 final StringBuilder playerString = new StringBuilder();
