@@ -193,7 +193,12 @@ public class NbtCommand extends AbstractCommand {
                 final Entity entity = entityHitResult.getEntity();
                 if (entity != null) {
                     final NbtCompound tag = entity.writeNbt(new NbtCompound());
-                    Vandalism.getInstance().getClientMenuManager().getByClass(NbtEditorClientMenuWindow.class).displayNbt(entity.getName().getString(), tag);
+                    if (tag != null && !tag.isEmpty()) {
+                        Vandalism.getInstance().getClientMenuManager().getByClass(NbtEditorClientMenuWindow.class).displayNbt(entity.getName().getString(), tag);
+                    }
+                    else {
+                        ChatUtil.errorChatMessage("The entity has no NBT data.");
+                    }
                     return SINGLE_SUCCESS;
                 }
             }
