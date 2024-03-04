@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
 import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
@@ -30,6 +31,7 @@ import de.nekosarekawaii.vandalism.event.normal.network.WorldListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.integration.network.SyncPosition;
 import de.nekosarekawaii.vandalism.util.game.PacketUtil;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.client.render.Tessellator;
@@ -45,6 +47,7 @@ import net.minecraft.network.packet.s2c.play.*;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -66,6 +69,12 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
             10.0f,
             3.0f,
             20.0f);
+
+    private final ColorValue realColor = new ColorValue(
+            this,
+            "Real Color",
+            "The color of the real position.",
+            new Color(255, 0, 0, 102));
 
     private final ValueGroup resyncGroup = new ValueGroup(this, "Resync", "Resync options.");
 
@@ -105,7 +114,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
             10.0
     ).visibleCondition(this.resyncOnDistanceToPlayer::getValue);
 
-    private final HashMap<Integer, TrackedPosition> backTrackedEntities = new HashMap<>();
+    private final HashMap<Integer, SyncPosition> backTrackedEntities = new HashMap<>();
     private final ConcurrentLinkedQueue<DelayedPacket> packets = new ConcurrentLinkedQueue<>();
 
     public BackTrackModule() {
@@ -152,9 +161,9 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
                     && entity instanceof final LivingEntity livingEntity) {
                 if (this.mc.player.distanceTo(livingEntity) <= backTrackRange.getValue()) {
                     if (!this.backTrackedEntities.containsKey(livingEntity.getId())) {
-                        final TrackedPosition trackedPosition = new TrackedPosition();
-                        trackedPosition.setPos(entity.getPos());
-                        this.backTrackedEntities.put(livingEntity.getId(), trackedPosition);
+                        this.backTrackedEntities.put(livingEntity.getId(), new SyncPosition(entity.getPos()));
+                    } else {
+                        this.backTrackedEntities.get(livingEntity.getId()).onLivingUpdate();
                     }
                 } else {
                     this.backTrackedEntities.remove(livingEntity.getId());
@@ -172,6 +181,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
                         packet instanceof LightUpdateS2CPacket ||
                         packet instanceof ChunkDataS2CPacket ||
                         packet instanceof PlayerRespawnS2CPacket ||
+                        packet instanceof ChunkRenderDistanceCenterS2CPacket ||
                         this.backTrackedEntities.isEmpty() || this.mc.player == null ||
                         this.mc.world == null || event.isCancelled() //Ignore already cancelled packets
         ) {//@formatter:on
@@ -192,21 +202,21 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
 
         boolean shouldCancel = false;
         if (packet instanceof final EntityS2CPacket entityS2CPacket && this.backTrackedEntities.containsKey(entityS2CPacket.id)) {
-            final TrackedPosition trackedPosition = this.backTrackedEntities.get(entityS2CPacket.id);
+            final SyncPosition trackedPosition = this.backTrackedEntities.get(entityS2CPacket.id);
             trackedPosition.setPos(
                     trackedPosition.withDelta(
                             entityS2CPacket.getDeltaX(),
                             entityS2CPacket.getDeltaY(),
                             entityS2CPacket.getDeltaZ()
-                    )
+                    ), true
             );
 
             if (this.checkForResync(trackedPosition, entityS2CPacket.id)) {
                 shouldCancel = true;
             }
         } else if (packet instanceof final EntityPositionS2CPacket positionS2CPacket && this.backTrackedEntities.containsKey(positionS2CPacket.getId())) {
-            final TrackedPosition trackedPosition = this.backTrackedEntities.get(positionS2CPacket.getId());
-            trackedPosition.setPos(new Vec3d(positionS2CPacket.getX(), positionS2CPacket.getY(), positionS2CPacket.getZ()));
+            final SyncPosition trackedPosition = this.backTrackedEntities.get(positionS2CPacket.getId());
+            trackedPosition.setPos(new Vec3d(positionS2CPacket.getX(), positionS2CPacket.getY(), positionS2CPacket.getZ()), true);
 
             if (this.checkForResync(trackedPosition, positionS2CPacket.getId())) {
                 shouldCancel = true;
@@ -232,10 +242,6 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
 
     @Override
     public void onRender3D(final float tickDelta, final long limitTime, final MatrixStack matrixStack) {
-        if (this.backTrackedEntities.isEmpty()) {
-            return;
-        }
-
         this.handlePackets(this.backTrackedEntities.isEmpty());
 
         for (var test : this.backTrackedEntities.entrySet()) {
@@ -279,7 +285,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
                     matrixStack,
                     immediate,
                     minX, box.minY, minZ, maxX, box.maxY, maxZ,
-                    1.0f, 0.0f, 0.0f, 0.4f
+                    (float) realColor.getColor().getRed() / 255, (float) realColor.getColor().getGreen() / 255, (float) realColor.getColor().getBlue() / 255, (float) realColor.getColor().getAlpha() / 255
             );
             matrixStack.pop();
 

@@ -19,12 +19,12 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.event.normal.player.RotationListener;
 import de.nekosarekawaii.vandalism.base.value.impl.number.BezierValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
+import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.event.normal.player.RotationListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.click.ClickType;
 import de.nekosarekawaii.vandalism.util.click.Clicker;
@@ -118,6 +118,7 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
     @Override
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID);
+        updateClicker(this.clickType.getValue().getClicker());
     }
 
     @Override
@@ -127,12 +128,14 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        this.clickType.getValue().getClicker().onUpdate();
+        if(mc.options.attackKey.isPressed())
+            this.clickType.getValue().getClicker().onUpdate();
     }
 
     @Override
     public void onRotation(RotationEvent event) {
-        this.clickType.getValue().getClicker().onRotate();
+        if(mc.options.attackKey.isPressed())
+            this.clickType.getValue().getClicker().onRotate();
     }
 
     private void updateClicker(final Clicker clicker) {
@@ -142,6 +145,7 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
             boxMuellerClicker.setMinCps(this.minCps.getValue());
             boxMuellerClicker.setMaxCps(this.maxCps.getValue());
             boxMuellerClicker.setCpsUpdatePossibility(this.updatePossibility.getValue());
+            boxMuellerClicker.setKillAuraModule(null);
         }
 
         if (clicker instanceof final BezierClicker bezierClicker) {

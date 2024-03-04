@@ -121,3 +121,5 @@ accessible field net/minecraft/client/gui/screen/multiplayer/MultiplayerServerLi
 accessible field net/minecraft/client/world/ClientChunkManager chunks Lnet/minecraft/client/world/ClientChunkManager$ClientChunkMap;
 accessible method net/minecraft/client/world/ClientChunkManager$ClientChunkMap getIndex (II)I
 accessible method net/minecraft/client/world/ClientChunkManager$ClientChunkMap set (ILnet/minecraft/world/chunk/WorldChunk;)V
+accessible field net/minecraft/network/packet/c2s/play/PlayerInteractEntityC2SPacket type Lnet/minecraft/network/packet/c2s/play/PlayerInteractEntityC2SPacket$InteractTypeHandler;
+accessible field net/minecraft/network/packet/c2s/play/PlayerInteractEntityC2SPacket ATTACK Lnet/minecraft/network/packet/c2s/play/PlayerInteractEntityC2SPacket$InteractTypeHandler;
