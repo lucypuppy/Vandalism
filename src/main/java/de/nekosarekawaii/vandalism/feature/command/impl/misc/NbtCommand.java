@@ -22,13 +22,15 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.clientsettings.impl.ChatSettings;
+import de.nekosarekawaii.vandalism.clientmenu.impl.nbteditor.gui.NbtEditorClientMenuWindow;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.feature.command.arguments.NbtCompoundArgumentType;
-import de.nekosarekawaii.vandalism.clientmenu.impl.nbteditor.gui.NbtEditorClientMenuWindow;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.NbtPathArgumentType;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
@@ -37,6 +39,7 @@ import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.hit.EntityHitResult;
 
 import java.util.UUID;
 
@@ -50,6 +53,7 @@ public class NbtCommand extends AbstractCommand {
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
+        final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
         builder.then(literal("add").then(argument("nbt", NbtCompoundArgumentType.create()).executes(s -> {
             final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
@@ -59,7 +63,10 @@ public class NbtCommand extends AbstractCommand {
                     source.copyFrom(tag);
                     ItemStackUtil.giveItemStack(stack);
                 } else {
-                    ChatUtil.errorChatMessage("Some of the NBT data could not be found, try using: " + Vandalism.getInstance().getClientSettings().getChatSettings().commandPrefix.getValue() + "nbt set {nbt}");
+                    ChatUtil.errorChatMessage(
+                            "Some of the NBT data could not be found, try using: " +
+                                    chatSettings.commandPrefix.getValue() + "nbt set {nbt}"
+                    );
                 }
             }
             return SINGLE_SUCCESS;
@@ -88,13 +95,44 @@ public class NbtCommand extends AbstractCommand {
             if (this.validBasic(stack)) {
                 final NbtCompound tag = stack.getNbt();
                 final MutableText copyButton = Text.literal("NBT");
-                copyButton.setStyle(copyButton.getStyle().withFormatting(Formatting.UNDERLINE).withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, Vandalism.getInstance().getClientSettings().getChatSettings().commandPrefix.getValue() + "nbt copy")).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Copy the NBT data to your clipboard."))));
+                copyButton.setStyle(
+                        copyButton.getStyle().withFormatting(Formatting.UNDERLINE).withClickEvent(
+                                new ClickEvent(ClickEvent.Action.RUN_COMMAND, chatSettings.commandPrefix.getValue() + "nbt copy")
+                        ).withHoverEvent(new HoverEvent(
+                                HoverEvent.Action.SHOW_TEXT, Text.literal("Copy the NBT data to your clipboard.")
+                        ))
+                );
                 final MutableText text = Text.literal("");
                 text.append(copyButton);
                 if (tag == null) text.append("{}");
                 else text.append(" ").append(NbtHelper.toPrettyPrintedText(tag));
                 ChatUtil.infoChatMessage(text);
             }
+            return SINGLE_SUCCESS;
+        }));
+
+        builder.then(literal("view-entity").executes(context -> {
+            if (this.mc.crosshairTarget instanceof final EntityHitResult entityHitResult) {
+                final Entity entity = entityHitResult.getEntity();
+                if (entity != null) {
+                    final NbtCompound tag = entity.writeNbt(new NbtCompound());
+                    final MutableText copyButton = Text.literal("NBT");
+                    copyButton.setStyle(
+                            copyButton.getStyle().withFormatting(Formatting.UNDERLINE).withClickEvent(
+                                    new ClickEvent(ClickEvent.Action.RUN_COMMAND, chatSettings.commandPrefix.getValue() + "nbt copy")
+                            ).withHoverEvent(new HoverEvent(
+                                    HoverEvent.Action.SHOW_TEXT, Text.literal("Copy the NBT data to your clipboard.")
+                            ))
+                    );
+                    final MutableText text = Text.literal("");
+                    text.append(copyButton);
+                    if (tag == null) text.append("{}");
+                    else text.append(" ").append(NbtHelper.toPrettyPrintedText(tag));
+                    ChatUtil.infoChatMessage(text);
+                    return SINGLE_SUCCESS;
+                }
+            }
+            ChatUtil.errorChatMessage("You must be looking at an entity to use this command.");
             return SINGLE_SUCCESS;
         }));
 
@@ -105,6 +143,20 @@ public class NbtCommand extends AbstractCommand {
                 this.mc.keyboard.setClipboard(tag.toString());
                 ChatUtil.infoChatMessage("NBT copied into the Clipboard.");
             }
+            return SINGLE_SUCCESS;
+        }));
+
+        builder.then(literal("copy-entity").executes(context -> {
+            if (this.mc.crosshairTarget instanceof final EntityHitResult entityHitResult) {
+                final Entity entity = entityHitResult.getEntity();
+                if (entity != null) {
+                    final NbtCompound tag = entity.writeNbt(new NbtCompound());
+                    this.mc.keyboard.setClipboard(tag.toString());
+                    ChatUtil.infoChatMessage("NBT copied into the Clipboard.");
+                    return SINGLE_SUCCESS;
+                }
+            }
+            ChatUtil.errorChatMessage("You must be looking at an entity to use this command.");
             return SINGLE_SUCCESS;
         }));
 
@@ -133,6 +185,19 @@ public class NbtCommand extends AbstractCommand {
             if (this.validBasic(stack)) {
                 Vandalism.getInstance().getClientMenuManager().getByClass(NbtEditorClientMenuWindow.class).displayNbt(stack.getName().getString(), stack.getNbt());
             }
+            return SINGLE_SUCCESS;
+        }));
+
+        builder.then(literal("gui-entity").executes(context -> {
+            if (this.mc.crosshairTarget instanceof final EntityHitResult entityHitResult) {
+                final Entity entity = entityHitResult.getEntity();
+                if (entity != null) {
+                    final NbtCompound tag = entity.writeNbt(new NbtCompound());
+                    Vandalism.getInstance().getClientMenuManager().getByClass(NbtEditorClientMenuWindow.class).displayNbt(entity.getName().getString(), tag);
+                    return SINGLE_SUCCESS;
+                }
+            }
+            ChatUtil.errorChatMessage("You must be looking at an entity to use this command.");
             return SINGLE_SUCCESS;
         }));
 
