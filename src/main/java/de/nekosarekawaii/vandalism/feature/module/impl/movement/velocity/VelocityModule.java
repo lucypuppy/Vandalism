@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.impl.CancelModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.impl.LegitModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.impl.ReduceModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.impl.ReverseModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
 
@@ -29,7 +30,8 @@ public class VelocityModule extends AbstractModule {
     public final ModuleModeValue<VelocityModule> mode = new ModuleModeValue<>(this, "Mode", "The mode of the velocity.",
             new CancelModuleMode(),
             new ReverseModuleMode(),
-            new LegitModuleMode()
+            new LegitModuleMode(),
+            new ReduceModuleMode()
     );
 
     public VelocityModule() {

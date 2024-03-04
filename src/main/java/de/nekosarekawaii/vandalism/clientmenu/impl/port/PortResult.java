@@ -118,8 +118,8 @@ public class PortResult {
 
         FAILED("There was an error fetching the server info."),
         BIND_FAILED("Cannot assign requested address."),
-        UNKNOWN_HOST("Unknown Host."),
-        CONNECTION_REFUSED("Connection Refused."),
+        UNKNOWN_HOST("Unknown host."),
+        CONNECTION_REFUSED("Connection refused."),
         CONNECTION_TIMED_OUT("Connection timed out."),
         DATA_READ_FAILED("Failed to read data."),
         PACKET_READ_FAILED("Failed to read packet."),
