@@ -34,7 +34,7 @@ public class LongJumpModule extends AbstractModule implements PlayerUpdateListen
     private boolean canLongJump = false;
 
     public LongJumpModule() {
-        super("Long Jump", "Let's you jump further than normal.", Category.MOVEMENT);
+        super("Long Jump", "Lets you jump further than normal.", Category.MOVEMENT);
         this.markExperimental();
     }
 

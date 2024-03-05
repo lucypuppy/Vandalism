@@ -63,7 +63,7 @@ public class HUDClientMenuWindow extends ClientMenuWindow {
                         hudElement.reset();
                         Vandalism.getInstance().getConfigManager().save();
                     }
-                    if (ImGui.button("Close HUD Config" + id + "close", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                    if (ImGui.button("Close HUD config" + id + "close", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                         this.setActive(false);
                     }
                     ImGui.endTabItem();

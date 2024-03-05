@@ -141,7 +141,7 @@ public class NbtCommand extends AbstractCommand {
             if (this.validBasic(stack)) {
                 final NbtCompound tag = stack.getOrCreateNbt();
                 this.mc.keyboard.setClipboard(tag.toString());
-                ChatUtil.infoChatMessage("NBT copied into the Clipboard.");
+                ChatUtil.infoChatMessage("NBT copied into the clipboard.");
             }
             return SINGLE_SUCCESS;
         }));
@@ -152,7 +152,7 @@ public class NbtCommand extends AbstractCommand {
                 if (entity != null) {
                     final NbtCompound tag = entity.writeNbt(new NbtCompound());
                     this.mc.keyboard.setClipboard(tag.toString());
-                    ChatUtil.infoChatMessage("NBT copied into the Clipboard.");
+                    ChatUtil.infoChatMessage("NBT copied into the clipboard.");
                     return SINGLE_SUCCESS;
                 }
             }

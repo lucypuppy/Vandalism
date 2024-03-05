@@ -38,7 +38,7 @@ public class CopyUsernameCommand extends AbstractCommand {
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
             this.mc.keyboard.setClipboard(this.mc.player.getGameProfile().getName());
-            ChatUtil.infoChatMessage("Username copied into the Clipboard.");
+            ChatUtil.infoChatMessage("Username copied into the clipboard.");
             return SINGLE_SUCCESS;
         });
     }

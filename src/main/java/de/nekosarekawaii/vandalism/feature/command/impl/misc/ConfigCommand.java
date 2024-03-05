@@ -53,7 +53,7 @@ public class ConfigCommand extends AbstractCommand {
     private static final File CONFIGS_DIR = new File(Vandalism.getInstance().getRunDirectory(), "configs");
 
     public ConfigCommand() {
-        super("Let's you load, save or delete configs.", Category.MISC, "config", "configs");
+        super("Lets you load, save or delete configs.", Category.MISC, "config", "configs");
         if (!CONFIGS_DIR.exists()) {
             if (!CONFIGS_DIR.mkdirs()) {
                 Vandalism.getInstance().getLogger().error("Failed to create configs directory.");

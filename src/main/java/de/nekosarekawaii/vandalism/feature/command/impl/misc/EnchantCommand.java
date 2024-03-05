@@ -32,7 +32,7 @@ public class EnchantCommand extends AbstractCommand {
 
     public EnchantCommand() {
         super(
-                "Enchants the item in your main hand with the specified enchantment.",
+                "Enchants the item in your main hand with a specified enchantment.",
                 Category.MISC,
                 "enchant",
                 "enchantitem",
