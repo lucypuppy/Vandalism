@@ -233,7 +233,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     private final BooleanValue preHit = new BooleanValue(
             this.clicking,
             "Pre Hit",
-            "Whether you want to pre hit in the extended range. (Doesnt work in Cooldown mode)",
+            "Whether you want to pre hit in the extended range (doesnt work in cooldown mode).",
             false
     ).visibleCondition(() -> this.clickType.getValue() != ClickType.COOLDOWN);
 
@@ -290,7 +290,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     private final IntegerValue aimPoints = new IntegerValue(
             this.rotationGroup,
             "Aim Points",
-            "The amount of aim points. (Higher values can cause lag)",
+            "The amount of aim points (higher values can cause lag).",
             32,
             1,
             100

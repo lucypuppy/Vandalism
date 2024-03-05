@@ -93,7 +93,7 @@ public class CopySignTextCommand extends AbstractCommand {
                     }
                     if (containsText) {
                         this.mc.keyboard.setClipboard(textBuilder.toString());
-                        ChatUtil.infoChatMessage("Sign Text copied into the Clipboard.");
+                        ChatUtil.infoChatMessage("Sign text copied into the clipboard.");
                     }
                     else {
                         ChatUtil.errorChatMessage("The sign you are looking at does not contain any text.");
