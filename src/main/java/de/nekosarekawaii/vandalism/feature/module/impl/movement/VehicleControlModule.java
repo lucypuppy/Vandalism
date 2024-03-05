@@ -34,7 +34,7 @@ public class VehicleControlModule extends AbstractModule implements PlayerUpdate
     public final BooleanValue alwaysSaddle = new BooleanValue(
             this,
             "Always Saddle",
-            "Allows you to ride entities that don't have a saddle.",
+            "Allows you to ride entities that dont have a saddle.",
             true
     );
 

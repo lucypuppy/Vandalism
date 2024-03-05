@@ -29,7 +29,7 @@ public class CopyServerIPCommand extends AbstractCommand {
 
     public CopyServerIPCommand() {
         super(
-                "Copies the ip address of the server your are currently connected to into your clipboard.",
+                "Copies the ip address of the server your are currently connected to.",
                 Category.MISC,
                 "copyserverip",
                 "serveripcopy",
@@ -56,11 +56,11 @@ public class CopyServerIPCommand extends AbstractCommand {
 
     private void copyAddress(final boolean entireAddress) {
         if (this.mc.isInSingleplayer()) {
-            ChatUtil.errorChatMessage("You are in Single-player.");
+            ChatUtil.errorChatMessage("You are in singleplayer.");
             return;
         }
         this.mc.keyboard.setClipboard(ServerConnectionUtil.getLastServerInfo().address + (entireAddress ? " | " + this.mc.getNetworkHandler().getConnection().getAddress().toString() : ""));
-        ChatUtil.infoChatMessage("Server IP copied into the Clipboard.");
+        ChatUtil.infoChatMessage("Server IP copied into the clipboard.");
     }
 
 }

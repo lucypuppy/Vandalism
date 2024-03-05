@@ -28,7 +28,7 @@ public class CopyServerVersionCommand extends AbstractCommand {
 
     public CopyServerVersionCommand() {
         super(
-                "Lets you copy the brand from the server you are currently connected to.",
+                "Lets you copy the brand of the server you are currently connected to.",
                 Category.MISC,
                 "copyserverversion",
                 "copyversion",
@@ -40,11 +40,11 @@ public class CopyServerVersionCommand extends AbstractCommand {
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
             if (this.mc.isInSingleplayer()) {
-                ChatUtil.errorChatMessage("You are in Single-player.");
+                ChatUtil.errorChatMessage("You are in singleplayer.");
             }
             else {
                 this.mc.keyboard.setClipboard(ServerConnectionUtil.getLastServerInfo().version.getString());
-                ChatUtil.infoChatMessage("Server Version copied into the Clipboard.");
+                ChatUtil.infoChatMessage("Server Version copied into the clipboard.");
             }
             return SINGLE_SUCCESS;
         });

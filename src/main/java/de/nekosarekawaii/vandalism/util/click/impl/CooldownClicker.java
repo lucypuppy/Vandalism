@@ -31,12 +31,12 @@ public class CooldownClicker extends Clicker {
 
     @Override
     public void onUpdate() {
-        if(mc.crosshairTarget == null || mc.crosshairTarget.getType() != HitResult.Type.ENTITY) {
+        if (this.mc.crosshairTarget == null || this.mc.crosshairTarget.getType() != HitResult.Type.ENTITY) {
             this.clickAction.accept(false);
             return;
         }
-        EntityHitResult entityHitResult = (EntityHitResult) mc.crosshairTarget;
-        if(killAuraModule == null || entityHitResult.getEntity().distanceTo(mc.player) > (killAuraModule.getPreHit().getValue() ? killAuraModule.getAimRange() : killAuraModule.getRange())) {
+        EntityHitResult entityHitResult = (EntityHitResult) this.mc.crosshairTarget;
+        if (this.killAuraModule == null || entityHitResult.getEntity().distanceTo(this.mc.player) > (this.killAuraModule.getPreHit().getValue() ? this.killAuraModule.getAimRange() : this.killAuraModule.getRange())) {
             this.clickAction.accept(false);
             return;
         }
@@ -64,7 +64,7 @@ public class CooldownClicker extends Clicker {
 
     }
 
-    public void setKillAuraModule(KillAuraModule killAuraModule) {
+    public void setKillAuraModule(final KillAuraModule killAuraModule) {
         this.killAuraModule = killAuraModule;
     }
 

@@ -233,7 +233,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     private final BooleanValue preHit = new BooleanValue(
             this.clicking,
             "Pre Hit",
-            "Whether you want to pre hit in the extended range. (Doesnt work in Cooldown mode)",
+            "Whether you want to pre hit in the extended range (doesnt work in cooldown mode).",
             false
     ).visibleCondition(() -> this.clickType.getValue() != ClickType.COOLDOWN);
 
@@ -290,7 +290,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     private final IntegerValue aimPoints = new IntegerValue(
             this.rotationGroup,
             "Aim Points",
-            "The amount of aim points. (Higher values can cause lag)",
+            "The amount of aim points (higher values can cause lag).",
             32,
             1,
             100
@@ -589,7 +589,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         } else if (clicker instanceof final BezierClicker bezierClicker) {
             bezierClicker.setBezierValue(this.cpsBezier);
             bezierClicker.setCpsUpdatePossibility(this.updatePossibility.getValue());
-        }else if(clicker instanceof final CooldownClicker cooldownClicker) {
+        } else if (clicker instanceof final CooldownClicker cooldownClicker) {
             cooldownClicker.setKillAuraModule(this);
         }
 
@@ -714,19 +714,19 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
             final Box box = new Box(
                     pos.x - entity.getWidth() / 2f,
-                    pos.y + entity.getHeight()/2 + Math.sin(System.currentTimeMillis()*0.005)*0.9,
+                    pos.y + entity.getHeight() / 2 + Math.sin(System.currentTimeMillis() * 0.005) * 0.9,
                     pos.z - entity.getWidth() / 2f,
                     pos.x + entity.getWidth() / 2f,
-                    pos.y + entity.getHeight()/2+0.11 + Math.sin(System.currentTimeMillis()*0.005)*0.9,
+                    pos.y + entity.getHeight() / 2 + 0.11 + Math.sin(System.currentTimeMillis() * 0.005) * 0.9,
                     pos.z + entity.getWidth() / 2f
             );
 
             final Box box2 = new Box(
                     pos.x - entity.getWidth() / 2f,
-                    pos.y + entity.getHeight()/2 + Math.sin(System.currentTimeMillis()*0.005+Math.PI)*0.9,
+                    pos.y + entity.getHeight() / 2 + Math.sin(System.currentTimeMillis() * 0.005 + Math.PI) * 0.9,
                     pos.z - entity.getWidth() / 2f,
                     pos.x + entity.getWidth() / 2f,
-                    pos.y + entity.getHeight()/2+0.11 + Math.sin(System.currentTimeMillis()*0.005+Math.PI)*0.9,
+                    pos.y + entity.getHeight() / 2 + 0.11 + Math.sin(System.currentTimeMillis() * 0.005 + Math.PI) * 0.9,
                     pos.z + entity.getWidth() / 2f
             );
 
@@ -742,7 +742,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             BufferBuilder bufferBuilder = tessellator.getBuffer();
             bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
             int points = 24;
-            for(int i = 0; i <= points; i++) {
+            for (int i = 0; i <= points; i++) {
                 double angle = (i / (double) points) * Math.PI * 2;
                 double radius = this.getTarget().getWidth();
                 double x = Math.cos(angle) * radius;
@@ -752,7 +752,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             tessellator.draw();
 
             bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-            for(int i = 0; i <= points; i++) {
+            for (int i = 0; i <= points; i++) {
                 double angle = (i / (double) points) * Math.PI * 2;
                 double radius = this.getTarget().getWidth();
                 double x = Math.cos(angle) * radius;
