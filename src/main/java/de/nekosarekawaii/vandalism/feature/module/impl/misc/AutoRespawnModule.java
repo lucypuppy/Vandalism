@@ -20,9 +20,9 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 
 public class AutoRespawnModule extends AbstractModule implements PlayerUpdateListener {
@@ -46,7 +46,7 @@ public class AutoRespawnModule extends AbstractModule implements PlayerUpdateLis
     private final BooleanValue autoBack = new BooleanValue(
             this,
             "Auto Back",
-            "Automatically uses the back command when you die.",
+            "Automatically uses the /back command when you die.",
             false
     );
 

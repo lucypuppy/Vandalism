@@ -31,7 +31,7 @@ public class VisualThrottleModule extends AbstractModule {
     public final IntegerValue minSodiumEntityAverageSideLength = new IntegerValue(
             this,
             "Min sodium entity average side length",
-            "How long should a average side from an entity be to get always rendered to prevent sodium crash.",
+            "How long should an average side from an entity be to get always rendered to prevent sodium crash.",
             10,
             10,
             1000
