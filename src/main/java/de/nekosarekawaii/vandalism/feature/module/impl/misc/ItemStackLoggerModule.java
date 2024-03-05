@@ -68,7 +68,7 @@ public class ItemStackLoggerModule extends AbstractModule implements PlayerUpdat
     private final BooleanValue notifyInChat = new BooleanValue(
             this,
             "Notify in Chat",
-            "If activated this module sends a notification into the chat to inform you about a newly found item.",
+            "Sends a notification into chat to inform you about a newly found item.",
             true
     );
 

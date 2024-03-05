@@ -159,7 +159,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     @Override
     public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         if (action == GLFW.GLFW_PRESS || key != GLFW.GLFW_KEY_UNKNOWN) {
-            this.getList().stream().filter(m -> m.getKeyBind().isPressed(key)).findAny().ifPresent(AbstractModule::toggle);
+            this.getList().stream().filter(m -> m.getKeyBind().isPressed(key)).forEach(AbstractModule::toggle);
         }
     }
 

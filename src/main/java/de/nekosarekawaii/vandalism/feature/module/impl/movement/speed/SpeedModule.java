@@ -36,7 +36,7 @@ public class SpeedModule extends AbstractModule {
     );
 
     public SpeedModule() {
-        super("Speed", "Makes your on-ground movement faster or better.", Category.MOVEMENT);
+        super("Speed", "Makes your on ground movement faster or better.", Category.MOVEMENT);
     }
 
 }
