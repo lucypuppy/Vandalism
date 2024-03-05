@@ -128,14 +128,16 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if(mc.options.attackKey.isPressed())
+        if (this.mc.options.attackKey.isPressed()) {
             this.clickType.getValue().getClicker().onUpdate();
+        }
     }
 
     @Override
-    public void onRotation(RotationEvent event) {
-        if(mc.options.attackKey.isPressed())
+    public void onRotation(final RotationEvent event) {
+        if (this.mc.options.attackKey.isPressed()) {
             this.clickType.getValue().getClicker().onRotate();
+        }
     }
 
     private void updateClicker(final Clicker clicker) {
@@ -155,7 +157,7 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
 
         clicker.setClickAction(attack -> {
             if (attack) {
-                mc.doAttack();
+                this.mc.doAttack();
             }
         });
     }

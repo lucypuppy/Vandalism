@@ -162,7 +162,6 @@ public class ServersTab implements MinecraftWrapper {
             ImGui.checkbox("Only Bungee Spoofable", this.onlyBungeeSpoofable);
             if (!this.waitingForResponse) {
                 if (ImUtils.subButton("Get")) {
-                    this.servers.clear();
                     final ServersRequest serversRequest = new ServersRequest(
                             this.asn.get(),
                             this.country,
@@ -180,21 +179,33 @@ public class ServersTab implements MinecraftWrapper {
                     this.executorService.submit(() -> {
                         this.waitingForResponse = true;
                         final Response response = ServerDiscoveryUtil.request(serversRequest);
-                        ServersResponse.Server server = new ServersResponse.Server();
+                        ServersResponse.Server errorDisplay = new ServersResponse.Server();
+                        errorDisplay.description = "API request failed!";
                         if (response == null) {
-                            server.version = "Every API User is rate limited!";
+                            errorDisplay.version = "Every API User is rate limited!";
                         } else if (response instanceof final ServersResponse serversResponse) {
                             if (serversResponse.isError()) {
-                                server.version = "Response failed due to " + serversResponse.error;
+                                errorDisplay.version = "Response failed due to " + serversResponse.error;
                             } else if (serversResponse.data == null || serversResponse.data.isEmpty()) {
-                                server.version = "No servers found!";
+                                errorDisplay.version = "No servers found!";
                             } else {
-                                this.servers.addAll(serversResponse.data);
-                                server = null;
+                                for (final ServersResponse.Server server : serversResponse.data) {
+                                    boolean contains = false;
+                                    for (final ServersResponse.Server containedServer : this.servers) {
+                                        if (server.server.equals(containedServer.server)) {
+                                            contains = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!contains) {
+                                        this.servers.add(server);
+                                    }
+                                }
+                                errorDisplay = null;
                             }
                         }
-                        if (server != null) {
-                            this.servers.add(server);
+                        if (errorDisplay != null) {
+                            this.servers.add(errorDisplay);
                         }
                         this.waitingForResponse = false;
                     });
@@ -228,6 +239,8 @@ public class ServersTab implements MinecraftWrapper {
         if (ImGui.beginTabItem(name + "##serversTab" + name)) {
             isSelected = true;
             if (!this.servers.isEmpty() && !this.waitingForResponse) {
+                ImGui.text("Found " + this.servers.size() + " server/s.");
+                ImGui.spacing();
                 ImGui.text("Search for servers");
                 ImGui.setNextItemWidth(-1);
                 ImGui.inputText("##serverSearchField", this.serversSearchField);

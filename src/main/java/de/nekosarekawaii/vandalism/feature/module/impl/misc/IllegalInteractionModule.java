@@ -19,9 +19,9 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
@@ -49,14 +49,14 @@ public class IllegalInteractionModule extends AbstractModule implements PlayerUp
     public BooleanValue viaVersionBug = new BooleanValue(
             this,
             "ViaVersion Bug",
-            "Allows you to place blocks inside your-self on versions lower than 1.9.0 on servers that are using the plugin ViaVersion.",
+            "Allows you to place blocks inside yourself on versions lower than 1.9.0 on servers that are using the plugin ViaVersion.",
             true
     );
 
     public IllegalInteractionModule() {
         super(
                 "Illegal Interaction",
-                "Let's you interact with illegal block hit results.",
+                "Lets you interact with illegal block hit results.",
                 Category.MISC
         );
     }

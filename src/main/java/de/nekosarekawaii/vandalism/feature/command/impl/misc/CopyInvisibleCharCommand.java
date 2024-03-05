@@ -38,7 +38,7 @@ public class CopyInvisibleCharCommand extends AbstractCommand {
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
             this.mc.keyboard.setClipboard("\uF802");
-            ChatUtil.infoChatMessage("Invisible character copied into the Clipboard.");
+            ChatUtil.infoChatMessage("Invisible character copied into the clipboard.");
             return SINGLE_SUCCESS;
         });
     }

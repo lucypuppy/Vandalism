@@ -143,7 +143,7 @@ public class FOVFuckerModule extends AbstractModule implements PlayerUpdateListe
             return;
         }
 
-        if (this.target.isDead() || this.mc.world.getEntityById(this.target.getId()) == null) {
+        if (this.target.isDead() || this.mc.world.getEntityById(this.target.getId()) == null || !WorldUtil.isTarget(this.target)) {
             this.reset();
             return;
         }

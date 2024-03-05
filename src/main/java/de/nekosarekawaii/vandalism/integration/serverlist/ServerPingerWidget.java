@@ -178,7 +178,8 @@ public class ServerPingerWidget implements MinecraftWrapper {
                             } else {
                                 try {
                                     final String faviconString = base64FaviconString.substring(Base64_START.length()).replaceAll("\n", "");
-                                    currentServerInfo.setFavicon(Base64.getDecoder().decode(faviconString.getBytes(StandardCharsets.UTF_8)));
+                                    final byte[] faviconBytes = Base64.getDecoder().decode(faviconString.getBytes(StandardCharsets.UTF_8));
+                                    currentServerInfo.setFavicon(faviconBytes.length < 1 ? null : faviconBytes);
                                 } catch (IllegalArgumentException e) {
                                     Vandalism.getInstance().getLogger().error("Server " + currentServerInfo.address + " has responded with an malformed base64 server icon.", e);
                                 }

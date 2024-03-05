@@ -50,7 +50,7 @@ public class ModuleArgumentType implements ArgumentType<AbstractModule> {
     @Override
     public AbstractModule parse(final StringReader reader) throws CommandSyntaxException {
         final String argument = reader.readString().replace("-", " ");
-        final AbstractModule module = Vandalism.getInstance().getModuleManager().getByName(argument, true);
+        final AbstractModule module = Vandalism.getInstance().getModuleManager().getByName(argument, false); // TODO: temp fix - RClasses' getByName method has ignoreCase inverted, we'll have to change it back on PR merge
         if (module == null) {
             throw NOT_EXISTING.create(argument);
         }

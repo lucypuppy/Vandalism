@@ -34,7 +34,7 @@ public class AutoSprintModule extends AbstractModule implements PlayerUpdateList
     );
 
     public AutoSprintModule() {
-        super("Auto Sprint", "Automatically let's you sprint!", Category.MOVEMENT);
+        super("Auto Sprint", "Automatically lets you sprint!", Category.MOVEMENT);
     }
 
     @Override

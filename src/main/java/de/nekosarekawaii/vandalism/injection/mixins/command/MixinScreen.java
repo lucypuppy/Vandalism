@@ -22,6 +22,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.feature.command.CommandManager;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Style;
@@ -39,7 +41,7 @@ public abstract class MixinScreen {
         if (clickEvent != null) {
             if (clickEvent.getAction() == ClickEvent.Action.RUN_COMMAND) {
                 final String value = clickEvent.getValue(), secret = CommandManager.COMMAND_SECRET;
-                if (value.startsWith(secret)) {
+                if (value.startsWith(secret) && MinecraftClient.getInstance().currentScreen instanceof ChatScreen) {
                     try {
                         Vandalism.getInstance().getCommandManager().getCommandDispatcher().execute(value.replaceFirst(secret, ""), AbstractCommand.COMMAND_SOURCE);
                         cir.setReturnValue(true);
