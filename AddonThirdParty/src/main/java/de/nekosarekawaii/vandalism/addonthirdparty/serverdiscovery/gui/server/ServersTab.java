@@ -296,11 +296,18 @@ public class ServersTab implements MinecraftWrapper {
                 }
                 ImGui.beginChild("##servers", -1, -1, true, ImGuiWindowFlags.HorizontalScrollbar);
                 int i = 0;
+                boolean hasLastServer = false;
                 for (final ServersResponse.Server serverEntry : this.servers) {
                     i++;
                     final String address = serverEntry.server;
                     final boolean cracked = serverEntry.cracked;
-                    final boolean isLastServer = ServerConnectionUtil.lastServerExists() && ServerConnectionUtil.getLastServerInfo().address.equals(address) || this.lastAddress.equals(address);
+                    boolean isLastServer = ServerConnectionUtil.lastServerExists() && ServerConnectionUtil.getLastServerInfo().address.equals(address) || this.lastAddress.equals(address);
+                    if (hasLastServer) {
+                        isLastServer = false;
+                    }
+                    if (isLastServer) {
+                        hasLastServer = true;
+                    }
                     final StringBuilder dataString = new StringBuilder();
                     String description = Formatting.strip(serverEntry.description);
                     if (description != null && !description.isEmpty()) {
