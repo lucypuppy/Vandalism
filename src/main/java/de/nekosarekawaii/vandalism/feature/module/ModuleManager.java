@@ -153,7 +153,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new SignExploitsModule(),
                 new ScaffoldModule(),
                 new NoteBotModule(),
-                new MiddleClickFriendsModule()
+                new MiddleClickFriendsModule(),
+                new ResourcePackSpooferModule()
         );
         this.configManager.add(new ModulesConfig(this));
     }
