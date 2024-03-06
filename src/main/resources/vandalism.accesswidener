@@ -118,6 +118,7 @@ accessible field net/minecraft/client/option/ServerList servers Ljava/util/List;
 accessible field net/minecraft/client/gui/screen/multiplayer/MultiplayerServerListWidget CANNOT_RESOLVE_TEXT Lnet/minecraft/text/Text;
 accessible field net/minecraft/client/gui/screen/multiplayer/MultiplayerServerListWidget CANNOT_CONNECT_TEXT Lnet/minecraft/text/Text;
 accessible field net/minecraft/client/gui/screen/multiplayer/MultiplayerServerListWidget servers Ljava/util/List;
+mutable field net/minecraft/client/gui/screen/multiplayer/MultiplayerServerListWidget servers Ljava/util/List;
 accessible field net/minecraft/client/world/ClientChunkManager chunks Lnet/minecraft/client/world/ClientChunkManager$ClientChunkMap;
 accessible method net/minecraft/client/world/ClientChunkManager$ClientChunkMap getIndex (II)I
 accessible method net/minecraft/client/world/ClientChunkManager$ClientChunkMap set (ILnet/minecraft/world/chunk/WorldChunk;)V

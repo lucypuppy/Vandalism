@@ -73,6 +73,7 @@
     "fix.minecraft.MixinEntryListWidget",
     "fix.minecraft.MixinModStatus",
     "fix.minecraft.MixinMultiplayerScreen",
+    "fix.minecraft.MixinMultiplayerServerListWidget",
     "fix.minecraft.MixinPackScreen",
     "fix.minecraft.MixinScanningEntry",
     "fix.minecraft.MixinWindow",
