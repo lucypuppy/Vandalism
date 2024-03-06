@@ -20,13 +20,71 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.ChatSettings;
+import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.hud.ChatHud;
+import net.minecraft.client.gui.hud.ChatHudLine;
+import net.minecraft.client.util.ChatMessages;
+import net.minecraft.text.OrderedText;
+import net.minecraft.text.StringVisitable;
+import net.minecraft.text.Text;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
+import org.spongepowered.asm.mixin.injection.Redirect;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Mixin(ChatHud.class)
 public abstract class MixinChatHud {
+
+    @Shadow
+    @Final
+    private List<ChatHudLine.Visible> visibleMessages;
+
+    @Unique
+    private final List<OrderedText> vandalism$visibleMessages = new ArrayList<>();
+
+    @Redirect(method = "logChatMessage", at = @At(value = "INVOKE", target = "Ljava/lang/String;replaceAll(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", ordinal = 1))
+    private String removeSameLineID(String string, final String regex, final String replacement) {
+        final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
+        if (chatSettings.sameLineMessages.getValue()) {
+            if (string.contains(ChatUtil.SAME_LINE_ID.getString())) {
+                string = string.replace(ChatUtil.SAME_LINE_ID.getString(), "");
+            }
+        }
+        return string;
+    }
+
+    @Redirect(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;ILnet/minecraft/client/gui/hud/MessageIndicator;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/ChatMessages;breakRenderedChatMessageLines(Lnet/minecraft/text/StringVisitable;ILnet/minecraft/client/font/TextRenderer;)Ljava/util/List;"))
+    private List<OrderedText> sameLineMessages(final StringVisitable message, final int width, final TextRenderer textRenderer) {
+        final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
+        if (chatSettings.sameLineMessages.getValue()) {
+            final Text text = (Text) message;
+            if (text.getSiblings().contains(ChatUtil.SAME_LINE_ID)) {
+                text.getSiblings().remove(ChatUtil.SAME_LINE_ID);
+                final int maxSameLineMessages = chatSettings.maxSameLineMessages.getValue();
+                if (this.visibleMessages.size() > maxSameLineMessages) {
+                    for (int i = maxSameLineMessages; i < this.visibleMessages.size(); i++) {
+                        final ChatHudLine.Visible visibleMessage = this.visibleMessages.get(i);
+                        if (this.vandalism$visibleMessages.contains(visibleMessage.content())) {
+                            this.visibleMessages.remove(visibleMessage);
+                            break;
+                        }
+                    }
+                }
+                final List<OrderedText> lines = ChatMessages.breakRenderedChatMessageLines(text, width, textRenderer);
+                this.vandalism$visibleMessages.addAll(lines);
+                return lines;
+            }
+        }
+        return ChatMessages.breakRenderedChatMessageLines(message, width, textRenderer);
+    }
 
     @ModifyConstant(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;ILnet/minecraft/client/gui/hud/MessageIndicator;Z)V", constant = @Constant(intValue = 100), expect = 2)
     public int moreChatHistory(final int original) {

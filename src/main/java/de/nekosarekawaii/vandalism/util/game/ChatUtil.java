@@ -34,6 +34,7 @@ import net.minecraft.util.Formatting;
 import java.awt.*;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.UUID;
 
 public class ChatUtil implements MinecraftWrapper {
 
@@ -44,7 +45,7 @@ public class ChatUtil implements MinecraftWrapper {
                     .setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Color.WHITE.getRGB()))))
             .append(") ");
 
-    private enum Type {
+    public enum Type {
 
         INFO(Color.GREEN), WARNING(Color.ORANGE), ERROR(Color.RED);
 
@@ -71,6 +72,10 @@ public class ChatUtil implements MinecraftWrapper {
 
     public static void infoChatMessage(final Text message) {
         chatMessage(Type.INFO.getPrefix().copy().append(message));
+    }
+
+    public static void infoChatMessage(final Text message, final boolean sameLine) {
+        chatMessage(Type.INFO.getPrefix().copy().append(message), true, sameLine);
     }
 
     public static void warningChatMessage(final String message) {
@@ -105,7 +110,7 @@ public class ChatUtil implements MinecraftWrapper {
         chatMessage(Text.literal(message));
     }
 
-    public static void chatMessage(final Text message) {
+    public static void chatMessage(final MutableText message) {
         chatMessage(message, true);
     }
 
@@ -113,22 +118,32 @@ public class ChatUtil implements MinecraftWrapper {
         chatMessage(Text.literal(message), prefix);
     }
 
-    public static void chatMessage(final Text message, final boolean prefix) {
+    public static void chatMessage(final MutableText message, final boolean prefix) {
+        chatMessage(message, prefix, false);
+    }
+
+    public static final Text SAME_LINE_ID = Text.literal(UUID.randomUUID().toString());
+
+    public static void chatMessage(final MutableText message, final boolean prefix, final boolean sameLine) {
         if (mc.inGameHud == null) {
             Vandalism.getInstance().getLogger().info(message.getString());
             return;
         }
-        mc.inGameHud.getChatHud().addMessage(prefix ? CHAT_PREFIX.copy().append(message) : message);
+        final MutableText text = prefix ? CHAT_PREFIX.copy().append(message) : message;
+        if (sameLine && Vandalism.getInstance().getClientSettings().getChatSettings().sameLineMessages.getValue()) {
+            text.getSiblings().add(SAME_LINE_ID);
+        }
+        mc.inGameHud.getChatHud().addMessage(text);
     }
 
     public static void sendChatMessage(final String message) {
         final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
         if (networkHandler == null) return;
         final Instant instant = Instant.now();
-        final long l = NetworkEncryptionUtils.SecureRandomUtil.nextLong();
+        final long secureRandom = NetworkEncryptionUtils.SecureRandomUtil.nextLong();
         final LastSeenMessagesCollector.LastSeenMessages lastSeenMessages = networkHandler.lastSeenMessagesCollector.collect();
-        final MessageSignatureData messageSignatureData = networkHandler.messagePacker.pack(new MessageBody(message, instant, l, lastSeenMessages.lastSeen()));
-        networkHandler.sendPacket(new ChatMessageC2SPacket(message, instant, l, messageSignatureData, lastSeenMessages.update()));
+        final MessageSignatureData messageSignatureData = networkHandler.messagePacker.pack(new MessageBody(message, instant, secureRandom, lastSeenMessages.lastSeen()));
+        networkHandler.sendPacket(new ChatMessageC2SPacket(message, instant, secureRandom, messageSignatureData, lastSeenMessages.update()));
     }
 
     public static Text trimText(final Text text, final int length) {

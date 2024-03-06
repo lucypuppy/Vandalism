@@ -29,8 +29,12 @@ import de.nekosarekawaii.vandalism.event.normal.internal.ModuleToggleListener;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.raphimc.vialoader.util.VersionRange;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +66,13 @@ public abstract class AbstractModule extends Feature implements ValueParent {
                 this.onDeactivate();
             }
             if (Vandalism.getInstance().getClientSettings().getMenuSettings().moduleStateLogging.getValue() && this.mc.player != null) {
-                ChatUtil.infoChatMessage(this.getName() + " has been " + (newValue ? "activated" : "deactivated") + ".");
+                final MutableText text = ChatUtil.Type.INFO.getPrefix().copy();
+                text.append(Text.literal(Formatting.DARK_AQUA + this.getName() + Formatting.GRAY + " has been "));
+                final MutableText state = newValue ? Text.literal("activated") : Text.literal("deactivated");
+                state.withColor(newValue ? Color.GREEN.getRGB() : Color.RED.getRGB());
+                text.append(state);
+                text.append(".");
+                ChatUtil.chatMessage(text, true, true);
             }
             this.recursiveUpdateActiveState(newValue, this.values);
         }
