@@ -27,6 +27,7 @@ import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.event.normal.game.ShutdownProcessListener;
 import de.nekosarekawaii.vandalism.event.normal.network.DisconnectListener;
 import de.nekosarekawaii.vandalism.event.normal.network.WorldListener;
+import de.nekosarekawaii.vandalism.event.normal.player.HealthUpdateListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.config.ModulesConfig;
@@ -58,7 +59,7 @@ import java.util.Objects;
 public class ModuleManager extends NamedStorage<AbstractModule> implements
         KeyboardInputListener, ShutdownProcessListener,
         DisconnectListener, MinecraftWrapper,
-        WorldListener, PlayerUpdateListener
+        WorldListener, PlayerUpdateListener, HealthUpdateListener
 {
 
     private final ConfigManager configManager;
@@ -83,7 +84,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this,
                 KeyboardInputEvent.ID, ShutdownProcessEvent.ID,
                 DisconnectEvent.ID, WorldLoadEvent.ID,
-                PlayerUpdateEvent.ID
+                PlayerUpdateEvent.ID,
+                HealthUpdateEvent.ID
         );
     }
 
@@ -182,8 +184,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     }
 
     @Override
-    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.mc.player.isDead()) {
+    public void onHealthUpdate(final HealthUpdateEvent event) {
+        if(event.health <= 0.0F) {
             this.getList().stream().filter(m -> m.isActive() && m.isDeactivateOnDeath()).forEach(AbstractModule::deactivate);
         }
     }
