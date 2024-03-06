@@ -1,0 +1,60 @@
+/*
+ * This file is part of Vandalism - https://github.com/VandalismDevelopment/Vandalism
+ * Copyright (C) 2023-2024 NekosAreKawaii, Verschlxfene, FooFieOwO and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package de.nekosarekawaii.vandalism.feature.module.impl.misc;
+
+import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.network.packet.c2s.common.ResourcePackStatusC2SPacket;
+import net.minecraft.network.packet.s2c.common.ResourcePackSendS2CPacket;
+
+public class ResourcePackSpooferModule extends AbstractModule implements IncomingPacketListener {
+
+    public ResourcePackSpooferModule() {
+        super(
+                "Resource Pack Spoofer",
+                "Allows you to spoof the Resource Pack.",
+                Category.MISC
+        );
+    }
+
+    @Override
+    public void onActivate() {
+        Vandalism.getInstance().getEventSystem().subscribe(IncomingPacketEvent.ID, this);
+    }
+
+    @Override
+    public void onDeactivate() {
+        Vandalism.getInstance().getEventSystem().unsubscribe(IncomingPacketEvent.ID, this);
+    }
+
+    @Override
+    public void onIncomingPacket(final IncomingPacketEvent event) {
+        if (event.packet instanceof final ResourcePackSendS2CPacket resourcePackSendS2CPacket) {
+            final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
+            if (networkHandler != null) {
+                networkHandler.sendPacket(new ResourcePackStatusC2SPacket(resourcePackSendS2CPacket.id(), ResourcePackStatusC2SPacket.Status.ACCEPTED));
+                networkHandler.sendPacket(new ResourcePackStatusC2SPacket(resourcePackSendS2CPacket.id(), ResourcePackStatusC2SPacket.Status.SUCCESSFULLY_LOADED));
+            }
+        }
+    }
+
+
+}
