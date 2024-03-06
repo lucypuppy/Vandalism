@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.event;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalFloatRef;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.event.normal.player.HealthUpdateListener;
 import de.nekosarekawaii.vandalism.event.normal.player.MoveFlyingListener;
 import de.nekosarekawaii.vandalism.event.normal.player.StrafeListener;
 import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
@@ -53,6 +54,15 @@ public abstract class MixinLivingEntity implements MinecraftWrapper {
             final var event = new StrafeListener.StrafeEvent(null, -1, f.get(), StrafeListener.Type.JUMP);
             Vandalism.getInstance().getEventSystem().postInternal(StrafeListener.StrafeEvent.ID, event);
             f.set(event.yaw);
+        }
+    }
+
+    @ModifyArgs(method = "setHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/data/DataTracker;set(Lnet/minecraft/entity/data/TrackedData;Ljava/lang/Object;)V"))
+    private void callHealthUpdateListener(Args args) {
+        if (mc.player == (Object) this) {
+            final var event = new HealthUpdateListener.HealthUpdateEvent(args.get(1));
+            Vandalism.getInstance().getEventSystem().postInternal(HealthUpdateListener.HealthUpdateEvent.ID, event);
+            args.set(1, event.health);
         }
     }
 

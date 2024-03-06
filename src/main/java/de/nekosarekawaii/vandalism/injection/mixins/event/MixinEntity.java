@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.event;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.cancellable.player.EntityPushListener;
 import de.nekosarekawaii.vandalism.event.cancellable.player.FluidPushListener;
+import de.nekosarekawaii.vandalism.event.normal.network.EntityRemoveListener;
 import de.nekosarekawaii.vandalism.event.normal.player.StepListener;
 import de.nekosarekawaii.vandalism.event.normal.player.StepSuccessListener;
 import de.nekosarekawaii.vandalism.event.normal.player.StrafeListener;
@@ -32,6 +33,7 @@ import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
@@ -106,6 +108,11 @@ public abstract class MixinEntity implements MinecraftWrapper {
             return movementInputToVelocity(event.movementInput, event.speed, event.yaw);
         }
         return movementInputToVelocity(movementInput, speed, yaw);
+    }
+
+    @Inject(method = "setRemoved", at = @At("HEAD"))
+    private void callEntityRemoveListener(Entity.RemovalReason reason, CallbackInfo ci) {
+        Vandalism.getInstance().getEventSystem().postInternal(EntityRemoveListener.EntityRemoveEvent.ID, new EntityRemoveListener.EntityRemoveEvent((Entity) (Object) this, reason));
     }
 
 }
