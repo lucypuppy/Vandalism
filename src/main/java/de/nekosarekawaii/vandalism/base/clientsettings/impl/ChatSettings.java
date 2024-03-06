@@ -33,6 +33,22 @@ public class ChatSettings extends ValueGroup {
             "."
     );
 
+    public final BooleanValue sameLineMessages = new BooleanValue(
+            this,
+            "Same Line Messages",
+            "If enabled, some chat messages from the client will be displayed in the same line.",
+            true
+    );
+
+    public final IntegerValue maxSameLineMessages = new IntegerValue(
+            this,
+            "Max Same Line Messages",
+            "The max amount of chat messages that will be displayed in the same line.",
+            10,
+            1,
+            20
+    ).visibleCondition(this.sameLineMessages::getValue);
+
     public final BooleanValue fixChatFieldWidth = new BooleanValue(
             this,
             "Fix Chat Field Width",
