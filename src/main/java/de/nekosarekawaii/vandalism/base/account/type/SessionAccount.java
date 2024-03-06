@@ -141,6 +141,9 @@ public class SessionAccount extends AbstractAccount {
                     if (ImGui.button("Use Random Name", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
                         this.name.set(NameGenerationUtil.generateUsername());
                     }
+                    if (ImGui.button("Use WorldGuard Bypass Name", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
+                        this.name.set("[^A-Za-z0-9_]");
+                    }
                 }
                 ImGui.text("UUID");
                 ImGui.setNextItemWidth(ImGui.getColumnWidth() - 4f);
