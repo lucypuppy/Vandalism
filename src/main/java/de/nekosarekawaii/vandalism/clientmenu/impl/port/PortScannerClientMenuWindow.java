@@ -156,7 +156,7 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
                     if (ImGui.button("Reset Values##portscannerresetvalues", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                         this.minPort.set(1);
                         this.maxPort.set(65535);
-                        this.threads.set(500);
+                        this.threads.set(128);
                     }
                     ImGui.sameLine();
                 }
