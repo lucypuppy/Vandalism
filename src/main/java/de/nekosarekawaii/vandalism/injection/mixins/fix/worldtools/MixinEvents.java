@@ -18,6 +18,8 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.fix.worldtools;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.GridWidget;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
@@ -31,7 +33,10 @@ public abstract class MixinEvents {
 
     @Inject(method = "onGameMenuScreenInitWidgets", at = @At(value = "HEAD"))
     private void fixWorldToolsButton(final GridWidget.Adder adder, final CallbackInfo ci) {
-        adder.copyPositioner().margin(2, 2);
+        final Screen screen = MinecraftClient.getInstance().currentScreen;
+        if (screen != null) {
+            adder.copyPositioner().margin(screen.width - 206, 2);
+        }
     }
 
 }
