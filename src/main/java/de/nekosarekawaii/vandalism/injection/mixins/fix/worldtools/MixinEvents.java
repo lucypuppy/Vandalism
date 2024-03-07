@@ -45,7 +45,7 @@ public abstract class MixinEvents {
             return instance.build();
         }
         final ButtonWidget button = instance.width(204).position(currentScreen.width / 2 - 102, currentScreen.height - 22).build();
-        currentScreen.addDrawable(button);
+        currentScreen.addDrawableChild(button);
         return button;
     }
 
