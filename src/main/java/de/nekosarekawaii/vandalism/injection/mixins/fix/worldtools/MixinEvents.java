@@ -20,23 +20,33 @@ package de.nekosarekawaii.vandalism.injection.mixins.fix.worldtools;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.GridWidget;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Pseudo
 @Mixin(targets = "org/waste/of/time/Events")
 public abstract class MixinEvents {
 
-    @Inject(method = "onGameMenuScreenInitWidgets", at = @At(value = "HEAD"))
-    private void fixWorldToolsButton(final GridWidget.Adder adder, final CallbackInfo ci) {
-        final Screen screen = MinecraftClient.getInstance().currentScreen;
-        if (screen != null) {
-            adder.copyPositioner().margin(screen.width - 206, 2);
+    @Inject(method = "onGameMenuScreenInitWidgets", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/GridWidget$Adder;add(Lnet/minecraft/client/gui/widget/Widget;I)Lnet/minecraft/client/gui/widget/Widget;"), cancellable = true)
+    private static void fixWorldToolsButton(final GridWidget.Adder adder,final  CallbackInfo ci) {
+        ci.cancel();
+    }
+
+    @Redirect(method = "onGameMenuScreenInitWidgets", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/ButtonWidget$Builder;build()Lnet/minecraft/client/gui/widget/ButtonWidget;"))
+    private static ButtonWidget fixWorldToolsButton(final ButtonWidget.Builder instance) {
+        final Screen currentScreen = MinecraftClient.getInstance().currentScreen;
+        if (currentScreen == null) {
+            return instance.build();
         }
+        final ButtonWidget button = instance.width(204).position(currentScreen.width / 2 - 102, currentScreen.height - 22).build();
+        currentScreen.addDrawable(button);
+        return button;
     }
 
 }
