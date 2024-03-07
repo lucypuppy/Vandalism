@@ -29,10 +29,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(targets = "org/waste/of/time/Events")
 public abstract class MixinEvents {
 
-    @Inject(method = "onGameMenuScreenInitWidgets", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/GridWidget$Adder;add(Lnet/minecraft/client/gui/widget/Widget;I)Lnet/minecraft/client/gui/widget/Widget;"), cancellable = true)
+    @Inject(method = "onGameMenuScreenInitWidgets", at = @At(value = "HEAD"))
     private void fixWorldToolsButton(final GridWidget.Adder adder, final CallbackInfo ci) {
-        ci.cancel();
-        adder.copyPositioner().margin(10, 10);
+        adder.copyPositioner().margin(2, 2);
     }
 
 }
