@@ -23,7 +23,10 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.ServerInfo;
 import net.minecraft.command.CommandSource;
+import net.minecraft.util.Pair;
 
 public class CopyServerIPCommand extends AbstractCommand {
 
@@ -36,7 +39,7 @@ public class CopyServerIPCommand extends AbstractCommand {
                 "copyserveraddress",
                 "serveraddresscopy",
                 "copyip",
-                "copyserverip"
+                "ipcopy"
         );
     }
 
@@ -46,20 +49,38 @@ public class CopyServerIPCommand extends AbstractCommand {
             this.copyAddress(false);
             return SINGLE_SUCCESS;
         });
-        builder.then(argument("entire-address", BoolArgumentType.bool())
+        builder.then(argument("resolved", BoolArgumentType.bool())
                 .executes(context -> {
-                    this.copyAddress(BoolArgumentType.getBool(context, "entire-address"));
+                    this.copyAddress(BoolArgumentType.getBool(context, "resolved"));
                     return SINGLE_SUCCESS;
                 })
         );
     }
 
-    private void copyAddress(final boolean entireAddress) {
+    private void copyAddress(final boolean resolved) {
         if (this.mc.isInSingleplayer()) {
             ChatUtil.errorChatMessage("You are in singleplayer.");
             return;
         }
-        this.mc.keyboard.setClipboard(ServerConnectionUtil.getLastServerInfo().address + (entireAddress ? " | " + this.mc.getNetworkHandler().getConnection().getAddress().toString() : ""));
+        if (resolved) {
+            final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
+            if (networkHandler != null) {
+                final Pair<String, Integer> address = ServerConnectionUtil.resolveServerAddress(networkHandler.getConnection().getAddress().toString());
+                this.mc.keyboard.setClipboard(address.getLeft() + ":" + address.getRight());
+            }
+            else {
+                ChatUtil.errorChatMessage("You are not connected to a server.");
+            }
+        }
+        else {
+            final ServerInfo serverInfo = this.mc.getCurrentServerEntry();
+            if (serverInfo != null) {
+                this.mc.keyboard.setClipboard(serverInfo.address);
+            }
+            else {
+                ChatUtil.errorChatMessage("You are not connected to a server.");
+            }
+        }
         ChatUtil.infoChatMessage("Server IP copied into the clipboard.");
     }
 

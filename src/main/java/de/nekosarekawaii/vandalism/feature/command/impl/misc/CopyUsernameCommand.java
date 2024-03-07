@@ -30,7 +30,11 @@ public class CopyUsernameCommand extends AbstractCommand {
                 "Copies your username into your clipboard.",
                 Category.MISC,
                 "copyusername",
-                "usernamecopy"
+                "usernamecopy",
+                "copyname",
+                "namecopy",
+                "copyign",
+                "igncopy"
         );
     }
 
