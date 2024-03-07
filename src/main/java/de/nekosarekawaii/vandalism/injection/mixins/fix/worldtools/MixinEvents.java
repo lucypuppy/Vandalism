@@ -34,12 +34,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinEvents {
 
     @Inject(method = "onGameMenuScreenInitWidgets", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/GridWidget$Adder;add(Lnet/minecraft/client/gui/widget/Widget;I)Lnet/minecraft/client/gui/widget/Widget;"), cancellable = true)
-    private static void fixWorldToolsButton(final GridWidget.Adder adder,final  CallbackInfo ci) {
+    private void fixWorldToolsButton(final GridWidget.Adder adder,final  CallbackInfo ci) {
         ci.cancel();
     }
 
     @Redirect(method = "onGameMenuScreenInitWidgets", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/ButtonWidget$Builder;build()Lnet/minecraft/client/gui/widget/ButtonWidget;"))
-    private static ButtonWidget fixWorldToolsButton(final ButtonWidget.Builder instance) {
+    private ButtonWidget fixWorldToolsButton(final ButtonWidget.Builder instance) {
         final Screen currentScreen = MinecraftClient.getInstance().currentScreen;
         if (currentScreen == null) {
             return instance.build();
