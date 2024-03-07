@@ -59,7 +59,7 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
     };
 
     private final ImString address, state, progress;
-    private final ImInt minPort, maxPort, threads;
+    private final ImInt minPort, maxPort, threads, timeout;
     private final List<Integer> ports;
     private final List<PortResult> portResults;
     private int currentPort;
@@ -74,6 +74,7 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
         this.minPort = new ImInt(1);
         this.maxPort = new ImInt(65535);
         this.threads = new ImInt(128);
+        this.timeout = new ImInt(500);
         this.ports = new CopyOnWriteArrayList<>();
         this.portResults = new CopyOnWriteArrayList<>();
         this.currentPort = -1;
@@ -152,11 +153,15 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
                 if (ImGui.inputInt("Threads##portscannerthreads", this.threads, 1)) {
                     this.threads.set(Math.max(1, Math.min(this.threads.get(), 1000)));
                 }
-                if (this.minPort.get() != 1 || this.maxPort.get() != 65535 || this.threads.get() != 500) {
+                if (ImGui.inputInt("Timeout##portscannertimeout", this.timeout, 1)) {
+                    this.timeout.set(Math.max(1, Math.min(this.timeout.get(), 10000)));
+                }
+                if (this.minPort.get() != 1 || this.maxPort.get() != 65535 || this.threads.get() != 128 || this.timeout.get() != 500) {
                     if (ImGui.button("Reset Values##portscannerresetvalues", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                         this.minPort.set(1);
                         this.maxPort.set(65535);
                         this.threads.set(128);
+                        this.timeout.set(500);
                     }
                     ImGui.sameLine();
                 }
@@ -182,7 +187,7 @@ public class PortScannerClientMenuWindow extends ClientMenuWindow {
                                     final int port = this.currentPort;
                                     try {
                                         final Socket socket = new Socket();
-                                        socket.connect(new InetSocketAddress(resolvedAddress, port), 500);
+                                        socket.connect(new InetSocketAddress(resolvedAddress, port), this.timeout.get());
                                         socket.close();
                                         synchronized (this.ports) {
                                             if (!this.ports.contains(port)) {
