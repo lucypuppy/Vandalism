@@ -18,30 +18,31 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.module;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.render.ESPModule;
+import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.client.render.OutlineVertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+
+import java.awt.*;
 
 @Mixin(WorldRenderer.class)
 public abstract class MixinWorldRenderer {
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/OutlineVertexConsumerProvider;setColor(IIII)V"))
-    private void hookEsp(final OutlineVertexConsumerProvider instance, int red, int green, int blue, int alpha) {
+    private void hookEsp(final OutlineVertexConsumerProvider instance, int red, int green, int blue, int alpha, @Local Entity entity) {
         final ESPModule espModule = Vandalism.getInstance().getModuleManager().getEspModule();
-        if (espModule.isActive()) {
-            final var color = espModule.outlineColor.getValue();
-
-            red = color.getColor().getRed();
-            green = color.getColor().getGreen();
-            blue = color.getColor().getBlue();
-            alpha = color.getColor().getAlpha();
-
+        if (espModule.isActive() && WorldUtil.isTarget(entity)) {
+            final Color color = espModule.outlineColor.getColor();
+            instance.setColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        } else {
+            instance.setColor(red, green, blue, alpha);
         }
-        instance.setColor(red, green, blue, alpha);
     }
 
 }
