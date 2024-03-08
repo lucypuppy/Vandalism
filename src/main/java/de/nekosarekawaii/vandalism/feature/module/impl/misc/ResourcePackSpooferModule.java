@@ -21,7 +21,6 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.c2s.common.ResourcePackStatusC2SPacket;
 import net.minecraft.network.packet.s2c.common.ResourcePackSendS2CPacket;
 
@@ -48,13 +47,10 @@ public class ResourcePackSpooferModule extends AbstractModule implements Incomin
     @Override
     public void onIncomingPacket(final IncomingPacketEvent event) {
         if (event.packet instanceof final ResourcePackSendS2CPacket resourcePackSendS2CPacket) {
-            final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
-            if (networkHandler != null) {
-                networkHandler.sendPacket(new ResourcePackStatusC2SPacket(resourcePackSendS2CPacket.id(), ResourcePackStatusC2SPacket.Status.ACCEPTED));
-                networkHandler.sendPacket(new ResourcePackStatusC2SPacket(resourcePackSendS2CPacket.id(), ResourcePackStatusC2SPacket.Status.SUCCESSFULLY_LOADED));
-            }
+            event.cancel();
+            event.connection.send(new ResourcePackStatusC2SPacket(resourcePackSendS2CPacket.id(), ResourcePackStatusC2SPacket.Status.ACCEPTED));
+            event.connection.send(new ResourcePackStatusC2SPacket(resourcePackSendS2CPacket.id(), ResourcePackStatusC2SPacket.Status.SUCCESSFULLY_LOADED));
         }
     }
-
 
 }
