@@ -140,6 +140,7 @@ public class RotationListener implements OutgoingPacketListener, StrafeListener,
 
     public void resetRotation() {
         this.targetRotation = null;
+        this.currentPriority = null;
     }
 
     public Rotation getRotation() {
