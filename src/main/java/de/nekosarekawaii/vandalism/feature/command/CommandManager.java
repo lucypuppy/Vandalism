@@ -21,7 +21,6 @@ package de.nekosarekawaii.vandalism.feature.command;
 import com.mojang.brigadier.CommandDispatcher;
 import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
-import de.nekosarekawaii.vandalism.feature.command.impl.development.TestCommand;
 import de.nekosarekawaii.vandalism.feature.command.impl.exploit.*;
 import de.nekosarekawaii.vandalism.feature.command.impl.misc.*;
 import de.nekosarekawaii.vandalism.feature.command.impl.movement.ClipCommand;

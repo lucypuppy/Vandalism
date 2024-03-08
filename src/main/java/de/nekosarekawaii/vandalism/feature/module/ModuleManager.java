@@ -33,7 +33,6 @@ import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.config.ModulesConfig;
 import de.nekosarekawaii.vandalism.feature.module.gui.ModulesClientMenuWindow;
 import de.nekosarekawaii.vandalism.feature.module.impl.combat.*;
-import de.nekosarekawaii.vandalism.feature.module.impl.development.TestModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.consolespammer.ConsoleSpammerModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.disabler.DisablerModule;
@@ -59,15 +58,13 @@ import java.util.Objects;
 public class ModuleManager extends NamedStorage<AbstractModule> implements
         KeyboardInputListener, ShutdownProcessListener,
         DisconnectListener, MinecraftWrapper,
-        WorldListener, PlayerUpdateListener, HealthUpdateListener
-{
+        WorldListener, PlayerUpdateListener, HealthUpdateListener {
 
     private final ConfigManager configManager;
 
     private ModPacketBlockerModule modPacketBlockerModule;
     private ExploitFixerModule exploitFixerModule;
     private TrueSightModule trueSightModule;
-    private VisualThrottleModule visualThrottleModule;
     private BetterTabListModule betterTabListModule;
     private FastPlaceModule fastPlaceModule;
     private IllegalInteractionModule illegalInteractionModule;
@@ -101,7 +98,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.modPacketBlockerModule = new ModPacketBlockerModule(),
                 this.exploitFixerModule = new ExploitFixerModule(),
                 this.trueSightModule = new TrueSightModule(),
-                this.visualThrottleModule = new VisualThrottleModule(),
                 this.betterTabListModule = new BetterTabListModule(),
                 this.fastPlaceModule = new FastPlaceModule(),
                 this.illegalInteractionModule = new IllegalInteractionModule(),
@@ -186,7 +182,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
     @Override
     public void onHealthUpdate(final HealthUpdateEvent event) {
-        if(event.health <= 0.0F) {
+        if (event.health <= 0.0F) {
             this.getList().stream().filter(m -> m.isActive() && m.isDeactivateOnDeath()).forEach(AbstractModule::deactivate);
         }
     }
@@ -199,16 +195,12 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
         return modPacketBlockerModule;
     }
 
-    public ExploitFixerModule getExploitFixerModule() {
-        return exploitFixerModule;
-    }
-
     public TrueSightModule getTrueSightModule() {
         return trueSightModule;
     }
 
-    public VisualThrottleModule getVisualThrottleModule() {
-        return visualThrottleModule;
+    public ExploitFixerModule getExploitFixerModule() {
+        return exploitFixerModule;
     }
 
     public BetterTabListModule getBetterTabListModule() {
@@ -225,10 +217,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
     public ESPModule getEspModule() {
         return espModule;
-    }
-
-    public KillAuraModule getKillAuraModule() {
-        return killAuraModule;
     }
 
     public TickBaseModule getTickBaseModule() {

@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import com.mojang.authlib.yggdrasil.TextureUrlChecker;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.module.impl.misc.ExploitFixerModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.ExploitFixerModule;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -31,10 +31,10 @@ public abstract class MixinTextureUrlChecker {
 
     @Inject(method = "isAllowedTextureDomain", at = @At("HEAD"), cancellable = true)
     private static void hookExploitFixer(final String url, final CallbackInfoReturnable<Boolean> cir) {
-        final var exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
-
+        final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
         if (exploitFixerModule.isActive() && exploitFixerModule.blockInvalidTextureUrls.getValue()) {
-            if (!url.toLowerCase().startsWith("https://" + ExploitFixerModule.CORRECT_TEXTURE_URL_START) && !url.toLowerCase().startsWith("http://" + ExploitFixerModule.CORRECT_TEXTURE_URL_START)) {
+            final String correctTextureUrlStart = exploitFixerModule.correctTextureUrlStart;
+            if (!url.toLowerCase().startsWith("https://" + correctTextureUrlStart) && !url.toLowerCase().startsWith("http://" + correctTextureUrlStart)) {
                 cir.setReturnValue(false);
             }
         }

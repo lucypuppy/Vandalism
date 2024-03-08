@@ -16,14 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.impl.development;
+package de.nekosarekawaii.vandalism.feature.command.impl.misc;
 
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import net.minecraft.command.CommandSource;
 
-public class TestModule extends AbstractModule {
+public class TestCommand extends AbstractCommand {
 
-    public TestModule() {
-        super("Test", "Just for development purposes.", Category.DEVELOPMENT);
+    public TestCommand() {
+        super("Just for development purposes.", Category.MISC, "test");
+        this.markExperimental();
+    }
+
+    @Override
+    public void build(final LiteralArgumentBuilder<CommandSource> builder) {
+        builder.executes(context -> {
+            ChatUtil.infoChatMessage("Executed Test Command.");
+            return SINGLE_SUCCESS;
+        });
     }
 
 }
