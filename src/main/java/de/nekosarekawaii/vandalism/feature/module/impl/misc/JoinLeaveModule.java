@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.impl.exploit;
+package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import com.mojang.authlib.GameProfile;
 import de.nekosarekawaii.vandalism.Vandalism;
@@ -45,7 +45,7 @@ public class JoinLeaveModule extends AbstractModule implements IncomingPacketLis
         super(
                 "Join Leave",
                 "Notifies you whenever a player connects or disconnects to the server.",
-                Category.EXPLOIT
+                Category.MISC
         );
     }
 

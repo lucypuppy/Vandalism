@@ -18,30 +18,12 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
-import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 
-public class ExploitFixerModule extends AbstractModule {
+public class TestModule extends AbstractModule {
 
-    public static final String CORRECT_TEXTURE_URL_START = "textures.minecraft.net/";
-
-    public final BooleanValue blockInvalidTextureUrls = new BooleanValue(
-            this,
-            "Block invalid texture URLs",
-            "Blocks all incoming textures that are not from Mojang services" + CORRECT_TEXTURE_URL_START,
-            true
-    );
-
-    public final BooleanValue blockBrigadierStackOverflowCrash = new BooleanValue(
-            this,
-            "Block brigadier stack overflow crash",
-            "Blocks an stack overflow crash which is caused by brigadier.",
-            true
-    );
-
-    public ExploitFixerModule() {
-        super("Exploit Fixer", "Fixes exploits that could harm your game or even your computer.", Category.MISC);
-        this.activateDefault();
+    public TestModule() {
+        super("Test", "Just for development purposes.", Category.MISC);
     }
 
 }

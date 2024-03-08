@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
-import de.nekosarekawaii.vandalism.feature.module.impl.render.VisualThrottleModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.ExploitFixerModule;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Style;
 import net.minecraft.text.TranslatableTextContent;
@@ -39,24 +39,24 @@ public abstract class MixinTranslatableTextContent {
     private int vandalism$count;
 
     @Inject(method = "visit(Lnet/minecraft/text/StringVisitable$StyledVisitor;Lnet/minecraft/text/Style;)Ljava/util/Optional;", at = @At("HEAD"), cancellable = true)
-    private void hookVisualThrottle(final StringVisitable.StyledVisitor visitor, final Style style, final CallbackInfoReturnable<Optional> cir) {
+    private void hookExploitFixer(final StringVisitable.StyledVisitor visitor, final Style style, final CallbackInfoReturnable<Optional> cir) {
         if (!FabricBootstrap.INITIALIZED) return;
-        final VisualThrottleModule visualThrottleModule = Vandalism.getInstance().getModuleManager().getVisualThrottleModule();
-        if (visualThrottleModule.isActive() && visualThrottleModule.blockTooManyTranslateTexts.getValue()) {
+        final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
+        if (exploitFixerModule.isActive() && exploitFixerModule.blockTooManyTranslateTexts.getValue()) {
             this.vandalism$count++;
-            if (this.vandalism$count >= visualThrottleModule.translateTextDepthLimit.getValue()) {
+            if (this.vandalism$count >= exploitFixerModule.translateTextDepthLimit.getValue()) {
                 cir.setReturnValue(Optional.empty());
             }
         }
     }
 
     @Inject(method = "visit(Lnet/minecraft/text/StringVisitable$Visitor;)Ljava/util/Optional;", at = @At("HEAD"), cancellable = true)
-    private void hookVisualThrottle(final StringVisitable.Visitor visitor, final CallbackInfoReturnable<Optional> cir) {
+    private void hookExploitFixer(final StringVisitable.Visitor visitor, final CallbackInfoReturnable<Optional> cir) {
         if (!FabricBootstrap.INITIALIZED) return;
-        final VisualThrottleModule visualThrottleModule = Vandalism.getInstance().getModuleManager().getVisualThrottleModule();
-        if (visualThrottleModule.isActive() && visualThrottleModule.blockTooManyTranslateTexts.getValue()) {
+        final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
+        if (exploitFixerModule.isActive() && exploitFixerModule.blockTooManyTranslateTexts.getValue()) {
             this.vandalism$count++;
-            if (this.vandalism$count >= visualThrottleModule.translateTextDepthLimit.getValue()) {
+            if (this.vandalism$count >= exploitFixerModule.translateTextDepthLimit.getValue()) {
                 cir.setReturnValue(Optional.empty());
             }
         }

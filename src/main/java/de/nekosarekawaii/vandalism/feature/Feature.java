@@ -45,7 +45,7 @@ public abstract class Feature implements IName, MinecraftWrapper {
 
     public enum Category {
 
-        DEVELOPMENT, COMBAT, EXPLOIT, MOVEMENT, RENDER, MISC;
+        COMBAT, EXPLOIT, MOVEMENT, RENDER, MISC;
 
         public String getName() {
             return StringUtils.normalizeEnumName(name());

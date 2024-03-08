@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.module.impl.render.VisualThrottleModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.ExploitFixerModule;
 import de.nekosarekawaii.vandalism.util.game.ParticleTracker;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleFactory;
@@ -37,27 +37,27 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinParticleManager {
 
     @Redirect(method = "createParticle", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/particle/ParticleFactory;createParticle(Lnet/minecraft/particle/ParticleEffect;Lnet/minecraft/client/world/ClientWorld;DDDDDD)Lnet/minecraft/client/particle/Particle;"))
-    private @Nullable Particle hookVisualThrottle(final ParticleFactory<ParticleEffect> particleFactory, final ParticleEffect parameters, final ClientWorld world, final double x, final double y, final double z, final double velocityX, final double velocityY, final double velocityZ) {
-        final VisualThrottleModule visualThrottleModule = Vandalism.getInstance().getModuleManager().getVisualThrottleModule();
-        if (visualThrottleModule.isActive() && visualThrottleModule.blockTooManyParticles.getValue()) {
+    private @Nullable Particle hookExploitFixer(final ParticleFactory<ParticleEffect> particleFactory, final ParticleEffect parameters, final ClientWorld world, final double x, final double y, final double z, final double velocityX, final double velocityY, final double velocityZ) {
+        final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
+        if (exploitFixerModule.isActive() && exploitFixerModule.blockTooManyParticles.getValue()) {
             final String particleId = parameters.asString();
-            if (visualThrottleModule.particleTrackerMap.containsKey(particleId)) {
-                final ParticleTracker particleTracker = visualThrottleModule.particleTrackerMap.get(particleId);
+            if (exploitFixerModule.particleTrackerMap.containsKey(particleId)) {
+                final ParticleTracker particleTracker = exploitFixerModule.particleTrackerMap.get(particleId);
                 particleTracker.increaseCount();
-                if (particleTracker.getCount() > visualThrottleModule.countToBlockParticles.getValue()) {
+                if (particleTracker.getCount() > exploitFixerModule.countToBlockParticles.getValue()) {
                     return null;
                 }
-            } else visualThrottleModule.particleTrackerMap.put(particleId, new ParticleTracker(particleId));
+            } else exploitFixerModule.particleTrackerMap.put(particleId, new ParticleTracker(particleId));
         }
         return particleFactory.createParticle(parameters, world, x, y, z, velocityX, velocityY, velocityZ);
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
-    private void hookVisualThrottle(final CallbackInfo ci) {
-        final VisualThrottleModule visualThrottleModule = Vandalism.getInstance().getModuleManager().getVisualThrottleModule();
-        if (visualThrottleModule.isActive() && visualThrottleModule.blockTooManyParticles.getValue()) {
-            for (final ParticleTracker particleTracker : visualThrottleModule.particleTrackerMap.values()) {
-                if (particleTracker.getTimer().hasReached(visualThrottleModule.particleBlockingCountResetDelay.getValue(), true)) {
+    private void hookExploitFixer(final CallbackInfo ci) {
+        final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
+        if (exploitFixerModule.isActive() && exploitFixerModule.blockTooManyParticles.getValue()) {
+            for (final ParticleTracker particleTracker : exploitFixerModule.particleTrackerMap.values()) {
+                if (particleTracker.getTimer().hasReached(exploitFixerModule.particleBlockingCountResetDelay.getValue(), true)) {
                     particleTracker.resetCount();
                 }
             }
@@ -65,8 +65,8 @@ public abstract class MixinParticleManager {
     }
 
     @Inject(method = "clearParticles", at = @At("HEAD"))
-    private void hookVisualThrottle_Clear(final CallbackInfo ci) {
-        Vandalism.getInstance().getModuleManager().getVisualThrottleModule().particleTrackerMap.clear();
+    private void hookExploitFixer_Clear(final CallbackInfo ci) {
+        Vandalism.getInstance().getModuleManager().getExploitFixerModule().particleTrackerMap.clear();
     }
 
 }

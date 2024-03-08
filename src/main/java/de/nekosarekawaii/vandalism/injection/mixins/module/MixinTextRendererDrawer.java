@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
-import de.nekosarekawaii.vandalism.feature.module.impl.render.VisualThrottleModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.ExploitFixerModule;
 import net.minecraft.text.Style;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -35,12 +35,12 @@ public abstract class MixinTextRendererDrawer {
     private int vandalism$glyphCount;
 
     @Inject(method = "accept", at = @At("HEAD"), cancellable = true)
-    private void hookVisualThrottle(final int i, final Style style, final int j, final CallbackInfoReturnable<Boolean> cir) {
+    private void hookExploitFixer(final int i, final Style style, final int j, final CallbackInfoReturnable<Boolean> cir) {
         if (!FabricBootstrap.INITIALIZED) return;
-        final VisualThrottleModule visualThrottleModule = Vandalism.getInstance().getModuleManager().getVisualThrottleModule();
-        if (visualThrottleModule.isActive() && visualThrottleModule.blockTooManyTextGlyphs.getValue()) {
+        final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
+        if (exploitFixerModule.isActive() && exploitFixerModule.blockTooManyTextGlyphs.getValue()) {
             this.vandalism$glyphCount++;
-            if (this.vandalism$glyphCount >= visualThrottleModule.countToBlockTextGlyphs.getValue()) {
+            if (this.vandalism$glyphCount >= exploitFixerModule.countToBlockTextGlyphs.getValue()) {
                 cir.setReturnValue(false);
             }
         }

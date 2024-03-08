@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
-import de.nekosarekawaii.vandalism.feature.module.impl.render.VisualThrottleModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.ExploitFixerModule;
 import net.minecraft.text.CharacterVisitor;
 import net.minecraft.text.Style;
 import net.minecraft.text.TextVisitFactory;
@@ -33,33 +33,33 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinTextVisitFactory {
 
     @Inject(method = "visitForwards", at = @At("HEAD"), cancellable = true)
-    private static void hookVisualThrottle(final String text, final Style style, final CharacterVisitor visitor, final CallbackInfoReturnable<Boolean> cir) {
+    private static void hookExploitFixer(final String text, final Style style, final CharacterVisitor visitor, final CallbackInfoReturnable<Boolean> cir) {
         if (!FabricBootstrap.INITIALIZED) return;
-        final VisualThrottleModule visualThrottleModule = Vandalism.getInstance().getModuleManager().getVisualThrottleModule();
-        if (visualThrottleModule.isActive() && visualThrottleModule.blockTooLongTexts.getValue()) {
-            if (text.length() >= visualThrottleModule.countToBlockTooLongTexts.getValue()) {
+        final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
+        if (exploitFixerModule.isActive() && exploitFixerModule.blockTooLongTexts.getValue()) {
+            if (text.length() >= exploitFixerModule.countToBlockTooLongTexts.getValue()) {
                 cir.setReturnValue(true);
             }
         }
     }
 
     @Inject(method = "visitBackwards", at = @At("HEAD"), cancellable = true)
-    private static void hookVisualThrottle2(final String text, final Style style, final CharacterVisitor visitor, final CallbackInfoReturnable<Boolean> cir) {
+    private static void hookExploitFixer2(final String text, final Style style, final CharacterVisitor visitor, final CallbackInfoReturnable<Boolean> cir) {
         if (!FabricBootstrap.INITIALIZED) return;
-        final VisualThrottleModule visualThrottleModule = Vandalism.getInstance().getModuleManager().getVisualThrottleModule();
-        if (visualThrottleModule.isActive() && visualThrottleModule.blockTooLongTexts.getValue()) {
-            if (text.length() >= visualThrottleModule.countToBlockTooLongTexts.getValue()) {
+        final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
+        if (exploitFixerModule.isActive() && exploitFixerModule.blockTooLongTexts.getValue()) {
+            if (text.length() >= exploitFixerModule.countToBlockTooLongTexts.getValue()) {
                 cir.setReturnValue(true);
             }
         }
     }
 
     @Inject(method = "visitFormatted(Ljava/lang/String;ILnet/minecraft/text/Style;Lnet/minecraft/text/Style;Lnet/minecraft/text/CharacterVisitor;)Z", at = @At("HEAD"), cancellable = true)
-    private static void hookVisualThrottle3(final String text, final int startIndex, final Style startingStyle, final Style resetStyle, final CharacterVisitor visitor, final CallbackInfoReturnable<Boolean> cir) {
+    private static void hookExploitFixer3(final String text, final int startIndex, final Style startingStyle, final Style resetStyle, final CharacterVisitor visitor, final CallbackInfoReturnable<Boolean> cir) {
         if (!FabricBootstrap.INITIALIZED) return;
-        final VisualThrottleModule visualThrottleModule = Vandalism.getInstance().getModuleManager().getVisualThrottleModule();
-        if (visualThrottleModule.isActive() && visualThrottleModule.blockTooLongTexts.getValue()) {
-            if (text.length() >= visualThrottleModule.countToBlockTooLongTexts.getValue()) {
+        final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
+        if (exploitFixerModule.isActive() && exploitFixerModule.blockTooLongTexts.getValue()) {
+            if (text.length() >= exploitFixerModule.countToBlockTooLongTexts.getValue()) {
                 cir.setReturnValue(true);
             }
         }
