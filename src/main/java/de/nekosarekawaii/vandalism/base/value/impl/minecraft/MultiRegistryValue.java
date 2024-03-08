@@ -35,6 +35,7 @@ public class MultiRegistryValue<K> extends MultiModeValue {
         this(parent, name, description, registry, Collections.emptyList());
     }
 
+    @SafeVarargs
     public MultiRegistryValue(ValueParent parent, String name, String description, final Registry<K> registry, final K... options) {
         this(parent, name, description, registry, Collections.emptyList(), options);
     }
@@ -43,6 +44,7 @@ public class MultiRegistryValue<K> extends MultiModeValue {
         this(parent, name, description, registry, defaultValue, registry.stream().toList().toArray((K[]) new Object[registry.size()]));
     }
 
+    @SafeVarargs
     public MultiRegistryValue(ValueParent parent, String name, String description, final Registry<K> registry, final List<K> defaultValue, final K... options) {
         super(
                 parent,
