@@ -20,24 +20,23 @@ package de.nekosarekawaii.vandalism.event.normal.player;
 
 import de.florianmichael.dietrichevents2.AbstractEvent;
 
-public interface PlayerSlowdownListener {
+public interface ShouldSlowdownListener {
 
-    default void onSlowdown(final PlayerSlowdownEvent event) {}
+    void onShouldSlowdown(final ShouldSlowdownEvent event);
 
-    class PlayerSlowdownEvent extends AbstractEvent<PlayerSlowdownListener> {
+    class ShouldSlowdownEvent extends AbstractEvent<ShouldSlowdownListener> {
 
-        public static final int ID = 33;
+        public static final int ID = 39;
 
-        public float movementForward, movementSideways;
+        public boolean shouldSlowdown;
 
-        public PlayerSlowdownEvent(final float movementForward, final float movementSideways) {
-            this.movementForward = movementForward;
-            this.movementSideways = movementSideways;
+        public ShouldSlowdownEvent(final boolean shouldSlowdown) {
+            this.shouldSlowdown = shouldSlowdown;
         }
 
         @Override
-        public void call(final PlayerSlowdownListener listener) {
-            listener.onSlowdown(this);
+        public void call(final ShouldSlowdownListener listener) {
+            listener.onShouldSlowdown(this);
         }
 
     }

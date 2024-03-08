@@ -21,33 +21,28 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.normal.player.CanSprintListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerSlowdownListener;
+import de.nekosarekawaii.vandalism.event.normal.player.ShouldSlowdownListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.item.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.BooleanSupplier;
-
-public class NoSlowModule extends AbstractModule implements PlayerSlowdownListener, CanSprintListener {
+public class NoSlowModule extends AbstractModule implements PlayerSlowdownListener, CanSprintListener, ShouldSlowdownListener {
 
     private static final String FORWARD = "Forward";
 
     private static final String SIDEWAYS = "Sideways";
 
-    private static final List<Item> ITEMS = new ArrayList<>();
-
     private final BooleanValue forceHungerSprint = new BooleanValue(
             this,
             "Force Hunger Sprint",
             "Forces sprinting when the player is hungry.",
-            false
+            true
     );
+
     private final ValueGroup foodSlowDown = new ValueGroup(this, "Food", "Food Slowdown settings.");
 
     private final FloatValue foodForwardMultiplier = new FloatValue(
@@ -88,6 +83,28 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
             1.0f
     );
 
+    private final ValueGroup shieldSlowDown = new ValueGroup(this, "Shield", "Shield Slowdown settings.").visibleCondition(() -> {
+        return ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_8);
+    });
+
+    private final FloatValue shieldForwardMultiplier = new FloatValue(
+            this.shieldSlowDown,
+            FORWARD,
+            FORWARD + " slowdown multiplier.",
+            1.0f,
+            0.2f,
+            1.0f
+    );
+
+    private final FloatValue shieldSidewaysMultiplier = new FloatValue(
+            this.shieldSlowDown,
+            SIDEWAYS,
+            SIDEWAYS + " slowdown multiplier.",
+            1.0f,
+            0.2f,
+            1.0f
+    );
+
     private final ValueGroup swordSlowDown = new ValueGroup(this, "Sword", "Sword Slowdown settings.").visibleCondition(() -> {
         return ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_9);
     });
@@ -103,6 +120,28 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
 
     private final FloatValue swordSidewaysMultiplier = new FloatValue(
             this.swordSlowDown,
+            SIDEWAYS,
+            SIDEWAYS + " slowdown multiplier.",
+            1.0f,
+            0.2f,
+            1.0f
+    );
+
+    private final ValueGroup tridentSlowDown = new ValueGroup(this, "Trident", "Trident Slowdown settings.").visibleCondition(() -> {
+        return ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_12);
+    });
+
+    private final FloatValue tridentForwardMultiplier = new FloatValue(
+            this.tridentSlowDown,
+            FORWARD,
+            FORWARD + " slowdown multiplier.",
+            1.0f,
+            0.2f,
+            1.0f
+    );
+
+    private final FloatValue tridentSidewaysMultiplier = new FloatValue(
+            this.tridentSlowDown,
             SIDEWAYS,
             SIDEWAYS + " slowdown multiplier.",
             1.0f,
@@ -156,53 +195,6 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
                 "Modifies the slowdown in certain conditions.",
                 Category.MOVEMENT
         );
-        ITEMS.add(Items.TRIDENT);
-        ITEMS.add(Items.SHIELD);
-        for (final Item item : ITEMS) {
-            final String name = item.toString().substring(0, 1).toUpperCase() + item.toString().substring(1);
-            final ValueGroup group = new ValueGroup(this, name, name + " settings.");
-            if (item instanceof ShieldItem) {
-                group.visibleCondition(() -> ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_8));
-            } else if (item instanceof TridentItem) {
-                group.visibleCondition(() -> ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_12));
-            }
-            new FloatValue(
-                    group,
-                    "Forward",
-                    "Forward slowdown multiplier.",
-                    1.0f,
-                    0.2f,
-                    1.0f
-            );
-            new FloatValue(
-                    group,
-                    "Sideways",
-                    "Sideways slowdown multiplier.",
-                    1.0f,
-                    0.2f,
-                    1.0f
-            );
-        }
-    }
-
-    private float getValue(final float defaultValue, final Item item, final String name) {
-        for (final Value<?> value : this.getValues()) {
-            if (value instanceof final ValueGroup valueGroup) {
-                final BooleanSupplier visible = valueGroup.isVisible();
-                if (visible != null && visible.getAsBoolean()) {
-                    if (valueGroup.getName().equals(item.getTranslationKey())) {
-                        for (final Value<?> value1 : valueGroup.getValues()) {
-                            if (value1 instanceof final FloatValue floatValue) {
-                                if (value1.toString().equalsIgnoreCase(name)) {
-                                    return floatValue.getValue();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return defaultValue;
     }
 
     private float getForwardMultiplier() {
@@ -210,18 +202,25 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
         final ItemStack stack = this.mc.player.getActiveItem();
         if (!stack.isEmpty()) {
             final Item item = this.mc.player.getActiveItem().getItem();
-            if (ITEMS.contains(item)) {
-                return this.getValue(defaultValue, item, FORWARD);
-            }
             if (item.isFood()) {
                 return this.foodForwardMultiplier.getValue();
             }
             if (item instanceof PotionItem) {
                 return this.potionForwardMultiplier.getValue();
             }
+            if (ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_8)) {
+                if (item instanceof ShieldItem) {
+                    return this.shieldForwardMultiplier.getValue();
+                }
+            }
             if (ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_9)) {
                 if (item instanceof SwordItem) {
                     return this.swordForwardMultiplier.getValue();
+                }
+            }
+            if (ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_12_2)) {
+                if (item instanceof TridentItem) {
+                    return this.tridentForwardMultiplier.getValue();
                 }
             }
             if (item instanceof BowItem) {
@@ -239,18 +238,25 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
         final ItemStack stack = this.mc.player.getActiveItem();
         if (!stack.isEmpty()) {
             final Item item = this.mc.player.getActiveItem().getItem();
-            if (ITEMS.contains(item)) {
-                return this.getValue(defaultValue, item, SIDEWAYS);
-            }
             if (item.isFood()) {
                 return this.foodSidewaysMultiplier.getValue();
             }
             if (item instanceof PotionItem) {
                 return this.potionSidewaysMultiplier.getValue();
             }
+            if (ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_8)) {
+                if (item instanceof ShieldItem) {
+                    return this.shieldSidewaysMultiplier.getValue();
+                }
+            }
             if (ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_9)) {
                 if (item instanceof SwordItem) {
                     return this.swordSidewaysMultiplier.getValue();
+                }
+            }
+            if (ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_12_2)) {
+                if (item instanceof TridentItem) {
+                    return this.tridentSidewaysMultiplier.getValue();
                 }
             }
             if (item instanceof BowItem) {
@@ -264,9 +270,19 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
     }
 
     @Override
+    public void onActivate() {
+        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerSlowdownEvent.ID, CanSprintEvent.ID, ShouldSlowdownEvent.ID);
+    }
+
+    @Override
+    public void onDeactivate() {
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerSlowdownEvent.ID, CanSprintEvent.ID, ShouldSlowdownEvent.ID);
+    }
+
+    @Override
     public void onSlowdown(final PlayerSlowdownEvent event) {
-        final float forwardMultiplier = getForwardMultiplier();
-        final float sidewaysMultiplier = getSidewaysMultiplier();
+        final float forwardMultiplier = this.getForwardMultiplier();
+        final float sidewaysMultiplier = this.getSidewaysMultiplier();
         if (forwardMultiplier > 0.0f) {
             event.movementForward = forwardMultiplier;
         }
@@ -276,19 +292,15 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
     }
 
     @Override
-    public void onCanSprint(CanSprintEvent event) {
-        if (forceHungerSprint.getValue()) {
+    public void onCanSprint(final CanSprintEvent event) {
+        if (this.forceHungerSprint.getValue()) {
             event.canSprint = true;
         }
     }
 
     @Override
-    public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerSlowdownEvent.ID, CanSprintEvent.ID);
+    public void onShouldSlowdown(final ShouldSlowdownEvent event) {
+        event.shouldSlowdown = false;
     }
 
-    @Override
-    public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerSlowdownEvent.ID, CanSprintEvent.ID);
-    }
 }
