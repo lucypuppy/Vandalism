@@ -20,6 +20,8 @@ package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.FastPlaceModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.render.ESPModule;
+import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
@@ -35,8 +37,8 @@ public abstract class MixinMinecraftClient implements MinecraftWrapper {
 
     @Inject(method = "hasOutline", at = @At("RETURN"), cancellable = true)
     private void hookEsp(final Entity entity, final CallbackInfoReturnable<Boolean> cir) {
-        if (entity == this.mc.player) return;
-        if (Vandalism.getInstance().getModuleManager().getEspModule().isActive()) {
+        final ESPModule espModule = Vandalism.getInstance().getModuleManager().getEspModule();
+        if (entity != this.mc.player && espModule.isActive() && WorldUtil.isTarget(entity)) {
             cir.setReturnValue(true);
         }
     }
