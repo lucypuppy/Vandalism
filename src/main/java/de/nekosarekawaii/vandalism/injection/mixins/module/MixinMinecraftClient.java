@@ -21,7 +21,6 @@ package de.nekosarekawaii.vandalism.injection.mixins.module;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.FastPlaceModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.render.ESPModule;
-import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
@@ -36,15 +35,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinMinecraftClient implements MinecraftWrapper {
 
     @Inject(method = "hasOutline", at = @At("RETURN"), cancellable = true)
-    private void hookEsp(final Entity entity, final CallbackInfoReturnable<Boolean> cir) {
+    private void hookESP(final Entity entity, final CallbackInfoReturnable<Boolean> cir) {
         final ESPModule espModule = Vandalism.getInstance().getModuleManager().getEspModule();
-        if (entity != this.mc.player && espModule.isActive() && WorldUtil.isTarget(entity)) {
+        if (entity != this.mc.player && espModule.isActive() && espModule.isTarget(entity)) {
             cir.setReturnValue(true);
         }
     }
 
     @ModifyConstant(method = "doItemUse", constant = @Constant(intValue = 4))
-    private int hookFastUse(final int value) {
+    private int hookFastPlace(final int value) {
         final FastPlaceModule fastPlaceModule = Vandalism.getInstance().getModuleManager().getFastPlaceModule();
         if (fastPlaceModule.isActive()) return fastPlaceModule.cooldown.getValue();
         return value;
