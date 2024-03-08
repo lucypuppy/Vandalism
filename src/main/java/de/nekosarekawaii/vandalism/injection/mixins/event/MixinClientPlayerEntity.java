@@ -23,6 +23,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.normal.player.CanSprintListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerSlowdownListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.event.normal.player.ShouldSlowdownListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.input.Input;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -77,12 +78,21 @@ public abstract class MixinClientPlayerEntity {
         input.movementSideways *= playerUseMultiplier.movementSideways;
     }
 
-    @Inject(method = "canSprint", at = @At(value = "RETURN"), cancellable = true)
-    private void canSprint(CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method = "shouldSlowDown", at = @At("RETURN"), cancellable = true)
+    private void callShouldSlowdownListener(final CallbackInfoReturnable<Boolean> cir) {
         if ((Object) this != this.client.player) {
             return;
         }
+        final ShouldSlowdownListener.ShouldSlowdownEvent shouldSlowdownEvent = new ShouldSlowdownListener.ShouldSlowdownEvent(cir.getReturnValue());
+        Vandalism.getInstance().getEventSystem().postInternal(ShouldSlowdownListener.ShouldSlowdownEvent.ID, shouldSlowdownEvent);
+        cir.setReturnValue(shouldSlowdownEvent.shouldSlowdown);
+    }
 
+    @Inject(method = "canSprint", at = @At(value = "RETURN"), cancellable = true)
+    private void callCanSprintListener(final CallbackInfoReturnable<Boolean> cir) {
+        if ((Object) this != this.client.player) {
+            return;
+        }
         final CanSprintListener.CanSprintEvent canSprintEvent = new CanSprintListener.CanSprintEvent(cir.getReturnValue());
         Vandalism.getInstance().getEventSystem().postInternal(CanSprintListener.CanSprintEvent.ID, canSprintEvent);
         cir.setReturnValue(canSprintEvent.canSprint);
