@@ -100,8 +100,7 @@ public class AccountsConfig extends AbstractConfig<JsonObject> {
                 } catch (Throwable t) {
                     Vandalism.getInstance().getLogger().error("Failed to log into the last account: " + lastAccount.getDisplayName(), t);
                 }
-            }
-            else {
+            } else {
                 Vandalism.getInstance().getLogger().error("Failed to load the last account!");
             }
         }
