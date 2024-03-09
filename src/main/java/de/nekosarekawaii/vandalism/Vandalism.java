@@ -70,7 +70,6 @@ import java.io.File;
  *      - Fix blockTooManyTextGlyphs
  *      - Fix blockTooLongTexts
  *  - Add scroll state saving to the multiplayer screen
- *  - Fix deactivation state issue for example for single execute server crasher
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Rewrite GCD fix to be accurate
