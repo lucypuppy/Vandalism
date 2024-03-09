@@ -282,24 +282,27 @@ public class ServerInfoWidget implements MinecraftWrapper {
                     for (final ModsTableColumn modsTableColumn : modsTableColumns) {
                         ImGui.tableSetupColumn(modsTableColumn.getName());
                     }
-                    ImGui.tableHeadersRow();
-                    for (final MCPingResponse.ModInfo.Mod mod : this.mcPingResponse.modinfo.modList) {
-                        ImGui.tableNextRow();
-                        for (int i = 0; i < maxModTableColumns; i++) {
-                            ImGui.tableSetColumnIndex(i);
-                            final ModsTableColumn modsTableColumn = modsTableColumns[i];
-                            switch (modsTableColumn) {
-                                case MOD_ID -> ImGui.text(mod.modid);
-                                case MOD_VERSION -> ImGui.text(mod.version);
-                                case ACTIONS -> {
-                                    ImGui.spacing();
-                                    final int buttonWidth = 0, buttonHeight = 28;
-                                    if (ImGui.button("Copy Data" + uniqueId + mod.modid, buttonWidth, buttonHeight)) {
-                                        this.mc.keyboard.setClipboard(mod.modid + " (" + mod.version + ")");
+                    final MCPingResponse.ModInfo info = this.mcPingResponse.modinfo;
+                    if (info != null) {
+                        ImGui.tableHeadersRow();
+                        for (final MCPingResponse.ModInfo.Mod mod : info.modList) {
+                            ImGui.tableNextRow();
+                            for (int i = 0; i < maxModTableColumns; i++) {
+                                ImGui.tableSetColumnIndex(i);
+                                final ModsTableColumn modsTableColumn = modsTableColumns[i];
+                                switch (modsTableColumn) {
+                                    case MOD_ID -> ImGui.text(mod.modid);
+                                    case MOD_VERSION -> ImGui.text(mod.version);
+                                    case ACTIONS -> {
+                                        ImGui.spacing();
+                                        final int buttonWidth = 0, buttonHeight = 28;
+                                        if (ImGui.button("Copy Data" + uniqueId + mod.modid, buttonWidth, buttonHeight)) {
+                                            this.mc.keyboard.setClipboard(mod.modid + " (" + mod.version + ")");
+                                        }
+                                        ImGui.spacing();
                                     }
-                                    ImGui.spacing();
-                                }
-                                default -> {
+                                    default -> {
+                                    }
                                 }
                             }
                         }

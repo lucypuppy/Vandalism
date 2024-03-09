@@ -73,7 +73,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     private TickBaseModule tickBaseModule;
     private FullBrightModule fullBrightModule;
     private VehicleControlModule vehicleControlModule;
-    private CreativePackagerModule creativePackagerModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
         this.configManager = configManager;
@@ -106,7 +105,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.killAuraModule = new KillAuraModule(),
                 this.tickBaseModule = new TickBaseModule(this.killAuraModule),
                 this.vehicleControlModule = new VehicleControlModule(),
-                this.creativePackagerModule = new CreativePackagerModule(),
                 new FakeLagModule(this.killAuraModule),
                 new CraftCarryModule(),
                 new BackTrackModule(),
@@ -232,10 +230,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
     public VehicleControlModule getVehicleControlModule() {
         return vehicleControlModule;
-    }
-
-    public CreativePackagerModule getCreativePackagerModule() {
-        return creativePackagerModule;
     }
 
 }
