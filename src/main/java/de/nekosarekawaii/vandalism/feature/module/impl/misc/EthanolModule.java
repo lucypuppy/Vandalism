@@ -93,14 +93,12 @@ public class EthanolModule extends AbstractModule implements IncomingPacketListe
                     event.connection.send(new CustomPayloadC2SPacket(new InitCustomPayload()));
                 }
 
-                if (this.detected) {
-                    if (Objects.equals(id, EthanolModule.ETHANOL_MESSAGE)) {
-                        ChatUtil.chatMessage(new String(PacketUtil.readBuffer(payload.buf()), StandardCharsets.UTF_8));
-                    }
+                if (Objects.equals(id, EthanolModule.ETHANOL_MESSAGE)) {
+                    ChatUtil.chatMessage(new String(PacketUtil.readBuffer(payload.buf()), StandardCharsets.UTF_8));
+                }
 
-                    if (Objects.equals(id, EthanolModule.ETHANOL_VANISH)) {
-                        this.vanished = payload.buf().readByte() == 1;
-                    }
+                if (Objects.equals(id, EthanolModule.ETHANOL_VANISH)) {
+                    this.vanished = payload.buf().readByte() == 1;
                 }
             }
         }
@@ -108,6 +106,9 @@ public class EthanolModule extends AbstractModule implements IncomingPacketListe
 
     @Override
     public void onOutgoingPacket(final OutgoingPacketEvent event) {
+        if (!this.detected)
+            return;
+
         if (event.packet instanceof ChatMessageC2SPacket packet) {
             final String message = packet.chatMessage();
             final String prefix = this.commandPrefix.getValue();
