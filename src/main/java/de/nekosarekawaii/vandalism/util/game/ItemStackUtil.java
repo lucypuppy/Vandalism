@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.util.game;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.creativetab.CreativeTabManager;
 import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
@@ -141,7 +142,7 @@ public class ItemStackUtil implements MinecraftWrapper {
         return false;
     }
 
-    public enum PackageType {
+    public enum PackageType implements IName {
         CHEST,
         TRAPPED_CHEST,
         BARREL,
@@ -158,7 +159,16 @@ public class ItemStackUtil implements MinecraftWrapper {
         BREWING_STAND,
         JUKEBOX,
         LECTERN,
-        BUNDLE
+        BUNDLE;
+
+        public Identifier getId() {
+            return Identifier.of("minecraft", name().toLowerCase());
+        }
+
+        @Override
+        public String getName() {
+            return Text.translatable(Registries.ITEM.get(getId()).getTranslationKey()).getString();
+        }
     }
 
     public static ItemStack packageStack(final ItemStack stack, final PackageType type) {
@@ -168,8 +178,7 @@ public class ItemStackUtil implements MinecraftWrapper {
                     DISPENSER, DROPPER, HOPPER,
                     CAMPFIRE, SOUL_CAMPFIRE,
                     CHISELED_BOOKSHELF, BREWING_STAND -> {
-                final Identifier identifier = Identifier.of("minecraft", type.name().toLowerCase());
-                final ItemStack item = new ItemStack(Registries.ITEM.get(identifier));
+                final ItemStack item = new ItemStack(Registries.ITEM.get(type.getId()));
                 final NbtCompound base = new NbtCompound();
                 final NbtCompound blockEntityTag = new NbtCompound();
                 final NbtList items = new NbtList();
