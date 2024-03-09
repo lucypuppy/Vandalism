@@ -177,7 +177,7 @@ public class ItemStackUtil implements MinecraftWrapper {
                 child.putByte("Slot", (byte) 0);
                 child.putString("id", getId(stack).toString());
                 child.putByte("Count", (byte) stack.getCount());
-                child.put("tag", stack.getOrCreateNbt());
+                if (stack.getNbt() != null ) child.put("tag", stack.getNbt());
                 items.add(child);
                 blockEntityTag.put("Items", items);
                 base.put("BlockEntityTag", blockEntityTag);
@@ -191,7 +191,7 @@ public class ItemStackUtil implements MinecraftWrapper {
                 final NbtCompound child = new NbtCompound();
                 child.putString("id", getId(stack).toString());
                 child.putByte("Count", (byte) stack.getCount());
-                child.put("tag", stack.getOrCreateNbt());
+                if (stack.getNbt() != null ) child.put("tag", stack.getNbt());
                 blockEntityTag.put("RecordItem", child);
                 base.put("BlockEntityTag", blockEntityTag);
                 item.setNbt(base);
@@ -204,7 +204,7 @@ public class ItemStackUtil implements MinecraftWrapper {
                 final NbtCompound child = new NbtCompound();
                 child.putString("id", getId(stack).toString());
                 child.putByte("Count", (byte) stack.getCount());
-                child.put("tag", stack.getOrCreateNbt());
+                if (stack.getNbt() != null ) child.put("tag", stack.getNbt());
                 blockEntityTag.put("Book", child);
                 base.put("BlockEntityTag", blockEntityTag);
                 item.setNbt(base);
@@ -217,7 +217,7 @@ public class ItemStackUtil implements MinecraftWrapper {
                 final NbtCompound child = new NbtCompound();
                 child.putString("id", getId(stack).toString());
                 child.putByte("Count", (byte) stack.getCount());
-                child.put("tag", stack.getOrCreateNbt());
+                if (stack.getNbt() != null ) child.put("tag", stack.getNbt());
                 items.add(child);
                 base.put("Items", items);
                 item.setNbt(base);
