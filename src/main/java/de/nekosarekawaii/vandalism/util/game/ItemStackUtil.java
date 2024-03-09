@@ -143,6 +143,7 @@ public class ItemStackUtil implements MinecraftWrapper {
     }
 
     public enum PackageType implements IName {
+
         CHEST,
         TRAPPED_CHEST,
         BARREL,
@@ -161,14 +162,19 @@ public class ItemStackUtil implements MinecraftWrapper {
         LECTERN,
         BUNDLE;
 
-        public Identifier getId() {
-            return Identifier.of("minecraft", name().toLowerCase());
+        public final Identifier id;
+        private final String name;
+
+        PackageType() {
+            this.id = new Identifier(this.name().toLowerCase());
+            this.name = Text.translatable(Registries.ITEM.get(this.id).getTranslationKey()).getString();
         }
 
         @Override
         public String getName() {
-            return Text.translatable(Registries.ITEM.get(getId()).getTranslationKey()).getString();
+            return this.name;
         }
+
     }
 
     public static ItemStack packageStack(final ItemStack stack, final PackageType type) {
@@ -178,7 +184,7 @@ public class ItemStackUtil implements MinecraftWrapper {
                     DISPENSER, DROPPER, HOPPER,
                     CAMPFIRE, SOUL_CAMPFIRE,
                     CHISELED_BOOKSHELF, BREWING_STAND -> {
-                final ItemStack item = new ItemStack(Registries.ITEM.get(type.getId()));
+                final ItemStack item = new ItemStack(Registries.ITEM.get(type.id));
                 final NbtCompound base = new NbtCompound();
                 final NbtCompound blockEntityTag = new NbtCompound();
                 final NbtList items = new NbtList();

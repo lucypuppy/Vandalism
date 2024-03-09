@@ -21,14 +21,12 @@ package de.nekosarekawaii.vandalism.feature.creativetab;
 import de.florianmichael.dietrichevents2.Priorities;
 import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.clientsettings.impl.NetworkingSettings;
 import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.feature.creativetab.impl.*;
-import de.nekosarekawaii.vandalism.feature.module.impl.misc.CreativePackagerModule;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtHelper;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 import net.minecraft.text.Text;
 
@@ -42,7 +40,7 @@ public class CreativeTabManager extends Storage<AbstractCreativeTab> implements 
     public CreativeTabManager() {
         this.setAddConsumer(AbstractCreativeTab::publish);
     }
-    
+
     @Override
     public void init() {
         this.add(
@@ -60,34 +58,28 @@ public class CreativeTabManager extends Storage<AbstractCreativeTab> implements 
         if (event.packet instanceof final CreativeInventoryActionC2SPacket creativeInventoryActionC2SPacket) {
             final ItemStack stack = creativeInventoryActionC2SPacket.stack.copy();
             final NbtCompound nbt = stack.getNbt();
-
             if (nbt == null) return;
-            boolean isClientSide = nbt.contains(CLIENTSIDE_NAME) || nbt.contains(CLIENTSIDE_GLINT);
-
+            final boolean isClientSide = nbt.contains(CLIENTSIDE_NAME) || nbt.contains(CLIENTSIDE_GLINT);
             if (isClientSide) {
                 if (nbt.contains(CLIENTSIDE_NAME)) {
                     final NbtCompound display = stack.getSubNbt(ItemStack.DISPLAY_KEY);
                     if (display != null) {
                         display.remove(ItemStack.NAME_KEY);
                         display.remove(ItemStack.LORE_KEY);
-                        if (display.isEmpty()) {
-                            stack.removeSubNbt(ItemStack.DISPLAY_KEY);
-                        }
+                        if (display.isEmpty()) stack.removeSubNbt(ItemStack.DISPLAY_KEY);
                     }
                     final Text name = Text.Serialization.fromJson(nbt.getString(CLIENTSIDE_NAME));
-                    if (!stack.getName().equals(name)) {
-                        stack.setCustomName(name);
-                    }
+                    if (!stack.getName().equals(name)) stack.setCustomName(name);
+                    nbt.remove(CLIENTSIDE_NAME);
                 }
-                nbt.remove(CLIENTSIDE_NAME);
-                nbt.remove(CLIENTSIDE_GLINT);
-
-                final CreativePackagerModule mod = Vandalism.getInstance().getModuleManager().getCreativePackagerModule();
-                if (mod.isActive()) {
-                    creativeInventoryActionC2SPacket.stack = ItemStackUtil.packageStack(stack, mod.type.getValue());
+                if (nbt.contains(CLIENTSIDE_GLINT)) nbt.remove(CLIENTSIDE_GLINT);
+                final NetworkingSettings networkingSettings = Vandalism.getInstance().getClientSettings().getNetworkingSettings();
+                if (networkingSettings.packageCreativeItems.getValue()) {
+                    creativeInventoryActionC2SPacket.stack = ItemStackUtil.packageStack(stack, networkingSettings.creativeItemsPackageType.getValue());
                 }
+                else creativeInventoryActionC2SPacket.stack = stack;
             }
         }
     }
-    
+
 }
