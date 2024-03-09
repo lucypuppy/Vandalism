@@ -28,12 +28,14 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -116,25 +118,8 @@ public class ItemStackUtil implements MinecraftWrapper {
         return stack;
     }
 
-    public static ItemStack withClientSide(final ItemStack stack, final Text name, @Nullable final Text... description) {
-        return withClientSide(stack, name, false, description);
-    }
-
-    public static ItemStack withClientSide(final ItemStack stack, final Text name, final boolean glint, @Nullable final Text... description) {
-        final NbtCompound base = stack.getOrCreateNbt();
-        base.putString(CreativeTabManager.CLIENTSIDE_NAME, Text.Serialization.toJsonString(stack.getName()));
-        if (glint) base.put(CreativeTabManager.CLIENTSIDE_GLINT, new NbtCompound());
-        stack.setCustomName(name);
-        if (description != null) {
-            final NbtList lore = new NbtList();
-            for (final Text text : description) {
-                if (text != null) {
-                    lore.add(NbtString.of(Text.Serialization.toJsonString(text)));
-                }
-            }
-            stack.getOrCreateSubNbt(ItemStack.DISPLAY_KEY).put(ItemStack.LORE_KEY, lore);
-        }
-        return stack;
+    public static Identifier getId(final ItemStack stack) {
+        return Registries.ITEM.getId(stack.getItem());
     }
 
     public static void giveItemStack(final ItemStack itemStack) {
@@ -154,6 +139,112 @@ public class ItemStackUtil implements MinecraftWrapper {
             ChatUtil.errorChatMessage("Failed to give item cause of: " + throwable);
         }
         return false;
+    }
+
+    public enum PackageType {
+        CHEST,
+        TRAPPED_CHEST,
+        BARREL,
+        SHULKER_BOX,
+        FURNACE,
+        BLAST_FURNACE,
+        SMOKER,
+        DISPENSER,
+        DROPPER,
+        HOPPER,
+        CAMPFIRE,
+        SOUL_CAMPFIRE,
+        CHISELED_BOOKSHELF,
+        BREWING_STAND,
+        JUKEBOX,
+        LECTERN,
+        BUNDLE
+    }
+
+    public static ItemStack packageStack(final ItemStack stack, final PackageType type) {
+        return switch (type) {
+            case CHEST, TRAPPED_CHEST, BARREL, SHULKER_BOX,
+                    FURNACE, BLAST_FURNACE, SMOKER,
+                    DISPENSER, DROPPER, HOPPER,
+                    CAMPFIRE, SOUL_CAMPFIRE,
+                    CHISELED_BOOKSHELF, BREWING_STAND -> {
+                final Identifier identifier = Identifier.of("minecraft", type.name().toLowerCase());
+                final ItemStack item = new ItemStack(Registries.ITEM.get(identifier));
+                final NbtCompound base = new NbtCompound();
+                final NbtCompound blockEntityTag = new NbtCompound();
+                final NbtList items = new NbtList();
+                final NbtCompound child = new NbtCompound();
+                child.putByte("Slot", (byte) 0);
+                child.putString("id", getId(stack).toString());
+                child.putByte("Count", (byte) stack.getCount());
+                child.put("tag", stack.getOrCreateNbt());
+                items.add(child);
+                blockEntityTag.put("Items", items);
+                base.put("BlockEntityTag", blockEntityTag);
+                item.setNbt(base);
+                yield item;
+            }
+            case JUKEBOX -> {
+                final ItemStack item = new ItemStack(Items.JUKEBOX);
+                final NbtCompound base = new NbtCompound();
+                final NbtCompound blockEntityTag = new NbtCompound();
+                final NbtCompound child = new NbtCompound();
+                child.putString("id", getId(stack).toString());
+                child.putByte("Count", (byte) stack.getCount());
+                child.put("tag", stack.getOrCreateNbt());
+                blockEntityTag.put("RecordItem", child);
+                base.put("BlockEntityTag", blockEntityTag);
+                item.setNbt(base);
+                yield item;
+            }
+            case LECTERN -> {
+                final ItemStack item = new ItemStack(Items.LECTERN);
+                final NbtCompound base = new NbtCompound();
+                final NbtCompound blockEntityTag = new NbtCompound();
+                final NbtCompound child = new NbtCompound();
+                child.putString("id", getId(stack).toString());
+                child.putByte("Count", (byte) stack.getCount());
+                child.put("tag", stack.getOrCreateNbt());
+                blockEntityTag.put("Book", child);
+                base.put("BlockEntityTag", blockEntityTag);
+                item.setNbt(base);
+                yield item;
+            }
+            case BUNDLE -> {
+                final ItemStack item = new ItemStack(Items.BUNDLE);
+                final NbtCompound base = new NbtCompound();
+                final NbtList items = new NbtList();
+                final NbtCompound child = new NbtCompound();
+                child.putString("id", getId(stack).toString());
+                child.putByte("Count", (byte) stack.getCount());
+                child.put("tag", stack.getOrCreateNbt());
+                items.add(child);
+                base.put("Items", items);
+                item.setNbt(base);
+                yield item;
+            }
+        };
+    }
+
+    public static ItemStack withClientSide(final ItemStack stack, final Text name, final boolean glint, @Nullable final Text... description) {
+        final NbtCompound base = stack.getOrCreateNbt();
+        base.putString(CreativeTabManager.CLIENTSIDE_NAME, Text.Serialization.toJsonString(stack.getName()));
+        if (glint) base.put(CreativeTabManager.CLIENTSIDE_GLINT, new NbtCompound());
+        stack.setCustomName(name);
+        if (description != null) {
+            final NbtList lore = new NbtList();
+            for (final Text text : description) {
+                if (text != null) {
+                    lore.add(NbtString.of(Text.Serialization.toJsonString(text)));
+                }
+            }
+            stack.getOrCreateSubNbt(ItemStack.DISPLAY_KEY).put(ItemStack.LORE_KEY, lore);
+        }
+        return stack;
+    }
+
+    public static ItemStack withClientSide(final ItemStack stack, final Text name, @Nullable final Text... description) {
+        return withClientSide(stack, name, false, description);
     }
 
 }
