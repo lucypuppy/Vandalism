@@ -148,8 +148,7 @@ public class ServersTab implements MinecraftWrapper {
                         if (ImGui.selectable("Any", this.protocol == ServersRequest.ANY_PROTOCOL)) {
                             this.protocol = protocol;
                         }
-                    }
-                    else {
+                    } else {
                         final String protocolVersionName = ProtocolVersion.getProtocol(protocol).getName();
                         if (ImGui.selectable(protocolVersionName, protocolVersionName.equals(ProtocolVersion.getProtocol(this.protocol).getName()))) {
                             this.protocol = protocol;
@@ -289,8 +288,7 @@ public class ServersTab implements MinecraftWrapper {
                     ImGui.separator();
                     if (this.checkedServers >= this.lastMaxServers) {
                         this.checkedServers = -1;
-                    }
-                    else if (this.checkTimeout.hasReached(60000, true)) {
+                    } else if (this.checkTimeout.hasReached(60000, true)) {
                         this.checkedServers = -1;
                     }
                 }
@@ -389,6 +387,12 @@ public class ServersTab implements MinecraftWrapper {
                         }
                         if (ImGui.button("Copy Data" + serverEntryId + "copydata", buttonWidth, buttonHeight)) {
                             this.mc.keyboard.setClipboard(data);
+                        }
+                        final ProtocolVersion protocolVersion = ProtocolVersion.getProtocol(serverEntry.protocol);
+                        if (protocolVersion.isKnown()) {
+                            if (ImGui.button("Apply server version" + serverEntryId + "applyserverversion", buttonWidth, buttonHeight)) {
+                                ProtocolTranslator.setTargetVersion(protocolVersion);
+                            }
                         }
                         ImGui.endPopup();
                     }
