@@ -19,6 +19,8 @@
 package de.nekosarekawaii.vandalism.clientmenu.impl.widget;
 
 import com.google.gson.JsonSyntaxException;
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerDataUtil;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
@@ -186,6 +188,13 @@ public class ServerInfoWidget implements MinecraftWrapper {
                             }
                             this.mc.keyboard.setClipboard(serverInfoBuilder.toString());
                         }
+                        final ProtocolVersion protocolVersion = ProtocolVersion.getProtocol(this.mcPingResponse.version.protocol);
+                        if (protocolVersion.isKnown()) {
+                            if (ImGui.button("Apply server version" + uniqueId + "applyserverversion", buttonWidth, buttonHeight)) {
+                                ProtocolTranslator.setTargetVersion(protocolVersion);
+                            }
+                        }
+
                         if (this.mcPingResponse.players.sample.length > 0) {
                             if (ImGui.button("Player List: " + (this.showPlayerList ? "Deactivate" : "Activate") + uniqueId, buttonWidth, buttonHeight)) {
                                 this.showPlayerList = !this.showPlayerList;
