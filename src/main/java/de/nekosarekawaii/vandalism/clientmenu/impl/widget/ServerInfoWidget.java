@@ -129,6 +129,14 @@ public class ServerInfoWidget implements MinecraftWrapper {
                         if (ImGui.button("Connect" + uniqueId + "connect", buttonWidth, buttonHeight)) {
                             ServerConnectionUtil.connect(address);
                         }
+                        final ProtocolVersion protocolVersion = ProtocolVersion.getProtocol(this.mcPingResponse.version.protocol);
+                        if (protocolVersion.isKnown()) {
+                            if (ImGui.button("Connect with server version" + uniqueId + "connectwithserverversion", buttonWidth, buttonHeight)) {
+                                ProtocolTranslator.setTargetVersion(protocolVersion, true);
+                                ServerConnectionUtil.connect(address);
+                            }
+                        }
+
                         if (ImGui.button("Add to the Server List" + uniqueId + "addtoserverlist", buttonWidth, buttonHeight)) {
                             final net.minecraft.client.option.ServerList serverList = new net.minecraft.client.option.ServerList(MinecraftClient.getInstance());
                             serverList.loadFile();
