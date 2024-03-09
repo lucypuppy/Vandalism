@@ -53,7 +53,6 @@ import java.io.File;
  *      - Add protection for ip addresses
  *      - Add protection for account manager
  *  - Fix spotify menu control buttons
- *  - Use <a href="https://github.com/EvilCodeZ/JNI4J/tree/main">JNI4J</a> to improve the packet manager logging for fields
  *  - Rewrite EnhancedServerList
  *  - Fix offsets for the new "teleport" method in the fov fucker module
  *  - Fix module tabs display (no stacking) when the client starts the first time
