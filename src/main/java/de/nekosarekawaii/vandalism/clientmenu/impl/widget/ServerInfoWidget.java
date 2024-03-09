@@ -132,6 +132,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                         final ProtocolVersion protocolVersion = ProtocolVersion.getProtocol(this.mcPingResponse.version.protocol);
                         if (protocolVersion.isKnown()) {
                             if (ImGui.button("Connect with server version" + uniqueId + "connectwithserverversion", buttonWidth, buttonHeight)) {
+                                ProtocolTranslator.setTargetVersion(ProtocolTranslator.NATIVE_VERSION, false);
                                 ProtocolTranslator.setTargetVersion(protocolVersion, true);
                                 ServerConnectionUtil.connect(address);
                             }

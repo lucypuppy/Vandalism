@@ -375,6 +375,7 @@ public class ServersTab implements MinecraftWrapper {
                         final ProtocolVersion protocolVersion = ProtocolVersion.getProtocol(serverEntry.protocol);
                         if (protocolVersion.isKnown()) {
                             if (ImGui.button("Connect with server version" + serverEntryId + "connectwithserverversion", buttonWidth, buttonHeight)) {
+                                ProtocolTranslator.setTargetVersion(ProtocolTranslator.NATIVE_VERSION, false);
                                 ProtocolTranslator.setTargetVersion(protocolVersion, true);
                                 this.lastAddress = address;
                                 ServerConnectionUtil.connect(address);
