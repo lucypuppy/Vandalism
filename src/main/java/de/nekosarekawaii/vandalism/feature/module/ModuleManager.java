@@ -95,7 +95,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
             );
         }
         this.add(
-                new CraftCarryModule(),
                 this.modPacketBlockerModule = new ModPacketBlockerModule(),
                 this.exploitFixerModule = new ExploitFixerModule(),
                 this.trueSightModule = new TrueSightModule(),
@@ -109,6 +108,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.vehicleControlModule = new VehicleControlModule(),
                 this.creativePackagerModule = new CreativePackagerModule(),
                 new FakeLagModule(this.killAuraModule),
+                new CraftCarryModule(),
                 new BackTrackModule(),
                 new NoSlowModule(),
                 new PacketManagerModule(),
@@ -167,31 +167,31 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
     @Override
     public void onShutdownProcess() {
-        this.getList().stream().filter(m -> m.isActive() && m.isDeactivateOnShutdown()).forEach(AbstractModule::deactivate);
+        this.getList().stream().filter(module -> module.isActive() && module.isDeactivateOnShutdown()).forEach(AbstractModule::deactivate);
     }
 
     @Override
     public void onDisconnect(final ClientConnection clientConnection, final Text disconnectReason) {
         // There is a thing called pinging a server
         if (this.mc.getNetworkHandler() != null && Objects.equals(clientConnection, this.mc.getNetworkHandler().getConnection())) {
-            this.getList().stream().filter(m -> m.isActive() && m.isDeactivateOnQuit()).forEach(AbstractModule::deactivate);
+            this.getList().stream().filter(module -> module.isActive() && module.isDeactivateOnQuit()).forEach(AbstractModule::deactivate);
         }
     }
 
     @Override
     public void onPreWorldLoad() {
-        this.getList().stream().filter(m -> m.isActive() && m.isDeactivateOnWorldLoad()).forEach(AbstractModule::deactivate);
+        this.getList().stream().filter(module -> module.isActive() && module.isDeactivateOnWorldLoad()).forEach(AbstractModule::deactivate);
     }
 
     @Override
     public void onHealthUpdate(final HealthUpdateEvent event) {
         if (event.health <= 0.0F) {
-            this.getList().stream().filter(m -> m.isActive() && m.isDeactivateOnDeath()).forEach(AbstractModule::deactivate);
+            this.getList().stream().filter(module -> module.isActive() && module.isDeactivateOnDeath()).forEach(AbstractModule::deactivate);
         }
     }
 
     public List<AbstractModule> getByCategory(final Feature.Category category) {
-        return this.getList().stream().filter(abstractModule -> abstractModule.getCategory() == category).toList();
+        return this.getList().stream().filter(module -> module.getCategory() == category).toList();
     }
 
     public ModPacketBlockerModule getModPacketBlockerModule() {

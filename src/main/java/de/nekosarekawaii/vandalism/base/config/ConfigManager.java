@@ -24,15 +24,11 @@ public class ConfigManager extends Storage<AbstractConfig<?>> {
 
     @Override
     public void init() {
-        for (final AbstractConfig<?> config : getList()) {
-            config.load();
-        }
+        this.getList().forEach(AbstractConfig::load);
     }
 
     public void save() {
-        for (final AbstractConfig<?> config : getList()) {
-            config.save();
-        }
+        this.getList().forEach(AbstractConfig::save);
     }
 
 }
