@@ -23,8 +23,12 @@ import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.feature.creativetab.impl.*;
+import de.nekosarekawaii.vandalism.feature.module.impl.misc.CreativePackagerModule;
+import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 import net.minecraft.text.Text;
 
@@ -54,26 +58,33 @@ public class CreativeTabManager extends Storage<AbstractCreativeTab> implements 
     @Override
     public void onOutgoingPacket(final OutgoingPacketEvent event) {
         if (event.packet instanceof final CreativeInventoryActionC2SPacket creativeInventoryActionC2SPacket) {
-            final ItemStack itemStack = creativeInventoryActionC2SPacket.getStack();
-            final NbtCompound nbt = itemStack.getNbt();
-            if (nbt != null) {
+            final ItemStack stack = creativeInventoryActionC2SPacket.stack.copy();
+            final NbtCompound nbt = stack.getNbt();
+
+            if (nbt == null) return;
+            boolean isClientSide = nbt.contains(CLIENTSIDE_NAME) || nbt.contains(CLIENTSIDE_GLINT);
+
+            if(isClientSide) {
                 if (nbt.contains(CLIENTSIDE_NAME)) {
-                    final NbtCompound display = itemStack.getSubNbt(ItemStack.DISPLAY_KEY);
+                    final NbtCompound display = stack.getSubNbt(ItemStack.DISPLAY_KEY);
                     if (display != null) {
                         display.remove(ItemStack.NAME_KEY);
                         display.remove(ItemStack.LORE_KEY);
                         if (display.isEmpty()) {
-                            itemStack.removeSubNbt(ItemStack.DISPLAY_KEY);
+                            stack.removeSubNbt(ItemStack.DISPLAY_KEY);
                         }
                     }
                     final Text name = Text.Serialization.fromJson(nbt.getString(CLIENTSIDE_NAME));
-                    if (!itemStack.getName().equals(name)) {
-                        itemStack.setCustomName(name);
+                    if (!stack.getName().equals(name)) {
+                        stack.setCustomName(name);
                     }
-                    nbt.remove(CLIENTSIDE_NAME);
                 }
-                if (nbt.contains(CLIENTSIDE_GLINT)) {
-                    nbt.remove(CLIENTSIDE_GLINT);
+                nbt.remove(CLIENTSIDE_NAME);
+                nbt.remove(CLIENTSIDE_GLINT);
+
+                final CreativePackagerModule mod = Vandalism.getInstance().getModuleManager().getCreativePackagerModule();
+                if(mod.isActive()) {
+                    creativeInventoryActionC2SPacket.stack = ItemStackUtil.packageStack(stack, mod.type.getValue());
                 }
             }
         }
