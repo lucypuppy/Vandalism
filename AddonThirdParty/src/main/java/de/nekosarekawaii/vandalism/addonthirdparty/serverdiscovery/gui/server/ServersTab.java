@@ -372,6 +372,14 @@ public class ServersTab implements MinecraftWrapper {
                     }
                     if (ImGui.beginPopupContextItem(serverEntryId + "popup", ImGuiPopupFlags.MouseButtonRight)) {
                         final int buttonWidth = 150, buttonHeight = 28;
+                        final ProtocolVersion protocolVersion = ProtocolVersion.getProtocol(serverEntry.protocol);
+                        if (protocolVersion.isKnown()) {
+                            if (ImGui.button("Connect with server version" + serverEntryId + "connectwithserverversion", buttonWidth, buttonHeight)) {
+                                ProtocolTranslator.setTargetVersion(protocolVersion, true);
+                                this.lastAddress = address;
+                                ServerConnectionUtil.connect(address);
+                            }
+                        }
                         if (ImGui.button("Add to the Server List" + serverEntryId + "addtoserverlist", buttonWidth, buttonHeight)) {
                             final ServerList serverList = new ServerList(MinecraftClient.getInstance());
                             serverList.loadFile();
@@ -387,12 +395,6 @@ public class ServersTab implements MinecraftWrapper {
                         }
                         if (ImGui.button("Copy Data" + serverEntryId + "copydata", buttonWidth, buttonHeight)) {
                             this.mc.keyboard.setClipboard(data);
-                        }
-                        final ProtocolVersion protocolVersion = ProtocolVersion.getProtocol(serverEntry.protocol);
-                        if (protocolVersion.isKnown()) {
-                            if (ImGui.button("Apply server version" + serverEntryId + "applyserverversion", buttonWidth, buttonHeight)) {
-                                ProtocolTranslator.setTargetVersion(protocolVersion);
-                            }
                         }
                         ImGui.endPopup();
                     }
