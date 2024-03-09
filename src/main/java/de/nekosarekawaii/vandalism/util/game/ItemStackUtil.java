@@ -131,7 +131,7 @@ public class ItemStackUtil implements MinecraftWrapper {
         try {
             if (mc.player == null || mc.getNetworkHandler() == null) throw NOT_IN_GAME.create();
             if (!mc.player.getAbilities().creativeMode) throw NOT_IN_CREATIVE_MODE.create();
-            mc.getNetworkHandler().sendPacket(new CreativeInventoryActionC2SPacket(mc.player.getInventory().selectedSlot + 36, withClientSide(itemStack, itemStack.getName())));
+            mc.getNetworkHandler().sendPacket(new CreativeInventoryActionC2SPacket(mc.player.getInventory().selectedSlot + 36, itemStack));
             if (receiveMessage) {
                 ChatUtil.infoChatMessage("You should have received '" + itemStack.getName().getString() + "' item.");
             }
