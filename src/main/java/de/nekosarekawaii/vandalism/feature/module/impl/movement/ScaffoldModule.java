@@ -24,7 +24,6 @@ import de.nekosarekawaii.vandalism.event.normal.player.RotationListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.hit.BlockHitResult;
@@ -69,7 +68,6 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
         final BlockHitResult raycastBlocks = WorldUtil.raytraceBlocks(this.rotation, 5.0);
         if (raycastBlocks.getSide() == this.direction) {
             mc.doItemUse();
-            ChatUtil.infoChatMessage("Place");
         }
     }
 
