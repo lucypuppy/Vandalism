@@ -64,7 +64,7 @@ public class CreativeTabManager extends Storage<AbstractCreativeTab> implements 
             if (nbt == null) return;
             boolean isClientSide = nbt.contains(CLIENTSIDE_NAME) || nbt.contains(CLIENTSIDE_GLINT);
 
-            if(isClientSide) {
+            if (isClientSide) {
                 if (nbt.contains(CLIENTSIDE_NAME)) {
                     final NbtCompound display = stack.getSubNbt(ItemStack.DISPLAY_KEY);
                     if (display != null) {
@@ -83,7 +83,7 @@ public class CreativeTabManager extends Storage<AbstractCreativeTab> implements 
                 nbt.remove(CLIENTSIDE_GLINT);
 
                 final CreativePackagerModule mod = Vandalism.getInstance().getModuleManager().getCreativePackagerModule();
-                if(mod.isActive()) {
+                if (mod.isActive()) {
                     creativeInventoryActionC2SPacket.stack = ItemStackUtil.packageStack(stack, mod.type.getValue());
                 }
             }

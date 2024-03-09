@@ -235,11 +235,11 @@ public class ItemStackUtil implements MinecraftWrapper {
         };
     }
 
-    public static ItemStack withClientSide(final ItemStack stack, final Text name, final boolean glint, @Nullable final Text... description) {
+    public static ItemStack withClientSide(final ItemStack stack, @Nullable final Text name, final boolean glint, @Nullable final Text... description) {
         final NbtCompound base = stack.getOrCreateNbt();
         base.putString(CreativeTabManager.CLIENTSIDE_NAME, Text.Serialization.toJsonString(stack.getName()));
         if (glint) base.put(CreativeTabManager.CLIENTSIDE_GLINT, new NbtCompound());
-        stack.setCustomName(name);
+        if (name != null) stack.setCustomName(name);
         if (description != null) {
             final NbtList lore = new NbtList();
             for (final Text text : description) {
@@ -254,6 +254,10 @@ public class ItemStackUtil implements MinecraftWrapper {
 
     public static ItemStack withClientSide(final ItemStack stack, final Text name, @Nullable final Text... description) {
         return withClientSide(stack, name, false, description);
+    }
+
+    public static ItemStack withClientSide(final ItemStack stack) {
+        return withClientSide(stack, null, false);
     }
 
 }
