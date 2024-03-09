@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.util.game;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.ClientConnection;
@@ -70,6 +71,12 @@ public class PacketUtil {
                 });
             }
         }
+    }
+
+    public static byte[] readBuffer(final ByteBuf buf) {
+        final byte[] bytes = new byte[buf.readableBytes()];
+        buf.readBytes(bytes);
+        return bytes;
     }
 
 }
