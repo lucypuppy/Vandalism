@@ -30,6 +30,7 @@ import imgui.flag.ImGuiTableFlags;
 import imgui.flag.ImGuiWindowFlags;
 import net.lenni0451.mcping.responses.MCPingResponse;
 import net.lenni0451.mcping.responses.QueryPingResponse;
+import net.lenni0451.reflect.stream.RStream;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.text.MutableText;
@@ -132,9 +133,9 @@ public class ServerInfoWidget implements MinecraftWrapper {
                         final ProtocolVersion protocolVersion = ProtocolVersion.getProtocol(this.mcPingResponse.version.protocol);
                         if (protocolVersion.isKnown()) {
                             if (ImGui.button("Connect with server version" + uniqueId + "connectwithserverversion", buttonWidth, buttonHeight)) {
+                                /* Autistic fix for ingame with revert on disconnect */
+                                RStream.of(ProtocolTranslator.class).fields().by("previousVersion").set(null);
                                 ProtocolTranslator.setTargetVersion(protocolVersion, true);
-                                ProtocolTranslator.setTargetVersion(ProtocolTranslator.NATIVE_VERSION, true);
-                                ProtocolTranslator.setTargetVersion(protocolVersion, false);
                                 ServerConnectionUtil.connect(address);
                             }
                         }
