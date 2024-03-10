@@ -84,6 +84,7 @@ import java.io.File;
  *  - Add more stuff to fake lag (Ideas off clumsy)
  *  - Keksbye, Simon, FooFieOwO this is fixed find a new way for to bypasss a cubecraft disabler
  *  - Fix autoblock blocking without sword
+ *  - Add more blocks to BlockBreaker
  * <br><br>
  * TODO: simon <br>
  *  - Add a better Autoblock to Killaura with FooFieOwO
