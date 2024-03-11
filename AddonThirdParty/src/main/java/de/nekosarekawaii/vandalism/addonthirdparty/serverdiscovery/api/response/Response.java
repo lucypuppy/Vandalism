@@ -18,4 +18,6 @@
 
 package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response;
 
-public abstract class Response {}
+public abstract class Response {
+    public String error;
+}
