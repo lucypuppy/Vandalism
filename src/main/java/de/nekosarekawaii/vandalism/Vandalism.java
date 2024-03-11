@@ -138,7 +138,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         }
         this.logger.info("");
         this.logger.info("Version: " + FabricBootstrap.MOD_VERSION);
-        this.logger.info("Made by " + FabricBootstrap.MOD_AUTHORS + " with <3");
+        this.logger.info("Made by " + FabricBootstrap.MOD_AUTHORS + " ;3");
         this.logger.info("");
         this.logger.info("Starting...");
         this.logger.info("");
