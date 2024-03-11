@@ -20,21 +20,14 @@ package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.Request;
-import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.impl.UserInfoRequest;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.Response;
-import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.impl.UserInfoResponse;
-import net.minecraft.util.Pair;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 public class ServerDiscoveryUtil {
 
-    private static final String API_KEY = "jRqj4pHMt5OFtGHpmxfdQIULrUqvggJ0";
+    private static final String API_KEY = "47ho0jn7nFaM10JnTTJA5Xnwhsfj19AR";
 
     public static Response request(final Request<?> request) {
-        Response response = request.send(API_KEY);
+        final Response response = request.send(API_KEY);
         if (response.error != null) {
             Vandalism.getInstance().getLogger().error("Error while sending request: " + response.error);
         }
