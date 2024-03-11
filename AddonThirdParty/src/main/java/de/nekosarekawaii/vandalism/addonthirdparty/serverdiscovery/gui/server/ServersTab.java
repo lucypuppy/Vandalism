@@ -77,6 +77,8 @@ public class ServersTab implements MinecraftWrapper {
     private final ImBoolean ignoreModded = new ImBoolean(false);
     private final ImBoolean onlyBungeeSpoofable = new ImBoolean(false);
 
+    private final ImInt onlineAfter = new ImInt(-1);
+
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private boolean waitingForResponse = false;
     private final ImString serversSearchField = new ImString();
@@ -84,7 +86,7 @@ public class ServersTab implements MinecraftWrapper {
 
     private String lastAddress = "";
 
-    private AtomicInteger checkedServers = new AtomicInteger(-1);
+    private final AtomicInteger checkedServers = new AtomicInteger(-1);
     private int lastMaxServers = -1;
 
     private final MSTimer checkTimeout = new MSTimer();
@@ -161,6 +163,7 @@ public class ServersTab implements MinecraftWrapper {
             }
             ImGui.checkbox("Ignore Modded", this.ignoreModded);
             ImGui.checkbox("Only Bungee Spoofable", this.onlyBungeeSpoofable);
+            ImGui.inputInt("Online After", this.onlineAfter, 1);
             if (!this.waitingForResponse) {
                 if (ImUtils.subButton("Get")) {
                     final ServersRequest serversRequest = new ServersRequest(
@@ -173,6 +176,7 @@ public class ServersTab implements MinecraftWrapper {
                             this.maxPlayers.get(),
                             this.minOnlinePlayers.get(),
                             this.maxOnlinePlayers.get(),
+                            this.onlineAfter.get(),
                             this.protocol,
                             this.ignoreModded.get(),
                             this.onlyBungeeSpoofable.get()
