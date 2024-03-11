@@ -21,8 +21,11 @@ package de.nekosarekawaii.vandalism.feature.module.impl.render;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.florianmichael.rclasses.io.debugging.ByteCountDataOutput;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
+import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.event.normal.render.TooltipDrawListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
 import de.nekosarekawaii.vandalism.util.render.InputType;
 import de.nekosarekawaii.vandalism.util.render.tooltip.impl.BannerTooltipComponent;
 import de.nekosarekawaii.vandalism.util.render.tooltip.impl.ContainerTooltipComponent;
@@ -59,7 +62,25 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public class BetterTooltipsModule extends AbstractModule implements TooltipDrawListener {
+public class BetterTooltipsModule extends AbstractModule implements TooltipDrawListener, KeyboardInputListener {
+
+    private ItemStack hoveredItemStack = ItemStack.EMPTY;
+
+    private final KeyBindValue giveItemKey = new KeyBindValue(
+            this,
+            "Give Item Key",
+            "Allows you to give yourself the item you are currently hovering over by pressing the key.",
+            GLFW.GLFW_KEY_G,
+            false
+    );
+
+    private final KeyBindValue openContainerKey = new KeyBindValue(
+            this,
+            "Open Container Key",
+            "Allows you to open a container item you are currently hovering over by pressing the key.",
+            GLFW.GLFW_KEY_LEFT_ALT,
+            false
+    );
 
     public BetterTooltipsModule() {
         super("Better Tooltips", "Improves item tooltips from the game.", Category.RENDER);
@@ -67,12 +88,32 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
 
     @Override
     public void onActivate() {
+        this.hoveredItemStack = ItemStack.EMPTY;
         Vandalism.getInstance().getEventSystem().subscribe(TooltipDrawEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(KeyboardInputEvent.ID, this);
     }
 
     @Override
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(TooltipDrawEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(KeyboardInputEvent.ID, this);
+        this.hoveredItemStack = ItemStack.EMPTY;
+    }
+
+    @Override
+    public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
+        if (action != GLFW.GLFW_PRESS || this.hoveredItemStack == null || this.hoveredItemStack.isEmpty() || !this.hoveredItemStack.hasNbt()) {
+            return;
+        }
+        if (this.giveItemKey.isPressed(key)) {
+            try {
+                ItemStackUtil.giveItemStack(this.hoveredItemStack);
+            }
+            catch (Exception e) {
+                Vandalism.getInstance().getLogger().error("Failed to give item to player.", e);
+            }
+        }
+        this.hoveredItemStack = ItemStack.EMPTY;
     }
 
     @Override
@@ -80,6 +121,15 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
         final List<TooltipData> tooltipData = event.tooltipData;
         final ItemStack itemStack = event.itemStack;
         final Item item = itemStack.getItem();
+
+        if (!itemStack.isEmpty() && itemStack.hasNbt()) {
+            tooltipData.add(new TextTooltipComponent(
+                    Text.literal(
+                            "(Press " + InputType.getKeyName(this.giveItemKey.getValue()) + " to give yourself this item)"
+                    ).setStyle(Style.EMPTY.withFormatting(Formatting.GRAY)).asOrderedText()
+            ));
+            this.hoveredItemStack = itemStack;
+        }
 
         if (item instanceof CompassItem && CompassItem.hasLodestone(itemStack)) {
             drawCompassTooltip(tooltipData, itemStack);
@@ -139,7 +189,7 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
         tooltipData.add(new TextTooltipComponent(dimension.asOrderedText()));
     }
 
-    private void drawBannerPatternTooltip(List<TooltipData> tooltipData, BannerPatternItem patternItem) {
+    private void drawBannerPatternTooltip(final List<TooltipData> tooltipData, final BannerPatternItem patternItem) {
         final Optional<RegistryEntryList.Named<BannerPattern>> optionalList = Registries.BANNER_PATTERN.getEntryList(patternItem.getPattern());
 
         if (optionalList.isPresent()) {
@@ -185,9 +235,13 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
             final DefaultedList<ItemStack> itemStacks = DefaultedList.ofSize(27, ItemStack.EMPTY);
             Inventories.readNbt(compoundTag, itemStacks);
             if (!itemStacks.isEmpty()) {
-                tooltipData.add(new TextTooltipComponent(Text.literal("(Press alt to open inventory)").setStyle(Style.EMPTY.withFormatting(Formatting.GRAY)).asOrderedText()));
+                tooltipData.add(new TextTooltipComponent(
+                        Text.literal(
+                                "(Press " + InputType.getKeyName(this.openContainerKey.getValue()) + " to open this inventory)"
+                        ).setStyle(Style.EMPTY.withFormatting(Formatting.GRAY)).asOrderedText()
+                ));
                 tooltipData.add(new ContainerTooltipComponent(itemStacks, color));
-                if (InputType.isPressed(GLFW.GLFW_KEY_LEFT_ALT)) {
+                if (this.openContainerKey.isPressed()) {
                     final Inventory inventory = new Inventory() {
 
                         @Override
@@ -205,7 +259,7 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
 
                         @Override
                         public ItemStack getStack(final int slot) {
-                            return itemStacks.get(slot);
+                            return itemStacks.get(slot).copy();
                         }
 
                         @Override
