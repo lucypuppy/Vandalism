@@ -23,6 +23,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.creativetab.CreativeTabManager;
+import de.nekosarekawaii.vandalism.util.MinecraftConstants;
 import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
@@ -129,10 +130,14 @@ public class ItemStackUtil implements MinecraftWrapper {
     }
 
     public static boolean giveItemStack(final ItemStack itemStack, final boolean receiveMessage) {
+        return giveItemStack(itemStack, receiveMessage, mc.player.getInventory().selectedSlot + MinecraftConstants.FIRST_SLOT_IN_HOTBAR);
+    }
+
+    public static boolean giveItemStack(final ItemStack itemStack, final boolean receiveMessage, final int selectedSlot) {
         try {
             if (mc.player == null || mc.getNetworkHandler() == null) throw NOT_IN_GAME.create();
             if (!mc.player.getAbilities().creativeMode) throw NOT_IN_CREATIVE_MODE.create();
-            mc.getNetworkHandler().sendPacket(new CreativeInventoryActionC2SPacket(mc.player.getInventory().selectedSlot + 36, itemStack));
+            mc.getNetworkHandler().sendPacket(new CreativeInventoryActionC2SPacket(selectedSlot, itemStack));
             if (receiveMessage) {
                 ChatUtil.infoChatMessage("You should have received '" + itemStack.getName().getString() + Formatting.GRAY + "' item.");
             }
