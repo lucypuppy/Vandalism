@@ -25,8 +25,8 @@ import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.InputType;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 import org.lwjgl.glfw.GLFW;
 
@@ -46,11 +46,11 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
     protected int x, y;
     protected Alignment alignmentX, alignmentY;
 
-    public HUDElement(final String name, final int defaultX, final int defaultY) {
-        this(name, defaultX, defaultY, true);
+    public HUDElement(final String name) {
+        this(name, true);
     }
 
-    public HUDElement(final String name, final int defaultX, final int defaultY, final boolean defaultActive) {
+    public HUDElement(final String name, final boolean defaultActive) {
         this.name = name;
         this.values = new ArrayList<>();
         this.active = new BooleanValue(
@@ -59,8 +59,8 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
                 "Whether this HUD element is active.",
                 defaultActive
         );
-        this.defaultX = defaultX;
-        this.defaultY = defaultY;
+        this.defaultX = 0;
+        this.defaultY = 0;
         this.x = defaultX;
         this.y = defaultY;
         this.width = 10;

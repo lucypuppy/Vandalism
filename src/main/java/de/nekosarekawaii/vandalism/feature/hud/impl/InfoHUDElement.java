@@ -203,7 +203,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
     private long lastUpdate = System.currentTimeMillis();
 
     public InfoHUDElement() {
-        super("Info", 0, 136);
+        super("Info");
         Vandalism.getInstance().getEventSystem().subscribe(IncomingPacketEvent.ID, this);
     }
 
