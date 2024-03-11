@@ -20,7 +20,6 @@ package de.nekosarekawaii.vandalism.feature.creativetab.impl;
 
 import de.florianmichael.rclasses.common.RandomUtils;
 import de.nekosarekawaii.vandalism.feature.creativetab.AbstractCreativeTab;
-import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -54,7 +53,7 @@ public class KickItemsCreativeTab extends AbstractCreativeTab {
         final NbtCompound base = new NbtCompound();
         base.putString("SkullOwner", " ");
         item.setNbt(base);
-        return ItemStackUtil.packageStack(item, ItemStackUtil.PackageType.FURNACE);
+        return item;
     }
 
     private static ItemStack createKickHeadV2() {
@@ -127,7 +126,7 @@ public class KickItemsCreativeTab extends AbstractCreativeTab {
         ));
         base.put("Recipes", recipes);
         item.setNbt(base);
-        return ItemStackUtil.packageStack(item, ItemStackUtil.PackageType.FURNACE);
+        return item;
     }
 
 }

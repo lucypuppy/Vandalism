@@ -303,7 +303,7 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
         attributeModifiers.add(attributeModifier);
         base.put("AttributeModifiers", attributeModifiers);
         item.setNbt(base);
-        return ItemStackUtil.packageStack(item, ItemStackUtil.PackageType.FURNACE);
+        return item;
     }
 
     private static ItemStack createCreativeItemControlItem(final boolean kick) {

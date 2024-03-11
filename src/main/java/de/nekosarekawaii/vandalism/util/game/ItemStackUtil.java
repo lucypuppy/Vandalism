@@ -38,6 +38,7 @@ import net.minecraft.nbt.NbtString;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
@@ -133,7 +134,7 @@ public class ItemStackUtil implements MinecraftWrapper {
             if (!mc.player.getAbilities().creativeMode) throw NOT_IN_CREATIVE_MODE.create();
             mc.getNetworkHandler().sendPacket(new CreativeInventoryActionC2SPacket(mc.player.getInventory().selectedSlot + 36, itemStack));
             if (receiveMessage) {
-                ChatUtil.infoChatMessage("You should have received '" + itemStack.getName().getString() + "' item.");
+                ChatUtil.infoChatMessage("You should have received '" + itemStack.getName().getString() + Formatting.GRAY + "' item.");
             }
             return true;
         } catch (Throwable throwable) {
