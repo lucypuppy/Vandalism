@@ -22,11 +22,12 @@ import de.florianmichael.rclasses.common.StringUtils;
 import de.florianmichael.rclasses.io.debugging.ByteCountDataOutput;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
-import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
+import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.event.normal.render.TooltipDrawListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
 import de.nekosarekawaii.vandalism.util.render.InputType;
+import de.nekosarekawaii.vandalism.util.render.InventoryNoop;
+import de.nekosarekawaii.vandalism.util.render.tooltip.CustomContainerScreen;
 import de.nekosarekawaii.vandalism.util.render.tooltip.impl.BannerTooltipComponent;
 import de.nekosarekawaii.vandalism.util.render.tooltip.impl.ContainerTooltipComponent;
 import de.nekosarekawaii.vandalism.util.render.tooltip.impl.MapTooltipComponent;
@@ -35,13 +36,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.entity.BannerPattern;
 import net.minecraft.block.entity.BannerPatterns;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.item.TooltipData;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.entry.RegistryEntryList;
@@ -59,20 +59,8 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
 
-public class BetterTooltipsModule extends AbstractModule implements TooltipDrawListener, KeyboardInputListener {
-
-    private ItemStack hoveredItemStack = ItemStack.EMPTY;
-
-    private final KeyBindValue giveItemKey = new KeyBindValue(
-            this,
-            "Give Item Key",
-            "Allows you to give yourself the item you are currently hovering over by pressing the key.",
-            GLFW.GLFW_KEY_G,
-            false
-    );
+public class BetterTooltipsModule extends AbstractModule implements TooltipDrawListener, OutgoingPacketListener {
 
     private final KeyBindValue openContainerKey = new KeyBindValue(
             this,
@@ -88,32 +76,24 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
 
     @Override
     public void onActivate() {
-        this.hoveredItemStack = ItemStack.EMPTY;
         Vandalism.getInstance().getEventSystem().subscribe(TooltipDrawEvent.ID, this);
-        Vandalism.getInstance().getEventSystem().subscribe(KeyboardInputEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(OutgoingPacketEvent.ID, this);
     }
 
     @Override
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(TooltipDrawEvent.ID, this);
-        Vandalism.getInstance().getEventSystem().unsubscribe(KeyboardInputEvent.ID, this);
-        this.hoveredItemStack = ItemStack.EMPTY;
+        Vandalism.getInstance().getEventSystem().unsubscribe(OutgoingPacketEvent.ID, this);
     }
 
     @Override
-    public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        if (action != GLFW.GLFW_PRESS || this.hoveredItemStack == null || this.hoveredItemStack.isEmpty() || !this.hoveredItemStack.hasNbt()) {
-            return;
-        }
-        if (this.giveItemKey.isPressed(key)) {
-            try {
-                ItemStackUtil.giveItemStack(this.hoveredItemStack);
-            }
-            catch (Exception e) {
-                Vandalism.getInstance().getLogger().error("Failed to give item to player.", e);
+    public void onOutgoingPacket(final OutgoingPacketEvent event) {
+        if (mc.currentScreen instanceof CustomContainerScreen) {
+            final Packet<?> packet = event.packet;
+            if (packet instanceof CloseHandledScreenC2SPacket) {
+                event.cancel();
             }
         }
-        this.hoveredItemStack = ItemStack.EMPTY;
     }
 
     @Override
@@ -121,16 +101,6 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
         final List<TooltipData> tooltipData = event.tooltipData;
         final ItemStack itemStack = event.itemStack;
         final Item item = itemStack.getItem();
-
-        if (!itemStack.isEmpty() && itemStack.hasNbt()) {
-            tooltipData.add(new TextTooltipComponent(
-                    Text.literal(
-                            "(Press " + InputType.getKeyName(this.giveItemKey.getValue()) + " to give yourself this item)"
-                    ).setStyle(Style.EMPTY.withFormatting(Formatting.GRAY)).asOrderedText()
-            ));
-            this.hoveredItemStack = itemStack;
-        }
-
         if (item instanceof CompassItem && CompassItem.hasLodestone(itemStack)) {
             drawCompassTooltip(tooltipData, itemStack);
         } else if (item instanceof BannerPatternItem patternItem) {
@@ -145,7 +115,6 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
         } else {
             drawContainerTooltip(tooltipData, itemStack, item);
         }
-
         drawBytesTooltip(tooltipData, itemStack);
     }
 
@@ -215,121 +184,46 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
 
     private void drawContainerTooltip(final List<TooltipData> tooltipData, final ItemStack itemStack, final Item item) {
         final NbtCompound compoundTag = itemStack.getSubNbt("BlockEntityTag");
-
-        if (compoundTag != null && compoundTag.contains("Items", 9) && item instanceof BlockItem blockItem) {
-            final Block block = blockItem.getBlock();
-            Color color = Color.WHITE;
-
-            if (block instanceof ShulkerBoxBlock shulkerBoxBlock) {
-                final DyeColor dye = shulkerBoxBlock.getColor();
-
-                if (dye != null) {
-                    final float[] dyeColor = dye.getColorComponents();
-
-                    if (dyeColor.length == 3) {
-                        color = new Color(dyeColor[0], dyeColor[1], dyeColor[2]);
+        if (compoundTag != null && item instanceof BlockItem blockItem) {
+            final boolean isGenericContainer = compoundTag.contains("Items", 9);
+            if (isGenericContainer || compoundTag.contains("RecordItem")) {
+                final Block block = blockItem.getBlock();
+                Color color = Color.WHITE;
+                if (block instanceof ShulkerBoxBlock shulkerBoxBlock) {
+                    final DyeColor dye = shulkerBoxBlock.getColor();
+                    if (dye != null) {
+                        final float[] dyeColor = dye.getColorComponents();
+                        if (dyeColor.length == 3) {
+                            color = new Color(dyeColor[0], dyeColor[1], dyeColor[2]);
+                        }
                     }
                 }
-            }
-
-            final DefaultedList<ItemStack> itemStacks = DefaultedList.ofSize(27, ItemStack.EMPTY);
-            Inventories.readNbt(compoundTag, itemStacks);
-            if (!itemStacks.isEmpty()) {
-                tooltipData.add(new TextTooltipComponent(
-                        Text.literal(
-                                "(Press " + InputType.getKeyName(this.openContainerKey.getValue()) + " to open this inventory)"
-                        ).setStyle(Style.EMPTY.withFormatting(Formatting.GRAY)).asOrderedText()
-                ));
-                tooltipData.add(new ContainerTooltipComponent(itemStacks, color));
-                if (this.openContainerKey.isPressed()) {
-                    final Inventory inventory = new Inventory() {
-
-                        @Override
-                        public void clear() {}
-
-                        @Override
-                        public int size() {
-                            return itemStacks.size();
-                        }
-
-                        @Override
-                        public boolean isEmpty() {
-                            return itemStacks.isEmpty();
-                        }
-
-                        @Override
-                        public ItemStack getStack(final int slot) {
-                            return itemStacks.get(slot).copy();
-                        }
-
-                        @Override
-                        public ItemStack removeStack(final int slot, final int amount) {
-                            return null;
-                        }
-
-                        @Override
-                        public ItemStack removeStack(final int slot) {
-                            return null;
-                        }
-
-                        @Override
-                        public void setStack(final int slot, final ItemStack stack) {}
-
-                        @Override
-                        public int getMaxCountPerStack() {
-                            return 128;
-                        }
-
-                        @Override
-                        public void markDirty() {}
-
-                        @Override
-                        public boolean canPlayerUse(final PlayerEntity player) {
-                            return false;
-                        }
-
-                        @Override
-                        public void onOpen(final PlayerEntity player) {}
-
-                        @Override
-                        public void onClose(final PlayerEntity player) {}
-
-                        @Override
-                        public boolean isValid(final int slot, final ItemStack stack) {
-                            return false;
-                        }
-
-                        @Override
-                        public boolean canTransferTo(final Inventory hopperInventory, final int slot, final ItemStack stack) {
-                            return false;
-                        }
-
-                        @Override
-                        public int count(final Item item) {
-                            return Inventory.super.count(item);
-                        }
-
-                        @Override
-                        public boolean containsAny(final Set<Item> items) {
-                            return Inventory.super.containsAny(items);
-                        }
-
-                        @Override
-                        public boolean containsAny(final Predicate<ItemStack> predicate) {
-                            return Inventory.super.containsAny(predicate);
-                        }
-
-                    };
-                    final GenericContainerScreenHandler genericContainerScreen = GenericContainerScreenHandler.createGeneric9x3(
-                            0,
-                            this.mc.player.getInventory(),
-                            inventory
-                    );
-                    this.mc.setScreen(new GenericContainerScreen(
-                            genericContainerScreen,
-                            this.mc.player.getInventory(),
-                            Text.of(itemStack.getName())
+                final DefaultedList<ItemStack> itemStacks = DefaultedList.ofSize(27, ItemStack.EMPTY);
+                if (isGenericContainer) {
+                    Inventories.readNbt(compoundTag, itemStacks);
+                }
+                else {
+                    itemStacks.set(0, ItemStack.fromNbt(compoundTag.getCompound("RecordItem")));
+                }
+                if (!itemStacks.isEmpty()) {
+                    tooltipData.add(new TextTooltipComponent(
+                            Text.literal(
+                                    "(Press " + InputType.getKeyName(this.openContainerKey.getValue()) + " to open this inventory)"
+                            ).setStyle(Style.EMPTY.withFormatting(Formatting.GRAY)).asOrderedText()
                     ));
+                    tooltipData.add(new ContainerTooltipComponent(itemStacks, color));
+                    if (this.openContainerKey.isPressed()) {
+                        final GenericContainerScreenHandler genericContainerScreen = GenericContainerScreenHandler.createGeneric9x3(
+                                0,
+                                this.mc.player.getInventory(),
+                                new InventoryNoop(itemStacks)
+                        );
+                        this.mc.setScreen(new CustomContainerScreen(
+                                genericContainerScreen,
+                                this.mc.player.getInventory(),
+                                Text.of(itemStack.getName())
+                        ));
+                    }
                 }
             }
         }
