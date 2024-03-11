@@ -47,7 +47,7 @@ public class WatermarkHUDElement extends HUDElement {
     private final ColorValue color;
 
     public WatermarkHUDElement(final File logoDirectory) {
-        super("Watermark", 0, 0);
+        super("Watermark");
 
         final File[] files = logoDirectory.listFiles();
         final List<LogoSelection> logoSelections = new ArrayList<>();
