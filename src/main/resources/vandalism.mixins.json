@@ -88,6 +88,7 @@
     "module.MixinClientPlayNetworkAddon",
     "module.MixinClientWorld",
     "module.MixinCommandDispatcher",
+    "module.MixinCraftRequestC2SPacket",
     "module.MixinEntityRenderer",
     "module.MixinFeatureRenderer",
     "module.MixinIllusionerEntityRenderer",

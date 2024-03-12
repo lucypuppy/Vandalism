@@ -73,6 +73,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     private TickBaseModule tickBaseModule;
     private FullBrightModule fullBrightModule;
     private VehicleControlModule vehicleControlModule;
+    private ConsoleSpammerModule consoleSpammerModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
         this.configManager = configManager;
@@ -104,8 +105,9 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.fullBrightModule = new FullBrightModule(),
                 this.killAuraModule = new KillAuraModule(),
                 this.tickBaseModule = new TickBaseModule(this.killAuraModule),
-                this.vehicleControlModule = new VehicleControlModule(),
                 new FakeLagModule(this.killAuraModule),
+                this.vehicleControlModule = new VehicleControlModule(),
+                this.consoleSpammerModule = new ConsoleSpammerModule(),
                 new CraftCarryModule(),
                 new BackTrackModule(),
                 new NoSlowModule(),
@@ -114,7 +116,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new BungeeCordSpooferModule(),
                 new GodModeModule(),
                 new BowSpammerModule(),
-                new ConsoleSpammerModule(),
                 new JoinLeaveModule(),
                 new AutoFishModule(),
                 new AutoRespawnModule(),
@@ -232,6 +233,10 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
     public VehicleControlModule getVehicleControlModule() {
         return vehicleControlModule;
+    }
+
+    public ConsoleSpammerModule getConsoleSpammerModule() {
+        return consoleSpammerModule;
     }
 
 }
