@@ -59,7 +59,6 @@ import java.io.File;
  *  - Use hashmap storage when it has been added to rclasses instead of a default storage because that would improve the performance
  *      - (Search for FriendManager#getList())
  *  - Add anti vanish via. the player list hud
- *  - Ensure MCConstants class file is used
  *  - Fix Game server pinger (ensure pings are on different threads)
  *  - Add Proxy manager
  *  - Exploit Fixer Module:
@@ -69,6 +68,8 @@ import java.io.File;
  *      - Fix blockTooManyTextGlyphs
  *      - Fix blockTooLongTexts
  *  - Add scroll state saving to the multiplayer screen
+ *  - Fix creative packager for older versions like 1.8
+ *  - Fix weird creative tab item remove bug when using the open container key and clicking inside the client side inventory
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Rewrite GCD fix to be accurate
