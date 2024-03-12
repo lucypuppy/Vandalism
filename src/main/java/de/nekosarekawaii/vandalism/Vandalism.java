@@ -44,7 +44,6 @@ import java.io.File;
 
 /**
  * TODO: NekosAreKawaii <br>
- *  - Add Version Range to the creative tabs
  *  - Change behavior of the echolocation module to use it as a chunk load detector
  *  - Protector Module:
  *      - Add protection for custom rank prefixes
@@ -68,6 +67,7 @@ import java.io.File;
  *      - Fix blockTooManyTextGlyphs
  *      - Fix blockTooLongTexts
  *  - Add scroll state saving to the multiplayer screen
+ *  - Add Version Range to the creative tabs
  *  - Fix creative packager for older versions like 1.8
  *  - Fix weird creative tab item remove bug when using the open container key and clicking inside the client side inventory
  * <br><br>
