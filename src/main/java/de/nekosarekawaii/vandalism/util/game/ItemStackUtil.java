@@ -28,10 +28,7 @@ import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.SpawnEggItem;
+import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtList;
@@ -179,6 +176,18 @@ public class ItemStackUtil implements MinecraftWrapper {
         @Override
         public String getName() {
             return this.name;
+        }
+
+        public static boolean isPackageItem(final Item item) {
+            if (item instanceof BlockItem blockItem) {
+                final Block block = blockItem.getBlock();
+                for (final PackageType value : values()) {
+                    if (block.equals(Registries.BLOCK.get(value.id))) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
     }

@@ -73,12 +73,15 @@ public class CreativeTabManager extends Storage<AbstractCreativeTab> implements 
                     nbt.remove(CLIENTSIDE_NAME);
                 }
                 if (nbt.contains(CLIENTSIDE_GLINT)) nbt.remove(CLIENTSIDE_GLINT);
-                final NetworkingSettings networkingSettings = Vandalism.getInstance().getClientSettings().getNetworkingSettings();
-                if (networkingSettings.packageCreativeItems.getValue()) {
-                    creativeInventoryActionC2SPacket.stack = ItemStackUtil.packageStack(stack, networkingSettings.creativeItemsPackageType.getValue());
-                }
-                else creativeInventoryActionC2SPacket.stack = stack;
             }
+            final NetworkingSettings networkingSettings = Vandalism.getInstance().getClientSettings().getNetworkingSettings();
+            if (networkingSettings.packageCreativeItems.getValue()) {
+                if (ItemStackUtil.PackageType.isPackageItem(stack.getItem())) {
+                    return;
+                }
+                creativeInventoryActionC2SPacket.stack = ItemStackUtil.packageStack(stack, networkingSettings.creativeItemsPackageType.getValue());
+            }
+            else creativeInventoryActionC2SPacket.stack = stack;
         }
     }
 
