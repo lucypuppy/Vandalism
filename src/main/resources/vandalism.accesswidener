@@ -126,3 +126,4 @@ accessible field net/minecraft/network/packet/c2s/play/PlayerInteractEntityC2SPa
 accessible field net/minecraft/network/packet/c2s/play/PlayerInteractEntityC2SPacket ATTACK Lnet/minecraft/network/packet/c2s/play/PlayerInteractEntityC2SPacket$InteractTypeHandler;
 accessible field net/minecraft/network/packet/c2s/play/CreativeInventoryActionC2SPacket stack Lnet/minecraft/item/ItemStack;
 mutable field net/minecraft/network/packet/c2s/play/CreativeInventoryActionC2SPacket stack Lnet/minecraft/item/ItemStack;
+accessible method net/minecraft/block/entity/BlockEntity writeNbt (Lnet/minecraft/nbt/NbtCompound;)V
