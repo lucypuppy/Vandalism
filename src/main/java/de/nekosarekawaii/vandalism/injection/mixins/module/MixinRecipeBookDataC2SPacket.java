@@ -21,14 +21,14 @@ package de.nekosarekawaii.vandalism.injection.mixins.module;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.consolespammer.impl.IdentifierModuleMode;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.c2s.play.CraftRequestC2SPacket;
+import net.minecraft.network.packet.c2s.play.RecipeBookDataC2SPacket;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(CraftRequestC2SPacket.class)
-public abstract class MixinCraftRequestC2SPacket {
+@Mixin(RecipeBookDataC2SPacket.class)
+public abstract class MixinRecipeBookDataC2SPacket {
 
     @Redirect(method = "write", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/PacketByteBuf;writeIdentifier(Lnet/minecraft/util/Identifier;)Lnet/minecraft/network/PacketByteBuf;"))
     private PacketByteBuf hookConsoleSpammer(final PacketByteBuf instance, final Identifier id) {
@@ -38,5 +38,4 @@ public abstract class MixinCraftRequestC2SPacket {
         }
         return instance.writeIdentifier(id);
     }
-
 }
