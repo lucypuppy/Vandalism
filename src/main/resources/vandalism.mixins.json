@@ -96,7 +96,6 @@
     "module.MixinLightmapTextureManager",
     "module.MixinLivingEntityRenderer",
     "module.MixinMinecraftClient",
-    "module.MixinParticleManager",
     "module.MixinPigEntity",
     "module.MixinPlayerListHud",
     "module.MixinSodiumWorldRenderer",
