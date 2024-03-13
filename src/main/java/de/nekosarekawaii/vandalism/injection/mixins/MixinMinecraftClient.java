@@ -21,27 +21,24 @@ package de.nekosarekawaii.vandalism.injection.mixins;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.lang.management.ManagementFactory;
-import java.net.Proxy;
 
 @Mixin(value = MinecraftClient.class)
 public abstract class MixinMinecraftClient {
 
-    @Shadow @Final private Proxy networkProxy;
-
-    @Shadow @Nullable public abstract @Nullable ClientPlayNetworkHandler getNetworkHandler();
+    @Shadow @Nullable
+    public abstract ClientPlayNetworkHandler getNetworkHandler();
 
     @Unique
     private boolean vandalism$loadingDisplayed = false;
@@ -71,9 +68,10 @@ public abstract class MixinMinecraftClient {
         Vandalism.getInstance().getHudManager().infoHUDElement.rightClick.click();
     }
 
-    @Redirect(method = "setScreen", at = @At(value = "INVOKE", target = "Ljava/lang/IllegalStateException;<init>(Ljava/lang/String;)V"))
-    private void fixISE(final IllegalStateException instance, final String s) {
-        ServerConnectionUtil.disconnect(s);
+    @Inject(method = "setScreen", at = @At(value = "INVOKE", target = "Ljava/lang/IllegalStateException;<init>(Ljava/lang/String;)V", shift = At.Shift.BEFORE, remap = false), cancellable = true)
+    private void fixISE(final Screen screen, final CallbackInfo ci) {
+        ci.cancel();
+        ServerConnectionUtil.disconnect("Trying to return to in-game GUI during disconnection.");
     }
 
 }
