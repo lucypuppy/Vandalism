@@ -18,8 +18,6 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.module;
 
-import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.module.impl.exploit.consolespammer.ConsoleSpammerModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.consolespammer.impl.IdentifierModuleMode;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.CraftRequestC2SPacket;
@@ -33,8 +31,7 @@ public abstract class MixinCraftRequestC2SPacket {
 
     @Redirect(method = "write", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/PacketByteBuf;writeIdentifier(Lnet/minecraft/util/Identifier;)Lnet/minecraft/network/PacketByteBuf;"))
     private PacketByteBuf hookConsoleSpammer(final PacketByteBuf instance, final Identifier id) {
-        final ConsoleSpammerModule consoleSpammerModule = Vandalism.getInstance().getModuleManager().getConsoleSpammerModule();
-        if (consoleSpammerModule.isActive() && consoleSpammerModule.mode.getValue().getClass().equals(IdentifierModuleMode.class) && id.equals(IdentifierModuleMode.IDENTIFIER)) {
+        if (IdentifierModuleMode.IDENTIFIER.equals(id)) {
             instance.writeString(IdentifierModuleMode.consoleString());
         }
         return instance.writeIdentifier(id);
