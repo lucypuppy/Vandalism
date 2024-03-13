@@ -80,9 +80,10 @@ public class CreativeTabManager extends Storage<AbstractCreativeTab> implements 
                         return;
                     }
                     creativeInventoryActionC2SPacket.stack = ItemStackUtil.packageStack(stack, networkingSettings.creativeItemsPackageType.getValue());
+                    return;
                 }
-                else creativeInventoryActionC2SPacket.stack = stack;
             }
+            creativeInventoryActionC2SPacket.stack = stack;
         }
     }
 
