@@ -732,7 +732,27 @@ public class NameGenerationUtil {
             "GitHub",
             "Sleepy",
             "Fusselig",
-            "Airplane"
+            "Airplane",
+            "Collar",
+            "Choke",
+            "DAM",
+            "pull",
+            "push",
+            "Russland",
+            "cyka",
+            "blyat",
+            "Valorant",
+            "RAM",
+            "Energy",
+            "Discord",
+            "1234",
+            "88",
+            "42",
+            "Computer",
+            "Autism",
+            "Video",
+            "2b2t",
+            "Hur3"
     );
 
     private static final int MAX_USERNAME_LENGTH = 16;
