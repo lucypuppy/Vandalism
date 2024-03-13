@@ -23,7 +23,6 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
-import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.render.InputType;
 import imgui.ImGui;
 import net.minecraft.client.MinecraftClient;
@@ -64,7 +63,7 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
     @Override
     public void render() {
         final String id = "##" + this.getName() + this.getParent().getName();
-        final float width = 200;
+        float width = 200;
         final float height = ImGui.getTextLineHeightWithSpacing();
         if (!this.waitingForInput) {
             if (ImGui.button(InputType.getKeyName(this.getValue()) + id, width, height)) {
@@ -73,10 +72,13 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
             }
         } else {
             ImGui.textWrapped("Listening for key input...");
-            if (ImUtils.subButton("Cancel" + id + "cancel")) {
+            width = 100;
+            ImGui.sameLine();
+            if (ImGui.button("Cancel" + id + "cancel", width, ImGui.getTextLineHeightWithSpacing())) {
                 this.finishInput();
             }
-            if (ImUtils.subButton("Reset" + id + "reset")) {
+            ImGui.sameLine();
+            if (ImGui.button("Reset" + id + "reset", width, ImGui.getTextLineHeightWithSpacing())) {
                 this.finishInput();
                 this.resetValue();
             }
@@ -93,7 +95,12 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
         if (key != GLFW.GLFW_KEY_UNKNOWN && action == GLFW.GLFW_PRESS) {
             this.finishInput();
             if (key != GLFW.GLFW_KEY_ESCAPE) {
-                this.setValue(key);
+                if (key == GLFW.GLFW_KEY_BACKSPACE) {
+                    this.setValue(GLFW.GLFW_KEY_UNKNOWN);
+                }
+                else {
+                    this.setValue(key);
+                }
             }
         }
     }
