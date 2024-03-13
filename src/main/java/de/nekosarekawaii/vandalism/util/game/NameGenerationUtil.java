@@ -18,17 +18,14 @@
 
 package de.nekosarekawaii.vandalism.util.game;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class NameGenerationUtil {
 
-    private static final String UPPER_CASE_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private static final String LOWER_CASE_CHARACTERS = "abcdefghijklmnopqrstuvwxyz";
-    private static final String DIGITS = "0123456789";
-    private static final String SPECIAL_CHARACTERS = "_";
-    private static final String ALL_CHARACTERS = UPPER_CASE_CHARACTERS + LOWER_CASE_CHARACTERS + DIGITS + SPECIAL_CHARACTERS;
-
-    private static final String[] USERNAME_PARTS = {
+    private static final List<String> USERNAME_PARTS = Arrays.asList(
             "PvP",
             "Im",
             "Craft",
@@ -736,22 +733,18 @@ public class NameGenerationUtil {
             "Sleepy",
             "Fusselig",
             "Airplane"
-    };
+    );
+
+    private static final int MAX_USERNAME_LENGTH = 16;
 
     public static String generateUsername() {
-        String username;
-        final String part1 = USERNAME_PARTS[ThreadLocalRandom.current().nextInt(USERNAME_PARTS.length)];
-        final String part2 = USERNAME_PARTS[ThreadLocalRandom.current().nextInt(USERNAME_PARTS.length)];
-        final int additionalChars = ThreadLocalRandom.current().nextInt(1, Math.max(1, part1.length() + part2.length()) + 2);
-        final StringBuilder additionalCharsBuilder = new StringBuilder();
-        final String allowedChars = ALL_CHARACTERS;
-    /*    for (int i = 0; i < additionalChars; i++) {
-            additionalCharsBuilder.append(allowedChars.charAt(ThreadLocalRandom.current().nextInt(allowedChars.length())));
-        }*/
-        username = part1 + part2 + additionalCharsBuilder;
-        if (username.length() > 16) username = username.substring(0, 16);
+        Collections.shuffle(USERNAME_PARTS);
+        String username = USERNAME_PARTS.get(ThreadLocalRandom.current().nextInt(USERNAME_PARTS.size()));
+        username += USERNAME_PARTS.get(ThreadLocalRandom.current().nextInt(USERNAME_PARTS.size()));
+        if (username.length() > MAX_USERNAME_LENGTH) {
+            username = username.substring(0, MAX_USERNAME_LENGTH);
+        }
         return username;
     }
-
 
 }
