@@ -69,6 +69,8 @@ import java.io.File;
  *  - Add Version Range to the creative tabs
  *  - Fix creative packager for older versions like 1.8
  *  - Fix weird creative tab item remove bug when using the open container key and clicking inside the client side inventory
+ *  - Recode NameGenerationUtil#generateUsername to use a json instead of having an hardcoded string
+ *  -  to prevent the client being detected trough an api
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Rewrite GCD fix to be accurate
