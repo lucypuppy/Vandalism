@@ -32,7 +32,7 @@ public abstract class MixinCraftRequestC2SPacket {
     @Redirect(method = "write", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/PacketByteBuf;writeIdentifier(Lnet/minecraft/util/Identifier;)Lnet/minecraft/network/PacketByteBuf;"))
     private PacketByteBuf hookConsoleSpammer(final PacketByteBuf instance, final Identifier id) {
         if (IdentifierModuleMode.IDENTIFIER.equals(id)) {
-            instance.writeString(IdentifierModuleMode.consoleString());
+            return instance.writeString(IdentifierModuleMode.consoleString());
         }
         return instance.writeIdentifier(id);
     }
