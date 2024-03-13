@@ -377,7 +377,7 @@ public class ServersTab implements MinecraftWrapper {
                         ImGui.popStyleColor(3);
                     }
                     if (ImGui.beginPopupContextItem(serverEntryId + "popup", ImGuiPopupFlags.MouseButtonRight)) {
-                        final int buttonWidth = 150, buttonHeight = 28;
+                        final int buttonWidth = 200, buttonHeight = 28;
                         final ProtocolVersion protocolVersion = ProtocolVersion.getProtocol(serverEntry.protocol);
                         if (protocolVersion.isKnown()) {
                             if (ImGui.button("Connect with server version" + serverEntryId + "connectwithserverversion", buttonWidth, buttonHeight)) {
