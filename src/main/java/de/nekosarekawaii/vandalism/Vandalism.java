@@ -61,7 +61,6 @@ import java.io.File;
  *  - Fix Game server pinger (ensure pings are on different threads)
  *  - Add Proxy manager
  *  - Exploit Fixer Module:
- *      - Fix blockTooManyParticles
  *      - Fix blockTooManyTranslateTexts
  *      - Fix translateTextDepthLimit
  *      - Fix blockTooManyTextGlyphs
