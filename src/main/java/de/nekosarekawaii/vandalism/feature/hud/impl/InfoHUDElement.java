@@ -177,6 +177,15 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             true
     );
 
+    private final IntegerValue lagMeterThreshold = new IntegerValue(
+            this,
+            "Lag Meter Threshold",
+            "The threshold in milliseconds for the lag meter to show.",
+            1000,
+            500,
+            10000
+    ).visibleCondition(this.lagMeter::getValue);
+
     private final BooleanValue tickBaseCharge = new BooleanValue(
             this,
             "Tick Base Charge",
@@ -375,7 +384,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
 
         if (this.lagMeter.getValue()) {
             final long lagMillis = this.mc.getNetworkHandler() != null && !(this.mc.isInSingleplayer() && this.mc.isPaused()) ? System.currentTimeMillis() - this.lastUpdate : 0L;
-            if (lagMillis > 1000L || !inGame) {
+            if (lagMillis > this.lagMeterThreshold.getValue() || !inGame) {
                 infoMap.put("Lag", lagMillis + " ms");
             }
         }
