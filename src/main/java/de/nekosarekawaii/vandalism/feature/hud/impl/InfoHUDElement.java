@@ -30,6 +30,7 @@ import de.nekosarekawaii.vandalism.feature.module.impl.exploit.TickBaseModule;
 import de.nekosarekawaii.vandalism.injection.access.IRenderTickCounter;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerDataUtil;
 import de.nekosarekawaii.vandalism.util.click.CPSTracker;
+import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.PlayerListEntry;
@@ -333,7 +334,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         if (this.serverVersion.getValue()) {
             String value = "unknown";
             if (this.mc.player != null && !this.mc.isInSingleplayer()) {
-                final ServerInfo currentServerInfo = this.mc.getCurrentServerEntry();
+                final ServerInfo currentServerInfo = ServerConnectionUtil.getLastServerInfo();
                 if (currentServerInfo != null) {
                     final Text version = currentServerInfo.version;
                     if (version != null) {
@@ -347,7 +348,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         if (this.serverAddress.getValue()) {
             String value = "unknown";
             if (this.mc.player != null && !this.mc.isInSingleplayer()) {
-                final ServerInfo currentServerInfo = this.mc.getCurrentServerEntry();
+                final ServerInfo currentServerInfo = ServerConnectionUtil.getLastServerInfo();
                 if (currentServerInfo != null) {
                     value = currentServerInfo.address;
                 }
