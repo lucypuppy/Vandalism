@@ -221,7 +221,6 @@ public class NameGenerationUtil {
             "Hash",
             "Furry",
             "Yiff",
-            "Finn",
             "XMR",
             "Pepe",
             "Coin",
