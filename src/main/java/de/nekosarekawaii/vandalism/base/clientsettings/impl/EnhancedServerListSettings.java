@@ -46,6 +46,13 @@ public class EnhancedServerListSettings extends ValueGroup {
             true
     ).visibleCondition(this.enhancedServerList::getValue);
 
+    public final BooleanValue saveScrollingAmount = new BooleanValue(
+            this,
+            "Save Scrolling Amount",
+            "Saves the scrolling amount of the server list.",
+            true
+    ).visibleCondition(this.enhancedServerList::getValue);
+
     public final BooleanValue cacheServerList = new BooleanValue(
             this,
             "Cache Server List",

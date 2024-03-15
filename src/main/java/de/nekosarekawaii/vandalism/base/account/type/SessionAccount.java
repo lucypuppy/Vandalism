@@ -46,7 +46,7 @@ public class SessionAccount extends AbstractAccount {
         public void accept(final ImGuiInputTextCallbackData imGuiInputTextCallbackData) {
             final int eventChar = imGuiInputTextCallbackData.getEventChar();
             if (eventChar == 0) return;
-            if (!Character.isLetterOrDigit(eventChar) && eventChar != '_' && eventChar != '§' && eventChar != '.') {
+            if (!Character.isLetterOrDigit(eventChar) && eventChar != '_' && eventChar != '§' && eventChar != '.' && eventChar != '[' && eventChar != ']') {
                 imGuiInputTextCallbackData.setEventChar((char) 0);
             }
         }
@@ -134,13 +134,8 @@ public class SessionAccount extends AbstractAccount {
                 ImGui.setNextItemWidth(ImGui.getColumnWidth() - 4f);
                 ImGui.inputText("##sessionAccountName", this.name, ImGuiInputTextFlags.CallbackCharFilter, USERNAME_NAME_FILTER);
                 final String name = this.name.get();
-                if (name.isEmpty()) {
-                    if (ImGui.button("Use Random Name", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
-                        this.name.set(NameGenerationUtil.generateUsername());
-                    }
-                    if (ImGui.button("Use WorldGuard Bypass Name", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
-                        this.name.set("[^A-Za-z0-9_]");
-                    }
+                if (ImGui.button("Use Random Name", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
+                    this.name.set(NameGenerationUtil.generateUsername());
                 }
                 ImGui.text("UUID");
                 ImGui.setNextItemWidth(ImGui.getColumnWidth() - 4f);

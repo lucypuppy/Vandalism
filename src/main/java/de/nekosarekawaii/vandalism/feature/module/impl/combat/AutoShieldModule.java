@@ -18,15 +18,20 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
+import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShieldItem;
+import net.raphimc.vialoader.util.VersionRange;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -34,13 +39,30 @@ import java.util.List;
 
 public class AutoShieldModule extends AbstractModule implements PlayerUpdateListener {
 
+    private final FloatValue range = new FloatValue(
+            this,
+            "Range",
+            "The range to target entities.",
+            14.0f, 1.0f, 20.0f
+    );
+
+    private final IntegerValue rotateSpeed = new IntegerValue(
+            this,
+            "Rotate Speed",
+            "The speed to rotate to the target.",
+            180,
+            1,
+            180
+    );
+
     private Entity target;
 
     public AutoShieldModule() {
         super(
                 "Auto Shield",
                 "Automatically blocks attacks from targets with a shield.",
-                Category.COMBAT
+                Category.COMBAT,
+                VersionRange.andNewer(ProtocolVersion.v1_9)
         );
     }
 
@@ -70,13 +92,14 @@ public class AutoShieldModule extends AbstractModule implements PlayerUpdateList
             this.reset();
             return;
         }
-        final float range = 14.0f;
-        if (this.target == null || this.target.distanceTo(this.mc.player) >= range || this.target instanceof final ProjectileEntity projectileEntity && projectileEntity.getVelocity().y <= 0) {
+        final float range = this.range.getValue();
+        if (this.target == null || !WorldUtil.isTarget(this.target) || this.target.distanceTo(this.mc.player) >= range || this.target instanceof final ProjectileEntity projectileEntity && projectileEntity.getVelocity().y <= 0) {
             this.reset();
             final List<Entity> entities = new ArrayList<>();
             for (final Entity entity : this.mc.world.getEntities()) {
                 if (entity == this.mc.player) continue;
                 if (entity == this.mc.player.getVehicle()) continue;
+                if (!WorldUtil.isTarget(entity)) continue;
                 if (this.mc.player.getPos().distanceTo(entity.getPos()) > range) continue;
                 entities.add(entity);
                 break;
@@ -87,8 +110,8 @@ public class AutoShieldModule extends AbstractModule implements PlayerUpdateList
         } else {
             final Rotation rotation = Rotation.Builder.build(this.target.getPos(), this.mc.player.getEyePos());
             Vandalism.getInstance().getRotationListener().setRotation(rotation, RotationPriority.NORMAL,
-                    180, 0.0f, false);
-
+                    this.rotateSpeed.getValue(), 0.0f, false
+            );
             if (!this.mc.player.isBlocking()) {
                 this.mc.options.useKey.setPressed(true);
             }
