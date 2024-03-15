@@ -28,7 +28,6 @@ import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListe
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.TickBaseModule;
 import de.nekosarekawaii.vandalism.injection.access.IRenderTickCounter;
-import de.nekosarekawaii.vandalism.integration.serverlist.ServerDataUtil;
 import de.nekosarekawaii.vandalism.util.click.CPSTracker;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
@@ -37,7 +36,6 @@ import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.network.packet.s2c.common.KeepAliveS2CPacket;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
-import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.LinkedHashMap;
@@ -133,13 +131,6 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             this.serverElements,
             "Server Brand",
             "Shows the current server brand.",
-            true
-    );
-
-    private final BooleanValue serverVersion = new BooleanValue(
-            this.serverElements,
-            "Server Version",
-            "Shows the current server version.",
             true
     );
 
@@ -329,20 +320,6 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
                 }
             }
             infoMap.put("Server Brand", value);
-        }
-
-        if (this.serverVersion.getValue()) {
-            String value = "unknown";
-            if (this.mc.player != null && !this.mc.isInSingleplayer()) {
-                final ServerInfo currentServerInfo = ServerConnectionUtil.getLastServerInfo();
-                if (currentServerInfo != null) {
-                    final Text version = currentServerInfo.version;
-                    if (version != null) {
-                        value = ServerDataUtil.fixVersionName(version.getString());
-                    }
-                }
-            }
-            infoMap.put("Server Version", value);
         }
 
         if (this.serverAddress.getValue()) {
