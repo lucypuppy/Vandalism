@@ -19,10 +19,13 @@
 package de.nekosarekawaii.vandalism.base.clientsettings.impl;
 
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
+import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
+
+import java.awt.*;
 
 public class ChatSettings extends ValueGroup {
 
@@ -113,6 +116,29 @@ public class ChatSettings extends ValueGroup {
             100,
             Short.MAX_VALUE / 2
     ).visibleCondition(this.moreChatHistory::getValue);
+
+    private final ValueGroup chatPrefix = new ValueGroup(this, "Chat Prefix", "Chat prefix related settings.");
+
+    public final ColorValue chatPrefixColor = new ColorValue(
+            this.chatPrefix,
+            "Chat Prefix Color",
+            "Change the color of the chat prefix.",
+            Color.WHITE
+    );
+
+    public final StringValue startBracket = new StringValue(
+            this.chatPrefix,
+            "Start Bracket",
+            "Change the start bracket of the chat prefix.",
+            "("
+    );
+
+    public final StringValue endBracket = new StringValue(
+            this.chatPrefix,
+            "End Bracket",
+            "Change the end bracket of the chat prefix.",
+            ")"
+    );
 
     public ChatSettings(final ClientSettings parent) {
         super(parent, "Chat", "Chat related settings.");

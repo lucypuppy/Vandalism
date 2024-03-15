@@ -66,8 +66,7 @@ public abstract class AbstractModule extends Feature implements ValueParent {
                 this.onDeactivate();
             }
             if (Vandalism.getInstance().getClientSettings().getMenuSettings().moduleStateLogging.getValue() && this.mc.player != null) {
-                final MutableText text = ChatUtil.Type.INFO.getPrefix().copy();
-                text.append(Text.literal(Formatting.DARK_AQUA + this.getName() + Formatting.GRAY + " has been "));
+                final MutableText text = Text.literal(Formatting.DARK_AQUA + this.getName() + Formatting.GRAY + " has been ");
                 final MutableText state = newValue ? Text.literal("activated") : Text.literal("deactivated");
                 state.withColor(newValue ? Color.GREEN.getRGB() : Color.RED.getRGB());
                 text.append(state);

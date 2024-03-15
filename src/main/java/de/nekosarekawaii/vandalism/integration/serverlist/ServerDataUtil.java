@@ -91,6 +91,9 @@ public class ServerDataUtil {
                         tooltip.add(Text.literal("ASN: " + asn.getAsn()));
                     }
                 }
+                else {
+                    tooltip.add(Text.literal("Error: Failed to get IP information, API is probably down."));
+                }
                 if (LAST_SERVER_INFO_FETCH_TIMER.hasReached(2000, true)) {
                     if (!LAST_SERVER_ADDRESS.equals(address)) {
                         LAST_SERVER_ADDRESS = serverInfo.address;
