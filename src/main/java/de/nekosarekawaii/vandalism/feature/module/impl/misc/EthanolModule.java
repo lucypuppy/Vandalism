@@ -61,6 +61,8 @@ public class EthanolModule extends AbstractModule implements IncomingPacketListe
     @Override
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(this, IncomingPacketEvent.ID, OutgoingPacketEvent.ID, DisconnectEvent.ID, Render2DEvent.ID);
+        this.detected = false;
+        this.vanished = false;
     }
 
     @Override
@@ -89,7 +91,7 @@ public class EthanolModule extends AbstractModule implements IncomingPacketListe
                 final Identifier id = payload.id();
                 if (Objects.equals(id, EthanolModule.ETHANOL_INIT)) {
                     this.detected = true;
-                    ChatUtil.chatMessage(Text.literal("Ethanol Detected XD").withColor(0xFF0000));
+                    ChatUtil.chatMessage(Text.literal("Ethanol big mod detected with Enza XXD Mod by Rena-chan to get IP information with sidcool unterhosenpakete and french bread made by GrafWillAnus our big franzaske - sponsored by NHost (by Nzxter / Amkgre!!) and 24fire with big fire, marioteamhecker, Damian Juda / Sid Gruppe, ZapHostinng, TubeHosting in der Tube").withColor(0xFF0000));
                     event.connection.send(new CustomPayloadC2SPacket(new InitCustomPayload()));
                 }
 
