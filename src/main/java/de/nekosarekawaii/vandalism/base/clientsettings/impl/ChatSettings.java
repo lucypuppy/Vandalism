@@ -19,10 +19,13 @@
 package de.nekosarekawaii.vandalism.base.clientsettings.impl;
 
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
+import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
+
+import java.awt.*;
 
 public class ChatSettings extends ValueGroup {
 
@@ -113,6 +116,13 @@ public class ChatSettings extends ValueGroup {
             100,
             Short.MAX_VALUE / 2
     ).visibleCondition(this.moreChatHistory::getValue);
+
+    public final ColorValue chatPrefixColor = new ColorValue(
+            this,
+            "Chat Prefix Color",
+            "Change the color of the chat prefix.",
+            Color.WHITE
+    );
 
     public ChatSettings(final ClientSettings parent) {
         super(parent, "Chat", "Chat related settings.");
