@@ -74,7 +74,7 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
 
     private final MultiModeValue serverPackets;
     private final MultiModeValue clientPackets;
-    private static final MapperBase MAPPER_BASE = AsmFabricLoader.getLoader().getMappingsResolver().intermediary();
+    private static final MapperBase MAPPER_BASE = AsmFabricLoader.getLoader().getMappingsResolver().named();
 
     public PacketManagerModule() {
         super("Packet Manager", "Allows to log and cancel packets.", Category.MISC);
@@ -143,40 +143,40 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
         }
 
         { /* unwrapping */
-            if (object instanceof final Optional<?> optional) {
+            if (object instanceof Optional<?> optional) {
                 if (optional.isEmpty())
                     return "<empty>";
 
                 object = optional.get();
             }
-            if (object instanceof final PropertyMap map) {
+            if (object instanceof PropertyMap map) {
                 object = map.asMap();
             }
         }
 
         { /* primitive arrays */
-            if (object instanceof final int[] array) {
+            if (object instanceof int[] array) {
                 return Arrays.toString(array);
             }
-            if (object instanceof final byte[] array) {
+            if (object instanceof byte[] array) {
                 return Arrays.toString(array);
             }
-            if (object instanceof final char[] array) {
+            if (object instanceof char[] array) {
                 return Arrays.toString(array);
             }
-            if (object instanceof final short[] array) {
+            if (object instanceof short[] array) {
                 return Arrays.toString(array);
             }
-            if (object instanceof final long[] array) {
+            if (object instanceof long[] array) {
                 return Arrays.toString(array);
             }
-            if (object instanceof final float[] array) {
+            if (object instanceof float[] array) {
                 return Arrays.toString(array);
             }
-            if (object instanceof final boolean[] array) {
+            if (object instanceof boolean[] array) {
                 return Arrays.toString(array);
             }
-            if (object instanceof final double[] array) {
+            if (object instanceof double[] array) {
                 return Arrays.toString(array);
             }
         }
@@ -189,12 +189,11 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
             return "[".concat(Arrays.stream(array).map(index -> PacketManagerModule.dump(index, depth + 1, depthLimit)).collect(Collectors.joining(", "))).concat("]");
         }
 
-
         { /* Formattable */
-            if (object instanceof final Text text) {
+            if (object instanceof Text text) {
                 return Text.Serialization.toJsonString(text);
             }
-            if (object instanceof final NbtElement element) {
+            if (object instanceof NbtElement element) {
                 return NbtHelper.toFormattedString(element);
             }
         }
@@ -205,25 +204,25 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
         }
 
         { /* ADTs */
-            if (object instanceof final Collection<?> collection) {
+            if (object instanceof Collection<?> collection) {
                 return "[".concat(collection.stream().map(index -> PacketManagerModule.dump(index, depth + 1, depthLimit)).collect(Collectors.joining(", "))).concat("]");
             }
-            if (object instanceof final Map<?, ?> map) {
+            if (object instanceof Map<?, ?> map) {
                 return "[".concat(map.entrySet().stream().map(entry -> "(".concat(PacketManagerModule.dump(entry.getKey(), depth + 1, depthLimit)).concat(", ").concat(PacketManagerModule.dump(entry.getValue(), depth + 1, depthLimit)).concat(")")).collect(Collectors.joining(", "))).concat("]");
             }
-            if (object instanceof final Multimap<?, ?> map) {
+            if (object instanceof Multimap<?, ?> map) {
                 return "[".concat(map.entries().stream().map(entry -> "(".concat(PacketManagerModule.dump(entry.getKey(), depth + 1, depthLimit)).concat(", ").concat(PacketManagerModule.dump(entry.getValue(), depth + 1, depthLimit)).concat(")")).collect(Collectors.joining(", "))).concat("]");
             }
-            if (object instanceof final Pair<?, ?> pair) {
+            if (object instanceof Pair<?, ?> pair) {
                 return "(".concat(PacketManagerModule.dump(pair.getLeft(), depth + 1, depthLimit)).concat(", ").concat(PacketManagerModule.dump(pair.getRight(), depth + 1, depthLimit)).concat(")");
             }
-            if (object instanceof final Map.Entry<?, ?> entry) {
+            if (object instanceof Map.Entry<?, ?> entry) {
                 return "(".concat(PacketManagerModule.dump(entry.getKey(), depth + 1, depthLimit)).concat(", ").concat(PacketManagerModule.dump(entry.getValue(), depth + 1, depthLimit)).concat(")");
             }
-            if (object instanceof final Vec3i vec) {
+            if (object instanceof Vec3i vec) {
                 return "(".concat(String.valueOf(vec.getX())).concat("|").concat(String.valueOf(vec.getY())).concat(String.valueOf(vec.getZ())).concat(")");
             }
-            if (object instanceof final Identifier identifier) {
+            if (object instanceof Identifier identifier) {
                 return identifier.toString();
             }
         }
@@ -246,7 +245,7 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
                 }
                 final Object value = field.get(finalObject);
                 return String.format("%s=%s", PacketManagerModule.MAPPER_BASE == null ? field.getName() : PacketManagerModule.MAPPER_BASE.getFieldName(field.getDeclaringClass(), field.getName()), field.getType().isPrimitive() ? value : PacketManagerModule.dump(value, depth + 1, depthLimit));
-            } catch (final IllegalAccessException | InaccessibleObjectException ignored) {
+            } catch (IllegalAccessException | InaccessibleObjectException ignored) {
                 return null;
             }
         }).filter(Objects::nonNull).collect(Collectors.joining(";"))).concat("}");
