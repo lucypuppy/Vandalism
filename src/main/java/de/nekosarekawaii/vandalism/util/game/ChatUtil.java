@@ -19,8 +19,11 @@
 package de.nekosarekawaii.vandalism.util.game;
 
 import de.florianmichael.rclasses.common.StringUtils;
+import de.florianmichael.rclasses.common.color.ColorUtils;
+import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
+import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.encryption.NetworkEncryptionUtils;
@@ -38,30 +41,27 @@ import java.util.UUID;
 
 public class ChatUtil implements MinecraftWrapper {
 
-    public static final MutableText CHAT_PREFIX = Text.empty()
-            .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
-            .append("(")
-            .append(Text.literal(FabricBootstrap.MOD_NAME)
-                    .setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Color.WHITE.getRGB()))))
-            .append(") ");
+    private static final MutableText BRACKET_COLOR = Text.empty().setStyle(Style.EMPTY.withFormatting(Formatting.GRAY));
 
-    public enum Type {
+    public enum Type implements IName {
 
         INFO(Color.GREEN), WARNING(Color.ORANGE), ERROR(Color.RED);
 
-        private final MutableText prefix;
+        private final int color;
+        private final String name;
 
         Type(final Color color) {
-            this.prefix = Text.empty()
-                    .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
-                    .append("[")
-                    .append(Text.literal(StringUtils.normalizeEnumName(this.name()))
-                    .setStyle(Style.EMPTY.withColor(TextColor.fromRgb(color.getRGB()))))
-                    .append("] ");
+            this.color = color.getRGB();
+            this.name = StringUtils.normalizeEnumName(this.name());
         }
 
-        public MutableText getPrefix() {
-            return this.prefix.copy();
+        public int getColor() {
+            return this.color;
+        }
+
+        @Override
+        public String getName() {
+            return this.name;
         }
 
     }
@@ -71,11 +71,11 @@ public class ChatUtil implements MinecraftWrapper {
     }
 
     public static void infoChatMessage(final Text message) {
-        chatMessage(Type.INFO.getPrefix().copy().append(message));
+        infoChatMessage(message, false);
     }
 
     public static void infoChatMessage(final Text message, final boolean sameLine) {
-        chatMessage(Type.INFO.getPrefix().copy().append(message), true, sameLine);
+        chatMessage(message.copy().withColor(Type.INFO.getColor()), true, sameLine);
     }
 
     public static void warningChatMessage(final String message) {
@@ -83,11 +83,15 @@ public class ChatUtil implements MinecraftWrapper {
     }
 
     public static void warningChatMessage(final Text message) {
+        warningChatMessage(message, false);
+    }
+
+    public static void warningChatMessage(final Text message, final boolean sameLine) {
         if (mc.inGameHud == null) {
             Vandalism.getInstance().getLogger().warn(message.getString());
             return;
         }
-        chatMessage(Type.WARNING.getPrefix().copy().append(message));
+        chatMessage(message.copy().withColor(Type.WARNING.getColor()), true, sameLine);
     }
 
     public static void errorChatMessage(final String message) {
@@ -95,11 +99,15 @@ public class ChatUtil implements MinecraftWrapper {
     }
 
     public static void errorChatMessage(final Text message) {
+        errorChatMessage(message, false);
+    }
+
+    public static void errorChatMessage(final Text message, final boolean sameLine) {
         if (mc.inGameHud == null) {
             Vandalism.getInstance().getLogger().error(message.getString());
             return;
         }
-        chatMessage(Type.ERROR.getPrefix().copy().append(message));
+        chatMessage(message.copy().withColor(Type.ERROR.getColor()), true, sameLine);
     }
 
     public static void emptyChatMessage() {
@@ -129,7 +137,7 @@ public class ChatUtil implements MinecraftWrapper {
             Vandalism.getInstance().getLogger().info(message.getString());
             return;
         }
-        final MutableText text = prefix ? CHAT_PREFIX.copy().append(message) : message;
+        final MutableText text = prefix ? getChatPrefix().copy().append(message) : message;
         if (sameLine && Vandalism.getInstance().getClientSettings().getChatSettings().sameLineMessages.getValue()) {
             text.getSiblings().add(SAME_LINE_ID);
         }
@@ -161,6 +169,38 @@ public class ChatUtil implements MinecraftWrapper {
             }
         });
         return Text.literal(stringBuilder.toString()).setStyle(originalStyle);
+    }
+
+    public static MutableText colorFade(final String text, final Style style, final Color startColor, final Color endColor) {
+        final MutableText mutableText = Text.empty();
+
+        for (int i = 0; i < text.length(); i++) {
+            final float percent = (float) i / (text.length() - 1);
+            final Color color = ColorUtils.colorInterpolate(startColor, endColor, percent);
+
+            mutableText
+                    .append(Text.literal(String.valueOf(text.charAt(i)))
+                    .setStyle(style.withColor(TextColor.fromRgb(color.getRGB()))));
+        }
+
+        return mutableText;
+    }
+
+    public static MutableText getChatPrefix() {
+        final ColorValue chatPrefixColor = Vandalism.getInstance().getClientSettings().getChatSettings().chatPrefixColor;
+        final MutableText prefix;
+
+        if (chatPrefixColor.getMode().getValue() == ColorValue.ColorMode.STATIC) {
+            prefix = Text.literal(FabricBootstrap.MOD_NAME).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(chatPrefixColor.getColor(0).getRGB())));
+        } else {
+            prefix = colorFade(FabricBootstrap.MOD_NAME, Style.EMPTY, chatPrefixColor.getColor(0), chatPrefixColor.getColor(1000));
+        }
+
+        return BRACKET_COLOR.copy()
+                .append(Vandalism.getInstance().getClientSettings().getChatSettings().startBracket.getValue())
+                .append(prefix)
+                .append(Vandalism.getInstance().getClientSettings().getChatSettings().endBracket.getValue())
+                .append(" ");
     }
 
 }

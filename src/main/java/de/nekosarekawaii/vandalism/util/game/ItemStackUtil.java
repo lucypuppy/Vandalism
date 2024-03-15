@@ -136,11 +136,11 @@ public class ItemStackUtil implements MinecraftWrapper {
             if (!mc.player.getAbilities().creativeMode) throw NOT_IN_CREATIVE_MODE.create();
             mc.getNetworkHandler().sendPacket(new CreativeInventoryActionC2SPacket(selectedSlot, itemStack));
             if (receiveMessage) {
-                ChatUtil.infoChatMessage("You should have received '" + itemStack.getName().getString() + Formatting.GRAY + "' item.");
+                ChatUtil.infoChatMessage("You should have received " + Formatting.GRAY + "'" + Formatting.DARK_AQUA + itemStack.getName().getString() + Formatting.GRAY + "'");
             }
             return true;
         } catch (Throwable throwable) {
-            ChatUtil.errorChatMessage("Failed to give item cause of: " + throwable);
+            ChatUtil.errorChatMessage("Failed to give item cause of: " + throwable.getMessage());
         }
         return false;
     }
