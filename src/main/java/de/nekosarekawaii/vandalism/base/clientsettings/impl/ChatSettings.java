@@ -23,14 +23,9 @@ import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
-import de.nekosarekawaii.vandalism.base.value.impl.selection.MultiModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 
 import java.awt.*;
-import java.util.Arrays;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 public class ChatSettings extends ValueGroup {
 
@@ -145,19 +140,8 @@ public class ChatSettings extends ValueGroup {
             ")"
     );
 
-    public final MultiModeValue enabledChatInfoTypes;
-
     public ChatSettings(final ClientSettings parent) {
         super(parent, "Chat", "Chat related settings.");
-
-        final Supplier<Stream<String>> infoTypes = () -> Arrays.stream(ChatUtil.Type.values()).map(ChatUtil.Type::getName);
-        this.enabledChatInfoTypes = new MultiModeValue(
-                this.chatPrefix,
-                "Enabled Chat Info Types",
-                "Change the enabled chat info types.",
-                infoTypes.get().toList(),
-                infoTypes.get().toArray(String[]::new)
-        );
     }
 
 }

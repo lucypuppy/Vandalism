@@ -47,26 +47,16 @@ public class ChatUtil implements MinecraftWrapper {
 
         INFO(Color.GREEN), WARNING(Color.ORANGE), ERROR(Color.RED);
 
-        private final MutableText prefix;
+        private final int color;
         private final String name;
 
         Type(final Color color) {
-            this.prefix = Text.empty()
-                    .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
-                    .append("[")
-                    .append(Text.literal(StringUtils.normalizeEnumName(this.name()))
-                    .setStyle(Style.EMPTY.withColor(TextColor.fromRgb(color.getRGB()))))
-                    .append("] ");
-
+            this.color = color.getRGB();
             this.name = StringUtils.normalizeEnumName(this.name());
         }
 
-        public MutableText getPrefix() {
-            if (Vandalism.getInstance().getClientSettings().getChatSettings().enabledChatInfoTypes.isSelected(this.getName())) {
-                return this.prefix.copy();
-            }
-
-            return Text.empty();
+        public int getColor() {
+            return this.color;
         }
 
         @Override
@@ -81,11 +71,11 @@ public class ChatUtil implements MinecraftWrapper {
     }
 
     public static void infoChatMessage(final Text message) {
-        chatMessage(Type.INFO.getPrefix().copy().append(message));
+        infoChatMessage(message, false);
     }
 
     public static void infoChatMessage(final Text message, final boolean sameLine) {
-        chatMessage(Type.INFO.getPrefix().copy().append(message), true, sameLine);
+        chatMessage(message.copy().withColor(Type.INFO.getColor()), true, sameLine);
     }
 
     public static void warningChatMessage(final String message) {
@@ -93,11 +83,15 @@ public class ChatUtil implements MinecraftWrapper {
     }
 
     public static void warningChatMessage(final Text message) {
+        warningChatMessage(message, false);
+    }
+
+    public static void warningChatMessage(final Text message, final boolean sameLine) {
         if (mc.inGameHud == null) {
             Vandalism.getInstance().getLogger().warn(message.getString());
             return;
         }
-        chatMessage(Type.WARNING.getPrefix().copy().append(message));
+        chatMessage(message.copy().withColor(Type.WARNING.getColor()), true, sameLine);
     }
 
     public static void errorChatMessage(final String message) {
@@ -105,11 +99,15 @@ public class ChatUtil implements MinecraftWrapper {
     }
 
     public static void errorChatMessage(final Text message) {
+        errorChatMessage(message, false);
+    }
+
+    public static void errorChatMessage(final Text message, final boolean sameLine) {
         if (mc.inGameHud == null) {
             Vandalism.getInstance().getLogger().error(message.getString());
             return;
         }
-        chatMessage(Type.ERROR.getPrefix().copy().append(message));
+        chatMessage(message.copy().withColor(Type.ERROR.getColor()), true, sameLine);
     }
 
     public static void emptyChatMessage() {
@@ -180,7 +178,8 @@ public class ChatUtil implements MinecraftWrapper {
             final float percent = (float) i / (text.length() - 1);
             final Color color = ColorUtils.colorInterpolate(startColor, endColor, percent);
 
-            mutableText.append(Text.literal(String.valueOf(text.charAt(i)))
+            mutableText
+                    .append(Text.literal(String.valueOf(text.charAt(i)))
                     .setStyle(style.withColor(TextColor.fromRgb(color.getRGB()))));
         }
 
@@ -192,17 +191,16 @@ public class ChatUtil implements MinecraftWrapper {
         final MutableText prefix;
 
         if (chatPrefixColor.getMode().getValue() == ColorValue.ColorMode.STATIC) {
-            prefix = Text.literal(FabricBootstrap.MOD_NAME)
-                    .setStyle(Style.EMPTY.withColor(TextColor.fromRgb(chatPrefixColor.getColor(0).getRGB())));
+            prefix = Text.literal(FabricBootstrap.MOD_NAME).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(chatPrefixColor.getColor(0).getRGB())));
         } else {
-            prefix = colorFade(FabricBootstrap.MOD_NAME, Style.EMPTY,
-                    chatPrefixColor.getColor(0), chatPrefixColor.getColor(1000));
+            prefix = colorFade(FabricBootstrap.MOD_NAME, Style.EMPTY, chatPrefixColor.getColor(0), chatPrefixColor.getColor(1000));
         }
 
         return BRACKET_COLOR.copy()
                 .append(Vandalism.getInstance().getClientSettings().getChatSettings().startBracket.getValue())
                 .append(prefix)
-                .append(Vandalism.getInstance().getClientSettings().getChatSettings().endBracket.getValue());
+                .append(Vandalism.getInstance().getClientSettings().getChatSettings().endBracket.getValue())
+                .append(" ");
     }
 
 }
