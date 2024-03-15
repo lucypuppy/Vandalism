@@ -65,7 +65,6 @@ import java.io.File;
  *      - Fix translateTextDepthLimit
  *      - Fix blockTooManyTextGlyphs
  *      - Fix blockTooLongTexts
- *  - Add scroll state saving to the multiplayer screen
  *  - Add Version Range to the creative tabs
  *  - Fix creative packager for older versions like 1.8
  *  - Fix weird creative tab item remove bug when using the open container key and clicking inside the client side inventory
