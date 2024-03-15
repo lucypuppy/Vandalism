@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
@@ -30,6 +31,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShieldItem;
+import net.raphimc.vialoader.util.VersionRange;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -59,7 +61,8 @@ public class AutoShieldModule extends AbstractModule implements PlayerUpdateList
         super(
                 "Auto Shield",
                 "Automatically blocks attacks from targets with a shield.",
-                Category.COMBAT
+                Category.COMBAT,
+                VersionRange.andNewer(ProtocolVersion.v1_9)
         );
     }
 
