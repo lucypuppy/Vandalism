@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.util.game;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.florianmichael.rclasses.common.color.ColorUtils;
+import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
@@ -42,11 +43,12 @@ public class ChatUtil implements MinecraftWrapper {
 
     private static final MutableText BRACKET_COLOR = Text.empty().setStyle(Style.EMPTY.withFormatting(Formatting.GRAY));
 
-    public enum Type {
+    public enum Type implements IName {
 
         INFO(Color.GREEN), WARNING(Color.ORANGE), ERROR(Color.RED);
 
         private final MutableText prefix;
+        private final String name;
 
         Type(final Color color) {
             this.prefix = Text.empty()
@@ -55,10 +57,21 @@ public class ChatUtil implements MinecraftWrapper {
                     .append(Text.literal(StringUtils.normalizeEnumName(this.name()))
                     .setStyle(Style.EMPTY.withColor(TextColor.fromRgb(color.getRGB()))))
                     .append("] ");
+
+            this.name = StringUtils.normalizeEnumName(this.name());
         }
 
         public MutableText getPrefix() {
-            return this.prefix.copy();
+            if (Vandalism.getInstance().getClientSettings().getChatSettings().enabledChatInfoTypes.isSelected(this.getName())) {
+                return this.prefix.copy();
+            }
+
+            return Text.empty();
+        }
+
+        @Override
+        public String getName() {
+            return this.name;
         }
 
     }
@@ -187,9 +200,9 @@ public class ChatUtil implements MinecraftWrapper {
         }
 
         return BRACKET_COLOR.copy()
-                .append("\u300C")
+                .append(Vandalism.getInstance().getClientSettings().getChatSettings().startBracket.getValue())
                 .append(prefix)
-                .append("\u300D");
+                .append(Vandalism.getInstance().getClientSettings().getChatSettings().endBracket.getValue());
     }
 
 }

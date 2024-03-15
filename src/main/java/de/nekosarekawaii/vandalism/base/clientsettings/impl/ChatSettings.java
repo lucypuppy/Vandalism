@@ -23,9 +23,14 @@ import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
+import de.nekosarekawaii.vandalism.base.value.impl.selection.MultiModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
+import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 
 import java.awt.*;
+import java.util.Arrays;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class ChatSettings extends ValueGroup {
 
@@ -117,15 +122,42 @@ public class ChatSettings extends ValueGroup {
             Short.MAX_VALUE / 2
     ).visibleCondition(this.moreChatHistory::getValue);
 
+    private final ValueGroup chatPrefix = new ValueGroup(this, "Chat Prefix", "Chat prefix related settings.");
+
     public final ColorValue chatPrefixColor = new ColorValue(
-            this,
+            this.chatPrefix,
             "Chat Prefix Color",
             "Change the color of the chat prefix.",
             Color.WHITE
     );
 
+    public final StringValue startBracket = new StringValue(
+            this.chatPrefix,
+            "Start Bracket",
+            "Change the start bracket of the chat prefix.",
+            "("
+    );
+
+    public final StringValue endBracket = new StringValue(
+            this.chatPrefix,
+            "End Bracket",
+            "Change the end bracket of the chat prefix.",
+            ")"
+    );
+
+    public final MultiModeValue enabledChatInfoTypes;
+
     public ChatSettings(final ClientSettings parent) {
         super(parent, "Chat", "Chat related settings.");
+
+        final Supplier<Stream<String>> infoTypes = () -> Arrays.stream(ChatUtil.Type.values()).map(ChatUtil.Type::getName);
+        this.enabledChatInfoTypes = new MultiModeValue(
+                this.chatPrefix,
+                "Enabled Chat Info Types",
+                "Change the enabled chat info types.",
+                infoTypes.get().toList(),
+                infoTypes.get().toArray(String[]::new)
+        );
     }
 
 }
