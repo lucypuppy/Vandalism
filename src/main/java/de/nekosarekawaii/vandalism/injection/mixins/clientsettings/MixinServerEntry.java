@@ -18,7 +18,6 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
-import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerDataUtil;
@@ -96,15 +95,7 @@ public abstract class MixinServerEntry {
             final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
             if (enhancedServerListSettings.enhancedServerList.getValue()) {
                 if (enhancedServerListSettings.multiplayerScreenServerInformation.getValue()) {
-                    final int textX = x + textRenderer.getWidth(text) + 22;
-                    instance.drawTextWithShadow(textRenderer, vandalism$VERSION_TEXT + ServerDataUtil.fixVersionName(this.server.version.getString()), textX, y, -1);
-                    instance.drawTextWithShadow(
-                            textRenderer,
-                            vandalism$PROTOCOL_TEXT + ProtocolVersion.getProtocol(this.server.protocolVersion),
-                            textX,
-                            y + textRenderer.fontHeight,
-                            -1
-                    );
+                    instance.drawTextWithShadow(textRenderer, vandalism$VERSION_TEXT + ServerDataUtil.fixVersionName(this.server.version.getString()), x + textRenderer.getWidth(text) + 24, y, -1);
                 }
             }
         }
