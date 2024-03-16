@@ -42,6 +42,7 @@ import de.nekosarekawaii.vandalism.feature.module.impl.misc.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.elytraflight.ElytraFlightModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.FlightModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.jesus.JesusModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.nofall.NoFallModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.phase.PhaseModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.SpeedModule;
@@ -154,7 +155,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new ResourcePackSpooferModule(),
                 new AutoShieldModule(),
                 new EthanolModule(),
-                new BlockBreakerModule()
+                new BlockBreakerModule(),
+                new JesusModule()
         );
         this.configManager.add(new ModulesConfig(this));
     }
