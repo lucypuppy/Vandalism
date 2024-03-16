@@ -154,7 +154,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new ResourcePackSpooferModule(),
                 new AutoShieldModule(),
                 new EthanolModule(),
-                new BlockBreakerModule()
+                new BlockBreakerModule(),
+                new HandFuckerModule()
         );
         this.configManager.add(new ModulesConfig(this));
     }
