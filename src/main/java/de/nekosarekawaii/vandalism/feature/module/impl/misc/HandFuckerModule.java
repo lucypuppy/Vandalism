@@ -69,6 +69,8 @@ public class HandFuckerModule extends AbstractModule implements PlayerUpdateList
 
     @Override
     public void onIncomingPacket(final IncomingPacketEvent event) {
+        if (mc.player == null) return;
+
         if (event.packet instanceof final EntityTrackerUpdateS2CPacket packet) {
             if (packet.id() == mc.player.getId()) {
                 final List<DataTracker.SerializedEntry<?>> entries = new ArrayList<>();
