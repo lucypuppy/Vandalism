@@ -190,6 +190,7 @@ public class ScriptManager extends NamedStorage<Script> implements PlayerUpdateL
                         ChatUtil.errorChatMessage("Failed to execute script '" + scriptName + "' due to: " + e);
                     } else Vandalism.getInstance().getLogger().error("Failed to execute script", e);
                 }
+                this.runningScripts.remove(uuid);
             }, "script-execution-" + (getRunningScriptsCount() + 1) + "-" + scriptName);
             this.runningScripts.put(script.getUuid(), scriptThread);
             scriptThread.start();

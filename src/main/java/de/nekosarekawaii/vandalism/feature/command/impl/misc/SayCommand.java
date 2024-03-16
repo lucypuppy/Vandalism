@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.feature.command.impl.misc;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.feature.script.parse.ScriptVariable;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.command.CommandSource;
 
@@ -37,7 +38,7 @@ public class SayCommand extends AbstractCommand {
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.then(argument("message", StringArgumentType.greedyString()).executes(context -> {
-            final String message = StringArgumentType.getString(context, "message");
+            final String message = ScriptVariable.applyReplacements(StringArgumentType.getString(context, "message"));
             if (message.startsWith("/") && message.length() > 1) {
                 this.mc.getNetworkHandler().sendChatCommand(message.substring(1));
             } else {
