@@ -74,7 +74,7 @@ public abstract class MixinClientConnection {
             return;
         }
         if (!packet.equals(event.packet)) {
-            handlePacket(packet, packetListener);
+            handlePacket(event.packet, packetListener);
             ci.cancel();
         }
     }
