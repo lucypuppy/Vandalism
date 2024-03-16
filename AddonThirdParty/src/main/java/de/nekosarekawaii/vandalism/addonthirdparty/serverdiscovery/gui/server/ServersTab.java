@@ -39,6 +39,7 @@ import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import imgui.type.ImString;
 import net.lenni0451.mcping.MCPing;
+import net.lenni0451.reflect.stream.RStream;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.ServerList;
@@ -57,6 +58,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ServersTab implements MinecraftWrapper {
 
@@ -75,6 +77,8 @@ public class ServersTab implements MinecraftWrapper {
     private final ImBoolean ignoreModded = new ImBoolean(false);
     private final ImBoolean onlyBungeeSpoofable = new ImBoolean(false);
 
+    private final ImInt onlineAfter = new ImInt(-1);
+
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private boolean waitingForResponse = false;
     private final ImString serversSearchField = new ImString();
@@ -82,7 +86,7 @@ public class ServersTab implements MinecraftWrapper {
 
     private String lastAddress = "";
 
-    private int checkedServers = -1;
+    private final AtomicInteger checkedServers = new AtomicInteger(-1);
     private int lastMaxServers = -1;
 
     private final MSTimer checkTimeout = new MSTimer();
@@ -148,8 +152,7 @@ public class ServersTab implements MinecraftWrapper {
                         if (ImGui.selectable("Any", this.protocol == ServersRequest.ANY_PROTOCOL)) {
                             this.protocol = protocol;
                         }
-                    }
-                    else {
+                    } else {
                         final String protocolVersionName = ProtocolVersion.getProtocol(protocol).getName();
                         if (ImGui.selectable(protocolVersionName, protocolVersionName.equals(ProtocolVersion.getProtocol(this.protocol).getName()))) {
                             this.protocol = protocol;
@@ -160,6 +163,7 @@ public class ServersTab implements MinecraftWrapper {
             }
             ImGui.checkbox("Ignore Modded", this.ignoreModded);
             ImGui.checkbox("Only Bungee Spoofable", this.onlyBungeeSpoofable);
+            ImGui.inputInt("Online After", this.onlineAfter, 1);
             if (!this.waitingForResponse) {
                 if (ImUtils.subButton("Get")) {
                     final ServersRequest serversRequest = new ServersRequest(
@@ -172,6 +176,7 @@ public class ServersTab implements MinecraftWrapper {
                             this.maxPlayers.get(),
                             this.minOnlinePlayers.get(),
                             this.maxOnlinePlayers.get(),
+                            this.onlineAfter.get(),
                             this.protocol,
                             this.ignoreModded.get(),
                             this.onlyBungeeSpoofable.get()
@@ -245,12 +250,12 @@ public class ServersTab implements MinecraftWrapper {
                 ImGui.setNextItemWidth(-1);
                 ImGui.inputText("##serverSearchField", this.serversSearchField);
                 ImGui.separator();
-                if (this.checkedServers < 0) {
+                if (this.checkedServers.get() < 0) {
                     if (ImUtils.subButton("Remove offline servers")) {
-                        this.checkedServers = 0;
+                        this.checkedServers.set(0);
                         this.lastMaxServers = this.servers.size();
                         this.checkTimeout.reset();
-                        this.executorService.submit(() -> {
+                        this.executorService.execute(() -> {
                             for (final ServersResponse.Server server : this.servers) {
                                 final Pair<String, Integer> serverAddress = ServerConnectionUtil.resolveServerAddress(server.server);
                                 final String resolvedAddress = serverAddress.getLeft();
@@ -260,10 +265,10 @@ public class ServersTab implements MinecraftWrapper {
                                         .timeout(5000, 5000)
                                         .exceptionHandler(t -> {
                                             this.servers.remove(server);
-                                            this.checkedServers++;
+                                            this.checkedServers.getAndIncrement();
                                             Vandalism.getInstance().getLogger().info("Removed offline server " + resolvedAddress + ":" + resolvedPort);
                                         })
-                                        .finishHandler(response -> this.checkedServers++).getAsync();
+                                        .finishHandler(response -> this.checkedServers.getAndIncrement()).getAsync();
                             }
                         });
                     }
@@ -282,16 +287,15 @@ public class ServersTab implements MinecraftWrapper {
                     }
                     serverList.saveFile();
                 }
-                if (this.checkedServers > -1) {
+                if (this.checkedServers.get() > -1) {
                     ImGui.text("Offline Removal Progress");
-                    ImGui.progressBar((float) this.checkedServers / (float) this.lastMaxServers);
+                    ImGui.progressBar((float) this.checkedServers.get() / (float) this.lastMaxServers);
                     ImGui.text(this.checkedServers + " / " + this.lastMaxServers);
                     ImGui.separator();
-                    if (this.checkedServers >= this.lastMaxServers) {
-                        this.checkedServers = -1;
-                    }
-                    else if (this.checkTimeout.hasReached(60000, true)) {
-                        this.checkedServers = -1;
+                    if (this.checkedServers.get() >= this.lastMaxServers) {
+                        this.checkedServers.set(-1);
+                    } else if (this.checkTimeout.hasReached(60000, true)) {
+                        this.checkedServers.set(-1);
                     }
                 }
                 ImGui.beginChild("##servers", -1, -1, true, ImGuiWindowFlags.HorizontalScrollbar);
@@ -373,7 +377,18 @@ public class ServersTab implements MinecraftWrapper {
                         ImGui.popStyleColor(3);
                     }
                     if (ImGui.beginPopupContextItem(serverEntryId + "popup", ImGuiPopupFlags.MouseButtonRight)) {
-                        final int buttonWidth = 150, buttonHeight = 28;
+                        final int buttonWidth = 200, buttonHeight = 28;
+                        final ProtocolVersion protocolVersion = ProtocolVersion.getProtocol(serverEntry.protocol);
+                        if (protocolVersion.isKnown()) {
+                            if (ImGui.button("Connect with server version" + serverEntryId + "connectwithserverversion", buttonWidth, buttonHeight)) {
+                                /* Autistic fix for ingame with revert on disconnect */
+                                RStream.of(ProtocolTranslator.class).fields().by("previousVersion").set(null);
+
+                                ProtocolTranslator.setTargetVersion(protocolVersion, false);
+                                this.lastAddress = address;
+                                ServerConnectionUtil.connect(address);
+                            }
+                        }
                         if (ImGui.button("Add to the Server List" + serverEntryId + "addtoserverlist", buttonWidth, buttonHeight)) {
                             final ServerList serverList = new ServerList(MinecraftClient.getInstance());
                             serverList.loadFile();

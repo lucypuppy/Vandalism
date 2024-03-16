@@ -29,7 +29,7 @@ public abstract class MixinChatTranslatorHack {
 
     @Redirect(method = "translate", at = @At(value = "INVOKE", target = "Ljava/lang/String;startsWith(Ljava/lang/String;)Z", ordinal = 0), remap = false)
     private boolean addVandalismChatPrefix(final String string, final String prefix) {
-        return string.startsWith(prefix) || string.startsWith(ChatUtil.CHAT_PREFIX.getString());
+        return string.startsWith(prefix) || string.startsWith(ChatUtil.getChatPrefix().getString());
     }
 
 }

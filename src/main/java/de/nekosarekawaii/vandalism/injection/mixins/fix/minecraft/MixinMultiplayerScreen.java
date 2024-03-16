@@ -23,6 +23,8 @@ import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
+import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
+import net.minecraft.client.network.ServerInfo;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -51,6 +53,16 @@ public abstract class MixinMultiplayerScreen extends Screen implements Minecraft
     @Redirect(method = "method_19916", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resource/language/I18n;translate(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;"))
     private String replaceDefaultServerNameWithEmptyString(final String key, final Object[] args) {
         return "";
+    }
+
+    @Redirect(method = "method_19914", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerServerListWidget$ServerEntry;getServer()Lnet/minecraft/client/network/ServerInfo;"))
+    private ServerInfo fixServerName(final MultiplayerServerListWidget.ServerEntry instance) {
+        final ServerInfo origin = instance.getServer();
+        ServerInfo server = new ServerInfo(origin.name, origin.address, origin.getServerType());
+        if (server.name.isEmpty()) {
+            server.name = server.address;
+        }
+        return server;
     }
 
 }

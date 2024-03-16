@@ -83,22 +83,13 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
     }
 
     private static ItemStack createClientInstantCrashSkullV3() {
-        final ItemStack item = new ItemStack(Items.HOPPER);
+        final ItemStack item = new ItemStack(Items.PLAYER_HEAD);
         final NbtCompound base = new NbtCompound();
-        final NbtCompound blockEntityTag = new NbtCompound();
-        final NbtList items = new NbtList();
-        final NbtCompound firstSlot = new NbtCompound();
-        firstSlot.putByte("Slot", (byte) 0);
-        firstSlot.putString("id", "skull");
-        firstSlot.putByte("Count", (byte) 1);
         final NbtCompound skullOwner = new NbtCompound();
         final NbtCompound id = new NbtCompound();
         id.putString("Id", "0");
         skullOwner.put("SkullOwner", id);
-        firstSlot.put("tag", skullOwner);
-        items.add(firstSlot);
-        blockEntityTag.put("Items", items);
-        base.put("BlockEntityTag", blockEntityTag);
+        base.put("tag", skullOwner);
         item.setNbt(base);
         return item;
     }

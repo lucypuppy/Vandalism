@@ -19,15 +19,13 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.network.BlockCollisionShapeListener;
 import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.event.normal.network.BlockCollisionShapeListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.WaterFluid;
 import net.minecraft.registry.Registries;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.shape.VoxelShapes;
@@ -55,13 +53,6 @@ public class BlockNormalizerModule extends AbstractModule implements BlockCollis
             Registries.BLOCK,
             PRESET_BLOCKS,
             PRESET_BLOCKS.toArray(Block[]::new)
-    );
-
-    private final BooleanValue fluidBlocks = new BooleanValue(
-            this,
-            "Fluid Blocks",
-            "Whether or not to apply this module to fluid blocks.",
-            true
     );
 
     private final BooleanValue disableOnSneak = new BooleanValue(
@@ -95,23 +86,9 @@ public class BlockNormalizerModule extends AbstractModule implements BlockCollis
             return;
         }
         final BlockState state = event.state;
-        final FluidState fluidState = state.getFluidState();
-        final boolean isFluid = this.fluidBlocks.getValue() && event.pos.getY() < this.mc.player.getY() && !fluidState.isEmpty();
         final boolean isWaterLogged = state.contains(Properties.WATERLOGGED) && state.get(Properties.WATERLOGGED);
-        if ((this.affectedBlocks.isSelected(state.getBlock()) || isFluid) && !isWaterLogged) {
-            final double minX = 0, minY = 0, minZ = 0, maxX = 1, maxZ = 1;
-            double maxY = 1;
-            if (isFluid && fluidState.getFluid() instanceof WaterFluid && (this.mc.player.isOnFire() || this.mc.player.fallDistance >= 2)) {
-                maxY = 0.59;
-            }
-            event.shape = VoxelShapes.cuboid(
-                    minX,
-                    minY,
-                    minZ,
-                    maxX,
-                    maxY,
-                    maxZ
-            );
+        if ((this.affectedBlocks.isSelected(state.getBlock())) && !isWaterLogged) {
+            event.shape = VoxelShapes.cuboid(0, 0, 0, 1, 1, 1);
         }
     }
 

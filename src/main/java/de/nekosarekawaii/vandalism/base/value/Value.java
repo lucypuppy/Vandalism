@@ -50,11 +50,11 @@ public abstract class Value<V> implements IName {
 
     public void setValue(V value) {
         final V oldValue = this.value;
+        this.value = value;
         if (this.valueChangeConsumer != null) {
             // Allows the event to change the value
             this.valueChangeConsumer.accept(oldValue, value);
         }
-        this.value = value;
     }
 
     public <S extends Value<V>> S onValueChange(final BiConsumer<V, V> valueChangeConsumer) {

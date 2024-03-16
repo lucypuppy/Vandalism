@@ -18,10 +18,37 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
+import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryBlacklistValue;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.game.WorldUtil;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
+
+import java.util.Collections;
 
 public class ESPModule extends AbstractModule {
+
+    private final BooleanValue items = new BooleanValue(
+            this,
+            "Items",
+            "Whether items should also have an ESP.",
+            false
+    );
+
+    private final MultiRegistryBlacklistValue<Item> itemList = new MultiRegistryBlacklistValue<>(
+            this,
+            "Item List",
+            "The items to target.",
+            Registries.ITEM,
+            Collections.singletonList(
+                    Items.AIR
+            )
+    ).visibleCondition(this.items::getValue);
 
     public final ColorValue outlineColor = new ColorValue(
             this,
@@ -30,7 +57,15 @@ public class ESPModule extends AbstractModule {
     );
 
     public ESPModule() {
-        super("ESP", "Lets you see blocks or entities trough blocks.", Category.RENDER);
+        super(
+                "ESP",
+                "Lets you see blocks or entities trough blocks.",
+                Category.RENDER
+        );
+    }
+
+    public boolean isTarget(final Entity entity) {
+        return WorldUtil.isTarget(entity) || entity instanceof final ItemEntity itemEntity && this.itemList.isSelected(itemEntity.getStack().getItem()) && this.items.getValue();
     }
 
 }

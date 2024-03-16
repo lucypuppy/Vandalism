@@ -290,15 +290,8 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
     }
 
     private static ItemStack createGroundBugBoots() {
-        final ItemStack item = new ItemStack(Items.FURNACE);
+        final ItemStack item = new ItemStack(Items.DIAMOND_BOOTS);
         final NbtCompound base = new NbtCompound();
-        final NbtCompound blockEntityTag = new NbtCompound();
-        final NbtList items = new NbtList();
-        final NbtCompound firstSlot = new NbtCompound();
-        firstSlot.putByte("Slot", (byte) 0);
-        firstSlot.putString("id", "diamond_boots");
-        firstSlot.putByte("Count", (byte) 1);
-        final NbtCompound tag = new NbtCompound();
         final NbtList attributeModifiers = new NbtList();
         final NbtCompound attributeModifier = new NbtCompound();
         attributeModifier.putString("AttributeName", "generic.movementSpeed");
@@ -308,11 +301,7 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
         attributeModifier.putLong("UUIDLeast", 1);
         attributeModifier.putLong("UUIDMost", 1);
         attributeModifiers.add(attributeModifier);
-        tag.put("AttributeModifiers", attributeModifiers);
-        firstSlot.put("tag", tag);
-        items.add(firstSlot);
-        blockEntityTag.put("Items", items);
-        base.put("BlockEntityTag", blockEntityTag);
+        base.put("AttributeModifiers", attributeModifiers);
         item.setNbt(base);
         return item;
     }

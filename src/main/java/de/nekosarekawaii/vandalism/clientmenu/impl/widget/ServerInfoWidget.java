@@ -19,6 +19,8 @@
 package de.nekosarekawaii.vandalism.clientmenu.impl.widget;
 
 import com.google.gson.JsonSyntaxException;
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerDataUtil;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
@@ -28,6 +30,7 @@ import imgui.flag.ImGuiTableFlags;
 import imgui.flag.ImGuiWindowFlags;
 import net.lenni0451.mcping.responses.MCPingResponse;
 import net.lenni0451.mcping.responses.QueryPingResponse;
+import net.lenni0451.reflect.stream.RStream;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.text.MutableText;
@@ -127,6 +130,16 @@ public class ServerInfoWidget implements MinecraftWrapper {
                         if (ImGui.button("Connect" + uniqueId + "connect", buttonWidth, buttonHeight)) {
                             ServerConnectionUtil.connect(address);
                         }
+                        final ProtocolVersion protocolVersion = ProtocolVersion.getProtocol(this.mcPingResponse.version.protocol);
+                        if (protocolVersion.isKnown()) {
+                            if (ImGui.button("Connect with server version" + uniqueId + "connectwithserverversion", buttonWidth, buttonHeight)) {
+                                /* Autistic fix for ingame with revert on disconnect */
+                                RStream.of(ProtocolTranslator.class).fields().by("previousVersion").set(null);
+                                ProtocolTranslator.setTargetVersion(protocolVersion, true);
+                                ServerConnectionUtil.connect(address);
+                            }
+                        }
+
                         if (ImGui.button("Add to the Server List" + uniqueId + "addtoserverlist", buttonWidth, buttonHeight)) {
                             final net.minecraft.client.option.ServerList serverList = new net.minecraft.client.option.ServerList(MinecraftClient.getInstance());
                             serverList.loadFile();
@@ -186,6 +199,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                             }
                             this.mc.keyboard.setClipboard(serverInfoBuilder.toString());
                         }
+
                         if (this.mcPingResponse.players.sample.length > 0) {
                             if (ImGui.button("Player List: " + (this.showPlayerList ? "Deactivate" : "Activate") + uniqueId, buttonWidth, buttonHeight)) {
                                 this.showPlayerList = !this.showPlayerList;
@@ -282,24 +296,27 @@ public class ServerInfoWidget implements MinecraftWrapper {
                     for (final ModsTableColumn modsTableColumn : modsTableColumns) {
                         ImGui.tableSetupColumn(modsTableColumn.getName());
                     }
-                    ImGui.tableHeadersRow();
-                    for (final MCPingResponse.ModInfo.Mod mod : this.mcPingResponse.modinfo.modList) {
-                        ImGui.tableNextRow();
-                        for (int i = 0; i < maxModTableColumns; i++) {
-                            ImGui.tableSetColumnIndex(i);
-                            final ModsTableColumn modsTableColumn = modsTableColumns[i];
-                            switch (modsTableColumn) {
-                                case MOD_ID -> ImGui.text(mod.modid);
-                                case MOD_VERSION -> ImGui.text(mod.version);
-                                case ACTIONS -> {
-                                    ImGui.spacing();
-                                    final int buttonWidth = 0, buttonHeight = 28;
-                                    if (ImGui.button("Copy Data" + uniqueId + mod.modid, buttonWidth, buttonHeight)) {
-                                        this.mc.keyboard.setClipboard(mod.modid + " (" + mod.version + ")");
+                    final MCPingResponse.ModInfo info = this.mcPingResponse.modinfo;
+                    if (info != null) {
+                        ImGui.tableHeadersRow();
+                        for (final MCPingResponse.ModInfo.Mod mod : info.modList) {
+                            ImGui.tableNextRow();
+                            for (int i = 0; i < maxModTableColumns; i++) {
+                                ImGui.tableSetColumnIndex(i);
+                                final ModsTableColumn modsTableColumn = modsTableColumns[i];
+                                switch (modsTableColumn) {
+                                    case MOD_ID -> ImGui.text(mod.modid);
+                                    case MOD_VERSION -> ImGui.text(mod.version);
+                                    case ACTIONS -> {
+                                        ImGui.spacing();
+                                        final int buttonWidth = 0, buttonHeight = 28;
+                                        if (ImGui.button("Copy Data" + uniqueId + mod.modid, buttonWidth, buttonHeight)) {
+                                            this.mc.keyboard.setClipboard(mod.modid + " (" + mod.version + ")");
+                                        }
+                                        ImGui.spacing();
                                     }
-                                    ImGui.spacing();
-                                }
-                                default -> {
+                                    default -> {
+                                    }
                                 }
                             }
                         }

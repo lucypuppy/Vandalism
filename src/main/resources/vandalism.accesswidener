@@ -124,3 +124,9 @@ accessible method net/minecraft/client/world/ClientChunkManager$ClientChunkMap g
 accessible method net/minecraft/client/world/ClientChunkManager$ClientChunkMap set (ILnet/minecraft/world/chunk/WorldChunk;)V
 accessible field net/minecraft/network/packet/c2s/play/PlayerInteractEntityC2SPacket type Lnet/minecraft/network/packet/c2s/play/PlayerInteractEntityC2SPacket$InteractTypeHandler;
 accessible field net/minecraft/network/packet/c2s/play/PlayerInteractEntityC2SPacket ATTACK Lnet/minecraft/network/packet/c2s/play/PlayerInteractEntityC2SPacket$InteractTypeHandler;
+accessible field net/minecraft/network/packet/c2s/play/CreativeInventoryActionC2SPacket stack Lnet/minecraft/item/ItemStack;
+mutable field net/minecraft/network/packet/c2s/play/CreativeInventoryActionC2SPacket stack Lnet/minecraft/item/ItemStack;
+accessible method net/minecraft/block/entity/BlockEntity writeNbt (Lnet/minecraft/nbt/NbtCompound;)V
+accessible field net/minecraft/network/packet/s2c/play/ParticleS2CPacket count I
+mutable field net/minecraft/network/packet/s2c/play/ParticleS2CPacket count I
+accessible field net/minecraft/client/gui/widget/EntryListWidget itemHeight I

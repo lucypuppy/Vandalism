@@ -123,6 +123,7 @@ subprojects {
         doLast {
             //Locate the mods folder
             File modsFolder = new File(rootProject.projectDir, "run" + File.separator + "mods")
+            modsFolder.mkdirs()
 
             //Addon output jars are always named Addon<name>-<version>.jar
             String newName = project.name + "-${project.maven_version}.jar"

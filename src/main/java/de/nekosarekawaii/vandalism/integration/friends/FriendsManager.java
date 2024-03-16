@@ -50,11 +50,9 @@ public class FriendsManager extends Storage<Friend> implements TargetListener, T
         if (event.entity instanceof final PlayerEntity player) {
             final GameProfile gameProfile = player.getGameProfile();
             if (gameProfile == null) return;
-            for (final Friend friend : this.getList()) {
-                if (friend.getName().equalsIgnoreCase(gameProfile.getName())) {
-                    event.isTarget = false;
-                    break;
-                }
+
+            if (this.getList().stream().anyMatch(friend -> friend.getName().equalsIgnoreCase(gameProfile.getName()))) {
+                event.isTarget = false;
             }
         }
     }
@@ -67,25 +65,20 @@ public class FriendsManager extends Storage<Friend> implements TargetListener, T
     }
 
     public void addFriend(final String name, final String alias) {
-        for (final Friend friend : this.getList()) {
-            if (friend.getName().equalsIgnoreCase(name)) {
-                ChatUtil.errorChatMessage("You already have a friend with the name " + name + ".");
-                return;
-            }
+        if (this.getList().stream().anyMatch(friend -> friend.getName().equalsIgnoreCase(name))) {
+            ChatUtil.errorChatMessage("You already have a friend with the name " + name + ".");
+            return;
         }
+
         this.add(new Friend(name, alias));
         ChatUtil.infoChatMessage("Added " + name + (!name.equals(alias) ? " (" + alias + ")" : "") + " as a friend.");
     }
 
     public void removeFriend(final String name) {
-        for (final Friend friend : this.getList()) {
-            if (friend.getName().equalsIgnoreCase(name)) {
-                this.remove(friend);
-                ChatUtil.infoChatMessage("Removed " + name + " as a friend.");
-                return;
-            }
-        }
-        ChatUtil.errorChatMessage("You don't have a friend with the name " + name + ".");
+        this.getList().stream().filter(friend -> friend.getName().equalsIgnoreCase(name)).findFirst().ifPresentOrElse(friend -> {
+            this.remove(friend);
+            ChatUtil.infoChatMessage("Removed " + name + " as a friend.");
+        }, () -> ChatUtil.errorChatMessage("You don't have a friend with the name " + name + "."));
     }
 
     public void removeFriend(final Friend friend) {
@@ -98,12 +91,7 @@ public class FriendsManager extends Storage<Friend> implements TargetListener, T
     }
 
     public boolean isFriend(final String name) {
-        for (final Friend friend : this.getList()) {
-            if (friend.getName().equalsIgnoreCase(name)) {
-                return true;
-            }
-        }
-        return false;
+        return this.getList().stream().anyMatch(friend -> friend.getName().equalsIgnoreCase(name));
     }
 
 }

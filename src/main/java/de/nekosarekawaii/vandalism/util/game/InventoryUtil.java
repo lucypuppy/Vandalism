@@ -23,11 +23,19 @@ import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeEntry;
+import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.recipe.RecipeType;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.world.World;
 
 import java.util.List;
 
@@ -56,6 +64,45 @@ public class InventoryUtil implements MinecraftWrapper {
             if (slot.getStack().isEmpty()) continue;
             mc.interactionManager.clickSlot(handler.syncId, slot.id, 0, SlotActionType.QUICK_MOVE, mc.player);
         }
+    }
+
+    public static RecipeEntry<Recipe<?>> createDummyRecipeEntry(final Identifier identifier) {
+        return new RecipeEntry<>(
+                identifier,
+                new Recipe<>() {
+
+                    @Override
+                    public boolean matches(final Inventory inventory, final World world) {
+                        return false;
+                    }
+
+                    @Override
+                    public ItemStack craft(final Inventory inventory, final DynamicRegistryManager registryManager) {
+                        return null;
+                    }
+
+                    @Override
+                    public boolean fits(final int width, final int height) {
+                        return false;
+                    }
+
+                    @Override
+                    public ItemStack getResult(final DynamicRegistryManager registryManager) {
+                        return null;
+                    }
+
+                    @Override
+                    public RecipeSerializer<?> getSerializer() {
+                        return null;
+                    }
+
+                    @Override
+                    public RecipeType<?> getType() {
+                        return null;
+                    }
+
+                }
+        );
     }
 
 }

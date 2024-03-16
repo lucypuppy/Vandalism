@@ -24,8 +24,6 @@ import java.util.List;
 
 public class WhereIsResponse extends Response {
 
-    public String error;
-
     public static class Record {
 
         public String server;
