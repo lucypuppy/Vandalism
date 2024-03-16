@@ -1002,7 +1002,17 @@ public class NameGenerationUtil {
             "Drachen",
             "Lord",
             "Offline",
-            "Online"
+            "Online",
+            "Warrior",
+            "YouNeed",
+            "NeverEat",
+            "Enjoy",
+            "Enjoyer",
+            "Mutter",
+            "EU",
+            "NA",
+            "Sieg",
+            "Heil"
     );
 
     private static final int MAX_USERNAME_LENGTH = 16;
