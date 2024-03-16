@@ -44,7 +44,7 @@ public class CopyServerVersionCommand extends AbstractCommand {
             }
             else {
                 this.mc.keyboard.setClipboard(ServerConnectionUtil.getLastServerInfo().version.getString());
-                ChatUtil.infoChatMessage("Server Version copied into the clipboard.");
+                ChatUtil.infoChatMessage("Server version copied into the clipboard.");
             }
             return SINGLE_SUCCESS;
         });
