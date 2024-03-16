@@ -22,15 +22,16 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.florianmichael.rclasses.common.StringUtils;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
-import de.nekosarekawaii.vandalism.feature.module.gui.ModulesClientMenuWindow;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiComboFlags;
 import imgui.type.ImString;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -114,13 +115,12 @@ public class MultiModeValue extends Value<List<String>> {
                     continue;
                 }
                 final boolean isSelected = this.isSelected(value);
-                final float[] color;
-                if (isSelected) color = ModulesClientMenuWindow.ACTIVE_COLOR;
-                else color = ModulesClientMenuWindow.INACTIVE_COLOR;
                 if (isSelected) {
-                    ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], color[3]);
-                    ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], color[3] - 0.1f);
-                    ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
+                    final Color color = Vandalism.getInstance().getClientSettings().getMenuSettings().multiModeSelectionColor.getColor();
+                    final float[] colorArray = new float[]{ color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f };
+                    ImGui.pushStyleColor(ImGuiCol.Button, colorArray[0], colorArray[1], colorArray[2], colorArray[3]);
+                    ImGui.pushStyleColor(ImGuiCol.ButtonHovered, colorArray[0], colorArray[1], colorArray[2], colorArray[3]);
+                    ImGui.pushStyleColor(ImGuiCol.ButtonActive, colorArray[0], colorArray[1], colorArray[2], colorArray[3]);
                 }
                 if (ImUtils.subButton(value)) {
                     if (isSelected) this.getValue().remove(value);
