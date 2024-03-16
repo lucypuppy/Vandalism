@@ -44,7 +44,6 @@ import java.io.File;
 
 /**
  * TODO: NekosAreKawaii <br>
- *  - Add Version Range to the creative tabs
  *  - Change behavior of the echolocation module to use it as a chunk load detector
  *  - Protector Module:
  *      - Add protection for custom rank prefixes
@@ -53,24 +52,23 @@ import java.io.File;
  *      - Add protection for ip addresses
  *      - Add protection for account manager
  *  - Fix spotify menu control buttons
- *  - Use <a href="https://github.com/EvilCodeZ/JNI4J/tree/main">JNI4J</a> to improve the packet manager logging for fields
  *  - Rewrite EnhancedServerList
  *  - Fix offsets for the new "teleport" method in the fov fucker module
  *  - Fix module tabs display (no stacking) when the client starts the first time
  *  - Use hashmap storage when it has been added to rclasses instead of a default storage because that would improve the performance
  *      - (Search for FriendManager#getList())
  *  - Add anti vanish via. the player list hud
- *  - Ensure MCConstants class file is used
  *  - Fix Game server pinger (ensure pings are on different threads)
  *  - Add Proxy manager
  *  - Exploit Fixer Module:
- *      - Fix blockTooManyParticles
  *      - Fix blockTooManyTranslateTexts
  *      - Fix translateTextDepthLimit
  *      - Fix blockTooManyTextGlyphs
  *      - Fix blockTooLongTexts
- *  - Add scroll state saving to the multiplayer screen
- *  - Fix deactivation state issue for example for single execute server crasher
+ *  - Add Version Range to the creative tabs
+ *  - Fix creative packager for older versions like 1.8
+ *  - Fix weird creative tab item remove bug when using the open container key and clicking inside the client side inventory
+ *  - Add mouse handling to allow key bind values to use mouse keys
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Rewrite GCD fix to be accurate
@@ -86,6 +84,7 @@ import java.io.File;
  *  - Add more stuff to fake lag (Ideas off clumsy)
  *  - Keksbye, Simon, FooFieOwO this is fixed find a new way for to bypasss a cubecraft disabler
  *  - Fix autoblock blocking without sword
+ *  - Add more blocks to BlockBreaker
  * <br><br>
  * TODO: simon <br>
  *  - Add a better Autoblock to Killaura with FooFieOwO
@@ -139,7 +138,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         }
         this.logger.info("");
         this.logger.info("Version: " + FabricBootstrap.MOD_VERSION);
-        this.logger.info("Made by " + FabricBootstrap.MOD_AUTHORS + " with <3");
+        this.logger.info("Made by " + FabricBootstrap.MOD_AUTHORS + " ;3");
         this.logger.info("");
         this.logger.info("Starting...");
         this.logger.info("");

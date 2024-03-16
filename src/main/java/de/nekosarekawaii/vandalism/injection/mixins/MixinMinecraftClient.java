@@ -19,8 +19,13 @@
 package de.nekosarekawaii.vandalism.injection.mixins;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -31,6 +36,9 @@ import java.lang.management.ManagementFactory;
 
 @Mixin(value = MinecraftClient.class)
 public abstract class MixinMinecraftClient {
+
+    @Shadow @Nullable
+    public abstract ClientPlayNetworkHandler getNetworkHandler();
 
     @Unique
     private boolean vandalism$loadingDisplayed = false;
@@ -58,6 +66,12 @@ public abstract class MixinMinecraftClient {
     @Inject(method = "doItemUse", at = @At("HEAD"))
     public void doItemUse(final CallbackInfo ci) {
         Vandalism.getInstance().getHudManager().infoHUDElement.rightClick.click();
+    }
+
+    @Inject(method = "setScreen", at = @At(value = "INVOKE", target = "Ljava/lang/IllegalStateException;<init>(Ljava/lang/String;)V", shift = At.Shift.BEFORE, remap = false), cancellable = true)
+    private void fixISE(final Screen screen, final CallbackInfo ci) {
+        ci.cancel();
+        ServerConnectionUtil.disconnect("Trying to return to in-game GUI during disconnection.");
     }
 
 }

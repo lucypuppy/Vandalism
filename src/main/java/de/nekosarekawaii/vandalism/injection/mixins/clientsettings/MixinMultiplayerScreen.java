@@ -70,6 +70,12 @@ public abstract class MixinMultiplayerScreen extends Screen {
     @Unique
     private static net.minecraft.client.option.ServerList vandalism$SERVER_LIST;
 
+    @Unique
+    private static double vandalism$SCROLL_AMOUNT;
+
+    @Unique
+    private static int vandalism$LAST_SERVER_LIST_SIZE;
+
     protected MixinMultiplayerScreen(final Text title) {
         super(title);
     }
@@ -82,35 +88,52 @@ public abstract class MixinMultiplayerScreen extends Screen {
     @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerServerListWidget;setServers(Lnet/minecraft/client/option/ServerList;)V"))
     private void cacheServerList(final MultiplayerServerListWidget instance, net.minecraft.client.option.ServerList servers) {
         final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
-        if (enhancedServerListSettings.enhancedServerList.getValue() && enhancedServerListSettings.cacheServerList.getValue()){
+        if (enhancedServerListSettings.enhancedServerList.getValue() && enhancedServerListSettings.cacheServerList.getValue()) {
             if (vandalism$SERVER_LIST != null) {
                 servers = vandalism$SERVER_LIST;
-            }
-            else {
+            } else {
                 vandalism$SERVER_LIST = servers;
             }
-        }
-        else {
+        } else {
             vandalism$SERVER_LIST = null;
         }
         instance.setServers(servers);
     }
 
     @Inject(method = "init", at = @At("RETURN"))
-    private void addServerListsButton(final CallbackInfo ci) {
-        if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().enhancedServerList.getValue()) {
+    private void addServerListsButtonAndSetScrolling(final CallbackInfo ci) {
+        final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
+        if (enhancedServerListSettings.enhancedServerList.getValue()) {
             this.addDrawableChild(ButtonWidget.builder(Text.literal("Server Lists"), button -> {
                 if (this.client != null) {
                     this.client.setScreen(new ConfigScreen((MultiplayerScreen) (Object) this));
                 }
             }).dimensions(4, 4, 100, 20).build());
+            if (enhancedServerListSettings.saveScrollingAmount.getValue()) {
+                if (vandalism$SCROLL_AMOUNT > 0 && vandalism$SCROLL_AMOUNT != this.serverListWidget.getScrollAmount()) {
+                    this.serverListWidget.setScrollAmount(vandalism$SCROLL_AMOUNT);
+                }
+            }
         }
     }
 
     @Inject(method = "tick", at = @At("RETURN"))
-    private void enhancedServerListSyncServerList(final CallbackInfo ci) {
+    private void enhancedServerListSyncServerListAndSaveScrolling(final CallbackInfo ci) {
         if (Vandalism.getInstance().getServerListManager().hasBeenChanged()) {
             this.refresh();
+        }
+        final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
+        if (enhancedServerListSettings.enhancedServerList.getValue()) {
+            if (enhancedServerListSettings.saveScrollingAmount.getValue()) {
+                if (this.serverList.size() < vandalism$LAST_SERVER_LIST_SIZE) {
+                    vandalism$LAST_SERVER_LIST_SIZE = this.serverList.size();
+                    this.serverListWidget.setScrollAmount(Math.max(0, this.serverListWidget.getScrollAmount() - this.serverListWidget.itemHeight));
+                } else if (this.serverList.size() > vandalism$LAST_SERVER_LIST_SIZE) {
+                    vandalism$LAST_SERVER_LIST_SIZE = this.serverList.size();
+                    this.serverListWidget.setScrollAmount(this.serverListWidget.getScrollAmount() + this.serverListWidget.itemHeight);
+                }
+                vandalism$SCROLL_AMOUNT = this.serverListWidget.getScrollAmount();
+            }
         }
     }
 

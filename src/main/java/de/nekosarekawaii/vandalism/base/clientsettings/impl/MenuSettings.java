@@ -62,6 +62,20 @@ public class MenuSettings extends ValueGroup {
             915f
     );
 
+    public final ColorValue activatedModuleColor = new ColorValue(
+            this,
+            "Activated Module Color",
+            "The color of activated modules.",
+            new Color(28, 204, 28, 120)
+    );
+
+    public final ColorValue multiModeSelectionColor = new ColorValue(
+            this,
+            "Multi Mode Selection Color",
+            "The color of selected multi mode options.",
+            new Color(28, 204, 28, 120)
+    );
+
     public final BooleanValue customBackground = new BooleanValue(
             this,
             "Custom Background",

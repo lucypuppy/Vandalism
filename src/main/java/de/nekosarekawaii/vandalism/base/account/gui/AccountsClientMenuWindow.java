@@ -23,6 +23,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.base.account.AccountManager;
+import de.nekosarekawaii.vandalism.base.account.type.EasyMCAccount;
 import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuWindow;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.render.PlayerSkinRenderer;
@@ -186,12 +187,14 @@ public class AccountsClientMenuWindow extends ClientMenuWindow {
             }
             if (ImGui.beginTabItem("Add Account")) {
                 AccountManager.ACCOUNT_TYPES.forEach((account, factory) -> {
-                    if (ImGui.treeNodeEx(account.getType() + "##" + account.getType() + "AddAccount")) {
-                        factory.displayFactory();
-                        if (ImGui.button("Add", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
-                            this.recallAccount(factory, this.accountManager::add);
+                    if (!(account instanceof EasyMCAccount)) {
+                        if (ImGui.treeNodeEx(account.getType() + "##" + account.getType() + "AddAccount")) {
+                            factory.displayFactory();
+                            if (ImGui.button("Add", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
+                                this.recallAccount(factory, this.accountManager::add);
+                            }
+                            ImGui.treePop();
                         }
-                        ImGui.treePop();
                     }
                 });
                 ImGui.endTabItem();

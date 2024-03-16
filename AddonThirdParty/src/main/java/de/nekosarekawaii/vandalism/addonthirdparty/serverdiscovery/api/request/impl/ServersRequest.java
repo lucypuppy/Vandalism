@@ -43,7 +43,7 @@ public class ServersRequest extends Request<ServersResponse> {
     public boolean only_bungeespoofable;
     public Software software;
 
-    public ServersRequest(final int asn, final Country country, final boolean cracked, final String description, final Software software, final int min_players, final int max_players, final int min_online_players, final int max_online_players, final int protocol, final boolean ignore_modded, final boolean only_bungeespoofable) {
+    public ServersRequest(final int asn, final Country country, final boolean cracked, final String description, final Software software, final int min_players, final int max_players, final int min_online_players, final int max_online_players, final int online_after, final int protocol, final boolean ignore_modded, final boolean only_bungeespoofable) {
         super(ServersResponse.class, "servers");
         this.asn = asn;
         this.country_code = country == Country.ANY ? "" : country.name();
@@ -52,7 +52,7 @@ public class ServersRequest extends Request<ServersResponse> {
         this.software = software;
         this.setMaxPlayers(min_players, max_players);
         this.setOnlinePlayers(min_online_players, max_online_players);
-        this.online_after = (int) System.currentTimeMillis();
+        this.online_after = online_after;
         this.protocol = protocol;
         this.ignore_modded = ignore_modded;
         this.only_bungeespoofable = only_bungeespoofable;
@@ -127,7 +127,9 @@ public class ServersRequest extends Request<ServersResponse> {
         jsonObject.addProperty("cracked", this.cracked);
         jsonObject.addProperty("description", this.description);
         jsonObject.add("max_players", this.max_players);
-        jsonObject.addProperty("online_after", this.online_after);
+        if (this.online_after != -1) {
+            jsonObject.addProperty("online_after", this.online_after);
+        }
         jsonObject.add("online_players", this.online_players);
         if (this.protocol != ANY_PROTOCOL) {
             jsonObject.addProperty("protocol", this.protocol);

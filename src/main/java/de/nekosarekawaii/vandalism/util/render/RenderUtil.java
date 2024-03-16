@@ -27,6 +27,7 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
@@ -64,9 +65,9 @@ public class RenderUtil {
             throw new IllegalArgumentException("Color can't be null.");
         }
         if (percent <= 0.5) {
-            return ColorUtils.colorInterpolate(minColor, midColor, percent * 2d);
+            return ColorUtils.colorInterpolate(minColor, midColor, MathHelper.clamp(percent * 2d, 0, 1));
         }
-        return ColorUtils.colorInterpolate(midColor, maxColor, (percent - 0.5) * 2d);
+        return ColorUtils.colorInterpolate(midColor, maxColor, MathHelper.clamp((percent - 0.5) * 2d, 0, 1));
     }
 
     public static Formatting getRandomColor() {

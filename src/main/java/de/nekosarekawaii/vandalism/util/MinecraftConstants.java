@@ -23,4 +23,8 @@ public class MinecraftConstants {
     // those constant gets used in shitty anti cheats with no proper collision handling, posY % const == 0 = ground True
     public static double MAGIC_ON_GROUND_MODULO_FACTOR = 0.015625;
 
+    public static int FIRST_SLOT_IN_HOTBAR = 36;
+
+    public static int LAST_SLOT_IN_HOTBAR = 44;
+
 }

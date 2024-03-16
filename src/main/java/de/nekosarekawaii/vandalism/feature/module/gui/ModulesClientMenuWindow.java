@@ -40,13 +40,11 @@ import net.minecraft.client.gui.DrawContext;
 import net.raphimc.vialoader.util.VersionRange;
 import org.lwjgl.glfw.GLFW;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ModulesClientMenuWindow extends ClientMenuWindow {
-
-    public static final float[] ACTIVE_COLOR = new float[]{0.1f, 0.8f, 0.1f, 0.45f};
-    public static final float[] INACTIVE_COLOR = new float[]{0.8f, 0.1f, 0.1f, 0.45f};
 
     private final ImString searchInput = new ImString();
     private final ImString favoriteModulesSearchInput = new ImString();
@@ -160,21 +158,18 @@ public class ModulesClientMenuWindow extends ClientMenuWindow {
 
     private void renderModule(final AbstractModule module, final String id) {
         final String moduleId = "##" + id + module.getCategory().getName() + "module" + module.getName();
-        final float[] color;
-        if (module.isActive()) color = ACTIVE_COLOR;
-        else color = INACTIVE_COLOR;
-        final boolean moduleActivated = module.isActive();
-        if (moduleActivated) {
-            ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], color[3]);
-            ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], color[3] - 0.1f);
-            ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
+        final boolean isActive = module.isActive();
+        if (isActive) {
+            final Color color = Vandalism.getInstance().getClientSettings().getMenuSettings().activatedModuleColor.getColor();
+            final float[] colorArray = new float[]{ color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f };
+            ImGui.pushStyleColor(ImGuiCol.Button, colorArray[0], colorArray[1], colorArray[2], colorArray[3]);
+            ImGui.pushStyleColor(ImGuiCol.ButtonHovered, colorArray[0], colorArray[1], colorArray[2], colorArray[3]);
+            ImGui.pushStyleColor(ImGuiCol.ButtonActive, colorArray[0], colorArray[1], colorArray[2], colorArray[3]);
         }
         if (ImGui.button(module.getName() + moduleId + "togglebutton", -1, 25)) {
             module.toggle();
         }
-        if (moduleActivated) {
-            ImGui.popStyleColor(3);
-        }
+        if (isActive) ImGui.popStyleColor(3);
         final String popupId = module.getName() + " Module" + moduleId + "popup";
         if (ImGui.isItemClicked(ImGuiMouseButton.Right)) {
             ImGui.openPopup(popupId);

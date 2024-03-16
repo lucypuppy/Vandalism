@@ -42,6 +42,7 @@ import de.nekosarekawaii.vandalism.feature.module.impl.misc.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.elytraflight.ElytraFlightModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.FlightModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.jesus.JesusModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.nofall.NoFallModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.phase.PhaseModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.SpeedModule;
@@ -73,6 +74,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     private TickBaseModule tickBaseModule;
     private FullBrightModule fullBrightModule;
     private VehicleControlModule vehicleControlModule;
+    private ConsoleSpammerModule consoleSpammerModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
         this.configManager = configManager;
@@ -94,7 +96,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
             );
         }
         this.add(
-                new CraftCarryModule(),
                 this.modPacketBlockerModule = new ModPacketBlockerModule(),
                 this.exploitFixerModule = new ExploitFixerModule(),
                 this.trueSightModule = new TrueSightModule(),
@@ -105,8 +106,10 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.fullBrightModule = new FullBrightModule(),
                 this.killAuraModule = new KillAuraModule(),
                 this.tickBaseModule = new TickBaseModule(this.killAuraModule),
-                this.vehicleControlModule = new VehicleControlModule(),
                 new FakeLagModule(this.killAuraModule),
+                this.vehicleControlModule = new VehicleControlModule(),
+                this.consoleSpammerModule = new ConsoleSpammerModule(),
+                new CraftCarryModule(),
                 new BackTrackModule(),
                 new NoSlowModule(),
                 new PacketManagerModule(),
@@ -114,7 +117,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new BungeeCordSpooferModule(),
                 new GodModeModule(),
                 new BowSpammerModule(),
-                new ConsoleSpammerModule(),
                 new JoinLeaveModule(),
                 new AutoFishModule(),
                 new AutoRespawnModule(),
@@ -150,7 +152,11 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new ScaffoldModule(),
                 new NoteBotModule(),
                 new MiddleClickFriendsModule(),
-                new ResourcePackSpooferModule()
+                new ResourcePackSpooferModule(),
+                new AutoShieldModule(),
+                new EthanolModule(),
+                new BlockBreakerModule(),
+                new JesusModule()
         );
         this.configManager.add(new ModulesConfig(this));
     }
@@ -164,31 +170,31 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
     @Override
     public void onShutdownProcess() {
-        this.getList().stream().filter(m -> m.isActive() && m.isDeactivateOnShutdown()).forEach(AbstractModule::deactivate);
+        this.getList().stream().filter(module -> module.isActive() && module.isDeactivateOnShutdown()).forEach(AbstractModule::deactivate);
     }
 
     @Override
     public void onDisconnect(final ClientConnection clientConnection, final Text disconnectReason) {
         // There is a thing called pinging a server
         if (this.mc.getNetworkHandler() != null && Objects.equals(clientConnection, this.mc.getNetworkHandler().getConnection())) {
-            this.getList().stream().filter(m -> m.isActive() && m.isDeactivateOnQuit()).forEach(AbstractModule::deactivate);
+            this.getList().stream().filter(module -> module.isActive() && module.isDeactivateOnQuit()).forEach(AbstractModule::deactivate);
         }
     }
 
     @Override
     public void onPreWorldLoad() {
-        this.getList().stream().filter(m -> m.isActive() && m.isDeactivateOnWorldLoad()).forEach(AbstractModule::deactivate);
+        this.getList().stream().filter(module -> module.isActive() && module.isDeactivateOnWorldLoad()).forEach(AbstractModule::deactivate);
     }
 
     @Override
     public void onHealthUpdate(final HealthUpdateEvent event) {
         if (event.health <= 0.0F) {
-            this.getList().stream().filter(m -> m.isActive() && m.isDeactivateOnDeath()).forEach(AbstractModule::deactivate);
+            this.getList().stream().filter(module -> module.isActive() && module.isDeactivateOnDeath()).forEach(AbstractModule::deactivate);
         }
     }
 
     public List<AbstractModule> getByCategory(final Feature.Category category) {
-        return this.getList().stream().filter(abstractModule -> abstractModule.getCategory() == category).toList();
+        return this.getList().stream().filter(module -> module.getCategory() == category).toList();
     }
 
     public ModPacketBlockerModule getModPacketBlockerModule() {
@@ -229,6 +235,10 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
     public VehicleControlModule getVehicleControlModule() {
         return vehicleControlModule;
+    }
+
+    public ConsoleSpammerModule getConsoleSpammerModule() {
+        return consoleSpammerModule;
     }
 
 }

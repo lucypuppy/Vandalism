@@ -16,40 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.game;
+package de.nekosarekawaii.vandalism.util.common;
 
-import de.florianmichael.rclasses.math.timer.MSTimer;
+public class ArrayUtil {
 
-public class ParticleTracker {
-
-    private final String particleId;
-    private final MSTimer timer;
-    private int count;
-
-    public ParticleTracker(final String particleId) {
-        this.particleId = particleId;
-        this.timer = new MSTimer();
-        this.count = 1;
-    }
-
-    public String getParticleId() {
-        return this.particleId;
-    }
-
-    public void increaseCount() {
-        this.count++;
-    }
-
-    public void resetCount() {
-        this.count = 1;
-    }
-
-    public MSTimer getTimer() {
-        return this.timer;
-    }
-
-    public int getCount() {
-        return this.count;
+    public static <T> T last(final T[] array) {
+        return array[array.length - 1];
     }
 
 }

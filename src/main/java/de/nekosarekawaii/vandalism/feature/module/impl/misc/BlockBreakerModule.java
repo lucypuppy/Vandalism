@@ -1,0 +1,183 @@
+/*
+ * This file is part of Vandalism - https://github.com/VandalismDevelopment/Vandalism
+ * Copyright (C) 2023-2024 NekosAreKawaii, Verschlxfene, FooFieOwO and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package de.nekosarekawaii.vandalism.feature.module.impl.misc;
+
+import de.florianmichael.rclasses.math.timer.MSTimer;
+import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
+
+public class BlockBreakerModule extends AbstractModule implements PlayerUpdateListener, IncomingPacketListener {
+
+    private final MultiRegistryValue<Block> affectedBlocks = new MultiRegistryValue<>(
+            this,
+            "Blocks",
+            "Change the blocks that are affected by this module.",
+            Registries.BLOCK,
+            Registries.BLOCK.stream().toArray(Block[]::new)
+    );
+    private final IntegerValue scanRange = new IntegerValue(this, "Scan Range",
+            "The range where the block breaker breaks blocks", 4, 3, 10);
+
+    private final BooleanValue checkBreak = new BooleanValue(this, "Check Break",
+            "Check if the block is really broken", true);
+    private final IntegerValue checkTime = new IntegerValue(this, "Max Check Time",
+            "The max time for checking if the bed is really destroyed",
+            100, 50, 2000).visibleCondition(this.checkBreak::getValue);
+
+    private BlockPos bestBedPos = null;
+    private boolean checkBedStatus = false;
+    private final MSTimer checkTimer = new MSTimer();
+
+    public BlockBreakerModule() {
+        super("Block Breaker", "Automatically breaks selected blocks around you.", Category.MISC);
+    }
+
+    @Override
+    public void onActivate() {
+        this.checkBedStatus = false;
+        this.bestBedPos = null;
+        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, IncomingPacketEvent.ID);
+    }
+
+    @Override
+    public void onDeactivate() {
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, IncomingPacketEvent.ID);
+    }
+
+    @Override
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        if (this.bestBedPos == null) {
+            final int scanRange = this.scanRange.getValue();
+
+            double nearest = -1;
+            for (int x = -scanRange; x < scanRange; x++) {
+                for (int y = -scanRange; y < scanRange; y++) {
+                    for (int z = -scanRange; z < scanRange; z++) {
+                        final BlockPos pos = mc.player.getBlockPos().mutableCopy().add(x, y, z);
+                        final BlockState blockState = mc.world.getBlockState(pos);
+
+                        if (this.affectedBlocks.isSelected(blockState.getBlock())) {
+                            final double distance = mc.player.getPos().distanceTo(new Vec3d(pos.getX(), pos.getY(), pos.getZ()));
+
+                            if (nearest == -1 || nearest > distance) {
+                                this.bestBedPos = pos;
+                                nearest = distance;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Sanity Check
+        if (this.bestBedPos == null) {
+            return;
+        }
+
+        if (this.checkBedStatus) {
+            if (this.checkTimer.hasReached(this.checkTime.getValue())) {
+                ChatUtil.infoChatMessage("Bed successfully broken.");
+                this.checkBedStatus = false;
+                this.bestBedPos = null;
+            }
+
+            return;
+        }
+
+        final BlockState state = mc.world.getBlockState(this.bestBedPos);
+        final Direction direction = Direction.getFacing(this.bestBedPos.getX(), this.bestBedPos.getY(), this.bestBedPos.getZ());
+
+        if (direction == null) {
+            return;
+        }
+
+        // Interact with the bed to check if its really broken.
+        if (state.isAir()) {
+            if (this.checkBreak.getValue()) {
+                this.checkBedStatus = true;
+                this.checkTimer.reset();
+                interactBed(direction); // Interact for a block update
+            } else {
+                ChatUtil.infoChatMessage("Bed successfully broken.");
+                this.checkBedStatus = false; // Reset check.
+                this.bestBedPos = null;
+            }
+
+            return;
+        }
+
+        breakBed(direction);
+    }
+
+    @Override
+    public void onIncomingPacket(IncomingPacketEvent event) {
+        final Packet<?> packet = event.packet;
+
+        if (!this.checkBedStatus)
+            return;
+
+        if (packet instanceof final BlockUpdateS2CPacket blockUpdateS2CPacket) {
+            final BlockPos pos = blockUpdateS2CPacket.getPos();
+            final BlockState state = blockUpdateS2CPacket.getState();
+
+            if (pos.equals(this.bestBedPos) && this.affectedBlocks.isSelected(state.getBlock())) {
+                toggle();
+
+                ChatUtil.infoChatMessage("Failed to break bed, bed is protected.");
+                this.checkBedStatus = false;
+                this.bestBedPos = null;
+            }
+        }
+    }
+
+    private void breakBed(final Direction direction) {
+        if (mc.player.isCreative()) {
+            mc.interactionManager.attackBlock(bestBedPos, direction);
+            return;
+        }
+
+        if (mc.interactionManager.updateBlockBreakingProgress(bestBedPos, direction)) {
+            mc.player.swingHand(Hand.MAIN_HAND);
+            mc.particleManager.addBlockBreakingParticles(bestBedPos, direction);
+        }
+    }
+
+    private void interactBed(final Direction direction) {
+        final Vec3d pos = new Vec3d(this.bestBedPos.getX(), this.bestBedPos.getY(), this.bestBedPos.getZ());
+        final BlockHitResult blockHitResult = new BlockHitResult(pos, direction, this.bestBedPos, false);
+        mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, blockHitResult);
+    }
+
+}

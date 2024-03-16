@@ -24,8 +24,6 @@ import java.util.List;
 
 public class ServerInfoResponse extends Response {
 
-    public String error;
-
     public Boolean cracked;
     public String description;
     public Integer last_seen;

@@ -54,11 +54,9 @@ public class PlayerDiscoveryClientMenuWindow extends ClientMenuWindow {
 
         @Override
         public void accept(final ImGuiInputTextCallbackData imGuiInputTextCallbackData) {
-            if (imGuiInputTextCallbackData.getEventChar() == 0) return;
-            if (
-                    !Character.isLetterOrDigit(imGuiInputTextCallbackData.getEventChar()) &&
-                            imGuiInputTextCallbackData.getEventChar() != '_'
-            ) {
+            final int eventChar = imGuiInputTextCallbackData.getEventChar();
+            if (eventChar == 0) return;
+            if (!Character.isLetterOrDigit(eventChar) && eventChar != '_' && eventChar != '§' && eventChar != '.') {
                 imGuiInputTextCallbackData.setEventChar((char) 0);
             }
         }

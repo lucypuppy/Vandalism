@@ -37,7 +37,6 @@ import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
 import net.minecraft.client.network.MultiplayerServerListPinger;
-import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.ServerList;
 import net.minecraft.screen.ScreenTexts;
@@ -134,12 +133,9 @@ public class ServerPingerWidget implements MinecraftWrapper {
             currentServerInfo.playerListSummary = Collections.emptyList();
             currentServerInfo.setFavicon(null);
             setServerInfo(currentServerInfo);
-            final ServerAddress serverAddress = ServerAddress.parse(currentServerInfo.address);
-            final String resolvedAddress = serverAddress.getAddress();
-            final int resolvedPort = serverAddress.getPort();
             final int serverPingerWidgetDelay = enhancedServerListSettings.serverPingerWidgetDelay.getValue();
             MCPing.pingModern(SharedConstants.getProtocolVersion())
-                    .address(resolvedAddress, resolvedPort)
+                    .address(currentServerInfo.address)
                     .timeout(serverPingerWidgetDelay, serverPingerWidgetDelay)
                     .exceptionHandler(t -> {
                         currentServerInfo.ping = -1L;

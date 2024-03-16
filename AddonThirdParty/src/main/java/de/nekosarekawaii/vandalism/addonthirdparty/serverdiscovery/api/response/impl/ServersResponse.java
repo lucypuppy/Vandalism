@@ -24,8 +24,6 @@ import java.util.List;
 
 public class ServersResponse extends Response {
 
-    public String error;
-
     public static class Server {
 
         public String server;
