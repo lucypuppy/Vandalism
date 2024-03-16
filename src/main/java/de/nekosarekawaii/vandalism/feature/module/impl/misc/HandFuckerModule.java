@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
@@ -36,11 +37,12 @@ import java.util.List;
 public class HandFuckerModule extends AbstractModule implements PlayerUpdateListener, IncomingPacketListener {
 
     private final IntegerValue delay = new IntegerValue(this, "Delay", "Delay of the hand switch", 1_000, 1, 2_000);
+    private final BooleanValue annoyMe = new BooleanValue(this, "Annoy me", "Annoy me please", false);
     private long lastUpdate;
     private Arm arm;
 
     public HandFuckerModule() {
-        super("HandFucker", "Switches hands server-side.", Category.MISC); // TODO Version range
+        super("Hand Fucker", "Switches hands server-side.", Category.MISC); // TODO Version range
         this.lastUpdate = 0L;
         this.deactivateOnQuitDefault();
     }
@@ -72,6 +74,9 @@ public class HandFuckerModule extends AbstractModule implements PlayerUpdateList
 
     @Override
     public void onIncomingPacket(final IncomingPacketEvent event) {
+        if (this.annoyMe.getValue())
+            return;
+
         if (event.packet instanceof GameJoinS2CPacket joinPacket) {
             this.entityId = joinPacket.playerEntityId();
         }
