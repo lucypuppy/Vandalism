@@ -16,44 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.impl.movement;
+package de.nekosarekawaii.vandalism.feature.module.impl.movement.jesus.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.normal.network.BlockCollisionShapeListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import net.minecraft.block.Block;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.jesus.JesusModule;
+import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.registry.Registries;
-import net.minecraft.state.property.Properties;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.WaterFluid;
 import net.minecraft.util.shape.VoxelShapes;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class BlockNormalizerModule extends AbstractModule implements BlockCollisionShapeListener {
-
-    private static final List<Block> PRESET_BLOCKS = new ArrayList<>();
-
-    static {
-        PRESET_BLOCKS.add(Blocks.CACTUS);
-        PRESET_BLOCKS.add(Blocks.SWEET_BERRY_BUSH);
-        PRESET_BLOCKS.add(Blocks.POWDER_SNOW);
-        PRESET_BLOCKS.add(Blocks.COBWEB);
-        PRESET_BLOCKS.add(Blocks.POINTED_DRIPSTONE);
-        PRESET_BLOCKS.add(Blocks.BIG_DRIPLEAF);
-    }
-
-    private final MultiRegistryValue<Block> affectedBlocks = new MultiRegistryValue<>(
-            this,
-            "Blocks",
-            "Change the blocks that are affected by this module.",
-            Registries.BLOCK,
-            PRESET_BLOCKS,
-            PRESET_BLOCKS.toArray(Block[]::new)
-    );
+public class StaticModuleMode extends ModuleMulti<JesusModule> implements BlockCollisionShapeListener {
 
     private final BooleanValue disableOnSneak = new BooleanValue(
             this,
@@ -62,12 +37,8 @@ public class BlockNormalizerModule extends AbstractModule implements BlockCollis
             true
     );
 
-    public BlockNormalizerModule() {
-        super(
-                "Block Normalizer",
-                "Changes the collision shape of certain blocks to full block shapes.",
-                Category.MOVEMENT
-        );
+    public StaticModuleMode() {
+        super("Static");
     }
 
     @Override
@@ -86,9 +57,21 @@ public class BlockNormalizerModule extends AbstractModule implements BlockCollis
             return;
         }
         final BlockState state = event.state;
-        final boolean isWaterLogged = state.contains(Properties.WATERLOGGED) && state.get(Properties.WATERLOGGED);
-        if ((this.affectedBlocks.isSelected(state.getBlock())) && !isWaterLogged) {
-            event.shape = VoxelShapes.cuboid(0, 0, 0, 1, 1, 1);
+        final FluidState fluidState = state.getFluidState();
+        if (event.pos.getY() < this.mc.player.getY() && !fluidState.isEmpty()) {
+            final double minX = 0, minY = 0, minZ = 0, maxX = 1, maxZ = 1;
+            double maxY = 1;
+            if (fluidState.getFluid() instanceof WaterFluid && (this.mc.player.isOnFire() || this.mc.player.fallDistance >= 2)) {
+                maxY = 0.59;
+            }
+            event.shape = VoxelShapes.cuboid(
+                    minX,
+                    minY,
+                    minZ,
+                    maxX,
+                    maxY,
+                    maxZ
+            );
         }
     }
 
