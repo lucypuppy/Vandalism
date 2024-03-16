@@ -54,8 +54,8 @@ public class VulcanModuleMode extends ModuleMulti<JesusModule> implements BlockC
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (!this.mc.world.getBlockState(this.mc.player.getBlockPos()).getFluidState().isEmpty()) {
             final Vec3d velocity = MovementUtil.setSpeed(0.3);
-            mc.player.setVelocity(velocity.x, Math.random() * 0.6, velocity.z);
-            mc.options.sprintKey.setPressed(false);
+            this.mc.player.setVelocity(velocity.x, Math.random() * 0.6, velocity.z);
+            this.mc.options.sprintKey.setPressed(false);
         }
     }
 
