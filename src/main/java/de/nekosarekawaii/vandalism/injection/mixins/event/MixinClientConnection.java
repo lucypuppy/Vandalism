@@ -86,7 +86,7 @@ public abstract class MixinClientConnection {
             return;
         }
 
-        final var event = new OutgoingPacketListener.OutgoingPacketEvent(packet, ((NetworkState.PacketHandler) this.channel.attr(SERVERBOUND_PROTOCOL_KEY).get()).getState(), (ClientConnection) (Object) this);
+        final var event = new OutgoingPacketListener.OutgoingPacketEvent(packet, this.channel.attr(SERVERBOUND_PROTOCOL_KEY).get().getState(), (ClientConnection) (Object) this);
         Vandalism.getInstance().getEventSystem().postInternal(OutgoingPacketListener.OutgoingPacketEvent.ID, event);
         if (event.isCancelled()) {
             ci.cancel();
