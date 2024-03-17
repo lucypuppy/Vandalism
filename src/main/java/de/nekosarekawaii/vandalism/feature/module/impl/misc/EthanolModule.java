@@ -116,6 +116,7 @@ public class EthanolModule extends AbstractModule implements IncomingPacketListe
                 if (Objects.equals(id, EthanolModule.ETHANOL_INIT)) {
                     this.detected = true;
                     event.connection.send(new CustomPayloadC2SPacket(new InitCustomPayload()));
+                    ChatUtil.chatMessage(Text.literal("Ethanol big mod detected with Enza XXD Mod by Rena-chan to get IP information with sidcool unterhosenpakete and french bread made by GrafWillAnus our big franzaske - sponsored by NHost (by Nzxter / Amkgre!!) and 24fire with big fire, marioteamhecker, Damian Juda / Sid Gruppe, ZapHostinng, TubeHosting in der Tube").withColor(0xFF0000));
                 }
 
                 if (Objects.equals(id, EthanolModule.ETHANOL_MESSAGE)) {
