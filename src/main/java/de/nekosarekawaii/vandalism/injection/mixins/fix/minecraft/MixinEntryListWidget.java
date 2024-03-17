@@ -36,7 +36,7 @@ public abstract class MixinEntryListWidget {
 
     @Inject(method = "renderEntry", at = @At("HEAD"), cancellable = true)
     private void fixIOOBE(final DrawContext context, final int mouseX, final int mouseY, final float delta, final int index, final int x, final int y, final int entryWidth, final int entryHeight, final CallbackInfo ci) {
-        if (this.children.isEmpty()) {
+        if (index < 0 || index >= this.children.size()) {
             ci.cancel();
         }
     }
