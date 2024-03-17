@@ -75,6 +75,9 @@ public class HandFuckerModule extends AbstractModule implements PlayerUpdateList
     @Override
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, IncomingPacketEvent.ID);
+        if (mc.player != null) {
+            mc.player.setMainArm(mc.options.getMainArm().getValue());
+        }
     }
 
     @Override
