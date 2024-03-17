@@ -48,12 +48,22 @@ public class EthanolModule extends AbstractModule implements IncomingPacketListe
     private static final Identifier ETHANOL_COMMAND = new Identifier("ethanol", "command");
     private static final Identifier ETHANOL_VANISH = new Identifier("ethanol", "vanish");
 
-    private final StringValue commandPrefix = new StringValue(this, "Command prefix", "Ethanol command prefix.", "-");
+    private final StringValue commandPrefix = new StringValue(
+            this,
+            "Command prefix",
+            "Ethanol command prefix.",
+            "-"
+    );
+
     private boolean detected;
     private boolean vanished;
 
     public EthanolModule() {
-        super("Ethanol", "Ethanol backdoor implementation.", Category.MISC);
+        super(
+                "Ethanol",
+                "Ethanol plugin implementation.",
+                Category.MISC
+        );
         this.detected = false;
         this.vanished = false;
     }
@@ -75,11 +85,25 @@ public class EthanolModule extends AbstractModule implements IncomingPacketListe
         if (this.detected) {
             {
                 final Text text = Text.literal("Ethanol detected");
-                context.drawText(mc.textRenderer, text, context.getScaledWindowWidth() - mc.textRenderer.getWidth(text), context.getScaledWindowHeight() - mc.textRenderer.fontHeight, 0xFFFFFF, true);
+                context.drawText(
+                        mc.textRenderer,
+                        text,
+                        context.getScaledWindowWidth() - mc.textRenderer.getWidth(text),
+                        context.getScaledWindowHeight() - mc.textRenderer.fontHeight,
+                        0xFFFFFF,
+                        true
+                );
             }
             if (this.vanished) {
                 final Text text = Text.literal("Vanished").withColor(0xFF0000);
-                context.drawText(mc.textRenderer, text, context.getScaledWindowWidth() - mc.textRenderer.getWidth(text), context.getScaledWindowHeight() - (mc.textRenderer.fontHeight * 2), 0xFFFFFF, true);
+                context.drawText(
+                        mc.textRenderer,
+                        text,
+                        context.getScaledWindowWidth() - mc.textRenderer.getWidth(text),
+                        context.getScaledWindowHeight() - (mc.textRenderer.fontHeight * 2),
+                        0xFFFFFF,
+                        true
+                );
             }
         }
     }
@@ -91,7 +115,6 @@ public class EthanolModule extends AbstractModule implements IncomingPacketListe
                 final Identifier id = payload.id();
                 if (Objects.equals(id, EthanolModule.ETHANOL_INIT)) {
                     this.detected = true;
-                    ChatUtil.chatMessage(Text.literal("Ethanol big mod detected with Enza XXD Mod by Rena-chan to get IP information with sidcool unterhosenpakete and french bread made by GrafWillAnus our big franzaske - sponsored by NHost (by Nzxter / Amkgre!!) and 24fire with big fire, marioteamhecker, Damian Juda / Sid Gruppe, ZapHostinng, TubeHosting in der Tube").withColor(0xFF0000));
                     event.connection.send(new CustomPayloadC2SPacket(new InitCustomPayload()));
                 }
 
@@ -108,14 +131,13 @@ public class EthanolModule extends AbstractModule implements IncomingPacketListe
 
     @Override
     public void onOutgoingPacket(final OutgoingPacketEvent event) {
-        if (!this.detected)
-            return;
+        if (!this.detected) return;
 
         if (event.packet instanceof ChatMessageC2SPacket packet) {
             final String message = packet.chatMessage();
             final String prefix = this.commandPrefix.getValue();
             if (message.startsWith(prefix)) {
-                mc.player.networkHandler.sendPacket(new CustomPayloadC2SPacket(new CommandCustomPayload(message.substring(prefix.length()))));
+                mc.getNetworkHandler().sendPacket(new CustomPayloadC2SPacket(new CommandCustomPayload(message.substring(prefix.length()))));
                 event.setCancelled(true);
             }
         }
@@ -146,7 +168,7 @@ public class EthanolModule extends AbstractModule implements IncomingPacketListe
         }
     }
 
-    public static class InitCustomPayload implements CustomPayload {
+    private static class InitCustomPayload implements CustomPayload {
 
         @Override
         public void write(final PacketByteBuf buf) {
@@ -157,4 +179,5 @@ public class EthanolModule extends AbstractModule implements IncomingPacketListe
             return EthanolModule.ETHANOL_INIT;
         }
     }
+
 }

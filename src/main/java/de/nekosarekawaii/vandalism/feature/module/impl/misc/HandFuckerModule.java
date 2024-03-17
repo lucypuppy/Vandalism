@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
@@ -29,19 +30,38 @@ import net.minecraft.network.packet.c2s.common.ClientOptionsC2SPacket;
 import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
 import net.minecraft.network.packet.s2c.play.EntityTrackerUpdateS2CPacket;
 import net.minecraft.util.Arm;
+import net.raphimc.vialoader.util.VersionRange;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HandFuckerModule extends AbstractModule implements PlayerUpdateListener, IncomingPacketListener {
 
-    private final IntegerValue delay = new IntegerValue(this, "Delay", "Delay of the hand switch (in ticks)", 20, 1, 80);
-    private final BooleanValue annoyMe = new BooleanValue(this, "Annoy me", "Annoy me please", false);
+    private final IntegerValue delay = new IntegerValue(
+            this, "Delay",
+            "Delay of the hand switch.",
+            20,
+            1,
+            80
+    );
+
+    private final BooleanValue annoyMe = new BooleanValue(
+            this,
+            "Annoy me",
+            "Annoy me please.",
+            false
+    );
+
     private long partialTicks;
     private Arm arm;
 
     public HandFuckerModule() {
-        super("Hand Fucker", "Switches hands server-side.", Category.MISC); // TODO Version range
+        super(
+                "Hand Fucker",
+                "Switches hands server-side.",
+                Category.MISC,
+                VersionRange.andNewer(ProtocolVersion.v1_9)
+        );
         this.partialTicks = 0L;
         this.deactivateOnQuitDefault();
     }
@@ -64,7 +84,16 @@ public class HandFuckerModule extends AbstractModule implements PlayerUpdateList
             this.partialTicks = 0;
             final SyncedClientOptions options = mc.options.getSyncedOptions();
             this.arm = this.arm.getOpposite();
-            mc.player.networkHandler.sendPacket(new ClientOptionsC2SPacket(new SyncedClientOptions(options.language(), options.viewDistance(), options.chatVisibility(), options.chatColorsEnabled(), options.playerModelParts(), this.arm, options.filtersText(), options.allowsServerListing())));
+            mc.player.networkHandler.sendPacket(new ClientOptionsC2SPacket(new SyncedClientOptions(
+                    options.language(),
+                    options.viewDistance(),
+                    options.chatVisibility(),
+                    options.chatColorsEnabled(),
+                    options.playerModelParts(),
+                    this.arm,
+                    options.filtersText(),
+                    options.allowsServerListing()
+            )));
         }
     }
 
@@ -85,4 +114,5 @@ public class HandFuckerModule extends AbstractModule implements PlayerUpdateList
             }
         }
     }
+
 }
