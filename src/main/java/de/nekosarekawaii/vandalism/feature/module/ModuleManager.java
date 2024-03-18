@@ -22,7 +22,7 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.florianmichael.rclasses.pattern.storage.named.NamedStorage;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
-import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
+import de.nekosarekawaii.vandalism.clientwindow.ClientWindowManager;
 import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.event.normal.game.ShutdownProcessListener;
 import de.nekosarekawaii.vandalism.event.normal.network.DisconnectListener;
@@ -31,7 +31,7 @@ import de.nekosarekawaii.vandalism.event.normal.player.HealthUpdateListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.config.ModulesConfig;
-import de.nekosarekawaii.vandalism.feature.module.gui.ModulesClientMenuWindow;
+import de.nekosarekawaii.vandalism.feature.module.gui.ModulesClientWindow;
 import de.nekosarekawaii.vandalism.feature.module.impl.combat.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.consolespammer.ConsoleSpammerModule;
@@ -76,9 +76,9 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     private VehicleControlModule vehicleControlModule;
     private ConsoleSpammerModule consoleSpammerModule;
 
-    public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
+    public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientWindowManager clientWindowManager) {
         this.configManager = configManager;
-        clientMenuManager.add(new ModulesClientMenuWindow());
+        clientWindowManager.add(new ModulesClientWindow());
         eventSystem.subscribe(
                 this,
                 KeyboardInputEvent.ID, ShutdownProcessEvent.ID,
