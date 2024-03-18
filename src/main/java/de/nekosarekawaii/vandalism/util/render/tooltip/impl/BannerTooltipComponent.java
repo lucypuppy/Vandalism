@@ -1,6 +1,6 @@
 /*
  * This file is part of Vandalism - https://github.com/VandalismDevelopment/Vandalism
- * Copyright (C) 2023-2024 NekosAreKawaii, Verschlxfene, FooFieOwO and contributors
+ * Copyright (C) 2023-2024 NekosAreKawaii, FooFieOwO and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@
 
 package de.nekosarekawaii.vandalism.util.render.tooltip.impl;
 
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.tooltip.ConvertibleTooltipData;
+import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.block.entity.BannerBlockEntity;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
