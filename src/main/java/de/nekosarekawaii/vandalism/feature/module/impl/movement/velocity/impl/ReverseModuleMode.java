@@ -1,6 +1,6 @@
 /*
  * This file is part of Vandalism - https://github.com/VandalismDevelopment/Vandalism
- * Copyright (C) 2023-2024 NekosAreKawaii, Verschlxfene, FooFieOwO and contributors
+ * Copyright (C) 2023-2024 NekosAreKawaii, FooFieOwO and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
+import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.VelocityModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;

@@ -1,6 +1,6 @@
 /*
  * This file is part of Vandalism - https://github.com/VandalismDevelopment/Vandalism
- * Copyright (C) 2023-2024 NekosAreKawaii, Verschlxfene, FooFieOwO and contributors
+ * Copyright (C) 2023-2024 NekosAreKawaii, FooFieOwO and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,9 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.render.TextDrawListener;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
+import de.nekosarekawaii.vandalism.event.normal.render.TextDrawListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.client.session.Session;
 import org.apache.commons.lang3.StringUtils;
