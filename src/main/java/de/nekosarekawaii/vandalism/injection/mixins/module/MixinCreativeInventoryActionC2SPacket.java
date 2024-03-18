@@ -18,25 +18,25 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.module;
 
-import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.module.impl.exploit.consolespammer.impl.IdentifierModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.consolespammer.impl.NBTModuleMode;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.c2s.play.RecipeBookDataC2SPacket;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(RecipeBookDataC2SPacket.class)
-public abstract class MixinRecipeBookDataC2SPacket {
+@Mixin(CreativeInventoryActionC2SPacket.class)
+public abstract class MixinCreativeInventoryActionC2SPacket {
 
-    @Redirect(method = "write", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/PacketByteBuf;writeIdentifier(Lnet/minecraft/util/Identifier;)Lnet/minecraft/network/PacketByteBuf;"))
-    private PacketByteBuf hookConsoleSpammer(final PacketByteBuf instance, final Identifier id) {
-        if (IdentifierModuleMode.IDENTIFIER.equals(id)) {
-            final IdentifierModuleMode identifierModuleMode = (IdentifierModuleMode) Vandalism.getInstance().getModuleManager().getConsoleSpammerModule().mode.getValue();
-            return instance.writeString(identifierModuleMode.consoleString());
+    @Redirect(method = "write", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/PacketByteBuf;writeItemStack(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/network/PacketByteBuf;"))
+    private PacketByteBuf hookConsoleSpammer(final PacketByteBuf instance, final ItemStack stack) {
+        final NbtCompound nbt = stack.getNbt();
+        if (stack.hasNbt() && nbt != null && nbt.contains(NBTModuleMode.MARKER)) {
+            return NBTModuleMode.writeBuf(instance, nbt.getString(NBTModuleMode.MARKER));
         }
-        return instance.writeIdentifier(id);
+        return instance.writeItemStack(stack);
     }
 
 }
