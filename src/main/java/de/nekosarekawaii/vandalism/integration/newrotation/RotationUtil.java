@@ -34,7 +34,7 @@ public class RotationUtil implements MinecraftWrapper {
         return 1.0f - (diff / (yaw ? 180.0f : 90.0f));
     }
 
-    //  correlation can overaim/underaim, i recomend to set it at around 0.2f
+    // correlation can overaim/underaim, i recomend to set it at around 0.2f
     public static Rotation rotationDistribution(Rotation rotation, final Rotation lastRotation, final float rotateSpeed,
                                                 final float correlationStrength) {
         if (rotateSpeed > 0) {
@@ -50,11 +50,11 @@ public class RotationUtil implements MinecraftWrapper {
                 final double maxYaw = rotateSpeed * distributionYaw;
                 final double maxPitch = rotateSpeed * distributionPitch;
 
-                //  Introduce correlation between yaw and pitch
+                // Introduce correlation between yaw and pitch
                 final float moveYaw = (float) Math.max(Math.min(deltaYaw, maxYaw), -maxYaw);
                 final float movePitch = (float) Math.max(Math.min(deltaPitch, maxPitch), -maxPitch);
 
-                //  Apply correlation (reverse the effect)
+                // Apply correlation (reverse the effect)
                 float correlatedMoveYaw = moveYaw;
                 float correlatedMovePitch = movePitch;
 

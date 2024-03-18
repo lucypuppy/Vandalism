@@ -18,8 +18,6 @@
 
 package de.nekosarekawaii.vandalism.util.game;
 
-import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.internal.TargetListener;
 import de.nekosarekawaii.vandalism.injection.access.IGameRenderer;
 import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
 import net.minecraft.entity.Entity;
@@ -113,12 +111,6 @@ public class WorldUtil implements MinecraftWrapper {
                 RaycastContext.FluidHandling.NONE,
                 mc.player
         ));
-    }
-
-    public static boolean isTarget(final Entity entity) {
-        final var event = new TargetListener.TargetEvent(entity);
-        Vandalism.getInstance().getEventSystem().postInternal(TargetListener.TargetEvent.ID, event);
-        return event.isTarget;
     }
 
     public static boolean isOnGround(final double offset) {

@@ -35,6 +35,7 @@ import de.nekosarekawaii.vandalism.integration.friends.FriendsManager;
 import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
 import de.nekosarekawaii.vandalism.integration.newrotation.RotationManager;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerListManager;
+import de.nekosarekawaii.vandalism.integration.target.TargetManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -112,13 +113,14 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     private RotationManager rotationManager;
     private ServerListManager serverListManager;
     private FriendsManager friendsManager;
+    private CreativeTabManager creativeTabManager;
+    private HUDManager hudManager;
+    private TargetManager targetManager;
 
     // Features
     private ModuleManager moduleManager;
     private CommandManager commandManager;
     private ScriptManager scriptManager;
-    private CreativeTabManager creativeTabManager;
-    private HUDManager hudManager;
 
     public void printStartup() {
         this.logger.info("");
@@ -173,6 +175,14 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
         this.friendsManager = new FriendsManager(this.configManager);
 
+        this.creativeTabManager = new CreativeTabManager();
+        this.creativeTabManager.init();
+
+        this.hudManager = new HUDManager(this.configManager, this.clientWindowManager, this.runDirectory);
+        this.hudManager.init();
+
+        this.targetManager = new TargetManager();
+
         // Features
         this.moduleManager = new ModuleManager(this.eventSystem, this.configManager, this.clientWindowManager);
         this.moduleManager.init();
@@ -183,14 +193,8 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.scriptManager = new ScriptManager(this.configManager, this.clientWindowManager, this.runDirectory);
         this.scriptManager.init();
 
-        this.creativeTabManager = new CreativeTabManager();
-        this.creativeTabManager.init();
-
-        this.hudManager = new HUDManager(this.configManager, this.clientWindowManager, this.runDirectory);
-        this.hudManager.init();
-
-        //  Cause of the menu category button order this needs to be called
-        //  after every default menu has been added and before the addons are loaded
+        // Cause of the menu category button order this needs to be called
+        // after every default menu has been added and before the addons are loaded
         this.clientWindowManager.init();
 
         VandalismAddonLauncher.call(addon -> addon.onLaunch(this));
@@ -278,6 +282,10 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
     public FriendsManager getFriendsManager() {
         return friendsManager;
+    }
+
+    public TargetManager getTargetManager() {
+        return targetManager;
     }
 
 }

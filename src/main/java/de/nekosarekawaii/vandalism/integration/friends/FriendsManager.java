@@ -39,7 +39,7 @@ public class FriendsManager extends Storage<Friend> implements TargetListener, T
 
     @Override
     public void init() {
-        //  No op
+        
     }
 
     @Override

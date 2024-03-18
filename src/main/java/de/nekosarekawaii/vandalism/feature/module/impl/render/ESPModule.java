@@ -18,11 +18,11 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryBlacklistValue;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.Item;
@@ -65,7 +65,7 @@ public class ESPModule extends AbstractModule {
     }
 
     public boolean isTarget(final Entity entity) {
-        return WorldUtil.isTarget(entity) || entity instanceof final ItemEntity itemEntity && this.itemList.isSelected(itemEntity.getStack().getItem()) && this.items.getValue();
+        return Vandalism.getInstance().getTargetManager().isTarget(entity) || entity instanceof final ItemEntity itemEntity && this.itemList.isSelected(itemEntity.getStack().getItem()) && this.items.getValue();
     }
 
 }
