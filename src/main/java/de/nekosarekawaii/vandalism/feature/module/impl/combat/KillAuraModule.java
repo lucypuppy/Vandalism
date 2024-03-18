@@ -37,10 +37,11 @@ import de.nekosarekawaii.vandalism.event.normal.player.RotationListener;
 import de.nekosarekawaii.vandalism.event.normal.render.Render2DListener;
 import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
-import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
-import de.nekosarekawaii.vandalism.integration.rotation.enums.HitBoxSelectMode;
-import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
+import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
+import de.nekosarekawaii.vandalism.integration.newrotation.RotationBuilder;
+import de.nekosarekawaii.vandalism.integration.newrotation.RotationManager;
+import de.nekosarekawaii.vandalism.integration.newrotation.RotationUtil;
+import de.nekosarekawaii.vandalism.integration.newrotation.enums.RotationPriority;
 import de.nekosarekawaii.vandalism.util.click.ClickType;
 import de.nekosarekawaii.vandalism.util.click.Clicker;
 import de.nekosarekawaii.vandalism.util.click.impl.BezierClicker;
@@ -287,13 +288,40 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             1.0f
     );
 
-    private final IntegerValue aimPoints = new IntegerValue(
+    private final FloatValue gravitationalForce = new FloatValue(
             this.rotationGroup,
-            "Aim Points",
-            "The amount of aim points (higher values can cause lag).",
-            32,
-            1,
-            100
+            "Gravitational Force",
+            "The strength pf the Gravitational Force.",
+            9f,
+            0.0f,
+            20.0f
+    );
+
+    private final FloatValue windForceMagnitude = new FloatValue(
+            this.rotationGroup,
+            "Wind Force Magnitude",
+            "The strength of the Wind Force Magnitude.",
+            3f,
+            0.0f,
+            20.0f
+    );
+
+    private final FloatValue maxStepSize = new FloatValue(
+            this.rotationGroup,
+            "Wax Step Size",
+            "The Max Step Size.",
+            15f,
+            0.0f,
+            20.0f
+    );
+
+    private final FloatValue distanceThreshold = new FloatValue(
+            this.rotationGroup,
+            "Distance threshold",
+            "The Distance Threshold.",
+            12f,
+            0.0f,
+            20.0f
     );
 
     private final SeparatorValue movementFixSeparator = new SeparatorValue(
@@ -378,7 +406,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
     private long lastPossibleHit = -1;
 
-    private final de.nekosarekawaii.vandalism.integration.rotation.RotationListener rotationListener;
+    private final RotationManager rotationManager;
 
     public boolean isBlocking = false;
 
@@ -389,7 +417,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 Category.COMBAT
         );
 
-        this.rotationListener = Vandalism.getInstance().getRotationListener();
+        this.rotationManager = Vandalism.getInstance().getRotationManager();
         this.updateClicker(this.clickType.getValue().getClicker());
 
         this.deactivateAfterSessionDefault();
@@ -411,7 +439,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 PlayerUpdateEvent.ID, Render2DEvent.ID, RotationEvent.ID, RaytraceEvent.ID, Render3DEvent.ID
         );
 
-        this.rotationListener.resetRotation();
+        this.rotationManager.resetRotation(RotationPriority.HIGH);
         this.targetIndex = 0;
 
         stopBlocking(BlockState.ERROR);
@@ -419,24 +447,19 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (
-                this.target == null ||
-                        this.rotationListener.getRotation() == null ||
-                        Float.isNaN(this.rotationListener.getRotation().getYaw()) ||
-                        Float.isNaN(this.rotationListener.getRotation().getPitch())
-        ) {
+        if (this.target == null || this.rotationManager.getRotation() == null) {
             stopBlocking(BlockState.ERROR);
             return;
         }
 
         //  Check if the target is looking at us
-        final Rotation pseudoRotation = Rotation.Builder.build(this.mc.player.getPos(), this.target.getEyePos());
+        final Rotation pseudoRotation = RotationBuilder.build(this.mc.player.getPos(), this.target.getEyePos());
         this.isLooking = Math.abs(MathHelper.wrapDegrees(pseudoRotation.getYaw()) - MathHelper.wrapDegrees(this.target.getYaw())) <= 80.0 &&
                 this.mc.player.getPos().distanceTo(this.target.getPos()) <= 6.0;
 
         final double raytraceReach = this.preHit.getValue() && this.clickType.getValue() != ClickType.COOLDOWN ? this.getAimRange() : this.getRange();
         final Vec3d eyePos = mc.player.getEyePos();
-        final HitResult raytrace = WorldUtil.raytrace(this.rotationListener.getRotation(), Math.pow(raytraceReach, 2));
+        final HitResult raytrace = WorldUtil.raytrace(this.rotationManager.getRotation(), Math.pow(raytraceReach, 2));
         this.raytraceDistance = raytrace != null && raytrace.getType() != HitResult.Type.MISS ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
 
         if (this.raytraceDistance > raytraceReach) {
@@ -462,15 +485,11 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 this.clickType.getValue().getClicker().onRotate();
             }
 
-            final Rotation rotation = Rotation.Builder.build(
-                    this.target,
-                    this.getAimRange(),
-                    this.aimPoints.getValue(),
-                    HitBoxSelectMode.CIRCULAR
-            );
+            Rotation rotation = RotationBuilder.build(this.target, RotationPriority.HIGH,
+                    true, this.getAimRange());
 
             if (rotation == null) { // Sanity check, crashes if you sneak and have your reach set to 3.0
-                this.rotationListener.resetRotation();
+                this.rotationManager.resetRotation(RotationPriority.HIGH);
                 return;
             }
 
@@ -479,11 +498,11 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             if (this.rotationSpeedType.getValue() == SmoothingType.BEZIER) {
                 float rotationPercentage;
 
-                if (this.rotationListener.getRotation() == null) {
+                if (this.rotationManager.getRotation() == null) {
                     final Rotation playerRotation = new Rotation(this.mc.player.getYaw(), this.mc.player.getPitch());
                     rotationPercentage = RotationUtil.calculateRotationPercentage(playerRotation.getYaw(), rotation.getYaw(), true);
                 } else {
-                    rotationPercentage = RotationUtil.calculateRotationPercentage(rotationListener.getRotation().getYaw(), rotation.getYaw(), true);
+                    rotationPercentage = RotationUtil.calculateRotationPercentage(rotationManager.getRotation().getYaw(), rotation.getYaw(), true);
                 }
 
                 rotateSpeed = this.rotationSpeedBezier.getValue(rotationPercentage);
@@ -491,21 +510,25 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 rotateSpeed = (float) (this.rotateSpeed.getValue() + Math.random() * 5.0f);
             }
 
-            this.rotationListener.setRotation(
+            rotation = RotationUtil.windMouseSmooth(
+                    rotation, new Rotation(this.mc.player.lastYaw, this.mc.player.lastPitch),
+                    9, 3, 15, 12
+            );
+
+            this.rotationManager.setRotation(
                     rotation,
-                    RotationPriority.HIGH,
                     rotateSpeed,
                     this.correlationStrength.getValue(),
                     this.movementFix.getValue()
             );
         } else {
-            this.rotationListener.resetRotation();
+            this.rotationManager.resetRotation(RotationPriority.HIGH);
         }
     }
 
     @Override
     public void onRaytrace(final RaytraceEvent event) {
-        if (this.target != null && this.rotationListener.getRotation() != null) {
+        if (this.target != null && this.rotationManager.getRotation() != null) {
             event.range = Math.pow(getRange(), 2);
         }
     }

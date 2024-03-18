@@ -33,7 +33,7 @@ import de.nekosarekawaii.vandalism.feature.hud.HUDManager;
 import de.nekosarekawaii.vandalism.feature.module.ModuleManager;
 import de.nekosarekawaii.vandalism.feature.script.ScriptManager;
 import de.nekosarekawaii.vandalism.integration.friends.FriendsManager;
-import de.nekosarekawaii.vandalism.integration.rotation.RotationListener;
+import de.nekosarekawaii.vandalism.integration.newrotation.RotationManager;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerListManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
@@ -108,7 +108,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     private AccountManager accountManager;
 
     // Integration
-    private RotationListener rotationListener;
+    private RotationManager rotationManager;
     private ServerListManager serverListManager;
     private FriendsManager friendsManager;
 
@@ -165,7 +165,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.accountManager.init();
 
         // Integration
-        this.rotationListener = new RotationListener();
+        this.rotationManager = new RotationManager();
 
         this.serverListManager = new ServerListManager(this.runDirectory);
         this.serverListManager.loadConfig();
@@ -263,8 +263,8 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         return creativeTabManager;
     }
 
-    public RotationListener getRotationListener() {
-        return rotationListener;
+    public RotationManager getRotationManager() {
+        return rotationManager;
     }
 
     public ServerListManager getServerListManager() {

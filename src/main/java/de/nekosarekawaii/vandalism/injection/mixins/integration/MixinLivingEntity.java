@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.integration;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
+import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
 import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,7 +33,7 @@ public abstract class MixinLivingEntity implements MinecraftWrapper {
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getYaw()F"), slice = @Slice(to = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getYaw()F", ordinal = 1)))
     private float modifyRotationYaw(final LivingEntity instance) {
         if (this.mc.player == (Object) this) {
-            final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
+            final Rotation rotation = Vandalism.getInstance().getRotationManager().getRotation();
             if (rotation != null) return rotation.getYaw();
         }
         return instance.getYaw();
@@ -42,7 +42,7 @@ public abstract class MixinLivingEntity implements MinecraftWrapper {
     @Redirect(method = "turnHead", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getYaw()F"))
     private float modifyRotationHeadYaw(final LivingEntity instance) {
         if (this.mc.player == (Object) this) {
-            final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
+            final Rotation rotation = Vandalism.getInstance().getRotationManager().getRotation();
             if (rotation != null) return rotation.getYaw();
         }
         return instance.getYaw();
@@ -51,7 +51,7 @@ public abstract class MixinLivingEntity implements MinecraftWrapper {
     @Redirect(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getPitch()F"))
     private float modifyRotationPitch(final LivingEntity instance) {
         if (this.mc.player == (Object) this) {
-            final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
+            final Rotation rotation = Vandalism.getInstance().getRotationManager().getRotation();
             if (rotation != null) return rotation.getPitch();
         }
         return instance.getPitch();

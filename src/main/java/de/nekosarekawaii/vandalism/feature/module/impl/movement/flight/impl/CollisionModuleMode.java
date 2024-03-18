@@ -19,14 +19,21 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.normal.network.BlockCollisionShapeListener;
+import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.FlightModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
+import de.nekosarekawaii.vandalism.util.MinecraftConstants;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.shape.VoxelShapes;
 
-public class CollisionModuleMode extends ModuleMulti<FlightModule> implements BlockCollisionShapeListener {
+public class CollisionModuleMode extends ModuleMulti<FlightModule> implements BlockCollisionShapeListener, PlayerUpdateListener {
 
+    private int startPos;
+
+    private final BooleanValue autoJump = new BooleanValue(this, "AutoJump",
+            "Automatically jumps to bypass dumb checks.", true);
 
     public CollisionModuleMode() {
         super("Collision");
@@ -34,19 +41,34 @@ public class CollisionModuleMode extends ModuleMulti<FlightModule> implements Bl
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, BlockCollisionShapeEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, BlockCollisionShapeEvent.ID, PlayerUpdateEvent.ID);
+        this.startPos = (int) mc.player.getY();
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, BlockCollisionShapeEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, BlockCollisionShapeEvent.ID, PlayerUpdateEvent.ID);
+    }
+
+    @Override
+    public void onPrePlayerUpdate(PlayerUpdateEvent event) {
+        if (this.autoJump.getValue()) {
+            if (mc.options.jumpKey.isPressed() && mc.player.getY() < this.startPos + 1) {
+                this.startPos = (int) mc.player.getY();
+            }
+
+            if (mc.player.getY() % MinecraftConstants.MAGIC_ON_GROUND_MODULO_FACTOR == 0 && mc.player.age % 6 == 0) {
+                mc.player.jump();
+            }
+        } else {
+            this.startPos = (int) mc.player.getY();
+        }
     }
 
     @Override
     public void onBlockCollisionShape(BlockCollisionShapeEvent event) {
-        if (event.block == Blocks.AIR && event.pos.getY() < mc.player.getY()) {
-            final double minX = 0, minY = 0, minZ = 0, maxX = 1, maxZ = 1;
-            double maxY = 1;
+        if (event.block == Blocks.AIR && event.pos.getY() < this.startPos) {
+            final double minX = 0, minY = 0, minZ = 0, maxX = 1, maxY = 1, maxZ = 1;
             event.shape = VoxelShapes.cuboid(
                     minX,
                     minY,

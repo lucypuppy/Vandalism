@@ -22,8 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.normal.player.RotationListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
-import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
+import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.hit.BlockHitResult;
@@ -50,7 +49,7 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
     @Override
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID);
-        Vandalism.getInstance().getRotationListener().resetRotation();
+        Vandalism.getInstance().getRotationManager().resetRotation();
     }
 
     @Override
@@ -61,11 +60,11 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
         }
 
         this.direction = getDirection(mc.player.getPos(), pos);
-        if (this.direction == null || this.rotation == null) {
+        if (this.direction == null || Vandalism.getInstance().getRotationManager().getRotation() == null) {
             return;
         }
 
-        final BlockHitResult raycastBlocks = WorldUtil.raytraceBlocks(this.rotation, 5.0);
+        final BlockHitResult raycastBlocks = WorldUtil.raytraceBlocks(Vandalism.getInstance().getRotationManager().getRotation(), 5.0);
         if (raycastBlocks.getSide() == this.direction) {
             mc.doItemUse();
         }
@@ -85,7 +84,7 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
                 return;
             }
 
-            Vandalism.getInstance().getRotationListener().setRotation(this.rotation, RotationPriority.HIGH, 80f, 0, false);
+            Vandalism.getInstance().getRotationManager().setRotation(this.rotation, 80f, 0, false);
         }
     }
 

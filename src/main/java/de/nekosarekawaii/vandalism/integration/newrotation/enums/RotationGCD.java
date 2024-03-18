@@ -16,12 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.integration.rotation.enums;
+package de.nekosarekawaii.vandalism.integration.newrotation.enums;
 
 import com.mojang.datafixers.util.Function4;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.florianmichael.rclasses.pattern.functional.IName;
-import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
+import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
 import net.minecraft.util.math.MathHelper;
 
 public enum RotationGCD implements IName {
