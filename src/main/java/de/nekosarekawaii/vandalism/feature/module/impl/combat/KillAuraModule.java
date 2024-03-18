@@ -308,7 +308,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
     private final FloatValue maxStepSize = new FloatValue(
             this.rotationGroup,
-            "Wax Step Size",
+            "Max Step Size",
             "The Max Step Size.",
             15f,
             0.0f,
