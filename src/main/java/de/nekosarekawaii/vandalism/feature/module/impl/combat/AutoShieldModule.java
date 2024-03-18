@@ -24,8 +24,8 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
-import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
+import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
+import de.nekosarekawaii.vandalism.integration.newrotation.RotationBuilder;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileEntity;
@@ -68,7 +68,7 @@ public class AutoShieldModule extends AbstractModule implements PlayerUpdateList
 
     private void reset() {
         this.target = null;
-        Vandalism.getInstance().getRotationListener().resetRotation();
+        Vandalism.getInstance().getRotationManager().resetRotation();
         this.mc.options.useKey.setPressed(false);
     }
 
@@ -108,10 +108,9 @@ public class AutoShieldModule extends AbstractModule implements PlayerUpdateList
             entities.sort(Comparator.comparingDouble(entity -> this.mc.player.distanceTo(entity)));
             this.target = entities.get(0);
         } else {
-            final Rotation rotation = Rotation.Builder.build(this.target.getPos(), this.mc.player.getEyePos());
-            Vandalism.getInstance().getRotationListener().setRotation(rotation, RotationPriority.NORMAL,
-                    this.rotateSpeed.getValue(), 0.0f, false
-            );
+            final Rotation rotation = RotationBuilder.build(this.target.getPos(), this.mc.player.getEyePos());
+            Vandalism.getInstance().getRotationManager().setRotation(rotation, this.rotateSpeed.getValue(),
+                    0.0f, false);
             if (!this.mc.player.isBlocking()) {
                 this.mc.options.useKey.setPressed(true);
             }

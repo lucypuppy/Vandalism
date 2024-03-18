@@ -16,25 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.integration.rotation;
+package de.nekosarekawaii.vandalism.integration.newrotation;
 
 import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.RotationSettings;
 import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
+import de.nekosarekawaii.vandalism.event.normal.player.RotationListener;
 import de.nekosarekawaii.vandalism.event.normal.player.StrafeListener;
-import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationGCD;
-import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
+import de.nekosarekawaii.vandalism.integration.newrotation.enums.RotationGCD;
+import de.nekosarekawaii.vandalism.integration.newrotation.enums.RotationPriority;
 import de.nekosarekawaii.vandalism.util.render.RenderUtil;
 import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.MathHelper;
 
-public class RotationListener implements OutgoingPacketListener, StrafeListener, MinecraftWrapper, de.nekosarekawaii.vandalism.event.normal.player.RotationListener {
+public class RotationManager implements MinecraftWrapper, OutgoingPacketListener, StrafeListener, RotationListener {
 
     private Rotation rotation;
     private Rotation targetRotation;
-    private RotationPriority currentPriority;
 
     private double partialIterations;
 
@@ -42,7 +42,7 @@ public class RotationListener implements OutgoingPacketListener, StrafeListener,
     private float correlationStrength;
     private boolean movementFix;
 
-    public RotationListener() {
+    public RotationManager() {
         Vandalism.getInstance().getEventSystem().subscribe(this, OutgoingPacketEvent.ID, StrafeEvent.ID);
 
         //  Priority is low because we want to calculate the rotation after the module set it.
@@ -50,8 +50,8 @@ public class RotationListener implements OutgoingPacketListener, StrafeListener,
     }
 
     @Override
-    public void onOutgoingPacket(final OutgoingPacketEvent event) {
-        if (event.packet instanceof final PlayerMoveC2SPacket packet) {
+    public void onOutgoingPacket(OutgoingPacketEvent event) {
+        if (event.packet instanceof final PlayerMoveC2SPacket packet) { // Sanity check; if somewhere in the code is a packet and we didnt inject
             if (this.rotation != null) {
                 packet.yaw = this.rotation.getYaw();
                 packet.pitch = this.rotation.getPitch();
@@ -73,9 +73,8 @@ public class RotationListener implements OutgoingPacketListener, StrafeListener,
             return;
         }
 
-        if (this.rotation == null) {
+        if (this.rotation == null)
             return;
-        }
 
         final float yaw = MathHelper.wrapDegrees(this.mc.player.getYaw());
         final float pitch = this.mc.player.getPitch();
@@ -95,7 +94,7 @@ public class RotationListener implements OutgoingPacketListener, StrafeListener,
     }
 
     @Override
-    public void onStrafe(final StrafeListener.StrafeEvent event) {
+    public void onStrafe(StrafeEvent event) {
         if (this.rotation == null || !this.movementFix)
             return;
 
@@ -108,11 +107,11 @@ public class RotationListener implements OutgoingPacketListener, StrafeListener,
         event.yaw = this.rotation.getYaw();
     }
 
-    public void setRotation(final Rotation rotation, final RotationPriority priority, final float rotateSpeed, final float correlationStrength, final boolean movementFix) {
-        if (this.currentPriority == null || priority.getPriority() >= this.currentPriority.getPriority()) {
+    public void setRotation(final Rotation rotation, final float rotateSpeed, final float correlationStrength, final boolean movementFix) {
+        if (this.rotation == null || rotation.getPriority().getPriority() >= this.rotation.getPriority().getPriority()) {
             this.targetRotation = rotation;
-            this.currentPriority = priority;
 
+            // Settings
             this.rotateSpeed = rotateSpeed;
             this.correlationStrength = correlationStrength;
             this.movementFix = movementFix;
@@ -135,16 +134,23 @@ public class RotationListener implements OutgoingPacketListener, StrafeListener,
         fixedRotation.setYaw(lastRotation.getYaw() + MathHelper.wrapDegrees(fixedRotation.getYaw() - lastRotation.getYaw()));
         fixedRotation.setPitch(MathHelper.clamp(fixedRotation.getPitch(), -90.0f, 90.0f));
 
+        // Hand over the rotation Priority
+        fixedRotation.setPriority(rotation.getPriority());
         return fixedRotation;
     }
 
+    public void resetRotation(final RotationPriority priority) {
+        if (targetRotation != null && targetRotation.getPriority().getPriority() <= priority.getPriority()) {
+            this.targetRotation = null;
+        }
+    }
+
     public void resetRotation() {
-        this.targetRotation = null;
-        this.currentPriority = null;
+        resetRotation(RotationPriority.NORMAL);
     }
 
     public Rotation getRotation() {
-        return this.rotation;
+        return rotation;
     }
 
 }

@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.normal.player.AttackListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
+import de.nekosarekawaii.vandalism.integration.newrotation.RotationUtil;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;

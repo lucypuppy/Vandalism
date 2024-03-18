@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.util.game;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.normal.internal.TargetListener;
 import de.nekosarekawaii.vandalism.injection.access.IGameRenderer;
-import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
+import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
 import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileUtil;

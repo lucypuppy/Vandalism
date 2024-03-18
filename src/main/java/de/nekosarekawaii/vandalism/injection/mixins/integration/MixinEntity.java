@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.integration;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.injection.access.IGameRenderer;
-import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
+import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
 import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
@@ -35,7 +35,7 @@ public abstract class MixinEntity implements MinecraftWrapper {
     @Inject(method = "getRotationVector(FF)Lnet/minecraft/util/math/Vec3d;", at = @At("HEAD"), cancellable = true)
     private void injectGetRotationVector(float pitch, float yaw, CallbackInfoReturnable<Vec3d> cir) {
         if (mc.player == (Object) this && !((IGameRenderer) mc.gameRenderer).vandalism$isSelfInflicted()) {
-            final Rotation rotation = Vandalism.getInstance().getRotationListener().getRotation();
+            final Rotation rotation = Vandalism.getInstance().getRotationManager().getRotation();
 
             if (rotation != null) cir.setReturnValue(rotation.getVector());
         }
