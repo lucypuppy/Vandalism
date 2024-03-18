@@ -23,7 +23,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.ChatSettings;
-import de.nekosarekawaii.vandalism.clientmenu.impl.nbteditor.gui.NbtEditorClientMenuWindow;
+import de.nekosarekawaii.vandalism.clientwindow.impl.nbteditor.gui.NbtEditorClientWindow;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.feature.command.arguments.NbtCompoundArgumentType;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
@@ -230,7 +230,7 @@ public class NbtCommand extends AbstractCommand {
         builder.then(literal("gui").executes(context -> {
             final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
-                Vandalism.getInstance().getClientMenuManager().getByClass(NbtEditorClientMenuWindow.class).displayNbt(stack.getName().getString(), stack.getNbt());
+                Vandalism.getInstance().getClientWindowManager().getByClass(NbtEditorClientWindow.class).displayNbt(stack.getName().getString(), stack.getNbt());
             }
             return SINGLE_SUCCESS;
         }));
@@ -241,7 +241,7 @@ public class NbtCommand extends AbstractCommand {
                 if (entity != null) {
                     final NbtCompound tag = entity.writeNbt(new NbtCompound());
                     if (tag != null && !tag.isEmpty()) {
-                        Vandalism.getInstance().getClientMenuManager().getByClass(NbtEditorClientMenuWindow.class).displayNbt(entity.getName().getString(), tag);
+                        Vandalism.getInstance().getClientWindowManager().getByClass(NbtEditorClientWindow.class).displayNbt(entity.getName().getString(), tag);
                     }
                     else {
                         ChatUtil.errorChatMessage("The entity has no NBT data.");
@@ -263,7 +263,7 @@ public class NbtCommand extends AbstractCommand {
                     blockEntity.writeNbt(tag);
                     this.mc.keyboard.setClipboard(tag.toString());
                     if (tag != null && !tag.isEmpty()) {
-                        Vandalism.getInstance().getClientMenuManager().getByClass(NbtEditorClientMenuWindow.class).displayNbt(blockState.getBlock().getName().getString(), tag);
+                        Vandalism.getInstance().getClientWindowManager().getByClass(NbtEditorClientWindow.class).displayNbt(blockState.getBlock().getName().getString(), tag);
                     }
                     else {
                         ChatUtil.errorChatMessage("The entity has no NBT data.");
@@ -282,7 +282,7 @@ public class NbtCommand extends AbstractCommand {
                 displayTitle = nbt.getString(DISPLAY_TITLE_NBT_KEY);
                 nbt.remove(DISPLAY_TITLE_NBT_KEY);
             } else displayTitle = "Nbt";
-            Vandalism.getInstance().getClientMenuManager().getByClass(NbtEditorClientMenuWindow.class).displayNbt(displayTitle, nbt);
+            Vandalism.getInstance().getClientWindowManager().getByClass(NbtEditorClientWindow.class).displayNbt(displayTitle, nbt);
             return SINGLE_SUCCESS;
         })));
     }

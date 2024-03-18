@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.fix.imgui;
 
-import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuScreen;
+import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindowScreen;
 import de.nekosarekawaii.vandalism.injection.access.IImGuiImplGlfw;
 import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import imgui.flag.ImGuiMouseCursor;
@@ -40,7 +40,7 @@ public abstract class MixinImGuiImplGlfw implements IImGuiImplGlfw, MinecraftWra
 
     @Inject(method = "charCallback", at = @At(value = "INVOKE", target = "Limgui/ImGui;getIO()Limgui/ImGuiIO;", shift = At.Shift.BEFORE), cancellable = true)
     public void cancelCharCallback(final long windowId, final int c, final CallbackInfo ci) {
-        if (!(this.mc.currentScreen instanceof ClientMenuScreen)) {
+        if (!(this.mc.currentScreen instanceof ClientWindowScreen)) {
             ci.cancel();
         }
     }

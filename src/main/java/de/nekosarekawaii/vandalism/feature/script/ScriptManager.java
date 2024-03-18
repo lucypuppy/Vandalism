@@ -22,10 +22,10 @@ import de.florianmichael.rclasses.pattern.storage.named.NamedStorage;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
-import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
+import de.nekosarekawaii.vandalism.clientwindow.ClientWindowManager;
 import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.script.gui.ScriptsClientMenuWindow;
+import de.nekosarekawaii.vandalism.feature.script.gui.ScriptsClientWindow;
 import de.nekosarekawaii.vandalism.feature.script.parse.ScriptParser;
 import de.nekosarekawaii.vandalism.feature.script.parse.command.ScriptCommand;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
@@ -44,9 +44,9 @@ public class ScriptManager extends NamedStorage<Script> implements PlayerUpdateL
     private final File directory;
     private final ConfigManager configManager;
 
-    public ScriptManager(final ConfigManager configManager, final ClientMenuManager clientMenuManager, final File runDirectory) {
+    public ScriptManager(final ConfigManager configManager, final ClientWindowManager clientWindowManager, final File runDirectory) {
         this.configManager = configManager;
-        clientMenuManager.add(new ScriptsClientMenuWindow());
+        clientWindowManager.add(new ScriptsClientWindow());
         this.directory = new File(runDirectory, "scripts");
         Vandalism.getInstance().getEventSystem().subscribe(KeyboardInputEvent.ID, this);
         Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);

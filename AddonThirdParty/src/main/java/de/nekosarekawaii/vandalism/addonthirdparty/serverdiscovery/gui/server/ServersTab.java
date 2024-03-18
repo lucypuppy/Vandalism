@@ -92,8 +92,8 @@ public class ServersTab implements MinecraftWrapper {
     private final MSTimer checkTimeout = new MSTimer();
 
     public void renderMenu(final String name) {
-        final ServerDiscoveryClientMenuWindow serverDiscoveryClientMenuWindow = Vandalism.getInstance().getClientMenuManager().getByClass(ServerDiscoveryClientMenuWindow.class);
-        if (!serverDiscoveryClientMenuWindow.isCurrentServerTab(name)) {
+        final ServerDiscoveryClientWindow serverDiscoveryClientWindow = Vandalism.getInstance().getClientWindowManager().getByClass(ServerDiscoveryClientWindow.class);
+        if (!serverDiscoveryClientWindow.isCurrentServerTab(name)) {
             return;
         }
         if (ImGui.beginMenu("Tab Config")) {

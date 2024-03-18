@@ -18,13 +18,13 @@
 
 package de.nekosarekawaii.vandalism.base.clientsettings;
 
-import de.nekosarekawaii.vandalism.base.clientsettings.gui.ClientSettingsClientMenuWindow;
+import de.nekosarekawaii.vandalism.base.clientsettings.gui.ClientSettingsClientWindow;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.*;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
-import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
+import de.nekosarekawaii.vandalism.clientwindow.ClientWindowManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,9 +42,9 @@ public class ClientSettings implements ValueParent {
     private final TargetSettings targetSettings = new TargetSettings(this);
     private final EnhancedServerListSettings enhancedServerListSettings = new EnhancedServerListSettings(this);
 
-    public ClientSettings(final ConfigManager configManager, final ClientMenuManager clientMenuManager) {
+    public ClientSettings(final ConfigManager configManager, final ClientWindowManager clientWindowManager) {
         configManager.add(new ConfigWithValues("client-settings", getValues().stream().map(value -> (ValueParent) value).toList()));
-        clientMenuManager.add(new ClientSettingsClientMenuWindow(this));
+        clientWindowManager.add(new ClientSettingsClientWindow(this));
     }
 
     public MenuSettings getMenuSettings() {

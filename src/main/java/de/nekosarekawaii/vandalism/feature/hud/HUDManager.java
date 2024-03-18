@@ -21,13 +21,13 @@ package de.nekosarekawaii.vandalism.feature.hud;
 import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
-import de.nekosarekawaii.vandalism.clientmenu.ClientMenuManager;
-import de.nekosarekawaii.vandalism.clientmenu.base.ClientMenuScreen;
+import de.nekosarekawaii.vandalism.clientwindow.ClientWindowManager;
+import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindowScreen;
 import de.nekosarekawaii.vandalism.event.cancellable.render.ScreenListener;
 import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.event.normal.render.Render2DListener;
 import de.nekosarekawaii.vandalism.feature.hud.config.HUDConfig;
-import de.nekosarekawaii.vandalism.feature.hud.gui.HUDClientMenuWindow;
+import de.nekosarekawaii.vandalism.feature.hud.gui.HUDClientWindow;
 import de.nekosarekawaii.vandalism.feature.hud.impl.InfoHUDElement;
 import de.nekosarekawaii.vandalism.feature.hud.impl.ModuleListHUDElement;
 import de.nekosarekawaii.vandalism.feature.hud.impl.WatermarkHUDElement;
@@ -44,12 +44,12 @@ public class HUDManager extends Storage<HUDElement> implements Render2DListener,
 
     private final File logoFolder;
 
-    public HUDManager(final ConfigManager configManager, final ClientMenuManager clientMenuManager, final File runDirectory) {
+    public HUDManager(final ConfigManager configManager, final ClientWindowManager clientWindowManager, final File runDirectory) {
         Vandalism.getInstance().getEventSystem().subscribe(Render2DEvent.ID, this);
         Vandalism.getInstance().getEventSystem().subscribe(ScreenEvent.ID, this);
         Vandalism.getInstance().getEventSystem().subscribe(KeyboardInputEvent.ID, this);
         configManager.add(new HUDConfig(this));
-        clientMenuManager.add(new HUDClientMenuWindow(this));
+        clientWindowManager.add(new HUDClientWindow(this));
 
         this.logoFolder = new File(runDirectory, "logos");
         this.logoFolder.mkdirs();
@@ -66,8 +66,8 @@ public class HUDManager extends Storage<HUDElement> implements Render2DListener,
 
     @Override
     public void onRender2DInGame(final DrawContext context, final float delta) {
-        final HUDClientMenuWindow hudImWindow = Vandalism.getInstance().getClientMenuManager().getByClass(HUDClientMenuWindow.class);
-        if (this.mc.currentScreen instanceof ClientMenuScreen && hudImWindow.isActive()) {
+        final HUDClientWindow hudImWindow = Vandalism.getInstance().getClientWindowManager().getByClass(HUDClientWindow.class);
+        if (this.mc.currentScreen instanceof ClientWindowScreen && hudImWindow.isActive()) {
             return;
         }
         for (final HUDElement hudElement : this.getList()) {
