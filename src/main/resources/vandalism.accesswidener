@@ -130,3 +130,4 @@ accessible method net/minecraft/block/entity/BlockEntity writeNbt (Lnet/minecraf
 accessible field net/minecraft/network/packet/s2c/play/ParticleS2CPacket count I
 mutable field net/minecraft/network/packet/s2c/play/ParticleS2CPacket count I
 accessible field net/minecraft/client/gui/widget/EntryListWidget itemHeight I
+accessible method net/minecraft/client/network/ClientCommonNetworkHandler getParsedResourcePackUrl (Ljava/lang/String;)Ljava/net/URL;

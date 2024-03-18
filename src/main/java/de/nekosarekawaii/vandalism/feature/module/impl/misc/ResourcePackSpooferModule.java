@@ -21,8 +21,11 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import net.minecraft.client.network.ClientCommonNetworkHandler;
 import net.minecraft.network.packet.c2s.common.ResourcePackStatusC2SPacket;
 import net.minecraft.network.packet.s2c.common.ResourcePackSendS2CPacket;
+
+import java.util.UUID;
 
 public class ResourcePackSpooferModule extends AbstractModule implements IncomingPacketListener {
 
@@ -48,8 +51,14 @@ public class ResourcePackSpooferModule extends AbstractModule implements Incomin
     public void onIncomingPacket(final IncomingPacketEvent event) {
         if (event.packet instanceof final ResourcePackSendS2CPacket resourcePackSendS2CPacket) {
             event.cancel();
-            event.connection.send(new ResourcePackStatusC2SPacket(resourcePackSendS2CPacket.id(), ResourcePackStatusC2SPacket.Status.ACCEPTED));
-            event.connection.send(new ResourcePackStatusC2SPacket(resourcePackSendS2CPacket.id(), ResourcePackStatusC2SPacket.Status.SUCCESSFULLY_LOADED));
+            final UUID uuid = resourcePackSendS2CPacket.id();
+            if (ClientCommonNetworkHandler.getParsedResourcePackUrl(resourcePackSendS2CPacket.url()) == null) {
+                event.connection.send(new ResourcePackStatusC2SPacket(uuid, ResourcePackStatusC2SPacket.Status.INVALID_URL));
+            }
+            else {
+                event.connection.send(new ResourcePackStatusC2SPacket(uuid, ResourcePackStatusC2SPacket.Status.ACCEPTED));
+                event.connection.send(new ResourcePackStatusC2SPacket(uuid, ResourcePackStatusC2SPacket.Status.SUCCESSFULLY_LOADED));
+            }
         }
     }
 
