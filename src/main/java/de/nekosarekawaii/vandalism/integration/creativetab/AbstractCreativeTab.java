@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.creativetab;
+package de.nekosarekawaii.vandalism.integration.creativetab;
 
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;

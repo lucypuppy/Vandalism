@@ -29,7 +29,7 @@ import de.nekosarekawaii.vandalism.feature.script.parse.info.ScriptInfo;
 import de.nekosarekawaii.vandalism.feature.script.parse.info.impl.BooleanScriptInfo;
 import de.nekosarekawaii.vandalism.feature.script.parse.info.impl.CategoryScriptInfo;
 import de.nekosarekawaii.vandalism.feature.script.parse.info.impl.StringScriptInfo;
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;

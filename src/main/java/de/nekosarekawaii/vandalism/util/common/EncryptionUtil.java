@@ -24,19 +24,10 @@ import javax.crypto.spec.IvParameterSpec;
 import java.nio.charset.StandardCharsets;
 import java.security.spec.InvalidKeySpecException;
 
-/**
- * Static Encryption util to encrypt and decrypt strings over multiple game sessions.
- */
-public class StaticEncryptionUtil {
+public class EncryptionUtil {
 
-    /**
-     * The initial vector used for encryption and decryption.
-     */
     private static final IvParameterSpec INIITAL_VECTOR = new IvParameterSpec(new byte[] { 42, 49, 55, 1, 99, 62, 70, 83, 104, 115, 8, 15, 91, 120, 27, 33 });
 
-    /**
-     * The salt used for encryption and decryption over multiple sessions.
-     */
     private static final byte[] SALT = "xOtlS4mV9e0o89$LsetrR$R89u".getBytes(StandardCharsets.UTF_8);
 
     public static String encrypt(final String key, final String data) throws InvalidKeySpecException {

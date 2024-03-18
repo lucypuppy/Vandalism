@@ -48,7 +48,7 @@ import de.nekosarekawaii.vandalism.feature.module.impl.movement.phase.PhaseModul
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.SpeedModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.VelocityModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.render.*;
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;

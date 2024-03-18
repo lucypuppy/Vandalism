@@ -25,7 +25,7 @@ import de.nekosarekawaii.vandalism.event.normal.network.EntityRemoveListener;
 import de.nekosarekawaii.vandalism.event.normal.player.StepListener;
 import de.nekosarekawaii.vandalism.event.normal.player.StepSuccessListener;
 import de.nekosarekawaii.vandalism.event.normal.player.StrafeListener;
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.registry.tag.TagKey;

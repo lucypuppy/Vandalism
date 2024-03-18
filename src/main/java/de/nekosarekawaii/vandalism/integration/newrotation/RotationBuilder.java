@@ -19,8 +19,8 @@
 package de.nekosarekawaii.vandalism.integration.newrotation;
 
 import de.nekosarekawaii.vandalism.integration.newrotation.enums.RotationPriority;
+import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;

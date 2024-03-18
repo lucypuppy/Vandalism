@@ -16,15 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util;
+package de.nekosarekawaii.vandalism.util.game;
 
-public class MinecraftConstants {
+import net.minecraft.client.MinecraftClient;
 
-    // those constant gets used in shitty anti cheats with no proper collision handling, posY % const == 0 = ground True
-    public static double MAGIC_ON_GROUND_MODULO_FACTOR = 0.015625;
+public interface MinecraftWrapper {
 
-    public static int FIRST_SLOT_IN_HOTBAR = 36;
-
-    public static int LAST_SLOT_IN_HOTBAR = 44;
+    MinecraftClient mc = MinecraftClient.getInstance();
 
 }

@@ -22,7 +22,7 @@ import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.addonthirdparty.spotify.SpotifyManager;
 import de.nekosarekawaii.vandalism.base.config.AbstractConfig;
-import de.nekosarekawaii.vandalism.util.common.StaticEncryptionUtil;
+import de.nekosarekawaii.vandalism.util.common.EncryptionUtil;
 
 public class SpotifyConfig extends AbstractConfig<JsonObject> {
 
@@ -40,21 +40,21 @@ public class SpotifyConfig extends AbstractConfig<JsonObject> {
             final String key = System.getProperty("user.name");
             mainNode.addProperty(
                     "clientId",
-                    StaticEncryptionUtil.encrypt(
+                    EncryptionUtil.encrypt(
                             key,
                             this.spotifyManager.getClientId()
                     )
             );
             mainNode.addProperty(
                     "clientSecret",
-                    StaticEncryptionUtil.encrypt(
+                    EncryptionUtil.encrypt(
                             key,
                             this.spotifyManager.getClientSecret()
                     )
             );
             mainNode.addProperty(
                     "refreshToken",
-                    StaticEncryptionUtil.encrypt(
+                    EncryptionUtil.encrypt(
                             key,
                             this.spotifyManager.getRefreshToken()
                     )
@@ -71,7 +71,7 @@ public class SpotifyConfig extends AbstractConfig<JsonObject> {
             final String key = System.getProperty("user.name");
             String clientId = "";
             if (mainNode.has("clientId")) {
-                clientId = StaticEncryptionUtil.decrypt(key, mainNode.get("clientId").getAsString());
+                clientId = EncryptionUtil.decrypt(key, mainNode.get("clientId").getAsString());
             }
             if (clientId.isEmpty()) {
                 Vandalism.getInstance().getLogger().error("Failed to load Spotify config because the client id is empty.");
@@ -79,7 +79,7 @@ public class SpotifyConfig extends AbstractConfig<JsonObject> {
             }
             String clientSecret = "";
             if (mainNode.has("clientSecret")) {
-                clientSecret = StaticEncryptionUtil.decrypt(key, mainNode.get("clientSecret").getAsString());
+                clientSecret = EncryptionUtil.decrypt(key, mainNode.get("clientSecret").getAsString());
             }
             if (clientSecret.isEmpty()) {
                 Vandalism.getInstance().getLogger().error("Failed to load Spotify config because the client secret is empty.");
@@ -87,7 +87,7 @@ public class SpotifyConfig extends AbstractConfig<JsonObject> {
             }
             String refreshToken = "";
             if (mainNode.has("refreshToken")) {
-                refreshToken = StaticEncryptionUtil.decrypt(key, mainNode.get("refreshToken").getAsString());
+                refreshToken = EncryptionUtil.decrypt(key, mainNode.get("refreshToken").getAsString());
             }
             if (refreshToken.isEmpty()) {
                 Vandalism.getInstance().getLogger().error("Failed to load Spotify config because the refresh token is empty.");

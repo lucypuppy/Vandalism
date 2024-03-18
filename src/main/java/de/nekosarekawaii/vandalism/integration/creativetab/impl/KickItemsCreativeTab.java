@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.creativetab.impl;
+package de.nekosarekawaii.vandalism.integration.creativetab.impl;
 
 import de.florianmichael.rclasses.common.RandomUtils;
-import de.nekosarekawaii.vandalism.feature.creativetab.AbstractCreativeTab;
+import de.nekosarekawaii.vandalism.integration.creativetab.AbstractCreativeTab;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;

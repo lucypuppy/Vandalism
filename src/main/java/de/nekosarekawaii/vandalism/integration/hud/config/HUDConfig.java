@@ -16,14 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.hud.config;
+package de.nekosarekawaii.vandalism.integration.hud.config;
 
 import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.AbstractConfig;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
-import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
-import de.nekosarekawaii.vandalism.feature.hud.HUDManager;
+import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
+import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
 
 public class HUDConfig extends AbstractConfig<JsonObject> {
 

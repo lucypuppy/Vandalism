@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.integration.newrotation;
 
 import de.nekosarekawaii.vandalism.integration.newrotation.enums.RotationPriority;
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.minecraft.util.math.Vec3d;
 
 public class Rotation implements MinecraftWrapper {

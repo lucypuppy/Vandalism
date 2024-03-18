@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.util.click;
 
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 
 import java.util.function.Consumer;
 

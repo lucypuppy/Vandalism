@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.base.value.template;
 import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import imgui.ImGui;
 import imgui.flag.ImGuiTreeNodeFlags;
 
