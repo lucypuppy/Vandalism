@@ -26,7 +26,6 @@ import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.newrotation.RotationBuilder;
-import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.ItemStack;
@@ -93,13 +92,13 @@ public class AutoShieldModule extends AbstractModule implements PlayerUpdateList
             return;
         }
         final float range = this.range.getValue();
-        if (this.target == null || !WorldUtil.isTarget(this.target) || this.target.distanceTo(this.mc.player) >= range || this.target instanceof final ProjectileEntity projectileEntity && projectileEntity.getVelocity().y <= 0) {
+        if (this.target == null || !Vandalism.getInstance().getTargetManager().isTarget(this.target) || this.target.distanceTo(this.mc.player) >= range || this.target instanceof final ProjectileEntity projectileEntity && projectileEntity.getVelocity().y <= 0) {
             this.reset();
             final List<Entity> entities = new ArrayList<>();
             for (final Entity entity : this.mc.world.getEntities()) {
                 if (entity == this.mc.player) continue;
                 if (entity == this.mc.player.getVehicle()) continue;
-                if (!WorldUtil.isTarget(entity)) continue;
+                if (!Vandalism.getInstance().getTargetManager().isTarget(entity)) continue;
                 if (this.mc.player.getPos().distanceTo(entity.getPos()) > range) continue;
                 entities.add(entity);
                 break;

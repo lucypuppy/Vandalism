@@ -16,26 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.base.value.template;
+package de.nekosarekawaii.vandalism.integration.target;
 
-import com.google.gson.JsonObject;
-import de.nekosarekawaii.vandalism.base.value.Value;
-import de.nekosarekawaii.vandalism.base.value.ValueParent;
+import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.event.normal.internal.TargetListener;
+import net.minecraft.entity.Entity;
 
-public abstract class ValueNoOpConfig<T> extends Value<T> {
+public class TargetManager {
 
-    public ValueNoOpConfig(ValueParent parent, String name, String description, T defaultValue) {
-        super(parent, name, description, defaultValue);
+    public boolean isTarget(final Entity entity) {
+        final TargetListener.TargetEvent event = new TargetListener.TargetEvent(entity);
+        Vandalism.getInstance().getEventSystem().postInternal(TargetListener.TargetEvent.ID, event);
+        return event.isTarget;
     }
-
-    @Override
-    public void load(JsonObject mainNode) {
-        
-    }
-
-    @Override
-    public void save(JsonObject mainNode) {
-        
-    }
-
+    
 }

@@ -65,7 +65,7 @@ public class UpdatedNCPModuleMode extends ModuleMulti<SpeedModule> implements Pl
             this.offGroundTicks = 0;
         } else {
             if (this.offGroundTicks == 0) {
-              //   this.moveSpeed += 0.01f;
+              //  this.moveSpeed += 0.01f;
             }
             final Vec3d velocityVector = MovementUtil.setSpeed(this.moveSpeed, this.offGroundTicks <= 2 ? 0.0026f * 45 : 0.0026f);
             final Vec3d adjustedVelocity = MovementUtil.applyFriction(velocityVector,12);

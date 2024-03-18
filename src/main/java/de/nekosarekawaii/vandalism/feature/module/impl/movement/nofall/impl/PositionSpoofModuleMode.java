@@ -92,15 +92,15 @@ public class PositionSpoofModuleMode extends ModuleMulti<NoFallModule> implement
         }
 
         if (mc.player.fallDistance > 3.0) {
-            //  Get the next ground block
+            // Get the next ground block
             this.groundSubtractor = getNextGroundBlock();
             this.lastY = mc.player.getY();
 
-            //  Save the chunk and lighting provider for later
+            // Save the chunk and lighting provider for later
             this.unloadedChunk = mc.world.getChunkManager().getWorldChunk(x, z);
             this.lightingProvider = mc.world.getChunkManager().getLightingProvider();
 
-            //  Unload the chunk
+            // Unload the chunk
             PacketUtil.receivePacket(new UnloadChunkS2CPacket(new ChunkPos(x, z)));
         }
     }

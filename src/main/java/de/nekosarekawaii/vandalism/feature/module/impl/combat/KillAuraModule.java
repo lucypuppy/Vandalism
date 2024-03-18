@@ -452,7 +452,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             return;
         }
 
-        //  Check if the target is looking at us
+        // Check if the target is looking at us
         final Rotation pseudoRotation = RotationBuilder.build(this.mc.player.getPos(), this.target.getEyePos());
         this.isLooking = Math.abs(MathHelper.wrapDegrees(pseudoRotation.getYaw()) - MathHelper.wrapDegrees(this.target.getYaw())) <= 80.0 &&
                 this.mc.player.getPos().distanceTo(this.target.getPos()) <= 6.0;
@@ -540,9 +540,11 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             if (entity == this.mc.player || entity == this.mc.player.getVehicle()) {
                 continue;
             }
-            if (WorldUtil.isTarget(entity) &&
+            if (
+                    Vandalism.getInstance().getTargetManager().isTarget(entity) &&
                     this.mc.player.distanceTo(entity) <= getAimRange() + 1.0 &&
-                    entity.getWidth() > 0.0 && entity.getHeight() > 0.0) {
+                    entity.getWidth() > 0.0 && entity.getHeight() > 0.0
+            ) {
                 PlayerListEntry playerListEntry = null;
 
                 if (entity instanceof PlayerEntity player) {
@@ -651,7 +653,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         }
 
         if (this.autoBlockMode.getValue() == AutoBlockMode.RIGHT_CLICK_PERMANENT) {
-            mc.options.useKey.setPressed(true); //  Ensure we are blocking permanently
+            mc.options.useKey.setPressed(true); // Ensure we are blocking permanently
         } else if (this.autoBlockMode.getValue() == AutoBlockMode.TEST) {
             if (blockState == BlockState.POST_ATTACK) {
                 var actionResult = mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
@@ -690,41 +692,41 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
     @Override
     public void onRender3D(float tickDelta, long limitTime, MatrixStack matrixStack) {
-        //     if (this.clickType.getValue().getClicker() instanceof final BoxMuellerClicker boxMuellerClicker) {
-        //         final List<Vector4d> cpsHistory = boxMuellerClicker.getCpsHistory().getNormalList();
+        //    if (this.clickType.getValue().getClicker() instanceof final BoxMuellerClicker boxMuellerClicker) {
+        //        final List<Vector4d> cpsHistory = boxMuellerClicker.getCpsHistory().getNormalList();
 //
-        //         if (cpsHistory.size() < 5) {
-        //             return;
-        //         }
+        //        if (cpsHistory.size() < 5) {
+        //            return;
+        //        }
 //
-        //         final Double[] x = new Double[cpsHistory.size()];
-        //         final Double[] y1 = new Double[cpsHistory.size()];
-        //         final Double[] y2 = new Double[cpsHistory.size()];
-        //         final Double[] y3 = new Double[cpsHistory.size()];
-        //         final Double[] y4 = new Double[cpsHistory.size()];
+        //        final Double[] x = new Double[cpsHistory.size()];
+        //        final Double[] y1 = new Double[cpsHistory.size()];
+        //        final Double[] y2 = new Double[cpsHistory.size()];
+        //        final Double[] y3 = new Double[cpsHistory.size()];
+        //        final Double[] y4 = new Double[cpsHistory.size()];
 //
-        //         for (int i = 0; i < cpsHistory.size(); i++) {
-        //             final Vector4d cps = cpsHistory.get(i);
-        //             x[i] = (double) i;
-        //             y1[i] = cps.x;
-        //             y2[i] = cps.y;
-        //             y3[i] = cps.z;
-        //             y4[i] = cps.w;
-        //         }
+        //        for (int i = 0; i < cpsHistory.size(); i++) {
+        //            final Vector4d cps = cpsHistory.get(i);
+        //            x[i] = (double) i;
+        //            y1[i] = cps.x;
+        //            y2[i] = cps.y;
+        //            y3[i] = cps.z;
+        //            y4[i] = cps.w;
+        //        }
 //
-        //         ImLoader.draw(() -> {
-        //             if (ImGui.begin("CPS History")) {
-        //                 if (ImPlot.beginPlot("CPS History")) {
-        //                     ImPlot.plotLine("CPS", x, y1);
-        //                     ImPlot.plotLine("Gaussian", x, y2);
-        //                     ImPlot.plotLine("Gaussian Percentage", x, y3);
-        //                     ImPlot.plotLine("Gaussian Density", x, y4);
-        //                     ImPlot.endPlot();
-        //                 }
-        //             }
-        //             ImGui.end();
-        //         });
-        //     }
+        //        ImLoader.draw(() -> {
+        //            if (ImGui.begin("CPS History")) {
+        //                if (ImPlot.beginPlot("CPS History")) {
+        //                    ImPlot.plotLine("CPS", x, y1);
+        //                    ImPlot.plotLine("Gaussian", x, y2);
+        //                    ImPlot.plotLine("Gaussian Percentage", x, y3);
+        //                    ImPlot.plotLine("Gaussian Density", x, y4);
+        //                    ImPlot.endPlot();
+        //                }
+        //            }
+        //            ImGui.end();
+        //        });
+        //    }
 
         if (!this.targetESP.getValue() || this.getTarget() == null) {
             return;

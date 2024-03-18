@@ -25,7 +25,6 @@ import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.normal.render.EntityRenderBottomLayerListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
@@ -77,7 +76,7 @@ public class TrueSightModule extends AbstractModule implements EntityRenderBotto
 
     @Override
     public void onLivingEntityRenderBottomLayer(final EntityRenderBottomLayerEvent event) {
-        if (this.test(event.entity)) {
+        if (this.isValid(event.entity)) {
             final Color color = this.entityColor.getValue().getColor();
             event.red = color.getRed() / 255f;
             event.green = color.getGreen() / 255f;
@@ -86,8 +85,8 @@ public class TrueSightModule extends AbstractModule implements EntityRenderBotto
         }
     }
 
-    public boolean test(final Entity entity) {
-        return this.isActive() && this.entities.getValue() && entity.isInvisible() && WorldUtil.isTarget(entity);
+    public boolean isValid(final Entity entity) {
+        return this.isActive() && this.entities.getValue() && entity.isInvisible() && Vandalism.getInstance().getTargetManager().isTarget(entity);
     }
 
 }

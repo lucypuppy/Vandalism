@@ -33,7 +33,6 @@ import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.network.SyncPosition;
 import de.nekosarekawaii.vandalism.util.game.PacketUtil;
-import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.debug.DebugRenderer;
@@ -155,10 +154,12 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         for (final Entity entity : this.mc.world.getEntities()) {
-            if (WorldUtil.isTarget(entity)
+            if (
+                    Vandalism.getInstance().getTargetManager().isTarget(entity)
                     && entity.getWidth() > 0.0
                     && entity.getHeight() > 0.0
-                    && entity instanceof final LivingEntity livingEntity) {
+                    && entity instanceof final LivingEntity livingEntity
+            ) {
                 if (this.mc.player.distanceTo(livingEntity) <= backTrackRange.getValue()) {
                     if (!this.backTrackedEntities.containsKey(livingEntity.getId())) {
                         this.backTrackedEntities.put(livingEntity.getId(), new SyncPosition(entity.getPos()));

@@ -45,7 +45,7 @@ public class RotationManager implements MinecraftWrapper, OutgoingPacketListener
     public RotationManager() {
         Vandalism.getInstance().getEventSystem().subscribe(this, OutgoingPacketEvent.ID, StrafeEvent.ID);
 
-        //  Priority is low because we want to calculate the rotation after the module set it.
+        // Priority is low because we want to calculate the rotation after the module set it.
         Vandalism.getInstance().getEventSystem().subscribe(RotationEvent.ID, this, Priorities.LOW);
     }
 
@@ -98,7 +98,7 @@ public class RotationManager implements MinecraftWrapper, OutgoingPacketListener
         if (this.rotation == null || !this.movementFix)
             return;
 
-        //  Thanks mojang...
+        // Thanks mojang...
         if (event.type == StrafeListener.Type.JUMP) {
             event.yaw = (float) Math.toRadians(this.rotation.getYaw());
             return;

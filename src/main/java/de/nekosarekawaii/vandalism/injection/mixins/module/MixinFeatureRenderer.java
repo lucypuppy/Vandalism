@@ -49,7 +49,7 @@ public abstract class MixinFeatureRenderer {
 
     @Redirect(method = "renderModel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/RenderLayer;getEntityCutoutNoCull(Lnet/minecraft/util/Identifier;)Lnet/minecraft/client/render/RenderLayer;"))
     private static RenderLayer changeRenderLayer(Identifier texture) {
-        if (Vandalism.getInstance().getModuleManager().getTrueSightModule().test(vandalism$entity)) {
+        if (Vandalism.getInstance().getModuleManager().getTrueSightModule().isValid(vandalism$entity)) {
             return RenderLayer.getItemEntityTranslucentCull(texture);
         } else {
             return RenderLayer.getEntityCutoutNoCull(texture);
