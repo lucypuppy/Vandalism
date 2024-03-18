@@ -31,8 +31,8 @@ import de.nekosarekawaii.vandalism.clientwindow.impl.nbteditor.gui.NbtEditorClie
 import de.nekosarekawaii.vandalism.clientwindow.impl.port.PortScannerClientWindow;
 import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.event.normal.render.Render2DListener;
+import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.imgui.ImLoader;
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.MessageScreen;

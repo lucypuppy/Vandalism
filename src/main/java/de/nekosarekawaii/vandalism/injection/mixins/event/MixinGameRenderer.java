@@ -23,7 +23,7 @@ import de.nekosarekawaii.vandalism.event.normal.player.RaytraceListener;
 import de.nekosarekawaii.vandalism.event.normal.player.RotationListener;
 import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.injection.access.IGameRenderer;
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;

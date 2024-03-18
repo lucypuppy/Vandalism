@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.clientwindow.base;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.florianmichael.rclasses.pattern.functional.IName;
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 
 public class ClientWindow implements IName, MinecraftWrapper {

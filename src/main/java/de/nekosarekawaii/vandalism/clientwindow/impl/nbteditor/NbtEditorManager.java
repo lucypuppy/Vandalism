@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.clientwindow.impl.nbteditor;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientwindow.impl.nbteditor.gui.NbtEditorClientWindow;
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.ui.types.Window;

@@ -23,7 +23,7 @@ import de.nekosarekawaii.vandalism.addonthirdparty.spotify.SpotifyManager;
 import de.nekosarekawaii.vandalism.addonthirdparty.spotify.gui.SpotifyData;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
-import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
+import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
 import de.nekosarekawaii.vandalism.util.render.GLStateTracker;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.texture.AbstractTexture;

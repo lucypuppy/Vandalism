@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.clientwindow.base;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientwindow.ClientWindowManager;
-import de.nekosarekawaii.vandalism.feature.hud.gui.HUDClientWindow;
+import de.nekosarekawaii.vandalism.integration.hud.gui.HUDClientWindow;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import de.nekosarekawaii.vandalism.util.imgui.ImLoader;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;

@@ -27,9 +27,9 @@ import com.mojang.authlib.yggdrasil.YggdrasilEnvironment;
 import de.florianmichael.rclasses.common.TimeFormatter;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.normal.internal.UpdateSessionListener;
-import de.nekosarekawaii.vandalism.util.common.StaticEncryptionUtil;
+import de.nekosarekawaii.vandalism.util.common.EncryptionUtil;
+import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.PlayerSkinRenderer;
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.SocialInteractionsManager;
 import net.minecraft.client.realms.RealmsClient;
@@ -177,7 +177,7 @@ public abstract class AbstractAccount implements MinecraftWrapper {
         if (this.session.getUuidOrNull() != null) {
             node.addProperty("uuid", this.session.getUuidOrNull().toString());
         }
-        node.addProperty("accessToken", StaticEncryptionUtil.encrypt(username, this.session.getAccessToken()));
+        node.addProperty("accessToken", EncryptionUtil.encrypt(username, this.session.getAccessToken()));
         this.session.getXuid().ifPresent(s -> node.addProperty("xuid", s));
         this.session.getClientId().ifPresent(s -> node.addProperty("clientId", s));
         node.addProperty("accountType", this.session.getAccountType().getName());
@@ -186,7 +186,7 @@ public abstract class AbstractAccount implements MinecraftWrapper {
     public Session loadSession(final JsonObject node) throws Throwable {
         final String username = node.get("username").getAsString();
         final String uuid = node.has("uuid") ? node.get("uuid").getAsString() : null;
-        final String accessToken = StaticEncryptionUtil.decrypt(username, node.get("accessToken").getAsString());
+        final String accessToken = EncryptionUtil.decrypt(username, node.get("accessToken").getAsString());
         final Optional<String> xuid = node.has("xuid") ? Optional.of(node.get("xuid").getAsString()) : Optional.empty();
         final Optional<String> clientId = node.has("clientId") ? Optional.of(node.get("clientId").getAsString()) : Optional.empty();
         final String accountType = node.get("accountType").getAsString();

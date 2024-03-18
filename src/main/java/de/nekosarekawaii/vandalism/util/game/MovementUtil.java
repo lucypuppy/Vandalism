@@ -18,8 +18,6 @@
 
 package de.nekosarekawaii.vandalism.util.game;
 
-import de.nekosarekawaii.vandalism.util.MinecraftConstants;
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.util.math.BlockPos;

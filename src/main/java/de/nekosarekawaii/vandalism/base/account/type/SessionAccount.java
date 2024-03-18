@@ -23,7 +23,7 @@ import de.florianmichael.rclasses.common.array.ObjectTypeChecker;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
-import de.nekosarekawaii.vandalism.util.common.StaticEncryptionUtil;
+import de.nekosarekawaii.vandalism.util.common.EncryptionUtil;
 import de.nekosarekawaii.vandalism.util.common.UUIDUtil;
 import de.nekosarekawaii.vandalism.util.game.NameGenerationUtil;
 import imgui.ImGui;
@@ -102,7 +102,7 @@ public class SessionAccount extends AbstractAccount {
         // Every account stores the last input from updateSession(), but we still have to save and load our own account data
         mainNode.addProperty("name", this.name);
         mainNode.addProperty("uuid", this.uuid);
-        mainNode.addProperty("accessToken", StaticEncryptionUtil.encrypt(this.name, this.accessToken));
+        mainNode.addProperty("accessToken", EncryptionUtil.encrypt(this.name, this.accessToken));
         mainNode.addProperty("xuid", this.xuid);
         mainNode.addProperty("clientId", this.clientId);
     }
@@ -112,7 +112,7 @@ public class SessionAccount extends AbstractAccount {
         // Every account stores the last input from updateSession(), but we still have to save and load our own account data
         this.name = mainNode.get("name").getAsString();
         this.uuid = mainNode.get("uuid").getAsString();
-        this.accessToken = StaticEncryptionUtil.decrypt(this.name, mainNode.get("accessToken").getAsString());
+        this.accessToken = EncryptionUtil.decrypt(this.name, mainNode.get("accessToken").getAsString());
         this.xuid = mainNode.get("xuid").getAsString();
         this.clientId = mainNode.get("clientId").getAsString();
     }

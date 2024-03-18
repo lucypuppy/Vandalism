@@ -16,16 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.hud.impl;
+package de.nekosarekawaii.vandalism.integration.hud.impl;
 
 import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
-import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
+import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
+import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.GLStateTracker;
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;

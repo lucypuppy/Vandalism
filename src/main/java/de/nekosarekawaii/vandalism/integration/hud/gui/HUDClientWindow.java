@@ -16,12 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.hud.gui;
+package de.nekosarekawaii.vandalism.integration.hud.gui;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
-import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
-import de.nekosarekawaii.vandalism.feature.hud.HUDManager;
+import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
+import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiTabItemFlags;

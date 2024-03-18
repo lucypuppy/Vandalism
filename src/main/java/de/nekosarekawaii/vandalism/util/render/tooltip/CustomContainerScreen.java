@@ -18,8 +18,8 @@
 
 package de.nekosarekawaii.vandalism.util.render.tooltip;
 
-import de.nekosarekawaii.vandalism.util.MinecraftConstants;
 import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
+import de.nekosarekawaii.vandalism.util.game.MinecraftConstants;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;

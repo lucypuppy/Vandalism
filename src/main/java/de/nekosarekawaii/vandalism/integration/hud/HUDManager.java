@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.hud;
+package de.nekosarekawaii.vandalism.integration.hud;
 
 import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.Vandalism;
@@ -26,12 +26,12 @@ import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindowScreen;
 import de.nekosarekawaii.vandalism.event.cancellable.render.ScreenListener;
 import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.event.normal.render.Render2DListener;
-import de.nekosarekawaii.vandalism.feature.hud.config.HUDConfig;
-import de.nekosarekawaii.vandalism.feature.hud.gui.HUDClientWindow;
-import de.nekosarekawaii.vandalism.feature.hud.impl.InfoHUDElement;
-import de.nekosarekawaii.vandalism.feature.hud.impl.ModuleListHUDElement;
-import de.nekosarekawaii.vandalism.feature.hud.impl.WatermarkHUDElement;
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.integration.hud.config.HUDConfig;
+import de.nekosarekawaii.vandalism.integration.hud.gui.HUDClientWindow;
+import de.nekosarekawaii.vandalism.integration.hud.impl.InfoHUDElement;
+import de.nekosarekawaii.vandalism.integration.hud.impl.ModuleListHUDElement;
+import de.nekosarekawaii.vandalism.integration.hud.impl.WatermarkHUDElement;
+import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 
 import java.io.File;

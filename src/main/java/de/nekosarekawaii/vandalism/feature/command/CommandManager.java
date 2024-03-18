@@ -29,7 +29,7 @@ import de.nekosarekawaii.vandalism.feature.command.impl.movement.HClipCommand;
 import de.nekosarekawaii.vandalism.feature.command.impl.movement.VClipCommand;
 import de.nekosarekawaii.vandalism.feature.command.impl.render.ClientsideGameModeCommand;
 import de.nekosarekawaii.vandalism.feature.command.impl.render.ClientsideInventoryClearCommand;
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.ClickEvent;
 

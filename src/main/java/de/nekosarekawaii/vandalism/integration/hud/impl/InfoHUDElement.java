@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.hud.impl;
+package de.nekosarekawaii.vandalism.integration.hud.impl;
 
 import de.florianmichael.rclasses.math.geometry.Alignment;
 import de.nekosarekawaii.vandalism.Vandalism;
@@ -25,9 +25,9 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
-import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.TickBaseModule;
 import de.nekosarekawaii.vandalism.injection.access.IRenderTickCounter;
+import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
 import de.nekosarekawaii.vandalism.util.click.CPSTracker;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;

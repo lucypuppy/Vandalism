@@ -22,7 +22,6 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.normal.internal.TargetListener;
 import de.nekosarekawaii.vandalism.injection.access.IGameRenderer;
 import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
-import de.nekosarekawaii.vandalism.util.wrapper.MinecraftWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.util.hit.BlockHitResult;
@@ -127,8 +126,7 @@ public class WorldUtil implements MinecraftWrapper {
             return false;
         }
 
-        return mc.world.getBlockCollisions(mc.player,
-                mc.player.getBoundingBox().offset(0.0D, -offset, 0.0D)).iterator().hasNext();
+        return mc.world.getBlockCollisions(mc.player, mc.player.getBoundingBox().offset(0.0D, -offset, 0.0D)).iterator().hasNext();
     }
 
 }

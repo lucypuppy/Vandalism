@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins;
 
-import de.nekosarekawaii.vandalism.feature.creativetab.CreativeTabManager;
+import de.nekosarekawaii.vandalism.integration.creativetab.CreativeTabManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;

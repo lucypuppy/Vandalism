@@ -23,7 +23,7 @@ import de.nekosarekawaii.vandalism.addonwurstclient.injection.access.IWurstClien
 import de.nekosarekawaii.vandalism.addonwurstclient.module.WurstClientModule;
 import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
-import de.nekosarekawaii.vandalism.feature.hud.impl.WatermarkHUDElement;
+import de.nekosarekawaii.vandalism.integration.hud.impl.WatermarkHUDElement;
 import net.wurstclient.WurstClient;
 
 import java.util.List;
