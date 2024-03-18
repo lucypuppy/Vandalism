@@ -85,6 +85,7 @@ import java.io.File;
  *  - Keksbye, Simon, FooFieOwO this is fixed find a new way for to bypasss a cubecraft disabler
  *  - Fix autoblock blocking without sword
  *  - Add more blocks to BlockBreaker
+ *  - Rework windmouse algorythm
  * <br><br>
  * TODO: simon <br>
  *  - Add a better Autoblock to Killaura with FooFieOwO
