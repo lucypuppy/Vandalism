@@ -103,7 +103,7 @@ public class ServerPingerWidget implements MinecraftWrapper {
             WIDGET.setWidth(mc.currentScreen.width);
             final int x = WIDGET.getWidth() / 2 /* screen width / 2 */ - ELEMENT_WIDTH / 2;
             final int y = WIDGET.getY() + MAGICAL_OFFSET;
-            final int x2 = x + ELEMENT_WIDTH;
+            final int x2 = x + ELEMENT_WIDTH + 4;
             final int y2 = WIDGET.getY() + ELEMENT_HEIGHT;
             final float progress = (ELEMENT_WIDTH / 100f) * PING_TIMER.getDelta() * (100f / pingDelay);
             context.enableScissor(x, y, x2, y2 + MAGICAL_OFFSET);
