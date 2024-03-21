@@ -82,7 +82,9 @@ public class HandFuckerModule extends AbstractModule implements PlayerUpdateList
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        mc.player.setMainArm(mc.options.getMainArm().getValue());
+        if (!this.annoyMe.getValue()) {
+            mc.player.setMainArm(mc.options.getMainArm().getValue());
+        }
         if (++this.partialTicks >= this.delay.getValue()) {
             this.partialTicks = 0;
             final SyncedClientOptions options = mc.options.getSyncedOptions();
