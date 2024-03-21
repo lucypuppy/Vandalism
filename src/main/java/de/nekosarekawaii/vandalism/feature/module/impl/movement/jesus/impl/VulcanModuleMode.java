@@ -19,15 +19,21 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.jesus.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.event.normal.network.BlockCollisionShapeListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.jesus.JesusModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
+import net.minecraft.block.BlockState;
+import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShapes;
 
-public class VulcanModuleMode extends ModuleMulti<JesusModule> implements BlockCollisionShapeListener, PlayerUpdateListener {
+public class VulcanModuleMode extends ModuleMulti<JesusModule> implements BlockCollisionShapeListener, PlayerUpdateListener, OutgoingPacketListener {
+
+    private boolean overLiquid = false;
+    private long offGroundTicks = 0;
 
     public VulcanModuleMode() {
         super("Vulcan");
@@ -35,28 +41,83 @@ public class VulcanModuleMode extends ModuleMulti<JesusModule> implements BlockC
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, BlockCollisionShapeEvent.ID, PlayerUpdateEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, BlockCollisionShapeEvent.ID, PlayerUpdateEvent.ID, OutgoingPacketEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, BlockCollisionShapeEvent.ID, PlayerUpdateEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, BlockCollisionShapeEvent.ID, PlayerUpdateEvent.ID, OutgoingPacketEvent.ID);
     }
 
     @Override
     public void onBlockCollisionShape(final BlockCollisionShapeEvent event) {
         if (event.pos.getY() < this.mc.player.getY() && !event.state.getFluidState().isEmpty()) {
-            event.shape = VoxelShapes.cuboid(0, 0, 0, 1, 0.52, 1);
+            event.shape = VoxelShapes.cuboid(0, 0, 0, 1, 0.5, 1);
         }
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (!this.mc.world.getBlockState(this.mc.player.getBlockPos()).getFluidState().isEmpty()) {
-            final Vec3d velocity = MovementUtil.setSpeed(0.3);
-            this.mc.player.setVelocity(velocity.x, Math.random() * 0.6, velocity.z);
-            this.mc.options.sprintKey.setPressed(false);
+        final boolean lastOverLiquid = this.overLiquid;
+        this.overLiquid = overLiquid();
+
+        if (!this.overLiquid && lastOverLiquid) {
+            final Vec3d velocity = MovementUtil.setSpeed(0.2);
+            this.mc.player.setVelocity(velocity.x, -0.42, velocity.z);
+            return;
         }
+
+        if (!this.overLiquid)
+            return;
+
+        if (this.mc.player.isOnGround()) {
+            this.offGroundTicks = 0;
+            mc.player.setVelocity(mc.player.getVelocity().x, 0.6, mc.player.getVelocity().z);
+            mc.player.fallDistance = 0;
+            return;
+        } else if (mc.player.fallDistance > 0) {
+            mc.player.setVelocity(mc.player.getVelocity().x, -0.1, mc.player.getVelocity().z);
+        }
+
+        this.offGroundTicks++;
+        if (!MovementUtil.isMoving() || this.offGroundTicks < 5) {
+            return;
+        }
+
+        MovementUtil.setSpeed(0.33);
+    }
+
+    @Override
+    public void onOutgoingPacket(final OutgoingPacketListener.OutgoingPacketEvent event) {
+        if (event.packet instanceof PlayerMoveC2SPacket packet) {
+            if (!overLiquid)
+                return;
+
+            if (mc.player.fallDistance > 0 && mc.player.age % 13 == 0) { // Fix fall damage
+                packet.onGround = true;
+                return;
+            }
+
+            // Disable JesusA check
+            packet.onGround = false;
+            packet.y += 0.1;
+        }
+    }
+
+    public boolean overLiquid() {
+        for (int i = 0; i < 5; i++) {
+            final BlockState blockState = this.mc.world.getBlockState(this.mc.player.getBlockPos().add(0, -i, 0));
+
+            if (blockState.getFluidState().isEmpty()) {
+                if (!blockState.isAir()) {
+                    return false; // Return if a block is in between the player and the water
+                }
+            } else {
+                return true; // Return if player is over water
+            }
+        }
+
+        return false; // Return if player is too high
     }
 
 }
