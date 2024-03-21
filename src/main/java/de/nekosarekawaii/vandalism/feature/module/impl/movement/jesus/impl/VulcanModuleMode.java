@@ -33,6 +33,7 @@ import net.minecraft.util.shape.VoxelShapes;
 public class VulcanModuleMode extends ModuleMulti<JesusModule> implements BlockCollisionShapeListener, PlayerUpdateListener, OutgoingPacketListener {
 
     private boolean overLiquid = false;
+    private long offGroundTicks = 0;
 
     public VulcanModuleMode() {
         super("Vulcan");
@@ -70,6 +71,7 @@ public class VulcanModuleMode extends ModuleMulti<JesusModule> implements BlockC
             return;
 
         if (this.mc.player.isOnGround()) {
+            this.offGroundTicks = 0;
             mc.player.setVelocity(mc.player.getVelocity().x, 0.6, mc.player.getVelocity().z);
             mc.player.fallDistance = 0;
             return;
@@ -77,9 +79,12 @@ public class VulcanModuleMode extends ModuleMulti<JesusModule> implements BlockC
             mc.player.setVelocity(mc.player.getVelocity().x, -0.1, mc.player.getVelocity().z);
         }
 
-        if (MovementUtil.isMoving()) {
-            MovementUtil.setSpeed(0.33);
+        this.offGroundTicks++;
+        if (!MovementUtil.isMoving() || this.offGroundTicks < 5) {
+            return;
         }
+
+        MovementUtil.setSpeed(0.33);
     }
 
     @Override
@@ -88,7 +93,7 @@ public class VulcanModuleMode extends ModuleMulti<JesusModule> implements BlockC
             if (!overLiquid)
                 return;
 
-            if (mc.player.fallDistance > 0 && mc.player.age % 13 == 0) { // Fix fall damage
+            if (mc.player.fallDistance > 0 && mc.player.age % 19 == 0) { // Fix fall damage
                 packet.onGround = true;
                 return;
             }
