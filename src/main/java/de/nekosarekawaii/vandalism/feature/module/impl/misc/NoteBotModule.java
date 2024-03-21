@@ -179,7 +179,9 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
                 ImGui.textWrapped("Name: " + Files.getNameWithoutExtension(title));
             }
             final SongPlayer songPlayer = this.songPlayer;
-            ImGui.textWrapped("Duration: " + (songPlayer.getTick() * 50) / 1000 + "s / " + (songPlayer.getSongView().getLength() * 50) / 1000 + "s");
+            if (songPlayer != null) {
+                ImGui.textWrapped("Duration: " + (songPlayer.getTick() * 50) / 1000 + "s / " + (songPlayer.getSongView().getLength() * 50) / 1000 + "s");
+            }
         }
         ImGui.separator();
         ImGui.text("Search for a song");
