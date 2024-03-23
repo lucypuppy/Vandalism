@@ -28,10 +28,13 @@ import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.network.ServerInfo;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConfigScreen extends Screen {
 
@@ -76,6 +79,14 @@ public class ConfigScreen extends Screen {
         this.cleanBtn = axisGrid.add(this.addDrawableChild(ButtonWidget.builder(Text.literal("Clean"), button -> {
             if (this.parent instanceof final MultiplayerScreen multiplayerScreen) {
                 final net.minecraft.client.option.ServerList serverList = multiplayerScreen.getServerList();
+                final List<String> addresses = new ArrayList<>();
+                for (final ServerInfo server : serverList.servers) {
+                    if (addresses.contains(server.address)) {
+                        server.ping = 0L;
+                    } else {
+                        addresses.add(server.address);
+                    }
+                }
                 serverList.servers.removeIf(server -> server.ping <= 0L);
                 serverList.saveFile();
             }
