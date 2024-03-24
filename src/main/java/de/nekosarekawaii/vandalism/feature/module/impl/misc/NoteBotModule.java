@@ -33,7 +33,6 @@ import imgui.type.ImString;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Formatting;
 import net.raphimc.noteblocklib.NoteBlockLib;
 import net.raphimc.noteblocklib.format.SongFormat;
 import net.raphimc.noteblocklib.format.nbs.NbsDefinitions;
@@ -180,7 +179,9 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
                 ImGui.textWrapped("Name: " + Files.getNameWithoutExtension(title));
             }
             final SongPlayer songPlayer = this.songPlayer;
-            ImGui.textWrapped("Duration: " + (songPlayer.getTick() * 50) / 1000 + "s / " + (songPlayer.getSongView().getLength() * 50) / 1000 + "s");
+            if (songPlayer != null) {
+                ImGui.textWrapped("Duration: " + (songPlayer.getTick() * 50) / 1000 + "s / " + (songPlayer.getSongView().getLength() * 50) / 1000 + "s");
+            }
         }
         ImGui.separator();
         ImGui.text("Search for a song");
@@ -280,11 +281,11 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
                                     if (!title.isEmpty()) {
                                         networkHandler.sendChatCommand(
                                                 "bossbar set minecraft:notebot name \"" +
-                                                        Formatting.GREEN + "Currently playing " +
-                                                        Formatting.DARK_AQUA + Files.getNameWithoutExtension(title) + " " +
-                                                        Formatting.YELLOW + ((currentTick * 50) / 1000) + "s" +
-                                                        Formatting.GRAY + "/" +
-                                                        Formatting.YELLOW + ((maxTicks * 50) / 1000) + "s\""
+                                                        "Currently playing " +
+                                                        Files.getNameWithoutExtension(title) + " " +
+                                                        ((currentTick * 50) / 1000) + "s" +
+                                                        "/" +
+                                                        ((maxTicks * 50) / 1000) + "s\""
                                         );
                                     }
                                     final String color;
