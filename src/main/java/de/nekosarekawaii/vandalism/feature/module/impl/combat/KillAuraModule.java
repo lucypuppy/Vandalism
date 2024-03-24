@@ -63,7 +63,6 @@ import net.minecraft.world.GameMode;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class KillAuraModule extends AbstractModule implements PlayerUpdateListener, Render2DListener, Render3DListener, RotationListener, RaytraceListener {
@@ -462,8 +461,9 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         final HitResult raytrace = WorldUtil.raytrace(this.rotationManager.getRotation(), Math.pow(raytraceReach, 2));
         this.raytraceDistance = raytrace != null && raytrace.getType() != HitResult.Type.MISS ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
 
-        if (this.raytraceDistance > raytraceReach) {
+        if (this.raytraceDistance > raytraceReach || this.raytraceDistance < 0) {
             stopBlocking(BlockState.ERROR);
+            this.targetIndex = 0;
             return;
         }
 
@@ -510,10 +510,12 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 rotateSpeed = (float) (this.rotateSpeed.getValue() + Math.random() * 5.0f);
             }
 
-            rotation = RotationUtil.windMouseSmooth(
-                    rotation, new Rotation(this.mc.player.lastYaw, this.mc.player.lastPitch),
-                    9, 3, 15, 12
-            );
+            // rotation = RotationUtil.windMouseSmooth(
+            //         rotation, new Rotation(this.mc.player.lastYaw, this.mc.player.lastPitch),
+            //         9, 3, 15, 12
+            // );
+
+            // rotation.setPitch((float) (rotation.getPitch() + Math.random() * 5));
 
             this.rotationManager.setRotation(
                     rotation,
@@ -542,8 +544,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             }
             if (
                     Vandalism.getInstance().getTargetManager().isTarget(entity) &&
-                    this.mc.player.distanceTo(entity) <= getAimRange() + 1.0 &&
-                    entity.getWidth() > 0.0 && entity.getHeight() > 0.0
+                            this.mc.player.distanceTo(entity) <= getAimRange() + 1.0 &&
+                            entity.getWidth() > 0.0 && entity.getHeight() > 0.0
             ) {
                 PlayerListEntry playerListEntry = null;
 
@@ -562,18 +564,25 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             return;
         }
 
+        final Vec3d eyePos = this.mc.player.getEyePos();
         switch (this.selectionMode.getValue()) {
-            case RANGE -> entities.sort(Comparator.comparingDouble(entity -> this.mc.player.distanceTo(entity)));
-            case HEALTH -> entities.sort(Comparator.comparingDouble(entity -> {
-                if (entity instanceof LivingEntity living)
-                    return living.getHealth();
-                return 0;
-            }));
-            case ARMOR -> entities.sort(Comparator.comparingDouble(entity -> {
-                if (entity instanceof LivingEntity living)
-                    return living.getArmor();
-                return 0;
-            }));
+            case RANGE -> entities.sort((entity1, entity2) -> {
+                final double distance1 = eyePos.distanceTo(RotationBuilder.getNearestPoint(entity1));
+                final double distance2 = eyePos.distanceTo(RotationBuilder.getNearestPoint(entity2));
+                return Double.compare(distance1, distance2);
+            });
+
+            case HEALTH -> entities.sort((entity1, entity2) -> {
+                final double health1 = entity1 instanceof LivingEntity living1 ? living1.getHealth() : 9999;
+                final double health2 = entity2 instanceof LivingEntity living2 ? living2.getHealth() : 9999;
+                return Double.compare(health1, health2);
+            });
+
+            case ARMOR -> entities.sort((entity1, entity2) -> {
+                final double armor1 = entity1 instanceof LivingEntity living1 ? living1.getArmor() : 9999;
+                final double armor2 = entity2 instanceof LivingEntity living2 ? living2.getArmor() : 9999;
+                return Double.compare(armor1, armor2);
+            });
         }
 
         if (!this.switchTarget.getValue() || this.targetIndex >= entities.size()) {
