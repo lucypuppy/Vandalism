@@ -20,6 +20,8 @@ package de.nekosarekawaii.vandalism.util.game;
 
 import de.nekosarekawaii.vandalism.injection.access.IGameRenderer;
 import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.util.hit.BlockHitResult;
@@ -27,7 +29,10 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.GameMode;
 import net.minecraft.world.RaycastContext;
+
+import java.util.UUID;
 
 public class WorldUtil implements MinecraftWrapper {
 
@@ -119,6 +124,17 @@ public class WorldUtil implements MinecraftWrapper {
         }
 
         return mc.world.getBlockCollisions(mc.player, mc.player.getBoundingBox().offset(0.0D, -offset, 0.0D)).iterator().hasNext();
+    }
+
+    public static GameMode getGameMode(final UUID uuid) {
+        final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
+        if (networkHandler != null) {
+            final PlayerListEntry playerEntry = networkHandler.getPlayerListEntry(uuid);
+            if (playerEntry != null) {
+                return playerEntry.getGameMode();
+            }
+        }
+        return null;
     }
 
 }

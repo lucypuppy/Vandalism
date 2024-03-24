@@ -35,17 +35,15 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.raphimc.noteblocklib.NoteBlockLib;
 import net.raphimc.noteblocklib.format.SongFormat;
-import net.raphimc.noteblocklib.format.nbs.NbsDefinitions;
-import net.raphimc.noteblocklib.format.nbs.model.NbsNote;
 import net.raphimc.noteblocklib.model.Note;
 import net.raphimc.noteblocklib.model.Song;
 import net.raphimc.noteblocklib.model.SongView;
 import net.raphimc.noteblocklib.player.ISongPlayerCallback;
 import net.raphimc.noteblocklib.player.SongPlayer;
 import net.raphimc.noteblocklib.util.Instrument;
+import net.raphimc.noteblocklib.util.MinecraftDefinitions;
 
 import java.io.File;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class NoteBotModule extends AbstractModule implements PlayerUpdateListener {
@@ -180,7 +178,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
             }
             final SongPlayer songPlayer = this.songPlayer;
             if (songPlayer != null) {
-                ImGui.textWrapped("Duration: " + (songPlayer.getTick() * 50) / 1000 + "s / " + (songPlayer.getSongView().getLength() * 50) / 1000 + "s");
+                ImGui.textWrapped("Duration: " + formatSeconds((int) (songPlayer.getTick() / (songPlayer.getSongView().getSpeed()))));
             }
         }
         ImGui.separator();
@@ -257,22 +255,27 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
                     }
                     final SoundEvent sound = soundEvent.get();
                     if (sound != null) {
-                        final float pitch;
-                        if (note instanceof final NbsNote nbsNote) {
-                            final float keysPerOctave = NbsDefinitions.KEYS_PER_OCTAVE;
-                            // 0.15F is some kind of constant value, but this should definitely be replaced
-                            pitch = Math.min(2.0F, (float) Math.pow(2.0F, ((nbsNote.getKey() + nbsNote.getPitch()) - keysPerOctave) / keysPerOctave) * 0.15F);
-                        } else {
-                            ChatUtil.errorChatMessage("Note format " + note.getClass().getSimpleName() + " is not supported.");
-                            return;
-                        }
+                        final float pitch = Math.min(2.0F, MinecraftDefinitions.mcKeyToMcPitch(MinecraftDefinitions.nbsKeyToMcKey(note.getKey())));
                         if (play) {
                             switch (mode.getValue()) {
                                 case COMMAND -> {
                                     networkHandler.sendChatCommand("bossbar set minecraft:notebot players @a");
-                                    final String[] styles = new String[]{ "notched_10", "notched_12", "notched_20", "notched_6", "progress" };
-                                    networkHandler.sendChatCommand("bossbar set minecraft:notebot style " + styles[ThreadLocalRandom.current().nextInt(styles.length)]);
-                                    networkHandler.sendChatCommand("playsound " + sound.getId().toString() + " master @a ~ ~ ~ " + 1 + " " + pitch);
+                                    final String[] styles = new String[]{ "progress", "notched_6", "notched_10", "notched_12", "notched_20" };
+                                    String currentStyle = "progress";
+                                    if (pitch <= 0.4f) {
+                                        currentStyle = styles[4];
+                                    }
+                                    else if (pitch <= 0.8f) {
+                                        currentStyle = styles[3];
+                                    }
+                                    else if (pitch <= 1.2f) {
+                                        currentStyle = styles[2];
+                                    }
+                                    else if (pitch <= 1.6f) {
+                                        currentStyle = styles[1];
+                                    }
+                                    networkHandler.sendChatCommand("bossbar set minecraft:notebot style " + currentStyle);
+                                    networkHandler.sendChatCommand("execute as @a run playsound " + sound.getId().toString() + " master @a ~ ~ ~ 100 " + pitch);
                                     final int currentTick = songPlayer.getTick();
                                     final int maxTicks = view.getLength();
                                     final int progress = (int) ((currentTick / (float) maxTicks) * 100);
@@ -283,9 +286,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
                                                 "bossbar set minecraft:notebot name \"" +
                                                         "Currently playing " +
                                                         Files.getNameWithoutExtension(title) + " " +
-                                                        ((currentTick * 50) / 1000) + "s" +
-                                                        "/" +
-                                                        ((maxTicks * 50) / 1000) + "s\""
+                                                        formatSeconds((int) (songPlayer.getTick() / (songPlayer.getSongView().getSpeed()))) + "\""
                                         );
                                     }
                                     final String color;
@@ -303,7 +304,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
                                 default -> {}
                             }
                         } else {
-                            mc.execute(() -> player.playSound(sound, nbsNote.getVolume() / 100F, pitch));
+                            mc.execute(() -> player.playSound(sound, 100F, pitch));
                         }
                     } else {
                         ChatUtil.errorChatMessage("Failed to find mc instrument: " + instrument.name());
@@ -321,6 +322,16 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         });
         this.currentSongFile = songFile;
         this.activate();
+    }
+
+    private String formatSeconds(final int target) {
+        final StringBuilder builder = new StringBuilder();
+        int minutes = target / 60;
+        int hours = minutes / 60;
+        final int seconds = target % 60;
+        if (hours > 0) builder.append(hours).append(":");
+        builder.append(minutes).append(":").append(String.format("%02d", seconds));
+        return builder.toString();
     }
 
     private void reset() {
