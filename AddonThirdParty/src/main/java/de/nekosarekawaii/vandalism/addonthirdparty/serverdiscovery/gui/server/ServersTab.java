@@ -68,6 +68,7 @@ public class ServersTab implements MinecraftWrapper {
     private final ImBoolean cracked = new ImBoolean(false);
     private final ImString description = new ImString();
     private ServersRequest.Software software = ServersRequest.Software.ANY;
+    private final ImString customSoftware = new ImString();
     private final ImInt minPlayers = new ImInt(0);
     private final ImInt maxPlayers = new ImInt(-1);
     private final ImInt minOnlinePlayers = new ImInt(0);
@@ -129,6 +130,9 @@ public class ServersTab implements MinecraftWrapper {
                 }
                 ImGui.endCombo();
             }
+            if (this.software == ServersRequest.Software.CUSTOM) {
+                ImGui.inputText("Custom Software", this.customSoftware);
+            }
             ImGui.inputInt("Min Players", this.minPlayers, 1);
             ImGui.inputInt("Max Players", this.maxPlayers, 1);
             ImGui.inputInt("Min Online Players", this.minOnlinePlayers, 1);
@@ -138,7 +142,7 @@ public class ServersTab implements MinecraftWrapper {
                 protocols.add(ServersRequest.ANY_PROTOCOL);
                 for (final ProtocolVersion protocolVersion : ProtocolVersionList.getProtocolsNewToOld()) {
                     if (
-                            protocolVersion.olderThan(ProtocolVersion.v1_8) ||
+                            protocolVersion.olderThan(ProtocolVersion.v1_7_2) ||
                             AprilFoolsProtocolVersion.PROTOCOLS.contains(protocolVersion) ||
                             protocolVersion.equals(BedrockProtocolVersion.bedrockLatest) ||
                             protocolVersion.equals(ProtocolTranslator.AUTO_DETECT_PROTOCOL)
@@ -181,6 +185,9 @@ public class ServersTab implements MinecraftWrapper {
                             this.ignoreModded.get(),
                             this.onlyBungeeSpoofable.get()
                     );
+                    if (this.software == ServersRequest.Software.CUSTOM) {
+                        serversRequest.customSoftware = this.customSoftware.get();
+                    }
                     this.executorService.submit(() -> {
                         this.waitingForResponse = true;
                         final Response response = ServerDiscoveryUtil.request(serversRequest);
