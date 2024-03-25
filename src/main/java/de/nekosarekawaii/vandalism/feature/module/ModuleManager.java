@@ -157,7 +157,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new EthanolModule(),
                 new BlockBreakerModule(),
                 new HandFuckerModule(),
-                new JesusModule()
+                new JesusModule(),
+                new FakeGameModeModule()
         );
         this.configManager.add(new ModulesConfig(this));
     }

@@ -42,6 +42,7 @@ public class ServersRequest extends Request<ServersResponse> {
     public boolean ignore_modded;
     public boolean only_bungeespoofable;
     public Software software;
+    public String customSoftware;
 
     public ServersRequest(final int asn, final Country country, final boolean cracked, final String description, final Software software, final int min_players, final int max_players, final int min_online_players, final int max_online_players, final int online_after, final int protocol, final boolean ignore_modded, final boolean only_bungeespoofable) {
         super(ServersResponse.class, "servers");
@@ -50,6 +51,7 @@ public class ServersRequest extends Request<ServersResponse> {
         this.cracked = cracked;
         this.description = description;
         this.software = software;
+        this.customSoftware = "";
         this.setMaxPlayers(min_players, max_players);
         this.setOnlinePlayers(min_online_players, max_online_players);
         this.online_after = online_after;
@@ -89,7 +91,8 @@ public class ServersRequest extends Request<ServersResponse> {
         VANILLA,
         BUKKIT,
         SPIGOT,
-        PAPER;
+        PAPER,
+        CUSTOM;
 
         private final String name;
 
@@ -117,6 +120,7 @@ public class ServersRequest extends Request<ServersResponse> {
                 ", ignore_modded=" + this.ignore_modded +
                 ", only_bungeespoofable=" + this.only_bungeespoofable +
                 ", software=" + this.software +
+                ", customSoftware='" + this.customSoftware + '\'' +
                 '}';
     }
 
@@ -136,7 +140,7 @@ public class ServersRequest extends Request<ServersResponse> {
         }
         jsonObject.addProperty("ignore_modded", this.ignore_modded);
         jsonObject.addProperty("only_bungeespoofable", this.only_bungeespoofable);
-        jsonObject.addProperty("software", this.software.name().toLowerCase());
+        jsonObject.addProperty("software", this.software == Software.CUSTOM ? "^" + this.customSoftware : this.software.name().toLowerCase());
         return jsonObject;
     }
 

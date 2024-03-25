@@ -27,7 +27,6 @@ import de.nekosarekawaii.vandalism.feature.command.impl.movement.ClipCommand;
 import de.nekosarekawaii.vandalism.feature.command.impl.movement.FlipCommand;
 import de.nekosarekawaii.vandalism.feature.command.impl.movement.HClipCommand;
 import de.nekosarekawaii.vandalism.feature.command.impl.movement.VClipCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.render.ClientsideGameModeCommand;
 import de.nekosarekawaii.vandalism.feature.command.impl.render.ClientsideInventoryClearCommand;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.minecraft.command.CommandSource;
@@ -79,7 +78,6 @@ public class CommandManager extends Storage<AbstractCommand> implements Minecraf
                 new CopyUsernameCommand(),
                 new EnchantCommand(),
                 new FlipCommand(),
-                new ClientsideGameModeCommand(),
                 new ClientsideInventoryClearCommand(),
                 new DifficultyCommand(),
                 new AdvancedBeaconCommand(),
