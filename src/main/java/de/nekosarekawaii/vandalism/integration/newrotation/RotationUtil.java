@@ -22,10 +22,13 @@ import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class RotationUtil implements MinecraftWrapper {
 
+    private static final List<Integer> DIAGONAL_VALUES = Arrays.asList(45, 135, 225, 315);
     private static final double SQRT3 = Math.sqrt(3);
     private static final double SQRT5 = Math.sqrt(5);
 
@@ -34,7 +37,7 @@ public class RotationUtil implements MinecraftWrapper {
         return 1.0f - (diff / (yaw ? 180.0f : 90.0f));
     }
 
-    // correlation can overaim/underaim, i recomend to set it at around 0.2f
+    //  correlation can overaim/underaim, i recomend to set it at around 0.2f
     public static Rotation rotationDistribution(Rotation rotation, final Rotation lastRotation, final float rotateSpeed,
                                                 final float correlationStrength) {
         if (rotateSpeed > 0) {
@@ -50,17 +53,18 @@ public class RotationUtil implements MinecraftWrapper {
                 final double maxYaw = rotateSpeed * distributionYaw;
                 final double maxPitch = rotateSpeed * distributionPitch;
 
-                // Introduce correlation between yaw and pitch
+                //  Introduce correlation between yaw and pitch
                 final float moveYaw = (float) Math.max(Math.min(deltaYaw, maxYaw), -maxYaw);
                 final float movePitch = (float) Math.max(Math.min(deltaPitch, maxPitch), -maxPitch);
 
-                // Apply correlation (reverse the effect)
-                float correlatedMoveYaw = moveYaw;
-                float correlatedMovePitch = movePitch;
-
+                final float correlatedMoveYaw;
+                final float correlatedMovePitch;
                 if (correlationStrength > 0.0f) {
                     correlatedMoveYaw = moveYaw + movePitch * correlationStrength;
                     correlatedMovePitch = movePitch + moveYaw * correlationStrength;
+                } else {
+                    correlatedMoveYaw = moveYaw;
+                    correlatedMovePitch = movePitch;
                 }
 
                 return new Rotation(lastYaw + correlatedMoveYaw, lastPitch + correlatedMovePitch, rotation.getPriority());
@@ -76,58 +80,88 @@ public class RotationUtil implements MinecraftWrapper {
         return Math.abs(MathHelper.wrapDegrees(pseudoRotation.getYaw()) - MathHelper.wrapDegrees(target.getYaw())) > diff;
     }
 
-    // https://ben.land/post/2021/04/25/windmouse-human-mouse-movement/
+    //  https://ben.land/post/2021/04/25/windmouse-human-mouse-movement/
     public static Rotation windMouseSmooth(final Rotation rotation, final Rotation lastRotation,
                                            float gravitationalForce, float windForceMagnitude, float maxStepSize,
                                            float distanceThreshold) {
-        float currentYaw = lastRotation.getYaw();
-        float currentPitch = lastRotation.getPitch();
-        float velocityX = 0;
-        float velocityY = 0;
+        final Random random = new Random();
+        final float deltaX = rotation.getYaw() - lastRotation.getYaw();
+        final float deltaY = rotation.getPitch() - lastRotation.getPitch();
+        final float distance = (float) Math.hypot(deltaX, deltaY);
+
         float windX = 0;
         float windY = 0;
-        final Random random = new Random();
-
-        final float distance = (float) Math.hypot(rotation.getYaw() - lastRotation.getYaw(),
-                rotation.getPitch() - lastRotation.getPitch());
 
         if (distance >= 1) {
-            final float windMagnitude = Math.min(windForceMagnitude, distance);
+            float startX = lastRotation.getYaw();
+            float startY = lastRotation.getPitch();
+            float destX = startX + deltaX;
+            float destY = startY + deltaY;
+            float vX = 0;
+            float vY = 0;
 
-            if (distance >= distanceThreshold) {
-                windX = windX / (float) SQRT3 + (2 * random.nextFloat() - 1) * windMagnitude / (float) SQRT5;
-                windY = windY / (float) SQRT3 + (2 * random.nextFloat() - 1) * windMagnitude / (float) SQRT5;
-            } else {
-                windX /= (float) SQRT3;
-                windY /= (float) SQRT3;
+            int iterations = 0;
+            int consecutiveUnchanged = 0;
+            while (true) {
+                if (iterations > 50 || consecutiveUnchanged > 5)
+                    return new Rotation(startX, startY);
 
-                if (maxStepSize < 3) {
-                    maxStepSize = random.nextFloat() * 3 + 3;
-                } else {
-                    maxStepSize /= (float) SQRT5;
+                final float dist = (float) Math.hypot(destX - startX, destY - startY);
+                if (dist < 1) {
+                    return new Rotation(startX, startY);
                 }
-            }
 
-            velocityX += windX + gravitationalForce * (rotation.getYaw() - lastRotation.getYaw()) / distance;
-            velocityY += windY + gravitationalForce * (rotation.getPitch() - lastRotation.getPitch()) / distance;
+                final float windMagnitude = Math.min(windForceMagnitude, dist);
+                if (dist >= distanceThreshold) {
+                    windX = windX / ((float) SQRT3) + (2 * random.nextFloat() - 1) * windMagnitude / ((float) SQRT5);
+                    windY = windY / ((float) SQRT3) + (2 * random.nextFloat() - 1) * windMagnitude / ((float) SQRT5);
+                } else {
+                    windX /= (float) SQRT3;
+                    windY /= (float) SQRT3;
 
-            final float velocityMagnitude = (float) Math.hypot(velocityX, velocityY);
-            if (velocityMagnitude > maxStepSize) {
-                final float velocityClip = maxStepSize / 2.0f + random.nextFloat() * maxStepSize / 2.0f;
-                velocityX = (velocityX / velocityMagnitude) * velocityClip;
-                velocityY = (velocityY / velocityMagnitude) * velocityClip;
-            }
+                    if (maxStepSize < 3) {
+                        maxStepSize = random.nextFloat() * 3 + 3;
+                    } else {
+                        maxStepSize /= (float) SQRT5;
+                    }
+                }
 
-            final float newX = rotation.getYaw() + velocityX;
-            final float newY = rotation.getPitch() + velocityY;
-            if (currentYaw != newX || currentPitch != newY) {
-                currentYaw = newX;
-                currentPitch = newY;
+                vX += windX + gravitationalForce * (destX - startX) / dist;
+                vY += windY + gravitationalForce * (destY - startY) / dist;
+
+                final float vMag = (float) Math.hypot(vX, vY);
+                if (vMag > maxStepSize) {
+                    final float vClip = maxStepSize / 2.0f + random.nextFloat() * maxStepSize / 2.0f;
+                    vX = (vX / vMag) * vClip;
+                    vY = (vY / vMag) * vClip;
+                }
+
+                float newX = startX + vX;
+                float newY = startY + vY;
+
+                if (newX == startX && newY == startY) {
+                    consecutiveUnchanged++;
+                } else {
+                    consecutiveUnchanged = 0;
+                }
+
+                startX = newX;
+                startY = newY;
+                iterations++;
             }
         }
 
-        return new Rotation(currentYaw, currentPitch, rotation.getPriority());
+        return rotation;
     }
 
+    public static boolean isLookingDiagonal(final float rotationYaw) {
+        return DIAGONAL_VALUES.contains(getNearestDegree(rotationYaw));
+    }
+
+    public static int getNearestDegree(final float rotationYaw) {
+        final float wrappedYaw = MathHelper.wrapDegrees(rotationYaw);
+        final int nearestDegree = Math.round(wrappedYaw / 45) * 45;
+        return Math.floorMod(nearestDegree, 360);
+    }
 
 }
