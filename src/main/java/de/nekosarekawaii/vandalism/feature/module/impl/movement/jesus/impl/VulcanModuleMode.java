@@ -72,11 +72,11 @@ public class VulcanModuleMode extends ModuleMulti<JesusModule> implements BlockC
 
         if (this.mc.player.isOnGround()) {
             this.offGroundTicks = 0;
-            mc.player.setVelocity(mc.player.getVelocity().x, 0.6, mc.player.getVelocity().z);
-            mc.player.fallDistance = 0;
+            this.mc.player.setVelocity(this.mc.player.getVelocity().x, 0.6, this.mc.player.getVelocity().z);
+            this.mc.player.fallDistance = 0;
             return;
-        } else if (mc.player.fallDistance > 0) {
-            mc.player.setVelocity(mc.player.getVelocity().x, -0.1, mc.player.getVelocity().z);
+        } else if (this.mc.player.fallDistance > 0) {
+            this.mc.player.setVelocity(this.mc.player.getVelocity().x, -0.1, this.mc.player.getVelocity().z);
         }
 
         this.offGroundTicks++;
@@ -93,7 +93,7 @@ public class VulcanModuleMode extends ModuleMulti<JesusModule> implements BlockC
             if (!overLiquid)
                 return;
 
-            if (mc.player.fallDistance > 0 && mc.player.age % 19 == 0) { // Fix fall damage
+            if (this.mc.player.fallDistance > 0 && this.mc.player.age % 19 == 0) { // Fix fall damage
                 packet.onGround = true;
                 return;
             }
