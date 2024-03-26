@@ -28,6 +28,8 @@ import net.minecraft.util.math.Vec3d;
 
 public class OldAACModuleMode extends ModuleMulti<FlightModule> implements PlayerUpdateListener {
 
+    private double startY;
+
     public OldAACModuleMode() {
         super("Old AAC");
     }
@@ -35,6 +37,8 @@ public class OldAACModuleMode extends ModuleMulti<FlightModule> implements Playe
     @Override
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);
+
+        this.startY = this.mc.player.getY();
     }
 
     @Override
@@ -46,9 +50,19 @@ public class OldAACModuleMode extends ModuleMulti<FlightModule> implements Playe
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (this.mc.player.fallDistance > 3.0f) {
             this.mc.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
-            final Vec3d velocity = MovementUtil.setSpeed(1.5f);
-            this.mc.player.setVelocity(velocity.x, 0.75, velocity.z);
+
+            if (mc.options.jumpKey.isPressed()) {
+                this.startY += 1;
+            } else if (mc.options.sneakKey.isPressed()) {
+                this.startY -= 1;
+            }
+
             this.mc.player.fallDistance = 0.0f;
+        }
+
+        if (mc.player.hurtTime > 0 && mc.player.getPos().getY() < this.startY - 2.0) {
+            final Vec3d velocity = MovementUtil.isMoving() ? MovementUtil.setSpeed(1.5f) : this.mc.player.getVelocity();
+            this.mc.player.setVelocity(velocity.x, 0.6, velocity.z);
         }
     }
 
