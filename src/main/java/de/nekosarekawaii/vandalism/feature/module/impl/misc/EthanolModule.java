@@ -21,8 +21,8 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
 import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
-import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.event.normal.network.DisconnectListener;
+import de.nekosarekawaii.vandalism.event.normal.player.ChatSendListener;
 import de.nekosarekawaii.vandalism.event.normal.render.Render2DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
@@ -33,7 +33,6 @@ import net.minecraft.network.ClientConnection;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
-import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -41,7 +40,7 @@ import net.minecraft.util.Identifier;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
-public class EthanolModule extends AbstractModule implements IncomingPacketListener, OutgoingPacketListener, DisconnectListener, Render2DListener {
+public class EthanolModule extends AbstractModule implements IncomingPacketListener, ChatSendListener, DisconnectListener, Render2DListener {
 
     private static final Identifier ETHANOL_INIT = new Identifier("ethanol", "init");
     private static final Identifier ETHANOL_MESSAGE = new Identifier("ethanol", "message");
@@ -70,14 +69,14 @@ public class EthanolModule extends AbstractModule implements IncomingPacketListe
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, IncomingPacketEvent.ID, OutgoingPacketEvent.ID, DisconnectEvent.ID, Render2DEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, IncomingPacketEvent.ID, ChatSendEvent.ID, DisconnectEvent.ID, Render2DEvent.ID);
         this.detected = false;
         this.vanished = false;
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, IncomingPacketEvent.ID, OutgoingPacketEvent.ID, DisconnectEvent.ID, Render2DEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, IncomingPacketEvent.ID, ChatSendEvent.ID, DisconnectEvent.ID, Render2DEvent.ID);
     }
 
     @Override
@@ -86,10 +85,10 @@ public class EthanolModule extends AbstractModule implements IncomingPacketListe
             {
                 final Text text = Text.literal("Ethanol detected");
                 context.drawText(
-                        mc.textRenderer,
+                        this.mc.textRenderer,
                         text,
-                        context.getScaledWindowWidth() - mc.textRenderer.getWidth(text),
-                        context.getScaledWindowHeight() - mc.textRenderer.fontHeight,
+                        context.getScaledWindowWidth() - this.mc.textRenderer.getWidth(text),
+                        context.getScaledWindowHeight() - this.mc.textRenderer.fontHeight,
                         0xFFFFFF,
                         true
                 );
@@ -97,10 +96,10 @@ public class EthanolModule extends AbstractModule implements IncomingPacketListe
             if (this.vanished) {
                 final Text text = Text.literal("Vanished").withColor(0xFF0000);
                 context.drawText(
-                        mc.textRenderer,
+                        this.mc.textRenderer,
                         text,
-                        context.getScaledWindowWidth() - mc.textRenderer.getWidth(text),
-                        context.getScaledWindowHeight() - (mc.textRenderer.fontHeight * 2),
+                        context.getScaledWindowWidth() - this.mc.textRenderer.getWidth(text),
+                        context.getScaledWindowHeight() - (this.mc.textRenderer.fontHeight * 2),
                         0xFFFFFF,
                         true
                 );
@@ -130,16 +129,13 @@ public class EthanolModule extends AbstractModule implements IncomingPacketListe
     }
 
     @Override
-    public void onOutgoingPacket(final OutgoingPacketEvent event) {
+    public void onChatSend(final ChatSendEvent event) {
         if (!this.detected) return;
-
-        if (event.packet instanceof ChatMessageC2SPacket packet) {
-            final String message = packet.chatMessage();
-            final String prefix = this.commandPrefix.getValue();
-            if (message.startsWith(prefix)) {
-                mc.getNetworkHandler().sendPacket(new CustomPayloadC2SPacket(new CommandCustomPayload(message.substring(prefix.length()))));
-                event.setCancelled(true);
-            }
+        final String message = event.message;
+        final String prefix = this.commandPrefix.getValue();
+        if (message.startsWith(prefix)) {
+            this.mc.getNetworkHandler().sendPacket(new CustomPayloadC2SPacket(new CommandCustomPayload(message.substring(prefix.length()))));
+            event.message = "";
         }
     }
 
@@ -166,6 +162,7 @@ public class EthanolModule extends AbstractModule implements IncomingPacketListe
         public Identifier id() {
             return EthanolModule.ETHANOL_COMMAND;
         }
+
     }
 
     private static class InitCustomPayload implements CustomPayload {
@@ -178,6 +175,7 @@ public class EthanolModule extends AbstractModule implements IncomingPacketListe
         public Identifier id() {
             return EthanolModule.ETHANOL_INIT;
         }
+
     }
 
 }
