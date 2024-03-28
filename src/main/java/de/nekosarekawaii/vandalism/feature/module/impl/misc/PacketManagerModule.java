@@ -72,8 +72,8 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
             127
     );
 
-    private final MultiModeValue serverPackets;
-    private final MultiModeValue clientPackets;
+    private final MultiModeValue serverPackets, clientPackets;
+
     private static final MapperBase MAPPER_BASE = AsmFabricLoader.getLoader().getMappingsResolver().named();
 
     public PacketManagerModule() {
@@ -124,7 +124,6 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
             text.append(outgoing ? "Outgoing: " : "Incoming: ");
             text.append(networkStateNormalized);
             text.append(PacketManagerModule.dump(packet, 0, this.recursionDepthLimit.getValue()));
-
             if (this.mc.inGameHud != null) {
                 ChatUtil.infoChatMessage(text.toString());
             } else {
@@ -252,7 +251,7 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
     }
 
     private static String getSimpleName(final Class<?> clazz) {
-        return PacketManagerModule.MAPPER_BASE == null ? clazz.getSimpleName() : ArrayUtil.last(PacketManagerModule.MAPPER_BASE.getClassName(clazz.getName()).split("\\."));
+        return PacketManagerModule.MAPPER_BASE == null ? clazz.getSimpleName() : ArrayUtil.last(PacketManagerModule.MAPPER_BASE.getClassName(clazz.getName().replace(".", "/")).split("/"));
     }
 
     @Override
