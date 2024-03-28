@@ -137,7 +137,7 @@ public class EthanolModule extends AbstractModule implements IncomingPacketListe
             event.message = "";
             final String command = message.substring(prefix.length());
             if (!command.isEmpty()) {
-                this.mc.inGameHud.getChatHud().addToMessageHistory(command);
+                this.mc.inGameHud.getChatHud().addToMessageHistory(message);
                 this.mc.getNetworkHandler().sendPacket(new CustomPayloadC2SPacket(new CommandCustomPayload(command)));
             }
         }
