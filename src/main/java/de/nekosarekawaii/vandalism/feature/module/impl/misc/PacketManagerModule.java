@@ -117,7 +117,7 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
 
     private boolean handlePacket(final boolean outgoing, final Packet<?> packet, final NetworkState networkState) {
         final String networkStateNormalized = StringUtils.normalizeEnumName(networkState.name());
-        final String name = networkStateNormalized + packet.getClass().getSimpleName();
+        final String name = networkStateNormalized + PacketManagerModule.getSimpleName(packet.getClass());
         final boolean contains = this.clientPackets.isSelected(name) || this.serverPackets.isSelected(name);
         if (this.log.getValue() && contains) {
             final StringBuilder text = new StringBuilder();
