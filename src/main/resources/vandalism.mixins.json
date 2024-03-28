@@ -116,5 +116,8 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+    "module.MixinPlayerEntity"
+  ]
 }
