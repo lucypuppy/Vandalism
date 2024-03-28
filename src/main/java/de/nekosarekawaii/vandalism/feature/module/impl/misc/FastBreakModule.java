@@ -97,6 +97,9 @@ public class FastBreakModule extends AbstractModule implements BlockBreakListene
                         sequence
                 ));
             }
+            if (this.mc.world.getBlockState(lastPos).isAir()) {
+                this.reset();
+            }
         }
     }
 
