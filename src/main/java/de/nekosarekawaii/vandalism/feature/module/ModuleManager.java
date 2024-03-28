@@ -75,6 +75,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     private FullBrightModule fullBrightModule;
     private VehicleControlModule vehicleControlModule;
     private ConsoleSpammerModule consoleSpammerModule;
+    private FastBreakModule fastBreakModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientWindowManager clientWindowManager) {
         this.configManager = configManager;
@@ -109,6 +110,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new FakeLagModule(this.killAuraModule),
                 this.vehicleControlModule = new VehicleControlModule(),
                 this.consoleSpammerModule = new ConsoleSpammerModule(),
+                this.fastBreakModule = new FastBreakModule(),
                 new CraftCarryModule(),
                 new BackTrackModule(),
                 new NoSlowModule(),
@@ -241,6 +243,10 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
     public ConsoleSpammerModule getConsoleSpammerModule() {
         return consoleSpammerModule;
+    }
+
+    public FastBreakModule getFastBreakModule() {
+        return fastBreakModule;
     }
 
 }
