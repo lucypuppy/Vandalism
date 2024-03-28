@@ -134,8 +134,12 @@ public class EthanolModule extends AbstractModule implements IncomingPacketListe
         final String message = event.message;
         final String prefix = this.commandPrefix.getValue();
         if (message.startsWith(prefix)) {
-            this.mc.getNetworkHandler().sendPacket(new CustomPayloadC2SPacket(new CommandCustomPayload(message.substring(prefix.length()))));
             event.message = "";
+            final String command = message.substring(prefix.length());
+            if (!command.isEmpty()) {
+                this.mc.inGameHud.getChatHud().addToMessageHistory(command);
+                this.mc.getNetworkHandler().sendPacket(new CustomPayloadC2SPacket(new CommandCustomPayload(command)));
+            }
         }
     }
 
