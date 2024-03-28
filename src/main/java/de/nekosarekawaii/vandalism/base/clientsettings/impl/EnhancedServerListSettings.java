@@ -53,6 +53,13 @@ public class EnhancedServerListSettings extends ValueGroup {
             true
     ).visibleCondition(this.enhancedServerList::getValue);
 
+    public final BooleanValue saveSelectedEntry = new BooleanValue(
+            this,
+            "Save Selected Entry",
+            "Saves the selected entry of the server list.",
+            true
+    ).visibleCondition(this.enhancedServerList::getValue);
+
     public final BooleanValue cacheServerList = new BooleanValue(
             this,
             "Cache Server List",
