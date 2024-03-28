@@ -52,6 +52,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.net.InetSocketAddress;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -67,6 +68,12 @@ public abstract class MixinMultiplayerScreen extends Screen {
     @Shadow
     protected MultiplayerServerListWidget serverListWidget;
 
+    @Shadow
+    public abstract void select(final MultiplayerServerListWidget.Entry entry);
+
+    @Unique
+    private static int vandalism$SELECTED_ENTRY_INDEX = -1;
+
     @Unique
     private static net.minecraft.client.option.ServerList vandalism$SERVER_LIST;
 
@@ -76,13 +83,14 @@ public abstract class MixinMultiplayerScreen extends Screen {
     @Unique
     private static int vandalism$LAST_SERVER_LIST_SIZE;
 
-    protected MixinMultiplayerScreen(final Text title) {
-        super(title);
+    protected MixinMultiplayerScreen(final Text ignored) {
+        super(ignored);
     }
 
     @Inject(method = "refresh", at = @At("HEAD"))
-    private void resetServerList(final CallbackInfo ci) {
+    private void resetServerListAndSelectedEntry(final CallbackInfo ci) {
         vandalism$SERVER_LIST = null;
+        vandalism$SELECTED_ENTRY_INDEX = -1;
     }
 
     @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerServerListWidget;setServers(Lnet/minecraft/client/option/ServerList;)V"))
@@ -101,7 +109,7 @@ public abstract class MixinMultiplayerScreen extends Screen {
     }
 
     @Inject(method = "init", at = @At("RETURN"))
-    private void addServerListsButtonAndSetScrolling(final CallbackInfo ci) {
+    private void addServerListsButtonAndSetScrollingSetScreenInit(final CallbackInfo ci) {
         final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
         if (enhancedServerListSettings.enhancedServerList.getValue()) {
             this.addDrawableChild(ButtonWidget.builder(Text.literal("Server Lists"), button -> {
@@ -114,11 +122,17 @@ public abstract class MixinMultiplayerScreen extends Screen {
                     this.serverListWidget.setScrollAmount(vandalism$SCROLL_AMOUNT);
                 }
             }
+            if (enhancedServerListSettings.saveSelectedEntry.getValue()) {
+                final List<MultiplayerServerListWidget.Entry> children = this.serverListWidget.children();
+                if (children != null && vandalism$SELECTED_ENTRY_INDEX >= 0 && vandalism$SELECTED_ENTRY_INDEX < children.size()) {
+                    this.select(children.get(vandalism$SELECTED_ENTRY_INDEX));
+                }
+            }
         }
     }
 
     @Inject(method = "tick", at = @At("RETURN"))
-    private void enhancedServerListSyncServerListAndSaveScrolling(final CallbackInfo ci) {
+    private void enhancedServerListSyncServerListSaveScrollingAndSetSelectedEntry(final CallbackInfo ci) {
         if (Vandalism.getInstance().getServerListManager().hasBeenChanged()) {
             this.refresh();
         }
@@ -133,6 +147,20 @@ public abstract class MixinMultiplayerScreen extends Screen {
                     this.serverListWidget.setScrollAmount(this.serverListWidget.getScrollAmount() + this.serverListWidget.itemHeight);
                 }
                 vandalism$SCROLL_AMOUNT = this.serverListWidget.getScrollAmount();
+            }
+            if (enhancedServerListSettings.saveSelectedEntry.getValue()) {
+                boolean found = false;
+                for (int i = 0; i < this.serverListWidget.children().size(); i++) {
+                    final MultiplayerServerListWidget.Entry entry = this.serverListWidget.children().get(i);
+                    if (this.serverListWidget.getSelectedOrNull() == entry) {
+                        vandalism$SELECTED_ENTRY_INDEX = i;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    vandalism$SELECTED_ENTRY_INDEX = -1;
+                }
             }
         }
     }
