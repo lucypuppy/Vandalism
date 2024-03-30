@@ -74,6 +74,7 @@
     "fix.minecraft.MixinModStatus",
     "fix.minecraft.MixinMultiplayerScreen",
     "fix.minecraft.MixinMultiplayerServerListWidget",
+    "fix.minecraft.MixinOptionsScreen",
     "fix.minecraft.MixinPackScreen",
     "fix.minecraft.MixinScanningEntry",
     "fix.minecraft.MixinWindow",
@@ -98,6 +99,7 @@
     "module.MixinLivingEntityRenderer",
     "module.MixinMinecraftClient",
     "module.MixinPigEntity",
+    "module.MixinPlayerEntity",
     "module.MixinPlayerListHud",
     "module.MixinRecipeBookDataC2SPacket",
     "module.MixinSodiumWorldRenderer",
@@ -116,8 +118,5 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "mixins": [
-    "module.MixinPlayerEntity"
-  ]
+  }
 }
