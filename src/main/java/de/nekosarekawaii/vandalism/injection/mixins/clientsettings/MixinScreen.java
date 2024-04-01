@@ -20,9 +20,11 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.MenuSettings;
+import de.nekosarekawaii.vandalism.integration.render.shader.Shaders;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.math.Vec2f;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -43,12 +45,13 @@ public abstract class MixinScreen {
     @Nullable
     protected MinecraftClient client;
 
-    @Shadow public abstract void renderBackgroundTexture(DrawContext context);
+    @Shadow
+    public abstract void renderBackgroundTexture(DrawContext context);
 
     @Inject(method = "renderBackgroundTexture", at = @At("HEAD"), cancellable = true)
     private void drawCustomBackgroundInGui(final DrawContext context, final CallbackInfo ci) {
         final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
-        if (menuSettings.customBackground.getValue()) {
+        if (menuSettings.backgroundMode.getValue() == MenuSettings.BackgroundMode.COLOR) {
             ci.cancel();
             context.fill(
                     0,
@@ -57,6 +60,12 @@ public abstract class MixinScreen {
                     this.height,
                     menuSettings.customBackgroundColor.getColor().getRGB()
             );
+        } else if (menuSettings.backgroundMode.getValue() == MenuSettings.BackgroundMode.SHADER) {
+            ci.cancel();
+            Shaders.BACKGROUND.getShader().drawOnScreen(context.getMatrices(), shader -> {
+                shader.setUniform("resolution", new Vec2f(client.getWindow().getWidth(), client.getWindow().getHeight()));
+                shader.setUniform("time", (System.currentTimeMillis() - shader.getStartTime()) / 1000.0f);
+            });
         }
     }
 
@@ -67,8 +76,7 @@ public abstract class MixinScreen {
             ci.cancel();
             if (this.client.player == null) {
                 this.renderBackgroundTexture(context);
-            }
-            else {
+            } else {
                 context.fillGradient(
                         0,
                         0,

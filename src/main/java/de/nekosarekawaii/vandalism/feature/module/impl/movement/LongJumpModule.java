@@ -19,19 +19,20 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.event.normal.game.TickTimeListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
-import de.nekosarekawaii.vandalism.util.game.TimerHack;
 import net.minecraft.util.math.Vec3d;
 
-public class LongJumpModule extends AbstractModule implements PlayerUpdateListener {
+public class LongJumpModule extends AbstractModule implements PlayerUpdateListener, TickTimeListener {
 
     private int waitTicks = 0;
     private int moveTicks = 0;
     private double lastPosY = 0;
     private double moveSpeed = 0;
     private boolean canLongJump = false;
+    private float timer = 1;
 
     public LongJumpModule() {
         super("Long Jump", "Lets you jump further than normal.", Category.MOVEMENT);
@@ -44,13 +45,12 @@ public class LongJumpModule extends AbstractModule implements PlayerUpdateListen
         this.lastPosY = 0;
         this.moveSpeed = 0;
         this.canLongJump = false;
-        TimerHack.reset();
     }
 
     @Override
     public void onActivate() {
         this.reset();
-        Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, TickTimeEvent.ID);
         if (this.mc.getNetworkHandler() != null) {
             MovementUtil.clip(3.5, 0);
             MovementUtil.setSpeed(0.01);
@@ -61,7 +61,7 @@ public class LongJumpModule extends AbstractModule implements PlayerUpdateListen
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, TickTimeEvent.ID);
         this.reset();
     }
 
@@ -82,10 +82,10 @@ public class LongJumpModule extends AbstractModule implements PlayerUpdateListen
                     this.mc.player.setVelocity(new Vec3d(moveVelocity.getX(), 0, moveVelocity.getZ()));
                     this.mc.player.setVelocity(this.mc.player.getVelocity().add(0, 0.01, 0));
                     this.moveTicks = 5;
-                    TimerHack.setSpeed(0.8f);
+                    timer = 0.8f;
                     return;
                 } else {
-                    TimerHack.setSpeed(1.3f);
+                    timer = 1.3f;
                 }
                 if (Math.abs(this.mc.player.getY() - this.lastPosY) > 1) {
                     MovementUtil.setSpeed(-0.01);
@@ -108,6 +108,11 @@ public class LongJumpModule extends AbstractModule implements PlayerUpdateListen
                 this.moveTicks--;
             }
         }
+    }
+
+    @Override
+    public void onTickTimings(TickTimeEvent event) {
+        event.fromPercentage(timer);
     }
 
 }
