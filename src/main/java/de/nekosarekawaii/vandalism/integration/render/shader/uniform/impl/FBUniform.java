@@ -16,33 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.event.normal.game;
+package de.nekosarekawaii.vandalism.integration.render.shader.uniform.impl;
 
-import de.florianmichael.dietrichevents2.AbstractEvent;
+import de.nekosarekawaii.vandalism.integration.render.shader.uniform.Uniform;
+import org.lwjgl.opengl.GL20C;
 
-public interface TickTimeListener {
+import java.nio.FloatBuffer;
 
-    void onTickTimings(final TickTimeEvent event);
+public class FBUniform extends Uniform<FloatBuffer> {
 
-    class TickTimeEvent extends AbstractEvent<TickTimeListener> {
+    public FBUniform(final int programID, final String uniformName) {
+        super(programID, uniformName);
+    }
 
-        public static final int ID = 29;
-
-        public float tickTime;
-
-        public TickTimeEvent(final float tickTime) {
-            this.tickTime = tickTime;
-        }
-
-        @Override
-        public void call(final TickTimeListener tickTimeListener) {
-            tickTimeListener.onTickTimings(this);
-        }
-
-        public void fromPercentage(final float percentage) {
-            this.tickTime /= percentage;
-        }
-
+    @Override
+    public void apply() {
+        GL20C.glUniform1fv(this.location, this.value);
     }
 
 }

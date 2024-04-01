@@ -56,7 +56,11 @@ public abstract class MixinGameRenderer implements IGameRenderer, MinecraftWrapp
 
     @Redirect(method = "updateTargetedEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;hasExtendedReach()Z"))
     private boolean alwaysSurvival(final ClientPlayerInteractionManager instance) {
-        return vandalism$range == -1 && instance.hasExtendedReach();
+        if (vandalism$range != -1) {
+            return false;
+        }
+
+        return instance.hasExtendedReach();
     }
 
     @Override
