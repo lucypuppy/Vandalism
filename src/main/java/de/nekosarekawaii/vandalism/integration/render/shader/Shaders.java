@@ -16,33 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.event.normal.game;
+package de.nekosarekawaii.vandalism.integration.render.shader;
 
-import de.florianmichael.dietrichevents2.AbstractEvent;
+import de.nekosarekawaii.vandalism.base.FabricBootstrap;
+import de.nekosarekawaii.vandalism.integration.render.shader.uniform.UniformTypes;
+import net.minecraft.util.Identifier;
 
-public interface TickTimeListener {
+public enum Shaders {
 
-    void onTickTimings(final TickTimeEvent event);
+    BACKGROUND(new Shader(
+            new Identifier(FabricBootstrap.MOD_ID, "shader/vertex/vertex.vert"),
+            new Identifier(FabricBootstrap.MOD_ID, "shader/fragment/background.frag")
+    ).addUniform(UniformTypes.VEC2, "resolution").addUniform(UniformTypes.FLOAT, "time"));
 
-    class TickTimeEvent extends AbstractEvent<TickTimeListener> {
+    private final Shader shader;
 
-        public static final int ID = 29;
+    Shaders(final Shader shader) {
+        this.shader = shader;
+    }
 
-        public float tickTime;
-
-        public TickTimeEvent(final float tickTime) {
-            this.tickTime = tickTime;
-        }
-
-        @Override
-        public void call(final TickTimeListener tickTimeListener) {
-            tickTimeListener.onTickTimings(this);
-        }
-
-        public void fromPercentage(final float percentage) {
-            this.tickTime /= percentage;
-        }
-
+    public Shader getShader() {
+        return shader;
     }
 
 }

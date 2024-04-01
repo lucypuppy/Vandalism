@@ -18,12 +18,15 @@
 
 package de.nekosarekawaii.vandalism.base.clientsettings.impl;
 
+import de.florianmichael.rclasses.common.StringUtils;
+import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import org.lwjgl.glfw.GLFW;
 
@@ -76,11 +79,12 @@ public class MenuSettings extends ValueGroup {
             new Color(28, 204, 28, 120)
     );
 
-    public final BooleanValue customBackground = new BooleanValue(
+    public final EnumModeValue<BackgroundMode> backgroundMode = new EnumModeValue<>(
             this,
-            "Custom Background",
-            "Activates/Deactivates the use of a custom background.",
-            true
+            "Background Mode",
+            "The mode of the background.",
+            BackgroundMode.DEFAULT,
+            BackgroundMode.values()
     );
 
     public final ColorValue customBackgroundColor = new ColorValue(
@@ -88,7 +92,7 @@ public class MenuSettings extends ValueGroup {
             "Custom Background Color",
             "The color of the custom background.",
             new Color(69, 17, 89, 255)
-    ).visibleCondition(this.customBackground::getValue);
+    ).visibleCondition(() -> this.backgroundMode.getValue() == BackgroundMode.COLOR);
 
     public final BooleanValue inGameCustomBackground = new BooleanValue(
             this,
@@ -244,6 +248,23 @@ public class MenuSettings extends ValueGroup {
 
     public MenuSettings(final ClientSettings parent) {
         super(parent, "Menu", "Menu related settings.");
+    }
+
+    public enum BackgroundMode implements IName {
+        DEFAULT,
+        SHADER,
+        COLOR;
+
+        private final String name;
+
+        BackgroundMode() {
+            this.name = StringUtils.normalizeEnumName(this.name());
+        }
+
+        @Override
+        public String getName() {
+            return this.name;
+        }
     }
 
 }
