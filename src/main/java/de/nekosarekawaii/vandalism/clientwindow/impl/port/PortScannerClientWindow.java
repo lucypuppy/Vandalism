@@ -264,6 +264,7 @@ public class PortScannerClientWindow extends ClientWindow {
                 }
                 final ServerInfosTableColumn[] serverInfosTableColumns = ServerInfosTableColumn.values();
                 final int maxServerInfosTableColumns = serverInfosTableColumns.length;
+                ImGui.text("Excel Simulator 2024");
                 if (ImGui.beginTable("serverinfos##serverinfostableportscanner", maxServerInfosTableColumns,
                         ImGuiTableFlags.Borders |
                                 ImGuiTableFlags.Resizable |

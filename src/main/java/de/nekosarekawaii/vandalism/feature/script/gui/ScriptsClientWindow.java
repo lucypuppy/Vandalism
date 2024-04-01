@@ -115,6 +115,7 @@ public class ScriptsClientWindow extends ClientWindow {
                 } else {
                     final ScriptsTableColumn[] scriptsTableColumns = ScriptsTableColumn.values();
                     final int maxTableColumns = scriptsTableColumns.length;
+                    ImGui.text("Excel Simulator 2024");
                     if (ImGui.beginTable("scripts##scriptstable", maxTableColumns, ImGuiTableFlags.Borders | ImGuiTableFlags.Resizable | ImGuiTableFlags.RowBg | ImGuiTableFlags.ContextMenuInBody)) {
                         for (final ScriptsTableColumn scriptsTableColumn : scriptsTableColumns) {
                             ImGui.tableSetupColumn(scriptsTableColumn.getName());
