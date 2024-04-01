@@ -28,6 +28,7 @@ import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListe
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.TickBaseModule;
 import de.nekosarekawaii.vandalism.injection.access.IRenderTickCounter;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
+import de.nekosarekawaii.vandalism.integration.render.shader.multipass.impl.BlurMultiPassShader;
 import de.nekosarekawaii.vandalism.util.click.CPSTracker;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
@@ -203,6 +204,8 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
 
     private long lastUpdate = System.currentTimeMillis();
 
+    private BlurMultiPassShader pass;
+
     public InfoHUDElement() {
         super("Info");
         Vandalism.getInstance().getEventSystem().subscribe(IncomingPacketEvent.ID, this);
@@ -375,7 +378,10 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         }
 
         if (this.clientTPS.getValue()) {
-            infoMap.put("Client TPS", ((IRenderTickCounter) this.mc.renderTickCounter).vandalism$getTPS() + " TPS");
+            final float tps = ((IRenderTickCounter) this.mc.renderTickCounter).vandalism$getTPS();
+            final float percentage = tps / 20.0f;
+
+            infoMap.put("Client TPS", String.format("%.3f (%.3f)", tps, percentage));
         }
 
         int width = 0, height = 0;

@@ -20,7 +20,6 @@ package de.nekosarekawaii.vandalism.util.click.impl;
 
 import de.nekosarekawaii.vandalism.feature.module.impl.combat.KillAuraModule;
 import de.nekosarekawaii.vandalism.util.click.Clicker;
-import de.nekosarekawaii.vandalism.util.game.TimerHack;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -42,13 +41,13 @@ public class CooldownClicker extends Clicker {
         }
         final float baseAttackDamage = (float) this.mc.player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
 
-        float additionalBaseDelayOffset = 0;
+        //float additionalBaseDelayOffset = 0;
+//
+        //if (TimerHack.getSpeed() > 1) {
+        //    additionalBaseDelayOffset = -(TimerHack.getSpeed() - 1);
+        //}
 
-        if (TimerHack.getSpeed() > 1) {
-            additionalBaseDelayOffset = -(TimerHack.getSpeed() - 1);
-        }
-
-        final float attackCooldown = this.mc.player.getAttackCooldownProgress(additionalBaseDelayOffset);
+        final float attackCooldown = this.mc.player.getAttackCooldownProgress(0);
         final float finalAttackDamage = baseAttackDamage * (0.2f + attackCooldown * attackCooldown * 0.8f);
 
         if (finalAttackDamage >= 0.98f) {

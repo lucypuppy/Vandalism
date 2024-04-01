@@ -16,24 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.game;
+package de.nekosarekawaii.vandalism.integration.render.shader.uniform.impl;
 
-public class TimerHack {
+import de.nekosarekawaii.vandalism.integration.render.shader.uniform.Uniform;
+import org.lwjgl.opengl.GL11C;
+import org.lwjgl.opengl.GL20C;
 
-    private static final float DEFAULT_TIMER_SPEED = 1.0f;
+public class BoolUniform extends Uniform<Boolean> {
 
-    private static float TIMER_SPEED = DEFAULT_TIMER_SPEED;
-
-    public static void setSpeed(final float speed) {
-        TIMER_SPEED = Math.max(0.01f, speed);
+    public BoolUniform(final int programID, final String uniformName) {
+        super(programID, uniformName);
     }
 
-    public static float getSpeed() {
-        return TIMER_SPEED;
-    }
-
-    public static void reset() {
-        TIMER_SPEED = DEFAULT_TIMER_SPEED;
+    @Override
+    public void apply() {
+        GL20C.glUniform1i(this.location, this.value ? GL11C.GL_TRUE : GL11C.GL_FALSE);
     }
 
 }
