@@ -25,6 +25,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.TickBaseModule;
 import de.nekosarekawaii.vandalism.injection.access.IRenderTickCounter;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
@@ -35,14 +36,16 @@ import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.network.ServerInfo;
+import net.minecraft.network.packet.c2s.query.QueryPingC2SPacket;
 import net.minecraft.network.packet.s2c.common.KeepAliveS2CPacket;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
+import net.minecraft.network.packet.s2c.query.PingResultS2CPacket;
 import net.minecraft.util.Formatting;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class InfoHUDElement extends HUDElement implements IncomingPacketListener {
+public class InfoHUDElement extends HUDElement implements IncomingPacketListener, PlayerUpdateListener {
 
     private final BooleanValue shadow = new BooleanValue(
             this,
@@ -149,6 +152,22 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             true
     );
 
+    private final BooleanValue fasterPings = new BooleanValue(
+            this,
+            "Faster Pings",
+            "This tries to send pings faster.",
+            false
+    );
+
+    private final IntegerValue pingInterval = new IntegerValue(
+            this,
+            "Ping Interval",
+            "The interval in milliseconds for the ping.",
+            1000,
+            0,
+            10000
+    ).visibleCondition(() -> this.ping.getValue() && this.fasterPings.getValue());
+
     private final BooleanValue packetsSent = new BooleanValue(
             this,
             "Packets Sent",
@@ -203,18 +222,36 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
     public final CPSTracker rightClick = new CPSTracker();
 
     private long lastUpdate = System.currentTimeMillis();
+    private long lastPing = -1;
+    private long clientPing = -1;
 
     private BlurMultiPassShader pass;
 
     public InfoHUDElement() {
         super("Info");
-        Vandalism.getInstance().getEventSystem().subscribe(IncomingPacketEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(this, IncomingPacketEvent.ID, PlayerUpdateEvent.ID);
     }
 
     @Override
     public void onIncomingPacket(final IncomingPacketEvent event) {
+        final long now = System.currentTimeMillis();
+
         if (event.packet instanceof KeepAliveS2CPacket || event.packet instanceof WorldTimeUpdateS2CPacket) {
-            this.lastUpdate = System.currentTimeMillis();
+            this.lastUpdate = now;
+        }
+
+        if (event.packet instanceof final PingResultS2CPacket packet && this.fasterPings.getValue()) {
+            this.clientPing = now - packet.getStartTime();
+        }
+    }
+
+    @Override
+    public void onPrePlayerUpdate(PlayerUpdateEvent event) {
+        final long now = System.currentTimeMillis();
+
+        if (now - this.lastPing > this.pingInterval.getValue() && this.fasterPings.getValue()) {
+            this.mc.getNetworkHandler().sendPacket(new QueryPingC2SPacket(now));
+            this.lastPing = now;
         }
     }
 
@@ -338,12 +375,19 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
 
         if (this.ping.getValue()) {
             String value = "unknown";
-            if (this.mc.getNetworkHandler() != null) {
-                final PlayerListEntry playerListEntry = this.mc.getNetworkHandler().getPlayerListEntry(this.mc.player.getGameProfile().getId());
-                if (playerListEntry != null) {
-                    value = String.valueOf(playerListEntry.getLatency());
+
+            if (this.clientPing > 3 && this.fasterPings.getValue()) {
+                value = Long.toString(this.clientPing);
+            } else {
+                if (this.mc.getNetworkHandler() != null) {
+                    final PlayerListEntry playerListEntry = this.mc.getNetworkHandler().getPlayerListEntry(this.mc.player.getGameProfile().getId());
+
+                    if (playerListEntry != null) {
+                        value = String.valueOf(playerListEntry.getLatency());
+                    }
                 }
             }
+
             infoMap.put("Ping", value + " ms");
         }
 
@@ -441,3 +485,4 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
     }
 
 }
+
