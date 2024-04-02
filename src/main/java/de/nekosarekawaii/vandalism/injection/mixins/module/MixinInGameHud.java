@@ -19,15 +19,39 @@
 package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.exploitfixer.ExploitFixerModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.exploitfixer.settings.ExploitFixerRenderSettings;
 import de.nekosarekawaii.vandalism.feature.module.impl.render.BetterTabListModule;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(InGameHud.class)
 public abstract class MixinInGameHud {
+
+    @Shadow
+    protected abstract void renderHealthBar(final DrawContext context, final PlayerEntity player, final int x, final int y, final int lines, final int regeneratingHeartIndex, final float maxHealth, final int lastHealth, final int health, final int absorption, final boolean blinking);
+
+    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHealthBar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/entity/player/PlayerEntity;IIIIFIIIZ)V"))
+    private void hookExploitFixerModule(final InGameHud instance, final DrawContext context, final PlayerEntity player, final int x, final int y, final int lines, final int regeneratingHeartIndex, float maxHealth, final int lastHealth, int health, final int absorption, final boolean blinking) {
+        final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
+        final ExploitFixerRenderSettings renderSettings = exploitFixerModule.renderSettings;
+        if (exploitFixerModule.isActive() && renderSettings.blockTooHighHealthUpdates.getValue()) {
+            final float maxHealthUpdateHealth = renderSettings.maxHealthUpdateHealth.getValue();
+            if (maxHealth > maxHealthUpdateHealth) {
+                maxHealth = maxHealthUpdateHealth;
+            }
+            if (health > maxHealth) {
+                health = (int) maxHealth;
+            }
+        }
+        this.renderHealthBar(context, player, x, y, lines, regeneratingHeartIndex, maxHealth, lastHealth, health, absorption, blinking);
+    }
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z"))
     private boolean hookBetterTabListModule(final KeyBinding instance) {
