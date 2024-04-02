@@ -18,7 +18,9 @@
 
 package de.nekosarekawaii.vandalism.integration.hud.impl;
 
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.florianmichael.rclasses.math.geometry.Alignment;
+import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
@@ -155,7 +157,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
     private final BooleanValue fasterPings = new BooleanValue(
             this,
             "Faster Pings",
-            "This tries to send pings faster.",
+            "This tries to send pings faster. (1.20.2+ client version)",
             false
     );
 
@@ -240,7 +242,8 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             this.lastUpdate = now;
         }
 
-        if (event.packet instanceof final PingResultS2CPacket packet && this.fasterPings.getValue()) {
+        if (event.packet instanceof final PingResultS2CPacket packet && this.fasterPings.getValue() &&
+                !ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_20_2)) {
             this.clientPing = now - packet.getStartTime();
         }
     }
@@ -249,7 +252,8 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
         final long now = System.currentTimeMillis();
 
-        if (now - this.lastPing > this.pingInterval.getValue() && this.fasterPings.getValue()) {
+        if (now - this.lastPing > this.pingInterval.getValue() && this.fasterPings.getValue() &&
+                !ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_20_2)) {
             this.mc.getNetworkHandler().sendPacket(new QueryPingC2SPacket(now));
             this.lastPing = now;
         }
