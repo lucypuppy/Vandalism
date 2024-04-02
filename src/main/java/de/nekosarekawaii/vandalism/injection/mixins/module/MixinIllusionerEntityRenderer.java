@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.module.impl.exploit.ExploitFixerModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.exploitfixer.ExploitFixerModule;
 import net.minecraft.client.render.entity.IllusionerEntityRenderer;
 import net.minecraft.entity.mob.IllusionerEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,7 +32,7 @@ public abstract class MixinIllusionerEntityRenderer {
     @Redirect(method = "render(Lnet/minecraft/entity/mob/IllusionerEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/mob/IllusionerEntity;isInvisible()Z"))
     private boolean hookExploitFixer(final IllusionerEntity instance) {
         final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
-        if (exploitFixerModule.isActive() && exploitFixerModule.blockIllusionerEntityDuplicates.getValue()) return false;
+        if (exploitFixerModule.isActive() && exploitFixerModule.renderSettings.blockIllusionerEntityDuplicates.getValue()) return false;
         return instance.isInvisible();
     }
 

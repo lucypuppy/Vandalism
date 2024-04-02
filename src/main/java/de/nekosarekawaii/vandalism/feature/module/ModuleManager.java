@@ -36,6 +36,7 @@ import de.nekosarekawaii.vandalism.feature.module.impl.combat.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.consolespammer.ConsoleSpammerModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.disabler.DisablerModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.exploitfixer.ExploitFixerModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.godmode.GodModeModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.servercrasher.ServerCrasherModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.*;
