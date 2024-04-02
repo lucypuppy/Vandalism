@@ -65,8 +65,10 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
         }
 
         final BlockHitResult raycastBlocks = WorldUtil.raytraceBlocks(Vandalism.getInstance().getRotationManager().getRotation(), 5.0);
-        if (raycastBlocks.getSide() == this.direction) {
-            mc.doItemUse();
+        if (raycastBlocks.getBlockPos().equals(this.pos)) {
+            if (raycastBlocks.getSide() == this.direction || mc.options.jumpKey.isPressed()) {
+                mc.doItemUse();
+            }
         }
     }
 
