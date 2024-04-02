@@ -25,14 +25,15 @@ import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.block.BlockState;
+import net.minecraft.util.Pair;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
+import net.minecraft.util.shape.VoxelShape;
 
 public class ScaffoldModule extends AbstractModule implements PlayerUpdateListener, RotationListener {
 
     private BlockPos pos = null;
+    private Vec3d posVec = null;
     private Direction direction = null;
     private Rotation rotation = null;
 
@@ -54,12 +55,16 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
 
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
-        this.pos = getPlaceBlock(3);
+        final Pair<Vec3d, BlockPos> placeBlock = getPlaceBlock(6);
+        this.posVec = placeBlock.getLeft();
+        this.pos = placeBlock.getRight();
+
         if (pos == null) {
             return;
         }
 
         this.direction = getDirection(mc.player.getPos(), pos);
+
         if (this.direction == null || Vandalism.getInstance().getRotationManager().getRotation() == null) {
             return;
         }
@@ -90,22 +95,34 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
         }
     }
 
-    private BlockPos getPlaceBlock(int scanRange) {
+    private Pair<Vec3d, BlockPos> getPlaceBlock(int scanRange) {
         double distance = -1;
-        BlockPos theChosenOne = null;
+        Pair<Vec3d, BlockPos> theChosenOne = null;
 
         for (int x = -scanRange; x < scanRange; x++) {
             for (int y = -scanRange; y < 0; y++) {
                 for (int z = -scanRange; z < scanRange; z++) {
-                    BlockPos pos = mc.player.getBlockPos().add(x, y, z);
-                    BlockState state = mc.world.getBlockState(pos);
+                    final BlockPos pos = mc.player.getBlockPos().add(x, y, z);
+                    final BlockState state = mc.world.getBlockState(pos);
 
-                    if (state.isSolidBlock(mc.world, pos)) {
-                        double currentDistance = mc.player.getBlockPos().getSquaredDistance(pos);
-                        if (distance == -1 || currentDistance < distance) {
-                            distance = currentDistance;
-                            theChosenOne = pos;
-                        }
+                    if (!state.isSolidBlock(mc.world, pos)) {
+                        continue;
+                    }
+
+                    final VoxelShape shape = state.getCollisionShape(mc.world, pos);
+                    final Box box = shape.getBoundingBox().offset(pos);
+
+                    // Best hit vector for scaffold mu haha
+                    final double nearestX = MathHelper.clamp(mc.player.getX(), box.minX, box.maxX);
+                    final double nearestY = MathHelper.clamp(mc.player.getY(), box.minY, box.maxY);
+                    final double nearestZ = MathHelper.clamp(mc.player.getZ(), box.minZ, box.maxZ);
+
+                    final Vec3d nearestPoint = new Vec3d(nearestX, nearestY, nearestZ);
+                    final double currentDistance = mc.player.getPos().distanceTo(nearestPoint);
+
+                    if (distance == -1 || currentDistance < distance) {
+                        distance = currentDistance;
+                        theChosenOne = new Pair<>(nearestPoint, pos);
                     }
                 }
             }
