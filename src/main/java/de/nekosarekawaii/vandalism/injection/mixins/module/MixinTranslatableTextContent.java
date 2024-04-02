@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
-import de.nekosarekawaii.vandalism.feature.module.impl.exploit.ExploitFixerModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.exploitfixer.ExploitFixerModule;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Style;
 import net.minecraft.text.TranslatableTextContent;
@@ -42,9 +42,9 @@ public abstract class MixinTranslatableTextContent {
     private void hookExploitFixer(final StringVisitable.StyledVisitor visitor, final Style style, final CallbackInfoReturnable<Optional> cir) {
         if (!FabricBootstrap.INITIALIZED) return;
         final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
-        if (exploitFixerModule.isActive() && exploitFixerModule.blockTooManyTranslateTexts.getValue()) {
+        if (exploitFixerModule.isActive() && exploitFixerModule.renderSettings.blockTooManyTranslateTexts.getValue()) {
             this.vandalism$count++;
-            if (this.vandalism$count >= exploitFixerModule.translateTextDepthLimit.getValue()) {
+            if (this.vandalism$count >= exploitFixerModule.renderSettings.translateTextDepthLimit.getValue()) {
                 cir.setReturnValue(Optional.empty());
             }
         }
@@ -54,9 +54,9 @@ public abstract class MixinTranslatableTextContent {
     private void hookExploitFixer(final StringVisitable.Visitor visitor, final CallbackInfoReturnable<Optional> cir) {
         if (!FabricBootstrap.INITIALIZED) return;
         final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
-        if (exploitFixerModule.isActive() && exploitFixerModule.blockTooManyTranslateTexts.getValue()) {
+        if (exploitFixerModule.isActive() && exploitFixerModule.renderSettings.blockTooManyTranslateTexts.getValue()) {
             this.vandalism$count++;
-            if (this.vandalism$count >= exploitFixerModule.translateTextDepthLimit.getValue()) {
+            if (this.vandalism$count >= exploitFixerModule.renderSettings.translateTextDepthLimit.getValue()) {
                 cir.setReturnValue(Optional.empty());
             }
         }

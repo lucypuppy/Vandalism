@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.module.impl.exploit.ExploitFixerModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.exploitfixer.ExploitFixerModule;
 import net.minecraft.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
@@ -35,7 +35,7 @@ public abstract class MixinSodiumWorldRenderer {
     private void hookExploitFixer(final Entity entity, final CallbackInfoReturnable<Boolean> cir) {
         final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
         if (exploitFixerModule.isActive()) {
-            if (entity.getVisibilityBoundingBox().getAverageSideLength() > exploitFixerModule.minSodiumEntityAverageSideLength.getValue()) {
+            if (entity.getVisibilityBoundingBox().getAverageSideLength() > exploitFixerModule.modSettings.minSodiumEntityAverageSideLength.getValue()) {
                 cir.setReturnValue(true);
             }
         }

@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import com.mojang.authlib.yggdrasil.TextureUrlChecker;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.module.impl.exploit.ExploitFixerModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.exploitfixer.ExploitFixerModule;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -32,8 +32,8 @@ public abstract class MixinTextureUrlChecker {
     @Inject(method = "isAllowedTextureDomain", at = @At("HEAD"), cancellable = true)
     private static void hookExploitFixer(final String url, final CallbackInfoReturnable<Boolean> cir) {
         final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
-        if (exploitFixerModule.isActive() && exploitFixerModule.blockInvalidTextureUrls.getValue()) {
-            final String correctTextureUrlStart = exploitFixerModule.correctTextureUrlStart;
+        if (exploitFixerModule.isActive() && exploitFixerModule.miscSettings.blockInvalidTextureUrls.getValue()) {
+            final String correctTextureUrlStart = exploitFixerModule.miscSettings.correctTextureUrlStart;
             if (!url.toLowerCase().startsWith("https://" + correctTextureUrlStart) && !url.toLowerCase().startsWith("http://" + correctTextureUrlStart)) {
                 cir.setReturnValue(false);
             }
