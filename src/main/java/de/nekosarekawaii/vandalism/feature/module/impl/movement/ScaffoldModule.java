@@ -56,10 +56,15 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
         final Pair<Vec3d, BlockPos> placeBlock = getPlaceBlock(6);
+
+        if (placeBlock == null) {
+            return;
+        }
+
         this.posVec = placeBlock.getLeft();
         this.pos = placeBlock.getRight();
 
-        if (pos == null) {
+        if (this.pos == null) {
             return;
         }
 
@@ -85,13 +90,13 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
     @Override
     public void onRotation(RotationEvent event) {
         if (this.pos != null) {
-            this.rotation = rotation(pos);
+            this.rotation = rotation(this.pos);
 
             if (this.rotation == null) {
                 return;
             }
 
-            Vandalism.getInstance().getRotationManager().setRotation(this.rotation, 80f, 0, false);
+            Vandalism.getInstance().getRotationManager().setRotation(this.rotation, 80f, 0.1f, false);
         }
     }
 
