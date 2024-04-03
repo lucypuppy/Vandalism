@@ -27,7 +27,11 @@ public enum Shaders {
     BACKGROUND(new Shader(
             new Identifier(FabricBootstrap.MOD_ID, "shader/vertex/vertex.vert"),
             new Identifier(FabricBootstrap.MOD_ID, "shader/fragment/background.frag")
-    ).addUniform(UniformTypes.VEC2, "resolution").addUniform(UniformTypes.FLOAT, "time"));
+    ).addUniform(UniformTypes.VEC2, "resolution")
+            .addUniform(UniformTypes.FLOAT, "time")
+            .addUniform(UniformTypes.VEC3, "color1")
+            .addUniform(UniformTypes.VEC3, "color2")
+            .addUniform(UniformTypes.VEC3, "color3"));
 
     private final Shader shader;
 

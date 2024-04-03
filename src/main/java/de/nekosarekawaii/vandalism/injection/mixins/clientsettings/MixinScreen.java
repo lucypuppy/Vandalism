@@ -26,6 +26,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.math.Vec2f;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -68,6 +69,21 @@ public abstract class MixinScreen {
             Shaders.BACKGROUND.getShader().drawOnScreen(context.getMatrices(), shader -> {
                 shader.setUniform("resolution", new Vec2f(client.getWindow().getWidth(), client.getWindow().getHeight()));
                 shader.setUniform("time", (System.currentTimeMillis() - shader.getStartTime()) / 1000.0f);
+                shader.setUniform("color1", new Vector3f(
+                        menuSettings.shaderColor1.getColor().getRed() / 255.0f,
+                        menuSettings.shaderColor1.getColor().getGreen() / 255.0f,
+                        menuSettings.shaderColor1.getColor().getBlue() / 255.0f
+                ));
+                shader.setUniform("color2", new Vector3f(
+                        menuSettings.shaderColor2.getColor().getRed() / 255.0f,
+                        menuSettings.shaderColor2.getColor().getGreen() / 255.0f,
+                        menuSettings.shaderColor2.getColor().getBlue() / 255.0f
+                ));
+                shader.setUniform("color3", new Vector3f(
+                        menuSettings.shaderColor3.getColor().getRed() / 255.0f,
+                        menuSettings.shaderColor3.getColor().getGreen() / 255.0f,
+                        menuSettings.shaderColor3.getColor().getBlue() / 255.0f
+                ));
             });
         }
     }

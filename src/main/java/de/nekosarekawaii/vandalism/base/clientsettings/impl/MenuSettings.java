@@ -79,8 +79,14 @@ public class MenuSettings extends ValueGroup {
             new Color(28, 204, 28, 120)
     );
 
-    public final EnumModeValue<BackgroundMode> backgroundMode = new EnumModeValue<>(
+    private final ValueGroup backgroundSettings = new ValueGroup(
             this,
+            "Background Settings",
+            "Settings for the background."
+    );
+
+    public final EnumModeValue<BackgroundMode> backgroundMode = new EnumModeValue<>(
+            this.backgroundSettings,
             "Background Mode",
             "The mode of the background.",
             BackgroundMode.DEFAULT,
@@ -88,11 +94,32 @@ public class MenuSettings extends ValueGroup {
     );
 
     public final ColorValue customBackgroundColor = new ColorValue(
-            this,
+            this.backgroundSettings,
             "Custom Background Color",
             "The color of the custom background.",
             new Color(69, 17, 89, 255)
     ).visibleCondition(() -> this.backgroundMode.getValue() == BackgroundMode.COLOR);
+
+    public final ColorValue shaderColor1 = new ColorValue(
+            this.backgroundSettings,
+            "Shader Color 1",
+            "The first color of the shader background.",
+            new Color(0.0f, 0.0f, 0.0f, 1.0f)
+    ).visibleCondition(() -> this.backgroundMode.getValue() == BackgroundMode.SHADER);
+
+    public final ColorValue shaderColor2 = new ColorValue(
+            this.backgroundSettings,
+            "Shader Color 2",
+            "The second color of the shader background.",
+            new Color(0.9f, 0.0f, 0.0f, 1.0f)
+    ).visibleCondition(() -> this.backgroundMode.getValue() == BackgroundMode.SHADER);
+
+    public final ColorValue shaderColor3 = new ColorValue(
+            this.backgroundSettings,
+            "Shader Color 3",
+            "The third color of the shader background.",
+            new Color(0.9f, 0.0f, 0.9f, 1.0f)
+    ).visibleCondition(() -> this.backgroundMode.getValue() == BackgroundMode.SHADER);
 
     public final BooleanValue inGameCustomBackground = new BooleanValue(
             this,
