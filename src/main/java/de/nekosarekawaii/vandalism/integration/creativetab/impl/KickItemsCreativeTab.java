@@ -46,6 +46,7 @@ public class KickItemsCreativeTab extends AbstractCreativeTab {
         items.add(withClientSide(createKickStand(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Kick Stand")));
         items.add(withClientSide(createKickStandV2(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Kick Stand V2")));
         items.add(withClientSide(createKickKnowledgeBook(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Kick Knowledge Book")));
+        items.add(withClientSide(createKickHorn(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Horn")));
     }
 
     private static ItemStack createKickHead() {
@@ -125,6 +126,14 @@ public class KickItemsCreativeTab extends AbstractCreativeTab {
                 )
         ));
         base.put("Recipes", recipes);
+        item.setNbt(base);
+        return item;
+    }
+
+    private static ItemStack createKickHorn() {
+        final ItemStack item = new ItemStack(Items.GOAT_HORN);
+        final NbtCompound base = new NbtCompound();
+        base.putString("instrument", RandomStringUtils.random(21900));
         item.setNbt(base);
         return item;
     }

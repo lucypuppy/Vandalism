@@ -159,7 +159,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             "Faster Pings",
             "This tries to send pings faster. (1.20.2+ client version)",
             false
-    );
+    ).visibleCondition(this.ping::getValue);
 
     private final IntegerValue pingInterval = new IntegerValue(
             this,
@@ -242,7 +242,9 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             this.lastUpdate = now;
         }
 
-        if (event.packet instanceof final PingResultS2CPacket packet && this.fasterPings.getValue() &&
+        if (event.packet instanceof final PingResultS2CPacket packet &&
+                this.ping.getValue() &&
+                this.fasterPings.getValue() &&
                 !ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_20_2)) {
             this.clientPing = now - packet.getStartTime();
         }
@@ -252,7 +254,9 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
         final long now = System.currentTimeMillis();
 
-        if (now - this.lastPing > this.pingInterval.getValue() && this.fasterPings.getValue() &&
+        if (now - this.lastPing > this.pingInterval.getValue() &&
+                this.fasterPings.getValue() &&
+                this.ping.getValue() &&
                 !ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_20_2)) {
             this.mc.getNetworkHandler().sendPacket(new QueryPingC2SPacket(now));
             this.lastPing = now;
