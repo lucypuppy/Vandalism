@@ -19,6 +19,9 @@
 package de.nekosarekawaii.vandalism.injection.mixins.fix.minecraft;
 
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
@@ -33,11 +36,19 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.List;
+
 @Mixin(MultiplayerScreen.class)
 public abstract class MixinMultiplayerScreen extends Screen implements MinecraftWrapper {
 
     @Shadow
+    protected MultiplayerServerListWidget serverListWidget;
+
+    @Shadow
     private Screen parent;
+
+    @Shadow
+    public List<Text> multiplayerScreenTooltip;
 
     protected MixinMultiplayerScreen(final Text ignored) {
         super(ignored);
@@ -63,6 +74,24 @@ public abstract class MixinMultiplayerScreen extends Screen implements Minecraft
             server.name = server.address;
         }
         return server;
+    }
+
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;render(Lnet/minecraft/client/gui/DrawContext;IIF)V", shift = At.Shift.AFTER))
+    public void render(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+        this.renderBackground(context, mouseX, mouseY, delta);
+
+        // render xd
+        context.fill(serverListWidget.getX(), 0, serverListWidget.getRight(), serverListWidget.getY(), Integer.MIN_VALUE);
+        context.fill(serverListWidget.getX(), serverListWidget.getBottom(), serverListWidget.getRight(), MinecraftClient.getInstance().getWindow().getHeight(), Integer.MIN_VALUE);
+
+        // NOW draw the buttons etc
+        for (Drawable drawable : drawables) {
+            drawable.render(context, mouseX, mouseY, delta);
+        }
+
+        if (this.multiplayerScreenTooltip != null) {
+            context.drawTooltip(this.textRenderer, this.multiplayerScreenTooltip, mouseX, mouseY);
+        }
     }
 
 }

@@ -1,184 +1,139 @@
 #ifdef GL_ES
-precision highp float;
+precision mediump float;
 #endif
 
-
+// glslsandbox uniforms
 uniform float time;
-uniform vec2 mouse;
 uniform vec2 resolution;
+uniform vec2 mouse;
 
+// shadertoy globals
+float iTime = 0.0;
+vec3  iResolution = vec3(0.0);
+vec4 iMouse = vec4(0.0);
 
-#define iterations 0
-#define formuparam2 0.79
+void mainImage (out vec4 fragColor, in vec2 fragCoord);
+void main(void) {
+    iTime = time;
+    iResolution = vec3(resolution, 0.0);
+    iMouse = vec4(mouse, 0.0, 0.0);
 
-#define volsteps 9
-#define stepsize 0.190
-
-#define zoom 1.900
-#define tile  .50
-
-#define speed2  0.0
-#define cloudSpeed 0.0
-#define twinkle 0.00
-
-
-#define brightness 0.008
-#define darkmatter 8.700
-#define distfading 0.760
-#define saturation 0.850
-
-
-#define transverseSpeed 0.0 //zoom*2.0
-#define cloud 0.09
-
-
-float triangle(float x, float a) {
-    float output2 = 2.0 * abs(2.0 * ((x / a) - floor((x / a) + 0.5))) - 1.0;
-    return output2;
+    mainImage(gl_FragColor, gl_FragCoord.xy);
 }
 
-float field(in vec3 p) {
-    float cloudTime = time * cloudSpeed;
-    float strength = 7. + .03 * log(1.e-6 + fract(sin(cloudTime) * 4373.11));
-    float accum = 0.;
-    float prev = 0.;
-    float tw = 0.;
+/*
+ * Original shader from: https://www.shadertoy.com/view/XsX3DS
+ */
 
-    for (int i = 0; i < 9; ++i) {
-        float mag = dot(p, p);
-        p = abs(p) / mag + vec3(-.5, -.8 + 0.1 * sin(cloudTime * 0.7 + 2.0), -1.1 + 0.3 * cos(cloudTime * 0.3));
-        float w = exp(-float(i) / 7.);
-        accum += w * exp(-strength * pow(abs(mag - prev), 2.3));
-        tw += w;
-        prev = mag;
-    }
-    return max(0., 5. * accum / tw - .7);
+float rand(vec2 p){
+    p+=.2127+p.x+.3713*p.y;
+    vec2 r=4.789*sin(789.123*(p));
+    return fract(r.x*r.y);
 }
 
+float sn(vec2 p){
+    vec2 i=floor(p-.5);
+    vec2 f=fract(p-.5);
+    f = f*f*f*(f*(f*6.0-15.0)+10.0);
+    float rt=mix(rand(i),rand(i+vec2(1.,0.)),f.x);
+    float rb=mix(rand(i+vec2(0.,1.)),rand(i+vec2(1.,1.)),f.x);
+    return mix(rt,rb,f.y);
+}
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    vec2 uv = fragCoord.xy / iResolution.y;
+
+    uv+=iMouse.xy/ iResolution.xy;
+
+    vec2 p=uv.xy*vec2(3.,4.3);
+    float f =
+    .5*sn(p)
+    +.25*sn(2.*p)
+    +.125*sn(4.*p)
+    +.0625*sn(8.*p)
+    +.03125*sn(16.*p)+
+    .015*sn(32.*p)
+    ;
+
+    float newT = iTime*0.4 + sn(vec2(iTime*1.))*0.1;
+    p.x-=iTime*0.2;
+
+    p.y*=1.3;
+    float f2=
+    .5*sn(p)
+    +.25*sn(2.04*p+newT*1.1)
+    -.125*sn(4.03*p-iTime*0.3)
+    +.0625*sn(8.02*p-iTime*0.4)
+    +.03125*sn(16.01*p+iTime*0.5)+
+    .018*sn(24.02*p);
+
+    float f3=
+    .5*sn(p)
+    +.25*sn(2.04*p+newT*1.1)
+    -.125*sn(4.03*p-iTime*0.3)
+    +.0625*sn(8.02*p-iTime*0.5)
+    +.03125*sn(16.01*p+iTime*0.6)+
+    .019*sn(18.02*p);
+
+    float f4 = f2*smoothstep(0.0,1.,uv.y);
+
+    vec3 clouds = mix(vec3(-0.2,-0.4,-0.15),vec3(1.4,1.4,1.3),f4*f);
 
 
-void main() {
-    vec2 uv2 = gl_FragCoord.xy / resolution.xy - 0.5;
-    uv2.y *= resolution.y / resolution.x;
-    vec2 uvs = uv2;
-
-    float time2 = time;
-
-    float speed = -speed2 * cos(time2 * 0.02 + 3.1415926 / 4.0);
-    //speed = 0.0;
-    float formuparam = formuparam2;
-
-    //get coords and direction
-    vec2 uv = uvs;
-    //mouse rotation
-    float a_xz = 0.9;
-    float a_yz = -2.6;
-    float a_xy = 0.9 + time * 0.04;
-
-    mat2 rot_xz = mat2(cos(a_xz), sin(a_xz), -sin(a_xz), cos(a_xz));
-    mat2 rot_yz = mat2(cos(a_yz), sin(a_yz), -sin(a_yz), cos(a_yz));
-    mat2 rot_xy = mat2(cos(a_xy), sin(a_xy), -sin(a_xy), cos(a_xy));
+    vec2 moonp = vec2(0.5,0.8);
+    float moon = smoothstep(0.95,0.956,1.-length(uv-moonp));
+    vec2 moonp2 = moonp + vec2(0.015, 0);
+    moon -= smoothstep(0.93,0.956,1.-length(uv-moonp2));
+    moon = clamp(moon, 0., 1.);
+    moon += 0.3*smoothstep(0.80,0.956,1.-length(uv-moonp));
 
 
-    float v2 = 1.0;
-    vec3 dir = vec3(uv * zoom, 1.);
-    vec3 from = vec3(0.0, 0.0, 0.0);
+    clouds*=0.8;
+    clouds +=  moon +0.2;
+
+    float ground = smoothstep(0.07,0.075,f*(p.y-0.98)+0.01);
+
+    vec2 newUV = uv;
+    newUV.x-=iTime*0.3;
+    newUV.y+=iTime*3.;
+    float strength = sin(iTime*0.5+sn(newUV))*0.1+0.15;
 
 
-    from.x += 10.0 * cos(0.004 * time);
-    from.y += 10.0 * sin(0.00777777 * time);
-    from.z += 0.003 * time;
+    float rain = sn( vec2(newUV.x*20.1, newUV.y*40.1+newUV.x*400.1-20.*strength ));
+    float rain2 = sn( vec2(newUV.x*45.+iTime*0.5, newUV.y*30.1+newUV.x*200.1 ));
+    rain = strength-rain;
+    rain+=smoothstep(0.2,0.5,f4+0.1)*rain;
+    rain += pow(length(uv-moonp),1.)*0.1;
+    rain+=rain2*(sin(strength)-0.4)*2.;
+    rain = clamp(rain, 0.,0.5)*0.5;
+    float tree = 0.;
+    vec2 treeUV = uv;
 
-
-    vec3 forward = vec3(0., 0., 1.0 - twinkle);
-
-    dir.xy *= rot_xy;
-    dir.xz *= rot_xz;
-    dir.yz *= rot_yz;
-
-    forward.xy *= rot_xy;
-    forward.xz *= rot_xz;
-    forward.yz *= rot_yz;
-
-    from.xy *= rot_xy;
-    from.xz *= rot_xz;
-    from.yz *= rot_yz;
-
-
-    //zoom
-    float zooom = (time2) * speed;
-
-    from += forward * zooom * 1.0;
-
-    float sampleShift = mod(zooom, stepsize);
-
-    float zoffset = -sampleShift;
-    sampleShift /= stepsize; // make from 0 to 1
-
-    //volumetric rendering
-    float s = 0.74;
-    float s3 = s + stepsize / 2.0;
-    vec3 v = vec3(0.);
-    float t3 = 0.0;
-
-    vec3 backCol2 = vec3(0.);
-    for (int r = 0; r < volsteps; r++) {
-        vec3 p2 = from + (s + zoffset) * dir;// + vec3(0.,0.,zoffset);
-        vec3 p3 = from + (s3 + zoffset) * dir;// + vec3(0.,0.,zoffset);
-
-        p2 = abs(vec3(tile) - mod(p2, vec3(tile * 2.))); // tiling fold
-        p3 = abs(vec3(tile) - mod(p3, vec3(tile * 2.))); // tiling fold
-        #ifdef cloud
-        t3 = field(p3);
-        #endif
-
-        float pa, a = pa = 0.;
-    for (int i = 0; i< iterations; i++) {
-    p2 = abs(p2) / dot(p2, p2) - formuparam; // the magic formula
-    //p=abs(p)/max(dot(p,p),0.005)-formuparam; // another interesting way to reduce noise
-    float D = abs(length(p2) - pa); // absolute sum of average change
-    a += i > 7 ? min(12., D): D;
-    pa = length(p2);
+    {
+        float atree = abs(atan(treeUV.x-59.-85.5,3.-treeUV.y*25.+5.));
+        atree +=rand(treeUV.xy*vec2(0.001,1.))*atree;
+        tree += clamp(atree, 0.,1.)*0.33;
     }
+    {
+        float atree = abs(atan(treeUV.x*65.-65.5,3.-treeUV.y*19.+4.));
+        atree +=rand(treeUV.xy*vec2(0.001,1.))*atree;
+        tree += clamp(atree, 0.,1.)*0.33;
+    }
+    {
+        float atree = abs(atan(treeUV.x*85.-91.5,3.-treeUV.y*21.+4.));
+        atree +=rand(treeUV.xy*vec2(0.001,1.))*atree;
+        tree += clamp(atree, 0.,1.)*0.34;
+    }
+    tree = smoothstep(0.6,1.,tree);
 
 
-    //float dm=max(0.,darkmatter-a*a*.001); //dark matter
-    a*=a * a; // add contrast
-    //if (r>3) fade*=1.-dm; // dark matter, don't render near
-    // brightens stuff up a bit
-    float s1 = s+ zoffset;
-    // need closed form expression for this, now that we shift samples
-    float fade = pow(distfading,max(0., float(r) - sampleShift));
-    //t3 += fade;
-    v+=fade;
-    //backCol2 -= fade;
+    vec3 painting = tree*ground*clouds+clamp(rain*(strength-0.1),0.,1.);
 
-    // fade out samples as they approach the camera
-    if (r == 0)
-    fade *= (1. - (sampleShift));
-    // fade in samples as they approach from the distance
-    if (r == volsteps - 1 )
-    fade *= sampleShift;
-    v+=vec3(s1, s1 * s1, s1 * s1 * s1* s1) * a * brightness * fade; // coloring based on distance
+    float r=1.-length(max(abs(fragCoord.xy / iResolution.xy*2.-1.)-.5,0.));
+    painting*=r;
 
-    backCol2 += mix(.4, 1., v2) * vec3(1.8 * t3 * t3 * t3, 1.4 * t3 * t3, t3) * fade;
+    painting *= vec3(0.9, 0.0, 0.9);
 
-
-    s+=stepsize;
-    s3 += stepsize;
-    }//фор
-
-    v = mix(vec3(length(v)), v, saturation); //color adjust
-
-    vec4 forCol2 = vec4(v * .01, 1.);
-    #ifdef cloud
-    backCol2 *= cloud;
-    #endif
-    backCol2.b *= 1.8;
-    backCol2.r *= 0.05;
-
-    backCol2.b = 0.5 * mix(backCol2.g, backCol2.b, 0.8);
-    backCol2.g = 0.0;
-    //  backCol2.bg = mix(backCol2.gb, backCol2.bg, 0.5*(cos(time*0.01) + 1.0));
-    gl_FragColor = forCol2 + vec4(backCol2, 1.0);
+    fragColor = vec4(painting, 1.);
 }
