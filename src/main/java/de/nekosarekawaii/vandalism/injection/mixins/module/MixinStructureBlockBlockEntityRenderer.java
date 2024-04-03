@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.module.impl.exploit.ExploitFixerModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.exploitfixer.ExploitFixerModule;
 import net.minecraft.block.entity.StructureBlockBlockEntity;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
@@ -40,7 +40,7 @@ public abstract class MixinStructureBlockBlockEntityRenderer {
     @Redirect(method = "render(Lnet/minecraft/block/entity/StructureBlockBlockEntity;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;II)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;drawBox(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;DDDDDDFFFFFFF)V"))
     private void hookExploitFixer_BoundingBoxes(final MatrixStack matrices, final VertexConsumer vertexConsumer, final double x1, final double y1, final double z1, final double x2, final double y2, final double z2, final float red, final float green, final float blue, final float alpha, final float xAxisRed, final float yAxisGreen, final float zAxisBlue) {
         final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
-        if (exploitFixerModule.isActive() && exploitFixerModule.blockStructureBlockBoundingBoxes.getValue()) {
+        if (exploitFixerModule.isActive() && exploitFixerModule.renderSettings.blockStructureBlockBoundingBoxes.getValue()) {
             return;
         }
         WorldRenderer.drawBox(matrices, vertexConsumer, x1, y1, z1, x2, y2, z2, red, green, blue, alpha, xAxisRed, yAxisGreen, zAxisBlue);
@@ -49,7 +49,7 @@ public abstract class MixinStructureBlockBlockEntityRenderer {
     @Redirect(method = "render(Lnet/minecraft/block/entity/StructureBlockBlockEntity;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;II)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/block/entity/StructureBlockBlockEntityRenderer;renderInvisibleBlocks(Lnet/minecraft/block/entity/StructureBlockBlockEntity;Lnet/minecraft/client/render/VertexConsumer;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/client/util/math/MatrixStack;)V"))
     private void hookExploitFixer_AirBoxes(final StructureBlockBlockEntityRenderer structureBlockBlockEntityRenderer, final StructureBlockBlockEntity structureBlockBlockEntity, final VertexConsumer vertexConsumer, final BlockPos blockPos, final MatrixStack matrixStack) {
         final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
-        if (exploitFixerModule.isActive() && exploitFixerModule.blockStructureBlockAirBoxes.getValue()) {
+        if (exploitFixerModule.isActive() && exploitFixerModule.renderSettings.blockStructureBlockAirBoxes.getValue()) {
             return;
         }
         this.renderInvisibleBlocks(structureBlockBlockEntity, vertexConsumer, blockPos, matrixStack);

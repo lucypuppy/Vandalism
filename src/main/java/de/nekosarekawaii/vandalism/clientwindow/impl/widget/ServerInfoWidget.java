@@ -132,7 +132,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                         }
                         final ProtocolVersion protocolVersion = ProtocolVersion.getProtocol(this.mcPingResponse.version.protocol);
                         if (protocolVersion.isKnown()) {
-                            if (ImGui.button("Connect with server version" + uniqueId + "connectwithserverversion", buttonWidth, buttonHeight)) {
+                            if (ImGui.button("Connect with Server Version" + uniqueId + "connectwithserverversion", buttonWidth, buttonHeight)) {
                                 /* Autistic fix for ingame with revert on disconnect */
                                 RStream.of(ProtocolTranslator.class).fields().by("previousVersion").set(null);
                                 ProtocolTranslator.setTargetVersion(protocolVersion, true);

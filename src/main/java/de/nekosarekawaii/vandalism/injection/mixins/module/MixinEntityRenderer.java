@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.module.impl.exploit.ExploitFixerModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.exploitfixer.ExploitFixerModule;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.text.Text;
@@ -36,8 +36,8 @@ public abstract class MixinEntityRenderer {
     @Unique
     private Text vandalism$modifyDisplayNameLength(final Text text) {
         final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
-        if (exploitFixerModule.isActive() && exploitFixerModule.modifyDisplayNameLength.getValue()) {
-            return ChatUtil.trimText(text, exploitFixerModule.maxDisplayNameLength.getValue());
+        if (exploitFixerModule.isActive() && exploitFixerModule.renderSettings.modifyDisplayNameLength.getValue()) {
+            return ChatUtil.trimText(text, exploitFixerModule.renderSettings.maxDisplayNameLength.getValue());
         }
         return text;
     }

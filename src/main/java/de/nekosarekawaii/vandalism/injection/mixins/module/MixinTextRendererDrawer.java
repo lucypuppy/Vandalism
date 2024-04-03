@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
-import de.nekosarekawaii.vandalism.feature.module.impl.exploit.ExploitFixerModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.exploitfixer.ExploitFixerModule;
 import net.minecraft.text.Style;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -38,9 +38,9 @@ public abstract class MixinTextRendererDrawer {
     private void hookExploitFixer(final int i, final Style style, final int j, final CallbackInfoReturnable<Boolean> cir) {
         if (!FabricBootstrap.INITIALIZED) return;
         final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
-        if (exploitFixerModule.isActive() && exploitFixerModule.blockTooManyTextGlyphs.getValue()) {
+        if (exploitFixerModule.isActive() && exploitFixerModule.renderSettings.blockTooManyTextGlyphs.getValue()) {
             this.vandalism$glyphCount++;
-            if (this.vandalism$glyphCount >= exploitFixerModule.countToBlockTextGlyphs.getValue()) {
+            if (this.vandalism$glyphCount >= exploitFixerModule.renderSettings.countToBlockTextGlyphs.getValue()) {
                 cir.setReturnValue(false);
             }
         }
