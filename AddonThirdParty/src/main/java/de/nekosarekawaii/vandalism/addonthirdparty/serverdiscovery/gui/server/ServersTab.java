@@ -387,7 +387,7 @@ public class ServersTab implements MinecraftWrapper {
                         final int buttonWidth = 200, buttonHeight = 28;
                         final ProtocolVersion protocolVersion = ProtocolVersion.getProtocol(serverEntry.protocol);
                         if (protocolVersion.isKnown()) {
-                            if (ImGui.button("Connect with server version" + serverEntryId + "connectwithserverversion", buttonWidth, buttonHeight)) {
+                            if (ImGui.button("Connect with Server Version" + serverEntryId + "connectwithserverversion", buttonWidth, buttonHeight)) {
                                 /* Autistic fix for ingame with revert on disconnect */
                                 RStream.of(ProtocolTranslator.class).fields().by("previousVersion").set(null);
 
