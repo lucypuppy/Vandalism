@@ -96,7 +96,7 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
                 return;
             }
 
-            Vandalism.getInstance().getRotationManager().setRotation(this.rotation, 80f, 0.1f, false);
+            Vandalism.getInstance().getRotationManager().setRotation(this.rotation, 80f, 0.0f, false);
         }
     }
 
@@ -140,7 +140,7 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
         Rotation rotation = null;
 
         for (int yaw = -45; yaw < 45; yaw++) {
-            for (int pitch = 60; pitch < 90; pitch++) {
+            for (int pitch = 0; pitch < 90; pitch++) {
                 Rotation currentRotation = new Rotation(mc.player.getYaw() - (180 + yaw), pitch);
                 final BlockHitResult raycastBlocks = WorldUtil.raytraceBlocks(currentRotation, 5.0);
 
