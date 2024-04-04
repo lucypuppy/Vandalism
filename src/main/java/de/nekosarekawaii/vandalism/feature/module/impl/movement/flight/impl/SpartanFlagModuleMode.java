@@ -26,7 +26,7 @@ import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 import net.minecraft.util.math.Vec3d;
 
-public class SpartanModuleMode extends ModuleMulti<FlightModule> implements PlayerUpdateListener {
+public class SpartanFlagModuleMode extends ModuleMulti<FlightModule> implements PlayerUpdateListener {
 
     private final DoubleValue motionYOffset = new DoubleValue(
             this,
@@ -46,8 +46,8 @@ public class SpartanModuleMode extends ModuleMulti<FlightModule> implements Play
             5.0
     );
 
-    public SpartanModuleMode() {
-        super("Spartan");
+    public SpartanFlagModuleMode() {
+        super("Spartan Flag");
     }
 
     @Override
@@ -62,15 +62,15 @@ public class SpartanModuleMode extends ModuleMulti<FlightModule> implements Play
 
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
-        final double speed = this.speed.getValue() + (Math.random() * 2.0);
-        final double ySpeed = this.motionYOffset.getValue() + (Math.random() * 2.0);
+        final double random = Math.random() * 2.0;
+        final double speed = this.speed.getValue() + random;
         double motionX = 0, motionY = 0, motionZ = 0;
 
         if (mc.player.age % 11 == 0) {
             if (this.mc.options.jumpKey.isPressed()) {
-                motionY = ySpeed;
+                motionY = this.motionYOffset.getValue() + random;
             } else if (this.mc.options.sneakKey.isPressed()) {
-                motionY = -ySpeed;
+                motionY = -(this.motionYOffset.getValue() + random);
             }
         }
 
