@@ -28,6 +28,8 @@ import net.minecraft.util.math.Vec3d;
 
 public class SpartanFlagModuleMode extends ModuleMulti<FlightModule> implements PlayerUpdateListener {
 
+    private double lastRandom;
+
     private final DoubleValue motionYOffset = new DoubleValue(
             this,
             "Motion Y Offset",
@@ -62,7 +64,17 @@ public class SpartanFlagModuleMode extends ModuleMulti<FlightModule> implements 
 
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
-        final double random = Math.random() * 2.0;
+        if (mc.player.isInFluid()) {
+            this.mc.player.setVelocity(mc.player.getVelocity().x, 0, mc.player.getVelocity().z);
+            return;
+        }
+
+        double random = Math.random() * 2.0;
+        if (Math.abs(this.lastRandom - random) < 0.5) {
+            random *= Math.random();
+        }
+        this.lastRandom = random;
+
         final double speed = this.speed.getValue() + random;
         double motionX = 0, motionY = 0, motionZ = 0;
 
