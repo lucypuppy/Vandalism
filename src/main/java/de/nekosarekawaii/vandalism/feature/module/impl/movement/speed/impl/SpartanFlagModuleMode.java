@@ -27,6 +27,8 @@ import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 
 public class SpartanFlagModuleMode extends ModuleMulti<SpeedModule> implements PlayerUpdateListener {
 
+    private double lastRandom;
+
     private final DoubleValue speed = new DoubleValue(
             this,
             "Speed",
@@ -52,12 +54,18 @@ public class SpartanFlagModuleMode extends ModuleMulti<SpeedModule> implements P
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (MovementUtil.isMoving()) {
+        if (MovementUtil.isMoving() && !mc.player.isInFluid()) {
             if (this.mc.player.isOnGround()) {
                 this.mc.player.jump();
             }
 
-            MovementUtil.setSpeed(this.speed.getValue() + (Math.random() * 2.0));
+            double random = Math.random() * 2.0;
+            if (Math.abs(this.lastRandom - random) < 0.5) {
+                random *= Math.random();
+            }
+            this.lastRandom = random;
+
+            MovementUtil.setSpeed(this.speed.getValue() + random);
         }
     }
 
