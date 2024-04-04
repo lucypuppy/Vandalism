@@ -76,7 +76,7 @@ public abstract class MixinMultiplayerScreen extends Screen implements Minecraft
         return server;
     }
 
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;render(Lnet/minecraft/client/gui/DrawContext;IIF)V", shift = At.Shift.AFTER))
+    @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     public void render(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         this.renderBackground(context, mouseX, mouseY, delta);
 
@@ -85,13 +85,19 @@ public abstract class MixinMultiplayerScreen extends Screen implements Minecraft
         context.fill(serverListWidget.getX(), serverListWidget.getBottom(), serverListWidget.getRight(), MinecraftClient.getInstance().getWindow().getHeight(), Integer.MIN_VALUE);
 
         // NOW draw the buttons etc
-        for (Drawable drawable : drawables) {
+        for (final Drawable drawable : drawables) {
             drawable.render(context, mouseX, mouseY, delta);
         }
 
         if (this.multiplayerScreenTooltip != null) {
             context.drawTooltip(this.textRenderer, this.multiplayerScreenTooltip, mouseX, mouseY);
+            this.multiplayerScreenTooltip = null;
         }
+
+        this.serverListWidget.render(context, mouseX, mouseY, delta);
+        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 20, 16777215);
+
+        ci.cancel();
     }
 
 }
