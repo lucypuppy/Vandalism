@@ -41,7 +41,8 @@ public class FlightModule extends AbstractModule implements OutgoingPacketListen
             new CubeCraft2ModuleMode(),
             new CollisionModuleMode(),
             new OldAACModuleMode(),
-            new VulcanModuleMode()
+            new VulcanModuleMode(),
+            new SpartanModuleMode()
     );
 
     private final BooleanValue antiKick = new BooleanValue(
