@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.addonbaritone.settings;
 
 import baritone.Baritone;
 import baritone.api.Settings;
+import de.florianmichael.rclasses.common.color.HSBColor;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
@@ -49,8 +50,23 @@ public class BaritoneSettingMapper implements ValueParent {
         }
     }
 
+    // We need this method in case someone changes the settings via command.
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public void updateSettings() {
+        for (final Settings.Setting<?> setting : Baritone.settings().allSettings) {
+            final Value value = this.byName(setting.getName());
+
+            if (value != null) {
+                if (value.getValue() instanceof HSBColor) {
+                    value.setValue(new HSBColor((Color) setting.value));
+                } else {
+                    value.setValue(setting.value);
+                }
+            }
+        }
+    }
+
     // This is a really dumb way to do it but i guess its good enough for now.
-    // This value is very shitty so we should recode it in the future.
     @SuppressWarnings("unchecked")
     private void settingToValue(final Settings.Setting<?> undefinedSetting) {
         if (undefinedSetting.value instanceof Boolean) {
