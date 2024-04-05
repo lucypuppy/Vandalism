@@ -21,19 +21,19 @@ package de.nekosarekawaii.vandalism.addonbaritone;
 import baritone.Baritone;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.addonbaritone.gui.BaritoneSettingsClientWindow;
-import de.nekosarekawaii.vandalism.addonbaritone.settings.BaritoneSettingParser;
+import de.nekosarekawaii.vandalism.addonbaritone.settings.BaritoneSettingMapper;
 import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
 
 public class AddonBaritone implements VandalismAddonLauncher {
 
-    private BaritoneSettingParser baritoneSettingParser;
+    private BaritoneSettingMapper baritoneSettingMapper;
 
     @Override
     public void onLaunch(final Vandalism vandalism) {
-        this.baritoneSettingParser = new BaritoneSettingParser();
+        this.baritoneSettingMapper = new BaritoneSettingMapper();
 
         vandalism.getClientWindowManager().add(
-                new BaritoneSettingsClientWindow(this.baritoneSettingParser)
+                new BaritoneSettingsClientWindow(this.baritoneSettingMapper)
         );
     }
 
@@ -44,7 +44,7 @@ public class AddonBaritone implements VandalismAddonLauncher {
         Baritone.settings().allowParkour.value = true;
 
         // Load baritone settings
-        this.baritoneSettingParser.reloadSettings();
+        this.baritoneSettingMapper.loadSettings();
     }
 
 }
