@@ -20,19 +20,31 @@ package de.nekosarekawaii.vandalism.addonbaritone;
 
 import baritone.Baritone;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.addonbaritone.gui.BaritoneSettingsClientWindow;
+import de.nekosarekawaii.vandalism.addonbaritone.settings.BaritoneSettingParser;
 import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
 
 public class AddonBaritone implements VandalismAddonLauncher {
 
+    private BaritoneSettingParser baritoneSettingParser;
+
     @Override
     public void onLaunch(final Vandalism vandalism) {
+        this.baritoneSettingParser = new BaritoneSettingParser();
 
+        vandalism.getClientWindowManager().add(
+                new BaritoneSettingsClientWindow(this.baritoneSettingParser)
+        );
     }
 
     @Override
     public void onLateLaunch(final Vandalism vandalism) {
+        // Enable default settings because most default settings are dumb.
         Baritone.settings().chatControl.value = false;
         Baritone.settings().allowParkour.value = true;
+
+        // Load baritone settings
+        this.baritoneSettingParser.reloadSettings();
     }
 
 }
