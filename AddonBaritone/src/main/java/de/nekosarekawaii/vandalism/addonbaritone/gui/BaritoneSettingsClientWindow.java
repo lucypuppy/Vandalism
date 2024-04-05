@@ -18,9 +18,6 @@
 
 package de.nekosarekawaii.vandalism.addonbaritone.gui;
 
-import baritone.Baritone;
-import baritone.api.Settings;
-import de.florianmichael.rclasses.common.color.HSBColor;
 import de.nekosarekawaii.vandalism.addonbaritone.settings.BaritoneSettingMapper;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
@@ -29,13 +26,10 @@ import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import net.minecraft.client.gui.DrawContext;
 
-import java.awt.*;
-
 public class BaritoneSettingsClientWindow extends ClientWindow {
 
     private final BaritoneSettingMapper baritoneSettingMapper;
     private final ImString searchInput = new ImString();
-    private long lastRender;
 
     public BaritoneSettingsClientWindow(final BaritoneSettingMapper baritoneSettingMapper) {
         super("Baritone Settings", Category.MISC);
@@ -43,29 +37,22 @@ public class BaritoneSettingsClientWindow extends ClientWindow {
     }
 
     @Override
+    protected void init() {
+        this.baritoneSettingMapper.updateSettings();
+    }
+
+    @Override
+    protected void onEnable() {
+        this.baritoneSettingMapper.updateSettings();
+    }
+
+    @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        final long now = System.currentTimeMillis();
         final String searchIdentifier = "##BaritoneSearchInput";
         final int windowFlags = ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse;
 
         ImGui.begin("Baritone Settings##VeryCoolBaritoneSettings", windowFlags);
-
-        // This is shit but we need it in case someone changes baritone settings with the command.
-        if (now - this.lastRender > 250) {
-            for (final Settings.Setting<?> setting : Baritone.settings().allSettings) {
-                final Value value = this.baritoneSettingMapper.byName(setting.getName());
-
-                if (value != null) {
-                    if (value.getValue() instanceof HSBColor) {
-                        value.setValue(new HSBColor((Color) setting.value));
-                    } else {
-                        value.setValue(setting.value);
-                    }
-                }
-            }
-        }
-
         ImGui.separator();
         ImGui.setNextItemWidth(-1);
         ImGui.inputText(searchIdentifier + "input", this.searchInput);
@@ -80,8 +67,6 @@ public class BaritoneSettingsClientWindow extends ClientWindow {
 
         ImGui.endChild();
         ImGui.end();
-
-        this.lastRender = now;
     }
 
 }

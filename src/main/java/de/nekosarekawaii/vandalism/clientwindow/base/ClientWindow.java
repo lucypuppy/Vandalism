@@ -35,6 +35,9 @@ public class ClientWindow implements IName, MinecraftWrapper {
         this.category = category;
     }
 
+    protected void init() {
+    }
+
     protected void onEnable() {
     }
     protected void onDisable() {
