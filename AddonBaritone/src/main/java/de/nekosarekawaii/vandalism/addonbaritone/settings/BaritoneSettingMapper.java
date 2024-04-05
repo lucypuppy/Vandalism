@@ -33,15 +33,15 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BaritoneSettingParser implements ValueParent {
+public class BaritoneSettingMapper implements ValueParent {
 
     private final List<Value<?>> values;
 
-    public BaritoneSettingParser() {
+    public BaritoneSettingMapper() {
         this.values = new ArrayList<>();
     }
 
-    public void reloadSettings() {
+    public void loadSettings() {
         this.values.clear();
 
         for (final Settings.Setting<?> setting : Baritone.settings().allSettings) {
