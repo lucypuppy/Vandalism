@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.addonbaritone;
 import baritone.Baritone;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.addonbaritone.gui.BaritoneSettingsClientWindow;
+import de.nekosarekawaii.vandalism.addonbaritone.modules.BaritoneAddonModule;
 import de.nekosarekawaii.vandalism.addonbaritone.settings.BaritoneSettingMapper;
 import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
 
@@ -35,6 +36,8 @@ public class AddonBaritone implements VandalismAddonLauncher {
         vandalism.getClientWindowManager().add(
                 new BaritoneSettingsClientWindow(this.baritoneSettingMapper)
         );
+
+        vandalism.getModuleManager().add(new BaritoneAddonModule());
     }
 
     @Override

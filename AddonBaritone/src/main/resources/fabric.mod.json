@@ -5,7 +5,8 @@
   "name": "Vandalism-Baritone",
   "description": "Implementation of the Baritone for Vandalism.",
   "authors": [
-    "NekosAreKawaii"
+    "NekosAreKawaii",
+    "FooFieOwO"
   ],
   "license": "GPL-v3",
   "environment": "client",
