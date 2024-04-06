@@ -1,3 +1,11 @@
+plugins {
+    id "fabric-loom" version "1.5-SNAPSHOT"
+}
+
 dependencies {
     modImplementation files("binary/baritone-unoptimized-fabric-1.10.2.jar")
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/" + maven_name.toLowerCase() + "-baritone.accesswidener")
 }
