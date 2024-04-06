@@ -33,17 +33,25 @@ import de.nekosarekawaii.vandalism.injection.access.IRenderTickCounter;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
 import de.nekosarekawaii.vandalism.integration.render.shader.multipass.impl.BlurMultiPassShader;
 import de.nekosarekawaii.vandalism.util.click.CPSTracker;
+import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.network.packet.c2s.query.QueryPingC2SPacket;
 import net.minecraft.network.packet.s2c.common.KeepAliveS2CPacket;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.query.PingResultS2CPacket;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -170,6 +178,29 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             10000
     ).visibleCondition(() -> this.ping.getValue() && this.fasterPings.getValue());
 
+    private final BooleanValue externalPing = new BooleanValue(
+            this,
+            "External Ping",
+            "Does not use the minecraft protocol to calculate the RTT",
+            false
+    ).visibleCondition(this.ping::getValue);
+
+    private final BooleanValue externalPingShowFailed = new BooleanValue(
+            this,
+            "Show failed pings",
+            "Sends a chat message if a ping failed (you might increase the interval)",
+            true
+    ).visibleCondition(() -> this.ping.getValue() && this.externalPing.getValue());
+
+    private final IntegerValue externalPingInterval = new IntegerValue(
+            this,
+            "External Ping Interval",
+            "The interval in milliseconds in which the ping is updated",
+            100,
+            10,
+            10000
+    ).visibleCondition(() -> this.ping.getValue() && this.externalPing.getValue());
+
     private final BooleanValue packetsSent = new BooleanValue(
             this,
             "Packets Sent",
@@ -229,9 +260,12 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
 
     private BlurMultiPassShader pass;
 
+    private final ExternalPingThread externalPingThread;
+
     public InfoHUDElement() {
         super("Info");
         Vandalism.getInstance().getEventSystem().subscribe(this, IncomingPacketEvent.ID, PlayerUpdateEvent.ID);
+        this.externalPingThread = new ExternalPingThread(this.externalPing, this.externalPingInterval);
     }
 
     @Override
@@ -260,6 +294,13 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
                 !ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_20_2)) {
             this.mc.getNetworkHandler().sendPacket(new QueryPingC2SPacket(now));
             this.lastPing = now;
+        }
+
+        if (this.externalPing.getValue()) {
+            if (!this.externalPingThread.isRunning()) {
+                ChatUtil.chatMessage(Text.literal(Formatting.DARK_GREEN + "Starting external pinging"), true, false);
+                this.externalPingThread.start();
+            }
         }
     }
 
@@ -382,21 +423,26 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         }
 
         if (this.ping.getValue()) {
-            String value = "unknown";
+            String pingStr = "unknown";
 
             if (this.clientPing > 3 && this.fasterPings.getValue()) {
-                value = Long.toString(this.clientPing);
+                pingStr = Long.toString(this.clientPing);
             } else {
                 if (this.mc.getNetworkHandler() != null) {
                     final PlayerListEntry playerListEntry = this.mc.getNetworkHandler().getPlayerListEntry(this.mc.player.getGameProfile().getId());
 
                     if (playerListEntry != null) {
-                        value = String.valueOf(playerListEntry.getLatency());
+                        pingStr = String.valueOf(playerListEntry.getLatency());
                     }
                 }
             }
 
-            infoMap.put("Ping", value + " ms");
+            String value = pingStr + " ms";
+            if (this.externalPing.getValue()) {
+                value += " | " + this.externalPingThread.getLatency() + " ms";
+            }
+
+            infoMap.put("Ping", value);
         }
 
         if (this.packetsSent.getValue()) {
@@ -490,6 +536,55 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
                 this.color.getColor(-y * 20).getRGB(),
                 this.shadow.getValue()
         );
+    }
+
+    static class ExternalPingThread extends Thread {
+
+        private long latency = -1;
+        private boolean isRunning;
+        private final BooleanValue doPing;
+        private final IntegerValue intervalValue;
+
+        public ExternalPingThread(BooleanValue doPing, IntegerValue intervalValue) {
+            this.doPing = doPing;
+            this.intervalValue = intervalValue;
+        }
+
+        @Override
+        public void run() {
+            this.isRunning = true;
+            while (this.doPing.getValue()) {
+                try (Socket socket = new Socket()) {
+                    ClientPlayNetworkHandler networkHandler = MinecraftClient.getInstance().getNetworkHandler();
+                    if (networkHandler != null && networkHandler.getConnection() != null) {
+                        if (networkHandler.getConnection().getAddress() instanceof InetSocketAddress inetSocketAddress) {
+                            if (inetSocketAddress.getAddress() instanceof Inet4Address inet4Address) {
+                                long start = System.currentTimeMillis();
+                                socket.connect(new InetSocketAddress(inet4Address.getHostAddress(), inetSocketAddress.getPort()), 5000);
+                                this.latency = System.currentTimeMillis() - start;
+                            }
+                        }
+                    }
+                } catch (IOException e) {
+                    ChatUtil.chatMessage(Text.literal(Formatting.DARK_RED + "External ping failed"), true, false);
+                }
+                try {
+                    Thread.sleep(this.intervalValue.getValue());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            this.isRunning = false;
+            ChatUtil.chatMessage(Text.literal(Formatting.DARK_RED + "External pinging stopped"), true, false);
+        }
+
+        public long getLatency() {
+            return latency;
+        }
+
+        public boolean isRunning() {
+            return isRunning;
+        }
     }
 
 }
