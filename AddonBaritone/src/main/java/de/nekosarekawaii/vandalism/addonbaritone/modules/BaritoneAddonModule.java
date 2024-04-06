@@ -28,7 +28,6 @@ import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.injection.access.IRenderTickCounter;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
-import de.nekosarekawaii.vandalism.util.game.RenderTickCounterAccessor;
 
 public class BaritoneAddonModule extends AbstractModule implements PlayerUpdateListener {
 
@@ -61,7 +60,7 @@ public class BaritoneAddonModule extends AbstractModule implements PlayerUpdateL
 
         final IPathingBehavior pathingBehavior = baritone.getPathingBehavior();
 
-        final double tps = ((IRenderTickCounter) RenderTickCounterAccessor.getRenderTickCounter()).vandalism$getTPS();
+        final double tps = ((IRenderTickCounter) mc.renderTickCounter).vandalism$getTPS();
         final double ticksRemainingInSegment = pathingBehavior.ticksRemainingInSegment().orElse(0.0);
         final double ticksRemainingInGoal = pathingBehavior.estimatedTicksToGoal().orElse(0.0);
         final double remainingTimeInSegment = ticksRemainingInSegment / tps;
