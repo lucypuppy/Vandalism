@@ -18,6 +18,7 @@
       "de.nekosarekawaii.vandalism.addonbaritone.AddonBaritone"
     ]
   },
+  "accessWidener": "vandalism-baritone.accesswidener",
   "depends": {
     "vandalism": "*",
     "baritone": "*"
