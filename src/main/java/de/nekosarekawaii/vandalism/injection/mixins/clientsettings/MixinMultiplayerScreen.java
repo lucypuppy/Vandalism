@@ -96,18 +96,18 @@ public abstract class MixinMultiplayerScreen extends Screen {
     }
 
     @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerServerListWidget;setServers(Lnet/minecraft/client/option/ServerList;)V"))
-    private void cacheServerList(final MultiplayerServerListWidget instance, net.minecraft.client.option.ServerList servers) {
+    private void cacheServerList(final MultiplayerServerListWidget instance, net.minecraft.client.option.ServerList serverList) {
         final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
         if (enhancedServerListSettings.enhancedServerList.getValue() && enhancedServerListSettings.cacheServerList.getValue()) {
             if (vandalism$SERVER_LIST != null) {
-                servers = vandalism$SERVER_LIST;
+                serverList = vandalism$SERVER_LIST;
             } else {
-                vandalism$SERVER_LIST = servers;
+                vandalism$SERVER_LIST = serverList;
             }
         } else {
             vandalism$SERVER_LIST = null;
         }
-        instance.setServers(servers);
+        instance.setServers(serverList);
     }
 
     @Inject(method = "init", at = @At("RETURN"))
@@ -152,14 +152,15 @@ public abstract class MixinMultiplayerScreen extends Screen {
             }
             if (enhancedServerListSettings.saveSelectedEntry.getValue()) {
                 boolean found = false;
-                for (int i = 0; i < this.serverListWidget.children().size(); i++) {
-                    final MultiplayerServerListWidget.Entry entry = this.serverListWidget.children().get(i);
-                    MultiplayerServerListWidget.Entry serverEntry = this.serverListWidget.getSelectedOrNull();
-                    if (serverEntry == null) break;
-                    if (serverEntry == entry) {
-                        vandalism$SELECTED_ENTRY_INDEX = i;
-                        found = true;
-                        break;
+                MultiplayerServerListWidget.Entry serverEntry = this.serverListWidget.getSelectedOrNull();
+                if (serverEntry != null) {
+                    for (int i = 0; i < this.serverListWidget.children().size(); i++) {
+                        final MultiplayerServerListWidget.Entry entry = this.serverListWidget.children().get(i);
+                        if (serverEntry == entry) {
+                            vandalism$SELECTED_ENTRY_INDEX = i;
+                            found = true;
+                            break;
+                        }
                     }
                 }
                 if (!found) {
@@ -261,6 +262,8 @@ public abstract class MixinMultiplayerScreen extends Screen {
             );
             this.serverList.add(serverInfo, false);
             this.serverList.saveFile();
+
+            vandalism$SERVER_LIST = this.serverList;
             this.serverListWidget.setServers(this.serverList);
         } else if (keyCode == settings.copyServerKey.getValue()) {
             if (this.serverListWidget.getSelectedOrNull() instanceof final MultiplayerServerListWidget.ServerEntry selectedServerEntry) {
@@ -268,15 +271,15 @@ public abstract class MixinMultiplayerScreen extends Screen {
             }
         } else if (keyCode == settings.deleteServerKey.getValue()) {
             if (this.serverListWidget.getSelectedOrNull() instanceof final MultiplayerServerListWidget.ServerEntry selectedServerEntry) {
-
                 int index = this.serverListWidget.children().indexOf(selectedServerEntry);
-                this.serverListWidget.children().remove(selectedServerEntry);
-                this.serverList.remove(selectedServerEntry.getServer());
 
+                this.serverList.remove(selectedServerEntry.getServer());
                 this.serverList.saveFile();
+
+                vandalism$SERVER_LIST = this.serverList;
                 this.serverListWidget.setServers(this.serverList);
 
-                //checking if the size is greater than 1 because of the scanning entry
+                // checking if the size is greater than 1 because of the scanning entry
                 if (this.serverListWidget.children().size() > 1) {
                     // size() -2 because of scanning entry
                     MultiplayerServerListWidget.Entry entry = this.serverListWidget.children().get(Math.min(index, this.serverListWidget.children().size() - 2));
