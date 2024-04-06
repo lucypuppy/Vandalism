@@ -69,7 +69,7 @@ public abstract class MixinEntryListWidget<E extends EntryListWidget.Entry<E>> e
             method = "renderWidget",
             at = @At(value = "FIELD",
                     target = "Lnet/minecraft/client/gui/widget/EntryListWidget;renderBackground:Z"))
-    public boolean renderWidgetRenderBackground(EntryListWidget<?> instance) {
+    public boolean renderWidgetBackground(EntryListWidget<?> instance) {
         return false;
     }
 
@@ -79,34 +79,14 @@ public abstract class MixinEntryListWidget<E extends EntryListWidget.Entry<E>> e
                     shift = At.Shift.AFTER,
                     ordinal = 0))
     public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        if (renderBackground) {
+        if (this.renderBackground) {
             context.fill(
                     getRowLeft() - 5,
                     this.getY(),
                     getRowRight() + 1,
                     this.getBottom(),
-                    Integer.MIN_VALUE
+                    0x50000000
             );
         }
     }
-
-    @Inject(method = "renderWidget", at = @At(value = "FIELD",
-            target = "Lnet/minecraft/client/gui/widget/EntryListWidget;renderBackground:Z",
-            shift = At.Shift.AFTER,
-            ordinal = 1))
-    public void renderWidget2(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        if (renderBackground) {
-
-            // else it'll draw over the buttons cuz mojang had an IQ issue
-            if (!((Object) this instanceof MultiplayerServerListWidget)) {
-                context.fill(this.getX(), 0, this.getRight(), this.getY(), Integer.MIN_VALUE);
-                context.fill(this.getX(), this.getBottom(), this.getRight(), MinecraftClient.getInstance().getWindow().getHeight(), Integer.MIN_VALUE);
-            }
-
-            context.fillGradient(RenderLayer.getGuiOverlay(), this.getX(), this.getY(), this.getRight(), this.getY() + 4, -16777216, 0, 0);
-            context.fillGradient(RenderLayer.getGuiOverlay(), this.getX(), this.getBottom() - 4, this.getRight(), this.getBottom(), 0, -16777216, 0);
-        }
-    }
-
-
 }

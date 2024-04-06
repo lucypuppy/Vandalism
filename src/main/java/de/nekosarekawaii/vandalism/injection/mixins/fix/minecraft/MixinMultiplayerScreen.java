@@ -36,6 +36,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.awt.*;
 import java.util.List;
 
 @Mixin(MultiplayerScreen.class)
@@ -81,22 +82,21 @@ public abstract class MixinMultiplayerScreen extends Screen implements Minecraft
         this.renderBackground(context, mouseX, mouseY, delta);
 
         // render xd
-        context.fill(serverListWidget.getX(), 0, serverListWidget.getRight(), serverListWidget.getY(), Integer.MIN_VALUE);
-        context.fill(serverListWidget.getX(), serverListWidget.getBottom(), serverListWidget.getRight(), MinecraftClient.getInstance().getWindow().getHeight(), Integer.MIN_VALUE);
+        context.fill(this.serverListWidget.getX(), 0, this.serverListWidget.getRight(), this.serverListWidget.getY(), 0x50000000);
+        context.fill(this.serverListWidget.getX(), this.serverListWidget.getBottom(), this.serverListWidget.getRight(), MinecraftClient.getInstance().getWindow().getHeight(), 0x50000000);
 
         // NOW draw the buttons etc
-        for (final Drawable drawable : drawables) {
+        for (final Drawable drawable : this.drawables) {
             drawable.render(context, mouseX, mouseY, delta);
-        }
-
-        if (this.multiplayerScreenTooltip != null) {
-            context.drawTooltip(this.textRenderer, this.multiplayerScreenTooltip, mouseX, mouseY);
-            this.multiplayerScreenTooltip = null;
         }
 
         this.serverListWidget.render(context, mouseX, mouseY, delta);
         context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 20, 16777215);
 
+        if (this.multiplayerScreenTooltip != null) {
+            context.drawTooltip(this.textRenderer, this.multiplayerScreenTooltip, mouseX, mouseY);
+            this.multiplayerScreenTooltip = null;
+        }
         ci.cancel();
     }
 
