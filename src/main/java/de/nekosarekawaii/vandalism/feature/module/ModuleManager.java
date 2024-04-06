@@ -147,6 +147,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new ResourcePackSpooferModule(),
 
                 // movement
+                new AirJumpModule(),
                 new ElytraFlightModule(),
                 new FlightModule(),
                 new JesusModule(),
@@ -165,6 +166,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new StrafeModule(),
                 new TeleportModule(),
                 new TimerModule(),
+
                 // render
                 new AmbienceModule(),
                 new BetterTooltipsModule(),
