@@ -265,7 +265,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
     public InfoHUDElement() {
         super("Info");
         Vandalism.getInstance().getEventSystem().subscribe(this, IncomingPacketEvent.ID, PlayerUpdateEvent.ID);
-        this.externalPingThread = new ExternalPingThread(this.externalPing, this.externalPingInterval);
+        this.externalPingThread = new ExternalPingThread(this.externalPing, this.externalPingInterval, this.externalPingShowFailed);
     }
 
     @Override
@@ -544,10 +544,12 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         private boolean isRunning;
         private final BooleanValue doPing;
         private final IntegerValue intervalValue;
+        private final BooleanValue showFailed;
 
-        public ExternalPingThread(BooleanValue doPing, IntegerValue intervalValue) {
+        public ExternalPingThread(BooleanValue doPing, IntegerValue intervalValue, BooleanValue showFailed) {
             this.doPing = doPing;
             this.intervalValue = intervalValue;
+            this.showFailed = showFailed;
         }
 
         @Override
@@ -566,7 +568,9 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
                         }
                     }
                 } catch (IOException e) {
-                    ChatUtil.chatMessage(Text.literal(Formatting.DARK_RED + "External ping failed"), true, false);
+                    if (this.showFailed.getValue()) {
+                        ChatUtil.chatMessage(Text.literal(Formatting.DARK_RED + "External ping failed"), true, false);
+                    }
                 }
                 try {
                     Thread.sleep(this.intervalValue.getValue());
