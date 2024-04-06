@@ -93,76 +93,85 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     @Override
     public void init() {
         if (FabricBootstrap.IS_DEV_ENVIRONMENT) {
-            this.add(
-                    new TestModule()
-            );
+            this.add(new TestModule());
         }
         this.add(
-                this.modPacketBlockerModule = new ModPacketBlockerModule(),
+                // used by others
+                this.killAuraModule = new KillAuraModule(),
+                this.consoleSpammerModule = new ConsoleSpammerModule(),
                 this.exploitFixerModule = new ExploitFixerModule(),
-                this.trueSightModule = new TrueSightModule(),
-                this.betterTabListModule = new BetterTabListModule(),
+                this.tickBaseModule = new TickBaseModule(this.killAuraModule),
+                this.fastBreakModule = new FastBreakModule(),
                 this.fastPlaceModule = new FastPlaceModule(),
                 this.illegalInteractionModule = new IllegalInteractionModule(),
+                this.modPacketBlockerModule = new ModPacketBlockerModule(),
+                this.vehicleControlModule = new VehicleControlModule(),
+                this.betterTabListModule = new BetterTabListModule(),
+                this.trueSightModule = new TrueSightModule(),
                 this.espModule = new ESPModule(),
                 this.fullBrightModule = new FullBrightModule(),
-                this.killAuraModule = new KillAuraModule(),
-                this.tickBaseModule = new TickBaseModule(this.killAuraModule),
-                new FakeLagModule(this.killAuraModule),
-                this.vehicleControlModule = new VehicleControlModule(),
-                this.consoleSpammerModule = new ConsoleSpammerModule(),
-                this.fastBreakModule = new FastBreakModule(),
-                new CraftCarryModule(),
+
+                // combat
+                new AutoClickerModule(),
+                new AutoShieldModule(),
                 new BackTrackModule(),
-                new NoSlowModule(),
-                new PacketManagerModule(),
+                new BowSpammerModule(),
+                new WTapModule(),
+
+                // exploit
+                new DisablerModule(),
+                new GodModeModule(),
                 new ServerCrasherModule(),
                 new BungeeCordSpooferModule(),
-                new GodModeModule(),
-                new BowSpammerModule(),
-                new JoinLeaveModule(),
+                new CraftCarryModule(),
+                new EcholocationModule(),
+                new FakeLagModule(this.killAuraModule),
+                new SignExploitsModule(),
+                new VehicleOneHitModule(),
+
+                // misc
                 new AutoFishModule(),
                 new AutoRespawnModule(),
+                new BlockBreakerModule(),
+                new ChatReactionModule(),
+                new EthanolModule(),
+                new FakeGameModeModule(),
+                new HandFuckerModule(),
                 new InteractionSpammerModule(),
                 new ItemStackLoggerModule(),
+                new JoinLeaveModule(),
                 new MessageEncryptorModule(),
-                new BlockNormalizerModule(),
+                new MiddleClickFriendsModule(),
+                new NoteBotModule(),
+                new PacketManagerModule(),
+                new ResourcePackSpooferModule(),
+
+                // movement
                 new ElytraFlightModule(),
                 new FlightModule(),
-                new FOVFuckerModule(),
+                new JesusModule(),
                 new NoFallModule(),
                 new PhaseModule(),
-                new PushVelocityModule(),
                 new SpeedModule(),
-                new TimerModule(),
-                new AutoSprintModule(),
-                new StepModule(),
                 new VelocityModule(),
+                new AutoSprintModule(),
+                new BlockNormalizerModule(),
+                new FOVFuckerModule(),
+                new LongJumpModule(),
+                new NoSlowModule(),
+                new PushVelocityModule(),
+                new ScaffoldModule(),
+                new StepModule(),
+                new StrafeModule(),
+                new TeleportModule(),
+                new TimerModule(),
+                // render
                 new AmbienceModule(),
                 new BetterTooltipsModule(),
                 new CameraNoClipModule(),
                 new DeutschMacherModule(),
-                new ProtectorModule(),
-                new VehicleOneHitModule(),
-                new LongJumpModule(),
-                new ChatReactionModule(),
-                new EcholocationModule(),
-                new AutoClickerModule(),
-                new WTapModule(),
-                new DisablerModule(),
-                new TeleportModule(),
-                new SignExploitsModule(),
-                new ScaffoldModule(),
-                new NoteBotModule(),
-                new MiddleClickFriendsModule(),
-                new ResourcePackSpooferModule(),
-                new AutoShieldModule(),
-                new EthanolModule(),
-                new BlockBreakerModule(),
-                new HandFuckerModule(),
-                new JesusModule(),
-                new FakeGameModeModule()
-        );
+                new ProtectorModule()
+                );
         this.configManager.add(new ModulesConfig(this));
     }
 
