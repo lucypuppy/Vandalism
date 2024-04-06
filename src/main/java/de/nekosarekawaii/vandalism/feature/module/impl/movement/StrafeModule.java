@@ -19,11 +19,19 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 
 public class StrafeModule extends AbstractModule implements PlayerUpdateListener {
+
+    private final BooleanValue onlyOnGround = new BooleanValue(
+            this,
+            "Only on ground",
+            "Only changes direction if the player is on ground",
+            false
+    );
 
     public StrafeModule() {
         super("Strafe",
@@ -44,12 +52,8 @@ public class StrafeModule extends AbstractModule implements PlayerUpdateListener
 
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
-        double motionX = this.mc.player.getVelocity().getX();
-        double motionY = this.mc.player.getVelocity().getY();
-        double motionZ = this.mc.player.getVelocity().getZ();
-
-        double speed = Math.hypot(motionX, motionZ);
-        double direction = MovementUtil.getDirection();
-        this.mc.player.setVelocity(speed * -Math.sin(direction), motionY, speed * Math.cos(direction));
+        if (!MovementUtil.isMoving()) return;
+        if (this.onlyOnGround.getValue() && !this.mc.player.isOnGround()) return;
+        MovementUtil.setSpeed(MovementUtil.getSpeed());
     }
 }
