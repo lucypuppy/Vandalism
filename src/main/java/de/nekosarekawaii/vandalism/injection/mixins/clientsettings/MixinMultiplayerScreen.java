@@ -107,6 +107,8 @@ public abstract class MixinMultiplayerScreen extends Screen {
         } else {
             vandalism$SERVER_LIST = null;
         }
+
+        this.serverList = serverList;
         instance.setServers(serverList);
     }
 
