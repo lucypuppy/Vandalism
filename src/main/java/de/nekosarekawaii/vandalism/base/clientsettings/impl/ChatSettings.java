@@ -48,7 +48,7 @@ public class ChatSettings extends ValueGroup {
             "Max Same Line Messages",
             "The max amount of chat messages that will be displayed in the same line.",
             10,
-            1,
+            0,
             20
     ).visibleCondition(this.sameLineMessages::getValue);
 
