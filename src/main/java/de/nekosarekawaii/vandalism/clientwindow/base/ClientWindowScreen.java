@@ -41,6 +41,18 @@ public class ClientWindowScreen extends Screen {
     }
 
     @Override
+    protected void init() {
+        super.init();
+
+        for (final ClientWindow window : this.clientWindowManager.getList()) {
+            if (!window.isActive()) {
+                continue;
+            }
+            window.init();
+        }
+    }
+
+    @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         super.render(context, mouseX, mouseY, delta);
         ImLoader.draw(() -> {
