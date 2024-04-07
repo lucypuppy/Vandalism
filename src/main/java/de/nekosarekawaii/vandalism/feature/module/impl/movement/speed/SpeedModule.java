@@ -33,7 +33,8 @@ public class SpeedModule extends AbstractModule {
             new CubeCraftModuleMode(),
             new VerusModuleMode(),
             new UpdatedNCPModuleMode(),
-            new SpartanFlagModuleMode()
+            new SpartanFlagModuleMode(),
+            new VulcanModuleMode()
     );
 
     public SpeedModule() {
