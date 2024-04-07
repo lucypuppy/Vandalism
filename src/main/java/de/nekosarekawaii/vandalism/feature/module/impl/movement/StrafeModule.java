@@ -29,13 +29,20 @@ public class StrafeModule extends AbstractModule implements PlayerUpdateListener
     private final BooleanValue onlyOnGround = new BooleanValue(
             this,
             "Only on ground",
-            "Only changes direction if the player is on ground",
+            "Only changes direction if the player is on ground.",
             false
+    );
+
+    private final BooleanValue autoJump = new BooleanValue(
+            this,
+            "Auto jump",
+            "Jumps automatically if on ground.",
+            true
     );
 
     public StrafeModule() {
         super("Strafe",
-                "Improves the standard movement of minecraft",
+                "Improves the standard movement of minecraft.",
                 Category.MOVEMENT
         );
     }
@@ -54,6 +61,7 @@ public class StrafeModule extends AbstractModule implements PlayerUpdateListener
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
         if (!MovementUtil.isMoving()) return;
         if (this.onlyOnGround.getValue() && !this.mc.player.isOnGround()) return;
+        if (this.autoJump.getValue() && this.mc.player.isOnGround()) this.mc.player.jump();
         MovementUtil.setSpeed(MovementUtil.getSpeed());
     }
 }
