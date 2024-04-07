@@ -31,21 +31,21 @@ public class AirJumpModule extends AbstractModule implements PlayerUpdateListene
     private final ModeValue mode = new ModeValue(
             this,
             "Mode",
-            "The mode used to jump in air",
+            "The mode used to jump in air.",
             "On ground", "Jump"
     );
 
     private final BooleanValue sprintBoost = new BooleanValue(
             this,
             "Sprint boost",
-            "Specifies wether or not the sprint boost is getting applied",
+            "Specifies wether or not the sprint boost is getting applied.",
             true
     ).visibleCondition(() -> this.mode.getValue().equals("Jump"));
 
     public AirJumpModule() {
         super(
                 "Air Jump",
-                "Allows the player to jump mid air",
+                "Allows the player to jump mid air.",
                 Category.MOVEMENT
         );
     }
