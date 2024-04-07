@@ -35,7 +35,7 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
 
     private final AccountFactory factory;
     private String tokenChain;
-    private StepFullJavaSession.FullJavaSession session;
+    private StepFullJavaSession.FullJavaSession fullJavaSession;
 
     public AbstractMicrosoftAccount(final String name, final AccountFactory factory) {
         super("Microsoft (" + name + ")"); // Java is bad, but we are worse
@@ -52,12 +52,12 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
 
     @Override
     public void logIn0() throws Throwable {
-        if (this.session != null) { // If we already got a session, we should use it right?
+        if (this.fullJavaSession != null) { // If we already got a session, we should use it right?
             if (this.tokenChain == null) {
                 // Save the token chain if we don't have it yet
-                this.tokenChain = this.getStep().toJson(this.session).toString();
+                this.tokenChain = this.getStep().toJson(this.fullJavaSession).toString();
             }
-            final StepMCProfile.MCProfile profile = this.session.getMcProfile();
+            final StepMCProfile.MCProfile profile = this.fullJavaSession.getMcProfile();
             this.updateSession(new Session(profile.getName(), profile.getId(), profile.getMcToken().getAccessToken(), Optional.empty(), Optional.empty(), Session.AccountType.MSA));
         } else {
             // Get the token chain as a json object
@@ -68,8 +68,8 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
     }
 
     public void initWithExistingSession(final StepFullJavaSession.FullJavaSession session) throws Throwable {
-        this.session = session;
-        this.logIn();
+        this.fullJavaSession = session;
+        // this.logIn(); | TODO This is a temp fix to solve the issue with logging in twice, idk if it breaks something - NekosAreKawaii
     }
 
     @Override
