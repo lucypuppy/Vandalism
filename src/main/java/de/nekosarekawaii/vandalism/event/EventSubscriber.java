@@ -60,8 +60,10 @@ public abstract class EventSubscriber {
                     final Field field = eventClass.getField("ID");
                     final int id = field.getInt(null);
                     this.eventIds.add(new Pair<>(id, priorityMap.getOrDefault(id, Priorities.NORMAL)));
-                } catch (final IllegalAccessException | NoSuchFieldException e) {
-                    e.printStackTrace();
+                } catch (final NoSuchFieldException e) {
+                    Vandalism.getInstance().getLogger().error("Failed to get event ID for {} in {}", eventClass.getName(), clazz.getName());
+                } catch (final IllegalAccessException e) {
+                    Vandalism.getInstance().getLogger().error("Access error while trying to init {} in {}\n({})", eventClass.getName(), clazz.getName(), e);
                 }
             }
         }
