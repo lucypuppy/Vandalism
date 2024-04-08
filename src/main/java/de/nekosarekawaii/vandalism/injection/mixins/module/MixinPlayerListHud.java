@@ -29,6 +29,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Final;
@@ -103,17 +104,20 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
     }
 
     @Inject(method = "renderLatencyIcon", at = @At("HEAD"), cancellable = true)
-    public void hookBetterTabListModule(DrawContext context, int width, int x, int y, PlayerListEntry entry, CallbackInfo ci) {
+    public void hookBetterTabListModule(final DrawContext context, final int width, final int x, final int y, final PlayerListEntry entry, final CallbackInfo ci) {
         final var betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
         if (betterTabListModule.isActive() && betterTabListModule.showAccuratePing.getValue()) {
-            final var matrices = context.getMatrices();
+            final MatrixStack matrices = context.getMatrices();
             matrices.push();
             matrices.translate(x + width - 6, y + client.textRenderer.fontHeight / 2f, 0);
             matrices.scale(0.5f, 0.5f, 1f);
-
-            final var color = betterTabListModule.getColorFromPing(entry.getLatency());
-            context.drawText(client.textRenderer, String.valueOf(entry.getLatency()), -client.textRenderer.getWidth(String.valueOf(entry.getLatency())) / 2, -client.textRenderer.fontHeight / 2, color, true);
-
+            long latency = entry.getLatency();
+            final long maxPing = betterTabListModule.maxPing.getValue();
+            if (latency > maxPing) latency = maxPing;
+            else if (latency < -maxPing) latency = -maxPing;
+            final String latencyString = String.valueOf(latency);
+            final int color = betterTabListModule.getColorFromPing(latency);
+            context.drawText(client.textRenderer, latencyString, -client.textRenderer.getWidth(latencyString) / 2, -client.textRenderer.fontHeight / 2, color, true);
             matrices.pop();
             ci.cancel();
         }
