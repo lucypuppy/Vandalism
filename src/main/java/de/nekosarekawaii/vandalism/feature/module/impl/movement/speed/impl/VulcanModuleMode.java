@@ -16,35 +16,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.impl.movement;
+package de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.SpeedModule;
+import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 
-public class StrafeModule extends AbstractModule implements PlayerUpdateListener {
+public class VulcanModuleMode extends ModuleMulti<SpeedModule> implements PlayerUpdateListener {
 
-    private final BooleanValue onlyOnGround = new BooleanValue(
-            this,
-            "Only on ground",
-            "Only changes direction if the player is on ground.",
-            false
-    );
+    private int airTicks;
 
-    private final BooleanValue autoJump = new BooleanValue(
-            this,
-            "Auto jump",
-            "Jumps automatically if on ground.",
-            true
-    );
+    public VulcanModuleMode() {
+        super("Vulcan");
+    }
 
-    public StrafeModule() {
-        super("Strafe",
-                "Improves the standard movement of minecraft.",
-                Category.MOVEMENT
-        );
+    @Override
+    public void onPrePlayerUpdate(PlayerUpdateEvent event) {
+        if (!MovementUtil.isMoving())
+            airTicks = 0;
+
+        if (!mc.player.isOnGround() && MovementUtil.isMoving())
+            airTicks++;
+
+        if (airTicks > 3 && mc.player.getVelocity().getY() > 0)
+            mc.player.setVelocity(mc.player.getVelocity().getX(), -0.12f, mc.player.getVelocity().getZ());
+
+        if (mc.player.isOnGround() && MovementUtil.isMoving()) {
+            airTicks = 0;
+            mc.player.jump();
+            MovementUtil.setSpeed(0.48f);
+        }
     }
 
     @Override
@@ -57,11 +60,4 @@ public class StrafeModule extends AbstractModule implements PlayerUpdateListener
         Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
     }
 
-    @Override
-    public void onPrePlayerUpdate(PlayerUpdateEvent event) {
-        if (!MovementUtil.isMoving()) return;
-        if (this.onlyOnGround.getValue() && !this.mc.player.isOnGround()) return;
-        if (this.autoJump.getValue() && this.mc.player.isOnGround()) this.mc.player.jump();
-        MovementUtil.setSpeed(MovementUtil.getSpeed());
-    }
 }
