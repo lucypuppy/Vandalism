@@ -37,7 +37,7 @@ public class StrafeModule extends AbstractModule implements PlayerUpdateListener
             this,
             "Auto jump",
             "Jumps automatically if on ground.",
-            true
+            false
     );
 
     public StrafeModule() {
