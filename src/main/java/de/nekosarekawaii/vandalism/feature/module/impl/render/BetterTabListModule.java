@@ -24,6 +24,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.LongValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
@@ -48,6 +49,7 @@ public class BetterTabListModule extends AbstractModule implements KeyboardInput
     public final ColorValue friendsColor = new ColorValue(this, "Friends Color", "The color to highlight your friends names with.", ColorUtils.withAlpha(Color.CYAN, 100)).visibleCondition(this.highlightFriends::getValue);
 
     public final BooleanValue showAccuratePing = new BooleanValue(this, "Show Accurate Ping", "Shows the the game mode and the accurate ping right after every username.", true);
+    public final LongValue maxPing = new LongValue(this, "Max Ping", "Sets the maximum ping value.", 999L, 100L, 9999L).visibleCondition(this.showAccuratePing::getValue);
     public final IntegerValue highPing = new IntegerValue(this, "High Ping", "Sets the high ping value.", 500, 50, 1000).visibleCondition(this.showAccuratePing::getValue);
     private final ValueGroup pingColorGroup = new ValueGroup(this, "Ping Colors", "The colors to display the ping with.").visibleCondition(this.showAccuratePing::getValue);
     public final ColorValue lowPingColor = new ColorValue(this.pingColorGroup, "Low Ping Color", "The color to display the minimum ping with.", Color.GREEN).visibleCondition(this.showAccuratePing::getValue);
