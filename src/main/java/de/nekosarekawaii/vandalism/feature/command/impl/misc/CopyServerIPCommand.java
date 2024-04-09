@@ -28,7 +28,12 @@ import net.minecraft.client.network.ServerInfo;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.Pair;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class CopyServerIPCommand extends AbstractCommand {
+
+    private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
 
     public CopyServerIPCommand() {
         super(
@@ -65,8 +70,10 @@ public class CopyServerIPCommand extends AbstractCommand {
         if (resolved) {
             final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
             if (networkHandler != null) {
-                final Pair<String, Integer> address = ServerConnectionUtil.resolveServerAddress(networkHandler.getConnection().getAddress().toString());
-                this.mc.keyboard.setClipboard(address.getLeft() + ":" + address.getRight());
+                EXECUTOR.submit(() -> {
+                    final Pair<String, Integer> address = ServerConnectionUtil.resolveServerAddress(networkHandler.getConnection().getAddress().toString());
+                    this.mc.keyboard.setClipboard(address.getLeft() + ":" + address.getRight());
+                });
             }
             else {
                 ChatUtil.errorChatMessage("You are not connected to a server.");
