@@ -34,6 +34,8 @@ public class VulcanModuleMode extends ModuleMulti<FlightModule> implements Playe
         super("Vulcan");
     }
 
+    private int ticks;
+
     @Override
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, OutgoingPacketEvent.ID);
@@ -42,14 +44,22 @@ public class VulcanModuleMode extends ModuleMulti<FlightModule> implements Playe
     @Override
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, OutgoingPacketEvent.ID);
+        this.ticks = 0;
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (mc.player.fallDistance > 0.0025) {
             final Vec3d velocity = MovementUtil.setSpeed(0.215);
+
             if (mc.player.age % 2 == 0) {
-                mc.player.setVelocity(velocity.x, -0.155, velocity.z);
+                this.ticks++;
+
+                if (this.ticks % 3 == 0) {
+                    mc.player.setVelocity(velocity.x, -0.1, velocity.z);
+                } else {
+                    mc.player.setVelocity(velocity.x, -0.155, velocity.z);
+                }
             } else {
                 mc.player.setVelocity(velocity.x, -0.1, velocity.z);
             }
