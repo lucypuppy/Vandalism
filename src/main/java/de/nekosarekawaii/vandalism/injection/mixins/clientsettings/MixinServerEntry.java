@@ -63,7 +63,10 @@ public abstract class MixinServerEntry {
     }
 
     @Unique
-    private static final String vandalism$VERSION_TEXT = Formatting.GOLD + Formatting.BOLD.toString() + "Version" + Formatting.DARK_GRAY + Formatting.BOLD + "> " + Formatting.GRAY;
+    private static final String vandalism$TYPE_TEXT = Formatting.GOLD + Formatting.BOLD.toString() + "Type" + Formatting.DARK_GRAY + Formatting.BOLD + "> " + Formatting.GRAY;
+
+    @Unique
+    private static final String vandalism$VERSION_TEXT = Formatting.AQUA + Formatting.BOLD.toString() + "Version" + Formatting.DARK_GRAY + Formatting.BOLD + "> " + Formatting.GRAY;
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;IIIZ)I"))
     private int renderAddressAsDefaultServerName(final DrawContext instance, final TextRenderer textRenderer, String text, final int x, final int y, final int color, final boolean shadow) {
@@ -79,9 +82,7 @@ public abstract class MixinServerEntry {
                 }
             }
         }
-        if (text == null) {
-            return 0;
-        }
+        if (text == null) return 0;
         return instance.drawText(textRenderer, text, x, y, color, shadow);
     }
 
@@ -92,9 +93,29 @@ public abstract class MixinServerEntry {
             final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
             if (enhancedServerListSettings.enhancedServerList.getValue()) {
                 if (enhancedServerListSettings.multiplayerScreenServerInformation.getValue()) {
-                    final String version = this.server.version.getString();
-                    if (!version.isEmpty()) {
-                        instance.drawTextWithShadow(textRenderer, vandalism$VERSION_TEXT + ServerDataUtil.fixVersionName(version), x + textRenderer.getWidth(text) + 24, y, -1);
+                    final String versionString = this.server.version.getString();
+                    if (!versionString.isEmpty()) {
+                        final String fixedVersion = ServerDataUtil.fixVersionName(versionString);
+                        String type = fixedVersion;
+                        StringBuilder version = new StringBuilder();
+                        if (fixedVersion.contains(" ")) {
+                            final String[] data = fixedVersion.split(" +");
+                            if (data.length > 0) {
+                                type = data[0];
+                                for (int i = 1; i < data.length; i++) {
+                                    version.append(" ").append(data[i]);
+                                }
+                                if (version.toString().startsWith(" ")) {
+                                    version = new StringBuilder(version.substring(1));
+                                }
+                            }
+                        }
+                        else {
+                            type = "Vanilla/Unknown";
+                            version = new StringBuilder(fixedVersion);
+                        }
+                        instance.drawTextWithShadow(textRenderer, vandalism$TYPE_TEXT + type, x + textRenderer.getWidth(text) + 24, y, -1);
+                        instance.drawTextWithShadow(textRenderer, vandalism$VERSION_TEXT + version, x + textRenderer.getWidth(text) + 24, y + textRenderer.fontHeight, -1);
                     }
                 }
             }
