@@ -58,6 +58,7 @@ public class VulcanGlideModuleMode extends ModuleMulti<FlightModule> implements 
     @Override
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, OutgoingPacketEvent.ID);
+        mc.player.setVelocity(mc.player.getVelocity().getX(), -0.42, mc.player.getVelocity().getZ());
         this.ticks = 0;
     }
 
