@@ -37,8 +37,8 @@ public class TimerModule extends AbstractModule implements TickTimeListener {
 
     private final BooleanValue guis = new BooleanValue(
             this,
-            "GUI's",
-            "Also applies the timer to GUI's.",
+            "GUIs",
+            "Also applies the timer to GUIs.",
             false
     );
 
