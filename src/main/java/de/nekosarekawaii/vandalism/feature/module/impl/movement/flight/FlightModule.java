@@ -41,7 +41,7 @@ public class FlightModule extends AbstractModule implements OutgoingPacketListen
             new CubeCraft2ModuleMode(),
             new CollisionModuleMode(),
             new OldAACModuleMode(),
-            new VulcanModuleMode(),
+            new VulcanGlideModuleMode(this),
             new SpartanFlagModuleMode()
     );
 
