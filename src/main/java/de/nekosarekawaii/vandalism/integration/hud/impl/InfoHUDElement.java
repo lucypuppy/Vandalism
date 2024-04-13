@@ -31,7 +31,6 @@ import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.TickBaseModule;
 import de.nekosarekawaii.vandalism.injection.access.IRenderTickCounter;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
-import de.nekosarekawaii.vandalism.integration.render.shader.multipass.impl.BlurMultiPassShader;
 import de.nekosarekawaii.vandalism.util.click.CPSTracker;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
@@ -226,8 +225,6 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
     private long lastUpdate = System.currentTimeMillis();
     private long lastPing = -1;
     private long clientPing = -1;
-
-    private BlurMultiPassShader pass;
 
     public InfoHUDElement() {
         super("Info");
