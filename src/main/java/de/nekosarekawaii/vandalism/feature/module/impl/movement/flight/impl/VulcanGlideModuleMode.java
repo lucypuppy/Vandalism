@@ -19,43 +19,64 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.FlightModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
+import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
+import de.nekosarekawaii.vandalism.util.game.PlayerDamageUtil;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.Vec3d;
 
-public class VulcanModuleMode extends ModuleMulti<FlightModule> implements PlayerUpdateListener, OutgoingPacketListener {
+public class VulcanGlideModuleMode extends ModuleMulti<FlightModule> implements PlayerUpdateListener, OutgoingPacketListener {
 
-    public VulcanModuleMode() {
-        super("Vulcan");
+    private int ticks, ticks2;
+
+    private final BooleanValue damage = new BooleanValue(this, "Damage", "Damages the player on takeoff and allows you to fly further distances.", false);
+
+    public VulcanGlideModuleMode(final FlightModule parent) {
+        super("Vulcan Glide", parent);
     }
-
-    private int ticks;
 
     @Override
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, OutgoingPacketEvent.ID);
+
+        if (damage.getValue()) {
+            if (mc.player.isOnGround()) {
+                PlayerDamageUtil.damagePlayerVulcan();
+            } else {
+                ChatUtil.errorChatMessage("You must be on the ground to activate Vulcan Glide.");
+                this.parent.deactivate();
+            }
+        }
     }
 
     @Override
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, OutgoingPacketEvent.ID);
+        mc.player.setVelocity(mc.player.getVelocity().getX(), 0.06, mc.player.getVelocity().getZ());
         this.ticks = 0;
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        if (this.damage.getValue() && mc.player.hurtTime > 6) {
+            mc.player.setPosition(mc.player.getX(), mc.player.getY() + 9.9D, mc.player.getZ());
+            return;
+        }
+
         if (mc.player.fallDistance > 0.0025) {
             final Vec3d velocity = MovementUtil.setSpeed(0.215);
+            this.ticks++;
 
-            if (mc.player.age % 2 == 0) {
-                this.ticks++;
+            if (this.ticks % 2 == 0) {
+                this.ticks2++;
 
-                if (this.ticks % 3 == 0) {
+                if (this.ticks2 % 3 == 0) {
                     mc.player.setVelocity(velocity.x, -0.1, velocity.z);
                 } else {
                     mc.player.setVelocity(velocity.x, -0.155, velocity.z);

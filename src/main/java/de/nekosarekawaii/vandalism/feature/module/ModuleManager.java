@@ -148,6 +148,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
                 // movement
                 new AirJumpModule(),
+                new BlinkModule(),
                 new ElytraFlightModule(),
                 new FlightModule(),
                 new JesusModule(),

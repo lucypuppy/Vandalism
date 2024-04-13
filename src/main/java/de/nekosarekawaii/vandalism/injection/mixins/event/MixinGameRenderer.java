@@ -45,7 +45,7 @@ public abstract class MixinGameRenderer implements IGameRenderer, MinecraftWrapp
 
     @ModifyConstant(method = "updateTargetedEntity", constant = @Constant(doubleValue = 9.0))
     private double changeRange(final double constant) {
-        if (vandalism$range != -1) {
+        if (vandalism$isSelfInflicted()) {
             return vandalism$range;
         } else {
             final RaytraceListener.RaytraceEvent event = new RaytraceListener.RaytraceEvent(constant);
@@ -56,7 +56,7 @@ public abstract class MixinGameRenderer implements IGameRenderer, MinecraftWrapp
 
     @Redirect(method = "updateTargetedEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;hasExtendedReach()Z"))
     private boolean alwaysSurvival(final ClientPlayerInteractionManager instance) {
-        if (vandalism$range != -1) {
+        if (vandalism$isSelfInflicted()) {
             return false;
         }
 
