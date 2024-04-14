@@ -24,7 +24,7 @@ import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.
 
 public class ServerDiscoveryUtil {
 
-    private static final String API_KEY = "47ho0jn7nFaM10JnTTJA5Xnwhsfj19AR";
+    private static final String API_KEY = "lh4LsBZUYTwdClX46m2KMeBgtyZhFmXe";
 
     public static Response request(final Request<?> request) {
         final Response response = request.send(API_KEY);
