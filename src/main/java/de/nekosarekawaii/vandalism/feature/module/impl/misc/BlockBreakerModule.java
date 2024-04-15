@@ -47,27 +47,48 @@ public class BlockBreakerModule extends AbstractModule implements PlayerUpdateLi
             Registries.BLOCK,
             Registries.BLOCK.stream().toArray(Block[]::new)
     );
-    private final IntegerValue scanRange = new IntegerValue(this, "Scan Range",
-            "The range where the block breaker breaks blocks", 4, 3, 10);
 
-    private final BooleanValue checkBreak = new BooleanValue(this, "Check Break",
-            "Check if the block is really broken", true);
-    private final IntegerValue checkTime = new IntegerValue(this, "Max Check Time",
-            "The max time for checking if the bed is really destroyed",
-            100, 50, 2000).visibleCondition(this.checkBreak::getValue);
+    private final IntegerValue scanRange = new IntegerValue(
+            this,
+            "Scan Range",
+            "The range where the block breaker breaks blocks.",
+            4,
+            3,
+            10
+    );
 
-    private BlockPos bestBedPos = null;
-    private boolean checkBedStatus = false;
+    private final BooleanValue checkBreak = new BooleanValue(
+            this,
+            "Check Break",
+            "Check if the block is really broken.",
+            true
+    );
+
+    private final IntegerValue checkTime = new IntegerValue(
+            this,
+            "Max Check Time",
+            "The max time for checking if the block is really destroyed.",
+            100,
+            50,
+            2000
+    ).visibleCondition(this.checkBreak::getValue);
+
+    private BlockPos validPos = null;
+    private boolean checkBlockStatus = false;
     private final MSTimer checkTimer = new MSTimer();
 
     public BlockBreakerModule() {
-        super("Block Breaker", "Automatically breaks selected blocks around you.", Category.MISC);
+        super(
+                "Block Breaker",
+                "Automatically breaks selected blocks around you.",
+                Category.MISC
+        );
     }
 
     @Override
     public void onActivate() {
-        this.checkBedStatus = false;
-        this.bestBedPos = null;
+        this.checkBlockStatus = false;
+        this.validPos = null;
         Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, IncomingPacketEvent.ID);
     }
 
@@ -78,7 +99,7 @@ public class BlockBreakerModule extends AbstractModule implements PlayerUpdateLi
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.bestBedPos == null) {
+        if (this.validPos == null) {
             final int scanRange = this.scanRange.getValue();
 
             double nearest = -1;
@@ -92,7 +113,7 @@ public class BlockBreakerModule extends AbstractModule implements PlayerUpdateLi
                             final double distance = mc.player.getPos().distanceTo(new Vec3d(pos.getX(), pos.getY(), pos.getZ()));
 
                             if (nearest == -1 || nearest > distance) {
-                                this.bestBedPos = pos;
+                                this.validPos = pos;
                                 nearest = distance;
                             }
                         }
@@ -102,81 +123,81 @@ public class BlockBreakerModule extends AbstractModule implements PlayerUpdateLi
         }
 
         // Sanity Check
-        if (this.bestBedPos == null) {
+        if (this.validPos == null) {
             return;
         }
 
-        if (this.checkBedStatus) {
+        if (this.checkBlockStatus) {
             if (this.checkTimer.hasReached(this.checkTime.getValue())) {
-                ChatUtil.infoChatMessage("Bed successfully broken.");
-                this.checkBedStatus = false;
-                this.bestBedPos = null;
+                ChatUtil.infoChatMessage("Block successfully broken.");
+                this.checkBlockStatus = false;
+                this.validPos = null;
             }
 
             return;
         }
 
-        final BlockState state = mc.world.getBlockState(this.bestBedPos);
-        final Direction direction = Direction.getFacing(this.bestBedPos.getX(), this.bestBedPos.getY(), this.bestBedPos.getZ());
+        final BlockState state = mc.world.getBlockState(this.validPos);
+        final Direction direction = Direction.getFacing(this.validPos.getX(), this.validPos.getY(), this.validPos.getZ());
 
         if (direction == null) {
             return;
         }
 
-        // Interact with the bed to check if its really broken.
+        // Interact with the block to check if it's really broken.
         if (state.isAir()) {
             if (this.checkBreak.getValue()) {
-                this.checkBedStatus = true;
+                this.checkBlockStatus = true;
                 this.checkTimer.reset();
-                interactBed(direction); // Interact for a block update
+                interactBlock(direction); // Interact for a block update
             } else {
-                ChatUtil.infoChatMessage("Bed successfully broken.");
-                this.checkBedStatus = false; // Reset check.
-                this.bestBedPos = null;
+                ChatUtil.infoChatMessage("Block successfully broken.");
+                this.checkBlockStatus = false; // Reset check.
+                this.validPos = null;
             }
 
             return;
         }
 
-        breakBed(direction);
+        breakBlock(direction);
     }
 
     @Override
     public void onIncomingPacket(IncomingPacketEvent event) {
         final Packet<?> packet = event.packet;
 
-        if (!this.checkBedStatus)
+        if (!this.checkBlockStatus)
             return;
 
         if (packet instanceof final BlockUpdateS2CPacket blockUpdateS2CPacket) {
             final BlockPos pos = blockUpdateS2CPacket.getPos();
             final BlockState state = blockUpdateS2CPacket.getState();
 
-            if (pos.equals(this.bestBedPos) && this.affectedBlocks.isSelected(state.getBlock())) {
+            if (pos.equals(this.validPos) && this.affectedBlocks.isSelected(state.getBlock())) {
                 toggle();
 
-                ChatUtil.infoChatMessage("Failed to break bed, bed is protected.");
-                this.checkBedStatus = false;
-                this.bestBedPos = null;
+                ChatUtil.infoChatMessage("Failed to break block, block is protected.");
+                this.checkBlockStatus = false;
+                this.validPos = null;
             }
         }
     }
 
-    private void breakBed(final Direction direction) {
+    private void breakBlock(final Direction direction) {
         if (mc.player.isCreative()) {
-            mc.interactionManager.attackBlock(bestBedPos, direction);
+            mc.interactionManager.attackBlock(validPos, direction);
             return;
         }
 
-        if (mc.interactionManager.updateBlockBreakingProgress(bestBedPos, direction)) {
+        if (mc.interactionManager.updateBlockBreakingProgress(validPos, direction)) {
             mc.player.swingHand(Hand.MAIN_HAND);
-            mc.particleManager.addBlockBreakingParticles(bestBedPos, direction);
+            mc.particleManager.addBlockBreakingParticles(validPos, direction);
         }
     }
 
-    private void interactBed(final Direction direction) {
-        final Vec3d pos = new Vec3d(this.bestBedPos.getX(), this.bestBedPos.getY(), this.bestBedPos.getZ());
-        final BlockHitResult blockHitResult = new BlockHitResult(pos, direction, this.bestBedPos, false);
+    private void interactBlock(final Direction direction) {
+        final Vec3d pos = new Vec3d(this.validPos.getX(), this.validPos.getY(), this.validPos.getZ());
+        final BlockHitResult blockHitResult = new BlockHitResult(pos, direction, this.validPos, false);
         mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, blockHitResult);
     }
 
