@@ -29,6 +29,8 @@ public class SpeedModule extends AbstractModule {
             "Mode",
             "The current speed mode.",
             new LongJumpModuleMode(),
+            new LowHopModuleMode(),
+            new YPortModuleMode(),
             new BlocksMCModuleMode(),
             new CubeCraftModuleMode(),
             new VerusModuleMode(),
