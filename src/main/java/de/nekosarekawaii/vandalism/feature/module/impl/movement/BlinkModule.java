@@ -22,15 +22,17 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
+import de.nekosarekawaii.vandalism.event.normal.player.AttackListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.PacketUtil;
 import net.minecraft.network.packet.Packet;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class BlinkModule extends AbstractModule implements OutgoingPacketListener, IncomingPacketListener {
+public class BlinkModule extends AbstractModule implements OutgoingPacketListener, IncomingPacketListener, AttackListener {
 
     private final BooleanValue delayIncoming = new BooleanValue(this, "Delay Incoming", "Delays incoming packets too.", false);
+    private final BooleanValue reSyncOnAttack = new BooleanValue(this, "Resync On Attack", "Resyncs you when attacking.", false);
 
     private final ConcurrentLinkedQueue<BlinkPacket> packets = new ConcurrentLinkedQueue<>();
 
@@ -40,13 +42,13 @@ public class BlinkModule extends AbstractModule implements OutgoingPacketListene
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, OutgoingPacketEvent.ID, IncomingPacketEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, OutgoingPacketEvent.ID, IncomingPacketEvent.ID, AttackSendEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
         sendPackets();
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, OutgoingPacketEvent.ID, IncomingPacketEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, OutgoingPacketEvent.ID, IncomingPacketEvent.ID, AttackSendEvent.ID);
     }
 
     @Override
@@ -62,6 +64,13 @@ public class BlinkModule extends AbstractModule implements OutgoingPacketListene
     public void onOutgoingPacket(OutgoingPacketEvent event) {
         event.setCancelled(true);
         packets.add(new BlinkPacket(event.packet, BlinkPacket.Direction.OUTGOING));
+    }
+
+    @Override
+    public void onAttackSend(AttackSendEvent event) {
+        if (reSyncOnAttack.getValue()) {
+            this.deactivate();
+        }
     }
 
     private void sendPackets() {
