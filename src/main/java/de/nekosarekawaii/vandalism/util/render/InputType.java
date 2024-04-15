@@ -23,30 +23,56 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class InputType {
 
     public static final Map<String, Integer> FIELD_NAMES = new HashMap<>();
 
+    private static final List<Integer> BUTTONS = new ArrayList<>();
+
+    private static final List<Integer> DENIED_BUTTONS = List.of(
+            GLFW.GLFW_MOUSE_BUTTON_LEFT,
+            GLFW.GLFW_MOUSE_BUTTON_LAST
+    );
+
     static {
         RStream.of(InputUtil.class).fields().filter(field -> field.name().startsWith("GLFW_KEY_")).forEach(key -> {
             final int keyCode = key.get();
-            FIELD_NAMES.put(getKeyName(keyCode), keyCode);
+            FIELD_NAMES.put(getName(keyCode), keyCode);
+        });
+        RStream.of(GLFW.class).fields().filter(field -> field.name().startsWith("GLFW_MOUSE_BUTTON_")).forEach(button -> {
+            final int buttonCode = button.get();
+            if (!DENIED_BUTTONS.contains(buttonCode)) {
+                BUTTONS.add(buttonCode);
+                FIELD_NAMES.put(getName(buttonCode), buttonCode);
+            }
         });
         FIELD_NAMES.put("NONE", GLFW.GLFW_KEY_UNKNOWN);
     }
 
-    public static String getKeyName(final int keyCode) {
-        return InputUtil.Type.KEYSYM.createFromCode(keyCode).getLocalizedText().getString();
+    public static String getName(int code) {
+        if (BUTTONS.contains(code)) {
+            return InputUtil.Type.MOUSE.createFromCode(code).getLocalizedText().getString();
+        }
+        if (DENIED_BUTTONS.contains(code)) {
+            code = GLFW.GLFW_KEY_UNKNOWN;
+        }
+        return InputUtil.Type.KEYSYM.createFromCode(code).getLocalizedText().getString();
     }
 
-    public static boolean isPressed(final int keyCode) {
-        if (keyCode == GLFW.GLFW_KEY_UNKNOWN) {
+    public static boolean isPressed(final int code) {
+        if (code == GLFW.GLFW_KEY_UNKNOWN || DENIED_BUTTONS.contains(code)) {
             return false;
         }
-        return GLFW.glfwGetKey(MinecraftClient.getInstance().getWindow().getHandle(), keyCode) == GLFW.GLFW_PRESS;
+        if (BUTTONS.contains(code)) {
+            return GLFW.glfwGetMouseButton(MinecraftClient.getInstance().getWindow().getHandle(), code) == GLFW.GLFW_PRESS;
+        } else {
+            return GLFW.glfwGetKey(MinecraftClient.getInstance().getWindow().getHandle(), code) == GLFW.GLFW_PRESS;
+        }
     }
 
 }

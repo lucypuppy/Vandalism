@@ -23,12 +23,13 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
+import de.nekosarekawaii.vandalism.event.normal.game.MouseInputListener;
 import de.nekosarekawaii.vandalism.util.render.InputType;
 import imgui.ImGui;
 import net.minecraft.client.MinecraftClient;
 import org.lwjgl.glfw.GLFW;
 
-public class KeyBindValue extends Value<Integer> implements KeyboardInputListener {
+public class KeyBindValue extends Value<Integer> implements KeyboardInputListener, MouseInputListener {
 
     private final boolean onlyInGame;
 
@@ -66,9 +67,10 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
         float width = 200;
         final float height = ImGui.getTextLineHeightWithSpacing();
         if (!this.waitingForInput) {
-            if (ImGui.button(InputType.getKeyName(this.getValue()) + id, width, height)) {
+            if (ImGui.button(InputType.getName(this.getValue()) + id, width, height)) {
                 this.waitingForInput = true;
                 Vandalism.getInstance().getEventSystem().subscribe(KeyboardInputEvent.ID, this);
+                Vandalism.getInstance().getEventSystem().subscribe(MouseEvent.ID, this);
             }
         } else {
             ImGui.textWrapped("Listening for key input...");
@@ -88,6 +90,7 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
     private void finishInput() {
         this.waitingForInput = false;
         Vandalism.getInstance().getEventSystem().unsubscribe(KeyboardInputEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(MouseEvent.ID, this);
     }
 
     @Override
@@ -102,6 +105,14 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
                     this.setValue(key);
                 }
             }
+        }
+    }
+
+    @Override
+    public void onMouseButton(final int button, final int action, final int mods) {
+        if (button != GLFW.GLFW_KEY_UNKNOWN && action == GLFW.GLFW_PRESS) {
+            this.finishInput();
+            this.setValue(button);
         }
     }
 

@@ -33,18 +33,18 @@ import org.lwjgl.glfw.GLFW;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
-public class KeyNameArgumentType implements ArgumentType<Integer> {
+public class KeyBindArgumentType implements ArgumentType<Integer> {
 
     private static final DynamicCommandExceptionType NOT_EXISTING = new DynamicCommandExceptionType(
             name -> Text.literal("No key with the name " + name + " has been found!")
     );
 
-    public static KeyNameArgumentType create() {
-        return new KeyNameArgumentType();
+    public static KeyBindArgumentType create() {
+        return new KeyBindArgumentType();
     }
 
     public static int get(final CommandContext<?> context) {
-        return context.getArgument("key-name", int.class);
+        return context.getArgument("key-bind", int.class);
     }
 
     @Override

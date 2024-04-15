@@ -24,6 +24,7 @@ import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.clientwindow.ClientWindowManager;
 import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
+import de.nekosarekawaii.vandalism.event.normal.game.MouseInputListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.script.gui.ScriptsClientWindow;
 import de.nekosarekawaii.vandalism.feature.script.parse.ScriptParser;
@@ -38,7 +39,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ScriptManager extends NamedStorage<Script> implements PlayerUpdateListener, KeyboardInputListener, MinecraftWrapper {
+public class ScriptManager extends NamedStorage<Script> implements PlayerUpdateListener, KeyboardInputListener, MouseInputListener, MinecraftWrapper {
 
     private final ConcurrentHashMap<UUID, Thread> runningScripts = new ConcurrentHashMap<>();
     private final File directory;
@@ -48,8 +49,7 @@ public class ScriptManager extends NamedStorage<Script> implements PlayerUpdateL
         this.configManager = configManager;
         clientWindowManager.add(new ScriptsClientWindow());
         this.directory = new File(runDirectory, "scripts");
-        Vandalism.getInstance().getEventSystem().subscribe(KeyboardInputEvent.ID, this);
-        Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(this,  PlayerUpdateEvent.ID, KeyboardInputEvent.ID, MouseEvent.ID);
     }
 
     @Override
@@ -101,12 +101,21 @@ public class ScriptManager extends NamedStorage<Script> implements PlayerUpdateL
 
     @Override
     public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
+        this.handleInput(action, key);
+    }
+
+    @Override
+    public void onMouseButton(final int button, final int action, final int mods) {
+        this.handleInput(action, button);
+    }
+
+    private void handleInput(final int action, final int code) {
         // Cancel if the key is unknown to prevent the script from being executed multiple times.
-        if (action != GLFW.GLFW_PRESS || key == GLFW.GLFW_KEY_UNKNOWN) {
+        if (action != GLFW.GLFW_PRESS || code == GLFW.GLFW_KEY_UNKNOWN) {
             return;
         }
         for (final Script script : this.getList()) {
-            if (script.getKeyBind().isPressed(key)) {
+            if (script.getKeyBind().isPressed(code)) {
                 if (this.isScriptRunning(script.getUuid())) {
                     this.killRunningScript(script.getUuid());
                 }
