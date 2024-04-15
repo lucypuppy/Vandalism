@@ -28,9 +28,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import de.nekosarekawaii.vandalism.util.render.InputType;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.Text;
-import org.lwjgl.glfw.GLFW;
 
-import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 public class KeyBindArgumentType implements ArgumentType<Integer> {
@@ -49,20 +47,16 @@ public class KeyBindArgumentType implements ArgumentType<Integer> {
 
     @Override
     public Integer parse(final StringReader reader) throws CommandSyntaxException {
-        final String keyName = reader.readString().replace("-", " ").toUpperCase(Locale.ROOT);
-        if (keyName.equalsIgnoreCase("none") || keyName.equalsIgnoreCase("unknown")) {
-            return GLFW.GLFW_KEY_UNKNOWN;
-        } else {
-            if (!InputType.FIELD_NAMES.containsKey(keyName)) {
-                throw NOT_EXISTING.createWithContext(reader, keyName);
-            }
-            return InputType.FIELD_NAMES.get(keyName);
+        final String keyName = reader.readString().replace("-", " ");
+        if (!InputType.FIELD_NAMES.containsKey(keyName)) {
+            throw NOT_EXISTING.createWithContext(reader, keyName);
         }
+        return InputType.FIELD_NAMES.get(keyName);
     }
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
-        return CommandSource.suggestMatching(InputType.FIELD_NAMES.keySet(), builder);
+        return CommandSource.suggestMatching(InputType.FIELD_NAMES.keySet().stream().map(keyName -> keyName.replace(" ", "-")), builder);
     }
 
 }
