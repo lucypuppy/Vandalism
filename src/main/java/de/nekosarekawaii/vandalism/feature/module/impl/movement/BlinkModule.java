@@ -32,8 +32,7 @@ public class BlinkModule extends AbstractModule implements OutgoingPacketListene
 
     private final BooleanValue delayIncoming = new BooleanValue(this, "Delay Incoming", "Delays incoming packets too.", false);
 
-    private final ConcurrentLinkedQueue<Packet<?>> inPackets = new ConcurrentLinkedQueue<>();
-    private final ConcurrentLinkedQueue<Packet<?>> outPackets = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<BlinkPacket> packets = new ConcurrentLinkedQueue<>();
 
     public BlinkModule() {
         super("Blink", "Makes you look like teleporting to other players.", Category.MOVEMENT);
@@ -56,25 +55,30 @@ public class BlinkModule extends AbstractModule implements OutgoingPacketListene
             return;
         }
         event.setCancelled(true);
-        inPackets.add(event.packet);
+        packets.add(new BlinkPacket(event.packet, BlinkPacket.Direction.INCOMING));
     }
 
     @Override
     public void onOutgoingPacket(OutgoingPacketEvent event) {
         event.setCancelled(true);
-        outPackets.add(event.packet);
+        packets.add(new BlinkPacket(event.packet, BlinkPacket.Direction.OUTGOING));
     }
 
     private void sendPackets() {
-        while (!inPackets.isEmpty() && delayIncoming.getValue()) {
-            PacketUtil.receivePacket(inPackets.poll());
+        while (!packets.isEmpty()) {
+            BlinkPacket packet = packets.poll();
+            if (packet.direction == BlinkPacket.Direction.INCOMING && delayIncoming.getValue()) {
+                PacketUtil.receivePacket(packet.packet);
+            } else if (packet.direction == BlinkPacket.Direction.OUTGOING) {
+                PacketUtil.sendImmediately(packet.packet, null, true);
+            }
         }
+    }
 
-        while (!outPackets.isEmpty()) {
-            PacketUtil.sendImmediately(outPackets.poll(), null, true);
+    private record BlinkPacket(Packet<?> packet, BlinkModule.BlinkPacket.Direction direction) {
+        private enum Direction {
+            INCOMING,
+            OUTGOING
         }
-
-        inPackets.clear();
-        outPackets.clear();
     }
 }
