@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.feature.command.impl.misc;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
-import de.nekosarekawaii.vandalism.feature.command.arguments.KeyNameArgumentType;
+import de.nekosarekawaii.vandalism.feature.command.arguments.KeyBindArgumentType;
 import de.nekosarekawaii.vandalism.feature.command.arguments.ScriptArgumentType;
 import de.nekosarekawaii.vandalism.feature.script.Script;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
@@ -46,11 +46,11 @@ public class ScriptCommand extends AbstractCommand {
             ChatUtil.infoChatMessage("Loaded " + Vandalism.getInstance().getScriptManager().getList().size() + " scripts.");
             return SINGLE_SUCCESS;
         }));
-        builder.then(literal("bind").then(argument("script", ScriptArgumentType.create()).then(argument("key-name", KeyNameArgumentType.create()).executes(context -> {
+        builder.then(literal("bind").then(argument("script", ScriptArgumentType.create()).then(argument("key-bind", KeyBindArgumentType.create()).executes(context -> {
             final Script script = ScriptArgumentType.get(context);
-            final int keyCode = KeyNameArgumentType.get(context);
-            script.getKeyBind().setValue(keyCode);
-            ChatUtil.infoChatMessage("Bound script " + script.getName() + " to key " + InputType.getKeyName(keyCode) + ".");
+            final int code = KeyBindArgumentType.get(context);
+            script.getKeyBind().setValue(code);
+            ChatUtil.infoChatMessage("Bound script " + script.getName() + " to " + InputType.getName(code) + ".");
             return SINGLE_SUCCESS;
         }))));
     }

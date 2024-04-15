@@ -24,6 +24,7 @@ import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.clientwindow.ClientWindowManager;
 import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
+import de.nekosarekawaii.vandalism.event.normal.game.MouseInputListener;
 import de.nekosarekawaii.vandalism.event.normal.game.ShutdownProcessListener;
 import de.nekosarekawaii.vandalism.event.normal.network.DisconnectListener;
 import de.nekosarekawaii.vandalism.event.normal.network.WorldListener;
@@ -58,9 +59,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class ModuleManager extends NamedStorage<AbstractModule> implements
-        KeyboardInputListener, ShutdownProcessListener,
+        KeyboardInputListener, MouseInputListener, ShutdownProcessListener,
         DisconnectListener, MinecraftWrapper,
-        WorldListener, PlayerUpdateListener, HealthUpdateListener {
+        WorldListener, PlayerUpdateListener, HealthUpdateListener
+{
 
     private final ConfigManager configManager;
 
@@ -83,9 +85,9 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
         clientWindowManager.add(new ModulesClientWindow());
         eventSystem.subscribe(
                 this,
-                KeyboardInputEvent.ID, ShutdownProcessEvent.ID,
-                DisconnectEvent.ID, WorldLoadEvent.ID,
-                PlayerUpdateEvent.ID,
+                KeyboardInputEvent.ID, MouseEvent.ID,
+                ShutdownProcessEvent.ID, DisconnectEvent.ID,
+                WorldLoadEvent.ID, PlayerUpdateEvent.ID,
                 HealthUpdateEvent.ID
         );
     }
@@ -180,9 +182,20 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
     @Override
     public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        if (action == GLFW.GLFW_PRESS || key != GLFW.GLFW_KEY_UNKNOWN) {
-            this.getList().stream().filter(m -> m.getKeyBind().isPressed(key)).forEach(AbstractModule::toggle);
+        this.handleInput(action, key);
+    }
+
+    @Override
+    public void onMouseButton(final int button, final int action, final int mods) {
+        this.handleInput(action, button);
+    }
+
+    private void handleInput(final int action, final int code) {
+        // Cancel if the key is unknown to prevent the script from being executed multiple times.
+        if (action != GLFW.GLFW_PRESS || code == GLFW.GLFW_KEY_UNKNOWN) {
+            return;
         }
+        this.getList().stream().filter(m -> m.getKeyBind().isPressed(code)).forEach(AbstractModule::toggle);
     }
 
     @Override

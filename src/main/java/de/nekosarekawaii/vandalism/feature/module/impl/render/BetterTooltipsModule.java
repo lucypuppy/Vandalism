@@ -208,7 +208,7 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
                 if (!itemStacks.isEmpty()) {
                     tooltipData.add(new TextTooltipComponent(
                             Text.literal(
-                                    "(Press " + InputType.getKeyName(this.openContainerKey.getValue()) + " to open this inventory)"
+                                    "(Press " + InputType.getName(this.openContainerKey.getValue()) + " to open this inventory)"
                             ).setStyle(Style.EMPTY.withFormatting(Formatting.GRAY)).asOrderedText()
                     ));
                     tooltipData.add(new ContainerTooltipComponent(itemStacks, color));
