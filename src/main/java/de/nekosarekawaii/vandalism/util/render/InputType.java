@@ -51,7 +51,8 @@ public class InputType {
                 FIELD_NAMES.put(getName(buttonCode), buttonCode);
             }
         });
-        FIELD_NAMES.put("NONE", GLFW.GLFW_KEY_UNKNOWN);
+        FIELD_NAMES.put("None", GLFW.GLFW_KEY_UNKNOWN);
+        FIELD_NAMES.put("Unknown", GLFW.GLFW_KEY_UNKNOWN);
     }
 
     public static String getName(int code) {
