@@ -35,7 +35,7 @@ public class StrafeModule extends AbstractModule implements PlayerUpdateListener
 
     private final BooleanValue autoJump = new BooleanValue(
             this,
-            "Auto jump",
+            "Auto Jump",
             "Jumps automatically if on ground.",
             false
     );

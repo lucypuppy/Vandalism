@@ -32,8 +32,12 @@ public class CollisionModuleMode extends ModuleMulti<FlightModule> implements Bl
 
     private int startPos;
 
-    private final BooleanValue autoJump = new BooleanValue(this, "AutoJump",
-            "Automatically jumps to bypass dumb checks.", true);
+    private final BooleanValue autoJump = new BooleanValue(
+            this,
+            "Auto Jump",
+            "Automatically jumps to bypass dumb checks.",
+            true
+    );
 
     public CollisionModuleMode() {
         super("Collision");
