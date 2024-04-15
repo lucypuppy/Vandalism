@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryValue;
+import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryBlacklistValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
@@ -29,6 +29,7 @@ import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
 import net.minecraft.registry.Registries;
@@ -38,14 +39,20 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.Arrays;
+
 public class BlockBreakerModule extends AbstractModule implements PlayerUpdateListener, IncomingPacketListener {
 
-    private final MultiRegistryValue<Block> affectedBlocks = new MultiRegistryValue<>(
+    private final MultiRegistryBlacklistValue<Block> affectedBlocks = new MultiRegistryBlacklistValue<>(
             this,
             "Blocks",
             "Change the blocks that are affected by this module.",
             Registries.BLOCK,
-            Registries.BLOCK.stream().toArray(Block[]::new)
+            Arrays.asList(
+                    Blocks.AIR,
+                    Blocks.CAVE_AIR,
+                    Blocks.VOID_AIR
+            )
     );
 
     private final IntegerValue scanRange = new IntegerValue(
@@ -174,7 +181,6 @@ public class BlockBreakerModule extends AbstractModule implements PlayerUpdateLi
             final BlockState state = blockUpdateS2CPacket.getState();
 
             if (pos.equals(this.validPos) && this.affectedBlocks.isSelected(state.getBlock())) {
-                toggle();
 
                 ChatUtil.infoChatMessage("Failed to break block, block is protected.");
                 this.checkBlockStatus = false;
