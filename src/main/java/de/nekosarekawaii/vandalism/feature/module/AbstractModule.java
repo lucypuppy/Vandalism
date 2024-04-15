@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.clientsettings.impl.MenuSettings;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
@@ -28,6 +29,7 @@ import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.normal.internal.ModuleToggleListener;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
+import de.nekosarekawaii.vandalism.integration.sound.SoundManager;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -65,13 +67,20 @@ public abstract class AbstractModule extends Feature implements ValueParent {
             } else {
                 this.onDeactivate();
             }
-            if (Vandalism.getInstance().getClientSettings().getMenuSettings().moduleStateLogging.getValue() && this.mc.player != null) {
-                final MutableText text = Text.literal(Formatting.DARK_AQUA + this.getName() + Formatting.GRAY + " has been ");
-                final MutableText state = newValue ? Text.literal("activated") : Text.literal("deactivated");
-                state.withColor(newValue ? Color.GREEN.getRGB() : Color.RED.getRGB());
-                text.append(state);
-                text.append(".");
-                ChatUtil.chatMessage(text, true, true);
+            final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
+            if (this.mc.player != null) {
+                if (menuSettings.moduleStateLogging.getValue()) {
+                    final MutableText text = Text.literal(Formatting.DARK_AQUA + this.getName() + Formatting.GRAY + " has been ");
+                    final MutableText state = newValue ? Text.literal("activated") : Text.literal("deactivated");
+                    state.withColor(newValue ? Color.GREEN.getRGB() : Color.RED.getRGB());
+                    text.append(state);
+                    text.append(".");
+                    ChatUtil.chatMessage(text, true, true);
+                }
+                if (menuSettings.moduleStateSound.getValue()) {
+                    if (newValue) SoundManager.playModuleActivate();
+                    else SoundManager.playModuleDeactivate();
+                }
             }
             this.recursiveUpdateActiveState(newValue, this.values);
         }

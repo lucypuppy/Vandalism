@@ -49,6 +49,13 @@ public class MenuSettings extends ValueGroup {
             true
     );
 
+    public final BooleanValue moduleStateSound = new BooleanValue(
+            this,
+            "Module State Sound",
+            "Activates/Deactivates the sound for the module state.",
+            true
+    );
+
     public final BooleanValue scriptExecutionLogging = new BooleanValue(
             this,
             "Script Execution Logging",

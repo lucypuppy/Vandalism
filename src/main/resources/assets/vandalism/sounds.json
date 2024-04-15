@@ -1,0 +1,12 @@
+{
+  "module_activate": {
+    "sounds": [
+      "vandalism:module_activate"
+    ]
+  },
+  "module_deactivate": {
+    "sounds": [
+      "vandalism:module_deactivate"
+    ]
+  }
+}

@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.base;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.normal.game.MinecraftBoostrapListener;
 import de.nekosarekawaii.vandalism.event.normal.game.ShutdownProcessListener;
+import de.nekosarekawaii.vandalism.integration.sound.SoundManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.Person;
@@ -48,6 +49,7 @@ public class FabricBootstrap implements ClientModInitializer {
                 MinecraftBoostrapListener.MinecraftBootstrapEvent.ID,
                 ShutdownProcessListener.ShutdownProcessEvent.ID
         );
+        SoundManager.register();
     }
 
 }
