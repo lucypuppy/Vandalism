@@ -27,10 +27,13 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.math.Vec2f;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
+import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Screen.class)
@@ -46,8 +49,14 @@ public abstract class MixinScreen {
     @Nullable
     protected MinecraftClient client;
 
-    @Shadow
-    public abstract void renderBackgroundTexture(DrawContext context);
+    @ModifyConstant(method = "keyPressed", constant = @Constant(intValue = GLFW.GLFW_KEY_ESCAPE))
+    private int modifyEscapeKey(int constant) {
+        final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
+        if (menuSettings.changeScreenCloseButton.getValue()) {
+            constant = menuSettings.changeScreenCloseButtonKey.getValue();
+        }
+        return constant;
+    }
 
     @Inject(method = "renderBackgroundTexture", at = @At("HEAD"), cancellable = true)
     private void drawCustomBackgroundInGui(final DrawContext context, final CallbackInfo ci) {
