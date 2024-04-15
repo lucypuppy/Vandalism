@@ -34,14 +34,14 @@ import java.util.regex.Pattern;
 public abstract class MixinHackListHUD {
 
     @Unique
-    private static final HashMap<String, String> vandalism_NORMAL_HACK_NAMES = new HashMap<>();
+    private static final HashMap<String, String> vandalism$NORMAL_HACK_NAMES = new HashMap<>();
 
     @Unique
-    private static final Pattern vandalism_NORMALIZE_PATTERN = Pattern.compile("([a-z])([A-Z])");
+    private static final Pattern vandalism$NORMALIZE_PATTERN = Pattern.compile("([a-z])([A-Z])");
 
     @Unique
     public String vandalism$normalizeHackName(final Hack hack) {
-        String result = vandalism_NORMALIZE_PATTERN.matcher(hack.getName()).replaceAll("$1 $2");
+        String result = vandalism$NORMALIZE_PATTERN.matcher(hack.getName()).replaceAll("$1 $2");
         result = result.substring(0, 1).toUpperCase() + result.substring(1);
         return result;
     }
@@ -49,10 +49,10 @@ public abstract class MixinHackListHUD {
     @Inject(method = "updateState", at = @At("HEAD"), cancellable = true, remap = false)
     private void redirectWurstHackListEntry(final Hack hack, final CallbackInfo ci) {
         final String name;
-        if (vandalism_NORMAL_HACK_NAMES.containsKey(hack.getName())) {
-            name = vandalism_NORMAL_HACK_NAMES.get(hack.getName());
+        if (vandalism$NORMAL_HACK_NAMES.containsKey(hack.getName())) {
+            name = vandalism$NORMAL_HACK_NAMES.get(hack.getName());
         }
-        else vandalism_NORMAL_HACK_NAMES.put(hack.getName(), name = vandalism$normalizeHackName(hack));
+        else vandalism$NORMAL_HACK_NAMES.put(hack.getName(), name = vandalism$normalizeHackName(hack));
         if (hack.isEnabled()) {
             Vandalism.getInstance().getHudManager().moduleListHUDElement.addExternalModule("Wurst", name);
         } else {

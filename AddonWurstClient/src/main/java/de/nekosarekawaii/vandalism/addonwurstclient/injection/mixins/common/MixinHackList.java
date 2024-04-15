@@ -21,16 +21,21 @@ package de.nekosarekawaii.vandalism.addonwurstclient.injection.mixins.common;
 import de.nekosarekawaii.vandalism.addonwurstclient.hack.WurstClientOptionsHack;
 import net.wurstclient.hack.Hack;
 import net.wurstclient.hack.HackList;
+import net.wurstclient.hacks.AutoRespawnHack;
+import net.wurstclient.hacks.AutoStealHack;
 import net.wurstclient.hacks.HealthTagsHack;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
 import java.util.TreeMap;
 
 @Mixin(value = HackList.class, remap = false)
@@ -40,6 +45,13 @@ public abstract class MixinHackList {
     @Final
     private TreeMap<String, Hack> hax;
 
+    @Unique
+    private static final List<Class<? extends Hack>> vandalism$DISABLED_HACKS = Arrays.asList(
+            HealthTagsHack.class,
+            AutoStealHack.class,
+            AutoRespawnHack.class
+    );
+
     @Inject(method = "<init>", at = @At("RETURN"))
     private void addSomeWurstHacks(final Path enabledHacksFile, final CallbackInfo ci) {
         this.hax.put("Options", new WurstClientOptionsHack());
@@ -47,7 +59,7 @@ public abstract class MixinHackList {
 
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/util/TreeMap;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"))
     private Object removeSomeWurstHacks(TreeMap instance, Object key, Object value) {
-        if (value.getClass().equals(HealthTagsHack.class)) {
+        if (vandalism$DISABLED_HACKS.contains(value.getClass())) {
             return value;
         }
         return instance.put(key, value);

@@ -37,7 +37,7 @@ import java.util.TreeMap;
 public abstract class MixinOtfList {
 
     @Unique
-    private static final List<Class<? extends OtherFeature>> vandalism_DISABLED_OTFS = Arrays.asList(
+    private static final List<Class<? extends OtherFeature>> vandalism$DISABLED_OTFS = Arrays.asList(
             HackListOtf.class,
             DisableOtf.class,
             WurstCapesOtf.class,
@@ -46,7 +46,7 @@ public abstract class MixinOtfList {
 
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/util/TreeMap;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"), remap = false)
     private Object disableSomeWurstOtherFeatures(TreeMap instance, Object key, Object value) {
-        if (vandalism_DISABLED_OTFS.contains(value.getClass())) {
+        if (vandalism$DISABLED_OTFS.contains(value.getClass())) {
             return value;
         }
         return instance.put(key, value);
