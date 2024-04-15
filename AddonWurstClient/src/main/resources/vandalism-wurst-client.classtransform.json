@@ -4,6 +4,7 @@
   ],
   "mixins": [
     "TransformerClientPlayNetworkHandlerMixin",
-    "TransformerMinecraftClientMixin"
+    "TransformerMinecraftClientMixin",
+    "TranformerDeathScreenMixin"
   ]
 }
