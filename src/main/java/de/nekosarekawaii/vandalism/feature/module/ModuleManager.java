@@ -79,6 +79,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     private VehicleControlModule vehicleControlModule;
     private ConsoleSpammerModule consoleSpammerModule;
     private FastBreakModule fastBreakModule;
+    private ZoomModule zoomModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientWindowManager clientWindowManager) {
         this.configManager = configManager;
@@ -112,6 +113,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.trueSightModule = new TrueSightModule(),
                 this.espModule = new ESPModule(),
                 this.fullBrightModule = new FullBrightModule(),
+                this.zoomModule = new ZoomModule(),
 
                 // combat
                 new AutoClickerModule(),
@@ -275,4 +277,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
         return fastBreakModule;
     }
 
+    public ZoomModule getZoomModule() {
+        return zoomModule;
+    }
 }
