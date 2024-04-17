@@ -20,11 +20,14 @@ package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.normal.game.MouseInputListener;
+import de.nekosarekawaii.vandalism.event.normal.game.SmoothCameraRotationsListener;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.minecraft.client.Mouse;
+import net.minecraft.client.option.GameOptions;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Mouse.class)
@@ -51,4 +54,11 @@ public abstract class MixinMouse implements MinecraftWrapper {
         }
     }
 
+    @Redirect(method = "updateMouse", at = @At(value = "FIELD", target = "Lnet/minecraft/client/option/GameOptions;smoothCameraEnabled:Z"))
+    private boolean onTurnPlayerSmoothCamera(GameOptions instance) {
+        final SmoothCameraRotationsListener.SmoothCameraRotationsEvent event = new SmoothCameraRotationsListener.SmoothCameraRotationsEvent();
+        event.smoothCamera = instance.smoothCameraEnabled;
+        Vandalism.getInstance().getEventSystem().postInternal(SmoothCameraRotationsListener.SmoothCameraRotationsEvent.ID, event);
+        return event.smoothCamera;
+    }
 }
