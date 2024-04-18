@@ -28,11 +28,11 @@ import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 
 import java.util.Random;
 
-public class VulcanNofallModule extends ModuleMulti<NoFallModule> implements PlayerUpdateListener, OutgoingPacketListener {
+public class VulcanModuleMode extends ModuleMulti<NoFallModule> implements PlayerUpdateListener, OutgoingPacketListener {
 
     private int ticks;
 
-    public VulcanNofallModule() {
+    public VulcanModuleMode() {
         super("Vulcan");
     }
 
