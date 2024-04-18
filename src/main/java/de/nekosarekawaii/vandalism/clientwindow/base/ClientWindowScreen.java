@@ -84,6 +84,9 @@ public class ClientWindowScreen extends Screen {
                             ImGui.endMenu();
                         }
                     }
+                    if (ImGui.button("Close")) {
+                        this.close();
+                    }
                     ImGui.endMainMenuBar();
                 }
                 for (final ClientWindow window : this.clientWindowManager.getList()) {

@@ -93,6 +93,7 @@
     "module.MixinCreativeInventoryActionC2SPacket",
     "module.MixinEntityRenderer",
     "module.MixinFeatureRenderer",
+    "module.MixinGameRenderer",
     "module.MixinIllusionerEntityRenderer",
     "module.MixinInGameHud",
     "module.MixinLightmapTextureManager",
