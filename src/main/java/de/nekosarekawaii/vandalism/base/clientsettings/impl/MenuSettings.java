@@ -280,6 +280,21 @@ public class MenuSettings extends ValueGroup {
             false
     );
 
+    public final BooleanValue changeScreenCloseButton = new BooleanValue(
+            this,
+            "Change Screen Close Button",
+            "Changes the close button for gui screens.",
+            false
+    );
+
+    public final KeyBindValue changeScreenCloseButtonKey = new KeyBindValue(
+            this,
+            "Change Screen Close Button Key",
+            "Change the key to close the gui screens.",
+            GLFW.GLFW_KEY_ESCAPE,
+            false
+    ).visibleCondition(this.changeScreenCloseButton::getValue);
+
     public MenuSettings(final ClientSettings parent) {
         super(parent, "Menu", "Menu related settings.");
     }

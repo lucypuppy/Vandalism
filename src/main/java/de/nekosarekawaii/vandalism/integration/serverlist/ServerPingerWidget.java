@@ -54,7 +54,7 @@ import java.util.List;
 
 public class ServerPingerWidget implements MinecraftWrapper {
 
-    private static final String Base64_START = "data:image/png;base64,";
+    private static final String BASE64_START = "data:image/png;base64,";
 
     private static final MSTimer PING_TIMER = new MSTimer();
 
@@ -134,71 +134,79 @@ public class ServerPingerWidget implements MinecraftWrapper {
             currentServerInfo.setFavicon(null);
             setServerInfo(currentServerInfo);
             final int serverPingerWidgetDelay = enhancedServerListSettings.serverPingerWidgetDelay.getValue();
-            MCPing.pingModern(SharedConstants.getProtocolVersion())
-                    .address(currentServerInfo.address)
-                    .timeout(serverPingerWidgetDelay, serverPingerWidgetDelay)
-                    .exceptionHandler(t -> {
-                        currentServerInfo.ping = -1L;
-                        if (t instanceof UnknownHostException) {
-                            currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.UNKNOWN_HOST.getMessage());
-                        } else if (t instanceof ConnectionRefusedException) {
-                            currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.CONNECTION_REFUSED.getMessage());
-                        } else if (t instanceof ConnectTimeoutException) {
-                            currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.CONNECTION_TIMED_OUT.getMessage());
-                        } else if (t instanceof DataReadException) {
-                            currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.DATA_READ_FAILED.getMessage());
-                        } else if (t instanceof PacketReadException) {
-                            currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.PACKET_READ_FAILED.getMessage());
-                        } else {
-                            currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.FAILED.getMessage());
-                            Vandalism.getInstance().getLogger().error("Failed to ping server: " + currentServerInfo.address, t);
-                        }
-                        setServerInfo(currentServerInfo);
-                    })
-                    .finishHandler(response -> {
-                        currentServerInfo.version = Text.literal(response.version.name);
-                        currentServerInfo.ping = response.server.ping;
-                        final String descriptionString = response.description;
-                        try {
-                            final MutableText description = Text.Serialization.fromJson(descriptionString);
-                            if (description != null) {
-                                currentServerInfo.label = description;
-                            }
-                        } catch (JsonSyntaxException ignored) {
-                            currentServerInfo.label = Text.literal(descriptionString);
-                        }
-                        final String base64FaviconString = response.favicon;
-                        if (base64FaviconString != null) {
-                            if (!base64FaviconString.startsWith(Base64_START)) {
-                                Vandalism.getInstance().getLogger().error("Server " + currentServerInfo.address + " has responded with an unknown base64 server icon format.");
+            try {
+                MCPing.pingModern(SharedConstants.getProtocolVersion())
+                        .address(currentServerInfo.address)
+                        .timeout(serverPingerWidgetDelay, serverPingerWidgetDelay)
+                        .exceptionHandler(t -> {
+                            currentServerInfo.ping = -1L;
+                            if (t instanceof UnknownHostException) {
+                                currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.UNKNOWN_HOST.getMessage());
+                            } else if (t instanceof ConnectionRefusedException) {
+                                currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.CONNECTION_REFUSED.getMessage());
+                            } else if (t instanceof ConnectTimeoutException) {
+                                currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.CONNECTION_TIMED_OUT.getMessage());
+                            } else if (t instanceof DataReadException) {
+                                currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.DATA_READ_FAILED.getMessage());
+                            } else if (t instanceof PacketReadException) {
+                                currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.PACKET_READ_FAILED.getMessage());
                             } else {
-                                try {
-                                    final String faviconString = base64FaviconString.substring(Base64_START.length()).replaceAll("\n", "");
-                                    final byte[] faviconBytes = Base64.getDecoder().decode(faviconString.getBytes(StandardCharsets.UTF_8));
-                                    currentServerInfo.setFavicon(faviconBytes.length < 1 ? null : faviconBytes);
-                                } catch (IllegalArgumentException e) {
-                                    Vandalism.getInstance().getLogger().error("Server " + currentServerInfo.address + " has responded with an malformed base64 server icon.", e);
+                                currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.FAILED.getMessage());
+                                Vandalism.getInstance().getLogger().error("Failed to ping server: " + currentServerInfo.address, t);
+                            }
+                            setServerInfo(currentServerInfo);
+                        })
+                        .finishHandler(response -> {
+                            currentServerInfo.version = Text.literal(response.version.name);
+                            currentServerInfo.ping = response.server.ping;
+                            final String descriptionString = response.description;
+                            try {
+                                final MutableText description = Text.Serialization.fromJson(descriptionString);
+                                if (description != null) {
+                                    currentServerInfo.label = description;
+                                }
+                            } catch (JsonSyntaxException ignored) {
+                                currentServerInfo.label = Text.literal(descriptionString);
+                            }
+                            final String base64FaviconString = response.favicon;
+                            if (base64FaviconString != null) {
+                                if (!base64FaviconString.startsWith(BASE64_START)) {
+                                    Vandalism.getInstance().getLogger().error("Server " + currentServerInfo.address + " has responded with an unknown base64 server icon format.");
+                                } else {
+                                    try {
+                                        final String faviconString = base64FaviconString.substring(BASE64_START.length()).replaceAll("\n", "");
+                                        final byte[] faviconBytes = Base64.getDecoder().decode(faviconString.getBytes(StandardCharsets.UTF_8));
+                                        currentServerInfo.setFavicon(faviconBytes.length < 1 ? null : faviconBytes);
+                                    } catch (IllegalArgumentException e) {
+                                        Vandalism.getInstance().getLogger().error("Server " + currentServerInfo.address + " has responded with an malformed base64 server icon.", e);
+                                    }
                                 }
                             }
-                        }
-                        final int playersOnline = response.players.online;
-                        final int maxPlayers = response.players.max;
-                        currentServerInfo.playerCountLabel = MultiplayerServerListPinger.createPlayerCountText(playersOnline, maxPlayers);
-                        final MCPingResponse.Players.Player[] players = response.players.sample;
-                        if (players.length > 0) {
-                            final List<Text> list = new ArrayList<>(players.length);
-                            for (final MCPingResponse.Players.Player player : response.players.sample) {
-                                list.add(Text.literal(player.name));
+                            final int playersOnline = response.players.online;
+                            final int maxPlayers = response.players.max;
+                            currentServerInfo.playerCountLabel = MultiplayerServerListPinger.createPlayerCountText(playersOnline, maxPlayers);
+                            final MCPingResponse.Players.Player[] players = response.players.sample;
+                            if (players.length > 0) {
+                                final List<Text> list = new ArrayList<>(players.length);
+                                for (final MCPingResponse.Players.Player player : response.players.sample) {
+                                    list.add(Text.literal(player.name));
+                                }
+                                if (players.length < playersOnline) {
+                                    list.add(Text.translatable("multiplayer.status.and_more", playersOnline - players.length));
+                                }
+                                currentServerInfo.playerListSummary = list;
+                            } else {
+                                currentServerInfo.playerListSummary = List.of();
                             }
-                            if (players.length < playersOnline) {
-                                list.add(Text.translatable("multiplayer.status.and_more", playersOnline - players.length));
-                            }
-                            currentServerInfo.playerListSummary = list;
-                        } else {
-                            currentServerInfo.playerListSummary = List.of();
-                        }
-                        setServerInfo(currentServerInfo);
-                    }).getAsync();
+                            setServerInfo(currentServerInfo);
+                        }).getAsync();
+            }
+            catch (Throwable t) {
+                currentServerInfo.ping = -1L;
+                currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.FAILED.getMessage());
+                setServerInfo(currentServerInfo);
+                Vandalism.getInstance().getLogger().error("Failed to ping server: " + currentServerInfo.address, t);
+            }
             PING_TIMER.reset();
             IN_USE = false;
         }
