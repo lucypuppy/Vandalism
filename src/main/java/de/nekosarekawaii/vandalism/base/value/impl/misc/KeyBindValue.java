@@ -145,4 +145,7 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
         return super.getValue();
     }
 
+    public boolean isOnlyInGame() {
+        return onlyInGame;
+    }
 }

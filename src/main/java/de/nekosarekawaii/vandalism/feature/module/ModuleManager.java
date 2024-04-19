@@ -61,8 +61,7 @@ import java.util.Objects;
 public class ModuleManager extends NamedStorage<AbstractModule> implements
         KeyboardInputListener, MouseInputListener, ShutdownProcessListener,
         DisconnectListener, MinecraftWrapper,
-        WorldListener, PlayerUpdateListener, HealthUpdateListener
-{
+        WorldListener, PlayerUpdateListener, HealthUpdateListener {
 
     private final ConfigManager configManager;
 
@@ -178,7 +177,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new CameraNoClipModule(),
                 new DeutschMacherModule(),
                 new ProtectorModule()
-                );
+        );
         this.configManager.add(new ModulesConfig(this));
     }
 
@@ -194,10 +193,20 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
     private void handleInput(final int action, final int code) {
         // Cancel if the key is unknown to prevent the script from being executed multiple times.
-        if (action != GLFW.GLFW_PRESS || code == GLFW.GLFW_KEY_UNKNOWN) {
+        if (action == GLFW.GLFW_REPEAT || code == GLFW.GLFW_KEY_UNKNOWN) {
             return;
         }
-        this.getList().stream().filter(m -> m.getKeyBind().isPressed(code)).forEach(AbstractModule::toggle);
+
+        for (final AbstractModule module : this.getList()) {
+            if (module.getKeyBind().getValue() != code || (module.getKeyBind().isOnlyInGame() && (mc.player == null || mc.currentScreen != null)))
+                continue;
+
+            if (action == GLFW.GLFW_PRESS) {
+                module.toggle();
+            } else if (action == GLFW.GLFW_RELEASE && module.isDeactivateOnRelease()) {
+                module.deactivate();
+            }
+        }
     }
 
     @Override

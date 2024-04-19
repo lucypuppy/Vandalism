@@ -152,6 +152,13 @@ public abstract class AbstractModule extends Feature implements ValueParent {
             false
     );
 
+    private final BooleanValue deactivateOnRelease = new BooleanValue(
+            this.deactivationSettings,
+            "Deactivate on Release",
+            "Whether this module should be deactivated on key release.",
+            false
+    );
+
     private final SeparatorValue settingsSeparator = new SeparatorValue(
             this,
             "Settings",
@@ -193,6 +200,10 @@ public abstract class AbstractModule extends Feature implements ValueParent {
 
     public void deactivateOnDeathDefault() {
         this.deactivateOnDeath.setValue(true);
+    }
+
+    public void deactivateOnReleaseDefault() {
+        this.deactivateOnRelease.setValue(true);
     }
 
     public void onActivate() {
@@ -248,6 +259,10 @@ public abstract class AbstractModule extends Feature implements ValueParent {
 
     public boolean isDeactivateOnDeath() {
         return this.deactivateOnDeath.getValue();
+    }
+
+    public boolean isDeactivateOnRelease() {
+        return this.deactivateOnRelease.getValue();
     }
 
     private void recursiveUpdateActiveState(final boolean active, final List<Value<?>> values) {
