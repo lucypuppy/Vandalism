@@ -198,12 +198,9 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
         }
 
         for (final AbstractModule module : this.getList()) {
-            if (module.getKeyBind().getValue() != code || (module.getKeyBind().isOnlyInGame() && (mc.player == null || mc.currentScreen != null)))
-                continue;
-
-            if (action == GLFW.GLFW_PRESS) {
+            if (action == GLFW.GLFW_PRESS && module.getKeyBind().isPressed(code)) {
                 module.toggle();
-            } else if (action == GLFW.GLFW_RELEASE && module.isDeactivateOnRelease()) {
+            } else if (action == GLFW.GLFW_RELEASE && module.isDeactivateOnRelease() && module.getKeyBind().isReleased(code)) {
                 module.deactivate();
             }
         }
