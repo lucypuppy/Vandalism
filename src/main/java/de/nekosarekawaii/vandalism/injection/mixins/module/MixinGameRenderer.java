@@ -30,9 +30,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinGameRenderer {
 
     @Inject(method = "getFov", at = @At("RETURN"), cancellable = true)
-    private void onGetFov(Camera camera, float tickDelta, boolean changingFov, CallbackInfoReturnable<Double> cir) {
+    private void hookZoom(final Camera camera, final float tickDelta, final boolean changingFov, final CallbackInfoReturnable<Double> cir) {
         double fov = cir.getReturnValueD();
         fov = Vandalism.getInstance().getModuleManager().getZoomModule().getFov(fov);
         cir.setReturnValue(fov);
     }
+
 }
