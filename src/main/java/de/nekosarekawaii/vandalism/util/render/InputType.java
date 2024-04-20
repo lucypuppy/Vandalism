@@ -65,15 +65,24 @@ public class InputType {
         return InputUtil.Type.KEYSYM.createFromCode(code).getLocalizedText().getString();
     }
 
-    public static boolean isPressed(final int code) {
+    public static boolean isAction(final int code, final int action) {
         if (code == GLFW.GLFW_KEY_UNKNOWN || DENIED_BUTTONS.contains(code)) {
             return false;
         }
+
         if (BUTTONS.contains(code)) {
-            return GLFW.glfwGetMouseButton(MinecraftClient.getInstance().getWindow().getHandle(), code) == GLFW.GLFW_PRESS;
+            return GLFW.glfwGetMouseButton(MinecraftClient.getInstance().getWindow().getHandle(), code) == action;
         } else {
-            return GLFW.glfwGetKey(MinecraftClient.getInstance().getWindow().getHandle(), code) == GLFW.GLFW_PRESS;
+            return GLFW.glfwGetKey(MinecraftClient.getInstance().getWindow().getHandle(), code) == action;
         }
+    }
+
+    public static boolean isPressed(final int code) {
+        return isAction(code, GLFW.GLFW_PRESS);
+    }
+
+    public static boolean isReleased(final int code) {
+        return isAction(code, GLFW.GLFW_RELEASE);
     }
 
 }

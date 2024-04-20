@@ -18,12 +18,9 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.fix.minecraft;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
 import net.minecraft.client.gui.widget.ContainerWidget;
 import net.minecraft.client.gui.widget.EntryListWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -38,24 +35,11 @@ import java.util.List;
 @Mixin(EntryListWidget.class)
 public abstract class MixinEntryListWidget<E extends EntryListWidget.Entry<E>> extends ContainerWidget {
 
-    // ignored
     public MixinEntryListWidget(int i, int j, int k, int l, Text text) {
         super(i, j, k, l, text);
     }
 
     @Shadow @Final private List<?> children;
-
-    @Shadow
-    private boolean renderBackground;
-
-    @Shadow
-    public abstract double getScrollAmount();
-
-    @Shadow
-    public abstract int getRowLeft();
-
-    @Shadow
-    public abstract int getRowRight();
 
     @Inject(method = "renderEntry", at = @At("HEAD"), cancellable = true)
     private void fixIOOBE(final DrawContext context, final int mouseX, final int mouseY, final float delta, final int index, final int x, final int y, final int entryWidth, final int entryHeight, final CallbackInfo ci) {
@@ -69,24 +53,8 @@ public abstract class MixinEntryListWidget<E extends EntryListWidget.Entry<E>> e
             method = "renderWidget",
             at = @At(value = "FIELD",
                     target = "Lnet/minecraft/client/gui/widget/EntryListWidget;renderBackground:Z"))
-    public boolean renderWidgetBackground(EntryListWidget<?> instance) {
+    public boolean renderWidgetBackground(final EntryListWidget<?> instance) {
         return false;
     }
 
-    @Inject(method = "renderWidget",
-            at = @At(value = "FIELD",
-                    target = "Lnet/minecraft/client/gui/widget/EntryListWidget;renderBackground:Z",
-                    shift = At.Shift.AFTER,
-                    ordinal = 0))
-    public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        if (this.renderBackground) {
-            context.fill(
-                    getRowLeft() - 5,
-                    this.getY(),
-                    getRowRight() + 1,
-                    this.getBottom(),
-                    0x50000000
-            );
-        }
-    }
 }

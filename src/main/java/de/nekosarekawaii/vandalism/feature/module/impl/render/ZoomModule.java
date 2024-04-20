@@ -29,6 +29,7 @@ public class ZoomModule extends AbstractModule implements MouseInputListener, Sm
 
     public ZoomModule() {
         super("Zoom", "Allows you to zoom in.", Category.RENDER);
+        deactivateOnReleaseDefault();
     }
 
     @Override

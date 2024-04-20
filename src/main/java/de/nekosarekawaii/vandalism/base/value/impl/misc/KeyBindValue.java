@@ -124,9 +124,24 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
         return InputType.isPressed(this.getValue());
     }
 
+    public boolean isReleased() {
+        final MinecraftClient mc = MinecraftClient.getInstance();
+        if (this.onlyInGame && (mc.player == null || mc.currentScreen != null)){
+            return false;
+        }
+        return InputType.isReleased(this.getValue());
+    }
+
     public boolean isPressed(final int keyCode) {
         if (keyCode == this.getValue()) {
             return this.isPressed();
+        }
+        return false;
+    }
+
+    public boolean isReleased(final int keyCode) {
+        if (keyCode == this.getValue()) {
+            return this.isReleased();
         }
         return false;
     }

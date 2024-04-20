@@ -55,10 +55,11 @@ public abstract class MixinMouse implements MinecraftWrapper {
     }
 
     @Redirect(method = "updateMouse", at = @At(value = "FIELD", target = "Lnet/minecraft/client/option/GameOptions;smoothCameraEnabled:Z"))
-    private boolean onTurnPlayerSmoothCamera(GameOptions instance) {
+    private boolean callSmoothCameraRotationsEvent(final GameOptions instance) {
         final SmoothCameraRotationsListener.SmoothCameraRotationsEvent event = new SmoothCameraRotationsListener.SmoothCameraRotationsEvent();
         event.smoothCamera = instance.smoothCameraEnabled;
         Vandalism.getInstance().getEventSystem().postInternal(SmoothCameraRotationsListener.SmoothCameraRotationsEvent.ID, event);
         return event.smoothCamera;
     }
+
 }

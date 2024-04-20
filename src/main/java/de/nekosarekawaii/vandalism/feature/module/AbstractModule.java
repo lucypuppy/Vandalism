@@ -54,37 +54,7 @@ public abstract class AbstractModule extends Feature implements ValueParent {
             "Active",
             "Whether this module is active.",
             false
-    ).onValueChange((oldValue, newValue) -> {
-        final ModuleToggleListener.ModuleToggleEvent event = new ModuleToggleListener.ModuleToggleEvent(this, newValue);
-        Vandalism.getInstance().getEventSystem().postInternal(ModuleToggleListener.ModuleToggleEvent.ID, event);
-        // Allows the event to change the active state of the module
-        // It's important that people don't use the setActive method from the module itself in the event
-        // because that would cause an infinite loop
-        newValue = event.active;
-        if (oldValue != newValue) {
-            if (newValue) {
-                this.onActivate();
-            } else {
-                this.onDeactivate();
-            }
-            final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
-            if (this.mc.player != null) {
-                if (menuSettings.moduleStateLogging.getValue()) {
-                    final MutableText text = Text.literal(Formatting.DARK_AQUA + this.getName() + Formatting.GRAY + " has been ");
-                    final MutableText state = newValue ? Text.literal("activated") : Text.literal("deactivated");
-                    state.withColor(newValue ? Color.GREEN.getRGB() : Color.RED.getRGB());
-                    text.append(state);
-                    text.append(".");
-                    ChatUtil.chatMessage(text, true, true);
-                }
-                if (menuSettings.moduleStateSound.getValue()) {
-                    if (newValue) SoundManager.playModuleActivate();
-                    else SoundManager.playModuleDeactivate();
-                }
-            }
-            this.recursiveUpdateActiveState(newValue, this.values);
-        }
-    });
+    );
 
     private final SeparatorValue defaultSettingsSeparator = new SeparatorValue(
             this,
@@ -111,6 +81,20 @@ public abstract class AbstractModule extends Feature implements ValueParent {
             "Whether this module should be shown in the HUD.",
             true
     );
+
+    private final BooleanValue moduleStateLogging = new BooleanValue(
+            this.defaultSettings,
+            "Module State Logging",
+            "Activates/Deactivates the logging for the module state in this module.",
+            true
+    ).visibleCondition(() -> Vandalism.getInstance().getClientSettings().getMenuSettings().moduleStateLogging.getValue());
+
+    private final BooleanValue moduleStateSound = new BooleanValue(
+            this.defaultSettings,
+            "Module State Sound",
+            "Activates/Deactivates the sound for the module state in this module.",
+            true
+    ).visibleCondition(() -> Vandalism.getInstance().getClientSettings().getMenuSettings().moduleStateSound.getValue());
 
     private final KeyBindValue keyBind = new KeyBindValue(
             this.defaultSettings,
@@ -152,6 +136,13 @@ public abstract class AbstractModule extends Feature implements ValueParent {
             false
     );
 
+    private final BooleanValue deactivateOnRelease = new BooleanValue(
+            this.deactivationSettings,
+            "Deactivate on Release",
+            "Whether this module should be deactivated on key release.",
+            false
+    );
+
     private final SeparatorValue settingsSeparator = new SeparatorValue(
             this,
             "Settings",
@@ -166,6 +157,38 @@ public abstract class AbstractModule extends Feature implements ValueParent {
         super(name, description, category, supportedVersions);
         this.defaultValues = new ArrayList<>(this.values);
         this.defaultValues.remove(this.deactivationSettings);
+
+        this.active.onValueChange((oldValue, newValue) -> {
+            final ModuleToggleListener.ModuleToggleEvent event = new ModuleToggleListener.ModuleToggleEvent(this, newValue);
+            Vandalism.getInstance().getEventSystem().postInternal(ModuleToggleListener.ModuleToggleEvent.ID, event);
+            // Allows the event to change the active state of the module
+            // It's important that people don't use the setActive method from the module itself in the event
+            // because that would cause an infinite loop
+            newValue = event.active;
+            if (oldValue != newValue) {
+                if (newValue) {
+                    this.onActivate();
+                } else {
+                    this.onDeactivate();
+                }
+                final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
+                if (this.mc.player != null) {
+                    if (menuSettings.moduleStateLogging.getValue() && this.moduleStateLogging.getValue()) {
+                        final MutableText text = Text.literal(Formatting.DARK_AQUA + this.getName() + Formatting.GRAY + " has been ");
+                        final MutableText state = newValue ? Text.literal("activated") : Text.literal("deactivated");
+                        state.withColor(newValue ? Color.GREEN.getRGB() : Color.RED.getRGB());
+                        text.append(state);
+                        text.append(".");
+                        ChatUtil.chatMessage(text, true, true);
+                    }
+                    if (menuSettings.moduleStateSound.getValue() && this.moduleStateSound.getValue()) {
+                        if (newValue) SoundManager.playModuleActivate();
+                        else SoundManager.playModuleDeactivate();
+                    }
+                }
+                this.recursiveUpdateActiveState(newValue, this.values);
+            }
+        });
     }
 
     public void activateDefault() {
@@ -193,6 +216,10 @@ public abstract class AbstractModule extends Feature implements ValueParent {
 
     public void deactivateOnDeathDefault() {
         this.deactivateOnDeath.setValue(true);
+    }
+
+    public void deactivateOnReleaseDefault() {
+        this.deactivateOnRelease.setValue(true);
     }
 
     public void onActivate() {
@@ -248,6 +275,10 @@ public abstract class AbstractModule extends Feature implements ValueParent {
 
     public boolean isDeactivateOnDeath() {
         return this.deactivateOnDeath.getValue();
+    }
+
+    public boolean isDeactivateOnRelease() {
+        return this.deactivateOnRelease.getValue();
     }
 
     private void recursiveUpdateActiveState(final boolean active, final List<Value<?>> values) {
