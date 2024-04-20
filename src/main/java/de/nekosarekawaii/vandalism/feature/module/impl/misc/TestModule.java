@@ -18,12 +18,101 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import de.evilcodez.supermod.render.Buffers;
+import de.evilcodez.supermod.render.gl.render.*;
+import de.evilcodez.supermod.render.gl.render.passes.Passes;
+import de.evilcodez.supermod.render.shape.UVSphere;
+import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.FabricBootstrap;
+import de.nekosarekawaii.vandalism.event.normal.render.Render2DListener;
+import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3d;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 
-public class TestModule extends AbstractModule {
+import java.util.concurrent.ThreadLocalRandom;
+
+public class TestModule extends AbstractModule implements Render2DListener, Render3DListener {
 
     public TestModule() {
         super("Test", "Just for development purposes.", Category.MISC);
     }
 
+    @Override
+    public void onActivate() {
+        Vandalism.getInstance().getEventSystem().subscribe(Render2DListener.Render2DEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(Render3DListener.Render3DEvent.ID, this);
+    }
+
+    @Override
+    public void onDeactivate() {
+        Vandalism.getInstance().getEventSystem().unsubscribe(Render2DListener.Render2DEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(Render3DListener.Render3DEvent.ID, this);
+        this.mesh.close();
+        this.mesh = null;
+    }
+
+    private PersistentMesh mesh;
+
+    @Override
+    public void onRender2DInGame(DrawContext context, float delta) {
+        /*context.getMatrices().push();
+        context.getMatrices().translate(50.0f, 20.0f, 0.0f);
+        if (this.mesh == null) {
+            System.out.println("Building mesh");
+            try (final PersistentMeshProducer renderer = new PersistentMeshProducer(Buffers.getPersistentBufferPool())) {
+                final Matrix4f mat = context.getMatrices().peek().getPositionMatrix();
+                final AttribConsumerSet sphereSet = renderer.getAttribConsumers(Passes.colorTriangle());
+                final InstancedAttribConsumer consumer = sphereSet.main();
+                final IndexConsumer indices = sphereSet.indexData();
+
+                UVSphere.generateIndexed(32, 32, 250, (pos, uv, normal) -> {
+                    consumer.pos(mat, pos).putColor8(0xFF000000 | (ThreadLocalRandom.current().nextInt() & 0xFFFFFF)).next();
+                }, indices::index);
+
+                this.mesh = renderer.buildMesh();
+            }
+        } else {
+            this.mesh.draw(context.getMatrices().peek().getPositionMatrix());
+        }
+        context.getMatrices().pop();*/
+    }
+
+    @Override
+    public void onRender2DOutGamePre(DrawContext context, int mouseX, int mouseY, float delta) {
+    }
+
+    @Override
+    public void onRender2DOutGamePost(DrawContext context, int mouseX, int mouseY, float delta) {
+    }
+
+    @Override
+    public void onRender3D(float tickDelta, long limitTime, MatrixStack matrixStack) {
+        matrixStack.push();
+        matrixStack.translate(0, 120.0f, 0.0f);
+        try (final ImmediateRenderer renderer = new ImmediateRenderer(Buffers.getImmediateBufferPool())) {
+            final Vec3d camPos = mc.gameRenderer.getCamera().getPos();
+            matrixStack.translate(-camPos.x, -camPos.y, -camPos.z);
+            matrixStack.multiply(new Quaternionf().rotateX((float) Math.toRadians(-90.0)));
+            final Matrix4f mat = matrixStack.peek().getPositionMatrix();
+            final AttribConsumerSet sphereSet = renderer.getAttribConsumers(Passes.colorTextureTriangle());
+            final InstancedAttribConsumer consumer = sphereSet.main();
+            final IndexConsumer indices = sphereSet.indexData();
+
+            UVSphere.generateIndexed(64, 64, 25, (pos, uv, normal) -> {
+                consumer.pos(mat, pos).putUV(uv).putColor8(0xFF000000 | (ThreadLocalRandom.current().nextInt() & 0xFFFFFF)).next();
+            }, indices::index);
+
+            RenderSystem.bindTexture(mc.getTextureManager().getTexture(new Identifier(FabricBootstrap.MOD_ID, "textures/8k_earth_daymap.png")).getGlId());
+            RenderSystem.disableCull();
+            renderer.draw();
+            RenderSystem.enableCull();
+        }
+        matrixStack.pop();
+    }
 }

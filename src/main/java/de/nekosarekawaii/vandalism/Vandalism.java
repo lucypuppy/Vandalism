@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism;
 
+import de.evilcodez.supermod.render.Shaders;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
@@ -36,8 +37,10 @@ import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
 import de.nekosarekawaii.vandalism.integration.newrotation.RotationManager;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerListManager;
 import de.nekosarekawaii.vandalism.integration.target.TargetManager;
+import lombok.Getter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
+import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,6 +105,8 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
     // Base handlers
     private File runDirectory;
+    @Getter
+    private double startTime;
 
     private ConfigManager configManager;
     private ClientWindowManager clientWindowManager;
@@ -177,6 +182,8 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.creativeTabManager = new CreativeTabManager();
         this.creativeTabManager.init();
 
+        Shaders.loadAll();
+
         this.hudManager = new HUDManager(this.configManager, this.clientWindowManager, this.runDirectory);
         this.hudManager.init();
 
@@ -209,6 +216,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
         VandalismAddonLauncher.call(addon -> addon.onLateLaunch(this));
 
+        this.startTime = GLFW.glfwGetTime();
         FabricBootstrap.INITIALIZED = true;
     }
 

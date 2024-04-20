@@ -67,6 +67,9 @@ allprojects {
         modImplementation fabricApi.module("fabric-item-group-api-v1", project.fabric_version)
 
         modImplementation "de.florianmichael:viafabricplus:${project.viafabricplus_version}"
+
+        compileOnly "org.projectlombok:lombok:${project.lombok_version}"
+        annotationProcessor "org.projectlombok:lombok:${project.lombok_version}"
     }
 
     processResources {
