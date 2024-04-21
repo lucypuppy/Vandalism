@@ -27,6 +27,8 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.Person;
 import net.minecraft.util.Identifier;
 
+import java.io.File;
+
 public class FabricBootstrap implements ClientModInitializer {
 
     public static String MOD_ID, MOD_NAME, MOD_AUTHORS, MOD_VERSION;
@@ -38,7 +40,10 @@ public class FabricBootstrap implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-       // System.load("C:\\Program Files\\RenderDoc\\renderdoc.dll");
+        final File renderDoc = new File("C:\\Program Files\\RenderDoc\\renderdoc.dll");
+        if (renderDoc.exists()) {
+            System.load(renderDoc.getAbsolutePath());
+        }
         FabricLoader.getInstance().getModContainer(MOD_ID = "vandalism").ifPresent(modContainer -> {
             FabricBootstrap.MOD_NAME = modContainer.getMetadata().getName();
             FabricBootstrap.MOD_AUTHORS = String.join(", ", modContainer.getMetadata().getAuthors().stream().map(Person::getName).toList());
