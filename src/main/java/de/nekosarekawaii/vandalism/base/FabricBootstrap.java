@@ -38,7 +38,7 @@ public class FabricBootstrap implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        System.load("C:\\Program Files\\RenderDoc\\renderdoc.dll");
+       // System.load("C:\\Program Files\\RenderDoc\\renderdoc.dll");
         FabricLoader.getInstance().getModContainer(MOD_ID = "vandalism").ifPresent(modContainer -> {
             FabricBootstrap.MOD_NAME = modContainer.getMetadata().getName();
             FabricBootstrap.MOD_AUTHORS = String.join(", ", modContainer.getMetadata().getAuthors().stream().map(Person::getName).toList());
