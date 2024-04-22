@@ -3,12 +3,11 @@
 in vec2 FragCoord;
 in vec2 RlTexCoord;
 flat in vec2 RlPixelSize;
+flat in vec2 AbsPixelSize;
 
 out vec4 FragColor;
 
 uniform sampler2D tex;
-uniform vec2 u_Resolution;
-uniform float u_ScaleFactor;
 uniform float u_OutlineWidth;
 uniform float u_OutlineAccuracy;
 uniform float u_Exponent;

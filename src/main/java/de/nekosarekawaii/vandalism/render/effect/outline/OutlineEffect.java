@@ -16,8 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.render.effect;
+package de.nekosarekawaii.vandalism.render.effect.outline;
 
+import de.nekosarekawaii.vandalism.render.effect.PostProcessEffect;
 import de.nekosarekawaii.vandalism.render.gl.shader.ShaderProgram;
 import lombok.Getter;
 import lombok.Setter;

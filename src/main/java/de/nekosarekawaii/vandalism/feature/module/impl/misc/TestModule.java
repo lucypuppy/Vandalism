@@ -19,16 +19,16 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.nekosarekawaii.vandalism.render.Buffers;
-import de.nekosarekawaii.vandalism.render.Shaders;
-import de.nekosarekawaii.vandalism.render.gl.render.*;
-import de.nekosarekawaii.vandalism.render.gl.render.passes.Passes;
-import de.nekosarekawaii.vandalism.render.shape.UVSphere;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.event.normal.render.Render2DListener;
 import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.render.Buffers;
+import de.nekosarekawaii.vandalism.render.Shaders;
+import de.nekosarekawaii.vandalism.render.gl.render.*;
+import de.nekosarekawaii.vandalism.render.gl.render.passes.Passes;
+import de.nekosarekawaii.vandalism.render.shape.UVSphere;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -66,7 +66,13 @@ public class TestModule extends AbstractModule implements Render2DListener, Rend
         Shaders.getGlowOutlineEffect().configure(10.0f, 1.0f, 0.5f);
         Shaders.getGlowOutlineEffect().bindMask();
         context.drawText(mc.textRenderer, Text.literal("Hallo welters!"), 200, 200, 0xFFFF0000, false);
+        Shaders.getGlowOutlineEffect().setNoClear(true);
+        Shaders.getGlowOutlineEffect().renderFullscreen(Shaders.getOuterOutlineEffect().maskFramebuffer().get(), false);
         Shaders.getGlowOutlineEffect().renderFullscreen(mc.getFramebuffer(), false);
+        Shaders.getGlowOutlineEffect().setNoClear(false);
+        Shaders.getOuterOutlineEffect().configure(2.0f, 1.0f);
+        Shaders.getOuterOutlineEffect().renderFullscreen(mc.getFramebuffer(), false);
+
         context.drawText(mc.textRenderer, Text.literal("Hallo welters!"), 200, 200, 0xFFFF7FFF, false);
         /*context.getMatrices().push();
         context.getMatrices().translate(50.0f, 20.0f, 0.0f);
