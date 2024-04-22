@@ -55,8 +55,10 @@ public class TestModule extends AbstractModule implements Render2DListener, Rend
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(Render2DListener.Render2DEvent.ID, this);
         Vandalism.getInstance().getEventSystem().unsubscribe(Render3DListener.Render3DEvent.ID, this);
-        this.mesh.close();
-        this.mesh = null;
+        if (this.mesh != null) {
+            this.mesh.close();
+            this.mesh = null;
+        }
     }
 
     private PersistentMesh mesh;
