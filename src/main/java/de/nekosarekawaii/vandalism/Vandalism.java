@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism;
 
-import de.evilcodez.supermod.render.Shaders;
+import de.nekosarekawaii.vandalism.render.Shaders;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;

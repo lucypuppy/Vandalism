@@ -19,10 +19,11 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.evilcodez.supermod.render.Buffers;
-import de.evilcodez.supermod.render.gl.render.*;
-import de.evilcodez.supermod.render.gl.render.passes.Passes;
-import de.evilcodez.supermod.render.shape.UVSphere;
+import de.nekosarekawaii.vandalism.render.Buffers;
+import de.nekosarekawaii.vandalism.render.Shaders;
+import de.nekosarekawaii.vandalism.render.gl.render.*;
+import de.nekosarekawaii.vandalism.render.gl.render.passes.Passes;
+import de.nekosarekawaii.vandalism.render.shape.UVSphere;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.event.normal.render.Render2DListener;
@@ -30,6 +31,7 @@ import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
@@ -61,6 +63,11 @@ public class TestModule extends AbstractModule implements Render2DListener, Rend
 
     @Override
     public void onRender2DInGame(DrawContext context, float delta) {
+        Shaders.getGlowOutlineEffect().configure(10.0f, 1.0f, 0.5f);
+        Shaders.getGlowOutlineEffect().bindMask();
+        context.drawText(mc.textRenderer, Text.literal("Hallo welters!"), 200, 200, 0xFFFF0000, false);
+        Shaders.getGlowOutlineEffect().renderFullscreen(mc.getFramebuffer(), false);
+        context.drawText(mc.textRenderer, Text.literal("Hallo welters!"), 200, 200, 0xFFFF7FFF, false);
         /*context.getMatrices().push();
         context.getMatrices().translate(50.0f, 20.0f, 0.0f);
         if (this.mesh == null) {
@@ -104,7 +111,7 @@ public class TestModule extends AbstractModule implements Render2DListener, Rend
             final InstancedAttribConsumer consumer = sphereSet.main();
             final IndexConsumer indices = sphereSet.indexData();
 
-            UVSphere.generateIndexed(64, 64, 25, (pos, uv, normal) -> {
+            UVSphere.generateIndexed(2, 3, 25, (pos, uv, normal) -> {
                 consumer.pos(mat, pos).putUV(uv).putColor8(0xFF000000 | (ThreadLocalRandom.current().nextInt() & 0xFFFFFF)).next();
             }, indices::index);
 
