@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.render.effect;
+package de.nekosarekawaii.vandalism.render.effect.outline;
 
 import de.nekosarekawaii.vandalism.render.gl.shader.ShaderProgram;
 import lombok.Getter;
@@ -38,7 +38,7 @@ public class GlowOutlineEffect extends OutlineEffect {
 
     @Override
     protected String getShaderPath() {
-        return "postprocess/glow_outline";
+        return "postprocess/outline/glow_outline";
     }
 
     @Override

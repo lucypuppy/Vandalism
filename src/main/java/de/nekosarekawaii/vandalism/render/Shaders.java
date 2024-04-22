@@ -21,8 +21,11 @@ package de.nekosarekawaii.vandalism.render;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.event.cancellable.render.ScreenListener;
-import de.nekosarekawaii.vandalism.render.effect.GlowOutlineEffect;
 import de.nekosarekawaii.vandalism.render.effect.PostProcessEffect;
+import de.nekosarekawaii.vandalism.render.effect.outline.FastOuterOutlineEffect;
+import de.nekosarekawaii.vandalism.render.effect.outline.GlowOutlineEffect;
+import de.nekosarekawaii.vandalism.render.effect.outline.InnerOutlineEffect;
+import de.nekosarekawaii.vandalism.render.effect.outline.OuterOutlineEffect;
 import de.nekosarekawaii.vandalism.render.gl.shader.Shader;
 import de.nekosarekawaii.vandalism.render.gl.shader.ShaderProgram;
 import de.nekosarekawaii.vandalism.render.gl.shader.ShaderType;
@@ -42,11 +45,14 @@ public class Shaders {
 
     private static final List<ShaderProgram> shaders = new ArrayList<>();
 
-    // Post-processing (just add the field here and it will be automatically initialized)
+    // Post-processing (just add the field here, and it will be automatically initialized)
+    @Getter private static OuterOutlineEffect outerOutlineEffect;
+    @Getter private static FastOuterOutlineEffect fastOuterOutlineEffect;
+    @Getter private static InnerOutlineEffect innerOutlineEffect;
     @Getter private static GlowOutlineEffect glowOutlineEffect;
 
     @Getter private static ShaderProgram passThroughShader;
-    private static List<PostProcessEffect> postProcessEffects = new ArrayList<>();
+    private static final List<PostProcessEffect> postProcessEffects = new ArrayList<>();
 
     // General purpose shaders
     @Getter private static ShaderProgram positionShader;
