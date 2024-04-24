@@ -55,6 +55,8 @@ public class NbtCommand extends AbstractCommand {
         super("Allows you to view and modify the nbt data from an item stack.", Category.MISC, "nbt");
     }
 
+    // TODO fix
+
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
     /*    final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
