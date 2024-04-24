@@ -28,6 +28,7 @@ import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -81,12 +82,12 @@ public abstract class MixinGameRenderer implements IGameRenderer, MinecraftWrapp
         vandalism$range = range;
     }
 
-    @Inject(method = "renderWorld", at = @At(value = "FIELD", shift = At.Shift.BEFORE, target = "Lnet/minecraft/client/render/GameRenderer;renderHand:Z"))
-    private void callRender3DListener(final float tickDelta, final long limitTime, final MatrixStack matrices, final CallbackInfo ci) {
-        Vandalism.getInstance().getEventSystem().postInternal(
-                Render3DListener.Render3DEvent.ID,
-                new Render3DListener.Render3DEvent(tickDelta, limitTime, matrices)
-        );
-    }
+  // @Inject(method = "renderWorld", at = @At(value = "FIELD", shift = At.Shift.BEFORE, target = "Lnet/minecraft/client/render/GameRenderer;renderHand:Z"))
+  // private void callRender3DListener(float tickDelta, long limitTime, CallbackInfo ci) {
+  //     Vandalism.getInstance().getEventSystem().postInternal(
+  //             Render3DListener.Render3DEvent.ID,
+  //             new Render3DListener.Render3DEvent(tickDelta, limitTime, matrices)
+  //     );
+  // }
 
 }
