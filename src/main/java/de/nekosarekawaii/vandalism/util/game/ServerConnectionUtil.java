@@ -22,10 +22,13 @@ import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.CookieStorage;
 import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.text.Text;
 import net.minecraft.util.Pair;
+
+import java.util.HashMap;
 
 public class ServerConnectionUtil implements MinecraftWrapper {
 
@@ -59,7 +62,8 @@ public class ServerConnectionUtil implements MinecraftWrapper {
                 mc,
                 ServerAddress.parse(serverInfo.address),
                 serverInfo,
-                false
+                false,
+                new CookieStorage(new HashMap<>())
         );
     }
 
