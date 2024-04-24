@@ -38,12 +38,13 @@ public abstract class MixinGameRenderer implements IGameRenderer, MinecraftWrapp
     @Unique
     private double vandalism$range = -1;
 
-/*
-    @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setInverseViewRotationMatrix(Lorg/joml/Matrix3f;)V", shift = At.Shift.AFTER))
+
+    // i assume this is correct - Lucy
+    @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/Camera;update(Lnet/minecraft/world/BlockView;Lnet/minecraft/entity/Entity;ZZF)V", shift = At.Shift.AFTER))
     private void callRotationListener(final CallbackInfo ci) {
         Vandalism.getInstance().getEventSystem().postInternal(RotationListener.RotationEvent.ID, new RotationListener.RotationEvent());
     }
-
+/*
     @ModifyConstant(method = "updateTargetedEntity", constant = @Constant(doubleValue = 9.0))
     private double changeRange(final double constant) {
         if (vandalism$isSelfInflicted()) {
