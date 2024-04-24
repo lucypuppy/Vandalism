@@ -47,7 +47,7 @@ public class EnchantmentArgumentType implements ArgumentType<Enchantment> {
     public EnchantmentArgumentType() {
         this.ids = new ArrayList<>();
         for (final Enchantment enchantment : Registries.ENCHANTMENT) {
-            final Identifier id = EnchantmentHelper.getEnchantmentId(enchantment);
+            final Identifier id = Registries.ENCHANTMENT.getId(enchantment);
             if (id != null && id.getNamespace().equals("minecraft")) {
                 this.ids.add(id.getPath());
             }
@@ -67,7 +67,7 @@ public class EnchantmentArgumentType implements ArgumentType<Enchantment> {
         final String argument = reader.readString();
         Enchantment foundEnchantment = null;
         for (final Enchantment enchantment : Registries.ENCHANTMENT) {
-            final Identifier id = EnchantmentHelper.getEnchantmentId(enchantment);
+            final Identifier id = Registries.ENCHANTMENT.getId(enchantment);
             if (id != null && id.getNamespace().equals("minecraft") && id.getPath().equals(argument)) {
                 foundEnchantment = enchantment;
                 break;
