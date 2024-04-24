@@ -28,6 +28,7 @@ import net.minecraft.client.texture.TextureManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
@@ -36,6 +37,8 @@ import java.util.concurrent.Executor;
 
 @Mixin(TitleScreen.class)
 public abstract class MixinTitleScreen extends Screen {
+
+    @Shadow public abstract void renderBackground(DrawContext context, int mouseX, int mouseY, float delta);
 
     protected MixinTitleScreen(final Text title) {
         super(title);
@@ -50,12 +53,9 @@ public abstract class MixinTitleScreen extends Screen {
         return instance.loadTextureAsync(newId, executor);
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/RotatingCubeMapRenderer;render(FF)V"))
-    private void cancelPanoramaRenderer(final RotatingCubeMapRenderer instance, final float delta, final float alpha) {}
-
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIFFIIII)V"))
-    private void replacePanoramaTexture(final DrawContext instance, final Identifier texture, final int x, final int y, final int width, final int height, final float u, final float v, final int regionWidth, final int regionHeight, final int textureWidth, final int textureHeight) {
-        this.renderBackgroundTexture(instance);
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/TitleScreen;renderPanoramaBackground(Lnet/minecraft/client/gui/DrawContext;F)V"))
+    private void replacePanoramaTexture(TitleScreen instance, DrawContext context, float delta) {
+        this.renderBackground(context, 0, 0, delta);
     }
 
 }

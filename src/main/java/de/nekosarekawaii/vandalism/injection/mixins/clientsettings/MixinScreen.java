@@ -58,8 +58,8 @@ public abstract class MixinScreen {
         return constant;
     }
 
-    @Inject(method = "renderBackgroundTexture", at = @At("HEAD"), cancellable = true)
-    private void drawCustomBackgroundInGui(final DrawContext context, final CallbackInfo ci) {
+    @Inject(method = "renderBackground", at = @At(value = "HEAD"), cancellable = true)
+    private void drawCustomBackgroundInGui(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
 
         if (this.client.world != null) return;
