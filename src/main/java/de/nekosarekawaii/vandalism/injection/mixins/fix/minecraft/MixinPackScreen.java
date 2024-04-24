@@ -33,6 +33,7 @@ public abstract class MixinPackScreen extends Screen {
         super(title);
     }
 
+    // TODO fix (was auch immer da broken war)
    /* @Redirect(method = "renderBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/pack/PackScreen;renderBackgroundTexture(Lnet/minecraft/client/gui/DrawContext;)V"))
     private void fixBackground(final PackScreen instance, final DrawContext drawContext) {
         if (this.client != null) {
