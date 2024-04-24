@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.feature.script.gui;
 
-import de.florianmichael.rclasses.common.StringUtils;
+import de.nekosarekawaii.vandalism.util.common.StringUtils;
 
 public enum ScriptsTableColumn {
 

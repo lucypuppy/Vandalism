@@ -19,17 +19,17 @@
 package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.gui.server;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
-import de.florianmichael.rclasses.common.StringUtils;
-import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.ServerDiscoveryUtil;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.impl.ServersRequest;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.Response;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.impl.ServersResponse;
 import de.nekosarekawaii.vandalism.integration.viafabricplus.ViaFabricPlusAccess;
+import de.nekosarekawaii.vandalism.util.common.MSTimer;
+import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
-import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiComboFlags;
@@ -44,7 +44,6 @@ import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.ServerList;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Pair;
-import net.raphimc.viabedrock.api.BedrockProtocolVersion;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -192,7 +191,7 @@ public class ServersTab implements MinecraftWrapper {
                         ServersResponse.Server errorDisplay = new ServersResponse.Server();
                         errorDisplay.description = "API request failed!";
                         if (response == null) {
-                            errorDisplay.version = "Every API User is rate limited!";
+                            errorDisplay.version = "API User is rate limited!";
                         } else if (response instanceof final ServersResponse serversResponse) {
                             if (serversResponse.isError()) {
                                 errorDisplay.version = "Response failed due to " + serversResponse.error;

@@ -18,13 +18,9 @@
 
 package de.nekosarekawaii.vandalism.util.click.impl;
 
-import de.florianmichael.rclasses.common.RandomUtils;
-import de.florianmichael.rclasses.math.Arithmetics;
-import de.florianmichael.rclasses.math.timer.MSTimer;
-import de.florianmichael.rclasses.pattern.evicting.EvictingList;
 import de.nekosarekawaii.vandalism.feature.module.impl.combat.KillAuraModule;
 import de.nekosarekawaii.vandalism.util.click.Clicker;
-import de.nekosarekawaii.vandalism.util.common.MathUtil;
+import de.nekosarekawaii.vandalism.util.common.*;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import org.joml.Vector4d;

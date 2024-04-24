@@ -18,8 +18,8 @@
 
 package de.nekosarekawaii.vandalism.integration.creativetab.impl;
 
-import de.florianmichael.rclasses.common.RandomUtils;
 import de.nekosarekawaii.vandalism.integration.creativetab.AbstractCreativeTab;
+import de.nekosarekawaii.vandalism.util.common.RandomUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;

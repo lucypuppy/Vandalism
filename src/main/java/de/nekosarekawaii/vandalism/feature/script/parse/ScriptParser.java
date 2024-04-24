@@ -18,12 +18,12 @@
 
 package de.nekosarekawaii.vandalism.feature.script.parse;
 
-import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.script.Script;
 import de.nekosarekawaii.vandalism.feature.script.parse.command.ScriptCommand;
 import de.nekosarekawaii.vandalism.feature.script.parse.info.ScriptInfo;
+import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import net.minecraft.util.Pair;
 
 import java.io.File;

@@ -19,14 +19,14 @@
 package de.nekosarekawaii.vandalism.base.value.impl.misc;
 
 import com.google.gson.JsonObject;
-import de.florianmichael.rclasses.common.StringUtils;
-import de.florianmichael.rclasses.common.color.ColorUtils;
-import de.florianmichael.rclasses.common.color.HSBColor;
-import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
+import de.nekosarekawaii.vandalism.util.common.IName;
+import de.nekosarekawaii.vandalism.util.common.StringUtils;
+import de.nekosarekawaii.vandalism.util.render.ColorUtils;
+import de.nekosarekawaii.vandalism.util.render.HSBColor;
 import imgui.ImGui;
 import imgui.flag.ImGuiColorEditFlags;
 import imgui.flag.ImGuiMouseButton;

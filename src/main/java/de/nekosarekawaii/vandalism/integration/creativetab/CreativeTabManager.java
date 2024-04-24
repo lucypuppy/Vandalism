@@ -19,11 +19,11 @@
 package de.nekosarekawaii.vandalism.integration.creativetab;
 
 import de.florianmichael.dietrichevents2.Priorities;
-import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.NetworkingSettings;
 import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.integration.creativetab.impl.*;
+import de.nekosarekawaii.vandalism.util.common.Storage;
 import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;

@@ -16,15 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.common;
-
-import de.florianmichael.rclasses.common.encryption.EncryptionUtils;
+package de.nekosarekawaii.vandalism.util.encryption;
 
 import javax.crypto.spec.IvParameterSpec;
 import java.nio.charset.StandardCharsets;
 import java.security.spec.InvalidKeySpecException;
 
-public class EncryptionUtil {
+public class AESEncryptionUtil {
 
     private static final IvParameterSpec INIITAL_VECTOR = new IvParameterSpec(new byte[] { 42, 49, 55, 1, 99, 62, 70, 83, 104, 115, 8, 15, 91, 120, 27, 33 });
 

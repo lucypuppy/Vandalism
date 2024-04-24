@@ -18,11 +18,11 @@
 
 package de.nekosarekawaii.vandalism.feature.module.template;
 
-import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.common.MSTimer;
 
 public abstract class MultiExecutionModuleMode<M extends AbstractModule> extends SingleExecutionModuleMode<M> implements PlayerUpdateListener {
 

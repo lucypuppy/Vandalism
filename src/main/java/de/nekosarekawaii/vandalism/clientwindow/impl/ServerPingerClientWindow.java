@@ -18,11 +18,11 @@
 
 package de.nekosarekawaii.vandalism.clientwindow.impl;
 
-import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.impl.widget.ServerInfoWidget;
 import de.nekosarekawaii.vandalism.clientwindow.impl.widget.ServerInfosTableColumn;
+import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;

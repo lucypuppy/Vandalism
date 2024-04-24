@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.imgui;
+package de.nekosarekawaii.vandalism.util.render.imgui;
 
 import de.nekosarekawaii.vandalism.injection.access.IImGuiImplGlfw;
 import imgui.*;

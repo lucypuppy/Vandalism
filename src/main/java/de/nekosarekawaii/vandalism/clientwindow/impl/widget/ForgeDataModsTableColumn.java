@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.clientwindow.impl.widget;
 
-import de.florianmichael.rclasses.common.StringUtils;
+import de.nekosarekawaii.vandalism.util.common.StringUtils;
 
 public enum ForgeDataModsTableColumn {
 

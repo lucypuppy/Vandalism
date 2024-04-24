@@ -38,7 +38,6 @@ import de.nekosarekawaii.vandalism.integration.newrotation.RotationManager;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerListManager;
 import de.nekosarekawaii.vandalism.integration.target.TargetManager;
 import de.nekosarekawaii.vandalism.integration.viafabricplus.ProtocolVersionListener;
-import de.nekosarekawaii.vandalism.integration.viafabricplus.ViaFabricPlusAccess;
 import de.nekosarekawaii.vandalism.render.Shaders;
 import lombok.Getter;
 import lombok.Setter;
@@ -52,7 +51,6 @@ import java.io.File;
 
 /**
  * TODO: NekosAreKawaii <br>
- *  - Add toggleOnKeybindRelease option for modules
  *  - Change behavior of the echolocation module to use it as a chunk load detector
  *  - Protector Module:
  *      - Add protection for custom rank prefixes
