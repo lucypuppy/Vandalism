@@ -81,7 +81,7 @@ public class ModPacketBlockerModule extends AbstractModule implements IncomingPa
     @Override
     public void onIncomingPacket(final IncomingPacketEvent event) {
         if (event.packet instanceof final CustomPayloadS2CPacket customPayloadPacket) {
-            final String channel = customPayloadPacket.payload().id().getNamespace();
+            final String channel = customPayloadPacket.payload().getId().id().getNamespace();
             if (this.cancel(channel)) event.cancel();
         }
     }
@@ -89,7 +89,7 @@ public class ModPacketBlockerModule extends AbstractModule implements IncomingPa
     @Override
     public void onOutgoingPacket(OutgoingPacketEvent event) {
         if (event.packet instanceof final CustomPayloadC2SPacket customPayloadPacket) {
-            final String channel = customPayloadPacket.payload().id().getNamespace();
+            final String channel = customPayloadPacket.payload().getId().id().getNamespace();
             if (this.cancel(channel)) event.cancel();
         }
     }
