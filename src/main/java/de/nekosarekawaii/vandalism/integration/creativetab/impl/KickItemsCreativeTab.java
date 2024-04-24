@@ -35,6 +35,8 @@ import static de.nekosarekawaii.vandalism.util.game.ItemStackUtil.withClientSide
 
 public class KickItemsCreativeTab extends AbstractCreativeTab {
 
+    // TODO fix
+
     public KickItemsCreativeTab() {
         super(Text.literal("Kick Items"), Items.FIREWORK_ROCKET);
     }

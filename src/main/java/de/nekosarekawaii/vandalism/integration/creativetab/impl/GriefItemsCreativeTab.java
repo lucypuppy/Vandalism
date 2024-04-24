@@ -33,6 +33,8 @@ import static de.nekosarekawaii.vandalism.util.game.ItemStackUtil.withClientSide
 
 public class GriefItemsCreativeTab extends AbstractCreativeTab {
 
+    // TODO fix
+
     public GriefItemsCreativeTab() {
         super(Text.literal("Grief Items"), Items.TNT);
     }

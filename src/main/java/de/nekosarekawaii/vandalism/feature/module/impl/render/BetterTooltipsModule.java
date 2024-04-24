@@ -122,6 +122,7 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
     }
 
     private void drawBytesTooltip(final List<TooltipData> tooltipData, final ItemStack itemStack) {
+        // TODO fix
         //itemStack.writeNbt(new NbtCompound()).write(ByteCountDataOutput.INSTANCE);
         final int byteCount = ByteCountDataOutput.INSTANCE.getCount();
         ByteCountDataOutput.INSTANCE.reset();

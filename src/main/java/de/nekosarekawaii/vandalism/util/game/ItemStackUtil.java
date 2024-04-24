@@ -34,6 +34,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class ItemStackUtil implements MinecraftWrapper {
 
+
+    // TODO fix the entire class
     private static final SimpleCommandExceptionType NOT_IN_GAME = new SimpleCommandExceptionType(Text.literal("You need to be in-game to get items!"));
     private static final SimpleCommandExceptionType NOT_IN_CREATIVE_MODE = new SimpleCommandExceptionType(Text.literal("You must be in creative mode to use this."));
 
