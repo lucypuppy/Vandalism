@@ -35,7 +35,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(value = Screen.class, priority = 9999)
 public abstract class MixinScreen {
 
-    @Inject(method = "handleTextClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/SharedConstants;stripInvalidChars(Ljava/lang/String;)Ljava/lang/String;", ordinal = 1), cancellable = true)
+    @Inject(method = "handleTextClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/StringHelper;stripInvalidChars(Ljava/lang/String;)Ljava/lang/String;", ordinal = 1), cancellable = true)
     private void executeClientCommands(final Style style, final CallbackInfoReturnable<Boolean> cir) {
         final ClickEvent clickEvent = style.getClickEvent();
         if (clickEvent != null) {
