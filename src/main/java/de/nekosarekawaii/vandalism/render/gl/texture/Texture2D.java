@@ -188,6 +188,10 @@ public class Texture2D implements AutoCloseable {
         GL45C.glTextureParameterfv(this.id, GL45C.GL_TEXTURE_BORDER_COLOR, new float[] { r, g, b, a });
     }
 
+    public void clear(int level) {
+        GL45C.glClearTexImage(this.id, level, GL45C.GL_RGBA, GL45C.GL_FLOAT, (ByteBuffer) null);
+    }
+
     public int id() {
         return this.id;
     }

@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.render.gl.render.passes;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import de.nekosarekawaii.vandalism.render.Shaders;
 import de.nekosarekawaii.vandalism.render.gl.render.PrimitiveType;
 import de.nekosarekawaii.vandalism.render.gl.vertex.VertexLayouts;
@@ -33,6 +34,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.lwjgl.opengl.GL45C;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -47,7 +49,7 @@ public class Passes {
     private static final RenderPass textureRect             = new SimpleRenderPass(PrimitiveType.QUADS, VertexLayouts.POSITION_TEX, VertexLayouts.halfPosition(2, 1), Shaders::getPositionTexShader, Shaders::getInstPositionTexShader);
     private static final RenderPass colorTextureRect        = new SimpleRenderPass(PrimitiveType.QUADS, VertexLayouts.POSITION_TEX_COLOR8, VertexLayouts.halfPosition(3, 1), Shaders::getPositionTexColorShader, Shaders::getInstPositionTexColorShader);
     private static final RenderPass colorLineStrip          = new SimpleRenderPass(PrimitiveType.GL_LINE_STRIP, VertexLayouts.POSITION_COLOR8, VertexLayouts.halfPosition(2, 1), Shaders::getPositionColorShader, Shaders::getInstPositionColorShader);
-    /*private static final Int2ObjectFunction<RenderPass> text = memoize((Int2ObjectFunction<RenderPass>) glyphAtlasTexture -> new SimpleRenderPass(
+    private static final Int2ObjectFunction<RenderPass> text = memoize((Int2ObjectFunction<RenderPass>) glyphAtlasTexture -> new SimpleRenderPass(
             PrimitiveType.QUADS,
             VertexLayouts.POSITION_TEX_COLOR8,
             Shaders::getFontShader,
@@ -62,7 +64,7 @@ public class Passes {
                 RenderSystem.bindTexture(0);
             }
     ));
-    private static final Long2ObjectFunction<RenderPass> sdfText = memoize((Long2ObjectFunction<RenderPass>) l -> new SimpleRenderPass(
+    /*private static final Long2ObjectFunction<RenderPass> sdfText = memoize((Long2ObjectFunction<RenderPass>) l -> new SimpleRenderPass(
             PrimitiveType.QUADS,
             VertexLayouts.SDF_TEXT,
             Shaders::getSdfFontShader,
@@ -113,11 +115,11 @@ public class Passes {
         return colorLineStrip;
     }
 
-    /*public static RenderPass text(int glyphAtlasTexture) {
+    public static RenderPass text(int glyphAtlasTexture) {
         return text.get(glyphAtlasTexture);
     }
 
-    public static RenderPass sdfText(int glyphAtlasTexture, int onEdgeValue) {
+    /*public static RenderPass sdfText(int glyphAtlasTexture, int onEdgeValue) {
         final long encoded = ((long) glyphAtlasTexture << 32) | (onEdgeValue & 0xFFL);
         return sdfText.get(encoded);
     }*/

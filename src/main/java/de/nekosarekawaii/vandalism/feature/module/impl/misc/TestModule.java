@@ -19,6 +19,10 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import de.evilcodez.supermod.render.text.AtlasFont;
+import de.evilcodez.supermod.render.text.AtlasFontRenderer;
+import de.evilcodez.supermod.render.text.SimpleFont;
+import de.evilcodez.supermod.render.text.TextAlign;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.event.normal.render.Render2DListener;
@@ -37,9 +41,13 @@ import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class TestModule extends AbstractModule implements Render2DListener, Render3DListener {
+
+    private AtlasFont testFont;
 
     public TestModule() {
         super("Test", "Just for development purposes.", Category.MISC);
@@ -49,10 +57,19 @@ public class TestModule extends AbstractModule implements Render2DListener, Rend
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(Render2DListener.Render2DEvent.ID, this);
         Vandalism.getInstance().getEventSystem().subscribe(Render3DListener.Render3DEvent.ID, this);
+        try {
+            testFont = SimpleFont.compose(72, Files.readAllBytes(new File("C:\\Users\\Bruce\\Desktop\\bertofont.ttf").toPath()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onDeactivate() {
+        if (testFont != null) {
+            testFont.close();
+            testFont = null;
+        }
         Vandalism.getInstance().getEventSystem().unsubscribe(Render2DListener.Render2DEvent.ID, this);
         Vandalism.getInstance().getEventSystem().unsubscribe(Render3DListener.Render3DEvent.ID, this);
         if (this.mesh != null) {
@@ -74,8 +91,27 @@ public class TestModule extends AbstractModule implements Render2DListener, Rend
         Shaders.getGlowOutlineEffect().setNoClear(false);
         Shaders.getOuterOutlineEffect().configure(2.0f, 1.0f);
         Shaders.getOuterOutlineEffect().renderFullscreen(mc.getFramebuffer(), false);
-
         context.drawText(mc.textRenderer, Text.literal("Hallo welters!"), 200, 200, 0xFFFF7FFF, false);
+
+        if (testFont != null) {
+            try (final ImmediateRenderer renderer = new ImmediateRenderer(Buffers.getImmediateBufferPool())) {
+                final AtlasFontRenderer fontRenderer = new AtlasFontRenderer(this.testFont);
+
+                fontRenderer.drawScaled(
+                        "§c§n§mBert ist dick",
+                        context.getScaledWindowWidth() / 2.0f,
+                        50.0f,
+                        0.0f,
+                        true,
+                        0xFFFFFFFF,
+                        TextAlign.X_CENTER,
+                        context.getMatrices().peek().getPositionMatrix(),
+                        renderer,
+                        null
+                );
+                renderer.draw();
+            }
+        }
         /*context.getMatrices().push();
         context.getMatrices().translate(50.0f, 20.0f, 0.0f);
         if (this.mesh == null) {
@@ -119,7 +155,7 @@ public class TestModule extends AbstractModule implements Render2DListener, Rend
             final InstancedAttribConsumer consumer = sphereSet.main();
             final IndexConsumer indices = sphereSet.indexData();
 
-            UVSphere.generateIndexed(2, 3, 25, (pos, uv, normal) -> {
+            UVSphere.generateIndexed(64, 64, 25, (pos, uv, normal) -> {
                 consumer.pos(mat, pos).putUV(uv).putColor8(0xFF000000 | (ThreadLocalRandom.current().nextInt() & 0xFFFFFF)).next();
             }, indices::index);
 
