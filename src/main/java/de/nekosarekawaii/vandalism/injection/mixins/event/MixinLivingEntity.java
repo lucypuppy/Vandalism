@@ -48,7 +48,7 @@ public abstract class MixinLivingEntity implements MinecraftWrapper {
         }
     }
 
-    @Inject(method = "jump", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;setVelocity(Lnet/minecraft/util/math/Vec3d;)V", shift = At.Shift.BEFORE))
+    @Inject(method = "jump", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;setVelocity(DDD)V", shift = At.Shift.BEFORE))
     private void callStrafeListenerJump(CallbackInfo ci, @Local LocalFloatRef f) {
         if (mc.player == (Object) this) {
             final var event = new StrafeListener.StrafeEvent(null, -1, f.get(), StrafeListener.Type.JUMP);
