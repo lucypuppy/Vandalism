@@ -38,7 +38,7 @@ public class CustomContainerScreen extends GenericContainerScreen {
     protected void onMouseClick(final Slot slot, final int slotId, final int button, final SlotActionType actionType) {
         if (slot == null) return;
         final ItemStack stack = slot.getStack();
-        if (stack == null || stack.isEmpty() || !stack.hasNbt()) return;
+        if (stack == null || stack.isEmpty() || stack.getComponents().isEmpty()) return;
         ItemStackUtil.giveItemStack(slot.getStack(), false, MinecraftConstants.LAST_SLOT_IN_HOTBAR);
     }
 

@@ -57,7 +57,7 @@ public class NbtCommand extends AbstractCommand {
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
-        final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
+    /*    final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
         builder.then(literal("add").then(argument("nbt", NbtCompoundArgumentType.create()).executes(s -> {
             final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
@@ -284,7 +284,7 @@ public class NbtCommand extends AbstractCommand {
             } else displayTitle = "Nbt";
             Vandalism.getInstance().getClientWindowManager().getByClass(NbtEditorClientWindow.class).displayNbt(displayTitle, nbt);
             return SINGLE_SUCCESS;
-        })));
+        })));*/
     }
 
     private boolean validBasic(final ItemStack stack) {

@@ -38,6 +38,7 @@ public abstract class MixinGameRenderer implements IGameRenderer, MinecraftWrapp
     @Unique
     private double vandalism$range = -1;
 
+/*
     @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setInverseViewRotationMatrix(Lorg/joml/Matrix3f;)V", shift = At.Shift.AFTER))
     private void callRotationListener(final CallbackInfo ci) {
         Vandalism.getInstance().getEventSystem().postInternal(RotationListener.RotationEvent.ID, new RotationListener.RotationEvent());
@@ -62,6 +63,7 @@ public abstract class MixinGameRenderer implements IGameRenderer, MinecraftWrapp
 
         return instance.hasExtendedReach();
     }
+*/
 
     @Override
     public boolean vandalism$isSelfInflicted() {

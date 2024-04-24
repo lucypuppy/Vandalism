@@ -94,7 +94,7 @@ public class ServerPingerWidget implements MinecraftWrapper {
                 return;
             }
             IN_USE = true;
-            currentServerInfo.online = true;
+            currentServerInfo.setStatus(ServerInfo.Status.SUCCESSFUL);
             WIDGET.setY(startY);
             final int pingDelay = enhancedServerListSettings.serverPingerWidgetDelay.getValue();
             if (PING_TIMER.hasReached(pingDelay, true)) {
@@ -111,11 +111,11 @@ public class ServerPingerWidget implements MinecraftWrapper {
             context.drawHorizontalLine(x, x2, y2 + 1, Color.GRAY.getRGB());
             context.drawHorizontalLine(x, (int) (x + progress), y2 + 1, Color.GREEN.getRGB());
             context.disableScissor();
-            final List<Text> tooltip = FAKE_MULTIPLAYER_SCREEN.multiplayerScreenTooltip;
+/*            final List<Text> tooltip = FAKE_MULTIPLAYER_SCREEN.multiplayerScreenTooltip;
             if (tooltip != null) {
                 context.drawTooltip(mc.textRenderer, tooltip, mouseX, mouseY);
                 FAKE_MULTIPLAYER_SCREEN.setMultiplayerScreenTooltip(null);
-            }
+            }*/
             IN_USE = false;
         }
     }
@@ -126,7 +126,7 @@ public class ServerPingerWidget implements MinecraftWrapper {
         if (enhancedServerListSettings.enhancedServerList.getValue() && enhancedServerListSettings.serverPingerWidget.getValue()) {
             IN_USE = true;
             PING_TIMER.reset();
-            currentServerInfo.online = true;
+            currentServerInfo.setStatus(ServerInfo.Status.SUCCESSFUL);
             currentServerInfo.playerCountLabel = ScreenTexts.EMPTY;
             currentServerInfo.label = Text.translatable("multiplayer.status.pinging");
             currentServerInfo.ping = -2L;
@@ -161,10 +161,11 @@ public class ServerPingerWidget implements MinecraftWrapper {
                             currentServerInfo.ping = response.server.ping;
                             final String descriptionString = response.description;
                             try {
-                                final MutableText description = Text.Serialization.fromJson(descriptionString);
+                                // TODO WHY I NTHE FUCK)O?WADH UIAWHDUIWAHUi
+/*                                final MutableText description = Text.Serialization.fromJson(descriptionString);
                                 if (description != null) {
                                     currentServerInfo.label = description;
-                                }
+                                }*/
                             } catch (JsonSyntaxException ignored) {
                                 currentServerInfo.label = Text.literal(descriptionString);
                             }
