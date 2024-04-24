@@ -38,7 +38,6 @@ import net.minecraft.network.packet.c2s.handshake.HandshakeC2SPacket;
 import net.minecraft.network.packet.c2s.login.LoginHelloC2SPacket;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.profiler.PerformanceLog;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -233,9 +232,9 @@ public abstract class MixinMultiplayerScreen extends Screen {
                                                             Optional.of(""),
                                                             Session.AccountType.LEGACY
                                                     );
-                                                    final ClientConnection clientConnection = ClientConnection.connect(new InetSocketAddress(response.server.ip, response.server.port), true, (PerformanceLog) null);
-                                                    clientConnection.send(new HandshakeC2SPacket(response.server.protocol, response.server.ip, response.server.port, ConnectionIntent.LOGIN));
-                                                    clientConnection.send(new LoginHelloC2SPacket(name, UUID.fromString(uuid)));
+                                               //    final ClientConnection clientConnection = ClientConnection.connect(new InetSocketAddress(response.server.ip, response.server.port), true, (PerformanceLog) null);
+                                               //    clientConnection.send(new HandshakeC2SPacket(response.server.protocol, response.server.ip, response.server.port, ConnectionIntent.LOGIN));
+                                               //    clientConnection.send(new LoginHelloC2SPacket(name, UUID.fromString(uuid)));
                                                     Vandalism.getInstance().getLogger().info("Player " + name + " should be kicked.");
                                                     Thread.sleep(settings.kickAllPlayersKickDelay.getValue());
                                                 } catch (Exception e) {

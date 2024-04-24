@@ -54,20 +54,12 @@ public abstract class MixinClientConnection {
     @Shadow
     private Channel channel;
 
-    @Shadow
-    @Final
-    public static AttributeKey<NetworkState.PacketHandler<?>> CLIENTBOUND_PROTOCOL_KEY;
-
-    @Shadow
-    @Final
-    public static AttributeKey<NetworkState.PacketHandler<?>> SERVERBOUND_PROTOCOL_KEY;
-
     @Unique
     private boolean vandalism$selfRepeating;
 
     @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/packet/Packet;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/ClientConnection;handlePacket(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;)V", ordinal = 0), cancellable = true)
     private void callIncomingPacketListener(final ChannelHandlerContext channelHandlerContext, Packet<?> packet, final CallbackInfo ci) {
-        final var event = new IncomingPacketListener.IncomingPacketEvent(packet, this.channel.attr(CLIENTBOUND_PROTOCOL_KEY).get().getState(), (ClientConnection) (Object) this);
+        final var event = new IncomingPacketListener.IncomingPacketEvent(packet, this.packetListener.getPhase(), (ClientConnection) (Object) this);
         Vandalism.getInstance().getEventSystem().postInternal(IncomingPacketListener.IncomingPacketEvent.ID, event);
         if (event.isCancelled()) {
             ci.cancel();
@@ -86,7 +78,7 @@ public abstract class MixinClientConnection {
             return;
         }
 
-        final var event = new OutgoingPacketListener.OutgoingPacketEvent(packet, this.channel.attr(SERVERBOUND_PROTOCOL_KEY).get().getState(), (ClientConnection) (Object) this);
+        final var event = new OutgoingPacketListener.OutgoingPacketEvent(packet, this.packetListener.getPhase(), (ClientConnection) (Object) this);
         Vandalism.getInstance().getEventSystem().postInternal(OutgoingPacketListener.OutgoingPacketEvent.ID, event);
         if (event.isCancelled()) {
             ci.cancel();

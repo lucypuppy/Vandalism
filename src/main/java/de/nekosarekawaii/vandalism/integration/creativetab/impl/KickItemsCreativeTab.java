@@ -41,13 +41,14 @@ public class KickItemsCreativeTab extends AbstractCreativeTab {
 
     @Override
     public void exposeItems(final List<ItemStack> items) {
-        items.add(withClientSide(createKickHead(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Head")));
+/*        items.add(withClientSide(createKickHead(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Head")));
         items.add(withClientSide(createKickHeadV2(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Head V2")));
         items.add(withClientSide(createKickStand(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Kick Stand")));
         items.add(withClientSide(createKickStandV2(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Kick Stand V2")));
         items.add(withClientSide(createKickKnowledgeBook(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Kick Knowledge Book")));
-        items.add(withClientSide(createKickHorn(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Horn")));
+        items.add(withClientSide(createKickHorn(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Kick Horn")));*/
     }
+/*
 
     private static ItemStack createKickHead() {
         final ItemStack item = new ItemStack(Items.PLAYER_HEAD);
@@ -137,5 +138,6 @@ public class KickItemsCreativeTab extends AbstractCreativeTab {
         item.setNbt(base);
         return item;
     }
+*/
 
 }

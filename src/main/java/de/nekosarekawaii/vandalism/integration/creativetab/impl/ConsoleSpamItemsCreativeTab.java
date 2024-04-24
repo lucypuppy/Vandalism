@@ -20,25 +20,16 @@ package de.nekosarekawaii.vandalism.integration.creativetab.impl;
 
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.integration.creativetab.AbstractCreativeTab;
-import de.nekosarekawaii.vandalism.util.common.RandomUtils;
-import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.List;
-
-import static de.nekosarekawaii.vandalism.util.game.ItemStackUtil.withClientSide;
 
 public class ConsoleSpamItemsCreativeTab extends AbstractCreativeTab {
 
     private static final String HACKED =
-                    "888    888        d8888  .d8888b.  888    d8P  8888888888 8888888b.  \n" +
+            "888    888        d8888  .d8888b.  888    d8P  8888888888 8888888b.  \n" +
                     "888    888       d88888 d88P  Y88b 888   d8P   888        888  \"Y88b \n" +
                     "888    888      d88P888 888    888 888  d8P    888        888    888 \n" +
                     "8888888888     d88P 888 888        888d88K     8888888    888    888 \n" +
@@ -55,16 +46,16 @@ public class ConsoleSpamItemsCreativeTab extends AbstractCreativeTab {
 
     @Override
     public void exposeItems(final List<ItemStack> items) {
-        items.add(withClientSide(createServerConsoleErrorArrow(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Console Error Arrow")));
+       /* items.add(withClientSide(createServerConsoleErrorArrow(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Console Error Arrow")));
         items.add(withClientSide(createServerConsoleErrorBat(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Console Error Bat")));
         items.add(withClientSide(createServerConsoleErrorBook(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Console Error Book")));
         items.add(withClientSide(createServerConsoleSpamArrow(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Console Spam Arrow")));
         items.add(withClientSide(createServerConsoleSpamArea(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Console Spam Area")));
         items.add(withClientSide(createServerConsoleSpamBeeNest(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Console Spam Bee Nest")));
         items.add(withClientSide(createServerConsoleTrollDisplay(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Server Console Troll Display")));
-        items.add(withClientSide(createServerConsoleTrollFrame(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Server Console Troll Frame")));
+        items.add(withClientSide(createServerConsoleTrollFrame(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Server Console Troll Frame"))); */
     }
-
+/*
     private static ItemStack createServerConsoleErrorArrow() {
         final ItemStack item = new ItemStack(Items.HORSE_SPAWN_EGG);
         final NbtCompound base = new NbtCompound();
@@ -173,6 +164,6 @@ public class ConsoleSpamItemsCreativeTab extends AbstractCreativeTab {
         base.put("EntityTag", entityTag);
         item.setNbt(base);
         return item;
-    }
+    }*/
 
 }
