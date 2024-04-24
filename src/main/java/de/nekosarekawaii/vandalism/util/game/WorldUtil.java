@@ -62,7 +62,7 @@ public class WorldUtil implements MinecraftWrapper {
         final double prevRange = ((IGameRenderer) mc.gameRenderer).vandalism$getRange();
         ((IGameRenderer) mc.gameRenderer).vandalism$setRange(range);
 
-        mc.gameRenderer.updateTargetedEntity(1.0f);
+        mc.gameRenderer.updateCrosshairTarget(1.0f);
         final HitResult crosshairTarget = mc.crosshairTarget;
 
         ((IGameRenderer) mc.gameRenderer).vandalism$setRange(prevRange);
