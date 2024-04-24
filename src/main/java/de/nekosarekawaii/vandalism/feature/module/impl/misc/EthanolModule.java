@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.nekosarekawaii.vandalism.Vandalism;
@@ -27,7 +28,6 @@ import de.nekosarekawaii.vandalism.event.normal.render.Render2DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import de.nekosarekawaii.vandalism.util.game.PacketUtil;
-import net.fabricmc.fabric.impl.networking.payload.RetainedPayload;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.PacketByteBuf;
@@ -39,6 +39,7 @@ import net.minecraft.util.Identifier;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+
 
 public class EthanolModule extends AbstractModule implements IncomingPacketListener, ChatSendListener, DisconnectListener, Render2DListener {
 
@@ -183,3 +184,4 @@ public class EthanolModule extends AbstractModule implements IncomingPacketListe
     }
 
 }
+*/
