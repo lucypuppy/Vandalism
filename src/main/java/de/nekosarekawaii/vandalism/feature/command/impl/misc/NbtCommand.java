@@ -47,6 +47,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 
+import javax.xml.crypto.Data;
 import java.util.UUID;
 
 public class NbtCommand extends AbstractCommand {
@@ -213,14 +214,14 @@ public class NbtCommand extends AbstractCommand {
             return SINGLE_SUCCESS;
         }));
 
-        /*builder.then(literal("paste").executes(context -> {
+        builder.then(literal("paste").executes(context -> {
             final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
-                stack.setNbt(new NbtCompoundArgumentType().parse(new StringReader(this.mc.keyboard.getClipboard())));
+                stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(new NbtCompoundArgumentType().parse(new StringReader(this.mc.keyboard.getClipboard()))));
                 ItemStackUtil.giveItemStack(stack);
             }
             return SINGLE_SUCCESS;
-        }));*/
+        }));
 
         builder.then(literal("count").then(argument("count", IntegerArgumentType.integer(-127, 127)).executes(context -> {
             final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
