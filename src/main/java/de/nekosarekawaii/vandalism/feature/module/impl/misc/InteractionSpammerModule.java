@@ -26,6 +26,7 @@ import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.FluidBlock;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -129,7 +130,7 @@ public class InteractionSpammerModule extends AbstractModule implements PlayerUp
                 }
             }
         }
-        final HitResult hitResult = this.mc.getCameraEntity().raycast(this.mc.interactionManager.getReachDistance(), 0, false);
+        final HitResult hitResult = this.mc.getCameraEntity().raycast(mc.player.isCreative() ? 5.0F : 4.5F, 0, false);
         if (!(hitResult instanceof final BlockHitResult blockHitResult)) return;
         final Block block = this.mc.world.getBlockState(blockHitResult.getBlockPos()).getBlock();
         if (!(block instanceof AirBlock || block instanceof FluidBlock)) {
