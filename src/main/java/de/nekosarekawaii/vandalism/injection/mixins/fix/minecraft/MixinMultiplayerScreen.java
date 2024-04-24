@@ -48,9 +48,6 @@ public abstract class MixinMultiplayerScreen extends Screen implements Minecraft
     @Shadow
     private Screen parent;
 
-    @Shadow
-    public List<Text> multiplayerScreenTooltip;
-
     protected MixinMultiplayerScreen(final Text ignored) {
         super(ignored);
     }
@@ -93,9 +90,9 @@ public abstract class MixinMultiplayerScreen extends Screen implements Minecraft
         this.serverListWidget.render(context, mouseX, mouseY, delta);
         context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 20, 16777215);
 
-        if (this.multiplayerScreenTooltip != null) {
-            context.drawTooltip(this.textRenderer, this.multiplayerScreenTooltip, mouseX, mouseY);
-            this.multiplayerScreenTooltip = null;
+        if (this.tooltip != null) {
+            context.drawTooltip(this.textRenderer, this.tooltip.tooltip(), this.tooltip.positioner(), mouseX, mouseY);
+            this.tooltip = null;
         }
         ci.cancel();
     }

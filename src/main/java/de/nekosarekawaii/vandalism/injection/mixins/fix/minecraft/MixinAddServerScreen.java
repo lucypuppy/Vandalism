@@ -37,11 +37,6 @@ public abstract class MixinAddServerScreen extends Screen {
         super(ignored);
     }
 
-    @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/AddServerScreen;setInitialFocus(Lnet/minecraft/client/gui/Element;)V"))
-    private void setInitialFocusToAddressField(final AddServerScreen instance, final Element element) {
-        this.setInitialFocus(this.addressField);
-    }
-
     @Redirect(method = "updateAddButton", at = @At(value = "INVOKE", target = "Ljava/lang/String;isEmpty()Z"))
     private boolean allowEmptyServerNames(final String instance) {
         return false;
