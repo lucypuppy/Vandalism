@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.integration.hud.impl;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.florianmichael.rclasses.math.geometry.Alignment;
-import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
+
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
@@ -242,7 +242,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         if (event.packet instanceof final PingResultS2CPacket packet &&
                 this.ping.getValue() &&
                 this.fasterPings.getValue() &&
-                !ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_20_2)) {
+                !Vandalism.getInstance().getTargetVersion().olderThan(ProtocolVersion.v1_20_2)) {
             this.clientPing = now - packet.getStartTime();
         }
     }
@@ -254,7 +254,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         if (now - this.lastPing > this.pingInterval.getValue() &&
                 this.fasterPings.getValue() &&
                 this.ping.getValue() &&
-                !ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_20_2)) {
+                !Vandalism.getInstance().getTargetVersion().olderThan(ProtocolVersion.v1_20_2)) {
             this.mc.getNetworkHandler().sendPacket(new QueryPingC2SPacket(now));
             this.lastPing = now;
         }

@@ -18,7 +18,6 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
-import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerDataUtil;
@@ -200,7 +199,7 @@ public abstract class MixinMultiplayerScreen extends Screen {
                     host = data[0];
                     port = Integer.parseInt(data[1]);
                 }
-                MCPing.pingModern(ProtocolTranslator.getTargetVersion().getVersion()).address(host, port)
+                MCPing.pingModern(Vandalism.getInstance().getTargetVersion().getVersion()).address(host, port)
                         .timeout(
                                 settings.kickAllPlayersPingConnectionTimeout.getValue(),
                                 settings.kickAllPlayersPingReadTimeout.getValue()

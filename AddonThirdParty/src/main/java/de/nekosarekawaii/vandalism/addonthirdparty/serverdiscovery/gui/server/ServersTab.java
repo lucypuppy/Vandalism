@@ -21,7 +21,6 @@ package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.gui.server;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.florianmichael.rclasses.math.timer.MSTimer;
-import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.ServerDiscoveryUtil;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.impl.ServersRequest;
@@ -391,7 +390,7 @@ public class ServersTab implements MinecraftWrapper {
                                 /* Autistic fix for ingame with revert on disconnect */
                                 RStream.of(ProtocolTranslator.class).fields().by("previousVersion").set(null);
 
-                                ProtocolTranslator.setTargetVersion(protocolVersion, false);
+                                ViaFabricPlusAccess.setTargetVersion(protocolVersion, false);
                                 this.lastAddress = address;
                                 ServerConnectionUtil.connect(address);
                             }

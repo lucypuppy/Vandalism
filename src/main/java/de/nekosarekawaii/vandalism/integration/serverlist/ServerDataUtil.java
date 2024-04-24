@@ -21,9 +21,9 @@ package de.nekosarekawaii.vandalism.integration.serverlist;
 import com.google.gson.Gson;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.florianmichael.rclasses.math.timer.MSTimer;
-import de.florianmichael.viafabricplus.settings.impl.GeneralSettings;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
+import de.nekosarekawaii.vandalism.integration.viafabricplus.ViaFabricPlusAccess;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.text.Text;
@@ -54,7 +54,7 @@ public class ServerDataUtil {
 
     public static List<Text> attachAdditionalTooltipData(final List<Text> tooltip, final ServerInfo serverInfo) {
         if (serverInfo == null) return tooltip;
-        GeneralSettings.global().showAdvertisedServerVersion.setValue(false);
+        ViaFabricPlusAccess.setSettingValue("GeneralSettings", "showAdvertisedServerVersion", false);
         final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
         if (enhancedServerListSettings.enhancedServerList.getValue()) {
             if (enhancedServerListSettings.morePingTooltipServerInformation.getValue()) {
@@ -90,8 +90,7 @@ public class ServerDataUtil {
                         tooltip.add(Text.literal("Description: " + asn.getDescr()));
                         tooltip.add(Text.literal("ASN: " + asn.getAsn()));
                     }
-                }
-                else {
+                } else {
                     tooltip.add(Text.literal("Error: Failed to get IP information, API is probably down."));
                 }
                 if (LAST_SERVER_INFO_FETCH_TIMER.hasReached(2000, true)) {

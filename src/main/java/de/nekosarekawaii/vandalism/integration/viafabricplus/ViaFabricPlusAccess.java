@@ -26,10 +26,15 @@ import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import com.viaversion.viaversion.api.type.Type;
 import com.viaversion.viaversion.protocols.protocol1_8.ServerboundPackets1_8;
 import de.nekosarekawaii.vandalism.Vandalism;
+import net.lenni0451.reflect.stream.RStream;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import java.lang.reflect.Field;
 
 public class ViaFabricPlusAccess {
+
+    // We don't want to get the UNKNOWN version.
+    private static final String PROTOCOL_TRANSLATOR_CLASS = "de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator";
 
     private static Position toPosition(final BlockPos pos) {
         return new Position(pos.getX(), pos.getY(), pos.getZ());
@@ -65,14 +70,27 @@ public class ViaFabricPlusAccess {
     }
 
     /**
+     * Attempts to get the protocol version.
+     *
+     * @return the user connection
+     */
+    public static ProtocolVersion getTargetVersion() {
+        try {
+            return RStream.of(PROTOCOL_TRANSLATOR_CLASS).methods().by("getPlayNetworkUserConnection").invoke();
+        } catch (Exception e) {
+            Vandalism.getInstance().getLogger().error("An error occurred while attempting to get the user connection.", e);
+            return null;
+        }
+    }
+
+    /**
      * Attempts to get the user connection.
      *
      * @return the user connection
      */
     public static UserConnection getUserConnection() {
         try {
-            Class<?> protocolTranslatorClass = Class.forName("de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator");
-            return (UserConnection) protocolTranslatorClass.getMethod("getPlayNetworkUserConnection").invoke(null);
+            return RStream.of(PROTOCOL_TRANSLATOR_CLASS).methods().by("getPlayNetworkUserConnection").invoke();
         } catch (Exception e) {
             Vandalism.getInstance().getLogger().error("An error occurred while attempting to get the user connection.", e);
             return null;
@@ -88,11 +106,64 @@ public class ViaFabricPlusAccess {
      */
     public static Item translateItem(final ItemStack mcStack, final ProtocolVersion targetVersion) {
         try {
-            Class<?> itemTranslatorClass = Class.forName("de.florianmichael.viafabricplus.protocoltranslator.translator.ItemTranslator");
-            return (Item) itemTranslatorClass.getMethod("mcToVia", ItemStack.class, ProtocolVersion.class).invoke(null, mcStack, targetVersion);
+            final RStream classStream = RStream.of("de.florianmichael.viafabricplus.protocoltranslator.translator.ItemTranslator");
+            return classStream.methods().by("mcToVia", ItemStack.class, ProtocolVersion.class).invokeArgs(mcStack, targetVersion);
         } catch (Exception e) {
             Vandalism.getInstance().getLogger().error("An error occurred while attempting to translate the item.", e);
             return null;
+        }
+    }
+
+    /**
+     * Attempts to set a ViaFabricPlus setting.
+     *
+     * @param settingsClass the settings class (ex. GeneralSettings)
+     * @param settingsName  the property field name
+     * @param value         the value
+     * @param <T>           type
+     */
+    public static <T> void setSettingValue(final String settingsClass, final String settingsName, final T value) {
+        try {
+            final RStream classStream = RStream.of("de.florianmichael.viafabricplus.settings.impl." + settingsClass);
+            final Object globalMethod = classStream.methods().by("global").invoke();
+            Field settingField = classStream.clazz().getDeclaredField(settingsName);
+
+            settingField.getType().getMethod(
+                    "setValue",
+                    value.getClass()
+            ).invoke(globalMethod, value);
+        } catch (Exception e) {
+            Vandalism.getInstance().getLogger().error("An error occurred while attempting to set the value.", e);
+        }
+    }
+
+    /**
+     * Attempts to set the previous version.
+     *
+     * @param version the previous version
+     */
+    public static void setPreviousVersion(final ProtocolVersion version) {
+        try {
+            RStream.of(PROTOCOL_TRANSLATOR_CLASS).fields().by("previousVersion").set(version);
+        } catch (Exception e) {
+            Vandalism.getInstance().getLogger().error("An error occurred while attempting to set the previous value.", e);
+        }
+    }
+
+    /**
+     * Attempts to set the target version.
+     *
+     * @param version the target version
+     */
+    public static void setTargetVersion(final ProtocolVersion version, final boolean revertOnDisconnect) {
+        try {
+            RStream.of(PROTOCOL_TRANSLATOR_CLASS).methods().by(
+                    "setTargetVersion",
+                    ProtocolVersion.class,
+                    boolean.class
+            ).invokeArgs(version, revertOnDisconnect);
+        } catch (Exception e) {
+            Vandalism.getInstance().getLogger().error("An error occurred while attempting to set the value.", e);
         }
     }
 
