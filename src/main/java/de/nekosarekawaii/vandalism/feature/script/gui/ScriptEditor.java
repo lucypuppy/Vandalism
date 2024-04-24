@@ -18,7 +18,6 @@
 
 package de.nekosarekawaii.vandalism.feature.script.gui;
 
-import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.script.Script;
 import de.nekosarekawaii.vandalism.feature.script.parse.ScriptParser;
@@ -29,6 +28,7 @@ import de.nekosarekawaii.vandalism.feature.script.parse.info.ScriptInfo;
 import de.nekosarekawaii.vandalism.feature.script.parse.info.impl.BooleanScriptInfo;
 import de.nekosarekawaii.vandalism.feature.script.parse.info.impl.CategoryScriptInfo;
 import de.nekosarekawaii.vandalism.feature.script.parse.info.impl.StringScriptInfo;
+import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;

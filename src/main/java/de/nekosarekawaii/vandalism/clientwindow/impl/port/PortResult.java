@@ -18,9 +18,9 @@
 
 package de.nekosarekawaii.vandalism.clientwindow.impl.port;
 
-import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientwindow.impl.widget.ServerInfoWidget;
+import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import net.lenni0451.mcping.MCPing;
 import net.lenni0451.mcping.exception.ConnectTimeoutException;
 import net.lenni0451.mcping.exception.ConnectionRefusedException;

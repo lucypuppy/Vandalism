@@ -18,7 +18,6 @@
 
 package de.nekosarekawaii.vandalism.integration.hud;
 
-import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.clientwindow.ClientWindowManager;
@@ -31,6 +30,7 @@ import de.nekosarekawaii.vandalism.integration.hud.gui.HUDClientWindow;
 import de.nekosarekawaii.vandalism.integration.hud.impl.InfoHUDElement;
 import de.nekosarekawaii.vandalism.integration.hud.impl.ModuleListHUDElement;
 import de.nekosarekawaii.vandalism.integration.hud.impl.WatermarkHUDElement;
+import de.nekosarekawaii.vandalism.util.common.Storage;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 

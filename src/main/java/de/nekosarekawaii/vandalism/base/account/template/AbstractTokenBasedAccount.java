@@ -22,7 +22,7 @@ import com.google.gson.JsonObject;
 import com.mojang.authlib.yggdrasil.YggdrasilEnvironment;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
-import de.nekosarekawaii.vandalism.util.common.EncryptionUtil;
+import de.nekosarekawaii.vandalism.util.encryption.AESEncryptionUtil;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
@@ -113,12 +113,12 @@ public abstract class AbstractTokenBasedAccount extends AbstractAccount {
 
     @Override
     public void save0(final JsonObject mainNode) throws Throwable {
-        mainNode.addProperty("token", EncryptionUtil.encrypt(this.getSession().getUsername(), this.token));
+        mainNode.addProperty("token", AESEncryptionUtil.encrypt(this.getSession().getUsername(), this.token));
     }
 
     @Override
     public void load0(final JsonObject mainNode) throws Throwable {
-        this.token = EncryptionUtil.decrypt(this.getSession().getUsername(), mainNode.get("token").getAsString());
+        this.token = AESEncryptionUtil.decrypt(this.getSession().getUsername(), mainNode.get("token").getAsString());
     }
 
 }

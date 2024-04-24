@@ -19,7 +19,6 @@
 package de.nekosarekawaii.vandalism.feature.command;
 
 import com.mojang.brigadier.CommandDispatcher;
-import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.feature.command.impl.exploit.*;
 import de.nekosarekawaii.vandalism.feature.command.impl.misc.*;
@@ -28,6 +27,7 @@ import de.nekosarekawaii.vandalism.feature.command.impl.movement.FlipCommand;
 import de.nekosarekawaii.vandalism.feature.command.impl.movement.HClipCommand;
 import de.nekosarekawaii.vandalism.feature.command.impl.movement.VClipCommand;
 import de.nekosarekawaii.vandalism.feature.command.impl.render.ClientsideInventoryClearCommand;
+import de.nekosarekawaii.vandalism.util.common.Storage;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.ClickEvent;

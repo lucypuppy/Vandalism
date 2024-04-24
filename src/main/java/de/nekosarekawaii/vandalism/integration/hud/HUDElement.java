@@ -19,12 +19,12 @@
 package de.nekosarekawaii.vandalism.integration.hud;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.florianmichael.rclasses.math.geometry.Alignment;
-import de.florianmichael.rclasses.math.integration.Boundings;
-import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.util.common.Alignment;
+import de.nekosarekawaii.vandalism.util.common.Boundings;
+import de.nekosarekawaii.vandalism.util.common.IName;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.InputType;
 import net.minecraft.client.gui.DrawContext;

@@ -18,7 +18,6 @@
 
 package de.nekosarekawaii.vandalism.base.account;
 
-import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.base.account.config.AccountsConfig;
 import de.nekosarekawaii.vandalism.base.account.gui.AccountsClientWindow;
 import de.nekosarekawaii.vandalism.base.account.type.EasyMCAccount;
@@ -28,6 +27,7 @@ import de.nekosarekawaii.vandalism.base.account.type.microsoft.MSDeviceCodeAccou
 import de.nekosarekawaii.vandalism.base.account.type.microsoft.MSLocalWebserverAccount;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.clientwindow.ClientWindowManager;
+import de.nekosarekawaii.vandalism.util.common.Storage;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.session.Session;
 

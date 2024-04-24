@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.base.config;
 
-import de.florianmichael.rclasses.pattern.storage.Storage;
+import de.nekosarekawaii.vandalism.util.common.Storage;
 
 public class ConfigManager extends Storage<AbstractConfig<?>> {
 
