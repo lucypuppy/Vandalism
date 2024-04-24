@@ -20,7 +20,6 @@ package de.nekosarekawaii.vandalism.addonbaritone.settings;
 
 import baritone.Baritone;
 import baritone.api.Settings;
-import de.florianmichael.rclasses.common.color.HSBColor;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
@@ -29,6 +28,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.LongValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.util.render.HSBColor;
 
 import java.awt.*;
 import java.util.ArrayList;

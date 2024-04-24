@@ -19,8 +19,6 @@
 package de.nekosarekawaii.vandalism.integration.hud.impl;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
-import de.florianmichael.rclasses.math.geometry.Alignment;
-
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
@@ -32,6 +30,7 @@ import de.nekosarekawaii.vandalism.feature.module.impl.exploit.TickBaseModule;
 import de.nekosarekawaii.vandalism.injection.access.IRenderTickCounter;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
 import de.nekosarekawaii.vandalism.util.click.CPSTracker;
+import de.nekosarekawaii.vandalism.util.common.Alignment;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.client.gui.DrawContext;

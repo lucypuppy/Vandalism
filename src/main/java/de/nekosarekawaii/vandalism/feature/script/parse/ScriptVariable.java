@@ -18,8 +18,8 @@
 
 package de.nekosarekawaii.vandalism.feature.script.parse;
 
-import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
+import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 

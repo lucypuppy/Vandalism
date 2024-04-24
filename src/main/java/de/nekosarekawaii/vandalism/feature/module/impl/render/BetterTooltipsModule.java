@@ -18,13 +18,13 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
-import de.florianmichael.rclasses.common.StringUtils;
-import de.florianmichael.rclasses.io.debugging.ByteCountDataOutput;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
 import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.event.normal.render.TooltipDrawListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.common.ByteCountDataOutput;
+import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.game.InventoryNoop;
 import de.nekosarekawaii.vandalism.util.render.InputType;
 import de.nekosarekawaii.vandalism.util.render.tooltip.CustomContainerScreen;

@@ -18,7 +18,6 @@
 
 package de.nekosarekawaii.vandalism.feature.script;
 
-import de.florianmichael.rclasses.pattern.storage.named.NamedStorage;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
@@ -29,6 +28,7 @@ import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.script.gui.ScriptsClientWindow;
 import de.nekosarekawaii.vandalism.feature.script.parse.ScriptParser;
 import de.nekosarekawaii.vandalism.feature.script.parse.command.ScriptCommand;
+import de.nekosarekawaii.vandalism.util.common.NamedStorage;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.minecraft.util.Pair;

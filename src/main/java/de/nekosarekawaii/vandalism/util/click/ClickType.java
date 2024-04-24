@@ -18,11 +18,11 @@
 
 package de.nekosarekawaii.vandalism.util.click;
 
-import de.florianmichael.rclasses.common.StringUtils;
-import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.util.click.impl.BezierClicker;
 import de.nekosarekawaii.vandalism.util.click.impl.BoxMuellerClicker;
 import de.nekosarekawaii.vandalism.util.click.impl.CooldownClicker;
+import de.nekosarekawaii.vandalism.util.common.IName;
+import de.nekosarekawaii.vandalism.util.common.StringUtils;
 
 public enum ClickType implements IName {
 

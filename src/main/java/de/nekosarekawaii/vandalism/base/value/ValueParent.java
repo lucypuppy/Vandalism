@@ -18,13 +18,13 @@
 
 package de.nekosarekawaii.vandalism.base.value;
 
-import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
 import de.nekosarekawaii.vandalism.base.value.impl.rendering.ButtonValue;
 import de.nekosarekawaii.vandalism.base.value.impl.rendering.SeparatorValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
+import de.nekosarekawaii.vandalism.util.common.IName;
 import imgui.ImGui;
 import imgui.flag.ImGuiMouseButton;
 

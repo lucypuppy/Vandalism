@@ -20,9 +20,9 @@ package de.nekosarekawaii.vandalism.util.game;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.integration.creativetab.CreativeTabManager;
+import de.nekosarekawaii.vandalism.util.common.IName;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;

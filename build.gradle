@@ -162,10 +162,6 @@ dependencies {
     jij "de.florianmichael:DietrichEvents2:${project.dietrichevents2_version}"
     jij "de.florianmichael:WaybackAuthLib:${project.waybackauthlib_version}"
 
-    jij ("de.florianmichael.rclasses:all:${project.rclasses_version}") {
-        exclude module: "kotlin-support"
-    }
-
     jij "net.lenni0451:ImNbt:${project.imnbt_version}"
     jij "net.lenni0451:MCPing:${project.mc_ping_version}"
     jij "net.lenni0451:Reflect:${project.reflect_version}"

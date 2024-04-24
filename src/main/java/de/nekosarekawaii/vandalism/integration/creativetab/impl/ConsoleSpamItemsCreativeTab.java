@@ -18,9 +18,9 @@
 
 package de.nekosarekawaii.vandalism.integration.creativetab.impl;
 
-import de.florianmichael.rclasses.common.RandomUtils;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.integration.creativetab.AbstractCreativeTab;
+import de.nekosarekawaii.vandalism.util.common.RandomUtils;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;

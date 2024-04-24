@@ -19,9 +19,9 @@
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.florianmichael.rclasses.common.color.ColorUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.MenuSettings;
+import de.nekosarekawaii.vandalism.util.render.ColorUtils;
 import de.nekosarekawaii.vandalism.util.render.RenderUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ClickableWidget;

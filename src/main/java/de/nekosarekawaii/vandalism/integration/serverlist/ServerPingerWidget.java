@@ -19,10 +19,10 @@
 package de.nekosarekawaii.vandalism.integration.serverlist;
 
 import com.google.gson.JsonSyntaxException;
-import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
 import de.nekosarekawaii.vandalism.clientwindow.impl.port.PortResult;
+import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.lenni0451.mcping.MCPing;
 import net.lenni0451.mcping.exception.ConnectTimeoutException;

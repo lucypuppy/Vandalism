@@ -16,12 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.imgui;
+package de.nekosarekawaii.vandalism.util.common;
 
-import imgui.ImGuiIO;
+/**
+ * Enum for the alignment of an object. The alignment is used to determine the position of an object relative to another object.
+ */
+public enum Alignment {
 
-public interface ImRenderer {
+    LEFT, RIGHT,
+    TOP, BOTTOM,
 
-    void render(final ImGuiIO io);
+    MIDDLE
 
 }
