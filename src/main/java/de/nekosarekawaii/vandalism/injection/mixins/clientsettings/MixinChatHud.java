@@ -61,7 +61,7 @@ public abstract class MixinChatHud {
         return string;
     }
 
-    @Redirect(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;ILnet/minecraft/client/gui/hud/MessageIndicator;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/ChatMessages;breakRenderedChatMessageLines(Lnet/minecraft/text/StringVisitable;ILnet/minecraft/client/font/TextRenderer;)Ljava/util/List;"))
+    @Redirect(method = "addVisibleMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/ChatMessages;breakRenderedChatMessageLines(Lnet/minecraft/text/StringVisitable;ILnet/minecraft/client/font/TextRenderer;)Ljava/util/List;"))
     private List<OrderedText> sameLineMessages(final StringVisitable message, final int width, final TextRenderer textRenderer) {
         final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
         if (chatSettings.sameLineMessages.getValue()) {
@@ -86,7 +86,7 @@ public abstract class MixinChatHud {
         return ChatMessages.breakRenderedChatMessageLines(message, width, textRenderer);
     }
 
-    @ModifyConstant(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;ILnet/minecraft/client/gui/hud/MessageIndicator;Z)V", constant = @Constant(intValue = 100), expect = 2)
+    @ModifyConstant(method = "addToMessageHistory", constant = @Constant(intValue = 100), expect = 2)
     public int moreChatHistory(final int original) {
         final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
         if (chatSettings.moreChatHistory.getValue()) {
