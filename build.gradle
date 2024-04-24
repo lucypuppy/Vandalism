@@ -188,6 +188,7 @@ dependencies {
 
     // Since we're hard depending on ViaVersion we'll just include that.
     jij "com.viaversion:viaversion-common:${project.viaversion_version}"
+    jij "net.raphimc:ViaLoader:${project.vialoader_version}"
 
     // Fabric's jar in jar system doesn't support transitive dependencies, so we have to manually add them
     afterEvaluate {
