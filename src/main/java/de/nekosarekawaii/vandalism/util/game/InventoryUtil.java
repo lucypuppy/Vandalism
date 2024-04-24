@@ -65,7 +65,7 @@ public class InventoryUtil implements MinecraftWrapper {
         }
     }
 
-    public static RecipeEntry<Recipe<?>> createDummyRecipeEntry(final Identifier identifier) {
+   /* public static RecipeEntry<Recipe<?>> createDummyRecipeEntry(final Identifier identifier) {
         return new RecipeEntry<>(
                 identifier,
                 new Recipe<>() {
@@ -102,6 +102,6 @@ public class InventoryUtil implements MinecraftWrapper {
 
                 }
         );
-    }
+    }*/
 
 }

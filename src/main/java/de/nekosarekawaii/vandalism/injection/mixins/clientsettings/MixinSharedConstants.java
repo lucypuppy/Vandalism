@@ -29,13 +29,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(SharedConstants.class)
 public abstract class MixinSharedConstants {
 
-    @Inject(method = "isValidChar", at = @At("HEAD"), cancellable = true)
+/*    @Inject(method = "isValidChar", at = @At("HEAD"), cancellable = true)
     private static void allowColorChar(char chr, CallbackInfoReturnable<Boolean> cir) {
         if (Vandalism.getInstance().getClientSettings().getChatSettings().allowColorChar.getValue()) {
             if (chr == Formatting.FORMATTING_CODE_PREFIX) {
                 cir.setReturnValue(true);
             }
         }
-    }
+    }*/
 
 }

@@ -38,6 +38,7 @@ import net.minecraft.block.entity.BannerPattern;
 import net.minecraft.block.entity.BannerPatterns;
 import net.minecraft.client.item.TooltipData;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.LodestoneTrackerComponent;
 import net.minecraft.component.type.MapIdComponent;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.*;
@@ -121,38 +122,29 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
     }
 
     private void drawBytesTooltip(final List<TooltipData> tooltipData, final ItemStack itemStack) {
-        try {
-            itemStack.writeNbt(new NbtCompound()).write(ByteCountDataOutput.INSTANCE);
-            final int byteCount = ByteCountDataOutput.INSTANCE.getCount();
-            ByteCountDataOutput.INSTANCE.reset();
-            tooltipData.add(new TextTooltipComponent(Text.literal(
-                            StringUtils.formatBytes(byteCount)
-                    ).formatted(
-                            Formatting.GRAY
-                    ).asOrderedText())
-            );
-        } catch (IOException e) {
-            Vandalism.getInstance().getLogger().error("Failed to write item stack to nbt.", e);
-        }
+        //itemStack.writeNbt(new NbtCompound()).write(ByteCountDataOutput.INSTANCE);
+        final int byteCount = ByteCountDataOutput.INSTANCE.getCount();
+        ByteCountDataOutput.INSTANCE.reset();
+        tooltipData.add(new TextTooltipComponent(Text.literal(
+                        StringUtils.formatBytes(byteCount)
+                ).formatted(
+                        Formatting.GRAY
+                ).asOrderedText())
+        );
     }
 
     private void drawCompassTooltip(final List<TooltipData> tooltipData, final ItemStack itemStack) {
-        final NbtCompound nbt = itemStack.getNbt();
-        if (nbt == null) {
+        final LodestoneTrackerComponent lodestoneComponent = itemStack.getComponents().get(DataComponentTypes.LODESTONE_TRACKER);
+        if (lodestoneComponent == null || lodestoneComponent.target().isEmpty()) {
             return;
         }
 
-        final GlobalPos globalPos = CompassItem.createLodestonePos(nbt);
-        if (globalPos == null) {
-            return;
-        }
-
-        final BlockPos pos = globalPos.getPos();
-        final Text posText = Text.literal(String.format("X: %d, Y: %d, Z: %d", pos.getX(), pos.getY(), pos.getZ())).formatted(Formatting.GOLD);
+        final GlobalPos globalPos = lodestoneComponent.target().get();
+        final Text posText = Text.literal(String.format("X: %d, Y: %d, Z: %d", globalPos.pos().getX(), globalPos.pos().getY(), globalPos.pos().getZ())).formatted(Formatting.GOLD);
         final Text position = Text.literal("Position: ").formatted(Formatting.GRAY).append(posText);
         final Text dimension = Text.literal("Dimension: ").formatted(Formatting.GRAY).append(
                 Text.literal(
-                        globalPos.getDimension().getValue().toString()
+                        globalPos.dimension().getValue().toString()
                 ).formatted(Formatting.GOLD)
         );
 
@@ -160,8 +152,9 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
         tooltipData.add(new TextTooltipComponent(dimension.asOrderedText()));
     }
 
+    // TODO: fix
     private void drawBannerPatternTooltip(final List<TooltipData> tooltipData, final BannerPatternItem patternItem) {
-        final Optional<RegistryEntryList.Named<BannerPattern>> optionalList = Registries.BANNER_PATTERN.getEntryList(patternItem.getPattern());
+    /*    final Optional<RegistryEntryList.Named<BannerPattern>> optionalList = Registries.BANNER_PATTERN.getEntryList(patternItem.getPattern());
 
         if (optionalList.isPresent()) {
             final RegistryEntryList.Named<BannerPattern> list = optionalList.get();
@@ -170,7 +163,7 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
             if (bannerPattern != null) {
                 final ItemStack bannerItem = new ItemStack(Items.GRAY_BANNER);
 
-                bannerItem.getOrCreateSubNbt("BlockEntityTag").put("Patterns",
+               bannerItem.getOrCreateSubNbt("BlockEntityTag").put("Patterns",
                         new BannerPattern.Patterns().add(
                                 BannerPatterns.BASE,
                                 DyeColor.BLACK
@@ -181,11 +174,11 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
                 );
                 tooltipData.add(new BannerTooltipComponent(bannerItem));
             }
-        }
+        }*/
     }
 
     private void drawContainerTooltip(final List<TooltipData> tooltipData, final ItemStack itemStack, final Item item) {
-        final NbtCompound compoundTag = itemStack.getSubNbt("BlockEntityTag");
+/*        final NbtCompound compoundTag = itemStack.getSubNbt("BlockEntityTag");
         if (compoundTag != null && item instanceof BlockItem blockItem) {
             final boolean isGenericContainer = compoundTag.contains("Items", 9);
             if (isGenericContainer || compoundTag.contains("RecordItem")) {
@@ -228,7 +221,7 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
                     }
                 }
             }
-        }
+        }*/
     }
 
 }

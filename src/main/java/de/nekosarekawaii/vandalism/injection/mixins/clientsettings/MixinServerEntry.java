@@ -52,7 +52,7 @@ public abstract class MixinServerEntry {
 
     @Shadow @Final private MultiplayerScreen screen;
 
-    @Inject(method = "protocolVersionMatches", at = @At(value = "RETURN"), cancellable = true)
+   /* @Inject(method = "protocolVersionMatches", at = @At(value = "RETURN"), cancellable = true)
     private void forceProtocolVersionMatches(final CallbackInfoReturnable<Boolean> cir) {
         if (!Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().enhancedServerList.getValue()) {
             return;
@@ -60,7 +60,7 @@ public abstract class MixinServerEntry {
         if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().multiplayerScreenServerInformation.getValue()) {
             cir.setReturnValue(true);
         }
-    }
+    }*/
 
     @Unique
     private static final String vandalism$TYPE_TEXT = Formatting.GOLD + Formatting.BOLD.toString() + "Type" + Formatting.DARK_GRAY + Formatting.BOLD + "> " + Formatting.GRAY;
@@ -174,9 +174,10 @@ public abstract class MixinServerEntry {
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerScreen;setMultiplayerScreenTooltip(Ljava/util/List;)V", ordinal = 0))
+    // TODO for NekosAreKawaii since I don't know what it used to be. - Lucy
+    /*@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerScreen;setMultiplayerScreenTooltip(Ljava/util/List;)V", ordinal = 0))
     private void attachAdditionalTooltipData(final MultiplayerScreen instance, final List<Text> tooltip) {
         instance.setMultiplayerScreenTooltip(ServerDataUtil.attachAdditionalTooltipData(new ArrayList<>(tooltip), this.server));
-    }
+    }*/
 
 }

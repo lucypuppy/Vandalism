@@ -52,6 +52,7 @@ import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/*
 public class ItemStackLoggerModule extends AbstractModule implements PlayerUpdateListener {
 
     private final ButtonValue openDirectoryButton = new ButtonValue(
@@ -210,3 +211,4 @@ public class ItemStackLoggerModule extends AbstractModule implements PlayerUpdat
     }
 
 }
+*/

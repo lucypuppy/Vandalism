@@ -35,9 +35,11 @@ import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtHelper;
+import net.minecraft.network.NetworkPhase;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.NetworkState;
 import net.minecraft.network.packet.Packet;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
@@ -80,7 +82,7 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
         super("Packet Manager", "Allows to log and cancel packets.", Category.MISC);
         final List<String> serverPackets = new ArrayList<>();
         final List<String> clientPackets = new ArrayList<>();
-        for (final NetworkState networkState : NetworkState.values()) {
+/*        for (final NetworkState networkState : NetworkState.values()) {
             final String networkStateName = StringUtils.normalizeEnumName(networkState.name());
             for (final Class<? extends Packet<?>> serverPacketClass : networkState.getPacketIdToPacketMap(NetworkSide.CLIENTBOUND).values()) {
                 serverPackets.add(networkStateName + PacketManagerModule.getSimpleName(serverPacketClass));
@@ -88,7 +90,7 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
             for (final Class<? extends Packet<?>> clientPacketClass : networkState.getPacketIdToPacketMap(NetworkSide.SERVERBOUND).values()) {
                 clientPackets.add(networkStateName + PacketManagerModule.getSimpleName(clientPacketClass));
             }
-        }
+        }*/
         this.serverPackets = new MultiModeValue(
                 this,
                 "Server Packets",
@@ -115,7 +117,7 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
         Vandalism.getInstance().getEventSystem().unsubscribe(OutgoingPacketEvent.ID, this);
     }
 
-    private boolean handlePacket(final boolean outgoing, final Packet<?> packet, final NetworkState networkState) {
+    private boolean handlePacket(final boolean outgoing, final Packet<?> packet, final NetworkPhase networkState) {
         final String networkStateNormalized = StringUtils.normalizeEnumName(networkState.name());
         final String name = networkStateNormalized + PacketManagerModule.getSimpleName(packet.getClass());
         final boolean contains = this.clientPackets.isSelected(name) || this.serverPackets.isSelected(name);
@@ -189,9 +191,9 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
         }
 
         { /* Formattable */
-            if (object instanceof Text text) {
+          /*  if (object instanceof Text text) {
                 return Text.Serialization.toJsonString(text);
-            }
+            }*/
             if (object instanceof NbtElement element) {
                 return NbtHelper.toFormattedString(element);
             }

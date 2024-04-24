@@ -141,7 +141,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new FakeGameModeModule(),
                 new HandFuckerModule(),
                 new InteractionSpammerModule(),
-                new ItemStackLoggerModule(),
+                //new ItemStackLoggerModule(),
                 new JoinLeaveModule(),
                 new MessageEncryptorModule(),
                 new MiddleClickFriendsModule(),
