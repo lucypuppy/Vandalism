@@ -44,6 +44,8 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
         super(Text.literal("Troll Items"), Items.END_CRYSTAL);
     }
 
+    // TODO fix
+
     @Override
     public void exposeItems(final List<ItemStack> items) {
       /*  for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
