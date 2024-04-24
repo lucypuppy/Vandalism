@@ -30,6 +30,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(CreativeInventoryActionC2SPacket.class)
 public abstract class MixinCreativeInventoryActionC2SPacket {
 
+    // TODO fix
     /*@Redirect(method = "write", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/PacketByteBuf;writeItemStack(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/network/PacketByteBuf;"))
     private PacketByteBuf hookConsoleSpammer(final PacketByteBuf instance, final ItemStack stack) {
         final NbtCompound nbt = stack.getNbt();
