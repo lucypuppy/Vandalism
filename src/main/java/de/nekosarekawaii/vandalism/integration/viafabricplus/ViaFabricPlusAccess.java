@@ -18,13 +18,13 @@
 
 package de.nekosarekawaii.vandalism.integration.viafabricplus;
 
+import com.viaversion.viaversion.api.connection.UserConnection;
 import com.viaversion.viaversion.api.minecraft.Position;
+import com.viaversion.viaversion.api.minecraft.item.Item;
 import com.viaversion.viaversion.api.protocol.packet.PacketWrapper;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import com.viaversion.viaversion.api.type.Type;
 import com.viaversion.viaversion.protocols.protocol1_8.ServerboundPackets1_8;
-import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
-import de.florianmichael.viafabricplus.protocoltranslator.translator.ItemTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -36,7 +36,7 @@ public class ViaFabricPlusAccess {
     }
 
     public static void send1_8SignUpdatePacket(final BlockPos pos, final String line1, final String line2, final String line3, final String line4) {
-        final PacketWrapper packet = PacketWrapper.create(ServerboundPackets1_8.UPDATE_SIGN, ProtocolTranslator.getPlayNetworkUserConnection());
+        final PacketWrapper packet = PacketWrapper.create(ServerboundPackets1_8.UPDATE_SIGN, getUserConnection());
         packet.write(Type.POSITION1_8, toPosition(pos));
         packet.write(Type.STRING, line1);
         packet.write(Type.STRING, line2);
@@ -44,25 +44,55 @@ public class ViaFabricPlusAccess {
         packet.write(Type.STRING, line4);
         try {
             packet.sendToServerRaw();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Vandalism.getInstance().getLogger().error("An error occurred while sending a 1.8 sign update packet.", e);
         }
     }
 
     public static void send1_8BlockPlacePacket(final BlockPos pos, final int face, final ItemStack item, final float cX, final float cY, final float cZ) {
-        final PacketWrapper packet = PacketWrapper.create(ServerboundPackets1_8.PLAYER_BLOCK_PLACEMENT, ProtocolTranslator.getPlayNetworkUserConnection());
+        final PacketWrapper packet = PacketWrapper.create(ServerboundPackets1_8.PLAYER_BLOCK_PLACEMENT, getUserConnection());
         packet.write(Type.POSITION1_8, toPosition(pos));
         packet.write(Type.UNSIGNED_BYTE, (short) face);
-        packet.write(Type.ITEM, ItemTranslator.mcToVia(item, ProtocolVersion.v1_8));
+        packet.write(Type.ITEM1_8, translateItem(item, ProtocolVersion.v1_8));
         packet.write(Type.UNSIGNED_BYTE, (short) cX);
         packet.write(Type.UNSIGNED_BYTE, (short) cY);
         packet.write(Type.UNSIGNED_BYTE, (short) cZ);
         try {
             packet.sendToServerRaw();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Vandalism.getInstance().getLogger().error("An error occurred while sending a 1.8 block place packet.", e);
+        }
+    }
+
+    /**
+     * Attempts to get the user connection.
+     *
+     * @return the user connection
+     */
+    public static UserConnection getUserConnection() {
+        try {
+            Class<?> protocolTranslatorClass = Class.forName("de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator");
+            return (UserConnection) protocolTranslatorClass.getMethod("getPlayNetworkUserConnection").invoke(null);
+        } catch (Exception e) {
+            Vandalism.getInstance().getLogger().error("An error occurred while attempting to get the user connection.", e);
+            return null;
+        }
+    }
+
+    /**
+     * Attempts to translate the item using ViaFabricPlus' Item Translator.
+     *
+     * @param mcStack       the minecraft item stack
+     * @param targetVersion the version to translate to
+     * @return the viaversion item
+     */
+    public static Item translateItem(final ItemStack mcStack, final ProtocolVersion targetVersion) {
+        try {
+            Class<?> itemTranslatorClass = Class.forName("de.florianmichael.viafabricplus.protocoltranslator.translator.ItemTranslator");
+            return (Item) itemTranslatorClass.getMethod("mcToVia", ItemStack.class, ProtocolVersion.class).invoke(null, mcStack, targetVersion);
+        } catch (Exception e) {
+            Vandalism.getInstance().getLogger().error("An error occurred while attempting to translate the item.", e);
+            return null;
         }
     }
 
