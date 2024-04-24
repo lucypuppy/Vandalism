@@ -111,6 +111,7 @@ public class ServerPingerWidget implements MinecraftWrapper {
             context.drawHorizontalLine(x, x2, y2 + 1, Color.GRAY.getRGB());
             context.drawHorizontalLine(x, (int) (x + progress), y2 + 1, Color.GREEN.getRGB());
             context.disableScissor();
+            // TODO fix
 /*            final List<Text> tooltip = FAKE_MULTIPLAYER_SCREEN.multiplayerScreenTooltip;
             if (tooltip != null) {
                 context.drawTooltip(mc.textRenderer, tooltip, mouseX, mouseY);
