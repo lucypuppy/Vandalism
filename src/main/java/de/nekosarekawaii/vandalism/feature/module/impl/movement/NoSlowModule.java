@@ -19,7 +19,6 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
-import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
@@ -28,6 +27,7 @@ import de.nekosarekawaii.vandalism.event.normal.player.CanSprintListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerSlowdownListener;
 import de.nekosarekawaii.vandalism.event.normal.player.ShouldSlowdownListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.*;
 
 public class NoSlowModule extends AbstractModule implements PlayerSlowdownListener, CanSprintListener, ShouldSlowdownListener {
@@ -84,7 +84,7 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
     );
 
     private final ValueGroup shieldSlowDown = new ValueGroup(this, "Shield", "Shield Slowdown settings.").visibleCondition(() -> {
-        return ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_8);
+        return Vandalism.getInstance().getTargetVersion().newerThan(ProtocolVersion.v1_8);
     });
 
     private final FloatValue shieldForwardMultiplier = new FloatValue(
@@ -106,7 +106,7 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
     );
 
     private final ValueGroup swordSlowDown = new ValueGroup(this, "Sword", "Sword Slowdown settings.").visibleCondition(() -> {
-        return ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_9);
+        return Vandalism.getInstance().getTargetVersion().olderThan(ProtocolVersion.v1_9);
     });
 
     private final FloatValue swordForwardMultiplier = new FloatValue(
@@ -128,7 +128,7 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
     );
 
     private final ValueGroup tridentSlowDown = new ValueGroup(this, "Trident", "Trident Slowdown settings.").visibleCondition(() -> {
-        return ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_12);
+        return Vandalism.getInstance().getTargetVersion().newerThan(ProtocolVersion.v1_12);
     });
 
     private final FloatValue tridentForwardMultiplier = new FloatValue(
@@ -202,23 +202,23 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
         final ItemStack stack = this.mc.player.getActiveItem();
         if (!stack.isEmpty()) {
             final Item item = this.mc.player.getActiveItem().getItem();
-            if (item.isFood()) {
+            if (item.getComponents().contains(DataComponentTypes.FOOD)) {
                 return this.foodForwardMultiplier.getValue();
             }
             if (item instanceof PotionItem) {
                 return this.potionForwardMultiplier.getValue();
             }
-            if (ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_8)) {
+            if (Vandalism.getInstance().getTargetVersion().newerThan(ProtocolVersion.v1_8)) {
                 if (item instanceof ShieldItem) {
                     return this.shieldForwardMultiplier.getValue();
                 }
             }
-            if (ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_9)) {
+            if (Vandalism.getInstance().getTargetVersion().olderThan(ProtocolVersion.v1_9)) {
                 if (item instanceof SwordItem) {
                     return this.swordForwardMultiplier.getValue();
                 }
             }
-            if (ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_12_2)) {
+            if (Vandalism.getInstance().getTargetVersion().newerThan(ProtocolVersion.v1_12_2)) {
                 if (item instanceof TridentItem) {
                     return this.tridentForwardMultiplier.getValue();
                 }
@@ -238,23 +238,23 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
         final ItemStack stack = this.mc.player.getActiveItem();
         if (!stack.isEmpty()) {
             final Item item = this.mc.player.getActiveItem().getItem();
-            if (item.isFood()) {
+            if (item.getComponents().contains(DataComponentTypes.FOOD)) {
                 return this.foodSidewaysMultiplier.getValue();
             }
             if (item instanceof PotionItem) {
                 return this.potionSidewaysMultiplier.getValue();
             }
-            if (ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_8)) {
+            if (Vandalism.getInstance().getTargetVersion().newerThan(ProtocolVersion.v1_8)) {
                 if (item instanceof ShieldItem) {
                     return this.shieldSidewaysMultiplier.getValue();
                 }
             }
-            if (ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_9)) {
+            if (Vandalism.getInstance().getTargetVersion().olderThan(ProtocolVersion.v1_9)) {
                 if (item instanceof SwordItem) {
                     return this.swordSidewaysMultiplier.getValue();
                 }
             }
-            if (ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_12_2)) {
+            if (Vandalism.getInstance().getTargetVersion().newerThan(ProtocolVersion.v1_12_2)) {
                 if (item instanceof TridentItem) {
                     return this.tridentSidewaysMultiplier.getValue();
                 }

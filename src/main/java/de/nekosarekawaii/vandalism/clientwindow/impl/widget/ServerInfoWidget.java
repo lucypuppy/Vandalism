@@ -20,7 +20,6 @@ package de.nekosarekawaii.vandalism.clientwindow.impl.widget;
 
 import com.google.gson.JsonSyntaxException;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
-import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerDataUtil;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
@@ -135,7 +134,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                             if (ImGui.button("Connect with Server Version" + uniqueId + "connectwithserverversion", buttonWidth, buttonHeight)) {
                                 /* Autistic fix for ingame with revert on disconnect */
                                 RStream.of(ProtocolTranslator.class).fields().by("previousVersion").set(null);
-                                ProtocolTranslator.setTargetVersion(protocolVersion, true);
+                                ViaFabricPlusAccess.setTargetVersion(protocolVersion, true);
                                 ServerConnectionUtil.connect(address);
                             }
                         }

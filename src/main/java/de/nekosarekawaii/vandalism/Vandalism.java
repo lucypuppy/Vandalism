@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism;
 
-import de.nekosarekawaii.vandalism.render.Shaders;
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
@@ -37,7 +37,11 @@ import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
 import de.nekosarekawaii.vandalism.integration.newrotation.RotationManager;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerListManager;
 import de.nekosarekawaii.vandalism.integration.target.TargetManager;
+import de.nekosarekawaii.vandalism.integration.viafabricplus.ProtocolVersionListener;
+import de.nekosarekawaii.vandalism.integration.viafabricplus.ViaFabricPlusAccess;
+import de.nekosarekawaii.vandalism.render.Shaders;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
@@ -126,6 +130,11 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     private CommandManager commandManager;
     private ScriptManager scriptManager;
 
+    // Client Protocol
+    @Getter
+    @Setter
+    private ProtocolVersion targetVersion = ProtocolVersion.v1_20_3 /* There's no 1.20.5 yet. Thanks for nothing. */;
+
     public void printStartup() {
         this.logger.info("");
         final String[] ASCII_ART = {
@@ -198,6 +207,9 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
         this.scriptManager = new ScriptManager(this.configManager, this.clientWindowManager, this.runDirectory);
         this.scriptManager.init();
+
+        // We start the protocol listener.
+        new ProtocolVersionListener().start();
 
         // Cause of the menu category button order this needs to be called
         // after every default menu has been added and before the addons are loaded
