@@ -51,6 +51,7 @@ import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.SpeedModul
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.VelocityModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.render.*;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import lombok.Getter;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
@@ -65,19 +66,32 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
     private final ConfigManager configManager;
 
+    @Getter
     private ModPacketBlockerModule modPacketBlockerModule;
+    @Getter
     private ExploitFixerModule exploitFixerModule;
+    @Getter
     private TrueSightModule trueSightModule;
+    @Getter
     private BetterTabListModule betterTabListModule;
+    @Getter
     private FastPlaceModule fastPlaceModule;
+    @Getter
     private IllegalInteractionModule illegalInteractionModule;
+    @Getter
     private ESPModule espModule;
     private KillAuraModule killAuraModule;
+    @Getter
     private TickBaseModule tickBaseModule;
+    @Getter
     private FullBrightModule fullBrightModule;
+    @Getter
     private VehicleControlModule vehicleControlModule;
+    @Getter
     private ConsoleSpammerModule consoleSpammerModule;
+    @Getter
     private FastBreakModule fastBreakModule;
+    @Getter
     private ZoomModule zoomModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientWindowManager clientWindowManager) {
@@ -235,55 +249,4 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
         return this.getList().stream().filter(module -> module.getCategory() == category).toList();
     }
 
-    public ModPacketBlockerModule getModPacketBlockerModule() {
-        return modPacketBlockerModule;
-    }
-
-    public TrueSightModule getTrueSightModule() {
-        return trueSightModule;
-    }
-
-    public ExploitFixerModule getExploitFixerModule() {
-        return exploitFixerModule;
-    }
-
-    public BetterTabListModule getBetterTabListModule() {
-        return betterTabListModule;
-    }
-
-    public IllegalInteractionModule getIllegalInteractionModule() {
-        return illegalInteractionModule;
-    }
-
-    public FastPlaceModule getFastPlaceModule() {
-        return fastPlaceModule;
-    }
-
-    public ESPModule getEspModule() {
-        return espModule;
-    }
-
-    public TickBaseModule getTickBaseModule() {
-        return tickBaseModule;
-    }
-
-    public FullBrightModule getFullBrightModule() {
-        return fullBrightModule;
-    }
-
-    public VehicleControlModule getVehicleControlModule() {
-        return vehicleControlModule;
-    }
-
-    public ConsoleSpammerModule getConsoleSpammerModule() {
-        return consoleSpammerModule;
-    }
-
-    public FastBreakModule getFastBreakModule() {
-        return fastBreakModule;
-    }
-
-    public ZoomModule getZoomModule() {
-        return zoomModule;
-    }
 }
