@@ -37,7 +37,7 @@ import java.util.concurrent.Executor;
 
 @Mixin(TitleScreen.class)
 public abstract class MixinTitleScreen extends Screen {
-    
+
     protected MixinTitleScreen(final Text title) {
         super(title);
     }
@@ -51,9 +51,6 @@ public abstract class MixinTitleScreen extends Screen {
         return instance.loadTextureAsync(newId, executor);
     }
 
-    @Redirect(method = "renderPanoramaBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/RotatingCubeMapRenderer;render(Lnet/minecraft/client/gui/DrawContext;IIFF)V"))
-    private void replacePanoramaTexture(RotatingCubeMapRenderer instance, DrawContext context, int width, int height, float alpha, float tickDelta) {
-        this.renderBackground(context, 0, 0, tickDelta);
-    }
+    // todo readd background thing biwdhaw98hdu89iaw
 
 }
