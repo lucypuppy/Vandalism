@@ -37,6 +37,8 @@ import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.entity.BannerPattern;
 import net.minecraft.block.entity.BannerPatterns;
 import net.minecraft.client.item.TooltipData;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.MapIdComponent;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
@@ -101,14 +103,14 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
         final List<TooltipData> tooltipData = event.tooltipData;
         final ItemStack itemStack = event.itemStack;
         final Item item = itemStack.getItem();
-        if (item instanceof CompassItem && CompassItem.hasLodestone(itemStack)) {
+        if (item instanceof CompassItem stack && stack.getComponents().contains(DataComponentTypes.LODESTONE_TRACKER)) {
             drawCompassTooltip(tooltipData, itemStack);
         } else if (item instanceof BannerPatternItem patternItem) {
             drawBannerPatternTooltip(tooltipData, patternItem);
         } else if (item instanceof BannerItem) {
             tooltipData.add(new BannerTooltipComponent(itemStack));
-        } else if (item == Items.FILLED_MAP) {
-            final Integer mapId = FilledMapItem.getMapId(itemStack);
+        } else if (item instanceof FilledMapItem stack) {
+            final MapIdComponent mapId = stack.getComponents().get(DataComponentTypes.MAP_ID);
             if (mapId != null) {
                 tooltipData.add(new MapTooltipComponent(mapId));
             }

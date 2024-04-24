@@ -27,6 +27,7 @@ import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.component.type.MapIdComponent;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.map.MapState;
 import net.minecraft.util.Identifier;
@@ -34,10 +35,10 @@ import net.minecraft.util.Identifier;
 public class MapTooltipComponent implements TooltipComponent, MinecraftWrapper, ConvertibleTooltipData {
 
     private static final Identifier TEXTURE_MAP_BACKGROUND = new Identifier("textures/map/map_background.png");
-    private final int mapId;
+    private final MapIdComponent mapId;
     private final float scale = 1.0f;
 
-    public MapTooltipComponent(final int mapId) {
+    public MapTooltipComponent(final MapIdComponent mapId) {
         this.mapId = mapId;
     }
 

@@ -71,7 +71,7 @@ public class BannerTooltipComponent implements TooltipComponent, ConvertibleTool
         final VertexConsumerProvider.Immediate immediate = this.mc.getBufferBuilders().getEntityVertexConsumers();
         this.bannerField.pitch = 0f;
         this.bannerField.pivotY = -32f;
-        BannerBlockEntityRenderer.renderCanvas(matrices, immediate, 0xF000F0, OverlayTexture.DEFAULT_UV, this.bannerField, ModelLoader.BANNER_BASE, true, BannerBlockEntity.getPatternsFromNbt(((BannerItem) this.banner.getItem()).getColor(), BannerBlockEntity.getPatternListNbt(this.banner)));
+       // BannerBlockEntityRenderer.renderCanvas(matrices, immediate, 0xF000F0, OverlayTexture.DEFAULT_UV, this.bannerField, ModelLoader.BANNER_BASE, true, BannerBlockEntity.getPatternsFromNbt(((BannerItem) this.banner.getItem()).getColor(), BannerBlockEntity.getPatternListNbt(this.banner)));
         matrices.pop();
         matrices.pop();
         immediate.draw();
