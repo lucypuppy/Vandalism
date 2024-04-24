@@ -48,13 +48,4 @@ public abstract class MixinEntryListWidget<E extends EntryListWidget.Entry<E>> e
         }
     }
 
-    // remove the previous render background calls lol
-    @Redirect(
-            method = "renderWidget",
-            at = @At(value = "FIELD",
-                    target = "Lnet/minecraft/client/gui/widget/EntryListWidget;renderBackground:Z"))
-    public boolean renderWidgetBackground(final EntryListWidget<?> instance) {
-        return false;
-    }
-
 }
