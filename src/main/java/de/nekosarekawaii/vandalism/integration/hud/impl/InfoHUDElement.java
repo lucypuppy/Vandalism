@@ -242,7 +242,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
                 this.ping.getValue() &&
                 this.fasterPings.getValue() &&
                 !Vandalism.getInstance().getTargetVersion().olderThan(ProtocolVersion.v1_20_2)) {
-            this.clientPing = now - packet.getStartTime();
+            this.clientPing = now - packet.startTime();
         }
     }
 
