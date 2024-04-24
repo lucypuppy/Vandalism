@@ -54,6 +54,7 @@ public class CreativeTabManager extends Storage<AbstractCreativeTab> implements 
     }
 
     @Override
+    // TODO fix
     public void onOutgoingPacket(final OutgoingPacketEvent event) {
         if (event.packet instanceof final CreativeInventoryActionC2SPacket creativeInventoryActionC2SPacket) {
           /*  final ItemStack stack = creativeInventoryActionC2SPacket.stack.copy();

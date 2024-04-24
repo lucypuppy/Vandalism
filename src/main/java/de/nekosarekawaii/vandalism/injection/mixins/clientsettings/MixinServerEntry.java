@@ -52,6 +52,7 @@ public abstract class MixinServerEntry {
 
     @Shadow @Final private MultiplayerScreen screen;
 
+    // TODO fix
    /* @Inject(method = "protocolVersionMatches", at = @At(value = "RETURN"), cancellable = true)
     private void forceProtocolVersionMatches(final CallbackInfoReturnable<Boolean> cir) {
         if (!Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().enhancedServerList.getValue()) {
