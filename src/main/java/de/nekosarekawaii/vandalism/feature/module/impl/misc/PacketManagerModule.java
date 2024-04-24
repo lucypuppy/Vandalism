@@ -82,6 +82,7 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
         super("Packet Manager", "Allows to log and cancel packets.", Category.MISC);
         final List<String> serverPackets = new ArrayList<>();
         final List<String> clientPackets = new ArrayList<>();
+        // TODO fix
 /*        for (final NetworkState networkState : NetworkState.values()) {
             final String networkStateName = StringUtils.normalizeEnumName(networkState.name());
             for (final Class<? extends Packet<?>> serverPacketClass : networkState.getPacketIdToPacketMap(NetworkSide.CLIENTBOUND).values()) {
@@ -190,7 +191,7 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
             return "[".concat(Arrays.stream(array).map(index -> PacketManagerModule.dump(index, depth + 1, depthLimit)).collect(Collectors.joining(", "))).concat("]");
         }
 
-        { /* Formattable */
+        { /* Formattable */ // TODO fix
           /*  if (object instanceof Text text) {
                 return Text.Serialization.toJsonString(text);
             }*/

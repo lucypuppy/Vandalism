@@ -45,7 +45,9 @@ public abstract class MixinGameRenderer implements IGameRenderer, MinecraftWrapp
     private void callRotationListener(final CallbackInfo ci) {
         Vandalism.getInstance().getEventSystem().postInternal(RotationListener.RotationEvent.ID, new RotationListener.RotationEvent());
     }
-/*
+
+    // TODO fix
+    /*
     @ModifyConstant(method = "updateTargetedEntity", constant = @Constant(doubleValue = 9.0))
     private double changeRange(final double constant) {
         if (vandalism$isSelfInflicted()) {

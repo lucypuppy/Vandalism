@@ -52,6 +52,8 @@ import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+// TODO fix
+
 /*
 public class ItemStackLoggerModule extends AbstractModule implements PlayerUpdateListener {
 

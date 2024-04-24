@@ -178,6 +178,7 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
         }*/
     }
 
+    // TODO fix
     private void drawContainerTooltip(final List<TooltipData> tooltipData, final ItemStack itemStack, final Item item) {
 /*        final NbtCompound compoundTag = itemStack.getSubNbt("BlockEntityTag");
         if (compoundTag != null && item instanceof BlockItem blockItem) {
