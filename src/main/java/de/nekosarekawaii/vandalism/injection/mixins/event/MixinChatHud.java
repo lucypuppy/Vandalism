@@ -23,9 +23,9 @@ import de.nekosarekawaii.vandalism.event.normal.player.ChatModifyReceiveListener
 import de.nekosarekawaii.vandalism.event.normal.player.ChatReceiveListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHud;
+import net.minecraft.client.gui.hud.ChatHudLine;
 import net.minecraft.client.gui.hud.MessageIndicator;
 import net.minecraft.network.message.MessageSignatureData;
-import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -38,26 +38,28 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ChatHud.class)
 public abstract class MixinChatHud {
 
-    @Shadow @Final private MinecraftClient client;
+    @Shadow
+    @Final
+    private MinecraftClient client;
 
-    @ModifyArg(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;ILnet/minecraft/client/gui/hud/MessageIndicator;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/ChatMessages;breakRenderedChatMessageLines(Lnet/minecraft/text/StringVisitable;ILnet/minecraft/client/font/TextRenderer;)Ljava/util/List;"))
-    public StringVisitable callChatModifyReceiveListener(final StringVisitable content) {
+    @ModifyArg(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;Lnet/minecraft/client/gui/hud/MessageIndicator;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;addVisibleMessage(Lnet/minecraft/client/gui/hud/ChatHudLine;)V"))
+    public ChatHudLine callChatModifyReceiveListener(final ChatHudLine hudLine) {
         if (this.client.player != null) {
-            if (content instanceof final Text text) {
-                final ChatModifyReceiveListener.ChatModifyReceiveEvent event = new ChatModifyReceiveListener.ChatModifyReceiveEvent(text.copy());
-                Vandalism.getInstance().getEventSystem().postInternal(ChatModifyReceiveListener.ChatModifyReceiveEvent.ID, event);
-                return event.mutableText;
-            }
+            final ChatModifyReceiveListener.ChatModifyReceiveEvent event = new ChatModifyReceiveListener.ChatModifyReceiveEvent(hudLine.content().copy());
+            Vandalism.getInstance().getEventSystem().postInternal(ChatModifyReceiveListener.ChatModifyReceiveEvent.ID, event);
+            return new ChatHudLine(hudLine.creationTick(), event.mutableText, hudLine.signature(), hudLine.indicator());
         }
-        return content;
+
+        return hudLine;
     }
 
-    @Inject(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;ILnet/minecraft/client/gui/hud/MessageIndicator;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/ChatMessages;breakRenderedChatMessageLines(Lnet/minecraft/text/StringVisitable;ILnet/minecraft/client/font/TextRenderer;)Ljava/util/List;"))
-    public void callChatReceiveListener(final Text message, final MessageSignatureData signature, final int ticks, final MessageIndicator indicator, final boolean refresh, final CallbackInfo ci) {
+    @Inject(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;Lnet/minecraft/client/gui/hud/MessageIndicator;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;addVisibleMessage(Lnet/minecraft/client/gui/hud/ChatHudLine;)V"))
+    public void callChatReceiveListener(Text message, MessageSignatureData signatureData, MessageIndicator indicator, CallbackInfo ci) {
         if (this.client.player == null) {
             return;
         }
-        final ChatReceiveListener.ChatReceiveEvent event = new ChatReceiveListener.ChatReceiveEvent(message, signature, indicator);
+
+        final ChatReceiveListener.ChatReceiveEvent event = new ChatReceiveListener.ChatReceiveEvent(message, signatureData, indicator);
         Vandalism.getInstance().getEventSystem().postInternal(ChatReceiveListener.ChatReceiveEvent.ID, event);
     }
 
