@@ -46,7 +46,7 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
 
     @Override
     public void exposeItems(final List<ItemStack> items) {
-        for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
+      /*  for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
             items.add(withClientSide(createTrollPotion(new ItemStack(item)), Text.literal(Formatting.GOLD + "Troll Potion")));
         }
         for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
@@ -70,8 +70,9 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
         items.add(withClientSide(createUnstableTNTBlock(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Unstable TNT Block")));
         items.add(withClientSide(createGroundBugBoots(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Ground Bug Boots")));
         items.add(withClientSide(createCreativeItemControlItem(true), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Creative Item Control (Kick)")));
-        items.add(withClientSide(createCreativeItemControlItem(false), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Creative Item Control (Clear Chat)")));
+        items.add(withClientSide(createCreativeItemControlItem(false), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Creative Item Control (Clear Chat)")));*/
     }
+/*
 
     private static ItemStack createTrollPotion(final ItemStack origin) {
         final NbtCompound base = new NbtCompound();
@@ -317,5 +318,6 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
         item.setNbt(tag);
         return item;
     }
+*/
 
 }

@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.event.cancellable.network;
 
 import de.florianmichael.dietrichevents2.CancellableEvent;
 import net.minecraft.network.ClientConnection;
-import net.minecraft.network.NetworkState;
+import net.minecraft.network.NetworkPhase;
 import net.minecraft.network.packet.Packet;
 
 public interface IncomingPacketListener {
@@ -32,12 +32,12 @@ public interface IncomingPacketListener {
         public static final int ID = 0;
 
         public Packet<?> packet;
-        public final NetworkState networkState;
+        public final NetworkPhase networkPhase;
         public final ClientConnection connection;
 
-        public IncomingPacketEvent(final Packet<?> packet, final NetworkState networkState, final ClientConnection connection) {
+        public IncomingPacketEvent(final Packet<?> packet, final NetworkPhase networkPhase, final ClientConnection connection) {
             this.packet = packet;
-            this.networkState = networkState;
+            this.networkPhase = networkPhase;
             this.connection = connection;
         }
 

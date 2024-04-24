@@ -56,7 +56,7 @@ public class CreativeTabManager extends Storage<AbstractCreativeTab> implements 
     @Override
     public void onOutgoingPacket(final OutgoingPacketEvent event) {
         if (event.packet instanceof final CreativeInventoryActionC2SPacket creativeInventoryActionC2SPacket) {
-            final ItemStack stack = creativeInventoryActionC2SPacket.stack.copy();
+          /*  final ItemStack stack = creativeInventoryActionC2SPacket.stack.copy();
             final NbtCompound nbt = stack.getNbt();
             if (nbt == null) return;
             final boolean isClientSide = nbt.contains(CLIENTSIDE_NAME) || nbt.contains(CLIENTSIDE_GLINT);
@@ -83,7 +83,7 @@ public class CreativeTabManager extends Storage<AbstractCreativeTab> implements 
                     return;
                 }
             }
-            creativeInventoryActionC2SPacket.stack = stack;
+            creativeInventoryActionC2SPacket.stack = stack;*/
         }
     }
 

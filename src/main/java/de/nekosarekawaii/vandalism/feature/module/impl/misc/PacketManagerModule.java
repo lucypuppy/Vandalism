@@ -256,14 +256,14 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
 
     @Override
     public void onIncomingPacket(final IncomingPacketEvent event) {
-        if (this.handlePacket(false, event.packet, event.networkState)) {
+        if (this.handlePacket(false, event.packet, event.networkPhase)) {
             event.cancel();
         }
     }
 
     @Override
     public void onOutgoingPacket(final OutgoingPacketEvent event) {
-        if (this.handlePacket(true, event.packet, event.networkState)) {
+        if (this.handlePacket(true, event.packet, event.networkPhase)) {
             event.cancel();
         }
     }

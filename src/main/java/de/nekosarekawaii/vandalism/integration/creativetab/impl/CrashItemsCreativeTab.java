@@ -45,7 +45,7 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
 
     @Override
     public void exposeItems(final List<ItemStack> items) {
-        items.add(withClientSide(createClientInstantCrashSkull(CRASH_SKULL_1), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Skull")));
+    /*    items.add(withClientSide(createClientInstantCrashSkull(CRASH_SKULL_1), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Skull")));
         items.add(withClientSide(createClientInstantCrashSkull(CRASH_SKULL_2), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Skull V2")));
         items.add(withClientSide(createClientInstantCrashSkullV3(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Client Instant Crash Skull V3")));
         items.add(withClientSide(createClientInstantCrashSign("translation.test.invalid"), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Sign")));
@@ -60,10 +60,10 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
         items.add(withClientSide(createServerInstantCrashSculk(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Server Instant Crash Sculk")));
         items.add(withClientSide(createServerInstantCrashSign(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Server Instant Crash Sign")));
         items.add(withClientSide(createClientInstantCrashStone(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Instant Crash Stone")));
-        items.add(withClientSide(createClientAccessViolationNameTag(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Access Violation Name Tag")));
+        items.add(withClientSide(createClientAccessViolationNameTag(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Client Access Violation Name Tag"))); */
     }
 
-    private static ItemStack createClientInstantCrashSkull(final String value) {
+ /*   private static ItemStack createClientInstantCrashSkull(final String value) {
         final ItemStack item = new ItemStack(Items.PLAYER_HEAD);
         final NbtCompound base = new NbtCompound();
         final NbtCompound properties = new NbtCompound();
@@ -242,6 +242,6 @@ public class CrashItemsCreativeTab extends AbstractCreativeTab {
         final ItemStack item = new ItemStack(Items.NAME_TAG);
         item.setCustomName(Text.Serialization.fromJson("{\"translate\":\"%2$s%2$s%2$s%2$s%2$s\",\"with\":[\"\",{\"translate\":\"%2$s%2$s%2$s%2$s%2$s\",\"with\":[\"\",{\"translate\":\"%2$s%2$s%2$s%2$s%2$s\",\"with\":[\"\",{\"translate\":\"%2$s%2$s%2$s%2$s%2$s\",\"with\":[\"\",{\"translate\":\"%2$s%2$s%2$s%2$s%2$s\",\"with\":[\"\",{\"translate\":\"%2$s%2$s%2$s%2$s%2$s\",\"with\":[\"\",{\"translate\":\"%2$s%2$s%2$s%2$s%2$s\",\"with\":[\"\",{\"translate\":\"%2$s%2$s%2$s%2$s%2$s\",\"with\":[\"txsla\", \"txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_txsla_\"]}]}]}]}]}]}]}]}"));
         return item;
-    }
+    } */
 
 }
