@@ -18,12 +18,12 @@
 
 package de.nekosarekawaii.vandalism.feature.script.gui;
 
-import de.florianmichael.rclasses.common.RandomUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.feature.script.Script;
 import de.nekosarekawaii.vandalism.feature.script.parse.ScriptParser;
-import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.common.RandomUtils;
+import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiTabBarFlags;

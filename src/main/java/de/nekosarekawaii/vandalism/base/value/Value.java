@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.base.value;
 
 import com.google.gson.JsonObject;
-import de.florianmichael.rclasses.pattern.functional.IName;
+import de.nekosarekawaii.vandalism.util.common.IName;
 
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;

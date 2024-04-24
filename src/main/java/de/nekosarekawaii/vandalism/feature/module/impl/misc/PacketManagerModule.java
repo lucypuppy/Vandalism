@@ -23,7 +23,6 @@ import com.mojang.authlib.properties.PropertyMap;
 import de.florianmichael.asmfabricloader.AsmFabricLoader;
 import de.florianmichael.asmfabricloader.api.MapperBase;
 import de.florianmichael.dietrichevents2.Priorities;
-import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
@@ -32,6 +31,7 @@ import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListe
 import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.common.ArrayUtil;
+import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtHelper;

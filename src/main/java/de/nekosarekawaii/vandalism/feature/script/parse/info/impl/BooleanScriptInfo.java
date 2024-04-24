@@ -18,8 +18,8 @@
 
 package de.nekosarekawaii.vandalism.feature.script.parse.info.impl;
 
-import de.florianmichael.rclasses.common.array.ObjectTypeChecker;
 import de.nekosarekawaii.vandalism.feature.script.parse.info.IScriptInfo;
+import de.nekosarekawaii.vandalism.util.common.ObjectTypeChecker;
 
 public abstract class BooleanScriptInfo implements IScriptInfo<Boolean> {
 

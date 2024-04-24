@@ -27,7 +27,7 @@ import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.
 import de.nekosarekawaii.vandalism.base.account.type.SessionAccount;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
-import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;

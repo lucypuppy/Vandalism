@@ -19,13 +19,13 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import com.google.gson.*;
-import de.florianmichael.rclasses.common.RandomUtils;
-import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.rendering.ButtonValue;
 import de.nekosarekawaii.vandalism.event.normal.player.ChatReceiveListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.script.parse.ScriptVariable;
+import de.nekosarekawaii.vandalism.util.common.RandomUtils;
+import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.util.Util;
 

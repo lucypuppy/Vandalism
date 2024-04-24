@@ -22,7 +22,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
-import de.nekosarekawaii.vandalism.util.common.EncryptionUtil;
+import de.nekosarekawaii.vandalism.util.encryption.AESEncryptionUtil;
 import net.minecraft.client.session.Session;
 import net.raphimc.minecraftauth.MinecraftAuth;
 import net.raphimc.minecraftauth.step.AbstractStep;
@@ -74,12 +74,12 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
 
     @Override
     public void save0(final JsonObject mainNode) throws Throwable {
-        mainNode.addProperty("tokenChain", EncryptionUtil.encrypt(this.getSession().getUsername(), this.tokenChain));
+        mainNode.addProperty("tokenChain", AESEncryptionUtil.encrypt(this.getSession().getUsername(), this.tokenChain));
     }
 
     @Override
     public void load0(final JsonObject mainNode) throws Throwable {
-        this.tokenChain = EncryptionUtil.decrypt(this.getSession().getUsername(), mainNode.get("tokenChain").getAsString());
+        this.tokenChain = AESEncryptionUtil.decrypt(this.getSession().getUsername(), mainNode.get("tokenChain").getAsString());
     }
 
     @Override

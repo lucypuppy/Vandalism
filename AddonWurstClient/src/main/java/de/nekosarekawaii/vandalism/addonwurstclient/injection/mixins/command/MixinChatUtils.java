@@ -18,8 +18,8 @@
 
 package de.nekosarekawaii.vandalism.addonwurstclient.injection.mixins.command;
 
-import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.wurstclient.WurstClient;

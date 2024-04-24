@@ -19,7 +19,6 @@
 package de.nekosarekawaii.vandalism.feature.module;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import de.florianmichael.rclasses.pattern.storage.named.NamedStorage;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.clientwindow.ClientWindowManager;
@@ -50,6 +49,7 @@ import de.nekosarekawaii.vandalism.feature.module.impl.movement.phase.PhaseModul
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.SpeedModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.VelocityModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.render.*;
+import de.nekosarekawaii.vandalism.util.common.NamedStorage;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.text.Text;

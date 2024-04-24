@@ -18,8 +18,6 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
-import de.florianmichael.rclasses.common.StringUtils;
-import de.florianmichael.rclasses.common.color.ColorUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
@@ -29,6 +27,8 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.common.StringUtils;
+import de.nekosarekawaii.vandalism.util.render.ColorUtils;
 import de.nekosarekawaii.vandalism.util.render.RenderUtil;
 import net.minecraft.world.GameMode;
 import org.lwjgl.glfw.GLFW;

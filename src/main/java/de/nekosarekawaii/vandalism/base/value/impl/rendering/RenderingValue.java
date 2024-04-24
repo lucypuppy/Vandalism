@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.base.value.impl.rendering;
 
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.template.ValueNoOpConfig;
-import de.nekosarekawaii.vandalism.util.imgui.ImRenderer;
+import de.nekosarekawaii.vandalism.util.render.imgui.ImRenderer;
 import imgui.ImGui;
 
 public class RenderingValue extends ValueNoOpConfig<ImRenderer> {
