@@ -1,5 +1,5 @@
 plugins {
-    id "fabric-loom" version "1.5-SNAPSHOT"
+    id "fabric-loom" version "1.6-SNAPSHOT"
 }
 
 allprojects {
@@ -66,8 +66,6 @@ allprojects {
         modImplementation fabricApi.module("fabric-registry-sync-v0", project.fabric_version)
         modImplementation fabricApi.module("fabric-item-group-api-v1", project.fabric_version)
 
-        modImplementation "de.florianmichael:viafabricplus:${project.viafabricplus_version}"
-
         compileOnly "org.projectlombok:lombok:${project.lombok_version}"
         annotationProcessor "org.projectlombok:lombok:${project.lombok_version}"
     }
@@ -81,11 +79,11 @@ allprojects {
 
     java {
         toolchain {
-            languageVersion = JavaLanguageVersion.of(17)
+            languageVersion = JavaLanguageVersion.of(21)
         }
 
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     jar {
@@ -104,7 +102,6 @@ allprojects {
             }
         }
     }
-
 }
 
 subprojects {
@@ -164,6 +161,7 @@ dependencies {
     modJij "de.florianmichael:AsmFabricLoader:${project.asmfabricloader_version}"
     jij "de.florianmichael:DietrichEvents2:${project.dietrichevents2_version}"
     jij "de.florianmichael:WaybackAuthLib:${project.waybackauthlib_version}"
+
     jij ("de.florianmichael.rclasses:all:${project.rclasses_version}") {
         exclude module: "kotlin-support"
     }
@@ -186,6 +184,10 @@ dependencies {
     jij "org.jsoup:jsoup:${project.jsoup_version}"
 
     jij "net.raphimc:NoteBlockLib:${project.noteblocklib_version}"
+    jij "net.raphimc:MinecraftAuth:${project.minecraftauth_version}"
+
+    // Since we're hard depending on ViaVersion we'll just include that.
+    jij "com.viaversion:viaversion-common:${project.viaversion_version}"
 
     // Fabric's jar in jar system doesn't support transitive dependencies, so we have to manually add them
     afterEvaluate {
