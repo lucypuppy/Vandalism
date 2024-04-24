@@ -65,6 +65,7 @@ public class InventoryUtil implements MinecraftWrapper {
         }
     }
 
+    // TODO fix
    /* public static RecipeEntry<Recipe<?>> createDummyRecipeEntry(final Identifier identifier) {
         return new RecipeEntry<>(
                 identifier,
