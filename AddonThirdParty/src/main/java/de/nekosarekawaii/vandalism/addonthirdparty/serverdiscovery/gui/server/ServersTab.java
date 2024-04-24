@@ -26,6 +26,7 @@ import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.ServerDiscove
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.impl.ServersRequest;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.Response;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.impl.ServersResponse;
+import de.nekosarekawaii.vandalism.integration.viafabricplus.ViaFabricPlusAccess;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import de.nekosarekawaii.vandalism.util.imgui.ImUtils;
@@ -38,15 +39,12 @@ import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import imgui.type.ImString;
 import net.lenni0451.mcping.MCPing;
-import net.lenni0451.reflect.stream.RStream;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.ServerList;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Pair;
-import net.raphimc.viaaprilfools.api.AprilFoolsProtocolVersion;
 import net.raphimc.viabedrock.api.BedrockProtocolVersion;
-import net.raphimc.vialoader.util.ProtocolVersionList;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -139,12 +137,13 @@ public class ServersTab implements MinecraftWrapper {
             if (ImGui.beginCombo("Version", this.protocol == ServersRequest.ANY_PROTOCOL ? "Any" : ProtocolVersion.getProtocol(this.protocol).getName(), ImGuiComboFlags.HeightLargest)) {
                 final List<Integer> protocols = new ArrayList<>();
                 protocols.add(ServersRequest.ANY_PROTOCOL);
-                for (final ProtocolVersion protocolVersion : ProtocolVersionList.getProtocolsNewToOld()) {
+                for (final ProtocolVersion protocolVersion : ProtocolVersion.getProtocols()) {
                     if (
                             protocolVersion.olderThan(ProtocolVersion.v1_7_2) ||
-                            AprilFoolsProtocolVersion.PROTOCOLS.contains(protocolVersion) ||
-                            protocolVersion.equals(BedrockProtocolVersion.bedrockLatest) ||
-                            protocolVersion.equals(ProtocolTranslator.AUTO_DETECT_PROTOCOL)
+                            // TODO
+                            //AprilFoolsProtocolVersion.PROTOCOLS.contains(protocolVersion) ||
+                            protocolVersion.getName().contains("Bedrock") ||
+                            protocolVersion.getName().contains("Auto Detect")
                     ) {
                         continue;
                     }
@@ -388,8 +387,7 @@ public class ServersTab implements MinecraftWrapper {
                         if (protocolVersion.isKnown()) {
                             if (ImGui.button("Connect with Server Version" + serverEntryId + "connectwithserverversion", buttonWidth, buttonHeight)) {
                                 /* Autistic fix for ingame with revert on disconnect */
-                                RStream.of(ProtocolTranslator.class).fields().by("previousVersion").set(null);
-
+                                ViaFabricPlusAccess.setPreviousVersion(null);
                                 ViaFabricPlusAccess.setTargetVersion(protocolVersion, false);
                                 this.lastAddress = address;
                                 ServerConnectionUtil.connect(address);
