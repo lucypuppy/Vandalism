@@ -32,6 +32,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.NbtPathArgumentType;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -59,12 +61,12 @@ public class NbtCommand extends AbstractCommand {
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
-    /*    final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
+        final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
         builder.then(literal("add").then(argument("nbt", NbtCompoundArgumentType.create()).executes(s -> {
             final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
                 final NbtCompound tag = NbtCompoundArgumentType.get(s);
-                final NbtCompound source = stack.getOrCreateNbt();
+                final NbtCompound source = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
                 if (tag != null) {
                     source.copyFrom(tag);
                     ItemStackUtil.giveItemStack(stack);
@@ -78,19 +80,20 @@ public class NbtCommand extends AbstractCommand {
             return SINGLE_SUCCESS;
         })));
 
-        builder.then(literal("set").then(argument("nbt", NbtCompoundArgumentType.create()).executes(context -> {
+        // TODO fix
+       /* builder.then(literal("set").then(argument("nbt", NbtCompoundArgumentType.create()).executes(context -> {
             final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
                 stack.setNbt(NbtCompoundArgumentType.get(context));
                 ItemStackUtil.giveItemStack(stack);
             }
             return SINGLE_SUCCESS;
-        })));
+        })));     */
 
         builder.then(literal("remove").then(argument("nbt_path", NbtPathArgumentType.nbtPath()).executes(context -> {
             final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
-                context.getArgument("nbt_path", NbtPathArgumentType.NbtPath.class).remove(stack.getNbt());
+                context.getArgument("nbt_path", NbtPathArgumentType.NbtPath.class).remove(stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt());
                 ItemStackUtil.giveItemStack(stack);
             }
             return SINGLE_SUCCESS;
@@ -99,7 +102,7 @@ public class NbtCommand extends AbstractCommand {
         builder.then(literal("view").executes(context -> {
             final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
-                final NbtCompound tag = stack.getNbt();
+                final NbtCompound tag = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
                 final MutableText copyButton = Text.literal("NBT");
                 copyButton.setStyle(
                         copyButton.getStyle().withFormatting(Formatting.UNDERLINE).withClickEvent(
@@ -148,7 +151,8 @@ public class NbtCommand extends AbstractCommand {
                 final BlockEntity blockEntity = mc.world.getBlockEntity(pos);
                 if (blockEntity != null) {
                     final NbtCompound tag = new NbtCompound();
-                    blockEntity.writeNbt(tag);
+                    // TODO fix
+                    //    blockEntity.writeNbt(tag);
                     final MutableText copyButton = Text.literal("NBT");
                     copyButton.setStyle(
                             copyButton.getStyle().withFormatting(Formatting.UNDERLINE).withClickEvent(
@@ -159,8 +163,7 @@ public class NbtCommand extends AbstractCommand {
                     );
                     final MutableText text = Text.literal("");
                     text.append(copyButton);
-                    if (tag == null) text.append("{}");
-                    else text.append(" ").append(NbtHelper.toPrettyPrintedText(tag));
+                    text.append(" ").append(NbtHelper.toPrettyPrintedText(tag));
                     ChatUtil.infoChatMessage(text);
                     return SINGLE_SUCCESS;
                 }
@@ -172,7 +175,7 @@ public class NbtCommand extends AbstractCommand {
         builder.then(literal("copy").executes(context -> {
             final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
-                final NbtCompound tag = stack.getOrCreateNbt();
+                final NbtCompound tag = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
                 this.mc.keyboard.setClipboard(tag.toString());
                 ChatUtil.infoChatMessage("NBT copied into the clipboard.");
             }
@@ -199,7 +202,8 @@ public class NbtCommand extends AbstractCommand {
                 final BlockEntity blockEntity = mc.world.getBlockEntity(pos);
                 if (blockEntity != null) {
                     final NbtCompound tag = new NbtCompound();
-                    blockEntity.writeNbt(tag);
+                    // TODO fix
+               //     blockEntity.writeNbt(tag);
                     this.mc.keyboard.setClipboard(tag.toString());
                     ChatUtil.infoChatMessage("NBT copied into the clipboard.");
                     return SINGLE_SUCCESS;
@@ -209,14 +213,14 @@ public class NbtCommand extends AbstractCommand {
             return SINGLE_SUCCESS;
         }));
 
-        builder.then(literal("paste").executes(context -> {
+        /*builder.then(literal("paste").executes(context -> {
             final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
                 stack.setNbt(new NbtCompoundArgumentType().parse(new StringReader(this.mc.keyboard.getClipboard())));
                 ItemStackUtil.giveItemStack(stack);
             }
             return SINGLE_SUCCESS;
-        }));
+        }));*/
 
         builder.then(literal("count").then(argument("count", IntegerArgumentType.integer(-127, 127)).executes(context -> {
             final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
@@ -232,7 +236,7 @@ public class NbtCommand extends AbstractCommand {
         builder.then(literal("gui").executes(context -> {
             final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
-                Vandalism.getInstance().getClientWindowManager().getByClass(NbtEditorClientWindow.class).displayNbt(stack.getName().getString(), stack.getNbt());
+                Vandalism.getInstance().getClientWindowManager().getByClass(NbtEditorClientWindow.class).displayNbt(stack.getName().getString(), stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt());
             }
             return SINGLE_SUCCESS;
         }));
@@ -262,7 +266,8 @@ public class NbtCommand extends AbstractCommand {
                 final BlockEntity blockEntity = mc.world.getBlockEntity(pos);
                 if (blockEntity != null && blockState != null) {
                     final NbtCompound tag = new NbtCompound();
-                    blockEntity.writeNbt(tag);
+                    // TODO fix
+                    //blockEntity.writeNbt(tag);
                     this.mc.keyboard.setClipboard(tag.toString());
                     if (tag != null && !tag.isEmpty()) {
                         Vandalism.getInstance().getClientWindowManager().getByClass(NbtEditorClientWindow.class).displayNbt(blockState.getBlock().getName().getString(), tag);
@@ -286,7 +291,7 @@ public class NbtCommand extends AbstractCommand {
             } else displayTitle = "Nbt";
             Vandalism.getInstance().getClientWindowManager().getByClass(NbtEditorClientWindow.class).displayNbt(displayTitle, nbt);
             return SINGLE_SUCCESS;
-        })));*/
+        })));
     }
 
     private boolean validBasic(final ItemStack stack) {
