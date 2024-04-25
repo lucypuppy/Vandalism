@@ -18,7 +18,11 @@
 
 package de.nekosarekawaii.vandalism.integration.serverlist;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
 import de.nekosarekawaii.vandalism.clientwindow.impl.port.PortResult;
@@ -42,7 +46,9 @@ import net.minecraft.client.option.ServerList;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextCodecs;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.JsonHelper;
 
 import java.awt.*;
 import java.net.UnknownHostException;
@@ -53,6 +59,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class ServerPingerWidget implements MinecraftWrapper {
+
+    private static final Gson GSON = new Gson();
 
     private static final String BASE64_START = "data:image/png;base64,";
 
@@ -162,11 +170,12 @@ public class ServerPingerWidget implements MinecraftWrapper {
                             currentServerInfo.ping = response.server.ping;
                             final String descriptionString = response.description;
                             try {
-                                // TODO WHY I NTHE FUCK)O?WADH UIAWHDUIWAHUi
-/*                                final MutableText description = Text.Serialization.fromJson(descriptionString);
+                                final JsonElement jsonElement = JsonHelper.deserialize(GSON, descriptionString, JsonElement.class);
+                                final DataResult<Text> dataResult = TextCodecs.CODEC.parse(JsonOps.INSTANCE, jsonElement);
+                                final MutableText description = (MutableText) dataResult.result().orElse(null);
                                 if (description != null) {
                                     currentServerInfo.label = description;
-                                }*/
+                                }
                             } catch (JsonSyntaxException ignored) {
                                 currentServerInfo.label = Text.literal(descriptionString);
                             }
