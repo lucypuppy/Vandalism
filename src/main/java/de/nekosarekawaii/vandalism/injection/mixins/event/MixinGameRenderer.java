@@ -18,19 +18,19 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.player.RaytraceListener;
 import de.nekosarekawaii.vandalism.event.normal.player.RotationListener;
 import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.injection.access.IGameRenderer;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
-import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
@@ -84,12 +84,14 @@ public abstract class MixinGameRenderer implements IGameRenderer, MinecraftWrapp
         vandalism$range = range;
     }
 
-  // @Inject(method = "renderWorld", at = @At(value = "FIELD", shift = At.Shift.BEFORE, target = "Lnet/minecraft/client/render/GameRenderer;renderHand:Z"))
-  // private void callRender3DListener(float tickDelta, long limitTime, CallbackInfo ci) {
-  //     Vandalism.getInstance().getEventSystem().postInternal(
-  //             Render3DListener.Render3DEvent.ID,
-  //             new Render3DListener.Render3DEvent(tickDelta, limitTime, matrices)
-  //     );
-  // }
+    @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;renderHand(Lnet/minecraft/client/render/Camera;FLorg/joml/Matrix4f;)V"))
+    private void callRender3DListener(float tickDelta, long limitTime, CallbackInfo ci, @Local(ordinal = 1) Matrix4f matrix4f2) {
+        MatrixStack matrices = new MatrixStack();
+        matrices.multiplyPositionMatrix(matrix4f2);
+        Vandalism.getInstance().getEventSystem().postInternal(
+                Render3DListener.Render3DEvent.ID,
+                new Render3DListener.Render3DEvent(tickDelta, limitTime, matrices)
+        );
+    }
 
 }
