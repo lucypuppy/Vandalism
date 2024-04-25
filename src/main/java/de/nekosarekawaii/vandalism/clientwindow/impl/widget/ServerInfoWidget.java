@@ -18,7 +18,11 @@
 
 package de.nekosarekawaii.vandalism.clientwindow.impl.widget;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerDataUtil;
 import de.nekosarekawaii.vandalism.integration.viafabricplus.ViaFabricPlusAccess;
@@ -30,13 +34,16 @@ import imgui.flag.ImGuiTableFlags;
 import imgui.flag.ImGuiWindowFlags;
 import net.lenni0451.mcping.responses.MCPingResponse;
 import net.lenni0451.mcping.responses.QueryPingResponse;
-import net.lenni0451.reflect.stream.RStream;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextCodecs;
+import net.minecraft.util.JsonHelper;
 
 public class ServerInfoWidget implements MinecraftWrapper {
+
+    private static final Gson GSON = new Gson();
 
     private MCPingResponse mcPingResponse;
 
@@ -64,9 +71,10 @@ public class ServerInfoWidget implements MinecraftWrapper {
         if (mcPingResponse != null) {
             final String descriptionString = mcPingResponse.description;
             try {
-                // TODO FIX THIS
-          //    final MutableText description = Text.Serialization.fromJson(descriptionString);
-          //    if (description != null) this.motd = description.getString();
+                final JsonElement jsonElement = JsonHelper.deserialize(GSON, descriptionString, JsonElement.class);
+                final DataResult<Text> dataResult = TextCodecs.CODEC.parse(JsonOps.INSTANCE, jsonElement);
+                final MutableText description = (MutableText) dataResult.result().orElse(null);
+                if (description != null) this.motd = description.getString();
             } catch (JsonSyntaxException ignored) {
                 this.motd = descriptionString;
             }
