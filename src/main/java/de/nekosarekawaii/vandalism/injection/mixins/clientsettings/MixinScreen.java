@@ -20,12 +20,15 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.MenuSettings;
-import de.nekosarekawaii.vandalism.integration.render.shader.Shaders;
+import de.nekosarekawaii.vandalism.render.gl.shader.GlobalUniforms;
+import de.nekosarekawaii.vandalism.render.gl.shader.ShaderProgram;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.render.*;
 import net.minecraft.util.math.Vec2f;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
@@ -75,25 +78,23 @@ public abstract class MixinScreen {
             );
         } else if (menuSettings.backgroundMode.getValue() == MenuSettings.BackgroundMode.SHADER) {
             ci.cancel();
-            Shaders.BACKGROUND.getShader().drawOnScreen(context.getMatrices(), shader -> {
-                shader.setUniform("resolution", new Vec2f(client.getWindow().getWidth(), client.getWindow().getHeight()));
-                shader.setUniform("time", (System.currentTimeMillis() - shader.getStartTime()) / 1000.0f);
-                shader.setUniform("color1", new Vector3f(
-                        menuSettings.shaderColor1.getColor().getRed() / 255.0f,
-                        menuSettings.shaderColor1.getColor().getGreen() / 255.0f,
-                        menuSettings.shaderColor1.getColor().getBlue() / 255.0f
-                ));
-                shader.setUniform("color2", new Vector3f(
-                        menuSettings.shaderColor2.getColor().getRed() / 255.0f,
-                        menuSettings.shaderColor2.getColor().getGreen() / 255.0f,
-                        menuSettings.shaderColor2.getColor().getBlue() / 255.0f
-                ));
-                shader.setUniform("color3", new Vector3f(
-                        menuSettings.shaderColor3.getColor().getRed() / 255.0f,
-                        menuSettings.shaderColor3.getColor().getGreen() / 255.0f,
-                        menuSettings.shaderColor3.getColor().getBlue() / 255.0f
-                ));
-            });
+
+            final ShaderProgram shader = de.nekosarekawaii.vandalism.render.Shaders.getDarkNightBackgroundShader();
+            shader.bind();
+            GlobalUniforms.setBackgroundUniforms(shader, menuSettings.shaderColor1.getColor(),
+                    menuSettings.shaderColor2.getColor(), menuSettings.shaderColor3.getColor());
+
+            final Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
+            BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+            bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
+            bufferBuilder.vertex(matrix, -1F, -1F, 0F).next();
+            bufferBuilder.vertex(matrix, client.getWindow().getFramebufferWidth(), -1F, 0F).next();
+            bufferBuilder.vertex(matrix, client.getWindow().getFramebufferWidth(),
+                    client.getWindow().getFramebufferHeight(), 0F).next();
+            bufferBuilder.vertex(matrix, -1F, client.getWindow().getFramebufferHeight(), 0F).next();
+            BufferRenderer.draw(bufferBuilder.end());
+
+            shader.unbind();
         }
     }
 
