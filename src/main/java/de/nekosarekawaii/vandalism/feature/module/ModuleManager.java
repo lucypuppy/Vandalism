@@ -162,7 +162,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new NoteBotModule(),
                 new PacketManagerModule(),
                 new ResourcePackSpooferModule(),
-                new CancelGuiClose(),
+                new AntiGUICloseModule(),
 
                 // movement
                 new AirJumpModule(),

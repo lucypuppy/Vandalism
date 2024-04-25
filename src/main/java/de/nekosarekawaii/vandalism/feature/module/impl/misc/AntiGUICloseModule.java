@@ -23,10 +23,10 @@ import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListe
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.network.packet.s2c.play.CloseScreenS2CPacket;
 
-public class CancelGuiClose extends AbstractModule implements IncomingPacketListener {
+public class AntiGUICloseModule extends AbstractModule implements IncomingPacketListener {
 
-    public CancelGuiClose() {
-        super("Cancel Gui Close", "Cansels the server to close Guis.", Category.MISC);
+    public AntiGUICloseModule() {
+        super("Anti GUI Close", "Prevents the server from closing guis.", Category.MISC);
     }
 
     @Override
@@ -42,7 +42,8 @@ public class CancelGuiClose extends AbstractModule implements IncomingPacketList
     @Override
     public void onIncomingPacket(final IncomingPacketEvent event) {
         if (mc.player != null && event.packet instanceof CloseScreenS2CPacket) {
-            mc.player.currentScreenHandler = mc.player.playerScreenHandler; // Technically this should be legit but i need more investigation _FooFieOwo
+            // TODO: Technically this should be legit but i need more investigation - FooFieOwO
+            mc.player.currentScreenHandler = mc.player.playerScreenHandler;
             event.cancel();
         }
     }
