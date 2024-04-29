@@ -21,9 +21,13 @@ package de.nekosarekawaii.vandalism.util.game;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import de.nekosarekawaii.vandalism.util.common.IName;
 import net.minecraft.block.Block;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 import net.minecraft.registry.Registries;
@@ -40,27 +44,16 @@ public class ItemStackUtil implements MinecraftWrapper {
     private static final SimpleCommandExceptionType NOT_IN_CREATIVE_MODE = new SimpleCommandExceptionType(Text.literal("You must be in creative mode to use this."));
 
     public static ItemStack appendEnchantmentToItemStack(final ItemStack stack, final Enchantment enchantment, final int level) {
-//        return appendEnchantmentToItemStack(stack, EnchantmentHelper.getEnchantmentId(enchantment), level);
-        return stack;
-    }
-
-    public static ItemStack appendEnchantmentToItemStack(final ItemStack stack, final Identifier enchantmentId, final int level) {
-        //  final NbtCompound tag = stack.getOrCreateNbt();
-        //  if (!tag.contains(ItemStack.ENCHANTMENTS_KEY, 9)) tag.put(ItemStack.ENCHANTMENTS_KEY, new NbtList());
-        //  final NbtList nbtList = tag.getList(ItemStack.ENCHANTMENTS_KEY, 10);
-        //  nbtList.add(EnchantmentHelper.createNbt(enchantmentId, level));
-        //  stack.setNbt(tag);
+        EnchantmentHelper.apply(stack, builder -> builder.add(enchantment, level));
         return stack;
     }
 
     public static ItemStack createSpawnEggItemStack(final SpawnEggItem originSpawnEgg, final String spawnEggID) {
-        final ItemStack item = new ItemStack(originSpawnEgg);
-        final NbtCompound base = new NbtCompound();
-        final NbtCompound entityTag = new NbtCompound();
-        entityTag.putString("id", spawnEggID);
-        base.put("EntityTag", entityTag);
-        // item.setNbt(base);
-        return item;
+        final ItemStack itemStack = new ItemStack(originSpawnEgg);
+        final NbtCompound entityData = new NbtCompound();
+        entityData.putString("id", spawnEggID);
+        itemStack.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(entityData));
+        return itemStack;
     }
 
     public static NbtCompound createEffectNBT(final String id, final int duration, final int amplifier, final boolean showParticles) {
@@ -86,11 +79,15 @@ public class ItemStackUtil implements MinecraftWrapper {
     }
 
     public static ItemStack createItemStack(final Item item, final int count, final String nbt) {
-        final ItemStack stack = new ItemStack(item, count);
+        final ItemStack itemStack = new ItemStack(item, count);
         if (!nbt.isBlank()) {
-            // stack.setNbt(NbtHelper.fromNbtProviderString(nbt));
+            try {
+                itemStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(NbtHelper.fromNbtProviderString(nbt)));
+            } catch (final Exception e) {
+                ChatUtil.errorChatMessage("Failed to parse NBT: " + e.getMessage());
+            }
         }
-        return stack;
+        return itemStack;
     }
 
     public static ItemStack createItemStack(final Block block, final String nbt) {
@@ -98,11 +95,15 @@ public class ItemStackUtil implements MinecraftWrapper {
     }
 
     public static ItemStack createItemStack(final Block block, final int count, final String nbt) {
-        final ItemStack stack = new ItemStack(block, count);
+        final ItemStack itemStack = new ItemStack(block, count);
         if (!nbt.isBlank()) {
-            //stack.setNbt(NbtHelper.fromNbtProviderString(nbt));
+            try {
+                itemStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(NbtHelper.fromNbtProviderString(nbt)));
+            } catch (final Exception e) {
+                ChatUtil.errorChatMessage("Failed to parse NBT: " + e.getMessage());
+            }
         }
-        return stack;
+        return itemStack;
     }
 
     public static Identifier getId(final ItemStack stack) {
