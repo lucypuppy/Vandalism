@@ -40,9 +40,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Mixin(MultiplayerServerListWidget.ServerEntry.class)
 public abstract class MixinServerEntry {
 
@@ -52,7 +49,7 @@ public abstract class MixinServerEntry {
 
     @Shadow @Final private MultiplayerScreen screen;
 
-    // TODO fix
+    // TODO: Fix
    /* @Inject(method = "protocolVersionMatches", at = @At(value = "RETURN"), cancellable = true)
     private void forceProtocolVersionMatches(final CallbackInfoReturnable<Boolean> cir) {
         if (!Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().enhancedServerList.getValue()) {
@@ -175,7 +172,7 @@ public abstract class MixinServerEntry {
         }
     }
 
-    // TODO for NekosAreKawaii since I don't know what it used to be. - Lucy
+    // TODO: For NekosAreKawaii since I don't know what it used to be. - Lucy
     /*@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerScreen;setMultiplayerScreenTooltip(Ljava/util/List;)V", ordinal = 0))
     private void attachAdditionalTooltipData(final MultiplayerScreen instance, final List<Text> tooltip) {
         instance.setMultiplayerScreenTooltip(ServerDataUtil.attachAdditionalTooltipData(new ArrayList<>(tooltip), this.server));

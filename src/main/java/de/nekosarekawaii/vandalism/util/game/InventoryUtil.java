@@ -28,7 +28,7 @@ import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
-import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
@@ -65,8 +65,7 @@ public class InventoryUtil implements MinecraftWrapper {
         }
     }
 
-    // TODO fix
-   /* public static RecipeEntry<Recipe<?>> createDummyRecipeEntry(final Identifier identifier) {
+    public static RecipeEntry<Recipe<?>> createDummyRecipeEntry(final Identifier identifier) {
         return new RecipeEntry<>(
                 identifier,
                 new Recipe<>() {
@@ -77,7 +76,7 @@ public class InventoryUtil implements MinecraftWrapper {
                     }
 
                     @Override
-                    public ItemStack craft(final Inventory inventory, final DynamicRegistryManager registryManager) {
+                    public ItemStack craft(Inventory inventory, RegistryWrapper.WrapperLookup lookup) {
                         return null;
                     }
 
@@ -87,7 +86,7 @@ public class InventoryUtil implements MinecraftWrapper {
                     }
 
                     @Override
-                    public ItemStack getResult(final DynamicRegistryManager registryManager) {
+                    public ItemStack getResult(RegistryWrapper.WrapperLookup registriesLookup) {
                         return null;
                     }
 
@@ -103,6 +102,6 @@ public class InventoryUtil implements MinecraftWrapper {
 
                 }
         );
-    }*/
+    }
 
 }

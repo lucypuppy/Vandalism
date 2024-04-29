@@ -18,13 +18,10 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.fix.minecraft;
 
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.pack.PackScreen;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(PackScreen.class)
 public abstract class MixinPackScreen extends Screen {
@@ -33,7 +30,7 @@ public abstract class MixinPackScreen extends Screen {
         super(title);
     }
 
-    // TODO fix (was auch immer da broken war)
+    // TODO: Fix
    /* @Redirect(method = "renderBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/pack/PackScreen;renderBackgroundTexture(Lnet/minecraft/client/gui/DrawContext;)V"))
     private void fixBackground(final PackScreen instance, final DrawContext drawContext) {
         if (this.client != null) {

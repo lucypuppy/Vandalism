@@ -25,43 +25,23 @@ import de.nekosarekawaii.vandalism.event.normal.render.TooltipDrawListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.common.ByteCountDataOutput;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
-import de.nekosarekawaii.vandalism.util.game.InventoryNoop;
-import de.nekosarekawaii.vandalism.util.render.InputType;
 import de.nekosarekawaii.vandalism.util.render.tooltip.CustomContainerScreen;
 import de.nekosarekawaii.vandalism.util.render.tooltip.impl.BannerTooltipComponent;
-import de.nekosarekawaii.vandalism.util.render.tooltip.impl.ContainerTooltipComponent;
 import de.nekosarekawaii.vandalism.util.render.tooltip.impl.MapTooltipComponent;
 import de.nekosarekawaii.vandalism.util.render.tooltip.impl.TextTooltipComponent;
-import net.minecraft.block.Block;
-import net.minecraft.block.ShulkerBoxBlock;
-import net.minecraft.block.entity.BannerPattern;
-import net.minecraft.block.entity.BannerPatterns;
 import net.minecraft.client.item.TooltipData;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LodestoneTrackerComponent;
 import net.minecraft.component.type.MapIdComponent;
-import net.minecraft.inventory.Inventories;
 import net.minecraft.item.*;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.entry.RegistryEntryList;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import org.lwjgl.glfw.GLFW;
 
-import java.awt.*;
-import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 public class BetterTooltipsModule extends AbstractModule implements TooltipDrawListener, OutgoingPacketListener {
 
@@ -122,7 +102,7 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
     }
 
     private void drawBytesTooltip(final List<TooltipData> tooltipData, final ItemStack itemStack) {
-        // TODO fix
+        // TODO: Fix
         //itemStack.writeNbt(new NbtCompound()).write(ByteCountDataOutput.INSTANCE);
         final int byteCount = ByteCountDataOutput.INSTANCE.getCount();
         ByteCountDataOutput.INSTANCE.reset();
@@ -153,7 +133,7 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
         tooltipData.add(new TextTooltipComponent(dimension.asOrderedText()));
     }
 
-    // TODO: fix
+    // TODO: Fix
     private void drawBannerPatternTooltip(final List<TooltipData> tooltipData, final BannerPatternItem patternItem) {
     /*    final Optional<RegistryEntryList.Named<BannerPattern>> optionalList = Registries.BANNER_PATTERN.getEntryList(patternItem.getPattern());
 
@@ -178,9 +158,9 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
         }*/
     }
 
-    // TODO fix
+    // TODO: Fix
     private void drawContainerTooltip(final List<TooltipData> tooltipData, final ItemStack itemStack, final Item item) {
-/*        final NbtCompound compoundTag = itemStack.getSubNbt("BlockEntityTag");
+        /*final NbtCompound compoundTag = itemStack.getSubNbt("BlockEntityTag");
         if (compoundTag != null && item instanceof BlockItem blockItem) {
             final boolean isGenericContainer = compoundTag.contains("Items", 9);
             if (isGenericContainer || compoundTag.contains("RecordItem")) {

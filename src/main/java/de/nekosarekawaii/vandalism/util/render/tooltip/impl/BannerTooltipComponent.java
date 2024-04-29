@@ -20,19 +20,14 @@ package de.nekosarekawaii.vandalism.util.render.tooltip.impl;
 
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.tooltip.ConvertibleTooltipData;
-import net.minecraft.block.entity.BannerBlockEntity;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.DiffuseLighting;
-import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BannerBlockEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.BannerItem;
 import net.minecraft.item.ItemStack;
 
 public class BannerTooltipComponent implements TooltipComponent, ConvertibleTooltipData, MinecraftWrapper {
@@ -71,7 +66,7 @@ public class BannerTooltipComponent implements TooltipComponent, ConvertibleTool
         final VertexConsumerProvider.Immediate immediate = this.mc.getBufferBuilders().getEntityVertexConsumers();
         this.bannerField.pitch = 0f;
         this.bannerField.pivotY = -32f;
-        // TODO fix
+        // TODO: Fix
         // BannerBlockEntityRenderer.renderCanvas(matrices, immediate, 0xF000F0, OverlayTexture.DEFAULT_UV, this.bannerField, ModelLoader.BANNER_BASE, true, BannerBlockEntity.getPatternsFromNbt(((BannerItem) this.banner.getItem()).getColor(), BannerBlockEntity.getPatternListNbt(this.banner)));
         matrices.pop();
         matrices.pop();

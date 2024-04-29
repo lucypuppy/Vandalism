@@ -18,41 +18,7 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
-import de.florianmichael.dietrichevents2.Priorities;
-import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
-import de.nekosarekawaii.vandalism.base.value.impl.rendering.ButtonValue;
-import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.feature.command.impl.misc.NbtCommand;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
-import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtHelper;
-import net.minecraft.nbt.NbtIo;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Util;
-
-import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-// TODO fix
+// TODO: Fix
 
 /*
 public class ItemStackLoggerModule extends AbstractModule implements PlayerUpdateListener {

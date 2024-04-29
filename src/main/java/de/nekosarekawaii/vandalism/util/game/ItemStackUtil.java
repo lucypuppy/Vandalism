@@ -32,11 +32,11 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
+// TODO: Fix the entire class
 public class ItemStackUtil implements MinecraftWrapper {
 
-
-    // TODO fix the entire class
     private static final SimpleCommandExceptionType NOT_IN_GAME = new SimpleCommandExceptionType(Text.literal("You need to be in-game to get items!"));
+
     private static final SimpleCommandExceptionType NOT_IN_CREATIVE_MODE = new SimpleCommandExceptionType(Text.literal("You must be in creative mode to use this."));
 
     public static ItemStack appendEnchantmentToItemStack(final ItemStack stack, final Enchantment enchantment, final int level) {

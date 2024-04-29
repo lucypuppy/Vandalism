@@ -45,8 +45,8 @@ public class RotationBuilder implements MinecraftWrapper {
         final Vec3d entityVector = bestHitVec ? getNearestPoint(entity) : entity.getPos();
         Rotation normalRotations = build(entityVector, mc.player.getEyePos(), priority);
 
-        //If we can hit the entity with the normal rotations, return them
-        if (WorldUtil.raytrace(normalRotations, range).getType() == HitResult.Type.MISS) { // Todo maybe add faster raytraces
+        // If we can hit the entity with the normal rotations, return them
+        if (WorldUtil.raytrace(normalRotations, range).getType() == HitResult.Type.MISS) { // TODO: Maybe add faster ray traces
             return normalRotations;
         }
 
@@ -65,7 +65,7 @@ public class RotationBuilder implements MinecraftWrapper {
                         continue;
 
                     final Rotation parsedRotation = build(vector3d, mc.player.getEyePos(), priority);
-                    if (WorldUtil.raytrace(parsedRotation, range).getType() == HitResult.Type.MISS) // Todo maybe add faster raytraces
+                    if (WorldUtil.raytrace(parsedRotation, range).getType() == HitResult.Type.MISS) // TODO: Maybe add faster ray traces
                         continue;
 
                     if (!bestHitVec) {

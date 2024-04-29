@@ -19,21 +19,15 @@
 package de.nekosarekawaii.vandalism.integration.creativetab.impl;
 
 import de.nekosarekawaii.vandalism.integration.creativetab.AbstractCreativeTab;
-import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.SpawnEggItem;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
 import java.util.List;
 
-import static de.nekosarekawaii.vandalism.util.game.ItemStackUtil.withClientSide;
-
 public class GriefItemsCreativeTab extends AbstractCreativeTab {
 
-    // TODO fix
+    // TODO: Fix
 
     public GriefItemsCreativeTab() {
         super(Text.literal("Grief Items"), Items.TNT);
