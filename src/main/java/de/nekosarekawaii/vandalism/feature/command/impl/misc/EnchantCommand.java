@@ -58,8 +58,12 @@ public class EnchantCommand extends AbstractCommand {
         if (stack != null && !stack.isEmpty()) {
             if (ItemStackUtil.giveItemStack(ItemStackUtil.appendEnchantmentToItemStack(stack, enchantment, level), false)) {
                 ChatUtil.infoChatMessage("Enchanted the item in your main hand.");
-            } else ChatUtil.errorChatMessage("Failed to enchant the item in your main hand.");
-        } else ChatUtil.errorChatMessage("You must hold an item in your main hand.");
+            } else {
+                ChatUtil.errorChatMessage("Failed to enchant the item in your main hand.");
+            }
+        } else {
+            ChatUtil.errorChatMessage("You must hold an item in your main hand.");
+        }
     }
 
 }
