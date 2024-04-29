@@ -47,7 +47,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 
-import javax.xml.crypto.Data;
 import java.util.UUID;
 
 public class NbtCommand extends AbstractCommand {
@@ -57,8 +56,6 @@ public class NbtCommand extends AbstractCommand {
     public NbtCommand() {
         super("Allows you to view and modify the nbt data from an item stack.", Category.MISC, "nbt");
     }
-
-    // TODO fix
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
@@ -81,7 +78,7 @@ public class NbtCommand extends AbstractCommand {
             return SINGLE_SUCCESS;
         })));
 
-        // TODO fix
+        // TODO: Fix
        /* builder.then(literal("set").then(argument("nbt", NbtCompoundArgumentType.create()).executes(context -> {
             final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
             if (this.validBasic(stack)) {
@@ -152,8 +149,8 @@ public class NbtCommand extends AbstractCommand {
                 final BlockEntity blockEntity = mc.world.getBlockEntity(pos);
                 if (blockEntity != null) {
                     final NbtCompound tag = new NbtCompound();
-                    // TODO fix
-                    //    blockEntity.writeNbt(tag);
+                    // TODO: Fix
+                    //blockEntity.writeNbt(tag);
                     final MutableText copyButton = Text.literal("NBT");
                     copyButton.setStyle(
                             copyButton.getStyle().withFormatting(Formatting.UNDERLINE).withClickEvent(
@@ -203,8 +200,8 @@ public class NbtCommand extends AbstractCommand {
                 final BlockEntity blockEntity = mc.world.getBlockEntity(pos);
                 if (blockEntity != null) {
                     final NbtCompound tag = new NbtCompound();
-                    // TODO fix
-               //     blockEntity.writeNbt(tag);
+                    // TODO: Fix
+                    //blockEntity.writeNbt(tag);
                     this.mc.keyboard.setClipboard(tag.toString());
                     ChatUtil.infoChatMessage("NBT copied into the clipboard.");
                     return SINGLE_SUCCESS;
@@ -267,7 +264,7 @@ public class NbtCommand extends AbstractCommand {
                 final BlockEntity blockEntity = mc.world.getBlockEntity(pos);
                 if (blockEntity != null && blockState != null) {
                     final NbtCompound tag = new NbtCompound();
-                    // TODO fix
+                    // TODO: Fix
                     //blockEntity.writeNbt(tag);
                     this.mc.keyboard.setClipboard(tag.toString());
                     if (tag != null && !tag.isEmpty()) {

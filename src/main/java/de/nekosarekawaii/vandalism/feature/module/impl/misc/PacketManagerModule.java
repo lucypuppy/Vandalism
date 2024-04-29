@@ -36,11 +36,7 @@ import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.network.NetworkPhase;
-import net.minecraft.network.NetworkSide;
-import net.minecraft.network.NetworkState;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.registry.Registries;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.Vec3i;
@@ -82,8 +78,8 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
         super("Packet Manager", "Allows to log and cancel packets.", Category.MISC);
         final List<String> serverPackets = new ArrayList<>();
         final List<String> clientPackets = new ArrayList<>();
-        // TODO fix
-/*        for (final NetworkState networkState : NetworkState.values()) {
+        //TODO: Fix
+        /*for (final NetworkState networkState : NetworkState.values()) {
             final String networkStateName = StringUtils.normalizeEnumName(networkState.name());
             for (final Class<? extends Packet<?>> serverPacketClass : networkState.getPacketIdToPacketMap(NetworkSide.CLIENTBOUND).values()) {
                 serverPackets.add(networkStateName + PacketManagerModule.getSimpleName(serverPacketClass));
@@ -191,7 +187,7 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
             return "[".concat(Arrays.stream(array).map(index -> PacketManagerModule.dump(index, depth + 1, depthLimit)).collect(Collectors.joining(", "))).concat("]");
         }
 
-        { /* Formattable */ // TODO fix
+        { /* Formattable */ // TODO: Fix
           /*  if (object instanceof Text text) {
                 return Text.Serialization.toJsonString(text);
             }*/

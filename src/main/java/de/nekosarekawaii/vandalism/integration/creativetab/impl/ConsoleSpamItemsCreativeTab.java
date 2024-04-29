@@ -28,7 +28,7 @@ import java.util.List;
 
 public class ConsoleSpamItemsCreativeTab extends AbstractCreativeTab {
 
-    // TODO fix
+    // TODO: Fix
 
     private static final String HACKED =
             "888    888        d8888  .d8888b.  888    d8P  8888888888 8888888b.  \n" +

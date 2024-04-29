@@ -19,16 +19,13 @@
 package de.nekosarekawaii.vandalism.injection.mixins;
 
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.LogoDrawer;
-import net.minecraft.client.gui.RotatingCubeMapRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
@@ -51,6 +48,6 @@ public abstract class MixinTitleScreen extends Screen {
         return instance.loadTextureAsync(newId, executor);
     }
 
-    // todo readd background thing biwdhaw98hdu89iaw
+    // TODO: Re-add background thing
 
 }

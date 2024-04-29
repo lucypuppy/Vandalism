@@ -18,19 +18,13 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.module;
 
-import de.nekosarekawaii.vandalism.feature.module.impl.exploit.consolespammer.impl.NBTModuleMode;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(CreativeInventoryActionC2SPacket.class)
 public abstract class MixinCreativeInventoryActionC2SPacket {
 
-    // TODO fix
+    // TODO: Fix
     /*@Redirect(method = "write", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/PacketByteBuf;writeItemStack(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/network/PacketByteBuf;"))
     private PacketByteBuf hookConsoleSpammer(final PacketByteBuf instance, final ItemStack stack) {
         final NbtCompound nbt = stack.getNbt();

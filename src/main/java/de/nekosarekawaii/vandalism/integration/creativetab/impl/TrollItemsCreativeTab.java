@@ -19,24 +19,11 @@
 package de.nekosarekawaii.vandalism.integration.creativetab.impl;
 
 import de.nekosarekawaii.vandalism.integration.creativetab.AbstractCreativeTab;
-import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
-
-import static de.nekosarekawaii.vandalism.util.game.ItemStackUtil.withClientSide;
 
 public class TrollItemsCreativeTab extends AbstractCreativeTab {
 
@@ -44,7 +31,7 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
         super(Text.literal("Troll Items"), Items.END_CRYSTAL);
     }
 
-    // TODO fix
+    // TODO: Fix
 
     @Override
     public void exposeItems(final List<ItemStack> items) {

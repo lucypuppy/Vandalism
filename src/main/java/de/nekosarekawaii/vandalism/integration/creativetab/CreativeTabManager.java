@@ -20,15 +20,10 @@ package de.nekosarekawaii.vandalism.integration.creativetab;
 
 import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.clientsettings.impl.NetworkingSettings;
 import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.integration.creativetab.impl.*;
 import de.nekosarekawaii.vandalism.util.common.Storage;
-import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
-import net.minecraft.text.Text;
 
 import java.util.UUID;
 
@@ -54,10 +49,10 @@ public class CreativeTabManager extends Storage<AbstractCreativeTab> implements 
     }
 
     @Override
-    // TODO fix
+    // TODO: Fix
     public void onOutgoingPacket(final OutgoingPacketEvent event) {
         if (event.packet instanceof final CreativeInventoryActionC2SPacket creativeInventoryActionC2SPacket) {
-          /*  final ItemStack stack = creativeInventoryActionC2SPacket.stack.copy();
+          /*final ItemStack stack = creativeInventoryActionC2SPacket.stack.copy();
             final NbtCompound nbt = stack.getNbt();
             if (nbt == null) return;
             final boolean isClientSide = nbt.contains(CLIENTSIDE_NAME) || nbt.contains(CLIENTSIDE_GLINT);

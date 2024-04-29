@@ -24,8 +24,8 @@ import org.spongepowered.asm.mixin.Mixin;
 @Mixin(ItemStack.class)
 public abstract class MixinItemStack {
 
-    // TODO fix
-  /*  @Redirect(method = "hasGlint", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;hasGlint(Lnet/minecraft/item/ItemStack;)Z"))
+    // TODO: Fix
+    /*@Redirect(method = "hasGlint", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;hasGlint(Lnet/minecraft/item/ItemStack;)Z"))
     private boolean applyClientsideGlint(final Item instance, final ItemStack stack) {
         final var nbt = stack.getNbt();
         return instance.hasGlint(stack) || (nbt != null && nbt.contains(CreativeTabManager.CLIENTSIDE_GLINT));

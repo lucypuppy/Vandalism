@@ -19,23 +19,15 @@
 package de.nekosarekawaii.vandalism.integration.creativetab.impl;
 
 import de.nekosarekawaii.vandalism.integration.creativetab.AbstractCreativeTab;
-import de.nekosarekawaii.vandalism.util.common.RandomUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.List;
 
-import static de.nekosarekawaii.vandalism.util.game.ItemStackUtil.withClientSide;
-
 public class KickItemsCreativeTab extends AbstractCreativeTab {
 
-    // TODO fix
+    // TODO: Fix
 
     public KickItemsCreativeTab() {
         super(Text.literal("Kick Items"), Items.FIREWORK_ROCKET);
