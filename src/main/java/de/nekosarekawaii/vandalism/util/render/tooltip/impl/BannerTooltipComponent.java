@@ -25,9 +25,14 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.DiffuseLighting;
+import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.entity.BannerBlockEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
+import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.item.BannerItem;
 import net.minecraft.item.ItemStack;
 
 public class BannerTooltipComponent implements TooltipComponent, ConvertibleTooltipData, MinecraftWrapper {
@@ -66,8 +71,18 @@ public class BannerTooltipComponent implements TooltipComponent, ConvertibleTool
         final VertexConsumerProvider.Immediate immediate = this.mc.getBufferBuilders().getEntityVertexConsumers();
         this.bannerField.pitch = 0f;
         this.bannerField.pivotY = -32f;
-        // TODO: Fix
-        // BannerBlockEntityRenderer.renderCanvas(matrices, immediate, 0xF000F0, OverlayTexture.DEFAULT_UV, this.bannerField, ModelLoader.BANNER_BASE, true, BannerBlockEntity.getPatternsFromNbt(((BannerItem) this.banner.getItem()).getColor(), BannerBlockEntity.getPatternListNbt(this.banner)));
+        final BannerItem bannerItem = (BannerItem) this.banner.getItem();
+        BannerBlockEntityRenderer.renderCanvas(
+                matrices,
+                immediate,
+                0xF000F0,
+                OverlayTexture.DEFAULT_UV,
+                this.bannerField,
+                ModelLoader.BANNER_BASE,
+                true,
+                bannerItem.getColor(),
+                this.banner.get(DataComponentTypes.BANNER_PATTERNS)
+        );
         matrices.pop();
         matrices.pop();
         immediate.draw();
