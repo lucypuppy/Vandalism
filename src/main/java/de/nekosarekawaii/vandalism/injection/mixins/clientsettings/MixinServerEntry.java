@@ -28,6 +28,7 @@ import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.ServerList;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Final;
@@ -40,6 +41,9 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Mixin(MultiplayerServerListWidget.ServerEntry.class)
 public abstract class MixinServerEntry {
 
@@ -49,16 +53,17 @@ public abstract class MixinServerEntry {
 
     @Shadow @Final private MultiplayerScreen screen;
 
-    // TODO: Fix
-   /* @Inject(method = "protocolVersionMatches", at = @At(value = "RETURN"), cancellable = true)
-    private void forceProtocolVersionMatches(final CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerServerListWidget$ServerEntry;draw(Lnet/minecraft/client/gui/DrawContext;IILnet/minecraft/util/Identifier;)V", shift = At.Shift.BEFORE))
+    private void forceProtocolVersionMatches(final CallbackInfo ci) {
         if (!Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().enhancedServerList.getValue()) {
             return;
         }
         if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().multiplayerScreenServerInformation.getValue()) {
-            cir.setReturnValue(true);
+            if (this.server.getStatus() == ServerInfo.Status.INCOMPATIBLE) {
+                this.server.setStatus(ServerInfo.Status.SUCCESSFUL);
+            }
         }
-    }*/
+    }
 
     @Unique
     private static final String vandalism$TYPE_TEXT = Formatting.GOLD + Formatting.BOLD.toString() + "Type" + Formatting.DARK_GRAY + Formatting.BOLD + "> " + Formatting.GRAY;
@@ -172,10 +177,9 @@ public abstract class MixinServerEntry {
         }
     }
 
-    // TODO: For NekosAreKawaii since I don't know what it used to be. - Lucy
-    /*@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerScreen;setMultiplayerScreenTooltip(Ljava/util/List;)V", ordinal = 0))
-    private void attachAdditionalTooltipData(final MultiplayerScreen instance, final List<Text> tooltip) {
-        instance.setMultiplayerScreenTooltip(ServerDataUtil.attachAdditionalTooltipData(new ArrayList<>(tooltip), this.server));
-    }*/
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerScreen;setTooltip(Ljava/util/List;)V"))
+    private void attachAdditionalTooltipData(final MultiplayerScreen instance, final List<OrderedText> list) {
+        instance.setTooltip(ServerDataUtil.attachAdditionalTooltipData(new ArrayList<>(list), this.server));
+    }
 
 }

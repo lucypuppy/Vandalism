@@ -26,6 +26,7 @@ import de.nekosarekawaii.vandalism.integration.viafabricplus.ViaFabricPlusAccess
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import net.minecraft.client.network.ServerInfo;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Pair;
 
@@ -52,20 +53,20 @@ public class ServerDataUtil {
 
     private static IPAddressInfo LAST_SERVER_ADDRESS_INFO = null;
 
-    public static List<Text> attachAdditionalTooltipData(final List<Text> tooltip, final ServerInfo serverInfo) {
+    public static List<OrderedText> attachAdditionalTooltipData(final List<OrderedText> tooltip, final ServerInfo serverInfo) {
         if (serverInfo == null) return tooltip;
         ViaFabricPlusAccess.setSettingValue("GeneralSettings", "showAdvertisedServerVersion", false);
         final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
         if (enhancedServerListSettings.enhancedServerList.getValue()) {
             if (enhancedServerListSettings.morePingTooltipServerInformation.getValue()) {
                 tooltip.clear();
-                tooltip.add(Text.literal("Server Info"));
-                tooltip.add(Text.literal("Ping: " + Math.max(serverInfo.ping, 0) + " ms"));
-                tooltip.add(Text.literal("Version: " + ServerDataUtil.fixVersionName(serverInfo.version.getString())));
+                tooltip.add(Text.literal("Server Info").asOrderedText());
+                tooltip.add(Text.literal("Ping: " + Math.max(serverInfo.ping, 0) + " ms").asOrderedText());
+                tooltip.add(Text.literal("Version: " + ServerDataUtil.fixVersionName(serverInfo.version.getString())).asOrderedText());
                 final int protocol = serverInfo.protocolVersion;
                 final ProtocolVersion protocolVersion = ProtocolVersion.getProtocol(protocol);
                 final String protocolName = protocolVersion.getName();
-                tooltip.add(Text.literal("Protocol: " + protocolName + (!protocolName.contains("(") ? " (" + protocol + ")" : "")));
+                tooltip.add(Text.literal("Protocol: " + protocolName + (!protocolName.contains("(") ? " (" + protocol + ")" : "")).asOrderedText());
                 final String address = serverInfo.address;
                 String addressWithoutPort = address;
                 if (address.contains(":")) {
@@ -77,21 +78,21 @@ public class ServerDataUtil {
                 if (LAST_SERVER_ADDRESS.equals(address) && LAST_SERVER_ADDRESS_INFO != null) {
                     final IPAddressInfo.Location location = LAST_SERVER_ADDRESS_INFO.getLocation();
                     if (location != null) {
-                        tooltip.add(Text.literal("Country: " + location.getCountry() + " (" + location.getCountryCode() + ")"));
+                        tooltip.add(Text.literal("Country: " + location.getCountry() + " (" + location.getCountryCode() + ")").asOrderedText());
                     }
                     final IPAddressInfo.Company company = LAST_SERVER_ADDRESS_INFO.getCompany();
                     if (company != null) {
-                        tooltip.add(Text.literal("Company: " + company.getName()));
+                        tooltip.add(Text.literal("Company: " + company.getName()).asOrderedText());
                     }
                     final IPAddressInfo.ASN asn = LAST_SERVER_ADDRESS_INFO.getAsn();
                     if (asn != null) {
-                        tooltip.add(Text.literal("Domain: " + asn.getDomain()));
-                        tooltip.add(Text.literal("Organization: " + asn.getOrg()));
-                        tooltip.add(Text.literal("Description: " + asn.getDescr()));
-                        tooltip.add(Text.literal("ASN: " + asn.getAsn()));
+                        tooltip.add(Text.literal("Domain: " + asn.getDomain()).asOrderedText());
+                        tooltip.add(Text.literal("Organization: " + asn.getOrg()).asOrderedText());
+                        tooltip.add(Text.literal("Description: " + asn.getDescr()).asOrderedText());
+                        tooltip.add(Text.literal("ASN: " + asn.getAsn()).asOrderedText());
                     }
                 } else {
-                    tooltip.add(Text.literal("Error: Failed to get IP information, API is probably down."));
+                    tooltip.add(Text.literal("Error: Failed to get IP information, API is probably down.").asOrderedText());
                 }
                 if (LAST_SERVER_INFO_FETCH_TIMER.hasReached(2000, true)) {
                     if (!LAST_SERVER_ADDRESS.equals(address)) {

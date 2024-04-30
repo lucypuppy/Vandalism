@@ -37,6 +37,7 @@ import net.lenni0451.mcping.responses.MCPingResponse;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
@@ -119,12 +120,11 @@ public class ServerPingerWidget implements MinecraftWrapper {
             context.drawHorizontalLine(x, x2, y2 + 1, Color.GRAY.getRGB());
             context.drawHorizontalLine(x, (int) (x + progress), y2 + 1, Color.GREEN.getRGB());
             context.disableScissor();
-            // TODO: Fix
-            /*final List<Text> tooltip = FAKE_MULTIPLAYER_SCREEN.multiplayerScreenTooltip;
+            final Screen.PositionedTooltip tooltip = FAKE_MULTIPLAYER_SCREEN.tooltip;
             if (tooltip != null) {
-                context.drawTooltip(mc.textRenderer, tooltip, mouseX, mouseY);
-                FAKE_MULTIPLAYER_SCREEN.setMultiplayerScreenTooltip(null);
-            }*/
+                context.drawTooltip(mc.textRenderer, tooltip.tooltip(), tooltip.positioner(), mouseX, mouseY);
+                FAKE_MULTIPLAYER_SCREEN.tooltip = null;
+            }
             IN_USE = false;
         }
     }
