@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.StringHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,6 +28,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(StringHelper.class)
 public abstract class MixinStringHelper {
+
+    @Inject(method = "isValidChar", at = @At("HEAD"), cancellable = true)
+    private static void allowColorChar(char chr, CallbackInfoReturnable<Boolean> cir) {
+        if (Vandalism.getInstance().getClientSettings().getChatSettings().allowColorChar.getValue()) {
+            if (chr == Formatting.FORMATTING_CODE_PREFIX) {
+                cir.setReturnValue(true);
+            }
+        }
+    }
 
     @Inject(method = "truncateChat", at = @At(value = "HEAD"), cancellable = true)
     private static void moreChatInput(final String text, final CallbackInfoReturnable<String> cir) {
