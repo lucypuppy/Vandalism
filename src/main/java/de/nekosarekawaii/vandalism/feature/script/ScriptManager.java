@@ -31,6 +31,7 @@ import de.nekosarekawaii.vandalism.feature.script.parse.command.ScriptCommand;
 import de.nekosarekawaii.vandalism.util.common.NamedStorage;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import lombok.Getter;
 import net.minecraft.util.Pair;
 import org.lwjgl.glfw.GLFW;
 
@@ -42,8 +43,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ScriptManager extends NamedStorage<Script> implements PlayerUpdateListener, KeyboardInputListener, MouseInputListener, MinecraftWrapper {
 
     private final ConcurrentHashMap<UUID, Thread> runningScripts = new ConcurrentHashMap<>();
+
+    @Getter
     private final File directory;
     private final ConfigManager configManager;
+
 
     public ScriptManager(final ConfigManager configManager, final ClientWindowManager clientWindowManager, final File runDirectory) {
         this.configManager = configManager;
@@ -91,12 +95,8 @@ public class ScriptManager extends NamedStorage<Script> implements PlayerUpdateL
                 Vandalism.getInstance().getConfigManager().save();
             }
         } catch (Exception e) {
-            Vandalism.getInstance().getLogger().error("Failed to load script from file '" + file.getName() + "'", e);
+            Vandalism.getInstance().getLogger().error("Failed to load script from file '{}'", file.getName(), e);
         }
-    }
-
-    public File getDirectory() {
-        return this.directory;
     }
 
     @Override
@@ -143,7 +143,6 @@ public class ScriptManager extends NamedStorage<Script> implements PlayerUpdateL
             if (this.runningScripts.containsKey(uuid)) {
                 final Thread thread = this.runningScripts.get(uuid);
                 thread.interrupt();
-                thread.stop();
                 this.runningScripts.remove(uuid);
             }
         } catch (Exception exception) {
@@ -214,7 +213,7 @@ public class ScriptManager extends NamedStorage<Script> implements PlayerUpdateL
         for (final Script script : this.getList()) {
             if (!script.getFile().exists()) {
                 this.remove(script);
-                Vandalism.getInstance().getLogger().info("Script '" + script + "' has been unloaded because the file does not exist anymore.");
+                Vandalism.getInstance().getLogger().info("Script '{}' has been unloaded because the file does not exist anymore.", script);
                 Vandalism.getInstance().getConfigManager().save();
             }
         }

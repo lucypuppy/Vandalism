@@ -53,16 +53,24 @@ public abstract class MixinServerEntry {
 
     @Shadow @Final private MultiplayerScreen screen;
 
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerServerListWidget$ServerEntry;draw(Lnet/minecraft/client/gui/DrawContext;IILnet/minecraft/util/Identifier;)V", shift = At.Shift.BEFORE))
-    private void forceProtocolVersionMatches(final CallbackInfo ci) {
-        if (!Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().enhancedServerList.getValue()) {
-            return;
+    @Unique
+    private ServerInfo.Status vandalism$onProtocolVersionCheck(final ServerInfo info) {
+        ServerInfo.Status status = info.getStatus();
+        final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
+        if (enhancedServerListSettings.enhancedServerList.getValue() && enhancedServerListSettings.multiplayerScreenServerInformation.getValue() && status == ServerInfo.Status.INCOMPATIBLE) {
+            status = ServerInfo.Status.SUCCESSFUL;
         }
-        if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().multiplayerScreenServerInformation.getValue()) {
-            if (this.server.getStatus() == ServerInfo.Status.INCOMPATIBLE) {
-                this.server.setStatus(ServerInfo.Status.SUCCESSFUL);
-            }
-        }
+        return status;
+    }
+
+    @Redirect(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ServerInfo;getStatus()Lnet/minecraft/client/network/ServerInfo$Status;"))
+    private ServerInfo.Status forceProtocolVersionMatches(final ServerInfo instance) {
+        return this.vandalism$onProtocolVersionCheck(instance);
+    }
+
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ServerInfo;getStatus()Lnet/minecraft/client/network/ServerInfo$Status;", ordinal = 2))
+    private ServerInfo.Status forceProtocolVersionMatches2(final ServerInfo instance) {
+        return this.vandalism$onProtocolVersionCheck(instance);
     }
 
     @Unique
