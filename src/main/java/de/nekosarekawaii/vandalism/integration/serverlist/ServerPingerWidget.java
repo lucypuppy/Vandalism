@@ -149,19 +149,21 @@ public class ServerPingerWidget implements MinecraftWrapper {
                         .timeout(serverPingerWidgetDelay, serverPingerWidgetDelay)
                         .exceptionHandler(t -> {
                             currentServerInfo.ping = -1L;
-                            if (t instanceof UnknownHostException) {
-                                currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.UNKNOWN_HOST.getMessage());
-                            } else if (t instanceof ConnectionRefusedException) {
-                                currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.CONNECTION_REFUSED.getMessage());
-                            } else if (t instanceof ConnectTimeoutException) {
-                                currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.CONNECTION_TIMED_OUT.getMessage());
-                            } else if (t instanceof DataReadException) {
-                                currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.DATA_READ_FAILED.getMessage());
-                            } else if (t instanceof PacketReadException) {
-                                currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.PACKET_READ_FAILED.getMessage());
-                            } else {
-                                currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.FAILED.getMessage());
-                                Vandalism.getInstance().getLogger().error("Failed to ping server: " + currentServerInfo.address, t);
+                            switch (t) {
+                                case UnknownHostException unknownHostException ->
+                                        currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.UNKNOWN_HOST.getMessage());
+                                case ConnectionRefusedException connectionRefusedException ->
+                                        currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.CONNECTION_REFUSED.getMessage());
+                                case ConnectTimeoutException connectTimeoutException ->
+                                        currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.CONNECTION_TIMED_OUT.getMessage());
+                                case DataReadException dataReadException ->
+                                        currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.DATA_READ_FAILED.getMessage());
+                                case PacketReadException packetReadException ->
+                                        currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.PACKET_READ_FAILED.getMessage());
+                                case null, default -> {
+                                    currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.FAILED.getMessage());
+                                    Vandalism.getInstance().getLogger().error("Failed to ping server: {}", currentServerInfo.address, t);
+                                }
                             }
                             setServerInfo(currentServerInfo);
                         })
@@ -182,14 +184,14 @@ public class ServerPingerWidget implements MinecraftWrapper {
                             final String base64FaviconString = response.favicon;
                             if (base64FaviconString != null) {
                                 if (!base64FaviconString.startsWith(BASE64_START)) {
-                                    Vandalism.getInstance().getLogger().error("Server " + currentServerInfo.address + " has responded with an unknown base64 server icon format.");
+                                    Vandalism.getInstance().getLogger().error("Server {} has responded with an unknown base64 server icon format.", currentServerInfo.address);
                                 } else {
                                     try {
                                         final String faviconString = base64FaviconString.substring(BASE64_START.length()).replaceAll("\n", "");
                                         final byte[] faviconBytes = Base64.getDecoder().decode(faviconString.getBytes(StandardCharsets.UTF_8));
                                         currentServerInfo.setFavicon(faviconBytes.length < 1 ? null : faviconBytes);
                                     } catch (IllegalArgumentException e) {
-                                        Vandalism.getInstance().getLogger().error("Server " + currentServerInfo.address + " has responded with an malformed base64 server icon.", e);
+                                        Vandalism.getInstance().getLogger().error("Server {} has responded with an malformed base64 server icon.", currentServerInfo.address, e);
                                     }
                                 }
                             }
@@ -216,7 +218,7 @@ public class ServerPingerWidget implements MinecraftWrapper {
                 currentServerInfo.ping = -1L;
                 currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.FAILED.getMessage());
                 setServerInfo(currentServerInfo);
-                Vandalism.getInstance().getLogger().error("Failed to ping server: " + currentServerInfo.address, t);
+                Vandalism.getInstance().getLogger().error("Failed to ping server: {}", currentServerInfo.address, t);
             }
             PING_TIMER.reset();
             IN_USE = false;
