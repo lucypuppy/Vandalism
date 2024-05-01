@@ -98,8 +98,10 @@ import java.io.File;
  * TODO: mori <br>
  *  - Write all descriptions in the third person, without using the second person ('you')
  */
+@Getter
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
 
+    @Getter
     private static final Vandalism instance = new Vandalism();
 
     private final DietrichEvents2 eventSystem = new DietrichEvents2(42 /* This value has to be incremented for every new event */, Throwable::printStackTrace);
@@ -107,7 +109,6 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
     // Base handlers
     private File runDirectory;
-    @Getter
     private double startTime;
 
     private ConfigManager configManager;
@@ -129,9 +130,8 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     private ScriptManager scriptManager;
 
     // Client Protocol
-    @Getter
     @Setter
-    private ProtocolVersion targetVersion = ProtocolVersion.v1_20_3 /* There's no 1.20.5 yet. Thanks for nothing. */;
+    private ProtocolVersion targetVersion = ProtocolVersion.v1_20_5;
 
     public void printStartup() {
         this.logger.info("");
@@ -151,8 +151,8 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
             this.logger.info(line);
         }
         this.logger.info("");
-        this.logger.info("Version: " + FabricBootstrap.MOD_VERSION);
-        this.logger.info("Made by " + FabricBootstrap.MOD_AUTHORS + " ;3");
+        this.logger.info("Version: {}", FabricBootstrap.MOD_VERSION);
+        this.logger.info("Made by {} ;3", FabricBootstrap.MOD_AUTHORS);
         this.logger.info("");
         this.logger.info("Starting...");
         this.logger.info("");
@@ -235,74 +235,6 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         FabricBootstrap.SHUTTING_DOWN = true;
         Vandalism.getInstance().getLogger().info("Shutting down...");
         this.configManager.save();
-    }
-
-    public static Vandalism getInstance() {
-        return instance;
-    }
-
-    public DietrichEvents2 getEventSystem() {
-        return eventSystem;
-    }
-
-    public Logger getLogger() {
-        return logger;
-    }
-
-    public File getRunDirectory() {
-        return runDirectory;
-    }
-
-    public ConfigManager getConfigManager() {
-        return configManager;
-    }
-
-    public ClientWindowManager getClientWindowManager() {
-        return clientWindowManager;
-    }
-
-    public ClientSettings getClientSettings() {
-        return clientSettings;
-    }
-
-    public AccountManager getAccountManager() {
-        return accountManager;
-    }
-
-    public ModuleManager getModuleManager() {
-        return moduleManager;
-    }
-
-    public CommandManager getCommandManager() {
-        return commandManager;
-    }
-
-    public ScriptManager getScriptManager() {
-        return scriptManager;
-    }
-
-    public CreativeTabManager getCreativeTabManager() {
-        return creativeTabManager;
-    }
-
-    public RotationManager getRotationManager() {
-        return rotationManager;
-    }
-
-    public ServerListManager getServerListManager() {
-        return serverListManager;
-    }
-
-    public HUDManager getHudManager() {
-        return hudManager;
-    }
-
-    public FriendsManager getFriendsManager() {
-        return friendsManager;
-    }
-
-    public TargetManager getTargetManager() {
-        return targetManager;
     }
 
 }
