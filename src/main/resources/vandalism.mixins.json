@@ -36,7 +36,6 @@
     "clientsettings.MixinScreen",
     "clientsettings.MixinServerEntry",
     "clientsettings.MixinServerList",
-    "clientsettings.MixinSharedConstants",
     "clientsettings.MixinShulkerBoxScreen",
     "clientsettings.MixinSliderWidget",
     "clientsettings.MixinStringHelper",
