@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins;
 
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.LogoDrawer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
@@ -26,6 +27,7 @@ import net.minecraft.client.texture.TextureManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
@@ -34,6 +36,9 @@ import java.util.concurrent.Executor;
 
 @Mixin(TitleScreen.class)
 public abstract class MixinTitleScreen extends Screen {
+
+    @Shadow
+    public abstract void renderBackground(DrawContext context, int mouseX, int mouseY, float delta);
 
     protected MixinTitleScreen(final Text title) {
         super(title);
@@ -47,7 +52,5 @@ public abstract class MixinTitleScreen extends Screen {
         else newId = id;
         return instance.loadTextureAsync(newId, executor);
     }
-
-    // TODO: Re-add background thing
 
 }
