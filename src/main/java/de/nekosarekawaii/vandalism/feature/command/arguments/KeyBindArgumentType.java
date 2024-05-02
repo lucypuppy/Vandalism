@@ -47,7 +47,7 @@ public class KeyBindArgumentType implements ArgumentType<Integer> {
 
     @Override
     public Integer parse(final StringReader reader) throws CommandSyntaxException {
-        final String keyName = reader.readString().replace("-", " ");
+        final String keyName = reader.readString().replace("-", " ").toUpperCase();
         if (!InputType.FIELD_NAMES.containsKey(keyName)) {
             throw NOT_EXISTING.createWithContext(reader, keyName);
         }
