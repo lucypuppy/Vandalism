@@ -64,6 +64,11 @@ public class Shaders {
     @Getter private static ShaderProgram positionTexColorShader;
     @Getter private static ShaderProgram instPositionTexColorShader;
 
+    // Background
+    @Getter private static ShaderProgram darkNightBackgroundShader;
+
+    // Font
+    @Getter private static ShaderProgram fontShader;
 
     public static void loadAll() {
         if (initialized) return;
@@ -79,6 +84,9 @@ public class Shaders {
         shaders.add(instPositionTexShader = create("inst_position_tex", load(ShaderType.VERTEX, "general_purpose/inst_position_tex"), load(ShaderType.FRAGMENT, "general_purpose/position_tex")));
         shaders.add(positionTexColorShader = create("position_tex_color", load(ShaderType.VERTEX, "general_purpose/position_tex_color"), load(ShaderType.FRAGMENT, "general_purpose/position_tex_color")));
         shaders.add(instPositionTexColorShader = create("inst_position_tex_color", load(ShaderType.VERTEX, "general_purpose/inst_position_tex_color"), load(ShaderType.FRAGMENT, "general_purpose/position_tex_color")));
+
+        shaders.add(fontShader = create("font", load(ShaderType.VERTEX, "font/font"), load(ShaderType.FRAGMENT, "font/font")));
+        shaders.add(darkNightBackgroundShader = create("dark_night_background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/dark_night")));
 
         for (Field field : Shaders.class.getDeclaredFields()) {
             if (!Modifier.isStatic(field.getModifiers())) continue;
