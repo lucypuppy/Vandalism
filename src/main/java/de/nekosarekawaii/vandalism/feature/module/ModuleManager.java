@@ -40,6 +40,7 @@ import de.nekosarekawaii.vandalism.feature.module.impl.exploit.exploitfixer.Expl
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.godmode.GodModeModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.servercrasher.ServerCrasherModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.*;
+import de.nekosarekawaii.vandalism.feature.module.impl.misc.ethanol.EthanolModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.elytraflight.ElytraFlightModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.FlightModule;
@@ -51,6 +52,7 @@ import de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.Velocit
 import de.nekosarekawaii.vandalism.feature.module.impl.render.*;
 import de.nekosarekawaii.vandalism.util.common.NamedStorage;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import lombok.Getter;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
@@ -58,6 +60,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.List;
 import java.util.Objects;
 
+@Getter
 public class ModuleManager extends NamedStorage<AbstractModule> implements
         KeyboardInputListener, MouseInputListener, ShutdownProcessListener,
         DisconnectListener, MinecraftWrapper,
@@ -79,6 +82,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     private ConsoleSpammerModule consoleSpammerModule;
     private FastBreakModule fastBreakModule;
     private ZoomModule zoomModule;
+    private EthanolModule ethanolModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientWindowManager clientWindowManager) {
         this.configManager = configManager;
@@ -113,6 +117,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.espModule = new ESPModule(),
                 this.fullBrightModule = new FullBrightModule(),
                 this.zoomModule = new ZoomModule(),
+                this.ethanolModule = new EthanolModule(),
 
                 // combat
                 new AutoClickerModule(),
@@ -235,55 +240,4 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
         return this.getList().stream().filter(module -> module.getCategory() == category).toList();
     }
 
-    public ModPacketBlockerModule getModPacketBlockerModule() {
-        return modPacketBlockerModule;
-    }
-
-    public TrueSightModule getTrueSightModule() {
-        return trueSightModule;
-    }
-
-    public ExploitFixerModule getExploitFixerModule() {
-        return exploitFixerModule;
-    }
-
-    public BetterTabListModule getBetterTabListModule() {
-        return betterTabListModule;
-    }
-
-    public IllegalInteractionModule getIllegalInteractionModule() {
-        return illegalInteractionModule;
-    }
-
-    public FastPlaceModule getFastPlaceModule() {
-        return fastPlaceModule;
-    }
-
-    public ESPModule getEspModule() {
-        return espModule;
-    }
-
-    public TickBaseModule getTickBaseModule() {
-        return tickBaseModule;
-    }
-
-    public FullBrightModule getFullBrightModule() {
-        return fullBrightModule;
-    }
-
-    public VehicleControlModule getVehicleControlModule() {
-        return vehicleControlModule;
-    }
-
-    public ConsoleSpammerModule getConsoleSpammerModule() {
-        return consoleSpammerModule;
-    }
-
-    public FastBreakModule getFastBreakModule() {
-        return fastBreakModule;
-    }
-
-    public ZoomModule getZoomModule() {
-        return zoomModule;
-    }
 }
