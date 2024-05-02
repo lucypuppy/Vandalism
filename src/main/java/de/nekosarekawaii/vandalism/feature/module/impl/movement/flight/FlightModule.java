@@ -42,7 +42,8 @@ public class FlightModule extends AbstractModule implements OutgoingPacketListen
             new CollisionModuleMode(),
             new OldAACModuleMode(),
             new VulcanGlideModuleMode(this),
-            new SpartanFlagModuleMode()
+            new SpartanFlagModuleMode(),
+            new SpartanRoflModuleMode()
     );
 
     private final BooleanValue antiKick = new BooleanValue(
