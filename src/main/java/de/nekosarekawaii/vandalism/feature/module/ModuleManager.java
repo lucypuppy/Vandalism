@@ -133,6 +133,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new AutoShieldModule(),
                 new BackTrackModule(),
                 new BowSpammerModule(),
+                new TimerRangeModule(),
                 new WTapModule(),
 
                 // exploit
