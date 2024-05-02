@@ -22,18 +22,17 @@ import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.LongValue;
-import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import net.minecraft.block.FallingBlock;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.item.*;
+import de.nekosarekawaii.vandalism.util.game.InventoryUtil;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.SlotActionType;
 
-import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class ChestStealerModule extends AbstractModule implements PlayerUpdateListener {
+public class AutoArmorModule extends AbstractModule implements PlayerUpdateListener {
 
     private MSTimer timer;
     private MSTimer startTimer;
@@ -41,17 +40,15 @@ public class ChestStealerModule extends AbstractModule implements PlayerUpdateLi
     private long delay;
     private long cpsDelay;
 
+    public AutoArmorModule() {
+        super("Auto Armor", "Automatically equips the best armor in your inventory.", Category.MISC);
+    }
+
     private final LongValue startDelay = new LongValue(this, "Start Delay", "Delay before starting to take items.", 0L, 0L, 1000L);
     private final LongValue minDelay = new LongValue(this, "Min Delay", "Min delay between taking items.", 100L, 0L, 1000L);
     private final LongValue maxDelay = new LongValue(this, "Max Delay", "Max delay between taking items.", 100L, 0L, 1000L);
     private final IntegerValue minCPS = new IntegerValue(this, "Min CPS", "Min clicks per second.", 3, 1, 20);
     private final IntegerValue maxCPS = new IntegerValue(this, "Max CPS", "Max clicks per second.", 6, 1, 20);
-    private final BooleanValue autoClose = new BooleanValue(this, "Auto Close", "Automatically closes the chest when it's empty.", true);
-    private final BooleanValue filterItems = new BooleanValue(this, "Filter Items", "Only take items that are useful.", true);
-
-    public ChestStealerModule() {
-        super("Chest Stealer", "Automatically steals items from chests.", Category.MISC);
-    }
 
     @Override
     public void onActivate() {
@@ -71,26 +68,25 @@ public class ChestStealerModule extends AbstractModule implements PlayerUpdateLi
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
         if (!startTimer.hasReached(startDelay.getValue(), false)) return;
+        if (mc.currentScreen instanceof InventoryScreen screen) {
+            for(int i = 5; i < 8; i++) {
+                ItemStack stack = screen.getScreenHandler().slots.get(i).getStack();
+                if (stack.isEmpty() || InventoryUtil.isBestArmor(stack)) {
+                    continue;
+                }
+                mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, i, 1, SlotActionType.THROW, mc.player);
+            }
+            for(int i = 9; i <= 44; i++) {
+                ItemStack stack = screen.getScreenHandler().slots.get(i).getStack();
+                if (stack.isEmpty() || !(stack.getItem() instanceof ArmorItem) || !InventoryUtil.isBestArmor(stack)) {
+                    continue;
+                }
 
-        if (mc.currentScreen instanceof GenericContainerScreen screen) {
-            for (int i = 0; i < screen.getScreenHandler().getRows() * 9; i++) {
-                ItemStack itemStack = screen.getScreenHandler().slots.get(i).getStack();
-                if (itemStack.isEmpty() || (filterItems.getValue() && !canTakeItem(itemStack))) continue;
                 if (cpsTimer.hasReached(cpsDelay, true) && timer.hasReached(delay, true)) {
                     updateCPS();
                     updateDelay();
-                    mc.interactionManager.clickSlot(screen.getScreenHandler().syncId, i, 0, SlotActionType.QUICK_MOVE, mc.player);
+                    mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, i, 0, SlotActionType.QUICK_MOVE, mc.player);
                 }
-            }
-
-            boolean canClose = true;
-            for (int i = 0; i < screen.getScreenHandler().getRows() * 9; i++) {
-                ItemStack itemStack = screen.getScreenHandler().slots.get(i).getStack();
-                if (itemStack.isEmpty() || (filterItems.getValue() && !canTakeItem(itemStack))) continue;
-                canClose = false;
-            }
-            if (canClose && autoClose.getValue()) {
-                mc.player.closeHandledScreen();
             }
         } else {
             startTimer.reset();
@@ -103,41 +99,5 @@ public class ChestStealerModule extends AbstractModule implements PlayerUpdateLi
 
     private void updateCPS() {
         this.cpsDelay = this.delay = (int) (ThreadLocalRandom.current().nextGaussian() * (1000 / (minCPS.getValue() + 2) - 1000 / (maxCPS.getValue() + 2) + 1)) + 1000 / (maxCPS.getValue() + 2);
-    }
-
-    private boolean canTakeItem(ItemStack itemStack) {
-        Item item = itemStack.getItem();
-
-        final ArrayList<Item> whitelistedItems = new ArrayList<>() {
-            {
-                add(Items.FISHING_ROD);
-                add(Items.BOW);
-                add(Items.ARROW);
-                add(Items.TOTEM_OF_UNDYING);
-                add(Items.ENDER_PEARL);
-                add(Items.SNOWBALL);
-                add(Items.EGG);
-                add(Items.DIAMOND);
-                add(Items.EMERALD);
-                add(Items.GOLD_INGOT);
-                add(Items.IRON_INGOT);
-                add(Items.NETHERITE_INGOT);
-                add(Items.REDSTONE);
-                add(Items.LAPIS_LAZULI);
-                add(Items.COAL);
-                add(Items.QUARTZ);
-            }
-        };
-
-
-        return whitelistedItems.contains(item) ||
-                item instanceof ToolItem ||
-                item instanceof ArmorItem ||
-                (item instanceof BlockItem &&
-                        (item != Items.SLIME_BLOCK &&
-                                item != Items.TNT &&
-                                item != Items.SOUL_SAND &&
-                                !(((BlockItem) item).getBlock() instanceof FallingBlock))) ||
-                item.isFood();
     }
 }
