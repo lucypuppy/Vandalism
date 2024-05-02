@@ -63,7 +63,7 @@ public class ServerConnectionUtil implements MinecraftWrapper {
                 ServerAddress.parse(serverInfo.address),
                 serverInfo,
                 false,
-                new CookieStorage(new HashMap<>())
+                null /* Null is correct, else it'll say transferring to server. - Lucy */
         );
     }
 
