@@ -21,7 +21,6 @@ package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.normal.game.TickTimeListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 
 public class TimerRangeModule extends AbstractModule implements TickTimeListener {
 
@@ -50,12 +49,11 @@ public class TimerRangeModule extends AbstractModule implements TickTimeListener
             return;
         }
 
-        if (mc.player.hurtTime > 9) {
+        if (mc.player.hurtTime > 8) {
             event.fromPercentage(0.5f);
             hurt = true;
         } else if (mc.player.hurtTime <= 4) {
             if (hurt) {
-                ChatUtil.chatMessage("boosting");
                 event.fromPercentage(2f);
                 if (ticks >= 6) {
                     ticks = 0;
