@@ -138,11 +138,11 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new VehicleOneHitModule(),
 
                 // misc
+                new AntiGUICloseModule(),
                 new AutoFishModule(),
                 new AutoRespawnModule(),
                 new BlockBreakerModule(),
                 new ChatReactionModule(),
-               //new EthanolModule(), TODO
                 new FakeGameModeModule(),
                 new HandFuckerModule(),
                 new InteractionSpammerModule(),
