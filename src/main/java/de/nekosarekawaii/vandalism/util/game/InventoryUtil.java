@@ -22,7 +22,9 @@ import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeEntry;
@@ -102,6 +104,25 @@ public class InventoryUtil implements MinecraftWrapper {
 
                 }
         );
+    }
+
+    public static boolean isBestArmor(final ItemStack itemStack) {
+        if (mc.currentScreen instanceof InventoryScreen screen) {
+            if (itemStack.getItem() instanceof ArmorItem) {
+                for (int i = 5; i <= 44; i++) {
+                    ItemStack stack = screen.getScreenHandler().getSlot(i).getStack();
+                    if (!(stack.getItem() instanceof ArmorItem itemToCheck)) continue;
+                    final ArmorItem currentItem = (ArmorItem) itemStack.getItem();
+                    if (currentItem.getType() == itemToCheck.getType()) {
+                        if (currentItem.getProtection() < itemToCheck.getProtection()) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
 }

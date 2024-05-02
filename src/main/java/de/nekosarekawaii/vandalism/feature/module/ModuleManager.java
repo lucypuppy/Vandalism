@@ -147,6 +147,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new VehicleOneHitModule(),
 
                 // misc
+                new AutoArmorModule(),
                 new AutoFishModule(),
                 new AutoRespawnModule(),
                 new BlockBreakerModule(),
