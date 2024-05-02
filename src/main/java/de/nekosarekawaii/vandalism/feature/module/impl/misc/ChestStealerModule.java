@@ -126,6 +126,8 @@ public class ChestStealerModule extends AbstractModule implements PlayerUpdateLi
                 add(Items.LAPIS_LAZULI);
                 add(Items.COAL);
                 add(Items.QUARTZ);
+                add(Items.WATER_BUCKET);
+                add(Items.LAVA_BUCKET);
             }
         };
 
