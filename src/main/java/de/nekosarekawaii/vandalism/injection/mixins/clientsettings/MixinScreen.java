@@ -20,15 +20,10 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.MenuSettings;
-import de.nekosarekawaii.vandalism.render.Shaders;
-import de.nekosarekawaii.vandalism.render.gl.shader.GlobalUniforms;
-import de.nekosarekawaii.vandalism.render.gl.shader.ShaderProgram;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.*;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -58,42 +53,6 @@ public abstract class MixinScreen {
             constant = menuSettings.changeScreenCloseButtonKey.getValue();
         }
         return constant;
-    }
-
-    @Inject(method = "renderBackground", at = @At(value = "HEAD"), cancellable = true)
-    private void drawCustomBackgroundInGui(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
-
-        if (this.client.world != null) return;
-
-        if (menuSettings.backgroundMode.getValue() == MenuSettings.BackgroundMode.COLOR) {
-            ci.cancel();
-            context.fill(
-                    0,
-                    0,
-                    this.width,
-                    this.height,
-                    menuSettings.customBackgroundColor.getColor().getRGB()
-            );
-        } else if (menuSettings.backgroundMode.getValue() == MenuSettings.BackgroundMode.SHADER) {
-            ci.cancel();
-
-            final ShaderProgram shader = Shaders.getDarkNightBackgroundShader();
-            shader.bind();
-            GlobalUniforms.setBackgroundUniforms(shader, menuSettings.shaderColor1.getColor(), menuSettings.shaderColor2.getColor(), menuSettings.shaderColor3.getColor());
-
-            final Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
-            BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
-            bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
-            bufferBuilder.vertex(matrix, -1F, -1F, 0F).next();
-            bufferBuilder.vertex(matrix, client.getWindow().getFramebufferWidth(), -1F, 0F).next();
-            bufferBuilder.vertex(matrix, client.getWindow().getFramebufferWidth(),
-                    client.getWindow().getFramebufferHeight(), 0F).next();
-            bufferBuilder.vertex(matrix, -1F, client.getWindow().getFramebufferHeight(), 0F).next();
-            BufferRenderer.draw(bufferBuilder.end());
-
-            shader.unbind();
-        }
     }
 
     @Inject(method = "renderInGameBackground", at = @At("HEAD"), cancellable = true)

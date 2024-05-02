@@ -33,6 +33,7 @@
     "clientsettings.MixinPressableWidget",
     "clientsettings.MixinProgressScreen",
     "clientsettings.MixinReconfigurationScreen",
+    "clientsettings.MixinRotatingCubeMapRenderer",
     "clientsettings.MixinScreen",
     "clientsettings.MixinServerEntry",
     "clientsettings.MixinServerList",
