@@ -24,6 +24,7 @@ import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.newrotation.RotationUtil;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
+import de.nekosarekawaii.vandalism.util.render.InputType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 
@@ -87,7 +88,7 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
             final double speed = MovementUtil.getSpeedRelatedToYaw(this.mc.player.getYaw());
 
             if (speed < 0.3D || !isLooking) {
-                this.mc.options.forwardKey.setPressed(true);
+                this.mc.options.forwardKey.setPressed(InputType.isPressed(this.mc.options.forwardKey.boundKey.getCode()));
                 this.movementTarget = null;
             }
 
