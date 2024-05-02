@@ -151,6 +151,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new AutoRespawnModule(),
                 new BlockBreakerModule(),
                 new ChatReactionModule(),
+                new ChestStealerModule(),
                 new EthanolModule(),
                 new FakeGameModeModule(),
                 new HandFuckerModule(),
