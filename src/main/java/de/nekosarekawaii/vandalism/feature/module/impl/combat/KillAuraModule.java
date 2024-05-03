@@ -474,7 +474,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
     @Override
     public void onRotation(final RotationEvent event) {
-        if (mc.player == null || mc.interactionManager.getCurrentGameMode() == GameMode.SPECTATOR) {
+        if (mc.player == null || mc.interactionManager == null || mc.interactionManager.getCurrentGameMode() == GameMode.SPECTATOR) {
             return;
         }
 
