@@ -47,7 +47,7 @@ public class TimerRangeModule extends AbstractModule implements TickTimeListener
     public void onTickTimings(TickTimeEvent event) {
         if (mc.player == null) return;
 
-        if (mc.player.hurtTime > 9) {
+        if (mc.player.hurtTime > 8) {
             event.fromPercentage(0.5f);
             hurt = true;
         } else if (mc.player.hurtTime <= 4) {
