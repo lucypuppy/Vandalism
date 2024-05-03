@@ -184,6 +184,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
                         packet instanceof ChunkDataS2CPacket ||
                         packet instanceof PlayerRespawnS2CPacket ||
                         packet instanceof ChunkRenderDistanceCenterS2CPacket ||
+                        packet instanceof TeamS2CPacket ||
                         this.backTrackedEntities.isEmpty() || this.mc.player == null ||
                         this.mc.world == null || event.networkPhase == NetworkPhase.PLAY || event.isCancelled() //Ignore already cancelled packets
         ) {//@formatter:on
