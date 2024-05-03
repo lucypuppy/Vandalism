@@ -211,7 +211,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
                             entityS2CPacket.getDeltaX(),
                             entityS2CPacket.getDeltaY(),
                             entityS2CPacket.getDeltaZ()
-                    ), true
+                    ), false
             );
 
             if (this.checkForResync(trackedPosition, entityS2CPacket.id)) {
