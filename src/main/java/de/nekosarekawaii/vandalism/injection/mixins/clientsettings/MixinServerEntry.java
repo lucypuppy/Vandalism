@@ -185,9 +185,14 @@ public abstract class MixinServerEntry {
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerScreen;setTooltip(Ljava/util/List;)V"))
-    private void attachAdditionalTooltipData(final MultiplayerScreen instance, final List<OrderedText> list) {
-        instance.setTooltip(ServerDataUtil.attachAdditionalTooltipData(new ArrayList<>(list), this.server));
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerScreen;setTooltip(Lnet/minecraft/text/Text;)V"))
+    private void attachAdditionalTooltipData(final MultiplayerScreen instance, final Text text) {
+        final List<OrderedText> tooltip = ServerDataUtil.attachAdditionalTooltipData(new ArrayList<>(), this.server);
+        if (tooltip.isEmpty()) {
+            instance.setTooltip(text);
+            return;
+        }
+        instance.setTooltip(tooltip);
     }
 
 }
