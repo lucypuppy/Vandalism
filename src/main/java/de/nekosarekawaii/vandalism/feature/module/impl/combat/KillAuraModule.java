@@ -160,7 +160,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             this.clicking,
             "Click Type",
             "The type of clicking.",
-            ClickType.BEZIER,
+            ClickType.COOLDOWN,
             ClickType.values()
     ).onValueChange((oldValue, newValue) -> {
         oldValue.getClicker().setClickAction(aBoolean -> {

@@ -29,6 +29,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import net.lenni0451.reflect.stream.RStream;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+
 import java.lang.reflect.Field;
 
 public class ViaFabricPlusAccess {
@@ -133,7 +134,9 @@ public class ViaFabricPlusAccess {
                     value.getClass()
             ).invoke(globalMethod, value);
         } catch (Exception e) {
-            Vandalism.getInstance().getLogger().error("An error occurred while attempting to set the value.", e);
+            if (!(e instanceof ClassNotFoundException)) {
+                Vandalism.getInstance().getLogger().error("An error occurred while attempting to set the value.", e);
+            }
         }
     }
 
