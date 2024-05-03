@@ -139,6 +139,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
                 // misc
                 new AntiGUICloseModule(),
+                new AutoArmorModule(),
+                new ChestStealerModule(),
                 new AutoFishModule(),
                 new AutoRespawnModule(),
                 new BlockBreakerModule(),
