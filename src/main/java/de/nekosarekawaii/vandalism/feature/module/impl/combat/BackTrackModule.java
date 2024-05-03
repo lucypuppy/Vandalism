@@ -40,6 +40,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.TrackedPosition;
+import net.minecraft.network.NetworkPhase;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.common.DisconnectS2CPacket;
 import net.minecraft.network.packet.s2c.play.*;
@@ -184,7 +185,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
                         packet instanceof PlayerRespawnS2CPacket ||
                         packet instanceof ChunkRenderDistanceCenterS2CPacket ||
                         this.backTrackedEntities.isEmpty() || this.mc.player == null ||
-                        this.mc.world == null || event.isCancelled() //Ignore already cancelled packets
+                        this.mc.world == null || event.networkPhase == NetworkPhase.PLAY || event.isCancelled() //Ignore already cancelled packets
         ) {//@formatter:on
             return;
         }
