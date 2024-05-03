@@ -45,7 +45,7 @@ public class LegitModuleMode extends ModuleMulti<VelocityModule> implements Inco
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.velocity && mc.player.isSprinting() && this.mc.player.hurtTime == 9 && this.mc.player.isOnGround()) {
+        if (this.velocity && mc.player.isSprinting() && this.mc.player.hurtTime == 9 && this.mc.player.isOnGround() && !this.mc.player.isInLava() && !this.mc.player.isTouchingWater()) {
             this.mc.player.jump();
         }
     }
