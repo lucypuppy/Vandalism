@@ -129,6 +129,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.zoomModule = new ZoomModule(),
 
                 // combat
+                new AntiBotsModule(),
                 new AutoClickerModule(),
                 new AutoShieldModule(),
                 new BackTrackModule(),
