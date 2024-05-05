@@ -134,6 +134,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new AutoShieldModule(),
                 new BackTrackModule(),
                 new BowSpammerModule(),
+                new LagRangeModule(),
                 new TimerRangeModule(),
                 new WTapModule(),
 
