@@ -33,6 +33,8 @@ public class AutoSprintModule extends AbstractModule implements PlayerUpdateList
             true
     );
 
+    private boolean stopSprinting;
+
     public AutoSprintModule() {
         super("Auto Sprint", "Automatically lets you sprint!", Category.MOVEMENT);
     }
@@ -40,6 +42,7 @@ public class AutoSprintModule extends AbstractModule implements PlayerUpdateList
     @Override
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this, Priorities.LOW);
+        stopSprinting = false;
     }
 
     @Override
@@ -49,6 +52,12 @@ public class AutoSprintModule extends AbstractModule implements PlayerUpdateList
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        if(stopSprinting) {
+            this.mc.options.sprintKey.setPressed(false);
+            this.mc.player.setSprinting(false);
+            stopSprinting(false);
+            return;
+        }
         if (this.legit.getValue()) {
             this.mc.options.sprintKey.setPressed(true);
             return;
@@ -61,6 +70,10 @@ public class AutoSprintModule extends AbstractModule implements PlayerUpdateList
         ) {
             this.mc.player.setSprinting(true);
         }
+    }
+
+    public void stopSprinting(boolean shouldStop) {
+        stopSprinting = shouldStop;
     }
 
 }
