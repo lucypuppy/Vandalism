@@ -37,6 +37,7 @@ import de.nekosarekawaii.vandalism.event.normal.player.RotationListener;
 import de.nekosarekawaii.vandalism.event.normal.render.Render2DListener;
 import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.AutoSprintModule;
 import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.newrotation.RotationBuilder;
 import de.nekosarekawaii.vandalism.integration.newrotation.RotationManager;
@@ -429,6 +430,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 PlayerUpdateEvent.ID, Render2DEvent.ID, RotationEvent.ID, RaytraceEvent.ID, Render3DEvent.ID
         );
         updateClicker(this.clickType.getValue().getClicker());
+        this.autoSprintModule = Vandalism.getInstance().getModuleManager().getByClass(AutoSprintModule.class);
     }
 
     @Override
@@ -640,9 +642,12 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         });
     }
 
+    private AutoSprintModule autoSprintModule;
+
     private void hit() {
         if (this.unsprintOnAttack.getValue()) {
             this.mc.player.setSprinting(false);
+            autoSprintModule.stopSprinting(true);
         }
 
         stopBlocking(BlockState.PRE_ATTACK);
@@ -651,6 +656,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
         if (this.resprintAfterAttack.getValue()) {
             this.mc.player.setSprinting(true);
+            autoSprintModule.stopSprinting(false);
         }
 
         this.targetIndex++;
