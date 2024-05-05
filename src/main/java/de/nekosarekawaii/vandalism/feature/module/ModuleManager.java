@@ -126,6 +126,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new BowSpammerModule(),
                 new TimerRangeModule(),
                 new WTapModule(),
+                new AntiBotsModule(),
 
                 // exploit
                 new DisablerModule(),

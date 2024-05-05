@@ -177,7 +177,6 @@ public class NameGenerationUtil {
             "Nitsche",
             "Cavaleri",
             "Lucy",
-            "Piskorz",
             "Hasan",
             "Allah",
             "Monero",
