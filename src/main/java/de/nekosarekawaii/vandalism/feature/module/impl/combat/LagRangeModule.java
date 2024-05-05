@@ -75,11 +75,11 @@ public class LagRangeModule extends AbstractModule implements TimeTravelListener
         if(killAura.isActive() && killAura.getTarget() != null) {
             Entity target = killAura.getTarget();
             Vec3d eyePos = mc.player.getEyePos();
-//            Vec3d predictedPos = predictFuturePosition(target, this.getCharge());
+            Vec3d predictedPos = predictFuturePosition(target, this.getCharge());
             Vec3d predictedEyePos = predictFutureEyePosition(mc.player, this.getCharge());
             double distance = eyePos.distanceTo(target.getPos());
-//            double predictedDistance = eyePos.distanceTo(predictedPos);
-            double predictedDistance = predictedEyePos.distanceTo(target.getPos());
+            double predictedDistance = predictedEyePos.distanceTo(predictedPos);
+//            double predictedDistance = predictedEyePos.distanceTo(target.getPos());
             if(distance > killAura.getRange() && distance <= range.getValue()) {
                 if(isDone) {
                     if(predictedDistance > killAura.getRange()) {
