@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.FlightModule;
@@ -29,9 +30,10 @@ import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 import de.nekosarekawaii.vandalism.util.game.PlayerDamageUtil;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
+import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.util.math.Vec3d;
 
-public class VulcanGlideModuleMode extends ModuleMulti<FlightModule> implements PlayerUpdateListener, OutgoingPacketListener {
+public class VulcanGlideModuleMode extends ModuleMulti<FlightModule> implements PlayerUpdateListener, OutgoingPacketListener, IncomingPacketListener {
 
     private int ticks, ticks2;
 
@@ -43,7 +45,7 @@ public class VulcanGlideModuleMode extends ModuleMulti<FlightModule> implements 
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, OutgoingPacketEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, OutgoingPacketEvent.ID, IncomingPacketEvent.ID);
 
         if (damage.getValue()) {
             if (mc.player.isOnGround()) {
@@ -57,17 +59,24 @@ public class VulcanGlideModuleMode extends ModuleMulti<FlightModule> implements 
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, OutgoingPacketEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, OutgoingPacketEvent.ID, IncomingPacketEvent.ID);
         mc.player.setVelocity(mc.player.getVelocity().getX(), 0.06, mc.player.getVelocity().getZ());
         this.ticks = 0;
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.damage.getValue() && mc.player.hurtTime > 6) {
-            mc.player.setPosition(mc.player.getX(), mc.player.getY() + 9.9D, mc.player.getZ());
+        if (this.damage.getValue() && mc.player.fallDistance < 0.1F) {
+            if (mc.player.hurtTime > 8) {
+                mc.player.setVelocity(0, 9.0, 0);
+            }
+
+            if(mc.player.hurtTime == 5) {
+                mc.player.setVelocity(0, 0, 0);
+            }
             return;
         }
+
 
         if (mc.player.fallDistance > 0.0025) {
             final Vec3d velocity = MovementUtil.setSpeed(0.215);
@@ -95,6 +104,17 @@ public class VulcanGlideModuleMode extends ModuleMulti<FlightModule> implements 
                     packet.onGround = true;
                 }
             }
+        }
+    }
+
+    @Override
+    public void onIncomingPacket(IncomingPacketEvent event) {
+        if (
+                event.packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket &&
+                        this.mc.player != null &&
+                        velocityPacket.getId() == this.mc.player.getId()
+        ) {
+            event.cancel();
         }
     }
 
