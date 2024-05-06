@@ -66,6 +66,7 @@ public class Shaders {
 
     // Background
     @Getter private static ShaderProgram darkNightBackgroundShader;
+    @Getter private static ShaderProgram  ingameGuiBackgroundShader;
 
     // Font
     @Getter private static ShaderProgram fontShader;
@@ -88,6 +89,7 @@ public class Shaders {
         shaders.add(fontShader = create("font", load(ShaderType.VERTEX, "font/font"), load(ShaderType.FRAGMENT, "font/font")));
 
         shaders.add(darkNightBackgroundShader = create("dark_night_background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/dark_night")));
+        shaders.add(ingameGuiBackgroundShader = create("ingame_gui_background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/ingame_gui_test")));
 
         for (Field field : Shaders.class.getDeclaredFields()) {
             if (!Modifier.isStatic(field.getModifiers())) continue;
