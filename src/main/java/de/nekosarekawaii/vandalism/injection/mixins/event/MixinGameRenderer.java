@@ -52,7 +52,7 @@ public abstract class MixinGameRenderer implements IGameRenderer, MinecraftWrapp
 
     // TODO: Fix
 
-    @Redirect(method = "updateCrosshairTarget", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getBlockInteractionRange()D"))
+    @Redirect(method = "updateCrosshairTarget", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getEntityInteractionRange()D"))
     private double changeRange(ClientPlayerEntity instance) {
         if (vandalism$isSelfInflicted()) {
             return vandalism$range;
