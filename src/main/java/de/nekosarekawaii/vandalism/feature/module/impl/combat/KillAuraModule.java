@@ -460,7 +460,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
         final double raytraceReach = this.preHit.getValue() && this.clickType.getValue() != ClickType.COOLDOWN ? this.getAimRange() : this.getRange();
         final Vec3d eyePos = mc.player.getEyePos();
-        final HitResult raytrace = WorldUtil.raytrace(this.rotationManager.getRotation(), Math.pow(raytraceReach, 2));
+        final HitResult raytrace = WorldUtil.raytrace(this.rotationManager.getRotation(), raytraceReach);
         this.raytraceDistance = raytrace != null && raytrace.getType() != HitResult.Type.MISS ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
 
         if (this.raytraceDistance > raytraceReach || this.raytraceDistance < 0) {
