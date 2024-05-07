@@ -20,10 +20,12 @@ package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.event.normal.player.RaytraceListener;
 import de.nekosarekawaii.vandalism.event.normal.player.RotationListener;
 import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.injection.access.IGameRenderer;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
@@ -31,13 +33,15 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
 public abstract class MixinGameRenderer implements IGameRenderer, MinecraftWrapper {
 
     @Unique
-    private double vandalism$range = -1;
+    private static double vandalism$range = -1;
 
 
     // i assume this is correct - Lucy
@@ -47,27 +51,26 @@ public abstract class MixinGameRenderer implements IGameRenderer, MinecraftWrapp
     }
 
     // TODO: Fix
-    /*
-    @ModifyConstant(method = "updateTargetedEntity", constant = @Constant(doubleValue = 9.0))
-    private double changeRange(final double constant) {
+
+    @Redirect(method = "updateCrosshairTarget", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getBlockInteractionRange()D"))
+    private double changeRange(ClientPlayerEntity instance) {
         if (vandalism$isSelfInflicted()) {
             return vandalism$range;
         } else {
-            final RaytraceListener.RaytraceEvent event = new RaytraceListener.RaytraceEvent(constant);
+            final RaytraceListener.RaytraceEvent event = new RaytraceListener.RaytraceEvent(instance.getEntityInteractionRange());
             Vandalism.getInstance().getEventSystem().postInternal(RaytraceListener.RaytraceEvent.ID, event);
             return event.range;
         }
     }
 
-    @Redirect(method = "updateTargetedEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;hasExtendedReach()Z"))
-    private boolean alwaysSurvival(final ClientPlayerInteractionManager instance) {
-        if (vandalism$isSelfInflicted()) {
-            return false;
+    @ModifyArg(method = "ensureTargetInRange", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Vec3d;isInRange(Lnet/minecraft/util/math/Position;D)Z"))
+    private static double changeMaxRange(final double constant) {
+        if (vandalism$range != -1) {
+            return Math.max(vandalism$range, constant);
         }
-
-        return instance.hasExtendedReach();
+        return constant;
     }
-*/
+
 
     @Override
     public boolean vandalism$isSelfInflicted() {
