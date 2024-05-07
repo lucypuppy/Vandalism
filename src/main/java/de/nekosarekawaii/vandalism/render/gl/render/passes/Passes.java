@@ -64,11 +64,10 @@ public class Passes {
                 RenderSystem.bindTexture(0);
             }
     ));
-
     /*private static final Long2ObjectFunction<RenderPass> sdfText = memoize((Long2ObjectFunction<RenderPass>) l -> new SimpleRenderPass(
             PrimitiveType.QUADS,
             VertexLayouts.SDF_TEXT,
-            Shaders::getFontShader,
+            Shaders::getSdfFontShader,
             RenderSystem::enableBlend,
             shader -> {
                 final int texture = (int) (l >> 32);

@@ -18,12 +18,12 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
+import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.LongValue;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.game.InventoryUtil;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.item.ArmorItem;
@@ -53,11 +53,9 @@ public class AutoArmorModule extends AbstractModule implements PlayerUpdateListe
     @Override
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID);
-
         timer = new MSTimer();
         startTimer = new MSTimer();
         cpsTimer = new MSTimer();
-
         updateDelay();
         updateCPS();
     }
@@ -70,27 +68,33 @@ public class AutoArmorModule extends AbstractModule implements PlayerUpdateListe
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
         if (!startTimer.hasReached(startDelay.getValue(), false)) return;
-        if (mc.currentScreen instanceof final InventoryScreen screen) {
-            for(int i = 5; i < 8; i++) {
+        if (mc.currentScreen instanceof InventoryScreen screen) {
+            for (int i = 5; i <= 8; i++) {
                 ItemStack stack = screen.getScreenHandler().slots.get(i).getStack();
-                if (stack.isEmpty() || InventoryUtil.isBestArmor(stack))
+                if (stack.isEmpty() || InventoryUtil.isBestArmor(stack)) {
                     continue;
-
-                mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, i, 1, SlotActionType.THROW, mc.player);
+                }
+                if (cpsTimer.hasReached(cpsDelay, true) && timer.hasReached(delay, true)) {
+                    updateCPS();
+                    updateDelay();
+                    mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, i, 1, SlotActionType.THROW, mc.player);
+                }
             }
-
             for(int i = 9; i <= 44; i++) {
                 ItemStack stack = screen.getScreenHandler().slots.get(i).getStack();
-                if (stack.isEmpty() || !(stack.getItem() instanceof ArmorItem) || !InventoryUtil.isBestArmor(stack))
+                if (stack.isEmpty() || !(stack.getItem() instanceof ArmorItem) || !InventoryUtil.isBestArmor(stack)) {
+                    continue;
+                }
+
+                ArmorItem armorItem = (ArmorItem) stack.getItem();
+                if (!screen.getScreenHandler().slots.get(5 + armorItem.getType().ordinal()).getStack().isEmpty())
                     continue;
 
                 if (cpsTimer.hasReached(cpsDelay, true) && timer.hasReached(delay, true)) {
                     updateCPS();
                     updateDelay();
-
                     mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, i, 0, SlotActionType.QUICK_MOVE, mc.player);
                 }
-
             }
         } else {
             startTimer.reset();
@@ -104,5 +108,4 @@ public class AutoArmorModule extends AbstractModule implements PlayerUpdateListe
     private void updateCPS() {
         this.cpsDelay = this.delay = (int) (ThreadLocalRandom.current().nextGaussian() * (1000 / (minCPS.getValue() + 2) - 1000 / (maxCPS.getValue() + 2) + 1)) + 1000 / (maxCPS.getValue() + 2);
     }
-
 }

@@ -21,31 +21,41 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import net.minecraft.network.packet.s2c.play.CloseScreenS2CPacket;
+import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import net.minecraft.client.gui.screen.world.LevelLoadingScreen;
+import net.minecraft.network.packet.s2c.login.LoginHelloS2CPacket;
+import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 
-public class AntiGUICloseModule extends AbstractModule implements IncomingPacketListener {
+public class FlagDetectorModule extends AbstractModule implements IncomingPacketListener {
 
-    public AntiGUICloseModule() {
-        super("Anti GUI Close", "Prevents the server from closing guis.", Category.MISC);
+    private int flagCount;
+
+    public FlagDetectorModule() {
+        super("Flag Detector",
+                "Detects and counts flags.",
+                Category.MISC
+        );
     }
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(IncomingPacketEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(this, IncomingPacketEvent.ID);
+        this.flagCount = 0;
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(IncomingPacketEvent.ID, this);
+        this.flagCount = 0;
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, IncomingPacketEvent.ID);
     }
 
     @Override
-    public void onIncomingPacket(final IncomingPacketEvent event) {
-        if (mc.player != null && event.packet instanceof CloseScreenS2CPacket) {
-            // TODO: Technically this should be legit but i need more investigation - FooFieOwO
-            mc.player.currentScreenHandler = mc.player.playerScreenHandler;
-            event.cancel();
+    public void onIncomingPacket(IncomingPacketEvent event) {
+        if (event.packet instanceof LoginHelloS2CPacket) this.flagCount = 0;
+        if (mc.player == null || mc.world == null || mc.player.isDead() || mc.currentScreen instanceof LevelLoadingScreen)
+            return;
+        if (event.packet instanceof PlayerPositionLookS2CPacket) {
+            ChatUtil.warningChatMessage("Flag detected: " + ++flagCount);
         }
     }
-
 }

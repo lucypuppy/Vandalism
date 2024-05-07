@@ -61,6 +61,7 @@ public class ChestStealerModule extends AbstractModule implements PlayerUpdateLi
         startTimer = new MSTimer();
         cpsTimer = new MSTimer();
         updateDelay();
+        updateCPS();
     }
 
     @Override

@@ -19,11 +19,11 @@
 package de.nekosarekawaii.vandalism.render.gl.shader;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.nekosarekawaii.vandalism.render.gl.utils.TemporaryValues;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.render.gl.utils.TemporaryValues;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
-import net.minecraft.client.MinecraftClient;
 import org.joml.Matrix4fc;
+import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
@@ -31,7 +31,6 @@ import java.awt.*;
 public class GlobalUniforms implements MinecraftWrapper {
 
     public static void setGlobalUniforms(ShaderProgram program, boolean setIdentityTransform) {
-        final MinecraftClient mc = MinecraftClient.getInstance();
         program.uniform("u_ModelViewMatrix").set(RenderSystem.getModelViewMatrix());
         program.uniform("u_ProjectionMatrix").set(RenderSystem.getProjectionMatrix());
         program.uniform("u_WindowSize").set((float) mc.getWindow().getWidth(), (float) mc.getWindow().getHeight());
@@ -44,24 +43,30 @@ public class GlobalUniforms implements MinecraftWrapper {
         program.uniform("u_TransformMatrix").set(matrix);
     }
 
+    public static void setBackgroundUniforms(ShaderProgram program) {
+        program.uniform("resolution").set((float) mc.getWindow().getWidth(), (float) mc.getWindow().getHeight());
+        program.uniform("time").set((float) (GLFW.glfwGetTime() - Vandalism.getInstance().getStartTime()));
+    }
+
     public static void setBackgroundUniforms(ShaderProgram program, Color color1, Color color2, Color color3) {
         program.uniform("resolution").set((float) mc.getWindow().getWidth(), (float) mc.getWindow().getHeight());
         program.uniform("time").set((float) (GLFW.glfwGetTime() - Vandalism.getInstance().getStartTime()));
-        program.uniform("color1").set(
+
+        program.uniform("color1").set(new Vector3f(
                 color1.getRed() / 255.0f,
                 color1.getGreen() / 255.0f,
                 color1.getBlue() / 255.0f
-        );
-        program.uniform("color2").set(
+        ));
+        program.uniform("color2").set(new Vector3f(
                 color2.getRed() / 255.0f,
                 color2.getGreen() / 255.0f,
                 color2.getBlue() / 255.0f
-        );
-        program.uniform("color3").set(
+        ));
+        program.uniform("color3").set(new Vector3f(
                 color3.getRed() / 255.0f,
                 color3.getGreen() / 255.0f,
                 color3.getBlue() / 255.0f
-        );
+        ));
     }
 
 }

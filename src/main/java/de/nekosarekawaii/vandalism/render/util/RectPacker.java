@@ -1,4 +1,3 @@
-
 /*
  * This file is part of Vandalism - https://github.com/VandalismDevelopment/Vandalism
  * Copyright (C) 2023-2024 NekosAreKawaii, FooFieOwO and contributors

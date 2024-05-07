@@ -88,7 +88,7 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
             final double speed = MovementUtil.getSpeedRelatedToYaw(this.mc.player.getYaw());
 
             if (speed < 0.3D || !isLooking) {
-                this.mc.options.forwardKey.setPressed(true);
+                this.mc.options.forwardKey.setPressed(InputType.isPressed(this.mc.options.forwardKey.boundKey.getCode()));
                 this.movementTarget = null;
             }
 

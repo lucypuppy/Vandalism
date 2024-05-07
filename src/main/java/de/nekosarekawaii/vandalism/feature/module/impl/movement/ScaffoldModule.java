@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.normal.player.RotationListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
@@ -36,15 +37,24 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
     private Vec3d posVec = null;
     private Direction direction = null;
     private Rotation rotation = null;
+    private AutoSprintModule autoSprintModule;
 
     public ScaffoldModule() {
         super("Scaffold", "Places blocks underneath you.", Category.MOVEMENT);
         this.markExperimental();
     }
 
+    private BooleanValue allowSprint = new BooleanValue(
+            this,
+            "Allow Sprint",
+            "Allows you to sprint while scaffolding.",
+            false
+    );
+
     @Override
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID);
+        this.autoSprintModule = Vandalism.getInstance().getModuleManager().getByClass(AutoSprintModule.class);
     }
 
     @Override
@@ -80,6 +90,8 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
                 mc.doItemUse();
             }
         }
+
+        autoSprintModule.stopSprinting(!allowSprint.getValue());
     }
 
     @Override

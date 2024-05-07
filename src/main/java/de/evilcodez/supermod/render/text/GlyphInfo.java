@@ -16,6 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+<<<<<<<<HEAD:src/main/java/de/nekosarekawaii/vandalism/util/common/Alignment.java
+package de.nekosarekawaii.vandalism.util.common;
+
+/**
+ * Enum for the alignment of an object. The alignment is used to determine the position of an object relative to another object.
+ */
+public enum Alignment {
+
+    LEFT, RIGHT,
+    TOP, BOTTOM,
+
+    MIDDLE
+
+========
 package de.evilcodez.supermod.render.text;
 
 public abstract class GlyphInfo {
@@ -53,4 +67,5 @@ public abstract class GlyphInfo {
     public abstract float getU2();
 
     public abstract float getV2();
+>>>>>>>>refs/heads/main:src/main/java/de/evilcodez/supermod/render/text/GlyphInfo.java
 }
