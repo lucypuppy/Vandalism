@@ -113,7 +113,7 @@ public class InventoryUtil implements MinecraftWrapper {
                     if (!(stack.getItem() instanceof ArmorItem itemToCheck)) continue;
                     final ArmorItem currentItem = (ArmorItem) itemStack.getItem();
                     if (currentItem.getType() == itemToCheck.getType()) {
-                        if (currentItem.getProtection() < itemToCheck.getProtection()) {
+                        if (currentItem.getProtection() < itemToCheck.getProtection() || currentItem.getToughness() < itemToCheck.getToughness()) {
                             return false;
                         }
                     }
