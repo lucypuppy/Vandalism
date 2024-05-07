@@ -23,12 +23,13 @@ import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.normal.player.RotationListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.nofall.NoFallModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
-import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
 public class LegitModuleMode extends ModuleMulti<NoFallModule> implements PlayerUpdateListener, RotationListener {
+
+    private Rotation rotation = null;
 
     public LegitModuleMode() {
         super("Legit");
@@ -70,8 +71,7 @@ public class LegitModuleMode extends ModuleMulti<NoFallModule> implements Player
             Vandalism.getInstance().getRotationManager().resetRotation();
             return;
         }
-
-        Rotation rotation = new Rotation(mc.player.getYaw(), 90);
-        Vandalism.getInstance().getRotationManager().setRotation(rotation, 80f, 0.0f, true);
+        this.rotation = new Rotation(mc.player.getYaw(), 90);
+        Vandalism.getInstance().getRotationManager().setRotation(this.rotation, 80f, 0.0f, true);
     }
 }

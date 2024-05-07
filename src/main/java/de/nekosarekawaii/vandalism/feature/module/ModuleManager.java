@@ -120,13 +120,14 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.ethanolModule = new EthanolModule(),
 
                 // combat
+                new AntiBotsModule(),
                 new AutoClickerModule(),
                 new AutoShieldModule(),
                 new BackTrackModule(),
                 new BowSpammerModule(),
+                new LagRangeModule(),
                 new TimerRangeModule(),
                 new WTapModule(),
-                new AntiBotsModule(),
 
                 // exploit
                 new DisablerModule(),
@@ -140,14 +141,15 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new VehicleOneHitModule(),
 
                 // misc
-                new AntiGUICloseModule(),
                 new AutoArmorModule(),
-                new ChestStealerModule(),
                 new AutoFishModule(),
                 new AutoRespawnModule(),
                 new BlockBreakerModule(),
                 new ChatReactionModule(),
+                new ChestStealerModule(),
+                new EthanolModule(),
                 new FakeGameModeModule(),
+                new FlagDetectorModule(),
                 new HandFuckerModule(),
                 new InteractionSpammerModule(),
                 //new ItemStackLoggerModule(), TODO
@@ -157,6 +159,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new NoteBotModule(),
                 new PacketManagerModule(),
                 new ResourcePackSpooferModule(),
+                new AntiGUICloseModule(),
 
                 // movement
                 new AirJumpModule(),

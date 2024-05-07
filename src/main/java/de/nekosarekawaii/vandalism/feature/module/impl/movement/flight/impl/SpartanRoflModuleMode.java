@@ -66,12 +66,11 @@ public class SpartanRoflModuleMode extends ModuleMulti<FlightModule> implements 
     @Override
     public void onOutgoingPacket(OutgoingPacketEvent event) {
         if (event.packet instanceof final PlayerMoveC2SPacket packet) {
-            final double y = Math.sin(System.currentTimeMillis()) * 0.05;
-            final double xz = y / 4;
-
-            packet.x += xz;
-            packet.y += y;
-            packet.z += xz;
+            final double roflY = Math.sin(System.currentTimeMillis()) * 0.05;
+            final double roflXZ = roflY / 4;
+            packet.x += roflXZ;
+            packet.y += roflY;
+            packet.z += roflXZ;
         }
     }
 

@@ -98,7 +98,16 @@ public class ShaderUniform {
         this.set(value ? 1 : 0);
     }
 
+    public void set(Color color, boolean alpha) {
+        if (alpha) {
+            this.set(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
+            return;
+        }
+
+        this.set(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
+    }
+
     public void set(Color color) {
-        this.set(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
+        this.set(color, true);
     }
 }

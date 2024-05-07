@@ -24,8 +24,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.recipe.RecipeSerializer;
@@ -113,16 +112,49 @@ public class InventoryUtil implements MinecraftWrapper {
                     ItemStack stack = screen.getScreenHandler().getSlot(i).getStack();
                     if (!(stack.getItem() instanceof ArmorItem itemToCheck)) continue;
                     final ArmorItem currentItem = (ArmorItem) itemStack.getItem();
-
-                    if (currentItem.getType() == itemToCheck.getType() && currentItem.getProtection() < itemToCheck.getProtection())
-                        return false;
+                    if (currentItem.getType() == itemToCheck.getType()) {
+                        if (currentItem.getProtection() < itemToCheck.getProtection() || currentItem.getToughness() < itemToCheck.getToughness()) {
+                            return false;
+                        }
+                    }
                 }
-
                 return true;
             }
         }
-
         return false;
+    }
+
+    //Todo make this customizeable
+    public static int getHotbarSlotForItem(final ItemStack itemStack) {
+        if (itemStack.getItem() instanceof SwordItem)
+            return 0;
+
+        if (itemStack.getItem() instanceof BowItem)
+            return 1;
+
+        if (itemStack.getItem() instanceof PickaxeItem)
+            return 2;
+
+        if (itemStack.getItem() instanceof AxeItem)
+            return 3;
+
+        if (itemStack.getItem() instanceof ShovelItem)
+            return 4;
+
+        if (itemStack.getItem() instanceof EnderPearlItem)
+            return 5;
+
+        if (itemStack.getItem().isFood())
+            return 6;
+
+        if (itemStack.getItem() instanceof BucketItem) //Todo check if water is in the bucket
+            return 7;
+
+        if (itemStack.getItem() instanceof BlockItem)
+            return 8;
+
+
+        return -1;
     }
 
 }

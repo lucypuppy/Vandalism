@@ -22,6 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.event.cancellable.render.ScreenListener;
 import de.nekosarekawaii.vandalism.render.effect.PostProcessEffect;
+import de.nekosarekawaii.vandalism.render.effect.fill.ColorFillEffect;
 import de.nekosarekawaii.vandalism.render.effect.outline.FastOuterOutlineEffect;
 import de.nekosarekawaii.vandalism.render.effect.outline.GlowOutlineEffect;
 import de.nekosarekawaii.vandalism.render.effect.outline.InnerOutlineEffect;
@@ -46,10 +47,16 @@ public class Shaders {
     private static final List<ShaderProgram> shaders = new ArrayList<>();
 
     // Post-processing (just add the field here, and it will be automatically initialized)
+
+    // Outlines
     @Getter private static OuterOutlineEffect outerOutlineEffect;
     @Getter private static FastOuterOutlineEffect fastOuterOutlineEffect;
     @Getter private static InnerOutlineEffect innerOutlineEffect;
     @Getter private static GlowOutlineEffect glowOutlineEffect;
+
+    // Fills
+    @Getter
+    private static ColorFillEffect colorFillEffect;
 
     @Getter private static ShaderProgram passThroughShader;
     private static final List<PostProcessEffect> postProcessEffects = new ArrayList<>();
@@ -66,6 +73,8 @@ public class Shaders {
 
     // Background
     @Getter private static ShaderProgram darkNightBackgroundShader;
+    @Getter
+    private static ShaderProgram ingameGuiBackgroundShader;
 
     // Font
     @Getter private static ShaderProgram fontShader;
@@ -86,7 +95,9 @@ public class Shaders {
         shaders.add(instPositionTexColorShader = create("inst_position_tex_color", load(ShaderType.VERTEX, "general_purpose/inst_position_tex_color"), load(ShaderType.FRAGMENT, "general_purpose/position_tex_color")));
 
         shaders.add(fontShader = create("font", load(ShaderType.VERTEX, "font/font"), load(ShaderType.FRAGMENT, "font/font")));
+
         shaders.add(darkNightBackgroundShader = create("dark_night_background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/dark_night")));
+        shaders.add(ingameGuiBackgroundShader = create("ingame_gui_background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/ingame_gui_test")));
 
         for (Field field : Shaders.class.getDeclaredFields()) {
             if (!Modifier.isStatic(field.getModifiers())) continue;
