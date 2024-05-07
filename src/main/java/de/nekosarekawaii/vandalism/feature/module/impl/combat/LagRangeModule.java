@@ -44,6 +44,7 @@ public class LagRangeModule extends AbstractModule implements TimeTravelListener
     private IntegerValue maxCharge = new IntegerValue(this, "Max Charge", "The maximum amount of ticks you can charge.", 3, 1, 10);
     private LongValue delay = new LongValue(this, "Delay", "The delay between lagging in milliseconds.", 1000L, 0L, 10000L);
     private BooleanValue tickEntities = new BooleanValue(this, "Tick Entities", "Tick entities while charging.", true);
+    private BooleanValue onlyOnGround = new BooleanValue(this, "Only On Ground", "Only lag when you are on the ground.", false);
 
     @Override
     public void onActivate() {
@@ -104,7 +105,7 @@ public class LagRangeModule extends AbstractModule implements TimeTravelListener
 
         /* Charging and saving the amount of shifted time */
         if (!isUnCharging) {
-            if (isCharging && timer.hasReached(delay.getValue(), false) && getCharge() < maxCharge.getValue()) {
+            if (isCharging && timer.hasReached(delay.getValue(), false) && getCharge() < maxCharge.getValue() && (!onlyOnGround.getValue() || mc.player.isOnGround())) {
                 shifted += event.time - prevTime;
             }
         }
