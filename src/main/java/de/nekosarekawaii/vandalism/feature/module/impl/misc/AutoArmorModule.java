@@ -69,18 +69,25 @@ public class AutoArmorModule extends AbstractModule implements PlayerUpdateListe
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
         if (!startTimer.hasReached(startDelay.getValue(), false)) return;
         if (mc.currentScreen instanceof InventoryScreen screen) {
-            for(int i = 5; i < 8; i++) {
+            for(int i = 5; i <= 8; i++) {
                 ItemStack stack = screen.getScreenHandler().slots.get(i).getStack();
                 if (stack.isEmpty() || InventoryUtil.isBestArmor(stack)) {
                     continue;
                 }
-                mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, i, 1, SlotActionType.THROW, mc.player);
+                if (cpsTimer.hasReached(cpsDelay, true) && timer.hasReached(delay, true)) {
+                    updateCPS();
+                    updateDelay();
+                    mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, i, 1, SlotActionType.THROW, mc.player);
+                }
             }
             for(int i = 9; i <= 44; i++) {
                 ItemStack stack = screen.getScreenHandler().slots.get(i).getStack();
                 if (stack.isEmpty() || !(stack.getItem() instanceof ArmorItem) || !InventoryUtil.isBestArmor(stack)) {
                     continue;
                 }
+
+                ArmorItem armorItem = (ArmorItem) stack.getItem();
+                if(!screen.getScreenHandler().slots.get(5+armorItem.getType().ordinal()).getStack().isEmpty()) continue;
 
                 if (cpsTimer.hasReached(cpsDelay, true) && timer.hasReached(delay, true)) {
                     updateCPS();
