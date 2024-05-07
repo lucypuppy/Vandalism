@@ -18,7 +18,6 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
-import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
@@ -26,6 +25,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.LongValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.normal.game.TimeTravelListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 

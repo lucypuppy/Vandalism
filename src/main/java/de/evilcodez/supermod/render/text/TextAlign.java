@@ -16,23 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-<<<<<<<<HEAD:src/main/java/de/nekosarekawaii/vandalism/util/encryption/Base64.java
-package de.nekosarekawaii.vandalism.util.encryption;
-
-public class Base64 implements Encryptor {
-
-    @Override
-    public byte[] encrypt(byte[] data) {
-        return java.util.Base64.getEncoder().encode(data);
-    }
-
-    @Override
-    public byte[] decrypt(byte[] data) {
-        return java.util.Base64.getDecoder().decode(data);
-    }
-
-}
-========
 package de.evilcodez.supermod.render.text;
 
 import lombok.Getter;
@@ -40,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum TextAlign {
+
     X_POSITIVE(false),
     X_NEGATIVE(false),
     X_CENTER(false),
@@ -50,4 +34,3 @@ public enum TextAlign {
     @Getter
     private final boolean vertical;
 }
->>>>>>>>refs/heads/main:src/main/java/de/evilcodez/supermod/render/text/TextAlign.java
