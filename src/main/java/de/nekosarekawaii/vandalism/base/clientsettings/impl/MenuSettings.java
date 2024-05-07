@@ -295,6 +295,47 @@ public class MenuSettings extends ValueGroup {
             false
     ).visibleCondition(this.changeScreenCloseButton::getValue);
 
+    public final BooleanValue imguiGlowOutline = new BooleanValue(
+            this,
+            "ImGui Glow Outline",
+            "Activates/Deactivates the glow outline for ImGui.",
+            false
+    );
+
+    public final ColorValue imguiGlowOutlineColor = new ColorValue(
+            this,
+            "ImGui Glow Outline Color",
+            "The color of the glow outline for ImGui.",
+            Color.lightGray
+    ).visibleCondition(this.imguiGlowOutline::getValue);
+
+    public final FloatValue imguiGlowOutlineWidth = new FloatValue(
+            this,
+            "ImGui Glow Outline Width",
+            "The width of the glow outline for ImGui.",
+            6.0f,
+            1.0f,
+            20.0f
+    ).visibleCondition(this.imguiGlowOutline::getValue);
+
+    public final FloatValue imguiGlowOutlineAccuracy = new FloatValue(
+            this,
+            "ImGui Glow Outline Accuracy",
+            "The accuracy of the glow outline for ImGui.",
+            1.0f,
+            1.0f,
+            8.0f
+    ).visibleCondition(this.imguiGlowOutline::getValue);
+
+    public final FloatValue imguiGlowOutlineExponent = new FloatValue(
+            this,
+            "ImGui Glow Outline Exponent",
+            "The exponent of the glow outline for ImGui.",
+            0.22f,
+            0.01f,
+            4.0f
+    ).visibleCondition(this.imguiGlowOutline::getValue);
+
     public MenuSettings(final ClientSettings parent) {
         super(parent, "Menu", "Menu related settings.");
     }

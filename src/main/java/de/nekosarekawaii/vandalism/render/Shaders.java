@@ -22,6 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.event.cancellable.render.ScreenListener;
 import de.nekosarekawaii.vandalism.render.effect.PostProcessEffect;
+import de.nekosarekawaii.vandalism.render.effect.fill.ColorFillEffect;
 import de.nekosarekawaii.vandalism.render.effect.outline.FastOuterOutlineEffect;
 import de.nekosarekawaii.vandalism.render.effect.outline.GlowOutlineEffect;
 import de.nekosarekawaii.vandalism.render.effect.outline.InnerOutlineEffect;
@@ -46,10 +47,15 @@ public class Shaders {
     private static final List<ShaderProgram> shaders = new ArrayList<>();
 
     // Post-processing (just add the field here, and it will be automatically initialized)
+
+    // Outlines
     @Getter private static OuterOutlineEffect outerOutlineEffect;
     @Getter private static FastOuterOutlineEffect fastOuterOutlineEffect;
     @Getter private static InnerOutlineEffect innerOutlineEffect;
     @Getter private static GlowOutlineEffect glowOutlineEffect;
+
+    // Fills
+    @Getter private static ColorFillEffect colorFillEffect;
 
     @Getter private static ShaderProgram passThroughShader;
     private static final List<PostProcessEffect> postProcessEffects = new ArrayList<>();
