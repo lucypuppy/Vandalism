@@ -23,6 +23,8 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.component.DataComponentType;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.*;
 import net.minecraft.recipe.Recipe;
@@ -144,7 +146,7 @@ public class InventoryUtil implements MinecraftWrapper {
         if (itemStack.getItem() instanceof EnderPearlItem)
             return 5;
 
-        if (itemStack.getItem().isFood())
+        if (itemStack.getItem().getComponents().contains(DataComponentTypes.FOOD))
             return 6;
 
         if (itemStack.getItem() instanceof BucketItem) //Todo check if water is in the bucket

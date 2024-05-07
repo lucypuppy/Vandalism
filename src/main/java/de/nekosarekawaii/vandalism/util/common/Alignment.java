@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-<<<<<<<<HEAD:src/main/java/de/nekosarekawaii/vandalism/util/common/Alignment.java
 package de.nekosarekawaii.vandalism.util.common;
 
 /**
@@ -29,43 +28,4 @@ public enum Alignment {
 
     MIDDLE
 
-========
-        package de.evilcodez.supermod.render.text;
-
-    public abstract class GlyphInfo {
-
-        public abstract int getCodePoint();
-
-        public abstract boolean isUnknownGlyph();
-
-        public abstract int getTextureId();
-
-        public abstract int getObfuscationWidth();
-
-        public abstract float getAdvanceX();
-
-        public abstract float getBearingX();
-
-        public abstract float getAscent();
-
-        public abstract float getDescent();
-
-        public abstract float getLineGap();
-
-        public abstract int getOffsetX();
-
-        public abstract int getOffsetY();
-
-        public abstract int getWidth();
-
-        public abstract int getHeight();
-
-        public abstract float getU1();
-
-        public abstract float getV1();
-
-        public abstract float getU2();
-
-        public abstract float getV2();
->>>>>>>>refs/heads/main:src/main/java/de/evilcodez/supermod/render/text/GlyphInfo.java
 }
