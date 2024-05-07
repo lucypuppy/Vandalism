@@ -20,13 +20,16 @@ package de.nekosarekawaii.vandalism.integration.hud.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.normal.internal.ModuleToggleListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
+import de.nekosarekawaii.vandalism.render.Shaders;
 import net.minecraft.client.gui.DrawContext;
 
+import java.awt.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -82,6 +85,47 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
             "The color of the text."
     );
 
+    public final BooleanValue glowOutline = new BooleanValue(
+            this,
+            "ImGui Glow Outline",
+            "Activates/Deactivates the glow outline for ImGui.",
+            false
+    );
+
+    public final ColorValue glowOutlineColor = new ColorValue(
+            this,
+            "ImGui Glow Outline Color",
+            "The color of the glow outline for ImGui.",
+            Color.lightGray
+    ).visibleCondition(this.glowOutline::getValue);
+
+    public final FloatValue glowOutlineWidth = new FloatValue(
+            this,
+            "ImGui Glow Outline Width",
+            "The width of the glow outline for ImGui.",
+            6.0f,
+            1.0f,
+            20.0f
+    ).visibleCondition(this.glowOutline::getValue);
+
+    public final FloatValue glowOutlineAccuracy = new FloatValue(
+            this,
+            "ImGui Glow Outline Accuracy",
+            "The accuracy of the glow outline for ImGui.",
+            1.0f,
+            1.0f,
+            8.0f
+    ).visibleCondition(this.glowOutline::getValue);
+
+    public final FloatValue glowOutlineExponent = new FloatValue(
+            this,
+            "ImGui Glow Outline Exponent",
+            "The exponent of the glow outline for ImGui.",
+            0.22f,
+            0.01f,
+            4.0f
+    ).visibleCondition(this.glowOutline::getValue);
+
     public ModuleListHUDElement() {
         super("Module List");
         Vandalism.getInstance().getEventSystem().subscribe(ModuleToggleEvent.ID, this);
@@ -102,48 +146,64 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
     public void onRender(final DrawContext context, final float delta, final boolean inGame) {
         this.sort();
         int yOffset = 0;
-        for (final String activatedModule : this.activatedModules) {
-            final int textWidth = this.mc.textRenderer.getWidth(activatedModule);
-            switch (this.alignmentX) {
-                case MIDDLE -> {
-                    if (this.background.getValue()) {
-                        context.fill(
-                                (this.x + this.width / 2) - (textWidth / 2) - this.widthOffset.getValue(),
-                                this.y + yOffset,
-                                (this.x + this.width / 2) + (textWidth / 2) + this.widthOffset.getValue(),
-                                this.y + yOffset + this.mc.textRenderer.fontHeight + this.heightOffset.getValue(),
-                                Integer.MIN_VALUE
-                        );
-                    }
-                    this.drawText(context, activatedModule, (this.x + this.width / 2) - (textWidth / 2), this.y + yOffset + this.heightOffset.getValue());
-                }
-                case RIGHT -> {
-                    if (this.background.getValue()) {
-                        context.fill(
-                                (this.x + this.width) - textWidth - this.widthOffset.getValue(),
-                                this.y + yOffset,
-                                (this.x + this.width) + this.widthOffset.getValue(),
-                                this.y + yOffset + this.mc.textRenderer.fontHeight + this.heightOffset.getValue(),
-                                Integer.MIN_VALUE
-                        );
-                    }
-                    this.drawText(context, activatedModule, (this.x + this.width) - textWidth, this.y + yOffset + this.heightOffset.getValue());
-                }
-                default -> {
-                    if (this.background.getValue()) {
-                        context.fill(
-                                this.x - this.widthOffset.getValue(),
-                                this.y + yOffset,
-                                this.x + textWidth + this.widthOffset.getValue(),
-                                this.y + yOffset + this.mc.textRenderer.fontHeight + this.heightOffset.getValue(),
-                                Integer.MIN_VALUE
-                        );
-                    }
-                    this.drawText(context, activatedModule, this.x, this.y + yOffset + this.heightOffset.getValue());
-                }
+
+        final int count = glowOutline.getValue() ? 2 : 1;
+
+        for(int i = 0; i < 2; i++) {
+            yOffset = 0;
+            final boolean postProcess = count == 2 && i == 0;
+            if(postProcess) {
+                Shaders.getGlowOutlineEffect().configure(this.glowOutlineWidth.getValue(), this.glowOutlineAccuracy.getValue(), this.glowOutlineExponent.getValue());
+                Shaders.getGlowOutlineEffect().bindMask();
             }
-            this.width = Math.max(this.width, textWidth);
-            yOffset += this.mc.textRenderer.fontHeight + this.heightOffset.getValue();
+            for (final String activatedModule : this.activatedModules) {
+                final int textWidth = this.mc.textRenderer.getWidth(activatedModule);
+                switch (this.alignmentX) {
+                    case MIDDLE -> {
+                        if (this.background.getValue() || postProcess) {
+                            context.fill(
+                                    (this.x + this.width / 2) - (textWidth / 2) - this.widthOffset.getValue(),
+                                    this.y + yOffset,
+                                    (this.x + this.width / 2) + (textWidth / 2) + this.widthOffset.getValue(),
+                                    this.y + yOffset + this.mc.textRenderer.fontHeight + this.heightOffset.getValue(),
+                                    Integer.MIN_VALUE
+                            );
+                        }
+                        this.drawText(context, activatedModule, (this.x + this.width / 2) - (textWidth / 2), this.y + yOffset + this.heightOffset.getValue());
+                    }
+                    case RIGHT -> {
+                        if (this.background.getValue() || postProcess) {
+                            context.fill(
+                                    (this.x + this.width) - textWidth - this.widthOffset.getValue(),
+                                    this.y + yOffset,
+                                    (this.x + this.width) + this.widthOffset.getValue(),
+                                    this.y + yOffset + this.mc.textRenderer.fontHeight + this.heightOffset.getValue(),
+                                    Integer.MIN_VALUE
+                            );
+                        }
+                        this.drawText(context, activatedModule, (this.x + this.width) - textWidth, this.y + yOffset + this.heightOffset.getValue());
+                    }
+                    default -> {
+                        if (this.background.getValue() || postProcess) {
+                            context.fill(
+                                    this.x - this.widthOffset.getValue(),
+                                    this.y + yOffset,
+                                    this.x + textWidth + this.widthOffset.getValue(),
+                                    this.y + yOffset + this.mc.textRenderer.fontHeight + this.heightOffset.getValue(),
+                                    Integer.MIN_VALUE
+                            );
+                        }
+                        this.drawText(context, activatedModule, this.x, this.y + yOffset + this.heightOffset.getValue());
+                    }
+                }
+                this.width = Math.max(this.width, textWidth);
+                yOffset += this.mc.textRenderer.fontHeight + this.heightOffset.getValue();
+            }
+            if(postProcess) {
+                Shaders.getGlowOutlineEffect().renderFullscreen(Shaders.getColorFillEffect().maskFramebuffer().get(), false);
+                Shaders.getColorFillEffect().setColor(this.glowOutlineColor.getColor());
+                Shaders.getColorFillEffect().renderFullscreen(this.mc.getFramebuffer(), false);
+            }
         }
         this.height = yOffset;
     }
