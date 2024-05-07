@@ -107,4 +107,7 @@ public class ShaderUniform {
         this.set(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
     }
 
+    public void set(Color color) {
+        this.set(color, true);
+    }
 }

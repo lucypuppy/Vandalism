@@ -18,7 +18,10 @@
 
 package de.nekosarekawaii.vandalism.util.imgui;
 
+import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.clientsettings.impl.MenuSettings;
 import de.nekosarekawaii.vandalism.injection.access.IImGuiImplGlfw;
+import de.nekosarekawaii.vandalism.render.Shaders;
 import imgui.*;
 import imgui.extension.implot.ImPlot;
 import imgui.flag.ImGuiCol;
@@ -56,6 +59,16 @@ public class ImLoader {
 
         ImGui.endFrame();
         ImGui.render();
+
+        final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
+        if (menuSettings.imguiGlowOutline.getValue()) {
+            Shaders.getGlowOutlineEffect().configure(menuSettings.imguiGlowOutlineWidth.getValue(), menuSettings.imguiGlowOutlineAccuracy.getValue(), menuSettings.imguiGlowOutlineExponent.getValue());
+            Shaders.getGlowOutlineEffect().bindMask();
+            IM_GUI_IMPL_GL_3.renderDrawData(ImGui.getDrawData());
+            Shaders.getGlowOutlineEffect().renderFullscreen(Shaders.getColorFillEffect().maskFramebuffer().get(), false);
+            Shaders.getColorFillEffect().setColor(menuSettings.imguiGlowOutlineColor.getColor());
+            Shaders.getColorFillEffect().renderFullscreen(MinecraftClient.getInstance().getFramebuffer(), false);
+        }
 
         IM_GUI_IMPL_GL_3.renderDrawData(ImGui.getDrawData());
     }

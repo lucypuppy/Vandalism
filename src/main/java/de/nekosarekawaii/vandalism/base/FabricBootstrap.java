@@ -41,7 +41,7 @@ public class FabricBootstrap implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         final File renderDoc = new File("C:\\Program Files\\RenderDoc\\renderdoc.dll");
-        if (renderDoc.exists()) {
+        if (renderDoc.exists() && System.getProperty("vandalism.load.renderdoc", "false").equalsIgnoreCase("true")) {
             System.load(renderDoc.getAbsolutePath());
         }
         FabricLoader.getInstance().getModContainer(MOD_ID = "vandalism").ifPresent(modContainer -> {
