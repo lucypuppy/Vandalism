@@ -156,7 +156,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new MessageEncryptorModule(),
                 new MiddleClickFriendsModule(),
                 new NoteBotModule(),
-                new PacketManagerModule(),
+                //new PacketManagerModule(), TODO
                 new ResourcePackSpooferModule(),
                 new AntiGUICloseModule(),
 
