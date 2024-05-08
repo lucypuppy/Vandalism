@@ -26,7 +26,7 @@ import net.lenni0451.classtransform.annotations.injection.CInject;
 @CTransformer(name = "net.wurstclient.mixin.ClientPlayNetworkHandlerMixin")
 public class TransformerClientPlayNetworkHandlerMixin {
 
-    @CInject(method = "onOnServerMetadata", target = @CTarget("HEAD"), cancellable = true)
+    @CInject(method = "onOnGameJoin", target = @CTarget("HEAD"), cancellable = true)
     public void disableWurstChatReportToast(final InjectionCallback callback) {
         callback.setCancelled(true);
     }
