@@ -55,6 +55,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.scoreboard.ScoreHolder;
+import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
@@ -585,6 +587,14 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 final double armor2 = entity2 instanceof LivingEntity living2 ? living2.getArmor() : 9999;
                 return Double.compare(armor1, armor2);
             });
+
+            case GOMME -> entities.sort((entity1, entity2) -> {
+                Scoreboard scoreboard = mc.player.getScoreboard();
+
+                final double health1 = entity1 instanceof LivingEntity living1 ? scoreboard.getScore(ScoreHolder.fromName(living1.getName().getString()), scoreboard.getNullableObjective("health")).getScore() : 9999;
+                final double health2 = entity2 instanceof LivingEntity living2 ? scoreboard.getScore(ScoreHolder.fromName(living2.getName().getString()), scoreboard.getNullableObjective("health")).getScore() : 9999;
+                return Double.compare(health1, health2);
+            });
         }
 
         if (!this.switchTarget.getValue() || this.targetIndex >= entities.size()) {
@@ -857,7 +867,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
         RANGE,
         HEALTH,
-        ARMOR;
+        ARMOR,
+        GOMME;
 
         private final String name;
 
