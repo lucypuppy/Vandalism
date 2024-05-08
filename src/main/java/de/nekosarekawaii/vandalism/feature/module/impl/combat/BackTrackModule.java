@@ -200,6 +200,10 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
                         packet instanceof PlayerRespawnS2CPacket ||
                         packet instanceof ChunkRenderDistanceCenterS2CPacket ||
                         packet instanceof TeamS2CPacket ||
+                        packet instanceof GameJoinS2CPacket ||
+                        packet instanceof EnterReconfigurationS2CPacket ||
+                        packet instanceof BundleS2CPacket ||
+                        packet instanceof BundleDelimiterS2CPacket ||
                         this.backTrackedEntities.isEmpty() || this.mc.player == null ||
                         this.mc.world == null || event.networkPhase != NetworkPhase.PLAY || event.isCancelled() //Ignore already cancelled packets
         ) {//@formatter:on
@@ -261,6 +265,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
 
     @Override
     public void onRender3D(final float tickDelta, final long limitTime, final MatrixStack matrixStack) {
+        if(mc.interactionManager == null) return;
         this.handlePackets(this.backTrackedEntities.isEmpty());
 
         for (var test : this.backTrackedEntities.entrySet()) {
