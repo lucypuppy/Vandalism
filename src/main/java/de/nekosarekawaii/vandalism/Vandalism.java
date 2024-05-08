@@ -51,6 +51,7 @@ import java.io.File;
 
 /**
  * TODO: NekosAreKawaii <br>
+ *  - Fix KeyBindArgumentType not accepting every key
  *  - Change behavior of the echolocation module to use it as a chunk load detector
  *  - Protector Module:
  *      - Add protection for custom rank prefixes
