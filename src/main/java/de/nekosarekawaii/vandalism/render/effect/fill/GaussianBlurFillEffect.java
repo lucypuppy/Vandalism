@@ -47,7 +47,7 @@ public class GaussianBlurFillEffect extends FillEffect {
 
     @Override
     protected String getShaderPath() {
-        return "postprocess/gaussian_blur_fill";
+        return "postprocess/fill/gaussian_blur_fill";
     }
 
     @Override
