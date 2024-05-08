@@ -22,7 +22,6 @@ import com.google.gson.Gson;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
-import de.nekosarekawaii.vandalism.integration.viafabricplus.ViaFabricPlusAccess;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import net.minecraft.client.network.ServerInfo;
@@ -55,7 +54,6 @@ public class ServerDataUtil {
 
     public static List<OrderedText> attachAdditionalTooltipData(final List<OrderedText> tooltip, final ServerInfo serverInfo) {
         if (serverInfo == null) return tooltip;
-        ViaFabricPlusAccess.setSettingValue("GeneralSettings", "showAdvertisedServerVersion", false);
         final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
         if (enhancedServerListSettings.enhancedServerList.getValue()) {
             if (enhancedServerListSettings.morePingTooltipServerInformation.getValue()) {
