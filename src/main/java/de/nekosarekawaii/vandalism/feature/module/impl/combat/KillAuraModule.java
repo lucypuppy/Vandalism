@@ -55,8 +55,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.scoreboard.ScoreHolder;
 import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.scoreboard.ScoreboardEntry;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
@@ -588,11 +588,14 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 return Double.compare(armor1, armor2);
             });
 
-            case GOMME -> entities.sort((entity1, entity2) -> {
-                Scoreboard scoreboard = mc.player.getScoreboard();
-
-                final double health1 = entity1 instanceof LivingEntity living1 ? scoreboard.getScore(ScoreHolder.fromName(living1.getName().getString()), scoreboard.getNullableObjective("health")).getScore() : 9999;
-                final double health2 = entity2 instanceof LivingEntity living2 ? scoreboard.getScore(ScoreHolder.fromName(living2.getName().getString()), scoreboard.getNullableObjective("health")).getScore() : 9999;
+            case GOMME_HEALTH -> entities.sort((entity1, entity2) -> {
+                double health1 = getHealthFromScoreboard(entity1);
+                double health2 = getHealthFromScoreboard(entity2);
+                if(health1 == 9999 && health2 == 9999) {
+                    final double distance1 = eyePos.distanceTo(RotationBuilder.getNearestPoint(entity1));
+                    final double distance2 = eyePos.distanceTo(RotationBuilder.getNearestPoint(entity2));
+                    return Double.compare(distance1, distance2);
+                }
                 return Double.compare(health1, health2);
             });
         }
@@ -602,6 +605,16 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         }
 
         this.target = entities.get(this.targetIndex);
+    }
+
+    private double getHealthFromScoreboard(Entity entity) {
+        Scoreboard scoreboard = mc.player.getScoreboard();
+        for(ScoreboardEntry entry : scoreboard.getScoreboardEntries(scoreboard.getNullableObjective("health"))) {
+            if(entry.owner().equalsIgnoreCase(entity.getName().getString())) {
+                return entry.value();
+            }
+        }
+        return 9999; // default value if health is not found
     }
 
     public BooleanValue getPreHit() {
@@ -868,7 +881,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         RANGE,
         HEALTH,
         ARMOR,
-        GOMME;
+        GOMME_HEALTH;
 
         private final String name;
 
