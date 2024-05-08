@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    modImplementation files("binary/baritone-unoptimized-fabric-1.10.2.jar")
+    modImplementation files("binary/baritone-unoptimized-fabric-1.10.2-3-g323e6faa.jar")
 }
 
 loom {
