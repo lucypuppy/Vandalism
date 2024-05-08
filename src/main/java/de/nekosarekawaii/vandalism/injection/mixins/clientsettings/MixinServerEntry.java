@@ -125,8 +125,8 @@ public abstract class MixinServerEntry {
                             type = "Vanilla/Unknown";
                             version = new StringBuilder(fixedVersion);
                         }
-                        instance.drawTextWithShadow(textRenderer, vandalism$TYPE_TEXT + type, x + textRenderer.getWidth(text) + 24, y, -1);
-                        instance.drawTextWithShadow(textRenderer, vandalism$VERSION_TEXT + version, x + textRenderer.getWidth(text) + 24, y + textRenderer.fontHeight, -1);
+                        instance.drawTextWithShadow(textRenderer, vandalism$TYPE_TEXT + type, x + textRenderer.getWidth(text) + 35, y, -1);
+                        instance.drawTextWithShadow(textRenderer, vandalism$VERSION_TEXT + version, x + textRenderer.getWidth(text) + 35, y + textRenderer.fontHeight, -1);
                     }
                 }
             }
