@@ -23,12 +23,10 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.ChatSettings;
-import de.nekosarekawaii.vandalism.clientwindow.impl.nbteditor.gui.NbtEditorClientWindow;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.feature.command.arguments.NbtCompoundArgumentType;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.NbtPathArgumentType;
@@ -228,66 +226,6 @@ public class NbtCommand extends AbstractCommand {
                 ItemStackUtil.giveItemStack(stack);
                 ChatUtil.infoChatMessage("Set main hand stack count to " + count + ".");
             }
-            return SINGLE_SUCCESS;
-        })));
-
-        builder.then(literal("gui").executes(context -> {
-            final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
-            if (this.validBasic(stack)) {
-                Vandalism.getInstance().getClientWindowManager().getByClass(NbtEditorClientWindow.class).displayNbt(stack.getName().getString(), stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt());
-            }
-            return SINGLE_SUCCESS;
-        }));
-
-        builder.then(literal("gui-entity").executes(context -> {
-            if (this.mc.crosshairTarget instanceof final EntityHitResult entityHitResult) {
-                final Entity entity = entityHitResult.getEntity();
-                if (entity != null) {
-                    final NbtCompound tag = entity.writeNbt(new NbtCompound());
-                    if (tag != null && !tag.isEmpty()) {
-                        Vandalism.getInstance().getClientWindowManager().getByClass(NbtEditorClientWindow.class).displayNbt(entity.getName().getString(), tag);
-                    }
-                    else {
-                        ChatUtil.errorChatMessage("The entity has no NBT data.");
-                    }
-                    return SINGLE_SUCCESS;
-                }
-            }
-            ChatUtil.errorChatMessage("You must be looking at an entity to use this command.");
-            return SINGLE_SUCCESS;
-        }));
-
-        builder.then(literal("gui-block-entity").executes(context -> {
-            if (this.mc.crosshairTarget instanceof final BlockHitResult blockHitResult) {
-                final BlockPos pos = blockHitResult.getBlockPos();
-                final BlockState blockState = mc.world.getBlockState(pos);
-                final BlockEntity blockEntity = mc.world.getBlockEntity(pos);
-                if (blockEntity != null && blockState != null) {
-                    final NbtCompound tag = new NbtCompound();
-                    // TODO: Fix
-                    //blockEntity.writeNbt(tag);
-                    this.mc.keyboard.setClipboard(tag.toString());
-                    if (tag != null && !tag.isEmpty()) {
-                        Vandalism.getInstance().getClientWindowManager().getByClass(NbtEditorClientWindow.class).displayNbt(blockState.getBlock().getName().getString(), tag);
-                    }
-                    else {
-                        ChatUtil.errorChatMessage("The entity has no NBT data.");
-                    }
-                    return SINGLE_SUCCESS;
-                }
-            }
-            ChatUtil.errorChatMessage("You must be looking at an block entity to use this command.");
-            return SINGLE_SUCCESS;
-        }));
-
-        builder.then(literal("displaynbt").then(argument("nbt", NbtCompoundArgumentType.create()).executes(context -> {
-            final NbtCompound nbt = NbtCompoundArgumentType.get(context);
-            final String displayTitle;
-            if (nbt.contains(DISPLAY_TITLE_NBT_KEY)) {
-                displayTitle = nbt.getString(DISPLAY_TITLE_NBT_KEY);
-                nbt.remove(DISPLAY_TITLE_NBT_KEY);
-            } else displayTitle = "Nbt";
-            Vandalism.getInstance().getClientWindowManager().getByClass(NbtEditorClientWindow.class).displayNbt(displayTitle, nbt);
             return SINGLE_SUCCESS;
         })));
     }
