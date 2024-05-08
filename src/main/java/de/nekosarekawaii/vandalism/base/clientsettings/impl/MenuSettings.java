@@ -128,26 +128,55 @@ public class MenuSettings extends ValueGroup {
             new Color(0.9f, 0.0f, 0.9f, 1.0f)
     ).visibleCondition(() -> this.backgroundMode.getValue() == BackgroundMode.SHADER);
 
-    public final BooleanValue inGameCustomBackground = new BooleanValue(
-            this,
-            "In-Game Custom Background",
-            "Activates/Deactivates the use of a custom background in-game.",
+    public final EnumModeValue<InGameBackgroundMode> inGameBackgroundMode = new EnumModeValue<>(
+            this.backgroundSettings,
+            "In Game Background Mode",
+            "The mode of the background.",
+            InGameBackgroundMode.DEFAULT,
+            InGameBackgroundMode.values()
+    );
+
+    public final BooleanValue inGameBackgroundBlur = new BooleanValue(
+            this.backgroundSettings,
+            "In-Game Background Blur",
+            "Activates/Deactivates the blur for the in-game background.",
             true
     );
+
+    public final ColorValue shaderColorSpark = new ColorValue(
+            this.backgroundSettings,
+            "Shader Color Spark",
+            "The color of the spark for the shader background.",
+            new Color(1.0f, 0.4f, 0.05f, 1.0f)
+    ).visibleCondition(() -> this.inGameBackgroundMode.getValue() == InGameBackgroundMode.SHADER);
+
+    public final ColorValue shaderColorBloom = new ColorValue(
+            this.backgroundSettings,
+            "Shader Color Bloom",
+            "The color of the bloom for the shader background.",
+            new Color(1.0f, 0.4f, 0.05f, 1.0f)
+    ).visibleCondition(() -> this.inGameBackgroundMode.getValue() == InGameBackgroundMode.SHADER);
+
+    public final ColorValue shaderColorSmoke = new ColorValue(
+            this.backgroundSettings,
+            "Shader Color Smoke",
+            "The color of the smoke for the shader background.",
+            new Color(1.0f, 0.43f, 0.1f, 1.0f)
+    ).visibleCondition(() -> this.inGameBackgroundMode.getValue() == InGameBackgroundMode.SHADER);
 
     public final ColorValue inGameCustomBackgroundColorTop = new ColorValue(
             this,
             "In-Game Custom Background Color Top",
             "The color of the custom background in-game at the top.",
             new Color(0, 0, 0, 94)
-    ).visibleCondition(this.inGameCustomBackground::getValue);
+    ).visibleCondition(() -> this.inGameBackgroundMode.getValue() == InGameBackgroundMode.COLOR_FACE);
 
     public final ColorValue inGameCustomBackgroundColorBottom = new ColorValue(
             this,
             "In-Game Custom Background Color Bottom",
             "The color of the custom background in-game at the bottom.",
             new Color(168, 10, 225, 150)
-    ).visibleCondition(this.inGameCustomBackground::getValue);
+    ).visibleCondition(() -> this.inGameBackgroundMode.getValue() == InGameBackgroundMode.COLOR_FACE);
 
     public final BooleanValue customWidgets = new BooleanValue(
             this,
@@ -348,6 +377,23 @@ public class MenuSettings extends ValueGroup {
         private final String name;
 
         BackgroundMode() {
+            this.name = StringUtils.normalizeEnumName(this.name());
+        }
+
+        @Override
+        public String getName() {
+            return this.name;
+        }
+    }
+
+    public enum InGameBackgroundMode implements IName {
+        DEFAULT,
+        SHADER,
+        COLOR_FACE;
+
+        private final String name;
+
+        InGameBackgroundMode() {
             this.name = StringUtils.normalizeEnumName(this.name());
         }
 
