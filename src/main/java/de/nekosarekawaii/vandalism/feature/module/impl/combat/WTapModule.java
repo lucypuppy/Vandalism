@@ -22,6 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.normal.player.AttackListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.AutoSprintModule;
 import de.nekosarekawaii.vandalism.integration.newrotation.RotationUtil;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 import de.nekosarekawaii.vandalism.util.render.InputType;
@@ -32,6 +33,7 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
 
     private Entity movementTarget = null;
     private LivingEntity lastTarget = null;
+    private AutoSprintModule autoSprintModule;
 
     public WTapModule() {
         super(
@@ -53,6 +55,7 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
                 PlayerUpdateEvent.ID,
                 AttackSendEvent.ID
         );
+        this.autoSprintModule = Vandalism.getInstance().getModuleManager().getByClass(AutoSprintModule.class);
     }
 
     @Override
@@ -76,6 +79,7 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
 
             if (MovementUtil.isMoving() && (livingEntity.hurtTime <= 2 || livingEntity.hurtTime == 9) && isLooking) {
                 this.mc.options.forwardKey.setPressed(false);
+                autoSprintModule.stopSprinting(true);
                 this.movementTarget = livingEntity;
             }
         }
@@ -89,6 +93,7 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
 
             if (speed < 0.3D || !isLooking) {
                 this.mc.options.forwardKey.setPressed(InputType.isPressed(this.mc.options.forwardKey.boundKey.getCode()));
+                autoSprintModule.stopSprinting(false);
                 this.movementTarget = null;
             }
 
@@ -98,6 +103,7 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
 
             if (this.lastTarget.hurtTime == 10 || this.lastTarget.hurtTime == 8) {
                 this.mc.options.forwardKey.setPressed(InputType.isPressed(this.mc.options.forwardKey.boundKey.getCode()));
+                autoSprintModule.stopSprinting(false);
                 if (this.lastTarget.hurtTime == 8) {
                     this.lastTarget = null;
                 }
