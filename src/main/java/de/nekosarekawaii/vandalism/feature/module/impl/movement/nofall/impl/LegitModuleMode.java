@@ -79,7 +79,7 @@ public class LegitModuleMode extends ModuleMulti<NoFallModule> implements Player
 
     @Override
     public void onRotation(RotationEvent event) {
-        if(mc.player.fallDistance < 3 || (mc.player.getMainHandStack().getItem() != Items.WATER_BUCKET && mc.player.getMainHandStack().getItem() != Items.BUCKET)) {
+        if((mc.player.fallDistance < 3 || mc.player.getMainHandStack().getItem() != Items.WATER_BUCKET) && (mc.player.getMainHandStack().getItem() != Items.BUCKET || !mc.player.isTouchingWater())) {
             Vandalism.getInstance().getRotationManager().resetRotation();
             return;
         }
