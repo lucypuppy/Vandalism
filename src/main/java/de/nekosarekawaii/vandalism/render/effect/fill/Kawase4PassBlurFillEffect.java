@@ -35,7 +35,7 @@ public class Kawase4PassBlurFillEffect extends FillEffect {
     public Kawase4PassBlurFillEffect() {
         super("Kawase4PassBlurFill");
         this.addPass(ctx -> {
-            ctx.setShader("postprocess/kawase4passblurfill");
+            ctx.setShader("postprocess/fill/kawase4passblurfill");
             ctx.setTextureBinding("u_Mask", this.maskFramebuffer());
             ctx.setTextureBinding("iChannel0", () -> this.textureId);
             ctx.setUniformSetup(shader -> this.setupUniforms(shader, 0));
