@@ -65,6 +65,7 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
 
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
+        autoSprintModule.stopSprinting(!allowSprint.getValue());
         final Pair<Vec3d, BlockPos> placeBlock = getPlaceBlock(6);
 
         if (placeBlock == null) {
