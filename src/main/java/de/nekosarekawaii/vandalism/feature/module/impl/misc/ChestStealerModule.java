@@ -25,6 +25,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
+import de.nekosarekawaii.vandalism.util.game.InventoryUtil;
 import net.minecraft.block.FallingBlock;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.component.DataComponentTypes;
@@ -74,8 +75,36 @@ public class ChestStealerModule extends AbstractModule implements PlayerUpdateLi
         if (!startTimer.hasReached(startDelay.getValue(), false)) return;
 
         if (mc.currentScreen instanceof GenericContainerScreen screen) {
+
+            //This swaps items directly into the hotbar. //Todo check if the item in the chest is better otherwise ignore it.
+            for (int i = 0; i < screen.getScreenHandler().slots.size() - 9; i++) {
+                final ItemStack itemStack = screen.getScreenHandler().slots.get(i).getStack();
+
+                if (!itemStack.isEmpty()) {
+                    final int slot = InventoryUtil.getHotbarSlotForItem(itemStack);
+
+                    if (slot == -1) //Invalid Item
+                        continue;
+
+                    final ItemStack hotbarStack = screen.getScreenHandler().slots.get(slot + 54).getStack();
+                    if (hotbarStack.getItem() instanceof AirBlockItem || InventoryUtil.isItemBetter(itemStack, hotbarStack)) {
+                        if (cpsTimer.hasReached(cpsDelay, true) && timer.hasReached(delay, true)) {
+                            updateCPS();
+                            updateDelay();
+                            mc.interactionManager.clickSlot(screen.getScreenHandler().syncId, i, slot, SlotActionType.SWAP, mc.player);
+                        }
+                    }
+                }
+            }
+
+            //This grabs stuff like armor, More blocks etc. //Todo check if the item is useful in any way
             for (int i = 0; i < screen.getScreenHandler().getRows() * 9; i++) {
                 final ItemStack itemStack = screen.getScreenHandler().slots.get(i).getStack();
+                final int slot = InventoryUtil.getHotbarSlotForItem(itemStack);
+
+                if (slot != -1 && slot != 8) //Invalid Item
+                    continue;
+
                 if (itemStack.isEmpty() || (filterItems.getValue() && !canTakeItem(itemStack)))
                     continue;
 
@@ -149,5 +178,4 @@ public class ChestStealerModule extends AbstractModule implements PlayerUpdateLi
                                 !(((BlockItem) item).getBlock() instanceof FallingBlock))) ||
                 item.getComponents().contains(DataComponentTypes.FOOD);
     }
-
 }

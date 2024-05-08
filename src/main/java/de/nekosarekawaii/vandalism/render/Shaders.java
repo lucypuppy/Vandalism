@@ -23,6 +23,8 @@ import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.event.cancellable.render.ScreenListener;
 import de.nekosarekawaii.vandalism.render.effect.PostProcessEffect;
 import de.nekosarekawaii.vandalism.render.effect.fill.ColorFillEffect;
+import de.nekosarekawaii.vandalism.render.effect.fill.GaussianBlurFillEffect;
+import de.nekosarekawaii.vandalism.render.effect.fill.Kawase4PassBlurFillEffect;
 import de.nekosarekawaii.vandalism.render.effect.outline.FastOuterOutlineEffect;
 import de.nekosarekawaii.vandalism.render.effect.outline.GlowOutlineEffect;
 import de.nekosarekawaii.vandalism.render.effect.outline.InnerOutlineEffect;
@@ -58,6 +60,10 @@ public class Shaders {
     @Getter
     private static ColorFillEffect colorFillEffect;
 
+    // Blur
+    @Getter private static GaussianBlurFillEffect gaussianBlurFillEffect;
+    @Getter private static Kawase4PassBlurFillEffect kawase4PassBlurFillEffect;
+
     @Getter private static ShaderProgram passThroughShader;
     private static final List<PostProcessEffect> postProcessEffects = new ArrayList<>();
 
@@ -73,8 +79,7 @@ public class Shaders {
 
     // Background
     @Getter private static ShaderProgram darkNightBackgroundShader;
-    @Getter
-    private static ShaderProgram ingameGuiBackgroundShader;
+    @Getter private static ShaderProgram ingameGuiBackgroundShader;
 
     // Font
     @Getter private static ShaderProgram fontShader;

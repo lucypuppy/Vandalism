@@ -149,7 +149,7 @@ public class InventoryUtil implements MinecraftWrapper {
         if (itemStack.getItem().getComponents().contains(DataComponentTypes.FOOD))
             return 6;
 
-        if (itemStack.getItem() instanceof BucketItem) //Todo check if water is in the bucket
+        if (itemStack.getItem() instanceof BucketItem) // Todo check if water is in the bucket
             return 7;
 
         if (itemStack.getItem() instanceof BlockItem)
@@ -157,6 +157,41 @@ public class InventoryUtil implements MinecraftWrapper {
 
 
         return -1;
+    }
+
+    // Todo add enchants, Durability etc
+    public static boolean isItemBetter(final ItemStack newItem, final ItemStack oldItem) {
+        if (newItem.getItem() instanceof ArmorItem armorItem && oldItem.getItem() instanceof ArmorItem oldArmorItem) {
+            if (armorItem.getProtection() > oldArmorItem.getProtection()) {
+                return true;
+            }
+        }
+
+        if (newItem.getItem() instanceof SwordItem swordItem && oldItem.getItem() instanceof SwordItem oldSwordItem) {
+            if (swordItem.getMaterial().getAttackDamage() > oldSwordItem.getMaterial().getAttackDamage()) {
+                return true;
+            }
+        }
+
+        if (newItem.getItem() instanceof PickaxeItem pickaxeItem && oldItem.getItem() instanceof PickaxeItem oldPickaxeItem) {
+            if (pickaxeItem.getMaterial().getMiningSpeedMultiplier() > oldPickaxeItem.getMaterial().getMiningSpeedMultiplier()) {
+                return true;
+            }
+        }
+
+        if (newItem.getItem() instanceof AxeItem axeItem && oldItem.getItem() instanceof AxeItem oldAxeItem) {
+            if (axeItem.getMaterial().getMiningSpeedMultiplier() > oldAxeItem.getMaterial().getMiningSpeedMultiplier()) {
+                return true;
+            }
+        }
+
+        if (newItem.getItem() instanceof ShovelItem shovelItem && oldItem.getItem() instanceof ShovelItem oldShovelItem) {
+            if (shovelItem.getMaterial().getMiningSpeedMultiplier() > oldShovelItem.getMaterial().getMiningSpeedMultiplier()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }
