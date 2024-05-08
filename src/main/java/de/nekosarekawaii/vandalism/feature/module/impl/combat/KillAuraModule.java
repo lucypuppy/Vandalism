@@ -359,6 +359,13 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             "Extra settings for the auto block."
     );
 
+    public final BooleanValue noHitSlow = new BooleanValue(
+            this.extraSettings,
+            "No Hit Slowdown",
+            "Whether you should slow down when hitting.",
+            false
+    );
+
     private final BooleanValue unsprintOnAttack = new BooleanValue(
             this.extraSettings,
             "Unsprint On Attack",
