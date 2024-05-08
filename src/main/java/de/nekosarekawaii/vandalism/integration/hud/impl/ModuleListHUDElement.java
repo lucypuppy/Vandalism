@@ -87,22 +87,22 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
 
     public final BooleanValue glowOutline = new BooleanValue(
             this,
-            "ImGui Glow Outline",
-            "Activates/Deactivates the glow outline for ImGui.",
+            "Glow Outline",
+            "Activates/Deactivates the glow outline.",
             false
     );
 
     public final ColorValue glowOutlineColor = new ColorValue(
             this,
-            "ImGui Glow Outline Color",
-            "The color of the glow outline for ImGui.",
+            "Glow Outline Color",
+            "The color of the glow outline.",
             Color.lightGray
     ).visibleCondition(this.glowOutline::getValue);
 
     public final FloatValue glowOutlineWidth = new FloatValue(
             this,
-            "ImGui Glow Outline Width",
-            "The width of the glow outline for ImGui.",
+            "Glow Outline Width",
+            "The width of the glow outline.",
             6.0f,
             1.0f,
             20.0f
@@ -110,8 +110,8 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
 
     public final FloatValue glowOutlineAccuracy = new FloatValue(
             this,
-            "ImGui Glow Outline Accuracy",
-            "The accuracy of the glow outline for ImGui.",
+            "Glow Outline Accuracy",
+            "The accuracy of the glow outline.",
             1.0f,
             1.0f,
             8.0f
@@ -119,8 +119,8 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
 
     public final FloatValue glowOutlineExponent = new FloatValue(
             this,
-            "ImGui Glow Outline Exponent",
-            "The exponent of the glow outline for ImGui.",
+            "Glow Outline Exponent",
+            "The exponent of the glow outline.",
             0.22f,
             0.01f,
             4.0f
