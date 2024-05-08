@@ -32,7 +32,7 @@ import org.lwjgl.glfw.GLFW;
 public class ModuleCommand extends AbstractCommand {
 
     public ModuleCommand() {
-        super("Lets you toggle and bind modules.", Category.MISC, "module");
+        super("Lets you toggle and bind/unbind modules.", Category.MISC, "module");
     }
 
     @Override
