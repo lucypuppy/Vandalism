@@ -18,12 +18,19 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.MenuSettings;
+import de.nekosarekawaii.vandalism.render.Shaders;
+import de.nekosarekawaii.vandalism.render.gl.shader.GlobalUniforms;
+import de.nekosarekawaii.vandalism.render.gl.shader.ShaderProgram;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.render.*;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -46,6 +53,8 @@ public abstract class MixinScreen {
     @Nullable
     protected MinecraftClient client;
 
+    @Shadow protected abstract void applyBlur(float delta);
+
     @ModifyConstant(method = "keyPressed", constant = @Constant(intValue = GLFW.GLFW_KEY_ESCAPE))
     private int modifyEscapeKey(int constant) {
         final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
@@ -58,16 +67,53 @@ public abstract class MixinScreen {
     @Inject(method = "renderInGameBackground", at = @At("HEAD"), cancellable = true)
     private void drawCustomBackgroundInGame(final DrawContext context, final CallbackInfo ci) {
         final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
-        if (menuSettings.inGameCustomBackground.getValue()) {
-            ci.cancel();
-            context.fillGradient(
-                    0,
-                    0,
-                    this.width,
-                    this.height,
-                    menuSettings.inGameCustomBackgroundColorTop.getColor().getRGB(),
-                    menuSettings.inGameCustomBackgroundColorBottom.getColor().getRGB()
-            );
+
+        if (menuSettings.inGameBackgroundBlur.getValue())
+            applyBlur(client.getTickDelta());
+
+        switch (menuSettings.inGameBackgroundMode.getValue()) {
+            case COLOR_FACE -> {
+                ci.cancel();
+                context.fillGradient(
+                        0,
+                        0,
+                        this.width,
+                        this.height,
+                        menuSettings.inGameCustomBackgroundColorTop.getColor().getRGB(),
+                        menuSettings.inGameCustomBackgroundColorBottom.getColor().getRGB()
+                );
+            }
+
+            case SHADER -> {
+                ci.cancel();
+                final Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
+                final BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+                final ShaderProgram backgroundShader = Shaders.getIngameGuiBackgroundShader();
+
+                backgroundShader.bind();
+                RenderSystem.enableBlend();
+                RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
+                RenderSystem.disableDepthTest();
+
+                GlobalUniforms.setBackgroundUniforms(backgroundShader);
+                backgroundShader.uniform("sparkColor").set(menuSettings.shaderColorSpark.getColor(), false);
+                backgroundShader.uniform("bloomColor").set(menuSettings.shaderColorBloom.getColor(), false);
+                backgroundShader.uniform("smokeColor").set(menuSettings.shaderColorSmoke.getColor(), false);
+
+                backgroundShader.uniform("size").set(6.28f);
+                backgroundShader.uniform("fadeDivision").set(1.0f);
+
+                bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
+                bufferBuilder.vertex(matrix, -1F, -1F, 0F).next();
+                bufferBuilder.vertex(matrix, client.getWindow().getFramebufferWidth(), -1F, 0F).next();
+                bufferBuilder.vertex(matrix, client.getWindow().getFramebufferWidth(), client.getWindow().getFramebufferHeight(), 0F).next();
+                bufferBuilder.vertex(matrix, -1F, client.getWindow().getFramebufferHeight(), 0F).next();
+                BufferRenderer.draw(bufferBuilder.end());
+
+                RenderSystem.disableBlend();
+                RenderSystem.enableDepthTest();
+                backgroundShader.unbind();
+            }
         }
     }
 

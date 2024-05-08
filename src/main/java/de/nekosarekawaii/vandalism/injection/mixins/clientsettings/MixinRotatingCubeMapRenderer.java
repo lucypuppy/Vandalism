@@ -58,7 +58,11 @@ public abstract class MixinRotatingCubeMapRenderer {
             ci.cancel();
             final ShaderProgram shader = Shaders.getDarkNightBackgroundShader();
             shader.bind();
-            GlobalUniforms.setBackgroundUniforms(shader, menuSettings.shaderColor1.getColor(), menuSettings.shaderColor2.getColor(), menuSettings.shaderColor3.getColor());
+            GlobalUniforms.setBackgroundUniforms(shader);
+            shader.uniform("color1").set(menuSettings.shaderColor1.getColor(), false);
+            shader.uniform("color2").set(menuSettings.shaderColor2.getColor(), false);
+            shader.uniform("color3").set(menuSettings.shaderColor3.getColor(), false);
+
             final Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
             BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
             bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
