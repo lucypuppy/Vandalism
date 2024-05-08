@@ -31,6 +31,7 @@ import net.minecraft.item.Items;
 public class LegitModuleMode extends ModuleMulti<NoFallModule> implements PlayerUpdateListener, RotationListener {
 
     private Rotation rotation = null;
+    private int previousSlot;
 
     public LegitModuleMode() {
         super("Legit");
@@ -39,6 +40,9 @@ public class LegitModuleMode extends ModuleMulti<NoFallModule> implements Player
     @Override
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID);
+        if(mc.player != null) {
+            previousSlot = mc.player.getInventory().selectedSlot;
+        }
         ChatUtil.chatMessage("You need to have a water bucket in your hotbar to use this mode.");
     }
 
@@ -46,29 +50,36 @@ public class LegitModuleMode extends ModuleMulti<NoFallModule> implements Player
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID);
         Vandalism.getInstance().getRotationManager().resetRotation();
+        if(mc.player != null) {
+            previousSlot = mc.player.getInventory().selectedSlot;
+        }
     }
 
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
-        if(mc.player.fallDistance < 3 || mc.world.getBlockState(mc.player.getBlockPos().down()).isAir() || !mc.player.getInventory().contains(new ItemStack(Items.WATER_BUCKET))) {
-            return;
-        }
+        if(mc.player.fallDistance >= 3 && mc.player.getInventory().contains(new ItemStack(Items.WATER_BUCKET))) {
+            for (int i = 0; i <= 8; i++) {
+                if (mc.player.getInventory().getStack(i).getItem() == Items.WATER_BUCKET) {
+                    previousSlot = mc.player.getInventory().selectedSlot;
+                    mc.player.getInventory().selectedSlot = i;
+                    break;
+                }
+            }
 
-        for(int i = 0; i <= 9; i++) {
-            if(mc.player.getInventory().getStack(i).getItem() == Items.WATER_BUCKET) {
-                mc.player.getInventory().selectedSlot = i;
-                break;
+            if (mc.player.getMainHandStack().getItem() == Items.WATER_BUCKET && !mc.world.getBlockState(mc.player.getBlockPos().down()).isAir()) {
+                mc.doItemUse();
             }
         }
 
-        if(mc.player.getMainHandStack().getItem() == Items.WATER_BUCKET) {
+        if(mc.player.isTouchingWater() && mc.player.getMainHandStack().getItem() == Items.BUCKET) {
             mc.doItemUse();
+            mc.player.getInventory().selectedSlot = previousSlot;
         }
     }
 
     @Override
     public void onRotation(RotationEvent event) {
-        if(mc.player.fallDistance < 3 || !mc.player.getInventory().contains(new ItemStack(Items.WATER_BUCKET))) {
+        if(mc.player.fallDistance < 3 || (mc.player.getMainHandStack().getItem() != Items.WATER_BUCKET && mc.player.getMainHandStack().getItem() != Items.BUCKET)) {
             Vandalism.getInstance().getRotationManager().resetRotation();
             return;
         }
