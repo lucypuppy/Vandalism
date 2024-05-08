@@ -32,6 +32,7 @@ import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.network.SyncPosition;
+import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.game.PacketUtil;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -50,14 +51,23 @@ import net.minecraft.util.math.Vec3d;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BackTrackModule extends AbstractModule implements PlayerUpdateListener,
         IncomingPacketListener, Render3DListener, WorldListener {
 
-    public final IntegerValue pingSpoof = new IntegerValue(
+    public final IntegerValue minDuration = new IntegerValue(
             this,
-            "Ping Spoof",
-            "The amount of ping to spoof.",
+            "Min Duration",
+            "The minimum duration to back track the target.",
+            60,
+            0,
+            1000);
+
+    public final IntegerValue maxDuration = new IntegerValue(
+            this,
+            "Max Duration",
+            "The maximum duration to back track the target.",
             60,
             0,
             1000);
@@ -116,6 +126,8 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
 
     private final HashMap<Integer, SyncPosition> backTrackedEntities = new HashMap<>();
     private final ConcurrentLinkedQueue<DelayedPacket> packets = new ConcurrentLinkedQueue<>();
+    private MSTimer timer;
+    private long delay;
 
     public BackTrackModule() {
         super(
@@ -139,6 +151,9 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
                 this,
                 Priorities.HIGH
         );
+
+        timer = new MSTimer();
+        updateDelay();
     }
 
     @Override
@@ -186,7 +201,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
                         packet instanceof ChunkRenderDistanceCenterS2CPacket ||
                         packet instanceof TeamS2CPacket ||
                         this.backTrackedEntities.isEmpty() || this.mc.player == null ||
-                        this.mc.world == null || event.networkPhase == NetworkPhase.PLAY || event.isCancelled() //Ignore already cancelled packets
+                        this.mc.world == null || event.networkPhase != NetworkPhase.PLAY || event.isCancelled() //Ignore already cancelled packets
         ) {//@formatter:on
             return;
         }
@@ -211,7 +226,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
                             entityS2CPacket.getDeltaX(),
                             entityS2CPacket.getDeltaY(),
                             entityS2CPacket.getDeltaZ()
-                    ), false
+                    ), true
             );
 
             if (this.checkForResync(trackedPosition, entityS2CPacket.id)) {
@@ -236,9 +251,10 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
 
     private void handlePackets(final boolean flush) {
         for (final DelayedPacket packet : this.packets) {
-            if (flush || System.currentTimeMillis() > packet.time() + this.pingSpoof.getValue()) {
+            if (flush || System.currentTimeMillis() > packet.time() + this.delay) {
                 PacketUtil.receivePacket(packet.packet());
                 this.packets.remove(packet);
+                updateDelay();
             }
         }
     }
@@ -324,6 +340,10 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
     public void onPreWorldLoad() {
         //handlePackets(true);
         this.backTrackedEntities.clear();
+    }
+
+    private void updateDelay() {
+        this.delay = (int) (ThreadLocalRandom.current().nextGaussian() * (minDuration.getValue() - maxDuration.getValue())) + maxDuration.getValue();
     }
 
     //@formatter:off
