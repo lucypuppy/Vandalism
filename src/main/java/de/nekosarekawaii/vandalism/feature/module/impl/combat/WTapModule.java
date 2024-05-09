@@ -23,6 +23,7 @@ import de.nekosarekawaii.vandalism.event.normal.player.AttackListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.AutoSprintModule;
+import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.newrotation.RotationUtil;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 import de.nekosarekawaii.vandalism.util.render.InputType;
@@ -89,7 +90,9 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (this.movementTarget != null) {
             final boolean isLooking = RotationUtil.isEntityLookingAtEntity(this.mc.player, this.movementTarget, 80);
-            final double speed = MovementUtil.getSpeedRelatedToYaw(this.mc.player.getYaw());
+            Rotation rotation = Vandalism.getInstance().getRotationManager().getRotation();
+            final double speed = MovementUtil.getSpeedRelatedToYaw(rotation != null ? rotation.getYaw() : this.mc.player.getYaw());
+//            final double speed = MovementUtil.getSpeedRelatedToYaw(this.mc.player.getYaw());
 
             if (speed < 0.3D || !isLooking) {
                 this.mc.options.forwardKey.setPressed(InputType.isPressed(this.mc.options.forwardKey.boundKey.getCode()));
