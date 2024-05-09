@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.event.normal.game.TickTimeListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.FlightModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
@@ -28,7 +29,7 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.util.math.Vec3d;
 
-public class SpartanOMFGLOL extends ModuleMulti<FlightModule> implements PlayerUpdateListener, IncomingPacketListener {
+public class SpartanOMFGLOL extends ModuleMulti<FlightModule> implements PlayerUpdateListener, IncomingPacketListener, TickTimeListener {
 
     public SpartanOMFGLOL() {
         super("SpartanOMFGLOL");
@@ -36,12 +37,12 @@ public class SpartanOMFGLOL extends ModuleMulti<FlightModule> implements PlayerU
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, IncomingPacketEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, IncomingPacketEvent.ID, TickTimeEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, IncomingPacketEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, IncomingPacketEvent.ID, TickTimeEvent.ID);
     }
 
     @Override
@@ -54,6 +55,8 @@ public class SpartanOMFGLOL extends ModuleMulti<FlightModule> implements PlayerU
         if (mc.player.hurtTime == 9) {
             final Vec3d velocity = MovementUtil.isMoving() ? MovementUtil.setSpeed(1.5f) : this.mc.player.getVelocity();
             this.mc.player.setVelocity(velocity.x, 1.05, velocity.z);
+        } else if (mc.player.hurtTime > 2 && MovementUtil.isMoving()) {
+            MovementUtil.setSpeed(1.5f);
         }
     }
 
@@ -67,4 +70,10 @@ public class SpartanOMFGLOL extends ModuleMulti<FlightModule> implements PlayerU
             event.cancel();
         }
     }
+
+    @Override
+    public void onTickTimings(TickTimeEvent event) {
+        event.fromPercentage(0.75f);
+    }
+
 }
