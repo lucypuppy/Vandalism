@@ -77,7 +77,7 @@ public class ViaFabricPlusAccess {
      */
     public static ProtocolVersion getTargetVersion() {
         try {
-            return RStream.of(PROTOCOL_TRANSLATOR_CLASS).methods().by("getPlayNetworkUserConnection").invoke();
+            return RStream.of(PROTOCOL_TRANSLATOR_CLASS).methods().by("getTargetVersion").invoke();
         } catch (Exception e) {
             Vandalism.getInstance().getLogger().error("An error occurred while attempting to get the user connection.", e);
             return null;

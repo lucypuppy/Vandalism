@@ -19,42 +19,81 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
-import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.LongValue;
+import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
+import de.nekosarekawaii.vandalism.event.normal.player.MoveInputListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.VelocityModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
-import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 
-public class LegitModuleMode extends ModuleMulti<VelocityModule> implements IncomingPacketListener, PlayerUpdateListener {
+import java.util.Random;
 
-    private boolean velocity = false;
+public class LegitModuleMode extends ModuleMulti<VelocityModule> implements MoveInputListener {
 
     public LegitModuleMode() {
         super("Legit");
     }
 
+    private final ModeValue chanceMode = new ModeValue(
+            this,
+            "Chance Mode",
+            "The mode of the chance to reduce knockback.",
+            "Percent", "Hit Amount", "Delay");
+
+    private final IntegerValue percent = new IntegerValue(this,
+            "Percent",
+            "The percent chance to reduce knockback.",
+            80, 0, 100)
+            .visibleCondition(() -> chanceMode.getValue().equalsIgnoreCase("Percent"));
+    private final IntegerValue hitAmount = new IntegerValue(this,
+            "Hit Amount",
+            "The amount of hits to reduce knockback.",
+            3, 0, 10)
+            .visibleCondition(() -> chanceMode.getValue().equalsIgnoreCase("Hit Amount"));
+    private final LongValue delay = new LongValue(this,
+            "Delay",
+            "The delay in milliseconds to reduce knockback.",
+            1000L, 0L, 10000L)
+            .visibleCondition(() -> chanceMode.getValue().equalsIgnoreCase("Delay"));
+
+    private int hits;
+    private long lastJumpTime;
+
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, IncomingPacketEvent.ID, PlayerUpdateEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, MoveInputEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, IncomingPacketEvent.ID, PlayerUpdateEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, MoveInputEvent.ID);
+        this.hits = 0;
+        this.lastJumpTime = 0;
     }
 
     @Override
-    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.velocity && mc.player.isSprinting() && this.mc.player.hurtTime == 9 && this.mc.player.isOnGround() && !this.mc.player.isInLava() && !this.mc.player.isTouchingWater()) {
-            this.mc.player.jump();
+    public void onMoveInput(MoveInputEvent event) {
+        if (mc.player == null) {
+            return;
+        }
+        if (mc.player.hurtTime == 9 && mc.player.isOnGround() && mc.player.isSprinting() && !this.mc.player.isInLava() && !this.mc.player.isTouchingWater() && (!mc.player.isOnFire() || mc.player.getFireTicks() > 0)) {
+            if (canJump()) {
+                event.jumping = true;
+                this.hits = 0;
+                this.lastJumpTime = System.currentTimeMillis();
+            } else {
+                this.hits++;
+            }
         }
     }
 
-    @Override
-    public void onIncomingPacket(final IncomingPacketEvent event) {
-        if (event.packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket && this.mc.player != null && velocityPacket.getId() == this.mc.player.getId()) {
-            this.velocity = true;
-        }
+    private boolean canJump() {
+        return switch (chanceMode.getValue().toLowerCase()) {
+            case "percent" -> new Random().nextInt(100) < percent.getValue();
+            case "hit amount" -> hitAmount.getValue() <= hits;
+            case "delay" -> System.currentTimeMillis() - lastJumpTime < delay.getValue();
+            default -> false;
+        };
     }
 
 }

@@ -29,12 +29,14 @@ public interface MoveInputListener {
         public static final int ID = 21;
 
         public float movementForward, movementSideways;
+        public boolean jumping;
         public final boolean slowDown;
         public final float slowDownFactor;
 
-        public MoveInputEvent(final float movementForward, final float movementSideways, final boolean slowDown, final float slowDownFactor) {
+        public MoveInputEvent(final float movementForward, final float movementSideways, final boolean jumping, final boolean slowDown, final float slowDownFactor) {
             this.movementForward = movementForward;
             this.movementSideways = movementSideways;
+            this.jumping = jumping;
             this.slowDown = slowDown;
             this.slowDownFactor = slowDownFactor;
         }
