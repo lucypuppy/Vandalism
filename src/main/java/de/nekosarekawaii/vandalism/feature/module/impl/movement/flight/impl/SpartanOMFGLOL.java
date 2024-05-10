@@ -49,13 +49,14 @@ public class SpartanOMFGLOL extends ModuleMulti<FlightModule> implements PlayerU
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (this.mc.player.fallDistance > 3.0f) {
             this.mc.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
+
+            final Vec3d velocity = MovementUtil.isMoving() ? MovementUtil.setSpeed(1.5f) : this.mc.player.getVelocity();
+            this.mc.player.setVelocity(velocity.x, 0.73, velocity.z);
+
             this.mc.player.fallDistance = 0.0f;
         }
 
-        if (mc.player.hurtTime == 9) {
-            final Vec3d velocity = MovementUtil.isMoving() ? MovementUtil.setSpeed(1.5f) : this.mc.player.getVelocity();
-            this.mc.player.setVelocity(velocity.x, 1.05, velocity.z);
-        } else if (mc.player.hurtTime > 2 && MovementUtil.isMoving()) {
+        if (mc.player.hurtTime > 2 && MovementUtil.isMoving()) {
             MovementUtil.setSpeed(1.5f);
         }
     }
