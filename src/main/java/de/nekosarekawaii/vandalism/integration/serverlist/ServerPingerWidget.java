@@ -20,7 +20,6 @@ package de.nekosarekawaii.vandalism.integration.serverlist;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonSyntaxException;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import de.nekosarekawaii.vandalism.Vandalism;
@@ -178,7 +177,7 @@ public class ServerPingerWidget implements MinecraftWrapper {
                                 if (description != null) {
                                     currentServerInfo.label = description;
                                 }
-                            } catch (JsonSyntaxException ignored) {
+                            } catch (final Exception ignored) {
                                 currentServerInfo.label = Text.literal(descriptionString);
                             }
                             final String base64FaviconString = response.favicon;
