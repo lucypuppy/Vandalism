@@ -157,7 +157,7 @@ public class ConfigCommand extends AbstractCommand {
                     }
                     final JsonObject moduleJsonObject = jsonObject.getAsJsonObject(moduleName);
                     if (activateModules) {
-                        if (moduleJsonObject.has("active")) {
+                        if (moduleJsonObject != null && moduleJsonObject.has("active")) {
                             if (moduleJsonObject.get("active").getAsBoolean()) {
                                 module.activate();
                             } else {
@@ -165,7 +165,7 @@ public class ConfigCommand extends AbstractCommand {
                             }
                         }
                     }
-                    if (moduleJsonObject.has("values")) {
+                    if (moduleJsonObject != null && moduleJsonObject.has("values")) {
                         ConfigWithValues.loadValues(moduleJsonObject.getAsJsonObject("values"), module.getValues());
                     }
                 }
