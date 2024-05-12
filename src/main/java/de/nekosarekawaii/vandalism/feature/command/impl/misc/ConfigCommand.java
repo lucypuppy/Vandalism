@@ -104,15 +104,15 @@ public class ConfigCommand extends AbstractCommand {
                         ChatUtil.infoChatMessage("Config " + name + " has been saved.");
                     } catch (Exception e) {
                         ChatUtil.errorChatMessage("Failed to save config: " + name);
-                        Vandalism.getInstance().getLogger().error("Failed to save config: " + name, e);
+                        Vandalism.getInstance().getLogger().error("Failed to save config: {}", name, e);
                     }
                 } catch (IOException e) {
                     ChatUtil.errorChatMessage("Failed to create config: " + name);
-                    Vandalism.getInstance().getLogger().error("Failed to create config: " + name, e);
+                    Vandalism.getInstance().getLogger().error("Failed to create config: {}", name, e);
                 }
             } catch (Exception e) {
                 ChatUtil.errorChatMessage("Failed to save config: " + name);
-                Vandalism.getInstance().getLogger().error("Failed to save config: " + name, e);
+                Vandalism.getInstance().getLogger().error("Failed to save config: {}", name, e);
             }
             return SINGLE_SUCCESS;
         })));
@@ -134,7 +134,7 @@ public class ConfigCommand extends AbstractCommand {
                 } else {
                     ChatUtil.errorChatMessage("Failed to delete config " + name + ".");
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 ChatUtil.errorChatMessage("Failed to delete config.");
                 Vandalism.getInstance().getLogger().error("Failed to delete config.", e);
             }
@@ -152,6 +152,7 @@ public class ConfigCommand extends AbstractCommand {
                 for (final AbstractModule module : moduleManager.getList()) {
                     final String moduleName = module.getName();
                     if (!jsonObject.has(moduleName)) {
+                        for (final Value<?> value : module.getValues()) value.resetValue();
                         continue;
                     }
                     final JsonObject moduleJsonObject = jsonObject.getAsJsonObject(moduleName);
@@ -169,8 +170,8 @@ public class ConfigCommand extends AbstractCommand {
                     }
                 }
                 ChatUtil.infoChatMessage("Config " + name + " has been loaded.");
-            } catch (Exception e) {
-                Vandalism.getInstance().getLogger().error("Failed to load config " + file.getName(), e);
+            } catch (final Exception e) {
+                Vandalism.getInstance().getLogger().error("Failed to load config {}", file.getName(), e);
             }
         } else {
             ChatUtil.errorChatMessage("Config " + name + " does not exist.");
