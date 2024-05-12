@@ -33,7 +33,7 @@ public abstract class AbstractConfig<T extends JsonElement> {
 
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    private String cachedConfig = "";
+    private int cachedConfigHash = 0;
 
     private final Class<T> nodeType;
 
@@ -55,8 +55,9 @@ public abstract class AbstractConfig<T extends JsonElement> {
             file.delete();
             file.createNewFile();
             try (final FileWriter fw = new FileWriter(file)) {
-                this.cachedConfig = this.asString();
-                fw.write(this.cachedConfig);
+                final String currentConfig = this.asString();
+                this.cachedConfigHash = currentConfig.hashCode();
+                fw.write(currentConfig);
                 fw.flush();
                 return true;
             } catch (final Exception e) {
@@ -75,8 +76,8 @@ public abstract class AbstractConfig<T extends JsonElement> {
     public boolean load(final File file) {
         if (file.exists()) {
             try (final FileReader fr = new FileReader(file)) {
-                load0(GSON.fromJson(fr, this.nodeType));
-                this.cachedConfig = this.asString();
+                this.load0(GSON.fromJson(fr, this.nodeType));
+                this.cachedConfigHash = this.asString().hashCode();
                 return true;
             } catch (final Exception e) {
                 Vandalism.getInstance().getLogger().error("Failed to load config {}", file.getName(), e);
@@ -93,8 +94,8 @@ public abstract class AbstractConfig<T extends JsonElement> {
         return GSON.toJson(this.save0());
     }
 
-    public String cachedAsString() {
-        return this.cachedConfig;
+    public boolean isModified() {
+        return this.cachedConfigHash != this.asString().hashCode();
     }
 
 }
