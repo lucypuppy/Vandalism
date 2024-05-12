@@ -57,8 +57,7 @@ public class ServerAddressResolverClientWindow extends ClientWindow {
     }
 
     @Override
-    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        ImGui.begin("Server Address Resolver##serveraddressresolver");
+    protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         ImGui.inputText(
                 "Hostname##serveraddressresolverhostname",
                 this.hostname,
@@ -102,7 +101,6 @@ public class ServerAddressResolverClientWindow extends ClientWindow {
             ImGui.setNextItemWidth(-1);
             ImGui.inputTextMultiline("##serveraddressresolverdata", this.lastData, -1, -1, ImGuiInputTextFlags.ReadOnly);
         }
-        ImGui.end();
     }
 
 }

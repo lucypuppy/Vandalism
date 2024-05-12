@@ -32,6 +32,8 @@ import imgui.ImGui;
 import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiTableFlags;
 import imgui.flag.ImGuiWindowFlags;
+import lombok.Getter;
+import lombok.Setter;
 import net.lenni0451.mcping.responses.MCPingResponse;
 import net.lenni0451.mcping.responses.QueryPingResponse;
 import net.minecraft.client.MinecraftClient;
@@ -45,25 +47,24 @@ public class ServerInfoWidget implements MinecraftWrapper {
 
     private static final Gson GSON = new Gson();
 
+    @Getter
     private MCPingResponse mcPingResponse;
 
+    @Setter
     private QueryPingResponse queryPingResponse;
 
     private boolean showMods, showPlayerList, showPlugins;
 
-    private String address, motd;
+    @Setter
+    private String address, MOTD;
 
     public ServerInfoWidget() {
         this.mcPingResponse = null;
         this.showMods = false;
         this.showPlayerList = false;
         this.showPlugins = false;
-        this.motd = "";
+        this.MOTD = "";
         this.queryPingResponse = null;
-    }
-
-    public void setAddress(final String address) {
-        this.address = address;
     }
 
     public void setMcPingResponse(final MCPingResponse mcPingResponse) {
@@ -74,19 +75,11 @@ public class ServerInfoWidget implements MinecraftWrapper {
                 final JsonElement jsonElement = JsonHelper.deserialize(GSON, descriptionString, JsonElement.class);
                 final DataResult<Text> dataResult = TextCodecs.CODEC.parse(JsonOps.INSTANCE, jsonElement);
                 final MutableText description = (MutableText) dataResult.result().orElse(null);
-                if (description != null) this.motd = description.getString();
+                if (description != null) this.MOTD = description.getString();
             } catch (JsonSyntaxException ignored) {
-                this.motd = descriptionString;
+                this.MOTD = descriptionString;
             }
         }
-    }
-
-    public MCPingResponse getMcPingResponse() {
-        return this.mcPingResponse;
-    }
-
-    public void setQueryPingResponse(final QueryPingResponse queryPingResponse) {
-        this.queryPingResponse = queryPingResponse;
     }
 
     public void renderTableEntry(final boolean isSingle) {
@@ -125,7 +118,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                     }
                 }
                 case MOTD -> {
-                    ImGui.textWrapped(this.motd);
+                    ImGui.textWrapped(this.MOTD);
                 }
                 case ACTIONS -> {
                     ImGui.spacing();
@@ -179,8 +172,8 @@ public class ServerInfoWidget implements MinecraftWrapper {
                                 serverInfoBuilder.append(this.mcPingResponse.players.online).append('/');
                                 serverInfoBuilder.append(this.mcPingResponse.players.max).append('\n');
                             }
-                            if (this.motd != null) {
-                                serverInfoBuilder.append("MOTD: ").append(this.motd).append('\n');
+                            if (this.MOTD != null) {
+                                serverInfoBuilder.append("MOTD: ").append(this.MOTD).append('\n');
                             }
                             if (this.mcPingResponse.players != null && this.mcPingResponse.players.sample.length > 0) {
                                 serverInfoBuilder.append("Player List: ").append('\n');

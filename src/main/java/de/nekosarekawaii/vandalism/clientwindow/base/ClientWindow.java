@@ -21,18 +21,37 @@ package de.nekosarekawaii.vandalism.clientwindow.base;
 import de.nekosarekawaii.vandalism.util.common.IName;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import imgui.ImGui;
+import lombok.Getter;
 import net.minecraft.client.gui.DrawContext;
 
 public class ClientWindow implements IName, MinecraftWrapper {
 
     private final String name;
+
+    @Getter
     private final Category category;
 
+    private final boolean doesRenderWindow;
+
+    private final int defaultWindowFlags;
+
+    @Getter
     private boolean active;
 
-    public ClientWindow(String name, Category category) {
+    public ClientWindow(final String name, final Category category) {
+        this(name, category, false);
+    }
+
+    public ClientWindow(final String name, final Category category, final boolean doesRenderWindow) {
+        this(name, category, doesRenderWindow, -1);
+    }
+
+    public ClientWindow(final String name, final Category category, final boolean doesRenderWindow, final int defaultWindowFlags) {
         this.name = name;
         this.category = category;
+        this.doesRenderWindow = doesRenderWindow;
+        this.defaultWindowFlags = defaultWindowFlags;
     }
 
     protected void init() {
@@ -40,11 +59,26 @@ public class ClientWindow implements IName, MinecraftWrapper {
 
     protected void onEnable() {
     }
+
     protected void onDisable() {
     }
 
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        final boolean doesntRenderWindow = !this.doesRenderWindow;
+        if (doesntRenderWindow) {
+            if (this.defaultWindowFlags != -1) {
+                ImGui.begin(this.getName(), this.defaultWindowFlags);
+            } else {
+                ImGui.begin(this.getName());
+            }
+        }
+        this.onRender(context, mouseX, mouseY, delta);
+        if (doesntRenderWindow) ImGui.end();
     }
+
+    protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+    }
+
     public void mouseClicked(final double mouseX, final double mouseY, final int button, final boolean release) {
     }
 
@@ -52,17 +86,12 @@ public class ClientWindow implements IName, MinecraftWrapper {
         return true;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
     public void setActive(boolean active) {
         this.active = active;
-
         if (active) {
-            onEnable();
+            this.onEnable();
         } else {
-            onDisable();
+            this.onDisable();
         }
     }
 
@@ -75,10 +104,7 @@ public class ClientWindow implements IName, MinecraftWrapper {
         return this.name;
     }
 
-    public Category getCategory() {
-        return this.category;
-    }
-
+    @Getter
     public enum Category {
 
         CONFIG,
@@ -89,10 +115,6 @@ public class ClientWindow implements IName, MinecraftWrapper {
 
         Category() {
             this.name = StringUtils.normalizeEnumName(this.name());
-        }
-
-        public String getName() {
-            return this.name;
         }
 
     }

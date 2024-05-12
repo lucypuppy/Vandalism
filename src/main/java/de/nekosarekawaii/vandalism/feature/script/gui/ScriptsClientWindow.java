@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.feature.script.gui;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.feature.script.Script;
+import de.nekosarekawaii.vandalism.feature.script.ScriptManager;
 import de.nekosarekawaii.vandalism.feature.script.parse.ScriptParser;
 import de.nekosarekawaii.vandalism.util.common.RandomUtils;
 import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
@@ -49,33 +50,33 @@ public class ScriptsClientWindow extends ClientWindow {
     private final ImBoolean hideHints;
 
     public ScriptsClientWindow() {
-        super("Scripts", Category.CONFIG);
+        super("Scripts", Category.CONFIG, false, ImGuiWindowFlags.MenuBar);
         this.scriptEditors = new ConcurrentHashMap<>();
         this.hideHints = new ImBoolean(false);
     }
 
     @Override
-    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        final List<Script> scripts = Vandalism.getInstance().getScriptManager().getList();
+    protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        final ScriptManager scriptManager = Vandalism.getInstance().getScriptManager();
+        final List<Script> scripts = scriptManager.getList();
         for (final Map.Entry<File, ScriptEditor> entry : this.scriptEditors.entrySet()) {
             if (entry.getValue().isClosed()) this.scriptEditors.remove(entry.getKey());
         }
-        ImGui.begin("Scripts##scripts", ImGuiWindowFlags.MenuBar);
         if (ImGui.beginMenuBar()) {
             if (ImGui.button("Open directory##scriptsopendir")) {
-                Util.getOperatingSystem().open(Vandalism.getInstance().getScriptManager().getDirectory());
+                Util.getOperatingSystem().open(scriptManager.getDirectory());
             }
             if (ImGui.button("Reload##scriptsreload")) {
-                Vandalism.getInstance().getScriptManager().init();
+                scriptManager.init();
             }
             if (ImGui.button("Create new example script##scriptscreatenewexamplescript")) {
                 final String name = "Example#" + RandomUtils.randomInt(1000, 9999);
-                final File scriptFile = new File(Vandalism.getInstance().getScriptManager().getDirectory(), name + ScriptParser.SCRIPT_FILE_EXTENSION);
+                final File scriptFile = new File(scriptManager.getDirectory(), name + ScriptParser.SCRIPT_FILE_EXTENSION);
                 this.scriptEditors.put(scriptFile, new ScriptEditor(scriptFile, true));
             }
             if (ImGui.button("Create new script##scriptscreatenewscript")) {
                 final String name = "Template#" + RandomUtils.randomInt(1000, 9999);
-                final File scriptFile = new File(Vandalism.getInstance().getScriptManager().getDirectory(), name + ScriptParser.SCRIPT_FILE_EXTENSION);
+                final File scriptFile = new File(scriptManager.getDirectory(), name + ScriptParser.SCRIPT_FILE_EXTENSION);
                 this.scriptEditors.put(scriptFile, new ScriptEditor(scriptFile, false));
             }
             if (!this.scriptEditors.isEmpty()) {
@@ -85,9 +86,9 @@ public class ScriptsClientWindow extends ClientWindow {
                     }
                 }
             }
-            if (Vandalism.getInstance().getScriptManager().getRunningScriptsCount() > 0) {
-                if (ImGui.button("Kill " + Vandalism.getInstance().getScriptManager().getRunningScriptsCount() + " running scripts##scriptskill")) {
-                    Vandalism.getInstance().getScriptManager().killAllRunningScripts();
+            if (scriptManager.getRunningScriptsCount() > 0) {
+                if (ImGui.button("Kill " + scriptManager.getRunningScriptsCount() + " running scripts##scriptskill")) {
+                    scriptManager.killAllRunningScripts();
                 }
             }
             ImGui.endMenuBar();
@@ -152,14 +153,14 @@ public class ScriptsClientWindow extends ClientWindow {
                                                 ImGui.separator();
                                                 ImGui.spacing();
                                                 if (this.mc.player != null) {
-                                                    final Script scriptFromList = Vandalism.getInstance().getScriptManager().getList().stream().filter(s -> s.getFile().getName().equalsIgnoreCase(scriptFile.getName())).findFirst().orElse(null);
+                                                    final Script scriptFromList = scriptManager.getList().stream().filter(s -> s.getFile().getName().equalsIgnoreCase(scriptFile.getName())).findFirst().orElse(null);
                                                     if (scriptFromList != null) {
                                                         final UUID uuid = scriptFromList.getUuid();
-                                                        if (ImUtils.subButton((Vandalism.getInstance().getScriptManager().isScriptRunning(uuid) ? "Kill" : "Execute") + "##scriptsexecuteorkill" + script.getName())) {
-                                                            if (Vandalism.getInstance().getScriptManager().isScriptRunning(uuid)) {
-                                                                Vandalism.getInstance().getScriptManager().killRunningScript(uuid);
+                                                        if (ImUtils.subButton((scriptManager.isScriptRunning(uuid) ? "Kill" : "Execute") + "##scriptsexecuteorkill" + script.getName())) {
+                                                            if (scriptManager.isScriptRunning(uuid)) {
+                                                                scriptManager.killRunningScript(uuid);
                                                             } else {
-                                                                Vandalism.getInstance().getScriptManager().executeScript(uuid);
+                                                                scriptManager.executeScript(uuid);
                                                             }
                                                         }
                                                     }
@@ -198,9 +199,9 @@ public class ScriptsClientWindow extends ClientWindow {
                                                 }
                                                 if (ImUtils.subButton("Delete##scriptsdelete" + script.getName())) {
                                                     if (!script.getFile().delete()) {
-                                                        Vandalism.getInstance().getLogger().error("Failed to delete script: " + script.getName());
+                                                        Vandalism.getInstance().getLogger().error("Failed to delete script: {}", script.getName());
                                                     } else {
-                                                        Vandalism.getInstance().getLogger().info("Deleted script: " + script.getName());
+                                                        Vandalism.getInstance().getLogger().info("Deleted script: {}", script.getName());
                                                     }
                                                 }
                                                 ImGui.endPopup();
@@ -224,7 +225,6 @@ public class ScriptsClientWindow extends ClientWindow {
             }
             ImGui.endTabBar();
         }
-        ImGui.end();
     }
 
 }

@@ -88,8 +88,7 @@ public class PlayerDiscoveryClientWindow extends ClientWindow {
     }
 
     @Override
-    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        ImGui.begin(this.getName());
+    protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         ImGui.text("State");
         ImGui.setNextItemWidth(-1);
         ImGui.inputText("##playerdiscoverystate", this.state, ImGuiInputTextFlags.ReadOnly);
@@ -189,14 +188,12 @@ public class PlayerDiscoveryClientWindow extends ClientWindow {
                     ImGui.popStyleColor(3);
                 }
                 ImGui.sameLine();
-                final StringBuilder dataString = new StringBuilder();
-                dataString.append("Server: ").append(record.server).append("\n");
-                dataString.append("UUID: ").append(record.uuid).append("\n");
-                dataString.append("Name: ").append(record.name).append("\n");
-                dataString.append("Last Seen: ").append(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(
+                final String data = "Server: " + record.server + "\n" +
+                        "UUID: " + record.uuid + "\n" +
+                        "Name: " + record.name + "\n" +
+                        "Last Seen: " + DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(
                         Instant.ofEpochSecond(record.last_seen).atZone(ZoneId.systemDefault()).toLocalDateTime()
-                )).append("\n");
-                final String data = dataString.toString();
+                ) + "\n";
                 if (!this.searchField.get().isBlank() && !StringUtils.contains(data, this.searchField.get())) {
                     continue;
                 }
@@ -225,7 +222,6 @@ public class PlayerDiscoveryClientWindow extends ClientWindow {
             }
             ImGui.endChild();
         }
-        ImGui.end();
     }
 
 }

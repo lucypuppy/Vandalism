@@ -41,14 +41,13 @@ public class SpotifyClientWindow extends ClientWindow {
     private final ImBoolean showClientSecret;
 
     public SpotifyClientWindow() {
-        super("Spotify", Category.MISC);
+        super("Spotify", Category.MISC, false, ImGuiWindowFlags.MenuBar);
         this.showClientSecret = new ImBoolean(false);
     }
 
     @Override
-    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+    public void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         final SpotifyManager spotifyManager = AddonThirdParty.getInstance().getSpotifyManager();
-        ImGui.begin(this.getName(), ImGuiWindowFlags.MenuBar);
         if (ImGui.beginMenuBar()) {
             if (ImGui.beginMenu("Config")) {
                 final int sharedFlag = ImGuiInputTextFlags.CallbackResize;
@@ -183,7 +182,6 @@ public class SpotifyClientWindow extends ClientWindow {
         ImGui.text(String.format("%d:%02d", currentProgress / 1000 / 60, currentProgress / 1000 % 60));
         ImGui.sameLine(ImGui.getWindowWidth() - 45);
         ImGui.text(String.format("%d:%02d", spotifyData.getDuration() / 1000 / 60, durationSeconds));
-        ImGui.end();
     }
 
 }

@@ -39,13 +39,12 @@ public class ServerDiscoveryClientWindow extends ClientWindow {
     private String currentServerTab = "";
 
     public ServerDiscoveryClientWindow() {
-        super("Server Discovery", Category.SERVER);
+        super("Server Discovery", Category.SERVER, false, ImGuiWindowFlags.MenuBar);
         this.serversTabs.put(DEFAULT_SERVER_TAB_NAME, new ServersTab());
     }
 
     @Override
-    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        ImGui.begin(this.getName(), ImGuiWindowFlags.MenuBar);
+    protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         if (ImGui.beginMenuBar()) {
             for (final Map.Entry<String, ServersTab> entry : this.serversTabs.entrySet()) {
                 entry.getValue().renderMenu(entry.getKey());
@@ -86,11 +85,7 @@ public class ServerDiscoveryClientWindow extends ClientWindow {
                 }
                 ImGui.endTabBar();
             }
-        }
-        else {
-            ImGui.text("Press create to create a new server tab.");
-        }
-        ImGui.end();
+        } else ImGui.text("Press create to create a new server tab.");
     }
 
 

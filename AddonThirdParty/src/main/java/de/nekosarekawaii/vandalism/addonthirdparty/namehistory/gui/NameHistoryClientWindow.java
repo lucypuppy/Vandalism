@@ -38,10 +38,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -105,8 +102,7 @@ public class NameHistoryClientWindow extends ClientWindow {
     }
 
     @Override
-    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        ImGui.begin("Name History##namehistory");
+    protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         ImGui.text("State");
         ImGui.setNextItemWidth(-1);
         ImGui.inputText("##namehistorystate", this.state, ImGuiInputTextFlags.ReadOnly);
@@ -132,7 +128,7 @@ public class NameHistoryClientWindow extends ClientWindow {
                     }
                     if (this.lastUUID.isBlank() && this.mc.player != null) {
                         this.state.set("Fallback: Trying to get the uuid from the user on the server...");
-                        for (final PlayerListEntry entry : this.mc.getNetworkHandler().getPlayerList()) {
+                        for (final PlayerListEntry entry : Objects.requireNonNull(this.mc.getNetworkHandler()).getPlayerList()) {
                             if (entry.getProfile().getName().equalsIgnoreCase(this.lastUsername)) {
                                 this.lastUUID = entry.getProfile().getId().toString();
                                 break;
@@ -263,7 +259,6 @@ public class NameHistoryClientWindow extends ClientWindow {
                 ImGui.endTable();
             }
         }
-        ImGui.end();
     }
 
 }

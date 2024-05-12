@@ -29,6 +29,7 @@ import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiTableFlags;
 import imgui.type.ImInt;
 import imgui.type.ImString;
+import lombok.Getter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ServerInfo;
@@ -66,7 +67,7 @@ public class PortScannerClientWindow extends ClientWindow {
     private int currentPortResult;
 
     public PortScannerClientWindow() {
-        super("Port Scanner", Category.SERVER);
+        super("Port Scanner", Category.SERVER, true);
         this.address = new ImString(253);
         this.progress = new ImString(200);
         this.state = new ImString(100);
@@ -99,7 +100,7 @@ public class PortScannerClientWindow extends ClientWindow {
     }
 
     @Override
-    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+    protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         for (final PortResult portResult : this.portResults) {
             portResult.renderSubData();
         }
@@ -179,7 +180,7 @@ public class PortScannerClientWindow extends ClientWindow {
                     final String resolvedAddress = serverAddress.getLeft();
                     for (int i = 0; i < this.threads.get(); i++) {
                         final int id = i;
-                        Vandalism.getInstance().getLogger().info("Starting Port Scanner Thread #" + id + "...");
+                        Vandalism.getInstance().getLogger().info("Starting Port Scanner Thread #{}...", id);
                         new Thread(() -> {
                             try {
                                 while (this.isRunning() && this.currentPort < this.maxPort.get()) {
@@ -198,9 +199,9 @@ public class PortScannerClientWindow extends ClientWindow {
                                     catch (Exception ignored) {}
                                 }
                                 this.stop();
-                                Vandalism.getInstance().getLogger().info("Port Scanner Thread #" + id + " finished.");
+                                Vandalism.getInstance().getLogger().info("Port Scanner Thread #{} finished.", id);
                             } catch (Exception e) {
-                                Vandalism.getInstance().getLogger().error("Port Scanner Thread #" + id + " failed.", e);
+                                Vandalism.getInstance().getLogger().error("Port Scanner Thread #{} failed.", id, e);
                                 this.state.set(State.FAILED.getMessage() + e.getClass().getSimpleName() + ": " + e.getMessage());
                             }
                         }, "Port Scanner Thread #" + id).start();
@@ -287,6 +288,7 @@ public class PortScannerClientWindow extends ClientWindow {
         ImGui.end();
     }
 
+    @Getter
     private enum State {
 
         RUNNING("Running..."),
@@ -297,10 +299,6 @@ public class PortScannerClientWindow extends ClientWindow {
 
         State(final String message) {
             this.message = message;
-        }
-
-        public String getMessage() {
-            return this.message;
         }
 
     }

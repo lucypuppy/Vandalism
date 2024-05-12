@@ -32,7 +32,7 @@ public class BaritoneSettingsClientWindow extends ClientWindow {
     private final ImString searchInput = new ImString();
 
     public BaritoneSettingsClientWindow(final BaritoneSettingMapper baritoneSettingMapper) {
-        super("Baritone Settings", Category.MISC);
+        super("Baritone Settings", Category.MISC, true);
         this.baritoneSettingMapper = baritoneSettingMapper;
     }
 
@@ -47,8 +47,7 @@ public class BaritoneSettingsClientWindow extends ClientWindow {
     }
 
     @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+    protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         final String searchIdentifier = "##BaritoneSearchInput";
         final int windowFlags = ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse;
 

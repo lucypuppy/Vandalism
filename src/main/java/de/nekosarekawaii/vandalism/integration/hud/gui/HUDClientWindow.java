@@ -45,9 +45,8 @@ public class HUDClientWindow extends ClientWindow {
     }
 
     @Override
-    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+    protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         final String id = "##hudconfig";
-        ImGui.begin("HUD Config" + id + "window");
         if (ImGui.beginTabBar(id)) {
             for (final HUDElement hudElement : this.hudManager.getList()) {
                 final String name = hudElement.getName();
@@ -71,7 +70,6 @@ public class HUDClientWindow extends ClientWindow {
             }
             ImGui.endTabBar();
         }
-        ImGui.end();
         final Window window = this.mc.getWindow();
         final double scaledWidth = window.getScaledWidth(), scaledHeight = window.getScaledHeight();
         boolean mouseOver = false;

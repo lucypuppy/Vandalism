@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.clientwindow.impl.port;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientwindow.impl.widget.ServerInfoWidget;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
+import lombok.Getter;
 import net.lenni0451.mcping.MCPing;
 import net.lenni0451.mcping.exception.ConnectTimeoutException;
 import net.lenni0451.mcping.exception.ConnectionRefusedException;
@@ -32,11 +33,15 @@ import java.net.UnknownHostException;
 
 public class PortResult {
 
+    @Getter
     private final int port;
+
+    @Getter
     private final String hostname;
 
     private final ServerInfoWidget serverInfoWidget;
 
+    @Getter
     private PingState currentState;
 
     private final MSTimer stateTimer = new MSTimer();
@@ -47,18 +52,6 @@ public class PortResult {
         this.serverInfoWidget = new ServerInfoWidget();
         this.serverInfoWidget.setAddress(address);
         this.clear();
-    }
-
-    public int getPort() {
-        return this.port;
-    }
-
-    public String getHostname() {
-        return this.hostname;
-    }
-
-    public PingState getCurrentState() {
-        return this.currentState;
     }
 
     public void renderTableEntry() {
@@ -90,19 +83,20 @@ public class PortResult {
                     .address(this.hostname, this.port)
                     .timeout(5000, 5000)
                     .exceptionHandler(t -> {
-                        if (t instanceof UnknownHostException) {
-                            this.currentState = PingState.UNKNOWN_HOST;
-                        } else if (t instanceof ConnectionRefusedException) {
-                            this.currentState = PingState.CONNECTION_REFUSED;
-                        } else if (t instanceof ConnectTimeoutException) {
-                            this.currentState = PingState.CONNECTION_TIMED_OUT;
-                        } else if (t instanceof DataReadException) {
-                            this.currentState = PingState.DATA_READ_FAILED;
-                        } else if (t instanceof PacketReadException) {
-                            this.currentState = PingState.PACKET_READ_FAILED;
-                        } else {
-                            this.currentState = PingState.FAILED;
-                            Vandalism.getInstance().getLogger().error("Failed to ping " + this.hostname + ":" + this.port, t);
+                        switch (t) {
+                            case UnknownHostException unknownHostException ->
+                                    this.currentState = PingState.UNKNOWN_HOST;
+                            case ConnectionRefusedException connectionRefusedException ->
+                                    this.currentState = PingState.CONNECTION_REFUSED;
+                            case ConnectTimeoutException connectTimeoutException ->
+                                    this.currentState = PingState.CONNECTION_TIMED_OUT;
+                            case DataReadException dataReadException -> this.currentState = PingState.DATA_READ_FAILED;
+                            case PacketReadException packetReadException ->
+                                    this.currentState = PingState.PACKET_READ_FAILED;
+                            case null, default -> {
+                                this.currentState = PingState.FAILED;
+                                Vandalism.getInstance().getLogger().error("Failed to ping {}:{}", this.hostname, this.port, t);
+                            }
                         }
                     })
                     .finishHandler(response -> {
@@ -114,6 +108,7 @@ public class PortResult {
         } else this.currentState = PingState.WAITING_INPUT;
     }
 
+    @Getter
     public enum PingState {
 
         FAILED("There was an error fetching the server info."),
@@ -131,10 +126,6 @@ public class PortResult {
 
         PingState(final String message) {
             this.message = message;
-        }
-
-        public String getMessage() {
-            return this.message;
         }
 
     }
