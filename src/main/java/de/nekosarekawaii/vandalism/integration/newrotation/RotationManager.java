@@ -101,6 +101,7 @@ public class RotationManager implements MinecraftWrapper, OutgoingPacketListener
         // Thanks mojang...
         if (event.type == StrafeListener.Type.JUMP) {
             event.yaw = (float) Math.toRadians(this.rotation.getYaw());
+            event.modified = true;
             return;
         }
 
