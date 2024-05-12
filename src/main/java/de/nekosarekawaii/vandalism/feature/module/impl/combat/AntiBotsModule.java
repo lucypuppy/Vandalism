@@ -59,6 +59,7 @@ public class AntiBotsModule extends AbstractModule implements TargetListener, In
 
     @Override
     public void onIncomingPacket(IncomingPacketEvent event) {
+        if(mc.world != null) return;
         if (event.packet instanceof EntityPositionS2CPacket packet) {
             Entity entity = mc.world.getEntityById(packet.getId());
             if (entity instanceof PlayerEntity && !movedEntities.contains(entity)) {
