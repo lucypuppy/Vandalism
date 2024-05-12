@@ -85,7 +85,7 @@ public class ConfigWithValues extends AbstractConfig<JsonObject> {
                 value.load(targetNode);
             }
             catch (Throwable t) {
-                Vandalism.getInstance().getLogger().error("Failed to load value: " + getValueTree(value), t);
+                Vandalism.getInstance().getLogger().error("Failed to load value: {}", getValueTree(value), t);
             }
         }
     }

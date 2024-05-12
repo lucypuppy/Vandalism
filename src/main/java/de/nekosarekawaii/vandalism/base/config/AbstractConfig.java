@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import de.nekosarekawaii.vandalism.Vandalism;
+import lombok.Getter;
 
 import java.io.File;
 import java.io.FileReader;
@@ -32,7 +33,11 @@ public abstract class AbstractConfig<T extends JsonElement> {
 
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
+    private String cachedConfig = "";
+
     private final Class<T> nodeType;
+
+    @Getter
     private final File file;
 
     public AbstractConfig(final Class<T> nodeType, final String name) {
@@ -45,18 +50,20 @@ public abstract class AbstractConfig<T extends JsonElement> {
     }
 
     public boolean save(final File file) {
+        final String fileName = file.getName();
         try {
             file.delete();
             file.createNewFile();
             try (final FileWriter fw = new FileWriter(file)) {
-                fw.write(GSON.toJson(save0()));
+                this.cachedConfig = this.asString();
+                fw.write(this.cachedConfig);
                 fw.flush();
                 return true;
-            } catch (Exception e) {
-                Vandalism.getInstance().getLogger().error("Failed to save config " + file.getName(), e);
+            } catch (final Exception e) {
+                Vandalism.getInstance().getLogger().error("Failed to save config {}", fileName, e);
             }
-        } catch (IOException e) {
-            Vandalism.getInstance().getLogger().error("Failed to create config " + file.getName(), e);
+        } catch (final IOException e) {
+            Vandalism.getInstance().getLogger().error("Failed to create config {}", fileName, e);
         }
         return false;
     }
@@ -69,9 +76,10 @@ public abstract class AbstractConfig<T extends JsonElement> {
         if (file.exists()) {
             try (final FileReader fr = new FileReader(file)) {
                 load0(GSON.fromJson(fr, this.nodeType));
+                this.cachedConfig = this.asString();
                 return true;
-            } catch (Exception e) {
-                Vandalism.getInstance().getLogger().error("Failed to load config " + file.getName(), e);
+            } catch (final Exception e) {
+                Vandalism.getInstance().getLogger().error("Failed to load config {}", file.getName(), e);
             }
         }
         return false;
@@ -80,5 +88,13 @@ public abstract class AbstractConfig<T extends JsonElement> {
     public abstract T save0();
 
     public abstract void load0(final T mainNode);
+
+    public String asString() {
+        return GSON.toJson(this.save0());
+    }
+
+    public String cachedAsString() {
+        return this.cachedConfig;
+    }
 
 }
