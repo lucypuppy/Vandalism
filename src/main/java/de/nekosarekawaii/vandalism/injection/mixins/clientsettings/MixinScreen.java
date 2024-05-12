@@ -72,7 +72,7 @@ public abstract class MixinScreen {
             applyBlur(client.getTickDelta());
 
         switch (menuSettings.inGameBackgroundMode.getValue()) {
-            case COLOR_FACE -> {
+            case COLOR_FADE -> {
                 ci.cancel();
                 context.fillGradient(
                         0,
