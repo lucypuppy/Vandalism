@@ -43,8 +43,7 @@ public class ClientSettingsClientWindow extends ClientWindow {
     }
 
     @Override
-    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        ImGui.begin(this.getName());
+    protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         ImGui.spacing();
         if (ImGui.beginTabBar("##clientsettings")) {
             for (final Value<?> value : this.clientSettings.getValues()) {
@@ -99,7 +98,6 @@ public class ClientSettingsClientWindow extends ClientWindow {
             }
             ImGui.endTabBar();
         }
-        ImGui.end();
     }
 
 }

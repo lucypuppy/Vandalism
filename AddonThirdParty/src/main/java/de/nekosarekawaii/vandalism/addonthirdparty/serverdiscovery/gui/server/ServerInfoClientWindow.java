@@ -91,8 +91,7 @@ public class ServerInfoClientWindow extends ClientWindow {
     }
 
     @Override
-    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        ImGui.begin(this.getName());
+    protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         ImGui.text("State");
         ImGui.setNextItemWidth(-1);
         ImGui.inputText("##serverinfostate", this.state, ImGuiInputTextFlags.ReadOnly);
@@ -123,15 +122,15 @@ public class ServerInfoClientWindow extends ClientWindow {
                     final String ip = resolvedAddress.getLeft();
                     final int port = resolvedAddress.getRight();
                     final Response response = ServerDiscoveryUtil.request(new ServerInfoRequest(ip, port));
-                    if (response == null) {
-                        this.state.set("Every API User is rate limited!");
-                    } else if (response instanceof final ServerInfoResponse serverInfoResponse) {
+                    if (response instanceof final ServerInfoResponse serverInfoResponse) {
                         if (serverInfoResponse.isError()) {
                             this.state.set("Error: " + serverInfoResponse.error);
                         } else {
                             this.serverInfo = serverInfoResponse;
                             this.state.set("Success!");
                         }
+                    } else {
+                        this.state.set("API User is rate limited!");
                     }
                     this.waitingForResponse = false;
                 });
@@ -208,18 +207,16 @@ public class ServerInfoClientWindow extends ClientWindow {
                 if (playerName.equals("Anonymous Player") || playerUUID.equals("00000000-0000-0000-0000-000000000000")) {
                     continue;
                 }
-                final StringBuilder playerString = new StringBuilder();
-                playerString.append("Name: ");
-                playerString.append(playerName);
-                playerString.append("\n");
-                playerString.append("UUID: ");
-                playerString.append(playerUUID);
-                playerString.append("\n");
-                playerString.append("Last Seen: ");
-                playerString.append(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(
-                        Instant.ofEpochSecond(player.last_seen).atZone(ZoneId.systemDefault()).toLocalDateTime()
-                ));
-                final String playerData = playerString.toString();
+                final String playerData = "Name: " +
+                        playerName +
+                        "\n" +
+                        "UUID: " +
+                        playerUUID +
+                        "\n" +
+                        "Last Seen: " +
+                        DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(
+                                Instant.ofEpochSecond(player.last_seen).atZone(ZoneId.systemDefault()).toLocalDateTime()
+                        );
                 final GameProfile gameProfile = this.mc.getGameProfile();
                 final boolean isCurrentAccount = gameProfile.getName().equals(playerName) && gameProfile.getId().toString().equals(playerUUID);
                 if (isCurrentAccount) {
@@ -269,7 +266,6 @@ public class ServerInfoClientWindow extends ClientWindow {
                 ImGui.text(playerData);
             }
         }
-        ImGui.end();
     }
 
 }

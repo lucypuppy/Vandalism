@@ -27,6 +27,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.ModuleManager;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
 import imgui.ImGui;
@@ -54,12 +55,12 @@ public class ModulesClientWindow extends ClientWindow {
     private boolean closePopup = false;
 
     public ModulesClientWindow() {
-        super("Modules", Category.CONFIG);
+        super("Modules", Category.CONFIG, true);
     }
 
     @Override
-    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        final var moduleManager = Vandalism.getInstance().getModuleManager();
+    protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        final ModuleManager moduleManager = Vandalism.getInstance().getModuleManager();
         if (!moduleManager.getList().isEmpty()) {
             final float width = 195, minHeight = 140, maxHeight = Vandalism.getInstance().getClientSettings().getMenuSettings().moduleTabMaxHeight.getValue();
             final int windowFlags = ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse;

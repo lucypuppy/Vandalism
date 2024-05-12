@@ -98,7 +98,7 @@ public class WatermarkHUDElement extends HUDElement {
     }
 
     @Override
-    public void onRender(final DrawContext context, final float delta, final boolean inGame) {
+    protected void onRender(final DrawContext context, final float delta, final boolean inGame) {
         final Identifier identifier = this.logoSelection.getValue().getIdentifier();
         this.mc.getTextureManager().getTexture(identifier).setFilter(
                 true,

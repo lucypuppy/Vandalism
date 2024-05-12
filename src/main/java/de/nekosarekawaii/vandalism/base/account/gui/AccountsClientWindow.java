@@ -147,21 +147,11 @@ public class AccountsClientWindow extends ClientWindow {
             ImGui.openPopup("account-popup");
         }
         ImGui.sameLine(95);
-        final StringBuilder data = new StringBuilder();
-        data.append("Name: ");
-        data.append(account.getDisplayName());
-        data.append("\n");
-        data.append("Type: ");
-        data.append(account.getType());
-        data.append("\n");
-        data.append("Status: ");
-        data.append(account.getStatus() == null ? "Idle" : account.getStatus());
-        ImGui.text(data.toString());
+        ImGui.text("Name: " + account.getDisplayName() + "\n" + "Type: " + account.getType() + "\n" + "Status: " + (account.getStatus() == null ? "Idle" : account.getStatus()));
     }
 
     @Override
-    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        ImGui.begin(this.getName());
+    protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         if (ImGui.beginTabBar("##accountsTabBar")) {
             if (ImGui.beginTabItem("Current Account")) {
                 final AbstractAccount currentAccount = this.accountManager.getCurrentAccount();
@@ -213,7 +203,6 @@ public class AccountsClientWindow extends ClientWindow {
             }
             ImGui.endTabBar();
         }
-        ImGui.end();
     }
 
 }

@@ -30,6 +30,7 @@ import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiTableFlags;
 import imgui.type.ImInt;
 import imgui.type.ImString;
+import lombok.Getter;
 import net.lenni0451.mcping.MCPing;
 import net.lenni0451.mcping.exception.ConnectTimeoutException;
 import net.lenni0451.mcping.exception.ConnectionRefusedException;
@@ -82,9 +83,8 @@ public class ServerPingerClientWindow extends ClientWindow {
     }
 
     @Override
-    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+    protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         this.serverInfoWidget.renderSubData();
-        ImGui.begin("Server Pinger##serverpinger");
         ImGui.text("State: " + this.currentState.getMessage());
         ImGui.text("Query State: " + this.currentQueryState.getMessage());
         ImGui.inputText(
@@ -177,7 +177,6 @@ public class ServerPingerClientWindow extends ClientWindow {
                 }
             }
         }
-        ImGui.end();
     }
 
     private void clear() {
@@ -197,19 +196,19 @@ public class ServerPingerClientWindow extends ClientWindow {
                     .address(this.hostname.get(), this.port.get())
                     .timeout(5000, 5000)
                     .exceptionHandler(t -> {
-                        if (t instanceof UnknownHostException) {
-                            this.currentState = State.UNKNOWN_HOST;
-                        } else if (t instanceof ConnectionRefusedException) {
-                            this.currentState = State.CONNECTION_REFUSED;
-                        } else if (t instanceof ConnectTimeoutException) {
-                            this.currentState = State.CONNECTION_TIMED_OUT;
-                        } else if (t instanceof DataReadException) {
-                            this.currentState = State.DATA_READ_FAILED;
-                        } else if (t instanceof PacketReadException) {
-                            this.currentState = State.PACKET_READ_FAILED;
-                        } else {
-                            this.currentState = State.FAILED;
-                            Vandalism.getInstance().getLogger().error("Failed to ping " + this.hostname.get() + ":" + this.port.get(), t);
+                        switch (t) {
+                            case UnknownHostException unknownHostException -> this.currentState = State.UNKNOWN_HOST;
+                            case ConnectionRefusedException connectionRefusedException ->
+                                    this.currentState = State.CONNECTION_REFUSED;
+                            case ConnectTimeoutException connectTimeoutException ->
+                                    this.currentState = State.CONNECTION_TIMED_OUT;
+                            case DataReadException dataReadException -> this.currentState = State.DATA_READ_FAILED;
+                            case PacketReadException packetReadException ->
+                                    this.currentState = State.PACKET_READ_FAILED;
+                            case null, default -> {
+                                this.currentState = State.FAILED;
+                                Vandalism.getInstance().getLogger().error("Failed to ping {}:{}", this.hostname.get(), this.port.get(), t);
+                            }
                         }
                     })
                     .finishHandler(response -> {
@@ -221,21 +220,21 @@ public class ServerPingerClientWindow extends ClientWindow {
                     .address(this.hostname.get(), this.queryPort.get())
                     .timeout(5000, 5000)
                     .exceptionHandler(t -> {
-                        if (t instanceof BindException) {
-                            this.currentQueryState = State.BIND_FAILED;
-                        } else if (t instanceof UnknownHostException) {
-                            this.currentQueryState = State.UNKNOWN_HOST;
-                        } else if (t instanceof ConnectionRefusedException) {
-                            this.currentQueryState = State.CONNECTION_REFUSED;
-                        } else if (t instanceof ConnectTimeoutException) {
-                            this.currentQueryState = State.CONNECTION_TIMED_OUT;
-                        } else if (t instanceof DataReadException) {
-                            this.currentQueryState = State.DATA_READ_FAILED;
-                        } else if (t instanceof PacketReadException) {
-                            this.currentQueryState = State.PACKET_READ_FAILED;
-                        } else {
-                            this.currentQueryState = State.FAILED;
-                            Vandalism.getInstance().getLogger().error("Failed to ping query " + this.hostname.get() + ":" + this.queryPort.get(), t);
+                        switch (t) {
+                            case BindException bindException -> this.currentQueryState = State.BIND_FAILED;
+                            case UnknownHostException unknownHostException ->
+                                    this.currentQueryState = State.UNKNOWN_HOST;
+                            case ConnectionRefusedException connectionRefusedException ->
+                                    this.currentQueryState = State.CONNECTION_REFUSED;
+                            case ConnectTimeoutException connectTimeoutException ->
+                                    this.currentQueryState = State.CONNECTION_TIMED_OUT;
+                            case DataReadException dataReadException -> this.currentQueryState = State.DATA_READ_FAILED;
+                            case PacketReadException packetReadException ->
+                                    this.currentQueryState = State.PACKET_READ_FAILED;
+                            case null, default -> {
+                                this.currentQueryState = State.FAILED;
+                                Vandalism.getInstance().getLogger().error("Failed to ping query {}:{}", this.hostname.get(), this.queryPort.get(), t);
+                            }
                         }
                     })
                     .finishHandler(response -> {
@@ -246,6 +245,7 @@ public class ServerPingerClientWindow extends ClientWindow {
         } else this.currentState = State.WAITING_INPUT;
     }
 
+    @Getter
     private enum State {
 
         FAILED("There was an error fetching the server info."),
@@ -263,10 +263,6 @@ public class ServerPingerClientWindow extends ClientWindow {
 
         State(final String message) {
             this.message = message;
-        }
-
-        public String getMessage() {
-            return this.message;
         }
 
     }

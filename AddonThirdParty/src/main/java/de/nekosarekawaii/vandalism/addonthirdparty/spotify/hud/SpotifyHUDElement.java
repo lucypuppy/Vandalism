@@ -56,7 +56,7 @@ public class SpotifyHUDElement extends HUDElement {
     }
 
     @Override
-    public void onRender(final DrawContext context, final float delta, final boolean inGame) {
+    protected void onRender(final DrawContext context, final float delta, final boolean inGame) {
         final SpotifyManager spotifyManager = this.spotifyManager;
         spotifyManager.update();
         final SpotifyData spotifyData = spotifyManager.getCurrentSpotifyData();

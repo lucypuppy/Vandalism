@@ -29,7 +29,7 @@ public class ServerDiscoveryUtil {
     public static Response request(final Request<?> request) {
         final Response response = request.send(API_KEY);
         if (response.error != null) {
-            Vandalism.getInstance().getLogger().error("Error while sending request: " + response.error);
+            Vandalism.getInstance().getLogger().error("Error while sending request: {}", response.error);
         }
         return response;
     }
