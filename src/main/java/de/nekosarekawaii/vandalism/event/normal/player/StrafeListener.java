@@ -36,12 +36,14 @@ public interface StrafeListener {
         public Vec3d movementInput;
         public float speed, yaw;
         public final Type type;
+        public boolean modified;
 
         public StrafeEvent(final Vec3d movementInput, final float speed, final float yaw, final Type type) {
             this.movementInput = movementInput;
             this.speed = speed;
             this.yaw = yaw;
             this.type = type;
+            modified = false;
         }
 
         @Override
