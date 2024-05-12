@@ -157,7 +157,7 @@ public class ConfigScreen extends Screen {
             final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
             final String name = this.serverList.getName();
             final boolean isSelected = name.equals(Vandalism.getInstance().getServerListManager().getSelectedServerList().getName());
-            final int rectX = x - 1, rectY = y - 1, rectX2 = x + entryWidth + 1, rectY2 = y + entryHeight + 1;
+            final int rectX = x - 1, rectY = y - 1, rectX2 = x + entryWidth - 3, rectY2 = y + entryHeight + 1;
             context.fill(rectX, rectY, rectX2, rectY2, isSelected ? Color.GRAY.getRGB() : Color.DARK_GRAY.getRGB());
             context.drawCenteredTextWithShadow(textRenderer, (this.serverList.isDefault() ? ServerList.DEFAULT_SERVER_LIST_NAME : name) + " (" + this.serverList.getSize() + ")", x + entryWidth / 2, y + entryHeight / 2 - textRenderer.fontHeight / 2, isSelected ? Color.GREEN.getRGB() : Color.WHITE.getRGB());
         }
