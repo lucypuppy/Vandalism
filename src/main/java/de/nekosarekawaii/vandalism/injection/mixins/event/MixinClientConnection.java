@@ -24,15 +24,12 @@ import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListe
 import de.nekosarekawaii.vandalism.event.normal.network.DisconnectListener;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.util.AttributeKey;
 import net.minecraft.network.ClientConnection;
-import net.minecraft.network.NetworkState;
 import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.listener.PacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -44,22 +41,25 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinClientConnection {
 
     @Shadow
-    private static <T extends PacketListener> void handlePacket(Packet<T> packet, PacketListener listener) {
+    public static <T extends PacketListener> void handlePacket(final Packet<T> packet, final PacketListener listener) {
     }
 
-    @Shadow @Nullable private volatile PacketListener packetListener;
-
-    @Shadow protected abstract void sendImmediately(Packet<?> packet, @Nullable PacketCallbacks callbacks, boolean flush);
+    @Shadow
+    @Nullable
+    public volatile PacketListener packetListener;
 
     @Shadow
-    private Channel channel;
+    protected abstract void sendImmediately(final Packet<?> packet, final @Nullable PacketCallbacks callbacks, final boolean flush);
+
+    @Shadow
+    public Channel channel;
 
     @Unique
     private boolean vandalism$selfRepeating;
 
     @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/packet/Packet;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/ClientConnection;handlePacket(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;)V", ordinal = 0), cancellable = true)
     private void callIncomingPacketListener(final ChannelHandlerContext channelHandlerContext, Packet<?> packet, final CallbackInfo ci) {
-        final var event = new IncomingPacketListener.IncomingPacketEvent(packet, this.packetListener.getPhase(), (ClientConnection) (Object) this);
+        final IncomingPacketListener.IncomingPacketEvent event = new IncomingPacketListener.IncomingPacketEvent(packet, this.packetListener.getPhase(), (ClientConnection) (Object) this);
         Vandalism.getInstance().getEventSystem().postInternal(IncomingPacketListener.IncomingPacketEvent.ID, event);
         if (event.isCancelled()) {
             ci.cancel();
@@ -78,7 +78,7 @@ public abstract class MixinClientConnection {
             return;
         }
 
-        final var event = new OutgoingPacketListener.OutgoingPacketEvent(packet, this.packetListener.getPhase(), (ClientConnection) (Object) this);
+        final OutgoingPacketListener.OutgoingPacketEvent event = new OutgoingPacketListener.OutgoingPacketEvent(packet, this.packetListener.getPhase(), (ClientConnection) (Object) this);
         Vandalism.getInstance().getEventSystem().postInternal(OutgoingPacketListener.OutgoingPacketEvent.ID, event);
         if (event.isCancelled()) {
             ci.cancel();

@@ -48,7 +48,7 @@ public abstract class MixinAbstractBlockState {
         if (pos == null || world == null || MinecraftClient.getInstance() == null || MinecraftClient.getInstance().player == null) {
             return shape;
         }
-        final var event = new BlockCollisionShapeListener.BlockCollisionShapeEvent(block, blockState, world, pos, context, shape);
+        final BlockCollisionShapeListener.BlockCollisionShapeEvent event = new BlockCollisionShapeListener.BlockCollisionShapeEvent(block, blockState, world, pos, context, shape);
         Vandalism.getInstance().getEventSystem().postInternal(BlockCollisionShapeListener.BlockCollisionShapeEvent.ID, event);
         return event.shape;
     }

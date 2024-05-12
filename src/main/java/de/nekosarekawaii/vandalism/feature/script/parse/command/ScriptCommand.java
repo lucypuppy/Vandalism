@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.feature.script.parse.command;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.nekosarekawaii.vandalism.Vandalism;
@@ -46,7 +47,7 @@ public enum ScriptCommand {
         if (args[0].equals("script") && args.length > 2 && args[1].equals("execute") && args[2].equals(scriptName)) {
             throw new RuntimeException("This script can't run itself because this would cause a stack overflow");
         }
-        final var dispatcher = Vandalism.getInstance().getCommandManager().getCommandDispatcher();
+        final CommandDispatcher<CommandSource> dispatcher = Vandalism.getInstance().getCommandManager().getCommandDispatcher();
         if (execute) {
             dispatcher.execute(ScriptVariable.applyReplacements(code), AbstractCommand.COMMAND_SOURCE);
         } else {

@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.integration.creativetab;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -45,7 +46,7 @@ public abstract class AbstractCreativeTab {
     public abstract void exposeItems(final List<ItemStack> items);
 
     public void publish() {
-        final var itemGroup = FabricItemGroup.builder().icon(() -> this.icon).displayName(this.name).entries(((displayContext, entries) -> {
+        final ItemGroup itemGroup = FabricItemGroup.builder().icon(() -> this.icon).displayName(this.name).entries(((displayContext, entries) -> {
             if (this.TEMP_ITEMS.isEmpty()) {
                 exposeItems(this.TEMP_ITEMS);
             }

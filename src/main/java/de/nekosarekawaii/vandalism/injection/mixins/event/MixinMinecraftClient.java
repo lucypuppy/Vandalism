@@ -73,7 +73,7 @@ public abstract class MixinMinecraftClient {
             vandalism$selfInflicted = false;
             return;
         }
-        final var event = new ScreenListener.ScreenEvent(screen);
+        final ScreenListener.ScreenEvent event = new ScreenListener.ScreenEvent(screen);
         Vandalism.getInstance().getEventSystem().postInternal(ScreenListener.ScreenEvent.ID, event);
         if (event.isCancelled()) {
             ci.cancel();
@@ -101,7 +101,7 @@ public abstract class MixinMinecraftClient {
 
     @Inject(method = "getTargetMillisPerTick", at = @At("RETURN"), cancellable = true)
     public void callTickTimeListener(final float millis, final CallbackInfoReturnable<Float> cir) {
-        final var event = new TickTimeListener.TickTimeEvent(cir.getReturnValue());
+        final TickTimeListener.TickTimeEvent event = new TickTimeListener.TickTimeEvent(cir.getReturnValue());
         Vandalism.getInstance().getEventSystem().postInternal(TickTimeListener.TickTimeEvent.ID, event);
         cir.setReturnValue(event.tickTime);
     }
@@ -113,7 +113,7 @@ public abstract class MixinMinecraftClient {
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;getMeasuringTimeMs()J", ordinal = 0))
     public long getTime() {
-        final var event = new TimeTravelListener.TimeTravelEvent(Util.getMeasuringTimeMs());
+        final TimeTravelListener.TimeTravelEvent event = new TimeTravelListener.TimeTravelEvent(Util.getMeasuringTimeMs());
         Vandalism.getInstance().getEventSystem().postInternal(TimeTravelListener.TimeTravelEvent.ID, event);
         return event.time;
     }

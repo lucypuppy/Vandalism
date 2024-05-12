@@ -57,6 +57,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardEntry;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
@@ -701,7 +702,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             mc.options.useKey.setPressed(true); // Ensure we are blocking permanently
         } else if (this.autoBlockMode.getValue() == AutoBlockMode.TEST) {
             if (blockState == BlockState.POST_ATTACK) {
-                var actionResult = mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
+                final ActionResult actionResult = mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
                 if (actionResult.isAccepted()) {
                     if (actionResult.shouldSwingHand()) {
                         mc.player.swingHand(Hand.MAIN_HAND);
