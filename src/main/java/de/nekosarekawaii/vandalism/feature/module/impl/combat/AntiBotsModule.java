@@ -22,8 +22,10 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.normal.internal.TargetListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.EntityPositionS2CPacket;
+import net.minecraft.network.packet.s2c.play.EntityS2CPacket;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +36,7 @@ public class AntiBotsModule extends AbstractModule implements TargetListener, In
         super("Anti Bots", "Prevents bots from joining your server.", Category.COMBAT);
     }
 
-    private List<Integer> movedEntities = new ArrayList<>();
+    private List<Entity> movedEntities = new ArrayList<>();
 
     @Override
     public void onActivate() {
@@ -48,20 +50,30 @@ public class AntiBotsModule extends AbstractModule implements TargetListener, In
 
     @Override
     public void onTarget(TargetEvent event) {
-        if(!event.isTarget) return;
+        if (!event.isTarget) return;
 
-        if(event.entity instanceof PlayerEntity player) {
-            if(!movedEntities.contains(player.getId())) {
-                event.isTarget = false;
-            }
+        if (!movedEntities.contains(event.entity)) {
+            event.isTarget = false;
         }
     }
 
     @Override
     public void onIncomingPacket(IncomingPacketEvent event) {
-        if(event.packet instanceof EntityPositionS2CPacket packet) {
-            if(!movedEntities.contains(packet.getId())) {
-                movedEntities.add(packet.getId());
+        if (event.packet instanceof EntityPositionS2CPacket packet) {
+            Entity entity = mc.world.getEntityById(packet.getId());
+            if (entity instanceof PlayerEntity && !movedEntities.contains(entity)) {
+                if (packet.getX() != entity.getTrackedPosition().pos.x || packet.getY() != entity.getTrackedPosition().pos.y || packet.getZ() != entity.getTrackedPosition().pos.z) {
+                    movedEntities.add(entity);
+                }
+            }
+        }
+
+        if (event.packet instanceof EntityS2CPacket packet) {
+            Entity entity = packet.getEntity(mc.world);
+            if (entity instanceof PlayerEntity && !movedEntities.contains(entity)) {
+                if (packet.getDeltaX() != 0 || packet.getDeltaY() != 0 || packet.getDeltaZ() != 0) {
+                    movedEntities.add(entity);
+                }
             }
         }
     }
