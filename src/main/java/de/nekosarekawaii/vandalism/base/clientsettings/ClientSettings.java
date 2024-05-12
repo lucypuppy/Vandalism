@@ -25,6 +25,7 @@ import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.clientwindow.ClientWindowManager;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,50 +34,33 @@ public class ClientSettings implements ValueParent {
 
     private final List<Value<?>> values = new ArrayList<>();
 
+    @Getter
     private final MenuSettings menuSettings = new MenuSettings(this);
+
+    @Getter
     private final ChatSettings chatSettings = new ChatSettings(this);
+
+    @Getter
     private final NetworkingSettings networkingSettings = new NetworkingSettings(this);
+
+    @Getter
     private final VisualSettings visualSettings = new VisualSettings(this);
+
+    @Getter
     private final MovementSettings movementSettings = new MovementSettings(this);
+
+    @Getter
     private final RotationSettings rotationSettings = new RotationSettings(this);
+
+    @Getter
     private final TargetSettings targetSettings = new TargetSettings(this);
+
+    @Getter
     private final EnhancedServerListSettings enhancedServerListSettings = new EnhancedServerListSettings(this);
 
     public ClientSettings(final ConfigManager configManager, final ClientWindowManager clientWindowManager) {
         configManager.add(new ConfigWithValues("client-settings", getValues().stream().map(value -> (ValueParent) value).toList()));
         clientWindowManager.add(new ClientSettingsClientWindow(this));
-    }
-
-    public MenuSettings getMenuSettings() {
-        return menuSettings;
-    }
-
-    public ChatSettings getChatSettings() {
-        return chatSettings;
-    }
-
-    public NetworkingSettings getNetworkingSettings() {
-        return networkingSettings;
-    }
-
-    public VisualSettings getVisualSettings() {
-        return visualSettings;
-    }
-
-    public MovementSettings getMovementSettings() {
-        return movementSettings;
-    }
-
-    public RotationSettings getRotationSettings() {
-        return rotationSettings;
-    }
-
-    public TargetSettings getTargetSettings() {
-        return targetSettings;
-    }
-
-    public EnhancedServerListSettings getEnhancedServerListSettings() {
-        return enhancedServerListSettings;
     }
 
     @Override

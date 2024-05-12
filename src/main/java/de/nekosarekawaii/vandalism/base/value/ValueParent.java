@@ -25,6 +25,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.rendering.SeparatorValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
 import de.nekosarekawaii.vandalism.util.common.IName;
+import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiMouseButton;
 
@@ -48,8 +49,16 @@ public interface ValueParent extends IName {
     }
 
     default void renderValues(final boolean renderNames) {
+        this.renderValues(renderNames, "");
+    }
+
+    default void renderValues(final String containingText) {
+        this.renderValues(true, containingText);
+    }
+
+    default void renderValues(final boolean renderNames, final String containingText) {
         for (final Value<?> value : this.getValues()) {
-            this.renderValue(value, renderNames);
+            this.renderValue(value, renderNames, containingText);
         }
     }
 
@@ -58,7 +67,19 @@ public interface ValueParent extends IName {
     }
 
     default void renderValue(final Value<?> value, final boolean renderName) {
+        this.renderValue(value, renderName, "");
+    }
+
+    default void renderValue(final Value<?> value, final boolean renderName, final String containingText) {
         if (value.isVisible() == null || value.isVisible().getAsBoolean()) {
+            final String name = value.getName();
+            if (!containingText.isEmpty() && (
+                    !StringUtils.contains(name, containingText) &&
+                            !StringUtils.contains(name.replace(" ", ""), containingText) &&
+                            !StringUtils.contains(value.getDescription(), containingText)
+            )) {
+                return;
+            }
             if (value instanceof final ValueGroup valueGroup) {
                 value.render();
                 if (!valueGroup.wasOpen()) {

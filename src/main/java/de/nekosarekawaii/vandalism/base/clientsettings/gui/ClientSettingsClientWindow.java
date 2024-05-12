@@ -29,6 +29,7 @@ import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
+import imgui.type.ImString;
 import net.minecraft.client.gui.DrawContext;
 
 import java.util.List;
@@ -36,6 +37,8 @@ import java.util.List;
 public class ClientSettingsClientWindow extends ClientWindow {
 
     private final ClientSettings clientSettings;
+
+    private final ImString searchInput = new ImString();
 
     public ClientSettingsClientWindow(final ClientSettings clientSettings) {
         super("Client Settings", Category.CONFIG);
@@ -52,8 +55,16 @@ public class ClientSettingsClientWindow extends ClientWindow {
                     final String id = "##" + name + "settings";
                     if (ImGui.beginTabItem(name + id + "tab")) {
                         ImGui.pushStyleColor(ImGuiCol.ChildBg, 0.0f, 0.0f, 0.0f, 0.0f);
+                        ImGui.setNextItemWidth(-1);
+                        ImGui.inputText(id + "input", this.searchInput);
+                        ImGui.separator();
                         ImGui.beginChild(id + "values", ImGui.getColumnWidth(), (- ImGui.getTextLineHeightWithSpacing()) * 3, true);
-                        valueGroup.renderValues();
+                        final String searchInput = this.searchInput.get();
+                        if (!searchInput.isBlank()) {
+                            valueGroup.renderValues(searchInput);
+                        } else {
+                            valueGroup.renderValues();
+                        }
                         ImGui.endChild();
                         ImGui.popStyleColor();
                         ImGui.separator();
