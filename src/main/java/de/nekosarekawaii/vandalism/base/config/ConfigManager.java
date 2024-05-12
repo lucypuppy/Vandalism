@@ -35,11 +35,10 @@ public class ConfigManager extends Storage<AbstractConfig<?>> {
                 }
                 if (FabricBootstrap.INITIALIZED && !FabricBootstrap.SHUTTING_DOWN) {
                     for (final AbstractConfig<?> abstractConfig : this.getList()) {
-                        if (abstractConfig.cachedAsString().equals(abstractConfig.asString())) {
-                            continue;
+                        if (abstractConfig.isModified()) {
+                            abstractConfig.save();
+                            Vandalism.getInstance().getLogger().info("Auto saved config {}", abstractConfig.getFile().getName());
                         }
-                        abstractConfig.save();
-                        Vandalism.getInstance().getLogger().info("Auto saved config {}", abstractConfig.getFile().getName());
                     }
                 }
             }
