@@ -65,7 +65,7 @@ public abstract class MixinLivingEntity implements MinecraftWrapper {
     @Redirect(method = "jump", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getYaw()F"))
     private float modifyJumpYaw(final LivingEntity instance) {
         if (mc.player == (Object) this) {
-            return (float) Math.toDegrees(event.yaw);
+            return event.modified ? (float) Math.toDegrees(event.yaw) : instance.getYaw();
         }
         return instance.getYaw();
     }
