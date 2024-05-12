@@ -18,13 +18,38 @@
 
 package de.nekosarekawaii.vandalism.base.config;
 
+import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.util.common.Storage;
 
 public class ConfigManager extends Storage<AbstractConfig<?>> {
 
+    private final Thread autoSaveThread;
+
+    public ConfigManager() {
+        this.autoSaveThread = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(10000);
+                } catch (final InterruptedException ignored) {
+                }
+                if (FabricBootstrap.INITIALIZED && !FabricBootstrap.SHUTTING_DOWN) {
+                    for (final AbstractConfig<?> abstractConfig : this.getList()) {
+                        if (abstractConfig.cachedAsString().equals(abstractConfig.asString())) {
+                            continue;
+                        }
+                        abstractConfig.save();
+                        Vandalism.getInstance().getLogger().info("Auto saved config {}", abstractConfig.getFile().getName());
+                    }
+                }
+            }
+        });
+    }
+
     @Override
     public void init() {
         this.getList().forEach(AbstractConfig::load);
+        this.autoSaveThread.start();
     }
 
     public void save() {
