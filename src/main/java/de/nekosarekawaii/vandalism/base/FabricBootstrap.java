@@ -26,6 +26,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.Person;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 
 import java.io.File;
 
@@ -40,9 +41,16 @@ public class FabricBootstrap implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        final File renderDoc = new File("C:\\Program Files\\RenderDoc\\renderdoc.dll");
-        if (renderDoc.exists() && System.getProperty("vandalism.load.renderdoc", "false").equalsIgnoreCase("true")) {
-            System.load(renderDoc.getAbsolutePath());
+        final Util.OperatingSystem os = Util.getOperatingSystem();
+        final boolean isWindows = os == Util.OperatingSystem.WINDOWS;
+        if (!isWindows && os != Util.OperatingSystem.LINUX) {
+            throw new UnsupportedOperationException("Unsupported operating system: " + os);
+        }
+        if (isWindows) {
+            final File renderDoc = new File("C:\\Program Files\\RenderDoc\\renderdoc.dll");
+            if (renderDoc.exists() && System.getProperty("vandalism.load.renderdoc", "false").equalsIgnoreCase("true")) {
+                System.load(renderDoc.getAbsolutePath());
+            }
         }
         FabricLoader.getInstance().getModContainer(MOD_ID = "vandalism").ifPresent(modContainer -> {
             FabricBootstrap.MOD_NAME = modContainer.getMetadata().getName();
