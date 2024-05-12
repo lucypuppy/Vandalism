@@ -81,7 +81,7 @@ public class MultiModeValue extends Value<List<String>> {
 
     @Override
     public void save(final JsonObject mainNode) {
-        final var selectedOptionsNode = new JsonArray();
+        final JsonArray selectedOptionsNode = new JsonArray();
         for (final String value : this.getValue()) {
             selectedOptionsNode.add(value);
         }

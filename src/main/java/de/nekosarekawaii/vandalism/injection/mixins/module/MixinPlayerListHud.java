@@ -23,6 +23,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.authlib.GameProfile;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.feature.module.impl.render.BetterTabListModule;
 import de.nekosarekawaii.vandalism.integration.friends.Friend;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.minecraft.client.MinecraftClient;
@@ -52,7 +53,7 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
 
     @ModifyConstant(constant = @Constant(longValue = 80L), method = "collectPlayerEntries")
     private long hookBetterTabListModule(final long count) {
-        final var betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
+        final BetterTabListModule betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
 
         if (betterTabListModule.isActive()) {
             return betterTabListModule.tabSize.getValue();
@@ -66,7 +67,7 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
 
     @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V", ordinal = 2))
     public void hookBetterTabListModule(DrawContext instance, int x1, int y1, int x2, int y2, int color, Operation<Void> original, @Local(ordinal = 0) List<PlayerListEntry> list) {
-        final var betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
+        final BetterTabListModule betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
         final GameProfile profile = list.get(vandalism$index).getProfile();
         if (betterTabListModule.isActive()) {
             if (betterTabListModule.highlightSelf.getValue() && this.mc.player != null && profile.getId().equals(this.mc.player.getGameProfile().getId())) {
@@ -90,10 +91,10 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
 
     @Inject(method = "getPlayerName", at = @At("RETURN"), cancellable = true)
     public void hookBetterTabListModule(PlayerListEntry entry, CallbackInfoReturnable<Text> cir) {
-        final var betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
+        final BetterTabListModule betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
 
         if (betterTabListModule.isActive() && betterTabListModule.showGameMode.getValue()) {
-            final var color = betterTabListModule.getColorFromGameMode(entry.getGameMode().getId());
+            final int color = betterTabListModule.getColorFromGameMode(entry.getGameMode().getId());
 
             cir.setReturnValue(Text.literal("").append(
                     Text.literal(
@@ -105,7 +106,7 @@ public abstract class MixinPlayerListHud implements MinecraftWrapper {
 
     @Inject(method = "renderLatencyIcon", at = @At("HEAD"), cancellable = true)
     public void hookBetterTabListModule(final DrawContext context, final int width, final int x, final int y, final PlayerListEntry entry, final CallbackInfo ci) {
-        final var betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
+        final BetterTabListModule betterTabListModule = Vandalism.getInstance().getModuleManager().getBetterTabListModule();
         if (betterTabListModule.isActive() && betterTabListModule.showAccuratePing.getValue()) {
             final MatrixStack matrices = context.getMatrices();
             matrices.push();

@@ -40,7 +40,7 @@ public class ImLoader {
         ImGui.createContext();
         ImPlot.createContext();
 
-        final var io = ImGui.getIO();
+        final ImGuiIO io = ImGui.getIO();
         io.setFontGlobalScale(1f);
         io.setIniFilename(runDirectory.getName() + "/imgui.ini");
 
@@ -74,15 +74,15 @@ public class ImLoader {
     }
 
     protected static void loadFonts(final ImGuiIO io) {
-        final var atlas = io.getFonts();
+        final ImFontAtlas atlas = io.getFonts();
 
-        final var rangesBuilder = new ImFontGlyphRangesBuilder();
+        final ImFontGlyphRangesBuilder rangesBuilder = new ImFontGlyphRangesBuilder();
         rangesBuilder.addRanges(atlas.getGlyphRangesDefault());
         rangesBuilder.addRanges(atlas.getGlyphRangesCyrillic());
         rangesBuilder.addRanges(atlas.getGlyphRangesJapanese());
         rangesBuilder.addRanges(FontAwesomeIcons._IconRange);
 
-        final var fontConfig = new ImFontConfig();
+        final ImFontConfig fontConfig = new ImFontConfig();
         fontConfig.setPixelSnapH(true);
         fontConfig.setGlyphRanges(rangesBuilder.buildRanges());
 

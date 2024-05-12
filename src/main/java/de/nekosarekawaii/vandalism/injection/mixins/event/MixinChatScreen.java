@@ -32,7 +32,7 @@ public abstract class MixinChatScreen {
     private String callChatSendListener(final ChatScreen instance, String chatText) {
         chatText = instance.normalize(chatText);
         if (!chatText.isBlank()) {
-            final var event = new ChatSendListener.ChatSendEvent(chatText);
+            final ChatSendListener.ChatSendEvent event = new ChatSendListener.ChatSendEvent(chatText);
             Vandalism.getInstance().getEventSystem().postInternal(ChatSendListener.ChatSendEvent.ID, event);
             chatText = event.message;
         }

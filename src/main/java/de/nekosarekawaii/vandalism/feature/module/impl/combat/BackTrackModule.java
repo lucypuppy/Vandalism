@@ -50,6 +50,7 @@ import net.minecraft.util.math.Vec3d;
 
 import java.awt.*;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -268,7 +269,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
         if(mc.interactionManager == null) return;
         this.handlePackets(this.backTrackedEntities.isEmpty());
 
-        for (var test : this.backTrackedEntities.entrySet()) {
+        for (final Map.Entry<Integer, SyncPosition> test : this.backTrackedEntities.entrySet()) {
             final Entity entity = this.mc.world.getEntityById(test.getKey());
             final Vec3d pos = test.getValue().pos;
 

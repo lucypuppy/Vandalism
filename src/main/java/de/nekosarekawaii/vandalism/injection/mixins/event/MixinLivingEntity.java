@@ -39,7 +39,7 @@ public abstract class MixinLivingEntity implements MinecraftWrapper {
     @ModifyArgs(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Vec3d;<init>(DDD)V"))
     private void callMoveFlyingListener(final Args args) {
         if (this.mc.player == (Object) this) {
-            final var event = new MoveFlyingListener.MoveFlyingEvent(args.get(0), args.get(1), args.get(2));
+            final MoveFlyingListener.MoveFlyingEvent event = new MoveFlyingListener.MoveFlyingEvent(args.get(0), args.get(1), args.get(2));
             Vandalism.getInstance().getEventSystem().postInternal(MoveFlyingListener.MoveFlyingEvent.ID, event);
 
             args.set(0, event.sidewaysSpeed);
@@ -51,16 +51,16 @@ public abstract class MixinLivingEntity implements MinecraftWrapper {
     @Inject(method = "jump", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;setVelocity(DDD)V", shift = At.Shift.BEFORE))
     private void callStrafeListenerJump(CallbackInfo ci, @Local LocalFloatRef f) {
         if (mc.player == (Object) this) {
-            final var event = new StrafeListener.StrafeEvent(null, -1, f.get(), StrafeListener.Type.JUMP);
+            final StrafeListener.StrafeEvent event = new StrafeListener.StrafeEvent(null, -1, f.get(), StrafeListener.Type.JUMP);
             Vandalism.getInstance().getEventSystem().postInternal(StrafeListener.StrafeEvent.ID, event);
             f.set(event.yaw);
         }
     }
 
     @ModifyArgs(method = "setHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/data/DataTracker;set(Lnet/minecraft/entity/data/TrackedData;Ljava/lang/Object;)V"))
-    private void callHealthUpdateListener(Args args) {
+    private void callHealthUpdateListener(final Args args) {
         if (mc.player == (Object) this) {
-            final var event = new HealthUpdateListener.HealthUpdateEvent(args.get(1));
+            final HealthUpdateListener.HealthUpdateEvent event = new HealthUpdateListener.HealthUpdateEvent(args.get(1));
             Vandalism.getInstance().getEventSystem().postInternal(HealthUpdateListener.HealthUpdateEvent.ID, event);
             args.set(1, event.health);
         }

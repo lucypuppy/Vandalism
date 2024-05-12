@@ -30,7 +30,7 @@ public abstract class MixinTextVisitFactory {
 
     @ModifyArg(method = {"visitFormatted(Ljava/lang/String;ILnet/minecraft/text/Style;Lnet/minecraft/text/CharacterVisitor;)Z"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/text/TextVisitFactory;visitFormatted(Ljava/lang/String;ILnet/minecraft/text/Style;Lnet/minecraft/text/Style;Lnet/minecraft/text/CharacterVisitor;)Z", ordinal = 0), index = 0)
     private static String callTextDrawListener(final String text) {
-        final var event = new TextDrawListener.TextDrawEvent(text);
+        final TextDrawListener.TextDrawEvent event = new TextDrawListener.TextDrawEvent(text);
         Vandalism.getInstance().getEventSystem().postInternal(TextDrawListener.TextDrawEvent.ID, event);
 
         return event.text;

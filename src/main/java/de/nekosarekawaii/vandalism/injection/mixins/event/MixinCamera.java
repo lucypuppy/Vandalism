@@ -31,7 +31,7 @@ public abstract class MixinCamera {
 
     @Inject(method = "clipToSpace", at = @At("HEAD"), cancellable = true)
     public void callCameraClipRaytraceListener(final double desiredCameraDistance, final CallbackInfoReturnable<Double> cir) {
-        final var event = new CameraClipRaytraceListener.CameraClipRaytraceEvent();
+        final CameraClipRaytraceListener.CameraClipRaytraceEvent event = new CameraClipRaytraceListener.CameraClipRaytraceEvent();
         Vandalism.getInstance().getEventSystem().postInternal(CameraClipRaytraceListener.CameraClipRaytraceEvent.ID, event);
 
         if (event.isCancelled()) {
