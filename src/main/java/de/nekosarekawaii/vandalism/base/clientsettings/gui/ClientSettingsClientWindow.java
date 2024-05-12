@@ -39,6 +39,7 @@ public class ClientSettingsClientWindow extends ClientWindow {
     private final ClientSettings clientSettings;
 
     private final ImString searchInput = new ImString();
+    private final ImString perTabSearchInput = new ImString();
 
     public ClientSettingsClientWindow(final ClientSettings clientSettings) {
         super("Client Settings", Category.CONFIG);
@@ -47,29 +48,47 @@ public class ClientSettingsClientWindow extends ClientWindow {
 
     @Override
     protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        ImGui.spacing();
-        if (ImGui.beginTabBar("##clientsettings")) {
+        final String id = "##clientsettings";
+        ImGui.setNextItemWidth(-1);
+        ImGui.inputText(id + "searchInput", this.searchInput);
+        ImGui.separator();
+        final String searchInput = this.searchInput.get();
+        if (ImGui.beginTabBar(id)) {
             for (final Value<?> value : this.clientSettings.getValues()) {
                 if (value instanceof final ValueGroup valueGroup) {
                     final String name = valueGroup.getName();
-                    final String id = "##" + name + "settings";
-                    if (ImGui.beginTabItem(name + id + "tab")) {
+                    final String tabId = "##" + name + "settings";
+                    boolean containsSearchInput = false;
+                    if (!searchInput.isBlank()) {
+                        containsSearchInput = valueGroup.getValues().stream().anyMatch(v -> {
+                            return v.getName().toLowerCase().contains(searchInput.toLowerCase()) || v.getDescription().toLowerCase().contains(searchInput.toLowerCase());
+                        });
+                    }
+                    if (containsSearchInput) {
+                        ImGui.pushStyleColor(ImGuiCol.Tab, 1.0f, 0.0f, 0.0f, 0.4f);
+                        ImGui.pushStyleColor(ImGuiCol.TabHovered, 1.0f, 0.0f, 0.0f, 0.4f);
+                        ImGui.pushStyleColor(ImGuiCol.TabActive, 1.0f, 0.0f, 0.0f, 0.4f);
+                    }
+                    if (ImGui.beginTabItem(name + tabId + "tab")) {
                         ImGui.pushStyleColor(ImGuiCol.ChildBg, 0.0f, 0.0f, 0.0f, 0.0f);
-                        ImGui.setNextItemWidth(-1);
-                        ImGui.inputText(id + "input", this.searchInput);
-                        ImGui.separator();
-                        ImGui.beginChild(id + "values", ImGui.getColumnWidth(), (- ImGui.getTextLineHeightWithSpacing()) * 3, true);
-                        final String searchInput = this.searchInput.get();
-                        if (!searchInput.isBlank()) {
-                            valueGroup.renderValues(searchInput);
+                        if (searchInput.isBlank()) {
+                            ImGui.setNextItemWidth(-1);
+                            ImGui.inputText(tabId + "perTabSearchInput", this.perTabSearchInput);
+                            ImGui.separator();
+                        }
+                        ImGui.beginChild(tabId + "values", ImGui.getColumnWidth(), (-ImGui.getTextLineHeightWithSpacing()) * 3, true);
+                        final String tabSearchInput = this.perTabSearchInput.get();
+                        if (searchInput.isBlank()) {
+                            if (!tabSearchInput.isBlank()) valueGroup.renderValues(tabSearchInput);
+                            else valueGroup.renderValues();
                         } else {
-                            valueGroup.renderValues();
+                            valueGroup.renderValues(searchInput);
                         }
                         ImGui.endChild();
                         ImGui.popStyleColor();
                         ImGui.separator();
                         final List<Value<?>> values = valueGroup.getValues();
-                        if (ImGui.button("Copy " + name + " Settings" + id + "copysettingsbutton", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
+                        if (ImGui.button("Copy " + name + " Settings" + tabId + "copysettingsbutton", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
                             final JsonObject jsonObject = new JsonObject();
                             jsonObject.addProperty("settings", name);
                             final JsonObject valuesJsonObject = new JsonObject();
@@ -78,7 +97,7 @@ public class ClientSettingsClientWindow extends ClientWindow {
                             this.mc.keyboard.setClipboard(jsonObject.toString());
                         }
                         ImGui.sameLine();
-                        if (ImGui.button("Paste " + name + " Settings" + id + "pastesettingsbutton", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                        if (ImGui.button("Paste " + name + " Settings" + tabId + "pastesettingsbutton", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                             final String clipboard = this.mc.keyboard.getClipboard();
                             if (clipboard != null && !clipboard.isBlank()) {
                                 try {
@@ -90,18 +109,20 @@ public class ClientSettingsClientWindow extends ClientWindow {
                                             }
                                         }
                                     }
-                                }
-                                catch (Exception exception) {
+                                } catch (final Exception exception) {
                                     Vandalism.getInstance().getLogger().error("Failed to paste settings from clipboard.", exception);
                                 }
                             }
                         }
-                        if (ImUtils.subButton("Reset " + name + " Settings" + id + "button")) {
+                        if (ImUtils.subButton("Reset " + name + " Settings" + tabId + "button")) {
                             for (final Value<?> valueGroupValue : valueGroup.getValues()) {
                                 valueGroupValue.resetValue();
                             }
                         }
                         ImGui.endTabItem();
+                    }
+                    if (containsSearchInput) {
+                        ImGui.popStyleColor(3);
                     }
                 } else {
                     this.clientSettings.renderValue(value);
