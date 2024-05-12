@@ -20,7 +20,6 @@ package de.nekosarekawaii.vandalism.clientwindow.impl.widget;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonSyntaxException;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
@@ -76,7 +75,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                 final DataResult<Text> dataResult = TextCodecs.CODEC.parse(JsonOps.INSTANCE, jsonElement);
                 final MutableText description = (MutableText) dataResult.result().orElse(null);
                 if (description != null) this.MOTD = description.getString();
-            } catch (JsonSyntaxException ignored) {
+            } catch (final Exception ignored) {
                 this.MOTD = descriptionString;
             }
         }
@@ -122,7 +121,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
                 }
                 case ACTIONS -> {
                     ImGui.spacing();
-                    final int buttonWidth = 150, buttonHeight = 28;
+                    final int buttonWidth = 200, buttonHeight = 28;
                     ImGui.button("..." + uniqueId + "actions", -1, 25);
                     if (ImGui.beginPopupContextItem(uniqueId + "popup", ImGuiPopupFlags.MouseButtonLeft)) {
                         final String address = this.address + ':' + this.mcPingResponse.server.port;
