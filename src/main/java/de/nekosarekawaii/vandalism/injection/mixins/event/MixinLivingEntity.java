@@ -27,14 +27,19 @@ import de.nekosarekawaii.vandalism.event.normal.player.StrafeListener;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.minecraft.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity implements MinecraftWrapper {
+
+    @Unique
+    private StrafeListener.StrafeEvent event;
 
     @ModifyArgs(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Vec3d;<init>(DDD)V"))
     private void callMoveFlyingListener(final Args args) {
@@ -51,10 +56,18 @@ public abstract class MixinLivingEntity implements MinecraftWrapper {
     @Inject(method = "jump", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;setVelocity(DDD)V", shift = At.Shift.BEFORE))
     private void callStrafeListenerJump(CallbackInfo ci, @Local LocalFloatRef f) {
         if (mc.player == (Object) this) {
-            final StrafeListener.StrafeEvent event = new StrafeListener.StrafeEvent(null, -1, f.get(), StrafeListener.Type.JUMP);
+            event = new StrafeListener.StrafeEvent(null, -1, f.get(), StrafeListener.Type.JUMP);
             Vandalism.getInstance().getEventSystem().postInternal(StrafeListener.StrafeEvent.ID, event);
             f.set(event.yaw);
         }
+    }
+
+    @Redirect(method = "jump", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getYaw()F"))
+    private float modifyJumpYaw(final LivingEntity instance) {
+        if (mc.player == (Object) this) {
+            return (float) Math.toDegrees(event.yaw);
+        }
+        return instance.getYaw();
     }
 
     @ModifyArgs(method = "setHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/data/DataTracker;set(Lnet/minecraft/entity/data/TrackedData;Ljava/lang/Object;)V"))
