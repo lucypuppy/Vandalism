@@ -86,7 +86,7 @@ public class LagRangeModule extends AbstractModule implements TimeTravelListener
                     if (predictedDistance > killAura.getRange()) {
                         this.isCharging = true;
                         this.isUnCharging = false;
-                    } else if (getCharge() > 0) {
+                    } else if (shifted > 0) {
                         this.isCharging = false;
                         this.isUnCharging = true;
                     }

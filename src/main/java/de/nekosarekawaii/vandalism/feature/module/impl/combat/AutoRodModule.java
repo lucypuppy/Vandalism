@@ -25,13 +25,19 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.normal.player.RotationListener;
+import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.newrotation.RotationBuilder;
 import de.nekosarekawaii.vandalism.integration.newrotation.RotationManager;
 import de.nekosarekawaii.vandalism.integration.newrotation.enums.RotationPriority;
+import de.nekosarekawaii.vandalism.util.game.Prediction;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.debug.DebugRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -39,13 +45,15 @@ import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AutoRodModule extends AbstractModule implements PlayerUpdateListener, RotationListener {
+public class AutoRodModule extends AbstractModule implements PlayerUpdateListener, RotationListener, Render3DListener {
 
     private boolean shouldRod;
     private boolean didRod;
@@ -53,6 +61,7 @@ public class AutoRodModule extends AbstractModule implements PlayerUpdateListene
     private HitResult hitResult;
     private Entity target;
     private final RotationManager rotationManager;
+    private Vec3d predictedTargetPos;
 
     public AutoRodModule() {
         super("Auto Rod", "Automatically rod targets.", Category.COMBAT);
@@ -78,6 +87,15 @@ public class AutoRodModule extends AbstractModule implements PlayerUpdateListene
             180.0f
     );
 
+    private final IntegerValue fov = new IntegerValue(
+            this,
+            "FOV",
+            "The field of view to rod in.",
+            180,
+            1,
+            180
+    );
+
     private final BooleanValue predict = new BooleanValue(
             this,
             "Predict",
@@ -96,7 +114,7 @@ public class AutoRodModule extends AbstractModule implements PlayerUpdateListene
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID, Render3DEvent.ID);
         if (mc.player != null) {
             prevSlot = mc.player.getInventory().selectedSlot;
         }
@@ -104,7 +122,7 @@ public class AutoRodModule extends AbstractModule implements PlayerUpdateListene
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID, Render3DEvent.ID);
         if (mc.player != null) {
             prevSlot = mc.player.getInventory().selectedSlot;
         }
@@ -115,7 +133,9 @@ public class AutoRodModule extends AbstractModule implements PlayerUpdateListene
 
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
-        doRod();
+        if(isEntityLookingAtEntity(mc.player, target, fov.getValue())) {
+            doRod();
+        }
     }
 
     private void doRod() {
@@ -124,7 +144,9 @@ public class AutoRodModule extends AbstractModule implements PlayerUpdateListene
             Rotation rotation = this.rotationManager.getRotation() != null ? this.rotationManager.getRotation() : new Rotation(mc.player.getYaw(), mc.player.getPitch());
             hitResult = WorldUtil.raytrace(rotation, range.getValue());
 
-            if (hitResult != null && hitResult.getType() == HitResult.Type.ENTITY && (!predict.getValue() || willRodHitTarget(this.target))) {
+            predictedTargetPos = Prediction.predictEntityMovement((LivingEntity) this.target, this.ticksToPredict.getValue());
+
+            if (hitResult != null && hitResult.getType() == HitResult.Type.ENTITY/* && (!predict.getValue() || willRodHitTarget(this.target))*/) {
                 shouldRod = true;
             }
 
@@ -163,6 +185,51 @@ public class AutoRodModule extends AbstractModule implements PlayerUpdateListene
     }
 
     @Override
+    public void onRender3D(float tickDelta, long limitTime, MatrixStack matrixStack) {
+        if(mc.player == null || predictedTargetPos == null || !isEntityLookingAtEntity(mc.player, target, fov.getValue())) return;
+        final Entity entity = target;
+        final Vec3d pos = predictedTargetPos;
+
+        if(entity.getPos().distanceTo(pos) < 0.1) return;
+
+        matrixStack.push();
+
+        final Box box = new Box(
+                pos.x - entity.getWidth() / 2f,
+                pos.y,
+                pos.z - entity.getWidth() / 2f,
+                pos.x + entity.getWidth() / 2f,
+                pos.y + entity.getHeight(),
+                pos.z + entity.getWidth() / 2f
+        );
+
+        final Vec3d center = box.getCenter();
+        final double scale = 1.5;
+
+        final Vec3d camPos = this.mc.gameRenderer.getCamera().getPos();
+        matrixStack.translate(-camPos.x, -camPos.y, -camPos.z);
+
+        final VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+
+        matrixStack.push();
+        final double minX = (box.minX - center.x) * scale + center.x;
+        final double minZ = (box.minZ - center.z) * scale + center.z;
+        final double maxX = (box.maxX - center.x) * scale + center.x;
+        final double maxZ = (box.maxZ - center.z) * scale + center.z;
+        DebugRenderer.drawBox(
+                matrixStack,
+                immediate,
+                minX, box.minY, minZ, maxX, box.maxY, maxZ,
+                (float) 0, (float) 1, (float) 0, (float) 102/255
+        );
+        matrixStack.pop();
+
+        immediate.draw();
+
+        matrixStack.pop();
+    }
+
+    @Override
     public void onRotation(RotationEvent event) {
         if (mc.player == null || mc.world == null || mc.interactionManager == null || mc.interactionManager.getCurrentGameMode() == GameMode.SPECTATOR) {
             return;
@@ -170,8 +237,8 @@ public class AutoRodModule extends AbstractModule implements PlayerUpdateListene
 
         updateTarget();
 
-        if (this.target != null && !didRod) {
-            Rotation rotation = RotationBuilder.build(this.target, RotationPriority.NORMAL, true, this.range.getValue());
+        if (isEntityLookingAtEntity(mc.player, target, fov.getValue()) && !didRod) {
+            Rotation rotation = predict.getValue() && predictedTargetPos != null ? RotationBuilder.build(predictedTargetPos.add(0, target.getStandingEyeHeight()-0.2, 0), mc.player.getEyePos(), RotationPriority.NORMAL) : RotationBuilder.build(this.target, RotationPriority.NORMAL, true, this.range.getValue());
 
             if (rotation == null) { // Sanity check, crashes if you sneak and have your reach set to 3.0
                 this.rotationManager.resetRotation();
@@ -240,28 +307,8 @@ public class AutoRodModule extends AbstractModule implements PlayerUpdateListene
         this.target = entities.getFirst();
     }
 
-    public boolean willRodHitTarget(Entity target) {
-        Vec3d initialPosition = mc.player.getPos();
-        Rotation rotation = this.rotationManager.getRotation() != null ? this.rotationManager.getRotation() : new Rotation(mc.player.getYaw(), mc.player.getPitch());
-        Vec3d initialVelocity = rotation.getVector().multiply(1.5D); // Assume initial speed of 1.5 blocks/tick
-
-        for (int i = 0; i < ticksToPredict.getValue(); i++) { // Simulate for 100 ticks
-            Vec3d futureTargetPos = target.getPos().add(target.getVelocity().multiply(i)); // Predict target's future position
-            Vec3d futureHookPos = getFutureHookPos(initialPosition, initialVelocity, i); // Calculate hook's future position
-
-            if (futureHookPos.distanceTo(futureTargetPos) < 1.0D) { // If hook is close to target
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private Vec3d getFutureHookPos(Vec3d initialPos, Vec3d initialVelocity, int ticks) {
-        double gravity = 0.03D; // Gravity value
-        double futureX = initialPos.x + initialVelocity.x * ticks;
-        double futureY = initialPos.y + initialVelocity.y * ticks - 0.5D * gravity * ticks * ticks;
-        double futureZ = initialPos.z + initialVelocity.z * ticks;
-        return new Vec3d(futureX, futureY, futureZ);
+    public static boolean isEntityLookingAtEntity(final Entity origin, final Entity target, final double diff) {
+        if (target == null || origin == null) return false;
+        return 180 - Math.abs(MathHelper.wrapDegrees(origin.getYaw() - target.getYaw())) <= diff;
     }
 }
