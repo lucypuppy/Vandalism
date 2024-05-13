@@ -122,6 +122,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 // combat
                 new AntiBotsModule(),
                 new AutoClickerModule(),
+                new AutoRodModule(),
                 new AutoShieldModule(),
                 new BackTrackModule(),
                 new BowSpammerModule(),
