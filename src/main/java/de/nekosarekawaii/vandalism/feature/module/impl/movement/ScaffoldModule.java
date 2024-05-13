@@ -91,8 +91,6 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
                 mc.doItemUse();
             }
         }
-
-        autoSprintModule.stopSprinting(!allowSprint.getValue());
     }
 
     @Override
