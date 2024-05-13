@@ -20,20 +20,21 @@ package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.normal.player.AttackListener;
+import de.nekosarekawaii.vandalism.event.normal.player.MoveInputListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.AutoSprintModule;
 import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.newrotation.RotationUtil;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
-import de.nekosarekawaii.vandalism.util.render.InputType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 
-public class WTapModule extends AbstractModule implements AttackListener, PlayerUpdateListener {
+public class WTapModule extends AbstractModule implements AttackListener, PlayerUpdateListener, MoveInputListener {
 
     private Entity movementTarget = null;
     private LivingEntity lastTarget = null;
+    private boolean canW;
     private AutoSprintModule autoSprintModule;
 
     public WTapModule() {
@@ -46,6 +47,7 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
 
     private void reset() {
         this.movementTarget = null;
+        canW = true;
     }
 
     @Override
@@ -54,9 +56,11 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
         Vandalism.getInstance().getEventSystem().subscribe(
                 this,
                 PlayerUpdateEvent.ID,
-                AttackSendEvent.ID
+                AttackSendEvent.ID,
+                MoveInputEvent.ID
         );
         this.autoSprintModule = Vandalism.getInstance().getModuleManager().getByClass(AutoSprintModule.class);
+        canW = true;
     }
 
     @Override
@@ -64,7 +68,8 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
         Vandalism.getInstance().getEventSystem().unsubscribe(
                 this,
                 PlayerUpdateEvent.ID,
-                AttackSendEvent.ID
+                AttackSendEvent.ID,
+                MoveInputEvent.ID
         );
         this.reset();
     }
@@ -79,8 +84,9 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
             final boolean isLooking = RotationUtil.isEntityLookingAtEntity(this.mc.player, livingEntity, 80);
 
             if (MovementUtil.isMoving() && (livingEntity.hurtTime <= 2 || livingEntity.hurtTime == 9) && isLooking) {
-                this.mc.options.forwardKey.setPressed(false);
-                autoSprintModule.stopSprinting(true);
+//                this.mc.options.forwardKey.setPressed(false);
+//                autoSprintModule.stopSprinting(true);
+                canW = false;
                 this.movementTarget = livingEntity;
             }
         }
@@ -95,8 +101,9 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
 //            final double speed = MovementUtil.getSpeedRelatedToYaw(this.mc.player.getYaw());
 
             if (speed < 0.3D || !isLooking) {
-                this.mc.options.forwardKey.setPressed(InputType.isPressed(this.mc.options.forwardKey.boundKey.getCode()));
-                autoSprintModule.stopSprinting(false);
+//                this.mc.options.forwardKey.setPressed(InputType.isPressed(this.mc.options.forwardKey.boundKey.getCode()));
+//                autoSprintModule.stopSprinting(false);
+                canW = true;
                 this.movementTarget = null;
             }
 
@@ -105,8 +112,9 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
             }
 
             if (this.lastTarget.hurtTime == 10 || this.lastTarget.hurtTime == 8) {
-                this.mc.options.forwardKey.setPressed(InputType.isPressed(this.mc.options.forwardKey.boundKey.getCode()));
-                autoSprintModule.stopSprinting(false);
+//                this.mc.options.forwardKey.setPressed(InputType.isPressed(this.mc.options.forwardKey.boundKey.getCode()));
+//                autoSprintModule.stopSprinting(false);
+                canW = true;
                 if (this.lastTarget.hurtTime == 8) {
                     this.lastTarget = null;
                 }
@@ -114,4 +122,8 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
         }
     }
 
+    @Override
+    public void onMoveInput(MoveInputEvent event) {
+        event.movementForward = canW ? event.movementForward : 0.0F;
+    }
 }
