@@ -291,47 +291,59 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             1.0f
     );
 
-    private final FloatValue gravitationalForce = new FloatValue(
+    private final ValueGroup windMouseGroup = new ValueGroup(
             this.rotationGroup,
+            "Wind Mouse Settings",
+            "Settings for the WindMouse algorithm."
+    );
+
+    private final BooleanValue windMouse = new BooleanValue(
+            this.windMouseGroup,
+            "Wind Mouse",
+            "Whether the WindMouse algorithm should be used.",
+            true);
+
+    private final FloatValue gravitationalForce = new FloatValue(
+            this.windMouseGroup,
             "Gravitational Force",
             "The strength pf the Gravitational Force.",
             9f,
             0.0f,
             20.0f
-    );
+    ).visibleCondition(this.windMouse::getValue);
 
     private final FloatValue windForceMagnitude = new FloatValue(
-            this.rotationGroup,
+            this.windMouseGroup,
             "Wind Force Magnitude",
             "The strength of the Wind Force Magnitude.",
             3f,
             0.0f,
             20.0f
-    );
+    ).visibleCondition(this.windMouse::getValue);
 
     private final FloatValue maxStepSize = new FloatValue(
-            this.rotationGroup,
+            this.windMouseGroup,
             "Max Step Size",
             "The Max Step Size.",
             15f,
             0.0f,
             20.0f
-    );
+    ).visibleCondition(this.windMouse::getValue);
 
     private final FloatValue distanceThreshold = new FloatValue(
-            this.rotationGroup,
+            this.windMouseGroup,
             "Distance threshold",
             "The Distance Threshold.",
             12f,
             0.0f,
             20.0f
-    );
+    ).visibleCondition(this.windMouse::getValue);
 
-    private final SeparatorValue movementFixSeparator = new SeparatorValue(
-            this.rotationGroup,
-            "Movement Fix Separator",
-            "Settings for the movement fix."
-    );
+//    private final SeparatorValue movementFixSeparator = new SeparatorValue(
+//            this.rotationGroup,
+//            "Movement Fix Separator",
+//            "Settings for the movement fix."
+//    );
 
     private final BooleanValue movementFix = new BooleanValue(
             this.rotationGroup,
@@ -419,6 +431,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     private final RotationManager rotationManager;
 
     public boolean isBlocking = false;
+    private Rotation prevRotation;
 
     public KillAuraModule() {
         super(
@@ -441,6 +454,9 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         );
         updateClicker(this.clickType.getValue().getClicker());
         this.autoSprintModule = Vandalism.getInstance().getModuleManager().getByClass(AutoSprintModule.class);
+        if (mc.player != null) {
+            this.prevRotation = new Rotation(mc.player.prevYaw, mc.player.prevPitch);
+        }
     }
 
     @Override
@@ -522,13 +538,18 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 rotateSpeed = (float) (this.rotateSpeed.getValue() + Math.random() * 5.0f);
             }
 
-            // rotation = RotationUtil.windMouseSmooth(
-            //         rotation, new Rotation(this.mc.player.lastYaw, this.mc.player.lastPitch),
-            //         9, 3, 15, 12
-            // );
+            if (windMouse.getValue()) {
+                rotation = RotationUtil.windMouseSmooth(
+                        rotation, prevRotation,
+                        gravitationalForce.getValue(), windForceMagnitude.getValue(), maxStepSize.getValue(), distanceThreshold.getValue()
+                );
+            }
+
+//            rotation = WindMouse.updateMouse(rotation, prevRotation);
 
             // rotation.setPitch((float) (rotation.getPitch() + Math.random() * 5));
 
+            prevRotation = rotation;
             this.rotationManager.setRotation(
                     rotation,
                     rotateSpeed,
@@ -599,7 +620,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             case GOMME_HEALTH -> entities.sort((entity1, entity2) -> {
                 double health1 = getHealthFromScoreboard(entity1);
                 double health2 = getHealthFromScoreboard(entity2);
-                if(health1 == 9999 && health2 == 9999) {
+                if (health1 == 9999 && health2 == 9999) {
                     final double distance1 = eyePos.distanceTo(RotationBuilder.getNearestPoint(entity1));
                     final double distance2 = eyePos.distanceTo(RotationBuilder.getNearestPoint(entity2));
                     return Double.compare(distance1, distance2);
@@ -617,8 +638,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
     private double getHealthFromScoreboard(Entity entity) {
         Scoreboard scoreboard = mc.player.getScoreboard();
-        for(ScoreboardEntry entry : scoreboard.getScoreboardEntries(scoreboard.getNullableObjective("health"))) {
-            if(entry.owner().equalsIgnoreCase(entity.getName().getString())) {
+        for (ScoreboardEntry entry : scoreboard.getScoreboardEntries(scoreboard.getNullableObjective("health"))) {
+            if (entry.owner().equalsIgnoreCase(entity.getName().getString())) {
                 return entry.value();
             }
         }
