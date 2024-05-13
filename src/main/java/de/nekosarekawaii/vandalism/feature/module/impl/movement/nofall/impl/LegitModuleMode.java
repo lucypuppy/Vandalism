@@ -31,7 +31,7 @@ import net.minecraft.item.Items;
 public class LegitModuleMode extends ModuleMulti<NoFallModule> implements PlayerUpdateListener, RotationListener {
 
     private Rotation rotation = null;
-    private int previousSlot;
+    private int prevSlot;
 
     public LegitModuleMode() {
         super("Legit");
@@ -41,7 +41,7 @@ public class LegitModuleMode extends ModuleMulti<NoFallModule> implements Player
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID);
         if(mc.player != null) {
-            previousSlot = mc.player.getInventory().selectedSlot;
+            prevSlot = mc.player.getInventory().selectedSlot;
         }
         ChatUtil.chatMessage("You need to have a water bucket in your hotbar to use this mode.");
     }
@@ -51,7 +51,7 @@ public class LegitModuleMode extends ModuleMulti<NoFallModule> implements Player
         Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID);
         Vandalism.getInstance().getRotationManager().resetRotation();
         if(mc.player != null) {
-            previousSlot = mc.player.getInventory().selectedSlot;
+            prevSlot = mc.player.getInventory().selectedSlot;
         }
     }
 
@@ -60,7 +60,7 @@ public class LegitModuleMode extends ModuleMulti<NoFallModule> implements Player
         if(mc.player.fallDistance >= 3 && mc.player.getInventory().contains(new ItemStack(Items.WATER_BUCKET))) {
             for (int i = 0; i <= 8; i++) {
                 if (mc.player.getInventory().getStack(i).getItem() == Items.WATER_BUCKET) {
-                    previousSlot = mc.player.getInventory().selectedSlot;
+                    prevSlot = mc.player.getInventory().selectedSlot;
                     mc.player.getInventory().selectedSlot = i;
                     break;
                 }
@@ -73,7 +73,7 @@ public class LegitModuleMode extends ModuleMulti<NoFallModule> implements Player
 
         if(mc.player.isTouchingWater() && mc.player.getMainHandStack().getItem() == Items.BUCKET) {
             mc.doItemUse();
-            mc.player.getInventory().selectedSlot = previousSlot;
+            mc.player.getInventory().selectedSlot = prevSlot;
         }
     }
 
@@ -84,6 +84,6 @@ public class LegitModuleMode extends ModuleMulti<NoFallModule> implements Player
             return;
         }
         this.rotation = new Rotation(mc.player.getYaw(), 90);
-        Vandalism.getInstance().getRotationManager().setRotation(this.rotation, 80f, 0.0f, true);
+        Vandalism.getInstance().getRotationManager().setRotation(this.rotation, 60f, 0.2f, true);
     }
 }
