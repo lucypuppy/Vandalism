@@ -26,13 +26,15 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.normal.game.TimeTravelListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
+import de.nekosarekawaii.vandalism.util.game.Prediction;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.profiler.Profiler;
 
 public class LagRangeModule extends AbstractModule implements TimeTravelListener {
 
     private long shifted, prevShifted, prevTime;
-    private boolean isCharging, isUnCharging, isDone;
+    private boolean isCharging, isDone;
     private MSTimer timer;
     private KillAuraModule killAura;
 
@@ -51,7 +53,7 @@ public class LagRangeModule extends AbstractModule implements TimeTravelListener
         Vandalism.getInstance().getEventSystem().subscribe(this, TimeTravelEvent.ID);
         timer = new MSTimer();
         this.killAura = Vandalism.getInstance().getModuleManager().getByClass(KillAuraModule.class);
-        isCharging = isUnCharging = false;
+        isCharging = false;
         isDone = true;
     }
 
@@ -73,41 +75,27 @@ public class LagRangeModule extends AbstractModule implements TimeTravelListener
         }
 
         /* Deciding when to lag and when to uncharge */
-        if (killAura.isActive() && killAura.getTarget() != null) {
-            Entity target = killAura.getTarget();
-            Vec3d eyePos = mc.player.getEyePos();
-            Vec3d predictedPos = predictFuturePosition(target, this.getCharge());
-            Vec3d predictedEyePos = predictFutureEyePosition(mc.player, this.getCharge());
-            double distance = eyePos.distanceTo(target.getPos());
-            double predictedDistance = predictedEyePos.distanceTo(predictedPos);
-//            double predictedDistance = predictedEyePos.distanceTo(target.getPos());
-            if (distance > killAura.getRange() && distance <= range.getValue()) {
-                if (isDone) {
-                    if (predictedDistance > killAura.getRange()) {
-                        this.isCharging = true;
-                        this.isUnCharging = false;
-                    } else if (shifted > 0) {
-                        this.isCharging = false;
-                        this.isUnCharging = true;
-                    }
-                } else {
-                    this.isCharging = false;
-                    this.isUnCharging = true;
-                }
+        if (killAura.getTarget() instanceof LivingEntity target) {
+            boolean isTargetValid = killAura.isActive();
+
+            if (isTargetValid) {
+                double distance = mc.player.getEyePos().distanceTo(target.getPos());
+                double predictedDistance = Prediction.predictEntityMovement(mc.player, this.getCharge())
+                        .add(0, mc.player.getStandingEyeHeight(), 0)
+                        .distanceTo(Prediction.predictEntityMovement(target, this.getCharge()));
+
+                boolean isInRange = distance > killAura.getRange() && distance <= range.getValue();
+                boolean isPredictedInRange = predictedDistance > killAura.getRange();
+
+                this.isCharging = isInRange && (isDone ? isPredictedInRange : shifted > 0);
             } else {
                 this.isCharging = false;
-                this.isUnCharging = false;
             }
-        } else {
-            this.isCharging = false;
-            this.isUnCharging = false;
         }
 
         /* Charging and saving the amount of shifted time */
-        if (!isUnCharging) {
-            if (isCharging && timer.hasReached(delay.getValue(), false) && getCharge() < maxCharge.getValue() && (!onlyOnGround.getValue() || mc.player.isOnGround())) {
-                shifted += event.time - prevTime;
-            }
+        if (isCharging && timer.hasReached(delay.getValue(), false) && getCharge() < maxCharge.getValue() && (!onlyOnGround.getValue() || mc.player.isOnGround())) {
+            shifted += event.time - prevTime;
         }
 
         /* Ticking the entities so they are in sync with us */
@@ -116,14 +104,12 @@ public class LagRangeModule extends AbstractModule implements TimeTravelListener
         }
 
         /* UnCharging */
-        if (isUnCharging) {
-            if (getCharge() > 0) {
-                isDone = false;
-                shifted = 0;
-            }
+        if (!isCharging && shifted > 0) {
+            isDone = false;
+            shifted = 0;
         }
 
-        if (this.getCharge() <= 0 || !isUnCharging) {
+        if (shifted <= 0) {
             if (!isCharging && !isDone) {
                 timer.reset();
             }
@@ -143,25 +129,14 @@ public class LagRangeModule extends AbstractModule implements TimeTravelListener
             if (entity == null || entity == mc.player) continue;
             mc.world.tickEntity(entity);
         }
-    }
 
-    public Vec3d predictFuturePosition(Entity entity, int ticksInFuture) {
-        Vec3d currentPosition = entity.getPos();
-        Vec3d velocity = new Vec3d(entity.getVelocity().x, entity.getVelocity().y, entity.getVelocity().z);
-
-        // Predict future position based on current velocity
-        Vec3d futurePosition = currentPosition.add(velocity.multiply(ticksInFuture));
-
-        return futurePosition;
-    }
-
-    public Vec3d predictFutureEyePosition(Entity entity, int ticksInFuture) {
-        Vec3d currentPosition = entity.getEyePos();
-        Vec3d velocity = new Vec3d(entity.getVelocity().x, entity.getVelocity().y, entity.getVelocity().z);
-
-        // Predict future position based on current velocity
-        Vec3d futurePosition = currentPosition.add(velocity.multiply(ticksInFuture));
-
-        return futurePosition;
+        Profiler profiler = mc.world.getProfiler();
+        profiler.push("entities");
+        mc.world.getEntities().forEach((entity) -> {
+            if (entity == null || entity == mc.player) return;
+            if (!entity.isRemoved() && !entity.hasVehicle() && !mc.world.getTickManager().shouldSkipTick(entity)) {
+                mc.world.tickEntity(mc.world::tickEntity, entity);
+            }
+        });
     }
 }
