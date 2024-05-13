@@ -140,13 +140,15 @@ public class AutoRodModule extends AbstractModule implements PlayerUpdateListene
 
     private void doRod() {
         boolean hasRod = mc.player.getMainHandStack().getItem() == Items.FISHING_ROD;
-        if (mc.player.fishHook == null && this.target != null && mc.player.getEyePos().distanceTo(this.target.getPos()) > Vandalism.getInstance().getModuleManager().getKillAuraModule().getRange()) {
+        double targetDistance = this.target != null ? mc.player.getEyePos().distanceTo(this.target.getPos()) : -1;
+        double hookDistance = mc.player.fishHook != null ? mc.player.getEyePos().distanceTo(mc.player.fishHook.getPos()) : 9999;
+
+        if (mc.player.fishHook == null && this.target != null && targetDistance > Vandalism.getInstance().getModuleManager().getKillAuraModule().getRange()) {
             Rotation rotation = this.rotationManager.getRotation() != null ? this.rotationManager.getRotation() : new Rotation(mc.player.getYaw(), mc.player.getPitch());
             hitResult = WorldUtil.raytrace(rotation, range.getValue());
-
             predictedTargetPos = Prediction.predictEntityMovement((LivingEntity) this.target, this.ticksToPredict.getValue());
 
-            if (hitResult != null && hitResult.getType() == HitResult.Type.ENTITY/* && (!predict.getValue() || willRodHitTarget(this.target))*/) {
+            if (hitResult != null && hitResult.getType() == HitResult.Type.ENTITY) {
                 shouldRod = true;
             }
 
@@ -154,10 +156,7 @@ public class AutoRodModule extends AbstractModule implements PlayerUpdateListene
                 if (!hasRod) {
                     prevSlot = mc.player.getInventory().selectedSlot;
                     int rodSlot = getRodSlot();
-
-                    if (rodSlot == -1) {
-                        return;
-                    }
+                    if (rodSlot == -1) return;
                     mc.player.getInventory().selectedSlot = rodSlot;
                 }
                 if (hasRod) {
@@ -165,21 +164,15 @@ public class AutoRodModule extends AbstractModule implements PlayerUpdateListene
                     didRod = true;
                 }
             }
-        } else {
-            double targetDistance = this.target != null ? mc.player.getEyePos().distanceTo(this.target.getPos()) : -1;
-            double hookDistance = mc.player.fishHook != null ? mc.player.getEyePos().distanceTo(mc.player.fishHook.getPos()) : 9999;
-            if (mc.player.fishHook != null && ProjectileUtil.getCollision(mc.player.fishHook,
-                    (entity) -> entity instanceof LivingEntity && entity != mc.player).getType() == HitResult.Type.ENTITY || mc.player.fishHook != null && mc.player.fishHook.verticalCollision || target == null || hookDistance > targetDistance) {
-                shouldRod = false;
-            }
-            if (!shouldRod) {
-                if (didRod && hasRod) {
-                    mc.doItemUse();
-                    didRod = false;
-                }
-                if (prevSlot != mc.player.getInventory().selectedSlot && hasRod) {
-                    mc.player.getInventory().selectedSlot = prevSlot;
-                }
+        } else if (mc.player.fishHook != null && ProjectileUtil.getCollision(mc.player.fishHook, (entity) -> entity instanceof LivingEntity && entity != mc.player).getType() == HitResult.Type.ENTITY || mc.player.fishHook != null && mc.player.fishHook.verticalCollision || target == null || hookDistance - targetDistance > 1.5) {
+            shouldRod = false;
+        }
+
+        if (!shouldRod && didRod && hasRod) {
+            mc.doItemUse();
+            didRod = false;
+            if (prevSlot != mc.player.getInventory().selectedSlot) {
+                mc.player.getInventory().selectedSlot = prevSlot;
             }
         }
     }
