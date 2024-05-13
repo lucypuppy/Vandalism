@@ -19,11 +19,14 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.normal.player.RotationListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
+import de.nekosarekawaii.vandalism.integration.newrotation.RotationUtil;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Pair;
@@ -38,11 +41,75 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
     private Direction direction = null;
     private Rotation rotation = null;
     private AutoSprintModule autoSprintModule;
+    private Rotation prevRotation;
 
     public ScaffoldModule() {
         super("Scaffold", "Places blocks underneath you.", Category.MOVEMENT);
         this.markExperimental();
     }
+
+    private final ValueGroup rotationGroup = new ValueGroup(
+            this,
+            "Rotation",
+            "Settings for the rotations."
+    );
+
+    private final FloatValue rotateSpeed = new FloatValue(
+            this.rotationGroup,
+            "Rotate Speed",
+            "The speed of the rotation.",
+            60.0f,
+            1.0f,
+            180.0f
+    );
+
+    private final ValueGroup windMouseGroup = new ValueGroup(
+            this.rotationGroup,
+            "Wind Mouse Settings",
+            "Settings for the WindMouse algorithm."
+    );
+
+    private final BooleanValue windMouse = new BooleanValue(
+            this.windMouseGroup,
+            "Wind Mouse",
+            "Whether the WindMouse algorithm should be used.",
+            true);
+
+    private final FloatValue gravitationalForce = new FloatValue(
+            this.windMouseGroup,
+            "Gravitational Force",
+            "The strength pf the Gravitational Force.",
+            9f,
+            0.0f,
+            20.0f
+    ).visibleCondition(this.windMouse::getValue);
+
+    private final FloatValue windForceMagnitude = new FloatValue(
+            this.windMouseGroup,
+            "Wind Force Magnitude",
+            "The strength of the Wind Force Magnitude.",
+            3f,
+            0.0f,
+            20.0f
+    ).visibleCondition(this.windMouse::getValue);
+
+    private final FloatValue maxStepSize = new FloatValue(
+            this.windMouseGroup,
+            "Max Step Size",
+            "The Max Step Size.",
+            15f,
+            0.0f,
+            20.0f
+    ).visibleCondition(this.windMouse::getValue);
+
+    private final FloatValue distanceThreshold = new FloatValue(
+            this.windMouseGroup,
+            "Distance threshold",
+            "The Distance Threshold.",
+            12f,
+            0.0f,
+            20.0f
+    ).visibleCondition(this.windMouse::getValue);
 
     private BooleanValue allowSprint = new BooleanValue(
             this,
@@ -55,6 +122,9 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID);
         this.autoSprintModule = Vandalism.getInstance().getModuleManager().getByClass(AutoSprintModule.class);
+        if (mc.player != null) {
+            this.prevRotation = new Rotation(mc.player.prevYaw, mc.player.prevPitch);
+        }
     }
 
     @Override
@@ -107,7 +177,14 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
                 return;
             }
 
-            Vandalism.getInstance().getRotationManager().setRotation(this.rotation, 80f, 0.0f, false);
+            if(windMouse.getValue()) {
+                this.rotation = RotationUtil.windMouseSmooth(
+                        rotation, prevRotation,
+                        gravitationalForce.getValue(), windForceMagnitude.getValue(), maxStepSize.getValue(), distanceThreshold.getValue()
+                );
+            }
+            prevRotation = rotation;
+            Vandalism.getInstance().getRotationManager().setRotation(this.rotation, rotateSpeed.getValue(), 0.0f, true);
         }
     }
 
