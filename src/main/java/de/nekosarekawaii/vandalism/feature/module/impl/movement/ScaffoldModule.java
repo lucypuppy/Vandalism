@@ -184,7 +184,7 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
                 );
             }
             prevRotation = rotation;
-            Vandalism.getInstance().getRotationManager().setRotation(this.rotation, rotateSpeed.getValue(), 0.0f, true);
+            Vandalism.getInstance().getRotationManager().setRotation(this.rotation, rotateSpeed.getValue(), 0.0f, false);
         }
     }
 
