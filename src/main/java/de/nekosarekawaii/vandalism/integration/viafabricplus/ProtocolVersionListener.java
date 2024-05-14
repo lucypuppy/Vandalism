@@ -34,7 +34,7 @@ public class ProtocolVersionListener extends Thread {
 
         // Cancer fix.
         if (Vandalism.getInstance().getTargetVersion() == null) {
-            Vandalism.getInstance().setTargetVersion(ProtocolVersion.v1_20_5 /* There is no 1.20.5 as of 24/04/2024 */);
+            Vandalism.getInstance().setTargetVersion(ProtocolVersion.v1_20_5);
             interrupt();
         }
     }

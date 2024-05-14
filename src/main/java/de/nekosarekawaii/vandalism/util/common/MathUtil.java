@@ -44,4 +44,8 @@ public class MathUtil {
         return firstPart * Math.exp(exponent);
     }
 
+    public static boolean isBetween(double value, double min, double max) {
+        return value >= min && value <= max;
+    }
+
 }

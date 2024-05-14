@@ -295,7 +295,7 @@ public class PlayerKickerClientWindow extends ClientWindow {
                         ip += uuid.replace("-", "");
                     }
                     PacketHelper.writePacket(PacketHelper.createHandshakePacket(ip, this.port.get(), this.protocol), output);
-                    PacketHelper.writePacket(PacketHelper.createLoginPacket(name, UUID.fromString(uuid)), output);
+                    PacketHelper.writePacket(PacketHelper.createLoginPacket(this.protocol, name, UUID.fromString(uuid)), output);
                     Thread.sleep(1000);
                     connection.close();
                     this.currentState = "Player " + name + " should be kicked.";
