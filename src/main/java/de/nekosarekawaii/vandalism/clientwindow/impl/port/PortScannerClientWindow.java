@@ -121,7 +121,7 @@ public class PortScannerClientWindow extends ClientWindow {
                     ImGuiInputTextFlags.CallbackCharFilter,
                     HOSTNAME_FILTER
             );
-            final ServerInfo currentServer = this.mc.getCurrentServerEntry();
+            final ServerInfo currentServer = ServerConnectionUtil.getLastServerInfo();
             if (currentServer != null) {
                 if (ImGui.button("Use Current Server##portscannerusecurrentserver", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                     this.address.set(currentServer.address);

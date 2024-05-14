@@ -190,9 +190,7 @@ public class ServersTab implements MinecraftWrapper {
                         final Response response = ServerDiscoveryUtil.request(serversRequest);
                         ServersResponse.Server errorDisplay = new ServersResponse.Server();
                         errorDisplay.description = "API request failed!";
-                        if (response == null) {
-                            errorDisplay.version = "API User is rate limited!";
-                        } else if (response instanceof final ServersResponse serversResponse) {
+                        if (response instanceof final ServersResponse serversResponse) {
                             if (serversResponse.isError()) {
                                 errorDisplay.version = "Response failed due to " + serversResponse.error;
                             } else if (serversResponse.data == null || serversResponse.data.isEmpty()) {
@@ -212,6 +210,8 @@ public class ServersTab implements MinecraftWrapper {
                                 }
                                 errorDisplay = null;
                             }
+                        } else {
+                            errorDisplay.version = "API User is rate limited!";
                         }
                         if (errorDisplay != null) {
                             this.servers.add(errorDisplay);

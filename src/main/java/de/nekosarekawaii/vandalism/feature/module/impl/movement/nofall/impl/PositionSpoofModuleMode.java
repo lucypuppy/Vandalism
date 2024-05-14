@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.nofall.NoFallModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
-import de.nekosarekawaii.vandalism.util.game.PacketUtil;
+import de.nekosarekawaii.vandalism.util.game.PacketHelper;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.network.packet.s2c.play.ChunkDataS2CPacket;
@@ -70,14 +70,13 @@ public class PositionSpoofModuleMode extends ModuleMulti<NoFallModule> implement
                 }
 
                 if (this.groundTicks > 20) {
-                    PacketUtil.receivePacket(new ChunkDataS2CPacket(this.unloadedChunk,
-                            this.lightingProvider, null, null));
+                    PacketHelper.receivePacket(new ChunkDataS2CPacket(this.unloadedChunk, this.lightingProvider, null, null));
 
                     this.unloadedChunk = null;
                     this.lightingProvider = null;
                     this.mc.player.fallDistance = 0.0F;
                 } else if (this.groundTicks > 0) {
-                    PacketUtil.sendImmediately(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 100, mc.player.getZ(), true), null, true);
+                    PacketHelper.sendImmediately(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 100, mc.player.getZ(), true), null, true);
                 }
             }
 
@@ -87,7 +86,7 @@ public class PositionSpoofModuleMode extends ModuleMulti<NoFallModule> implement
         if (this.groundTicks > 0) {
             this.groundTicks = 0;
             mc.player.jump();
-            PacketUtil.sendImmediately(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 100, mc.player.getZ(), true), null, false);
+            PacketHelper.sendImmediately(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() - 100, mc.player.getZ(), true), null, false);
             return;
         }
 
@@ -101,7 +100,7 @@ public class PositionSpoofModuleMode extends ModuleMulti<NoFallModule> implement
             this.lightingProvider = mc.world.getChunkManager().getLightingProvider();
 
             // Unload the chunk
-            PacketUtil.receivePacket(new UnloadChunkS2CPacket(new ChunkPos(x, z)));
+            PacketHelper.receivePacket(new UnloadChunkS2CPacket(new ChunkPos(x, z)));
         }
     }
 

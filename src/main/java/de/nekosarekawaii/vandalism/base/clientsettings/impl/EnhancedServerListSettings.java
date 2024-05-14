@@ -128,54 +128,6 @@ public class EnhancedServerListSettings extends ValueGroup {
             false
     ).visibleCondition(this.enhancedServerList::getValue);
 
-    public final BooleanValue kickAllPlayers = new BooleanValue(
-            this,
-            "Kick All Players",
-            "Adds a Button to the Multiplayer Screen that allows you to kick all Players from the Server.",
-            true
-    ).visibleCondition(this.enhancedServerList::getValue);
-
-    private final ValueGroup kickAllPlayersSettings = new ValueGroup(
-            this,
-            "Kick All Players Settings",
-            "Kick All Players related settings."
-    ).visibleCondition(() -> this.enhancedServerList.getValue() && this.kickAllPlayers.getValue());
-
-    public final KeyBindValue kickAllPlayersKey = new KeyBindValue(
-            this.kickAllPlayersSettings,
-            "Kick All Players Key",
-            "Change the key to kick all Players from the Server.",
-            GLFW.GLFW_KEY_PAGE_UP,
-            false
-    ).visibleCondition(this.enhancedServerList::getValue);
-
-    public final IntegerValue kickAllPlayersPingConnectionTimeout = new IntegerValue(
-            this.kickAllPlayersSettings,
-            "Kick All Players Ping Connection Timeout",
-            "The Ping Connection Timeout that will be used to kick all Players.",
-            5000,
-            1000,
-            10000
-    ).visibleCondition(() -> this.enhancedServerList.getValue() && this.kickAllPlayers.getValue());
-
-    public final IntegerValue kickAllPlayersPingReadTimeout = new IntegerValue(
-            this.kickAllPlayersSettings,
-            "Kick All Players Ping Read Timeout",
-            "The Ping Read Timeout that will be used to kick all Players.",
-            5000,
-            1000,
-            10000
-    ).visibleCondition(() -> this.enhancedServerList.getValue() && this.kickAllPlayers.getValue());
-
-    public final IntegerValue kickAllPlayersKickDelay = new IntegerValue(
-            this.kickAllPlayersSettings,
-            "Kick All Players Kick Delay",
-            "The Kick Delay that will be used to kick a Player.",
-            6000,
-            100,
-            10000
-    ).visibleCondition(() -> this.enhancedServerList.getValue() && this.kickAllPlayers.getValue());
-
     public EnhancedServerListSettings(final ClientSettings parent) {
         super(parent, "Enhanced Server List", "Enhanced Server List related settings.");
     }

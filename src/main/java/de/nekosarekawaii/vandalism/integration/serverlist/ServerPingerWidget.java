@@ -24,9 +24,9 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
-import de.nekosarekawaii.vandalism.clientwindow.impl.port.PortResult;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.game.PingState;
 import net.lenni0451.mcping.MCPing;
 import net.lenni0451.mcping.exception.ConnectTimeoutException;
 import net.lenni0451.mcping.exception.ConnectionRefusedException;
@@ -150,17 +150,17 @@ public class ServerPingerWidget implements MinecraftWrapper {
                             currentServerInfo.ping = -1L;
                             switch (t) {
                                 case UnknownHostException unknownHostException ->
-                                        currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.UNKNOWN_HOST.getMessage());
+                                        currentServerInfo.label = Text.literal(Formatting.DARK_RED + PingState.UNKNOWN_HOST.getMessage());
                                 case ConnectionRefusedException connectionRefusedException ->
-                                        currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.CONNECTION_REFUSED.getMessage());
+                                        currentServerInfo.label = Text.literal(Formatting.DARK_RED + PingState.CONNECTION_REFUSED.getMessage());
                                 case ConnectTimeoutException connectTimeoutException ->
-                                        currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.CONNECTION_TIMED_OUT.getMessage());
+                                        currentServerInfo.label = Text.literal(Formatting.DARK_RED + PingState.CONNECTION_TIMED_OUT.getMessage());
                                 case DataReadException dataReadException ->
-                                        currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.DATA_READ_FAILED.getMessage());
+                                        currentServerInfo.label = Text.literal(Formatting.DARK_RED + PingState.DATA_READ_FAILED.getMessage());
                                 case PacketReadException packetReadException ->
-                                        currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.PACKET_READ_FAILED.getMessage());
+                                        currentServerInfo.label = Text.literal(Formatting.DARK_RED + PingState.PACKET_READ_FAILED.getMessage());
                                 case null, default -> {
-                                    currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.FAILED.getMessage());
+                                    currentServerInfo.label = Text.literal(Formatting.DARK_RED + PingState.FAILED.getMessage());
                                     Vandalism.getInstance().getLogger().error("Failed to ping server: {}", currentServerInfo.address, t);
                                 }
                             }
@@ -215,7 +215,7 @@ public class ServerPingerWidget implements MinecraftWrapper {
             }
             catch (Throwable t) {
                 currentServerInfo.ping = -1L;
-                currentServerInfo.label = Text.literal(Formatting.DARK_RED + PortResult.PingState.FAILED.getMessage());
+                currentServerInfo.label = Text.literal(Formatting.DARK_RED + PingState.FAILED.getMessage());
                 setServerInfo(currentServerInfo);
                 Vandalism.getInstance().getLogger().error("Failed to ping server: {}", currentServerInfo.address, t);
             }
