@@ -103,7 +103,7 @@ public class PlayerKickerClientWindow extends ClientWindow {
                 ImGui.endTooltip();
             }
             ImGui.sameLine();
-            ImGui.checkbox("Prevent Friend Kick (Orange Highlighted)", this.preventFriendKick);
+            ImGui.checkbox("Prevent Friend Kick", this.preventFriendKick);
             ImGui.sameLine();
             ImGui.textDisabled("(?)");
             if (ImGui.isItemHovered()) {
