@@ -43,14 +43,10 @@ public abstract class MixinGameRenderer implements IGameRenderer, MinecraftWrapp
     @Unique
     private static double vandalism$range = -1;
 
-
-    // i assume this is correct - Lucy
     @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/Camera;update(Lnet/minecraft/world/BlockView;Lnet/minecraft/entity/Entity;ZZF)V", shift = At.Shift.AFTER))
     private void callRotationListener(final CallbackInfo ci) {
         Vandalism.getInstance().getEventSystem().postInternal(RotationListener.RotationEvent.ID, new RotationListener.RotationEvent());
     }
-
-    // TODO: Fix
 
     @Redirect(method = "updateCrosshairTarget", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getEntityInteractionRange()D"))
     private double changeRange(ClientPlayerEntity instance) {

@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.util.game;
 
+import de.nekosarekawaii.vandalism.util.common.MathUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -81,12 +82,22 @@ public class PacketHelper {
         return data;
     }
 
-    public static byte[] createLoginPacket(final String username, final UUID uuid) throws IOException {
+    public static byte[] createLoginPacket(final int protocolId, final String username, final UUID uuid) throws Exception {
+        if (MathUtil.isBetween(protocolId, 759, 760)) {
+            throw new RuntimeException("No implementation for this protocol: " + protocolId + " (too lazy)");
+        }
+
         final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         final DataOutputStream out = new DataOutputStream(bytes);
         writeVarInt(out, 0);
         writeString(out, username);
-        writeUUID(out, uuid);
+        if (MathUtil.isBetween(protocolId, 761, 766)) {
+            if (MathUtil.isBetween(protocolId, 761, 763)) {
+                out.writeBoolean(true);
+            }
+            writeUUID(out, uuid);
+        }
+
         final byte[] data = bytes.toByteArray();
         bytes.close();
         return data;
