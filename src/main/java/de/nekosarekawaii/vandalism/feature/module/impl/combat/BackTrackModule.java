@@ -33,7 +33,7 @@ import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.network.SyncPosition;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
-import de.nekosarekawaii.vandalism.util.game.PacketUtil;
+import de.nekosarekawaii.vandalism.util.game.PacketHelper;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.debug.DebugRenderer;
@@ -173,9 +173,9 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
         for (final Entity entity : this.mc.world.getEntities()) {
             if (
                     Vandalism.getInstance().getTargetManager().isTarget(entity)
-                    && entity.getWidth() > 0.0
-                    && entity.getHeight() > 0.0
-                    && entity instanceof final LivingEntity livingEntity
+                            && entity.getWidth() > 0.0
+                            && entity.getHeight() > 0.0
+                            && entity instanceof final LivingEntity livingEntity
             ) {
                 if (this.mc.player.distanceTo(livingEntity) <= backTrackRange.getValue()) {
                     if (!this.backTrackedEntities.containsKey(livingEntity.getId())) {
@@ -194,7 +194,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
     public void onIncomingPacket(final IncomingPacketEvent event) {
         final Packet<?> packet = event.packet;
 
-        if (//@formatter:off
+        if (
                 packet instanceof GameMessageS2CPacket || packet instanceof PlaySoundS2CPacket ||
                         packet instanceof LightUpdateS2CPacket ||
                         packet instanceof ChunkDataS2CPacket ||
@@ -207,7 +207,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
                         packet instanceof BundleDelimiterS2CPacket ||
                         this.backTrackedEntities.isEmpty() || this.mc.player == null ||
                         this.mc.world == null || event.networkPhase != NetworkPhase.PLAY || event.isCancelled() //Ignore already cancelled packets
-        ) {//@formatter:on
+        ) {
             return;
         }
 
@@ -257,7 +257,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
     private void handlePackets(final boolean flush) {
         for (final DelayedPacket packet : this.packets) {
             if (flush || System.currentTimeMillis() > packet.time() + this.delay) {
-                PacketUtil.receivePacket(packet.packet());
+                PacketHelper.receivePacket(packet.packet());
                 this.packets.remove(packet);
                 updateDelay();
             }
@@ -266,7 +266,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
 
     @Override
     public void onRender3D(final float tickDelta, final long limitTime, final MatrixStack matrixStack) {
-        if(mc.interactionManager == null) return;
+        if (mc.interactionManager == null) return;
         this.handlePackets(this.backTrackedEntities.isEmpty());
 
         for (final Map.Entry<Integer, SyncPosition> test : this.backTrackedEntities.entrySet()) {
@@ -352,8 +352,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
         this.delay = (int) (ThreadLocalRandom.current().nextGaussian() * (minDuration.getValue() - maxDuration.getValue())) + maxDuration.getValue();
     }
 
-    //@formatter:off
-    private record DelayedPacket(Packet<?> packet, long time) {}
-    //@formatter:on
+    private record DelayedPacket(Packet<?> packet, long time) {
+    }
 
 }

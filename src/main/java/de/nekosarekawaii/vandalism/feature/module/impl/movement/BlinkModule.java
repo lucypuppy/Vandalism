@@ -24,7 +24,7 @@ import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListe
 import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.event.normal.player.AttackListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.game.PacketUtil;
+import de.nekosarekawaii.vandalism.util.game.PacketHelper;
 import net.minecraft.network.packet.Packet;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -77,9 +77,9 @@ public class BlinkModule extends AbstractModule implements OutgoingPacketListene
         while (!packets.isEmpty()) {
             BlinkPacket packet = packets.poll();
             if (packet.direction == BlinkPacket.Direction.INCOMING && delayIncoming.getValue()) {
-                PacketUtil.receivePacket(packet.packet);
+                PacketHelper.receivePacket(packet.packet);
             } else if (packet.direction == BlinkPacket.Direction.OUTGOING) {
-                PacketUtil.sendImmediately(packet.packet, null, true);
+                PacketHelper.sendImmediately(packet.packet, null, true);
             }
         }
     }

@@ -107,10 +107,7 @@ public class PlayerDiscoveryClientWindow extends ClientWindow {
                 this.executor.submit(() -> {
                     this.waitingForResponse = true;
                     final Response response = ServerDiscoveryUtil.request(new WhereIsRequest(usernameValue));
-                    if (response == null) {
-                        this.state.set("Every API User is rate limited!");
-                    }
-                    else if (response instanceof final WhereIsResponse whereIsResponse) {
+                    if (response instanceof final WhereIsResponse whereIsResponse) {
                         if (whereIsResponse.isError()) {
                             this.state.set("Error: " + whereIsResponse.error);
                         } else {
@@ -136,6 +133,8 @@ public class PlayerDiscoveryClientWindow extends ClientWindow {
                                 }
                             }
                         }
+                    } else {
+                        this.state.set("API User is rate limited!");
                     }
                     this.waitingForResponse = false;
                 });

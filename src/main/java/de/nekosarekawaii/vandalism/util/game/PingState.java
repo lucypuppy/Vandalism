@@ -16,23 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery;
+package de.nekosarekawaii.vandalism.util.game;
 
-import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.Request;
-import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.Response;
+import lombok.Getter;
 
-public class ServerDiscoveryUtil {
+@Getter
+public enum PingState {
 
-    private static final String API_KEY = "lh4LsBZUYTwdClX46m2KMeBgtyZhFmXe";
+    FAILED("There was an error fetching the server info."),
+    BIND_FAILED("Cannot assign requested address."),
+    UNKNOWN_HOST("Unknown host."),
+    CONNECTION_REFUSED("Connection refused."),
+    CONNECTION_TIMED_OUT("Connection timed out."),
+    DATA_READ_FAILED("Failed to read data."),
+    PACKET_READ_FAILED("Failed to read packet."),
+    SUCCESS("Successfully fetched the server info."),
+    WAITING_RESPONSE("Waiting for response..."),
+    WAITING_INPUT("Waiting for input...");
 
-    public static Response request(final Request<?> request) {
-        final Response response = request.send(API_KEY);
-        if (response.error != null) {
-            Vandalism.getInstance().getLogger().error("Error while sending request: {}", response.error);
-            return null;
-        }
-        return response;
+    private final String message;
+
+    PingState(final String message) {
+        this.message = message;
     }
 
 }

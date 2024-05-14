@@ -33,11 +33,11 @@ public class PlayerDamageUtil implements MinecraftWrapper {
         final double z = mc.player.getZ();
 
         for (int i = 0; i < calculatePacketsForDamage(hearts); i++) {
-            PacketUtil.sendImmediately(new PlayerMoveC2SPacket.PositionAndOnGround(x, y + hearts, z, false), null, true);
-            PacketUtil.sendImmediately(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, false), null, true);
+            PacketHelper.sendImmediately(new PlayerMoveC2SPacket.PositionAndOnGround(x, y + hearts, z, false), null, true);
+            PacketHelper.sendImmediately(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, false), null, true);
         }
 
-        PacketUtil.sendImmediately(new PlayerMoveC2SPacket.OnGroundOnly(true), null, true);
+        PacketHelper.sendImmediately(new PlayerMoveC2SPacket.OnGroundOnly(true), null, true);
     }
 
     public static void damagePlayerVulcan() {
@@ -52,7 +52,7 @@ public class PlayerDamageUtil implements MinecraftWrapper {
         for (int i = 0; i < heights.length; i++) {
             final double height = heights[i];
             final boolean onGround = onGrounds[i];
-            PacketUtil.sendImmediately(new PlayerMoveC2SPacket.PositionAndOnGround(x, y + height, z, onGround), null, true);
+            PacketHelper.sendImmediately(new PlayerMoveC2SPacket.PositionAndOnGround(x, y + height, z, onGround), null, true);
         }
 
         mc.player.setPos(x, y + 3.1, z);

@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.clientwindow.impl.port;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientwindow.impl.widget.ServerInfoWidget;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
+import de.nekosarekawaii.vandalism.util.game.PingState;
 import lombok.Getter;
 import net.lenni0451.mcping.MCPing;
 import net.lenni0451.mcping.exception.ConnectTimeoutException;
@@ -106,28 +107,6 @@ public class PortResult {
                     }).getSync();
             this.currentState = PingState.WAITING_RESPONSE;
         } else this.currentState = PingState.WAITING_INPUT;
-    }
-
-    @Getter
-    public enum PingState {
-
-        FAILED("There was an error fetching the server info."),
-        BIND_FAILED("Cannot assign requested address."),
-        UNKNOWN_HOST("Unknown host."),
-        CONNECTION_REFUSED("Connection refused."),
-        CONNECTION_TIMED_OUT("Connection timed out."),
-        DATA_READ_FAILED("Failed to read data."),
-        PACKET_READ_FAILED("Failed to read packet."),
-        SUCCESS("Successfully fetched the server info."),
-        WAITING_RESPONSE("Waiting for response..."),
-        WAITING_INPUT("Waiting for input...");
-
-        private final String message;
-
-        PingState(final String message) {
-            this.message = message;
-        }
-
     }
 
 }

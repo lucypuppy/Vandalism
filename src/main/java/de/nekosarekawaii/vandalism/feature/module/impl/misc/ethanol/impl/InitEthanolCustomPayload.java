@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc.ethanol.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.util.game.PacketUtil;
+import de.nekosarekawaii.vandalism.util.game.PacketHelper;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
@@ -36,7 +36,7 @@ public class InitEthanolCustomPayload implements CustomPayload {
 
     public InitEthanolCustomPayload(final PacketByteBuf buf) {
         Vandalism.getInstance().getModuleManager().getEthanolModule().detected = true;
-        PacketUtil.sendImmediately(new CustomPayloadC2SPacket(new InitEthanolCustomPayload()), null, true);
+        PacketHelper.sendImmediately(new CustomPayloadC2SPacket(new InitEthanolCustomPayload()), null, true);
     }
 
     private void write(final PacketByteBuf buf) {}
