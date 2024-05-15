@@ -31,7 +31,6 @@ import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.newrotation.RotationBuilder;
 import de.nekosarekawaii.vandalism.integration.newrotation.RotationManager;
 import de.nekosarekawaii.vandalism.integration.newrotation.enums.RotationPriority;
-import de.nekosarekawaii.vandalism.util.game.Prediction;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.render.Tessellator;
@@ -143,10 +142,11 @@ public class AutoRodModule extends AbstractModule implements PlayerUpdateListene
         double targetDistance = this.target != null ? mc.player.getEyePos().distanceTo(this.target.getPos()) : -1;
         double hookDistance = mc.player.fishHook != null ? mc.player.getEyePos().distanceTo(mc.player.fishHook.getPos()) : 9999;
 
-        if (mc.player.fishHook == null && this.target != null && targetDistance > Vandalism.getInstance().getModuleManager().getKillAuraModule().getRange()) {
+        if (mc.player.fishHook == null && this.target != null && targetDistance > Vandalism.getInstance().getModuleManager().getKillAuraModule().getRange()+0.5) {
             Rotation rotation = this.rotationManager.getRotation() != null ? this.rotationManager.getRotation() : new Rotation(mc.player.getYaw(), mc.player.getPitch());
             hitResult = WorldUtil.raytrace(rotation, range.getValue());
-            predictedTargetPos = Prediction.predictEntityMovement((LivingEntity) this.target, this.ticksToPredict.getValue());
+//            predictedTargetPos = Prediction.predictEntityMovement((LivingEntity) this.target, this.ticksToPredict.getValue(), false);
+            predictedTargetPos = getPosToRod(this.target);
 
             if (hitResult != null && hitResult.getType() == HitResult.Type.ENTITY) {
                 shouldRod = true;
@@ -168,7 +168,7 @@ public class AutoRodModule extends AbstractModule implements PlayerUpdateListene
             shouldRod = false;
         }
 
-        if (!shouldRod && didRod && hasRod) {
+        if (!shouldRod/* && didRod*/ && hasRod) {
             mc.doItemUse();
             didRod = false;
             if (prevSlot != mc.player.getInventory().selectedSlot) {
@@ -298,6 +298,31 @@ public class AutoRodModule extends AbstractModule implements PlayerUpdateListene
         });
 
         this.target = entities.getFirst();
+    }
+
+    public Vec3d getPosToRod(Entity target) {
+        Vec3d initialPosition = mc.player.getPos();
+        Rotation rotation = this.rotationManager.getRotation() != null ? this.rotationManager.getRotation() : new Rotation(mc.player.getYaw(), mc.player.getPitch());
+        Vec3d initialVelocity = rotation.getVector().multiply(1.5D); // Assume initial speed of 1.5 blocks/tick
+
+        for (int i = 0; i < ticksToPredict.getValue(); i++) { // Simulate for 100 ticks
+            Vec3d futureTargetPos = target.getPos().add(target.getVelocity().multiply(i)); // Predict target's future position
+            Vec3d futureHookPos = getFutureHookPos(initialPosition, initialVelocity, i); // Calculate hook's future position
+
+            if (futureHookPos.distanceTo(futureTargetPos) < 1.0D) { // If hook is close to target
+                return futureTargetPos;
+            }
+        }
+
+        return target.getPos();
+    }
+
+    private Vec3d getFutureHookPos(Vec3d initialPos, Vec3d initialVelocity, int ticks) {
+        double gravity = 0.03D; // Gravity value
+        double futureX = initialPos.x + initialVelocity.x * ticks;
+        double futureY = initialPos.y + initialVelocity.y * ticks - 0.5D * gravity * ticks * ticks;
+        double futureZ = initialPos.z + initialVelocity.z * ticks;
+        return new Vec3d(futureX, futureY, futureZ);
     }
 
     public static boolean isEntityLookingAtEntity(final Entity origin, final Entity target, final double diff) {
