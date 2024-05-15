@@ -19,23 +19,28 @@
 package de.nekosarekawaii.vandalism.base.value.impl.misc;
 
 import com.google.gson.JsonObject;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
+import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindowScreen;
+import de.nekosarekawaii.vandalism.integration.hud.gui.HUDClientWindow;
 import de.nekosarekawaii.vandalism.util.common.IName;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
+import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.ColorUtils;
 import de.nekosarekawaii.vandalism.util.render.HSBColor;
 import imgui.ImGui;
 import imgui.flag.ImGuiColorEditFlags;
 import imgui.flag.ImGuiMouseButton;
+import net.minecraft.client.MinecraftClient;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ColorValue extends Value<HSBColor> implements ValueParent {
+public class ColorValue extends Value<HSBColor> implements ValueParent, MinecraftWrapper {
 
     private final List<Value<?>> values = new ArrayList<>();
 
@@ -112,7 +117,9 @@ public class ColorValue extends Value<HSBColor> implements ValueParent {
     @Override
     public void save(final JsonObject mainNode) {
         final JsonObject valueNode = new JsonObject();
-        valueNode.addProperty("color", super.getValue().getColor().getRGB());
+        if (this.mode.getValue() == ColorMode.STATIC || mc.currentScreen instanceof ClientWindowScreen) {
+            valueNode.addProperty("color", super.getValue().getColor().getRGB());
+        }
         valueNode.addProperty("mainColorFade", this.mainColorFade.getRGB());
         valueNode.addProperty("secondaryColorFade", this.secondaryColorFade.getRGB());
         for (final Value<?> value : this.getValues()) {
