@@ -75,26 +75,31 @@ public class LagRangeModule extends AbstractModule implements TimeTravelListener
         }
 
         /* Deciding when to lag and when to uncharge */
-        if (killAura.getTarget() instanceof LivingEntity target) {
-            boolean isTargetValid = killAura.isActive();
+        if (killAura.isActive() && killAura.getTarget() instanceof LivingEntity target) {
+            double distance = mc.player.getEyePos().distanceTo(target.getPos());
 
-            if (isTargetValid) {
-                double distance = mc.player.getEyePos().distanceTo(target.getPos());
-                double predictedDistance = Prediction.predictEntityMovement(mc.player, this.getCharge())
+            boolean isPredictedInRange = false;
+
+            for (int ticks = Math.min(getCharge(), 1); ticks <= maxCharge.getValue(); ++ticks) {
+                double predictedDistance = Prediction.predictEntityMovement(mc.player, ticks, true)
                         .add(0, mc.player.getStandingEyeHeight(), 0)
-                        .distanceTo(Prediction.predictEntityMovement(target, this.getCharge()));
-
-                boolean isInRange = distance > killAura.getRange() && distance <= range.getValue();
-                boolean isPredictedInRange = predictedDistance > killAura.getRange();
-
-                this.isCharging = isInRange && (isDone ? isPredictedInRange : shifted > 0);
-            } else {
-                this.isCharging = false;
+                        .distanceTo(Prediction.predictEntityMovement(target, ticks, true));
+                if (predictedDistance <= killAura.getRange()) {
+                    isPredictedInRange = true;
+                    break;
+                }
             }
+
+            boolean isInRange = distance > killAura.getRange() && distance <= range.getValue();
+
+            this.isCharging = isDone && isInRange && isPredictedInRange;
+        } else {
+            this.isCharging = false;
         }
 
+
         /* Charging and saving the amount of shifted time */
-        if (isCharging && timer.hasReached(delay.getValue(), false) && getCharge() < maxCharge.getValue() && (!onlyOnGround.getValue() || mc.player.isOnGround())) {
+        if (isCharging && timer.hasReached(delay.getValue(), false) && (!onlyOnGround.getValue() || mc.player.isOnGround())) {
             shifted += event.time - prevTime;
         }
 

@@ -23,11 +23,12 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public class Prediction {
 
-    public static Vec3d predictEntityMovement(LivingEntity entity, int ticks) {
+    public static Vec3d predictEntityMovement(LivingEntity entity, int ticks, boolean predictInput) {
         final LivingEntity livingEntity = new LivingEntity((EntityType<? extends LivingEntity>) entity.getType(), entity.getWorld()) {
             @Override
             public Iterable<ItemStack> getArmorItems() {
@@ -55,6 +56,12 @@ public class Prediction {
         livingEntity.setVelocity(entity.getVelocity());
 
         for (int i = 0; i < ticks; i++) {
+            if(predictInput) {
+                BlockPos blockPos = entity.getVelocityAffectingPos();
+                float p = entity.getWorld().getBlockState(blockPos).getBlock().getSlipperiness();
+                Vec3d input = new Vec3d(entity.sidewaysSpeed, entity.upwardSpeed, entity.forwardSpeed);
+                livingEntity.applyMovementInput(input, p);
+            }
             livingEntity.tick();
         }
 
