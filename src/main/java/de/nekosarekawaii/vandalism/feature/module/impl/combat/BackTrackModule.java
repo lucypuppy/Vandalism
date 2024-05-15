@@ -224,14 +224,14 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
         }
 
         boolean shouldCancel = false;
-        if (packet instanceof final EntityS2CPacket entityS2CPacket && this.backTrackedEntities.containsKey(entityS2CPacket.id)) {
+        if (packet instanceof final EntityS2CPacket entityS2CPacket && entityS2CPacket.isPositionChanged() && this.backTrackedEntities.containsKey(entityS2CPacket.id)) {
             final SyncPosition trackedPosition = this.backTrackedEntities.get(entityS2CPacket.id);
             trackedPosition.setPos(
                     trackedPosition.withDelta(
                             entityS2CPacket.getDeltaX(),
                             entityS2CPacket.getDeltaY(),
                             entityS2CPacket.getDeltaZ()
-                    ), true
+                    ), false
             );
 
             if (this.checkForResync(trackedPosition, entityS2CPacket.id)) {
@@ -239,7 +239,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
             }
         } else if (packet instanceof final EntityPositionS2CPacket positionS2CPacket && this.backTrackedEntities.containsKey(positionS2CPacket.getId())) {
             final SyncPosition trackedPosition = this.backTrackedEntities.get(positionS2CPacket.getId());
-            trackedPosition.setPos(new Vec3d(positionS2CPacket.getX(), positionS2CPacket.getY(), positionS2CPacket.getZ()), true);
+            trackedPosition.setPos(new Vec3d(positionS2CPacket.getX(), positionS2CPacket.getY(), positionS2CPacket.getZ()), false);
 
             if (this.checkForResync(trackedPosition, positionS2CPacket.getId())) {
                 shouldCancel = true;
