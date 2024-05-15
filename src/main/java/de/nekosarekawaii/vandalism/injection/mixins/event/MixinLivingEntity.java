@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalFloatRef;
 import de.nekosarekawaii.vandalism.Vandalism;
@@ -31,7 +32,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
@@ -62,12 +62,12 @@ public abstract class MixinLivingEntity implements MinecraftWrapper {
         }
     }
 
-    @Redirect(method = "jump", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getYaw()F"))
-    private float modifyJumpYaw(final LivingEntity instance) {
+    @ModifyExpressionValue(method = "jump", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getYaw()F"))
+    private float modifyJumpYaw(float original) {
         if (mc.player == (Object) this) {
-            return event.modified ? (float) Math.toDegrees(event.yaw) : instance.getYaw();
+            return event.modified ? (float) Math.toDegrees(event.yaw) : original;
         }
-        return instance.getYaw();
+        return original;
     }
 
     @ModifyArgs(method = "setHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/data/DataTracker;set(Lnet/minecraft/entity/data/TrackedData;Ljava/lang/Object;)V"))
