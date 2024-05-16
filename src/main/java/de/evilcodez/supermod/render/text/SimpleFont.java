@@ -363,9 +363,7 @@ public class SimpleFont extends AtlasFont {
         }
 
         @Override
-        public void renderGlyph(@NotNull GlyphInfo glyph, float x, float y, float z, int color, boolean isShadowGlyph,
-                                boolean italic, boolean bold) {
-            // TODO: bold
+        public void renderGlyph(@NotNull GlyphInfo glyph, float x, float y, float z, int color, boolean isShadowGlyph, boolean italic, boolean bold) {
             if (this.lastTexture != glyph.getTextureId() || this.consumer == null) {
                 this.consumer = this.batch.getAttribConsumers(Passes.text(glyph.getTextureId())).main();
                 this.lastTexture = glyph.getTextureId();

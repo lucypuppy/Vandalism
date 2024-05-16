@@ -90,7 +90,6 @@ public class InventoryUtil implements MinecraftWrapper {
         return false;
     }
 
-    // TODO: Make this customizable
     public static int getHotbarSlotForItem(final ItemStack itemStack) {
         if (itemStack.getItem() instanceof SwordItem)
             return 0;
@@ -123,7 +122,6 @@ public class InventoryUtil implements MinecraftWrapper {
         return -1;
     }
 
-    // TODO: Add enchants, Durability etc.
     public static boolean isItemBetter(final ItemStack newItem, final ItemStack oldItem) {
         if (newItem.getItem() instanceof ArmorItem armorItem && oldItem.getItem() instanceof ArmorItem oldArmorItem) {
             if (armorItem.getProtection() > oldArmorItem.getProtection()) {
