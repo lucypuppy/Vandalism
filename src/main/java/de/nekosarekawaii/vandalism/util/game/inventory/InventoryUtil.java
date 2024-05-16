@@ -16,28 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.game;
+package de.nekosarekawaii.vandalism.util.game.inventory;
 
 import com.google.common.collect.Lists;
+import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.component.DataComponentType;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.inventory.Inventory;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.*;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeEntry;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.world.World;
 
 import java.util.List;
 
@@ -71,39 +67,7 @@ public class InventoryUtil implements MinecraftWrapper {
     public static RecipeEntry<Recipe<?>> createDummyRecipeEntry(final Identifier identifier) {
         return new RecipeEntry<>(
                 identifier,
-                new Recipe<>() {
-
-                    @Override
-                    public boolean matches(final Inventory inventory, final World world) {
-                        return false;
-                    }
-
-                    @Override
-                    public ItemStack craft(Inventory inventory, RegistryWrapper.WrapperLookup lookup) {
-                        return null;
-                    }
-
-                    @Override
-                    public boolean fits(final int width, final int height) {
-                        return false;
-                    }
-
-                    @Override
-                    public ItemStack getResult(RegistryWrapper.WrapperLookup registriesLookup) {
-                        return null;
-                    }
-
-                    @Override
-                    public RecipeSerializer<?> getSerializer() {
-                        return null;
-                    }
-
-                    @Override
-                    public RecipeType<?> getType() {
-                        return null;
-                    }
-
-                }
+                new RecipeNoop()
         );
     }
 
@@ -126,7 +90,7 @@ public class InventoryUtil implements MinecraftWrapper {
         return false;
     }
 
-    //Todo make this customizeable
+    // TODO: Make this customizable
     public static int getHotbarSlotForItem(final ItemStack itemStack) {
         if (itemStack.getItem() instanceof SwordItem)
             return 0;
@@ -149,7 +113,7 @@ public class InventoryUtil implements MinecraftWrapper {
         if (itemStack.getItem().getComponents().contains(DataComponentTypes.FOOD))
             return 6;
 
-        if (itemStack.getItem() instanceof BucketItem) // Todo check if water is in the bucket
+        if (itemStack.getItem() instanceof BucketItem item && item.fluid == Fluids.WATER)
             return 7;
 
         if (itemStack.getItem() instanceof BlockItem)
@@ -159,7 +123,7 @@ public class InventoryUtil implements MinecraftWrapper {
         return -1;
     }
 
-    // Todo add enchants, Durability etc
+    // TODO: Add enchants, Durability etc.
     public static boolean isItemBetter(final ItemStack newItem, final ItemStack oldItem) {
         if (newItem.getItem() instanceof ArmorItem armorItem && oldItem.getItem() instanceof ArmorItem oldArmorItem) {
             if (armorItem.getProtection() > oldArmorItem.getProtection()) {
@@ -186,9 +150,7 @@ public class InventoryUtil implements MinecraftWrapper {
         }
 
         if (newItem.getItem() instanceof ShovelItem shovelItem && oldItem.getItem() instanceof ShovelItem oldShovelItem) {
-            if (shovelItem.getMaterial().getMiningSpeedMultiplier() > oldShovelItem.getMaterial().getMiningSpeedMultiplier()) {
-                return true;
-            }
+            return shovelItem.getMaterial().getMiningSpeedMultiplier() > oldShovelItem.getMaterial().getMiningSpeedMultiplier();
         }
 
         return false;
