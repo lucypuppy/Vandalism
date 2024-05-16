@@ -25,7 +25,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
-import de.nekosarekawaii.vandalism.util.game.InventoryUtil;
+import de.nekosarekawaii.vandalism.util.game.inventory.InventoryUtil;
 import net.minecraft.block.FallingBlock;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.component.DataComponentTypes;
