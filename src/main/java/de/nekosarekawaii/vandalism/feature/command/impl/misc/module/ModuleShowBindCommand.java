@@ -16,29 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.command.impl.movement;
+package de.nekosarekawaii.vandalism.feature.command.impl.misc.module;
 
-import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
-import de.nekosarekawaii.vandalism.util.game.MovementUtil;
+import de.nekosarekawaii.vandalism.feature.command.arguments.ModuleArgumentType;
+import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.util.render.InputType;
 import net.minecraft.command.CommandSource;
 
-public class VClipCommand extends AbstractCommand {
+public class ModuleShowBindCommand extends AbstractCommand {
 
-    public VClipCommand() {
-        super("Allows you to teleport yourself by vertical offset.", Category.MOVEMENT, "vclip", "vtp", "verticalteleport");
+    public ModuleShowBindCommand() {
+        super("Lets you show the bind of modules.", Category.MISC, "moduleshowbind", "showbind");
     }
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
-        builder.then(argument("vertical-offset", DoubleArgumentType.doubleArg(-10.0, 10.0)).executes(context -> {
-            if (this.mc.player != null)
-                MovementUtil.clip(
-                        DoubleArgumentType.getDouble(context, "vertical-offset"),
-                        0.0
-                );
-
+        builder.then(argument("module", ModuleArgumentType.create()).executes(context -> {
+            final AbstractModule module = ModuleArgumentType.get(context);
+            if (module.getKeyBind().isValid()) {
+                ChatUtil.infoChatMessage("Module " + module.getName() + " is bound to " + InputType.getName(module.getKeyBind().getValue()) + ".");
+            } else {
+                ChatUtil.infoChatMessage("Module " + module.getName() + " is not bound.");
+            }
             return SINGLE_SUCCESS;
         }));
     }
