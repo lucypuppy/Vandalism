@@ -25,6 +25,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import de.nekosarekawaii.vandalism.util.render.InputType;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.Text;
@@ -47,11 +48,12 @@ public class KeyBindArgumentType implements ArgumentType<Integer> {
 
     @Override
     public Integer parse(final StringReader reader) throws CommandSyntaxException {
-        final String keyName = reader.readString().replace("-", " ").toUpperCase();
-        if (!InputType.FIELD_NAMES.containsKey(keyName)) {
-            throw NOT_EXISTING.createWithContext(reader, keyName);
+        final String input = reader.readString().replace("-", " ").toUpperCase();
+        if (!InputType.FIELD_NAMES.containsKey(input)) {
+            ChatUtil.infoChatMessage("No key with the name " + input + " has been found!");
+            throw NOT_EXISTING.createWithContext(reader, input);
         }
-        return InputType.FIELD_NAMES.get(keyName);
+        return InputType.FIELD_NAMES.get(input);
     }
 
     @Override

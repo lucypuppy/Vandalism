@@ -16,23 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.command.impl.misc;
+package de.nekosarekawaii.vandalism.feature.command.impl.misc.module;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.feature.command.arguments.ModuleArgumentType;
+import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.command.CommandSource;
 
-public class ToggleModuleCommand extends AbstractCommand {
+public class ModuleUnbindCommand extends AbstractCommand {
 
-    public ToggleModuleCommand() {
-        super("Lets you toggle modules.", Category.MISC, "toggle", "t");
+    public ModuleUnbindCommand() {
+        super("Lets you unbind modules.", Category.MISC, "moduleunbind", "unbind");
     }
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.then(argument("module", ModuleArgumentType.create()).executes(context -> {
-            ModuleArgumentType.get(context).toggle();
+            final AbstractModule module = ModuleArgumentType.get(context);
+            if (module.getKeyBind().isValid()) {
+                module.getKeyBind().resetValue();
+                ChatUtil.infoChatMessage("Unbound module " + module.getName() + ".");
+            } else {
+                ChatUtil.infoChatMessage("Module " + module.getName() + " is not bound.");
+            }
             return SINGLE_SUCCESS;
         }));
     }

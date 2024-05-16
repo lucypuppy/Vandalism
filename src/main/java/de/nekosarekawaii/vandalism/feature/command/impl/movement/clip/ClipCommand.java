@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.command.impl.movement;
+package de.nekosarekawaii.vandalism.feature.command.impl.movement.clip;
 
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -24,23 +24,26 @@ import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 import net.minecraft.command.CommandSource;
 
-public class HClipCommand extends AbstractCommand {
+public class ClipCommand extends AbstractCommand {
 
-    public HClipCommand() {
-        super("Allows you to teleport yourself by horizontal offset.", Category.MOVEMENT, "hclip", "htp", "horizontalteleport");
+    public ClipCommand() {
+        super("Allows you to teleport yourself by vertical and horizontal offset.", Category.MOVEMENT, "clip", "tp", "teleport");
     }
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
-        builder.then(argument("horizontal-offset", DoubleArgumentType.doubleArg(-10.0, 10.0)).executes(context -> {
-            if (this.mc.player != null)
-                MovementUtil.clip(
-                        0.0,
-                        DoubleArgumentType.getDouble(context, "horizontal-offset")
-                );
+        builder.
+                then(argument("vertical-offset", DoubleArgumentType.doubleArg(-10.0, 10.0)).
+                        then(argument("horizontal-offset", DoubleArgumentType.doubleArg(-10.0, 10.0)).
+                                executes(context -> {
+                                    if (this.mc.player != null)
+                                        MovementUtil.clip(
+                                                DoubleArgumentType.getDouble(context, "vertical-offset"),
+                                                DoubleArgumentType.getDouble(context, "horizontal-offset")
+                                        );
 
-            return SINGLE_SUCCESS;
-        }));
+                                    return SINGLE_SUCCESS;
+                                })));
     }
 
 }

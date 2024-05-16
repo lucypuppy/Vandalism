@@ -16,31 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.command.impl.misc;
+package de.nekosarekawaii.vandalism.feature.command.impl.movement.clip;
 
+import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 import net.minecraft.command.CommandSource;
 
-public class CopyInvisibleCharCommand extends AbstractCommand {
+public class HClipCommand extends AbstractCommand {
 
-    public CopyInvisibleCharCommand() {
-        super(
-                "Copies an invisible character into your clipboard.",
-                Category.MISC,
-                "copyinvisiblechar",
-                "copyinvchar"
-        );
+    public HClipCommand() {
+        super("Allows you to teleport yourself by horizontal offset.", Category.MOVEMENT, "hclip", "htp", "horizontalteleport");
     }
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
-        builder.executes(context -> {
-            this.mc.keyboard.setClipboard("\uF802");
-            ChatUtil.infoChatMessage("Invisible character copied into the clipboard.");
+        builder.then(argument("horizontal-offset", DoubleArgumentType.doubleArg(-10.0, 10.0)).executes(context -> {
+            if (this.mc.player != null)
+                MovementUtil.clip(
+                        0.0,
+                        DoubleArgumentType.getDouble(context, "horizontal-offset")
+                );
+
             return SINGLE_SUCCESS;
-        });
+        }));
     }
 
 }
