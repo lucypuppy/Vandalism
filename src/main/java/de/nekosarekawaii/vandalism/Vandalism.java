@@ -59,10 +59,8 @@ import java.io.File;
  *      - Add protection for ip addresses
  *      - Add protection for account manager
  *  - Fix spotify menu control buttons
- *  - Rewrite EnhancedServerList
  *  - Fix offsets for the new "teleport" method in the fov fucker module
- *  - Fix module tabs display (no stacking) when the client starts the first time
- *  - Use hashmap storage when it has been added to rclasses instead of a default storage because that would improve the performance
+ *  - Use hashmap storage instead of a default storage because that would improve the performance
  *      - (Search for FriendManager#getList())
  *  - Add anti vanish via. the player list hud
  *  - Fix Game server pinger (ensure pings are on different threads)
@@ -72,9 +70,6 @@ import java.io.File;
  *      - Fix translateTextDepthLimit
  *      - Fix blockTooManyTextGlyphs
  *      - Fix blockTooLongTexts
- *  - Add Version Range to the creative tabs
- *  - Fix creative packager for older versions like 1.8
- *  - Fix weird creative tab item remove bug when using the open container key and clicking inside the client side inventory
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Rewrite GCD fix to be accurate
