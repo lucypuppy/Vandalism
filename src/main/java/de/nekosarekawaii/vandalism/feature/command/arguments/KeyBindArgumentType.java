@@ -25,7 +25,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import de.nekosarekawaii.vandalism.util.render.InputType;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.Text;
@@ -51,7 +50,6 @@ public class KeyBindArgumentType implements ArgumentType<Integer> {
         final String input = reader.canRead(2) ? reader.readString() : String.valueOf(reader.read());
         final String fixedInput = (input.equals("-") ? input : input.replace("-", " ")).toUpperCase();
         if (!InputType.FIELD_NAMES.containsKey(fixedInput)) {
-            ChatUtil.infoChatMessage("No key with the name " + input + " has been found!");
             throw NOT_EXISTING.createWithContext(reader, input);
         }
         return InputType.FIELD_NAMES.get(fixedInput);
