@@ -92,12 +92,24 @@ import java.io.File;
  *  - Keksbye, Simon, FooFieOwO this is fixed find a new way for to bypasss a cubecraft disabler
  *  - Fix autoblock blocking without sword
  *  - Rework windmouse algorythm
+ *  - Technically this should be legit but i need more investigation -> AutoGUICloseModule#onIncomingPacket
+ *  - Maybe add faster ray traces -> RotationBuilder#build
+ *  - Make this customizable -> InventoryUtil#getHotbarSlotForItem
+ *  - Add enchants, Durability etc. -> InventoryUtil#isItemBetter
+ *  - Check if the item in the chest is better otherwise ignore it -> ChestStealerModule#onPrePlayerUpdate
+ *  - Check if the item is useful in any way -> ChestStealerModule#onPrePlayerUpdate
  * <br><br>
  * TODO: simon <br>
  *  - Add a better Autoblock to Killaura with FooFieOwO
  * <br><br>
  * TODO: mori <br>
  *  - Write all descriptions in the third person, without using the second person ('you')
+ * <br><br>
+ * TODO: EvilCodeZ <br>
+ *  - Add Bold -> SimpleFont#SimpleGlyphRenderer#renderGlyph
+ *  - Also handle MINECRAFT_LINES and MINECRAFT_LINE_STRIP -> PersistentMeshProducer#addPass at "} else if (pass.getPrimitiveType() == PrimitiveType.QUADS) {"
+ *  - If the quad buffer is resized at any time, the element buffer will be corrupted -> PersistentMeshProducer#addPass at "elementBuffer = GlobalQuadElementBuffer.getQuadElementBuffer(vertexCount / 4);"
+ *  - Finish AtlasFontRenderer#substringText x2
  */
 @Getter
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {

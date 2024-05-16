@@ -104,8 +104,8 @@ public class PersistentMeshProducer implements AttribConsumerProvider, AutoClose
                 elementBuffer = buffers.getIndexDataBuffer().getBuffer().uploadImmutable(0);
                 indexType = buffers.getIndexDataBuffer().getType();
                 vao.setElementBuffer(elementBuffer);
-            } else if (pass.getPrimitiveType() == PrimitiveType.QUADS) { // TODO: Also handle MINECRAFT_LINES and MINECRAFT_LINE_STRIP
-                elementBuffer = GlobalQuadElementBuffer.getQuadElementBuffer(vertexCount / 4); // TODO: If the quad buffer is resized at any time, the element buffer will be corrupted
+            } else if (pass.getPrimitiveType() == PrimitiveType.QUADS) {
+                elementBuffer = GlobalQuadElementBuffer.getQuadElementBuffer(vertexCount / 4);
                 indexType = GlobalQuadElementBuffer.QUAD_ELEMENT_BUFFER_TYPE;
                 vao.setElementBuffer(elementBuffer);
                 elementBuffer = null; // the VAO shouldn't own the buffer

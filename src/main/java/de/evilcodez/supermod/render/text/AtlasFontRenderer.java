@@ -237,14 +237,12 @@ public class AtlasFontRenderer {
     @NotNull
     public String substringText(@Nullable String text, @NotNull TextAlign align, float fontSize) {
         if (text == null || text.isEmpty()) return "";
-        // TODO
         return "";
     }
 
     @NotNull
     public String substringText(@Nullable StringVisitable text, @NotNull TextAlign align, float fontSize) {
         if (text == null) return "";
-        // TODO
         return "";
     }
 
