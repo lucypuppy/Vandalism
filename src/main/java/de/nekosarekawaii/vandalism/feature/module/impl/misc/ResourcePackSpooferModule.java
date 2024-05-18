@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.client.network.ClientCommonNetworkHandler;
 import net.minecraft.network.packet.c2s.common.ResourcePackStatusC2SPacket;
@@ -27,7 +28,7 @@ import net.minecraft.network.packet.s2c.common.ResourcePackSendS2CPacket;
 
 import java.util.UUID;
 
-public class ResourcePackSpooferModule extends AbstractModule implements IncomingPacketListener {
+public class ResourcePackSpooferModule extends AbstractModule implements IncomingPacketListener, OutgoingPacketListener {
 
     public ResourcePackSpooferModule() {
         super(
@@ -37,14 +38,15 @@ public class ResourcePackSpooferModule extends AbstractModule implements Incomin
         );
     }
 
+
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(IncomingPacketEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(this, IncomingPacketEvent.ID, OutgoingPacketEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(IncomingPacketEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, IncomingPacketEvent.ID, OutgoingPacketEvent.ID);
     }
 
     @Override
@@ -60,6 +62,19 @@ public class ResourcePackSpooferModule extends AbstractModule implements Incomin
                 event.connection.send(new ResourcePackStatusC2SPacket(uuid, ResourcePackStatusC2SPacket.Status.DOWNLOADED));
                 event.connection.send(new ResourcePackStatusC2SPacket(uuid, ResourcePackStatusC2SPacket.Status.SUCCESSFULLY_LOADED));
             }
+        }
+    }
+
+
+    @Override
+    public void onOutgoingPacket(final OutgoingPacketEvent event) {
+        if (
+                event.packet instanceof final ResourcePackStatusC2SPacket resourcePackStatusC2SPacket && (
+                        resourcePackStatusC2SPacket.status() == ResourcePackStatusC2SPacket.Status.DECLINED ||
+                                resourcePackStatusC2SPacket.status() == ResourcePackStatusC2SPacket.Status.FAILED_DOWNLOAD
+                )
+        ) {
+            event.cancel();
         }
     }
 
