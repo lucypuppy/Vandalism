@@ -94,7 +94,7 @@ public class MultiModeValue extends Value<List<String>> {
         final String id = "##" + this.getName() + this.getParent().getName();
         if (ImGui.beginCombo(id, this.getValue().toString().substring(1, this.getValue().toString().length() - 1), ImGuiComboFlags.HeightLargest)) {
             ImGui.separator();
-            ImGui.text("Search for " + this.getName());
+            ImGui.text("Search for " + this.getName() + " (" + this.options.size() + ")");
             ImGui.setNextItemWidth(Math.max(350, ImGui.getColumnWidth()));
             ImGui.inputText(id + "search", this.searchInput);
             if (ImGui.button("Select all" + id + "selectAll", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
