@@ -638,7 +638,14 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
     private double getHealthFromScoreboard(Entity entity) {
         Scoreboard scoreboard = mc.player.getScoreboard();
+
         for (ScoreboardEntry entry : scoreboard.getScoreboardEntries(scoreboard.getNullableObjective("health"))) {
+            if (entry.owner().equalsIgnoreCase(entity.getName().getString())) {
+                return entry.value();
+            }
+        }
+
+        for (ScoreboardEntry entry : scoreboard.getScoreboardEntries(scoreboard.getNullableObjective("showhealth"))) {
             if (entry.owner().equalsIgnoreCase(entity.getName().getString())) {
                 return entry.value();
             }
