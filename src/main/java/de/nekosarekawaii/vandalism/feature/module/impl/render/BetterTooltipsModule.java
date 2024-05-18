@@ -84,34 +84,32 @@ public class BetterTooltipsModule extends AbstractModule implements TooltipDrawL
         final List<TooltipData> tooltipData = event.tooltipData;
         final ItemStack itemStack = event.itemStack;
         final Item item = itemStack.getItem();
-        if (item instanceof CompassItem stack && stack.getComponents().contains(DataComponentTypes.LODESTONE_TRACKER)) {
-            drawCompassTooltip(tooltipData, itemStack);
-        } else if (item instanceof BannerPatternItem patternItem) {
-            drawBannerPatternTooltip(tooltipData, patternItem);
-        } else if (item instanceof BannerItem) {
-            tooltipData.add(new BannerTooltipComponent(itemStack));
-        } else if (item instanceof FilledMapItem stack) {
-            final MapIdComponent mapId = stack.getComponents().get(DataComponentTypes.MAP_ID);
-            if (mapId != null) {
-                tooltipData.add(new MapTooltipComponent(mapId));
+        switch (item) {
+            case CompassItem stack when stack.getComponents().contains(DataComponentTypes.LODESTONE_TRACKER) ->
+                    drawCompassTooltip(tooltipData, itemStack);
+            case BannerPatternItem patternItem -> drawBannerPatternTooltip(tooltipData, patternItem);
+            case BannerItem bannerItem -> tooltipData.add(new BannerTooltipComponent(itemStack));
+            case FilledMapItem stack -> {
+                final MapIdComponent mapId = stack.getComponents().get(DataComponentTypes.MAP_ID);
+                if (mapId != null) {
+                    tooltipData.add(new MapTooltipComponent(mapId));
+                }
             }
-        } else {
-            drawContainerTooltip(tooltipData, itemStack, item);
+            case null, default -> drawContainerTooltip(tooltipData, itemStack, item);
         }
         drawBytesTooltip(tooltipData, itemStack);
     }
 
     private void drawBytesTooltip(final List<TooltipData> tooltipData, final ItemStack itemStack) {
-        // TODO: Fix
-        //itemStack.writeNbt(new NbtCompound()).write(ByteCountDataOutput.INSTANCE);
-        final int byteCount = ByteCountDataOutput.INSTANCE.getCount();
-        ByteCountDataOutput.INSTANCE.reset();
-        tooltipData.add(new TextTooltipComponent(Text.literal(
-                        StringUtils.formatBytes(byteCount)
-                ).formatted(
-                        Formatting.GRAY
-                ).asOrderedText())
-        );
+        try {
+            itemStack.encode(mc.player.getRegistryManager()).write(ByteCountDataOutput.INSTANCE);
+            final int byteCount = ByteCountDataOutput.INSTANCE.getCount();
+            ByteCountDataOutput.INSTANCE.reset();
+            tooltipData.add(new TextTooltipComponent(Text.literal(StringUtils.formatBytes(byteCount)).formatted(Formatting.GRAY).asOrderedText()));
+        } catch (final Exception ignored) {
+            tooltipData.add(new TextTooltipComponent(Text.literal("Error getting bytes.").formatted(Formatting.RED).asOrderedText()));
+        }
+
     }
 
     private void drawCompassTooltip(final List<TooltipData> tooltipData, final ItemStack itemStack) {
