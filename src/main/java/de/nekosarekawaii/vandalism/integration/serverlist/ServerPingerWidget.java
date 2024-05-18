@@ -18,10 +18,6 @@
 
 package de.nekosarekawaii.vandalism.integration.serverlist;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.JsonOps;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
@@ -43,12 +39,11 @@ import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
 import net.minecraft.client.network.MultiplayerServerListPinger;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.ServerList;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextCodecs;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.JsonHelper;
 
 import java.awt.*;
 import java.net.UnknownHostException;
@@ -59,8 +54,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class ServerPingerWidget implements MinecraftWrapper {
-
-    private static final Gson GSON = new Gson();
 
     private static final String BASE64_START = "data:image/png;base64,";
 
@@ -171,9 +164,7 @@ public class ServerPingerWidget implements MinecraftWrapper {
                             currentServerInfo.ping = response.server.ping;
                             final String descriptionString = response.description;
                             try {
-                                final JsonElement jsonElement = JsonHelper.deserialize(GSON, descriptionString, JsonElement.class);
-                                final DataResult<Text> dataResult = TextCodecs.CODEC.parse(JsonOps.INSTANCE, jsonElement);
-                                final MutableText description = (MutableText) dataResult.result().orElse(null);
+                                final MutableText description = Text.Serialization.fromJson(descriptionString, DynamicRegistryManager.EMPTY);
                                 if (description != null) {
                                     currentServerInfo.label = description;
                                 }
@@ -212,8 +203,7 @@ public class ServerPingerWidget implements MinecraftWrapper {
                             }
                             setServerInfo(currentServerInfo);
                         }).getAsync();
-            }
-            catch (Throwable t) {
+            } catch (final Throwable t) {
                 currentServerInfo.ping = -1L;
                 currentServerInfo.label = Text.literal(Formatting.DARK_RED + PingState.FAILED.getMessage());
                 setServerInfo(currentServerInfo);

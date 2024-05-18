@@ -38,6 +38,8 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.packet.*;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.Vec3i;
@@ -225,10 +227,10 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
             return "[".concat(Arrays.stream(array).map(index -> PacketManagerModule.dump(index, depth + 1, depthLimit)).collect(Collectors.joining(", "))).concat("]");
         }
 
-        { /* Formattable */ // TODO: Fix
-          /*  if (object instanceof Text text) {
-                return Text.Serialization.toJsonString(text);
-            }*/
+        { /* Formattable */
+            if (object instanceof Text text) {
+                return Text.Serialization.toJsonString(text, DynamicRegistryManager.EMPTY);
+            }
             if (object instanceof NbtElement element) {
                 return NbtHelper.toFormattedString(element);
             }
