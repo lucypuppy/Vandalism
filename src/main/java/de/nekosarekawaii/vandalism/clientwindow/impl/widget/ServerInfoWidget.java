@@ -18,10 +18,6 @@
 
 package de.nekosarekawaii.vandalism.clientwindow.impl.widget;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.JsonOps;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerDataUtil;
 import de.nekosarekawaii.vandalism.integration.viafabricplus.ViaFabricPlusAccess;
@@ -37,14 +33,11 @@ import net.lenni0451.mcping.responses.MCPingResponse;
 import net.lenni0451.mcping.responses.QueryPingResponse;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ServerInfo;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextCodecs;
-import net.minecraft.util.JsonHelper;
 
 public class ServerInfoWidget implements MinecraftWrapper {
-
-    private static final Gson GSON = new Gson();
 
     @Getter
     private MCPingResponse mcPingResponse;
@@ -71,9 +64,7 @@ public class ServerInfoWidget implements MinecraftWrapper {
         if (mcPingResponse != null) {
             final String descriptionString = mcPingResponse.description;
             try {
-                final JsonElement jsonElement = JsonHelper.deserialize(GSON, descriptionString, JsonElement.class);
-                final DataResult<Text> dataResult = TextCodecs.CODEC.parse(JsonOps.INSTANCE, jsonElement);
-                final MutableText description = (MutableText) dataResult.result().orElse(null);
+                final MutableText description = Text.Serialization.fromJson(descriptionString, DynamicRegistryManager.EMPTY);
                 if (description != null) this.MOTD = description.getString();
             } catch (final Exception ignored) {
                 this.MOTD = descriptionString;
