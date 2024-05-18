@@ -42,7 +42,6 @@ public class AntiGUICloseModule extends AbstractModule implements IncomingPacket
     @Override
     public void onIncomingPacket(final IncomingPacketEvent event) {
         if (mc.player != null && event.packet instanceof CloseScreenS2CPacket) {
-            // TODO: Technically this should be legit but i need more investigation - FooFieOwO
             mc.player.currentScreenHandler = mc.player.playerScreenHandler;
             event.cancel();
         }

@@ -146,3 +146,4 @@ accessible method net/minecraft/block/AbstractBlock getCollisionShape (Lnet/mine
 accessible method net/minecraft/client/gui/screen/Screen$PositionedTooltip tooltip ()Ljava/util/List;
 accessible method net/minecraft/block/entity/BlockEntity writeNbt (Lnet/minecraft/nbt/NbtCompound;Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;)V
 accessible field net/minecraft/client/MinecraftClient attackCooldown I
+accessible field net/minecraft/item/BucketItem fluid Lnet/minecraft/fluid/Fluid;

@@ -16,36 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.command.impl.misc;
+package de.nekosarekawaii.vandalism.feature.command.impl.misc.module;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.feature.command.arguments.ModuleArgumentType;
 import net.minecraft.command.CommandSource;
 
-public class CopyServerBrandCommand extends AbstractCommand {
+public class ModuleToggleCommand extends AbstractCommand {
 
-    public CopyServerBrandCommand() {
-        super(
-                "Lets you copy the brand from the server you are currently connected to.",
-                Category.MISC,
-                "copyserverbrand",
-                "copybrand"
-        );
+    public ModuleToggleCommand() {
+        super("Lets you toggle modules.", Category.MISC, "moduletoggle", "toggle", "t");
     }
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
-        builder.executes(context -> {
-            if (this.mc.isInSingleplayer()) {
-                ChatUtil.errorChatMessage("You are in singleplayer.");
-            }
-            else {
-                this.mc.keyboard.setClipboard(this.mc.getNetworkHandler().getBrand());
-                ChatUtil.infoChatMessage("Server brand copied into the clipboard.");
-            }
+        builder.then(argument("module", ModuleArgumentType.create()).executes(context -> {
+            ModuleArgumentType.get(context).toggle();
             return SINGLE_SUCCESS;
-        });
+        }));
     }
 
 }

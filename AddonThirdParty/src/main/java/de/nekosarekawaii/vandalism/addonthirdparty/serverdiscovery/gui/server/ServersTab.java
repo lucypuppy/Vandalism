@@ -139,7 +139,7 @@ public class ServersTab implements MinecraftWrapper {
                 for (final ProtocolVersion protocolVersion : ProtocolVersion.getProtocols()) {
                     if (
                             protocolVersion.olderThan(ProtocolVersion.v1_7_2) ||
-                            // TODO
+                                    // TODO: Re-implement this
                             //AprilFoolsProtocolVersion.PROTOCOLS.contains(protocolVersion) ||
                             protocolVersion.getName().contains("Bedrock") ||
                             protocolVersion.getName().contains("Auto Detect")

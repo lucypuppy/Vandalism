@@ -16,33 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.command.impl.misc;
+package de.nekosarekawaii.vandalism.feature.command.impl.misc.copy;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.command.CommandSource;
 
-public class CopyUsernameCommand extends AbstractCommand {
+public class CopyServerBrandCommand extends AbstractCommand {
 
-    public CopyUsernameCommand() {
+    public CopyServerBrandCommand() {
         super(
-                "Copies your username into your clipboard.",
+                "Lets you copy the brand from the server you are currently connected to.",
                 Category.MISC,
-                "copyusername",
-                "usernamecopy",
-                "copyname",
-                "namecopy",
-                "copyign",
-                "igncopy"
+                "copyserverbrand",
+                "copybrand"
         );
     }
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
-            this.mc.keyboard.setClipboard(this.mc.player.getGameProfile().getName());
-            ChatUtil.infoChatMessage("Username copied into the clipboard.");
+            if (this.mc.isInSingleplayer()) {
+                ChatUtil.errorChatMessage("You are in singleplayer.");
+            }
+            else {
+                this.mc.keyboard.setClipboard(this.mc.getNetworkHandler().getBrand());
+                ChatUtil.infoChatMessage("Server brand copied into the clipboard.");
+            }
             return SINGLE_SUCCESS;
         });
     }

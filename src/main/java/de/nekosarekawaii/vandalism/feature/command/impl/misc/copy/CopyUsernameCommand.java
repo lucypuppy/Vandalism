@@ -16,36 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.command.impl.misc;
+package de.nekosarekawaii.vandalism.feature.command.impl.misc.copy;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
-import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import net.minecraft.command.CommandSource;
 
-public class CopyServerVersionCommand extends AbstractCommand {
+public class CopyUsernameCommand extends AbstractCommand {
 
-    public CopyServerVersionCommand() {
+    public CopyUsernameCommand() {
         super(
-                "Lets you copy the brand of the server you are currently connected to.",
+                "Copies your username into your clipboard.",
                 Category.MISC,
-                "copyserverversion",
-                "copyversion",
-                "copyver"
+                "copyusername",
+                "usernamecopy",
+                "copyname",
+                "namecopy",
+                "copyign",
+                "igncopy"
         );
     }
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
-            if (this.mc.isInSingleplayer()) {
-                ChatUtil.errorChatMessage("You are in singleplayer.");
-            }
-            else {
-                this.mc.keyboard.setClipboard(ServerConnectionUtil.getLastServerInfo().version.getString());
-                ChatUtil.infoChatMessage("Server version copied into the clipboard.");
-            }
+            this.mc.keyboard.setClipboard(this.mc.player.getGameProfile().getName());
+            ChatUtil.infoChatMessage("Username copied into the clipboard.");
             return SINGLE_SUCCESS;
         });
     }

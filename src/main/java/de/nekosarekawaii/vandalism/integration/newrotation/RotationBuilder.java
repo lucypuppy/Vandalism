@@ -46,7 +46,7 @@ public class RotationBuilder implements MinecraftWrapper {
         Rotation normalRotations = build(entityVector, mc.player.getEyePos(), priority);
 
         // If we can hit the entity with the normal rotations, return them
-        if (WorldUtil.raytrace(normalRotations, range).getType() == HitResult.Type.MISS) { // TODO: Maybe add faster ray traces
+        if (WorldUtil.raytrace(normalRotations, range).getType() == HitResult.Type.MISS) {
             return normalRotations;
         }
 
@@ -61,12 +61,14 @@ public class RotationBuilder implements MinecraftWrapper {
                             bb.minY + (bb.maxY - bb.minY) * y,
                             bb.minZ + (bb.maxZ - bb.minZ) * z);
 
-                    if (mc.player.getEyePos().distanceTo(vector3d) > range)
+                    if (mc.player.getEyePos().distanceTo(vector3d) > range) {
                         continue;
+                    }
 
                     final Rotation parsedRotation = build(vector3d, mc.player.getEyePos(), priority);
-                    if (WorldUtil.raytrace(parsedRotation, range).getType() == HitResult.Type.MISS) // TODO: Maybe add faster ray traces
+                    if (WorldUtil.raytrace(parsedRotation, range).getType() == HitResult.Type.MISS) {
                         continue;
+                    }
 
                     if (!bestHitVec) {
                         return parsedRotation;
@@ -88,8 +90,10 @@ public class RotationBuilder implements MinecraftWrapper {
         final double nearestZ = Math.max(boundingBox.minZ, Math.min(entity.getZ(), boundingBox.maxZ));
 
         final double nearestY = entity.getY() + Math.max(0,
-                Math.min(mc.player.getY() - entity.getY() + mc.player.getEyeHeight(mc.player.getPose()),
-                        (boundingBox.maxY - boundingBox.minY) * 0.9)
+                Math.min(
+                        mc.player.getY() - entity.getY() + mc.player.getEyeHeight(mc.player.getPose()),
+                        (boundingBox.maxY - boundingBox.minY) * 0.9
+                )
         );
 
         return new Vec3d(nearestX, nearestY, nearestZ);

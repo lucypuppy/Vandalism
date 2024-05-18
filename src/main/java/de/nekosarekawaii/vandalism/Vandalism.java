@@ -51,7 +51,6 @@ import java.io.File;
 
 /**
  * TODO: NekosAreKawaii <br>
- *  - Fix KeyBindArgumentType not accepting every key
  *  - Change behavior of the echolocation module to use it as a chunk load detector
  *  - Protector Module:
  *      - Add protection for custom rank prefixes
@@ -60,10 +59,8 @@ import java.io.File;
  *      - Add protection for ip addresses
  *      - Add protection for account manager
  *  - Fix spotify menu control buttons
- *  - Rewrite EnhancedServerList
  *  - Fix offsets for the new "teleport" method in the fov fucker module
- *  - Fix module tabs display (no stacking) when the client starts the first time
- *  - Use hashmap storage when it has been added to rclasses instead of a default storage because that would improve the performance
+ *  - Use hashmap storage instead of a default storage because that would improve the performance
  *      - (Search for FriendManager#getList())
  *  - Add anti vanish via. the player list hud
  *  - Fix Game server pinger (ensure pings are on different threads)
@@ -73,9 +70,6 @@ import java.io.File;
  *      - Fix translateTextDepthLimit
  *      - Fix blockTooManyTextGlyphs
  *      - Fix blockTooLongTexts
- *  - Add Version Range to the creative tabs
- *  - Fix creative packager for older versions like 1.8
- *  - Fix weird creative tab item remove bug when using the open container key and clicking inside the client side inventory
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Rewrite GCD fix to be accurate
@@ -92,12 +86,24 @@ import java.io.File;
  *  - Keksbye, Simon, FooFieOwO this is fixed find a new way for to bypasss a cubecraft disabler
  *  - Fix autoblock blocking without sword
  *  - Rework windmouse algorythm
+ *  - Technically this should be legit but i need more investigation -> AutoGUICloseModule#onIncomingPacket
+ *  - Maybe add faster ray traces -> RotationBuilder#build
+ *  - Make this customizable -> InventoryUtil#getHotbarSlotForItem
+ *  - Add enchants, Durability etc. -> InventoryUtil#isItemBetter
+ *  - Check if the item in the chest is better otherwise ignore it -> ChestStealerModule#onPrePlayerUpdate
+ *  - Check if the item is useful in any way -> ChestStealerModule#onPrePlayerUpdate
  * <br><br>
  * TODO: simon <br>
  *  - Add a better Autoblock to Killaura with FooFieOwO
  * <br><br>
  * TODO: mori <br>
  *  - Write all descriptions in the third person, without using the second person ('you')
+ * <br><br>
+ * TODO: EvilCodeZ <br>
+ *  - Add Bold -> SimpleFont#SimpleGlyphRenderer#renderGlyph
+ *  - Also handle MINECRAFT_LINES and MINECRAFT_LINE_STRIP -> PersistentMeshProducer#addPass at "} else if (pass.getPrimitiveType() == PrimitiveType.QUADS) {"
+ *  - If the quad buffer is resized at any time, the element buffer will be corrupted -> PersistentMeshProducer#addPass at "elementBuffer = GlobalQuadElementBuffer.getQuadElementBuffer(vertexCount / 4);"
+ *  - Finish AtlasFontRenderer#substringText x2
  */
 @Getter
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
