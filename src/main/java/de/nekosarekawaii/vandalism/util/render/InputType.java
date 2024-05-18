@@ -42,17 +42,17 @@ public class InputType {
     static {
         RStream.of(InputUtil.class).fields().filter(field -> field.name().startsWith("GLFW_KEY_")).forEach(key -> {
             final int keyCode = key.get();
-            FIELD_NAMES.put(getName(keyCode), keyCode);
+            FIELD_NAMES.put(getName(keyCode).toUpperCase(), keyCode);
         });
         RStream.of(GLFW.class).fields().filter(field -> field.name().startsWith("GLFW_MOUSE_BUTTON_")).forEach(button -> {
             final int buttonCode = button.get();
             if (!DENIED_BUTTONS.contains(buttonCode)) {
                 BUTTONS.add(buttonCode);
-                FIELD_NAMES.put(getName(buttonCode), buttonCode);
+                FIELD_NAMES.put(getName(buttonCode).toUpperCase(), buttonCode);
             }
         });
-        FIELD_NAMES.put("None", GLFW.GLFW_KEY_UNKNOWN);
-        FIELD_NAMES.put("Unknown", GLFW.GLFW_KEY_UNKNOWN);
+        FIELD_NAMES.put("NONE", GLFW.GLFW_KEY_UNKNOWN);
+        FIELD_NAMES.put("UNKNOWN", GLFW.GLFW_KEY_UNKNOWN);
     }
 
     public static String getName(int code) {

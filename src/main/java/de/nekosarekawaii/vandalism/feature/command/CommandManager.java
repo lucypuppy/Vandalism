@@ -21,19 +21,28 @@ package de.nekosarekawaii.vandalism.feature.command;
 import com.mojang.brigadier.CommandDispatcher;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.feature.command.impl.exploit.*;
+import de.nekosarekawaii.vandalism.feature.command.impl.exploit.plugin.MultiverseCoreOptimizerCommand;
+import de.nekosarekawaii.vandalism.feature.command.impl.exploit.plugin.SkriptDupeCommand;
 import de.nekosarekawaii.vandalism.feature.command.impl.misc.*;
-import de.nekosarekawaii.vandalism.feature.command.impl.movement.ClipCommand;
+import de.nekosarekawaii.vandalism.feature.command.impl.misc.copy.*;
+import de.nekosarekawaii.vandalism.feature.command.impl.misc.module.ModuleBindCommand;
+import de.nekosarekawaii.vandalism.feature.command.impl.misc.module.ModuleShowBindCommand;
+import de.nekosarekawaii.vandalism.feature.command.impl.misc.module.ModuleToggleCommand;
+import de.nekosarekawaii.vandalism.feature.command.impl.misc.module.ModuleUnbindCommand;
 import de.nekosarekawaii.vandalism.feature.command.impl.movement.FlipCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.movement.HClipCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.movement.VClipCommand;
+import de.nekosarekawaii.vandalism.feature.command.impl.movement.clip.ClipCommand;
+import de.nekosarekawaii.vandalism.feature.command.impl.movement.clip.HClipCommand;
+import de.nekosarekawaii.vandalism.feature.command.impl.movement.clip.VClipCommand;
 import de.nekosarekawaii.vandalism.feature.command.impl.render.ClientsideInventoryClearCommand;
 import de.nekosarekawaii.vandalism.util.common.Storage;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import lombok.Getter;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.ClickEvent;
 
 import java.util.UUID;
 
+@Getter
 public class CommandManager extends Storage<AbstractCommand> implements MinecraftWrapper {
 
     public static final String COMMAND_SECRET = UUID.randomUUID().toString();
@@ -50,8 +59,11 @@ public class CommandManager extends Storage<AbstractCommand> implements Minecraf
             this.add(new TestCommand());
         }
         this.add(
+                new ModuleToggleCommand(),
+                new ModuleBindCommand(),
+                new ModuleUnbindCommand(),
+                new ModuleShowBindCommand(),
                 new ChatClearCommand(),
-                new ModuleCommand(),
                 new ScriptCommand(),
                 new FriendsCommand(),
                 new ConfigCommand(),
@@ -66,7 +78,7 @@ public class CommandManager extends Storage<AbstractCommand> implements Minecraf
                 new CopyPositionCommand(),
                 new TeleportEntitySpawnEggCommand(),
                 new SoundEntitySpawnEggCommand(),
-                new SoundHeadCommand(),
+                //new SoundHeadCommand(), TODO: Fix Component
                 new ClipCommand(),
                 new VClipCommand(),
                 new HClipCommand(),
@@ -81,16 +93,12 @@ public class CommandManager extends Storage<AbstractCommand> implements Minecraf
                 new ClientsideInventoryClearCommand(),
                 new DifficultyCommand(),
                 //new AdvancedBeaconCommand(), TODO: Fix Component
-                new ExploitBookCommand(),
-                new ToggleModuleCommand(),
-                new MVOptimizerCommand(),
+                //new ExploitBookCommand(), TODO: Fix Json
+                new ModuleToggleCommand(),
+                new MultiverseCoreOptimizerCommand(),
                 new SkillSpamCommand(),
                 new SpamCommand()
         );
-    }
-
-    public CommandDispatcher<CommandSource> getCommandDispatcher() {
-        return commandDispatcher;
     }
 
     public ClickEvent generateClickEvent(final String command) {

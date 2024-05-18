@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.command.impl.misc;
+package de.nekosarekawaii.vandalism.feature.command.impl.misc.module;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.Vandalism;
@@ -29,39 +29,15 @@ import de.nekosarekawaii.vandalism.util.render.InputType;
 import net.minecraft.command.CommandSource;
 import org.lwjgl.glfw.GLFW;
 
-public class ModuleCommand extends AbstractCommand {
+public class ModuleBindCommand extends AbstractCommand {
 
-    public ModuleCommand() {
-        super("Lets you toggle and bind/unbind modules.", Category.MISC, "module");
+    public ModuleBindCommand() {
+        super("Lets you bind modules.", Category.MISC, "modulebind", "bind");
     }
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
-        builder.then(literal("toggle").then(argument("module", ModuleArgumentType.create()).executes(context -> {
-            ModuleArgumentType.get(context).toggle();
-            return SINGLE_SUCCESS;
-        })));
-        builder.then(literal("show-bind").then(argument("module", ModuleArgumentType.create()).executes(context -> {
-            final AbstractModule module = ModuleArgumentType.get(context);
-            if (module.getKeyBind().isValid()) {
-                ChatUtil.infoChatMessage("Module " + module.getName() + " is bound to " + InputType.getName(module.getKeyBind().getValue()) + ".");
-            } else {
-                ChatUtil.infoChatMessage("Module " + module.getName() + " is not bound.");
-            }
-            return SINGLE_SUCCESS;
-        })));
-        builder.then(literal("unbind").then(argument("module", ModuleArgumentType.create()).executes(context -> {
-            final AbstractModule module = ModuleArgumentType.get(context);
-            if (module.getKeyBind().isValid()) {
-                module.getKeyBind().resetValue();
-                ChatUtil.infoChatMessage("Unbound module " + module.getName() + ".");
-            } else {
-                ChatUtil.infoChatMessage("Module " + module.getName() + " is not bound.");
-            }
-
-            return SINGLE_SUCCESS;
-        })));
-        builder.then(literal("bind").then(argument("module", ModuleArgumentType.create()).then(argument("key-bind", KeyBindArgumentType.create()).executes(context -> {
+        builder.then(argument("module", ModuleArgumentType.create()).then(argument("key-bind", KeyBindArgumentType.create()).executes(context -> {
             final AbstractModule module = ModuleArgumentType.get(context);
             final Integer code = KeyBindArgumentType.get(context);
             if (code == GLFW.GLFW_KEY_UNKNOWN && !module.getKeyBind().isValid()) {
@@ -84,7 +60,7 @@ public class ModuleCommand extends AbstractCommand {
                 }
             }
             return SINGLE_SUCCESS;
-        }))));
+        })));
     }
 
 }
