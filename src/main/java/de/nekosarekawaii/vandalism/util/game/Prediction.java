@@ -28,7 +28,7 @@ import net.minecraft.util.math.Vec3d;
 
 public class Prediction {
 
-    public static Vec3d predictEntityMovement(LivingEntity entity, int ticks, boolean predictInput) {
+    public static LivingEntity predictEntityMovement(LivingEntity entity, int ticks, boolean predictInput) {
         final LivingEntity livingEntity = new LivingEntity((EntityType<? extends LivingEntity>) entity.getType(), entity.getWorld()) {
             @Override
             public Iterable<ItemStack> getArmorItems() {
@@ -65,7 +65,12 @@ public class Prediction {
             livingEntity.tick();
         }
 
-        return livingEntity.getPos();
+        return livingEntity;
+    }
+
+    public static Vec3d predictEntityPosition(LivingEntity entity, int ticks, boolean predictInput) {
+        LivingEntity predictedEntity = predictEntityMovement(entity, ticks, predictInput);
+        return predictedEntity.getPos();
     }
 
 }
