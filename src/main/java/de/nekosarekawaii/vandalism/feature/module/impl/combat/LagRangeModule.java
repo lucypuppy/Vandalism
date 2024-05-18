@@ -26,6 +26,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.normal.game.TimeTravelListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
+import de.nekosarekawaii.vandalism.util.common.MathUtil;
 import de.nekosarekawaii.vandalism.util.game.Prediction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -37,6 +38,8 @@ public class LagRangeModule extends AbstractModule implements TimeTravelListener
     private boolean isCharging, isDone;
     private MSTimer timer;
     private KillAuraModule killAura;
+
+    private int ticksToShift;
 
     public LagRangeModule() {
         super("Lag Range", "Allows you to manipulate how minecraft handles ticks and speedup the game.", Category.COMBAT);
@@ -55,6 +58,7 @@ public class LagRangeModule extends AbstractModule implements TimeTravelListener
         this.killAura = Vandalism.getInstance().getModuleManager().getByClass(KillAuraModule.class);
         isCharging = false;
         isDone = true;
+        ticksToShift = 0;
     }
 
     @Override
@@ -80,19 +84,21 @@ public class LagRangeModule extends AbstractModule implements TimeTravelListener
 
             boolean isPredictedInRange = false;
 
-            for (int ticks = Math.min(getCharge(), 1); ticks <= maxCharge.getValue(); ++ticks) {
-                double predictedDistance = Prediction.predictEntityMovement(mc.player, ticks, true)
+            for (int ticks = getCharge(); ticks <= maxCharge.getValue(); ++ticks) {
+                double predictedDistance = Prediction.predictEntityPosition(mc.player, ticks, true)
                         .add(0, mc.player.getStandingEyeHeight(), 0)
-                        .distanceTo(Prediction.predictEntityMovement(target, ticks, true));
-                if (predictedDistance <= killAura.getRange()) {
+                        .distanceTo(Prediction.predictEntityPosition(target, ticks, true));
+//                if (predictedDistance <= killAura.getRange()) {
+                if (MathUtil.isBetween(predictedDistance, killAura.getRange() - 0.1, killAura.getRange())) {
                     isPredictedInRange = true;
+                    ticksToShift = ticks;
                     break;
                 }
             }
 
             boolean isInRange = distance > killAura.getRange() && distance <= range.getValue();
 
-            this.isCharging = isDone && isInRange && isPredictedInRange;
+            this.isCharging = isDone && isInRange && (isPredictedInRange || (ticksToShift > 0 && getCharge() < ticksToShift));
         } else {
             this.isCharging = false;
         }
@@ -109,9 +115,10 @@ public class LagRangeModule extends AbstractModule implements TimeTravelListener
         }
 
         /* UnCharging */
-        if (!isCharging && shifted > 0) {
+        if (!isCharging && shifted > 0 && getCharge() >= ticksToShift) {
             isDone = false;
             shifted = 0;
+            ticksToShift = 0;
         }
 
         if (shifted <= 0) {
