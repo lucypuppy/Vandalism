@@ -26,8 +26,10 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.PacketCallbacks;
+import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.listener.PacketListener;
 import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.play.BundleS2CPacket;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -36,6 +38,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.Iterator;
 
 @Mixin(value = ClientConnection.class, priority = 9999)
 public abstract class MixinClientConnection {
@@ -57,18 +61,34 @@ public abstract class MixinClientConnection {
     @Unique
     private boolean vandalism$selfRepeating;
 
-    @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/packet/Packet;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/ClientConnection;handlePacket(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;)V", ordinal = 0), cancellable = true)
-    private void callIncomingPacketListener(final ChannelHandlerContext channelHandlerContext, Packet<?> packet, final CallbackInfo ci) {
+    @Unique
+    private boolean vandalism$onIncomingPacket(final Packet<?> packet, final CallbackInfo ci) {
         final IncomingPacketListener.IncomingPacketEvent event = new IncomingPacketListener.IncomingPacketEvent(packet, this.packetListener.getPhase(), (ClientConnection) (Object) this);
         Vandalism.getInstance().getEventSystem().postInternal(IncomingPacketListener.IncomingPacketEvent.ID, event);
         if (event.isCancelled()) {
-            ci.cancel();
-            return;
+            return true;
         }
         if (!packet.equals(event.packet)) {
             handlePacket(event.packet, packetListener);
-            ci.cancel();
+            return true;
         }
+        return false;
+    }
+
+    @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/packet/Packet;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/ClientConnection;handlePacket(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;)V", ordinal = 0), cancellable = true)
+    private void callIncomingPacketListener(final ChannelHandlerContext channelHandlerContext, Packet<?> packet, final CallbackInfo ci) {
+        if (packet instanceof final BundleS2CPacket bundleS2CPacket) {
+            for (final Iterator<Packet<? super ClientPlayPacketListener>> it = bundleS2CPacket.getPackets().iterator(); it.hasNext(); ) {
+                if (vandalism$onIncomingPacket(it.next(), ci)) {
+                    it.remove();
+                }
+            }
+        } else {
+            if (vandalism$onIncomingPacket(packet, ci)) {
+                ci.cancel();
+            }
+        }
+
     }
 
     @Inject(method = "sendImmediately", at = @At("HEAD"), cancellable = true)
