@@ -58,6 +58,7 @@ public class MSDeviceCodeAccount extends AbstractMicrosoftAccount {
 
         @Override
         public CompletableFuture<AbstractAccount> make() {
+            this.state = "";
             return CompletableFuture.supplyAsync(() -> {
                 try {
                     final StepFullJavaSession.FullJavaSession javaSession = MinecraftAuth.JAVA_DEVICE_CODE_LOGIN.getFromInput(MinecraftAuth.createHttpClient(), new StepMsaDeviceCode.MsaDeviceCodeCallback(msaDeviceCode -> {

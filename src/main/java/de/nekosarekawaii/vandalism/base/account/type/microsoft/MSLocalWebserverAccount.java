@@ -66,6 +66,7 @@ public class MSLocalWebserverAccount extends AbstractMicrosoftAccount {
 
         @Override
         public CompletableFuture<AbstractAccount> make() {
+            this.state = "";
             return CompletableFuture.supplyAsync(() -> {
                 try {
                     final StepFullJavaSession.FullJavaSession javaSession = JAVA_LOCAL_WEBSERVER_LOGIN.getFromInput(MinecraftAuth.createHttpClient(), new StepLocalWebServer.LocalWebServerCallback(localWebServer -> {
