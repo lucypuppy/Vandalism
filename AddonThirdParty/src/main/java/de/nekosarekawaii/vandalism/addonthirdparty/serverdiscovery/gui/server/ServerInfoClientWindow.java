@@ -26,6 +26,7 @@ import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.impl.ServerInfoResponse;
 import de.nekosarekawaii.vandalism.base.account.type.SessionAccount;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
+import de.nekosarekawaii.vandalism.util.game.PingState;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
 import imgui.ImGui;
@@ -36,11 +37,18 @@ import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
+import net.lenni0451.mcping.MCPing;
+import net.lenni0451.mcping.exception.ConnectTimeoutException;
+import net.lenni0451.mcping.exception.ConnectionRefusedException;
+import net.lenni0451.mcping.exception.DataReadException;
+import net.lenni0451.mcping.exception.PacketReadException;
+import net.lenni0451.mcping.responses.MCPingResponse;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Pair;
 
+import java.net.UnknownHostException;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -75,6 +83,8 @@ public class ServerInfoClientWindow extends ClientWindow {
 
     private boolean waitingForResponse;
 
+    private int filteredPlayers;
+
     public ServerInfoClientWindow() {
         super("Server Info", Category.SERVER);
         this.ip = new ImString(253);
@@ -84,6 +94,7 @@ public class ServerInfoClientWindow extends ClientWindow {
         this.serverInfo = null;
         this.lastIP = "";
         this.waitingForResponse = false;
+        this.filteredPlayers = 0;
     }
 
     private void resetState() {
@@ -116,6 +127,7 @@ public class ServerInfoClientWindow extends ClientWindow {
                 this.state.set("Requesting data for " + ipValue + "...");
                 this.serverInfo = null;
                 this.lastIP = ipValue;
+                this.filteredPlayers = 0;
                 this.executor.submit(() -> {
                     this.waitingForResponse = true;
                     final Pair<String, Integer> resolvedAddress = ServerConnectionUtil.resolveServerAddress(ipValue);
@@ -198,49 +210,84 @@ public class ServerInfoClientWindow extends ClientWindow {
             if (ImGui.button("Copy Data##serverinfocopydata", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                 this.mc.keyboard.setClipboard(data);
             }
-            ImGui.spacing();
-            ImGui.text("Players");
-            ImGui.separator();
-            for (final ServerInfoResponse.Player player : this.serverInfo.players) {
-                final String playerName = player.name;
-                final String playerUUID = player.uuid;
-                if (playerName.equals("Anonymous Player") || playerUUID.equals("00000000-0000-0000-0000-000000000000")) {
-                    continue;
+            if (this.serverInfo.players != null && !this.serverInfo.players.isEmpty()) {
+                if (!this.lastIP.isBlank() && !this.waitingForResponse) {
+                    final String lastIpValue = this.lastIP;
+                    if (ImUtils.subButton("Filter Online Players##serverinfofilteronlineplayers")) {
+                        this.state.set("Filtering online players...");
+                        this.waitingForResponse = true;
+                        this.executor.submit(() -> {
+                            final Pair<String, Integer> resolvedAddress = ServerConnectionUtil.resolveServerAddress(lastIpValue);
+                            final String ip = resolvedAddress.getLeft();
+                            final int port = resolvedAddress.getRight();
+                            MCPing.pingModern(this.serverInfo.protocol)
+                                    .address(ip, port)
+                                    .timeout(5000, 5000)
+                                    .exceptionHandler(t -> {
+                                        switch (t) {
+                                            case UnknownHostException unknownHostException ->
+                                                    this.state.set(PingState.UNKNOWN_HOST.getMessage());
+                                            case ConnectionRefusedException connectionRefusedException ->
+                                                    this.state.set(PingState.CONNECTION_REFUSED.getMessage());
+                                            case ConnectTimeoutException connectTimeoutException ->
+                                                    this.state.set(PingState.CONNECTION_TIMED_OUT.getMessage());
+                                            case DataReadException dataReadException ->
+                                                    this.state.set(PingState.DATA_READ_FAILED.getMessage());
+                                            case PacketReadException packetReadException ->
+                                                    this.state.set(PingState.PACKET_READ_FAILED.getMessage());
+                                            case null, default -> {
+                                                this.state.set(PingState.FAILED.getMessage());
+                                                Vandalism.getInstance().getLogger().error("Failed to ping {}:{}", ip, port, t);
+                                            }
+                                        }
+                                        this.waitingForResponse = false;
+                                    }).finishHandler(response -> {
+                                        if (this.serverInfo.players != null && !this.serverInfo.players.isEmpty() && response.players != null && response.players.sample != null) {
+                                            final MCPingResponse.Players.Player[] sample = response.players.sample;
+                                            this.serverInfo.players.removeIf(serverInfoPlayer -> {
+                                                for (final MCPingResponse.Players.Player onlinePlayer : sample) {
+                                                    if (onlinePlayer.name.equals(serverInfoPlayer.name)) {
+                                                        this.filteredPlayers++;
+                                                        return true;
+                                                    }
+                                                }
+                                                return false;
+                                            });
+                                        }
+                                        this.state.set("Successfully filtered " + this.filteredPlayers + " online players!");
+                                        this.waitingForResponse = false;
+                                    }).getSync();
+                        });
+                    }
                 }
-                final String playerData = "Name: " +
-                        playerName +
-                        "\n" +
-                        "UUID: " +
-                        playerUUID +
-                        "\n" +
-                        "Last Seen: " +
-                        DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(
-                                Instant.ofEpochSecond(player.last_seen).atZone(ZoneId.systemDefault()).toLocalDateTime()
-                        );
-                final GameProfile gameProfile = this.mc.getGameProfile();
-                final boolean isCurrentAccount = gameProfile.getName().equals(playerName) && gameProfile.getId().toString().equals(playerUUID);
-                if (isCurrentAccount) {
-                    final float[] color = {0.1f, 0.8f, 0.1f, 0.30f};
-                    ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], color[3]);
-                    ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], color[3] - 0.1f);
-                    ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
-                }
-                if (ImGui.button("##serverinfoplayer" + playerName, ImGui.getColumnWidth() - 8, 60)) {
-                    final SessionAccount sessionAccount = new SessionAccount(
-                            playerName,
-                            playerUUID,
-                            "",
-                            "",
-                            ""
-                    );
-                    sessionAccount.logIn();
-                }
-                if (isCurrentAccount) {
-                    ImGui.popStyleColor(3);
-                }
-                if (ImGui.beginPopupContextItem("##serverinfoplayer" + playerName + "popup", ImGuiPopupFlags.MouseButtonRight)) {
-                    final int buttonWidth = 150, buttonHeight = 28;
-                    if (ImGui.button("Add##serverinfoplayer" + playerName + "add", buttonWidth, buttonHeight)) {
+                ImGui.spacing();
+                ImGui.text("Players (" + this.serverInfo.players.size() + ")" + (this.filteredPlayers > 0 ? " | Filtered (" + this.filteredPlayers + ")" : ""));
+                ImGui.separator();
+                for (final ServerInfoResponse.Player player : this.serverInfo.players) {
+                    final String playerName = player.name;
+                    final String playerUUID = player.uuid;
+                    if (playerName.equals("Anonymous Player") || playerUUID.equals("00000000-0000-0000-0000-000000000000")) {
+                        continue;
+                    }
+                    final String playerData = "Name: " +
+                            playerName +
+                            "\n" +
+                            "UUID: " +
+                            playerUUID +
+                            "\n" +
+                            "Last Seen: " +
+                            DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(
+                                    Instant.ofEpochSecond(player.last_seen).atZone(ZoneId.systemDefault()).toLocalDateTime()
+                            );
+                    final GameProfile gameProfile = this.mc.getGameProfile();
+                    final boolean isCurrentAccount = gameProfile.getName().equals(playerName) && gameProfile.getId().toString().equals(playerUUID);
+                    if (isCurrentAccount) {
+                        final float[] color = {0.1f, 0.8f, 0.1f, 0.30f};
+                        ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], color[3]);
+                        ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], color[3] - 0.1f);
+                        ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
+                    }
+                    if (ImGui.button("##serverinfoplayer" + playerName, ImGui.getColumnWidth() - 8, 60)) {
                         final SessionAccount sessionAccount = new SessionAccount(
                                 playerName,
                                 playerUUID,
@@ -248,22 +295,40 @@ public class ServerInfoClientWindow extends ClientWindow {
                                 "",
                                 ""
                         );
-                        Vandalism.getInstance().getAccountManager().add(sessionAccount);
                         sessionAccount.logIn();
                     }
-                    if (ImGui.button("Copy Name##serverinfoplayer" + playerName + "copyname", buttonWidth, buttonHeight)) {
-                        this.mc.keyboard.setClipboard(playerName);
+                    if (isCurrentAccount) {
+                        ImGui.popStyleColor(3);
                     }
-                    if (ImGui.button("Copy UUID##serverinfoplayer" + playerName + "copyuuid", buttonWidth, buttonHeight)) {
-                        this.mc.keyboard.setClipboard(playerUUID);
+                    if (ImGui.beginPopupContextItem("##serverinfoplayer" + playerName + "popup", ImGuiPopupFlags.MouseButtonRight)) {
+                        final int buttonWidth = 150, buttonHeight = 28;
+                        if (ImGui.button("Add##serverinfoplayer" + playerName + "add", buttonWidth, buttonHeight)) {
+                            final SessionAccount sessionAccount = new SessionAccount(
+                                    playerName,
+                                    playerUUID,
+                                    "",
+                                    "",
+                                    ""
+                            );
+                            Vandalism.getInstance().getAccountManager().add(sessionAccount);
+                            sessionAccount.logIn();
+                        }
+                        if (ImGui.button("Copy Name##serverinfoplayer" + playerName + "copyname", buttonWidth, buttonHeight)) {
+                            this.mc.keyboard.setClipboard(playerName);
+                        }
+                        if (ImGui.button("Copy UUID##serverinfoplayer" + playerName + "copyuuid", buttonWidth, buttonHeight)) {
+                            this.mc.keyboard.setClipboard(playerUUID);
+                        }
+                        if (ImGui.button("Copy Data##serverinfoplayer" + playerName + "copydata", buttonWidth, buttonHeight)) {
+                            this.mc.keyboard.setClipboard(playerData);
+                        }
+                        ImGui.endPopup();
                     }
-                    if (ImGui.button("Copy Data##serverinfoplayer" + playerName + "copydata", buttonWidth, buttonHeight)) {
-                        this.mc.keyboard.setClipboard(playerData);
-                    }
-                    ImGui.endPopup();
+                    ImGui.sameLine(20);
+                    ImGui.text(playerData);
                 }
-                ImGui.sameLine(20);
-                ImGui.text(playerData);
+            } else {
+                ImGui.text("No players found.");
             }
         }
     }
