@@ -18,6 +18,8 @@
 
 package de.nekosarekawaii.vandalism.util.game;
 
+import de.nekosarekawaii.vandalism.event.normal.player.StrafeListener;
+import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.util.math.BlockPos;
@@ -64,7 +66,7 @@ public class MovementUtil implements MinecraftWrapper {
     /**
      * Set the speed of the player.
      *
-     * @param speed  The speed to set.
+     * @param speed The speed to set.
      * @return The new velocity of the player.
      */
     public static Vec3d setSpeed(final double speed) {
@@ -87,7 +89,7 @@ public class MovementUtil implements MinecraftWrapper {
      *
      * @param entity The entity to set the speed of.
      * @param speed  The speed to set.
-     * @param yaw The yaw to use.
+     * @param yaw    The yaw to use.
      * @return The new velocity of the entity.
      */
     public static Vec3d setSpeed(final Entity entity, final double speed, final float yaw) {
@@ -217,6 +219,38 @@ public class MovementUtil implements MinecraftWrapper {
 
     public static double roundToGround(final double posY) {
         return Math.round(posY / MinecraftConstants.MAGIC_ON_GROUND_MODULO_FACTOR) * MinecraftConstants.MAGIC_ON_GROUND_MODULO_FACTOR;
+    }
+
+    public static Vec3d silentMoveFix(Rotation rotation, StrafeListener.StrafeEvent event) {
+        float currentMotionX = (float) (event.movementInput.x * Math.cos(Math.toRadians(event.yaw)) - event.movementInput.z * Math.sin(Math.toRadians(event.yaw)));
+        float currentMotionZ = (float) (event.movementInput.z * Math.cos(Math.toRadians(event.yaw)) + event.movementInput.x * Math.sin(Math.toRadians(event.yaw)));
+
+        float bestForward = (float) event.movementInput.z;
+        float bestStrafing = (float) event.movementInput.x;
+        float bestDist = -1;
+
+        float[] possibleInputs = new float[]{-1.0F, 0.0F, 1.0F};
+        for (float forward : possibleInputs) {
+            for (float strafing : possibleInputs) {
+                if (forward == 0.0F && strafing == 0.0F) continue;
+
+                float motionX = (float) (strafing * Math.cos(Math.toRadians(rotation.getYaw())) - forward * Math.sin(Math.toRadians(rotation.getYaw())));
+                float motionZ = (float) (forward * Math.cos(Math.toRadians(rotation.getYaw())) + strafing * Math.sin(Math.toRadians(rotation.getYaw())));
+
+                float deltaX = motionX - currentMotionX;
+                float deltaZ = motionZ - currentMotionZ;
+
+                float dist = (float) Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
+                if (bestDist == -1 || dist < bestDist) {
+                    bestForward = forward;
+                    bestStrafing = strafing;
+                    bestDist = dist;
+                }
+            }
+        }
+
+        float mag = (float) Math.max(Math.abs(event.movementInput.z), Math.abs(event.movementInput.x));
+        return new Vec3d(bestStrafing * mag, event.movementInput.y, bestForward * mag);
     }
 
 }
