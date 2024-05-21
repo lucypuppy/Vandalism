@@ -22,16 +22,18 @@ import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.RotationSettings;
 import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
+import de.nekosarekawaii.vandalism.event.normal.player.CanSprintListener;
 import de.nekosarekawaii.vandalism.event.normal.player.RotationListener;
 import de.nekosarekawaii.vandalism.event.normal.player.StrafeListener;
 import de.nekosarekawaii.vandalism.integration.newrotation.enums.RotationGCD;
 import de.nekosarekawaii.vandalism.integration.newrotation.enums.RotationPriority;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 import de.nekosarekawaii.vandalism.util.render.RenderUtil;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.MathHelper;
 
-public class RotationManager implements MinecraftWrapper, OutgoingPacketListener, StrafeListener, RotationListener {
+public class RotationManager implements MinecraftWrapper, OutgoingPacketListener, StrafeListener, RotationListener, CanSprintListener {
 
     private Rotation rotation;
     private Rotation targetRotation;
@@ -43,7 +45,7 @@ public class RotationManager implements MinecraftWrapper, OutgoingPacketListener
     private boolean movementFix;
 
     public RotationManager() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, OutgoingPacketEvent.ID, StrafeEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, OutgoingPacketEvent.ID, StrafeEvent.ID, CanSprintEvent.ID);
 
         // Priority is low because we want to calculate the rotation after the module set it.
         Vandalism.getInstance().getEventSystem().subscribe(RotationEvent.ID, this, Priorities.LOW);
@@ -98,6 +100,12 @@ public class RotationManager implements MinecraftWrapper, OutgoingPacketListener
         if (this.rotation == null || !this.movementFix)
             return;
 
+        if (Vandalism.getInstance().getClientSettings().getRotationSettings().moveFixMode.getValue().equalsIgnoreCase("Silent")) {
+            if (event.movementInput != null && MovementUtil.isMoving()) {
+                event.movementInput = MovementUtil.silentMoveFix(this.rotation, event);
+            }
+        }
+
         // Thanks mojang...
         if (event.type == StrafeListener.Type.JUMP) {
             event.yaw = (float) Math.toRadians(this.rotation.getYaw());
@@ -106,6 +114,12 @@ public class RotationManager implements MinecraftWrapper, OutgoingPacketListener
         }
 
         event.yaw = this.rotation.getYaw();
+    }
+
+    @Override
+    public void onCanSprint(CanSprintEvent event) {
+        if(this.rotation == null || !this.movementFix) return;
+        event.canSprint = Math.abs(MathHelper.wrapDegrees(this.rotation.getYaw() - MovementUtil.getInputAngle(mc.player.getYaw()))) <= 45;
     }
 
     public void setRotation(final Rotation rotation, final float rotateSpeed, final float correlationStrength, final boolean movementFix) {
@@ -153,5 +167,4 @@ public class RotationManager implements MinecraftWrapper, OutgoingPacketListener
     public Rotation getRotation() {
         return rotation;
     }
-
 }

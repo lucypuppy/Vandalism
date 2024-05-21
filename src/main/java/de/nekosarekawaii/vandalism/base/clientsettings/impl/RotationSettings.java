@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.base.clientsettings.impl;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
+import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.integration.newrotation.enums.RotationGCD;
 
@@ -50,6 +51,13 @@ public class RotationSettings extends ValueGroup {
             "Change the GCD Mode.",
             RotationGCD.REAL,
             RotationGCD.values()
+    );
+
+    public final ModeValue moveFixMode = new ModeValue(
+            this,
+            "Movement Fix Mode",
+            "Change the behaviour of the movement fix.",
+            "Silent", "Strict"
     );
 
     public RotationSettings(final ClientSettings parent) {
