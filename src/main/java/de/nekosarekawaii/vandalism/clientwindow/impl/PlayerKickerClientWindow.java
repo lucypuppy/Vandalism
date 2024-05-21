@@ -83,8 +83,8 @@ public class PlayerKickerClientWindow extends ClientWindow {
             ImGui.text("IP");
             ImGui.setNextItemWidth(-1);
             ImGui.inputText("##playerKickerIp", this.ip);
-            if (this.ip.isEmpty() && this.mc.player != null) {
-                if (ImUtils.subButton("Use Current Server")) {
+            if (this.ip.isEmpty()) {
+                if (ImUtils.subButton("Use " + (this.mc.player != null ? "Current" : "Last") + " Server")) {
                     final ServerInfo currentServerInfo = ServerConnectionUtil.getLastServerInfo();
                     if (currentServerInfo != null) {
                         this.ip.set(currentServerInfo.address);

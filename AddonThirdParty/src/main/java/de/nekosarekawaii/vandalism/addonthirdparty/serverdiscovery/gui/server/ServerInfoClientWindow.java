@@ -106,7 +106,7 @@ public class ServerInfoClientWindow extends ClientWindow {
         );
         final ServerInfo currentServer = ServerConnectionUtil.getLastServerInfo();
         if (currentServer != null && !this.waitingForResponse) {
-            if (ImGui.button("Use Current Server##serverinfousecurrentserver", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+            if (ImGui.button("Use " + (this.mc.player != null ? "Current" : "Last") + " Server##serverinfousecurrentserver", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                 this.ip.set(currentServer.address);
             }
         }
