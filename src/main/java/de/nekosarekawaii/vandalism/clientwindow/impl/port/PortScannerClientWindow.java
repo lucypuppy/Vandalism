@@ -123,7 +123,7 @@ public class PortScannerClientWindow extends ClientWindow {
             );
             final ServerInfo currentServer = ServerConnectionUtil.getLastServerInfo();
             if (currentServer != null) {
-                if (ImGui.button("Use Current Server##portscannerusecurrentserver", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                if (ImGui.button("Use " + (this.mc.player != null ? "Current" : "Last") + " Server##portscannerusecurrentserver", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                     this.address.set(currentServer.address);
                 }
             }
