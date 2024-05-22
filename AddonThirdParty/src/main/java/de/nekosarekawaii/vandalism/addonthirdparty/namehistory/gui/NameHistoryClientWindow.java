@@ -22,7 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
+import de.nekosarekawaii.vandalism.clientwindow.template.StateClientWindow;
 import de.nekosarekawaii.vandalism.util.common.UUIDUtil;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
@@ -42,7 +42,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class NameHistoryClientWindow extends ClientWindow {
+public class NameHistoryClientWindow extends StateClientWindow {
 
     private static final HttpClient REQUESTER = HttpClient.newHttpClient();
 
@@ -61,7 +61,7 @@ public class NameHistoryClientWindow extends ClientWindow {
 
     };
 
-    private final ImString username, state;
+    private final ImString username;
 
     private final ExecutorService executor;
 
@@ -74,8 +74,6 @@ public class NameHistoryClientWindow extends ClientWindow {
     public NameHistoryClientWindow() {
         super("Name History", Category.MISC);
         this.username = new ImString(16);
-        this.state = new ImString(200);
-        this.resetState();
         this.executor = Executors.newSingleThreadExecutor();
         this.gson = new Gson();
         this.names = new ArrayList<>();
@@ -89,24 +87,9 @@ public class NameHistoryClientWindow extends ClientWindow {
         this.lastUUID = "";
     }
 
-    private void resetState() {
-        this.state.set("Waiting for input...");
-    }
-
-    private void delayedResetState() {
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException ignored) {
-        }
-        this.resetState();
-    }
-
     @Override
     protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        ImGui.text("State");
-        ImGui.setNextItemWidth(-1);
-        ImGui.inputText("##namehistorystate", this.state, ImGuiInputTextFlags.ReadOnly);
-        ImGui.spacing();
+        super.onRender(context, mouseX, mouseY, delta);
         ImGui.text("Username");
         ImGui.setNextItemWidth(-1);
         ImGui.inputText("##namehistoryusername", this.username,
@@ -120,14 +103,14 @@ public class NameHistoryClientWindow extends ClientWindow {
                 this.lastUsername = usernameValue;
                 this.executor.submit(() -> {
                     try {
-                        this.state.set("Getting uuid by username from mojang api...");
+                        this.setState("Getting uuid by username from mojang api...");
                         this.lastUUID = UUIDUtil.getUUIDFromName(this.lastUsername);
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         this.clear();
-                        this.state.set("Error while getting uuid for name '" + this.lastUsername + "' from mojang api: " + e);
+                        this.setState("Error while getting uuid for name '" + this.lastUsername + "' from mojang api: " + e);
                     }
                     if (this.lastUUID.isBlank() && this.mc.player != null) {
-                        this.state.set("Fallback: Trying to get the uuid from the user on the server...");
+                        this.setState("Fallback: Trying to get the uuid from the user on the server...");
                         for (final PlayerListEntry entry : Objects.requireNonNull(this.mc.getNetworkHandler()).getPlayerList()) {
                             if (entry.getProfile().getName().equalsIgnoreCase(this.lastUsername)) {
                                 this.lastUUID = entry.getProfile().getId().toString();
@@ -137,7 +120,7 @@ public class NameHistoryClientWindow extends ClientWindow {
                     }
                     if (!this.lastUUID.isBlank()) {
                         try {
-                            this.state.set("Getting name history by uuid...");
+                            this.setState("Getting name history by uuid...");
                             final HttpRequest request = HttpRequest.newBuilder()
                                     .uri(URI.create("https://laby.net/api/v2/user/" + this.lastUUID + "/get-profile"))
                                     .GET()
@@ -170,23 +153,23 @@ public class NameHistoryClientWindow extends ClientWindow {
                                         ));
                                     }
                                     if (this.names.isEmpty()) {
-                                        this.state.set("No name history found for " + this.lastUsername + ".");
+                                        this.setState("No name history found for " + this.lastUsername + ".");
                                         this.clear();
-                                    } else this.state.set("Got name history.");
+                                    } else this.setState("Got name history.");
                                 }
                             } else {
-                                this.state.set("Invalid response for the name history from the laby.net api (Content is blank).");
+                                this.setState("Invalid response for the name history from the laby.net api (Content is blank).");
                                 this.clear();
                             }
-                        } catch (Exception e) {
-                            this.state.set("Error while getting name history from mojang api: " + e);
+                        } catch (final Exception e) {
+                            this.setState("Error while getting name history from mojang api: " + e);
                             this.clear();
                         }
                     } else {
-                        this.state.set("Invalid uuid.");
+                        this.setState("Invalid uuid.");
                         this.clear();
                     }
-                    this.delayedResetState();
+                    this.delayedResetState(10000);
                 });
             }
         }

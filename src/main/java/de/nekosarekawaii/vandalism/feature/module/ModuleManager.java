@@ -102,7 +102,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
             this.add(new TestModule());
         }
         this.add(
-                // used by others
                 this.killAuraModule = new KillAuraModule(),
                 this.consoleSpammerModule = new ConsoleSpammerModule(),
                 this.exploitFixerModule = new ExploitFixerModule(),
@@ -118,8 +117,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.fullBrightModule = new FullBrightModule(),
                 this.zoomModule = new ZoomModule(),
                 this.ethanolModule = new EthanolModule(),
-
-                // combat
+                new FakeLagModule(this.killAuraModule),
                 new AntiBotsModule(),
                 new AutoClickerModule(),
                 new AutoRodModule(),
@@ -130,19 +128,14 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new TeleportHitModule(),
                 new TimerRangeModule(),
                 new WTapModule(),
-
-                // exploit
                 new DisablerModule(),
                 new GodModeModule(),
                 new ServerCrasherModule(),
                 new BungeeCordSpooferModule(),
                 new CraftCarryModule(),
                 new EcholocationModule(),
-                new FakeLagModule(this.killAuraModule),
                 new SignExploitsModule(),
                 new VehicleOneHitModule(),
-
-                // misc
                 new AutoArmorModule(),
                 new AutoFishModule(),
                 new AutoRespawnModule(),
@@ -161,8 +154,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new PacketManagerModule(),
                 new ResourcePackSpooferModule(),
                 new AntiGUICloseModule(),
-
-                // movement
                 new AirJumpModule(),
                 new BlinkModule(),
                 new ElytraFlightModule(),
@@ -183,13 +174,12 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new StrafeModule(),
                 new TeleportModule(),
                 new TimerModule(),
-
-                // render
                 new AmbienceModule(),
                 new BetterTooltipsModule(),
                 new CameraNoClipModule(),
                 new DeutschMacherModule(),
-                new ProtectorModule()
+                new ProtectorModule(),
+                new GameModeUpdateModule()
         );
         this.configManager.add(new ModulesConfig(this));
     }

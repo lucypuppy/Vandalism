@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.ServerDiscove
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.impl.WhereIsRequest;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.Response;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.impl.WhereIsResponse;
-import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
+import de.nekosarekawaii.vandalism.clientwindow.template.StateClientWindow;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class PlayerDiscoveryClientWindow extends ClientWindow {
+public class PlayerDiscoveryClientWindow extends StateClientWindow {
 
     private static final ImGuiInputTextCallback USERNAME_NAME_FILTER = new ImGuiInputTextCallback() {
 
@@ -63,7 +63,7 @@ public class PlayerDiscoveryClientWindow extends ClientWindow {
 
     };
 
-    private final ImString username, state;
+    private final ImString username;
 
     private final ExecutorService executor;
 
@@ -76,23 +76,14 @@ public class PlayerDiscoveryClientWindow extends ClientWindow {
     public PlayerDiscoveryClientWindow() {
         super("Player Discovery", Category.SERVER);
         this.username = new ImString(16);
-        this.state = new ImString(200);
-        this.resetState();
         this.executor = Executors.newSingleThreadExecutor();
         this.searchField = new ImString();
         this.waitingForResponse = false;
     }
 
-    private void resetState() {
-        this.state.set("Waiting for input...");
-    }
-
     @Override
     protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        ImGui.text("State");
-        ImGui.setNextItemWidth(-1);
-        ImGui.inputText("##playerdiscoverystate", this.state, ImGuiInputTextFlags.ReadOnly);
-        ImGui.spacing();
+        super.onRender(context, mouseX, mouseY, delta);
         ImGui.text("Username");
         ImGui.setNextItemWidth(-1);
         ImGui.inputText("##playerdiscoveryname", this.username,
@@ -102,20 +93,20 @@ public class PlayerDiscoveryClientWindow extends ClientWindow {
         final String usernameValue = this.username.get();
         if (!usernameValue.isBlank() && usernameValue.length() > 2 && usernameValue.length() < 17 && !this.waitingForResponse) {
             if (ImUtils.subButton("Search##playerdiscoverysearch")) {
-                this.state.set("Searching for " + usernameValue + "...");
+                this.setState("Searching for " + usernameValue + "...");
                 this.records.clear();
                 this.executor.submit(() -> {
                     this.waitingForResponse = true;
                     final Response response = ServerDiscoveryUtil.request(new WhereIsRequest(usernameValue));
                     if (response instanceof final WhereIsResponse whereIsResponse) {
                         if (whereIsResponse.isError()) {
-                            this.state.set("Error: " + whereIsResponse.error);
+                            this.setState("Error: " + whereIsResponse.error);
                         } else {
                             final List<WhereIsResponse.Record> data = whereIsResponse.data;
                             if (data.isEmpty()) {
-                                this.state.set(usernameValue + " not found on any server.");
+                                this.setState(usernameValue + " not found on any server.");
                             } else {
-                                this.state.set("Found " + usernameValue + " on " + data.size() + " server(s).");
+                                this.setState("Found " + usernameValue + " on " + data.size() + " server(s).");
                                 for (final WhereIsResponse.Record record : data) {
                                     boolean contains = false;
                                     for (final WhereIsResponse.Record containedRecord : this.records) {
@@ -134,7 +125,7 @@ public class PlayerDiscoveryClientWindow extends ClientWindow {
                             }
                         }
                     } else {
-                        this.state.set("API User is rate limited!");
+                        this.setState("API User is rate limited!");
                     }
                     this.waitingForResponse = false;
                 });

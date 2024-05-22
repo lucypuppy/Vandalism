@@ -80,7 +80,7 @@ public class JoinLeaveModule extends AbstractModule implements IncomingPacketLis
                             message.append(Formatting.DARK_GRAY);
                             message.append(" | ");
                             message.append(Formatting.GOLD);
-                            message.append("Game mode");
+                            message.append("Game Mode");
                             message.append(Formatting.GRAY);
                             message.append(": ");
                             message.append(Formatting.DARK_AQUA);
@@ -95,26 +95,16 @@ public class JoinLeaveModule extends AbstractModule implements IncomingPacketLis
                 for (final UUID profileId : playerRemoveS2CPacket.profileIds()) {
                     final PlayerListEntry playerListEntry = this.mc.getNetworkHandler().getPlayerListEntry(profileId);
                     if (playerListEntry != null) {
-                        final StringBuilder message = new StringBuilder();
-                        message.append(Formatting.DARK_GRAY);
-                        message.append("[");
-                        message.append(Formatting.DARK_RED);
-                        message.append("-");
-                        message.append(Formatting.DARK_GRAY);
-                        message.append("] ");
-                        message.append(Formatting.RED);
-                        message.append(playerListEntry.getProfile().getName());
-                        if (this.displayGameMode.getValue()) {
-                            message.append(Formatting.DARK_GRAY);
-                            message.append(" | ");
-                            message.append(Formatting.GOLD);
-                            message.append("Game mode");
-                            message.append(Formatting.GRAY);
-                            message.append(": ");
-                            message.append(Formatting.DARK_AQUA);
-                            message.append(playerListEntry.getGameMode().getName());
-                        }
-                        ChatUtil.infoChatMessage(message.toString());
+                        ChatUtil.infoChatMessage(
+                                Formatting.DARK_GRAY +
+                                        "[" +
+                                        Formatting.DARK_RED +
+                                        "-" +
+                                        Formatting.DARK_GRAY +
+                                        "] " +
+                                        Formatting.RED +
+                                        playerListEntry.getProfile().getName()
+                        );
                     }
                 }
             }
