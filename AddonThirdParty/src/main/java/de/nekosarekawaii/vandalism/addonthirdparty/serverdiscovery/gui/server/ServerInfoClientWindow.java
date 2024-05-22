@@ -25,7 +25,7 @@ import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.i
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.Response;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.impl.ServerInfoResponse;
 import de.nekosarekawaii.vandalism.base.account.type.SessionAccount;
-import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
+import de.nekosarekawaii.vandalism.clientwindow.template.StateClientWindow;
 import de.nekosarekawaii.vandalism.util.game.PingState;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
@@ -56,7 +56,7 @@ import java.time.format.FormatStyle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ServerInfoClientWindow extends ClientWindow {
+public class ServerInfoClientWindow extends StateClientWindow {
 
     private static final ImGuiInputTextCallback IP_FILTER = new ImGuiInputTextCallback() {
 
@@ -74,7 +74,7 @@ public class ServerInfoClientWindow extends ClientWindow {
 
     };
 
-    private final ImString ip, state;
+    private final ImString ip;
 
     private final ExecutorService executor;
 
@@ -88,8 +88,6 @@ public class ServerInfoClientWindow extends ClientWindow {
     public ServerInfoClientWindow() {
         super("Server Info", Category.SERVER);
         this.ip = new ImString(253);
-        this.state = new ImString(200);
-        this.resetState();
         this.executor = Executors.newSingleThreadExecutor();
         this.serverInfo = null;
         this.lastIP = "";
@@ -97,16 +95,9 @@ public class ServerInfoClientWindow extends ClientWindow {
         this.filteredPlayers = 0;
     }
 
-    private void resetState() {
-        this.state.set("Waiting for input...");
-    }
-
     @Override
     protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        ImGui.text("State");
-        ImGui.setNextItemWidth(-1);
-        ImGui.inputText("##serverinfostate", this.state, ImGuiInputTextFlags.ReadOnly);
-        ImGui.spacing();
+        super.onRender(context, mouseX, mouseY, delta);
         ImGui.text("IP");
         ImGui.setNextItemWidth(-1);
         ImGui.inputText(
@@ -124,7 +115,7 @@ public class ServerInfoClientWindow extends ClientWindow {
         final String ipValue = this.ip.get();
         if (!ipValue.isBlank() && !this.waitingForResponse) {
             if (ImUtils.subButton("Get##serverinfoddatarequest")) {
-                this.state.set("Requesting data for " + ipValue + "...");
+                this.setState("Requesting data for " + ipValue + "...");
                 this.serverInfo = null;
                 this.lastIP = ipValue;
                 this.filteredPlayers = 0;
@@ -136,13 +127,13 @@ public class ServerInfoClientWindow extends ClientWindow {
                     final Response response = ServerDiscoveryUtil.request(new ServerInfoRequest(ip, port));
                     if (response instanceof final ServerInfoResponse serverInfoResponse) {
                         if (serverInfoResponse.isError()) {
-                            this.state.set("Error: " + serverInfoResponse.error);
+                            this.setState("Error: " + serverInfoResponse.error);
                         } else {
                             this.serverInfo = serverInfoResponse;
-                            this.state.set("Success!");
+                            this.setState("Success!");
                         }
                     } else {
-                        this.state.set("API User is rate limited!");
+                        this.setState("API User is rate limited!");
                     }
                     this.waitingForResponse = false;
                 });
@@ -214,7 +205,7 @@ public class ServerInfoClientWindow extends ClientWindow {
                 if (!this.lastIP.isBlank() && !this.waitingForResponse) {
                     final String lastIpValue = this.lastIP;
                     if (ImUtils.subButton("Filter Online Players##serverinfofilteronlineplayers")) {
-                        this.state.set("Filtering online players...");
+                        this.setState("Filtering online players...");
                         this.waitingForResponse = true;
                         this.executor.submit(() -> {
                             final Pair<String, Integer> resolvedAddress = ServerConnectionUtil.resolveServerAddress(lastIpValue);
@@ -226,17 +217,17 @@ public class ServerInfoClientWindow extends ClientWindow {
                                     .exceptionHandler(t -> {
                                         switch (t) {
                                             case UnknownHostException unknownHostException ->
-                                                    this.state.set(PingState.UNKNOWN_HOST.getMessage());
+                                                    this.setState(PingState.UNKNOWN_HOST.getMessage());
                                             case ConnectionRefusedException connectionRefusedException ->
-                                                    this.state.set(PingState.CONNECTION_REFUSED.getMessage());
+                                                    this.setState(PingState.CONNECTION_REFUSED.getMessage());
                                             case ConnectTimeoutException connectTimeoutException ->
-                                                    this.state.set(PingState.CONNECTION_TIMED_OUT.getMessage());
+                                                    this.setState(PingState.CONNECTION_TIMED_OUT.getMessage());
                                             case DataReadException dataReadException ->
-                                                    this.state.set(PingState.DATA_READ_FAILED.getMessage());
+                                                    this.setState(PingState.DATA_READ_FAILED.getMessage());
                                             case PacketReadException packetReadException ->
-                                                    this.state.set(PingState.PACKET_READ_FAILED.getMessage());
+                                                    this.setState(PingState.PACKET_READ_FAILED.getMessage());
                                             case null, default -> {
-                                                this.state.set(PingState.FAILED.getMessage());
+                                                this.setState(PingState.FAILED.getMessage());
                                                 Vandalism.getInstance().getLogger().error("Failed to ping {}:{}", ip, port, t);
                                             }
                                         }
@@ -254,7 +245,7 @@ public class ServerInfoClientWindow extends ClientWindow {
                                                 return false;
                                             });
                                         }
-                                        this.state.set("Successfully filtered " + this.filteredPlayers + " online players!");
+                                        this.setState("Successfully filtered " + this.filteredPlayers + " online players!");
                                         this.waitingForResponse = false;
                                     }).getSync();
                         });

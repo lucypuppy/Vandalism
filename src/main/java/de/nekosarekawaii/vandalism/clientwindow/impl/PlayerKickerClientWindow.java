@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.clientwindow.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
+import de.nekosarekawaii.vandalism.clientwindow.template.StateClientWindow;
 import de.nekosarekawaii.vandalism.util.game.PacketHelper;
 import de.nekosarekawaii.vandalism.util.game.PingState;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
@@ -51,7 +51,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class PlayerKickerClientWindow extends ClientWindow {
+public class PlayerKickerClientWindow extends StateClientWindow {
 
     private final ImString ip = new ImString(253);
     private final ImInt port = new ImInt(25565);
@@ -63,7 +63,6 @@ public class PlayerKickerClientWindow extends ClientWindow {
     private final ImInt kickDelay = new ImInt(2000);
 
     private boolean checking = false;
-    private String currentState = PingState.WAITING_RESPONSE.getMessage();
     private MCPingResponse.Players players = null;
     private int protocol = SharedConstants.getProtocolVersion();
     private int friends = 0;
@@ -73,12 +72,12 @@ public class PlayerKickerClientWindow extends ClientWindow {
 
     public PlayerKickerClientWindow() {
         super("Player Kicker", Category.SERVER);
+
     }
 
     @Override
     protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        ImGui.textWrapped("Current State: " + this.currentState);
-        ImGui.separator();
+        super.onRender(context, mouseX, mouseY, delta);
         if (!this.checking) {
             ImGui.text("IP");
             ImGui.setNextItemWidth(-1);
@@ -139,7 +138,7 @@ public class PlayerKickerClientWindow extends ClientWindow {
                 }
                 if (ImUtils.subButton("Check")) {
                     this.checking = true;
-                    this.currentState = PingState.WAITING_RESPONSE.getMessage();
+                    this.setState(PingState.WAITING_RESPONSE.getMessage());
                     this.players = null;
                     this.protocol = SharedConstants.getProtocolVersion();
                     this.friends = 0;
@@ -151,23 +150,23 @@ public class PlayerKickerClientWindow extends ClientWindow {
                                 this.checking = false;
                                 switch (t) {
                                     case UnknownHostException unknownHostException ->
-                                            this.currentState = PingState.UNKNOWN_HOST.getMessage();
+                                            this.setState(PingState.UNKNOWN_HOST.getMessage());
                                     case ConnectionRefusedException connectionRefusedException ->
-                                            this.currentState = PingState.CONNECTION_REFUSED.getMessage();
+                                            this.setState(PingState.CONNECTION_REFUSED.getMessage());
                                     case ConnectTimeoutException connectTimeoutException ->
-                                            this.currentState = PingState.CONNECTION_TIMED_OUT.getMessage();
+                                            this.setState(PingState.CONNECTION_TIMED_OUT.getMessage());
                                     case DataReadException dataReadException ->
-                                            this.currentState = PingState.DATA_READ_FAILED.getMessage();
+                                            this.setState(PingState.DATA_READ_FAILED.getMessage());
                                     case PacketReadException packetReadException ->
-                                            this.currentState = PingState.PACKET_READ_FAILED.getMessage();
+                                            this.setState(PingState.PACKET_READ_FAILED.getMessage());
                                     case null, default -> {
-                                        this.currentState = PingState.FAILED.getMessage();
+                                        this.setState(PingState.FAILED.getMessage());
                                         Vandalism.getInstance().getLogger().error("Failed to ping {}:{}", this.ip.get(), this.port.get(), t);
                                     }
                                 }
                             }).finishHandler(response -> {
                                 this.checking = false;
-                                this.currentState = PingState.SUCCESS.getMessage();
+                                this.setState(PingState.SUCCESS.getMessage());
                                 this.players = response.players;
                                 this.protocol = response.server.protocol;
                                 if (this.players != null && this.players.sample != null) {
@@ -184,6 +183,7 @@ public class PlayerKickerClientWindow extends ClientWindow {
                                         }
                                     }
                                 }
+                                this.delayedResetState(10000);
                             }).getAsync();
                 }
             }
@@ -279,7 +279,7 @@ public class PlayerKickerClientWindow extends ClientWindow {
         this.executorService.submit(() -> {
             if (!name.isBlank() && !uuid.isBlank()) {
                 try {
-                    this.currentState = "Kicking player " + name + "...";
+                    this.setState("Kicking player " + name + "...");
                     Thread.sleep(this.kickDelay.get());
                     final Socket connection = new Socket(this.ip.get(), this.port.get());
                     connection.setTcpNoDelay(true);
@@ -299,12 +299,12 @@ public class PlayerKickerClientWindow extends ClientWindow {
                     PacketHelper.writePacket(PacketHelper.createLoginPacket(this.protocol, name, UUID.fromString(uuid)), output);
                     Thread.sleep(1000);
                     connection.close();
-                    this.currentState = "Player " + name + " should be kicked.";
+                    this.setState("Player " + name + " should be kicked.");
                 } catch (final Exception ignored) {
-                    this.currentState = "Failed to kick player " + name + ".";
+                    this.setState("Failed to kick player " + name + ".");
                 }
             } else {
-                this.currentState = "Invalid player data.";
+                this.setState("Invalid player data.");
             }
         });
     }

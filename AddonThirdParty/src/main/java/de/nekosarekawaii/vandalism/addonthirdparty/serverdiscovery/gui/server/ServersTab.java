@@ -270,7 +270,7 @@ public class ServersTab implements MinecraftWrapper {
                                         .exceptionHandler(t -> {
                                             this.servers.remove(server);
                                             this.checkedServers.getAndIncrement();
-                                            Vandalism.getInstance().getLogger().info("Removed offline server " + resolvedAddress + ":" + resolvedPort);
+                                            Vandalism.getInstance().getLogger().info("Removed offline server {}:{}", resolvedAddress, resolvedPort);
                                         })
                                         .finishHandler(response -> this.checkedServers.getAndIncrement()).getAsync();
                             }

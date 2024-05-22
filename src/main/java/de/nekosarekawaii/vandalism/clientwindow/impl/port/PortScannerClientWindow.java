@@ -19,8 +19,8 @@
 package de.nekosarekawaii.vandalism.clientwindow.impl.port;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.impl.widget.ServerInfosTableColumn;
+import de.nekosarekawaii.vandalism.clientwindow.template.StateClientWindow;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
@@ -40,7 +40,7 @@ import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class PortScannerClientWindow extends ClientWindow {
+public class PortScannerClientWindow extends StateClientWindow {
 
     private static final ImGuiInputTextCallback HOSTNAME_FILTER = new ImGuiInputTextCallback() {
 
@@ -59,7 +59,7 @@ public class PortScannerClientWindow extends ClientWindow {
 
     };
 
-    private final ImString address, state, progress;
+    private final ImString address, progress;
     private final ImInt minPort, maxPort, threads, timeout;
     private final List<Integer> ports;
     private final List<PortResult> portResults;
@@ -70,8 +70,6 @@ public class PortScannerClientWindow extends ClientWindow {
         super("Port Scanner", Category.SERVER, true);
         this.address = new ImString(253);
         this.progress = new ImString(200);
-        this.state = new ImString(100);
-        this.state.set(State.WAITING_INPUT.getMessage());
         this.minPort = new ImInt(1);
         this.maxPort = new ImInt(65535);
         this.threads = new ImInt(128);
@@ -88,15 +86,15 @@ public class PortScannerClientWindow extends ClientWindow {
         this.currentPort = this.minPort.get() - 1;
         this.currentPortResult = -1;
         this.progress.clear();
-        this.state.set(State.WAITING_INPUT.getMessage());
+        this.resetState();
     }
 
     private boolean isRunning() {
-        return this.state.get().equals(State.RUNNING.getMessage());
+        return this.getState().equals(State.RUNNING.getMessage());
     }
 
     private void stop() {
-        this.state.set(State.WAITING_INPUT.getMessage());
+        this.resetState();
     }
 
     @Override
@@ -105,8 +103,7 @@ public class PortScannerClientWindow extends ClientWindow {
             portResult.renderSubData();
         }
         ImGui.begin("Port Scanner##portscanner");
-        ImGui.text("Current State: " + this.state.get());
-        ImGui.separator();
+        super.onRender(context, mouseX, mouseY, delta);
         if (this.isRunning()) {
             ImGui.text("Progress");
             final float progress = (float) this.currentPort / (float) (this.maxPort.get() - this.minPort.get());
@@ -175,7 +172,7 @@ public class PortScannerClientWindow extends ClientWindow {
                 }
                 if (ImGui.button("Start##portscannerstart", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                     this.reset();
-                    this.state.set(State.RUNNING.getMessage());
+                    this.setState(State.RUNNING.getMessage());
                     final Pair<String, Integer> serverAddress = ServerConnectionUtil.resolveServerAddress(this.address.get());
                     final String resolvedAddress = serverAddress.getLeft();
                     for (int i = 0; i < this.threads.get(); i++) {
@@ -195,14 +192,14 @@ public class PortScannerClientWindow extends ClientWindow {
                                                 this.ports.add(port);
                                             }
                                         }
+                                    } catch (final Exception ignored) {
                                     }
-                                    catch (Exception ignored) {}
                                 }
                                 this.stop();
                                 Vandalism.getInstance().getLogger().info("Port Scanner Thread #{} finished.", id);
-                            } catch (Exception e) {
+                            } catch (final Exception e) {
                                 Vandalism.getInstance().getLogger().error("Port Scanner Thread #{} failed.", id, e);
-                                this.state.set(State.FAILED.getMessage() + e.getClass().getSimpleName() + ": " + e.getMessage());
+                                this.setState(State.FAILED.getMessage() + e.getClass().getSimpleName() + ": " + e.getMessage());
                             }
                         }, "Port Scanner Thread #" + id).start();
                     }
@@ -292,8 +289,7 @@ public class PortScannerClientWindow extends ClientWindow {
     private enum State {
 
         RUNNING("Running..."),
-        FAILED("Failed: "),
-        WAITING_INPUT("Waiting for input...");
+        FAILED("Failed: ");
 
         private final String message;
 
