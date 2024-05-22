@@ -20,13 +20,14 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.event.normal.network.WorldListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.client.gui.screen.world.LevelLoadingScreen;
 import net.minecraft.network.packet.s2c.login.LoginHelloS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 
-public class FlagDetectorModule extends AbstractModule implements IncomingPacketListener {
+public class FlagDetectorModule extends AbstractModule implements IncomingPacketListener, WorldListener {
 
     private int flagCount;
 
@@ -39,14 +40,14 @@ public class FlagDetectorModule extends AbstractModule implements IncomingPacket
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, IncomingPacketEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, IncomingPacketEvent.ID, WorldLoadEvent.ID);
         this.flagCount = 0;
     }
 
     @Override
     public void onDeactivate() {
         this.flagCount = 0;
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, IncomingPacketEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, IncomingPacketEvent.ID, WorldLoadEvent.ID);
     }
 
     @Override
@@ -57,5 +58,10 @@ public class FlagDetectorModule extends AbstractModule implements IncomingPacket
         if (event.packet instanceof PlayerPositionLookS2CPacket) {
             ChatUtil.warningChatMessage("Flag detected: " + ++flagCount);
         }
+    }
+
+    @Override
+    public void onPostWorldLoad() {
+        this.flagCount = 0;
     }
 }
