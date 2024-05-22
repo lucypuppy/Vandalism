@@ -50,24 +50,26 @@ public class MiddleClickFriendsModule extends AbstractModule implements MouseInp
     }
 
     @Override
-    public void onMouseButton(final int button, final int action, final int mods) {
-        if (button == GLFW.GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW.GLFW_PRESS) {
-            final HitResult hitResult = this.mc.crosshairTarget;
-            if (hitResult instanceof final EntityHitResult entityHitResult) {
-                final Entity entity = entityHitResult.getEntity();
-                if (entity != null) {
-                    final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
-                    if (networkHandler != null) {
-                        final PlayerListEntry playerListEntry = networkHandler.getPlayerListEntry(entity.getUuid());
-                        if (playerListEntry != null) {
-                            final GameProfile gameProfile = playerListEntry.getProfile();
-                            if (gameProfile != null) {
-                                final String name = gameProfile.getName();
-                                if (name != null) {
-                                    if (Vandalism.getInstance().getFriendsManager().isFriend(name)) {
-                                        Vandalism.getInstance().getFriendsManager().removeFriend(name);
-                                    } else {
-                                        Vandalism.getInstance().getFriendsManager().addFriend(name, name);
+    public void onMouse(final MouseEvent event) {
+        if (event.type == MouseInputListener.Type.BUTTON) {
+            if (event.button == GLFW.GLFW_MOUSE_BUTTON_MIDDLE && event.action == GLFW.GLFW_PRESS) {
+                final HitResult hitResult = this.mc.crosshairTarget;
+                if (hitResult instanceof final EntityHitResult entityHitResult) {
+                    final Entity entity = entityHitResult.getEntity();
+                    if (entity != null) {
+                        final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
+                        if (networkHandler != null) {
+                            final PlayerListEntry playerListEntry = networkHandler.getPlayerListEntry(entity.getUuid());
+                            if (playerListEntry != null) {
+                                final GameProfile gameProfile = playerListEntry.getProfile();
+                                if (gameProfile != null) {
+                                    final String name = gameProfile.getName();
+                                    if (name != null) {
+                                        if (Vandalism.getInstance().getFriendsManager().isFriend(name)) {
+                                            Vandalism.getInstance().getFriendsManager().removeFriend(name);
+                                        } else {
+                                            Vandalism.getInstance().getFriendsManager().addFriend(name, name);
+                                        }
                                     }
                                 }
                             }
