@@ -25,7 +25,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = ZoomOtf.class)
 public abstract class MixinZoomOtf {
@@ -39,11 +38,6 @@ public abstract class MixinZoomOtf {
     @Inject(method = "onMouseScroll", at = @At("HEAD"), cancellable = true, remap = false)
     private void cancelWurstZoomMouseScrollEvent(final CallbackInfo ci) {
         ci.cancel();
-    }
-
-    @Inject(method = "changeFovBasedOnZoom", at = @At("HEAD"), cancellable = true, remap = false)
-    private void cancelWurstZoomFOVChange(final double fov, final CallbackInfoReturnable<Double> cir) {
-        cir.setReturnValue(fov);
     }
 
 }

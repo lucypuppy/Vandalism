@@ -13,15 +13,10 @@ import de.nekosarekawaii.vandalism.util.common.Easing;
 public class ZoomModule extends AbstractModule implements MouseInputListener, SmoothCameraRotationsListener {
 
     public final DoubleValue zoomFov = new DoubleValue(this, "Zoom FOV", "The FOV to use when zooming in", 30.0, 1.0, 70.0);
-
     public final EasingTypeValue animationIn = new EasingTypeValue(this, "Zoom-in Animation", "The easing animation to use when zooming in", Easing.LINEAR);
-
     public final EasingTypeValue animationOut = new EasingTypeValue(this, "Zoom-out Animation", "The easing animation to use when zooming out", Easing.LINEAR);
-
     public final IntegerValue animationDuration = new IntegerValue(this, "Animation Duration", "The duration of the zoom animation in milliseconds", 100, 0, 1000);
-
     public final BooleanValue scroll = new BooleanValue(this, "Scroll", "If enabled, you can zoom in by scrolling the mouse wheel", false);
-
     public final BooleanValue smoothRotations = new BooleanValue(this, "Smooth Rotations", "If enabled, the camera will rotate smoothly when zooming in", false);
 
     private long animTime;
@@ -29,7 +24,7 @@ public class ZoomModule extends AbstractModule implements MouseInputListener, Sm
 
     public ZoomModule() {
         super("Zoom", "Allows you to zoom in.", Category.RENDER);
-        deactivateOnReleaseDefault();
+        this.deactivateOnReleaseDefault();
     }
 
     @Override
@@ -41,14 +36,13 @@ public class ZoomModule extends AbstractModule implements MouseInputListener, Sm
         final long animEnd = this.animTime + this.animationDuration.getValue();
         if (animEnd < now) {
             this.animTime = System.currentTimeMillis();
-        }
-        else {
+        } else {
             final float progress = (now - this.animTime) / (float) this.animationDuration.getValue();
             this.setAnimProgress(now, 1.0f - progress);
         }
     }
 
-    private void setAnimProgress(long now, float progress) {
+    private void setAnimProgress(final long now, final float progress) {
         this.animTime = now - (long) (progress * this.animationDuration.getValue());
     }
 
@@ -60,28 +54,33 @@ public class ZoomModule extends AbstractModule implements MouseInputListener, Sm
         final long animEnd = this.animTime + this.animationDuration.getValue();
         if (animEnd < now) {
             this.animTime = System.currentTimeMillis();
-        }
-        else {
+        } else {
             final float progress = (now - this.animTime) / (float) this.animationDuration.getValue();
             this.setAnimProgress(now, 1.0f - progress);
         }
     }
 
     @Override
-    public void onMouseScroll(double horizontal, double vertical) {
-        if (!this.scroll.getValue()) return;
-        this.scrollAmount += vertical * 2.0;
-        if (this.scrollAmount < 0) this.scrollAmount = 0;
-        //event.setCancelled(true);
+    public void onMouse(final MouseEvent event) {
+        if (event.type == Type.SCROLL) {
+            if (!this.scroll.getValue()) return;
+            this.scrollAmount += event.vertical * 2.0;
+            if (this.scrollAmount < 0) this.scrollAmount = 0;
+            event.setCancelled(true);
+        }
     }
 
     @Override
-    public void onSmoothCameraRotations(SmoothCameraRotationsEvent event) {
-        if (this.smoothRotations.getValue()) event.smoothCamera = true;
+    public void onSmoothCameraRotations(final SmoothCameraRotationsEvent event) {
+        if (this.smoothRotations.getValue()) {
+            event.smoothCamera = true;
+        }
     }
 
-    /** Not using CameraFOVEvent because it's not called when zooming out, because the event is only called when the module is enabled */
-    public double getFov(double fov) {
+    /**
+     * Not using CameraFOVEvent because it's not called when zooming out, because the event is only called when the module is enabled
+     */
+    public double getFov(final double fov) {
         if (this.zoomFov.getValue() - this.scrollAmount < this.zoomFov.getMinValue()) {
             this.scrollAmount = this.zoomFov.getValue() - this.zoomFov.getMinValue();
         }
@@ -95,14 +94,15 @@ public class ZoomModule extends AbstractModule implements MouseInputListener, Sm
             if (now >= startTime) {
                 return targetFOV;
             }
-//            return this.interpolate(targetFOV, fov, (startTime - now) / (double) this.animationDuration.getInt());
+            // return this.interpolate(targetFOV, fov, (startTime - now) / (double) this.animationDuration.getInt());
             return this.animationIn.getValue().easePercent((startTime - now) / 1000.0f, (float) targetFOV, (float) fov, this.animationDuration.getValue() / 1000.0f);
         }
         final long stopTime = this.animTime + (long) this.animationDuration.getValue();
         if (now >= stopTime) {
             return fov;
         }
-//        return this.interpolate(fov, targetFOV, (stopTime - now) / (double) this.animationDuration.getInt());
+        // return this.interpolate(fov, targetFOV, (stopTime - now) / (double) this.animationDuration.getInt());
         return this.animationOut.getValue().easePercent((stopTime - now) / 1000.0f, (float) fov, (float) targetFOV, this.animationDuration.getValue() / 1000.0f);
     }
+
 }

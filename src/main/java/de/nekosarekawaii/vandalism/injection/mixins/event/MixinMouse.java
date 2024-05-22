@@ -40,10 +40,14 @@ public abstract class MixinMouse implements MinecraftWrapper {
         }
     }
 
-    @Inject(method = "onMouseScroll", at = @At("HEAD"))
+    @Inject(method = "onMouseScroll", at = @At("HEAD"), cancellable = true)
     private void callMouseEvent_Scroll(final long window, final double horizontal, final double vertical, final CallbackInfo ci) {
         if (this.mc.getWindow().getHandle() == window) {
-            Vandalism.getInstance().getEventSystem().postInternal(MouseInputListener.MouseEvent.ID, new MouseInputListener.MouseEvent(true, horizontal, vertical));
+            final MouseInputListener.MouseEvent event = new MouseInputListener.MouseEvent(true, horizontal, vertical);
+            Vandalism.getInstance().getEventSystem().postInternal(MouseInputListener.MouseEvent.ID, event);
+            if (event.isCancelled()) {
+                ci.cancel();
+            }
         }
     }
 

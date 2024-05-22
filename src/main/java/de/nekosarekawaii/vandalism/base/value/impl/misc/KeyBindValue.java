@@ -109,10 +109,12 @@ public class KeyBindValue extends Value<Integer> implements KeyboardInputListene
     }
 
     @Override
-    public void onMouseButton(final int button, final int action, final int mods) {
-        if (button != GLFW.GLFW_KEY_UNKNOWN && action == GLFW.GLFW_PRESS) {
-            this.finishInput();
-            this.setValue(button);
+    public void onMouse(final MouseEvent event) {
+        if (event.type == MouseInputListener.Type.BUTTON) {
+            if (event.button != GLFW.GLFW_KEY_UNKNOWN && event.action == GLFW.GLFW_PRESS) {
+                this.finishInput();
+                this.setValue(event.button);
+            }
         }
     }
 

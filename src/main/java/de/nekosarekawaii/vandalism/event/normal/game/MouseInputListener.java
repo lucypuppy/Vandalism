@@ -18,24 +18,17 @@
 
 package de.nekosarekawaii.vandalism.event.normal.game;
 
-import de.florianmichael.dietrichevents2.AbstractEvent;
+import de.florianmichael.dietrichevents2.CancellableEvent;
 
 public interface MouseInputListener {
 
-    default void onMouseButton(final int button, final int action, final int mods) {
-    }
+    void onMouse(final MouseEvent event);
 
-    default void onMouseScroll(final double horizontal, final double vertical) {
-    }
-
-    default void onCursorPos(final double x, final double y) {
-    }
-
-    class MouseEvent extends AbstractEvent<MouseInputListener> {
+    class MouseEvent extends CancellableEvent<MouseInputListener> {
 
         public static final int ID = 8;
 
-        private final Type type;
+        public final Type type;
         public int button, action, mods;
         public double horizontal, vertical;
         public double x, y;
@@ -62,11 +55,7 @@ public interface MouseInputListener {
 
         @Override
         public void call(final MouseInputListener listener) {
-            switch (this.type) {
-                case BUTTON -> listener.onMouseButton(button, action, mods);
-                case SCROLL -> listener.onMouseScroll(horizontal, vertical);
-                case POS -> listener.onCursorPos(x, y);
-            }
+            listener.onMouse(this);
         }
 
     }

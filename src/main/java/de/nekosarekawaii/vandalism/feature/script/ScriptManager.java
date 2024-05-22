@@ -105,8 +105,10 @@ public class ScriptManager extends NamedStorage<Script> implements PlayerUpdateL
     }
 
     @Override
-    public void onMouseButton(final int button, final int action, final int mods) {
-        this.handleInput(action, button);
+    public void onMouse(final MouseEvent event) {
+        if (event.type == MouseInputListener.Type.BUTTON) {
+            this.handleInput(event.action, event.button);
+        }
     }
 
     private void handleInput(final int action, final int code) {
