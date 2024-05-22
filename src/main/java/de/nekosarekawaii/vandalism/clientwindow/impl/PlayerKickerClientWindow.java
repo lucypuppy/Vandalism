@@ -148,6 +148,7 @@ public class PlayerKickerClientWindow extends ClientWindow {
                             .address(this.ip.get(), this.port.get())
                             .timeout(5000, 5000)
                             .exceptionHandler(t -> {
+                                this.checking = false;
                                 switch (t) {
                                     case UnknownHostException unknownHostException ->
                                             this.currentState = PingState.UNKNOWN_HOST.getMessage();
