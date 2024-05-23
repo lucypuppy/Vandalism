@@ -6,6 +6,7 @@
     "TransformerClientPlayNetworkHandlerMixin",
     "TransformerMinecraftClientMixin",
     "TranformerDeathScreenMixin",
-    "TransformerGamerRendererMixin"
+    "TransformerGamerRendererMixin",
+    "TranformerChatHudMixin"
   ]
 }
