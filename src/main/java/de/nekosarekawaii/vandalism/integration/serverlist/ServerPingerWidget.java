@@ -208,13 +208,19 @@ public class ServerPingerWidget implements MinecraftWrapper {
                                 currentServerInfo.playerListSummary = List.of();
                             }
                             FORGE_MOD_DATA.clear();
+                            final int maxForgeMods = 20;
                             if (response.modinfo != null) {
                                 FORGE_MOD_DATA.add("Forge Mod Type: " + response.modinfo.type);
                                 final MCPingResponse.ModInfo.Mod[] mods = response.modinfo.modList;
                                 if (mods.length > 0) {
                                     FORGE_MOD_DATA.add("Forge Mods:");
-                                    for (final MCPingResponse.ModInfo.Mod mod : mods) {
+                                    for (int i = 0; i < mods.length; i++) {
+                                        final MCPingResponse.ModInfo.Mod mod = mods[i];
                                         FORGE_MOD_DATA.add(" " + mod.modid + " v" + mod.version);
+                                        if (i == maxForgeMods) {
+                                            FORGE_MOD_DATA.add(" and " + (mods.length - maxForgeMods) + " more mods...");
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -227,8 +233,13 @@ public class ServerPingerWidget implements MinecraftWrapper {
                                 final MCPingResponse.ForgeData.Mod[] mods = response.forgeData.mods;
                                 if (mods.length > 0) {
                                     FORGE_MOD_DATA.add("Forge Mods:");
-                                    for (final MCPingResponse.ForgeData.Mod mod : mods) {
+                                    for (int i = 0; i < mods.length; i++) {
+                                        final MCPingResponse.ForgeData.Mod mod = mods[i];
                                         FORGE_MOD_DATA.add(" " + mod.modId + " | " + mod.modmarker);
+                                        if (i == maxForgeMods) {
+                                            FORGE_MOD_DATA.add(" and " + (mods.length - maxForgeMods) + " more mods...");
+                                            break;
+                                        }
                                     }
                                 }
                             }
