@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.impl.misc.ethanol.impl;
+package de.nekosarekawaii.vandalism.addonthirdparty.ethanol.module.impl;
 
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import de.nekosarekawaii.vandalism.util.game.PacketHelper;

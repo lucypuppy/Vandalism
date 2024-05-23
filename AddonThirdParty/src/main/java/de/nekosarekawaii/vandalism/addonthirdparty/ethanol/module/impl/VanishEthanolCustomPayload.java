@@ -16,39 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.impl.misc.ethanol.impl;
+package de.nekosarekawaii.vandalism.addonthirdparty.ethanol.module.impl;
 
+import de.nekosarekawaii.vandalism.addonthirdparty.AddonThirdParty;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
-import java.nio.charset.StandardCharsets;
+public class VanishEthanolCustomPayload implements CustomPayload {
 
-public class CommandEthanolCustomPayload implements CustomPayload {
-
-    public static final CustomPayload.Id<CommandEthanolCustomPayload> ID = new Id<>(
-            new Identifier("ethanol", "command")
+    public static final Id<VanishEthanolCustomPayload> ID = new Id<>(
+            new Identifier("ethanol", "vanish")
     );
 
-    public static final PacketCodec<PacketByteBuf, CommandEthanolCustomPayload> CODEC = CustomPayload.codecOf(
-            CommandEthanolCustomPayload::write,
-            buf -> {
-                throw new UnsupportedOperationException("CommandEthanolCustomPayload is a write only packet");
-            }
-    );
+    public static final PacketCodec<PacketByteBuf, VanishEthanolCustomPayload> CODEC = CustomPayload.codecOf((value, buf) -> {
+        throw new UnsupportedOperationException("VanishEthanolCustomPayload is a read-only packet");
+    }, VanishEthanolCustomPayload::new);
 
-    private final String command;
-
-    public CommandEthanolCustomPayload(final String command) {
-        this.command = command;
+    public VanishEthanolCustomPayload(final PacketByteBuf buf) {
+        AddonThirdParty.getInstance().getEthanolModule().vanished = buf.readByte() == 1;
     }
 
-    private void write(final PacketByteBuf buf) {
-        buf.writeBytes(command.getBytes(StandardCharsets.UTF_8));
-    }
-
-    public CustomPayload.Id<CommandEthanolCustomPayload> getId() {
+    public Id<VanishEthanolCustomPayload> getId() {
         return ID;
     }
 

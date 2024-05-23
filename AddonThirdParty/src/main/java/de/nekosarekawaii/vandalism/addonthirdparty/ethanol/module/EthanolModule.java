@@ -16,18 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.impl.misc.ethanol;
+package de.nekosarekawaii.vandalism.addonthirdparty.ethanol.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.addonthirdparty.ethanol.module.impl.CommandEthanolCustomPayload;
+import de.nekosarekawaii.vandalism.addonthirdparty.ethanol.module.impl.InitEthanolCustomPayload;
+import de.nekosarekawaii.vandalism.addonthirdparty.ethanol.module.impl.MessageEthanolCustomPayload;
+import de.nekosarekawaii.vandalism.addonthirdparty.ethanol.module.impl.VanishEthanolCustomPayload;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
 import de.nekosarekawaii.vandalism.event.normal.network.WorldListener;
 import de.nekosarekawaii.vandalism.event.normal.player.ChatSendListener;
 import de.nekosarekawaii.vandalism.event.normal.render.Render2DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.feature.module.impl.misc.ethanol.impl.CommandEthanolCustomPayload;
-import de.nekosarekawaii.vandalism.feature.module.impl.misc.ethanol.impl.InitEthanolCustomPayload;
-import de.nekosarekawaii.vandalism.feature.module.impl.misc.ethanol.impl.MessageEthanolCustomPayload;
-import de.nekosarekawaii.vandalism.feature.module.impl.misc.ethanol.impl.VanishEthanolCustomPayload;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
@@ -46,8 +46,7 @@ public class EthanolModule extends AbstractModule implements ChatSendListener, R
             "-"
     );
 
-    public boolean vanished = false;
-    public boolean detected = false;
+    public boolean vanished = false, detected = false;
 
     @Override
     public void onChatSend(ChatSendEvent event) {

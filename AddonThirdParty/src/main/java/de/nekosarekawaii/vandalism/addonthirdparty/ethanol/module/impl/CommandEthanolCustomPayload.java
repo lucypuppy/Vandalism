@@ -16,29 +16,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.impl.misc.ethanol.impl;
+package de.nekosarekawaii.vandalism.addonthirdparty.ethanol.module.impl;
 
-import de.nekosarekawaii.vandalism.Vandalism;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
-public class VanishEthanolCustomPayload implements CustomPayload {
+import java.nio.charset.StandardCharsets;
 
-    public static final Id<VanishEthanolCustomPayload> ID = new Id<>(
-            new Identifier("ethanol", "vanish")
+public class CommandEthanolCustomPayload implements CustomPayload {
+
+    public static final Id<CommandEthanolCustomPayload> ID = new Id<>(
+            new Identifier("ethanol", "command")
     );
 
-    public static final PacketCodec<PacketByteBuf, VanishEthanolCustomPayload> CODEC = CustomPayload.codecOf((value, buf) -> {
-        throw new UnsupportedOperationException("VanishEthanolCustomPayload is a read-only packet");
-    }, VanishEthanolCustomPayload::new);
+    public static final PacketCodec<PacketByteBuf, CommandEthanolCustomPayload> CODEC = CustomPayload.codecOf(
+            CommandEthanolCustomPayload::write,
+            buf -> {
+                throw new UnsupportedOperationException("CommandEthanolCustomPayload is a write only packet");
+            }
+    );
 
-    public VanishEthanolCustomPayload(final PacketByteBuf buf) {
-        Vandalism.getInstance().getModuleManager().getEthanolModule().vanished = buf.readByte() == 1;
+    private final String command;
+
+    public CommandEthanolCustomPayload(final String command) {
+        this.command = command;
     }
 
-    public Id<VanishEthanolCustomPayload> getId() {
+    private void write(final PacketByteBuf buf) {
+        buf.writeBytes(command.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public Id<CommandEthanolCustomPayload> getId() {
         return ID;
     }
 

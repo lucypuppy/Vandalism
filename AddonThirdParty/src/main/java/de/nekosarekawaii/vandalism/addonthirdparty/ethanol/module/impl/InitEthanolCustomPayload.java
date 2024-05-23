@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.impl.misc.ethanol.impl;
+package de.nekosarekawaii.vandalism.addonthirdparty.ethanol.module.impl;
 
-import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.addonthirdparty.AddonThirdParty;
 import de.nekosarekawaii.vandalism.util.game.PacketHelper;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
@@ -29,19 +29,19 @@ import net.minecraft.util.Identifier;
 public class InitEthanolCustomPayload implements CustomPayload {
 
     public static final PacketCodec<PacketByteBuf, InitEthanolCustomPayload> CODEC = CustomPayload.codecOf(InitEthanolCustomPayload::write, InitEthanolCustomPayload::new);
-    public static final CustomPayload.Id<InitEthanolCustomPayload> ID = new Id<>(new Identifier("ethanol", "init"));
+    public static final Id<InitEthanolCustomPayload> ID = new Id<>(new Identifier("ethanol", "init"));
 
     public InitEthanolCustomPayload() {
     }
 
     public InitEthanolCustomPayload(final PacketByteBuf buf) {
-        Vandalism.getInstance().getModuleManager().getEthanolModule().detected = true;
+        AddonThirdParty.getInstance().getEthanolModule().detected = true;
         PacketHelper.sendImmediately(new CustomPayloadC2SPacket(new InitEthanolCustomPayload()), null, true);
     }
 
     private void write(final PacketByteBuf buf) {}
 
-    public CustomPayload.Id<InitEthanolCustomPayload> getId() {
+    public Id<InitEthanolCustomPayload> getId() {
         return ID;
     }
 
