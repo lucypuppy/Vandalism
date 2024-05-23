@@ -23,6 +23,8 @@ import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSe
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerDataUtil;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerList;
 import de.nekosarekawaii.vandalism.integration.serverlist.gui.ConfigScreen;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
@@ -35,11 +37,9 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.util.List;
 
@@ -58,8 +58,6 @@ public abstract class MixinMultiplayerScreen extends Screen {
     @Shadow
     public abstract void select(final MultiplayerServerListWidget.Entry entry);
 
-    @Shadow
-    private ServerInfo selectedEntry;
     @Unique
     private static int vandalism$SELECTED_ENTRY_INDEX = -1;
 
@@ -159,16 +157,16 @@ public abstract class MixinMultiplayerScreen extends Screen {
         }
     }
 
-    @ModifyArgs(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawCenteredTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;III)V"))
-    private void enhancedServerListModifyTitle(final Args args) {
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawCenteredTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;III)V"))
+    private void enhancedServerListModifyTitle(final DrawContext instance, final TextRenderer textRenderer, final Text text, final int centerX, final int y, final int color) {
         if (!Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().enhancedServerList.getValue()) {
             return;
         }
         final ServerList selectedServerList = Vandalism.getInstance().getServerListManager().getSelectedServerList();
         final MutableText title = Text.literal(selectedServerList.isDefault() ? ServerList.DEFAULT_SERVER_LIST_NAME : selectedServerList.getName());
         title.append(" (" + selectedServerList.getSize() + ") | ");
-        title.append((Text) args.get(1));
-        args.set(1, title);
+        title.append(text);
+        instance.drawCenteredTextWithShadow(textRenderer, title, centerX, y, color);
     }
 
     @Inject(method = "keyPressed", at = @At("HEAD"))
@@ -205,7 +203,7 @@ public abstract class MixinMultiplayerScreen extends Screen {
                 // checking if the size is greater than 1 because of the scanning entry
                 if (this.serverListWidget.children().size() > 1) {
                     // size() - 2 because of scanning entry
-                    MultiplayerServerListWidget.Entry entry = this.serverListWidget.children().get(Math.min(index, this.serverListWidget.children().size() - 2));
+                    final MultiplayerServerListWidget.Entry entry = this.serverListWidget.children().get(Math.min(index, this.serverListWidget.children().size() - 2));
                     if (entry instanceof MultiplayerServerListWidget.ServerEntry serverEntry) {
                         this.select(serverEntry);
                     }
@@ -213,4 +211,5 @@ public abstract class MixinMultiplayerScreen extends Screen {
             }
         }
     }
+
 }
