@@ -42,6 +42,7 @@ import net.minecraft.client.option.ServerList;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -52,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ServerPingerWidget implements MinecraftWrapper {
 
@@ -75,6 +77,8 @@ public class ServerPingerWidget implements MinecraftWrapper {
     private static final int ELEMENT_HEIGHT = 42;
 
     public static boolean IN_USE = false;
+
+    private static final CopyOnWriteArrayList<String> FORGE_MOD_DATA = new CopyOnWriteArrayList<>();
 
     private static void setServerInfo(final ServerInfo serverInfo) {
         if (serverInfo == null) {
@@ -114,7 +118,9 @@ public class ServerPingerWidget implements MinecraftWrapper {
             context.disableScissor();
             final Screen.PositionedTooltip tooltip = FAKE_MULTIPLAYER_SCREEN.tooltip;
             if (tooltip != null) {
-                context.drawTooltip(mc.textRenderer, tooltip.tooltip(), tooltip.positioner(), mouseX, mouseY);
+                final List<OrderedText> lines = new ArrayList<>(tooltip.tooltip());
+                for (final String line : FORGE_MOD_DATA) lines.add(Text.literal(line).asOrderedText());
+                context.drawTooltip(mc.textRenderer, lines, tooltip.positioner(), mouseX, mouseY);
                 FAKE_MULTIPLAYER_SCREEN.tooltip = null;
             }
             IN_USE = false;
@@ -200,6 +206,31 @@ public class ServerPingerWidget implements MinecraftWrapper {
                                 currentServerInfo.playerListSummary = list;
                             } else {
                                 currentServerInfo.playerListSummary = List.of();
+                            }
+                            FORGE_MOD_DATA.clear();
+                            if (response.modinfo != null) {
+                                FORGE_MOD_DATA.add("Forge Mod Type: " + response.modinfo.type);
+                                final MCPingResponse.ModInfo.Mod[] mods = response.modinfo.modList;
+                                if (mods.length > 0) {
+                                    FORGE_MOD_DATA.add("Forge Mods:");
+                                    for (final MCPingResponse.ModInfo.Mod mod : mods) {
+                                        FORGE_MOD_DATA.add(" " + mod.modid + " v" + mod.version);
+                                    }
+                                }
+                            }
+                            if (response.forgeData != null) {
+                                FORGE_MOD_DATA.add("Forge FML Net Version: " + response.forgeData.fmlNetworkVersion);
+                                final MCPingResponse.ForgeData.Channel[] channels = response.forgeData.channels;
+                                if (channels.length > 0) {
+                                    FORGE_MOD_DATA.add("Forge Channels: " + channels.length);
+                                }
+                                final MCPingResponse.ForgeData.Mod[] mods = response.forgeData.mods;
+                                if (mods.length > 0) {
+                                    FORGE_MOD_DATA.add("Forge Mods:");
+                                    for (final MCPingResponse.ForgeData.Mod mod : mods) {
+                                        FORGE_MOD_DATA.add(" " + mod.modId + " | " + mod.modmarker);
+                                    }
+                                }
                             }
                             setServerInfo(currentServerInfo);
                         }).getAsync();
