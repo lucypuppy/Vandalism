@@ -24,7 +24,7 @@ import net.minecraft.util.Identifier;
 
 public class SpotifyData {
 
-    public final static Identifier IMAGE_IDENTIFIER = new Identifier(FabricBootstrap.MOD_ID, "spotify_track.png");
+    public static final Identifier IMAGE_IDENTIFIER = new Identifier(FabricBootstrap.MOD_ID, "spotify_track.png");
 
     private String type;
     private String name;

@@ -57,7 +57,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
     private File currentSongFile;
     private SongPlayer songPlayer;
 
-    private final static File NOTE_BLOCK_SONGS_DIR = new File(Vandalism.getInstance().getRunDirectory(), "note-block-songs");
+    private static final File NOTE_BLOCK_SONGS_DIR = new File(Vandalism.getInstance().getRunDirectory(), "note-block-songs");
     private final ImString searchText = new ImString();
     private File searchFile;
     private boolean playing = false;
