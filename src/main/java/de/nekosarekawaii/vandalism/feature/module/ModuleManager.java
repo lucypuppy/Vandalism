@@ -40,7 +40,6 @@ import de.nekosarekawaii.vandalism.feature.module.impl.exploit.exploitfixer.Expl
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.godmode.GodModeModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.servercrasher.ServerCrasherModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.*;
-import de.nekosarekawaii.vandalism.feature.module.impl.misc.ethanol.EthanolModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.elytraflight.ElytraFlightModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.FlightModule;
@@ -82,7 +81,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     private ConsoleSpammerModule consoleSpammerModule;
     private FastBreakModule fastBreakModule;
     private ZoomModule zoomModule;
-    private EthanolModule ethanolModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientWindowManager clientWindowManager) {
         this.configManager = configManager;
@@ -116,7 +114,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.espModule = new ESPModule(),
                 this.fullBrightModule = new FullBrightModule(),
                 this.zoomModule = new ZoomModule(),
-                this.ethanolModule = new EthanolModule(),
                 new FakeLagModule(this.killAuraModule),
                 new AntiBotsModule(),
                 new AutoClickerModule(),
