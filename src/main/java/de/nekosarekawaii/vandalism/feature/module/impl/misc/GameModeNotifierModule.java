@@ -27,11 +27,11 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.util.Formatting;
 
-public class GameModeUpdateModule extends AbstractModule implements IncomingPacketListener {
+public class GameModeNotifierModule extends AbstractModule implements IncomingPacketListener {
 
-    public GameModeUpdateModule() {
+    public GameModeNotifierModule() {
         super(
-                "Game Mode Update",
+                "Game Mode Update Notifier",
                 "Notifies you whenever a player updates their game mode.",
                 Category.MISC
         );

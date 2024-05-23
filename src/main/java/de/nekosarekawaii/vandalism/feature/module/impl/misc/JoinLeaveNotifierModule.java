@@ -32,7 +32,7 @@ import net.minecraft.util.Formatting;
 
 import java.util.UUID;
 
-public class JoinLeaveModule extends AbstractModule implements IncomingPacketListener {
+public class JoinLeaveNotifierModule extends AbstractModule implements IncomingPacketListener {
 
     private final BooleanValue displayGameMode = new BooleanValue(
             this,
@@ -41,9 +41,9 @@ public class JoinLeaveModule extends AbstractModule implements IncomingPacketLis
             true
     );
 
-    public JoinLeaveModule() {
+    public JoinLeaveNotifierModule() {
         super(
-                "Join Leave",
+                "Join Leave Notifier",
                 "Notifies you whenever a player connects or disconnects to the server.",
                 Category.MISC
         );

@@ -147,7 +147,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new HandFuckerModule(),
                 new InteractionSpammerModule(),
                 //new ItemStackLoggerModule(), TODO
-                new JoinLeaveModule(),
+                new JoinLeaveNotifierModule(),
                 new MessageEncryptorModule(),
                 new MiddleClickFriendsModule(),
                 new NoteBotModule(),
@@ -179,7 +179,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new CameraNoClipModule(),
                 new DeutschMacherModule(),
                 new ProtectorModule(),
-                new GameModeUpdateModule()
+                new GameModeNotifierModule()
         );
         this.configManager.add(new ModulesConfig(this));
     }
