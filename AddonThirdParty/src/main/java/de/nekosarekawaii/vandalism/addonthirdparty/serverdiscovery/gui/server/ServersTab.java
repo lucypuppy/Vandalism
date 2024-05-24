@@ -211,7 +211,7 @@ public class ServersTab implements MinecraftWrapper {
                                 errorDisplay = null;
                             }
                         } else {
-                            errorDisplay.version = "API User is rate limited!";
+                            errorDisplay.version = response.error;
                         }
                         if (errorDisplay != null) {
                             this.servers.add(errorDisplay);
