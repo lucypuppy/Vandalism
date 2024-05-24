@@ -23,6 +23,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.LongValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
 import de.nekosarekawaii.vandalism.event.normal.game.TimeTravelListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
@@ -45,20 +46,23 @@ public class LagRangeModule extends AbstractModule implements TimeTravelListener
         super("Lag Range", "Allows you to manipulate how minecraft handles ticks and speedup the game.", Category.COMBAT);
     }
 
-    private DoubleValue range = new DoubleValue(this, "Range", "The range to start lagging.", 3.5, 0.1, 6.0);
-    private IntegerValue maxCharge = new IntegerValue(this, "Max Charge", "The maximum amount of ticks you can charge.", 3, 1, 10);
-    private LongValue delay = new LongValue(this, "Delay", "The delay between lagging in milliseconds.", 1000L, 0L, 10000L);
-    private BooleanValue tickEntities = new BooleanValue(this, "Tick Entities", "Tick entities while charging.", true);
-    private BooleanValue onlyOnGround = new BooleanValue(this, "Only On Ground", "Only lag when you are on the ground.", false);
+    private final ModeValue mode = new ModeValue(this, "Mode", "The way lagrange should behave.", "Range", "On Hit");
+    private final DoubleValue range = new DoubleValue(this, "Range", "The range to start lagging.", 3.5, 0.1, 6.0).visibleCondition(() -> mode.getValue().equalsIgnoreCase("Range"));
+    private final IntegerValue hurtTime = new IntegerValue(this, "Hurt Time", "The amount of ticks to wait before lagging after attacking.", 7, 1, 10).visibleCondition(() -> mode.getValue().equalsIgnoreCase("On Hit"));
+
+    private final IntegerValue maxCharge = new IntegerValue(this, "Max Charge", "The maximum amount of ticks you can charge.", 3, 1, 10);
+    private final LongValue delay = new LongValue(this, "Delay", "The delay between lagging in milliseconds.", 1000L, 0L, 10000L);
+    private final BooleanValue tickEntities = new BooleanValue(this, "Tick Entities", "Tick entities while charging.", true);
+    private final BooleanValue onlyOnGround = new BooleanValue(this, "Only On Ground", "Only lag when you are on the ground.", false);
 
     @Override
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(this, TimeTravelEvent.ID);
-        timer = new MSTimer();
+        this.timer = new MSTimer();
         this.killAura = Vandalism.getInstance().getModuleManager().getByClass(KillAuraModule.class);
-        isCharging = false;
-        isDone = true;
-        ticksToShift = 0;
+        this.isCharging = false;
+        this.isDone = true;
+        this.ticksToShift = 0;
     }
 
     @Override
@@ -68,86 +72,97 @@ public class LagRangeModule extends AbstractModule implements TimeTravelListener
 
     @Override
     public void onTimeTravel(TimeTravelEvent event) {
-        if (mc.player == null) {
-            shifted = 0;
+        if (this.mc.player == null) {
+            this.shifted = 0;
             return;
         }
-        prevShifted = shifted;
+        this.prevShifted = this.shifted;
 
-        if (this.getCharge() >= maxCharge.getValue()) {
-            isDone = false;
+        if (this.getCharge() >= this.maxCharge.getValue()) {
+            this.isDone = false;
         }
 
         /* Deciding when to lag and when to uncharge */
-        if (killAura.isActive() && killAura.getTarget() instanceof LivingEntity target) {
-            double distance = mc.player.getEyePos().distanceTo(target.getPos());
+        if (this.killAura.isActive() && this.killAura.getTarget() instanceof LivingEntity target) {
+            switch (this.mode.getValue().toLowerCase()) {
+                case "range": {
+                    double distance = this.mc.player.getEyePos().distanceTo(target.getPos());
 
-            boolean isPredictedInRange = false;
+                    boolean isPredictedInRange = false;
 
-            for (int ticks = getCharge(); ticks <= maxCharge.getValue(); ++ticks) {
-                double predictedDistance = Prediction.predictEntityPosition(mc.player, ticks, true)
-                        .add(0, mc.player.getStandingEyeHeight(), 0)
-                        .distanceTo(Prediction.predictEntityPosition(target, ticks, true));
-//                if (predictedDistance <= killAura.getRange()) {
-                if (MathUtil.isBetween(predictedDistance, killAura.getRange() - 0.1, killAura.getRange())) {
-                    isPredictedInRange = true;
-                    ticksToShift = ticks;
+                    for (int ticks = getCharge(); ticks <= this.maxCharge.getValue(); ++ticks) {
+                        double predictedDistance = Prediction.predictEntityPosition(this.mc.player, ticks, true)
+                                .add(0, this.mc.player.getStandingEyeHeight(), 0)
+                                .distanceTo(Prediction.predictEntityPosition(target, ticks, true));
+                        if (MathUtil.isBetween(predictedDistance, this.killAura.getRange() - 0.1, this.killAura.getRange())) {
+                            isPredictedInRange = true;
+                            this.ticksToShift = ticks;
+                            break;
+                        }
+                    }
+
+                    boolean isInRange = distance > this.killAura.getRange() && distance <= this.range.getValue();
+
+                    this.isCharging = this.isDone && isInRange && (isPredictedInRange || (this.ticksToShift > 0 && getCharge() < this.ticksToShift));
+                    break;
+                }
+                case "on hit": {
+                    if(target.hurtTime == this.hurtTime.getValue())
+                        this.ticksToShift = this.maxCharge.getValue();
+
+                    this.isCharging = this.isDone && (target.hurtTime == this.hurtTime.getValue() || (this.ticksToShift > 0 && getCharge() < this.ticksToShift));
                     break;
                 }
             }
-
-            boolean isInRange = distance > killAura.getRange() && distance <= range.getValue();
-
-            this.isCharging = isDone && isInRange && (isPredictedInRange || (ticksToShift > 0 && getCharge() < ticksToShift));
         } else {
             this.isCharging = false;
         }
 
 
         /* Charging and saving the amount of shifted time */
-        if (isCharging && timer.hasReached(delay.getValue(), false) && (!onlyOnGround.getValue() || mc.player.isOnGround())) {
-            shifted += event.time - prevTime;
+        if (this.isCharging && this.timer.hasReached(this.delay.getValue(), false) && (!this.onlyOnGround.getValue() || this.mc.player.isOnGround())) {
+            this.shifted += event.time - this.prevTime;
         }
 
         /* Ticking the entities so they are in sync with us */
-        if (tickEntities.getValue() && prevShifted < shifted) {
+        if (this.tickEntities.getValue() && this.prevShifted < this.shifted) {
             tickEntities();
         }
 
         /* UnCharging */
-        if (!isCharging && shifted > 0 && getCharge() >= ticksToShift) {
-            isDone = false;
-            shifted = 0;
-            ticksToShift = 0;
+        if (!this.isCharging && this.shifted > 0 && getCharge() >= this.ticksToShift) {
+            this.isDone = false;
+            this.shifted = 0;
+            this.ticksToShift = 0;
         }
 
-        if (shifted <= 0) {
-            if (!isCharging && !isDone) {
-                timer.reset();
+        if (this.shifted <= 0) {
+            if (!this.isCharging && !this.isDone) {
+                this.timer.reset();
             }
-            isDone = true;
+            this.isDone = true;
         }
 
-        prevTime = event.time;
-        event.time -= shifted;
+        this.prevTime = event.time;
+        event.time -= this.shifted;
     }
 
     public int getCharge() {
-        return (int) (shifted / mc.renderTickCounter.tickTime);
+        return (int) (this.shifted / this.mc.renderTickCounter.tickTime);
     }
 
     private void tickEntities() {
-        for (Entity entity : mc.world.getEntities()) {
-            if (entity == null || entity == mc.player) continue;
-            mc.world.tickEntity(entity);
+        for (Entity entity : this.mc.world.getEntities()) {
+            if (entity == null || entity == this.mc.player) continue;
+            this.mc.world.tickEntity(entity);
         }
 
-        Profiler profiler = mc.world.getProfiler();
+        Profiler profiler = this.mc.world.getProfiler();
         profiler.push("entities");
-        mc.world.getEntities().forEach((entity) -> {
-            if (entity == null || entity == mc.player) return;
-            if (!entity.isRemoved() && !entity.hasVehicle() && !mc.world.getTickManager().shouldSkipTick(entity)) {
-                mc.world.tickEntity(mc.world::tickEntity, entity);
+        this.mc.world.getEntities().forEach((entity) -> {
+            if (entity == null || entity == this.mc.player) return;
+            if (!entity.isRemoved() && !entity.hasVehicle() && !this.mc.world.getTickManager().shouldSkipTick(entity)) {
+                this.mc.world.tickEntity(this.mc.world::tickEntity, entity);
             }
         });
     }
