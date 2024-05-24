@@ -103,7 +103,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.killAuraModule = new KillAuraModule(),
                 this.consoleSpammerModule = new ConsoleSpammerModule(),
                 this.exploitFixerModule = new ExploitFixerModule(),
-                this.tickBaseModule = new TickBaseModule(this.killAuraModule),
+                this.tickBaseModule = new TickBaseModule(),
                 this.fastBreakModule = new FastBreakModule(),
                 this.fastPlaceModule = new FastPlaceModule(),
                 this.illegalInteractionModule = new IllegalInteractionModule(),
