@@ -125,7 +125,7 @@ public class PlayerDiscoveryClientWindow extends StateClientWindow {
                             }
                         }
                     } else {
-                        this.setState("API User is rate limited!");
+                        this.setState(response.error);
                     }
                     this.waitingForResponse = false;
                 });

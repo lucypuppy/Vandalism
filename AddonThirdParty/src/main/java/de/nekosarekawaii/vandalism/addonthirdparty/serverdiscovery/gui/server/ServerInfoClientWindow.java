@@ -133,7 +133,7 @@ public class ServerInfoClientWindow extends StateClientWindow {
                             this.setState("Success!");
                         }
                     } else {
-                        this.setState("API User is rate limited!");
+                        this.setState(response.error);
                     }
                     this.waitingForResponse = false;
                 });
