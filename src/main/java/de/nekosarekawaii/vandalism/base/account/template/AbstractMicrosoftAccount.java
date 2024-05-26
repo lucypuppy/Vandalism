@@ -51,7 +51,7 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
     public abstract AbstractStep<?, StepFullJavaSession.FullJavaSession> getStep();
 
     @Override
-    public void logIn0() throws Throwable {
+    public void login0() throws Throwable {
         if (this.session != null) { // If we already got a session, we should use it right?
             if (this.tokenChain == null) {
                 // Save the token chain if we don't have it yet
@@ -69,7 +69,7 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
 
     public void initWithExistingSession(final StepFullJavaSession.FullJavaSession session) throws Throwable {
         this.session = session;
-        this.logIn();
+        this.login();
     }
 
     @Override

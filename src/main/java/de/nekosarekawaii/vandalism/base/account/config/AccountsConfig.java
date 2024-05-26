@@ -96,7 +96,7 @@ public class AccountsConfig extends AbstractConfig<JsonObject> {
             final AbstractAccount lastAccount = this.loadAccount(mainNode.get("lastAccount").getAsJsonObject());
             if (lastAccount != null) {
                 try {
-                    lastAccount.logIn();
+                    lastAccount.login();
                 } catch (Throwable t) {
                     Vandalism.getInstance().getLogger().error("Failed to log into the last account: " + lastAccount.getDisplayName(), t);
                 }

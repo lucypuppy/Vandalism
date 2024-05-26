@@ -28,14 +28,24 @@ import de.nekosarekawaii.vandalism.base.account.type.microsoft.MSLocalWebserverA
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.clientwindow.ClientWindowManager;
 import de.nekosarekawaii.vandalism.util.common.Storage;
+import de.nekosarekawaii.vandalism.util.common.UUIDUtil;
+import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.session.Session;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Uuids;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class AccountManager extends Storage<AbstractAccount> {
+
+    private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
 
     public static final Map<AbstractAccount, AccountFactory> ACCOUNT_TYPES = new LinkedHashMap<>();
 
@@ -54,6 +64,9 @@ public class AccountManager extends Storage<AbstractAccount> {
     }
 
     private AbstractAccount firstAccount;
+
+    @Getter
+    @Setter
     private AbstractAccount currentAccount;
 
     @Override
@@ -68,16 +81,45 @@ public class AccountManager extends Storage<AbstractAccount> {
         );
     }
 
-    public void setCurrentAccount(final AbstractAccount currentAccount) {
-        this.currentAccount = currentAccount;
+    public void logout() throws Throwable {
+        this.firstAccount.login();
     }
 
-    public AbstractAccount getCurrentAccount() {
-        return this.currentAccount;
+    public void loginCracked(final String username) {
+        this.loginCracked(username, "", false);
     }
 
-    public void logOut() throws Throwable {
-        this.firstAccount.logIn();
+    public void loginCracked(final String username, final boolean add) {
+        this.loginCracked(username, "", add);
+    }
+
+    public void loginCracked(final String username, final String uuid) {
+        this.loginCracked(username, uuid, false);
+    }
+
+    public void loginCracked(final String username, final String uuid, final boolean add) {
+        EXECUTOR.submit(() -> {
+            String fixedUUID = uuid;
+            if (fixedUUID.isBlank()) {
+                try {
+                    fixedUUID = UUIDUtil.getUUIDFromName(username);
+                } catch (final Throwable ignored) {
+                    fixedUUID = Uuids.getOfflinePlayerUuid(username).toString();
+                }
+            }
+            final SessionAccount sessionAccount = new SessionAccount(
+                    username,
+                    fixedUUID,
+                    "",
+                    "",
+                    ""
+            );
+            if (add) {
+                this.add(sessionAccount);
+            }
+            sessionAccount.login();
+            ChatUtil.infoChatMessage("Username changed to: " + Formatting.DARK_AQUA + username);
+        });
     }
 
 }
