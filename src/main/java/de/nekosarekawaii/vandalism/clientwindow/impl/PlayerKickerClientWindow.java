@@ -46,7 +46,6 @@ import net.minecraft.util.Uuids;
 import java.io.DataOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -228,7 +227,7 @@ public class PlayerKickerClientWindow extends StateClientWindow {
                         ImGui.separator();
                         final int buttonWidth = 200, buttonHeight = 28;
                         if (ImGui.button("Login" + id + "login", buttonWidth, buttonHeight)) {
-                            this.mc.session = new Session(name, UUID.fromString(uuid), "-", Optional.empty(), Optional.empty(), Session.AccountType.LEGACY);
+                            Vandalism.getInstance().getAccountManager().loginCracked(name, uuid);
                         }
                         if (ImGui.button("Copy Data" + id + "copyData", buttonWidth, buttonHeight)) {
                             this.mc.keyboard.setClipboard(data);

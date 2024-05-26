@@ -132,7 +132,7 @@ public class AccountsClientWindow extends ClientWindow {
         if (ImGui.button("##account" + playerName + account.getType(), ImGui.getColumnWidth(), ACCOUNT_ENTRY_CONTENT_HEIGHT)) {
             if (isEntry) {
                 try {
-                    account.logIn();
+                    account.login();
                     account.setStatus("Logged in");
                 } catch (Throwable throwable) {
                     account.setStatus("Error: " + throwable.getMessage());
@@ -160,7 +160,7 @@ public class AccountsClientWindow extends ClientWindow {
                     this.renderHoveredAccountPopup(false);
                     if (ImUtils.subButton("Logout")) {
                         try {
-                            this.accountManager.logOut();
+                            this.accountManager.logout();
                         } catch (Throwable t) {
                             Vandalism.getInstance().getLogger().error("Failed to logout from account.", t);
                         }
@@ -194,7 +194,7 @@ public class AccountsClientWindow extends ClientWindow {
                     if (ImGui.treeNodeEx(account.getType() + "##" + account.getType() + "DirectLoginAccount")) {
                         factory.displayFactory();
                         if (ImGui.button("Login", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
-                            this.recallAccount(factory, AbstractAccount::logIn);
+                            this.recallAccount(factory, AbstractAccount::login);
                         }
                         ImGui.treePop();
                     }

@@ -70,11 +70,11 @@ public class SessionAccount extends AbstractAccount {
         this.accessToken = accessToken;
         this.xuid = xuid;
         this.clientId = clientId;
-        this.logIn0();
+        this.login0();
     }
 
     @Override
-    public void logIn0() {
+    public void login0() {
         if (!ObjectTypeChecker.isUUID(this.uuid)) {
             String uuid = "";
             if (!this.name.isBlank()) {

@@ -22,6 +22,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.feature.command.impl.exploit.*;
 import de.nekosarekawaii.vandalism.feature.command.impl.exploit.plugin.MultiverseCoreOptimizerCommand;
+import de.nekosarekawaii.vandalism.feature.command.impl.exploit.plugin.PluginsCommand;
 import de.nekosarekawaii.vandalism.feature.command.impl.exploit.plugin.SkriptDupeCommand;
 import de.nekosarekawaii.vandalism.feature.command.impl.misc.*;
 import de.nekosarekawaii.vandalism.feature.command.impl.misc.copy.*;
@@ -87,7 +88,7 @@ public class CommandManager extends Storage<AbstractCommand> implements Minecraf
                 new ArmorCarryCommand(),
                 new InventoryClearCommand(),
                 new CopyInvisibleCharCommand(),
-                new CopyUsernameCommand(),
+                new UsernameCommand(),
                 new EnchantCommand(),
                 new FlipCommand(),
                 new ClientsideInventoryClearCommand(),

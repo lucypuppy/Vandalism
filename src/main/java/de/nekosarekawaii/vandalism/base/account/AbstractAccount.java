@@ -58,7 +58,7 @@ public abstract class AbstractAccount implements MinecraftWrapper {
         this.type = type;
     }
 
-    public abstract void logIn0() throws Throwable;
+    public abstract void login0() throws Throwable;
     
     public abstract void save0(final JsonObject mainNode) throws Throwable;
 
@@ -126,10 +126,10 @@ public abstract class AbstractAccount implements MinecraftWrapper {
         return this.type;
     }
 
-    public void logIn() {
+    public void login() {
         CompletableFuture.runAsync(() -> {
             try {
-                this.logIn0(); // Set the game session and reload the skins
+                this.login0(); // Set the game session and reload the skins
                 if (reloadProfileKeys(this.session, getEnvironment())) {
                     this.setStatus("Updated session and logged in");
                 } else {

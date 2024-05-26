@@ -24,7 +24,6 @@ import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.ServerDiscove
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.impl.ServerInfoRequest;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.Response;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.impl.ServerInfoResponse;
-import de.nekosarekawaii.vandalism.base.account.type.SessionAccount;
 import de.nekosarekawaii.vandalism.clientwindow.template.StateClientWindow;
 import de.nekosarekawaii.vandalism.util.game.PingState;
 import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
@@ -279,14 +278,7 @@ public class ServerInfoClientWindow extends StateClientWindow {
                         ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
                     }
                     if (ImGui.button("##serverinfoplayer" + playerName, ImGui.getColumnWidth() - 8, 60)) {
-                        final SessionAccount sessionAccount = new SessionAccount(
-                                playerName,
-                                playerUUID,
-                                "",
-                                "",
-                                ""
-                        );
-                        sessionAccount.logIn();
+                        Vandalism.getInstance().getAccountManager().loginCracked(playerName, playerUUID);
                     }
                     if (isCurrentAccount) {
                         ImGui.popStyleColor(3);
@@ -294,15 +286,7 @@ public class ServerInfoClientWindow extends StateClientWindow {
                     if (ImGui.beginPopupContextItem("##serverinfoplayer" + playerName + "popup", ImGuiPopupFlags.MouseButtonRight)) {
                         final int buttonWidth = 150, buttonHeight = 28;
                         if (ImGui.button("Add##serverinfoplayer" + playerName + "add", buttonWidth, buttonHeight)) {
-                            final SessionAccount sessionAccount = new SessionAccount(
-                                    playerName,
-                                    playerUUID,
-                                    "",
-                                    "",
-                                    ""
-                            );
-                            Vandalism.getInstance().getAccountManager().add(sessionAccount);
-                            sessionAccount.logIn();
+                            Vandalism.getInstance().getAccountManager().loginCracked(playerName, playerUUID, true);
                         }
                         if (ImGui.button("Copy Name##serverinfoplayer" + playerName + "copyname", buttonWidth, buttonHeight)) {
                             this.mc.keyboard.setClipboard(playerName);
