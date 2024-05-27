@@ -20,14 +20,22 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import com.mojang.authlib.GameProfile;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.event.normal.network.WorldListener;
+import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
+import lombok.Getter;
+import lombok.Setter;
+import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.util.Formatting;
+import net.minecraft.world.GameMode;
 
-public class GameModeNotifierModule extends AbstractModule implements IncomingPacketListener {
+import java.util.ArrayList;
+import java.util.List;
+
+public class GameModeNotifierModule extends AbstractModule implements WorldListener, PlayerUpdateListener {
+
+    private final List<PlayerEntry> playerEntries = new ArrayList<>();
 
     public GameModeNotifierModule() {
         super(
@@ -39,44 +47,94 @@ public class GameModeNotifierModule extends AbstractModule implements IncomingPa
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(IncomingPacketEvent.ID, this);
+        this.playerEntries.clear();
+        Vandalism.getInstance().getEventSystem().subscribe(this, WorldLoadEvent.ID, PlayerUpdateEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(IncomingPacketEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, WorldLoadEvent.ID, PlayerUpdateEvent.ID);
+        this.playerEntries.clear();
     }
 
     @Override
-    public void onIncomingPacket(final IncomingPacketEvent event) {
-        final Packet<?> packet = event.packet;
-        if (packet instanceof final PlayerListS2CPacket playerListS2CPacket) {
-            if (playerListS2CPacket.getActions().contains(PlayerListS2CPacket.Action.UPDATE_GAME_MODE)) {
-                for (final PlayerListS2CPacket.Entry entry : playerListS2CPacket.getEntries()) {
-                    final GameProfile profile = entry.profile();
-                    if (profile != null) {
-                        ChatUtil.infoChatMessage(
-                                Formatting.DARK_GRAY +
-                                        "[" +
-                                        Formatting.YELLOW +
-                                        "\uD83E\uDC09" +
-                                        Formatting.DARK_GRAY +
-                                        "] " +
-                                        Formatting.GREEN +
-                                        profile.getName() +
-                                        Formatting.DARK_GRAY +
-                                        " | " +
-                                        Formatting.GOLD +
-                                        "Game Mode" +
-                                        Formatting.GRAY +
-                                        ": " +
-                                        Formatting.DARK_AQUA +
-                                        entry.gameMode().getName()
-                        );
+    public void onPostWorldLoad() {
+        this.playerEntries.clear();
+    }
+
+    @Override
+    public void onPostPlayerUpdate(final PlayerUpdateEvent event) {
+        if (this.mc.getNetworkHandler() == null) return;
+        for (final PlayerListEntry playerListEntry : this.mc.getNetworkHandler().getPlayerList()) {
+            final GameProfile profile = playerListEntry.getProfile();
+            if (profile != null) {
+                final GameMode gameMode = playerListEntry.getGameMode();
+                if (gameMode != null) {
+                    PlayerEntry entry = null;
+                    boolean found = false;
+                    for (final PlayerEntry playerEntry : this.playerEntries) {
+                        if (playerEntry.getName().equals(profile.getName())) {
+                            playerEntry.setCurrentGameMode(gameMode);
+                            entry = playerEntry;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        final PlayerEntry playerEntry = new PlayerEntry(profile.getName());
+                        playerEntry.setCurrentGameMode(gameMode);
+                        this.playerEntries.add(playerEntry);
+                        entry = playerEntry;
+                    }
+                    if (entry.hasBeenUpdated()) {
+                        final String name = entry.getName();
+                        final StringBuilder notification = new StringBuilder();
+                        notification.append(Formatting.DARK_GRAY);
+                        notification.append("[");
+                        notification.append(Formatting.YELLOW);
+                        notification.append("\uD83E\uDC09");
+                        notification.append(Formatting.DARK_GRAY);
+                        notification.append("] ");
+                        notification.append(Formatting.GREEN);
+                        notification.append(name);
+                        notification.append(Formatting.DARK_GRAY);
+                        notification.append(" | ");
+                        if (entry.getLastGameMode() != null) {
+                            notification.append(Formatting.RED);
+                            String lastGameModeName = entry.getLastGameMode().getName();
+                            lastGameModeName = lastGameModeName.substring(0, 1).toUpperCase() + lastGameModeName.substring(1).toLowerCase();
+                            notification.append(lastGameModeName);
+                            notification.append(Formatting.GRAY);
+                            notification.append(" > ");
+                        }
+                        notification.append(Formatting.DARK_AQUA);
+                        String currentGameModeName = gameMode.getName();
+                        currentGameModeName = currentGameModeName.substring(0, 1).toUpperCase() + currentGameModeName.substring(1).toLowerCase();
+                        notification.append(currentGameModeName);
+                        ChatUtil.infoChatMessage(notification.toString());
+                        entry.setLastGameMode(entry.getCurrentGameMode());
                     }
                 }
             }
         }
+    }
+
+    @Getter
+    private static class PlayerEntry {
+
+        private final String name;
+
+        @Setter
+        private GameMode lastGameMode, currentGameMode;
+
+        public PlayerEntry(final String name) {
+            this.name = name;
+        }
+
+        public boolean hasBeenUpdated() {
+            return this.lastGameMode == null || !this.lastGameMode.equals(this.currentGameMode);
+        }
+
     }
 
 }

@@ -34,10 +34,10 @@ import java.util.UUID;
 
 public class JoinLeaveNotifierModule extends AbstractModule implements IncomingPacketListener {
 
-    private final BooleanValue displayGameMode = new BooleanValue(
+    private final BooleanValue displayGameModeOnJoin = new BooleanValue(
             this,
-            "Display Game Mode",
-            "Displays the game mode of players that join or leave the server.",
+            "Display Game Mode On Join",
+            "Displays the game mode of players that join the server.",
             true
     );
 
@@ -76,15 +76,13 @@ public class JoinLeaveNotifierModule extends AbstractModule implements IncomingP
                         message.append("] ");
                         message.append(Formatting.GREEN);
                         message.append(profile.getName());
-                        if (this.displayGameMode.getValue()) {
+                        if (this.displayGameModeOnJoin.getValue()) {
                             message.append(Formatting.DARK_GRAY);
                             message.append(" | ");
-                            message.append(Formatting.GOLD);
-                            message.append("Game Mode");
-                            message.append(Formatting.GRAY);
-                            message.append(": ");
                             message.append(Formatting.DARK_AQUA);
-                            message.append(entry.gameMode().getName());
+                            String gameMode = entry.gameMode().getName();
+                            gameMode = gameMode.substring(0, 1).toUpperCase() + gameMode.substring(1).toLowerCase();
+                            message.append(gameMode);
                         }
                         ChatUtil.infoChatMessage(message.toString());
                     }
