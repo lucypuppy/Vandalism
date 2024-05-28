@@ -39,7 +39,7 @@ public class GameModeNotifierModule extends AbstractModule implements WorldListe
 
     public GameModeNotifierModule() {
         super(
-                "Game Mode Update Notifier",
+                "Game Mode Notifier",
                 "Notifies you whenever a player updates their game mode.",
                 Category.MISC
         );
