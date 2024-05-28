@@ -16,16 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.clientwindow.impl.widget;
+package de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl;
 
-import de.nekosarekawaii.vandalism.util.common.StringUtils;
+import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
 
-public enum ForgeDataModsTableColumn {
+public class SingleDataEntry extends DataEntry {
 
-    MOD_ID, MOD_MARKER, ACTIONS;
+    private final String dataName, data;
 
-    public String getName() {
-        return StringUtils.normalizeEnumName(this.name());
+    public SingleDataEntry(final String dataName, final String data) {
+        this.dataName = dataName;
+        this.data = data;
+    }
+
+    @Override
+    public String getData() {
+        return this.dataName + ": " + this.data;
     }
 
 }

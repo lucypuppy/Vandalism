@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.clientwindow.impl;
 
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
+import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
@@ -35,13 +36,10 @@ public class ServerAddressResolverClientWindow extends ClientWindow {
 
         @Override
         public void accept(final ImGuiInputTextCallbackData imGuiInputTextCallbackData) {
-            if (imGuiInputTextCallbackData.getEventChar() == 0) return;
-            if (
-                    !Character.isLetterOrDigit(imGuiInputTextCallbackData.getEventChar()) &&
-                            imGuiInputTextCallbackData.getEventChar() != '.' &&
-                            imGuiInputTextCallbackData.getEventChar() != '-' &&
-                            imGuiInputTextCallbackData.getEventChar() != ':'
-            ) {
+            final int eventCharInt = imGuiInputTextCallbackData.getEventChar();
+            if (eventCharInt == 0) return;
+            final char eventChar = (char) eventCharInt;
+            if (!Character.isLetterOrDigit(eventChar) && eventChar != '.' && eventChar != '-' && eventChar != ':') {
                 imGuiInputTextCallbackData.setEventChar((char) 0);
             }
         }
@@ -58,8 +56,11 @@ public class ServerAddressResolverClientWindow extends ClientWindow {
 
     @Override
     protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        final String id = "##" + this.getName();
+        ImGui.text("Hostname");
+        ImGui.setNextItemWidth(-1);
         ImGui.inputText(
-                "Hostname##serveraddressresolverhostname",
+                id + "hostnameInput",
                 this.hostname,
                 ImGuiInputTextFlags.CallbackCharFilter,
                 HOSTNAME_FILTER
@@ -73,7 +74,7 @@ public class ServerAddressResolverClientWindow extends ClientWindow {
                         this.hostname.get().contains(".") &&
                         this.hostname.get().indexOf(".") < this.hostname.get().length() - 2
         ) {
-            if (ImGui.button("Resolve Server Address##serveraddressresolverresolve", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+            if (ImUtils.subButton("Resolve Server Address" + id + "resolveAddress")) {
                 this.lastData.clear();
                 Executors.newSingleThreadExecutor().submit(() -> {
                     try {
@@ -86,20 +87,20 @@ public class ServerAddressResolverClientWindow extends ClientWindow {
                         if (newAddress.contains("./")) newAddress = newAddress.replace("./", "/");
                         if (newAddress.contains("/")) newAddress = newAddress.replace("/", "\n");
                         this.lastData.set(oldAddress + "\n\n" + newAddress);
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         this.lastData.set("Error: " + e.getMessage());
                     }
                 });
             }
         }
         if (!this.lastData.get().isBlank()) {
-            if (ImGui.button("Clear##serveraddressresolverclear", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+            if (ImUtils.subButton("Clear" + id + "clear")) {
                 this.lastData.clear();
             }
             ImGui.separator();
             ImGui.text("Resolved Data");
             ImGui.setNextItemWidth(-1);
-            ImGui.inputTextMultiline("##serveraddressresolverdata", this.lastData, -1, -1, ImGuiInputTextFlags.ReadOnly);
+            ImGui.inputTextMultiline(id + "resolvedData", this.lastData, -1, -1, ImGuiInputTextFlags.ReadOnly);
         }
     }
 

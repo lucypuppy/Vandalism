@@ -32,25 +32,18 @@ public class ClientWindow implements IName, MinecraftWrapper {
     @Getter
     private final Category category;
 
-    private final boolean doesRenderWindow;
-
     private final int defaultWindowFlags;
 
     @Getter
     private boolean active;
 
     public ClientWindow(final String name, final Category category) {
-        this(name, category, false);
+        this(name, category, -1);
     }
 
-    public ClientWindow(final String name, final Category category, final boolean doesRenderWindow) {
-        this(name, category, doesRenderWindow, -1);
-    }
-
-    public ClientWindow(final String name, final Category category, final boolean doesRenderWindow, final int defaultWindowFlags) {
+    public ClientWindow(final String name, final Category category, final int defaultWindowFlags) {
         this.name = name;
         this.category = category;
-        this.doesRenderWindow = doesRenderWindow;
         this.defaultWindowFlags = defaultWindowFlags;
     }
 
@@ -64,16 +57,13 @@ public class ClientWindow implements IName, MinecraftWrapper {
     }
 
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        final boolean doesntRenderWindow = !this.doesRenderWindow;
-        if (doesntRenderWindow) {
-            if (this.defaultWindowFlags != -1) {
-                ImGui.begin(this.getName(), this.defaultWindowFlags);
-            } else {
-                ImGui.begin(this.getName());
-            }
+        if (this.defaultWindowFlags != -1) {
+            ImGui.begin(this.getName(), this.defaultWindowFlags);
+        } else {
+            ImGui.begin(this.getName());
         }
         this.onRender(context, mouseX, mouseY, delta);
-        if (doesntRenderWindow) ImGui.end();
+        ImGui.end();
     }
 
     protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {

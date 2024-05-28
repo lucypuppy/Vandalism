@@ -19,17 +19,21 @@
 package de.nekosarekawaii.vandalism.clientwindow.impl.port;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.clientwindow.impl.widget.ServerInfosTableColumn;
 import de.nekosarekawaii.vandalism.clientwindow.template.StateClientWindow;
-import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
+import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataListWidget;
+import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
+import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
+import de.nekosarekawaii.vandalism.util.common.DateUtil;
+import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
+import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
 import imgui.flag.ImGuiInputTextFlags;
-import imgui.flag.ImGuiTableFlags;
 import imgui.type.ImInt;
 import imgui.type.ImString;
 import lombok.Getter;
+import net.lenni0451.mcping.responses.MCPingResponse;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ServerInfo;
@@ -40,52 +44,46 @@ import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class PortScannerClientWindow extends StateClientWindow {
+public class PortScannerClientWindow extends StateClientWindow implements DataListWidget {
 
     private static final ImGuiInputTextCallback HOSTNAME_FILTER = new ImGuiInputTextCallback() {
 
         @Override
         public void accept(final ImGuiInputTextCallbackData imGuiInputTextCallbackData) {
-            if (imGuiInputTextCallbackData.getEventChar() == 0) return;
-            if (
-                    !Character.isLetterOrDigit(imGuiInputTextCallbackData.getEventChar()) &&
-                            imGuiInputTextCallbackData.getEventChar() != '.' &&
-                            imGuiInputTextCallbackData.getEventChar() != '-' &&
-                            imGuiInputTextCallbackData.getEventChar() != ':'
-            ) {
+            final int eventCharInt = imGuiInputTextCallbackData.getEventChar();
+            if (eventCharInt == 0) return;
+            final char eventChar = (char) eventCharInt;
+            if (!Character.isLetterOrDigit(eventChar) && eventChar != '.' && eventChar != '-' && eventChar != ':') {
                 imGuiInputTextCallbackData.setEventChar((char) 0);
             }
         }
 
     };
 
-    private final ImString address, progress;
-    private final ImInt minPort, maxPort, threads, timeout;
-    private final List<Integer> ports;
-    private final List<PortResult> portResults;
-    private int currentPort;
-    private int currentPortResult;
+    private final ImString address = new ImString(253);
+    private final ImString progress = new ImString(200);
+    private final ImInt minPort = new ImInt(1);
+    private final ImInt maxPort = new ImInt(65535);
+    private final ImInt threads = new ImInt(128);
+    private final ImInt timeout = new ImInt(500);
+    private final ImString portsContainer = new ImString(500);
+    private final List<Integer> ports = new CopyOnWriteArrayList<>();
+    private final List<PortResult> portResults = new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<ListDataEntry> portScanDataEntries = new CopyOnWriteArrayList<>();
+    private int currentPort = -1;
+    private int currentPortResult = -1;
 
     public PortScannerClientWindow() {
-        super("Port Scanner", Category.SERVER, true);
-        this.address = new ImString(253);
-        this.progress = new ImString(200);
-        this.minPort = new ImInt(1);
-        this.maxPort = new ImInt(65535);
-        this.threads = new ImInt(128);
-        this.timeout = new ImInt(500);
-        this.ports = new CopyOnWriteArrayList<>();
-        this.portResults = new CopyOnWriteArrayList<>();
-        this.currentPort = -1;
-        this.currentPortResult = -1;
+        super("Port Scanner", Category.SERVER);
     }
 
     private void reset() {
+        this.progress.clear();
         this.ports.clear();
         this.portResults.clear();
+        this.portScanDataEntries.clear();
         this.currentPort = this.minPort.get() - 1;
         this.currentPortResult = -1;
-        this.progress.clear();
         this.resetState();
     }
 
@@ -98,29 +96,31 @@ public class PortScannerClientWindow extends StateClientWindow {
     }
 
     @Override
+    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        for (final PortResult portResult : this.portResults) portResult.render();
+        super.render(context, mouseX, mouseY, delta);
+    }
+
+    @Override
     protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        for (final PortResult portResult : this.portResults) {
-            portResult.renderSubData();
-        }
-        ImGui.begin("Port Scanner##portscanner");
+        final String id = "##" + this.getName();
         super.onRender(context, mouseX, mouseY, delta);
         if (this.isRunning()) {
             ImGui.text("Progress");
-            final float progress = (float) this.currentPort / (float) (this.maxPort.get() - this.minPort.get());
-            ImGui.progressBar(progress / 100f);
+            ImGui.progressBar(((float) this.currentPort / (float) (this.maxPort.get() - this.minPort.get())) / 100f);
             ImGui.separator();
         } else {
             ImGui.text("Address");
             ImGui.setNextItemWidth(-1);
             ImGui.inputText(
-                    "##portscannerhostname",
+                    id + "address",
                     this.address,
                     ImGuiInputTextFlags.CallbackCharFilter,
                     HOSTNAME_FILTER
             );
-            final ServerInfo currentServer = ServerConnectionUtil.getLastServerInfo();
+            final ServerInfo currentServer = ServerUtil.getLastServerInfo();
             if (currentServer != null) {
-                if (ImGui.button("Use " + (this.mc.player != null ? "Current" : "Last") + " Server##portscannerusecurrentserver", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                if (ImUtils.subButton("Use " + (this.mc.player != null ? "Current" : "Last") + " Server" + id + "useLastOrCurrentServer")) {
                     this.address.set(currentServer.address);
                 }
             }
@@ -140,44 +140,57 @@ public class PortScannerClientWindow extends StateClientWindow {
                             final int port = Integer.parseInt(data[1]);
                             this.minPort.set(Math.max(1, Math.min(port - 500, 65535)));
                             this.maxPort.set(Math.max(port, Math.min(port + 500, 65535)));
-                        } catch (Exception ignored) {
+                        } catch (final Exception ignored) {
                         }
                     }
                 }
-                ImGui.inputInt("Min Port##portscannerminport", this.minPort, 1);
-                this.minPort.set(Math.max(1, Math.min(this.minPort.get(), this.maxPort.get() - 1)));
-                ImGui.inputInt("Max Port##portscannermaxport", this.maxPort, 1);
-                this.maxPort.set(Math.max(this.minPort.get() + 1, Math.min(this.maxPort.get(), 65535)));
-                if (ImGui.inputInt("Threads##portscannerthreads", this.threads, 1)) {
+                ImGui.text("Min Port");
+                ImGui.sameLine(ImGui.getColumnWidth() / 2f + 27f);
+                ImGui.text("Max Port");
+                ImGui.setNextItemWidth(ImGui.getColumnWidth() / 2f);
+                if (ImGui.inputInt(id + "minPort", this.minPort, 1)) {
+                    this.minPort.set(Math.max(1, Math.min(this.minPort.get(), this.maxPort.get() - 1)));
+                }
+                ImGui.setNextItemWidth(-1);
+                ImGui.sameLine();
+                if (ImGui.inputInt(id + "maxPort", this.maxPort, 1)) {
+                    this.maxPort.set(Math.max(this.minPort.get() + 1, Math.min(this.maxPort.get(), 65535)));
+                }
+                ImGui.text("Threads");
+                ImGui.sameLine(ImGui.getColumnWidth() / 2f + 27f);
+                ImGui.text("Timeout");
+                ImGui.setNextItemWidth(ImGui.getColumnWidth() / 2f);
+                if (ImGui.inputInt(id + "threads", this.threads, 1)) {
                     this.threads.set(Math.max(1, Math.min(this.threads.get(), 1000)));
                 }
-                if (ImGui.inputInt("Timeout##portscannertimeout", this.timeout, 1)) {
+                ImGui.setNextItemWidth(-1);
+                ImGui.sameLine();
+                if (ImGui.inputInt(id + "timeout", this.timeout, 1)) {
                     this.timeout.set(Math.max(1, Math.min(this.timeout.get(), 10000)));
                 }
                 if (this.minPort.get() != 1 || this.maxPort.get() != 65535 || this.threads.get() != 128 || this.timeout.get() != 500) {
-                    if (ImGui.button("Reset Values##portscannerresetvalues", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                    if (ImGui.button("Reset Values" + id + "resetValues", ImGui.getColumnWidth() / (this.ports.isEmpty() ? 2f : 3f), ImGui.getTextLineHeightWithSpacing())) {
                         this.minPort.set(1);
                         this.maxPort.set(65535);
                         this.threads.set(128);
                         this.timeout.set(500);
                     }
-                    ImGui.sameLine();
                 }
-                ImGui.spacing();
                 if (!this.ports.isEmpty()) {
-                    if (ImGui.button("Clear##portscannerclear", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
+                    ImGui.sameLine();
+                    if (ImGui.button("Clear" + id + "clear", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
                         this.reset();
                     }
                     ImGui.sameLine();
                 }
-                if (ImGui.button("Start##portscannerstart", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                if (ImUtils.subButton("Start" + id + "start")) {
                     this.reset();
                     this.setState(State.RUNNING.getMessage());
-                    final Pair<String, Integer> serverAddress = ServerConnectionUtil.resolveServerAddress(this.address.get());
+                    final Pair<String, Integer> serverAddress = ServerUtil.resolveServerAddress(this.address.get());
                     final String resolvedAddress = serverAddress.getLeft();
                     for (int i = 0; i < this.threads.get(); i++) {
-                        final int id = i;
-                        Vandalism.getInstance().getLogger().info("Starting Port Scanner Thread #{}...", id);
+                        final int threadID = i + 1;
+                        Vandalism.getInstance().getLogger().info("Starting Port Scanner Thread #{}...", threadID);
                         new Thread(() -> {
                             try {
                                 while (this.isRunning() && this.currentPort < this.maxPort.get()) {
@@ -196,36 +209,44 @@ public class PortScannerClientWindow extends StateClientWindow {
                                     }
                                 }
                                 this.stop();
-                                Vandalism.getInstance().getLogger().info("Port Scanner Thread #{} finished.", id);
+                                Vandalism.getInstance().getLogger().info("Port Scanner Thread #{} finished.", threadID);
                             } catch (final Exception e) {
-                                Vandalism.getInstance().getLogger().error("Port Scanner Thread #{} failed.", id, e);
+                                Vandalism.getInstance().getLogger().error("Port Scanner Thread #{} failed.", threadID, e);
                                 this.setState(State.FAILED.getMessage() + e.getClass().getSimpleName() + ": " + e.getMessage());
                             }
-                        }, "Port Scanner Thread #" + id).start();
+                        }, "Port Scanner Thread #" + threadID).start();
                     }
                 }
                 ImGui.spacing();
             }
         }
         if (this.isRunning()) {
-            if (ImGui.button("Stop##portscannerstop", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+            if (ImUtils.subButton("Stop" + id + "stop")) {
                 this.stop();
             }
-            ImGui.spacing();
         }
-        ImGui.separator();
-        ImGui.text("Results");
-        ImGui.separator();
         if (!this.ports.isEmpty()) {
-            ImGui.textWrapped("Found " + this.ports.size() + " open ports.");
+            ImGui.text("Open Ports: " + this.ports.size());
+            this.portsContainer.set(String.join(", ", this.ports.stream().map(port -> port + " ").toList()));
+            String portsContainer = this.portsContainer.get();
+            if (portsContainer.endsWith(" ")) {
+                this.portsContainer.set(portsContainer.substring(0, portsContainer.length() - 1));
+                portsContainer = this.portsContainer.get();
+            }
+            ImGui.beginChild(id + "openPorts" + "Child", -1, ImGui.getTextLineHeight() + ImGui.getTextLineHeight() * this.ports.size() / 10f, true);
+            ImGui.textWrapped(portsContainer);
+            ImGui.endChild();
+            if (ImUtils.subButton("Copy All Ports" + id + "copyAllPorts")) {
+                this.mc.keyboard.setClipboard(portsContainer);
+            }
             if (this.currentPortResult > -1) {
+                ImGui.separator();
                 ImGui.text("Pinging Progress");
-                final float progress = (float) this.currentPortResult / (float) this.ports.size();
-                ImGui.progressBar(progress);
+                ImGui.progressBar((float) this.currentPortResult / (float) this.ports.size());
                 ImGui.separator();
             }
             if (this.currentPortResult < 0) {
-                if (ImGui.button("Ping all ports##portspingallportscanner", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                if (ImUtils.subButton("Ping All Ports" + id + "pingAllPorts")) {
                     this.portResults.clear();
                     new Thread(() -> {
                         this.currentPortResult = 0;
@@ -233,12 +254,19 @@ public class PortScannerClientWindow extends StateClientWindow {
                             try {
                                 final PortResult portResult = new PortResult(port, this.address.get());
                                 portResult.ping(() -> {
+                                    final MCPingResponse pingResponse = portResult.getMcPingResponse();
+                                    if (pingResponse != null) {
+                                        portResult.getList().add(new Pair<>("Description", ServerUtil.fixDescription(portResult.getDescription())));
+                                        portResult.getList().add(new Pair<>("Version", pingResponse.version.name));
+                                        portResult.getList().add(new Pair<>("Protocol", String.valueOf(pingResponse.version.protocol)));
+                                        portResult.getList().add(new Pair<>("Players", pingResponse.players.online + "/" + pingResponse.players.max));
+                                    }
+                                    this.portScanDataEntries.add(portResult);
                                     this.portResults.add(portResult);
                                     this.currentPortResult++;
                                 });
-                            }
-                            catch (Exception e) {
-                                Vandalism.getInstance().getLogger().error("Failed to ping port " + port + ".", e);
+                            } catch (final Exception e) {
+                                Vandalism.getInstance().getLogger().error("Failed to ping port {}.", port, e);
                             }
                         }
                         this.currentPortResult = -1;
@@ -247,42 +275,65 @@ public class PortScannerClientWindow extends StateClientWindow {
             }
             if (!this.portResults.isEmpty()) {
                 if (this.currentPortResult < 0) {
-                    if (ImGui.button("Add all servers##portsaddallserversportscanner", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                    ImGui.sameLine();
+                    if (ImUtils.subButton("Add All Servers" + id + "addAllServers")) {
                         final net.minecraft.client.option.ServerList serverList = new net.minecraft.client.option.ServerList(MinecraftClient.getInstance());
                         serverList.loadFile();
                         for (final PortResult portResult : this.portResults) {
                             serverList.add(new ServerInfo(
                                     "Port Scan Result (" + portResult.getPort() + ")",
-                                    portResult.getHostname() + ":" + portResult.getPort(),
+                                    portResult.getAddress() + ":" + portResult.getPort(),
                                     ServerInfo.ServerType.OTHER
                             ), false);
                         }
                         serverList.saveFile();
                     }
                 }
-                final ServerInfosTableColumn[] serverInfosTableColumns = ServerInfosTableColumn.values();
-                final int maxServerInfosTableColumns = serverInfosTableColumns.length;
-                ImGui.text("Excel Simulator 2024");
-                if (ImGui.beginTable("serverinfos##serverinfostableportscanner", maxServerInfosTableColumns,
-                        ImGuiTableFlags.Borders |
-                                ImGuiTableFlags.Resizable |
-                                ImGuiTableFlags.RowBg |
-                                ImGuiTableFlags.ContextMenuInBody
-                )) {
-                    for (final ServerInfosTableColumn serverInfosTableColumn : serverInfosTableColumns) {
-                        ImGui.tableSetupColumn(serverInfosTableColumn.getName());
-                    }
-                    ImGui.tableHeadersRow();
-                    for (final PortResult portResult : this.portResults) {
-                        portResult.renderTableEntry();
-                    }
-                    ImGui.endTable();
+                if (DateUtil.isAprilFools()) {
+                    ImGui.text("Excel Simulator " + DateUtil.getYear());
                 }
+                ImGui.text("Server: " + this.portResults.size());
+                this.renderDataList(id, -1, 90f, this.portScanDataEntries);
             }
         } else {
             ImGui.text("No valid results.");
         }
-        ImGui.end();
+    }
+
+    @Override
+    public boolean filterDataEntry(final DataEntry dataEntry) {
+        return false;
+    }
+
+    @Override
+    public boolean shouldHighlightDataEntry(final DataEntry dataEntry) {
+        return false;
+    }
+
+    @Override
+    public float[] getDataEntryHighlightColor(final DataEntry dataEntry) {
+        return null;
+    }
+
+    @Override
+    public void onDataEntryClick(final DataEntry dataEntry) {
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            ServerUtil.connect(listDataEntry.getFirst().getRight());
+        }
+    }
+
+    @Override
+    public void renderDataEntryContextMenu(final String id, final int index, final DataEntry dataEntry) {
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            final String address = listDataEntry.getFirst().getRight();
+            for (final PortResult portResult : this.portResults) {
+                final String addressPort = portResult.getAddress() + ":" + portResult.getPort();
+                if (addressPort.equals(address)) {
+                    portResult.renderContextMenu(id + "contextMenuContent");
+                    break;
+                }
+            }
+        }
     }
 
     @Getter

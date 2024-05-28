@@ -20,9 +20,9 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
-import de.nekosarekawaii.vandalism.integration.serverlist.ServerDataUtil;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerPingerWidget;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
+import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -87,7 +87,7 @@ public abstract class MixinDirectConnectScreen extends Screen {
             if (address != null && !address.isBlank()) {
                 if (enhancedServerListSettings.directConnectAddressFix.getValue()) {
                     final String oldAddress = address;
-                    address = ServerDataUtil.fixAddress(address);
+                    address = ServerUtil.fixAddress(address);
                     if (!oldAddress.equals(address)) {
                         this.addressField.setText(address);
                     }

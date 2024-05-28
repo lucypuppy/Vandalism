@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
+import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -71,7 +71,7 @@ public abstract class MixinMinecraftClient {
     @Inject(method = "setScreen", at = @At(value = "INVOKE", target = "Ljava/lang/IllegalStateException;<init>(Ljava/lang/String;)V", shift = At.Shift.BEFORE, remap = false), cancellable = true)
     private void fixISE(final Screen screen, final CallbackInfo ci) {
         ci.cancel();
-        ServerConnectionUtil.disconnect("Trying to return to in-game GUI during disconnection.");
+        ServerUtil.disconnect("Trying to return to in-game GUI during disconnection.");
     }
 
 }

@@ -23,26 +23,33 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.clientwindow.template.StateClientWindow;
+import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataListWidget;
+import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
+import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
+import de.nekosarekawaii.vandalism.util.common.MathUtil;
 import de.nekosarekawaii.vandalism.util.common.UUIDUtil;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
 import imgui.flag.ImGuiInputTextFlags;
-import imgui.flag.ImGuiTableFlags;
 import imgui.type.ImString;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.util.Pair;
 import net.minecraft.util.Uuids;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class NameHistoryClientWindow extends StateClientWindow {
+public class NameHistoryClientWindow extends StateClientWindow implements DataListWidget {
 
     private static final HttpClient REQUESTER = HttpClient.newHttpClient();
 
@@ -50,55 +57,45 @@ public class NameHistoryClientWindow extends StateClientWindow {
 
         @Override
         public void accept(final ImGuiInputTextCallbackData imGuiInputTextCallbackData) {
-            if (imGuiInputTextCallbackData.getEventChar() == 0) return;
-            if (
-                    !Character.isLetterOrDigit(imGuiInputTextCallbackData.getEventChar()) &&
-                            imGuiInputTextCallbackData.getEventChar() != '_'
-            ) {
+            final int eventCharInt = imGuiInputTextCallbackData.getEventChar();
+            if (eventCharInt == 0) return;
+            final char eventChar = (char) eventCharInt;
+            if (!Character.isLetterOrDigit(eventChar) && eventChar != '_') {
                 imGuiInputTextCallbackData.setEventChar((char) 0);
             }
         }
 
     };
 
-    private final ImString username;
-
-    private final ExecutorService executor;
-
-    private final Gson gson;
-
-    private final List<Name> names;
-
-    private String lastUsername, lastUUID;
+    private final ImString username = new ImString(16);
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final Gson gson = new Gson();
+    private String lastUsername = "", lastUUID = "";
+    private final CopyOnWriteArrayList<ListDataEntry> nameHistoryDataEntries = new CopyOnWriteArrayList<>();
 
     public NameHistoryClientWindow() {
         super("Name History", Category.MISC);
-        this.username = new ImString(16);
-        this.executor = Executors.newSingleThreadExecutor();
-        this.gson = new Gson();
-        this.names = new ArrayList<>();
-        this.lastUsername = "";
-        this.lastUUID = "";
     }
 
     private void clear() {
-        this.names.clear();
+        this.nameHistoryDataEntries.clear();
         this.lastUsername = "";
         this.lastUUID = "";
     }
 
     @Override
     protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        final String id = "##" + this.getName();
         super.onRender(context, mouseX, mouseY, delta);
         ImGui.text("Username");
         ImGui.setNextItemWidth(-1);
-        ImGui.inputText("##namehistoryusername", this.username,
+        ImGui.inputText(id + "username", this.username,
                 ImGuiInputTextFlags.CallbackCharFilter,
                 USERNAME_NAME_FILTER
         );
         final String usernameValue = this.username.get();
-        if (!usernameValue.isBlank() && usernameValue.length() > 2 && usernameValue.length() < 17) {
-            if (ImGui.button("Get##namehistoryget", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+        if (!usernameValue.isBlank() && MathUtil.isBetween(usernameValue.length(), 3, 16)) {
+            if (ImGui.button("Get" + id + "get", ImGui.getColumnWidth() / (this.nameHistoryDataEntries.isEmpty() ? 1f : 2f), ImGui.getTextLineHeightWithSpacing())) {
                 this.clear();
                 this.lastUsername = usernameValue;
                 this.executor.submit(() -> {
@@ -146,16 +143,18 @@ public class NameHistoryClientWindow extends StateClientWindow {
                                         if (accurate.equals("true")) accurate = "Yes";
                                         else if (accurate.equals("false")) accurate = "No";
                                         else accurate = "Unknown";
-                                        this.names.add(new Name(
-                                                usernameObject.get("username").getAsString(),
-                                                date,
-                                                accurate
-                                        ));
+                                        final CopyOnWriteArrayList<Pair<String, String>> list = new CopyOnWriteArrayList<>();
+                                        list.add(new Pair<>("Username", usernameObject.get("username").getAsString()));
+                                        list.add(new Pair<>("Date", date));
+                                        list.add(new Pair<>("Accurate", accurate));
+                                        this.nameHistoryDataEntries.add(new ListDataEntry(list));
                                     }
-                                    if (this.names.isEmpty()) {
+                                    if (this.nameHistoryDataEntries.isEmpty()) {
                                         this.setState("No name history found for " + this.lastUsername + ".");
                                         this.clear();
-                                    } else this.setState("Got name history.");
+                                    } else {
+                                        this.setState("Got name history.");
+                                    }
                                 }
                             } else {
                                 this.setState("Invalid response for the name history from the laby.net api (Content is blank).");
@@ -174,72 +173,70 @@ public class NameHistoryClientWindow extends StateClientWindow {
             }
         }
         if (!this.lastUsername.isBlank() && !this.lastUUID.isBlank()) {
-            if (ImGui.button("Copy UUID##namehistorycopyuuid", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
+            if (!this.nameHistoryDataEntries.isEmpty()) {
+                if (!usernameValue.isBlank() && MathUtil.isBetween(usernameValue.length(), 3, 16)) {
+                    ImGui.sameLine();
+                }
+                if (ImGui.button("Clear" + id + "clear", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                    this.clear();
+                }
+            }
+            if (ImGui.button("Copy UUID" + id + "copyUuid", ImGui.getColumnWidth() / 3f, ImGui.getTextLineHeightWithSpacing())) {
                 this.mc.keyboard.setClipboard(this.lastUUID);
             }
             ImGui.sameLine();
-            if (ImGui.button("Copy UUID Array##namehistorycopyuuidarray", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+            if (ImGui.button("Copy UUID Array" + id + "copyUuidArray", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
                 this.mc.keyboard.setClipboard(Arrays.toString(Uuids.toIntArray(UUID.fromString(this.lastUUID))));
             }
-            if (ImGui.button("Copy Data##namehistorycopydata", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+            ImGui.sameLine();
+            if (ImGui.button("Copy Data" + id + "copyData", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                 final StringBuilder dataBuilder = new StringBuilder("[Data for " + this.lastUsername + "]\n\n");
                 dataBuilder
                         .append("[UUID]\n")
                         .append(this.lastUUID)
                         .append("\n")
                         .append(Arrays.toString(Uuids.toIntArray(UUID.fromString(this.lastUUID)))).append("\n\n[Name History]\n");
-                for (final Name name : this.names) {
-                    dataBuilder.append("Username: ").append(name.username());
-                    dataBuilder.append(" | Date: ").append(name.date());
-                    dataBuilder.append(" | Accurate: ").append(name.accurate()).append("\n");
+                for (final ListDataEntry nameHistoryDataEntry : this.nameHistoryDataEntries) {
+                    dataBuilder.append(nameHistoryDataEntry.getData()).append("\n\n");
                 }
                 this.mc.keyboard.setClipboard(dataBuilder.toString());
             }
-        }
-        if (!this.names.isEmpty()) {
-            if (ImGui.button("Clear##namehistoryclear", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
-                this.clear();
+            if (!this.nameHistoryDataEntries.isEmpty()) {
+                ImGui.separator();
+                ImGui.text("Name History of " + this.lastUsername + " (" + this.nameHistoryDataEntries.size() + ")");
+                this.renderDataList(id + "nameHistoryList", -1, 55f, this.nameHistoryDataEntries);
             }
-            ImGui.separator();
-            ImGui.text("Name History");
-            final NamesTableColumn[] namesTableColumns = NamesTableColumn.values();
-            final int maxTableColumns = namesTableColumns.length;
-            if (ImGui.beginTable("names##namestable", maxTableColumns,
-                    ImGuiTableFlags.Borders |
-                            ImGuiTableFlags.Resizable |
-                            ImGuiTableFlags.RowBg |
-                            ImGuiTableFlags.ContextMenuInBody
-            )) {
-                for (final NamesTableColumn namesTableColumn : namesTableColumns) {
-                    ImGui.tableSetupColumn(namesTableColumn.getName());
-                }
-                ImGui.tableHeadersRow();
-                for (final Name name : this.names) {
-                    ImGui.tableNextRow();
-                    for (int i = 0; i < maxTableColumns; i++) {
-                        ImGui.tableSetColumnIndex(i);
-                        final NamesTableColumn accountsTableColumn = namesTableColumns[i];
-                        switch (accountsTableColumn) {
-                            case USERNAME -> ImGui.textWrapped(name.username());
-                            case DATE -> ImGui.textWrapped(name.date());
-                            case ACCURATE -> ImGui.textWrapped(name.accurate());
-                            case ACTIONS -> {
-                                ImGui.spacing();
-                                if (ImGui.button("Copy Data##namehistorycopydata" + name.username(), ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
-                                    this.mc.keyboard.setClipboard(
-                                            "Username: " + name.username() +
-                                                    " | Date: " + name.date() +
-                                                    " | Accurate: " + name.accurate()
-                                    );
-                                }
-                                ImGui.spacing();
-                            }
-                            default -> {
-                            }
-                        }
-                    }
-                }
-                ImGui.endTable();
+        }
+    }
+
+    @Override
+    public boolean filterDataEntry(final DataEntry dataEntry) {
+        return false;
+    }
+
+    @Override
+    public boolean shouldHighlightDataEntry(final DataEntry dataEntry) {
+        return false;
+    }
+
+    @Override
+    public float[] getDataEntryHighlightColor(final DataEntry dataEntry) {
+        return null;
+    }
+
+    @Override
+    public void onDataEntryClick(final DataEntry dataEntry) {
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            this.mc.keyboard.setClipboard(listDataEntry.getFirst().getRight());
+        }
+    }
+
+    @Override
+    public void renderDataEntryContextMenu(final String id, final int index, final DataEntry dataEntry) {
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            final String playerName = listDataEntry.getFirst().getRight();
+            if (ImGui.button("Copy Data" + id + "copyData" + playerName, ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                this.mc.keyboard.setClipboard(listDataEntry.getData());
             }
         }
     }

@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.MenuSettings;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerPingerWidget;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
-import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
+import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.DisconnectedScreen;
 import net.minecraft.client.gui.screen.LoadingDisplay;
@@ -65,7 +65,7 @@ public abstract class MixinDisconnectedScreen extends Screen {
         }
         if (menuSettings.disconnectedScreenCopyData.getValue()) {
             if (isCopy(keyCode)) {
-                final StringBuilder textBuilder = new StringBuilder(ServerConnectionUtil.lastServerExists() ? "Disconnect Data from " + ServerConnectionUtil.getLastServerInfo().address : "");
+                final StringBuilder textBuilder = new StringBuilder(ServerUtil.lastServerExists() ? "Disconnect Data from " + ServerUtil.getLastServerInfo().address : "");
                 final String emptyLine = "\n\n";
                 textBuilder.append(emptyLine);
                 children().forEach(w -> {
@@ -95,7 +95,7 @@ public abstract class MixinDisconnectedScreen extends Screen {
                 this.vandalism$reconnectTimer.reset();
             }
             if (this.vandalism$reconnectTimer.hasReached(autoReconnectDelay, true)) {
-                ServerConnectionUtil.connectToLastServer();
+                ServerUtil.connectToLastServer();
             }
         }
         else {
@@ -117,7 +117,7 @@ public abstract class MixinDisconnectedScreen extends Screen {
             context.drawCenteredTextWithShadow(this.textRenderer, "Reconnecting in " + remainingTime, x, y, -1);
             context.drawCenteredTextWithShadow(this.textRenderer, LoadingDisplay.get(Util.getMeasuringTimeMs()), x, y2, -1);
         }
-        ServerPingerWidget.draw(ServerConnectionUtil.getLastServerInfo(), context, mouseX, mouseY, delta, this.height - 55);
+        ServerPingerWidget.draw(ServerUtil.getLastServerInfo(), context, mouseX, mouseY, delta, this.height - 55);
     }
 
     @Override
@@ -136,11 +136,11 @@ public abstract class MixinDisconnectedScreen extends Screen {
     private <T extends Widget> T addMoreButtons(final DirectionalLayoutWidget instance, final T widget) {
         instance.add(widget);
         this.vandalism$reconnectTimer.resume();
-        ServerPingerWidget.ping(ServerConnectionUtil.getLastServerInfo());
+        ServerPingerWidget.ping(ServerUtil.getLastServerInfo());
         final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
         if (menuSettings.moreDisconnectedScreenButtons.getValue()) {
             final Positioner positioner = instance.getMainPositioner().copy().marginTop(-8);
-            instance.add(ButtonWidget.builder(Text.literal("Reconnect"), button -> ServerConnectionUtil.connectToLastServer()).build(), positioner);
+            instance.add(ButtonWidget.builder(Text.literal("Reconnect"), button -> ServerUtil.connectToLastServer()).build(), positioner);
             instance.add(ButtonWidget.builder(Text.literal("Auto Reconnect: " + (menuSettings.autoReconnect.getValue() ? "On" : "Off")), button -> {
                 menuSettings.autoReconnect.setValue(!menuSettings.autoReconnect.getValue());
                 button.setMessage(Text.literal("Auto Reconnect: " + (menuSettings.autoReconnect.getValue() ? "On" : "Off")));

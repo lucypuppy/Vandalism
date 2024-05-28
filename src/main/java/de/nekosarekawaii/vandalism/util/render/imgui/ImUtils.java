@@ -41,20 +41,20 @@ public class ImUtils {
     public static void loadFont(final String fontName, final int size, final ImFontAtlas atlas, final ImFontConfig fontConfig, final short[] glyphRanges) {
         final Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(FabricBootstrap.MOD_ID);
         if (modContainer.isEmpty()) {
-            Vandalism.getInstance().getLogger().error("Could not find mod container of " + FabricBootstrap.MOD_ID);
+            Vandalism.getInstance().getLogger().error("Could not find mod container of {}", FabricBootstrap.MOD_ID);
             return;
         }
         final String pathString = "assets/" + FabricBootstrap.MOD_ID + "/font/" + fontName + ".ttf";
         final Optional<Path> path = modContainer.get().findPath(pathString);
         if (path.isEmpty()) {
-            Vandalism.getInstance().getLogger().error("Could not find font file: " + pathString);
+            Vandalism.getInstance().getLogger().error("Could not find font file: {}", pathString);
             return;
         }
         try {
             fontConfig.setName(fontName + " " + size + "px");
             atlas.addFontFromMemoryTTF(IOUtils.toByteArray(Files.newInputStream(path.get())), size, fontConfig, glyphRanges);
         } catch (IOException e) {
-            Vandalism.getInstance().getLogger().error("Failed to load font: " + pathString, e);
+            Vandalism.getInstance().getLogger().error("Failed to load font: {}", pathString, e);
         }
     }
 

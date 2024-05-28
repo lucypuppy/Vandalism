@@ -50,7 +50,7 @@ public class ScriptsClientWindow extends ClientWindow {
     private final ImBoolean hideHints;
 
     public ScriptsClientWindow() {
-        super("Scripts", Category.CONFIG, false, ImGuiWindowFlags.MenuBar);
+        super("Scripts", Category.CONFIG, ImGuiWindowFlags.MenuBar);
         this.scriptEditors = new ConcurrentHashMap<>();
         this.hideHints = new ImBoolean(false);
     }

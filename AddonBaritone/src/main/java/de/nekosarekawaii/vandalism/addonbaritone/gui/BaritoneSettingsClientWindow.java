@@ -32,7 +32,7 @@ public class BaritoneSettingsClientWindow extends ClientWindow {
     private final ImString searchInput = new ImString();
 
     public BaritoneSettingsClientWindow(final BaritoneSettingMapper baritoneSettingMapper) {
-        super("Baritone Settings", Category.MISC, true);
+        super("Baritone Settings", Category.MISC, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
         this.baritoneSettingMapper = baritoneSettingMapper;
     }
 
@@ -48,24 +48,18 @@ public class BaritoneSettingsClientWindow extends ClientWindow {
 
     @Override
     protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        final String searchIdentifier = "##BaritoneSearchInput";
-        final int windowFlags = ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse;
-
-        ImGui.begin("Baritone Settings##VeryCoolBaritoneSettings", windowFlags);
+        final String id = "##" + this.getName();
         ImGui.separator();
         ImGui.setNextItemWidth(-1);
-        ImGui.inputText(searchIdentifier + "input", this.searchInput);
+        ImGui.inputText(id + "input", this.searchInput);
         ImGui.separator();
-        ImGui.beginChild(searchIdentifier + "scrolllist", -1, -1, true);
-
+        ImGui.beginChild(id + "scrolllist", -1, -1, true);
         for (final Value<?> value : this.baritoneSettingMapper.getValues()) {
             if (this.searchInput.isEmpty() || value.getName().toLowerCase().contains(searchInput.get().toLowerCase())) {
                 this.baritoneSettingMapper.renderValue(value, true);
             }
         }
-
         ImGui.endChild();
-        ImGui.end();
     }
 
 }
