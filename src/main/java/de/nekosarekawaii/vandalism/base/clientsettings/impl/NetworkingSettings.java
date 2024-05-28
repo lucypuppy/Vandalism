@@ -61,13 +61,13 @@ public class NetworkingSettings extends ValueGroup implements KeyboardInputListe
             true
     );
 
-    public final EnumModeValue<ItemStackUtil.PackageType> creativeItemsPackageType = new EnumModeValue<>(
-            this,
-            "Creative Items Package Type",
-            "Which item to package your creative items into.",
-            ItemStackUtil.PackageType.FURNACE,
-            ItemStackUtil.PackageType.values()
-    ).visibleCondition(this.packageCreativeItems::getValue);
+//    public final EnumModeValue<ItemStackUtil.PackageType> creativeItemsPackageType = new EnumModeValue<>(
+//            this,
+//            "Creative Items Package Type",
+//            "Which item to package your creative items into.",
+//            ItemStackUtil.PackageType.FURNACE,
+//            ItemStackUtil.PackageType.values()
+//    ).visibleCondition(this.packageCreativeItems::getValue);
 
     public final BooleanValue spoofIsCreativeLevelTwoOp = new BooleanValue(
             this,
