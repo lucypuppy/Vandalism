@@ -176,8 +176,6 @@ dependencies {
     jij "io.github.spair:imgui-java-natives-windows:${project.spair_imgui_version}"
     jij "io.github.spair:imgui-java-natives-linux:${project.spair_imgui_version}"
 
-    jij "org.jsoup:jsoup:${project.jsoup_version}"
-
     jij "net.raphimc:NoteBlockLib:${project.noteblocklib_version}"
     jij "net.raphimc:MinecraftAuth:${project.minecraftauth_version}"
 

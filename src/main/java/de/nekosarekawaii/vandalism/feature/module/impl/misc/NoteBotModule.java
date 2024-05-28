@@ -41,8 +41,8 @@ import net.raphimc.noteblocklib.format.SongFormat;
 import net.raphimc.noteblocklib.model.Note;
 import net.raphimc.noteblocklib.model.Song;
 import net.raphimc.noteblocklib.model.SongView;
-import net.raphimc.noteblocklib.player.ISongPlayerCallback;
 import net.raphimc.noteblocklib.player.SongPlayer;
+import net.raphimc.noteblocklib.player.SongPlayerCallback;
 import net.raphimc.noteblocklib.util.Instrument;
 import net.raphimc.noteblocklib.util.MinecraftDefinitions;
 
@@ -261,7 +261,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
                 customInstruments.put(input, output);
             }
         }
-        this.songPlayer = new SongPlayer(view, new ISongPlayerCallback() {
+        this.songPlayer = new SongPlayer(view, new SongPlayerCallback() {
 
             @Override
             public void playNote(final Note note) {
@@ -271,7 +271,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
                     deactivate();
                     return;
                 }
-                final Instrument instrument = Instrument.fromNbsId(note.getInstrument());
+                final Instrument instrument = note.getInstrument();
                 if (instrument != null) {
                     final AtomicReference<SoundEvent> soundEvent = new AtomicReference<>(null);
                     for (final net.minecraft.block.enums.Instrument mcInstrument : net.minecraft.block.enums.Instrument.values()) {
