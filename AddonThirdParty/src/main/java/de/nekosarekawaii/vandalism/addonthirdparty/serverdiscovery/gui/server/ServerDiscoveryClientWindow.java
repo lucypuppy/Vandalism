@@ -32,30 +32,29 @@ public class ServerDiscoveryClientWindow extends ClientWindow {
 
     private static final String DEFAULT_SERVER_TAB_NAME = "Server Tab";
 
-    private final ConcurrentHashMap<String, ServersTab> serversTabs = new ConcurrentHashMap<>();
-
+    private final ConcurrentHashMap<String, ServerDiscoveryTab> serversTabs = new ConcurrentHashMap<>();
     private final ImString serverTabName = new ImString();
-
     private String currentServerTab = "";
 
     public ServerDiscoveryClientWindow() {
-        super("Server Discovery", Category.SERVER, false, ImGuiWindowFlags.MenuBar);
-        this.serversTabs.put(DEFAULT_SERVER_TAB_NAME, new ServersTab());
+        super("Server Discovery", Category.SERVER, ImGuiWindowFlags.MenuBar);
+        this.serversTabs.put(DEFAULT_SERVER_TAB_NAME, new ServerDiscoveryTab());
     }
 
     @Override
     protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        final String id = "##" + this.getName();
         if (ImGui.beginMenuBar()) {
-            for (final Map.Entry<String, ServersTab> entry : this.serversTabs.entrySet()) {
+            for (final Map.Entry<String, ServerDiscoveryTab> entry : this.serversTabs.entrySet()) {
                 entry.getValue().renderMenu(entry.getKey());
             }
             if (!this.currentServerTab.isEmpty()) {
-                if (ImGui.button("Close Tab")) {
+                if (ImGui.button("Close Tab" + id + "closeServerTab")) {
                     this.serversTabs.remove(this.currentServerTab);
                     this.currentServerTab = "";
                 }
             }
-            if (ImGui.button("Create")) {
+            if (ImGui.button("Create" + id + "createServerTab")) {
                 String name = this.serverTabName.get();
                 if (name.isEmpty()) {
                     name = DEFAULT_SERVER_TAB_NAME;
@@ -67,19 +66,19 @@ public class ServerDiscoveryClientWindow extends ClientWindow {
                     }
                     name = name + " " + i;
                 }
-                this.serversTabs.put(name, new ServersTab());
+                this.serversTabs.put(name, new ServerDiscoveryTab());
                 this.serverTabName.set("");
             }
             ImGui.text("Enter Name:");
             ImGui.setNextItemWidth(-1);
-            ImGui.inputText("##newServerTabName", this.serverTabName);
+            ImGui.inputText(id + "serverTabName", this.serverTabName);
             ImGui.endMenuBar();
         }
         if (!this.serversTabs.isEmpty()) {
-            if (ImGui.beginTabBar("##serversTabBar", ImGuiTabBarFlags.AutoSelectNewTabs)) {
-                for (final Map.Entry<String, ServersTab> entry : this.serversTabs.entrySet()) {
+            if (ImGui.beginTabBar(id + "serverTabBar", ImGuiTabBarFlags.AutoSelectNewTabs)) {
+                for (final Map.Entry<String, ServerDiscoveryTab> entry : this.serversTabs.entrySet()) {
                     final String name = entry.getKey();
-                    if (entry.getValue().render(name)) {
+                    if (entry.getValue().render(id + name, name)) {
                         this.currentServerTab = name;
                     }
                 }

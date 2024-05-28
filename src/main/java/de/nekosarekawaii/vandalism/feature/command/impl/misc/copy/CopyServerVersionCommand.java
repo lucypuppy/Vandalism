@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.feature.command.impl.misc.copy;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
-import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
+import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import net.minecraft.command.CommandSource;
 
 public class CopyServerVersionCommand extends AbstractCommand {
@@ -41,9 +41,8 @@ public class CopyServerVersionCommand extends AbstractCommand {
         builder.executes(context -> {
             if (this.mc.isInSingleplayer()) {
                 ChatUtil.errorChatMessage("You are in singleplayer.");
-            }
-            else {
-                this.mc.keyboard.setClipboard(ServerConnectionUtil.getLastServerInfo().version.getString());
+            } else if (ServerUtil.lastServerExists()) {
+                this.mc.keyboard.setClipboard(ServerUtil.getLastServerInfo().version.getString());
                 ChatUtil.infoChatMessage("Server version copied into the clipboard.");
             }
             return SINGLE_SUCCESS;

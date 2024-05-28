@@ -44,6 +44,22 @@ public class MathUtil {
         return firstPart * Math.exp(exponent);
     }
 
+    public static boolean isBetween(int value, int min, int max) {
+        return value >= min && value <= max;
+    }
+
+    public static boolean isBetween(long value, long min, long max) {
+        return value >= min && value <= max;
+    }
+
+    public static boolean isBetween(float value, float min, float max) {
+        return value >= min && value <= max;
+    }
+
+    public static boolean isBetween(byte value, byte min, byte max) {
+        return value >= min && value <= max;
+    }
+
     public static boolean isBetween(double value, double min, double max) {
         return value >= min && value <= max;
     }

@@ -55,11 +55,11 @@ public class ModulesClientWindow extends ClientWindow {
     private boolean closePopup = false;
 
     public ModulesClientWindow() {
-        super("Modules", Category.CONFIG, true);
+        super("Modules", Category.CONFIG);
     }
 
     @Override
-    protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         final ModuleManager moduleManager = Vandalism.getInstance().getModuleManager();
         if (!moduleManager.getList().isEmpty()) {
             final float width = 195, minHeight = 140, maxHeight = Vandalism.getInstance().getClientSettings().getMenuSettings().moduleTabMaxHeight.getValue();

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.integration.serverlist;
+package de.nekosarekawaii.vandalism.util.game.server;
 
 import com.google.gson.annotations.SerializedName;
 

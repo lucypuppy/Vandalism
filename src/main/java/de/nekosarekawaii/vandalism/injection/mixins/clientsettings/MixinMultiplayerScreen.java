@@ -20,9 +20,9 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
-import de.nekosarekawaii.vandalism.integration.serverlist.ServerDataUtil;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerList;
 import de.nekosarekawaii.vandalism.integration.serverlist.gui.ConfigScreen;
+import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -178,7 +178,7 @@ public abstract class MixinMultiplayerScreen extends Screen {
             if (clipboard == null || clipboard.isBlank()) return;
             final ServerInfo serverInfo = new ServerInfo(
                     "Copied from Clipboard",
-                    ServerDataUtil.fixAddress(clipboard),
+                    ServerUtil.fixAddress(clipboard),
                     ServerInfo.ServerType.OTHER
             );
             this.serverList.add(serverInfo, false);

@@ -16,16 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.addonthirdparty.namehistory.gui;
+package de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry;
 
-import de.nekosarekawaii.vandalism.util.common.StringUtils;
+public abstract class DataEntry {
 
-public enum NamesTableColumn {
-
-    USERNAME, DATE, ACCURATE, ACTIONS;
-
-    public String getName() {
-        return StringUtils.normalizeEnumName(this.name());
-    }
+    public abstract String getData();
 
 }

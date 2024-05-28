@@ -23,32 +23,33 @@ import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.i
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.Response;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.impl.WhereIsResponse;
 import de.nekosarekawaii.vandalism.clientwindow.template.StateClientWindow;
+import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataListWidget;
+import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
+import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
+import de.nekosarekawaii.vandalism.util.common.MathUtil;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
-import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
+import de.nekosarekawaii.vandalism.util.common.TimeFormatter;
+import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
-import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiInputTextFlags;
-import imgui.flag.ImGuiPopupFlags;
-import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.ServerList;
+import net.minecraft.util.Pair;
 
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class PlayerDiscoveryClientWindow extends StateClientWindow {
+public class PlayerDiscoveryClientWindow extends StateClientWindow implements DataListWidget {
 
     private static final ImGuiInputTextCallback USERNAME_NAME_FILTER = new ImGuiInputTextCallback() {
 
@@ -63,64 +64,55 @@ public class PlayerDiscoveryClientWindow extends StateClientWindow {
 
     };
 
-    private final ImString username;
-
-    private final ExecutorService executor;
-
-    private final List<WhereIsResponse.Record> records = new ArrayList<>();
-
-    private final ImString searchField;
-
-    private boolean waitingForResponse;
+    private final ImString username = new ImString(16);
+    private String lastUsername = "";
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final CopyOnWriteArrayList<ListDataEntry> playerRecordDataEntries = new CopyOnWriteArrayList<>();
+    private final ImString searchField = new ImString();
+    private boolean waitingForResponse = false;
 
     public PlayerDiscoveryClientWindow() {
         super("Player Discovery", Category.SERVER);
-        this.username = new ImString(16);
-        this.executor = Executors.newSingleThreadExecutor();
-        this.searchField = new ImString();
-        this.waitingForResponse = false;
     }
 
     @Override
     protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        final String id = "##" + this.getName();
         super.onRender(context, mouseX, mouseY, delta);
         ImGui.text("Username");
         ImGui.setNextItemWidth(-1);
-        ImGui.inputText("##playerdiscoveryname", this.username,
-                ImGuiInputTextFlags.CallbackCharFilter,
-                USERNAME_NAME_FILTER
-        );
+        ImGui.inputText(id + "username", this.username, ImGuiInputTextFlags.CallbackCharFilter, USERNAME_NAME_FILTER);
         final String usernameValue = this.username.get();
-        if (!usernameValue.isBlank() && usernameValue.length() > 2 && usernameValue.length() < 17 && !this.waitingForResponse) {
-            if (ImUtils.subButton("Search##playerdiscoverysearch")) {
+        if (!usernameValue.isBlank() && MathUtil.isBetween(usernameValue.length(), 3, 16) && !this.waitingForResponse) {
+            if (ImGui.button("Search" + id + "search", ImGui.getColumnWidth() / (!this.playerRecordDataEntries.isEmpty() ? 2f : 1f), ImGui.getTextLineHeightWithSpacing())) {
                 this.setState("Searching for " + usernameValue + "...");
-                this.records.clear();
+                this.playerRecordDataEntries.clear();
+                this.lastUsername = usernameValue;
                 this.executor.submit(() -> {
                     this.waitingForResponse = true;
-                    final Response response = ServerDiscoveryUtil.request(new WhereIsRequest(usernameValue));
+                    final Response response = ServerDiscoveryUtil.request(new WhereIsRequest(this.lastUsername));
                     if (response instanceof final WhereIsResponse whereIsResponse) {
                         if (whereIsResponse.isError()) {
                             this.setState("Error: " + whereIsResponse.error);
                         } else {
                             final List<WhereIsResponse.Record> data = whereIsResponse.data;
                             if (data.isEmpty()) {
-                                this.setState(usernameValue + " not found on any server.");
+                                this.setState(this.lastUsername + " not found on any server.");
                             } else {
-                                this.setState("Found " + usernameValue + " on " + data.size() + " server(s).");
+                                this.setState("Found " + this.lastUsername + " on " + data.size() + " servers.");
                                 for (final WhereIsResponse.Record record : data) {
-                                    boolean contains = false;
-                                    for (final WhereIsResponse.Record containedRecord : this.records) {
+                                    for (final WhereIsResponse.Record containedRecord : data) {
                                         if (containedRecord.server.equals(record.server)) {
-                                            contains = true;
-                                            if (record.last_seen < containedRecord.last_seen) {
-                                                containedRecord.last_seen = record.last_seen;
+                                            if (containedRecord.last_seen < record.last_seen) {
+                                                record.last_seen = containedRecord.last_seen;
                                             }
                                             break;
                                         }
                                     }
-                                    if (!contains) {
-                                        this.records.add(record);
-                                    }
+                                    final CopyOnWriteArrayList<Pair<String, String>> list = new CopyOnWriteArrayList<>();
+                                    list.add(new Pair<>("Server", record.server));
+                                    list.add(new Pair<>("Last Seen", TimeFormatter.formatDateTime(Instant.ofEpochSecond(record.last_seen).atZone(ZoneId.systemDefault()).toLocalDateTime())));
+                                    this.playerRecordDataEntries.add(new ListDataEntry(list));
                                 }
                             }
                         }
@@ -131,86 +123,84 @@ public class PlayerDiscoveryClientWindow extends StateClientWindow {
                 });
             }
         }
-        if (!this.records.isEmpty()) {
-            if (ImUtils.subButton("Clear##playerdiscoveryclear")) {
-                this.records.clear();
+        if (!this.playerRecordDataEntries.isEmpty()) {
+            ImGui.sameLine();
+            if (ImUtils.subButton("Clear" + id + "clear")) {
+                this.playerRecordDataEntries.clear();
                 this.resetState();
             }
             ImGui.spacing();
             ImGui.text("Search");
             ImGui.setNextItemWidth(-1);
-            ImGui.inputText("##playerdiscoverysearchfield", this.searchField);
+            ImGui.inputText(id + "searchField", this.searchField);
             ImGui.separator();
-            if (ImUtils.subButton("Add all servers")) {
+            if (ImUtils.subButton("Add All Servers" + id + "addAllServers")) {
                 final ServerList serverList = new ServerList(MinecraftClient.getInstance());
                 serverList.loadFile();
                 int i = 0;
-                for (final WhereIsResponse.Record record : this.records) {
+                for (final ListDataEntry listDataEntry : this.playerRecordDataEntries) {
                     i++;
                     serverList.add(new ServerInfo(
-                            "Player Discovery " + usernameValue + " (" + (i < 10 ? "0" + i : i) + ")",
-                            record.server,
+                            "Player Discovery " + this.lastUsername + " (" + (i < 10 ? "0" + i : i) + ")",
+                            listDataEntry.getFirst().getRight(),
                             ServerInfo.ServerType.OTHER
                     ), false);
                 }
                 serverList.saveFile();
             }
-            ImGui.beginChild("##playerdiscoverydata", -1, -1, true, ImGuiWindowFlags.HorizontalScrollbar);
-            int i = 0;
-            for (final WhereIsResponse.Record record : this.records) {
-                final String address = record.server;
-                if (address.isEmpty()) {
-                    continue;
-                }
-                i++;
-                final String playerEntryId = "##playerentry" + address + i;
-                final boolean isLastServer = ServerConnectionUtil.lastServerExists() && ServerConnectionUtil.getLastServerInfo().address.equals(address);
-                if (isLastServer) {
-                    final float[] color = new float[]{ 0.8f, 0.1f, 0.1f, 0.30f };
-                    ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], color[3]);
-                    ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], color[3] - 0.1f);
-                    ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
-                }
-                if (ImGui.button(playerEntryId, ImGui.getColumnWidth() - 8, 75)) {
-                    ServerConnectionUtil.connect(address);
-                }
-                if (isLastServer) {
-                    ImGui.popStyleColor(3);
-                }
-                ImGui.sameLine();
-                final String data = "Server: " + record.server + "\n" +
-                        "UUID: " + record.uuid + "\n" +
-                        "Name: " + record.name + "\n" +
-                        "Last Seen: " + DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(
-                        Instant.ofEpochSecond(record.last_seen).atZone(ZoneId.systemDefault()).toLocalDateTime()
-                ) + "\n";
-                if (!this.searchField.get().isBlank() && !StringUtils.contains(data, this.searchField.get())) {
-                    continue;
-                }
-                if (ImGui.beginPopupContextItem(playerEntryId + "popup", ImGuiPopupFlags.MouseButtonRight)) {
-                    final int buttonWidth = 150, buttonHeight = 28;
-                    if (ImGui.button("Add to the Server List" + playerEntryId + "addtoserverlist", buttonWidth, buttonHeight)) {
-                        final ServerList serverList = new ServerList(MinecraftClient.getInstance());
-                        serverList.loadFile();
-                        serverList.add(new ServerInfo(
-                                "Player Discovery " + usernameValue + " (" + (i < 10 ? "0" + i : i) + ")",
-                                address,
-                                ServerInfo.ServerType.OTHER
-                        ), false);
-                        serverList.saveFile();
-                    }
-                    if (ImGui.button("Copy Address" + playerEntryId + "copyaddress", buttonWidth, buttonHeight)) {
-                        this.mc.keyboard.setClipboard(address);
-                    }
-                    if (ImGui.button("Copy Data" + playerEntryId + "copydata", buttonWidth, buttonHeight)) {
-                        this.mc.keyboard.setClipboard(data);
-                    }
-                    ImGui.endPopup();
-                }
-                ImGui.sameLine(10);
-                ImGui.text(data);
+            this.renderDataList(id + "playerRecords", -1f, 45f, this.playerRecordDataEntries);
+        }
+    }
+
+    @Override
+    public boolean filterDataEntry(final DataEntry dataEntry) {
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            return listDataEntry.getFirst().getRight().isEmpty() || (!this.searchField.get().isBlank() && !StringUtils.contains(listDataEntry.getData(), this.searchField.get()));
+        }
+        return false;
+    }
+
+    @Override
+    public boolean shouldHighlightDataEntry(final DataEntry dataEntry) {
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            return ServerUtil.lastServerExists() && ServerUtil.getLastServerInfo().address.equals(listDataEntry.getFirst().getRight());
+        }
+        return false;
+    }
+
+    @Override
+    public float[] getDataEntryHighlightColor(final DataEntry dataEntry) {
+        return new float[]{0.8f, 0.1f, 0.1f, 0.30f};
+    }
+
+    @Override
+    public void onDataEntryClick(final DataEntry dataEntry) {
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            ServerUtil.connect(listDataEntry.getFirst().getRight());
+        }
+    }
+
+    @Override
+    public void renderDataEntryContextMenu(final String id, final int index, final DataEntry dataEntry) {
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            final String address = listDataEntry.getFirst().getRight();
+            final int buttonWidth = 150, buttonHeight = 28;
+            if (ImGui.button("Add to the Server List" + id + "addToServerList", buttonWidth, buttonHeight)) {
+                final ServerList serverList = new ServerList(MinecraftClient.getInstance());
+                serverList.loadFile();
+                serverList.add(new ServerInfo(
+                        "Player Discovery " + this.lastUsername + " (" + (index < 10 ? "0" + index : index) + ")",
+                        address,
+                        ServerInfo.ServerType.OTHER
+                ), false);
+                serverList.saveFile();
             }
-            ImGui.endChild();
+            if (ImGui.button("Copy Address" + id + "copyAddress", buttonWidth, buttonHeight)) {
+                this.mc.keyboard.setClipboard(address);
+            }
+            if (ImGui.button("Copy Data" + id + "copyData", buttonWidth, buttonHeight)) {
+                this.mc.keyboard.setClipboard(listDataEntry.getData());
+            }
         }
     }
 

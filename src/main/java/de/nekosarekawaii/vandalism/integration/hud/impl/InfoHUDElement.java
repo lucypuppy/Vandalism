@@ -33,8 +33,8 @@ import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
 import de.nekosarekawaii.vandalism.render.Shaders;
 import de.nekosarekawaii.vandalism.util.click.CPSTracker;
 import de.nekosarekawaii.vandalism.util.common.Alignment;
-import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
+import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.network.ServerInfo;
@@ -420,7 +420,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         if (this.serverAddress.getValue()) {
             String value = "unknown";
             if (this.mc.player != null && !this.mc.isInSingleplayer()) {
-                final ServerInfo currentServerInfo = ServerConnectionUtil.getLastServerInfo();
+                final ServerInfo currentServerInfo = ServerUtil.getLastServerInfo();
                 if (currentServerInfo != null) {
                     value = currentServerInfo.address;
                 }

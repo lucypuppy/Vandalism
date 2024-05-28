@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
-import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
+import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ProgressScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -62,7 +62,7 @@ public abstract class MixinProgressScreen extends Screen {
         if (!FabricBootstrap.SHUTTING_DOWN) {
             if (Vandalism.getInstance().getClientSettings().getMenuSettings().progressScreenEscaping.getValue()) {
                 if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-                    ServerConnectionUtil.disconnect("Manually disconnected from server.");
+                    ServerUtil.disconnect("Manually disconnected from server.");
                     return true;
                 }
             }

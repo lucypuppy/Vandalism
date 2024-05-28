@@ -27,7 +27,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
-import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
+import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import net.minecraft.client.ClientBrandRetriever;
 import org.lwjgl.glfw.GLFW;
 
@@ -120,7 +120,7 @@ public class NetworkingSettings extends ValueGroup implements KeyboardInputListe
     @Override
     public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
         if (key == this.forceDisconnectKey.getValue() && action == GLFW.GLFW_PRESS) {
-            ServerConnectionUtil.disconnect("Manually disconnected from the server.");
+            ServerUtil.disconnect("Manually disconnected from the server.");
         }
     }
 

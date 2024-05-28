@@ -22,7 +22,9 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.util.common.MathUtil;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.Formatting;
 
@@ -41,23 +43,31 @@ public class UsernameCommand extends AbstractCommand {
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
-            ChatUtil.infoChatMessage("Your username is: " + Formatting.DARK_AQUA + this.mc.session.getUsername());
+            ChatUtil.infoChatMessage("Your name is: " + Formatting.DARK_AQUA + this.mc.session.getUsername());
             return SINGLE_SUCCESS;
         });
         builder.then(literal("copy").executes(context -> {
             this.mc.keyboard.setClipboard(this.mc.session.getUsername());
-            ChatUtil.infoChatMessage("Username copied into the clipboard.");
+            ChatUtil.infoChatMessage("Name copied into the clipboard.");
             return SINGLE_SUCCESS;
         }));
         builder.then(literal("change").then(argument("name", StringArgumentType.word()).executes(context -> {
-            final String username = StringArgumentType.getString(context, "name");
-            if (username.length() > 16 || username.length() < 3) {
-                ChatUtil.errorChatMessage("The username must be between 3 and 16 characters long.");
-                return SINGLE_SUCCESS;
-            }
-            Vandalism.getInstance().getAccountManager().loginCracked(username);
+            this.login(StringArgumentType.getString(context, "name"));
             return SINGLE_SUCCESS;
         })));
+        builder.then(literal("change-and-reconnect").then(argument("name", StringArgumentType.word()).executes(context -> {
+            this.login(StringArgumentType.getString(context, "name"));
+            ServerUtil.connectToLastServer();
+            return SINGLE_SUCCESS;
+        })));
+    }
+
+    private void login(final String name) {
+        if (MathUtil.isBetween(name.length(), 3, 16)) {
+            ChatUtil.errorChatMessage("The name must be between 3 and 16 characters long.");
+            return;
+        }
+        Vandalism.getInstance().getAccountManager().loginCracked(name);
     }
 
 }

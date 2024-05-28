@@ -33,13 +33,8 @@ public class StateClientWindow extends ClientWindow {
         this.resetState();
     }
 
-    public StateClientWindow(final String name, final Category category, final boolean doesRenderWindow) {
-        super(name, category, doesRenderWindow);
-        this.resetState();
-    }
-
-    public StateClientWindow(final String name, final Category category, final boolean doesRenderWindow, final int defaultWindowFlags) {
-        super(name, category, doesRenderWindow, defaultWindowFlags);
+    public StateClientWindow(final String name, final Category category, final int defaultWindowFlags) {
+        super(name, category, defaultWindowFlags);
         this.resetState();
     }
 

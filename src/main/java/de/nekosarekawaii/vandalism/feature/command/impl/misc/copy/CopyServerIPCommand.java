@@ -22,7 +22,7 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
-import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
+import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.command.CommandSource;
@@ -71,7 +71,7 @@ public class CopyServerIPCommand extends AbstractCommand {
             final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
             if (networkHandler != null) {
                 EXECUTOR.submit(() -> {
-                    final Pair<String, Integer> address = ServerConnectionUtil.resolveServerAddress(networkHandler.getConnection().getAddress().toString());
+                    final Pair<String, Integer> address = ServerUtil.resolveServerAddress(networkHandler.getConnection().getAddress().toString());
                     this.mc.keyboard.setClipboard(address.getLeft() + ":" + address.getRight());
                 });
             }

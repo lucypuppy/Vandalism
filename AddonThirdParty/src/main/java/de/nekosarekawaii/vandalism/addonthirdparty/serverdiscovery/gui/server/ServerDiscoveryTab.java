@@ -24,17 +24,18 @@ import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.ServerDiscove
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.impl.ServersRequest;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.Response;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.impl.ServersResponse;
-import de.nekosarekawaii.vandalism.integration.viafabricplus.ViaFabricPlusAccess;
+import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataListWidget;
+import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
+import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
+import de.nekosarekawaii.vandalism.util.common.TimeFormatter;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
-import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
+import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiComboFlags;
-import imgui.flag.ImGuiPopupFlags;
-import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import imgui.type.ImString;
@@ -42,13 +43,10 @@ import net.lenni0451.mcping.MCPing;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.ServerList;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Pair;
 
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -56,7 +54,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ServersTab implements MinecraftWrapper {
+public class ServerDiscoveryTab implements MinecraftWrapper, DataListWidget {
 
     private final ImInt asn = new ImInt(0);
     private Country country = Country.ANY;
@@ -79,7 +77,6 @@ public class ServersTab implements MinecraftWrapper {
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private boolean waitingForResponse = false;
     private final ImString serversSearchField = new ImString();
-    private final List<ServersResponse.Server> servers = new CopyOnWriteArrayList<>();
 
     private String lastAddress = "";
 
@@ -87,6 +84,8 @@ public class ServersTab implements MinecraftWrapper {
     private int lastMaxServers = -1;
 
     private final MSTimer checkTimeout = new MSTimer();
+
+    private final CopyOnWriteArrayList<ListDataEntry> serverDataEntries = new CopyOnWriteArrayList<>();
 
     public void renderMenu(final String name) {
         final ServerDiscoveryClientWindow serverDiscoveryClientWindow = Vandalism.getInstance().getClientWindowManager().getByClass(ServerDiscoveryClientWindow.class);
@@ -140,9 +139,9 @@ public class ServersTab implements MinecraftWrapper {
                     if (
                             protocolVersion.olderThan(ProtocolVersion.v1_7_2) ||
                                     // TODO: Re-implement this
-                            //AprilFoolsProtocolVersion.PROTOCOLS.contains(protocolVersion) ||
-                            protocolVersion.getName().contains("Bedrock") ||
-                            protocolVersion.getName().contains("Auto Detect")
+                                    //AprilFoolsProtocolVersion.PROTOCOLS.contains(protocolVersion) ||
+                                    protocolVersion.getName().contains("Bedrock") ||
+                                    protocolVersion.getName().contains("Auto Detect")
                     ) {
                         continue;
                     }
@@ -188,40 +187,48 @@ public class ServersTab implements MinecraftWrapper {
                     this.executorService.submit(() -> {
                         this.waitingForResponse = true;
                         final Response response = ServerDiscoveryUtil.request(serversRequest);
-                        ServersResponse.Server errorDisplay = new ServersResponse.Server();
-                        errorDisplay.description = "API request failed!";
+                        CopyOnWriteArrayList<Pair<String, String>> errorDisplay = new CopyOnWriteArrayList<>();
+                        errorDisplay.add(new Pair<>("Error", "API request failed!"));
                         if (response instanceof final ServersResponse serversResponse) {
                             if (serversResponse.isError()) {
-                                errorDisplay.version = "Response failed due to " + serversResponse.error;
+                                errorDisplay.add(new Pair<>("Message", "Response failed due to " + serversResponse.error));
                             } else if (serversResponse.data == null || serversResponse.data.isEmpty()) {
-                                errorDisplay.version = "No servers found!";
+                                errorDisplay.add(new Pair<>("Message", "No servers found!"));
                             } else {
                                 for (final ServersResponse.Server server : serversResponse.data) {
                                     boolean contains = false;
-                                    for (final ServersResponse.Server containedServer : this.servers) {
-                                        if (server.server.equals(containedServer.server)) {
+                                    for (final ListDataEntry containedServerEntry : this.serverDataEntries) {
+                                        if (server.server.equals(containedServerEntry.getFirst().getRight())) {
                                             contains = true;
                                             break;
                                         }
                                     }
                                     if (!contains) {
-                                        this.servers.add(server);
+                                        final CopyOnWriteArrayList<Pair<String, String>> serverEntry = new CopyOnWriteArrayList<>();
+                                        serverEntry.add(new Pair<>("Server", server.server));
+                                        serverEntry.add(new Pair<>("Description", ServerUtil.fixDescription(server.description)));
+                                        serverEntry.add(new Pair<>("Version", ServerUtil.fixVersionName(server.version, true)));
+                                        serverEntry.add(new Pair<>("Protocol", String.valueOf(server.protocol)));
+                                        serverEntry.add(new Pair<>("Players", server.online_players + "/" + server.max_players));
+                                        serverEntry.add(new Pair<>("Cracked", String.valueOf(server.cracked)));
+                                        serverEntry.add(new Pair<>("Last Seen", TimeFormatter.formatDateTime(Instant.ofEpochSecond(server.last_seen).atZone(ZoneId.systemDefault()).toLocalDateTime())));
+                                        this.serverDataEntries.add(new ListDataEntry(serverEntry));
                                     }
                                 }
                                 errorDisplay = null;
                             }
                         } else {
-                            errorDisplay.version = response.error;
+                            errorDisplay.add(new Pair<>("Message", response.error));
                         }
                         if (errorDisplay != null) {
-                            this.servers.add(errorDisplay);
+                            this.serverDataEntries.add(new ListDataEntry(errorDisplay));
                         }
                         this.waitingForResponse = false;
                     });
                 }
-                if (!this.servers.isEmpty()) {
+                if (!this.serverDataEntries.isEmpty()) {
                     if (ImUtils.subButton("Clear")) {
-                        this.servers.clear();
+                        this.serverDataEntries.clear();
                     }
                 }
             }
@@ -229,12 +236,12 @@ public class ServersTab implements MinecraftWrapper {
         }
     }
 
-    public boolean render(final String name) {
+    public boolean render(final String id, final String name) {
         boolean isSelected = false;
         boolean containsLastServer = false;
-        if (ServerConnectionUtil.lastServerExists()) {
-            for (final ServersResponse.Server server : this.servers) {
-                if (ServerConnectionUtil.getLastServerInfo().address.equals(server.server)) {
+        if (ServerUtil.lastServerExists()) {
+            for (final ListDataEntry serverEntry : this.serverDataEntries) {
+                if (ServerUtil.getLastServerInfo().address.equals(serverEntry.getFirst().getRight())) {
                     containsLastServer = true;
                     break;
                 }
@@ -245,30 +252,28 @@ public class ServersTab implements MinecraftWrapper {
             ImGui.pushStyleColor(ImGuiCol.TabActive, 1.0f, 0.0f, 0.0f, 0.4f);
             ImGui.pushStyleColor(ImGuiCol.TabHovered, 0.8f, 0.0f, 0.0f, 0.4f);
         }
-        if (ImGui.beginTabItem(name + "##serversTab" + name)) {
+        if (ImGui.beginTabItem(name + id)) {
             isSelected = true;
-            if (!this.servers.isEmpty() && !this.waitingForResponse) {
-                ImGui.text("Found " + this.servers.size() + " server/s.");
-                ImGui.spacing();
-                ImGui.text("Search for servers");
+            if (!this.serverDataEntries.isEmpty() && !this.waitingForResponse) {
+                ImGui.text("Search for Servers (" + this.serverDataEntries.size() + ")");
                 ImGui.setNextItemWidth(-1);
-                ImGui.inputText("##serverSearchField", this.serversSearchField);
+                ImGui.inputText(id + "searchField", this.serversSearchField);
                 ImGui.separator();
                 if (this.checkedServers.get() < 0) {
-                    if (ImUtils.subButton("Remove offline servers")) {
+                    if (ImUtils.subButton("Remove Offline Servers" + id + "removeOfflineServers")) {
                         this.checkedServers.set(0);
-                        this.lastMaxServers = this.servers.size();
+                        this.lastMaxServers = this.serverDataEntries.size();
                         this.checkTimeout.reset();
                         this.executorService.execute(() -> {
-                            for (final ServersResponse.Server server : this.servers) {
-                                final Pair<String, Integer> serverAddress = ServerConnectionUtil.resolveServerAddress(server.server);
+                            for (final ListDataEntry serverEntry : this.serverDataEntries) {
+                                final Pair<String, Integer> serverAddress = ServerUtil.resolveServerAddress(serverEntry.getFirst().getRight());
                                 final String resolvedAddress = serverAddress.getLeft();
                                 final int resolvedPort = serverAddress.getRight();
                                 MCPing.pingModern(this.protocol)
                                         .address(resolvedAddress, resolvedPort)
                                         .timeout(5000, 5000)
                                         .exceptionHandler(t -> {
-                                            this.servers.remove(server);
+                                            this.serverDataEntries.remove(serverEntry);
                                             this.checkedServers.getAndIncrement();
                                             Vandalism.getInstance().getLogger().info("Removed offline server {}:{}", resolvedAddress, resolvedPort);
                                         })
@@ -277,15 +282,15 @@ public class ServersTab implements MinecraftWrapper {
                         });
                     }
                 }
-                if (ImUtils.subButton("Add all servers")) {
+                if (ImUtils.subButton("Add All Servers" + id + "addAllServers")) {
                     final ServerList serverList = new ServerList(MinecraftClient.getInstance());
                     serverList.loadFile();
                     int i = 0;
-                    for (final ServersResponse.Server server : this.servers) {
+                    for (final ListDataEntry serverEntry : this.serverDataEntries) {
                         i++;
                         serverList.add(new ServerInfo(
                                 "Server Discovery (" + (i < 10 ? "0" + i : i) + ")",
-                                server.server,
+                                serverEntry.getFirst().getRight(),
                                 ServerInfo.ServerType.OTHER
                         ), false);
                     }
@@ -302,118 +307,7 @@ public class ServersTab implements MinecraftWrapper {
                         this.checkedServers.set(-1);
                     }
                 }
-                ImGui.beginChild("##servers", -1, -1, true, ImGuiWindowFlags.HorizontalScrollbar);
-                int i = 0;
-                boolean hasLastServer = false;
-                for (final ServersResponse.Server serverEntry : this.servers) {
-                    i++;
-                    final String address = serverEntry.server;
-                    final boolean cracked = serverEntry.cracked;
-                    boolean isLastServer = ServerConnectionUtil.lastServerExists() && ServerConnectionUtil.getLastServerInfo().address.equals(address) || this.lastAddress.equals(address);
-                    if (hasLastServer) {
-                        isLastServer = false;
-                    }
-                    if (isLastServer) {
-                        hasLastServer = true;
-                    }
-                    final StringBuilder dataString = new StringBuilder();
-                    String description = Formatting.strip(serverEntry.description);
-                    if (description != null && !description.isEmpty()) {
-                        final String colorCodePrefix = String.valueOf(Formatting.FORMATTING_CODE_PREFIX);
-                        if (description.contains(colorCodePrefix)) {
-                            description = description.replace(colorCodePrefix, "");
-                        }
-                        if (description.contains("    ")) {
-                            description = description.replace("    ", " ");
-                        }
-                        if (description.contains("\n")) {
-                            description = description.replace("\n", " ");
-                        }
-                        if (description.contains("\t")) {
-                            description = description.replace("\t", " ");
-                        }
-                        if (!description.isEmpty()) {
-                            dataString.append("Description: ");
-                            final int maxLength = 200;
-                            if (description.length() > maxLength) {
-                                description = description.substring(0, maxLength);
-                                description += "...";
-                            }
-                            dataString.append(description);
-                        }
-                    }
-                    dataString.append("\n");
-                    dataString.append("Version: ");
-                    dataString.append(serverEntry.version);
-                    dataString.append("\n");
-                    dataString.append("Protocol: ");
-                    dataString.append(serverEntry.protocol);
-                    dataString.append("\n");
-                    dataString.append("Players: ");
-                    dataString.append(serverEntry.online_players);
-                    dataString.append("/");
-                    dataString.append(serverEntry.max_players);
-                    dataString.append("\n");
-                    dataString.append("Last Seen: ");
-                    dataString.append(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(
-                            Instant.ofEpochSecond(serverEntry.last_seen).atZone(ZoneId.systemDefault()).toLocalDateTime()
-                    ));
-                    final String data = dataString.toString();
-                    if (!this.serversSearchField.get().isBlank() && !StringUtils.contains(data, this.serversSearchField.get())) {
-                        continue;
-                    }
-                    final boolean shouldHighlight = cracked || isLastServer;
-                    if (shouldHighlight) {
-                        float[] color = {0.1f, 0.8f, 0.1f, 0.30f};
-                        if (isLastServer) {
-                            color = new float[]{0.8f, 0.1f, 0.1f, 0.30f};
-                        }
-                        ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], color[3]);
-                        ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], color[3] - 0.1f);
-                        ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
-                    }
-                    final String serverEntryId = "##serverEntry" + address;
-                    if (ImGui.button(serverEntryId, ImGui.getColumnWidth() - 8, 90)) {
-                        this.lastAddress = address;
-                        ServerConnectionUtil.connect(address);
-                    }
-                    if (shouldHighlight) {
-                        ImGui.popStyleColor(3);
-                    }
-                    if (ImGui.beginPopupContextItem(serverEntryId + "popup", ImGuiPopupFlags.MouseButtonRight)) {
-                        final int buttonWidth = 200, buttonHeight = 28;
-                        final ProtocolVersion protocolVersion = ProtocolVersion.getProtocol(serverEntry.protocol);
-                        if (protocolVersion.isKnown()) {
-                            if (ImGui.button("Connect with Server Version" + serverEntryId + "connectwithserverversion", buttonWidth, buttonHeight)) {
-                                /* Autistic fix for ingame with revert on disconnect */
-                                ViaFabricPlusAccess.setPreviousVersion(null);
-                                ViaFabricPlusAccess.setTargetVersion(protocolVersion, false);
-                                this.lastAddress = address;
-                                ServerConnectionUtil.connect(address);
-                            }
-                        }
-                        if (ImGui.button("Add to the Server List" + serverEntryId + "addtoserverlist", buttonWidth, buttonHeight)) {
-                            final ServerList serverList = new ServerList(MinecraftClient.getInstance());
-                            serverList.loadFile();
-                            serverList.add(new ServerInfo(
-                                    "Server Discovery (" + (i < 10 ? "0" + i : i) + ")",
-                                    address,
-                                    ServerInfo.ServerType.OTHER
-                            ), false);
-                            serverList.saveFile();
-                        }
-                        if (ImGui.button("Copy Address" + serverEntryId + "copyaddress", buttonWidth, buttonHeight)) {
-                            this.mc.keyboard.setClipboard(address);
-                        }
-                        if (ImGui.button("Copy Data" + serverEntryId + "copydata", buttonWidth, buttonHeight)) {
-                            this.mc.keyboard.setClipboard(data);
-                        }
-                        ImGui.endPopup();
-                    }
-                    ImGui.sameLine(10);
-                    ImGui.text(data);
-                }
-                ImGui.endChild();
+                this.renderDataList(id, -1, -5, 120f, this.serverDataEntries);
             } else {
                 if (this.waitingForResponse) {
                     ImGui.text("Waiting for response...");
@@ -425,6 +319,78 @@ public class ServersTab implements MinecraftWrapper {
         }
         if (containsLastServer) ImGui.popStyleColor(3);
         return isSelected;
+    }
+
+    @Override
+    public boolean filterDataEntry(final DataEntry dataEntry) {
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            return !this.serversSearchField.get().isBlank() && !StringUtils.contains(listDataEntry.getData(), this.serversSearchField.get());
+        }
+        return false;
+    }
+
+    @Override
+    public boolean shouldHighlightDataEntry(final DataEntry dataEntry) {
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            final String address = listDataEntry.getFirst().getRight();
+            return listDataEntry.getSixth().getRight().equals("true") || ServerUtil.lastServerExists() && ServerUtil.getLastServerInfo().address.equals(address) || this.lastAddress.equals(address);
+        }
+        return false;
+    }
+
+    @Override
+    public float[] getDataEntryHighlightColor(final DataEntry dataEntry) {
+        float[] color = {0.1f, 0.8f, 0.1f, 0.30f};
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            final String address = listDataEntry.getFirst().getRight();
+            if (ServerUtil.lastServerExists() && ServerUtil.getLastServerInfo().address.equals(address) || this.lastAddress.equals(address)) {
+                color = new float[]{0.8f, 0.1f, 0.1f, 0.30f};
+            }
+        }
+        return color;
+    }
+
+    @Override
+    public void onDataEntryClick(final DataEntry dataEntry) {
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            final String address = listDataEntry.getFirst().getRight();
+            this.lastAddress = address;
+            ServerUtil.connect(address);
+        }
+    }
+
+    @Override
+    public void renderDataEntryContextMenu(final String id, final int index, final DataEntry dataEntry) {
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            final String address = listDataEntry.getFirst().getRight();
+            final int buttonWidth = 200, buttonHeight = 28;
+            try {
+                final ProtocolVersion protocolVersion = ProtocolVersion.getProtocol(Integer.parseInt(listDataEntry.getFourth().getRight()));
+                if (protocolVersion.isKnown()) {
+                    if (ImGui.button("Connect with Server Version" + id + "connectWithServerVersion", buttonWidth, buttonHeight)) {
+                        this.lastAddress = address;
+                        ServerUtil.connectWithVFPFix(address, protocolVersion, false);
+                    }
+                }
+            } catch (final NumberFormatException ignored) {
+            }
+            if (ImGui.button("Add to the Server List" + id + "addToServerList", buttonWidth, buttonHeight)) {
+                final ServerList serverList = new ServerList(MinecraftClient.getInstance());
+                serverList.loadFile();
+                serverList.add(new ServerInfo(
+                        "Server Discovery (" + (index < 10 ? "0" + index : index) + ")",
+                        address,
+                        ServerInfo.ServerType.OTHER
+                ), false);
+                serverList.saveFile();
+            }
+            if (ImGui.button("Copy Address" + id + "copyAddress", buttonWidth, buttonHeight)) {
+                this.mc.keyboard.setClipboard(address);
+            }
+            if (ImGui.button("Copy Data" + id + "copyData", buttonWidth, buttonHeight)) {
+                this.mc.keyboard.setClipboard(listDataEntry.getData());
+            }
+        }
     }
 
 }

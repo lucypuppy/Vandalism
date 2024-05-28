@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerPingerWidget;
-import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
+import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -76,7 +76,7 @@ public abstract class MixinGameMenuScreen extends Screen {
         if (text == SEND_FEEDBACK_TEXT) {
             cir.setReturnValue(ButtonWidget.builder(Text.translatable("menu.multiplayer"), b -> this.client.setScreen(new MultiplayerScreen(this))).width(98).build());
         } else if (text == REPORT_BUGS_TEXT && !this.client.isInSingleplayer()) {
-            final ButtonWidget button = ButtonWidget.builder(Text.literal("Reconnect"), b -> ServerConnectionUtil.connect(this.client.getCurrentServerEntry())).width(98).build();
+            final ButtonWidget button = ButtonWidget.builder(Text.literal("Reconnect"), b -> ServerUtil.connect(this.client.getCurrentServerEntry())).width(98).build();
             cir.setReturnValue(button);
         }
     }

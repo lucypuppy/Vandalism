@@ -20,8 +20,8 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
-import de.nekosarekawaii.vandalism.integration.serverlist.ServerDataUtil;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerPingerWidget;
+import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
@@ -106,7 +106,7 @@ public abstract class MixinServerEntry {
                 if (enhancedServerListSettings.multiplayerScreenServerInformation.getValue()) {
                     final String versionString = this.server.version.getString();
                     if (!versionString.isEmpty()) {
-                        final String fixedVersion = ServerDataUtil.fixVersionName(versionString);
+                        final String fixedVersion = ServerUtil.fixVersionName(versionString, false);
                         String type = fixedVersion;
                         StringBuilder version = new StringBuilder();
                         if (fixedVersion.contains(" ")) {
@@ -187,7 +187,7 @@ public abstract class MixinServerEntry {
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerScreen;setTooltip(Lnet/minecraft/text/Text;)V"))
     private void attachAdditionalTooltipData(final MultiplayerScreen instance, final Text text) {
-        final List<OrderedText> tooltip = ServerDataUtil.attachAdditionalTooltipData(new ArrayList<>(), this.server);
+        final List<OrderedText> tooltip = ServerUtil.attachAdditionalTooltipData(new ArrayList<>(), this.server);
         if (tooltip.isEmpty()) {
             instance.setTooltip(text);
             return;

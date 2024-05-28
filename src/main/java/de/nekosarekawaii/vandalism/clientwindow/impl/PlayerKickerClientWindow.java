@@ -20,14 +20,14 @@ package de.nekosarekawaii.vandalism.clientwindow.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientwindow.template.StateClientWindow;
+import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataListWidget;
+import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
+import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
 import de.nekosarekawaii.vandalism.util.game.PacketHelper;
 import de.nekosarekawaii.vandalism.util.game.PingState;
-import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
+import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
 import imgui.ImGui;
-import imgui.flag.ImGuiCol;
-import imgui.flag.ImGuiPopupFlags;
-import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import imgui.type.ImString;
@@ -40,17 +40,17 @@ import net.lenni0451.mcping.responses.MCPingResponse;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ServerInfo;
-import net.minecraft.client.session.Session;
-import net.minecraft.util.Uuids;
+import net.minecraft.util.Pair;
 
 import java.io.DataOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class PlayerKickerClientWindow extends StateClientWindow {
+public class PlayerKickerClientWindow extends StateClientWindow implements DataListWidget {
 
     private final ImString ip = new ImString(253);
     private final ImInt port = new ImInt(25565);
@@ -69,30 +69,32 @@ public class PlayerKickerClientWindow extends StateClientWindow {
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
+    private final CopyOnWriteArrayList<ListDataEntry> playerDataEntries = new CopyOnWriteArrayList<>();
+
     public PlayerKickerClientWindow() {
         super("Player Kicker", Category.SERVER);
-
     }
 
     @Override
     protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         super.onRender(context, mouseX, mouseY, delta);
+        final String id = "##" + this.getName();
         if (!this.checking) {
             ImGui.text("IP");
             ImGui.setNextItemWidth(-1);
-            ImGui.inputText("##playerKickerIp", this.ip);
+            ImGui.inputText(id + "IP", this.ip);
             if (this.ip.isEmpty()) {
-                if (ImUtils.subButton("Use " + (this.mc.player != null ? "Current" : "Last") + " Server")) {
-                    final ServerInfo currentServerInfo = ServerConnectionUtil.getLastServerInfo();
-                    if (currentServerInfo != null) {
+                if (ImUtils.subButton("Use " + (this.mc.player != null ? "Current" : "Last") + " Server" + id + "useLastOrCurrentServer")) {
+                    final ServerInfo currentServerInfo = ServerUtil.getLastServerInfo();
+                    if (ServerUtil.lastServerExists()) {
                         this.ip.set(currentServerInfo.address);
                     }
                 }
             }
             ImGui.text("Port");
             ImGui.setNextItemWidth(-1);
-            ImGui.inputInt("##playerKickerPort", this.port);
-            ImGui.checkbox("Prevent Self Kick", this.preventSelfKick);
+            ImGui.inputInt(id + "Port", this.port);
+            ImGui.checkbox("Prevent Self Kick" + id + "preventSelfKick", this.preventSelfKick);
             ImGui.sameLine();
             ImGui.textDisabled("(?)");
             if (ImGui.isItemHovered()) {
@@ -101,7 +103,7 @@ public class PlayerKickerClientWindow extends StateClientWindow {
                 ImGui.endTooltip();
             }
             ImGui.sameLine();
-            ImGui.checkbox("Prevent Friend Kick", this.preventFriendKick);
+            ImGui.checkbox("Prevent Friend Kick" + id + "preventFriendKick", this.preventFriendKick);
             ImGui.sameLine();
             ImGui.textDisabled("(?)");
             if (ImGui.isItemHovered()) {
@@ -110,19 +112,19 @@ public class PlayerKickerClientWindow extends StateClientWindow {
                 ImGui.endTooltip();
             }
             ImGui.sameLine();
-            ImGui.checkbox("Spoof BungeeCord", this.spoofBungeeCord);
+            ImGui.checkbox("Spoof BungeeCord" + id + "spoofBungeeCord", this.spoofBungeeCord);
             if (this.spoofBungeeCord.get()) {
                 ImGui.sameLine();
-                ImGui.checkbox("Customize IP", this.customizeIP);
+                ImGui.checkbox("Customize IP" + id + "customizeIP", this.customizeIP);
                 if (this.customizeIP.get()) {
                     ImGui.text("Custom IP");
                     ImGui.setNextItemWidth(-1);
-                    ImGui.inputText("##playerKickerCustomIP", this.customIP);
+                    ImGui.inputText(id + "customIP", this.customIP);
                 }
             }
             ImGui.text("Kick Delay (ms)");
             ImGui.setNextItemWidth(-1);
-            ImGui.inputInt("##playerKickerKickDelay", this.kickDelay);
+            ImGui.inputInt(id + "delay", this.kickDelay);
             ImGui.spacing();
             if (this.ip.isNotEmpty()) {
                 if (this.ip.get().contains(":")) {
@@ -135,13 +137,14 @@ public class PlayerKickerClientWindow extends StateClientWindow {
                         }
                     }
                 }
-                if (ImUtils.subButton("Check")) {
+                if (ImUtils.subButton("Check" + id + "check")) {
                     this.checking = true;
                     this.setState(PingState.WAITING_RESPONSE.getMessage());
                     this.players = null;
                     this.protocol = SharedConstants.getProtocolVersion();
                     this.friends = 0;
                     this.anonymousPlayers = 0;
+                    this.playerDataEntries.clear();
                     MCPing.pingModern(this.protocol)
                             .address(this.ip.get(), this.port.get())
                             .timeout(5000, 5000)
@@ -175,11 +178,15 @@ public class PlayerKickerClientWindow extends StateClientWindow {
                                         return;
                                     }
                                     for (final MCPingResponse.Players.Player player : sample) {
-                                        if (this.isAnonymous(player.name, player.id)) {
+                                        if (ServerUtil.isAnonymous(player.name, player.id)) {
                                             this.anonymousPlayers++;
-                                        } else if (this.isFriend(player.name)) {
+                                        } else if (Vandalism.getInstance().getFriendsManager().isFriend(player.name)) {
                                             this.friends++;
                                         }
+                                        final CopyOnWriteArrayList<Pair<String, String>> list = new CopyOnWriteArrayList<>();
+                                        list.add(new Pair<>("Name", player.name));
+                                        list.add(new Pair<>("UUID", player.id));
+                                        this.playerDataEntries.add(new ListDataEntry(list));
                                     }
                                 }
                                 this.delayedResetState(10000);
@@ -195,50 +202,8 @@ public class PlayerKickerClientWindow extends StateClientWindow {
                 if (this.friends > 0) {
                     ImGui.textWrapped("Friends: " + this.friends);
                 }
-                ImGui.beginChild("##playerKickerPlayers", ImGui.getColumnWidth(), -ImGui.getTextLineHeightWithSpacing() - 10, true, ImGuiWindowFlags.HorizontalScrollbar);
-                for (int i = 0; i < this.players.sample.length; i++) {
-                    final MCPingResponse.Players.Player player = this.players.sample[i];
-                    final String name = player.name;
-                    final String uuid = player.id;
-                    boolean isSelf = this.isSelf(name, uuid), isFriend = this.isFriend(name);
-                    if (this.isAnonymous(name, uuid) || (isSelf && this.preventSelfKick.get()) || (isFriend && this.preventFriendKick.get())) {
-                        continue;
-                    }
-                    final boolean shouldHighlight = isSelf || isFriend;
-                    if (shouldHighlight) {
-                        float[] color = {0.8f, 0.1f, 0.1f, 0.30f};
-                        if (isFriend) {
-                            color = new float[]{0.9f, 0.5f, 0.1f, 0.40f};
-                        }
-                        ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], color[3]);
-                        ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], color[3] - 0.1f);
-                        ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
-                    }
-                    final String data = "Name: " + name + "\n" + "UUID: " + uuid;
-                    final String id = "##playerKickerPlayer" + i;
-                    if (ImGui.button(id, ImGui.getColumnWidth(), 45)) {
-                        this.kickPlayer(name, uuid);
-                    }
-                    if (shouldHighlight) {
-                        ImGui.popStyleColor(3);
-                    }
-                    if (ImGui.beginPopupContextItem(id + "popup", ImGuiPopupFlags.MouseButtonRight)) {
-                        ImGui.text("Player: " + name);
-                        ImGui.separator();
-                        final int buttonWidth = 200, buttonHeight = 28;
-                        if (ImGui.button("Login" + id + "login", buttonWidth, buttonHeight)) {
-                            Vandalism.getInstance().getAccountManager().loginCracked(name, uuid);
-                        }
-                        if (ImGui.button("Copy Data" + id + "copyData", buttonWidth, buttonHeight)) {
-                            this.mc.keyboard.setClipboard(data);
-                        }
-                        ImGui.endPopup();
-                    }
-                    ImGui.sameLine(10);
-                    ImGui.text(data);
-                }
-                ImGui.endChild();
-                if (ImGui.button("Kick All Players", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                this.renderDataList(id + "playerList", -ImGui.getTextLineHeightWithSpacing() - 10, 45f, this.playerDataEntries);
+                if (ImGui.button("Kick All Players" + id + "kickAllPlayers", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                     for (final MCPingResponse.Players.Player player : this.players.sample) {
                         this.kickPlayer(player.name, player.id);
                     }
@@ -249,30 +214,64 @@ public class PlayerKickerClientWindow extends StateClientWindow {
         }
     }
 
-    private boolean isAnonymous(final String name, final String uuid) {
-        return name.equals("Anonymous Player") || uuid.equals("00000000-0000-0000-0000-000000000000");
-    }
-
-    private boolean isSelf(final String name, final String uuid) {
-        if (this.mc.player != null) {
-            final Session currentSession = this.mc.session;
-            final String currentName = currentSession.getUsername();
-            final UUID currentUuid = currentSession.getUuidOrNull();
-            boolean isSameUUID = currentUuid != null && currentUuid.toString().equals(uuid);
-            if (!isSameUUID) {
-                isSameUUID = Uuids.getOfflinePlayerUuid(currentName).toString().equals(uuid);
-            }
-            return currentName.equals(name) && isSameUUID;
+    @Override
+    public boolean filterDataEntry(final DataEntry dataEntry) {
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            final String name = listDataEntry.getFirst().getRight(), uuid = listDataEntry.getSecond().getRight();
+            final boolean isSelf = ServerUtil.isSelf(name, uuid), isFriend = Vandalism.getInstance().getFriendsManager().isFriend(name);
+            return ServerUtil.isAnonymous(name, uuid) || (isSelf && this.preventSelfKick.get()) || (isFriend && this.preventFriendKick.get());
         }
         return false;
     }
 
-    private boolean isFriend(final String name) {
-        return Vandalism.getInstance().getFriendsManager().isFriend(name);
+    @Override
+    public boolean shouldHighlightDataEntry(final DataEntry dataEntry) {
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            final String name = listDataEntry.getFirst().getRight(), uuid = listDataEntry.getSecond().getRight();
+            final boolean isSelf = ServerUtil.isSelf(name, uuid), isFriend = Vandalism.getInstance().getFriendsManager().isFriend(name);
+            return isSelf || isFriend;
+        }
+        return false;
     }
 
+    @Override
+    public float[] getDataEntryHighlightColor(final DataEntry dataEntry) {
+        float[] color = {0.8f, 0.1f, 0.1f, 0.30f};
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            if (Vandalism.getInstance().getFriendsManager().isFriend(listDataEntry.getFirst().getRight())) {
+                color = new float[]{0.9f, 0.5f, 0.1f, 0.40f};
+            }
+        }
+        return color;
+    }
+
+    @Override
+    public void onDataEntryClick(final DataEntry dataEntry) {
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            this.kickPlayer(listDataEntry.getFirst().getRight(), listDataEntry.getSecond().getRight());
+        }
+    }
+
+    @Override
+    public void renderDataEntryContextMenu(final String id, final int index, final DataEntry dataEntry) {
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            final String name = listDataEntry.getFirst().getRight(), uuid = listDataEntry.getSecond().getRight();
+            ImGui.text("Player: " + name);
+            ImGui.separator();
+            final int buttonWidth = 200, buttonHeight = 28;
+            if (ImGui.button("Login" + id + "login", buttonWidth, buttonHeight)) {
+                Vandalism.getInstance().getAccountManager().loginCracked(name, uuid);
+            }
+            if (ImGui.button("Copy Data" + id + "copyData", buttonWidth, buttonHeight)) {
+                this.mc.keyboard.setClipboard(dataEntry.getData());
+            }
+        }
+    }
+
+
+
     private void kickPlayer(final String name, final String uuid) {
-        if ((this.isSelf(name, uuid) && this.preventSelfKick.get()) || (this.isFriend(name) && this.preventFriendKick.get())) {
+        if ((ServerUtil.isSelf(name, uuid) && this.preventSelfKick.get()) || (Vandalism.getInstance().getFriendsManager().isFriend(name) && this.preventFriendKick.get())) {
             return;
         }
         this.executorService.submit(() -> {

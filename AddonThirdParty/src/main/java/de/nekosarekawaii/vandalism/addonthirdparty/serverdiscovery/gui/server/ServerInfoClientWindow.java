@@ -18,22 +18,23 @@
 
 package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.gui.server;
 
-import com.mojang.authlib.GameProfile;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.ServerDiscoveryUtil;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.impl.ServerInfoRequest;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.Response;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.impl.ServerInfoResponse;
 import de.nekosarekawaii.vandalism.clientwindow.template.StateClientWindow;
+import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataListWidget;
+import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
+import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
+import de.nekosarekawaii.vandalism.util.common.TimeFormatter;
 import de.nekosarekawaii.vandalism.util.game.PingState;
-import de.nekosarekawaii.vandalism.util.game.ServerConnectionUtil;
+import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
-import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiInputTextFlags;
-import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import net.lenni0451.mcping.MCPing;
@@ -44,83 +45,73 @@ import net.lenni0451.mcping.exception.PacketReadException;
 import net.lenni0451.mcping.responses.MCPingResponse;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ServerInfo;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Pair;
 
 import java.net.UnknownHostException;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ServerInfoClientWindow extends StateClientWindow {
+public class ServerInfoClientWindow extends StateClientWindow implements DataListWidget {
 
     private static final ImGuiInputTextCallback IP_FILTER = new ImGuiInputTextCallback() {
 
         @Override
         public void accept(final ImGuiInputTextCallbackData imGuiInputTextCallbackData) {
-            if (imGuiInputTextCallbackData.getEventChar() == 0) return;
-            if (
-                    !Character.isLetterOrDigit(imGuiInputTextCallbackData.getEventChar()) &&
-                            imGuiInputTextCallbackData.getEventChar() != '.' &&
-                            imGuiInputTextCallbackData.getEventChar() != ':'
-            ) {
+            final int eventCharInt = imGuiInputTextCallbackData.getEventChar();
+            if (eventCharInt == 0) return;
+            final char eventChar = (char) eventCharInt;
+            if (!Character.isLetterOrDigit(eventChar) && eventChar != '.' && eventChar != ':') {
                 imGuiInputTextCallbackData.setEventChar((char) 0);
             }
         }
 
     };
 
-    private final ImString ip;
+    private final ImString ip = new ImString(253);
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private ServerInfoResponse serverInfo = null;
+    private String lastIP = "";
+    private boolean waitingForResponse = false;
+    private int filteredPlayers = 0;
 
-    private final ExecutorService executor;
-
-    private ServerInfoResponse serverInfo;
-    private String lastIP;
-
-    private boolean waitingForResponse;
-
-    private int filteredPlayers;
+    private final CopyOnWriteArrayList<ListDataEntry> playerDataEntries = new CopyOnWriteArrayList<>();
 
     public ServerInfoClientWindow() {
         super("Server Info", Category.SERVER);
-        this.ip = new ImString(253);
-        this.executor = Executors.newSingleThreadExecutor();
-        this.serverInfo = null;
-        this.lastIP = "";
-        this.waitingForResponse = false;
-        this.filteredPlayers = 0;
     }
 
     @Override
     protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        final String id = "##" + this.getName();
         super.onRender(context, mouseX, mouseY, delta);
         ImGui.text("IP");
         ImGui.setNextItemWidth(-1);
         ImGui.inputText(
-                "##serverinfoip",
+                id + "ip",
                 this.ip,
                 ImGuiInputTextFlags.CallbackCharFilter,
                 IP_FILTER
         );
-        final ServerInfo currentServer = ServerConnectionUtil.getLastServerInfo();
-        if (currentServer != null && !this.waitingForResponse) {
-            if (ImGui.button("Use " + (this.mc.player != null ? "Current" : "Last") + " Server##serverinfousecurrentserver", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
-                this.ip.set(currentServer.address);
+        final ServerInfo lastServer = ServerUtil.getLastServerInfo();
+        if (ServerUtil.lastServerExists() && !this.waitingForResponse) {
+            if (ImUtils.subButton("Use " + (this.mc.player != null ? "Current" : "Last") + " Server" + id + "useLastOrCurrentServer")) {
+                this.ip.set(lastServer.address);
             }
         }
         final String ipValue = this.ip.get();
         if (!ipValue.isBlank() && !this.waitingForResponse) {
-            if (ImUtils.subButton("Get##serverinfoddatarequest")) {
+            if (ImUtils.subButton("Get" + id + "get")) {
                 this.setState("Requesting data for " + ipValue + "...");
                 this.serverInfo = null;
                 this.lastIP = ipValue;
                 this.filteredPlayers = 0;
+                this.playerDataEntries.clear();
                 this.executor.submit(() -> {
                     this.waitingForResponse = true;
-                    final Pair<String, Integer> resolvedAddress = ServerConnectionUtil.resolveServerAddress(ipValue);
+                    final Pair<String, Integer> resolvedAddress = ServerUtil.resolveServerAddress(ipValue);
                     final String ip = resolvedAddress.getLeft();
                     final int port = resolvedAddress.getRight();
                     final Response response = ServerDiscoveryUtil.request(new ServerInfoRequest(ip, port));
@@ -129,6 +120,7 @@ public class ServerInfoClientWindow extends StateClientWindow {
                             this.setState("Error: " + serverInfoResponse.error);
                         } else {
                             this.serverInfo = serverInfoResponse;
+                            this.updatePlayerDataEntries();
                             this.setState("Success!");
                         }
                     } else {
@@ -140,30 +132,10 @@ public class ServerInfoClientWindow extends StateClientWindow {
         }
         if (this.serverInfo != null) {
             final StringBuilder dataString = new StringBuilder();
-            String description = Formatting.strip(this.serverInfo.description);
-            if (description != null && !description.isEmpty()) {
-                final String colorCodePrefix = String.valueOf(Formatting.FORMATTING_CODE_PREFIX);
-                if (description.contains(colorCodePrefix)) {
-                    description = description.replace(colorCodePrefix, "");
-                }
-                if (description.contains("    ")) {
-                    description = description.replace("    ", " ");
-                }
-                if (description.contains("\n")) {
-                    description = description.replace("\n", " ");
-                }
-                if (description.contains("\t")) {
-                    description = description.replace("\t", " ");
-                }
-                if (!description.isEmpty()) {
-                    dataString.append("Description: ");
-                    final int maxLength = 200;
-                    if (description.length() > maxLength) {
-                        description = description.substring(0, maxLength);
-                        description += "...";
-                    }
-                    dataString.append(description);
-                }
+            final String description = ServerUtil.fixDescription(this.serverInfo.description);
+            if (!description.isEmpty()) {
+                dataString.append("Description: ");
+                dataString.append(description);
             }
             dataString.append("\n");
             dataString.append("Version: ");
@@ -181,33 +153,31 @@ public class ServerInfoClientWindow extends StateClientWindow {
             dataString.append(this.serverInfo.cracked);
             dataString.append("\n");
             dataString.append("Last Seen: ");
-            dataString.append(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(
-                    Instant.ofEpochSecond(this.serverInfo.last_seen).atZone(ZoneId.systemDefault()).toLocalDateTime()
-            ));
+            dataString.append(TimeFormatter.formatDateTime(Instant.ofEpochSecond(this.serverInfo.last_seen).atZone(ZoneId.systemDefault()).toLocalDateTime()));
             final String data = dataString.toString();
-            ImGui.spacing();
             ImGui.text("Server Info");
             ImGui.separator();
-            ImGui.beginChild("##serverinfodata", -1, ImGui.getTextLineHeightWithSpacing() * 4, true, ImGuiWindowFlags.HorizontalScrollbar);
+            ImGui.beginChild(id + "data", -1, ImGui.getTextLineHeightWithSpacing() * 4, true, ImGuiWindowFlags.HorizontalScrollbar);
             ImGui.spacing();
             ImGui.sameLine(5);
             ImGui.text(data);
             ImGui.endChild();
-            if (ImGui.button("Connect##serverInfoConnect", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
-                ServerConnectionUtil.connect(this.lastIP);
+            if (ImGui.button("Connect" + id + "connect", ImGui.getColumnWidth() / 3f, ImGui.getTextLineHeightWithSpacing())) {
+                ServerUtil.connect(this.lastIP);
             }
             ImGui.sameLine();
-            if (ImGui.button("Copy Data##serverinfocopydata", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+            if (ImGui.button("Copy Data" + id + "copyData", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
                 this.mc.keyboard.setClipboard(data);
             }
             if (this.serverInfo.players != null && !this.serverInfo.players.isEmpty()) {
                 if (!this.lastIP.isBlank() && !this.waitingForResponse) {
                     final String lastIpValue = this.lastIP;
-                    if (ImUtils.subButton("Filter Online Players##serverinfofilteronlineplayers")) {
+                    ImGui.sameLine();
+                    if (ImGui.button("Filter Online Players" + id + "filterOnlinePlayers", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                         this.setState("Filtering online players...");
                         this.waitingForResponse = true;
                         this.executor.submit(() -> {
-                            final Pair<String, Integer> resolvedAddress = ServerConnectionUtil.resolveServerAddress(lastIpValue);
+                            final Pair<String, Integer> resolvedAddress = ServerUtil.resolveServerAddress(lastIpValue);
                             final String ip = resolvedAddress.getLeft();
                             final int port = resolvedAddress.getRight();
                             MCPing.pingModern(this.serverInfo.protocol)
@@ -243,6 +213,7 @@ public class ServerInfoClientWindow extends StateClientWindow {
                                                 }
                                                 return false;
                                             });
+                                            this.updatePlayerDataEntries();
                                         }
                                         this.setState("Successfully filtered " + this.filteredPlayers + " online players!");
                                         this.waitingForResponse = false;
@@ -250,60 +221,84 @@ public class ServerInfoClientWindow extends StateClientWindow {
                         });
                     }
                 }
-                ImGui.spacing();
                 ImGui.text("Players (" + this.serverInfo.players.size() + ")" + (this.filteredPlayers > 0 ? " | Filtered (" + this.filteredPlayers + ")" : ""));
                 ImGui.separator();
-                for (final ServerInfoResponse.Player player : this.serverInfo.players) {
-                    final String playerName = player.name;
-                    final String playerUUID = player.uuid;
-                    if (playerName.equals("Anonymous Player") || playerUUID.equals("00000000-0000-0000-0000-000000000000")) {
-                        continue;
-                    }
-                    final String playerData = "Name: " +
-                            playerName +
-                            "\n" +
-                            "UUID: " +
-                            playerUUID +
-                            "\n" +
-                            "Last Seen: " +
-                            DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(
-                                    Instant.ofEpochSecond(player.last_seen).atZone(ZoneId.systemDefault()).toLocalDateTime()
-                            );
-                    final GameProfile gameProfile = this.mc.getGameProfile();
-                    final boolean isCurrentAccount = gameProfile.getName().equals(playerName) && gameProfile.getId().toString().equals(playerUUID);
-                    if (isCurrentAccount) {
-                        final float[] color = {0.1f, 0.8f, 0.1f, 0.30f};
-                        ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], color[3]);
-                        ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], color[3] - 0.1f);
-                        ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
-                    }
-                    if (ImGui.button("##serverinfoplayer" + playerName, ImGui.getColumnWidth() - 8, 60)) {
-                        Vandalism.getInstance().getAccountManager().loginCracked(playerName, playerUUID);
-                    }
-                    if (isCurrentAccount) {
-                        ImGui.popStyleColor(3);
-                    }
-                    if (ImGui.beginPopupContextItem("##serverinfoplayer" + playerName + "popup", ImGuiPopupFlags.MouseButtonRight)) {
-                        final int buttonWidth = 150, buttonHeight = 28;
-                        if (ImGui.button("Add##serverinfoplayer" + playerName + "add", buttonWidth, buttonHeight)) {
-                            Vandalism.getInstance().getAccountManager().loginCracked(playerName, playerUUID, true);
-                        }
-                        if (ImGui.button("Copy Name##serverinfoplayer" + playerName + "copyname", buttonWidth, buttonHeight)) {
-                            this.mc.keyboard.setClipboard(playerName);
-                        }
-                        if (ImGui.button("Copy UUID##serverinfoplayer" + playerName + "copyuuid", buttonWidth, buttonHeight)) {
-                            this.mc.keyboard.setClipboard(playerUUID);
-                        }
-                        if (ImGui.button("Copy Data##serverinfoplayer" + playerName + "copydata", buttonWidth, buttonHeight)) {
-                            this.mc.keyboard.setClipboard(playerData);
-                        }
-                        ImGui.endPopup();
-                    }
-                    ImGui.sameLine(20);
-                    ImGui.text(playerData);
-                }
+                this.renderDataList(id + "playerList", -1, ImGui.getColumnWidth() - 20, 60f, this.playerDataEntries);
             } else {
                 ImGui.text("No players found.");
+            }
+        }
+    }
+
+    private void updatePlayerDataEntries() {
+        this.playerDataEntries.clear();
+        if (this.serverInfo == null || this.serverInfo.players == null) return;
+        for (final ServerInfoResponse.Player player : this.serverInfo.players) {
+            final CopyOnWriteArrayList<Pair<String, String>> list = new CopyOnWriteArrayList<>();
+            list.add(new Pair<>("Name", player.name));
+            list.add(new Pair<>("UUID", player.uuid));
+            list.add(new Pair<>("Last Seen", TimeFormatter.formatDateTime(Instant.ofEpochSecond(player.last_seen).atZone(ZoneId.systemDefault()).toLocalDateTime())));
+            this.playerDataEntries.add(new ListDataEntry(list));
+        }
+    }
+
+    @Override
+    public boolean filterDataEntry(final DataEntry dataEntry) {
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            return ServerUtil.isAnonymous(listDataEntry.getFirst().getRight(), listDataEntry.getSecond().getRight());
+        }
+        return false;
+    }
+
+    @Override
+    public boolean shouldHighlightDataEntry(final DataEntry dataEntry) {
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            final String playerName = listDataEntry.getFirst().getRight();
+            final String playerUUID = listDataEntry.getSecond().getRight();
+            return ServerUtil.isSelf(playerName, playerUUID) || Vandalism.getInstance().getFriendsManager().isFriend(playerName);
+        }
+        return false;
+    }
+
+    @Override
+    public float[] getDataEntryHighlightColor(final DataEntry dataEntry) {
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            final String playerName = listDataEntry.getFirst().getRight();
+            final String playerUUID = listDataEntry.getSecond().getRight();
+            if (ServerUtil.isSelf(playerName, playerUUID)) {
+                return new float[]{0.8f, 0.1f, 0.1f, 0.30f};
+            } else if (Vandalism.getInstance().getFriendsManager().isFriend(playerName)) {
+                return new float[]{0.9f, 0.5f, 0.1f, 0.40f};
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void onDataEntryClick(final DataEntry dataEntry) {
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            Vandalism.getInstance().getAccountManager().loginCracked(listDataEntry.getFirst().getRight(), listDataEntry.getSecond().getRight());
+        }
+    }
+
+    @Override
+    public void renderDataEntryContextMenu(final String id, final int index, final DataEntry dataEntry) {
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            final String playerName = listDataEntry.getFirst().getRight();
+            final String playerUUID = listDataEntry.getSecond().getRight();
+            final String lastSeen = listDataEntry.getThird().getRight();
+            final int buttonWidth = 150, buttonHeight = 28;
+            if (ImGui.button("Add" + id + "player" + playerName + "add", buttonWidth, buttonHeight)) {
+                Vandalism.getInstance().getAccountManager().loginCracked(playerName, playerUUID, true);
+            }
+            if (ImGui.button("Copy Name" + id + "player" + playerName + "copyName", buttonWidth, buttonHeight)) {
+                this.mc.keyboard.setClipboard(playerName);
+            }
+            if (ImGui.button("Copy UUID" + id + "player" + playerName + "copyUuid", buttonWidth, buttonHeight)) {
+                this.mc.keyboard.setClipboard(playerUUID);
+            }
+            if (ImGui.button("Copy Data" + id + "player" + playerName + "copyData", buttonWidth, buttonHeight)) {
+                this.mc.keyboard.setClipboard("Name: " + playerName + "\nUUID: " + playerUUID + "\nLast Seen: " + lastSeen);
             }
         }
     }
