@@ -112,6 +112,13 @@ public class NetworkingSettings extends ValueGroup implements KeyboardInputListe
             true
     );
 
+    public final BooleanValue disableReversedDNSLookupForPureIPs = new BooleanValue(
+            this,
+            "Disable Reversed DNS Lookup for Pure IPs",
+            "Disables the Reversed DNS Lookup for Pure IPs.",
+            true
+    );
+
     public NetworkingSettings(final ClientSettings parent) {
         super(parent, "Networking", "Networking related settings.");
         Vandalism.getInstance().getEventSystem().subscribe(KeyboardInputEvent.ID, this);
