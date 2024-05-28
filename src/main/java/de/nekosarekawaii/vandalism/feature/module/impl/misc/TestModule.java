@@ -19,10 +19,6 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.evilcodez.supermod.render.text.AtlasFont;
-import de.evilcodez.supermod.render.text.AtlasFontRenderer;
-import de.evilcodez.supermod.render.text.SimpleFont;
-import de.evilcodez.supermod.render.text.TextAlign;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.event.normal.render.Render2DListener;
@@ -33,6 +29,10 @@ import de.nekosarekawaii.vandalism.render.Shaders;
 import de.nekosarekawaii.vandalism.render.gl.render.*;
 import de.nekosarekawaii.vandalism.render.gl.render.passes.Passes;
 import de.nekosarekawaii.vandalism.render.shape.UVSphere;
+import de.nekosarekawaii.vandalism.render.text.AtlasFont;
+import de.nekosarekawaii.vandalism.render.text.AtlasFontRenderer;
+import de.nekosarekawaii.vandalism.render.text.SimpleFont;
+import de.nekosarekawaii.vandalism.render.text.TextAlign;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;

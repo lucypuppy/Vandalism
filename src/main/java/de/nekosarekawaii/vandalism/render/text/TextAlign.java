@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.evilcodez.supermod.render.text;
+package de.nekosarekawaii.vandalism.render.text;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
