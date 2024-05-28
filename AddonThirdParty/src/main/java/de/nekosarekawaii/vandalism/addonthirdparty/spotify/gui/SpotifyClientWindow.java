@@ -47,48 +47,49 @@ public class SpotifyClientWindow extends ClientWindow {
 
     @Override
     public void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
+        final String id = "##" + this.getName();
         final SpotifyManager spotifyManager = AddonThirdParty.getInstance().getSpotifyManager();
         if (ImGui.beginMenuBar()) {
-            if (ImGui.beginMenu("Config")) {
+            if (ImGui.beginMenu("Config" + id + "configMenu")) {
                 final int sharedFlag = ImGuiInputTextFlags.CallbackResize;
                 final ImString clientId = new ImString(spotifyManager.getClientId());
-                if (ImGui.inputText("Client ID", clientId, sharedFlag)) {
+                if (ImGui.inputText("Client ID" + id + "clientId", clientId, sharedFlag)) {
                     if (!spotifyManager.getClientId().equals(clientId.get())) {
                         spotifyManager.logout();
                         spotifyManager.setClientId(clientId.get());
                     }
                 }
                 final ImString clientSecret = new ImString(spotifyManager.getClientSecret());
-                if (ImGui.inputText("Client Secret", clientSecret, sharedFlag | (!this.showClientSecret.get() ? ImGuiInputTextFlags.Password : 0))) {
+                if (ImGui.inputText("Client Secret" + id + "clientSecret", clientSecret, sharedFlag | (!this.showClientSecret.get() ? ImGuiInputTextFlags.Password : 0))) {
                     if (!spotifyManager.getClientSecret().equals(clientSecret.get())) {
                         spotifyManager.logout();
                     }
                     spotifyManager.setClientSecret(clientSecret.get());
                 }
                 ImGui.sameLine();
-                ImGui.checkbox("Show Client Secret", this.showClientSecret);
+                ImGui.checkbox("Show Client Secret" + id + "showClientSecret", this.showClientSecret);
                 final ImInt httpServerPort = new ImInt(spotifyManager.getHttpServerPort());
-                if (ImGui.inputInt("HTTP Server Port", httpServerPort)) {
+                if (ImGui.inputInt("HTTP Server Port" + id + "httpServerPort", httpServerPort)) {
                     spotifyManager.setHttpServerPort(httpServerPort.get());
                 }
-                if (ImUtils.subButton("Copy redirect URI")) {
+                if (ImUtils.subButton("Copy redirect URI" + id + "copyRedirectUri")) {
                     this.mc.keyboard.setClipboard(spotifyManager.getRedirectUri());
                 }
                 if (spotifyManager.isLoggedIn()) {
-                    if (ImUtils.subButton("Logout")) {
+                    if (ImUtils.subButton("Logout" + id + "logout")) {
                         spotifyManager.logout();
                     }
                 } else if (!spotifyManager.getClientId().isEmpty() && !spotifyManager.getClientSecret().isEmpty()) {
-                    if (ImUtils.subButton("Login")) {
+                    if (ImUtils.subButton("Login" + id + "login")) {
                         spotifyManager.login();
                     }
                 }
                 ImGui.endMenu();
             }
-            if (ImGui.button("Developer Dashboard")) {
+            if (ImGui.button("Developer Dashboard" + id + "developerDashboard")) {
                 Util.getOperatingSystem().open("https://developer.spotify.com/dashboard/");
             }
-            if (ImGui.button("Manage Apps")) {
+            if (ImGui.button("Manage Apps" + id + "manageApps")) {
                 Util.getOperatingSystem().open("https://spotify.com/us/account/apps/");
             }
             ImGui.endMenuBar();
@@ -106,7 +107,7 @@ public class SpotifyClientWindow extends ClientWindow {
         if (spotifyData.isPaused()) {
             ImGui.sameLine(15);
             ImGui.pushStyleColor(ImGuiCol.ChildBg, 0.0f, 0.0f, 0.0f, 0.5f);
-            ImGui.beginChild("##spotifyPlaybackPauseAnimation", -1, 80, false, ImGuiWindowFlags.NoScrollbar);
+            ImGui.beginChild(id + "playbackPauseAnimation", -1, 80, false, ImGuiWindowFlags.NoScrollbar);
             ImGui.popStyleColor();
             ImGui.spacing();
             ImGui.sameLine();
@@ -118,14 +119,14 @@ public class SpotifyClientWindow extends ClientWindow {
             ImGui.pushStyleColor(ImGuiCol.Button, 1.0f, 1.0f, 1.0f, alpha);
             ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 1.0f, 1.0f, 1.0f, alpha);
             ImGui.pushStyleColor(ImGuiCol.ButtonActive, 1.0f, 1.0f, 1.0f, alpha);
-            ImGui.button("##spotifyPlaybackPauseAnimation1", 10, 50);
+            ImGui.button(id + "playbackPauseAnimation1", 10, 50);
             ImGui.sameLine();
-            ImGui.button("##spotifyPlaybackPauseAnimation2", 10, 50);
+            ImGui.button(id + "playbackPauseAnimation2", 10, 50);
             ImGui.popStyleColor(3);
             ImGui.endChild();
         }
         ImGui.sameLine(95);
-        ImGui.beginChild("##spotifyPlaybackData", -1, 80, false, ImGuiWindowFlags.NoScrollbar);
+        ImGui.beginChild(id + "playbackData", -1, 80, false, ImGuiWindowFlags.NoScrollbar);
         ImGui.spacing();
         ImGui.pushStyleColor(ImGuiCol.Button, 0.0f, 0.0f, 0.0f, 0.0f);
         final String waitingForData = "Waiting for data...";
@@ -180,7 +181,7 @@ public class SpotifyClientWindow extends ClientWindow {
         ImGui.progressBar(Percentage.percentage(currentProgress, spotifyData.getDuration()) / 100, -1, 2);
         final long durationSeconds = spotifyData.getDuration() / 1000 % 60;
         ImGui.text(String.format("%d:%02d", currentProgress / 1000 / 60, currentProgress / 1000 % 60));
-        ImGui.sameLine(ImGui.getWindowWidth() - 45);
+        ImGui.sameLine(ImGui.getWindowWidth() - 50);
         ImGui.text(String.format("%d:%02d", spotifyData.getDuration() / 1000 / 60, durationSeconds));
     }
 
