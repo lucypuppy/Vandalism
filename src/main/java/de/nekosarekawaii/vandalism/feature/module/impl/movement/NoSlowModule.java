@@ -27,6 +27,7 @@ import de.nekosarekawaii.vandalism.event.normal.player.CanSprintListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerSlowdownListener;
 import de.nekosarekawaii.vandalism.event.normal.player.ShouldSlowdownListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.integration.viafabricplus.ViaFabricPlusAccess;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.*;
 
@@ -84,7 +85,7 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
     );
 
     private final ValueGroup shieldSlowDown = new ValueGroup(this, "Shield", "Shield Slowdown settings.").visibleCondition(() -> {
-        return Vandalism.getInstance().getTargetVersion().newerThan(ProtocolVersion.v1_8);
+        return ViaFabricPlusAccess.getTargetVersion().newerThan(ProtocolVersion.v1_8);
     });
 
     private final FloatValue shieldForwardMultiplier = new FloatValue(
@@ -106,7 +107,7 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
     );
 
     private final ValueGroup swordSlowDown = new ValueGroup(this, "Sword", "Sword Slowdown settings.").visibleCondition(() -> {
-        return Vandalism.getInstance().getTargetVersion().olderThan(ProtocolVersion.v1_9);
+        return ViaFabricPlusAccess.getTargetVersion().olderThan(ProtocolVersion.v1_9);
     });
 
     private final FloatValue swordForwardMultiplier = new FloatValue(
@@ -128,7 +129,7 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
     );
 
     private final ValueGroup tridentSlowDown = new ValueGroup(this, "Trident", "Trident Slowdown settings.").visibleCondition(() -> {
-        return Vandalism.getInstance().getTargetVersion().newerThan(ProtocolVersion.v1_12);
+        return ViaFabricPlusAccess.getTargetVersion().newerThan(ProtocolVersion.v1_12);
     });
 
     private final FloatValue tridentForwardMultiplier = new FloatValue(
@@ -208,17 +209,17 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
             if (item instanceof PotionItem) {
                 return this.potionForwardMultiplier.getValue();
             }
-            if (Vandalism.getInstance().getTargetVersion().newerThan(ProtocolVersion.v1_8)) {
+            if (ViaFabricPlusAccess.getTargetVersion().newerThan(ProtocolVersion.v1_8)) {
                 if (item instanceof ShieldItem) {
                     return this.shieldForwardMultiplier.getValue();
                 }
             }
-            if (Vandalism.getInstance().getTargetVersion().olderThan(ProtocolVersion.v1_9)) {
+            if (ViaFabricPlusAccess.getTargetVersion().olderThan(ProtocolVersion.v1_9)) {
                 if (item instanceof SwordItem) {
                     return this.swordForwardMultiplier.getValue();
                 }
             }
-            if (Vandalism.getInstance().getTargetVersion().newerThan(ProtocolVersion.v1_12_2)) {
+            if (ViaFabricPlusAccess.getTargetVersion().newerThan(ProtocolVersion.v1_12_2)) {
                 if (item instanceof TridentItem) {
                     return this.tridentForwardMultiplier.getValue();
                 }
@@ -244,17 +245,17 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
             if (item instanceof PotionItem) {
                 return this.potionSidewaysMultiplier.getValue();
             }
-            if (Vandalism.getInstance().getTargetVersion().newerThan(ProtocolVersion.v1_8)) {
+            if (ViaFabricPlusAccess.getTargetVersion().newerThan(ProtocolVersion.v1_8)) {
                 if (item instanceof ShieldItem) {
                     return this.shieldSidewaysMultiplier.getValue();
                 }
             }
-            if (Vandalism.getInstance().getTargetVersion().olderThan(ProtocolVersion.v1_9)) {
+            if (ViaFabricPlusAccess.getTargetVersion().olderThan(ProtocolVersion.v1_9)) {
                 if (item instanceof SwordItem) {
                     return this.swordSidewaysMultiplier.getValue();
                 }
             }
-            if (Vandalism.getInstance().getTargetVersion().newerThan(ProtocolVersion.v1_12_2)) {
+            if (ViaFabricPlusAccess.getTargetVersion().newerThan(ProtocolVersion.v1_12_2)) {
                 if (item instanceof TridentItem) {
                     return this.tridentSidewaysMultiplier.getValue();
                 }

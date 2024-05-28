@@ -66,6 +66,8 @@ allprojects {
         modImplementation fabricApi.module("fabric-registry-sync-v0", project.fabric_version)
         modImplementation fabricApi.module("fabric-item-group-api-v1", project.fabric_version)
 
+        modImplementation "de.florianmichael:ViaFabricPlus:${project.viafabricplus_version}"
+
         compileOnly "org.projectlombok:lombok:${project.lombok_version}"
         annotationProcessor "org.projectlombok:lombok:${project.lombok_version}"
     }
@@ -178,10 +180,6 @@ dependencies {
 
     jij "net.raphimc:NoteBlockLib:${project.noteblocklib_version}"
     jij "net.raphimc:MinecraftAuth:${project.minecraftauth_version}"
-
-    // Soft depend on ViaFabricPlus components for class access
-    api "com.viaversion:viaversion-common:${project.viaversion_version}"
-    api "net.raphimc:ViaLoader:${project.vialoader_version}"
 
     // Fabric's jar in jar system doesn't support transitive dependencies, so we have to manually add them
     afterEvaluate {
