@@ -52,24 +52,23 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
 
     @Override
     public void login0() throws Throwable {
-        if (this.session != null) { // If we already got a session, we should use it right?
-            if (this.tokenChain == null) {
-                // Save the token chain if we don't have it yet
-                this.tokenChain = this.getStep().toJson(this.session).toString();
-            }
-            final StepMCProfile.MCProfile profile = this.session.getMcProfile();
-            this.updateSession(new Session(profile.getName(), profile.getId(), profile.getMcToken().getAccessToken(), Optional.empty(), Optional.empty(), Session.AccountType.MSA));
+        // Save token chain if it is not already saved
+        if (this.session != null && this.tokenChain == null) {
+            this.tokenChain = this.getStep().toJson(this.session).toString();
         } else {
             // Get the token chain as a json object
             final JsonObject tokenChainNode = JsonParser.parseString(this.tokenChain).getAsJsonObject();
             // Refresh the token chain and get the new token chain
-            this.initWithExistingSession(this.getStep().refresh(MinecraftAuth.createHttpClient(), this.getStep().fromJson(tokenChainNode)));
+            this.session = this.getStep().refresh(MinecraftAuth.createHttpClient(), this.getStep().fromJson(tokenChainNode));
         }
+
+        final StepMCProfile.MCProfile profile = this.session.getMcProfile();
+        this.updateSession(new Session(profile.getName(), profile.getId(), profile.getMcToken().getAccessToken(), Optional.empty(), Optional.empty(), Session.AccountType.MSA));
     }
 
-    public void initWithExistingSession(final StepFullJavaSession.FullJavaSession session) throws Throwable {
+    public void initialLogin(final StepFullJavaSession.FullJavaSession session) {
         this.session = session;
-        this.login();
+        this.login(); // Recall login flow to update session, otherwise get from tokenChain
     }
 
     @Override
