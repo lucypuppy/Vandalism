@@ -181,9 +181,9 @@ dependencies {
     jij "net.raphimc:NoteBlockLib:${project.noteblocklib_version}"
     jij "net.raphimc:MinecraftAuth:${project.minecraftauth_version}"
 
-    // Since we're hard depending on ViaVersion we'll just include that.
-    jij "com.viaversion:viaversion-common:${project.viaversion_version}"
-    jij "net.raphimc:ViaLoader:${project.vialoader_version}"
+    // Soft depend on ViaFabricPlus components for class access
+    api "com.viaversion:viaversion-common:${project.viaversion_version}"
+    api "net.raphimc:ViaLoader:${project.vialoader_version}"
 
     // Fabric's jar in jar system doesn't support transitive dependencies, so we have to manually add them
     afterEvaluate {
