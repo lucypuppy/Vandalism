@@ -113,7 +113,8 @@
     "util.MixinDrawContext",
     "util.MixinMinecraftClient",
     "util.MixinRenderTickCounter",
-    "util.MixinToolTipComponent"
+    "util.MixinToolTipComponent",
+    "clientsettings.MixinAddressResolver"
   ],
   "injectors": {
     "defaultRequire": 1
