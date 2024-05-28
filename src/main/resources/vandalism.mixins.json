@@ -8,6 +8,7 @@
     "MixinLogoDrawer",
     "MixinMinecraftClient",
     "MixinTitleScreen",
+    "clientsettings.MixinAddressResolver",
     "clientsettings.MixinAllowedAddressResolver",
     "clientsettings.MixinBuiltinModelItemRenderer",
     "clientsettings.MixinChatHud",
@@ -97,6 +98,7 @@
     "module.MixinLightmapTextureManager",
     "module.MixinLivingEntityRenderer",
     "module.MixinMinecraftClient",
+    "module.MixinParticleManager",
     "module.MixinPigEntity",
     "module.MixinPlayerEntity",
     "module.MixinPlayerListHud",
@@ -113,8 +115,7 @@
     "util.MixinDrawContext",
     "util.MixinMinecraftClient",
     "util.MixinRenderTickCounter",
-    "util.MixinToolTipComponent",
-    "clientsettings.MixinAddressResolver"
+    "util.MixinToolTipComponent"
   ],
   "injectors": {
     "defaultRequire": 1
