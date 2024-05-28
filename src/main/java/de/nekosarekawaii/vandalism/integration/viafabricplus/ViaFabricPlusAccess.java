@@ -25,30 +25,22 @@ import com.viaversion.viaversion.api.protocol.packet.PacketWrapper;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import com.viaversion.viaversion.api.type.Types;
 import com.viaversion.viaversion.protocols.v1_8to1_9.packet.ServerboundPackets1_8;
+import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
+import de.florianmichael.viafabricplus.protocoltranslator.translator.ItemTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import net.lenni0451.reflect.stream.RStream;
 import net.lenni0451.reflect.stream.field.FieldWrapper;
-import net.lenni0451.reflect.stream.method.MethodWrapper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
-// TODO Rethink if this concept makes sense
 public class ViaFabricPlusAccess {
 
-    private static final MethodWrapper getTargetVersion;
-    private static final MethodWrapper getPlayNetworkUserConnection;
-    private static final MethodWrapper mcToVia;
     private static final FieldWrapper previousVersion;
-    private static final MethodWrapper setTargetVersion;
 
     static {
         final String protocolTranslatorClass = "de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator";
 
-        getTargetVersion = RStream.of(protocolTranslatorClass).methods().by("getTargetVersion", new Class[]{});
-        getPlayNetworkUserConnection = RStream.of(protocolTranslatorClass).methods().by("getPlayNetworkUserConnection");
-        mcToVia = RStream.of("de.florianmichael.viafabricplus.protocoltranslator.translator.ItemTranslator").methods().by("mcToVia", ItemStack.class, ProtocolVersion.class);
         previousVersion = RStream.of(protocolTranslatorClass).fields().by("previousVersion");
-        setTargetVersion = RStream.of(protocolTranslatorClass).methods().by("setTargetVersion", ProtocolVersion.class, boolean.class);
     }
 
     private static BlockPosition toPosition(final BlockPos pos) {
@@ -90,12 +82,7 @@ public class ViaFabricPlusAccess {
      * @return the user connection
      */
     public static ProtocolVersion getTargetVersion() {
-        try {
-            return getTargetVersion.invoke();
-        } catch (Exception e) {
-            Vandalism.getInstance().getLogger().error("An error occurred while attempting to get the user connection.", e);
-            return null;
-        }
+        return ProtocolTranslator.getTargetVersion();
     }
 
     /**
@@ -104,12 +91,7 @@ public class ViaFabricPlusAccess {
      * @return the user connection
      */
     public static UserConnection getUserConnection() {
-        try {
-            return getPlayNetworkUserConnection.invoke();
-        } catch (Exception e) {
-            Vandalism.getInstance().getLogger().error("An error occurred while attempting to get the user connection.", e);
-            return null;
-        }
+        return ProtocolTranslator.getPlayNetworkUserConnection();
     }
 
     /**
@@ -120,12 +102,7 @@ public class ViaFabricPlusAccess {
      * @return the viaversion item
      */
     public static Item translateItem(final ItemStack mcStack, final ProtocolVersion targetVersion) {
-        try {
-            return mcToVia.invokeArgs(mcStack, targetVersion);
-        } catch (Exception e) {
-            Vandalism.getInstance().getLogger().error("An error occurred while attempting to translate the item.", e);
-            return null;
-        }
+        return ItemTranslator.mcToVia(mcStack, targetVersion);
     }
 
     /**
@@ -147,11 +124,7 @@ public class ViaFabricPlusAccess {
      * @param version the target version
      */
     public static void setTargetVersion(final ProtocolVersion version, final boolean revertOnDisconnect) {
-        try {
-            setTargetVersion.invokeArgs(version, revertOnDisconnect);
-        } catch (Exception e) {
-            Vandalism.getInstance().getLogger().error("An error occurred while attempting to set the value.", e);
-        }
+        ProtocolTranslator.setTargetVersion(version, revertOnDisconnect);
     }
 
 }

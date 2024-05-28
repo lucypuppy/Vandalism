@@ -30,6 +30,7 @@ import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.TickBaseModule;
 import de.nekosarekawaii.vandalism.injection.access.IRenderTickCounter;
 import de.nekosarekawaii.vandalism.integration.hud.HUDElement;
+import de.nekosarekawaii.vandalism.integration.viafabricplus.ViaFabricPlusAccess;
 import de.nekosarekawaii.vandalism.render.Shaders;
 import de.nekosarekawaii.vandalism.util.click.CPSTracker;
 import de.nekosarekawaii.vandalism.util.common.Alignment;
@@ -292,7 +293,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         if (event.packet instanceof final PingResultS2CPacket packet &&
                 this.ping.getValue() &&
                 this.fasterPings.getValue() &&
-                !Vandalism.getInstance().getTargetVersion().olderThan(ProtocolVersion.v1_20_2)) {
+                !ViaFabricPlusAccess.getTargetVersion().olderThan(ProtocolVersion.v1_20_2)) {
             this.clientPing = now - packet.startTime();
         }
     }
@@ -304,7 +305,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         if (now - this.lastPing > this.pingInterval.getValue() &&
                 this.fasterPings.getValue() &&
                 this.ping.getValue() &&
-                !Vandalism.getInstance().getTargetVersion().olderThan(ProtocolVersion.v1_20_2)) {
+                !ViaFabricPlusAccess.getTargetVersion().olderThan(ProtocolVersion.v1_20_2)) {
             this.mc.getNetworkHandler().sendPacket(new QueryPingC2SPacket(now));
             this.lastPing = now;
         }
@@ -313,6 +314,8 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
     @Override
     protected void onRender(final DrawContext context, final float delta, final boolean inGame) {
         final Map<String, String> infoMap = new LinkedHashMap<>();
+
+        infoMap.put("Protocol Version", ViaFabricPlusAccess.getTargetVersion().getName());
 
         if (this.fps.getValue()) {
             infoMap.put("FPS", Integer.toString(this.mc.getCurrentFps()));
