@@ -315,8 +315,6 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
     protected void onRender(final DrawContext context, final float delta, final boolean inGame) {
         final Map<String, String> infoMap = new LinkedHashMap<>();
 
-        infoMap.put("Protocol Version", ViaFabricPlusAccess.getTargetVersion().getName());
-
         if (this.fps.getValue()) {
             infoMap.put("FPS", Integer.toString(this.mc.getCurrentFps()));
         }
