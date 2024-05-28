@@ -76,7 +76,7 @@ public class MSLocalWebserverAccount extends AbstractMicrosoftAccount {
                     }));
                     this.state = null;
                     final MSLocalWebserverAccount account = new MSLocalWebserverAccount();
-                    account.initWithExistingSession(javaSession);
+                    account.initialLogin(javaSession);
                     return account;
                 } catch (Throwable t) {
                     this.state = "Failed to log into account: " + t.getMessage();

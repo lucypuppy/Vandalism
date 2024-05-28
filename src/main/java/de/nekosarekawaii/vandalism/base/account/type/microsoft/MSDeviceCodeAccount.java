@@ -68,7 +68,7 @@ public class MSDeviceCodeAccount extends AbstractMicrosoftAccount {
                     }));
                     this.state = null;
                     final MSDeviceCodeAccount account = new MSDeviceCodeAccount();
-                    account.initWithExistingSession(javaSession);
+                    account.initialLogin(javaSession);
                     return account;
                 } catch (Throwable t) {
                     this.state = "Failed to log into account: " + t.getMessage();
