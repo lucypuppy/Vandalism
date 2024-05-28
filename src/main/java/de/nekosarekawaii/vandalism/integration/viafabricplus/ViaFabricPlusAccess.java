@@ -27,15 +27,28 @@ import com.viaversion.viaversion.api.type.Type;
 import com.viaversion.viaversion.protocols.protocol1_8.ServerboundPackets1_8;
 import de.nekosarekawaii.vandalism.Vandalism;
 import net.lenni0451.reflect.stream.RStream;
+import net.lenni0451.reflect.stream.field.FieldWrapper;
+import net.lenni0451.reflect.stream.method.MethodWrapper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
-import java.lang.reflect.Field;
-
 public class ViaFabricPlusAccess {
 
-    // We don't want to get the UNKNOWN version.
-    private static final String PROTOCOL_TRANSLATOR_CLASS = "de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator";
+    private static final MethodWrapper getTargetVersion;
+    private static final MethodWrapper getPlayNetworkUserConnection;
+    private static final MethodWrapper mcToVia;
+    private static final FieldWrapper previousVersion;
+    private static final MethodWrapper setTargetVersion;
+
+    static {
+        final String protocolTranslatorClass = "de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator";
+
+        getTargetVersion = RStream.of(protocolTranslatorClass).methods().by("getTargetVersion", new Class[]{});
+        getPlayNetworkUserConnection = RStream.of(protocolTranslatorClass).methods().by("getPlayNetworkUserConnection");
+        mcToVia = RStream.of("de.florianmichael.viafabricplus.protocoltranslator.translator.ItemTranslator").methods().by("mcToVia", ItemStack.class, ProtocolVersion.class);
+        previousVersion = RStream.of(protocolTranslatorClass).fields().by("previousVersion");
+        setTargetVersion = RStream.of(protocolTranslatorClass).methods().by("setTargetVersion", ProtocolVersion.class, boolean.class);
+    }
 
     private static Position toPosition(final BlockPos pos) {
         return new Position(pos.getX(), pos.getY(), pos.getZ());
@@ -77,7 +90,7 @@ public class ViaFabricPlusAccess {
      */
     public static ProtocolVersion getTargetVersion() {
         try {
-            return RStream.of(PROTOCOL_TRANSLATOR_CLASS).methods().by("getTargetVersion", new Class[]{}).invoke();
+            return getTargetVersion.invoke();
         } catch (Exception e) {
             Vandalism.getInstance().getLogger().error("An error occurred while attempting to get the user connection.", e);
             return null;
@@ -91,7 +104,7 @@ public class ViaFabricPlusAccess {
      */
     public static UserConnection getUserConnection() {
         try {
-            return RStream.of(PROTOCOL_TRANSLATOR_CLASS).methods().by("getPlayNetworkUserConnection").invoke();
+            return getPlayNetworkUserConnection.invoke();
         } catch (Exception e) {
             Vandalism.getInstance().getLogger().error("An error occurred while attempting to get the user connection.", e);
             return null;
@@ -107,36 +120,10 @@ public class ViaFabricPlusAccess {
      */
     public static Item translateItem(final ItemStack mcStack, final ProtocolVersion targetVersion) {
         try {
-            final RStream classStream = RStream.of("de.florianmichael.viafabricplus.protocoltranslator.translator.ItemTranslator");
-            return classStream.methods().by("mcToVia", ItemStack.class, ProtocolVersion.class).invokeArgs(mcStack, targetVersion);
+            return mcToVia.invokeArgs(mcStack, targetVersion);
         } catch (Exception e) {
             Vandalism.getInstance().getLogger().error("An error occurred while attempting to translate the item.", e);
             return null;
-        }
-    }
-
-    /**
-     * Attempts to set a ViaFabricPlus setting.
-     *
-     * @param settingsClass the settings class (ex. GeneralSettings)
-     * @param settingsName  the property field name
-     * @param value         the value
-     * @param <T>           type
-     */
-    public static <T> void setSettingValue(final String settingsClass, final String settingsName, final T value) {
-        try {
-            final RStream classStream = RStream.of("de.florianmichael.viafabricplus.settings.impl." + settingsClass);
-            final Object globalMethod = classStream.methods().by("global").invoke();
-            Field settingField = classStream.clazz().getDeclaredField(settingsName);
-
-            settingField.getType().getMethod(
-                    "setValue",
-                    value.getClass()
-            ).invoke(globalMethod, value);
-        } catch (Exception e) {
-            if (!(e instanceof ClassNotFoundException)) {
-                Vandalism.getInstance().getLogger().error("An error occurred while attempting to set the value.", e);
-            }
         }
     }
 
@@ -147,7 +134,7 @@ public class ViaFabricPlusAccess {
      */
     public static void setPreviousVersion(final ProtocolVersion version) {
         try {
-            RStream.of(PROTOCOL_TRANSLATOR_CLASS).fields().by("previousVersion").set(version);
+            previousVersion.set(version);
         } catch (Exception e) {
             Vandalism.getInstance().getLogger().error("An error occurred while attempting to set the previous value.", e);
         }
@@ -160,11 +147,7 @@ public class ViaFabricPlusAccess {
      */
     public static void setTargetVersion(final ProtocolVersion version, final boolean revertOnDisconnect) {
         try {
-            RStream.of(PROTOCOL_TRANSLATOR_CLASS).methods().by(
-                    "setTargetVersion",
-                    ProtocolVersion.class,
-                    boolean.class
-            ).invokeArgs(version, revertOnDisconnect);
+            setTargetVersion.invokeArgs(version, revertOnDisconnect);
         } catch (Exception e) {
             Vandalism.getInstance().getLogger().error("An error occurred while attempting to set the value.", e);
         }
