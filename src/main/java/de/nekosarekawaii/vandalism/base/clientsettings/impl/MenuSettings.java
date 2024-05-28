@@ -107,29 +107,14 @@ public class MenuSettings extends ValueGroup {
             new Color(69, 17, 89, 255)
     ).visibleCondition(() -> this.backgroundMode.getValue() == BackgroundMode.COLOR);
 
-    public final ColorValue shaderColor1 = new ColorValue(
-            this.backgroundSettings,
-            "Shader Color 1",
-            "The first color of the shader background.",
-            new Color(0.0f, 0.0f, 0.0f, 1.0f)
-    ).visibleCondition(() -> this.backgroundMode.getValue() == BackgroundMode.SHADER);
-
-    public final ColorValue shaderColor2 = new ColorValue(
-            this.backgroundSettings,
-            "Shader Color 2",
-            "The second color of the shader background.",
-            new Color(0.9f, 0.0f, 0.0f, 1.0f)
-    ).visibleCondition(() -> this.backgroundMode.getValue() == BackgroundMode.SHADER);
-
-    public final ColorValue shaderColor3 = new ColorValue(
-            this.backgroundSettings,
-            "Shader Color 3",
-            "The third color of the shader background.",
-            new Color(0.9f, 0.0f, 0.9f, 1.0f)
-    ).visibleCondition(() -> this.backgroundMode.getValue() == BackgroundMode.SHADER);
+    private final ValueGroup inGameBackgroundSettings = new ValueGroup(
+            this,
+            "In-Game Background Settings",
+            "Settings for the in-game background."
+    );
 
     public final EnumModeValue<InGameBackgroundMode> inGameBackgroundMode = new EnumModeValue<>(
-            this.backgroundSettings,
+            this.inGameBackgroundSettings,
             "In Game Background Mode",
             "The mode of the background.",
             InGameBackgroundMode.DEFAULT,
@@ -137,42 +122,42 @@ public class MenuSettings extends ValueGroup {
     );
 
     public final BooleanValue inGameBackgroundBlur = new BooleanValue(
-            this.backgroundSettings,
+            this.inGameBackgroundSettings,
             "In-Game Background Blur",
             "Activates/Deactivates the blur for the in-game background.",
             true
     );
 
     public final ColorValue shaderColorSpark = new ColorValue(
-            this.backgroundSettings,
+            this.inGameBackgroundSettings,
             "Shader Color Spark",
             "The color of the spark for the shader background.",
             new Color(168, 10, 225, 150)
     ).visibleCondition(() -> this.inGameBackgroundMode.getValue() == InGameBackgroundMode.SHADER);
 
     public final ColorValue shaderColorBloom = new ColorValue(
-            this.backgroundSettings,
+            this.inGameBackgroundSettings,
             "Shader Color Bloom",
             "The color of the bloom for the shader background.",
             new Color(168, 10, 225, 150)
     ).visibleCondition(() -> this.inGameBackgroundMode.getValue() == InGameBackgroundMode.SHADER);
 
     public final ColorValue shaderColorSmoke = new ColorValue(
-            this.backgroundSettings,
+            this.inGameBackgroundSettings,
             "Shader Color Smoke",
             "The color of the smoke for the shader background.",
             new Color(168, 10, 225, 150)
     ).visibleCondition(() -> this.inGameBackgroundMode.getValue() == InGameBackgroundMode.SHADER);
 
     public final ColorValue inGameCustomBackgroundColorTop = new ColorValue(
-            this,
+            this.inGameBackgroundSettings,
             "In-Game Custom Background Color Top",
             "The color of the custom background in-game at the top.",
             new Color(0, 0, 0, 94)
     ).visibleCondition(() -> this.inGameBackgroundMode.getValue() == InGameBackgroundMode.COLOR_FADE);
 
     public final ColorValue inGameCustomBackgroundColorBottom = new ColorValue(
-            this,
+            this.inGameBackgroundSettings,
             "In-Game Custom Background Color Bottom",
             "The color of the custom background in-game at the bottom.",
             new Color(168, 10, 225, 150)

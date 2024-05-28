@@ -26,6 +26,10 @@ import de.nekosarekawaii.vandalism.render.gl.shader.ShaderProgram;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.RotatingCubeMapRenderer;
+import net.minecraft.client.gui.screen.DownloadingTerrainScreen;
+import net.minecraft.client.gui.screen.ReconfiguringScreen;
+import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
 import net.minecraft.client.render.*;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
@@ -56,13 +60,17 @@ public abstract class MixinRotatingCubeMapRenderer {
             );
         } else if (menuSettings.backgroundMode.getValue() == MenuSettings.BackgroundMode.SHADER) {
             ci.cancel();
-            final ShaderProgram shader = Shaders.getDarkNightBackgroundShader();
+            ShaderProgram shader;
+            switch (this.client.currentScreen) {
+                case TitleScreen titleScreen -> shader = Shaders.getTitleScreenBackgroundShader();
+                case DownloadingTerrainScreen downloadingTerrainScreen ->
+                        shader = Shaders.getLoadingScreenBackgroundShader();
+                case ConnectScreen connectScreen -> shader = Shaders.getLoadingScreenBackgroundShader();
+                case ReconfiguringScreen reconfiguringScreen -> shader = Shaders.getLoadingScreenBackgroundShader();
+                case null, default -> shader = Shaders.getBackgroundShader();
+            }
             shader.bind();
             GlobalUniforms.setBackgroundUniforms(shader);
-            shader.uniform("color1").set(menuSettings.shaderColor1.getColor(), false);
-            shader.uniform("color2").set(menuSettings.shaderColor2.getColor(), false);
-            shader.uniform("color3").set(menuSettings.shaderColor3.getColor(), false);
-
             final Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
             BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
             bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);

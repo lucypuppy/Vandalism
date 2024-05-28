@@ -32,6 +32,7 @@ import de.nekosarekawaii.vandalism.render.effect.outline.OuterOutlineEffect;
 import de.nekosarekawaii.vandalism.render.gl.shader.Shader;
 import de.nekosarekawaii.vandalism.render.gl.shader.ShaderProgram;
 import de.nekosarekawaii.vandalism.render.gl.shader.ShaderType;
+import de.nekosarekawaii.vandalism.util.common.DateUtil;
 import lombok.Getter;
 import net.minecraft.client.MinecraftClient;
 
@@ -78,7 +79,12 @@ public class Shaders {
     @Getter private static ShaderProgram instPositionTexColorShader;
 
     // Background
-    @Getter private static ShaderProgram darkNightBackgroundShader;
+    @Getter
+    private static ShaderProgram titleScreenBackgroundShader;
+    @Getter
+    private static ShaderProgram backgroundShader;
+    @Getter
+    private static ShaderProgram loadingScreenBackgroundShader;
     @Getter private static ShaderProgram ingameGuiBackgroundShader;
 
     // Font
@@ -101,8 +107,11 @@ public class Shaders {
 
         shaders.add(fontShader = create("font", load(ShaderType.VERTEX, "font/font"), load(ShaderType.FRAGMENT, "font/font")));
 
-        shaders.add(darkNightBackgroundShader = create("dark_night_background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/dark_night")));
-        shaders.add(ingameGuiBackgroundShader = create("ingame_gui_background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/ingame_gui_test")));
+
+        shaders.add(titleScreenBackgroundShader = create("title_screen_background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/" + (DateUtil.isBirthday() ? "title_screen_birthday" : "title_screen_default"))));
+        shaders.add(backgroundShader = create("background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/default")));
+        shaders.add(loadingScreenBackgroundShader = create("loading_screen_background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/loading_screen")));
+        shaders.add(ingameGuiBackgroundShader = create("ingame_gui_background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/ingame_gui")));
 
         for (Field field : Shaders.class.getDeclaredFields()) {
             if (!Modifier.isStatic(field.getModifiers())) continue;
