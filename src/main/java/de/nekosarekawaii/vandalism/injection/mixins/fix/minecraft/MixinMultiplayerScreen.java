@@ -19,9 +19,6 @@
 package de.nekosarekawaii.vandalism.injection.mixins.fix.minecraft;
 
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
@@ -35,9 +32,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.awt.*;
-import java.util.List;
 
 @Mixin(MultiplayerScreen.class)
 public abstract class MixinMultiplayerScreen extends Screen implements MinecraftWrapper {
@@ -72,29 +66,6 @@ public abstract class MixinMultiplayerScreen extends Screen implements Minecraft
             server.name = server.address;
         }
         return server;
-    }
-
-    @Inject(method = "render", at = @At("HEAD"), cancellable = true)
-    public void render(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        this.renderBackground(context, mouseX, mouseY, delta);
-
-        // render xd
-        context.fill(this.serverListWidget.getX(), 0, this.serverListWidget.getRight(), this.serverListWidget.getY(), 0x50000000);
-        context.fill(this.serverListWidget.getX(), this.serverListWidget.getBottom(), this.serverListWidget.getRight(), MinecraftClient.getInstance().getWindow().getHeight(), 0x50000000);
-
-        // NOW draw the buttons etc
-        for (final Drawable drawable : this.drawables) {
-            drawable.render(context, mouseX, mouseY, delta);
-        }
-
-        this.serverListWidget.render(context, mouseX, mouseY, delta);
-        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 20, 16777215);
-
-        if (this.tooltip != null) {
-            context.drawTooltip(this.textRenderer, this.tooltip.tooltip(), this.tooltip.positioner(), mouseX, mouseY);
-            this.tooltip = null;
-        }
-        ci.cancel();
     }
 
 }
