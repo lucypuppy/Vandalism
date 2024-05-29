@@ -19,28 +19,22 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.normal.network.BlockCollisionShapeListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.FlightModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
 import de.nekosarekawaii.vandalism.util.game.MinecraftConstants;
+import de.nekosarekawaii.vandalism.util.game.MovementUtil;
+import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.shape.VoxelShapes;
 
-public class CollisionModuleMode extends ModuleMulti<FlightModule> implements BlockCollisionShapeListener, PlayerUpdateListener {
+public class NegativityV2ModuleMode extends ModuleMulti<FlightModule> implements BlockCollisionShapeListener, PlayerUpdateListener {
 
     private int startPos;
 
-    private final BooleanValue autoJump = new BooleanValue(
-            this,
-            "Auto Jump",
-            "Automatically jumps to bypass dumb checks.",
-            true
-    );
-
-    public CollisionModuleMode() {
-        super("Collision");
+    public NegativityV2ModuleMode() {
+        super("Negativity V2");
     }
 
     @Override
@@ -55,23 +49,20 @@ public class CollisionModuleMode extends ModuleMulti<FlightModule> implements Bl
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.autoJump.getValue()) {
-            if (mc.options.jumpKey.isPressed() && this.mc.player.getY() < this.startPos + 1) {
-                this.startPos = (int) this.mc.player.getY();
-            }
-
-            if (this.mc.player.getY() % MinecraftConstants.MAGIC_ON_GROUND_MODULO_FACTOR == 0 && this.mc.player.age % 6 == 0) {
-                this.mc.player.jump();
-            }
-        } else {
-            this.startPos = (int) this.mc.player.getY();
+        this.mc.options.jumpKey.setPressed(false);
+        if (MovementUtil.isMoving() && !WorldUtil.isOnGround(0.1)) {
+            MovementUtil.setSpeed(0.65);
         }
+        this.startPos = (int) this.mc.player.getY();
     }
 
     @Override
     public void onBlockCollisionShape(final BlockCollisionShapeEvent event) {
         if (event.block == Blocks.AIR && event.pos.getY() < this.startPos) {
             final double minX = 0, minY = 0, minZ = 0, maxX = 1, maxY = 1, maxZ = 1;
+            if (this.mc.player.getY() % MinecraftConstants.MAGIC_ON_GROUND_MODULO_FACTOR <= 0.2 && this.mc.player.age % 7 == 0) {
+                return;
+            }
             event.shape = VoxelShapes.cuboid(
                     minX,
                     minY,
@@ -82,4 +73,5 @@ public class CollisionModuleMode extends ModuleMulti<FlightModule> implements Bl
             );
         }
     }
+
 }
