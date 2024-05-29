@@ -86,8 +86,17 @@ public abstract class MixinChatHud {
         return ChatMessages.breakRenderedChatMessageLines(message, width, textRenderer);
     }
 
-    @ModifyConstant(method = "addToMessageHistory", constant = @Constant(intValue = 100), expect = 2)
-    public int moreChatHistory(final int original) {
+    @ModifyConstant(method = "addMessage(Lnet/minecraft/client/gui/hud/ChatHudLine;)V", constant = @Constant(intValue = 100))
+    public int moreChatHistory1(final int original) {
+        final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
+        if (chatSettings.moreChatHistory.getValue()) {
+            return chatSettings.moreChatHistoryMaxLength.getValue();
+        }
+        return original;
+    }
+
+    @ModifyConstant(method = "addVisibleMessage", constant = @Constant(intValue = 100))
+    public int moreChatHistory2(final int original) {
         final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
         if (chatSettings.moreChatHistory.getValue()) {
             return chatSettings.moreChatHistoryMaxLength.getValue();
