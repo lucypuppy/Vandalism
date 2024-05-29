@@ -72,6 +72,7 @@ public class DeutschMacherModule extends AbstractModule implements TextDrawListe
 
     public DeutschMacherModule() {
         super("Deutsch Macher", "Dieses Modul verwandelt die Modifikation in eine arische Modifikation.", Category.RENDER);
+        this.markExperimental();
     }
 
     @Override

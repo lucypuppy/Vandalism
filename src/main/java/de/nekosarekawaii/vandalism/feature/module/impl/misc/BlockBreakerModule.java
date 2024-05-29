@@ -90,6 +90,7 @@ public class BlockBreakerModule extends AbstractModule implements PlayerUpdateLi
                 "Automatically breaks selected blocks around you.",
                 Category.MISC
         );
+        this.markExperimental();
     }
 
     @Override
