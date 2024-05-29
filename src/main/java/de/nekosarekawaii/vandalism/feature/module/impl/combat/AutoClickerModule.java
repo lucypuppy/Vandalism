@@ -37,7 +37,7 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
             this,
             "Click Type",
             "The type of clicking.",
-            ClickType.BEZIER,
+            ClickType.COOLDOWN,
             ClickType.values()
     ).onValueChange((oldValue, newValue) -> {
         oldValue.getClicker().setClickAction(aBoolean -> {
