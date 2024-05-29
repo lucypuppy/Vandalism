@@ -23,10 +23,8 @@ import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
-import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
-import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
 import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import net.minecraft.client.ClientBrandRetriever;
 import org.lwjgl.glfw.GLFW;
@@ -54,20 +52,21 @@ public class NetworkingSettings extends ValueGroup implements KeyboardInputListe
             ClientBrandRetriever.VANILLA
     ).visibleCondition(this.changeBrand::getValue);
 
-    public final BooleanValue packageCreativeItems = new BooleanValue(
+    // TODO: Re-implement this
+    /*public final BooleanValue packageCreativeItems = new BooleanValue(
             this,
             "Package Creative Items",
             "Packages creative items to bypass certain restrictions.",
             true
     );
 
-//    public final EnumModeValue<ItemStackUtil.PackageType> creativeItemsPackageType = new EnumModeValue<>(
-//            this,
-//            "Creative Items Package Type",
-//            "Which item to package your creative items into.",
-//            ItemStackUtil.PackageType.FURNACE,
-//            ItemStackUtil.PackageType.values()
-//    ).visibleCondition(this.packageCreativeItems::getValue);
+    public final EnumModeValue<ItemStackUtil.PackageType> creativeItemsPackageType = new EnumModeValue<>(
+            this,
+            "Creative Items Package Type",
+            "Which item to package your creative items into.",
+            ItemStackUtil.PackageType.FURNACE,
+            ItemStackUtil.PackageType.values()
+    ).visibleCondition(this.packageCreativeItems::getValue);*/
 
     public final BooleanValue spoofIsCreativeLevelTwoOp = new BooleanValue(
             this,
