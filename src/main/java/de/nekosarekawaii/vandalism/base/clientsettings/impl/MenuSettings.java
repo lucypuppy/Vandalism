@@ -163,18 +163,18 @@ public class MenuSettings extends ValueGroup {
             new Color(168, 10, 225, 150)
     ).visibleCondition(() -> this.inGameBackgroundMode.getValue() == InGameBackgroundMode.COLOR_FADE);
 
-    public final BooleanValue customWidgets = new BooleanValue(
-            this,
-            "Custom Widgets",
-            "Activates/Deactivates the use of our widgets.",
-            true
-    );
-
     private final ValueGroup customWidgetsSettings = new ValueGroup(
             this,
             "Custom Widgets Settings",
             "Settings for the custom widgets."
-    ).visibleCondition(this.customWidgets::getValue);
+    );
+
+    public final BooleanValue customWidgets = new BooleanValue(
+            this.customWidgetsSettings,
+            "Custom Widgets",
+            "Activates/Deactivates the use of our widgets.",
+            true
+    );
 
     public final ColorValue customWidgetsMainColor = new ColorValue(
             this.customWidgetsSettings,
