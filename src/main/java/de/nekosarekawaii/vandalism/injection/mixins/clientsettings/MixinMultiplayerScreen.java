@@ -132,8 +132,11 @@ public abstract class MixinMultiplayerScreen extends Screen {
                     vandalism$LAST_SERVER_LIST_SIZE = this.serverList.size();
                     this.serverListWidget.setScrollAmount(Math.max(0, this.serverListWidget.getScrollAmount() - this.serverListWidget.itemHeight));
                 } else if (this.serverList.size() > vandalism$LAST_SERVER_LIST_SIZE) {
+                    final double currentScrollAmount = this.serverListWidget.getScrollAmount();
                     vandalism$LAST_SERVER_LIST_SIZE = this.serverList.size();
-                    this.serverListWidget.setScrollAmount(this.serverListWidget.getScrollAmount() + this.serverListWidget.itemHeight);
+                    if (currentScrollAmount != 0) {
+                        this.serverListWidget.setScrollAmount(currentScrollAmount + this.serverListWidget.itemHeight);
+                    }
                 }
                 vandalism$SCROLL_AMOUNT = this.serverListWidget.getScrollAmount();
             }
@@ -159,14 +162,15 @@ public abstract class MixinMultiplayerScreen extends Screen {
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawCenteredTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;III)V"))
     private void enhancedServerListModifyTitle(final DrawContext instance, final TextRenderer textRenderer, final Text text, final int centerX, final int y, final int color) {
-        if (!Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().enhancedServerList.getValue()) {
-            return;
+        if (Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings().enhancedServerList.getValue()) {
+            final ServerList selectedServerList = Vandalism.getInstance().getServerListManager().getSelectedServerList();
+            final MutableText title = Text.literal(selectedServerList.isDefault() ? ServerList.DEFAULT_SERVER_LIST_NAME : selectedServerList.getName());
+            title.append(" (" + selectedServerList.getSize() + ") | ");
+            title.append(text);
+            instance.drawCenteredTextWithShadow(textRenderer, title, centerX, y, color);
+        } else {
+            instance.drawCenteredTextWithShadow(textRenderer, text, centerX, y, color);
         }
-        final ServerList selectedServerList = Vandalism.getInstance().getServerListManager().getSelectedServerList();
-        final MutableText title = Text.literal(selectedServerList.isDefault() ? ServerList.DEFAULT_SERVER_LIST_NAME : selectedServerList.getName());
-        title.append(" (" + selectedServerList.getSize() + ") | ");
-        title.append(text);
-        instance.drawCenteredTextWithShadow(textRenderer, title, centerX, y, color);
     }
 
     @Inject(method = "keyPressed", at = @At("HEAD"))
@@ -192,7 +196,7 @@ public abstract class MixinMultiplayerScreen extends Screen {
             }
         } else if (keyCode == settings.deleteServerKey.getValue()) {
             if (this.serverListWidget.getSelectedOrNull() instanceof final MultiplayerServerListWidget.ServerEntry selectedServerEntry) {
-                int index = this.serverListWidget.children().indexOf(selectedServerEntry);
+                final int index = this.serverListWidget.children().indexOf(selectedServerEntry);
 
                 this.serverList.remove(selectedServerEntry.getServer());
                 this.serverList.saveFile();
