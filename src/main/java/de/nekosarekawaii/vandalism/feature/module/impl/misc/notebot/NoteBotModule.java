@@ -203,6 +203,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
             if (this.mc.player != null) {
                 if (ImGui.button("Play##" + identifier + "play", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
                     try {
+                        this.deactivate();
                         // Okay, so we're going to read the song extract info we might need and then recreate it as a NBS. This will make the playing at the end less cancer.
                         final Song<?, ?, ?> song = NoteBlockLib.readSong(file);
                         // We recreate the song as NBS here
@@ -395,20 +396,27 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
                 }
             }
             case PLAYING -> {
-                if (this.soundShuffler.getValue() && customInstruments.isEmpty()) {
+                if (this.soundShuffler.getValue() && this.customInstruments.isEmpty()) {
                     final List<String> validSounds = Registries.SOUND_EVENT.stream().map(SoundEvent::getId).filter(id -> !id.toString().toLowerCase().contains("music")).map(Object::toString).toList();
                     for (final net.minecraft.block.enums.Instrument mcInstrument : net.minecraft.block.enums.Instrument.values()) {
                         final String input = mcInstrument.getSound().value().getId().toString();
                         final String output = validSounds.get(RandomUtils.randomInt(0, validSounds.size()));
-                        customInstruments.put(input, output);
+                        this.customInstruments.put(input, output);
                     }
                 }
-                if (!player.isRunning()) {
-                    if (loopSong.getValue()) player.play();
-                    else state = State.DONE;
+                if ((int) (this.player.getTick() / (this.player.getSongView().getSpeed())) >= (int) (this.song.getView().getLength() / (this.player.getSongView().getSpeed()))) {
+                    if (this.loopSong.getValue()) {
+                        this.player.setTick(0);
+                    } else {
+                        this.state = State.DONE;
+                        this.deactivate();
+                        ChatUtil.infoChatMessage("Song has finished playing.");
+                    }
+                } else if (!this.player.isRunning()) {
+                    this.player.play();
                 }
             }
-            case DONE -> deactivate();
+            case DONE -> this.deactivate();
         }
     }
 
