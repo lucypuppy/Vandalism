@@ -24,6 +24,11 @@ allprojects {
         mavenCentral()
 
         maven {
+            name = "ViaVersion"
+            url = "https://repo.viaversion.com/"
+        }
+
+        maven {
             name = "Jitpack"
             url = "https://jitpack.io/"
         }
@@ -41,11 +46,6 @@ allprojects {
         maven {
             name = "OpenCollab Snapshots"
             url = "https://repo.opencollab.dev/maven-snapshots/"
-        }
-
-        maven {
-            name = "ViaVersion"
-            url = "https://repo.viaversion.com/"
         }
 
         maven {

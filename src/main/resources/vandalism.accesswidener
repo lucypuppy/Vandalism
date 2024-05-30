@@ -147,3 +147,4 @@ accessible method net/minecraft/client/gui/screen/Screen$PositionedTooltip toolt
 accessible method net/minecraft/block/entity/BlockEntity writeNbt (Lnet/minecraft/nbt/NbtCompound;Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;)V
 accessible field net/minecraft/client/MinecraftClient attackCooldown I
 accessible field net/minecraft/item/BucketItem fluid Lnet/minecraft/fluid/Fluid;
+accessible field net/minecraft/block/AbstractBlock$Settings instrument Lnet/minecraft/block/enums/Instrument;
