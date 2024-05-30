@@ -159,7 +159,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
                                     "bossbar set " + BOSS_BAR_NAME + " style " + currentStyle,
                                     "bossbar set " + BOSS_BAR_NAME + " color " + bossBarColor,
                                     "bossbar set " + BOSS_BAR_NAME + " value " + progress,
-                                    "bossbar set " + BOSS_BAR_NAME + " name \"Currently playing " + (title.isEmpty() ? "a Song" : Files.getNameWithoutExtension(title)) + " " + formatSeconds((int) (this.player.getTick() / (this.player.getSongView().getSpeed()))) + "\""
+                                    "bossbar set " + BOSS_BAR_NAME + " name \"Currently playing " + (title.isEmpty() ? "a Song" : Files.getNameWithoutExtension(title)) + " " + this.getProgress() + "\""
                             );
                             for (final String command : commands) {
                                 networkHandler.sendChatCommand(command);
@@ -263,6 +263,11 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         }
     }
 
+    private String getProgress() {
+        if (this.player == null || this.song == null) return "0:00 / 0:00";
+        return formatSeconds((int) (this.player.getTick() / (this.player.getSongView().getSpeed()))) + " / " + formatSeconds((int) (this.song.getView().getLength() / (this.player.getSongView().getSpeed())));
+    }
+
     private final RenderingValue songSelector = new RenderingValue(this, "Song Selector", "Select a song to play.", io -> {
         if (NOTE_BLOCK_SONGS_DIR.exists()) {
             if (NOTE_BLOCK_SONGS_DIR.isFile()) {
@@ -285,7 +290,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
                 ImGui.textWrapped("Name: " + Files.getNameWithoutExtension(title));
             }
             if (this.player != null) {
-                ImGui.textWrapped("Duration: " + formatSeconds((int) (this.player.getTick() / (this.player.getSongView().getSpeed()))));
+                ImGui.textWrapped("Duration: " + this.getProgress());
             }
         }
         ImGui.separator();
