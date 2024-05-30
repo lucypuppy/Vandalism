@@ -46,7 +46,7 @@ public class SessionAccount extends AbstractAccount {
         public void accept(final ImGuiInputTextCallbackData imGuiInputTextCallbackData) {
             final int eventChar = imGuiInputTextCallbackData.getEventChar();
             if (eventChar == 0) return;
-            if (!Character.isLetterOrDigit(eventChar) && eventChar != '_' && eventChar != '§' && eventChar != '.' && eventChar != '[' && eventChar != ']') {
+            if (!Character.isLetterOrDigit(eventChar) && eventChar != '_' && eventChar != '§' && eventChar != '.' && eventChar != '[' && eventChar != ']' && eventChar != ' ') {
                 imGuiInputTextCallbackData.setEventChar((char) 0);
             }
         }
