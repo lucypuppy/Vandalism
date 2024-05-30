@@ -27,23 +27,17 @@ import net.minecraft.command.CommandSource;
 public class ClipCommand extends AbstractCommand {
 
     public ClipCommand() {
-        super("Allows you to teleport yourself by vertical and horizontal offset.", Category.MOVEMENT, "clip", "tp", "teleport");
+        super("Allows you to teleport yourself by horizontal and vertical offset.", Category.MOVEMENT, "clip", "tp", "teleport");
     }
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
-        builder.
-                then(argument("vertical-offset", DoubleArgumentType.doubleArg(-10.0, 10.0)).
-                        then(argument("horizontal-offset", DoubleArgumentType.doubleArg(-10.0, 10.0)).
-                                executes(context -> {
-                                    if (this.mc.player != null)
-                                        MovementUtil.clip(
-                                                DoubleArgumentType.getDouble(context, "vertical-offset"),
-                                                DoubleArgumentType.getDouble(context, "horizontal-offset")
-                                        );
-
-                                    return SINGLE_SUCCESS;
-                                })));
+        builder.then(argument("horizontal-offset", DoubleArgumentType.doubleArg(-200.0, 200.0)).then(argument("vertical-offset", DoubleArgumentType.doubleArg(-200.0, 200.0)).executes(context -> {
+            if (this.mc.player != null) {
+                MovementUtil.bypassClip(DoubleArgumentType.getDouble(context, "horizontal-offset"), DoubleArgumentType.getDouble(context, "vertical-offset"));
+            }
+            return SINGLE_SUCCESS;
+        })));
     }
 
 }

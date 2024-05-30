@@ -32,13 +32,10 @@ public class VClipCommand extends AbstractCommand {
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
-        builder.then(argument("vertical-offset", DoubleArgumentType.doubleArg(-10.0, 10.0)).executes(context -> {
-            if (this.mc.player != null)
-                MovementUtil.clip(
-                        DoubleArgumentType.getDouble(context, "vertical-offset"),
-                        0.0
-                );
-
+        builder.then(argument("vertical-offset", DoubleArgumentType.doubleArg(-200.0, 200.0)).executes(context -> {
+            if (this.mc.player != null) {
+                MovementUtil.bypassClip(0, DoubleArgumentType.getDouble(context, "vertical-offset"));
+            }
             return SINGLE_SUCCESS;
         }));
     }

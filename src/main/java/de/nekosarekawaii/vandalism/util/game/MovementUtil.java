@@ -22,14 +22,12 @@ import de.nekosarekawaii.vandalism.event.normal.player.StrafeListener;
 import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class MovementUtil implements MinecraftWrapper {
-
-    private static final float[] POSSIBLE_MOVEMENTS = new float[]{-1f, 0.0f, 1f};
-
 
     /**
      * Get the direction of in which the player is looking.
@@ -108,6 +106,11 @@ public class MovementUtil implements MinecraftWrapper {
         return mc.player.forwardSpeed != 0 || mc.player.sidewaysSpeed != 0;
     }
 
+    /**
+     * Get the player's velocity.
+     *
+     * @return The player's velocity.
+     */
     public static Vec3d applyFriction(final Vec3d velocity, final float percentage) {
         if (mc.player == null) return Vec3d.ZERO;
         final BlockPos blockPos = mc.player.getVelocityAffectingPos();
@@ -177,6 +180,43 @@ public class MovementUtil implements MinecraftWrapper {
     }
 
     /**
+     * Clip the player but bypass the clip checks.
+     *
+     * @param startX The start x to use.
+     * @param startY The start y to use.
+     * @param startZ The start z to use.
+     * @param endX   The end x to use.
+     * @param endY   The end y to use.
+     * @param endZ   The end z to use.
+     */
+    public static void bypassClip(final double startX, final double startY, final double startZ, final double endX, final double endY, final double endZ) {
+        final Vec3d start = new Vec3d(startX, startY, startZ);
+        final Vec3d end = new Vec3d(endX, endY, endZ);
+        final double distance = start.distanceTo(end);
+        final int packetsRequired = (int) Math.ceil(Math.abs(distance / 10));
+        for (int packetNumber = 0; packetNumber < (packetsRequired - 1); packetNumber++) {
+            mc.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
+        }
+        mc.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(end.x, end.y, end.z, true));
+        mc.player.setPos(end.x, end.y, end.z);
+    }
+
+    /**
+     * Clip the player but bypass the clip checks.
+     *
+     * @param horizontal The horizontal to use.
+     * @param vertical   The vertical to use.
+     */
+    public static void bypassClip(final double horizontal, final double vertical) {
+        if (mc.player == null) return;
+        final double currentX = mc.player.getX();
+        final double currentY = mc.player.getY();
+        final double currentZ = mc.player.getZ();
+        final double direction = Math.toRadians(mc.player.getYaw());
+        bypassClip(currentX, currentY, currentZ, currentX - Math.sin(direction) * horizontal, currentY + vertical, currentZ + Math.cos(direction) * horizontal);
+    }
+
+    /**
      * Get the input angle.
      *
      * @param yaw The yaw to use.
@@ -201,6 +241,12 @@ public class MovementUtil implements MinecraftWrapper {
         return yaw;
     }
 
+    /**
+     * Get the speed related to the yaw.
+     *
+     * @param yaw The yaw to use.
+     * @return The speed related to the yaw.
+     */
     public static double getSpeedRelatedToYaw(float yaw) {
         yaw = MathHelper.wrapDegrees(yaw);
 
@@ -217,10 +263,21 @@ public class MovementUtil implements MinecraftWrapper {
         return -1.0;
     }
 
+    /**
+     * Get the speed related to the yaw.
+     * @param posY The position y to use.
+     * @return The speed related to the yaw.
+     */
     public static double roundToGround(final double posY) {
         return Math.round(posY / MinecraftConstants.MAGIC_ON_GROUND_MODULO_FACTOR) * MinecraftConstants.MAGIC_ON_GROUND_MODULO_FACTOR;
     }
 
+    /**
+     * Get the speed related to the yaw.
+     * @param rotation The rotation to use.
+     * @param event The strafe event to use.
+     * @return The speed related to the yaw.
+     */
     public static Vec3d silentMoveFix(Rotation rotation, StrafeListener.StrafeEvent event) {
         float currentMotionX = (float) (event.movementInput.x * Math.cos(Math.toRadians(event.yaw)) - event.movementInput.z * Math.sin(Math.toRadians(event.yaw)));
         float currentMotionZ = (float) (event.movementInput.z * Math.cos(Math.toRadians(event.yaw)) + event.movementInput.x * Math.sin(Math.toRadians(event.yaw)));
