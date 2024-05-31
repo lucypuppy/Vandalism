@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.clientwindow.base;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientwindow.ClientWindowManager;
+import de.nekosarekawaii.vandalism.clientwindow.impl.AboutClientWindow;
 import de.nekosarekawaii.vandalism.integration.hud.gui.HUDClientWindow;
 import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import de.nekosarekawaii.vandalism.util.render.imgui.ImLoader;
@@ -61,7 +62,11 @@ public class ClientWindowScreen extends Screen {
                 hudImWindow.render(context, mouseX, mouseY, delta);
             } else {
                 if (ImGui.beginMainMenuBar()) {
+                    if (ImGui.button("About")) {
+                        this.clientWindowManager.getByClass(AboutClientWindow.class).toggle();
+                    }
                     for (final ClientWindow.Category category : this.clientWindowManager.getCategories()) {
+                        if (category == null) continue;
                         if (ImGui.beginMenu(category.getName())) {
                             for (final ClientWindow clientWindow : this.clientWindowManager.getByCategory(category)) {
                                 if (ImGui.checkbox(clientWindow.getName(), clientWindow.isActive())) {
