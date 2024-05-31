@@ -24,6 +24,7 @@ import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindowScreen;
 import de.nekosarekawaii.vandalism.clientwindow.config.ClientWindowConfig;
+import de.nekosarekawaii.vandalism.clientwindow.impl.AboutClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.impl.PlayerKickerClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.impl.ServerAddressResolverClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.impl.port.PortScannerClientWindow;
@@ -57,6 +58,7 @@ public class ClientWindowManager extends Storage<ClientWindow> implements Keyboa
     @Override
     public void init() {
         this.add(
+                new AboutClientWindow(),
                 new PortScannerClientWindow(),
                 new ServerAddressResolverClientWindow(),
                 new PlayerKickerClientWindow()
@@ -85,7 +87,7 @@ public class ClientWindowManager extends Storage<ClientWindow> implements Keyboa
     }
 
     public List<ClientWindow> getByCategory(final ClientWindow.Category category) {
-        return this.getList().stream().filter(imWindow -> imWindow.getCategory() == category).toList();
+        return this.getList().stream().filter(imWindow -> imWindow.getCategory() != null && imWindow.getCategory() == category).toList();
     }
 
     public List<ClientWindow.Category> getCategories() {
