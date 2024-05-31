@@ -32,6 +32,7 @@
     "net.minecraft.client.realms.gui.screen.RealmsMainScreenAccessor",
     "net.minecraft.client.render.entity.MixinEntityRenderer",
     "net.minecraft.client.render.entity.MixinLivingEntityRenderer",
+    "net.minecraft.client.util.MixinWindow",
     "net.minecraft.client.util.telemetry.MixinTelemetryManager",
     "net.minecraft.client.world.MixinClientWorld",
     "net.minecraft.entity.MixinEntity",
