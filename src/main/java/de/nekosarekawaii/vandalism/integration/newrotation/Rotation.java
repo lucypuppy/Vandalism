@@ -20,8 +20,12 @@ package de.nekosarekawaii.vandalism.integration.newrotation;
 
 import de.nekosarekawaii.vandalism.integration.newrotation.enums.RotationPriority;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.util.math.Vec3d;
 
+@Setter
+@Getter
 public class Rotation implements MinecraftWrapper {
 
     private float yaw, pitch;
@@ -37,32 +41,8 @@ public class Rotation implements MinecraftWrapper {
         this(yaw, pitch, RotationPriority.NORMAL);
     }
 
-    public void setYaw(float yaw) {
-        this.yaw = yaw;
-    }
-
-    public float getYaw() {
-        return this.yaw;
-    }
-
-    public void setPitch(float pitch) {
-        this.pitch = pitch;
-    }
-
-    public float getPitch() {
-        return this.pitch;
-    }
-
     public Vec3d getVector() {
         return Vec3d.fromPolar(pitch, yaw);
-    }
-
-    public void setPriority(RotationPriority priority) {
-        this.priority = priority;
-    }
-
-    public RotationPriority getPriority() {
-        return priority;
     }
 
     @Override
