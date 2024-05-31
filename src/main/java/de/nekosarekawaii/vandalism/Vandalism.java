@@ -133,6 +133,8 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     private CommandManager commandManager;
     private ScriptManager scriptManager;
 
+    //test
+
     public void printStartup() {
         this.logger.info("");
         final String[] ASCII_ART = {
