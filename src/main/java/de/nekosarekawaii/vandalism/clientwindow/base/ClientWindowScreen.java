@@ -62,9 +62,6 @@ public class ClientWindowScreen extends Screen {
                 hudImWindow.render(context, mouseX, mouseY, delta);
             } else {
                 if (ImGui.beginMainMenuBar()) {
-                    if (ImGui.button("About")) {
-                        this.clientWindowManager.getByClass(AboutClientWindow.class).toggle();
-                    }
                     for (final ClientWindow.Category category : this.clientWindowManager.getCategories()) {
                         if (category == null) continue;
                         if (ImGui.beginMenu(category.getName())) {
@@ -88,6 +85,9 @@ public class ClientWindowScreen extends Screen {
                             }
                             ImGui.endMenu();
                         }
+                    }
+                    if (ImGui.button("About")) {
+                        this.clientWindowManager.getByClass(AboutClientWindow.class).toggle();
                     }
                     if (ImGui.button("Close")) {
                         this.close();
