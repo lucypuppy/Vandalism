@@ -5,10 +5,7 @@ import me.nekosarekawaii.foxglove.feature.FeatureList;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.DebugModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.development.TestModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.exploit.*;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.CustomItemUseCooldownModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.ItemStackLoggerModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.ModPacketBlockerModule;
-import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.PacketLoggerModule;
+import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.*;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.CustomPushVelocityModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.FlightModule;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.movement.SpeedModule;
@@ -145,6 +142,12 @@ public class ModuleRegistry {
         return this.stepModule;
     }
 
+    private CameraNoClipModule cameraNoClipModule;
+
+    public CameraNoClipModule getCameraNoClipModule() {
+        return cameraNoClipModule;
+    }
+
     private final FeatureList<Module> modules;
 
     public ModuleRegistry() {
@@ -174,7 +177,8 @@ public class ModuleRegistry {
                 this.itemStackLoggerModule = new ItemStackLoggerModule(),
                 this.customItemUseCooldownModule = new CustomItemUseCooldownModule(),
                 this.customPushVelocityModule = new CustomPushVelocityModule(),
-                this.stepModule = new StepModule()
+                this.stepModule = new StepModule(),
+                this.cameraNoClipModule = new CameraNoClipModule()
         );
     }
 

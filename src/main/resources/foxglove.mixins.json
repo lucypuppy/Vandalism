@@ -30,6 +30,7 @@
     "net.minecraft.client.network.MixinAllowedAddressResolver",
     "net.minecraft.client.network.MixinClientPlayNetworkHandler",
     "net.minecraft.client.realms.gui.screen.RealmsMainScreenAccessor",
+    "net.minecraft.client.render.MixinCamera",
     "net.minecraft.client.render.entity.MixinEntityRenderer",
     "net.minecraft.client.render.entity.MixinLivingEntityRenderer",
     "net.minecraft.client.util.MixinWindow",
