@@ -3,7 +3,7 @@ package me.nekosarekawaii.foxglove.mixin.net.minecraft.network;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import io.netty.channel.ChannelHandlerContext;
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.event.impl.PacketListener;
+import me.nekosarekawaii.foxglove.event.PacketListener;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.packet.Packet;

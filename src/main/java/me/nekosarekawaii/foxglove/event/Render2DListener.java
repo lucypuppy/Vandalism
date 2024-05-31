@@ -1,4 +1,4 @@
-package me.nekosarekawaii.foxglove.event.impl;
+package me.nekosarekawaii.foxglove.event;
 
 import de.florianmichael.dietrichevents2.AbstractEvent;
 import net.minecraft.client.gui.DrawContext;

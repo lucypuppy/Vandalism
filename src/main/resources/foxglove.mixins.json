@@ -29,12 +29,7 @@
     "net.minecraft.client.util.telemetry.MixinTelemetryManager",
     "net.minecraft.client.world.MixinClientWorld",
     "net.minecraft.entity.MixinEntity",
-    "net.minecraft.network.MixinClientConnection"
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  },
-  "mixins": [
+    "net.minecraft.network.MixinClientConnection",
     "com.mojang.authlib.yggdrasil.MixinTextureUrlChecker",
     "com.mojang.authlib.yggdrasil.MixinYggdrasilAuthenticationServiceAccessor",
     "com.mojang.authlib.yggdrasil.MixinYggdrasilUserApiService",
@@ -46,5 +41,8 @@
     "net.minecraft.util.MixinIdentifier",
     "net.minecraft.util.MixinModStatus",
     "net.minecraft.util.MixinStringHelper"
-  ]
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

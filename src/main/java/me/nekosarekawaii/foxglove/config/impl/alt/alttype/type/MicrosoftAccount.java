@@ -58,5 +58,4 @@ public class MicrosoftAccount extends Account {
             throw new RuntimeException(e);
         }
     }
-
 }

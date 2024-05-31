@@ -1,8 +1,8 @@
 package me.nekosarekawaii.foxglove.feature.impl.module.impl.movement;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import me.nekosarekawaii.foxglove.event.impl.EntityPushListener;
-import me.nekosarekawaii.foxglove.event.impl.FluidPushListener;
+import me.nekosarekawaii.foxglove.event.EntityPushListener;
+import me.nekosarekawaii.foxglove.event.FluidPushListener;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;

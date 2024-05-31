@@ -130,5 +130,4 @@ public class MainConfig extends ValueableConfig {
             loadValues(jsonObject.getAsJsonObject("values"), this.getValues());
         }
     }
-
 }

@@ -6,50 +6,36 @@ import me.nekosarekawaii.foxglove.util.render.ColorUtils;
 import me.nekosarekawaii.foxglove.value.IValue;
 import me.nekosarekawaii.foxglove.value.Value;
 
-public class ColorValue extends Value<float[]> {
+import java.awt.*;
 
-    public ColorValue(final String name, final String description, final IValue parent, final float... defaultValue) {
+public class ColorValue extends Value<Color> {
+
+    public ColorValue(final String name, final String description, final IValue parent, final Color defaultValue) {
         super(name, description, parent, defaultValue);
-
-        if (defaultValue.length != 4) throw new IllegalArgumentException("Color Array must be 4 entries long!");
     }
 
     @Override
     public void onConfigLoad(final JsonObject valueObject) {
-        this.setValue(
-                valueObject.get("value_red").getAsFloat(),
-                valueObject.get("value_green").getAsFloat(),
-                valueObject.get("value_blue").getAsFloat(),
-                valueObject.get("value_alpha").getAsFloat()
-        );
+        this.setValue(new Color(valueObject.get("value").getAsInt()));
     }
 
     @Override
     public void onConfigSave(final JsonObject valueObject) {
-        valueObject.addProperty("value_red", this.getValue()[0]);
-        valueObject.addProperty("value_green", this.getValue()[1]);
-        valueObject.addProperty("value_blue", this.getValue()[2]);
-        valueObject.addProperty("value_alpha", this.getValue()[3]);
-    }
-
-    @Override
-    public void setValue(final float... value) {
-        if (value.length != 4) throw new IllegalArgumentException("Color Array must be 4 entries long!");
-
-        super.setValue(value);
-    }
-
-    public int getRGBA() {
-        return ColorUtils.rgbaToValueFloat(this.getValue()[0], this.getValue()[1], this.getValue()[2], this.getValue()[3]);
+        valueObject.addProperty("value", this.getValue().getRGB());
     }
 
     @Override
     public void render() {
-        final float[] colorArray = this.getValue();
+        final var rgb = this.getValue().getRGB();
+        final var colorArray = new float[] {
+                ((rgb >> 16) & 0xff) / 255F,
+                ((rgb >> 8) & 0xff) / 255F,
+                ((rgb) & 0xff) / 255F,
+                ((rgb >> 24) & 0xff) / 255F
+        };
 
         if (ImGui.colorEdit4(this.getName() + "##" + this.getHashIdent(), colorArray)) {
-            this.setValue(colorArray);
+            this.setValue(new Color(colorArray[0], colorArray[1], colorArray[2], colorArray[3]));
         }
     }
-
 }

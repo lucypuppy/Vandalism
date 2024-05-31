@@ -1,8 +1,8 @@
 package me.nekosarekawaii.foxglove.feature.impl.module.impl.misc;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import me.nekosarekawaii.foxglove.event.EventPriorities;
-import me.nekosarekawaii.foxglove.event.impl.PacketListener;
+import de.florianmichael.dietrichevents2.Priorities;
+import me.nekosarekawaii.foxglove.event.PacketListener;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
@@ -25,7 +25,7 @@ public class PacketLoggerModule extends Module implements PacketListener {
 
     @Override
     protected void onEnable() {
-        DietrichEvents2.global().subscribe(PacketEvent.ID, this, EventPriorities.LOW.getPriority());
+        DietrichEvents2.global().subscribe(PacketEvent.ID, this, Priorities.LOW);
     }
 
     @Override

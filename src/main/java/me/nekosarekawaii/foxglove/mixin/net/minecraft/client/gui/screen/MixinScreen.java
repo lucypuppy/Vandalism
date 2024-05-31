@@ -3,7 +3,7 @@ package me.nekosarekawaii.foxglove.mixin.net.minecraft.client.gui.screen;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.event.impl.Render2DListener;
+import me.nekosarekawaii.foxglove.event.Render2DListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.MessageScreen;

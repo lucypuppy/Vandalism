@@ -1,9 +1,9 @@
 package me.nekosarekawaii.foxglove.mixin.net.minecraft.entity;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import me.nekosarekawaii.foxglove.event.impl.EntityPushListener;
-import me.nekosarekawaii.foxglove.event.impl.FluidPushListener;
-import me.nekosarekawaii.foxglove.event.impl.StepListener;
+import me.nekosarekawaii.foxglove.event.EntityPushListener;
+import me.nekosarekawaii.foxglove.event.FluidPushListener;
+import me.nekosarekawaii.foxglove.event.StepListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;

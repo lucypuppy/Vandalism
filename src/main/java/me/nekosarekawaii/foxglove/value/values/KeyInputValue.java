@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import imgui.ImGui;
 import it.unimi.dsi.fastutil.Pair;
-import me.nekosarekawaii.foxglove.event.impl.KeyboardListener;
+import me.nekosarekawaii.foxglove.event.KeyboardListener;
 import me.nekosarekawaii.foxglove.value.IValue;
 import me.nekosarekawaii.foxglove.value.Value;
 import org.lwjgl.glfw.GLFW;

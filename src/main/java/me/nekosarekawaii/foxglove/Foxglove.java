@@ -5,6 +5,8 @@ import me.nekosarekawaii.foxglove.creativetab.CreativeTabRegistry;
 import me.nekosarekawaii.foxglove.feature.impl.command.CommandRegistry;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleRegistry;
 import me.nekosarekawaii.foxglove.imgui.ImGuiHandler;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.metadata.Person;
 import net.minecraft.client.MinecraftClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.awt.*;
 import java.io.File;
 import java.lang.management.ManagementFactory;
+import java.util.Collection;
 
 public class Foxglove {
 
@@ -21,7 +24,8 @@ public class Foxglove {
         return instance;
     }
 
-    private final String name, lowerCaseName, version, author, windowTitle;
+    private final String name, lowerCaseName, version, windowTitle;
+    private final Collection<String> authors;
 
     private final Color color;
     private final int colorRGB;
@@ -45,8 +49,11 @@ public class Foxglove {
     public Foxglove() {
         this.name = "Foxglove";
         this.lowerCaseName = this.name.toLowerCase();
-        this.version = "1.2.5";
-        this.author = "NekosAreKawaii";
+
+        final var modContainer = FabricLoader.getInstance().getModContainer(this.lowerCaseName).get().getMetadata();
+        this.version = modContainer.getVersion().getFriendlyString();
+        this.authors = modContainer.getAuthors().stream().map(Person::getName).toList();
+
         this.color = Color.MAGENTA;
         this.colorRGB = this.color.getRGB();
         this.logger = LoggerFactory.getLogger(this.name);
@@ -63,7 +70,7 @@ public class Foxglove {
                 "%s %s made by %s%s",
                 this.name,
                 this.version,
-                this.author,
+                String.join(", ", this.authors),
                 this.jvmDebugMode ? " - JVM Debug Mode" : ""
         );
         this.creativeTabRegistry = new CreativeTabRegistry();
@@ -72,7 +79,7 @@ public class Foxglove {
     public void start() {
         this.logger.info("Starting...");
         this.logger.info("Version: {}", this.version);
-        this.logger.info("Made by {}", this.author);
+        this.logger.info("Made by {}", String.join(", ", this.authors));
 
         this.logger.info("Loading Features...");
         this.moduleRegistry = new ModuleRegistry();
@@ -108,8 +115,8 @@ public class Foxglove {
         return this.version;
     }
 
-    public String getAuthor() {
-        return this.author;
+    public Collection<String> getAuthors() {
+        return authors;
     }
 
     public Color getColor() {

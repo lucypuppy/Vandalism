@@ -52,4 +52,9 @@ public class ColorUtils {
         };
     }
 
+
+    public static Color withAlpha(final Color color, final int alpha) {
+        return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+    }
+
 }

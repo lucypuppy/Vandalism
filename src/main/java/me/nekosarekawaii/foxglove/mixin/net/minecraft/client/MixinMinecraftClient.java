@@ -2,9 +2,9 @@ package me.nekosarekawaii.foxglove.mixin.net.minecraft.client;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.event.impl.ScreenListener;
-import me.nekosarekawaii.foxglove.event.impl.TickListener;
-import me.nekosarekawaii.foxglove.event.impl.WorldListener;
+import me.nekosarekawaii.foxglove.event.ScreenListener;
+import me.nekosarekawaii.foxglove.event.TickListener;
+import me.nekosarekawaii.foxglove.event.WorldListener;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.misc.CustomItemUseCooldownModule;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;

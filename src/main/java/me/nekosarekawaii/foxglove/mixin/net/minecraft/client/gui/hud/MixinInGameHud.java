@@ -2,7 +2,7 @@ package me.nekosarekawaii.foxglove.mixin.net.minecraft.client.gui.hud;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
 import me.nekosarekawaii.foxglove.Foxglove;
-import me.nekosarekawaii.foxglove.event.impl.Render2DListener;
+import me.nekosarekawaii.foxglove.event.Render2DListener;
 import me.nekosarekawaii.foxglove.feature.impl.module.impl.render.BetterTabListModule;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.ChatHud;

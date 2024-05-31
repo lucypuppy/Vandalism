@@ -1,11 +1,11 @@
 package me.nekosarekawaii.foxglove.creativetab;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
+import de.florianmichael.dietrichevents2.Priorities;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.nekosarekawaii.foxglove.Foxglove;
 import me.nekosarekawaii.foxglove.creativetab.impl.*;
-import me.nekosarekawaii.foxglove.event.EventPriorities;
-import me.nekosarekawaii.foxglove.event.impl.PacketListener;
+import me.nekosarekawaii.foxglove.event.PacketListener;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
@@ -68,7 +68,7 @@ public class CreativeTabRegistry implements PacketListener {
             this.itemGroups.add(itemGroup);
             Registry.register(Registries.ITEM_GROUP, new Identifier(Foxglove.getInstance().getLowerCaseName(), Integer.toString(i)), itemGroup);
         }
-        DietrichEvents2.global().subscribe(PacketEvent.ID, this, EventPriorities.HIGH.getPriority());
+        DietrichEvents2.global().subscribe(PacketEvent.ID, this, Priorities.HIGH);
     }
 
     public ObjectArrayList<CreativeTab> getCreativeTabs() {

@@ -1,7 +1,7 @@
 package me.nekosarekawaii.foxglove.mixin.net.minecraft.client;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import me.nekosarekawaii.foxglove.event.impl.KeyboardListener;
+import me.nekosarekawaii.foxglove.event.KeyboardListener;
 import net.minecraft.client.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

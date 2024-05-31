@@ -59,5 +59,4 @@ public abstract class ValueableConfig extends Config implements IValue {
             }
         }
     }
-
 }

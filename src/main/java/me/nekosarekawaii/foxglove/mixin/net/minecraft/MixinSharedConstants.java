@@ -13,7 +13,7 @@ public abstract class MixinSharedConstants {
     @Inject(method = "isValidChar", at = @At("RETURN"), cancellable = true)
     private static void injectIsValidChar(final char chr, final CallbackInfoReturnable<Boolean> cir) {
         if (Foxglove.getInstance().getConfigManager().getMainConfig().allowColorChar.getValue()) {
-            if (chr == '\u00a7') cir.setReturnValue(true);
+            if (chr == '§') cir.setReturnValue(true);
         }
     }
 

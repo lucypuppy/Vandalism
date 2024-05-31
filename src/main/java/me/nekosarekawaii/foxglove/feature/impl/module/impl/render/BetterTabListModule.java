@@ -1,7 +1,7 @@
 package me.nekosarekawaii.foxglove.feature.impl.module.impl.render;
 
 import de.florianmichael.dietrichevents2.DietrichEvents2;
-import me.nekosarekawaii.foxglove.event.impl.KeyboardListener;
+import me.nekosarekawaii.foxglove.event.KeyboardListener;
 import me.nekosarekawaii.foxglove.feature.FeatureCategory;
 import me.nekosarekawaii.foxglove.feature.impl.module.Module;
 import me.nekosarekawaii.foxglove.feature.impl.module.ModuleInfo;
@@ -12,6 +12,8 @@ import me.nekosarekawaii.foxglove.value.values.number.slider.SliderFloatValue;
 import me.nekosarekawaii.foxglove.value.values.number.slider.SliderIntegerValue;
 import org.lwjgl.glfw.GLFW;
 
+import java.awt.*;
+
 @ModuleInfo(name = "Better Tab List", description = "Shows you an improved version of the Game's Tab List.", category = FeatureCategory.RENDER)
 public class BetterTabListModule extends Module implements KeyboardListener {
 
@@ -19,7 +21,7 @@ public class BetterTabListModule extends Module implements KeyboardListener {
 
     public final Value<Boolean> self = new BooleanValue("Highlight Self", "Highlights yourself in the Tab List.", this, true);
 
-    public final ColorValue selfColor = new ColorValue("Self Color", "The color to highlight your name with.", this, 0.031f, 0.823f, 0.101f, 0.392f).visibleConsumer(this.self::getValue);
+    public final ColorValue selfColor = new ColorValue("Self Color", "The color to highlight your name with.", this, Color.GREEN).visibleConsumer(this.self::getValue);
 
     public final Value<Boolean> accurateLatency = new BooleanValue("Accurate Latency", "Shows the latency as a number in the Tab List.", this, true);
 

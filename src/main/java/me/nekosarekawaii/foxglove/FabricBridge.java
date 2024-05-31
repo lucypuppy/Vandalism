@@ -17,5 +17,4 @@ public class FabricBridge implements ClientModInitializer {
         Registry.register(Registries.ITEM, new Identifier(Foxglove.getInstance().getLowerCaseName(), "dummy"), dummyItem);
         Foxglove.getInstance().getCreativeTabRegistry().register(dummyItem);
     }
-
 }

@@ -11,8 +11,8 @@
 >>
 >> The menu key should look like this:
 >>
->> ![Menu Key](menu_key.jpg)
+>> ![Menu Key](.github/images/menu_key.jpg)
 >>
 >> The main bar looks like this:
 >>
->> ![Main Bar](main_bar.png)
+>> ![Main Bar](.github/images/main_bar.png)
