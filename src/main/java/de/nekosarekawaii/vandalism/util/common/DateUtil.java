@@ -35,7 +35,7 @@ public class DateUtil {
     }
 
     public static boolean isBirthday() {
-        return getDay() == 1 && getMonth() == 6;
+        return getDay() == 2 && getMonth() == 7;
     }
 
     public static boolean isAprilFools() {
