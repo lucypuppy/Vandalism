@@ -48,7 +48,8 @@ public class CommandRegistry {
                 new CopyPositionCommand(),
                 new TeleportEntitySpawnEggCommand(),
                 new SoundEntitySpawnEggCommand(),
-                new ClipCommand()
+                new ClipCommand(),
+                new ServerBrandCommand()
         );
     }
 

@@ -21,6 +21,7 @@ import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
 
 import java.util.List;
+import java.util.Objects;
 
 @ModuleInfo(name = "Head Up Display", description = "The In-game HUD of the Mod.", category = FeatureCategory.RENDER, isDefaultEnabled = true)
 public class HeadUpDisplayModule extends Module implements Render2DListener {
@@ -144,7 +145,7 @@ public class HeadUpDisplayModule extends Module implements Render2DListener {
                         ImGui.text("Position: " + player.getBlockPos().toShortString());
                     }
                     if (this.serverBrand.getValue()) {
-                        ImGui.text("Server Brand: " + player.getServerBrand());
+                        ImGui.text("Server Brand: " + Objects.requireNonNull(player.getServerBrand()).replaceFirst("\\(.*?\\) ", ""));
                     }
                     if (this.difficulty.getValue()) {
                         ImGui.text("Difficulty: " + world.getDifficulty().getName());
