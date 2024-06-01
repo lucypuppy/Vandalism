@@ -108,7 +108,7 @@ public class Shaders {
         shaders.add(fontShader = create("font", load(ShaderType.VERTEX, "font/font"), load(ShaderType.FRAGMENT, "font/font")));
 
 
-        shaders.add(titleScreenBackgroundShader = create("title_screen_background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/" + (DateUtil.isBirthday() ? "title_screen_birthday" : "gamecube"))));
+        shaders.add(titleScreenBackgroundShader = create("title_screen_background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/" + (DateUtil.isBirthday() ? "title_screen_birthday" : "title_screen_default"))));
         shaders.add(backgroundShader = create("background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/default")));
         shaders.add(loadingScreenBackgroundShader = create("loading_screen_background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/loading_screen")));
         shaders.add(ingameGuiBackgroundShader = create("ingame_gui_background", load(ShaderType.VERTEX, "vertex/vertex"), load(ShaderType.FRAGMENT, "fragment/background/ingame_gui")));
