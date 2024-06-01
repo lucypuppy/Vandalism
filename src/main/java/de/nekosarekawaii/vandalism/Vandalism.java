@@ -90,6 +90,7 @@ import java.io.File;
  * <br><br>
  * TODO: simon <br>
  *  - Add a better Autoblock to Killaura with FooFieOwO
+ *  - Add double clicks to KillAura when recoding
  * <br><br>
  * TODO: mori <br>
  *  - Write all descriptions in the third person, without using the second person ('you')
