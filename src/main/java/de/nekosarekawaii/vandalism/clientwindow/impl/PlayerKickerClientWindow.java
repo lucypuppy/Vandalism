@@ -268,8 +268,6 @@ public class PlayerKickerClientWindow extends StateClientWindow implements DataL
         }
     }
 
-
-
     private void kickPlayer(final String name, final String uuid) {
         if ((ServerUtil.isSelf(name, uuid) && this.preventSelfKick.get()) || (Vandalism.getInstance().getFriendsManager().isFriend(name) && this.preventFriendKick.get())) {
             return;
