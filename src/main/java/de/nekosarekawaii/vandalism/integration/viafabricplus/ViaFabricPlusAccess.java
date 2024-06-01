@@ -38,9 +38,7 @@ public class ViaFabricPlusAccess {
     private static final FieldWrapper previousVersion;
 
     static {
-        final String protocolTranslatorClass = "de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator";
-
-        previousVersion = RStream.of(protocolTranslatorClass).fields().by("previousVersion");
+        previousVersion = RStream.of(ProtocolTranslator.class).fields().by("previousVersion");
     }
 
     private static BlockPosition toPosition(final BlockPos pos) {
