@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc.notebot;
 
 import com.google.common.io.Files;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.rendering.RenderingValue;
@@ -330,7 +331,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
      */
     @Override
     public void onIncomingPacket(IncomingPacketEvent event) {
-        if (event.packet instanceof final BlockEventS2CPacket packet && ViaFabricPlusAccess.getTargetVersion().olderThanOrEqualTo(ProtocolVersion.v1_12_2)) {
+        if (event.packet instanceof final BlockEventS2CPacket packet && ProtocolTranslator.getTargetVersion().olderThanOrEqualTo(ProtocolVersion.v1_12_2)) {
             if (packet.getBlock() instanceof NoteBlock || mc.world.getBlockState(packet.getPos()).getBlock() instanceof NoteBlock) {
                 this.cachedPositions.put(packet.getPos(), packet.getData());
             }
@@ -524,7 +525,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
      * @return the key
      */
     public int getNote(BlockPos pos) {
-        if (ViaFabricPlusAccess.getTargetVersion().olderThanOrEqualTo(ProtocolVersion.v1_12_2)) {
+        if (ProtocolTranslator.getTargetVersion().olderThanOrEqualTo(ProtocolVersion.v1_12_2)) {
             return cachedPositions.getOrDefault(pos, 0);
         }
 

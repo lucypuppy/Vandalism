@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.IllegalInteractionModule;
 import de.nekosarekawaii.vandalism.integration.viafabricplus.ViaFabricPlusAccess;
@@ -36,7 +37,7 @@ public abstract class MixinClientPlayerInteractionManager {
     @Redirect(method = "interactBlockInternal", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;useOnBlock(Lnet/minecraft/item/ItemUsageContext;)Lnet/minecraft/util/ActionResult;"))
     private ActionResult hookIllegalBlockPlace(final ItemStack instance, final ItemUsageContext context) {
         ActionResult actionResult = instance.useOnBlock(context);
-        if (ViaFabricPlusAccess.getTargetVersion().olderThanOrEqualTo(ProtocolVersion.v1_8)) {
+        if (ProtocolTranslator.getTargetVersion().olderThanOrEqualTo(ProtocolVersion.v1_8)) {
             final IllegalInteractionModule illegalInteractionModule = Vandalism.getInstance().getModuleManager().getIllegalInteractionModule();
             if (illegalInteractionModule.isActive() && illegalInteractionModule.viaVersionBug.getValue()) {
                 if (actionResult == ActionResult.FAIL) {

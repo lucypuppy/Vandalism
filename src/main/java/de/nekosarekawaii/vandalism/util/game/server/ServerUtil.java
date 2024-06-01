@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.util.game.server;
 
 import com.google.gson.Gson;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
 import de.nekosarekawaii.vandalism.integration.viafabricplus.ViaFabricPlusAccess;
@@ -312,7 +313,7 @@ public class ServerUtil implements MinecraftWrapper {
      */
     public static void connectWithVFPFix(final String address, final ProtocolVersion protocolVersion, final boolean revertOnDisconnect) {
         ViaFabricPlusAccess.setPreviousVersion(null);
-        ViaFabricPlusAccess.setTargetVersion(protocolVersion, revertOnDisconnect);
+        ProtocolTranslator.setTargetVersion(protocolVersion, revertOnDisconnect);
         connect(address);
     }
 

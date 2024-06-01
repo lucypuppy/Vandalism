@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
@@ -84,9 +85,8 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
             1.0f
     );
 
-    private final ValueGroup shieldSlowDown = new ValueGroup(this, "Shield", "Shield Slowdown settings.").visibleCondition(() -> {
-        return ViaFabricPlusAccess.getTargetVersion().newerThan(ProtocolVersion.v1_8);
-    });
+    private final ValueGroup shieldSlowDown = new ValueGroup(this, "Shield", "Shield Slowdown settings.").visibleCondition(() ->
+            ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_8));
 
     private final FloatValue shieldForwardMultiplier = new FloatValue(
             this.shieldSlowDown,
@@ -106,9 +106,8 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
             1.0f
     );
 
-    private final ValueGroup swordSlowDown = new ValueGroup(this, "Sword", "Sword Slowdown settings.").visibleCondition(() -> {
-        return ViaFabricPlusAccess.getTargetVersion().olderThan(ProtocolVersion.v1_9);
-    });
+    private final ValueGroup swordSlowDown = new ValueGroup(this, "Sword", "Sword Slowdown settings.").visibleCondition(() ->
+            ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_9));
 
     private final FloatValue swordForwardMultiplier = new FloatValue(
             this.swordSlowDown,
@@ -128,9 +127,8 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
             1.0f
     );
 
-    private final ValueGroup tridentSlowDown = new ValueGroup(this, "Trident", "Trident Slowdown settings.").visibleCondition(() -> {
-        return ViaFabricPlusAccess.getTargetVersion().newerThan(ProtocolVersion.v1_12);
-    });
+    private final ValueGroup tridentSlowDown = new ValueGroup(this, "Trident", "Trident Slowdown settings.").visibleCondition(() ->
+            ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_12));
 
     private final FloatValue tridentForwardMultiplier = new FloatValue(
             this.tridentSlowDown,
@@ -209,17 +207,17 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
             if (item instanceof PotionItem) {
                 return this.potionForwardMultiplier.getValue();
             }
-            if (ViaFabricPlusAccess.getTargetVersion().newerThan(ProtocolVersion.v1_8)) {
+            if (ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_8)) {
                 if (item instanceof ShieldItem) {
                     return this.shieldForwardMultiplier.getValue();
                 }
             }
-            if (ViaFabricPlusAccess.getTargetVersion().olderThan(ProtocolVersion.v1_9)) {
+            if (ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_9)) {
                 if (item instanceof SwordItem) {
                     return this.swordForwardMultiplier.getValue();
                 }
             }
-            if (ViaFabricPlusAccess.getTargetVersion().newerThan(ProtocolVersion.v1_12_2)) {
+            if (ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_12_2)) {
                 if (item instanceof TridentItem) {
                     return this.tridentForwardMultiplier.getValue();
                 }
@@ -245,17 +243,17 @@ public class NoSlowModule extends AbstractModule implements PlayerSlowdownListen
             if (item instanceof PotionItem) {
                 return this.potionSidewaysMultiplier.getValue();
             }
-            if (ViaFabricPlusAccess.getTargetVersion().newerThan(ProtocolVersion.v1_8)) {
+            if (ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_8)) {
                 if (item instanceof ShieldItem) {
                     return this.shieldSidewaysMultiplier.getValue();
                 }
             }
-            if (ViaFabricPlusAccess.getTargetVersion().olderThan(ProtocolVersion.v1_9)) {
+            if (ProtocolTranslator.getTargetVersion().olderThan(ProtocolVersion.v1_9)) {
                 if (item instanceof SwordItem) {
                     return this.swordSidewaysMultiplier.getValue();
                 }
             }
-            if (ViaFabricPlusAccess.getTargetVersion().newerThan(ProtocolVersion.v1_12_2)) {
+            if (ProtocolTranslator.getTargetVersion().newerThan(ProtocolVersion.v1_12_2)) {
                 if (item instanceof TridentItem) {
                     return this.tridentSidewaysMultiplier.getValue();
                 }
