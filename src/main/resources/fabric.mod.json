@@ -6,19 +6,19 @@
   "description": "A mod for Minecraft designed to train server administrators.",
   "authors": [
     "NekosAreKawaii",
-    "FooFieOwO"
+    "FooFieOwO",
+    "Verschlxfene",
+    "Recyz"
   ],
   "contributors": [
-    "EnZaXD",
-    "EvilCodeZ",
-    "Flauschig",
+    "cuddlycatgirl",
+    "nellieldev",
+    "xkeksi",
     "NotYourReturn",
-    "SirLennox",
-    "Snow",
-    "keksbyte",
     "mori0",
-    "richard",
-    "simon"
+    "richardletshacks",
+    "EvilCodeZ",
+    "Flauschig"
   ],
   "environment": "client",
   "license": "GPL-v3",
