@@ -65,7 +65,6 @@ public class CommandManager extends Storage<AbstractCommand> implements Minecraf
                 new ModuleUnbindCommand(),
                 new ModuleShowBindCommand(),
                 new ChatClearCommand(),
-                new ScriptCommand(),
                 new FriendsCommand(),
                 new ConfigCommand(),
                 new SayCommand(),

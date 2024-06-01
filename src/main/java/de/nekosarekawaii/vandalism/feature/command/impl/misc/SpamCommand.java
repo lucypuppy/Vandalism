@@ -22,7 +22,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
-import de.nekosarekawaii.vandalism.feature.script.parse.ScriptVariable;
+import de.nekosarekawaii.vandalism.integration.Placeholders;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.command.CommandSource;
@@ -59,9 +59,9 @@ public class SpamCommand extends AbstractCommand {
                                             final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
                                             if (networkHandler == null) break;
                                             if (message.startsWith("/") && message.length() > 1) {
-                                                this.mc.getNetworkHandler().sendChatCommand(ScriptVariable.applyReplacements(message.substring(1)));
+                                                this.mc.getNetworkHandler().sendChatCommand(Placeholders.applyReplacements(message.substring(1)));
                                             } else {
-                                                ChatUtil.sendChatMessage(ScriptVariable.applyReplacements(message));
+                                                ChatUtil.sendChatMessage(Placeholders.applyReplacements(message));
                                             }
                                             try {
                                                 Thread.sleep(delay);

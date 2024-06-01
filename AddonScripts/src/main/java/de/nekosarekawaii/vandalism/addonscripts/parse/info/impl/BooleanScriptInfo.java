@@ -16,20 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.addonscripts;
+package de.nekosarekawaii.vandalism.addonscripts.parse.info.impl;
 
-import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
-import lombok.Getter;
+import de.nekosarekawaii.vandalism.addonscripts.parse.info.IScriptInfo;
+import de.nekosarekawaii.vandalism.util.common.ObjectTypeChecker;
 
-public class AddonTemplate implements VandalismAddonLauncher {
-
-    @Getter
-    private static AddonTemplate instance;
+public abstract class BooleanScriptInfo implements IScriptInfo<Boolean> {
 
     @Override
-    public void onLaunch(final Vandalism vandalism) {
-        instance = this;
+    public Boolean parse(final String line) throws Exception {
+        if (ObjectTypeChecker.isBoolean(line)) {
+            return Boolean.parseBoolean(line);
+        }
+        throw new Exception("Invalid boolean!");
     }
 
 }

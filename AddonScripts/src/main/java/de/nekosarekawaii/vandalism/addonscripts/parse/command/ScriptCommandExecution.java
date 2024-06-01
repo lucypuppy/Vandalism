@@ -16,20 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.addonscripts;
+package de.nekosarekawaii.vandalism.addonscripts.parse.command;
 
-import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
-import lombok.Getter;
+public interface ScriptCommandExecution {
 
-public class AddonTemplate implements VandalismAddonLauncher {
-
-    @Getter
-    private static AddonTemplate instance;
-
-    @Override
-    public void onLaunch(final Vandalism vandalism) {
-        instance = this;
-    }
+    void execute(final String scriptName, final int lineNumber, final String code, final boolean execute) throws Exception;
 
 }

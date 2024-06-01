@@ -19,17 +19,27 @@
 package de.nekosarekawaii.vandalism.addonscripts;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.addonscripts.base.ScriptManager;
+import de.nekosarekawaii.vandalism.addonscripts.command.ScriptCommand;
 import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
 import lombok.Getter;
 
-public class AddonTemplate implements VandalismAddonLauncher {
+public class AddonScripts implements VandalismAddonLauncher {
 
     @Getter
-    private static AddonTemplate instance;
+    private static AddonScripts instance;
+
+    @Getter
+    private ScriptManager scriptManager;
 
     @Override
     public void onLaunch(final Vandalism vandalism) {
         instance = this;
+
+        this.scriptManager = new ScriptManager(vandalism.getConfigManager(), vandalism.getClientWindowManager(), vandalism.getRunDirectory());
+        this.scriptManager.init();
+
+        vandalism.getCommandManager().add(new ScriptCommand());
     }
 
 }

@@ -29,7 +29,6 @@ import de.nekosarekawaii.vandalism.event.normal.game.MinecraftBoostrapListener;
 import de.nekosarekawaii.vandalism.event.normal.game.ShutdownProcessListener;
 import de.nekosarekawaii.vandalism.feature.command.CommandManager;
 import de.nekosarekawaii.vandalism.feature.module.ModuleManager;
-import de.nekosarekawaii.vandalism.feature.script.ScriptManager;
 import de.nekosarekawaii.vandalism.integration.creativetab.CreativeTabManager;
 import de.nekosarekawaii.vandalism.integration.friends.FriendsManager;
 import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
@@ -130,7 +129,6 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     // Features
     private ModuleManager moduleManager;
     private CommandManager commandManager;
-    private ScriptManager scriptManager;
 
     //test
 
@@ -203,9 +201,6 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
         this.commandManager = new CommandManager();
         this.commandManager.init();
-
-        this.scriptManager = new ScriptManager(this.configManager, this.clientWindowManager, this.runDirectory);
-        this.scriptManager.init();
 
         // Cause of the menu category button order this needs to be called
         // after every default menu has been added and before the addons are loaded

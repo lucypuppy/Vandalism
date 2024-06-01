@@ -16,20 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.addonscripts;
+package de.nekosarekawaii.vandalism.addonscripts.parse.info.impl;
 
-import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
-import lombok.Getter;
+import de.nekosarekawaii.vandalism.addonscripts.parse.info.IScriptInfo;
 
-public class AddonTemplate implements VandalismAddonLauncher {
-
-    @Getter
-    private static AddonTemplate instance;
+public abstract class StringScriptInfo implements IScriptInfo<String> {
 
     @Override
-    public void onLaunch(final Vandalism vandalism) {
-        instance = this;
+    public String parse(final String line) throws Exception {
+        if (line.isBlank()) {
+            throw new RuntimeException("The value is empty.");
+        }
+        return line;
     }
 
 }

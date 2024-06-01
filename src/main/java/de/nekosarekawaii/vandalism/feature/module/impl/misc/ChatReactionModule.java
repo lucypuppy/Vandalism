@@ -23,7 +23,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.rendering.ButtonValue;
 import de.nekosarekawaii.vandalism.event.normal.player.ChatReceiveListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.feature.script.parse.ScriptVariable;
+import de.nekosarekawaii.vandalism.integration.Placeholders;
 import de.nekosarekawaii.vandalism.util.common.RandomUtils;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import net.minecraft.client.network.PlayerListEntry;
@@ -162,9 +162,9 @@ public class ChatReactionModule extends AbstractModule implements ChatReceiveLis
         this.setup();
         this.contentMap.forEach((triggers, responses) -> {
             for (final String trigger : triggers) {
-                if (StringUtils.contains(ScriptVariable.applyReplacements(message), trigger)) {
+                if (StringUtils.contains(Placeholders.applyReplacements(message), trigger)) {
                     String answer = responses.length == 1 ? responses[0] : responses[RandomUtils.randomInt(0, responses.length)];
-                    answer = ScriptVariable.applyReplacements(answer);
+                    answer = Placeholders.applyReplacements(answer);
                     final String target = targetName.get();
                     if (answer.contains("%target%") && !target.equals("%target%")) {
                         answer = answer.replace("%target%", target);

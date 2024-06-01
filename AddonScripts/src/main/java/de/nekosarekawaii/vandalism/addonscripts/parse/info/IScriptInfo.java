@@ -16,20 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.addonscripts;
+package de.nekosarekawaii.vandalism.addonscripts.parse.info;
 
-import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
-import lombok.Getter;
+public interface IScriptInfo<T> {
 
-public class AddonTemplate implements VandalismAddonLauncher {
+    String tag();
 
-    @Getter
-    private static AddonTemplate instance;
+    T parse(final String line) throws Exception;
 
-    @Override
-    public void onLaunch(final Vandalism vandalism) {
-        instance = this;
-    }
+    T defaultValue();
 
 }
