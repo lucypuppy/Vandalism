@@ -16,20 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.addonscripts;
+package de.nekosarekawaii.vandalism.addonscripts.gui;
 
-import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
-import lombok.Getter;
+import de.nekosarekawaii.vandalism.util.common.StringUtils;
 
-public class AddonTemplate implements VandalismAddonLauncher {
+public enum ScriptsTableColumn {
 
-    @Getter
-    private static AddonTemplate instance;
+    NAME, VERSION, AUTHOR, DESCRIPTION, CATEGORY, EXPERIMENTAL, MODIFICATION_DATE, ACTIONS;
 
-    @Override
-    public void onLaunch(final Vandalism vandalism) {
-        instance = this;
+    public String getName() {
+        return StringUtils.normalizeEnumName(this.name());
     }
 
 }

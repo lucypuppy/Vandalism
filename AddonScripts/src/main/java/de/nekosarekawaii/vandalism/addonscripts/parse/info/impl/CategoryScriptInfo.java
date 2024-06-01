@@ -16,20 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.addonscripts;
+package de.nekosarekawaii.vandalism.addonscripts.parse.info.impl;
 
-import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
-import lombok.Getter;
+import de.nekosarekawaii.vandalism.addonscripts.parse.info.IScriptInfo;
+import de.nekosarekawaii.vandalism.feature.Feature;
 
-public class AddonTemplate implements VandalismAddonLauncher {
-
-    @Getter
-    private static AddonTemplate instance;
+public class CategoryScriptInfo implements IScriptInfo<Feature.Category> {
 
     @Override
-    public void onLaunch(final Vandalism vandalism) {
-        instance = this;
+    public String tag() {
+        return "category";
+    }
+
+    @Override
+    public Feature.Category parse(final String line) throws Exception {
+        try {
+            return Feature.Category.valueOf(line.toUpperCase());
+        } catch (Exception e) {
+            throw new Exception("Invalid category!");
+        }
+    }
+
+    @Override
+    public Feature.Category defaultValue() {
+        return Feature.Category.MISC;
     }
 
 }

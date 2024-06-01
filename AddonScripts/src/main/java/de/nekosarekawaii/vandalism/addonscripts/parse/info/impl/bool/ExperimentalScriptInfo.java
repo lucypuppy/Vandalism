@@ -16,20 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.addonscripts;
+package de.nekosarekawaii.vandalism.addonscripts.parse.info.impl.bool;
 
-import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.VandalismAddonLauncher;
-import lombok.Getter;
+import de.nekosarekawaii.vandalism.addonscripts.parse.info.impl.BooleanScriptInfo;
 
-public class AddonTemplate implements VandalismAddonLauncher {
-
-    @Getter
-    private static AddonTemplate instance;
+public class ExperimentalScriptInfo extends BooleanScriptInfo {
 
     @Override
-    public void onLaunch(final Vandalism vandalism) {
-        instance = this;
+    public String tag() {
+        return "experimental";
+    }
+
+    @Override
+    public Boolean defaultValue() {
+        return false;
     }
 
 }

@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "vandalism-third-party",
+  "id": "vandalism-scripts",
   "version": "${version}",
-  "name": "Vandalism-Third-Party",
-  "description": "Implementation of various third party APIs for Vandalism.",
+  "name": "Vandalism-Scripts",
+  "description": "Legacy script system.",
   "authors": [
     "NekosAreKawaii",
     "FooFieOwO",
@@ -12,12 +12,9 @@
   ],
   "license": "GPL-v3",
   "environment": "client",
-  "mixins": [
-    "vandalism-third-party.mixins.json"
-  ],
   "entrypoints": {
     "vandalism:onLaunch": [
-      "de.nekosarekawaii.vandalism.addonthirdparty.AddonThirdParty"
+      "de.nekosarekawaii.vandalism.addonscripts.AddonScripts"
     ]
   },
   "depends": {
