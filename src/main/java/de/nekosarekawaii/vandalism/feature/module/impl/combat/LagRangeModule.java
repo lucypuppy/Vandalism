@@ -29,7 +29,6 @@ import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.common.MathUtil;
 import de.nekosarekawaii.vandalism.util.game.Prediction;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.profiler.Profiler;
 
@@ -54,6 +53,7 @@ public class LagRangeModule extends AbstractModule implements TimeTravelListener
     private final LongValue delay = new LongValue(this, "Delay", "The delay between lagging in milliseconds.", 1000L, 0L, 10000L);
     private final BooleanValue tickEntities = new BooleanValue(this, "Tick Entities", "Tick entities while charging.", true);
     private final BooleanValue onlyOnGround = new BooleanValue(this, "Only On Ground", "Only lag when you are on the ground.", false);
+    private final BooleanValue noDamageCharge = new BooleanValue(this, "No Damage Charge", "Don't charge when receiving damage.", true);
 
     @Override
     public void onActivate() {
@@ -84,6 +84,7 @@ public class LagRangeModule extends AbstractModule implements TimeTravelListener
 
         /* Deciding when to lag and when to uncharge */
         if (this.killAura.isActive() && this.killAura.getTarget() instanceof LivingEntity target) {
+            boolean isDamaged = !this.noDamageCharge.getValue() || this.mc.player.hurtTime <= 2;
             switch (this.mode.getValue().toLowerCase()) {
                 case "range": {
                     double distance = this.mc.player.getEyePos().distanceTo(target.getPos());
@@ -103,14 +104,14 @@ public class LagRangeModule extends AbstractModule implements TimeTravelListener
 
                     boolean isInRange = distance > this.killAura.getRange() && distance <= this.range.getValue();
 
-                    this.isCharging = this.isDone && isInRange && (isPredictedInRange || (this.ticksToShift > 0 && getCharge() < this.ticksToShift));
+                    this.isCharging = this.isDone && isInRange && isDamaged && (isPredictedInRange || (this.ticksToShift > 0 && getCharge() < this.ticksToShift));
                     break;
                 }
                 case "on hit": {
                     if(target.hurtTime == this.hurtTime.getValue())
                         this.ticksToShift = this.maxCharge.getValue();
 
-                    this.isCharging = this.isDone && (target.hurtTime == this.hurtTime.getValue() || (this.ticksToShift > 0 && getCharge() < this.ticksToShift));
+                    this.isCharging = this.isDone && isDamaged && (target.hurtTime == this.hurtTime.getValue() || (this.ticksToShift > 0 && getCharge() < this.ticksToShift));
                     break;
                 }
             }
@@ -152,11 +153,6 @@ public class LagRangeModule extends AbstractModule implements TimeTravelListener
     }
 
     private void tickEntities() {
-        for (Entity entity : this.mc.world.getEntities()) {
-            if (entity == null || entity == this.mc.player) continue;
-            this.mc.world.tickEntity(entity);
-        }
-
         Profiler profiler = this.mc.world.getProfiler();
         profiler.push("entities");
         this.mc.world.getEntities().forEach((entity) -> {
