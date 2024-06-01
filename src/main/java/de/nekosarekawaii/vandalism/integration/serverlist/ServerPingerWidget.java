@@ -119,8 +119,10 @@ public class ServerPingerWidget implements MinecraftWrapper {
             final Screen.PositionedTooltip tooltip = FAKE_MULTIPLAYER_SCREEN.tooltip;
             if (tooltip != null) {
                 final List<OrderedText> lines = new ArrayList<>(tooltip.tooltip());
-                for (final String line : FORGE_MOD_DATA) lines.add(Text.literal(line).asOrderedText());
-                context.drawTooltip(mc.textRenderer, lines, tooltip.positioner(), mouseX, mouseY);
+                if (!lines.isEmpty()) {
+                    for (final String line : FORGE_MOD_DATA) lines.add(Text.literal(line).asOrderedText());
+                    context.drawTooltip(mc.textRenderer, lines, tooltip.positioner(), mouseX, mouseY);
+                }
                 FAKE_MULTIPLAYER_SCREEN.tooltip = null;
             }
             IN_USE = false;
