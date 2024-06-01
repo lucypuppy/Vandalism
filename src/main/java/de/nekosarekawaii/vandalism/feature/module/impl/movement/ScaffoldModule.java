@@ -111,7 +111,14 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
             20.0f
     ).visibleCondition(this.windMouse::getValue);
 
-    private BooleanValue allowSprint = new BooleanValue(
+    private final BooleanValue movementFix = new BooleanValue(
+            this.rotationGroup,
+            "Movement Fix",
+            "Whether the movement fix should be used.",
+            true
+    );
+
+    public BooleanValue allowSprint = new BooleanValue(
             this,
             "Allow Sprint",
             "Allows you to sprint while scaffolding.",
@@ -184,7 +191,7 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
                 );
             }
             prevRotation = rotation;
-            Vandalism.getInstance().getRotationManager().setRotation(this.rotation, rotateSpeed.getValue(), 0.0f, true);
+            Vandalism.getInstance().getRotationManager().setRotation(this.rotation, rotateSpeed.getValue(), 0.0f, movementFix.getValue());
         }
     }
 

@@ -31,9 +31,8 @@ import de.nekosarekawaii.vandalism.event.normal.network.WorldListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.network.SyncPosition;
-import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.game.PacketHelper;
+import de.nekosarekawaii.vandalism.util.network.SyncPosition;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.debug.DebugRenderer;
@@ -127,7 +126,6 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
 
     private final HashMap<Integer, SyncPosition> backTrackedEntities = new HashMap<>();
     private final ConcurrentLinkedQueue<DelayedPacket> packets = new ConcurrentLinkedQueue<>();
-    private MSTimer timer;
     private long delay;
 
     public BackTrackModule() {
@@ -153,7 +151,6 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
                 Priorities.HIGH
         );
 
-        timer = new MSTimer();
         updateDelay();
     }
 
