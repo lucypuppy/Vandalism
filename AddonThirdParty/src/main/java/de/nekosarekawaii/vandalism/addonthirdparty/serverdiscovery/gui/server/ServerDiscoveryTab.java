@@ -44,6 +44,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.ServerList;
 import net.minecraft.util.Pair;
+import net.raphimc.viaaprilfools.api.AprilFoolsProtocolVersion;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -136,13 +137,7 @@ public class ServerDiscoveryTab implements MinecraftWrapper, DataListWidget {
                 final List<Integer> protocols = new ArrayList<>();
                 protocols.add(ServersRequest.ANY_PROTOCOL);
                 for (final ProtocolVersion protocolVersion : ProtocolVersion.getProtocols()) {
-                    if (
-                            protocolVersion.olderThan(ProtocolVersion.v1_7_2) ||
-                                    // TODO: Re-implement this
-                                    //AprilFoolsProtocolVersion.PROTOCOLS.contains(protocolVersion) ||
-                                    protocolVersion.getName().contains("Bedrock") ||
-                                    protocolVersion.getName().contains("Auto Detect")
-                    ) {
+                    if (protocolVersion.olderThan(ProtocolVersion.v1_7_2) || AprilFoolsProtocolVersion.PROTOCOLS.contains(protocolVersion) || protocolVersion.getName().contains("Bedrock") || protocolVersion.getName().contains("Auto Detect")) {
                         continue;
                     }
                     protocols.add(protocolVersion.getVersion());
