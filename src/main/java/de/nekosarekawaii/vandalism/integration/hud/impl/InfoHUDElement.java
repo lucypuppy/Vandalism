@@ -362,7 +362,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             );
         }
 
-        if (this.dimensionalPosition.getValue()) {
+        if (this.dimensionalPosition.getValue() && mc.world != null) {
             final DimensionType dimensionType = mc.world.getDimension();
             if (dimensionType != WorldUtil.uncoverDimensionType(DimensionTypes.THE_END)) {
                 final int positionDecimalPlacesRawValue = this.positionDecimalPlaces.getValue();
