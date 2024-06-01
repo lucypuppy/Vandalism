@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import com.google.common.net.InetAddresses;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
 import net.minecraft.client.network.AddressResolver;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,8 +34,10 @@ public interface MixinAddressResolver {
 
     @Redirect(method = "method_36903", at = @At(value = "INVOKE", target = "Ljava/net/InetAddress;getByName(Ljava/lang/String;)Ljava/net/InetAddress;"))
     private static InetAddress disableReversedDNSLookupForPureIPs(String host) throws UnknownHostException {
+        final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
+
         final InetAddress address = InetAddress.getByName(host);
-        if (Vandalism.getInstance().getClientSettings().getNetworkingSettings().disableReversedDNSLookupForPureIPs.getValue()) {
+        if (enhancedServerListSettings.enhancedServerList.getValue() && enhancedServerListSettings.disableReversedDNSLookupForPureIPs.getValue()) {
             if (InetAddresses.isInetAddress(host)) {
                 return InetAddress.getByAddress(address.getHostAddress(), address.getAddress());
             }

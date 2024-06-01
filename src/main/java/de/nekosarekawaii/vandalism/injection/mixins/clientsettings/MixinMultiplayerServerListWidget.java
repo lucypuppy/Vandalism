@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
@@ -49,7 +50,8 @@ public abstract class MixinMultiplayerServerListWidget {
 
     @Inject(method = "updateEntries", at = @At("HEAD"))
     private void clearThreadPool(CallbackInfo ci) {
-        if (!Vandalism.getInstance().getClientSettings().getNetworkingSettings().handleThreadPoolOverloads.getValue()) {
+        final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
+        if (!enhancedServerListSettings.enhancedServerList.getValue() || !enhancedServerListSettings.handleThreadPoolOverloads.getValue()) {
             return;
         }
         if (!vandalism$initialized) {

@@ -128,6 +128,20 @@ public class EnhancedServerListSettings extends ValueGroup {
             false
     ).visibleCondition(this.enhancedServerList::getValue);
 
+    public final BooleanValue disableReversedDNSLookupForPureIPs = new BooleanValue(
+            this,
+            "Disable Reversed DNS Lookup for Pure IPs",
+            "Disables the Reversed DNS Lookup for Pure IPs.",
+            true
+    );
+
+    public final BooleanValue handleThreadPoolOverloads = new BooleanValue(
+            this,
+            "Handle Thread Pool Overloads",
+            "Rescales the pinging thread pool if overhead gets to high (makes pinging faster)",
+            true
+    );
+
     public EnhancedServerListSettings(final ClientSettings parent) {
         super(parent, "Enhanced Server List", "Enhanced Server List related settings.");
     }
