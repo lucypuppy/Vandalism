@@ -118,6 +118,13 @@ public class NetworkingSettings extends ValueGroup implements KeyboardInputListe
             true
     );
 
+    public final BooleanValue handleThreadPoolOverloads = new BooleanValue(
+            this,
+            "Handle Thread Pool Overloads",
+            "Rescales the pinging thread pool if overhead gets to high (makes pinging faster)",
+            true
+    );
+
     public NetworkingSettings(final ClientSettings parent) {
         super(parent, "Networking", "Networking related settings.");
         Vandalism.getInstance().getEventSystem().subscribe(KeyboardInputEvent.ID, this);
