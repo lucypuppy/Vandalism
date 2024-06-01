@@ -24,6 +24,8 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileUtil;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -31,22 +33,15 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.RaycastContext;
+import net.minecraft.world.dimension.DimensionType;
 
 import java.util.UUID;
 
 public class WorldUtil implements MinecraftWrapper {
 
-    public enum Dimension {
-        OVERWORLD, NETHER, END
-    }
-
-    // We don't need any other dimensions since this client isn't intended to be compatible with mod packs.
-    public static Dimension getDimension() {
-        return switch (mc.world.getRegistryKey().getValue().getPath()) {
-            case "the_nether" -> Dimension.NETHER;
-            case "the_end" -> Dimension.END;
-            default -> Dimension.OVERWORLD;
-        };
+    // Dimensions can be dynamically registered, so we need to uncover them from the registry sent by the server
+    public static DimensionType uncoverDimensionType(final RegistryKey<DimensionType> key) {
+        return mc.world.getRegistryManager().get(RegistryKeys.DIMENSION_TYPE).get(key);
     }
 
     public static HitResult raytrace(final Rotation rotation, final double range) {
