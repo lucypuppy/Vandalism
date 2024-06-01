@@ -68,6 +68,7 @@ allprojects {
 
         modImplementation "de.florianmichael:ViaFabricPlus:${project.viafabricplus_version}"
 
+        // The evil
         compileOnly "org.projectlombok:lombok:${project.lombok_version}"
         annotationProcessor "org.projectlombok:lombok:${project.lombok_version}"
     }
@@ -167,7 +168,7 @@ dependencies {
     jij "net.lenni0451:Reflect:${project.reflect_version}"
 
     jij "io.github.spair:imgui-java-binding:${project.spair_imgui_version}"
-    jij ("io.github.spair:imgui-java-lwjgl3:${project.spair_imgui_version}") {
+    jij("io.github.spair:imgui-java-lwjgl3:${project.spair_imgui_version}") {
         exclude module: "lwjgl"
         exclude module: "lwjgl-glfw"
         exclude module: "lwjgl-opengl"
