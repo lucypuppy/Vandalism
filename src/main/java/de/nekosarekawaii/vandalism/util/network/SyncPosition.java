@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.integration.network;
+package de.nekosarekawaii.vandalism.util.network;
 
 import net.minecraft.entity.TrackedPosition;
 import net.minecraft.util.math.Vec3d;

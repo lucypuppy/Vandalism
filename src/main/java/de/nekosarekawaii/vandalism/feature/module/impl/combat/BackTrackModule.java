@@ -31,7 +31,7 @@ import de.nekosarekawaii.vandalism.event.normal.network.WorldListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.integration.network.SyncPosition;
+import de.nekosarekawaii.vandalism.util.network.SyncPosition;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.game.PacketHelper;
 import net.minecraft.client.render.Tessellator;
