@@ -9,4 +9,4 @@ pluginManagement {
     }
 }
 
-include "AddonWurstClient", "AddonBaritone", "AddonThirdParty", "AddonScripts"
+include "AddonWurstClient", "AddonBaritone", "AddonThirdParty"
