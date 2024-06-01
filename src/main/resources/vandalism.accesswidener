@@ -148,3 +148,4 @@ accessible method net/minecraft/block/entity/BlockEntity writeNbt (Lnet/minecraf
 accessible field net/minecraft/client/MinecraftClient attackCooldown I
 accessible field net/minecraft/item/BucketItem fluid Lnet/minecraft/fluid/Fluid;
 accessible field net/minecraft/block/AbstractBlock$Settings instrument Lnet/minecraft/block/enums/Instrument;
+accessible field net/minecraft/world/dimension/DimensionType field_31440 I
