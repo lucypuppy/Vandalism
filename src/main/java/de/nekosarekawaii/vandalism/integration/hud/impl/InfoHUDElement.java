@@ -44,6 +44,8 @@ import net.minecraft.network.packet.s2c.common.KeepAliveS2CPacket;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.query.PingResultS2CPacket;
 import net.minecraft.util.Formatting;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.dimension.DimensionTypes;
 
 import java.awt.*;
 import java.util.LinkedHashMap;
@@ -361,28 +363,23 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         }
 
         if (this.dimensionalPosition.getValue()) {
-            final WorldUtil.Dimension dimension = this.mc.player == null ? WorldUtil.Dimension.OVERWORLD : WorldUtil.getDimension();
-            if (dimension != WorldUtil.Dimension.END) {
+            final DimensionType dimensionType = mc.world.getDimension();
+            if (dimensionType != WorldUtil.uncoverDimensionType(DimensionTypes.THE_END)) {
                 final int positionDecimalPlacesRawValue = this.positionDecimalPlaces.getValue();
                 if (positionDecimalPlacesRawValue < 1) this.positionDecimalPlaces.setValue(1);
                 else if (positionDecimalPlacesRawValue > 15) this.positionDecimalPlaces.setValue(15);
                 final int decimalPlaces = this.positionDecimalPlaces.getValue();
                 final String positionFormat = "%." + decimalPlaces + "f";
-                String name = "";
-                double correctedX = posX, correctedZ = posZ;
-                switch (dimension) {
-                    case NETHER -> {
-                        name = "Overworld Position";
-                        correctedX = posX * 8;
-                        correctedZ = posZ * 8;
-                    }
-                    case OVERWORLD -> {
-                        name = "Nether Position";
-                        correctedX = posX / 8;
-                        correctedZ = posZ / 8;
-                    }
-                    default -> {
-                    }
+                String name;
+                double correctedX, correctedZ;
+                if (dimensionType == WorldUtil.uncoverDimensionType(DimensionTypes.THE_NETHER)) {
+                    name = "Overworld Position";
+                    correctedX = posX * 8;
+                    correctedZ = posZ * 8;
+                } else {
+                    name = "Nether Position";
+                    correctedX = posX / 8;
+                    correctedZ = posZ / 8;
                 }
                 infoMap.put(name, String.format(
                         positionFormat + ", " + positionFormat + ", " + positionFormat,
@@ -489,7 +486,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
 
         final int count = glowOutline.getValue() ? 2 : 1;
 
-        for(int x = 0; x < 2; x++) {
+        for (int x = 0; x < 2; x++) {
             width = height = 0;
             final boolean postProcess = count == 2 && x == 0;
             if (postProcess) {
@@ -544,7 +541,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
                             }
 
                             this.drawText(context, text, this.x, this.y + height);
-                            height += fontHeight+1;
+                            height += fontHeight + 1;
                         }
                         case RIGHT -> {
                             text = infoEntry.getValue() + " « " + infoEntry.getKey();
