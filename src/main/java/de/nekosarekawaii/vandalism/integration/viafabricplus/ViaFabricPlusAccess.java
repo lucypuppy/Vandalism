@@ -18,16 +18,20 @@
 
 package de.nekosarekawaii.vandalism.integration.viafabricplus;
 
+import com.viaversion.nbt.tag.CompoundTag;
 import com.viaversion.viaversion.api.connection.UserConnection;
 import com.viaversion.viaversion.api.minecraft.BlockPosition;
+import com.viaversion.viaversion.api.minecraft.item.DataItem;
 import com.viaversion.viaversion.api.minecraft.item.Item;
 import com.viaversion.viaversion.api.protocol.packet.PacketWrapper;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import com.viaversion.viaversion.api.type.Types;
+import com.viaversion.viaversion.protocols.v1_8to1_9.Protocol1_8To1_9;
 import com.viaversion.viaversion.protocols.v1_8to1_9.packet.ServerboundPackets1_8;
 import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.florianmichael.viafabricplus.protocoltranslator.translator.ItemTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
+import io.netty.buffer.ByteBuf;
 import net.lenni0451.reflect.stream.RStream;
 import net.lenni0451.reflect.stream.field.FieldWrapper;
 import net.minecraft.item.ItemStack;
@@ -43,6 +47,21 @@ public class ViaFabricPlusAccess {
 
     private static BlockPosition toPosition(final BlockPos pos) {
         return new BlockPosition(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    public static DataItem writtenBook(final CompoundTag tag) {
+        return new DataItem(386, (byte) 1, tag); // assuming no data
+    }
+
+    public static void sendCustomPayload(final String channel, final ByteBuf data) {
+        if (channel.contains(":")) {
+            throw new IllegalStateException("Channel name has to be unmapped");
+        }
+        final PacketWrapper customPayload = PacketWrapper.create(ServerboundPackets1_8.CUSTOM_PAYLOAD, getUserConnection());
+        customPayload.write(Types.STRING, channel);
+        customPayload.write(Types.REMAINING_BYTES, data.array());
+
+        customPayload.sendToServer(Protocol1_8To1_9.class);
     }
 
     public static void send1_8SignUpdatePacket(final BlockPos pos, final String line1, final String line2, final String line3, final String line4) {
