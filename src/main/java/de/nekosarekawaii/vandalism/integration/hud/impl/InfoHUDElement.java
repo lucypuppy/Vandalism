@@ -374,12 +374,12 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
                 double correctedX, correctedZ;
                 if (dimensionType == WorldUtil.uncoverDimensionType(DimensionTypes.THE_NETHER)) {
                     name = "Overworld Position";
-                    correctedX = posX * 8;
-                    correctedZ = posZ * 8;
+                    correctedX = posX * DimensionType.field_31440;
+                    correctedZ = posZ * DimensionType.field_31440;
                 } else {
                     name = "Nether Position";
-                    correctedX = posX / 8;
-                    correctedZ = posZ / 8;
+                    correctedX = posX / DimensionType.field_31440;
+                    correctedZ = posZ / DimensionType.field_31440;
                 }
                 infoMap.put(name, String.format(
                         positionFormat + ", " + positionFormat + ", " + positionFormat,
