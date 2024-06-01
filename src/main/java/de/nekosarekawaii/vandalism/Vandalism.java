@@ -104,6 +104,8 @@ import java.io.File;
  *  - Restructure addon system/loader
  *  - Networking optimizations and fixes
  *  - Restructure codebase once again
+ *  - Restructure build scripts, moving build logic into build-logic and wrapping conventions
+ *  - Layered mappings with mojmap as fallback
  */
 @Getter
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
