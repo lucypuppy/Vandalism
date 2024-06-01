@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "vandalism-template",
+  "version": "${version}",
+  "name": "Vandalism-Template",
+  "description": "Template.",
+  "authors": [
+    "NekosAreKawaii",
+    "FooFieOwO",
+    "Verschlxfene",
+    "Recyz"
+  ],
+  "license": "GPL-v3",
+  "environment": "client",
+  "mixins": [
+    "vandalism-template.mixins.json"
+  ],
+  "entrypoints": {
+    "vandalism:onLaunch": [
+      "de.nekosarekawaii.vandalism.addontemplate.AddonTemplate"
+    ]
+  },
+  "depends": {
+    "vandalism": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "parent": "vandalism"
+    }
+  }
+}
