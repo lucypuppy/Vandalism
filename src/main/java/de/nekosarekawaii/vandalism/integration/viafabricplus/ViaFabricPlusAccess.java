@@ -54,11 +54,8 @@ public class ViaFabricPlusAccess {
         packet.write(Types.STRING, line2);
         packet.write(Types.STRING, line3);
         packet.write(Types.STRING, line4);
-        try {
-            packet.sendToServerRaw();
-        } catch (Exception e) {
-            Vandalism.getInstance().getLogger().error("An error occurred while sending a 1.8 sign update packet.", e);
-        }
+
+        packet.sendToServerRaw();
     }
 
     public static void send1_8BlockPlacePacket(final BlockPos pos, final int face, final ItemStack item, final float cX, final float cY, final float cZ) {
@@ -69,11 +66,8 @@ public class ViaFabricPlusAccess {
         packet.write(Types.UNSIGNED_BYTE, (short) cX);
         packet.write(Types.UNSIGNED_BYTE, (short) cY);
         packet.write(Types.UNSIGNED_BYTE, (short) cZ);
-        try {
-            packet.sendToServerRaw();
-        } catch (Exception e) {
-            Vandalism.getInstance().getLogger().error("An error occurred while sending a 1.8 block place packet.", e);
-        }
+
+        packet.sendToServerRaw();
     }
 
     /**
