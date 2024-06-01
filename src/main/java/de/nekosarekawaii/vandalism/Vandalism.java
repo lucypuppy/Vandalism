@@ -60,7 +60,6 @@ import java.io.File;
  *  - Use hashmap storage instead of a default storage because that would improve the performance
  *      - (Search for FriendManager#getList())
  *  - Add anti vanish via. the player list hud
- *  - Fix Game server pinger (ensure pings are on different threads)
  *  - Add Proxy manager
  *  - Exploit Fixer Module:
  *      - Fix blockTooManyTranslateTexts

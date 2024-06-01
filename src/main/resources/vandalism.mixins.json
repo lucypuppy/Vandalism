@@ -29,6 +29,7 @@
     "clientsettings.MixinInGameHud",
     "clientsettings.MixinItemGroup",
     "clientsettings.MixinMultiplayerScreen",
+    "clientsettings.MixinMultiplayerServerListWidget",
     "clientsettings.MixinPlayerEntity",
     "clientsettings.MixinPressableWidget",
     "clientsettings.MixinProgressScreen",
