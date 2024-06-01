@@ -19,10 +19,8 @@
 package de.nekosarekawaii.vandalism.integration.viafabricplus;
 
 import com.viaversion.nbt.tag.CompoundTag;
-import com.viaversion.viaversion.api.connection.UserConnection;
 import com.viaversion.viaversion.api.minecraft.BlockPosition;
 import com.viaversion.viaversion.api.minecraft.item.DataItem;
-import com.viaversion.viaversion.api.minecraft.item.Item;
 import com.viaversion.viaversion.api.protocol.packet.PacketWrapper;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import com.viaversion.viaversion.api.type.Types;
@@ -36,6 +34,8 @@ import net.lenni0451.reflect.stream.RStream;
 import net.lenni0451.reflect.stream.field.FieldWrapper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+
+import static de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator.getPlayNetworkUserConnection;
 
 public class ViaFabricPlusAccess {
 
@@ -53,11 +53,11 @@ public class ViaFabricPlusAccess {
         return new DataItem(386, (byte) 1, tag); // assuming no data
     }
 
-    public static void sendCustomPayload(final String channel, final ByteBuf data) {
+    public static void send1_8CustomPayload(final String channel, final ByteBuf data) {
         if (channel.contains(":")) {
             throw new IllegalStateException("Channel name has to be unmapped");
         }
-        final PacketWrapper customPayload = PacketWrapper.create(ServerboundPackets1_8.CUSTOM_PAYLOAD, getUserConnection());
+        final PacketWrapper customPayload = PacketWrapper.create(ServerboundPackets1_8.CUSTOM_PAYLOAD, getPlayNetworkUserConnection());
         customPayload.write(Types.STRING, channel);
         customPayload.write(Types.REMAINING_BYTES, data.array());
 
@@ -65,55 +65,26 @@ public class ViaFabricPlusAccess {
     }
 
     public static void send1_8SignUpdatePacket(final BlockPos pos, final String line1, final String line2, final String line3, final String line4) {
-        final PacketWrapper packet = PacketWrapper.create(ServerboundPackets1_8.SIGN_UPDATE, getUserConnection());
-        packet.write(Types.BLOCK_POSITION1_8, toPosition(pos));
-        packet.write(Types.STRING, line1);
-        packet.write(Types.STRING, line2);
-        packet.write(Types.STRING, line3);
-        packet.write(Types.STRING, line4);
+        final PacketWrapper signUpdate = PacketWrapper.create(ServerboundPackets1_8.SIGN_UPDATE, getPlayNetworkUserConnection());
+        signUpdate.write(Types.BLOCK_POSITION1_8, toPosition(pos));
+        signUpdate.write(Types.STRING, line1);
+        signUpdate.write(Types.STRING, line2);
+        signUpdate.write(Types.STRING, line3);
+        signUpdate.write(Types.STRING, line4);
 
-        packet.sendToServerRaw();
+        signUpdate.sendToServer(Protocol1_8To1_9.class);
     }
 
     public static void send1_8BlockPlacePacket(final BlockPos pos, final int face, final ItemStack item, final float cX, final float cY, final float cZ) {
-        final PacketWrapper packet = PacketWrapper.create(ServerboundPackets1_8.USE_ITEM_ON, getUserConnection());
-        packet.write(Types.BLOCK_POSITION1_8, toPosition(pos));
-        packet.write(Types.UNSIGNED_BYTE, (short) face);
-        packet.write(Types.ITEM1_8, translateItem(item, ProtocolVersion.v1_8));
-        packet.write(Types.UNSIGNED_BYTE, (short) cX);
-        packet.write(Types.UNSIGNED_BYTE, (short) cY);
-        packet.write(Types.UNSIGNED_BYTE, (short) cZ);
+        final PacketWrapper blockPlacement = PacketWrapper.create(ServerboundPackets1_8.USE_ITEM_ON, getPlayNetworkUserConnection());
+        blockPlacement.write(Types.BLOCK_POSITION1_8, toPosition(pos));
+        blockPlacement.write(Types.UNSIGNED_BYTE, (short) face);
+        blockPlacement.write(Types.ITEM1_8, ItemTranslator.mcToVia(item, ProtocolVersion.v1_8));
+        blockPlacement.write(Types.UNSIGNED_BYTE, (short) cX);
+        blockPlacement.write(Types.UNSIGNED_BYTE, (short) cY);
+        blockPlacement.write(Types.UNSIGNED_BYTE, (short) cZ);
 
-        packet.sendToServerRaw();
-    }
-
-    /**
-     * Attempts to get the protocol version.
-     *
-     * @return the user connection
-     */
-    public static ProtocolVersion getTargetVersion() {
-        return ProtocolTranslator.getTargetVersion();
-    }
-
-    /**
-     * Attempts to get the user connection.
-     *
-     * @return the user connection
-     */
-    public static UserConnection getUserConnection() {
-        return ProtocolTranslator.getPlayNetworkUserConnection();
-    }
-
-    /**
-     * Attempts to translate the item using ViaFabricPlus' Item Translator.
-     *
-     * @param mcStack       the minecraft item stack
-     * @param targetVersion the version to translate to
-     * @return the viaversion item
-     */
-    public static Item translateItem(final ItemStack mcStack, final ProtocolVersion targetVersion) {
-        return ItemTranslator.mcToVia(mcStack, targetVersion);
+        blockPlacement.sendToServer(Protocol1_8To1_9.class);
     }
 
     /**
@@ -127,15 +98,6 @@ public class ViaFabricPlusAccess {
         } catch (Exception e) {
             Vandalism.getInstance().getLogger().error("An error occurred while attempting to set the previous value.", e);
         }
-    }
-
-    /**
-     * Attempts to set the target version.
-     *
-     * @param version the target version
-     */
-    public static void setTargetVersion(final ProtocolVersion version, final boolean revertOnDisconnect) {
-        ProtocolTranslator.setTargetVersion(version, revertOnDisconnect);
     }
 
 }
