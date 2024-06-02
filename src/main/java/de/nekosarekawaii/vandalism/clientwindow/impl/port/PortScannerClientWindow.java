@@ -181,9 +181,9 @@ public class PortScannerClientWindow extends StateClientWindow implements DataLi
                     if (ImGui.button("Clear" + id + "clear", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
                         this.reset();
                     }
-                    ImGui.sameLine();
                 }
-                if (ImUtils.subButton("Start" + id + "start")) {
+                ImGui.sameLine();
+                if (ImGui.button("Start" + id + "start", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                     this.reset();
                     this.setState(State.RUNNING.getMessage());
                     final Pair<String, Integer> serverAddress = ServerUtil.resolveServerAddress(this.address.get());
