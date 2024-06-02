@@ -25,6 +25,7 @@ import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindowScreen;
 import de.nekosarekawaii.vandalism.clientwindow.config.ClientWindowConfig;
 import de.nekosarekawaii.vandalism.clientwindow.impl.AboutClientWindow;
+import de.nekosarekawaii.vandalism.clientwindow.impl.GlobalSearchClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.impl.PlayerKickerClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.impl.ServerAddressResolverClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.impl.port.PortScannerClientWindow;
@@ -58,6 +59,7 @@ public class ClientWindowManager extends Storage<ClientWindow> implements Keyboa
     @Override
     public void init() {
         this.add(
+                new GlobalSearchClientWindow(),
                 new AboutClientWindow(),
                 new PortScannerClientWindow(),
                 new ServerAddressResolverClientWindow(),

@@ -73,4 +73,9 @@ public abstract class AbstractCommand extends Feature {
         return aliases;
     }
 
+    @Override
+    public String getName() {
+        return aliases[0];
+    }
+
 }
