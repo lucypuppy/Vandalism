@@ -135,14 +135,15 @@ public class ServerDiscoveryTab implements MinecraftWrapper, DataListWidget {
             ImGui.inputInt("Max Online Players", this.maxOnlinePlayers, 1);
             if (ImGui.beginCombo("Version", this.protocol == ServersRequest.ANY_PROTOCOL ? "Any" : ProtocolVersion.getProtocol(this.protocol).getName(), ImGuiComboFlags.HeightLargest)) {
                 final List<Integer> protocols = new ArrayList<>();
-                protocols.add(ServersRequest.ANY_PROTOCOL);
                 for (final ProtocolVersion protocolVersion : ProtocolVersion.getProtocols()) {
                     if (protocolVersion.olderThan(ProtocolVersion.v1_7_2) || AprilFoolsProtocolVersion.PROTOCOLS.contains(protocolVersion) || protocolVersion.getName().contains("Bedrock") || protocolVersion.getName().contains("Auto Detect")) {
                         continue;
                     }
                     protocols.add(protocolVersion.getVersion());
                 }
-                for (final Integer protocol : protocols) {
+                protocols.add(ServersRequest.ANY_PROTOCOL);
+                for (int i = protocols.size() - 1; i > -1; i--) {
+                    final int protocol = protocols.get(i);
                     if (protocol == ServersRequest.ANY_PROTOCOL) {
                         if (ImGui.selectable("Any", this.protocol == ServersRequest.ANY_PROTOCOL)) {
                             this.protocol = protocol;
