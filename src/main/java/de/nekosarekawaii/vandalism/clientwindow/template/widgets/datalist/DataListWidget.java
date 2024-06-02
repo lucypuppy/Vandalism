@@ -38,6 +38,14 @@ public interface DataListWidget {
 
     void renderDataEntryContextMenu(final String id, final int index, final DataEntry dataEntry);
 
+    default boolean hasContextMenu(final DataEntry dataEntry) {
+        return true;
+    }
+
+    default float getDefaultContextMenuWidth() {
+        return 200f;
+    }
+
     default void renderDataList(final String id, final float height, final CopyOnWriteArrayList<? extends DataEntry> dataList) {
         this.renderDataList(id, height, 100f, dataList);
     }
@@ -66,9 +74,12 @@ public interface DataListWidget {
             if (shouldHighlight) {
                 ImGui.popStyleColor(3);
             }
-            if (ImGui.beginPopupContextItem(id + "contextMenu" + i, ImGuiPopupFlags.MouseButtonRight)) {
-                this.renderDataEntryContextMenu(id, i, dataEntry);
-                ImGui.endPopup();
+            if (this.hasContextMenu(dataEntry)) {
+                ImGui.setNextWindowSizeConstraints(this.getDefaultContextMenuWidth(), 50f, 1000000f, 1000000f);
+                if (ImGui.beginPopupContextItem(id + "contextMenu" + i, ImGuiPopupFlags.MouseButtonRight)) {
+                    this.renderDataEntryContextMenu(id, i, dataEntry);
+                    ImGui.endPopup();
+                }
             }
             ImGui.sameLine(10);
             ImGui.text(dataEntry.getData());
