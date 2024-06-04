@@ -515,30 +515,37 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
 
         this.state = State.DISCOVERING;
 
+        if (this.song == null) {
+            ChatUtil.errorChatMessage("No song selected.");
+            this.deactivate();
+            return;
+        }
+
         try {
             if (this.mode.getValue() == Mode.BLOCKS) {
                 // feel free to improve this while still having spaces, thanks!
                 final List<BlockPos> noteBlocks = scanNoteBlocks();
-                for (NbsNote requirement : this.song.getRequirements()) {
+                for (final NbsNote requirement : this.song.getRequirements()) {
                     final Instrument requiredInstrument = requirement.getInstrument();
 
-                    for (BlockPos noteBlock : noteBlocks) {
-                        if (tunableBlocks.containsKey(noteBlock))
+                    for (final BlockPos noteBlock : noteBlocks) {
+                        if (this.tunableBlocks.containsKey(noteBlock)) {
                             continue;
+                        }
 
                         final Instrument instrument = getInstrument(noteBlock);
                         final int key = MinecraftDefinitions.nbsKeyToMcKey(requirement.getKey());
                         if (requiredInstrument == instrument) {
-                            tunableBlocks.put(noteBlock, new Note(instrument, key));
+                            this.tunableBlocks.put(noteBlock, new Note(instrument, key));
                             break;
                         }
                     }
                 }
 
-                ChatUtil.infoChatMessage("%d tunable blocks found".formatted(tunableBlocks.size()));
+                ChatUtil.infoChatMessage("%d tunable blocks found".formatted(this.tunableBlocks.size()));
                 ChatUtil.infoChatMessage("%d total blocks found".formatted(noteBlocks.size()));
             } else if (this.mode.getValue() == Mode.COMMAND) {
-                final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
+                final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
                 if (networkHandler != null) {
                     networkHandler.sendChatCommand("bossbar add " + BOSS_BAR_NAME + " \"Note Bot\"");
                 }
@@ -548,7 +555,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
                 this.deactivate();
                 return;
             }
-            player = new SongPlayer(this.song.getView(), callback);
+            this.player = new SongPlayer(this.song.getView(), this.callback);
         } catch (final Exception e) {
             ChatUtil.errorChatMessage("Failed to read song: " + e);
         }
