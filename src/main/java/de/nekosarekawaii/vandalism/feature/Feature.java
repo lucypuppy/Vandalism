@@ -18,18 +18,22 @@
 
 package de.nekosarekawaii.vandalism.feature;
 
-import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.nekosarekawaii.vandalism.util.common.IName;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import lombok.Getter;
 import net.raphimc.vialoader.util.VersionRange;
 
 public abstract class Feature implements IName, MinecraftWrapper {
 
     private final String name;
+    @Getter
     private final String description;
+    @Getter
     private final Category category;
+    @Getter
     private final VersionRange supportedVersions;
+    @Getter
     private boolean experimental;
 
     public Feature(String name, String description, Category category) {
@@ -57,32 +61,8 @@ public abstract class Feature implements IName, MinecraftWrapper {
         return this.name;
     }
 
-    public String getDescription() {
-        return this.description;
-    }
-
-    public Category getCategory() {
-        return this.category;
-    }
-
-    public boolean isExperimental() {
-        return this.experimental;
-    }
-
     public void markExperimental() {
         this.experimental = true;
-    }
-
-    public VersionRange getSupportedVersions() {
-        return this.supportedVersions;
-    }
-
-    public boolean isSupportedVersion(final ProtocolVersion version) {
-        // Using null as a wildcard instead of VersionRange.all() is faster
-        if (this.supportedVersions == null) {
-            return true;
-        }
-        return this.supportedVersions.contains(version);
     }
 
 }
