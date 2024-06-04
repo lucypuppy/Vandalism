@@ -425,6 +425,12 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        if (this.mode.getValue().equals(Mode.BLOCKS) && this.mc.interactionManager.getCurrentGameMode().isCreative()) {
+            ChatUtil.errorChatMessage("You can't play note block songs in creative mode.");
+            this.deactivate();
+            return;
+        }
+
         if (!isEverythingTuned() && state == State.PLAYING) {
             state = State.TUNING;
             player.stop();
