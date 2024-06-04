@@ -23,6 +23,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -67,7 +68,15 @@ public class SmartVClip extends AbstractModule implements KeyboardInputListener 
                 final BlockState airBlock2State = this.mc.world.getBlockState(airBlock2);
 
                 if (safeBlock.isSolidSurface(this.mc.world, safeBlockPos, this.mc.player, Direction.UP) && airBlock1State.isAir() && airBlock2State.isAir()) {
-                    this.mc.player.updatePosition(safeBlockPos.getX() + 0.5, safeBlockPos.getY() + 1, safeBlockPos.getZ() + 0.5);
+                    MovementUtil.bypassClip(
+                            mc.player.getPos().getX(),
+                            mc.player.getPos().getY(),
+                            mc.player.getPos().getZ(),
+                            safeBlockPos.getX() + 0.5,
+                            safeBlockPos.getY() + 1,
+                            safeBlockPos.getZ() + 0.5
+                    );
+
                     break;
                 }
             }
