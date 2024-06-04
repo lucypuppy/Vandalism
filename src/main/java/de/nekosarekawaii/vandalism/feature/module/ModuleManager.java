@@ -177,7 +177,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new CameraNoClipModule(),
                 new DeutschMacherModule(),
                 new ProtectorModule(),
-                new GameModeNotifierModule()
+                new GameModeNotifierModule(),
+                new SmartVClip()
         );
         this.configManager.add(new ModulesConfig(this));
     }
