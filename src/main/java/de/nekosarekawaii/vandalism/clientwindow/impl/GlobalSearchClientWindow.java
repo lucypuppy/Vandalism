@@ -27,8 +27,6 @@ import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataen
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.integration.friends.Friend;
-import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.type.ImString;
 import net.minecraft.client.gui.DrawContext;
@@ -93,15 +91,7 @@ public class GlobalSearchClientWindow extends ClientWindow implements DataListWi
         ImGui.setNextItemWidth(-1);
         ImGui.inputText(id + "searchQuery", this.searchQuery);
         ImGui.separator();
-        for (final Friend friend : Vandalism.getInstance().getFriendsManager().getList()) {
-            final CopyOnWriteArrayList<Pair<String, String>> friendsList = new CopyOnWriteArrayList<>();
-            friendsList.add(new Pair<>("Type", "Friend"));
-            friendsList.add(new Pair<>("Name", friend.getName()));
-            friendsList.add(new Pair<>("Alias", friend.getAlias()));
-            this.searchEntries.add(new ListDataEntry(friendsList));
-        }
         this.renderDataList(id, -1, 70, this.searchEntries);
-        this.searchEntries.clear();
     }
 
     @Override
@@ -183,16 +173,7 @@ public class GlobalSearchClientWindow extends ClientWindow implements DataListWi
                         }
                     }
                 }
-                case "Friend" -> {
-                    ImGui.separator();
-                    for (final Friend friend : Vandalism.getInstance().getFriendsManager().getList()) {
-                        if (listDataEntry.getSecond().getRight().equals(friend.getName())) {
-                            if (ImUtils.subButton("Remove" + id + index)) {
-                                Vandalism.getInstance().getFriendsManager().removeFriend(friend);
-                            }
-                            break;
-                        }
-                    }
+                default -> {
                 }
             }
         }
@@ -202,7 +183,7 @@ public class GlobalSearchClientWindow extends ClientWindow implements DataListWi
     public boolean hasContextMenu(final DataEntry dataEntry) {
         if (dataEntry instanceof final ListDataEntry listDataEntry) {
             final String type = listDataEntry.getFirst().getRight();
-            return type.equals("Module") || type.equals("Module Value") || type.equals("Client Setting") || type.equals("Friend");
+            return type.equals("Module") || type.equals("Module Value") || type.equals("Client Setting");
         }
         return true;
     }
