@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.gui.server;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import com.viaversion.viaversion.api.protocol.version.VersionType;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.ServerDiscoveryUtil;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.impl.ServersRequest;
@@ -136,10 +137,9 @@ public class ServerDiscoveryTab implements MinecraftWrapper, DataListWidget {
             if (ImGui.beginCombo("Version", this.protocol == ServersRequest.ANY_PROTOCOL ? "Any" : ProtocolVersion.getProtocol(this.protocol).getName(), ImGuiComboFlags.HeightLargest)) {
                 final List<Integer> protocols = new ArrayList<>();
                 for (final ProtocolVersion protocolVersion : ProtocolVersion.getProtocols()) {
-                    if (protocolVersion.olderThan(ProtocolVersion.v1_7_2) || AprilFoolsProtocolVersion.PROTOCOLS.contains(protocolVersion) || protocolVersion.getName().contains("Bedrock") || protocolVersion.getName().contains("Auto Detect")) {
-                        continue;
+                    if (protocolVersion.getVersionType() == VersionType.RELEASE) {
+                        protocols.add(protocolVersion.getVersion());
                     }
-                    protocols.add(protocolVersion.getVersion());
                 }
                 protocols.add(ServersRequest.ANY_PROTOCOL);
                 for (int i = protocols.size() - 1; i > -1; i--) {
