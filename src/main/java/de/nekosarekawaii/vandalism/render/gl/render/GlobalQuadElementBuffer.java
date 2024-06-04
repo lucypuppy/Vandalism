@@ -51,7 +51,7 @@ public class GlobalQuadElementBuffer {
 
     private static void createBuffer(int quadCapacity) {
         if (quadCapacity <= bufferQuadCapacity) return;
-        Vandalism.getInstance().getLogger().debug("Creating new quad element buffer with capacity " + quadCapacity);
+        Vandalism.getInstance().getLogger().debug("Creating new quad element buffer with capacity {}", quadCapacity);
 
         final ByteBuffer buffer = BufferAlloc.allocate(quadCapacity * 6 * 4); // quadCapacity * numVerticesPerQuad * sizeof(int)
         try {

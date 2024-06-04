@@ -132,7 +132,7 @@ public class ServerListManager {
                                 existingServerList.setSize(size);
                                 continue;
                             }
-                            Vandalism.getInstance().getLogger().warn("Detected duplicated server list in enhanced server list config: " + name);
+                            Vandalism.getInstance().getLogger().warn("Detected duplicated server list in enhanced server list config: {}", name);
                             continue;
                         }
                         this.serverLists.add(new ServerList(name).setSize(size));

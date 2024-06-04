@@ -40,7 +40,7 @@ public class AccountsConfig extends AbstractConfig<JsonObject> {
         try {
             account.save(accountNode);
         } catch (Throwable t) {
-            Vandalism.getInstance().getLogger().error("Failed to save the account: " + account.getDisplayName(), t);
+            Vandalism.getInstance().getLogger().error("Failed to save the account: {}", account.getDisplayName(), t);
         }
     }
 
@@ -73,7 +73,7 @@ public class AccountsConfig extends AbstractConfig<JsonObject> {
                         account.load(accountNode);
                         return account;
                     } catch (Throwable t) {
-                        Vandalism.getInstance().getLogger().error("Failed to load an account of the type: " + type, t);
+                        Vandalism.getInstance().getLogger().error("Failed to load an account of the type: {}", type, t);
                     }
                 }
             }

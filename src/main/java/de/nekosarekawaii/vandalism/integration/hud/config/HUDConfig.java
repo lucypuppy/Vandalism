@@ -51,7 +51,7 @@ public class HUDConfig extends AbstractConfig<JsonObject> {
                 mainNode.add(hudElementName, hudElementNode);
             }
             catch (Throwable t) {
-                Vandalism.getInstance().getLogger().error("Failed to save the HUD element: " + hudElementName, t);
+                Vandalism.getInstance().getLogger().error("Failed to save the HUD element: {}", hudElementName, t);
             }
         }
         return mainNode;
@@ -78,7 +78,7 @@ public class HUDConfig extends AbstractConfig<JsonObject> {
                 }
             }
             catch (Throwable t) {
-                Vandalism.getInstance().getLogger().error("Failed to load the HUD element: " + hudElementName, t);
+                Vandalism.getInstance().getLogger().error("Failed to load the HUD element: {}", hudElementName, t);
             }
         }
     }

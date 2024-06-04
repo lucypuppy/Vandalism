@@ -136,7 +136,7 @@ public abstract class AbstractAccount implements MinecraftWrapper {
                     this.setStatus("Failed to update UserApiService");
                 }
                 Vandalism.getInstance().getAccountManager().setCurrentAccount(this);
-                Vandalism.getInstance().getLogger().info("Logged in as " + this.getDisplayName());
+                Vandalism.getInstance().getLogger().info("Logged in as {}", this.getDisplayName());
             } catch (Throwable t) {
                 throw new RuntimeException(t);
             }
