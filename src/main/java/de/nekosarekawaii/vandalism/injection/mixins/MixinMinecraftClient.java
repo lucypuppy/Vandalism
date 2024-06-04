@@ -48,7 +48,7 @@ public abstract class MixinMinecraftClient {
         if (!this.vandalism$loadingDisplayed) {
             this.vandalism$loadingDisplayed = true;
             Vandalism.getInstance().getLogger().info("");
-            Vandalism.getInstance().getLogger().info("Minecraft loading took ~" + ManagementFactory.getRuntimeMXBean().getUptime() + "ms.");
+            Vandalism.getInstance().getLogger().info("Minecraft loading took ~{}ms.", ManagementFactory.getRuntimeMXBean().getUptime());
             Vandalism.getInstance().getLogger().info("");
         }
     }

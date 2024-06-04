@@ -81,7 +81,7 @@ public class SessionAccount extends AbstractAccount {
                 try {
                     uuid = UUIDUtil.getUUIDFromName(this.name);
                 } catch (Exception e) {
-                    Vandalism.getInstance().getLogger().error("Failed to get UUID from username: \"" + this.name + "\"", e);
+                    Vandalism.getInstance().getLogger().error("Failed to get UUID from username: \"{}\"", this.name, e);
                 }
             }
             if (!ObjectTypeChecker.isUUID(uuid)) {
