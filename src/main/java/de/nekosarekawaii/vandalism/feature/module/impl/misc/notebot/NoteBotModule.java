@@ -119,10 +119,12 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
     private SongPlayer player;
     private File searchFile;
 
+    private List<BlockPos> lastPlayedNotes = new ArrayList<>();
+
     private String formatSeconds(final int target) {
         final StringBuilder builder = new StringBuilder();
-        int minutes = target / 60;
-        int hours = minutes / 60;
+        final int minutes = target / 60;
+        final int hours = minutes / 60;
         final int seconds = target % 60;
         if (hours > 0) builder.append(hours).append(":");
         builder.append(minutes).append(":").append(String.format("%02d", seconds));
@@ -203,6 +205,10 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
                             final int key = MinecraftDefinitions.nbsKeyToMcKey(note.getKey());
                             final BlockPos pos = getNoteBlock(note.getInstrument(), key);
                             if (pos == null || this.mc.interactionManager == null) return;
+                            this.lastPlayedNotes.add(pos);
+                            if (this.lastPlayedNotes.size() > this.player.getSongView().getNotesAtTick(this.player.getTick()).size()) {
+                                this.lastPlayedNotes.removeFirst();
+                            }
                             this.mc.interactionManager.attackBlock(pos, Direction.UP);
                         }
                         default -> {
@@ -369,7 +375,11 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
             float[] color = new float[]{1f, 0f, 0f};
             final Note note = entry.getValue();
             if (note.key() == getNote(pos)) {
-                color = new float[]{0f, 1f, 0f};
+                if (this.lastPlayedNotes.contains(pos)) {
+                    color = new float[]{0f, 0f, 1f};
+                } else {
+                    color = new float[]{0f, 1f, 0f};
+                }
             }
             DebugRenderer.drawBox(
                     matrixStack,
@@ -557,6 +567,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
             }
         }
         this.song = null;
+        this.lastPlayedNotes.clear();
     }
 
     /**
@@ -565,9 +576,9 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
      * @param pos the position
      * @return the instrument
      */
-    private Instrument getInstrument(BlockPos pos) {
+    private Instrument getInstrument(final BlockPos pos) {
         if (isNotNoteBlock(pos)) return Instrument.HARP;
-        Instrument instrument = blockToInstrument(mc.world.getBlockState(pos.down()));
+        final Instrument instrument = blockToInstrument(mc.world.getBlockState(pos.down()));
         return instrument != null ? instrument : Instrument.HARP;
     }
 
@@ -597,7 +608,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
      * @param pos the position
      * @return the key
      */
-    public int getNote(BlockPos pos) {
+    public int getNote(final BlockPos pos) {
         if (ProtocolTranslator.getTargetVersion().olderThanOrEqualTo(ProtocolVersion.v1_12_2)) {
             return cachedPositions.getOrDefault(pos, 0);
         }
