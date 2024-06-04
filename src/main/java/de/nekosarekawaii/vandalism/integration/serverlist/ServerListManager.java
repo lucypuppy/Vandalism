@@ -22,6 +22,7 @@ import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import de.nekosarekawaii.vandalism.Vandalism;
+import lombok.Getter;
 import net.minecraft.client.MinecraftClient;
 
 import java.io.File;
@@ -35,6 +36,7 @@ public class ServerListManager {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
+    @Getter
     private final List<ServerList> serverLists;
     private final File configFile;
     private ServerList selectedServerList;
@@ -44,7 +46,7 @@ public class ServerListManager {
         this.serverLists = new ArrayList<>();
         this.configFile = new File(dir, "enhancedserverlist.json");
         this.serverLists.add(new ServerList());
-        this.selectedServerList = this.serverLists.get(0);
+        this.selectedServerList = this.serverLists.getFirst();
         this.lastSelectedServerList = this.selectedServerList.getName();
     }
 
@@ -69,7 +71,7 @@ public class ServerListManager {
 
     public ServerList get(final String name) {
         if (name.equals(ServerList.DEFAULT_SERVER_LIST_NAME)) {
-            return this.serverLists.get(0);
+            return this.serverLists.getFirst();
         }
         for (final ServerList serverList : this.serverLists) {
             if (serverList.getName().equalsIgnoreCase(name)) {
@@ -164,10 +166,6 @@ public class ServerListManager {
         } catch (Exception e) {
             Vandalism.getInstance().getLogger().error("Failed to save enhanced server list config.", e);
         }
-    }
-
-    public List<ServerList> getServerLists() {
-        return this.serverLists;
     }
 
 }
