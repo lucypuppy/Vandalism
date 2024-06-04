@@ -266,12 +266,12 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
         if (mc.interactionManager == null) return;
         this.handlePackets(this.backTrackedEntities.isEmpty());
 
-        for (final Map.Entry<Integer, SyncPosition> test : this.backTrackedEntities.entrySet()) {
-            final Entity entity = this.mc.world.getEntityById(test.getKey());
-            final Vec3d pos = test.getValue().pos;
+        for (final Map.Entry<Integer, SyncPosition> entry : this.backTrackedEntities.entrySet()) {
+            final Entity entity = this.mc.world.getEntityById(entry.getKey());
+            final Vec3d pos = entry.getValue().pos;
 
             if (entity == null) {
-                this.backTrackedEntities.remove(test.getKey());
+                this.backTrackedEntities.remove(entry.getKey());
                 return;
             }
 

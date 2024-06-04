@@ -27,8 +27,9 @@ import de.nekosarekawaii.vandalism.base.value.impl.rendering.RenderingValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.event.normal.render.Render2DListener;
+import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.integration.viafabricplus.ViaFabricPlusAccess;
 import de.nekosarekawaii.vandalism.util.common.IName;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.common.RandomUtils;
@@ -40,12 +41,19 @@ import imgui.type.ImString;
 import lombok.Getter;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.NoteBlock;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.debug.DebugRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.s2c.play.BlockEventS2CPacket;
 import net.minecraft.registry.Registries;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -65,7 +73,7 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class NoteBotModule extends AbstractModule implements PlayerUpdateListener, IncomingPacketListener {
+public class NoteBotModule extends AbstractModule implements PlayerUpdateListener, IncomingPacketListener, Render2DListener, Render3DListener {
 
     private final EnumModeValue<Mode> mode = new EnumModeValue<>(
             this,
@@ -85,9 +93,9 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
 
     private final BooleanValue loopSong = new BooleanValue(
             this,
-            "Loop song",
+            "Loop Song",
             "Puts the song into a loop.",
-            true
+            false
     );
 
     private final BooleanValue soundShuffler = new BooleanValue(
@@ -110,6 +118,31 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
     private NoteSong song;
     private SongPlayer player;
     private File searchFile;
+
+    private String formatSeconds(final int target) {
+        final StringBuilder builder = new StringBuilder();
+        int minutes = target / 60;
+        int hours = minutes / 60;
+        final int seconds = target % 60;
+        if (hours > 0) builder.append(hours).append(":");
+        builder.append(minutes).append(":").append(String.format("%02d", seconds));
+        return builder.toString();
+    }
+
+    private float getCurrentTime() {
+        if (this.player == null) return 0f;
+        return this.player.getTick() / this.player.getSongView().getSpeed();
+    }
+
+    private float getEndTime() {
+        if (this.song == null || this.player == null) return 0f;
+        return this.song.getView().getLength() / this.player.getSongView().getSpeed();
+    }
+
+    private String getProgress() {
+        if (this.player == null || this.song == null) return "0:00 / 0:00";
+        return formatSeconds((int) getCurrentTime()) + " / " + formatSeconds((int) getEndTime());
+    }
 
     private final SongPlayerCallback callback = n -> {
         if (!(n instanceof NbsNote note)) {
@@ -145,7 +178,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
                             final int currentTick = this.player.getTick();
                             final int maxTicks = this.song.getView().getLength();
                             final int progress = (int) ((currentTick / (float) maxTicks) * 100);
-                            final String title = this.song.getFile().getName();
+                            final String title = Files.getNameWithoutExtension(this.song.getFile().getName());
                             final String bossBarColor;
                             if (progress < 50) bossBarColor = "green";
                             else if (progress < 75) bossBarColor = "yellow";
@@ -160,7 +193,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
                                     "bossbar set " + BOSS_BAR_NAME + " style " + currentStyle,
                                     "bossbar set " + BOSS_BAR_NAME + " color " + bossBarColor,
                                     "bossbar set " + BOSS_BAR_NAME + " value " + progress,
-                                    "bossbar set " + BOSS_BAR_NAME + " name \"Currently playing " + (title.isEmpty() ? "a Song" : Files.getNameWithoutExtension(title)) + " " + this.getProgress() + "\""
+                                    "bossbar set " + BOSS_BAR_NAME + " name \"Currently Playing " + (title.isEmpty() ? "a Song" : title) + " " + this.getProgress() + "\""
                             );
                             for (final String command : commands) {
                                 networkHandler.sendChatCommand(command);
@@ -184,25 +217,13 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         }
     };
 
-    private String formatSeconds(final int target) {
-        final StringBuilder builder = new StringBuilder();
-        int minutes = target / 60;
-        int hours = minutes / 60;
-        final int seconds = target % 60;
-        if (hours > 0) builder.append(hours).append(":");
-        builder.append(minutes).append(":").append(String.format("%02d", seconds));
-        return builder.toString();
-    }
-
     private void renderSongFile(final File dir, final File file) {
         final SongFormat songFormat = NoteBlockLib.getFormat(file.toPath());
         if (songFormat == null) return;
         final String identifier = dir.getName() + "-" + file.getName() + "noteblocksong";
         if (this.song == null || !this.song.getFile().getAbsolutePath().equals(file.getAbsolutePath())) {
-            ImGui.separator();
-            ImGui.text(file.getName());
             if (this.mc.player != null) {
-                if (ImGui.button("Play##" + identifier + "play", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
+                if (ImUtils.subButton("Play " + file.getName() + "##" + identifier + "play")) {
                     try {
                         this.deactivate();
                         // Okay, so we're going to read the song extract info we might need and then recreate it as a NBS. This will make the playing at the end less cancer.
@@ -215,7 +236,6 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
                     }
                 }
             }
-            ImGui.spacing();
         }
     }
 
@@ -265,11 +285,6 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         }
     }
 
-    private String getProgress() {
-        if (this.player == null || this.song == null) return "0:00 / 0:00";
-        return formatSeconds((int) (this.player.getTick() / (this.player.getSongView().getSpeed()))) + " / " + formatSeconds((int) (this.song.getView().getLength() / (this.player.getSongView().getSpeed())));
-    }
-
     private final RenderingValue songSelector = new RenderingValue(this, "Song Selector", "Select a song to play.", io -> {
         if (NOTE_BLOCK_SONGS_DIR.exists()) {
             if (NOTE_BLOCK_SONGS_DIR.isFile()) {
@@ -281,25 +296,33 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         }
         ImGui.spacing();
         final NoteSong currentSong = this.song;
-        if (currentSong != null && currentSong.getFile() != null) {
+        final boolean active = currentSong != null && currentSong.getFile() != null;
+        if (ImGui.button("Open Directory##noteblockopendir", ImGui.getColumnWidth() / (active ? 3f : 1f), ImGui.getTextLineHeightWithSpacing())) {
+            Util.getOperatingSystem().open(NOTE_BLOCK_SONGS_DIR);
+        }
+        if (active) {
+            ImGui.sameLine();
+            if (ImGui.button((this.player.isPaused() ? "Resume" : "Pause") + "##noteblockpause", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
+                this.player.setPaused(!this.player.isPaused());
+            }
+            ImGui.sameLine();
             if (ImUtils.subButton("Stop##noteblockstop")) {
                 this.deactivate();
             }
             ImGui.separator();
-            ImGui.text("Currently playing");
-            final String title = currentSong.getFile().getName();
-            if (!title.isEmpty()) {
-                ImGui.textWrapped("Name: " + Files.getNameWithoutExtension(title));
-            }
             if (this.player != null) {
-                ImGui.textWrapped("Duration: " + this.getProgress());
+                final String title = Files.getNameWithoutExtension(currentSong.getFile().getName());
+                ImGui.text("Currently Playing");
+                ImGui.textWrapped("Name: " + (title.isEmpty() ? "a Song" : title));
+                ImGui.text("Progress: " + this.getProgress());
+                ImGui.progressBar(this.getCurrentTime() / this.getEndTime());
             }
         }
         ImGui.separator();
-        ImGui.text("Search for a song");
+        ImGui.text("Search for a Song");
         ImGui.setNextItemWidth(-1);
         ImGui.inputText("##noteblocksongsearch", this.searchText);
-        ImGui.spacing();
+        ImGui.text(" ".repeat(200));
         if (this.searchText.get().isBlank()) {
             this.renderSongDir(NOTE_BLOCK_SONGS_DIR);
         } else if (this.searchFile != null) {
@@ -326,15 +349,67 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
 
     /**
      * Catches incoming block event packets for versions below 1.12.2 because ViaVersion doesn't map them correctly ( - RK_01 ).
-     *
-     * @param event the event
      */
     @Override
-    public void onIncomingPacket(IncomingPacketEvent event) {
+    public void onIncomingPacket(final IncomingPacketEvent event) {
         if (event.packet instanceof final BlockEventS2CPacket packet && ProtocolTranslator.getTargetVersion().olderThanOrEqualTo(ProtocolVersion.v1_12_2)) {
             if (packet.getBlock() instanceof NoteBlock || mc.world.getBlockState(packet.getPos()).getBlock() instanceof NoteBlock) {
                 this.cachedPositions.put(packet.getPos(), packet.getData());
             }
+        }
+    }
+
+    @Override
+    public void onRender3D(final float tickDelta, final long limitTime, final MatrixStack matrixStack) {
+        if (!this.mode.getValue().equals(Mode.BLOCKS) || this.tunableBlocks.isEmpty()) return;
+        final VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+        matrixStack.push();
+        for (final Map.Entry<BlockPos, Note> entry : this.tunableBlocks.entrySet()) {
+            final BlockPos pos = entry.getKey();
+            float[] color = new float[]{1f, 0f, 0f};
+            final Note note = entry.getValue();
+            if (note.key() == getNote(pos)) {
+                color = new float[]{0f, 1f, 0f};
+            }
+            DebugRenderer.drawBox(
+                    matrixStack,
+                    immediate,
+                    pos,
+                    pos,
+                    color[0], color[1], color[2], 0.5f
+            );
+        }
+        matrixStack.pop();
+        immediate.draw();
+    }
+
+    @Override
+    public void onRender2DInGame(final DrawContext context, final float delta) {
+        if (this.mode.getValue().equals(Mode.COMMAND)) return;
+        String text = "";
+        String subText = "";
+        if (this.song != null && this.player != null) {
+            final File songFile = this.song.getFile();
+            if (songFile != null) {
+                String title = Files.getNameWithoutExtension(songFile.getName());
+                title = title.isEmpty() ? "a Song" : title;
+                if (this.state == State.PLAYING) {
+                    text = Formatting.AQUA + "Currently Playing " + Formatting.YELLOW + title;
+                    text += " " + Formatting.GREEN + this.getProgress();
+                    text = text.replace("/", Formatting.GRAY + "/" + Formatting.RED);
+                    subText = Formatting.GOLD + "Mode" + Formatting.GRAY + " > " + Formatting.LIGHT_PURPLE + this.mode.getValue().getName();
+                } else {
+                    text = Formatting.AQUA + "Next Song " + Formatting.YELLOW + title;
+                    subText = Formatting.GOLD + "State" + Formatting.GRAY + " > " + Formatting.LIGHT_PURPLE + this.state.getName();
+                }
+            }
+        }
+        final int width = context.getScaledWindowWidth(), height = context.getScaledWindowHeight();
+        if (!text.isEmpty()) {
+            context.drawCenteredTextWithShadow(mc.textRenderer, text, width / 2, height - mc.textRenderer.fontHeight * 8, 0xFFFFFFFF);
+        }
+        if (!subText.isEmpty()) {
+            context.drawCenteredTextWithShadow(mc.textRenderer, subText, width / 2, height - mc.textRenderer.fontHeight * 7, 0xFFFFFFFF);
         }
     }
 
@@ -405,7 +480,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
                         this.customInstruments.put(input, output);
                     }
                 }
-                if ((int) (this.player.getTick() / (this.player.getSongView().getSpeed())) >= (int) (this.song.getView().getLength() / (this.player.getSongView().getSpeed()))) {
+                if (this.getCurrentTime() >= this.getEndTime()) {
                     if (this.loopSong.getValue()) {
                         this.player.setTick(0);
                     } else {
@@ -468,15 +543,13 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
             ChatUtil.errorChatMessage("Failed to read song: " + e);
         }
 
-        Vandalism.getInstance().getEventSystem().subscribe(IncomingPacketEvent.ID, this);
-        Vandalism.getInstance().getEventSystem().subscribe(PlayerUpdateEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, IncomingPacketEvent.ID, Render2DEvent.ID, Render3DEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
         if (player != null) player.stop();
-        Vandalism.getInstance().getEventSystem().unsubscribe(PlayerUpdateEvent.ID, this);
-        Vandalism.getInstance().getEventSystem().unsubscribe(IncomingPacketEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, IncomingPacketEvent.ID, Render2DEvent.ID, Render3DEvent.ID);
         if (this.mode.getValue() == Mode.COMMAND) {
             final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
             if (networkHandler != null) {
@@ -540,7 +613,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
      * @return the pos
      */
     private BlockPos getNoteBlock(final Instrument instrument, final int note) {
-        return tunableBlocks.entrySet().stream()
+        return this.tunableBlocks.entrySet().stream()
                 .filter(entry -> entry.getValue().instrument() == instrument && entry.getValue().key() == note)
                 .map(Map.Entry::getKey)
                 .findFirst()
@@ -553,8 +626,8 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
      * @return if they're tuned
      */
     private boolean isEverythingTuned() {
-        return tunableBlocks.entrySet().stream().allMatch(match -> {
-            int note = getNote(match.getKey());
+        return this.tunableBlocks.entrySet().stream().allMatch(match -> {
+            final int note = getNote(match.getKey());
             return note != -1 && note == match.getValue().key();
         });
     }
@@ -609,6 +682,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
 
     @Getter
     private enum TuneMode implements IName {
+
         SINGLE, BATCH;
 
         private final String name;
@@ -616,11 +690,20 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         TuneMode() {
             this.name = StringUtils.normalizeEnumName(this.name());
         }
+
     }
 
-
+    @Getter
     private enum State {
-        DISCOVERING, TUNING, PLAYING, DONE
+
+        DISCOVERING, TUNING, PLAYING, DONE;
+
+        private final String name;
+
+        State() {
+            this.name = StringUtils.normalizeEnumName(this.name());
+        }
+
     }
 
 }
