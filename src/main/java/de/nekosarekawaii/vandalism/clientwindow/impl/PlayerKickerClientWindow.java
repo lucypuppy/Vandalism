@@ -18,6 +18,8 @@
 
 package de.nekosarekawaii.vandalism.clientwindow.impl;
 
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import com.viaversion.viaversion.api.protocol.version.VersionType;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientwindow.template.StateClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataListWidget;
@@ -28,6 +30,7 @@ import de.nekosarekawaii.vandalism.util.game.PingState;
 import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
 import imgui.ImGui;
+import imgui.flag.ImGuiComboFlags;
 import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import imgui.type.ImString;
@@ -45,6 +48,8 @@ import net.minecraft.util.Pair;
 import java.io.DataOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
@@ -122,7 +127,27 @@ public class PlayerKickerClientWindow extends StateClientWindow implements DataL
                     ImGui.inputText(id + "customIP", this.customIP);
                 }
             }
+            ImGui.text("Version");
+            ImGui.sameLine(ImGui.getColumnWidth() / 2f + 25f);
             ImGui.text("Kick Delay (ms)");
+            ImGui.setNextItemWidth(ImGui.getColumnWidth() / 2f);
+            if (ImGui.beginCombo(id + "version", ProtocolVersion.getProtocol(this.protocol).getName(), ImGuiComboFlags.HeightLargest)) {
+                final List<Integer> protocols = new ArrayList<>();
+                for (final ProtocolVersion protocolVersion : ProtocolVersion.getProtocols()) {
+                    if (protocolVersion.getVersionType() == VersionType.RELEASE && protocolVersion.newerThanOrEqualTo(ProtocolVersion.v1_8) && !protocolVersion.equalTo(ProtocolVersion.v1_19) && !protocolVersion.equalTo(ProtocolVersion.v1_19_1)) {
+                        protocols.add(protocolVersion.getVersion());
+                    }
+                }
+                for (int i = protocols.size() - 1; i > -1; i--) {
+                    final int protocol = protocols.get(i);
+                    final String protocolVersionName = ProtocolVersion.getProtocol(protocol).getName();
+                    if (ImGui.selectable(protocolVersionName, protocolVersionName.equals(ProtocolVersion.getProtocol(this.protocol).getName()))) {
+                        this.protocol = protocol;
+                    }
+                }
+                ImGui.endCombo();
+            }
+            ImGui.sameLine();
             ImGui.setNextItemWidth(-1);
             ImGui.inputInt(id + "delay", this.kickDelay);
             ImGui.spacing();
@@ -141,11 +166,10 @@ public class PlayerKickerClientWindow extends StateClientWindow implements DataL
                     this.checking = true;
                     this.setState(PingState.WAITING_RESPONSE.getMessage());
                     this.players = null;
-                    this.protocol = SharedConstants.getProtocolVersion();
                     this.friends = 0;
                     this.anonymousPlayers = 0;
                     this.playerDataEntries.clear();
-                    MCPing.pingModern(this.protocol)
+                    MCPing.pingModern(SharedConstants.getProtocolVersion())
                             .address(this.ip.get(), this.port.get())
                             .timeout(5000, 5000)
                             .exceptionHandler(t -> {
@@ -170,7 +194,6 @@ public class PlayerKickerClientWindow extends StateClientWindow implements DataL
                                 this.checking = false;
                                 this.setState(PingState.SUCCESS.getMessage());
                                 this.players = response.players;
-                                this.protocol = response.server.protocol;
                                 if (this.players != null && this.players.sample != null) {
                                     final MCPingResponse.Players.Player[] sample = this.players.sample;
                                     if (sample.length == 0) {
