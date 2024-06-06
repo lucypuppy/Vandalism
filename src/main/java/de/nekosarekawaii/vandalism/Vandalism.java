@@ -113,7 +113,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     @Getter
     private static final Vandalism instance = new Vandalism();
 
-    private final DietrichEvents2 eventSystem = new DietrichEvents2(42 /* This value has to be incremented for every new event */, Throwable::printStackTrace);
+    private final DietrichEvents2 eventSystem = new DietrichEvents2(44 /* This value has to be incremented for every new event */, Throwable::printStackTrace);
     private final Logger logger = LoggerFactory.getLogger(FabricBootstrap.MOD_NAME);
 
     // Base handlers
@@ -136,8 +136,6 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     // Features
     private ModuleManager moduleManager;
     private CommandManager commandManager;
-
-    //test
 
     public void printStartup() {
         this.logger.info("");

@@ -19,25 +19,30 @@
 package de.nekosarekawaii.vandalism.event.normal.game;
 
 import de.florianmichael.dietrichevents2.AbstractEvent;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.block.BlockState;
+import net.minecraft.util.math.BlockPos;
 
-public interface MinecraftBoostrapListener {
+public interface BlockStateUpdateListener {
 
-    void onBootstrapGame(final MinecraftClient mc);
+    void onBlockStateUpdate(final BlockPos pos, final BlockState previousState, final BlockState state);
 
-    class MinecraftBootstrapEvent extends AbstractEvent<MinecraftBoostrapListener> {
+    class BlockStateUpdateEvent extends AbstractEvent<BlockStateUpdateListener> {
 
-        public static final int ID = 7;
+        public static final int ID = 43;
 
-        private final MinecraftClient mc;
+        private final BlockPos pos;
+        private final BlockState previousState;
+        private final BlockState state;
 
-        public MinecraftBootstrapEvent(final MinecraftClient mc) {
-            this.mc = mc;
+        public BlockStateUpdateEvent(final BlockPos pos, final BlockState previousState, final BlockState state) {
+            this.pos = pos;
+            this.previousState = previousState;
+            this.state = state;
         }
 
         @Override
-        public void call(final MinecraftBoostrapListener listener) {
-            listener.onBootstrapGame(this.mc);
+        public void call(final BlockStateUpdateListener listener) {
+            listener.onBlockStateUpdate(this.pos, this.previousState, this.state);
         }
 
     }

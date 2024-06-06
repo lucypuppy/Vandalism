@@ -37,7 +37,7 @@ public abstract class MixinWorldRenderer {
     private void hookESP(final OutlineVertexConsumerProvider instance, final int red, final int green, final int blue, final int alpha, final @Local Entity entity) {
         final ESPModule espModule = Vandalism.getInstance().getModuleManager().getEspModule();
         if (espModule.isActive() && espModule.isTarget(entity)) {
-            final Color color = espModule.outlineColor.getColor();
+            final Color color = espModule.entityColor.getColor();
             instance.setColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
         } else {
             instance.setColor(red, green, blue, alpha);

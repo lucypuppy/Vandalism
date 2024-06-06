@@ -66,6 +66,7 @@
     "event.MixinMouse",
     "event.MixinScreen",
     "event.MixinTextVisitFactory",
+    "event.MixinWorldChunk",
     "fix.imgui.MixinImGuiImplGlfw",
     "fix.minecraft.MixinAccessibilityOnboardingScreen",
     "fix.minecraft.MixinAddServerScreen",

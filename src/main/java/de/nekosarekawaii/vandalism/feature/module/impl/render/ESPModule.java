@@ -21,17 +21,44 @@ package de.nekosarekawaii.vandalism.feature.module.impl.render;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryBlacklistValue;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.event.normal.game.BlockStateListener;
+import de.nekosarekawaii.vandalism.event.normal.game.BlockStateUpdateListener;
+import de.nekosarekawaii.vandalism.event.normal.network.DisconnectListener;
+import de.nekosarekawaii.vandalism.event.normal.network.WorldListener;
+import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.render.ColorUtils;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.debug.DebugRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.network.ClientConnection;
 import net.minecraft.registry.Registries;
+import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
 
+import java.awt.*;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-public class ESPModule extends AbstractModule {
+public class ESPModule extends AbstractModule implements BlockStateListener, BlockStateUpdateListener, WorldListener, DisconnectListener, Render3DListener {
+
+    public final ColorValue entityColor = new ColorValue(
+            this,
+            "Entity Color",
+            "The color of the ESP for entities."
+    );
 
     private final BooleanValue items = new BooleanValue(
             this,
@@ -50,11 +77,42 @@ public class ESPModule extends AbstractModule {
             )
     ).visibleCondition(this.items::getValue);
 
-    public final ColorValue outlineColor = new ColorValue(
+    private final BooleanValue blocks = new BooleanValue(
             this,
-            "Color",
-            "The color of the outline."
+            "Blocks",
+            "Whether blocks should have an ESP.",
+            false
     );
+
+    private final DoubleValue maxBlockDistance = new DoubleValue(
+            this,
+            "Max Block Distance",
+            "The maximum distance to render the ESP for blocks.",
+            50d,
+            1d,
+            100d
+    ).visibleCondition(this.blocks::getValue);
+
+    private final MultiRegistryBlacklistValue<Block> blockList = new MultiRegistryBlacklistValue<>(
+            this,
+            "Block List",
+            "The blocks to target.",
+            Registries.BLOCK,
+            Arrays.asList(
+                    Blocks.AIR,
+                    Blocks.CAVE_AIR,
+                    Blocks.VOID_AIR
+            )
+    ).visibleCondition(this.blocks::getValue);
+
+    private final ColorValue blockColor = new ColorValue(
+            this,
+            "Block Color",
+            "The color of the ESP for blocks.",
+            new Color(221, 120, 246, 255)
+    ).visibleCondition(this.blocks::getValue);
+
+    private final List<BlockPos> espBlocks = new CopyOnWriteArrayList<>();
 
     public ESPModule() {
         super(
@@ -66,6 +124,70 @@ public class ESPModule extends AbstractModule {
 
     public boolean isTarget(final Entity entity) {
         return Vandalism.getInstance().getTargetManager().isTarget(entity) || entity instanceof final ItemEntity itemEntity && this.itemList.isSelected(itemEntity.getStack().getItem()) && this.items.getValue();
+    }
+
+    @Override
+    public void onActivate() {
+        this.espBlocks.clear();
+        Vandalism.getInstance().getEventSystem().subscribe(this, BlockStateEvent.ID, BlockStateUpdateEvent.ID, WorldLoadEvent.ID, DisconnectEvent.ID, Render3DEvent.ID);
+    }
+
+    @Override
+    public void onDeactivate() {
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, BlockStateEvent.ID, BlockStateUpdateEvent.ID, WorldLoadEvent.ID, DisconnectEvent.ID, Render3DEvent.ID);
+        this.espBlocks.clear();
+    }
+
+    @Override
+    public void onPreWorldLoad() {
+        this.espBlocks.clear();
+    }
+
+    @Override
+    public void onDisconnect(final ClientConnection clientConnection, final Text disconnectReason) {
+        this.espBlocks.clear();
+    }
+
+    @Override
+    public void onBlockState(final BlockPos pos, final BlockState state) {
+        if (!this.espBlocks.contains(pos) && this.blockList.isSelected(state.getBlock())) {
+            this.espBlocks.add(pos);
+        }
+    }
+
+    @Override
+    public void onBlockStateUpdate(final BlockPos pos, final BlockState previousState, final BlockState state) {
+        if (this.espBlocks.contains(pos) && previousState != state) {
+            this.espBlocks.remove(pos);
+        }
+    }
+
+    @Override
+    public void onRender3D(final float tickDelta, final long limitTime, final MatrixStack matrixStack) {
+        if (!this.blocks.getValue() || this.mc.player == null) {
+            return;
+        }
+        this.espBlocks.removeIf(pos -> {
+            return pos.toCenterPos().distanceTo(this.mc.player.getPos()) > this.maxBlockDistance.getValue() ||
+                    !this.blockList.isSelected(this.mc.world.getBlockState(pos).getBlock());
+        });
+        final VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+        matrixStack.push();
+        for (final BlockPos pos : this.espBlocks) {
+            final float[] color = ColorUtils.rgba(this.blockColor.getColor().getRGB());
+            DebugRenderer.drawBox(
+                    matrixStack,
+                    immediate,
+                    pos,
+                    pos,
+                    color[0],
+                    color[1],
+                    color[2],
+                    Math.min(color[3], 0.5f)
+            );
+        }
+        matrixStack.pop();
+        immediate.draw();
     }
 
 }
