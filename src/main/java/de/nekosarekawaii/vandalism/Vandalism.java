@@ -98,7 +98,6 @@ import java.io.File;
  * TODO: EvilCodeZ <br>
  *  - Add Bold -> SimpleFont#SimpleGlyphRenderer#renderGlyph
  *  - Also handle MINECRAFT_LINES and MINECRAFT_LINE_STRIP -> PersistentMeshProducer#addPass at "} else if (pass.getPrimitiveType() == PrimitiveType.QUADS) {"
- *  - If the quad buffer is resized at any time, the element buffer will be corrupted -> PersistentMeshProducer#addPass at "elementBuffer = GlobalQuadElementBuffer.getQuadElementBuffer(vertexCount / 4);"
  *  - Finish AtlasFontRenderer#substringText x2
  * TODO: Verschlxfene <br>
  *  - Restructure addon system/loader

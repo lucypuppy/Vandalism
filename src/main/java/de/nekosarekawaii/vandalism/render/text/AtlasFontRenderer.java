@@ -82,7 +82,7 @@ public class AtlasFontRenderer {
             y -= outSize.y;
         } else hasSize = false;
         this.textRendererVisitor.init(x, y, z, shadow, color, align, fontSize, this.font.getGlyphRenderer(), batch, matrix);
-        this.textSizeVisitor.init(align, fontSize);
+        this.textSizeVisitor.init(align, fontSize, 0.0f);
         if (!hasSize && needSize) {
             TextVisitFactory.visitFormatted(text, Style.EMPTY, (index, style, cp) -> this.textRendererVisitor.accept(index, style, cp) && this.textSizeVisitor.accept(index, style, cp));
         } else {
@@ -140,7 +140,7 @@ public class AtlasFontRenderer {
             y -= outSize.y;
         } else hasSize = false;
         this.textRendererVisitor.init(x, y, z, shadow, color, align, fontSize, this.font.getGlyphRenderer(), batch, matrix);
-        this.textSizeVisitor.init(align, fontSize);
+        this.textSizeVisitor.init(align, fontSize, 0.0f);
         if (!hasSize && needSize) {
             TextVisitFactory.visitFormatted(text, Style.EMPTY, (index, style, cp) -> this.textRendererVisitor.accept(index, style, cp) && this.textSizeVisitor.accept(index, style, cp));
         } else {
@@ -178,7 +178,7 @@ public class AtlasFontRenderer {
             return;
         }
         outSize.set(0.0f);
-        this.textSizeVisitor.init(align, fontSize);
+        this.textSizeVisitor.init(align, fontSize, 0.0f);
         TextVisitFactory.visitFormatted(text, Style.EMPTY, this.textSizeVisitor);
         outSize.set(this.textSizeVisitor.x, this.textSizeVisitor.y);
     }
@@ -189,7 +189,7 @@ public class AtlasFontRenderer {
             return;
         }
         outSize.set(0.0f);
-        this.textSizeVisitor.init(align, fontSize);
+        this.textSizeVisitor.init(align, fontSize, 0.0f);
         TextVisitFactory.visitFormatted(text, Style.EMPTY, this.textSizeVisitor);
         outSize.set(this.textSizeVisitor.x, this.textSizeVisitor.y);
     }
@@ -235,15 +235,11 @@ public class AtlasFontRenderer {
     }
 
     @NotNull
-    public String substringText(@Nullable String text, @NotNull TextAlign align, float fontSize) {
-        if (text == null || text.isEmpty()) return "";
-        return "";
-    }
-
-    @NotNull
-    public String substringText(@Nullable StringVisitable text, @NotNull TextAlign align, float fontSize) {
-        if (text == null) return "";
-        return "";
+    public String substringText(@Nullable String text, @NotNull TextAlign align, float fontSize, float maxWidth) {
+        if (text == null || text.isEmpty() || maxWidth <= 0.0f) return "";
+        this.textSizeVisitor.init(align, fontSize, maxWidth);
+        TextVisitFactory.visitFormatted(text, Style.EMPTY, this.textSizeVisitor);
+        return text.substring(0, this.textSizeVisitor.charIndex);
     }
 
     @RequiredArgsConstructor
@@ -355,13 +351,17 @@ public class AtlasFontRenderer {
         private float y;
         private float fontScale;
         private GlyphInfo prevGlyph;
+        private float maxWidth;
+        private int charIndex;
 
-        public void init(TextAlign align, float fontSize) {
+        public void init(TextAlign align, float fontSize, float maxWidth) {
             this.align = align;
             this.x = 0.0f;
             this.y = 0.0f;
             this.fontScale = this.renderer.getFontScale(fontSize);
             this.prevGlyph = null;
+            this.maxWidth = maxWidth;
+            this.charIndex = 0;
         }
 
         @Override
@@ -370,12 +370,18 @@ public class AtlasFontRenderer {
             if (this.align.isVertical()) {
                 this.x = Math.max(this.x, glyph.getAdvanceX() * this.fontScale);
                 this.y += (glyph.getAscent() - glyph.getDescent()) * this.fontScale;
+
+                if (this.maxWidth > 0.0f && this.y > this.maxWidth) return false;
+                this.charIndex = index;
             } else {
                 if (this.renderer.kerningEnabled && this.prevGlyph != null) {
                     this.x += this.renderer.font.getKerning(this.prevGlyph, glyph) * this.fontScale;
                 }
                 this.x += glyph.getAdvanceX() * this.fontScale;
                 this.y = Math.max(this.y, (glyph.getAscent() - glyph.getDescent()) * this.fontScale);
+
+                if (this.maxWidth > 0.0f && this.x > this.maxWidth) return false;
+                this.charIndex = index;
             }
             return true;
         }
