@@ -23,7 +23,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
-import de.nekosarekawaii.vandalism.integration.newrotation.enums.RotationGCD;
+import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationGCD;
 
 public class RotationSettings extends ValueGroup {
 

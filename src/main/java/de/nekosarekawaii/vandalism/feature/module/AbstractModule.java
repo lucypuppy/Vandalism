@@ -29,7 +29,7 @@ import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.internal.ModuleToggleListener;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
-import de.nekosarekawaii.vandalism.integration.sound.SoundManager;
+import de.nekosarekawaii.vandalism.util.game.SoundHooks;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import lombok.Getter;
 import net.minecraft.text.MutableText;
@@ -185,8 +185,8 @@ public abstract class AbstractModule extends Feature implements ValueParent {
                         ChatUtil.chatMessage(text, true, true);
                     }
                     if (menuSettings.moduleStateSound.getValue() && this.moduleStateSound.getValue()) {
-                        if (newValue) SoundManager.playModuleActivate();
-                        else SoundManager.playModuleDeactivate();
+                        if (newValue) SoundHooks.playModuleActivate();
+                        else SoundHooks.playModuleDeactivate();
                     }
                 }
                 this.recursiveUpdateActiveState(newValue, this.values);
