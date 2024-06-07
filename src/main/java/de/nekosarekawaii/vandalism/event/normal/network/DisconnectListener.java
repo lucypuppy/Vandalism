@@ -22,6 +22,9 @@ import de.florianmichael.dietrichevents2.AbstractEvent;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.text.Text;
 
+/**
+ * Event that is called once the playing client disconnects from the server.
+ */
 public interface DisconnectListener {
 
     void onDisconnect(final ClientConnection clientConnection, final Text disconnectReason);
