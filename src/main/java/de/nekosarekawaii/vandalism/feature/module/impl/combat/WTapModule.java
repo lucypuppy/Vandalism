@@ -19,9 +19,9 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.player.AttackListener;
-import de.nekosarekawaii.vandalism.event.normal.player.MoveInputListener;
-import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.event.player.AttackListener;
+import de.nekosarekawaii.vandalism.event.player.MoveInputListener;
+import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.AutoSprintModule;
 import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;

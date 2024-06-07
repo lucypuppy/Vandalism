@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.render;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
-import de.nekosarekawaii.vandalism.event.normal.render.TextDrawListener;
+import de.nekosarekawaii.vandalism.event.render.TextDrawListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.client.session.Session;
 import org.apache.commons.lang3.StringUtils;

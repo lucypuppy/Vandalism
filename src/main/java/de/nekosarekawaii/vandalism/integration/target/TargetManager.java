@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.integration.target;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.internal.TargetListener;
+import de.nekosarekawaii.vandalism.event.internal.TargetListener;
 import net.minecraft.entity.Entity;
 
 public class TargetManager {

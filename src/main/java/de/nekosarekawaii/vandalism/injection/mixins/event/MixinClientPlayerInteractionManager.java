@@ -19,8 +19,8 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.player.AttackListener;
-import de.nekosarekawaii.vandalism.event.normal.player.BlockBreakListener;
+import de.nekosarekawaii.vandalism.event.player.AttackListener;
+import de.nekosarekawaii.vandalism.event.player.BlockBreakListener;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.entity.Entity;

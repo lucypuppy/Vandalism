@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
-import de.nekosarekawaii.vandalism.event.normal.internal.TargetListener;
+import de.nekosarekawaii.vandalism.event.internal.TargetListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;

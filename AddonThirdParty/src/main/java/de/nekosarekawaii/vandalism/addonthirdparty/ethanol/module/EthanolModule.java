@@ -24,9 +24,9 @@ import de.nekosarekawaii.vandalism.addonthirdparty.ethanol.module.impl.InitEthan
 import de.nekosarekawaii.vandalism.addonthirdparty.ethanol.module.impl.MessageEthanolCustomPayload;
 import de.nekosarekawaii.vandalism.addonthirdparty.ethanol.module.impl.VanishEthanolCustomPayload;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
-import de.nekosarekawaii.vandalism.event.normal.network.WorldListener;
-import de.nekosarekawaii.vandalism.event.normal.player.ChatSendListener;
-import de.nekosarekawaii.vandalism.event.normal.render.Render2DListener;
+import de.nekosarekawaii.vandalism.event.network.WorldListener;
+import de.nekosarekawaii.vandalism.event.player.ChatSendListener;
+import de.nekosarekawaii.vandalism.event.render.Render2DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.client.gui.DrawContext;

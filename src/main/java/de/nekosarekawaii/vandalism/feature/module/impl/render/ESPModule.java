@@ -23,11 +23,11 @@ import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryBlackl
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
-import de.nekosarekawaii.vandalism.event.normal.game.BlockStateListener;
-import de.nekosarekawaii.vandalism.event.normal.game.BlockStateUpdateListener;
-import de.nekosarekawaii.vandalism.event.normal.network.DisconnectListener;
-import de.nekosarekawaii.vandalism.event.normal.network.WorldListener;
-import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
+import de.nekosarekawaii.vandalism.event.game.BlockStateListener;
+import de.nekosarekawaii.vandalism.event.game.BlockStateUpdateListener;
+import de.nekosarekawaii.vandalism.event.network.DisconnectListener;
+import de.nekosarekawaii.vandalism.event.network.WorldListener;
+import de.nekosarekawaii.vandalism.event.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.render.ColorUtils;
 import net.minecraft.block.Block;

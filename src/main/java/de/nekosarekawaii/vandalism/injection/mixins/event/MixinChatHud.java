@@ -19,8 +19,8 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.player.ChatModifyReceiveListener;
-import de.nekosarekawaii.vandalism.event.normal.player.ChatReceiveListener;
+import de.nekosarekawaii.vandalism.event.player.ChatModifyReceiveListener;
+import de.nekosarekawaii.vandalism.event.player.ChatReceiveListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.client.gui.hud.ChatHudLine;
