@@ -30,7 +30,7 @@ import de.nekosarekawaii.vandalism.addonthirdparty.spotify.gui.SpotifyData;
 import de.nekosarekawaii.vandalism.addonthirdparty.spotify.gui.StatusMessages;
 import de.nekosarekawaii.vandalism.addonthirdparty.spotify.hud.SpotifyHUDElement;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
-import de.nekosarekawaii.vandalism.integration.hud.HUDManager;
+import de.nekosarekawaii.vandalism.feature.hud.HUDManager;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;

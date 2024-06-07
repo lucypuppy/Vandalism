@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.util.game;
 
 import de.nekosarekawaii.vandalism.injection.access.IGameRenderer;
-import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
+import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.entity.Entity;

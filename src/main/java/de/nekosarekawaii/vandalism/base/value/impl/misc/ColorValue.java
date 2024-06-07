@@ -19,13 +19,11 @@
 package de.nekosarekawaii.vandalism.base.value.impl.misc;
 
 import com.google.gson.JsonObject;
-import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindowScreen;
-import de.nekosarekawaii.vandalism.integration.hud.gui.HUDClientWindow;
 import de.nekosarekawaii.vandalism.util.common.IName;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
@@ -34,7 +32,6 @@ import de.nekosarekawaii.vandalism.util.render.HSBColor;
 import imgui.ImGui;
 import imgui.flag.ImGuiColorEditFlags;
 import imgui.flag.ImGuiMouseButton;
-import net.minecraft.client.MinecraftClient;
 
 import java.awt.*;
 import java.util.ArrayList;

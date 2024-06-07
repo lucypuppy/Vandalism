@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.integration;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
+import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;
