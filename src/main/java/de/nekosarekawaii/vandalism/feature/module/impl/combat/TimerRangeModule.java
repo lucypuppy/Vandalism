@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.game.TickTimeListener;
+import de.nekosarekawaii.vandalism.event.game.TickTimeListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 
 public class TimerRangeModule extends AbstractModule implements TickTimeListener {

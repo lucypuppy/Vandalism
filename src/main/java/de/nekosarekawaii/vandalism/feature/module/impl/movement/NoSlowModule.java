@@ -24,11 +24,10 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
-import de.nekosarekawaii.vandalism.event.normal.player.CanSprintListener;
-import de.nekosarekawaii.vandalism.event.normal.player.PlayerSlowdownListener;
-import de.nekosarekawaii.vandalism.event.normal.player.ShouldSlowdownListener;
+import de.nekosarekawaii.vandalism.event.player.CanSprintListener;
+import de.nekosarekawaii.vandalism.event.player.PlayerSlowdownListener;
+import de.nekosarekawaii.vandalism.event.player.ShouldSlowdownListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.integration.viafabricplus.ViaFabricPlusAccess;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.*;
 

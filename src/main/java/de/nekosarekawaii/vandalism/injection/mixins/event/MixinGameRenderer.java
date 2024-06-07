@@ -20,9 +20,9 @@ package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.player.RaytraceListener;
-import de.nekosarekawaii.vandalism.event.normal.player.RotationListener;
-import de.nekosarekawaii.vandalism.event.normal.render.Render3DListener;
+import de.nekosarekawaii.vandalism.event.player.RaytraceListener;
+import de.nekosarekawaii.vandalism.event.player.RotationListener;
+import de.nekosarekawaii.vandalism.event.render.Render3DListener;
 import de.nekosarekawaii.vandalism.injection.access.IGameRenderer;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.minecraft.client.network.ClientPlayerEntity;

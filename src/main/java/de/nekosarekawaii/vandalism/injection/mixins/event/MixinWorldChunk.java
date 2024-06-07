@@ -19,8 +19,8 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.game.BlockStateListener;
-import de.nekosarekawaii.vandalism.event.normal.game.BlockStateUpdateListener;
+import de.nekosarekawaii.vandalism.event.game.BlockStateListener;
+import de.nekosarekawaii.vandalism.event.game.BlockStateUpdateListener;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.WorldChunk;

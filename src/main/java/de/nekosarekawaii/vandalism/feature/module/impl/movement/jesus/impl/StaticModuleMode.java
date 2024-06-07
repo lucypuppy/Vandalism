@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement.jesus.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
-import de.nekosarekawaii.vandalism.event.normal.network.BlockCollisionShapeListener;
+import de.nekosarekawaii.vandalism.event.network.BlockCollisionShapeListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.jesus.JesusModule;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
 import net.minecraft.block.BlockState;

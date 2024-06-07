@@ -22,13 +22,13 @@ import de.florianmichael.dietrichevents2.DietrichEvents2;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.clientwindow.ClientWindowManager;
-import de.nekosarekawaii.vandalism.event.normal.game.KeyboardInputListener;
-import de.nekosarekawaii.vandalism.event.normal.game.MouseInputListener;
-import de.nekosarekawaii.vandalism.event.normal.game.ShutdownProcessListener;
-import de.nekosarekawaii.vandalism.event.normal.network.DisconnectListener;
-import de.nekosarekawaii.vandalism.event.normal.network.WorldListener;
-import de.nekosarekawaii.vandalism.event.normal.player.HealthUpdateListener;
-import de.nekosarekawaii.vandalism.event.normal.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.event.game.KeyboardInputListener;
+import de.nekosarekawaii.vandalism.event.game.MouseInputListener;
+import de.nekosarekawaii.vandalism.event.game.ShutdownProcessListener;
+import de.nekosarekawaii.vandalism.event.network.DisconnectListener;
+import de.nekosarekawaii.vandalism.event.network.WorldListener;
+import de.nekosarekawaii.vandalism.event.player.HealthUpdateListener;
+import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.config.ModulesConfig;
 import de.nekosarekawaii.vandalism.feature.module.gui.ModulesClientWindow;
@@ -58,7 +58,6 @@ import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
-import java.util.Objects;
 
 @Getter
 public class ModuleManager extends NamedStorage<AbstractModule> implements

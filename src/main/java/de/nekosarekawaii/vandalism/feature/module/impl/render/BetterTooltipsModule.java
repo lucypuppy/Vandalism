@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.render;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
 import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
-import de.nekosarekawaii.vandalism.event.normal.render.TooltipDrawListener;
+import de.nekosarekawaii.vandalism.event.render.TooltipDrawListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.common.ByteCountDataOutput;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;

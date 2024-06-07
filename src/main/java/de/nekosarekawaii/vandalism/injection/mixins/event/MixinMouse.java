@@ -19,8 +19,8 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.normal.game.MouseInputListener;
-import de.nekosarekawaii.vandalism.event.normal.game.SmoothCameraRotationsListener;
+import de.nekosarekawaii.vandalism.event.game.MouseInputListener;
+import de.nekosarekawaii.vandalism.event.game.SmoothCameraRotationsListener;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.option.GameOptions;

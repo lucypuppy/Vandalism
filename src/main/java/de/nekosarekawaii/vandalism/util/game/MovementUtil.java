@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.util.game;
 
-import de.nekosarekawaii.vandalism.event.normal.player.StrafeListener;
+import de.nekosarekawaii.vandalism.event.player.StrafeListener;
 import de.nekosarekawaii.vandalism.integration.newrotation.Rotation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffects;
