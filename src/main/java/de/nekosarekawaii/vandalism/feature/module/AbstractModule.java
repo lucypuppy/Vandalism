@@ -31,6 +31,7 @@ import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
 import de.nekosarekawaii.vandalism.integration.sound.SoundManager;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import lombok.Getter;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -47,6 +48,7 @@ public abstract class AbstractModule extends Feature implements ValueParent {
 
     private final List<Value<?>> values = new ArrayList<>();
 
+    @Getter
     private final List<Value<?>> defaultValues;
 
     private final BooleanValue active = new BooleanValue(
@@ -96,6 +98,7 @@ public abstract class AbstractModule extends Feature implements ValueParent {
             true
     ).visibleCondition(() -> Vandalism.getInstance().getClientSettings().getMenuSettings().moduleStateSound.getValue());
 
+    @Getter
     private final KeyBindValue keyBind = new KeyBindValue(
             this.defaultSettings,
             "Key Bind",
@@ -222,10 +225,10 @@ public abstract class AbstractModule extends Feature implements ValueParent {
         this.deactivateOnRelease.setValue(true);
     }
 
-    public void onActivate() {
+    protected void onActivate() {
     }
 
-    public void onDeactivate() {
+    protected void onDeactivate() {
     }
 
     public boolean isActive() {
@@ -255,10 +258,6 @@ public abstract class AbstractModule extends Feature implements ValueParent {
 
     public boolean isShowInHUD() {
         return this.showInHUD.getValue();
-    }
-
-    public KeyBindValue getKeyBind() {
-        return this.keyBind;
     }
 
     public boolean isDeactivateOnQuit() {
@@ -299,10 +298,6 @@ public abstract class AbstractModule extends Feature implements ValueParent {
     @Override
     public List<Value<?>> getValues() {
         return this.values;
-    }
-
-    public List<Value<?>> getDefaultValues() {
-        return this.defaultValues;
     }
 
 }
