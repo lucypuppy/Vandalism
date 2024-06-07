@@ -217,10 +217,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
 
     @Override
     public void onDisconnect(final ClientConnection clientConnection, final Text disconnectReason) {
-        // There is a thing called pinging a server
-        if (this.mc.getNetworkHandler() != null && Objects.equals(clientConnection, this.mc.getNetworkHandler().getConnection())) {
-            this.getList().stream().filter(module -> module.isActive() && module.isDeactivateOnQuit()).forEach(AbstractModule::deactivate);
-        }
+        this.getList().stream().filter(module -> module.isActive() && module.isDeactivateOnQuit()).forEach(AbstractModule::deactivate);
     }
 
     @Override
