@@ -24,6 +24,8 @@ import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListe
 import de.nekosarekawaii.vandalism.event.normal.network.DisconnectListener;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.listener.ClientPlayPacketListener;
@@ -40,6 +42,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 @Mixin(value = ClientConnection.class, priority = 9999)
 public abstract class MixinClientConnection {
@@ -113,10 +116,14 @@ public abstract class MixinClientConnection {
 
     @Inject(method = "disconnect", at = @At("RETURN"))
     private void callDisconnectListener(Text disconnectReason, CallbackInfo ci) {
-        Vandalism.getInstance().getEventSystem().postInternal(
-                DisconnectListener.DisconnectEvent.ID,
-                new DisconnectListener.DisconnectEvent((ClientConnection) (Object) this, disconnectReason)
-        );
+        final ClientConnection self = (ClientConnection) (Object) this;
+        final ClientPlayNetworkHandler networkHandler = MinecraftClient.getInstance().getNetworkHandler();
+        if (networkHandler != null && Objects.equals(self, networkHandler.getConnection())) {
+            Vandalism.getInstance().getEventSystem().postInternal(
+                    DisconnectListener.DisconnectEvent.ID,
+                    new DisconnectListener.DisconnectEvent(self, disconnectReason)
+            );
+        }
     }
 
 }
