@@ -157,11 +157,11 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
         if (this.log.getValue()) {
             if (packetNamesContains) {
                 if (this.clientPackets.isSelected(name) || this.serverPackets.isSelected(name)) {
-                    text.append(PacketManagerModule.dump(packet, 0, this.recursionDepthLimit.getValue()));
+                    text.append(id).append(" | ").append(PacketManagerModule.dump(packet, 0, this.recursionDepthLimit.getValue()));
                     this.log(text, false);
                 }
             } else if (this.logUnhandledPackets.getValue()) {
-                text.append(name);
+                text.append(id).append(" | ").append(name);
                 this.log(text, true);
             }
         }

@@ -97,13 +97,29 @@ public class MultiModeValue extends Value<List<String>> {
             ImGui.text("Search for " + this.getName() + " (" + this.options.size() + ")");
             ImGui.setNextItemWidth(Math.max(350, ImGui.getColumnWidth()));
             ImGui.inputText(id + "search", this.searchInput);
-            if (ImGui.button("Select all" + id + "selectAll", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
+            if (ImGui.button("Select All" + id + "selectAll", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
                 this.getValue().clear();
-                this.getValue().addAll(this.options);
+                if (this.searchInput.isEmpty()) {
+                    this.getValue().addAll(this.options);
+                } else {
+                    for (final String value : this.options) {
+                        if (StringUtils.contains(value, this.searchInput.get())) {
+                            this.getValue().add(value);
+                        }
+                    }
+                }
             }
             ImGui.sameLine();
-            if (ImGui.button("Deselect all" + id + "deselectAll", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
-                this.getValue().clear();
+            if (ImGui.button("Deselect All" + id + "deselectAll", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                if (this.searchInput.isEmpty()) {
+                    this.getValue().clear();
+                } else {
+                    for (final String value : this.options) {
+                        if (StringUtils.contains(value, this.searchInput.get())) {
+                            this.getValue().remove(value);
+                        }
+                    }
+                }
             }
             if (ImGui.button("Close" + id + "close", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                 ImGui.closeCurrentPopup();
