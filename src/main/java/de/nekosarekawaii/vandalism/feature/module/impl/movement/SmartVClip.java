@@ -36,7 +36,7 @@ public class SmartVClip extends AbstractModule implements KeyboardInputListener 
     private final IntegerValue maxScanRange = new IntegerValue(this, "Max Scan Range", "The maximum range to port to.", 9, 3, 100);
 
     public SmartVClip() {
-        super("Smart V-Clip", "A automatic v-clip module.", Category.MOVEMENT);
+        super("Smart V Clip", "A automatic v-clip module.", Category.MOVEMENT);
     }
 
     @Override
