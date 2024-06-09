@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist;
 
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
@@ -68,7 +69,8 @@ public interface DataListWidget {
                 ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], color[3] - 0.1f);
                 ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
             }
-            if (ImGui.button(id + "dataEntry" + i, entryWidth, entryHeight)) {
+            // TODO wrong but fixes all guis without the need of rewriting their height values
+            if (ImGui.button(id + "dataEntry" + i, entryWidth, (entryHeight / 16) * Vandalism.getInstance().getClientSettings().getMenuSettings().menuScale.getValue())) {
                 this.onDataEntryClick(dataEntry);
             }
             if (shouldHighlight) {
