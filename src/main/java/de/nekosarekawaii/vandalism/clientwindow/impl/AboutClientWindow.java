@@ -18,9 +18,8 @@
 
 package de.nekosarekawaii.vandalism.clientwindow.impl;
 
-import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
-import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiWindowFlags;

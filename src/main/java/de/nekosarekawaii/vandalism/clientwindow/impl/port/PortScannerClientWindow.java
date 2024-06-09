@@ -25,7 +25,7 @@ import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataen
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
 import de.nekosarekawaii.vandalism.util.common.DateUtil;
 import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
-import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;

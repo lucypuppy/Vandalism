@@ -30,7 +30,7 @@ import de.nekosarekawaii.vandalism.util.common.MathUtil;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.common.TimeFormatter;
 import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
-import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;

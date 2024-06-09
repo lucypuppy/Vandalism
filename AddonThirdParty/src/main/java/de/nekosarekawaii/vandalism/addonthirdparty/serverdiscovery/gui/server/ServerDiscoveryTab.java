@@ -33,7 +33,7 @@ import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.common.TimeFormatter;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
-import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiComboFlags;
@@ -45,7 +45,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.option.ServerList;
 import net.minecraft.util.Pair;
-import net.raphimc.viaaprilfools.api.AprilFoolsProtocolVersion;
 
 import java.time.Instant;
 import java.time.ZoneId;

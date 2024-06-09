@@ -35,7 +35,7 @@ import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.common.RandomUtils;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
-import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.type.ImString;
 import lombok.Getter;
