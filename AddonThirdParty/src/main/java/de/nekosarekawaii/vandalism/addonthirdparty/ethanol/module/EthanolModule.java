@@ -24,16 +24,17 @@ import de.nekosarekawaii.vandalism.addonthirdparty.ethanol.module.impl.InitEthan
 import de.nekosarekawaii.vandalism.addonthirdparty.ethanol.module.impl.MessageEthanolCustomPayload;
 import de.nekosarekawaii.vandalism.addonthirdparty.ethanol.module.impl.VanishEthanolCustomPayload;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.StringValue;
-import de.nekosarekawaii.vandalism.event.network.WorldListener;
+import de.nekosarekawaii.vandalism.event.network.DisconnectListener;
 import de.nekosarekawaii.vandalism.event.player.ChatSendListener;
 import de.nekosarekawaii.vandalism.event.render.Render2DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.text.Text;
 
-public class EthanolModule extends AbstractModule implements ChatSendListener, Render2DListener, WorldListener {
+public class EthanolModule extends AbstractModule implements ChatSendListener, Render2DListener, DisconnectListener {
 
     public EthanolModule() {
         super("Ethanol", "Implementation for the communication of the Ethanol plugin.", Category.MISC);
@@ -71,7 +72,7 @@ public class EthanolModule extends AbstractModule implements ChatSendListener, R
     }
 
     @Override
-    public void onPreWorldLoad() {
+    public void onDisconnect(final ClientConnection clientConnection, final Text disconnectReason) {
         this.detected = false;
         this.vanished = false;
     }
@@ -109,12 +110,12 @@ public class EthanolModule extends AbstractModule implements ChatSendListener, R
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, WorldLoadEvent.ID, ChatSendEvent.ID, Render2DEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, DisconnectEvent.ID, ChatSendEvent.ID, Render2DEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, WorldLoadEvent.ID, ChatSendEvent.ID, Render2DEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, DisconnectEvent.ID, ChatSendEvent.ID, Render2DEvent.ID);
     }
 
 }
