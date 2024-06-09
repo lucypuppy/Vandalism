@@ -115,7 +115,8 @@
     "util.MixinDrawContext",
     "util.MixinMinecraftClient",
     "util.MixinRenderTickCounter",
-    "util.MixinToolTipComponent"
+    "util.MixinToolTipComponent",
+    "clientsettings.MixinRegistrySyncManager"
   ],
   "injectors": {
     "defaultRequire": 1
