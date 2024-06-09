@@ -78,8 +78,6 @@
     "fix.minecraft.MixinOptionsScreen",
     "fix.minecraft.MixinScanningEntry",
     "fix.minecraft.MixinWindow",
-    "fix.minecraftauth.MixinClasses",
-    "fix.minecraftauth.MixinDefaultJwtParserBuilder",
     "fix.worldtools.MixinEvents",
     "integration.MixinClientPlayerEntity",
     "integration.MixinEntity",
