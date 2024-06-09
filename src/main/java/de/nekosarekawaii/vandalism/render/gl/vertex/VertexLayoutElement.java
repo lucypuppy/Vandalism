@@ -28,7 +28,9 @@ public class VertexLayoutElement {
     private final int attribIndex;
     private final DataType dataType;
     private final int count;
+    @Getter
     private final boolean normalized;
+    @Getter
     private final boolean integer;
     private final int offset;
 
@@ -42,14 +44,6 @@ public class VertexLayoutElement {
 
     public int count() {
         return this.count;
-    }
-
-    public boolean isNormalized() {
-        return this.normalized;
-    }
-
-    public boolean isInteger() {
-        return this.integer;
     }
 
     public int offset() {

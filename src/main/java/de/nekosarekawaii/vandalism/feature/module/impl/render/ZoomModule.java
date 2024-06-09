@@ -97,6 +97,7 @@ public class ZoomModule extends AbstractModule implements MouseInputListener, Sm
 
     /**
      * Not using CameraFOVEvent because it's not called when zooming out, because the event is only called when the module is enabled
+     * // TODO: maybe zoom shouldn't be bound to module state?
      */
     public double getFov(final double fov) {
         if (this.zoomFov.getValue() - this.scrollAmount < this.zoomFov.getMinValue()) {

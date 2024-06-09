@@ -23,7 +23,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.event.internal.TargetListener;
 import de.nekosarekawaii.vandalism.event.render.TextDrawListener;
-import de.nekosarekawaii.vandalism.integration.friends.config.FriendConfig;
+import de.nekosarekawaii.vandalism.integration.friends.config.FriendsConfig;
 import de.nekosarekawaii.vandalism.util.common.Storage;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,7 +32,7 @@ import org.apache.commons.lang3.StringUtils;
 public class FriendsManager extends Storage<Friend> implements TargetListener, TextDrawListener {
 
     public FriendsManager(final ConfigManager configManager) {
-        configManager.add(new FriendConfig(this));
+        configManager.add(new FriendsConfig(this));
         Vandalism.getInstance().getEventSystem().subscribe(TargetEvent.ID, this);
         Vandalism.getInstance().getEventSystem().subscribe(TextDrawEvent.ID, this);
     }

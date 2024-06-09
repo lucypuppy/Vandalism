@@ -105,7 +105,7 @@ public class AutoShieldModule extends AbstractModule implements PlayerUpdateList
             }
             if (entities.isEmpty()) return;
             entities.sort(Comparator.comparingDouble(entity -> this.mc.player.distanceTo(entity)));
-            this.target = entities.get(0);
+            this.target = entities.getFirst();
         } else {
             final Rotation rotation = RotationBuilder.build(this.target.getPos(), this.mc.player.getEyePos());
             Vandalism.getInstance().getRotationManager().setRotation(rotation, this.rotateSpeed.getValue(),

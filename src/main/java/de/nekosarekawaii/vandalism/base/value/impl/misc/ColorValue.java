@@ -32,6 +32,7 @@ import de.nekosarekawaii.vandalism.util.render.HSBColor;
 import imgui.ImGui;
 import imgui.flag.ImGuiColorEditFlags;
 import imgui.flag.ImGuiMouseButton;
+import lombok.Getter;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ public class ColorValue extends Value<HSBColor> implements ValueParent, Minecraf
 
     private final List<Value<?>> values = new ArrayList<>();
 
+    @Getter
     private final EnumModeValue<ColorMode> mode = new EnumModeValue<>(
             this,
             "Mode",
@@ -123,34 +125,6 @@ public class ColorValue extends Value<HSBColor> implements ValueParent, Minecraf
             value.save(valueNode);
         }
         mainNode.add(getName(), valueNode);
-    }
-
-    public EnumModeValue<ColorMode> getMode() {
-        return this.mode;
-    }
-
-    public IntegerValue getRainbowSpeed() {
-        return this.rainbowSpeed;
-    }
-
-    public IntegerValue getTwoColorSpeed() {
-        return this.twoColorSpeed;
-    }
-
-    public Color getMainColorFade() {
-        return this.mainColorFade;
-    }
-
-    public void setMainColorFade(final Color mainColorFade) {
-        this.mainColorFade = mainColorFade;
-    }
-
-    public Color getSecondaryColorFade() {
-        return this.secondaryColorFade;
-    }
-
-    public void setSecondaryColorFade(final Color secondaryColorFade) {
-        this.secondaryColorFade = secondaryColorFade;
     }
 
     public HSBColor getValue(final int offset) {

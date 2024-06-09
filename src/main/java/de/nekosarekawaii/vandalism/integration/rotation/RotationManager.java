@@ -30,11 +30,13 @@ import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 import de.nekosarekawaii.vandalism.util.render.RenderUtil;
+import lombok.Getter;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.MathHelper;
 
 public class RotationManager implements MinecraftWrapper, OutgoingPacketListener, StrafeListener, RotationListener, CanSprintListener {
 
+    @Getter
     private Rotation rotation;
     private Rotation targetRotation;
 
@@ -164,7 +166,4 @@ public class RotationManager implements MinecraftWrapper, OutgoingPacketListener
         resetRotation(RotationPriority.NORMAL);
     }
 
-    public Rotation getRotation() {
-        return rotation;
-    }
 }

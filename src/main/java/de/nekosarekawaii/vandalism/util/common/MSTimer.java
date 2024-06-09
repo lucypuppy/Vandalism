@@ -18,6 +18,8 @@
 
 package de.nekosarekawaii.vandalism.util.common;
 
+import lombok.Setter;
+
 /**
  * A simple timer class.
  */
@@ -26,6 +28,7 @@ public class MSTimer {
     /**
      * The time in milliseconds.
      */
+    @Setter
     protected long time = System.currentTimeMillis();
 
     /**
@@ -95,10 +98,6 @@ public class MSTimer {
      */
     public long getTime() {
         return paused ? pausedTime : time;
-    }
-
-    public void setTime(final long time) {
-        this.time = time;
     }
 
 }

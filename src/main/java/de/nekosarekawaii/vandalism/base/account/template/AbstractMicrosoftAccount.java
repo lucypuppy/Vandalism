@@ -89,10 +89,6 @@ public abstract class AbstractMicrosoftAccount extends AbstractAccount {
         return getSession().getUsername();
     }
 
-    public String getTokenChain() {
-        return this.tokenChain;
-    }
-
     @Override
     public AccountFactory factory() {
         return this.factory;

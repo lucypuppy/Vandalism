@@ -18,25 +18,18 @@
 
 package de.nekosarekawaii.vandalism.integration.friends;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
 public class Friend {
 
     private final String name;
+    @Setter
     private String alias;
 
     public Friend(final String name, final String alias) {
         this.name = name;
-        this.alias = alias;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public String getAlias() {
-        return this.alias;
-    }
-
-    public void setAlias(final String alias) {
         this.alias = alias;
     }
 

@@ -88,10 +88,7 @@ public class StringUtils {
      * @return The generated string
      */
     public static String whitespace(final int count) {
-        final StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < count; i++)
-            builder.append("	");
-        return builder.toString();
+        return "	".repeat(Math.max(0, count));
     }
 
     /**
@@ -101,10 +98,7 @@ public class StringUtils {
      * @return The generated string
      */
     public static String space(final int count) {
-        final StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < count; i++)
-            builder.append(" ");
-        return builder.toString();
+        return " ".repeat(Math.max(0, count));
     }
 
     /**

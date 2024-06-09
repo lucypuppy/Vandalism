@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
-import com.llamalad7.mixinextras.injector.WrapWithCondition;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import de.nekosarekawaii.vandalism.Vandalism;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.client.gui.hud.InGameHud;

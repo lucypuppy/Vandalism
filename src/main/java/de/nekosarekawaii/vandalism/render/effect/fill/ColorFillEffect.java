@@ -24,10 +24,10 @@ import lombok.Setter;
 
 import java.awt.*;
 
+@Setter
+@Getter
 public class ColorFillEffect extends FillEffect {
 
-    @Getter
-    @Setter
     private Color color = Color.WHITE;
 
     public ColorFillEffect() {

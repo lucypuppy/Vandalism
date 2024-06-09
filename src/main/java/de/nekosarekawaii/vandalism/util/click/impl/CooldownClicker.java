@@ -20,10 +20,12 @@ package de.nekosarekawaii.vandalism.util.click.impl;
 
 import de.nekosarekawaii.vandalism.feature.module.impl.combat.KillAuraModule;
 import de.nekosarekawaii.vandalism.util.click.Clicker;
+import lombok.Setter;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 
+@Setter
 public class CooldownClicker extends Clicker {
 
     private KillAuraModule killAuraModule;
@@ -61,10 +63,6 @@ public class CooldownClicker extends Clicker {
     @Override
     public void onRotate() {
 
-    }
-
-    public void setKillAuraModule(final KillAuraModule killAuraModule) {
-        this.killAuraModule = killAuraModule;
     }
 
 }

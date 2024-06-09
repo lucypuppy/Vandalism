@@ -22,14 +22,12 @@ import de.nekosarekawaii.vandalism.render.gl.shader.ShaderProgram;
 import lombok.Getter;
 import lombok.Setter;
 
+@Setter
+@Getter
 public class Kawase4PassBlurFillEffect extends FillEffect {
 
-    @Getter
-    @Setter
     private int textureId;
 
-    @Getter
-    @Setter
     private float radius = 3.0f;
 
     public Kawase4PassBlurFillEffect() {

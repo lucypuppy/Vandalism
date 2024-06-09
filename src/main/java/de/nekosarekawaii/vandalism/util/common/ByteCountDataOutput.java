@@ -18,15 +18,23 @@
 
 package de.nekosarekawaii.vandalism.util.common;
 
+import lombok.Getter;
+
 import java.io.DataOutput;
 
 /**
  * Output stream that counts the number of bytes written.
  */
+@Getter
 public class ByteCountDataOutput implements DataOutput {
 
     public static final ByteCountDataOutput INSTANCE = new ByteCountDataOutput();
 
+    /**
+     * -- GETTER --
+     *
+     * @return the number of bytes written
+     */
     private int count = 0;
 
     /**
@@ -34,13 +42,6 @@ public class ByteCountDataOutput implements DataOutput {
      */
     public void reset() {
         this.count = 0;
-    }
-
-    /**
-     * @return the number of bytes written
-     */
-    public int getCount() {
-        return count;
     }
 
     @Override

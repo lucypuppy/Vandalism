@@ -22,6 +22,7 @@ import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import imgui.ImGui;
+import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,6 +30,7 @@ import java.util.function.Function;
 
 public class ValueModeGeneric<T> extends Value<T> {
 
+    @Getter
     private final List<T> options;
     private final Function<T, String> toString;
     private final Function<String, T> fromString;
@@ -73,10 +75,6 @@ public class ValueModeGeneric<T> extends Value<T> {
 
     public int getSelectedIndex() {
         return this.options.indexOf(this.getValue());
-    }
-
-    public List<T> getOptions() {
-        return options;
     }
 
 }

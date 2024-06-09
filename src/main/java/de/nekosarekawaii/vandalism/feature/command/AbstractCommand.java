@@ -23,6 +23,7 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.Feature;
+import lombok.Getter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
@@ -31,6 +32,7 @@ import net.minecraft.registry.BuiltinRegistries;
 import net.minecraft.server.command.CommandManager;
 import net.raphimc.vialoader.util.VersionRange;
 
+@Getter
 public abstract class AbstractCommand extends Feature {
 
     public static final int SINGLE_SUCCESS = com.mojang.brigadier.Command.SINGLE_SUCCESS;
@@ -67,10 +69,6 @@ public abstract class AbstractCommand extends Feature {
 
     protected static LiteralArgumentBuilder<CommandSource> literal(final String name) {
         return LiteralArgumentBuilder.literal(name);
-    }
-
-    public String[] getAliases() {
-        return aliases;
     }
 
     @Override
