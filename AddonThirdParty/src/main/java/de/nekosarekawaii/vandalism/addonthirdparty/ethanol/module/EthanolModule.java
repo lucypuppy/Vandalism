@@ -37,6 +37,12 @@ public class EthanolModule extends AbstractModule implements ChatSendListener, R
 
     public EthanolModule() {
         super("Ethanol", "Implementation for the communication of the Ethanol plugin.", Category.MISC);
+        PayloadTypeRegistry.playC2S().register(InitEthanolCustomPayload.ID, InitEthanolCustomPayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(CommandEthanolCustomPayload.ID, CommandEthanolCustomPayload.CODEC);
+
+        PayloadTypeRegistry.playS2C().register(InitEthanolCustomPayload.ID, InitEthanolCustomPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(VanishEthanolCustomPayload.ID, VanishEthanolCustomPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(MessageEthanolCustomPayload.ID, MessageEthanolCustomPayload.CODEC);
     }
 
     private final StringValue commandPrefix = new StringValue(
@@ -103,16 +109,6 @@ public class EthanolModule extends AbstractModule implements ChatSendListener, R
 
     @Override
     public void onActivate() {
-        try {
-            PayloadTypeRegistry.playC2S().register(InitEthanolCustomPayload.ID, InitEthanolCustomPayload.CODEC);
-            PayloadTypeRegistry.playC2S().register(CommandEthanolCustomPayload.ID, CommandEthanolCustomPayload.CODEC);
-
-            PayloadTypeRegistry.playS2C().register(InitEthanolCustomPayload.ID, InitEthanolCustomPayload.CODEC);
-            PayloadTypeRegistry.playS2C().register(VanishEthanolCustomPayload.ID, VanishEthanolCustomPayload.CODEC);
-            PayloadTypeRegistry.playS2C().register(MessageEthanolCustomPayload.ID, MessageEthanolCustomPayload.CODEC);
-        } catch (IllegalArgumentException ignored) {
-        }
-
         Vandalism.getInstance().getEventSystem().subscribe(this, WorldLoadEvent.ID, ChatSendEvent.ID, Render2DEvent.ID);
     }
 
