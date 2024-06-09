@@ -35,7 +35,7 @@ import de.nekosarekawaii.vandalism.event.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.event.render.Render2DListener;
 import de.nekosarekawaii.vandalism.util.common.Storage;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
-import de.nekosarekawaii.vandalism.util.render.imgui.ImLoader;
+import de.nekosarekawaii.vandalism.integration.imgui.ImLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.MessageScreen;

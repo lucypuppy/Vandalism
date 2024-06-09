@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.render.imgui;
+package de.nekosarekawaii.vandalism.integration.imgui;
 
 public class FontAwesomeIcons {
     public static final short _IconRangeMin = (short) 0xe005;
