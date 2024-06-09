@@ -111,6 +111,13 @@ public class NetworkingSettings extends ValueGroup implements KeyboardInputListe
             true
     );
 
+    public final BooleanValue ignoreFabricAPIRegistrySyncErrors = new BooleanValue(
+            this,
+            "Ignore Fabric API Registry Sync Errors",
+            "Ignores Fabric API Registry Sync Errors.",
+            true
+    );
+
     public NetworkingSettings(final ClientSettings parent) {
         super(parent, "Networking", "Networking related settings.");
         Vandalism.getInstance().getEventSystem().subscribe(KeyboardInputEvent.ID, this);
