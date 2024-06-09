@@ -26,6 +26,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
 import de.nekosarekawaii.vandalism.event.game.TimeTravelListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.integration.rotation.RotationBuilder;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.common.MathUtil;
 import de.nekosarekawaii.vandalism.util.game.Prediction;
@@ -87,15 +88,20 @@ public class LagRangeModule extends AbstractModule implements TimeTravelListener
             boolean isDamaged = !this.noDamageCharge.getValue() || this.mc.player.hurtTime <= 2;
             switch (this.mode.getValue().toLowerCase()) {
                 case "range": {
-                    double distance = this.mc.player.getEyePos().distanceTo(target.getPos());
+                    double distance = this.mc.player.getEyePos().distanceTo(RotationBuilder.getNearestPoint(target));
 
                     boolean isPredictedInRange = false;
 
                     for (int ticks = getCharge(); ticks <= this.maxCharge.getValue(); ++ticks) {
-                        double predictedDistance = Prediction.predictEntityPosition(this.mc.player, ticks, true)
-                                .add(0, this.mc.player.getStandingEyeHeight(), 0)
-                                .distanceTo(Prediction.predictEntityPosition(target, ticks, true));
-                        if (MathUtil.isBetween(predictedDistance, this.killAura.getRange() - 0.1, this.killAura.getRange())) {
+//                        double predictedDistance = Prediction.predictEntityPosition(this.mc.player, ticks, true)
+//                                .add(0, this.mc.player.getStandingEyeHeight(), 0)
+//                                .distanceTo(Prediction.predictEntityPosition(target, ticks, true));
+
+                        double predictedDistance = Prediction.predictEntityMovement(this.mc.player, ticks, true)
+                                .getEyePos()
+                                .distanceTo(RotationBuilder.getNearestPoint(Prediction.predictEntityMovement(target, ticks, true)));
+
+                        if (MathUtil.isBetween(predictedDistance, this.killAura.getRange() - 0.2, this.killAura.getRange() + 0.2)) {
                             isPredictedInRange = true;
                             this.ticksToShift = ticks;
                             break;

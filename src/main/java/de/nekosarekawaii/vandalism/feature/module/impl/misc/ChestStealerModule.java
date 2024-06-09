@@ -86,7 +86,7 @@ public class ChestStealerModule extends AbstractModule implements PlayerUpdateLi
                     if (slot == -1) //Invalid Item
                         continue;
 
-                    final ItemStack hotbarStack = screen.getScreenHandler().slots.get(slot + 54).getStack();
+                    final ItemStack hotbarStack = screen.getScreenHandler().slots.get(slot + 54).getStack(); // TODO fix ioob when in smaller container like spectator menu on gomme
                     if (hotbarStack.getItem() instanceof AirBlockItem || InventoryUtil.isItemBetter(itemStack, hotbarStack)) {
                         if (cpsTimer.hasReached(cpsDelay, true) && timer.hasReached(delay, true)) {
                             updateCPS();
