@@ -20,6 +20,8 @@ package de.nekosarekawaii.vandalism.clientwindow;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
+import de.nekosarekawaii.vandalism.base.clientsettings.impl.MenuSettings;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindowScreen;
@@ -49,11 +51,19 @@ import java.util.List;
 
 public class ClientWindowManager extends Storage<ClientWindow> implements KeyboardInputListener, Render2DListener, MinecraftWrapper {
 
+    private final File runDirectory;
+    private MenuSettings menuSettings;
+
     public ClientWindowManager(final ConfigManager configManager, final File runDirectory) {
+        this.runDirectory = runDirectory;
+
         configManager.add(new ClientWindowConfig(this));
         Vandalism.getInstance().getEventSystem().subscribe(this, KeyboardInputEvent.ID, Render2DEvent.ID);
+    }
 
-        ImLoader.init(runDirectory);
+    public void load(final ClientSettings clientSettings) {
+        this.menuSettings = clientSettings.getMenuSettings();
+        ImLoader.init(runDirectory, menuSettings.menuScale.getValue());
     }
 
     @Override
@@ -69,7 +79,7 @@ public class ClientWindowManager extends Storage<ClientWindow> implements Keyboa
 
     @Override
     public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        if (action == GLFW.GLFW_PRESS && Vandalism.getInstance().getClientSettings().getMenuSettings().menuKey.getValue() == key && !(MinecraftClient.getInstance().currentScreen instanceof ChatScreen)) {
+        if (action == GLFW.GLFW_PRESS && this.menuSettings.menuKey.getValue() == key && !(MinecraftClient.getInstance().currentScreen instanceof ChatScreen)) {
             openScreen();
         }
     }

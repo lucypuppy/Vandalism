@@ -36,7 +36,7 @@ public class ImLoader {
     private static final ImGuiImplGl3 IM_GUI_IMPL_GL_3 = new ImGuiImplGl3();
     private static final ImGuiImplGlfw IM_GUI_IMPL_GLFW = new ImGuiImplGlfw();
 
-    public static void init(final File runDirectory) {
+    public static void init(final File runDirectory, final int scale) {
         ImGui.createContext();
         ImPlot.createContext();
 
@@ -44,7 +44,7 @@ public class ImLoader {
         io.setFontGlobalScale(1f);
         io.setIniFilename(runDirectory.getName() + "/imgui.ini");
 
-        loadFonts(io);
+        loadFonts(io, scale);
         pushStyle();
 
         IM_GUI_IMPL_GLFW.init(MinecraftClient.getInstance().getWindow().getHandle(), true);
@@ -73,7 +73,7 @@ public class ImLoader {
         IM_GUI_IMPL_GL_3.renderDrawData(ImGui.getDrawData());
     }
 
-    protected static void loadFonts(final ImGuiIO io) {
+    protected static void loadFonts(final ImGuiIO io, final int scale) {
         final ImFontAtlas atlas = io.getFonts();
 
         final ImFontGlyphRangesBuilder rangesBuilder = new ImFontGlyphRangesBuilder();
@@ -86,11 +86,11 @@ public class ImLoader {
         fontConfig.setPixelSnapH(true);
         fontConfig.setGlyphRanges(rangesBuilder.buildRanges());
 
-        ImUtils.loadFont("roboto-regular", 16, atlas, fontConfig, fontConfig.getGlyphRanges());
+        ImUtils.loadFont("roboto-regular", scale, atlas, fontConfig, fontConfig.getGlyphRanges());
 
         fontConfig.setMergeMode(true);
-        ImUtils.loadFont("fa-solid-900", 16, atlas, fontConfig, fontConfig.getGlyphRanges());
-        ImUtils.loadFont("fa-regular-400", 16, atlas, fontConfig, fontConfig.getGlyphRanges());
+        ImUtils.loadFont("fa-solid-900", scale, atlas, fontConfig, fontConfig.getGlyphRanges());
+        ImUtils.loadFont("fa-regular-400", scale, atlas, fontConfig, fontConfig.getGlyphRanges());
 
         atlas.build();
         fontConfig.destroy();

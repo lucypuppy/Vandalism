@@ -106,6 +106,7 @@ import java.io.File;
  *  - Restructure codebase once again
  *  - Restructure build scripts, moving build logic into build-logic and wrapping conventions
  *  - Layered mappings with mojmap as fallback
+ *  - Rewrite client startup using static priorities, 3000 settings load, 3001 post addon load, ...
  */
 @Getter
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
@@ -179,6 +180,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.clientWindowManager = new ClientWindowManager(this.configManager, this.runDirectory);
 
         this.clientSettings = new ClientSettings(this.configManager, this.clientWindowManager);
+
         this.accountManager = new AccountManager(this.configManager, this.clientWindowManager);
         this.accountManager.init();
 
@@ -207,14 +209,16 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.commandManager = new CommandManager();
         this.commandManager.init();
 
-        // Cause of the menu category button order this needs to be called
-        // after every default menu has been added and before the addons are loaded
+        // After system init since this manager has many cross-usages
         this.clientWindowManager.init();
 
         VandalismAddonLauncher.call(addon -> addon.onLaunch(this));
 
         // We have to load the config files after all systems have been initialized
         this.configManager.init();
+
+        // After setting load
+        this.clientWindowManager.load(this.clientSettings);
 
         this.logger.info("");
         this.logger.info("Done!");
