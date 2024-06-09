@@ -29,6 +29,7 @@ import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.module.ModuleManager;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
+import de.nekosarekawaii.vandalism.util.render.imgui.ImLoader;
 import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.ImVec2;
@@ -62,8 +63,10 @@ public class ModulesClientWindow extends ClientWindow {
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         final ModuleManager moduleManager = Vandalism.getInstance().getModuleManager();
         if (!moduleManager.getList().isEmpty()) {
-            final float width = 195, minHeight = 140, maxHeight = Vandalism.getInstance().getClientSettings().getMenuSettings().moduleTabMaxHeight.getValue();
+            float width = 195, minHeight = 140, maxHeight = Vandalism.getInstance().getClientSettings().getMenuSettings().moduleTabMaxHeight.getValue();
             final int windowFlags = ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse;
+            width = ImUtils.modulateDimension(width);
+            maxHeight = ImUtils.modulateDimension(maxHeight);
             ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
             final String modulesIdentifier = "##modules", modulesSearchIdentifier = modulesIdentifier + "search";
             ImGui.begin("Search Modules" + modulesSearchIdentifier, windowFlags);
@@ -167,7 +170,7 @@ public class ModulesClientWindow extends ClientWindow {
             ImGui.pushStyleColor(ImGuiCol.ButtonHovered, colorArray[0], colorArray[1], colorArray[2], colorArray[3]);
             ImGui.pushStyleColor(ImGuiCol.ButtonActive, colorArray[0], colorArray[1], colorArray[2], colorArray[3]);
         }
-        if (ImGui.button(module.getName() + moduleId + "togglebutton", -1, 25)) {
+        if (ImGui.button(module.getName() + moduleId + "togglebutton", -1, ImUtils.modulateDimension(25))) {
             module.toggle();
         }
         if (isActive) ImGui.popStyleColor(3);
