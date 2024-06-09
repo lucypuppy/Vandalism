@@ -39,7 +39,6 @@ import de.nekosarekawaii.vandalism.render.Shaders;
 import lombok.Getter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,6 +91,7 @@ import java.io.File;
  * TODO: simon <br>
  *  - Add a better Autoblock to Killaura with FooFieOwO
  *  - Add double clicks to KillAura when recoding
+ *  - Add prioritize criticals to KillAura when recoding
  * <br><br>
  * TODO: mori <br>
  *  - Write all descriptions in the third person, without using the second person ('you')
