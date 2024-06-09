@@ -38,8 +38,7 @@ import java.util.function.Consumer;
 
 public class AccountsClientWindow extends ClientWindow {
 
-    private static final float ACCOUNT_ENTRY_CONTENT_WIDTH = 64f;
-    private static final float ACCOUNT_ENTRY_CONTENT_HEIGHT = 64f;
+    private static final float ACCOUNT_ENTRY_DIMENSION = 64F;
 
     private final AccountManager accountManager;
 
@@ -114,9 +113,9 @@ public class AccountsClientWindow extends ClientWindow {
         if (accountPlayerSkin != null) {
             final int playerSkinId = accountPlayerSkin.getGlId();
             if (playerSkinId != -1) {
-                ImUtils.texture(playerSkinId, ACCOUNT_ENTRY_CONTENT_WIDTH, ACCOUNT_ENTRY_CONTENT_HEIGHT, 8f, 8f, 15.5f, 15f);
+                ImUtils.texture(playerSkinId, ACCOUNT_ENTRY_DIMENSION, ACCOUNT_ENTRY_DIMENSION, 8f, 8f, 15.5f, 15f);
                 ImGui.sameLine(15);
-                ImUtils.texture(playerSkinId, ACCOUNT_ENTRY_CONTENT_WIDTH, ACCOUNT_ENTRY_CONTENT_HEIGHT, 39.5f, 8f, 47.1f, 14.8f);
+                ImUtils.texture(playerSkinId, ACCOUNT_ENTRY_DIMENSION, ACCOUNT_ENTRY_DIMENSION, 39.5f, 8f, 47.1f, 14.8f);
                 ImGui.sameLine();
             }
         }
@@ -129,7 +128,7 @@ public class AccountsClientWindow extends ClientWindow {
             ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], color[3] - 0.1f);
             ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
         }
-        if (ImGui.button("##account" + playerName + account.getType(), ImGui.getColumnWidth(), ACCOUNT_ENTRY_CONTENT_HEIGHT)) {
+        if (ImGui.button("##account" + playerName + account.getType(), ImGui.getColumnWidth(), ACCOUNT_ENTRY_DIMENSION)) {
             if (isEntry) {
                 try {
                     account.login();

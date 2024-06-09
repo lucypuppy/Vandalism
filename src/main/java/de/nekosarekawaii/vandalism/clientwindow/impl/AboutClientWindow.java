@@ -18,7 +18,9 @@
 
 package de.nekosarekawaii.vandalism.clientwindow.impl;
 
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
+import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiWindowFlags;
@@ -64,7 +66,7 @@ public class AboutClientWindow extends ClientWindow {
 
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        ImGui.setNextWindowSizeConstraints(800, 300, 1200, 540);
+        ImGui.setNextWindowSizeConstraints(800, 300, ImUtils.modulateDimension(1200), ImUtils.modulateDimension(540));
         super.render(context, mouseX, mouseY, delta);
     }
 

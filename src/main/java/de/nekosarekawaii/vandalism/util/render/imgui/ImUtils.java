@@ -38,6 +38,11 @@ public class ImUtils {
         return ImGui.button(str, ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing());
     }
 
+    // TODO wrong but fixes all guis without the need of rewriting their height values
+    public static float modulateDimension(final float input) {
+        return (input / 16) * Vandalism.getInstance().getClientSettings().getMenuSettings().menuScale.getValue();
+    }
+
     public static void loadFont(final String fontName, final int size, final ImFontAtlas atlas, final ImFontConfig fontConfig, final short[] glyphRanges) {
         final Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(FabricBootstrap.MOD_ID);
         if (modContainer.isEmpty()) {
