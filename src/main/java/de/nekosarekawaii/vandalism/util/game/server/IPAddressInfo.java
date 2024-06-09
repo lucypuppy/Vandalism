@@ -19,10 +19,13 @@
 package de.nekosarekawaii.vandalism.util.game.server;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.Getter;
 
 public class IPAddressInfo {
 
+    @Getter
     private final String ip;
+    @Getter
     private final String rir;
 
     @SerializedName("is_bogon")
@@ -49,11 +52,16 @@ public class IPAddressInfo {
     @SerializedName("is_abuser")
     private final boolean isAbuser;
 
+    @Getter
     private final Company company;
+    @Getter
     private final Datacenter datacenter;
+    @Getter
     private final ASN asn;
+    @Getter
     private final Location location;
 
+    @Getter
     @SerializedName("elapsed_ms")
     private final double elapsedMs;
 
@@ -75,66 +83,7 @@ public class IPAddressInfo {
         this.elapsedMs = 0.0;
     }
 
-    public String getIp() {
-        return ip;
-    }
-
-    public String getRir() {
-        return rir;
-    }
-
-    public boolean isBogon() {
-        return isBogon;
-    }
-
-    public boolean isMobile() {
-        return isMobile;
-    }
-
-    public boolean isCrawler() {
-        return isCrawler;
-    }
-
-    public boolean isDatacenter() {
-        return isDatacenter;
-    }
-
-    public boolean isTor() {
-        return isTor;
-    }
-
-    public boolean isProxy() {
-        return isProxy;
-    }
-
-    public boolean isVpn() {
-        return isVpn;
-    }
-
-    public boolean isAbuser() {
-        return isAbuser;
-    }
-
-    public Company getCompany() {
-        return company;
-    }
-
-    public Datacenter getDatacenter() {
-        return datacenter;
-    }
-
-    public ASN getAsn() {
-        return asn;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public double getElapsedMs() {
-        return elapsedMs;
-    }
-
+    @Getter
     public static class Company {
 
         private final String name;
@@ -156,32 +105,9 @@ public class IPAddressInfo {
             this.whois = "";
         }
 
-        public String getName() {
-            return name;
-        }
-
-        public String getAbuserScore() {
-            return abuserScore;
-        }
-
-        public String getDomain() {
-            return domain;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public String getNetwork() {
-            return network;
-        }
-
-        public String getWhois() {
-            return whois;
-        }
-
     }
 
+    @Getter
     public static class Datacenter {
 
         private final String datacenter;
@@ -194,20 +120,9 @@ public class IPAddressInfo {
             this.network = "";
         }
 
-        public String getDatacenter() {
-            return datacenter;
-        }
-
-        public String getDomain() {
-            return domain;
-        }
-
-        public String getNetwork() {
-            return network;
-        }
-
     }
 
+    @Getter
     public static class ASN {
 
         private final int asn;
@@ -245,69 +160,16 @@ public class IPAddressInfo {
             this.whois = "";
         }
 
-        public int getAsn() {
-            return asn;
-        }
-
-        public String getAbuserScore() {
-            return abuserScore;
-        }
-
-        public String getRoute() {
-            return route;
-        }
-
-        public String getDescr() {
-            return descr;
-        }
-
-        public String getCountry() {
-            return country;
-        }
-
-        public boolean isActive() {
-            return active;
-        }
-
-        public String getOrg() {
-            return org;
-        }
-
-        public String getDomain() {
-            return domain;
-        }
-
-        public String getAbuse() {
-            return abuse;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public String getCreated() {
-            return created;
-        }
-
-        public String getUpdated() {
-            return updated;
-        }
-
-        public String getRir() {
-            return rir;
-        }
-
-        public String getWhois() {
-            return whois;
-        }
-
     }
 
     public static class Location {
 
         private final String continent;
+
+        @Getter
         private final String country;
 
+        @Getter
         @SerializedName("country_code")
         private final String countryCode;
 
@@ -340,50 +202,6 @@ public class IPAddressInfo {
             this.localTime = "";
             this.localTimeUnix = 0L;
             this.isDst = false;
-        }
-
-        public String getContinent() {
-            return continent;
-        }
-
-        public String getCountry() {
-            return country;
-        }
-
-        public String getCountryCode() {
-            return countryCode;
-        }
-
-        public String getState() {
-            return state;
-        }
-
-        public String getCity() {
-            return city;
-        }
-
-        public double getLatitude() {
-            return latitude;
-        }
-
-        public double getLongitude() {
-            return longitude;
-        }
-
-        public String getZip() {
-            return zip;
-        }
-
-        public String getTimezone() {
-            return timezone;
-        }
-
-        public String getLocalTime() {
-            return localTime;
-        }
-
-        public long getLocalTimeUnix() {
-            return localTimeUnix;
         }
 
         public boolean isDst() {

@@ -24,6 +24,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.util.common.IName;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.render.ColorUtils;
+import lombok.Getter;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.encryption.NetworkEncryptionUtils;
 import net.minecraft.network.message.LastSeenMessagesCollector;
@@ -46,16 +47,13 @@ public class ChatUtil implements MinecraftWrapper {
 
         INFO(Color.GREEN), WARNING(Color.ORANGE), ERROR(Color.RED);
 
+        @Getter
         private final int color;
         private final String name;
 
         Type(final Color color) {
             this.color = color.getRGB();
             this.name = StringUtils.normalizeEnumName(this.name());
-        }
-
-        public int getColor() {
-            return this.color;
         }
 
         @Override

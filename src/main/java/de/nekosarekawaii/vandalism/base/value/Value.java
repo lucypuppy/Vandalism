@@ -20,17 +20,22 @@ package de.nekosarekawaii.vandalism.base.value;
 
 import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.util.common.IName;
+import lombok.Getter;
 
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
 
 public abstract class Value<V> implements IName {
 
+    @Getter
     private final ValueParent parent;
     private final String name;
+    @Getter
     private final String description;
 
+    @Getter
     private final V defaultValue;
+    @Getter
     private V value;
     private BiConsumer<V, V> valueChangeConsumer;
     private BooleanSupplier visibleCondition;
@@ -72,28 +77,12 @@ public abstract class Value<V> implements IName {
         return this.name;
     }
 
-    public String getDescription() {
-        return this.description;
-    }
-
-    public V getValue() {
-        return this.value;
-    }
-
-    public V getDefaultValue() {
-        return this.defaultValue;
-    }
-
     public void resetValue() {
         this.setValue(this.defaultValue);
     }
 
     public BooleanSupplier isVisible() {
         return this.visibleCondition;
-    }
-
-    public ValueParent getParent() {
-        return this.parent;
     }
 
     public abstract void load(final JsonObject mainNode);

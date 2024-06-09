@@ -19,16 +19,14 @@
 package de.nekosarekawaii.vandalism.util.click;
 
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import lombok.Setter;
 
 import java.util.function.Consumer;
 
+@Setter
 public abstract class Clicker implements MinecraftWrapper {
 
     protected Consumer<Boolean> clickAction = attack -> {};
-
-    public void setClickAction(final Consumer<Boolean> clickAction) {
-        this.clickAction = clickAction;
-    }
 
     public abstract void onUpdate();
 

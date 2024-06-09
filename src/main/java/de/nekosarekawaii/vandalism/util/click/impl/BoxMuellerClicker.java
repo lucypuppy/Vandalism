@@ -21,6 +21,8 @@ package de.nekosarekawaii.vandalism.util.click.impl;
 import de.nekosarekawaii.vandalism.feature.module.impl.combat.KillAuraModule;
 import de.nekosarekawaii.vandalism.util.click.Clicker;
 import de.nekosarekawaii.vandalism.util.common.*;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import org.joml.Vector4d;
@@ -30,18 +32,25 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class BoxMuellerClicker extends Clicker {
 
+    @Setter
     private KillAuraModule killAuraModule;
 
     private int delay;
+    @Setter
     private float mean;
+    @Setter
     private float std;
     private float cps;
     private int clicks;
+    @Setter
     private int minCps;
+    @Setter
     private int maxCps;
     private final MSTimer msTimer = new MSTimer();
     private float partialDelays;
+    @Setter
     private float cpsUpdatePossibility;
+    @Getter
     private final EvictingList<Vector4d> cpsHistory = new EvictingList<>(new ArrayList<>(), 200);
 
     @Override
@@ -105,34 +114,6 @@ public class BoxMuellerClicker extends Clicker {
 
             this.clicks++;
         }
-    }
-
-    public void setMaxCps(final int maxCps) {
-        this.maxCps = maxCps;
-    }
-
-    public void setMinCps(final int minCps) {
-        this.minCps = minCps;
-    }
-
-    public void setMean(final float mean) {
-        this.mean = mean;
-    }
-
-    public void setStd(final float std) {
-        this.std = std;
-    }
-
-    public void setCpsUpdatePossibility(final float possibility) {
-        this.cpsUpdatePossibility = possibility;
-    }
-
-    public EvictingList<Vector4d> getCpsHistory() {
-        return cpsHistory;
-    }
-
-    public void setKillAuraModule(KillAuraModule killAuraModule) {
-        this.killAuraModule = killAuraModule;
     }
 
 }

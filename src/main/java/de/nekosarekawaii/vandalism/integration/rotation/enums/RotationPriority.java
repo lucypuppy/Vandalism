@@ -18,6 +18,9 @@
 
 package de.nekosarekawaii.vandalism.integration.rotation.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum RotationPriority {
 
     LOWEST(0),
@@ -30,10 +33,6 @@ public enum RotationPriority {
 
     RotationPriority(final int priority) {
         this.priority = priority;
-    }
-
-    public int getPriority() {
-        return this.priority;
     }
 
 }

@@ -21,9 +21,9 @@ package de.nekosarekawaii.vandalism.feature.module.config;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.feature.module.ModuleManager;
 
-public class ModulesConfig extends ConfigWithValues {
+public class ModuleConfig extends ConfigWithValues {
 
-    public ModulesConfig(final ModuleManager manager) {
+    public ModuleConfig(final ModuleManager manager) {
         super("modules", manager.getList());
     }
 

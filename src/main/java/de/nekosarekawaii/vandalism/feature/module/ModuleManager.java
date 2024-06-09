@@ -30,7 +30,7 @@ import de.nekosarekawaii.vandalism.event.network.WorldListener;
 import de.nekosarekawaii.vandalism.event.player.HealthUpdateListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.Feature;
-import de.nekosarekawaii.vandalism.feature.module.config.ModulesConfig;
+import de.nekosarekawaii.vandalism.feature.module.config.ModuleConfig;
 import de.nekosarekawaii.vandalism.feature.module.gui.ModulesClientWindow;
 import de.nekosarekawaii.vandalism.feature.module.impl.combat.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.*;
@@ -179,7 +179,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new GameModeNotifierModule(),
                 new SmartVClip()
         );
-        this.configManager.add(new ModulesConfig(this));
+        this.configManager.add(new ModuleConfig(this));
     }
 
     @Override

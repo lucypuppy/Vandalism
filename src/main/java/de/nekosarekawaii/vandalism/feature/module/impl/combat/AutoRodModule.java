@@ -69,7 +69,7 @@ public class AutoRodModule extends AbstractModule implements PlayerUpdateListene
         this.deactivateAfterSessionDefault();
     }
 
-    private DoubleValue range = new DoubleValue(
+    private final DoubleValue range = new DoubleValue(
             this,
             "Max Range",
             "The maximum range to rod targets.",

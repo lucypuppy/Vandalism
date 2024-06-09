@@ -22,6 +22,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.BezierValue;
 import de.nekosarekawaii.vandalism.util.click.Clicker;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.common.RandomUtils;
+import lombok.Setter;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -31,6 +32,7 @@ public class BezierClicker extends Clicker {
     private int delay;
     private float cps;
     private float partialDelays;
+    @Setter
     private float cpsUpdatePossibility;
     private BezierValue value;
     private float percentage = 0.0f;
@@ -74,10 +76,6 @@ public class BezierClicker extends Clicker {
 
     public void setBezierValue(final BezierValue value) {
         this.value = value;
-    }
-
-    public void setCpsUpdatePossibility(final float possibility) {
-        this.cpsUpdatePossibility = possibility;
     }
 
 }

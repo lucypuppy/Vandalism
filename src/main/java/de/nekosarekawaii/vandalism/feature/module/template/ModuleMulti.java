@@ -22,6 +22,7 @@ import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import lombok.Getter;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public abstract class ModuleMulti<T extends AbstractModule> implements ValuePare
 
     private final List<Value<?>> values = new ArrayList<>();
 
+    @Getter
     private final String name;
     public final @Nullable T parent;
 
@@ -48,10 +50,6 @@ public abstract class ModuleMulti<T extends AbstractModule> implements ValuePare
     }
 
     public void onDeactivate() {
-    }
-
-    public String getName() {
-        return this.name;
     }
 
     @Override

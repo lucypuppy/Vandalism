@@ -18,6 +18,9 @@
 
 package de.nekosarekawaii.vandalism.util.common;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
@@ -37,11 +40,13 @@ public abstract class Storage<T> {
     /**
      * The list of the storage.
      */
+    @Getter
     private final List<T> list;
 
     /**
      * The add and remove consumer.
      */
+    @Setter
     private Consumer<T> addConsumer, removeConsumer;
 
     /**
@@ -131,18 +136,6 @@ public abstract class Storage<T> {
     @SuppressWarnings("unchecked")
     public <V extends T> V getByClass(final Class<V> clazz) {
         return (V) this.list.stream().filter(t -> t.getClass() == clazz).findFirst().orElse(null);
-    }
-
-    public List<T> getList() {
-        return this.list;
-    }
-
-    public void setAddConsumer(final Consumer<T> addConsumer) {
-        this.addConsumer = addConsumer;
-    }
-
-    public void setRemoveConsumer(final Consumer<T> removeConsumer) {
-        this.removeConsumer = removeConsumer;
     }
 
 }

@@ -71,12 +71,4 @@ public class EvictingList<V> {
         return this.list.size() >= this.maxSize;
     }
 
-    public List<V> getNormalList() {
-        return this.list;
-    }
-
-    public int getMaxSize() {
-        return this.maxSize;
-    }
-
 }

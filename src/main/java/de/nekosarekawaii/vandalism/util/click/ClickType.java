@@ -23,6 +23,7 @@ import de.nekosarekawaii.vandalism.util.click.impl.BoxMuellerClicker;
 import de.nekosarekawaii.vandalism.util.click.impl.CooldownClicker;
 import de.nekosarekawaii.vandalism.util.common.IName;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
+import lombok.Getter;
 
 public enum ClickType implements IName {
 
@@ -31,15 +32,12 @@ public enum ClickType implements IName {
     BEZIER(new BezierClicker());
 
     private final String name;
+    @Getter
     private final Clicker clicker;
 
     ClickType(final Clicker clicker) {
         this.name = StringUtils.normalizeEnumName(this.name());
         this.clicker = clicker;
-    }
-
-    public Clicker getClicker() {
-        return clicker;
     }
 
     @Override

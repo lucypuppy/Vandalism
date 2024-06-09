@@ -36,7 +36,7 @@ public class AntiBotsModule extends AbstractModule implements TargetListener, In
         super("Anti Bots", "Prevents bots from joining your server.", Category.COMBAT);
     }
 
-    private List<Entity> movedEntities = new ArrayList<>();
+    private final List<Entity> movedEntities = new ArrayList<>();
 
     @Override
     public void onActivate() {

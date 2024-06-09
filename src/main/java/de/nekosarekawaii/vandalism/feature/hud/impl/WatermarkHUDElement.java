@@ -26,6 +26,7 @@ import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
 import de.nekosarekawaii.vandalism.util.common.IName;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.GLStateTracker;
+import lombok.Getter;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
@@ -131,6 +132,7 @@ public class WatermarkHUDElement extends HUDElement {
 
     private static class LogoSelection implements IName, MinecraftWrapper {
 
+        @Getter
         private final Identifier identifier;
         private final String name;
 
@@ -149,10 +151,6 @@ public class WatermarkHUDElement extends HUDElement {
         public LogoSelection() {
             this.identifier = FabricBootstrap.MOD_ICON;
             this.name = "Default";
-        }
-
-        public Identifier getIdentifier() {
-            return this.identifier;
         }
 
         @Override

@@ -22,6 +22,7 @@ import com.mojang.datafixers.util.Function4;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.util.common.IName;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
+import lombok.Getter;
 import net.minecraft.util.math.MathHelper;
 
 public enum RotationGCD implements IName {
@@ -65,15 +66,12 @@ public enum RotationGCD implements IName {
     });
 
     private final String name;
+    @Getter
     private final Function4<Rotation, Rotation, Double, Integer, Rotation> lambda;
 
     RotationGCD(final Function4<Rotation, Rotation, Double, Integer, Rotation> lambda) {
         this.name = StringUtils.normalizeEnumName(this.name());
         this.lambda = lambda;
-    }
-
-    public Function4<Rotation, Rotation, Double, Integer, Rotation> getLambda() {
-        return lambda;
     }
 
     @Override

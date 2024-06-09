@@ -18,20 +18,15 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.fix.minecraft;
 
-import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.multiplayer.AddServerScreen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(AddServerScreen.class)
 public abstract class MixinAddServerScreen extends Screen {
-
-    @Shadow private TextFieldWidget addressField;
 
     protected MixinAddServerScreen(final Text ignored) {
         super(ignored);

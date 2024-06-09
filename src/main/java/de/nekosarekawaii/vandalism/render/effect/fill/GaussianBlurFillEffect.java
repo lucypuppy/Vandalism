@@ -22,22 +22,16 @@ import de.nekosarekawaii.vandalism.render.gl.shader.ShaderProgram;
 import lombok.Getter;
 import lombok.Setter;
 
+@Setter
+@Getter
 public class GaussianBlurFillEffect extends FillEffect {
 
-    @Getter
-    @Setter
     private int textureId;
 
-    @Getter
-    @Setter
     private float directions = 16.0f;
 
-    @Getter
-    @Setter
     private float quality = 4.0f;
 
-    @Getter
-    @Setter
     private float radius = 8.0f;
 
     public GaussianBlurFillEffect() {

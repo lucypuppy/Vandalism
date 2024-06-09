@@ -20,6 +20,9 @@ package de.nekosarekawaii.vandalism.util.common;
 
 // Easing.java from https://github.com/mattdesl/cisc226game/blob/master/SpaceGame/src/space/engine/easing/Easing.java
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -192,8 +195,32 @@ public interface Easing {
     /**
      * A base class for elastic easings.
      */
+    @Setter
+    @Getter
     abstract class Elastic implements Easing {
+        /**
+         * -- GETTER --
+         *  Returns the amplitude.
+         *
+         *
+         * -- SETTER --
+         *  Sets the amplitude to the given value.
+         *
+         @return the amplitude for this easing
+          * @param amplitude the new amplitude
+         */
         private float amplitude;
+        /**
+         * -- GETTER --
+         *  Returns the period.
+         *
+         *
+         * -- SETTER --
+         *  Sets the period to the given value.
+         *
+         @return the period for this easing
+          * @param period the new period
+         */
         private float period;
         
         /**
@@ -212,38 +239,7 @@ public interface Easing {
         public Elastic() {
             this(-1f, 0f);
         }
-        
-        /** 
-         * Returns the period.
-         * @return the period for this easing
-         */
-        public float getPeriod() { 
-            return period; 
-        }
-        
-        /** 
-         * Sets the period to the given value.
-         * @param period the new period
-         */
-        public void setPeriod(float period) { 
-            this.period = period; 
-        }
-        
-        /**
-         * Returns the amplitude.
-         * @return the amplitude for this easing
-         */
-        public float getAmplitude() { 
-            return amplitude; 
-        }
-        
-        /**
-         * Sets the amplitude to the given value.
-         * @param amplitude the new amplitude
-         */
-        public void setAmplitude(float amplitude) { 
-            this.amplitude = amplitude; 
-        }
+
     }
     
     /** An EasingIn instance using the default values. */
@@ -317,10 +313,23 @@ public interface Easing {
     }
 
     /** A base class for Back easings. */
+    @Setter
+    @Getter
     abstract class Back implements Easing {
         /** The default overshoot is 10% (1.70158). */
         public static final float DEFAULT_OVERSHOOT = 1.70158f;
 
+        /**
+         * -- GETTER --
+         *  Returns the overshoot for this easing.
+         *
+         *
+         * -- SETTER --
+         *  Sets the overshoot to the given value.
+         *
+         @return this easing's overshoot
+          * @param overshoot the new overshoot
+         */
         private float overshoot;
 
         /** Creates a new Back instance with the default overshoot (1.70158). */
@@ -334,17 +343,6 @@ public interface Easing {
          */
         public Back(float overshoot) { this.overshoot = overshoot; }
 
-        /**
-         * Sets the overshoot to the given value.
-         * @param overshoot the new overshoot
-         */
-        public void setOvershoot(float overshoot) { this.overshoot = overshoot; }
-
-        /**
-         * Returns the overshoot for this easing.
-         * @return this easing's overshoot
-         */
-        public float getOvershoot() { return overshoot; }
     }
 
     /////////// BACK EASING: overshooting cubic easing: (s+1)*t^3 - s*t^2  //////////////

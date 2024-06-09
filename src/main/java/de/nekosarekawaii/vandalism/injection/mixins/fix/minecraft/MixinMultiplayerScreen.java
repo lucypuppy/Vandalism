@@ -37,9 +37,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinMultiplayerScreen extends Screen implements MinecraftWrapper {
 
     @Shadow
-    protected MultiplayerServerListWidget serverListWidget;
-
-    @Shadow
     private Screen parent;
 
     protected MixinMultiplayerScreen(final Text ignored) {

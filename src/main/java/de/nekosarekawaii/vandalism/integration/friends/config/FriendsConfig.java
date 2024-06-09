@@ -25,11 +25,11 @@ import de.nekosarekawaii.vandalism.base.config.AbstractConfig;
 import de.nekosarekawaii.vandalism.integration.friends.Friend;
 import de.nekosarekawaii.vandalism.integration.friends.FriendsManager;
 
-public class FriendConfig extends AbstractConfig<JsonObject> {
+public class FriendsConfig extends AbstractConfig<JsonObject> {
 
     private final FriendsManager friendsManager;
 
-    public FriendConfig(final FriendsManager friendsManager) {
+    public FriendsConfig(final FriendsManager friendsManager) {
         super(JsonObject.class, "friends");
         this.friendsManager = friendsManager;
     }

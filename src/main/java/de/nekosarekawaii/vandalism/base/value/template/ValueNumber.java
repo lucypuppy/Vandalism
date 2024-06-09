@@ -20,7 +20,9 @@ package de.nekosarekawaii.vandalism.base.value.template;
 
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
+import lombok.Getter;
 
+@Getter
 public abstract class ValueNumber<T extends Number> extends Value<T> {
 
     private final T minValue;
@@ -31,14 +33,6 @@ public abstract class ValueNumber<T extends Number> extends Value<T> {
 
         this.minValue = minValue;
         this.maxValue = maxValue;
-    }
-
-    public T getMinValue() {
-        return minValue;
-    }
-
-    public T getMaxValue() {
-        return maxValue;
     }
 
 }
