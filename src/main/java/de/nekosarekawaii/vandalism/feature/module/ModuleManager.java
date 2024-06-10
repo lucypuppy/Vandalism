@@ -177,7 +177,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new DeutschMacherModule(),
                 new ProtectorModule(),
                 new GameModeNotifierModule(),
-                new SmartVClip()
+                new SmartVClip(),
+                new LoyisaIntegrationModule()
         );
         this.configManager.add(new ModuleConfig(this));
     }
