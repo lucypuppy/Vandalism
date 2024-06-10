@@ -73,6 +73,13 @@ public class ChatSettings extends ValueGroup {
             true
     );
 
+    public final BooleanValue modulateHead = new BooleanValue(
+            this,
+            "Modulate Head",
+            "Modulates the head of your current account.",
+            true
+    );
+
     public final BooleanValue allowColorChar = new BooleanValue(
             this,
             "Allow Color Char",
