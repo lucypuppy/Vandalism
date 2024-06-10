@@ -87,9 +87,12 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
 
     @ModifyArgs(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V"))
     private void modifyChatFieldBackground(final Args args) {
-        if (Vandalism.getInstance().getClientSettings().getChatSettings().displayAccountHead.getValue()) {
-            args.set(0, this.chatField.getX() - 2);
-            args.set(3, this.height - 1);
+        final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
+        if (chatSettings.displayAccountHead.getValue()) {
+            args.set(0, this.chatField.getX() - 2 - (chatSettings.modulateHead.getValue() ? 0 : 2));
+            if (chatSettings.modulateHead.getValue()) {
+                args.set(3, this.height - 1);
+            }
         }
     }
 
@@ -118,7 +121,11 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
                     final Identifier playerSkin = accountPlayerSkin.getSkin();
                     if (playerSkin != null) {
                         GLStateTracker.BLEND.save(true);
-                        PlayerSkinDrawer.draw(context, playerSkin, 1, this.chatField.getY() - 4, 15, true, false);
+                        if  (chatSettings.modulateHead.getValue()) {
+                            PlayerSkinDrawer.draw(context, playerSkin, 1, this.chatField.getY() - 4, 15, true, false);
+                        } else {
+                            PlayerSkinDrawer.draw(context, playerSkin, 2, this.chatField.getY() - 2, 12, true, false);
+                        }
                         GLStateTracker.BLEND.revert();
                     }
                 }
