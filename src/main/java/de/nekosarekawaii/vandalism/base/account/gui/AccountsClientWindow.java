@@ -25,8 +25,8 @@ import de.nekosarekawaii.vandalism.base.account.AccountFactory;
 import de.nekosarekawaii.vandalism.base.account.AccountManager;
 import de.nekosarekawaii.vandalism.base.account.type.EasyMCAccount;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
-import de.nekosarekawaii.vandalism.util.render.PlayerSkinRenderer;
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.render.PlayerSkinRenderer;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiMouseButton;
@@ -113,9 +113,9 @@ public class AccountsClientWindow extends ClientWindow {
         if (accountPlayerSkin != null) {
             final int playerSkinId = accountPlayerSkin.getGlId();
             if (playerSkinId != -1) {
-                ImUtils.texture(playerSkinId, ACCOUNT_ENTRY_DIMENSION, ACCOUNT_ENTRY_DIMENSION, 8f, 8f, 15.5f, 15f);
+                ImUtils.texture(playerSkinId, ImUtils.modulateDimension(ACCOUNT_ENTRY_DIMENSION), ImUtils.modulateDimension(ACCOUNT_ENTRY_DIMENSION), ImUtils.modulateDimension(8f), ImUtils.modulateDimension(8f), ImUtils.modulateDimension(15.5f), ImUtils.modulateDimension(15f));
                 ImGui.sameLine(15);
-                ImUtils.texture(playerSkinId, ACCOUNT_ENTRY_DIMENSION, ACCOUNT_ENTRY_DIMENSION, 39.5f, 8f, 47.1f, 14.8f);
+                ImUtils.texture(playerSkinId, ImUtils.modulateDimension(ACCOUNT_ENTRY_DIMENSION), ImUtils.modulateDimension(ACCOUNT_ENTRY_DIMENSION), ImUtils.modulateDimension(39.5f), ImUtils.modulateDimension(8f), ImUtils.modulateDimension(47.1f), ImUtils.modulateDimension(14.8f));
                 ImGui.sameLine();
             }
         }
@@ -128,7 +128,7 @@ public class AccountsClientWindow extends ClientWindow {
             ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], color[3] - 0.1f);
             ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
         }
-        if (ImGui.button("##account" + playerName + account.getType(), ImGui.getColumnWidth(), ACCOUNT_ENTRY_DIMENSION)) {
+        if (ImGui.button("##account" + playerName + account.getType(), ImGui.getColumnWidth(), ImUtils.modulateDimension(ACCOUNT_ENTRY_DIMENSION + 5f))) {
             if (isEntry) {
                 try {
                     account.login();
@@ -145,8 +145,8 @@ public class AccountsClientWindow extends ClientWindow {
             this.hoveredAccount = account;
             ImGui.openPopup("account-popup");
         }
-        ImGui.sameLine(95);
-        ImGui.text("Name: " + account.getDisplayName() + "\n" + "Type: " + account.getType() + "\n" + "Status: " + (account.getStatus() == null ? "Idle" : account.getStatus()));
+        ImGui.sameLine(ImUtils.modulateDimension(85));
+        ImGui.textWrapped("Name: " + account.getDisplayName() + "\n" + "Type: " + account.getType() + "\n" + "Status: " + (account.getStatus() == null ? "Idle" : account.getStatus()));
     }
 
     @Override
