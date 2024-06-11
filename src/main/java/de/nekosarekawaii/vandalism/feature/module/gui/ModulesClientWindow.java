@@ -28,8 +28,8 @@ import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.module.ModuleManager;
-import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiCol;
@@ -181,7 +181,7 @@ public class ModulesClientWindow extends ClientWindow {
         final ImVec2 displaySize = ImGui.getIO().getDisplaySize();
         final float centerFactor = 0.5f;
         ImGui.setNextWindowPos(displaySize.x * centerFactor, displaySize.y * centerFactor, ImGuiCond.Always, centerFactor, centerFactor);
-        ImGui.setNextWindowSizeConstraints(300f, 50f, 1000000f, 1000000f);
+        ImGui.setNextWindowSizeConstraints(ImUtils.modulateDimension(300f), ImUtils.modulateDimension(50f), ImUtils.modulateDimension(1000000f), ImUtils.modulateDimension(1000000f));
         if (ImGui.beginPopupModal(popupId, ImGuiWindowFlags.AlwaysAutoResize)) {
             this.renderModuleInfo(module, true);
             ImGui.separator();
