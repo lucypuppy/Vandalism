@@ -44,7 +44,7 @@ public class MenuSettings extends ValueGroup {
 
     public final IntegerValue menuScale = new IntegerValue(
             this,
-            "Menu scale",
+            "Menu Scale",
             "Changes the global scale of ImGui provided fonts. REQUIRES RESTART!",
             16,
             1,
