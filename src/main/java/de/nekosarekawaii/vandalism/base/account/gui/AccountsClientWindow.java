@@ -113,9 +113,26 @@ public class AccountsClientWindow extends ClientWindow {
         if (accountPlayerSkin != null) {
             final int playerSkinId = accountPlayerSkin.getGlId();
             if (playerSkinId != -1) {
-                ImUtils.texture(playerSkinId, ImUtils.modulateDimension(ACCOUNT_ENTRY_DIMENSION), ImUtils.modulateDimension(ACCOUNT_ENTRY_DIMENSION), ImUtils.modulateDimension(8f), ImUtils.modulateDimension(8f), ImUtils.modulateDimension(15.5f), ImUtils.modulateDimension(15f));
+                final float modulatedDimension = ImUtils.modulateDimension(ACCOUNT_ENTRY_DIMENSION);
+                ImUtils.texture(
+                        playerSkinId,
+                        modulatedDimension,
+                        modulatedDimension,
+                        ImUtils.modulateDimension(8f),
+                        ImUtils.modulateDimension(8f),
+                        ImUtils.modulateDimension(15.5f),
+                        ImUtils.modulateDimension(15f)
+                );
                 ImGui.sameLine(15);
-                ImUtils.texture(playerSkinId, ImUtils.modulateDimension(ACCOUNT_ENTRY_DIMENSION), ImUtils.modulateDimension(ACCOUNT_ENTRY_DIMENSION), ImUtils.modulateDimension(39.5f), ImUtils.modulateDimension(8f), ImUtils.modulateDimension(47.1f), ImUtils.modulateDimension(14.8f));
+                ImUtils.texture(
+                        playerSkinId,
+                        modulatedDimension,
+                        modulatedDimension,
+                        ImUtils.modulateDimension(39.5f),
+                        ImUtils.modulateDimension(8f),
+                        ImUtils.modulateDimension(47.1f),
+                        ImUtils.modulateDimension(14.8f)
+                );
                 ImGui.sameLine();
             }
         }
@@ -145,7 +162,7 @@ public class AccountsClientWindow extends ClientWindow {
             this.hoveredAccount = account;
             ImGui.openPopup("account-popup");
         }
-        ImGui.sameLine(ImUtils.modulateDimension(85));
+        ImGui.sameLine(ImUtils.modulateDimension(92));
         ImGui.textWrapped("Name: " + account.getDisplayName() + "\n" + "Type: " + account.getType() + "\n" + "Status: " + (account.getStatus() == null ? "Idle" : account.getStatus()));
     }
 
