@@ -28,12 +28,12 @@ import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataListWidget;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
+import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.common.TimeFormatter;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
-import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiComboFlags;
@@ -358,7 +358,7 @@ public class ServerDiscoveryTab implements MinecraftWrapper, DataListWidget {
     public void renderDataEntryContextMenu(final String id, final int index, final DataEntry dataEntry) {
         if (dataEntry instanceof final ListDataEntry listDataEntry) {
             final String address = listDataEntry.getFirst().getRight();
-            final int buttonWidth = 200, buttonHeight = 28;
+            final float buttonWidth = ImUtils.modulateDimension(200), buttonHeight = ImUtils.modulateDimension(28);
             try {
                 final ProtocolVersion protocolVersion = ProtocolVersion.getProtocol(Integer.parseInt(listDataEntry.getFourth().getRight()));
                 if (protocolVersion.isKnown()) {

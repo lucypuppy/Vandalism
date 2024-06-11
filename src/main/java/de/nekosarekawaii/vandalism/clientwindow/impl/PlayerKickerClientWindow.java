@@ -25,10 +25,10 @@ import de.nekosarekawaii.vandalism.clientwindow.template.StateClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataListWidget;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
+import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.game.PacketHelper;
 import de.nekosarekawaii.vandalism.util.game.PingState;
 import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
-import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiComboFlags;
 import imgui.type.ImBoolean;
@@ -281,7 +281,7 @@ public class PlayerKickerClientWindow extends StateClientWindow implements DataL
             final String name = listDataEntry.getFirst().getRight(), uuid = listDataEntry.getSecond().getRight();
             ImGui.text("Player: " + name);
             ImGui.separator();
-            final int buttonWidth = 200, buttonHeight = 28;
+            final float buttonWidth = ImUtils.modulateDimension(200), buttonHeight = ImUtils.modulateDimension(28);
             if (ImGui.button("Login" + id + "login", buttonWidth, buttonHeight)) {
                 Vandalism.getInstance().getAccountManager().loginCracked(name, uuid);
             }
