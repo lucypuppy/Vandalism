@@ -29,15 +29,11 @@ import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.internal.ModuleToggleListener;
 import de.nekosarekawaii.vandalism.feature.Feature;
 import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
-import de.nekosarekawaii.vandalism.util.game.SoundHooks;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.util.game.SoundHooks;
 import lombok.Getter;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.raphimc.vialoader.util.VersionRange;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -177,12 +173,13 @@ public abstract class AbstractModule extends Feature implements ValueParent {
                 final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
                 if (this.mc.player != null) {
                     if (menuSettings.moduleStateLogging.getValue() && this.moduleStateLogging.getValue()) {
-                        final MutableText text = Text.literal(Formatting.DARK_AQUA + this.getName() + Formatting.GRAY + " has been ");
+                        /*final MutableText text = Text.literal(Formatting.DARK_AQUA + this.getName() + Formatting.GRAY + " has been ");
                         final MutableText state = newValue ? Text.literal("activated") : Text.literal("deactivated");
                         state.withColor(newValue ? Color.GREEN.getRGB() : Color.RED.getRGB());
                         text.append(state);
                         text.append(".");
-                        ChatUtil.chatMessage(text, true, true);
+                        ChatUtil.chatMessage(text, true, true);*/
+                        ChatUtil.sendModuleToggleMessage(this, newValue);
                     }
                     if (menuSettings.moduleStateSound.getValue() && this.moduleStateSound.getValue()) {
                         if (newValue) SoundHooks.playModuleActivate();

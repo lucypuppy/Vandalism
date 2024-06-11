@@ -21,10 +21,12 @@ package de.nekosarekawaii.vandalism.util.game;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
+import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.common.IName;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.render.ColorUtils;
 import lombok.Getter;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.encryption.NetworkEncryptionUtils;
 import net.minecraft.network.message.LastSeenMessagesCollector;
@@ -198,6 +200,28 @@ public class ChatUtil implements MinecraftWrapper {
                 .append(prefix)
                 .append(Vandalism.getInstance().getClientSettings().getChatSettings().endBracket.getValue())
                 .append(" ");
+    }
+
+    private static MutableText moduleMessage;
+
+    public static void sendModuleToggleMessage(AbstractModule module, boolean enabled) {
+        if (MinecraftClient.getInstance().player == null) return;
+        final MinecraftClient mc = MinecraftClient.getInstance();
+        final boolean reduceMessages = Vandalism.getInstance().getClientSettings().getChatSettings().reduceModuleToggleMessages.getValue();
+        if (reduceMessages && moduleMessage != null) {
+            mc.inGameHud.getChatHud().messages.removeIf(message -> message.content() == moduleMessage);
+            mc.inGameHud.getChatHud().refresh();
+        }
+        MutableText text = Text.literal(Formatting.DARK_AQUA + module.getName() + Formatting.GRAY + " has been ");
+        final MutableText state = enabled ? Text.literal("activated") : Text.literal("deactivated");
+        state.withColor(enabled ? Color.GREEN.getRGB() : Color.RED.getRGB());
+        text.append(state);
+        text.append(".");
+        text = getChatPrefix().copy().append(text);
+        if (reduceMessages) {
+            moduleMessage = text;
+        }
+        mc.inGameHud.getChatHud().addMessage(text);
     }
 
 }
