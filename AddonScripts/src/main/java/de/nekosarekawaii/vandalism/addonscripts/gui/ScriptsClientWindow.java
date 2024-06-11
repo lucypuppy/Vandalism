@@ -20,12 +20,12 @@ package de.nekosarekawaii.vandalism.addonscripts.gui;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.addonscripts.AddonScripts;
-import de.nekosarekawaii.vandalism.addonscripts.parse.ScriptParser;
-import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.addonscripts.base.Script;
 import de.nekosarekawaii.vandalism.addonscripts.base.ScriptManager;
+import de.nekosarekawaii.vandalism.addonscripts.parse.ScriptParser;
+import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
+import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.common.RandomUtils;
-import de.nekosarekawaii.vandalism.util.render.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiPopupFlags;
 import imgui.flag.ImGuiTabBarFlags;
