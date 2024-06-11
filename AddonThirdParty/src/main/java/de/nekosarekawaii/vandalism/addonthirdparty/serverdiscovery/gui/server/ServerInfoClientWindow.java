@@ -27,10 +27,10 @@ import de.nekosarekawaii.vandalism.clientwindow.template.StateClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataListWidget;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
+import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.common.TimeFormatter;
 import de.nekosarekawaii.vandalism.util.game.PingState;
 import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
-import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
@@ -287,7 +287,7 @@ public class ServerInfoClientWindow extends StateClientWindow implements DataLis
             final String playerName = listDataEntry.getFirst().getRight();
             final String playerUUID = listDataEntry.getSecond().getRight();
             final String lastSeen = listDataEntry.getThird().getRight();
-            final int buttonWidth = 150, buttonHeight = 28;
+            final float buttonWidth = ImUtils.modulateDimension(150), buttonHeight = ImUtils.modulateDimension(28);
             if (ImGui.button("Add" + id + "player" + playerName + "add", buttonWidth, buttonHeight)) {
                 Vandalism.getInstance().getAccountManager().loginCracked(playerName, playerUUID, true);
             }

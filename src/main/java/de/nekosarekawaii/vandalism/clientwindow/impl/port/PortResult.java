@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.clientwindow.impl.port;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
+import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.PingState;
@@ -134,7 +135,7 @@ public class PortResult extends ListDataEntry implements MinecraftWrapper {
     }
 
     public void renderContextMenu(final String id) {
-        final int buttonWidth = 200, buttonHeight = 28;
+        final float buttonWidth = ImUtils.modulateDimension(200), buttonHeight = ImUtils.modulateDimension(28);
         final String address = this.address + ':' + this.mcPingResponse.server.port;
         ImGui.text(address);
         ImGui.separator();

@@ -26,11 +26,11 @@ import de.nekosarekawaii.vandalism.clientwindow.template.StateClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataListWidget;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
+import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.common.MathUtil;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.common.TimeFormatter;
 import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
-import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
@@ -184,7 +184,7 @@ public class PlayerDiscoveryClientWindow extends StateClientWindow implements Da
     public void renderDataEntryContextMenu(final String id, final int index, final DataEntry dataEntry) {
         if (dataEntry instanceof final ListDataEntry listDataEntry) {
             final String address = listDataEntry.getFirst().getRight();
-            final int buttonWidth = 150, buttonHeight = 28;
+            final float buttonWidth = ImUtils.modulateDimension(150), buttonHeight = ImUtils.modulateDimension(28);
             if (ImGui.button("Add to the Server List" + id + "addToServerList", buttonWidth, buttonHeight)) {
                 final ServerList serverList = new ServerList(MinecraftClient.getInstance());
                 serverList.loadFile();
