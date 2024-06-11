@@ -124,6 +124,13 @@ public class ChatSettings extends ValueGroup {
             Short.MAX_VALUE / 2
     ).visibleCondition(this.moreChatHistory::getValue);
 
+    public final BooleanValue reduceModuleToggleMessages = new BooleanValue(
+            this,
+            "Reduce Module Toggle Messages",
+            "Reduces the amount of module toggle messages in the chat by removing the old ones.",
+            false
+    );
+
     private final ValueGroup chatPrefix = new ValueGroup(this, "Chat Prefix", "Chat prefix related settings.");
 
     public final ColorValue chatPrefixColor = new ColorValue(
