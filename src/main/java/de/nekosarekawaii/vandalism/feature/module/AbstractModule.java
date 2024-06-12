@@ -173,12 +173,6 @@ public abstract class AbstractModule extends Feature implements ValueParent {
                 final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
                 if (this.mc.player != null) {
                     if (menuSettings.moduleStateLogging.getValue() && this.moduleStateLogging.getValue()) {
-                        /*final MutableText text = Text.literal(Formatting.DARK_AQUA + this.getName() + Formatting.GRAY + " has been ");
-                        final MutableText state = newValue ? Text.literal("activated") : Text.literal("deactivated");
-                        state.withColor(newValue ? Color.GREEN.getRGB() : Color.RED.getRGB());
-                        text.append(state);
-                        text.append(".");
-                        ChatUtil.chatMessage(text, true, true);*/
                         ChatUtil.sendModuleToggleMessage(this, newValue);
                     }
                     if (menuSettings.moduleStateSound.getValue() && this.moduleStateSound.getValue()) {

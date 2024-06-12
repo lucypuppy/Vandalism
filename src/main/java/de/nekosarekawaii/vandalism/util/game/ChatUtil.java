@@ -26,7 +26,6 @@ import de.nekosarekawaii.vandalism.util.common.IName;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.render.ColorUtils;
 import lombok.Getter;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.encryption.NetworkEncryptionUtils;
 import net.minecraft.network.message.LastSeenMessagesCollector;
@@ -204,9 +203,8 @@ public class ChatUtil implements MinecraftWrapper {
 
     private static MutableText moduleMessage;
 
-    public static void sendModuleToggleMessage(AbstractModule module, boolean enabled) {
-        if (MinecraftClient.getInstance().player == null) return;
-        final MinecraftClient mc = MinecraftClient.getInstance();
+    public static void sendModuleToggleMessage(final AbstractModule module, final boolean enabled) {
+        if (mc.player == null) return;
         final boolean reduceMessages = Vandalism.getInstance().getClientSettings().getChatSettings().reduceModuleToggleMessages.getValue();
         if (reduceMessages && moduleMessage != null) {
             mc.inGameHud.getChatHud().messages.removeIf(message -> message.content() == moduleMessage);
