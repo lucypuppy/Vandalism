@@ -18,24 +18,23 @@
 
 package de.nekosarekawaii.vandalism.util.game.inventory;
 
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.recipe.input.RecipeInput;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.world.World;
 
 public class RecipeNoop implements Recipe {
 
-
     @Override
-    public boolean matches(final Inventory inventory, final World world) {
+    public boolean matches(RecipeInput input, World world) {
         return false;
     }
 
     @Override
-    public ItemStack craft(Inventory inventory, RegistryWrapper.WrapperLookup lookup) {
+    public ItemStack craft(RecipeInput input, RegistryWrapper.WrapperLookup lookup) {
         return null;
     }
 

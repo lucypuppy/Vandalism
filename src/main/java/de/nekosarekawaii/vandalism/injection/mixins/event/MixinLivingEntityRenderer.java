@@ -40,11 +40,11 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
         super(ignored);
     }
 
-    @Redirect(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/model/EntityModel;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;IIFFFF)V"))
-    private void callEntityRenderBottomLayerListener(final EntityModel<T> instance, final MatrixStack matrices, final VertexConsumer vertices, final int light, final int overlay, final float red, final float green, final float blue, final float alpha, @Local T livingEntity) {
-        final EntityRenderBottomLayerListener.EntityRenderBottomLayerEvent event = new EntityRenderBottomLayerListener.EntityRenderBottomLayerEvent(livingEntity, matrices, vertices, light, overlay, red, green, blue, alpha);
+    @Redirect(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/model/EntityModel;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;III)V"))
+    private void callEntityRenderBottomLayerListener(EntityModel instance, MatrixStack matrices, VertexConsumer vertices, int light, int overlay, int color, @Local T livingEntity) {
+        final EntityRenderBottomLayerListener.EntityRenderBottomLayerEvent event = new EntityRenderBottomLayerListener.EntityRenderBottomLayerEvent(livingEntity, matrices, vertices, light, overlay, color);
         Vandalism.getInstance().getEventSystem().postInternal(EntityRenderBottomLayerListener.EntityRenderBottomLayerEvent.ID, event);
-        instance.render(matrices, vertices, event.light, event.overlay, event.red, event.green, event.blue, event.alpha);
+        instance.render(matrices, vertices, event.light, event.overlay, event.color);
     }
 
 }

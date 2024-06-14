@@ -30,10 +30,10 @@ import net.minecraft.util.Identifier;
 
 public class SoundHooks {
 
-    private static final Identifier MODULE_ACTIVATE_SOUND = new Identifier(FabricBootstrap.MOD_ID + ":module_activate");
+    private static final Identifier MODULE_ACTIVATE_SOUND = Identifier.of(FabricBootstrap.MOD_ID + ":module_activate");
     private static final SoundEvent MODULE_ACTIVATE_SOUND_EVENT = SoundEvent.of(MODULE_ACTIVATE_SOUND);
 
-    private static final Identifier MODULE_DEACTIVATE_SOUND = new Identifier(FabricBootstrap.MOD_ID + ":module_deactivate");
+    private static final Identifier MODULE_DEACTIVATE_SOUND = Identifier.of(FabricBootstrap.MOD_ID + ":module_deactivate");
     private static final SoundEvent MODULE_DEACTIVATE_SOUND_EVENT = SoundEvent.of(MODULE_DEACTIVATE_SOUND);
 
     public static void register() {

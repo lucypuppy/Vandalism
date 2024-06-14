@@ -87,7 +87,6 @@ public abstract class MixinScreen {
             case SHADER -> {
                 ci.cancel();
                 final Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
-                final BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
                 final ShaderProgram backgroundShader = Shaders.getIngameGuiBackgroundShader();
 
                 backgroundShader.bind();
@@ -103,11 +102,11 @@ public abstract class MixinScreen {
                 backgroundShader.uniform("size").set(6.28f);
                 backgroundShader.uniform("fadeDivision").set(1.0f);
 
-                bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
-                bufferBuilder.vertex(matrix, -1F, -1F, 0F).next();
-                bufferBuilder.vertex(matrix, client.getWindow().getFramebufferWidth(), -1F, 0F).next();
-                bufferBuilder.vertex(matrix, client.getWindow().getFramebufferWidth(), client.getWindow().getFramebufferHeight(), 0F).next();
-                bufferBuilder.vertex(matrix, -1F, client.getWindow().getFramebufferHeight(), 0F).next();
+                final BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
+                bufferBuilder.vertex(matrix, -1F, -1F, 0F);
+                bufferBuilder.vertex(matrix, client.getWindow().getFramebufferWidth(), -1F, 0F);
+                bufferBuilder.vertex(matrix, client.getWindow().getFramebufferWidth(), client.getWindow().getFramebufferHeight(), 0F);
+                bufferBuilder.vertex(matrix, -1F, client.getWindow().getFramebufferHeight(), 0F);
                 BufferRenderer.draw(bufferBuilder.end());
 
                 RenderSystem.disableBlend();
