@@ -207,12 +207,11 @@ public abstract class PostProcessEffect implements AutoCloseable {
     }
 
     private void drawRect(float rectLeft, float rectTop, float rectRight, float rectBottom) {
-        final BufferBuilder bb = Tessellator.getInstance().getBuffer();
-        bb.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
-        bb.vertex(rectLeft, rectBottom, 0.0f).next();
-        bb.vertex(rectRight, rectBottom, 0.0f).next();
-        bb.vertex(rectRight, rectTop, 0.0f).next();
-        bb.vertex(rectLeft, rectTop, 0.0f).next();
+        final BufferBuilder bb = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
+        bb.vertex(rectLeft, rectBottom, 0.0f);
+        bb.vertex(rectRight, rectBottom, 0.0f);
+        bb.vertex(rectRight, rectTop, 0.0f);
+        bb.vertex(rectLeft, rectTop, 0.0f);
         RenderSystem.enableBlend();
         BufferRenderer.draw(bb.end());
         RenderSystem.disableBlend();

@@ -157,7 +157,7 @@ public class ItemStackUtil implements MinecraftWrapper {
         private final String name;
 
         PackageType() {
-            this.id = new Identifier(this.name().toLowerCase());
+            this.id = Identifier.of(this.name().toLowerCase());
             this.name = Text.translatable(Registries.ITEM.get(this.id).getTranslationKey()).getString();
         }
 

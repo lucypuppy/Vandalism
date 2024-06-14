@@ -35,7 +35,7 @@ import java.awt.*;
 
 public class ContainerTooltipComponent implements TooltipComponent, MinecraftWrapper, ConvertibleTooltipData {
 
-    private static final Identifier TEXTURE_CONTAINER_BACKGROUND = new Identifier(FabricBootstrap.MOD_ID, "textures/hud/container.png");
+    private static final Identifier TEXTURE_CONTAINER_BACKGROUND = Identifier.of(FabricBootstrap.MOD_ID, "textures/hud/container.png");
 
     private static final int WIDTH = 176, HEIGHT = 67;
 
