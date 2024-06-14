@@ -19,8 +19,8 @@
 package de.nekosarekawaii.vandalism.event.render;
 
 import de.florianmichael.dietrichevents2.AbstractEvent;
-import net.minecraft.client.item.TooltipData;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipData;
 
 import java.util.List;
 
