@@ -69,7 +69,7 @@ public abstract class MixinScreen {
         final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
 
         if (menuSettings.inGameBackgroundBlur.getValue())
-            applyBlur(client.getTickDelta());
+            applyBlur(client.getRenderTickCounter().getTickDelta(false));
 
         switch (menuSettings.inGameBackgroundMode.getValue()) {
             case COLOR_FADE -> {

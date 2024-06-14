@@ -66,7 +66,7 @@ public class RotationManager implements MinecraftWrapper, OutgoingPacketListener
 
     @Override
     public void onRotation(RotationEvent event) {
-        final float partialTicks = this.mc.getTickDelta();
+        final float partialTicks = this.mc.getRenderTickCounter().getTickDelta(false);
         final Rotation lastRotation = new Rotation(this.mc.player.lastYaw, this.mc.player.lastPitch);
 
         if (this.targetRotation != null) {

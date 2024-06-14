@@ -24,9 +24,12 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.cancellable.player.EntityPushListener;
 import de.nekosarekawaii.vandalism.event.cancellable.player.FluidPushListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.RegistryKeys;
 
 public class PushVelocityModule extends AbstractModule implements EntityPushListener, FluidPushListener {
 
@@ -92,7 +95,7 @@ public class PushVelocityModule extends AbstractModule implements EntityPushList
 
         if (this.mc.options.useKey.isPressed()) {
             final ItemStack mainHandStack = this.mc.player.getMainHandStack();
-            if (mainHandStack.getItem() == Items.TRIDENT && EnchantmentHelper.getRiptide(mainHandStack) > 0)
+            if (mainHandStack.getItem() == Items.TRIDENT && EnchantmentHelper.getLevel(ItemStackUtil.getEnchantment(Enchantments.RIPTIDE), mainHandStack) > 0)
                 return;
         }
 

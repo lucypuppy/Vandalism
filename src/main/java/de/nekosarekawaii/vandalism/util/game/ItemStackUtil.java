@@ -25,12 +25,16 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -43,9 +47,17 @@ public class ItemStackUtil implements MinecraftWrapper {
 
     private static final SimpleCommandExceptionType NOT_IN_CREATIVE_MODE = new SimpleCommandExceptionType(Text.literal("You must be in creative mode to use this."));
 
-    public static ItemStack appendEnchantmentToItemStack(final ItemStack stack, final Enchantment enchantment, final int level) {
-        EnchantmentHelper.apply(stack, builder -> builder.add(enchantment, level));
+    public static ItemStack appendEnchantmentToItemStack(final ItemStack stack, final RegistryKey<Enchantment> enchantment, final int level) {
+        EnchantmentHelper.apply(stack, builder -> builder.add(getEnchantment(enchantment), level));
         return stack;
+    }
+
+    public static RegistryEntry<Enchantment> getEnchantment(final RegistryKey<Enchantment> enchantment) {
+        if (mc.world == null) {
+            throw new IllegalStateException("World is null!");
+        }
+        final var registry = mc.world.getRegistryManager().getWrapperOrThrow(RegistryKeys.ENCHANTMENT);
+        return registry.getOptional(enchantment).orElse(null);
     }
 
     public static ItemStack createSpawnEggItemStack(final SpawnEggItem originSpawnEgg, final String spawnEggID) {

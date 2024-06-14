@@ -138,7 +138,7 @@ public class WatermarkHUDElement extends HUDElement {
 
         public LogoSelection(final File file) throws IOException {
             this.name = file.getName();
-            this.identifier = new Identifier(FabricBootstrap.MOD_ID, "logo_" + this.name.replace(" ", "_"));
+            this.identifier = Identifier.of(FabricBootstrap.MOD_ID, "logo_" + this.name.replace(" ", "_"));
             try (final FileInputStream fileInputStream = new FileInputStream(file)) {
                 this.mc.getTextureManager().registerTexture(
                         this.identifier,
