@@ -159,7 +159,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         final Instrument instrument = note.getInstrument();
         if (instrument != null) {
             final AtomicReference<SoundEvent> soundEvent = new AtomicReference<>(null);
-            for (final net.minecraft.block.enums.Instrument mcInstrument : net.minecraft.block.enums.Instrument.values()) {
+            for (final net.minecraft.item.Instrument mcInstrument : net.minecraft.block.enums.Instrument.values()) {
                 if (mcInstrument.ordinal() != instrument.mcId()) continue;
                 soundEvent.set(mcInstrument.getSound().value());
                 break;

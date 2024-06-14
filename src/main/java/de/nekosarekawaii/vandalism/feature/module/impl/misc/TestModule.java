@@ -159,7 +159,7 @@ public class TestModule extends AbstractModule implements Render2DListener, Rend
                 consumer.pos(mat, pos).putUV(uv).putColor8(0xFF000000 | (ThreadLocalRandom.current().nextInt() & 0xFFFFFF)).next();
             }, indices::index);
 
-            RenderSystem.bindTexture(mc.getTextureManager().getTexture(new Identifier(FabricBootstrap.MOD_ID, "textures/8k_earth_daymap.png")).getGlId());
+            RenderSystem.bindTexture(mc.getTextureManager().getTexture(Identifier.of(FabricBootstrap.MOD_ID, "textures/8k_earth_daymap.png")).getGlId());
             RenderSystem.disableCull();
             renderer.draw();
             RenderSystem.enableCull();

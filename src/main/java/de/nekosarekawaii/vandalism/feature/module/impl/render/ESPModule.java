@@ -167,11 +167,9 @@ public class ESPModule extends AbstractModule implements BlockStateListener, Blo
         if (!this.blocks.getValue() || this.mc.player == null) {
             return;
         }
-        this.espBlocks.removeIf(pos -> {
-            return pos.toCenterPos().distanceTo(this.mc.player.getPos()) > this.maxBlockDistance.getValue() ||
-                    !this.blockList.isSelected(this.mc.world.getBlockState(pos).getBlock());
-        });
-        final VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+        this.espBlocks.removeIf(pos -> pos.toCenterPos().distanceTo(this.mc.player.getPos()) > this.maxBlockDistance.getValue() ||
+                !this.blockList.isSelected(this.mc.world.getBlockState(pos).getBlock()));
+        final VertexConsumerProvider.Immediate immediate = mc.getBufferBuilders().getEntityVertexConsumers();
         matrixStack.push();
         for (final BlockPos pos : this.espBlocks) {
             final float[] color = ColorUtils.rgba(this.blockColor.getColor().getRGB());

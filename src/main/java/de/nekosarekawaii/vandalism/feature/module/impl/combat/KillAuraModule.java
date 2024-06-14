@@ -838,27 +838,27 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             RenderSystem.setShader(GameRenderer::getPositionColorProgram);
             RenderSystem.disableCull();
             final Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder bufferBuilder = tessellator.getBuffer();
-            bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
+
+            var buffer = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
             int points = 24;
             for (int i = 0; i <= points; i++) {
                 double angle = (i / (double) points) * Math.PI * 2;
                 double radius = this.getTarget().getWidth();
                 double x = Math.cos(angle) * radius;
                 double z = Math.sin(angle) * radius;
-                bufferBuilder.vertex(matrixStack.peek().getPositionMatrix(), (float) (center.x + x), (float) center.y, (float) (center.z + z)).color(targetColor1.getColor().getRGB()).next();
+                buffer.vertex(matrixStack.peek().getPositionMatrix(), (float) (center.x + x), (float) center.y, (float) (center.z + z)).color(targetColor1.getColor().getRGB());
             }
-            tessellator.draw();
+            BufferRenderer.drawWithGlobalProgram(buffer.end());
 
-            bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
+            buffer = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
             for (int i = 0; i <= points; i++) {
                 double angle = (i / (double) points) * Math.PI * 2;
                 double radius = this.getTarget().getWidth();
                 double x = Math.cos(angle) * radius;
                 double z = Math.sin(angle) * radius;
-                bufferBuilder.vertex(matrixStack.peek().getPositionMatrix(), (float) (center2.x + x), (float) center2.y, (float) (center2.z + z)).color(targetColor2.getColor().getRGB()).next();
+                buffer.vertex(matrixStack.peek().getPositionMatrix(), (float) (center2.x + x), (float) center2.y, (float) (center2.z + z)).color(targetColor2.getColor().getRGB());
             }
-            tessellator.draw();
+            BufferRenderer.drawWithGlobalProgram(buffer.end());
             RenderSystem.enableCull();
             matrixStack.pop();
         }
