@@ -104,7 +104,6 @@ import java.io.File;
  *  - Restructure addon system/loader
  *  - Networking optimizations and fixes
  *  - Restructure codebase once again
- *  - Restructure build scripts, moving build logic into build-logic and wrapping conventions
  *  - Layered mappings with mojmap as fallback
  *  - Rewrite client startup using static priorities, 3000 settings load, 3001 post addon load, ...
  */
