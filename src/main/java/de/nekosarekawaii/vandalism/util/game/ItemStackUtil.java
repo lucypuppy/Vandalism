@@ -25,7 +25,6 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
@@ -34,6 +33,7 @@ import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -56,7 +56,7 @@ public class ItemStackUtil implements MinecraftWrapper {
         if (mc.world == null) {
             throw new IllegalStateException("World is null!");
         }
-        final var registry = mc.world.getRegistryManager().getWrapperOrThrow(RegistryKeys.ENCHANTMENT);
+        final RegistryWrapper.Impl<Enchantment> registry = mc.world.getRegistryManager().getWrapperOrThrow(RegistryKeys.ENCHANTMENT);
         return registry.getOptional(enchantment).orElse(null);
     }
 
