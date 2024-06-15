@@ -255,7 +255,7 @@ public class ServerDiscoveryTab implements MinecraftWrapper, DataListWidget {
                 ImGui.inputText(id + "searchField", this.serversSearchField);
                 ImGui.separator();
                 if (this.checkedServers.get() < 0) {
-                    if (ImUtils.subButton("Remove Offline Servers" + id + "removeOfflineServers")) {
+                    if (ImUtils.subButton("Filter Offline Servers" + id + "filterOfflineServers")) {
                         this.checkedServers.set(0);
                         this.lastMaxServers = this.serverDataEntries.size();
                         this.checkTimeout.reset();
@@ -270,7 +270,7 @@ public class ServerDiscoveryTab implements MinecraftWrapper, DataListWidget {
                                         .exceptionHandler(t -> {
                                             this.serverDataEntries.remove(serverEntry);
                                             this.checkedServers.getAndIncrement();
-                                            Vandalism.getInstance().getLogger().info("Removed offline server {}:{}", resolvedAddress, resolvedPort);
+                                            Vandalism.getInstance().getLogger().info("Filtered offline server {}:{}", resolvedAddress, resolvedPort);
                                         })
                                         .finishHandler(response -> this.checkedServers.getAndIncrement()).getAsync();
                             }
@@ -292,7 +292,7 @@ public class ServerDiscoveryTab implements MinecraftWrapper, DataListWidget {
                     serverList.saveFile();
                 }
                 if (this.checkedServers.get() > -1) {
-                    ImGui.text("Offline Removal Progress");
+                    ImGui.text("Offline Filter Progress");
                     ImGui.progressBar((float) this.checkedServers.get() / (float) this.lastMaxServers);
                     ImGui.text(this.checkedServers + " / " + this.lastMaxServers);
                     ImGui.separator();
