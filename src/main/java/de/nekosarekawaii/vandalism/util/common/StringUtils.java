@@ -249,4 +249,34 @@ public class StringUtils {
         return (int) Math.ceil(Math.log(maxValue) / Math.log(radix)) + 1;
     }
 
+    /**
+     * Checks if a string contains a letter.
+     *
+     * @param input The input string.
+     * @return True if the input string contains a letter, otherwise false.
+     */
+    public static boolean hasLetter(final String input) {
+        for (final char c : input.toCharArray()) {
+            if (Character.isLetter(c)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if a string contains a number.
+     *
+     * @param input The input string.
+     * @return True if the input string contains a number, otherwise false.
+     */
+    public static boolean hasNumber(final String input) {
+        for (final char c : input.toCharArray()) {
+            if (Character.isDigit(c)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

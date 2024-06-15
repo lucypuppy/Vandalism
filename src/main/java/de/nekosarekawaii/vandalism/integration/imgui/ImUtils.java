@@ -38,7 +38,7 @@ public class ImUtils {
         return ImGui.button(str, ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing());
     }
 
-    // TODO wrong but fixes all guis without the need of rewriting their height values
+    // TODO: Wrong but fixes all guis without the need of rewriting their height values.
     public static float modulateDimension(final float input) {
         return (input / 16) * Vandalism.getInstance().getClientSettings().getMenuSettings().menuScale.getValue();
     }

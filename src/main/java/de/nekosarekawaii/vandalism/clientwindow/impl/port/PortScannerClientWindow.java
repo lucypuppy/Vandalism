@@ -23,13 +23,11 @@ import de.nekosarekawaii.vandalism.clientwindow.template.StateClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataListWidget;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
+import de.nekosarekawaii.vandalism.clientwindow.template.widgets.field.IPFieldWidget;
+import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.common.DateUtil;
 import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
-import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import imgui.ImGui;
-import imgui.ImGuiInputTextCallbackData;
-import imgui.callback.ImGuiInputTextCallback;
-import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImInt;
 import imgui.type.ImString;
 import lombok.Getter;
@@ -44,23 +42,10 @@ import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class PortScannerClientWindow extends StateClientWindow implements DataListWidget {
+public class PortScannerClientWindow extends StateClientWindow implements DataListWidget, IPFieldWidget {
 
-    private static final ImGuiInputTextCallback HOSTNAME_FILTER = new ImGuiInputTextCallback() {
+    private final ImString ip = this.createImIP();
 
-        @Override
-        public void accept(final ImGuiInputTextCallbackData imGuiInputTextCallbackData) {
-            final int eventCharInt = imGuiInputTextCallbackData.getEventChar();
-            if (eventCharInt == 0) return;
-            final char eventChar = (char) eventCharInt;
-            if (!Character.isLetterOrDigit(eventChar) && eventChar != '.' && eventChar != '-' && eventChar != ':') {
-                imGuiInputTextCallbackData.setEventChar((char) 0);
-            }
-        }
-
-    };
-
-    private final ImString address = new ImString(253);
     private final ImString progress = new ImString(200);
     private final ImInt minPort = new ImInt(1);
     private final ImInt maxPort = new ImInt(65535);
@@ -110,40 +95,10 @@ public class PortScannerClientWindow extends StateClientWindow implements DataLi
             ImGui.progressBar(((float) this.currentPort / (float) (this.maxPort.get() - this.minPort.get())) / 100f);
             ImGui.separator();
         } else {
-            ImGui.text("Address");
-            ImGui.setNextItemWidth(-1);
-            ImGui.inputText(
-                    id + "address",
-                    this.address,
-                    ImGuiInputTextFlags.CallbackCharFilter,
-                    HOSTNAME_FILTER
-            );
-            final ServerInfo currentServer = ServerUtil.getLastServerInfo();
-            if (currentServer != null) {
-                if (ImUtils.subButton("Use " + (this.mc.player != null ? "Current" : "Last") + " Server" + id + "useLastOrCurrentServer")) {
-                    this.address.set(currentServer.address);
-                }
-            }
+            this.renderField(id);
         }
-        if (
-                !this.address.get().isBlank() &&
-                        this.address.get().length() >= 4 &&
-                        this.address.get().contains(".") &&
-                        this.address.get().indexOf(".") < this.address.get().length() - 2
-        ) {
+        if (this.isValidIP()) {
             if (!this.isRunning()) {
-                if (this.address.get().contains(":")) {
-                    final String[] data = this.address.get().split(":");
-                    this.address.set(data[0]);
-                    if (data.length >= 2) {
-                        try {
-                            final int port = Integer.parseInt(data[1]);
-                            this.minPort.set(Math.max(1, Math.min(port - 500, 65535)));
-                            this.maxPort.set(Math.max(port, Math.min(port + 500, 65535)));
-                        } catch (final Exception ignored) {
-                        }
-                    }
-                }
                 ImGui.text("Min Port");
                 ImGui.sameLine(ImGui.getColumnWidth() / 2f + 27f);
                 ImGui.text("Max Port");
@@ -186,8 +141,6 @@ public class PortScannerClientWindow extends StateClientWindow implements DataLi
                 if (ImGui.button("Start" + id + "start", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                     this.reset();
                     this.setState(State.RUNNING.getMessage());
-                    final Pair<String, Integer> serverAddress = ServerUtil.resolveServerAddress(this.address.get());
-                    final String resolvedAddress = serverAddress.getLeft();
                     for (int i = 0; i < this.threads.get(); i++) {
                         final int threadID = i + 1;
                         Vandalism.getInstance().getLogger().info("Starting Port Scanner Thread #{}...", threadID);
@@ -198,7 +151,7 @@ public class PortScannerClientWindow extends StateClientWindow implements DataLi
                                     final int port = this.currentPort;
                                     try {
                                         final Socket socket = new Socket();
-                                        socket.connect(new InetSocketAddress(resolvedAddress, port), this.timeout.get());
+                                        socket.connect(new InetSocketAddress(this.getImIP().get(), port), this.timeout.get());
                                         socket.close();
                                         synchronized (this.ports) {
                                             if (!this.ports.contains(port)) {
@@ -248,18 +201,20 @@ public class PortScannerClientWindow extends StateClientWindow implements DataLi
             if (this.currentPortResult < 0) {
                 if (ImUtils.subButton("Ping All Ports" + id + "pingAllPorts")) {
                     this.portResults.clear();
+                    this.portScanDataEntries.clear();
+                    this.currentPortResult = 0;
                     new Thread(() -> {
-                        this.currentPortResult = 0;
                         for (final int port : this.ports) {
                             try {
-                                final PortResult portResult = new PortResult(port, this.address.get());
+                                final PortResult portResult = new PortResult(port, this.getImIP().get());
                                 portResult.ping(() -> {
                                     final MCPingResponse pingResponse = portResult.getMcPingResponse();
                                     if (pingResponse != null) {
-                                        portResult.getList().add(new Pair<>("Description", ServerUtil.fixDescription(portResult.getDescription())));
-                                        portResult.getList().add(new Pair<>("Version", pingResponse.version.name));
-                                        portResult.getList().add(new Pair<>("Protocol", String.valueOf(pingResponse.version.protocol)));
-                                        portResult.getList().add(new Pair<>("Players", pingResponse.players.online + "/" + pingResponse.players.max));
+                                        final List<Pair<String, String>> list = portResult.getList();
+                                        list.add(new Pair<>("Description", ServerUtil.fixDescription(portResult.getDescription())));
+                                        list.add(new Pair<>("Version", pingResponse.version.name));
+                                        list.add(new Pair<>("Protocol", String.valueOf(pingResponse.version.protocol)));
+                                        list.add(new Pair<>("Players", pingResponse.players.online + "/" + pingResponse.players.max));
                                     }
                                     this.portScanDataEntries.add(portResult);
                                     this.portResults.add(portResult);
@@ -301,18 +256,45 @@ public class PortScannerClientWindow extends StateClientWindow implements DataLi
     }
 
     @Override
+    public ImString getImIP() {
+        return this.ip;
+    }
+
+    @Override
+    public void onDataSplit(final String[] data, final boolean resolved) {
+        IPFieldWidget.super.onDataSplit(data, resolved);
+        if (data.length > 1) {
+            try {
+                final int port = Integer.parseInt(data[1]);
+                this.minPort.set(Math.max(1, Math.min(port - 500, 65535)));
+                this.maxPort.set(Math.max(port, Math.min(port + 500, 65535)));
+            } catch (final Exception ignored) {
+            }
+        }
+    }
+
+    @Override
     public boolean filterDataEntry(final DataEntry dataEntry) {
         return false;
     }
 
     @Override
     public boolean shouldHighlightDataEntry(final DataEntry dataEntry) {
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            return ServerUtil.lastServerExists() && ServerUtil.getLastServerInfo().address.equals(listDataEntry.getFirst().getRight());
+        }
         return false;
     }
 
     @Override
     public float[] getDataEntryHighlightColor(final DataEntry dataEntry) {
-        return null;
+        float[] color = {0.1f, 0.8f, 0.1f, 0.30f};
+        if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            if (ServerUtil.lastServerExists() && ServerUtil.getLastServerInfo().address.equals(listDataEntry.getFirst().getRight())) {
+                color = new float[]{0.8f, 0.1f, 0.1f, 0.30f};
+            }
+        }
+        return color;
     }
 
     @Override
