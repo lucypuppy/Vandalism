@@ -1,0 +1,36 @@
+plugins {
+    id "fabric-loom"
+
+    id "vandalism.base-conventions"
+}
+
+configurations {
+    jij // jar in jar configuration
+    modJij // jar in jar configuration for mods
+
+    include.extendsFrom modJij
+    modImplementation.extendsFrom modJij
+    modCompileOnlyApi.extendsFrom modJij
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+
+    mappings "net.fabricmc:yarn:${project.yarn_mappings_version}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    /--Common libraries---/
+    modImplementation fabricApi.module("fabric-api-base", project.fabric_version)
+    modImplementation fabricApi.module("fabric-resource-loader-v0", project.fabric_version)
+    modImplementation fabricApi.module("fabric-networking-api-v1", project.fabric_version)
+    modImplementation fabricApi.module("fabric-registry-sync-v0", project.fabric_version)
+    modImplementation fabricApi.module("fabric-item-group-api-v1", project.fabric_version)
+
+    modImplementation "de.florianmichael:ViaFabricPlus:${project.viafabricplus_version}"
+}
+
+processResources {
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
