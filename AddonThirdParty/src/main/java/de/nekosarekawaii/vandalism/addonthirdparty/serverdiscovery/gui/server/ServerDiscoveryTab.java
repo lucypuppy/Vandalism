@@ -328,7 +328,10 @@ public class ServerDiscoveryTab implements MinecraftWrapper, DataListWidget {
     public boolean shouldHighlightDataEntry(final DataEntry dataEntry) {
         if (dataEntry instanceof final ListDataEntry listDataEntry) {
             final String address = listDataEntry.getFirst().getRight();
-            return listDataEntry.getSixth().getRight().equals("true") || ServerUtil.lastServerExists() && ServerUtil.getLastServerInfo().address.equals(address) || this.lastAddress.equals(address);
+            return
+                    (listDataEntry.getList().size() >= 6 && listDataEntry.getList().get(5).getRight().equals("true")) ||
+                            ServerUtil.lastServerExists() && ServerUtil.getLastServerInfo().address.equals(address) ||
+                            this.lastAddress.equals(address);
         }
         return false;
     }
