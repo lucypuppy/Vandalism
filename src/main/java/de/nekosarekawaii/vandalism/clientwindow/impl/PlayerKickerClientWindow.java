@@ -25,7 +25,10 @@ import de.nekosarekawaii.vandalism.clientwindow.template.StateClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataListWidget;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
+import de.nekosarekawaii.vandalism.clientwindow.template.widgets.field.IPPortFieldWidget;
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.common.MSTimer;
+import de.nekosarekawaii.vandalism.util.common.Percentage;
 import de.nekosarekawaii.vandalism.util.game.PacketHelper;
 import de.nekosarekawaii.vandalism.util.game.PingState;
 import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
@@ -42,7 +45,6 @@ import net.lenni0451.mcping.exception.PacketReadException;
 import net.lenni0451.mcping.responses.MCPingResponse;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.network.ServerInfo;
 import net.minecraft.util.Pair;
 
 import java.io.DataOutputStream;
@@ -55,26 +57,31 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class PlayerKickerClientWindow extends StateClientWindow implements DataListWidget {
+public class PlayerKickerClientWindow extends StateClientWindow implements DataListWidget, IPPortFieldWidget {
 
-    private final ImString ip = new ImString(253);
-    private final ImInt port = new ImInt(25565);
+    private final ImString ip = this.createImIP();
+    private final ImInt port = this.createImPort();
+
     private final ImBoolean preventSelfKick = new ImBoolean(true);
     private final ImBoolean preventFriendKick = new ImBoolean(true);
     private final ImBoolean spoofBungeeCord = new ImBoolean(false);
     private final ImBoolean customizeIP = new ImBoolean(false);
     private final ImString customIP = new ImString();
-    private final ImInt kickDelay = new ImInt(2000);
+    private final ImBoolean intervalKick = new ImBoolean(false);
+    private final ImInt intervalDelay = new ImInt(30000);
+    private final ImInt kickDelay = new ImInt(1000);
 
     private boolean checking = false;
     private MCPingResponse.Players players = null;
     private int protocol = SharedConstants.getProtocolVersion();
     private int friends = 0;
     private int anonymousPlayers = 0;
+    private final MSTimer intervalTimer = new MSTimer();
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     private final CopyOnWriteArrayList<ListDataEntry> playerDataEntries = new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<ListDataEntry> intervalDataEntries = new CopyOnWriteArrayList<>();
 
     public PlayerKickerClientWindow() {
         super("Player Kicker", Category.SERVER);
@@ -85,20 +92,7 @@ public class PlayerKickerClientWindow extends StateClientWindow implements DataL
         super.onRender(context, mouseX, mouseY, delta);
         final String id = "##" + this.getName();
         if (!this.checking) {
-            ImGui.text("IP");
-            ImGui.setNextItemWidth(-1);
-            ImGui.inputText(id + "IP", this.ip);
-            if (this.ip.isEmpty()) {
-                if (ImUtils.subButton("Use " + (this.mc.player != null ? "Current" : "Last") + " Server" + id + "useLastOrCurrentServer")) {
-                    final ServerInfo currentServerInfo = ServerUtil.getLastServerInfo();
-                    if (ServerUtil.lastServerExists()) {
-                        this.ip.set(currentServerInfo.address);
-                    }
-                }
-            }
-            ImGui.text("Port");
-            ImGui.setNextItemWidth(-1);
-            ImGui.inputInt(id + "Port", this.port);
+            this.renderField(id);
             ImGui.checkbox("Prevent Self Kick" + id + "preventSelfKick", this.preventSelfKick);
             ImGui.sameLine();
             ImGui.textDisabled("(?)");
@@ -127,6 +121,19 @@ public class PlayerKickerClientWindow extends StateClientWindow implements DataL
                     ImGui.inputText(id + "customIP", this.customIP);
                 }
             }
+            ImGui.checkbox("Interval Kick" + id + "intervalKick", this.intervalKick);
+            ImGui.sameLine();
+            ImGui.textDisabled("(?)");
+            if (ImGui.isItemHovered()) {
+                ImGui.beginTooltip();
+                ImGui.text("Yellow highlighted");
+                ImGui.endTooltip();
+            }
+            if (this.intervalKick.get()) {
+                ImGui.text("Interval Delay (ms)");
+                ImGui.setNextItemWidth(-1);
+                ImGui.inputInt(id + "intervalDelay", this.intervalDelay);
+            }
             ImGui.text("Version");
             ImGui.sameLine(ImGui.getColumnWidth() / 2f + 25f);
             ImGui.text("Kick Delay (ms)");
@@ -151,70 +158,60 @@ public class PlayerKickerClientWindow extends StateClientWindow implements DataL
             ImGui.setNextItemWidth(-1);
             ImGui.inputInt(id + "delay", this.kickDelay);
             ImGui.spacing();
-            if (this.ip.isNotEmpty()) {
-                if (this.ip.get().contains(":")) {
-                    final String[] split = this.ip.get().split(":");
-                    this.ip.set(split[0]);
-                    if (split.length > 1) {
-                        try {
-                            this.port.set(Integer.parseInt(split[1]));
-                        } catch (final NumberFormatException ignored) {
-                        }
-                    }
-                }
-                if (ImUtils.subButton("Check" + id + "check")) {
-                    this.checking = true;
-                    this.setState(PingState.WAITING_RESPONSE.getMessage());
-                    this.players = null;
-                    this.friends = 0;
-                    this.anonymousPlayers = 0;
-                    this.playerDataEntries.clear();
-                    MCPing.pingModern(SharedConstants.getProtocolVersion())
-                            .address(this.ip.get(), this.port.get())
-                            .timeout(5000, 5000)
-                            .exceptionHandler(t -> {
-                                this.checking = false;
-                                switch (t) {
-                                    case UnknownHostException unknownHostException ->
-                                            this.setState(PingState.UNKNOWN_HOST.getMessage());
-                                    case ConnectionRefusedException connectionRefusedException ->
-                                            this.setState(PingState.CONNECTION_REFUSED.getMessage());
-                                    case ConnectTimeoutException connectTimeoutException ->
-                                            this.setState(PingState.CONNECTION_TIMED_OUT.getMessage());
-                                    case DataReadException dataReadException ->
-                                            this.setState(PingState.DATA_READ_FAILED.getMessage());
-                                    case PacketReadException packetReadException ->
-                                            this.setState(PingState.PACKET_READ_FAILED.getMessage());
-                                    case null, default -> {
-                                        this.setState(PingState.FAILED.getMessage());
-                                        Vandalism.getInstance().getLogger().error("Failed to ping {}:{}", this.ip.get(), this.port.get(), t);
-                                    }
+            if (ImUtils.subButton("Check" + id + "check")) {
+                this.checking = true;
+                this.setState(PingState.WAITING_RESPONSE.getMessage());
+                this.players = null;
+                this.friends = 0;
+                this.anonymousPlayers = 0;
+                this.playerDataEntries.clear();
+                this.intervalDataEntries.clear();
+                this.intervalTimer.reset();
+                MCPing.pingModern(SharedConstants.getProtocolVersion())
+                        .address(this.getImIP().get(), this.getImPort().get())
+                        .timeout(5000, 5000)
+                        .exceptionHandler(t -> {
+                            this.checking = false;
+                            switch (t) {
+                                case UnknownHostException unknownHostException ->
+                                        this.setState(PingState.UNKNOWN_HOST.getMessage());
+                                case ConnectionRefusedException connectionRefusedException ->
+                                        this.setState(PingState.CONNECTION_REFUSED.getMessage());
+                                case ConnectTimeoutException connectTimeoutException ->
+                                        this.setState(PingState.CONNECTION_TIMED_OUT.getMessage());
+                                case DataReadException dataReadException ->
+                                        this.setState(PingState.DATA_READ_FAILED.getMessage());
+                                case PacketReadException packetReadException ->
+                                        this.setState(PingState.PACKET_READ_FAILED.getMessage());
+                                case null, default -> {
+                                    this.setState(PingState.FAILED.getMessage());
+                                    Vandalism.getInstance().getLogger().error("Failed to ping {}:{}", this.getImIP().get(), this.getImPort().get(), t);
                                 }
-                            }).finishHandler(response -> {
-                                this.checking = false;
-                                this.setState(PingState.SUCCESS.getMessage());
-                                this.players = response.players;
-                                if (this.players != null && this.players.sample != null) {
-                                    final MCPingResponse.Players.Player[] sample = this.players.sample;
-                                    if (sample.length == 0) {
-                                        this.players = null;
-                                        return;
-                                    }
-                                    for (final MCPingResponse.Players.Player player : sample) {
-                                        if (ServerUtil.isAnonymous(player.name, player.id)) {
-                                            this.anonymousPlayers++;
-                                        } else if (Vandalism.getInstance().getFriendsManager().isFriend(player.name)) {
-                                            this.friends++;
-                                        }
-                                        final CopyOnWriteArrayList<Pair<String, String>> list = new CopyOnWriteArrayList<>();
-                                        list.add(new Pair<>("Name", player.name));
-                                        list.add(new Pair<>("UUID", player.id));
-                                        this.playerDataEntries.add(new ListDataEntry(list));
-                                    }
+                            }
+                        }).finishHandler(response -> {
+                            this.checking = false;
+                            this.setState(PingState.SUCCESS.getMessage());
+                            this.players = response.players;
+                            if (this.players != null && this.players.sample != null) {
+                                final MCPingResponse.Players.Player[] sample = this.players.sample;
+                                if (sample.length == 0) {
+                                    this.players = null;
+                                    return;
                                 }
-                                this.delayedResetState(10000);
-                            }).getAsync();
-                }
+                                for (final MCPingResponse.Players.Player player : sample) {
+                                    if (ServerUtil.isAnonymous(player.name, player.id)) {
+                                        this.anonymousPlayers++;
+                                    } else if (Vandalism.getInstance().getFriendsManager().isFriend(player.name)) {
+                                        this.friends++;
+                                    }
+                                    final CopyOnWriteArrayList<Pair<String, String>> list = new CopyOnWriteArrayList<>();
+                                    list.add(new Pair<>("Name", player.name));
+                                    list.add(new Pair<>("UUID", player.id));
+                                    this.playerDataEntries.add(new ListDataEntry(list));
+                                }
+                            }
+                            this.delayedResetState(10000);
+                        }).getAsync();
             }
             ImGui.separator();
             if (this.players != null && this.players.sample != null) {
@@ -225,16 +222,53 @@ public class PlayerKickerClientWindow extends StateClientWindow implements DataL
                 if (this.friends > 0) {
                     ImGui.textWrapped("Friends: " + this.friends);
                 }
+                if (this.intervalKick.get()) {
+                    ImGui.text("Kicking Delay");
+                    ImGui.sameLine();
+                    ImGui.textDisabled("(?)");
+                    if (ImGui.isItemHovered()) {
+                        ImGui.beginTooltip();
+                        ImGui.text("Will kick all selected players after the specified delay has passed.");
+                        ImGui.endTooltip();
+                    }
+                    ImGui.progressBar(Percentage.percentage(this.intervalTimer.getDelta(), this.intervalDelay.get()) / 100f);
+                }
                 this.renderDataList(id + "playerList", -ImGui.getTextLineHeightWithSpacing() - 10, 45f, this.playerDataEntries);
-                if (ImGui.button("Kick All Players" + id + "kickAllPlayers", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
-                    for (final MCPingResponse.Players.Player player : this.players.sample) {
-                        this.kickPlayer(player.name, player.id);
+                if (this.intervalKick.get()) {
+                    if (this.intervalTimer.hasReached(this.intervalDelay.get(), true)) {
+                        for (final ListDataEntry listDataEntry : this.intervalDataEntries) {
+                            this.kickPlayer(listDataEntry.getFirst().getRight(), listDataEntry.getSecond().getRight());
+                        }
+                    }
+                    if (ImGui.button("Select all players for Interval Kick" + id + "selectAllPlayersForIntervalKick", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
+                        this.intervalDataEntries.clear();
+                        this.intervalDataEntries.addAll(this.playerDataEntries);
+                    }
+                    ImGui.sameLine();
+                    if (ImUtils.subButton("Deselect all players from Interval Kick" + id + "deSelectAllPlayersFromIntervalKick")) {
+                        this.intervalDataEntries.clear();
+                    }
+                } else {
+                    if (ImUtils.subButton("Kick All Players" + id + "kickAllPlayers")) {
+                        for (final MCPingResponse.Players.Player player : this.players.sample) {
+                            this.kickPlayer(player.name, player.id);
+                        }
                     }
                 }
             } else {
                 ImGui.text("No players found.");
             }
         }
+    }
+
+    @Override
+    public ImString getImIP() {
+        return this.ip;
+    }
+
+    @Override
+    public ImInt getImPort() {
+        return this.port;
     }
 
     @Override
@@ -252,7 +286,7 @@ public class PlayerKickerClientWindow extends StateClientWindow implements DataL
         if (dataEntry instanceof final ListDataEntry listDataEntry) {
             final String name = listDataEntry.getFirst().getRight(), uuid = listDataEntry.getSecond().getRight();
             final boolean isSelf = ServerUtil.isSelf(name, uuid), isFriend = Vandalism.getInstance().getFriendsManager().isFriend(name);
-            return isSelf || isFriend;
+            return isSelf || isFriend || this.intervalDataEntries.contains(listDataEntry);
         }
         return false;
     }
@@ -263,6 +297,8 @@ public class PlayerKickerClientWindow extends StateClientWindow implements DataL
         if (dataEntry instanceof final ListDataEntry listDataEntry) {
             if (Vandalism.getInstance().getFriendsManager().isFriend(listDataEntry.getFirst().getRight())) {
                 color = new float[]{0.9f, 0.5f, 0.1f, 0.40f};
+            } else if (this.intervalDataEntries.contains(listDataEntry)) {
+                color = new float[]{0.9f, 0.9f, 0.1f, 0.40f};
             }
         }
         return color;
@@ -271,6 +307,10 @@ public class PlayerKickerClientWindow extends StateClientWindow implements DataL
     @Override
     public void onDataEntryClick(final DataEntry dataEntry) {
         if (dataEntry instanceof final ListDataEntry listDataEntry) {
+            if (this.intervalKick.get()) {
+                this.setState("Disable interval kick to kick players manually!");
+                return;
+            }
             this.kickPlayer(listDataEntry.getFirst().getRight(), listDataEntry.getSecond().getRight());
         }
     }
@@ -288,6 +328,11 @@ public class PlayerKickerClientWindow extends StateClientWindow implements DataL
             if (ImGui.button("Copy Data" + id + "copyData", buttonWidth, buttonHeight)) {
                 this.mc.keyboard.setClipboard(dataEntry.getData());
             }
+            final boolean contains = this.intervalDataEntries.contains(listDataEntry);
+            if (ImGui.button("Interval Kick: " + (contains ? "On" : "Off") + id + "intervalKick", buttonWidth, buttonHeight)) {
+                if (contains) this.intervalDataEntries.remove(listDataEntry);
+                else this.intervalDataEntries.add(listDataEntry);
+            }
         }
     }
 
@@ -298,12 +343,14 @@ public class PlayerKickerClientWindow extends StateClientWindow implements DataL
         this.executorService.submit(() -> {
             if (!name.isBlank() && !uuid.isBlank()) {
                 try {
+                    String ip = this.getImIP().get();
+                    final int port = this.getImPort().get();
+                    final int protocol = this.protocol;
                     this.setState("Kicking player " + name + "...");
                     Thread.sleep(this.kickDelay.get());
-                    final Socket connection = new Socket(this.ip.get(), this.port.get());
+                    final Socket connection = new Socket(ip, port);
                     connection.setTcpNoDelay(true);
                     final DataOutputStream output = new DataOutputStream(connection.getOutputStream());
-                    String ip = this.ip.get();
                     if (this.spoofBungeeCord.get()) {
                         ip += "\u0000";
                         if (this.customizeIP.get()) {
@@ -314,8 +361,8 @@ public class PlayerKickerClientWindow extends StateClientWindow implements DataL
                         ip += "\u0000";
                         ip += uuid.replace("-", "");
                     }
-                    PacketHelper.writePacket(PacketHelper.createHandshakePacket(ip, this.port.get(), this.protocol), output);
-                    PacketHelper.writePacket(PacketHelper.createLoginPacket(this.protocol, name, UUID.fromString(uuid)), output);
+                    PacketHelper.writePacket(PacketHelper.createHandshakePacket(ip, port, protocol), output);
+                    PacketHelper.writePacket(PacketHelper.createLoginPacket(protocol, name, UUID.fromString(uuid)), output);
                     Thread.sleep(1000);
                     connection.close();
                     this.setState("Player " + name + " should be kicked.");

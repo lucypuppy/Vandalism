@@ -19,10 +19,10 @@
 package de.nekosarekawaii.vandalism.clientwindow.impl;
 
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
+import de.nekosarekawaii.vandalism.clientwindow.template.widgets.field.IPFieldWidget;
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import imgui.ImGui;
-import imgui.ImGuiInputTextCallbackData;
-import imgui.callback.ImGuiInputTextCallback;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
 import net.lenni0451.mcping.ServerAddress;
@@ -30,67 +30,41 @@ import net.minecraft.client.gui.DrawContext;
 
 import java.util.concurrent.Executors;
 
-public class ServerAddressResolverClientWindow extends ClientWindow {
+public class ServerAddressResolverClientWindow extends ClientWindow implements IPFieldWidget {
 
-    private static final ImGuiInputTextCallback HOSTNAME_FILTER = new ImGuiInputTextCallback() {
+    private final ImString ip = this.createImIP();
 
-        @Override
-        public void accept(final ImGuiInputTextCallbackData imGuiInputTextCallbackData) {
-            final int eventCharInt = imGuiInputTextCallbackData.getEventChar();
-            if (eventCharInt == 0) return;
-            final char eventChar = (char) eventCharInt;
-            if (!Character.isLetterOrDigit(eventChar) && eventChar != '.' && eventChar != '-' && eventChar != ':') {
-                imGuiInputTextCallbackData.setEventChar((char) 0);
-            }
-        }
-
-    };
-
-    private final ImString hostname, lastData;
+    private final ImString lastData = new ImString();
 
     public ServerAddressResolverClientWindow() {
         super("Server Address Resolver", Category.SERVER);
-        this.hostname = new ImString(253);
-        this.lastData = new ImString();
     }
 
     @Override
     protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         final String id = "##" + this.getName();
-        ImGui.text("Hostname");
-        ImGui.setNextItemWidth(-1);
-        ImGui.inputText(
-                id + "hostnameInput",
-                this.hostname,
-                ImGuiInputTextFlags.CallbackCharFilter,
-                HOSTNAME_FILTER
-        );
-        if (this.hostname.get().contains(":")) {
-            this.hostname.set(this.hostname.get().split(":")[0]);
-        }
-        if (
-                !this.hostname.get().isBlank() &&
-                        this.hostname.get().length() >= 4 &&
-                        this.hostname.get().contains(".") &&
-                        this.hostname.get().indexOf(".") < this.hostname.get().length() - 2
-        ) {
-            if (ImUtils.subButton("Resolve Server Address" + id + "resolveAddress")) {
-                this.lastData.clear();
-                Executors.newSingleThreadExecutor().submit(() -> {
-                    try {
-                        final ServerAddress serverAddress = ServerAddress.parse(this.hostname.get(), 25565);
-                        String oldAddress = serverAddress.getSocketAddress().toString();
-                        if (oldAddress.contains("./")) oldAddress = oldAddress.replace("./", "/");
-                        if (oldAddress.contains("/")) oldAddress = oldAddress.replace("/", "\n");
-                        serverAddress.resolve();
-                        String newAddress = serverAddress.getSocketAddress().toString();
-                        if (newAddress.contains("./")) newAddress = newAddress.replace("./", "/");
-                        if (newAddress.contains("/")) newAddress = newAddress.replace("/", "\n");
-                        this.lastData.set(oldAddress + "\n\n" + newAddress);
-                    } catch (final Exception e) {
-                        this.lastData.set("Error: " + e.getMessage());
-                    }
-                });
+        this.renderField(id);
+        if (this.isValidIP()) {
+            final String ip = this.getImIP().get();
+            if (StringUtils.hasLetter(ip)) {
+                if (ImUtils.subButton("Resolve Server Address" + id + "resolveAddress")) {
+                    this.lastData.clear();
+                    Executors.newSingleThreadExecutor().submit(() -> {
+                        try {
+                            final ServerAddress serverAddress = ServerAddress.parse(ip, 25565);
+                            String oldAddress = serverAddress.getSocketAddress().toString();
+                            if (oldAddress.contains("./")) oldAddress = oldAddress.replace("./", "/");
+                            if (oldAddress.contains("/")) oldAddress = oldAddress.replace("/", "\n");
+                            serverAddress.resolve();
+                            String newAddress = serverAddress.getSocketAddress().toString();
+                            if (newAddress.contains("./")) newAddress = newAddress.replace("./", "/");
+                            if (newAddress.contains("/")) newAddress = newAddress.replace("/", "\n");
+                            this.lastData.set(oldAddress + "\n\n" + newAddress);
+                        } catch (final Exception e) {
+                            this.lastData.set("Error: " + e.getMessage());
+                        }
+                    });
+                }
             }
         }
         if (!this.lastData.get().isBlank()) {
@@ -102,6 +76,16 @@ public class ServerAddressResolverClientWindow extends ClientWindow {
             ImGui.setNextItemWidth(-1);
             ImGui.inputTextMultiline(id + "resolvedData", this.lastData, -1, -1, ImGuiInputTextFlags.ReadOnly);
         }
+    }
+
+    @Override
+    public ImString getImIP() {
+        return this.ip;
+    }
+
+    @Override
+    public boolean shouldResolve() {
+        return false;
     }
 
 }

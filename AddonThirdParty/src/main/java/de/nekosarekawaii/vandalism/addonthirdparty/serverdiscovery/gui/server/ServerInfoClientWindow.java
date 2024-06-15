@@ -27,15 +27,14 @@ import de.nekosarekawaii.vandalism.clientwindow.template.StateClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataListWidget;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
+import de.nekosarekawaii.vandalism.clientwindow.template.widgets.field.IPPortFieldWidget;
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.common.TimeFormatter;
 import de.nekosarekawaii.vandalism.util.game.PingState;
 import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import imgui.ImGui;
-import imgui.ImGuiInputTextCallbackData;
-import imgui.callback.ImGuiInputTextCallback;
-import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiWindowFlags;
+import imgui.type.ImInt;
 import imgui.type.ImString;
 import net.lenni0451.mcping.MCPing;
 import net.lenni0451.mcping.exception.ConnectTimeoutException;
@@ -44,7 +43,6 @@ import net.lenni0451.mcping.exception.DataReadException;
 import net.lenni0451.mcping.exception.PacketReadException;
 import net.lenni0451.mcping.responses.MCPingResponse;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.network.ServerInfo;
 import net.minecraft.util.Pair;
 
 import java.net.UnknownHostException;
@@ -54,29 +52,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ServerInfoClientWindow extends StateClientWindow implements DataListWidget {
+public class ServerInfoClientWindow extends StateClientWindow implements DataListWidget, IPPortFieldWidget {
 
-    private static final ImGuiInputTextCallback IP_FILTER = new ImGuiInputTextCallback() {
+    private final ImString ip = this.createImIP();
+    private final ImInt port = this.createImPort();
 
-        @Override
-        public void accept(final ImGuiInputTextCallbackData imGuiInputTextCallbackData) {
-            final int eventCharInt = imGuiInputTextCallbackData.getEventChar();
-            if (eventCharInt == 0) return;
-            final char eventChar = (char) eventCharInt;
-            if (!Character.isLetterOrDigit(eventChar) && eventChar != '.' && eventChar != ':') {
-                imGuiInputTextCallbackData.setEventChar((char) 0);
-            }
-        }
-
-    };
-
-    private final ImString ip = new ImString(253);
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private ServerInfoResponse serverInfo = null;
     private String lastIP = "";
     private boolean waitingForResponse = false;
     private int filteredPlayers = 0;
-
     private final CopyOnWriteArrayList<ListDataEntry> playerDataEntries = new CopyOnWriteArrayList<>();
 
     public ServerInfoClientWindow() {
@@ -87,33 +72,18 @@ public class ServerInfoClientWindow extends StateClientWindow implements DataLis
     protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         final String id = "##" + this.getName();
         super.onRender(context, mouseX, mouseY, delta);
-        ImGui.text("IP");
-        ImGui.setNextItemWidth(-1);
-        ImGui.inputText(
-                id + "ip",
-                this.ip,
-                ImGuiInputTextFlags.CallbackCharFilter,
-                IP_FILTER
-        );
-        final ServerInfo lastServer = ServerUtil.getLastServerInfo();
-        if (ServerUtil.lastServerExists() && !this.waitingForResponse) {
-            if (ImUtils.subButton("Use " + (this.mc.player != null ? "Current" : "Last") + " Server" + id + "useLastOrCurrentServer")) {
-                this.ip.set(lastServer.address);
-            }
-        }
-        final String ipValue = this.ip.get();
-        if (!ipValue.isBlank() && !this.waitingForResponse) {
+        this.renderField(id);
+        if (this.isValidIP() && this.isValidPort() && !this.waitingForResponse) {
+            final String ip = this.getImIP().get();
+            final int port = this.getImPort().get();
             if (ImUtils.subButton("Get" + id + "get")) {
-                this.setState("Requesting data for " + ipValue + "...");
+                this.setState("Requesting data for " + ip + "...");
                 this.serverInfo = null;
-                this.lastIP = ipValue;
+                this.lastIP = ip;
                 this.filteredPlayers = 0;
                 this.playerDataEntries.clear();
                 this.executor.submit(() -> {
                     this.waitingForResponse = true;
-                    final Pair<String, Integer> resolvedAddress = ServerUtil.resolveServerAddress(ipValue);
-                    final String ip = resolvedAddress.getLeft();
-                    final int port = resolvedAddress.getRight();
                     final Response response = ServerDiscoveryUtil.request(new ServerInfoRequest(ip, port));
                     if (response instanceof final ServerInfoResponse serverInfoResponse) {
                         if (serverInfoResponse.isError()) {
@@ -228,6 +198,16 @@ public class ServerInfoClientWindow extends StateClientWindow implements DataLis
                 ImGui.text("No players found.");
             }
         }
+    }
+
+    @Override
+    public ImString getImIP() {
+        return this.ip;
+    }
+
+    @Override
+    public ImInt getImPort() {
+        return this.port;
     }
 
     private void updatePlayerDataEntries() {
