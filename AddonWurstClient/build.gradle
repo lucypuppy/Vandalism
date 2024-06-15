@@ -1,3 +1,7 @@
+plugins {
+    id "vandalism.addon-conventions"
+}
+
 dependencies {
     File buildOutput = new File(rootProject.projectDir, "/Wurst7/build/libs")
 
