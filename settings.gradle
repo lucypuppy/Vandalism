@@ -1,33 +1,8 @@
-dependencyResolutionManagement {
+pluginManagement {
     repositories {
         mavenCentral()
         maven {
-            name = "Fabric"
             url = "https://maven.fabricmc.net/"
-        }
-        maven {
-            name = "ViaVersion"
-            url = "https://repo.viaversion.com/"
-        }
-        maven {
-            name = "Jitpack"
-            url = "https://jitpack.io/"
-        }
-        maven {
-            name = "Lenni0451"
-            url = "https://maven.lenni0451.net/everything/"
-        }
-        maven {
-            name = "TerraformersMC"
-            url = "https://maven.terraformersmc.com/releases/"
-        }
-        maven {
-            name = "OpenCollab Snapshots"
-            url = "https://repo.opencollab.dev/maven-snapshots/"
-        }
-        maven {
-            name = "Modrinth"
-            url = "https://api.modrinth.com/maven/"
         }
     }
 }
