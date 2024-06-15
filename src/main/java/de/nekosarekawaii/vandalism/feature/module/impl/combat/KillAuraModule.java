@@ -839,7 +839,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             RenderSystem.disableCull();
             final Tessellator tessellator = Tessellator.getInstance();
 
-            var buffer = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
+            BufferBuilder buffer = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
             int points = 24;
             for (int i = 0; i <= points; i++) {
                 double angle = (i / (double) points) * Math.PI * 2;
