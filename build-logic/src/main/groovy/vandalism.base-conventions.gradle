@@ -1,0 +1,32 @@
+plugins {
+    id "java-library"
+}
+
+base {
+    version = project.maven_version
+    group = project.maven_group
+}
+
+dependencies {
+    // The evil
+    compileOnly "org.projectlombok:lombok:${project.lombok_version}"
+    annotationProcessor "org.projectlombok:lombok:${project.lombok_version}"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+jar {
+    // Rename the project's license file to LICENSE_<project_name> to avoid conflicts
+    from("LICENSE") {
+        rename {
+            "${it}_${maven_name}"
+        }
+    }
+}
