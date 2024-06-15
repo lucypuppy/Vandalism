@@ -65,6 +65,7 @@ public class MenuSettings extends ValueGroup {
             true
     );
 
+    @Deprecated(forRemoval = true)
     public final BooleanValue scriptExecutionLogging = new BooleanValue(
             this,
             "Script Execution Logging",

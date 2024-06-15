@@ -362,7 +362,7 @@ public class ServerUtil implements MinecraftWrapper {
                 address = address.split(":")[0];
             }
             return new Pair<>(address, serverAddress.getPort());
-        } catch (final Exception e) {
+        } catch (final Exception ignored) {
             final String[] split = hostname.split(":");
             if (split.length == 2) {
                 return new Pair<>(split[0], Integer.parseInt(split[1]));
