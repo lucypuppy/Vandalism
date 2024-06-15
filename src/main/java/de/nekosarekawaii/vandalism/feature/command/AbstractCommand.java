@@ -30,6 +30,7 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.registry.BuiltinRegistries;
 import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.command.ServerCommandSource;
 import net.raphimc.vialoader.util.VersionRange;
 
 @Getter
@@ -69,6 +70,10 @@ public abstract class AbstractCommand extends Feature {
 
     protected static LiteralArgumentBuilder<CommandSource> literal(final String name) {
         return LiteralArgumentBuilder.literal(name);
+    }
+
+    public ServerCommandSource createServerCommandSource() {
+        return new ServerCommandSource(null, mc.player.getPos(), null, null, 0, null, null, null, null);
     }
 
     @Override
