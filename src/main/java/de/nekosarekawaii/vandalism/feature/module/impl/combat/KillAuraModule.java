@@ -26,7 +26,6 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
-import de.nekosarekawaii.vandalism.base.value.impl.rendering.SeparatorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
@@ -35,7 +34,6 @@ import de.nekosarekawaii.vandalism.event.player.RotationListener;
 import de.nekosarekawaii.vandalism.event.render.Render2DListener;
 import de.nekosarekawaii.vandalism.event.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.AutoSprintModule;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationBuilder;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationManager;
@@ -126,12 +124,6 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             2.0
     ).visibleCondition(this.firstHitExtender::getValue);
 
-    private final SeparatorValue reach = new SeparatorValue(
-            this.targetSelectionGroup,
-            "Reach",
-            "Settings for the reach."
-    );
-
     private final EnumModeValue<SelectionMode> selectionMode = new EnumModeValue<>(
             this.targetSelectionGroup,
             "Target Selection Mode",
@@ -194,7 +186,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     private final IntegerValue minCps = new IntegerValue(
             this.clicking,
             "Minimum CPS",
-            "The minimum CPS for the Box-Mueller clicker.",
+            "The minimum CPS for the clicker.",
             10,
             1,
             20
@@ -205,7 +197,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     private final IntegerValue maxCps = new IntegerValue(
             this.clicking,
             "Maximum CPS",
-            "The maximum CPS for the Box-Mueller clicker.",
+            "The maximum CPS for the clicker.",
             20,
             1,
             30
@@ -291,59 +283,12 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             1.0f
     );
 
-    private final ValueGroup windMouseGroup = new ValueGroup(
+    private final BooleanValue aimBreathe = new BooleanValue(
             this.rotationGroup,
-            "Wind Mouse Settings",
-            "Settings for the WindMouse algorithm."
+            "Aim Breathe",
+            "Whether the aim breathe should be applied.",
+            false
     );
-
-    private final BooleanValue windMouse = new BooleanValue(
-            this.windMouseGroup,
-            "Wind Mouse",
-            "Whether the WindMouse algorithm should be used.",
-            true);
-
-    private final FloatValue gravitationalForce = new FloatValue(
-            this.windMouseGroup,
-            "Gravitational Force",
-            "The strength pf the Gravitational Force.",
-            9f,
-            0.0f,
-            20.0f
-    ).visibleCondition(this.windMouse::getValue);
-
-    private final FloatValue windForceMagnitude = new FloatValue(
-            this.windMouseGroup,
-            "Wind Force Magnitude",
-            "The strength of the Wind Force Magnitude.",
-            3f,
-            0.0f,
-            20.0f
-    ).visibleCondition(this.windMouse::getValue);
-
-    private final FloatValue maxStepSize = new FloatValue(
-            this.windMouseGroup,
-            "Max Step Size",
-            "The Max Step Size.",
-            15f,
-            0.0f,
-            20.0f
-    ).visibleCondition(this.windMouse::getValue);
-
-    private final FloatValue distanceThreshold = new FloatValue(
-            this.windMouseGroup,
-            "Distance threshold",
-            "The Distance Threshold.",
-            12f,
-            0.0f,
-            20.0f
-    ).visibleCondition(this.windMouse::getValue);
-
-//    private final SeparatorValue movementFixSeparator = new SeparatorValue(
-//            this.rotationGroup,
-//            "Movement Fix Separator",
-//            "Settings for the movement fix."
-//    );
 
     private final BooleanValue movementFix = new BooleanValue(
             this.rotationGroup,
@@ -377,20 +322,6 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             "No Hit Slowdown",
             "Whether you should slow down when hitting.",
             false
-    );
-
-    private final BooleanValue unsprintOnAttack = new BooleanValue(
-            this.extraSettings,
-            "Unsprint On Attack",
-            "Whether you should unsprint on attack.",
-            true
-    );
-
-    private final BooleanValue resprintAfterAttack = new BooleanValue(
-            this.extraSettings,
-            "Resprint After Attack",
-            "Whether you should resprint after attack.",
-            true
     );
 
     private final ValueGroup renderGroup = new ValueGroup(
@@ -453,7 +384,6 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 PlayerUpdateEvent.ID, Render2DEvent.ID, RotationEvent.ID, RaytraceEvent.ID, Render3DEvent.ID
         );
         updateClicker(this.clickType.getValue().getClicker());
-        this.autoSprintModule = Vandalism.getInstance().getModuleManager().getByClass(AutoSprintModule.class);
         if (mc.player != null) {
             this.prevRotation = new Rotation(mc.player.prevYaw, mc.player.prevPitch);
         }
@@ -538,16 +468,9 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 rotateSpeed = (float) (this.rotateSpeed.getValue() + Math.random() * 5.0f);
             }
 
-            if (windMouse.getValue()) {
-                rotation = RotationUtil.windMouseSmooth(
-                        rotation, prevRotation,
-                        gravitationalForce.getValue(), windForceMagnitude.getValue(), maxStepSize.getValue(), distanceThreshold.getValue()
-                );
+            if(aimBreathe.getValue()) {
+                rotation = RotationUtil.applyBreatheEffect(rotation, 1.0f, 0.05f);
             }
-
-//            rotation = WindMouse.updateMouse(rotation, prevRotation);
-
-            // rotation.setPitch((float) (rotation.getPitch() + Math.random() * 5));
 
             prevRotation = rotation;
             this.rotationManager.setRotation(
@@ -625,6 +548,10 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                     final double distance2 = eyePos.distanceTo(RotationBuilder.getNearestPoint(entity2));
                     return Double.compare(distance1, distance2);
                 }
+                if(health1 > 0 && health2 <= 0)
+                    return -1;
+                if(health1 <= 0 && health2 > 0)
+                    return 1;
                 return Double.compare(health1, health2);
             });
         }
@@ -701,22 +628,12 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         });
     }
 
-    private AutoSprintModule autoSprintModule;
-
     private void hit() {
-        if (this.unsprintOnAttack.getValue()) {
-            this.mc.player.setSprinting(false);
-            autoSprintModule.stopSprinting(true);
-        }
-
         stopBlocking(BlockState.PRE_ATTACK);
-        this.mc.doAttack();
-        startBlocking(BlockState.POST_ATTACK);
 
-        if (this.resprintAfterAttack.getValue()) {
-            this.mc.player.setSprinting(true);
-            autoSprintModule.stopSprinting(false);
-        }
+        this.mc.doAttack();
+
+        startBlocking(BlockState.POST_ATTACK);
 
         this.targetIndex++;
     }

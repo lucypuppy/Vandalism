@@ -46,7 +46,7 @@ public class RotationBuilder implements MinecraftWrapper {
         Rotation normalRotations = build(entityVector, mc.player.getEyePos(), priority);
 
         // If we can hit the entity with the normal rotations, return them
-        if (WorldUtil.raytrace(normalRotations, range).getType() == HitResult.Type.MISS) {
+        if (WorldUtil.raytrace(normalRotations, range).getType() != HitResult.Type.MISS) {
             return normalRotations;
         }
 
