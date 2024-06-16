@@ -24,13 +24,10 @@ import net.minecraft.util.math.MathHelper;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 public class RotationUtil implements MinecraftWrapper {
 
     private static final List<Integer> DIAGONAL_VALUES = Arrays.asList(45, 135, 225, 315);
-    private static final double SQRT3 = Math.sqrt(3);
-    private static final double SQRT5 = Math.sqrt(5);
 
     public static float calculateRotationPercentage(final float currentRotation, final float targetRotation, final boolean yaw) {
         final float diff = MathHelper.angleBetween(currentRotation, targetRotation);
@@ -80,78 +77,24 @@ public class RotationUtil implements MinecraftWrapper {
         return Math.abs(MathHelper.wrapDegrees(pseudoRotation.getYaw()) - MathHelper.wrapDegrees(target.getYaw())) > diff;
     }
 
-    //  https://ben.land/post/2021/04/25/windmouse-human-mouse-movement/
-    public static Rotation windMouseSmooth(final Rotation rotation, final Rotation lastRotation,
-                                           float gravitationalForce, float windForceMagnitude, float maxStepSize,
-                                           float distanceThreshold) {
-        final Random random = new Random();
-        final float deltaX = rotation.getYaw() - lastRotation.getYaw();
-        final float deltaY = rotation.getPitch() - lastRotation.getPitch();
-        final float distance = (float) Math.hypot(deltaX, deltaY);
+    private static float breatheYaw = 0.0f;
+    private static float breathePitch = 0.0f;
+    private static float breatheYawDirection = 1.0f;
+    private static float breathePitchDirection = 1.0f;
 
-        float windX = 0;
-        float windY = 0;
-
-        if (distance >= 1) {
-            float startX = lastRotation.getYaw();
-            float startY = lastRotation.getPitch();
-            float destX = startX + deltaX;
-            float destY = startY + deltaY;
-            float vX = 0;
-            float vY = 0;
-
-            int iterations = 0;
-            int consecutiveUnchanged = 0;
-            while (true) {
-                if (iterations > 50 || consecutiveUnchanged > 5)
-                    return new Rotation(startX, startY);
-
-                final float dist = (float) Math.hypot(destX - startX, destY - startY);
-                if (dist < 1) {
-                    return new Rotation(startX, startY);
-                }
-
-                final float windMagnitude = Math.min(windForceMagnitude, dist);
-                if (dist >= distanceThreshold) {
-                    windX = windX / ((float) SQRT3) + (2 * random.nextFloat() - 1) * windMagnitude / ((float) SQRT5);
-                    windY = windY / ((float) SQRT3) + (2 * random.nextFloat() - 1) * windMagnitude / ((float) SQRT5);
-                } else {
-                    windX /= (float) SQRT3;
-                    windY /= (float) SQRT3;
-
-                    if (maxStepSize < 3) {
-                        maxStepSize = random.nextFloat() * 3 + 3;
-                    } else {
-                        maxStepSize /= (float) SQRT5;
-                    }
-                }
-
-                vX += windX + gravitationalForce * (destX - startX) / dist;
-                vY += windY + gravitationalForce * (destY - startY) / dist;
-
-                final float vMag = (float) Math.hypot(vX, vY);
-                if (vMag > maxStepSize) {
-                    final float vClip = maxStepSize / 2.0f + random.nextFloat() * maxStepSize / 2.0f;
-                    vX = (vX / vMag) * vClip;
-                    vY = (vY / vMag) * vClip;
-                }
-
-                float newX = startX + vX;
-                float newY = startY + vY;
-
-                if (newX == startX && newY == startY) {
-                    consecutiveUnchanged++;
-                } else {
-                    consecutiveUnchanged = 0;
-                }
-
-                startX = newX;
-                startY = newY;
-                iterations++;
-            }
+    public static Rotation applyBreatheEffect(final Rotation rotation, final float maxBreatheAngle, final float breatheSpeed) {
+        breatheYaw += breatheYawDirection * breatheSpeed;
+        if (Math.abs(breatheYaw) > maxBreatheAngle) {
+            breatheYawDirection *= -1; // Reverse direction when reaching the maximum angle
         }
 
-        return rotation;
+        // Update pitch breathe effect
+        breathePitch += breathePitchDirection * breatheSpeed;
+        if (Math.abs(breathePitch) > maxBreatheAngle) {
+            breathePitchDirection *= -1; // Reverse direction when reaching the maximum angle
+        }
+
+        return new Rotation(rotation.getYaw() + breatheYaw, rotation.getPitch() + breathePitch);
     }
 
     public static boolean isLookingDiagonal(final float rotationYaw) {
