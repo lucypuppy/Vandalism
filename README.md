@@ -3,7 +3,8 @@
 Vandalism is a mod for Minecraft designed to train server administrators.
 
 ## Setup the project
-1. Clone the repository using ``git clone --recursive``.
+
+1. Clone the repository using ``git clone --recursive <url>``.
 2. Run ``gradle genSources`` to setup the project.
 3. Compile and install addons using ``gradle build`` and ``gradle installCompileAddon``.
 
