@@ -46,16 +46,16 @@ public abstract class AbstractCreativeTab {
     public abstract void exposeItems(final List<ItemStack> items);
 
     public void publish() {
-        final ItemGroup itemGroup = FabricItemGroup.builder().icon(() -> this.icon).displayName(this.name).entries(((displayContext, entries) -> {
-            if (this.TEMP_ITEMS.isEmpty()) {
-                exposeItems(this.TEMP_ITEMS);
-            }
-            entries.addAll(this.TEMP_ITEMS);
-        })).build();
-        Registry.register(Registries.ITEM_GROUP, Identifier.of(
-                FabricBootstrap.MOD_ID,
-                this.name.getString().toLowerCase().replace(" ", "_")
-        ), itemGroup);
+//        final ItemGroup itemGroup = FabricItemGroup.builder().icon(() -> this.icon).displayName(this.name).entries(((displayContext, entries) -> {
+//            if (this.TEMP_ITEMS.isEmpty()) {
+//                exposeItems(this.TEMP_ITEMS);
+//            }
+//            entries.addAll(this.TEMP_ITEMS);
+//        })).build();
+//        Registry.register(Registries.ITEM_GROUP, Identifier.of(
+//                FabricBootstrap.MOD_ID,
+//                this.name.getString().toLowerCase().replace(" ", "_")
+//        ), itemGroup);
     }
 
 }
