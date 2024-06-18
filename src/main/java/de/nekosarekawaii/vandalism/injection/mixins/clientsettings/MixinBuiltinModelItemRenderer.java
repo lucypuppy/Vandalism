@@ -38,9 +38,9 @@ public abstract class MixinBuiltinModelItemRenderer {
         return instance.getLayer(identifier);
     }
 
-    @ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/ModelPart;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;II)V"), index = 7)
-    private float shieldAlpha(final float value) {
-        return Vandalism.getInstance().getClientSettings().getVisualSettings().shieldAlpha.getValue();
-    }
+//    @ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/ModelPart;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;II)V"), index = 7)
+//    private float shieldAlpha(final float value) {
+//        return Vandalism.getInstance().getClientSettings().getVisualSettings().shieldAlpha.getValue();
+//    }
 
 }
