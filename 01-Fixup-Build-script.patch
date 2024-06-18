@@ -1,0 +1,22 @@
+Subject: [PATCH] 01-Fixup-Build-script
+---
+Index: build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/build.gradle b/build.gradle
+--- a/build.gradle	(revision 992fc8e8813b37564484e7129b64ee0b282c3c34)
++++ b/build.gradle	(date 1718725902820)
+@@ -56,11 +56,6 @@
+ 	}
+ }
+ 
+-tasks.withType(JavaCompile).configureEach {
+-	// Minecraft 1.20.5 (24w14a) upwards uses Java 21.
+-	it.options.release = 21
+-}
+-
+ java {
+ 	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+ 	// if it is present.
