@@ -113,7 +113,7 @@
     "util.MixinConnectScreen",
     "util.MixinDrawContext",
     "util.MixinMinecraftClient",
-    "util.MixinRenderTickCounter",
+    "util.MixinRenderTickCounter_Dynamic",
     "util.MixinToolTipComponent",
     "clientsettings.MixinRegistrySyncManager"
   ],

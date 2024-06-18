@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(RenderTickCounter.Dynamic.class)
-public abstract class MixinRenderTickCounter implements IRenderTickCounter {
+public abstract class MixinRenderTickCounter_Dynamic implements IRenderTickCounter {
 
     @Shadow
     public float lastFrameDuration;

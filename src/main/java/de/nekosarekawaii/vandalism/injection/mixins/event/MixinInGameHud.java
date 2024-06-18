@@ -24,6 +24,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.DebugHud;
 import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.render.RenderTickCounter;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -40,13 +41,13 @@ public abstract class MixinInGameHud {
 
     @Shadow @Final private MinecraftClient client;
 
-    @Inject(method = "render(Lnet/minecraft/client/gui/DrawContext;F)V", at = @At(value = "TAIL"))
-    private void callRender2DListener(final DrawContext context, final float tickDelta, final CallbackInfo ci) {
+    @Inject(method = "render", at = @At(value = "TAIL"))
+    private void callRender2DListener(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         // We never want to render anything when this is true
         if (this.debugHud.shouldShowDebugHud() || this.client.options.hudHidden) {
             return;
         }
-        Vandalism.getInstance().getEventSystem().postInternal(Render2DListener.Render2DEvent.ID, new Render2DListener.Render2DEvent(context, tickDelta));
+        Vandalism.getInstance().getEventSystem().postInternal(Render2DListener.Render2DEvent.ID, new Render2DListener.Render2DEvent(context, tickCounter.getTickDelta(false)));
     }
 
 }
