@@ -41,7 +41,7 @@ public class MotionModuleMode extends ModuleMulti<FlightModule> implements Playe
             this,
             "Speed",
             "The speed amount of the motion flight.",
-            1.2,
+            2.0,
             1.0,
             5.0
     );
