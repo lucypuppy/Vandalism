@@ -23,6 +23,8 @@ import de.nekosarekawaii.vandalism.addonthirdparty.spotify.gui.SpotifyData;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
+import de.nekosarekawaii.vandalism.util.common.AlignmentX;
+import de.nekosarekawaii.vandalism.util.common.AlignmentY;
 import de.nekosarekawaii.vandalism.util.render.ColorUtils;
 import de.nekosarekawaii.vandalism.util.render.GLStateTracker;
 import net.minecraft.client.gui.DrawContext;
@@ -52,7 +54,16 @@ public class SpotifyHUDElement extends HUDElement {
 
     public SpotifyHUDElement(final SpotifyManager spotifyManager) {
         super("Spotify");
+        this.alignmentX = AlignmentX.RIGHT;
+        this.alignmentY = AlignmentY.BOTTOM;
         this.spotifyManager = spotifyManager;
+    }
+
+    @Override
+    public void reset() {
+        this.alignmentX = AlignmentX.RIGHT;
+        this.alignmentY = AlignmentY.BOTTOM;
+        this.resetValues();
     }
 
     @Override
@@ -102,10 +113,10 @@ public class SpotifyHUDElement extends HUDElement {
         final int currentSecondsRest = currentSeconds % 60;
         final String current = (currentMinutes < 10 ? "0" : "") + currentMinutes + ":" + (currentSecondsRest < 10 ? "0" : "") + currentSecondsRest;
         context.fill(
-                this.x,
-                this.y,
-                this.x + this.width,
-                this.y + (fontHeight * infoMap.size()) + heightAddition,
+                this.getX(),
+                this.getY(),
+                this.getX() + this.width,
+                this.getY() + (fontHeight * infoMap.size()) + heightAddition,
                 Integer.MIN_VALUE
         );
         Identifier imageIdentifier = FabricBootstrap.MOD_ICON;
@@ -119,8 +130,8 @@ public class SpotifyHUDElement extends HUDElement {
                 true
         );
         GLStateTracker.BLEND.save(true);
-        final int textureX = this.x + 2;
-        final int textureY = this.y + 2;
+        final int textureX = this.getX() + 2;
+        final int textureY = this.getY() + 2;
         final int textureSize = 30;
         context.drawTexture(
                 imageIdentifier,
@@ -158,9 +169,9 @@ public class SpotifyHUDElement extends HUDElement {
                     ColorUtils.toSRGB(1f, 1f, 1f, alpha)
             );
         }
-        final int progressBarY = this.y + (fontHeight * infoMap.size()) + heightAddition - 10;
+        final int progressBarY = this.getY() + (fontHeight * infoMap.size()) + heightAddition - 10;
         final int progressBarOffset = 8;
-        final int progressBarStartX = this.x + progressBarOffset;
+        final int progressBarStartX = this.getX() + progressBarOffset;
         final int endWidth = this.width - (progressBarOffset * 2);
         final int progressBarEndX = progressBarStartX + endWidth;
         int progressBarCurrentProgress = (int) (progressBarStartX + (endWidth * (Math.max(1, currentProgress) / (double) spotifyData.getDuration())));
@@ -216,8 +227,8 @@ public class SpotifyHUDElement extends HUDElement {
         matrices.pop();
         final int wrapWidth = this.textWrapWidth.getValue();
         final int textOffset = 34;
-        final int textX = (int) ((this.x + textOffset) / scale);
-        final int textY = (int) ((this.y + 4) / scale) + 7;
+        final int textX = (int) ((this.getX() + textOffset) / scale);
+        final int textY = (int) ((this.getY() + 4) / scale) + 7;
         matrices.push();
         matrices.scale(scale, scale, 1f);
         for (final Map.Entry<String, String> infoEntry : infoMap.entrySet()) {

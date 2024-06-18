@@ -33,7 +33,8 @@ import de.nekosarekawaii.vandalism.feature.module.impl.exploit.TickBaseModule;
 import de.nekosarekawaii.vandalism.injection.access.IRenderTickCounter;
 import de.nekosarekawaii.vandalism.render.Shaders;
 import de.nekosarekawaii.vandalism.util.click.CPSTracker;
-import de.nekosarekawaii.vandalism.util.common.Alignment;
+import de.nekosarekawaii.vandalism.util.common.AlignmentX;
+import de.nekosarekawaii.vandalism.util.common.AlignmentY;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import net.minecraft.client.gui.DrawContext;
@@ -281,7 +282,16 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
 
     public InfoHUDElement() {
         super("Info");
+        this.alignmentX = AlignmentX.LEFT;
+        this.alignmentY = AlignmentY.MIDDLE;
         Vandalism.getInstance().getEventSystem().subscribe(this, IncomingPacketEvent.ID, PlayerUpdateEvent.ID);
+    }
+
+    @Override
+    public void reset() {
+        this.alignmentX = AlignmentX.LEFT;
+        this.alignmentY = AlignmentY.MIDDLE;
+        this.resetValues();
     }
 
     @Override
@@ -495,7 +505,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             }
 
             for (final Map.Entry<String, String> infoEntry : infoMap.entrySet()) {
-                if (this.alignmentX == Alignment.MIDDLE) {
+                if (this.alignmentX == AlignmentX.MIDDLE) {
                     final String[] infoParts = new String[]{infoEntry.getKey(), infoEntry.getValue()};
                     for (int i = 0; i < infoParts.length; i++) {
                         final String infoPart = infoParts[i];
@@ -503,10 +513,10 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
 
                         if (this.background.getValue() || postProcess) {
                             context.fill(
-                                    (this.x + this.width / 2) - (textWidth / 2) - 1,
-                                    this.y + height,
-                                    (this.x + this.width / 2) + (textWidth / 2) + 1,
-                                    this.y + height + this.mc.textRenderer.fontHeight + 1,
+                                    (this.getX() + this.width / 2) - (textWidth / 2) - 1,
+                                    this.getY() + height,
+                                    (this.getX() + this.width / 2) + (textWidth / 2) + 1,
+                                    this.getY() + height + this.mc.textRenderer.fontHeight + 1,
                                     Integer.MIN_VALUE
                             );
                         }
@@ -514,8 +524,8 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
                         this.drawText(
                                 context,
                                 (i == 0 ? Formatting.UNDERLINE : "") + infoPart,
-                                (this.x + this.width / 2) - textWidth / 2,
-                                this.y + height
+                                (this.getX() + this.width / 2) - textWidth / 2,
+                                this.getY() + height
                         );
                         height += fontHeight + 3;
                         if (textWidth > width) {
@@ -532,15 +542,15 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
 
                             if (this.background.getValue() || postProcess) {
                                 context.fill(
-                                        this.x - 1,
-                                        this.y + height - 1,
-                                        this.x + textWidth,
-                                        this.y + height + this.mc.textRenderer.fontHeight,
+                                        this.getX() - 1,
+                                        this.getY() + height - 1,
+                                        this.getX() + textWidth,
+                                        this.getY() + height + this.mc.textRenderer.fontHeight,
                                         Integer.MIN_VALUE
                                 );
                             }
 
-                            this.drawText(context, text, this.x, this.y + height);
+                            this.drawText(context, text, this.getX(), this.getY() + height);
                             height += fontHeight + 1;
                         }
                         case RIGHT -> {
@@ -549,15 +559,15 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
 
                             if (this.background.getValue() || postProcess) {
                                 context.fill(
-                                        (this.x + this.width) - textWidth - 1,
-                                        this.y + height,
-                                        (this.x + this.width) + 1,
-                                        this.y + height + this.mc.textRenderer.fontHeight,
+                                        (this.getX() + this.width) - textWidth - 1,
+                                        this.getY() + height,
+                                        (this.getX() + this.width) + 1,
+                                        this.getY() + height + this.mc.textRenderer.fontHeight,
                                         Integer.MIN_VALUE
                                 );
                             }
 
-                            this.drawText(context, text, (this.x + this.width) - textWidth, this.y + height);
+                            this.drawText(context, text, (this.getX() + this.width) - textWidth, this.getY() + height);
                             height += fontHeight;
                         }
                     }

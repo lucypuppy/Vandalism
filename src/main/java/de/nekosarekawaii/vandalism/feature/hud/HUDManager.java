@@ -22,8 +22,6 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.clientwindow.ClientWindowManager;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindowScreen;
-import de.nekosarekawaii.vandalism.event.cancellable.render.ScreenListener;
-import de.nekosarekawaii.vandalism.event.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.event.render.Render2DListener;
 import de.nekosarekawaii.vandalism.feature.hud.config.HUDConfig;
 import de.nekosarekawaii.vandalism.feature.hud.gui.HUDClientWindow;
@@ -36,7 +34,7 @@ import net.minecraft.client.gui.DrawContext;
 
 import java.io.File;
 
-public class HUDManager extends Storage<HUDElement> implements Render2DListener, ScreenListener, KeyboardInputListener, MinecraftWrapper {
+public class HUDManager extends Storage<HUDElement> implements Render2DListener, MinecraftWrapper {
 
     public WatermarkHUDElement watermarkHUDElement;
     public ModuleListHUDElement moduleListHUDElement;
@@ -45,9 +43,7 @@ public class HUDManager extends Storage<HUDElement> implements Render2DListener,
     private final File logoFolder;
 
     public HUDManager(final ConfigManager configManager, final ClientWindowManager clientWindowManager, final File runDirectory) {
-        Vandalism.getInstance().getEventSystem().subscribe(Render2DEvent.ID, this);
-        Vandalism.getInstance().getEventSystem().subscribe(ScreenEvent.ID, this);
-        Vandalism.getInstance().getEventSystem().subscribe(KeyboardInputEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(this, Render2DEvent.ID);
         configManager.add(new HUDConfig(this));
         clientWindowManager.add(new HUDClientWindow(this));
 
@@ -71,25 +67,8 @@ public class HUDManager extends Storage<HUDElement> implements Render2DListener,
             return;
         }
         for (final HUDElement hudElement : this.getList()) {
-            if (!hudElement.isActive()) {
-                continue;
-            }
+            if (!hudElement.isActive()) continue;
             hudElement.onRender(context, delta, true);
-        }
-    }
-
-    @Override
-    public void onResizeScreen(final ScreenEvent event) {
-        for (final HUDElement hudElement : this.getList()) {
-            hudElement.calculateAlignment();
-            hudElement.calculatePosition();
-        }
-    }
-
-    @Override
-    public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
-        for (final HUDElement hudElement : this.getList()) {
-            hudElement.onKeyInput(window, key, scanCode, action, modifiers);
         }
     }
 

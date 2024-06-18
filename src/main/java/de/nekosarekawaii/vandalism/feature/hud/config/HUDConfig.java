@@ -24,6 +24,8 @@ import de.nekosarekawaii.vandalism.base.config.AbstractConfig;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
 import de.nekosarekawaii.vandalism.feature.hud.HUDManager;
+import de.nekosarekawaii.vandalism.util.common.AlignmentX;
+import de.nekosarekawaii.vandalism.util.common.AlignmentY;
 
 public class HUDConfig extends AbstractConfig<JsonObject> {
 
@@ -41,8 +43,8 @@ public class HUDConfig extends AbstractConfig<JsonObject> {
             final String hudElementName = hudElement.getName();
             try {
                 final JsonObject hudElementNode = new JsonObject();
-                hudElementNode.addProperty("x", hudElement.getX());
-                hudElementNode.addProperty("y", hudElement.getY());
+                hudElementNode.addProperty("alignmentX", hudElement.getAlignmentX().getName());
+                hudElementNode.addProperty("alignmentY", hudElement.getAlignmentY().getName());
                 if (!hudElement.getValues().isEmpty()) {
                     final JsonObject valuesNode = new JsonObject();
                     ConfigWithValues.saveValues(valuesNode, hudElement.getValues());
@@ -66,11 +68,19 @@ public class HUDConfig extends AbstractConfig<JsonObject> {
                     continue;
                 }
                 final JsonObject hudElementNode = mainNode.getAsJsonObject(hudElementName);
-                if (hudElementNode.has("x")) {
-                    hudElement.setX(hudElementNode.get("x").getAsInt());
+                if (hudElementNode.has("alignmentX")) {
+                    AlignmentX alignmentX = AlignmentX.getAlignmentByName(hudElementNode.get("alignmentX").getAsString());
+                    if (alignmentX == null) {
+                        alignmentX = AlignmentX.LEFT;
+                    }
+                    hudElement.setAlignmentX(alignmentX);
                 }
-                if (hudElementNode.has("y")) {
-                    hudElement.setY(hudElementNode.get("y").getAsInt());
+                if (hudElementNode.has("alignmentY")) {
+                    AlignmentY alignmentY = AlignmentY.getAlignmentByName(hudElementNode.get("alignmentY").getAsString());
+                    if (alignmentY == null) {
+                        alignmentY = AlignmentY.TOP;
+                    }
+                    hudElement.setAlignmentY(alignmentY);
                 }
                 if (hudElementNode.has("values")) {
                     final JsonObject valuesNode = hudElementNode.get("values").getAsJsonObject();
