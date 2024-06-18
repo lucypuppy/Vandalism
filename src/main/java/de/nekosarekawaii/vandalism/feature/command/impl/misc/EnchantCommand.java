@@ -21,12 +21,15 @@ package de.nekosarekawaii.vandalism.feature.command.impl.misc;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
-import de.nekosarekawaii.vandalism.feature.command.arguments.EnchantmentArgumentType;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.argument.RegistryEntryReferenceArgumentType;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 
 public class EnchantCommand extends AbstractCommand {
 
@@ -42,10 +45,14 @@ public class EnchantCommand extends AbstractCommand {
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
-        builder.then(argument("enchantment", EnchantmentArgumentType.create())
+        builder.then(argument("enchantment", RegistryEntryReferenceArgumentType.registryEntry(REGISTRY_ACCESS, RegistryKeys.ENCHANTMENT))
                 .then(argument("level", IntegerArgumentType.integer(Short.MIN_VALUE, Short.MAX_VALUE))
                         .executes(context -> {
-                                    this.enchantItem(EnchantmentArgumentType.get(context), IntegerArgumentType.getInteger(context, "level"));
+                            final RegistryEntry.Reference<Enchantment> reference = context.getArgument("enchantment", RegistryEntry.Reference.class);
+                            final RegistryKey<Enchantment> registryKey = reference.registryKey();
+                            if (registryKey.isOf(RegistryKeys.ENCHANTMENT)) {
+                                this.enchantItem(registryKey, IntegerArgumentType.getInteger(context, "level"));
+                            }
                                     return SINGLE_SUCCESS;
                                 }
                         )
@@ -53,7 +60,7 @@ public class EnchantCommand extends AbstractCommand {
         );
     }
 
-    private void enchantItem(final Enchantment enchantment, final int level) {
+    private void enchantItem(final RegistryKey<Enchantment> enchantment, final int level) {
         final ItemStack stack = this.mc.player.getInventory().getMainHandStack();
         if (stack != null && !stack.isEmpty()) {
             if (ItemStackUtil.giveItemStack(ItemStackUtil.appendEnchantmentToItemStack(stack, enchantment, level), false)) {

@@ -475,7 +475,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         }
 
         if (this.clientTPS.getValue()) {
-            final float tps = ((IRenderTickCounter) this.mc.renderTickCounter).vandalism$getTPS();
+            final float tps = ((IRenderTickCounter) this.mc.getRenderTickCounter()).vandalism$getTPS();
             final float percentage = tps / 20.0f;
 
             infoMap.put("Client TPS", String.format("%.3f (%.3f)", tps, percentage));

@@ -63,8 +63,7 @@ public abstract class MixinRotatingCubeMapRenderer {
             ShaderProgram shader;
             switch (this.client.currentScreen) {
                 case TitleScreen titleScreen -> shader = Shaders.getTitleScreenBackgroundShader();
-                case DownloadingTerrainScreen downloadingTerrainScreen ->
-                        shader = Shaders.getLoadingScreenBackgroundShader();
+                case DownloadingTerrainScreen downloadingTerrainScreen -> shader = Shaders.getLoadingScreenBackgroundShader();
                 case ConnectScreen connectScreen -> shader = Shaders.getLoadingScreenBackgroundShader();
                 case ReconfiguringScreen reconfiguringScreen -> shader = Shaders.getLoadingScreenBackgroundShader();
                 case null, default -> shader = Shaders.getBackgroundShader();
@@ -72,12 +71,11 @@ public abstract class MixinRotatingCubeMapRenderer {
             shader.bind();
             GlobalUniforms.setBackgroundUniforms(shader);
             final Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
-            BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
-            bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
-            bufferBuilder.vertex(matrix, -1F, -1F, 0F).next();
-            bufferBuilder.vertex(matrix, client.getWindow().getFramebufferWidth(), -1F, 0F).next();
-            bufferBuilder.vertex(matrix, client.getWindow().getFramebufferWidth(), client.getWindow().getFramebufferHeight(), 0F).next();
-            bufferBuilder.vertex(matrix, -1F, client.getWindow().getFramebufferHeight(), 0F).next();
+            BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
+            bufferBuilder.vertex(matrix, -1F, -1F, 0F);
+            bufferBuilder.vertex(matrix, client.getWindow().getFramebufferWidth(), -1F, 0F);
+            bufferBuilder.vertex(matrix, client.getWindow().getFramebufferWidth(), client.getWindow().getFramebufferHeight(), 0F);
+            bufferBuilder.vertex(matrix, -1F, client.getWindow().getFramebufferHeight(), 0F);
             BufferRenderer.draw(bufferBuilder.end());
             shader.unbind();
         }

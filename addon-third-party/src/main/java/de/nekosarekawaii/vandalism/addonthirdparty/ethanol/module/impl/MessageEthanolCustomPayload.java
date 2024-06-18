@@ -29,7 +29,7 @@ import net.minecraft.util.Identifier;
 public class MessageEthanolCustomPayload implements CustomPayload {
 
     public static final Id<MessageEthanolCustomPayload> ID = new Id<>(
-            new Identifier("ethanol", "message")
+            Identifier.of("ethanol", "message")
     );
 
     public static final PacketCodec<PacketByteBuf, MessageEthanolCustomPayload> CODEC = CustomPayload.codecOf((value, buf) -> {

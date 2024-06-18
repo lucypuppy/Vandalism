@@ -89,7 +89,7 @@ public class TeleportModule extends AbstractModule implements PlayerUpdateListen
         if (this.mc.player.isUsingItem() || !this.mc.options.useKey.isPressed()) {
             return;
         }
-        final HitResult result = this.mc.player.raycast(this.maxDistance.getValue(), mc.getTickDelta(), false);
+        final HitResult result = this.mc.player.raycast(this.maxDistance.getValue(), mc.getRenderTickCounter().getTickDelta(false), false);
         if (!this.mc.player.isUsingItem() && this.mc.options.useKey.isPressed() && result.getType() == HitResult.Type.BLOCK) {
             pressed = true;
         }
@@ -115,7 +115,7 @@ public class TeleportModule extends AbstractModule implements PlayerUpdateListen
 
     private void vulcan() {
         if (!this.mc.player.isUsingItem() && this.mc.options.useKey.isPressed()) {
-            result = this.mc.player.raycast(this.maxDistance.getValue(), mc.getTickDelta(), false);
+            result = this.mc.player.raycast(this.maxDistance.getValue(), mc.getRenderTickCounter().getTickDelta(false) /* TODO CHECK EVERYWHERE*/, false);
             if (result.getType() == HitResult.Type.BLOCK) {
                 this.mc.options.useKey.setPressed(false);
                 pressed = true;

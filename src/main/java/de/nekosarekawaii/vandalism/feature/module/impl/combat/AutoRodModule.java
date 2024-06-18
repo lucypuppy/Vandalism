@@ -202,7 +202,7 @@ public class AutoRodModule extends AbstractModule implements PlayerUpdateListene
         final Vec3d camPos = this.mc.gameRenderer.getCamera().getPos();
         matrixStack.translate(-camPos.x, -camPos.y, -camPos.z);
 
-        final VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+        final VertexConsumerProvider.Immediate immediate = this.mc.getBufferBuilders().getEntityVertexConsumers();
 
         matrixStack.push();
         final double minX = (box.minX - center.x) * scale + center.x;

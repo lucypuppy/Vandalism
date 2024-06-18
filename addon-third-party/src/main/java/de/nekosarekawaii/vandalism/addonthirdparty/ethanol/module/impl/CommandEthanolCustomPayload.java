@@ -27,9 +27,7 @@ import java.nio.charset.StandardCharsets;
 
 public class CommandEthanolCustomPayload implements CustomPayload {
 
-    public static final Id<CommandEthanolCustomPayload> ID = new Id<>(
-            new Identifier("ethanol", "command")
-    );
+    public static final Id<CommandEthanolCustomPayload> ID = new Id<>(Identifier.of("ethanol", "command"));
 
     public static final PacketCodec<PacketByteBuf, CommandEthanolCustomPayload> CODEC = CustomPayload.codecOf(
             CommandEthanolCustomPayload::write,

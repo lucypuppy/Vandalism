@@ -52,7 +52,7 @@ public abstract class AbstractCreativeTab {
             }
             entries.addAll(this.TEMP_ITEMS);
         })).build();
-        Registry.register(Registries.ITEM_GROUP, new Identifier(
+        Registry.register(Registries.ITEM_GROUP, Identifier.of(
                 FabricBootstrap.MOD_ID,
                 this.name.getString().toLowerCase().replace(" ", "_")
         ), itemGroup);

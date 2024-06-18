@@ -27,7 +27,7 @@ import net.minecraft.util.Identifier;
 public class VanishEthanolCustomPayload implements CustomPayload {
 
     public static final Id<VanishEthanolCustomPayload> ID = new Id<>(
-            new Identifier("ethanol", "vanish")
+            Identifier.of("ethanol", "vanish")
     );
 
     public static final PacketCodec<PacketByteBuf, VanishEthanolCustomPayload> CODEC = CustomPayload.codecOf((value, buf) -> {

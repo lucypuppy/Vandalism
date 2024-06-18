@@ -60,7 +60,7 @@ public class BaritoneAddonModule extends AbstractModule implements PlayerUpdateL
 
         final IPathingBehavior pathingBehavior = baritone.getPathingBehavior();
 
-        final double tps = ((IRenderTickCounter) mc.renderTickCounter).vandalism$getTPS();
+        final double tps = ((IRenderTickCounter) mc.getRenderTickCounter()).vandalism$getTPS();
         final double ticksRemainingInSegment = pathingBehavior.ticksRemainingInSegment().orElse(0.0);
         final double ticksRemainingInGoal = pathingBehavior.estimatedTicksToGoal().orElse(0.0);
         final double remainingTimeInSegment = ticksRemainingInSegment / tps;

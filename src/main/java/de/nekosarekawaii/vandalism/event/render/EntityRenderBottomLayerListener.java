@@ -37,20 +37,15 @@ public interface EntityRenderBottomLayerListener {
 
         public final VertexConsumer vertexConsumer;
 
-        public int light, overlay;
+        public int light, overlay, color;
 
-        public float red, green, blue, alpha;
-
-        public EntityRenderBottomLayerEvent(final Entity entity, final MatrixStack matrixStack, final VertexConsumer vertexConsumer, final int light, final int overlay, final float red, final float green, final float blue, final float alpha) {
+        public EntityRenderBottomLayerEvent(final Entity entity, final MatrixStack matrixStack, final VertexConsumer vertexConsumer, final int light, final int overlay, final int color) {
             this.entity = entity;
             this.matrixStack = matrixStack;
             this.vertexConsumer = vertexConsumer;
             this.light = light;
             this.overlay = overlay;
-            this.red = red;
-            this.green = green;
-            this.blue = blue;
-            this.alpha = alpha;
+            this.color = color;
         }
 
         @Override

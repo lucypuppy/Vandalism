@@ -168,8 +168,8 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         mc.getWindow().setTitle(String.format("Starting %s...", FabricBootstrap.WINDOW_TITLE));
 
         // Base handlers
-        FabricBootstrap.MOD_LOGO = new Identifier(FabricBootstrap.MOD_ID, "textures/logo.png");
-        FabricBootstrap.MOD_ICON = new Identifier(FabricBootstrap.MOD_ID, "textures/icon/icon_1024x1024.png");
+        FabricBootstrap.MOD_LOGO = Identifier.of(FabricBootstrap.MOD_ID, "textures/logo.png");
+        FabricBootstrap.MOD_ICON = Identifier.of(FabricBootstrap.MOD_ID, "textures/icon/icon_1024x1024.png");
 
         this.runDirectory = new File(this.runDirectory, FabricBootstrap.MOD_ID);
         this.runDirectory.mkdirs();
