@@ -2,6 +2,11 @@
 
 Vandalism is a mod for Minecraft designed to train server administrators.
 
+## Setup the project
+1. Clone the repository using ``git clone --recursive``.
+2. Run ``gradle genSources`` to setup the project.
+3. Compile and install addons using ``gradle build`` and ``gradle installCompileAddon``.
+
 ## Guidelines
 
 ### How to name commits
@@ -29,3 +34,8 @@ Ex: ``gradlew wrapper --gradle-version 8.8``
 
 ### General notes
 Build conventions are located in the ``build-logic`` folder.
+
+In case someone force pushes, you need to:
+1. ``git fetch``
+2. ``git reset --hard origin/main``
+NOTE: This will remove all your local changes, so make sure to backup them.
