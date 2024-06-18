@@ -30,21 +30,21 @@ import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.render.Render2DListener;
 import de.nekosarekawaii.vandalism.event.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.common.IName;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.common.RandomUtils;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
-import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.type.ImString;
 import lombok.Getter;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.NoteBlock;
+import net.minecraft.block.enums.NoteBlockInstrument;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.debug.DebugRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -159,7 +159,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         final Instrument instrument = note.getInstrument();
         if (instrument != null) {
             final AtomicReference<SoundEvent> soundEvent = new AtomicReference<>(null);
-            for (final net.minecraft.block.enums.Instrument mcInstrument : net.minecraft.block.enums.Instrument.values()) {
+            for (final NoteBlockInstrument mcInstrument : NoteBlockInstrument.values()) {
                 if (mcInstrument.ordinal() != instrument.mcId()) continue;
                 soundEvent.set(mcInstrument.getSound().value());
                 break;
@@ -368,7 +368,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
     @Override
     public void onRender3D(final float tickDelta, final long limitTime, final MatrixStack matrixStack) {
         if (!this.mode.getValue().equals(Mode.BLOCKS) || this.tunableBlocks.isEmpty()) return;
-        final VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+        final VertexConsumerProvider.Immediate immediate = this.mc.getBufferBuilders().getEntityVertexConsumers();
         matrixStack.push();
         for (final Map.Entry<BlockPos, Note> entry : this.tunableBlocks.entrySet()) {
             final BlockPos pos = entry.getKey();
@@ -490,7 +490,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
             case PLAYING -> {
                 if (this.soundShuffler.getValue() && this.customInstruments.isEmpty()) {
                     final List<String> validSounds = Registries.SOUND_EVENT.stream().map(SoundEvent::getId).filter(id -> !id.toString().toLowerCase().contains("music")).map(Object::toString).toList();
-                    for (final net.minecraft.block.enums.Instrument mcInstrument : net.minecraft.block.enums.Instrument.values()) {
+                    for (final NoteBlockInstrument mcInstrument : NoteBlockInstrument.values()) {
                         final String input = mcInstrument.getSound().value().getId().toString();
                         final String output = validSounds.get(RandomUtils.randomInt(0, validSounds.size()));
                         this.customInstruments.put(input, output);

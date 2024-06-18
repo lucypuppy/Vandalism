@@ -34,7 +34,7 @@ import net.minecraft.util.Identifier;
 
 public class MapTooltipComponent implements TooltipComponent, MinecraftWrapper, ConvertibleTooltipData {
 
-    private static final Identifier TEXTURE_MAP_BACKGROUND = new Identifier("textures/map/map_background.png");
+    private static final Identifier TEXTURE_MAP_BACKGROUND = Identifier.of("textures/map/map_background.png");
     private final MapIdComponent mapId;
     private final float scale = 1.0f;
 

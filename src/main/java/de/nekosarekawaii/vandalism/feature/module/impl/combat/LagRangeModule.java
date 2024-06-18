@@ -30,6 +30,7 @@ import de.nekosarekawaii.vandalism.integration.rotation.RotationBuilder;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.common.MathUtil;
 import de.nekosarekawaii.vandalism.util.game.Prediction;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.profiler.Profiler;
 
@@ -155,7 +156,7 @@ public class LagRangeModule extends AbstractModule implements TimeTravelListener
     }
 
     public int getCharge() {
-        return (int) (this.shifted / this.mc.renderTickCounter.tickTime);
+        return (int) (this.shifted / ((RenderTickCounter.Dynamic) this.mc.getRenderTickCounter()).tickTime);
     }
 
     private void tickEntities() {

@@ -77,11 +77,7 @@ public class TrueSightModule extends AbstractModule implements EntityRenderBotto
     @Override
     public void onLivingEntityRenderBottomLayer(final EntityRenderBottomLayerEvent event) {
         if (this.isValid(event.entity)) {
-            final Color color = this.entityColor.getValue().getColor();
-            event.red = color.getRed() / 255f;
-            event.green = color.getGreen() / 255f;
-            event.blue = color.getBlue() / 255f;
-            event.alpha = color.getAlpha() / 255f;
+            event.color = this.entityColor.getValue().getColor().getRGB();
         }
     }
 
