@@ -682,7 +682,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     }
 
     @Override
-    public void onRender3D(float tickDelta, long limitTime, MatrixStack matrixStack) {
+    public void onRender3D(final float tickDelta, final MatrixStack matrixStack) {
         //    if (this.clickType.getValue().getClicker() instanceof final BoxMuellerClicker boxMuellerClicker) {
         //        final List<Vector4d> cpsHistory = boxMuellerClicker.getCpsHistory().getNormalList();
 //

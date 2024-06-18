@@ -23,7 +23,7 @@ import net.minecraft.client.util.math.MatrixStack;
 
 public interface Render3DListener {
 
-    void onRender3D(final float tickDelta, final long limitTime, final MatrixStack matrixStack);
+    void onRender3D(final float tickDelta, final MatrixStack matrixStack);
 
     class Render3DEvent extends AbstractEvent<Render3DListener> {
 
@@ -31,17 +31,15 @@ public interface Render3DListener {
 
         private final MatrixStack matrixStack;
         private final float tickDelta;
-        private final long limitTime;
 
-        public Render3DEvent(final float tickDelta, final long limitTime, final MatrixStack matrixStack) {
+        public Render3DEvent(final float tickDelta, final MatrixStack matrixStack) {
             this.matrixStack = matrixStack;
             this.tickDelta = tickDelta;
-            this.limitTime = limitTime;
         }
 
         @Override
         public void call(final Render3DListener listener) {
-            listener.onRender3D(this.tickDelta, this.limitTime, this.matrixStack);
+            listener.onRender3D(this.tickDelta, this.matrixStack);
         }
 
     }

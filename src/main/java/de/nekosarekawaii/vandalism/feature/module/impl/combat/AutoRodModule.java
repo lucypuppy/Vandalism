@@ -178,7 +178,7 @@ public class AutoRodModule extends AbstractModule implements PlayerUpdateListene
     }
 
     @Override
-    public void onRender3D(float tickDelta, long limitTime, MatrixStack matrixStack) {
+    public void onRender3D(final float tickDelta, final MatrixStack matrixStack) {
         if(mc.player == null || predictedTargetPos == null || !isEntityLookingAtEntity(mc.player, target, fov.getValue())) return;
         final Entity entity = target;
         final Vec3d pos = predictedTargetPos;

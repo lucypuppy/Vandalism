@@ -184,12 +184,6 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
                 return;
             }
 
-            if(windMouse.getValue()) {
-                this.rotation = RotationUtil.windMouseSmooth(
-                        rotation, prevRotation,
-                        gravitationalForce.getValue(), windForceMagnitude.getValue(), maxStepSize.getValue(), distanceThreshold.getValue()
-                );
-            }
             prevRotation = rotation;
             Vandalism.getInstance().getRotationManager().setRotation(this.rotation, rotateSpeed.getValue(), 0.0f, movementFix.getValue());
         }
