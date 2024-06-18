@@ -163,7 +163,7 @@ public class ESPModule extends AbstractModule implements BlockStateListener, Blo
     }
 
     @Override
-    public void onRender3D(final float tickDelta, final long limitTime, final MatrixStack matrixStack) {
+    public void onRender3D(final float tickDelta, final MatrixStack matrixStack) {
         if (!this.blocks.getValue() || this.mc.player == null) {
             return;
         }

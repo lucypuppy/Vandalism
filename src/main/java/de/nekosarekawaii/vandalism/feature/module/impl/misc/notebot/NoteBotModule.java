@@ -366,7 +366,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
     }
 
     @Override
-    public void onRender3D(final float tickDelta, final long limitTime, final MatrixStack matrixStack) {
+    public void onRender3D(final float tickDelta, final MatrixStack matrixStack) {
         if (!this.mode.getValue().equals(Mode.BLOCKS) || this.tunableBlocks.isEmpty()) return;
         final VertexConsumerProvider.Immediate immediate = this.mc.getBufferBuilders().getEntityVertexConsumers();
         matrixStack.push();

@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(RenderTickCounter.class)
+@Mixin(RenderTickCounter.Dynamic.class)
 public abstract class MixinRenderTickCounter implements IRenderTickCounter {
 
     @Shadow
@@ -42,12 +42,12 @@ public abstract class MixinRenderTickCounter implements IRenderTickCounter {
     @Unique
     private float tps;
 
-    @Inject(method = "beginRenderTick", at = @At("HEAD"))
+    @Inject(method = "beginRenderTick(J)I", at = @At("HEAD"))
     private void beginRenderTickHead(final long timeMillis, final CallbackInfoReturnable<Integer> info) {
         this.delta = timeMillis - this.prevTimeMillis;
     }
 
-    @Inject(method = "beginRenderTick", at = @At("RETURN"))
+    @Inject(method = "beginRenderTick(J)I", at = @At("RETURN"))
     private void beginRenderTickReturn(final long timeMillis, final CallbackInfoReturnable<Integer> info) {
         if (this.delta % 9 != 0) { // Filter the inaccuracy
             final float tickTime = this.delta / this.lastFrameDuration;

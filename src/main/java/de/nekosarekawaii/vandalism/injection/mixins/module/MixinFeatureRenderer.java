@@ -43,7 +43,7 @@ public abstract class MixinFeatureRenderer {
     private static Entity vandalism$entity;
 
     @Inject(method = "renderModel", at = @At("HEAD"))
-    private static void captureEntity(EntityModel model, Identifier texture, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, LivingEntity entity, float red, float green, float blue, CallbackInfo ci) {
+    private static <T extends LivingEntity> void captureEntity(EntityModel<T> model, Identifier texture, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T entity, int i, CallbackInfo ci) {
         vandalism$entity = entity;
     }
 
@@ -56,7 +56,7 @@ public abstract class MixinFeatureRenderer {
         }
     }
 
-    @Redirect(method = "render(Lnet/minecraft/client/render/entity/model/EntityModel;Lnet/minecraft/client/render/entity/model/EntityModel;Lnet/minecraft/util/Identifier;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/entity/LivingEntity;FFFFFFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isInvisible()Z"))
+    @Redirect(method = "render(Lnet/minecraft/client/render/entity/model/EntityModel;Lnet/minecraft/client/render/entity/model/EntityModel;Lnet/minecraft/util/Identifier;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/entity/LivingEntity;FFFFFFI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isInvisible()Z"))
     private static boolean hookTrueSight(final LivingEntity instance) {
         final TrueSightModule trueSightModule = Vandalism.getInstance().getModuleManager().getTrueSightModule();
         if (trueSightModule.isActive()) return false;

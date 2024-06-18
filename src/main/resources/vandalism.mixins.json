@@ -70,7 +70,6 @@
     "fix.imgui.MixinImGuiImplGlfw",
     "fix.minecraft.MixinAccessibilityOnboardingScreen",
     "fix.minecraft.MixinAddServerScreen",
-    "fix.minecraft.MixinBufferBuilder",
     "fix.minecraft.MixinEntryListWidget",
     "fix.minecraft.MixinModStatus",
     "fix.minecraft.MixinMultiplayerScreen",

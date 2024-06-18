@@ -30,12 +30,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinCamera {
 
     @Inject(method = "clipToSpace", at = @At("HEAD"), cancellable = true)
-    public void callCameraClipRaytraceListener(final double desiredCameraDistance, final CallbackInfoReturnable<Double> cir) {
+    public void callCameraClipRaytraceListener(float f, CallbackInfoReturnable<Float> cir) {
         final CameraClipRaytraceListener.CameraClipRaytraceEvent event = new CameraClipRaytraceListener.CameraClipRaytraceEvent();
         Vandalism.getInstance().getEventSystem().postInternal(CameraClipRaytraceListener.CameraClipRaytraceEvent.ID, event);
 
         if (event.isCancelled()) {
-            cir.setReturnValue(desiredCameraDistance);
+            cir.setReturnValue(f);
         }
     }
 

@@ -22,6 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerPingerWidget;
 import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -35,6 +36,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.net.URI;
 
 @Mixin(GameMenuScreen.class)
 public abstract class MixinGameMenuScreen extends Screen {
@@ -69,14 +72,15 @@ public abstract class MixinGameMenuScreen extends Screen {
     }
 
     @Inject(method = "createUrlButton", at = @At(value = "HEAD"), cancellable = true)
-    private void addMoreButtons(final Text text, final String url, final CallbackInfoReturnable<ButtonWidget> cir) {
+    private static void addMoreButtons(Screen parent, Text text, URI uri, CallbackInfoReturnable<ButtonWidget> cir) {
         if (!Vandalism.getInstance().getClientSettings().getMenuSettings().replaceGameMenuScreenButtons.getValue()) {
             return;
         }
+        final MinecraftClient client = MinecraftClient.getInstance();
         if (text == SEND_FEEDBACK_TEXT) {
-            cir.setReturnValue(ButtonWidget.builder(Text.translatable("menu.multiplayer"), b -> this.client.setScreen(new MultiplayerScreen(this))).width(98).build());
-        } else if (text == REPORT_BUGS_TEXT && !this.client.isInSingleplayer()) {
-            final ButtonWidget button = ButtonWidget.builder(Text.literal("Reconnect"), b -> ServerUtil.connect(this.client.getCurrentServerEntry())).width(98).build();
+            cir.setReturnValue(ButtonWidget.builder(Text.translatable("menu.multiplayer"), b -> client.setScreen(new MultiplayerScreen(parent))).width(98).build());
+        } else if (text == REPORT_BUGS_TEXT && !client.isInSingleplayer()) {
+            final ButtonWidget button = ButtonWidget.builder(Text.literal("Reconnect"), b -> ServerUtil.connect(client.getCurrentServerEntry())).width(98).build();
             cir.setReturnValue(button);
         }
     }

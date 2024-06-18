@@ -27,6 +27,7 @@ import de.nekosarekawaii.vandalism.injection.access.IGameRenderer;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
@@ -84,12 +85,12 @@ public abstract class MixinGameRenderer implements IGameRenderer, MinecraftWrapp
     }
 
     @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;renderHand(Lnet/minecraft/client/render/Camera;FLorg/joml/Matrix4f;)V"))
-    private void callRender3DListener(float tickDelta, long limitTime, CallbackInfo ci, @Local(ordinal = 1) Matrix4f matrix4f2) {
+    private void callRender3DListener(RenderTickCounter tickCounter, CallbackInfo ci, @Local(ordinal = 1) Matrix4f matrix4f2) {
         MatrixStack matrices = new MatrixStack();
         matrices.multiplyPositionMatrix(matrix4f2);
         Vandalism.getInstance().getEventSystem().postInternal(
                 Render3DListener.Render3DEvent.ID,
-                new Render3DListener.Render3DEvent(tickDelta, limitTime, matrices)
+                new Render3DListener.Render3DEvent(tickCounter.getTickDelta(true), matrices)
         );
     }
 

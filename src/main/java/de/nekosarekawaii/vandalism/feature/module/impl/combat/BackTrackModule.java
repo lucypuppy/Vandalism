@@ -262,7 +262,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
     }
 
     @Override
-    public void onRender3D(final float tickDelta, final long limitTime, final MatrixStack matrixStack) {
+    public void onRender3D(final float tickDelta, final MatrixStack matrixStack) {
         if (mc.interactionManager == null) return;
         this.handlePackets(this.backTrackedEntities.isEmpty());
 
