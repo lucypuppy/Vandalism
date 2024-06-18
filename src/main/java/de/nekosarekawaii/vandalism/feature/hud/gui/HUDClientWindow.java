@@ -22,22 +22,19 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
 import de.nekosarekawaii.vandalism.feature.hud.HUDManager;
+import de.nekosarekawaii.vandalism.util.common.AlignmentX;
+import de.nekosarekawaii.vandalism.util.common.AlignmentY;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
-import imgui.flag.ImGuiTabItemFlags;
+import imgui.flag.ImGuiComboFlags;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
-import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 
 public class HUDClientWindow extends ClientWindow {
 
     private final HUDManager hudManager;
-
-    private HUDElement draggedElement;
-    private boolean mouseDown = false;
-    private int lastMouseX, lastMouseY;
 
     public HUDClientWindow(final HUDManager hudManager) {
         super("HUD Config", Category.CONFIG);
@@ -51,18 +48,37 @@ public class HUDClientWindow extends ClientWindow {
             for (final HUDElement hudElement : this.hudManager.getList()) {
                 final String name = hudElement.getName();
                 final String tabId = id + name + "tab";
-                final boolean isDragged = this.draggedElement != null && this.draggedElement.getName().equals(name);
-                if (ImGui.beginTabItem(name + tabId, isDragged ? ImGuiTabItemFlags.SetSelected : 0)) {
+                if (ImGui.beginTabItem(name + tabId)) {
                     ImGui.pushStyleColor(ImGuiCol.ChildBg, 0.0f, 0.0f, 0.0f, 0.0f);
                     ImGui.beginChild(tabId + "values", ImGui.getColumnWidth(), - ImGui.getTextLineHeightWithSpacing() * 2.5f, true);
+                    final AlignmentX alignmentX = hudElement.getAlignmentX();
+                    ImGui.text("Alignment X");
+                    if (ImGui.beginCombo(id + "alignmentX", alignmentX.getName(), ImGuiComboFlags.HeightLargest)) {
+                        for (final AlignmentX alignment : AlignmentX.values()) {
+                            if (ImGui.selectable(alignment.getName(), alignmentX == alignment)) {
+                                hudElement.setAlignmentX(alignment);
+                            }
+                        }
+                        ImGui.endCombo();
+                    }
+                    final AlignmentY alignmentY = hudElement.getAlignmentY();
+                    ImGui.text("Alignment Y");
+                    if (ImGui.beginCombo(id + "alignmentY", alignmentY.getName(), ImGuiComboFlags.HeightLargest)) {
+                        for (final AlignmentY alignment : AlignmentY.values()) {
+                            if (ImGui.selectable(alignment.getName(), alignmentY == alignment)) {
+                                hudElement.setAlignmentY(alignment);
+                            }
+                        }
+                        ImGui.endCombo();
+                    }
                     hudElement.renderValues();
                     ImGui.endChild();
                     ImGui.popStyleColor();
-                    if (ImGui.button("Reset " + name + " Config" + id + name + "tabreset", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                    if (ImGui.button("Reset " + name + " Config" + id + name + "resetConfigTab", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                         hudElement.reset();
                         Vandalism.getInstance().getConfigManager().save();
                     }
-                    if (ImGui.button("Close HUD config" + id + "close", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                    if (ImGui.button("Close HUD Config" + id + "close", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                         this.setActive(false);
                     }
                     ImGui.endTabItem();
@@ -70,64 +86,15 @@ public class HUDClientWindow extends ClientWindow {
             }
             ImGui.endTabBar();
         }
+        for (final HUDElement hudElement : this.hudManager.getList()) {
+            hudElement.render(context, delta, false);
+        }
         final Window window = this.mc.getWindow();
         final double scaledWidth = window.getScaledWidth(), scaledHeight = window.getScaledHeight();
-        boolean mouseOver = false;
-        for (final HUDElement hudElement : this.hudManager.getList()) {
-            if (hudElement.render(
-                    this.draggedElement,
-                    this.mouseDown,
-                    mouseX,
-                    mouseY,
-                    mouseX - this.lastMouseX,
-                    mouseY - this.lastMouseY,
-                    scaledWidth,
-                    scaledHeight,
-                    context,
-                    delta
-            )) {
-                mouseOver = true;
-            }
-            if (hudElement.isDragged()) {
-                this.draggedElement = hudElement;
-            }
-        }
-        if (!mouseOver && this.mouseDown) {
-            this.draggedElement = null;
-        }
-        context.drawHorizontalLine(0, (int) scaledWidth, (int) (scaledHeight * 0.66), Color.green.getRGB());
-        context.drawHorizontalLine(0, (int) scaledWidth, (int) (scaledHeight * 0.33), Color.green.getRGB());
-        context.drawVerticalLine((int) (scaledWidth * 0.66), 0, (int) scaledHeight, Color.green.getRGB());
-        context.drawVerticalLine((int) (scaledWidth * 0.33), 0, (int) scaledHeight, Color.green.getRGB());
-        this.lastMouseX = mouseX;
-        this.lastMouseY = mouseY;
-    }
-
-    @Override
-    public void mouseClicked(final double mouseX, final double mouseY, final int button, final boolean release) {
-        if (button == 0) {
-            this.mouseDown = !release;
-            if (release) {
-                boolean save = false;
-                for (final HUDElement hudElement : this.hudManager.getList()) {
-                    if (hudElement.shouldSave()) {
-                        hudElement.setShouldSave(false);
-                        save = true;
-                    }
-                }
-                if (save) {
-                    Vandalism.getInstance().getConfigManager().save();
-                }
-            }
-        }
-    }
-
-    @Override
-    public boolean keyPressed(final int key, final int scanCode, final int modifiers, final boolean release) {
-        for (final HUDElement hudElement : this.hudManager.getList()) {
-            hudElement.onKeyInput(this.mc.getWindow().getHandle(), key, scanCode, release ? GLFW.GLFW_RELEASE : GLFW.GLFW_PRESS, modifiers);
-        }
-        return super.keyPressed(key, scanCode, modifiers, release);
+        context.drawHorizontalLine(0, (int) scaledWidth, (int) (scaledHeight * 0.66), Color.GREEN.getRGB());
+        context.drawHorizontalLine(0, (int) scaledWidth, (int) (scaledHeight * 0.33), Color.GREEN.getRGB());
+        context.drawVerticalLine((int) (scaledWidth * 0.66), 0, (int) scaledHeight, Color.GREEN.getRGB());
+        context.drawVerticalLine((int) (scaledWidth * 0.33), 0, (int) scaledHeight, Color.GREEN.getRGB());
     }
 
 }

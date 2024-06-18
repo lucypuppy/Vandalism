@@ -23,6 +23,8 @@ import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
+import de.nekosarekawaii.vandalism.util.common.AlignmentX;
+import de.nekosarekawaii.vandalism.util.common.AlignmentY;
 import de.nekosarekawaii.vandalism.util.common.IName;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.GLStateTracker;
@@ -49,6 +51,9 @@ public class WatermarkHUDElement extends HUDElement {
 
     public WatermarkHUDElement(final File logoDirectory) {
         super("Watermark");
+
+        this.alignmentX = AlignmentX.LEFT;
+        this.alignmentY = AlignmentY.TOP;
 
         final File[] files = logoDirectory.listFiles();
         final List<LogoSelection> logoSelections = new ArrayList<>();
@@ -99,6 +104,13 @@ public class WatermarkHUDElement extends HUDElement {
     }
 
     @Override
+    public void reset() {
+        this.alignmentX = AlignmentX.LEFT;
+        this.alignmentY = AlignmentY.TOP;
+        this.resetValues();
+    }
+
+    @Override
     protected void onRender(final DrawContext context, final float delta, final boolean inGame) {
         final Identifier identifier = this.logoSelection.getValue().getIdentifier();
         this.mc.getTextureManager().getTexture(identifier).setFilter(
@@ -115,8 +127,8 @@ public class WatermarkHUDElement extends HUDElement {
         );
         context.drawTexture(
                 identifier,
-                this.x,
-                this.y,
+                this.getX(),
+                this.getY(),
                 0,
                 0,
                 this.imageWidth.getValue(),

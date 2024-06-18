@@ -27,6 +27,8 @@ import de.nekosarekawaii.vandalism.event.internal.ModuleToggleListener;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.render.Shaders;
+import de.nekosarekawaii.vandalism.util.common.AlignmentX;
+import de.nekosarekawaii.vandalism.util.common.AlignmentY;
 import net.minecraft.client.gui.DrawContext;
 
 import java.awt.*;
@@ -128,17 +130,21 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
 
     public ModuleListHUDElement() {
         super("Module List");
+        this.alignmentX = AlignmentX.RIGHT;
+        this.alignmentY = AlignmentY.TOP;
         Vandalism.getInstance().getEventSystem().subscribe(ModuleToggleEvent.ID, this);
     }
 
     @Override
-    public void onModuleToggle(final ModuleToggleEvent event) {
+    public void reset() {
+        this.alignmentX = AlignmentX.RIGHT;
+        this.alignmentY = AlignmentY.TOP;
+        this.resetValues();
         this.sort = true;
     }
 
     @Override
-    public void reset() {
-        super.reset();
+    public void onModuleToggle(final ModuleToggleEvent event) {
         this.sort = true;
     }
 
@@ -162,38 +168,38 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
                     case MIDDLE -> {
                         if (this.background.getValue() || postProcess) {
                             context.fill(
-                                    (this.x + this.width / 2) - (textWidth / 2) - this.widthOffset.getValue(),
-                                    this.y + yOffset,
-                                    (this.x + this.width / 2) + (textWidth / 2) + this.widthOffset.getValue(),
-                                    this.y + yOffset + this.mc.textRenderer.fontHeight + this.heightOffset.getValue(),
+                                    (this.getX() + this.width / 2) - (textWidth / 2) - this.widthOffset.getValue(),
+                                    this.getY() + yOffset,
+                                    (this.getX() + this.width / 2) + (textWidth / 2) + this.widthOffset.getValue(),
+                                    this.getY() + yOffset + this.mc.textRenderer.fontHeight + this.heightOffset.getValue(),
                                     Integer.MIN_VALUE
                             );
                         }
-                        this.drawText(context, activatedModule, (this.x + this.width / 2) - (textWidth / 2), this.y + yOffset + this.heightOffset.getValue());
+                        this.drawText(context, activatedModule, (this.getX() + this.width / 2) - (textWidth / 2), this.getY() + yOffset + this.heightOffset.getValue());
                     }
                     case RIGHT -> {
                         if (this.background.getValue() || postProcess) {
                             context.fill(
-                                    (this.x + this.width) - textWidth - this.widthOffset.getValue(),
-                                    this.y + yOffset,
-                                    (this.x + this.width) + this.widthOffset.getValue(),
-                                    this.y + yOffset + this.mc.textRenderer.fontHeight + this.heightOffset.getValue(),
+                                    (this.getX() + this.width) - textWidth - this.widthOffset.getValue(),
+                                    this.getY() + yOffset,
+                                    (this.getX() + this.width) + this.widthOffset.getValue(),
+                                    this.getY() + yOffset + this.mc.textRenderer.fontHeight + this.heightOffset.getValue(),
                                     Integer.MIN_VALUE
                             );
                         }
-                        this.drawText(context, activatedModule, (this.x + this.width) - textWidth, this.y + yOffset + this.heightOffset.getValue());
+                        this.drawText(context, activatedModule, (this.getX() + this.width) - textWidth, this.getY() + yOffset + this.heightOffset.getValue());
                     }
                     default -> {
                         if (this.background.getValue() || postProcess) {
                             context.fill(
-                                    this.x - this.widthOffset.getValue(),
-                                    this.y + yOffset,
-                                    this.x + textWidth + this.widthOffset.getValue(),
-                                    this.y + yOffset + this.mc.textRenderer.fontHeight + this.heightOffset.getValue(),
+                                    this.getX() - this.widthOffset.getValue(),
+                                    this.getY() + yOffset,
+                                    this.getX() + textWidth + this.widthOffset.getValue(),
+                                    this.getY() + yOffset + this.mc.textRenderer.fontHeight + this.heightOffset.getValue(),
                                     Integer.MIN_VALUE
                             );
                         }
-                        this.drawText(context, activatedModule, this.x, this.y + yOffset + this.heightOffset.getValue());
+                        this.drawText(context, activatedModule, this.getX(), this.getY() + yOffset + this.heightOffset.getValue());
                     }
                 }
                 this.width = Math.max(this.width, textWidth);
@@ -215,12 +221,6 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
                 this.color.getColor(-y * 20).getRGB(),
                 this.shadow.getValue()
         );
-    }
-
-    @Override
-    public void calculateAlignment() {
-        super.calculateAlignment();
-        this.sort = true;
     }
 
     private void sort() {

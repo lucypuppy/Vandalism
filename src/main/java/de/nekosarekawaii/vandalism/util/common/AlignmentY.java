@@ -18,14 +18,29 @@
 
 package de.nekosarekawaii.vandalism.util.common;
 
+import lombok.Getter;
+
 /**
  * Enum for the alignment of an object. The alignment is used to determine the position of an object relative to another object.
  */
-public enum Alignment {
+@Getter
+public enum AlignmentY {
 
-    LEFT, RIGHT,
-    TOP, BOTTOM,
+    TOP, BOTTOM, MIDDLE;
 
-    MIDDLE
+    private final String name;
+
+    AlignmentY() {
+        this.name = StringUtils.normalizeEnumName(this.name());
+    }
+
+    public static AlignmentY getAlignmentByName(final String name) {
+        for (final AlignmentY alignment : values()) {
+            if (alignment.name().equalsIgnoreCase(name)) {
+                return alignment;
+            }
+        }
+        return null;
+    }
 
 }
