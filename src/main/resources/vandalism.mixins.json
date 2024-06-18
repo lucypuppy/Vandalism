@@ -10,7 +10,6 @@
     "MixinTitleScreen",
     "clientsettings.MixinAddressResolver",
     "clientsettings.MixinAllowedAddressResolver",
-    "clientsettings.MixinBuiltinModelItemRenderer",
     "clientsettings.MixinChatHud",
     "clientsettings.MixinChatScreen",
     "clientsettings.MixinClientBrandRetriever",
@@ -34,6 +33,7 @@
     "clientsettings.MixinPressableWidget",
     "clientsettings.MixinProgressScreen",
     "clientsettings.MixinReconfigurationScreen",
+    "clientsettings.MixinRegistrySyncManager",
     "clientsettings.MixinRotatingCubeMapRenderer",
     "clientsettings.MixinScreen",
     "clientsettings.MixinServerEntry",
@@ -114,8 +114,7 @@
     "util.MixinDrawContext",
     "util.MixinMinecraftClient",
     "util.MixinRenderTickCounter_Dynamic",
-    "util.MixinToolTipComponent",
-    "clientsettings.MixinRegistrySyncManager"
+    "util.MixinToolTipComponent"
   ],
   "injectors": {
     "defaultRequire": 1

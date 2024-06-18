@@ -51,15 +51,6 @@ public class VisualSettings extends ValueGroup {
             50.0f
     ).visibleCondition(this.customBobView::getValue);
 
-    public final FloatValue shieldAlpha = new FloatValue(
-            this,
-            "Shield Alpha",
-            "Change the alpha of a shield.",
-            1.0f,
-            0.1f,
-            1.0f
-    );
-
     public final BooleanValue showOwnDisplayName = new BooleanValue(
             this,
             "Show Own Display Name",
