@@ -139,7 +139,7 @@ public abstract class MixinDisconnectedScreen extends Screen {
         ServerPingerWidget.ping(ServerUtil.getLastServerInfo());
         final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
         if (menuSettings.moreDisconnectedScreenButtons.getValue()) {
-            final Positioner positioner = instance.getMainPositioner().copy().marginTop(-8);
+            final Positioner positioner = instance.getMainPositioner().copy();
             instance.add(ButtonWidget.builder(Text.literal("Reconnect"), button -> ServerUtil.connectToLastServer()).build(), positioner);
             instance.add(ButtonWidget.builder(Text.literal("Auto Reconnect: " + (menuSettings.autoReconnect.getValue() ? "On" : "Off")), button -> {
                 menuSettings.autoReconnect.setValue(!menuSettings.autoReconnect.getValue());
