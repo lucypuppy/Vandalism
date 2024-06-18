@@ -205,7 +205,7 @@ public class ChatUtil implements MinecraftWrapper {
 
     public static void sendModuleToggleMessage(final AbstractModule module, final boolean enabled) {
         if (mc.player == null) return;
-        final boolean reduceMessages = Vandalism.getInstance().getClientSettings().getChatSettings().reduceModuleToggleMessages.getValue();
+        final boolean reduceMessages = Vandalism.getInstance().getClientSettings().getMenuSettings().reduceModuleToggleMessages.getValue();
         if (reduceMessages && moduleMessage != null) {
             mc.inGameHud.getChatHud().messages.removeIf(message -> message.content() == moduleMessage);
             mc.inGameHud.getChatHud().refresh();

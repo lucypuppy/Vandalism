@@ -58,11 +58,18 @@ public class MenuSettings extends ValueGroup {
             true
     );
 
+    public final BooleanValue reduceModuleToggleMessages = new BooleanValue(
+            this,
+            "Reduce Module Toggle Messages",
+            "Reduces the amount of module toggle messages in the chat by removing the old ones.",
+            false
+    ).visibleCondition(this.moduleStateLogging::getValue);
+
     public final BooleanValue moduleStateSound = new BooleanValue(
             this,
             "Module State Sound",
             "Activates/Deactivates the sound for the module state.",
-            true
+            false
     );
 
     @Deprecated(forRemoval = true)
