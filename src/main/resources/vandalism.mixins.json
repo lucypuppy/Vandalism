@@ -38,6 +38,7 @@
     "clientsettings.MixinScreen",
     "clientsettings.MixinServerEntry",
     "clientsettings.MixinServerList",
+    "clientsettings.MixinShieldEntityModel",
     "clientsettings.MixinShulkerBoxScreen",
     "clientsettings.MixinSliderWidget",
     "clientsettings.MixinStringHelper",
