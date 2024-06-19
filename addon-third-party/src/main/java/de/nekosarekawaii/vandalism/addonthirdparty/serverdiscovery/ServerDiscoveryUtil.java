@@ -18,7 +18,6 @@
 
 package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery;
 
-import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.Request;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.Response;
 
@@ -27,12 +26,7 @@ public class ServerDiscoveryUtil {
     private static final String API_KEY = "lh4LsBZUYTwdClX46m2KMeBgtyZhFmXe";
 
     public static Response request(final Request<?> request) {
-        final Response response = request.send(API_KEY);
-        if (response.error != null) {
-            Vandalism.getInstance().getLogger().error("Error while sending request: {}", response.error);
-            return null;
-        }
-        return response;
+        return request.send(API_KEY);
     }
 
 }
