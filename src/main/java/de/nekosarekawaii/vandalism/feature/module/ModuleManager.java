@@ -178,7 +178,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new ProtectorModule(),
                 new GameModeNotifierModule(),
                 new SmartVClip(),
-                new LoyisaIntegrationModule()
+                new LoyisaIntegrationModule(),
+                new CheatDetectorModule()
         );
         this.configManager.add(new ModuleConfig(this));
     }
