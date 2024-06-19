@@ -33,9 +33,9 @@ import java.awt.*;
 public abstract class MixinLightmapTextureManager {
 
     @WrapOperation(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/NativeImage;setColor(III)V"))
-    private void hookFullBright(NativeImage instance, int x, int y, int color, Operation<Void> original) {
-        final FullBrightModule module = Vandalism.getInstance().getModuleManager().getFullBrightModule();
-        if (module.isActive()) {
+    private void hookFullBright(final NativeImage instance, final int x, final int y, final int color, final Operation<Void> original) {
+        final FullBrightModule fullBrightModule = Vandalism.getInstance().getModuleManager().getFullBrightModule();
+        if (fullBrightModule.isActive() && !fullBrightModule.useEffect.getValue()) {
             original.call(instance, x, y, Color.WHITE.getRGB());
         } else {
             original.call(instance, x, y, color);
