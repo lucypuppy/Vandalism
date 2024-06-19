@@ -20,6 +20,9 @@ package de.nekosarekawaii.vandalism.util.common;
 
 public class MathUtil {
 
+    public static final double EXPANDER = 1.6777216E7D;
+    public static final long MINIMUM_ROTATION_DIVISOR = 131072L;
+
     public static float cubicBezier(float p0, float p1, float p2, float p3, float t) {
         final float u = 1 - t;
         final float tt = t * t;
@@ -62,6 +65,16 @@ public class MathUtil {
 
     public static boolean isBetween(double value, double min, double max) {
         return value >= min && value <= max;
+    }
+
+    public static long getAbsoluteGcd(final float current, final float last) {
+        final long currentExpanded = (long) (current * EXPANDER);
+        final long lastExpanded = (long) (last * EXPANDER);
+        return gcd(currentExpanded, lastExpanded);
+    }
+
+    private static long gcd(final long current, final long last) {
+        return (last <= 16384L) ? current : gcd(last, current % last);
     }
 
 }
