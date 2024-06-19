@@ -19,7 +19,6 @@
 package de.nekosarekawaii.vandalism.addonthirdparty;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.addonthirdparty.ethanol.module.EthanolModule;
 import de.nekosarekawaii.vandalism.addonthirdparty.namehistory.gui.NameHistoryClientWindow;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.gui.player.PlayerDiscoveryClientWindow;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.gui.server.ServerDiscoveryClientWindow;
@@ -38,17 +37,10 @@ public class AddonThirdParty implements VandalismAddonLauncher {
     @Getter
     private SpotifyManager spotifyManager;
 
-    @Getter
-    private EthanolModule ethanolModule;
-
     @Override
     public void onLaunch(final Vandalism vandalism) {
         instance = this;
         this.spotifyManager = new SpotifyManager(vandalism.getConfigManager(), vandalism.getHudManager());
-
-        vandalism.getModuleManager().add(
-                this.ethanolModule = new EthanolModule()
-        );
 
         vandalism.getClientWindowManager().add(
                 new ServerInfoClientWindow(),
