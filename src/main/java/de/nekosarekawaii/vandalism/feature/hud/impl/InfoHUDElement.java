@@ -122,6 +122,13 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             true
     );
 
+    private final BooleanValue entities = new BooleanValue(
+            this,
+            "Entities",
+            "Shows the current amount of entities.",
+            true
+    );
+
     private final BooleanValue permissionsLevel = new BooleanValue(
             this,
             "Permissions Level",
@@ -351,6 +358,10 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
                         correctedZ
                 ));
             }
+        }
+
+        if (this.entities.getValue()) {
+            infoMap.put("Entities", this.mc.world != null ? String.valueOf(this.mc.world.getRegularEntityCount()) : "unknown");
         }
 
         if (this.difficulty.getValue()) {
