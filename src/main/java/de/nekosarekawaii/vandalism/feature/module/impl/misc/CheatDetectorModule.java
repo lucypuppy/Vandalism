@@ -51,14 +51,18 @@ public class CheatDetectorModule extends AbstractModule implements WorldListener
     }
 
     private void addPlayer(final PlayerEntity player) {
+        if (player == null) return;
+        final UUID uuid = player.getUuid();
         final DetectionPlayer detectionPlayer = new DetectionPlayer(player);
-        this.detectionPlayers.put(player.getUuid(), detectionPlayer);
+        this.detectionPlayers.put(uuid, detectionPlayer);
         detectionPlayer.onActivate();
     }
 
     private void removePlayer(final PlayerEntity player) {
-        this.detectionPlayers.get(player.getUuid()).onDeactivate();
-        this.detectionPlayers.remove(player.getUuid());
+        if (player == null) return;
+        final UUID uuid = player.getUuid();
+        this.detectionPlayers.get(uuid).onDeactivate();
+        this.detectionPlayers.remove(uuid);
     }
 
     private void clearPlayers() {
