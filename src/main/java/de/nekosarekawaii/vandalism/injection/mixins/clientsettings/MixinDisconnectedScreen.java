@@ -132,6 +132,16 @@ public abstract class MixinDisconnectedScreen extends Screen {
         this.vandalism$reconnectTimer.reset();
     }
 
+    @Redirect(method = "method_60868", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/DirectionalLayoutWidget;add(Lnet/minecraft/client/gui/widget/Widget;)Lnet/minecraft/client/gui/widget/Widget;"))
+    private <T extends Widget> T removeReportToServerButton(final DirectionalLayoutWidget instance, final T widget) {
+        return widget;
+    }
+
+    @Redirect(method = "method_60870", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/DirectionalLayoutWidget;add(Lnet/minecraft/client/gui/widget/Widget;)Lnet/minecraft/client/gui/widget/Widget;"))
+    private <T extends Widget> T removeOpenReportDirButton(final DirectionalLayoutWidget instance, final T widget) {
+        return widget;
+    }
+
     @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/DirectionalLayoutWidget;add(Lnet/minecraft/client/gui/widget/Widget;)Lnet/minecraft/client/gui/widget/Widget;", ordinal = 2))
     private <T extends Widget> T addMoreButtons(final DirectionalLayoutWidget instance, final T widget) {
         instance.add(widget);
@@ -140,11 +150,11 @@ public abstract class MixinDisconnectedScreen extends Screen {
         final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
         if (menuSettings.moreDisconnectedScreenButtons.getValue()) {
             final Positioner positioner = instance.getMainPositioner().copy();
-            instance.add(ButtonWidget.builder(Text.literal("Reconnect"), button -> ServerUtil.connectToLastServer()).build(), positioner);
+            instance.add(ButtonWidget.builder(Text.literal("Reconnect"), button -> ServerUtil.connectToLastServer()).width(200).build(), positioner);
             instance.add(ButtonWidget.builder(Text.literal("Auto Reconnect: " + (menuSettings.autoReconnect.getValue() ? "On" : "Off")), button -> {
                 menuSettings.autoReconnect.setValue(!menuSettings.autoReconnect.getValue());
                 button.setMessage(Text.literal("Auto Reconnect: " + (menuSettings.autoReconnect.getValue() ? "On" : "Off")));
-            }).build(), positioner);
+            }).width(200).build(), positioner);
         }
         return widget;
     }
