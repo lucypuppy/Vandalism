@@ -62,6 +62,21 @@ public interface ValueParent extends IName {
         }
     }
 
+    default void renderValuesExcept(final Value<?>... excepts) {
+        for (final Value<?> value : this.getValues()) {
+            boolean render = true;
+            for (final Value<?> except : excepts) {
+                if (value == except) {
+                    render = false;
+                    break;
+                }
+            }
+            if (render) {
+                this.renderValue(value);
+            }
+        }
+    }
+
     default void renderValue(final Value<?> value) {
         this.renderValue(value, true);
     }
