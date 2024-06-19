@@ -58,10 +58,10 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             true
     );
 
-    private final ColorValue color = new ColorValue(
+    private final ColorValue infoNameColor = new ColorValue(
             this,
-            "Color",
-            "The color of the text."
+            "Info Name Color",
+            "The color of the info name."
     );
 
     private final BooleanValue fps = new BooleanValue(
@@ -273,7 +273,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
     }
 
     private void drawText(final DrawContext context, final String text, final int x, final int y) {
-        this.drawText(text, context, x, y, this.shadow.getValue(), this.color.getColor(-y * 20).getRGB());
+        this.drawText(text, context, x, y, this.shadow.getValue(), this.infoNameColor.getColor(-y * 20).getRGB());
     }
 
     @Override
@@ -444,7 +444,6 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             infoMap.put("Client TPS", String.format("%.3f (%.3f)", tps, percentage));
         }
 
-
         int width = 0, height = this.getFontHeight();
         for (final Map.Entry<String, String> infoEntry : infoMap.entrySet()) {
             if (this.alignmentX == AlignmentX.MIDDLE) {
@@ -469,13 +468,13 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
                 int textWidth = 0;
                 switch (this.alignmentX) {
                     case LEFT -> {
-                        text = infoEntry.getKey() + " » " + infoEntry.getValue();
+                        text = infoEntry.getKey() + Formatting.GRAY + " » " + Formatting.WHITE + infoEntry.getValue();
                         textWidth = this.getTextWidth(text);
                         this.drawText(context, text, this.getX(), this.getY() + height);
                         height += this.getTextHeight(text) + 1;
                     }
                     case RIGHT -> {
-                        text = infoEntry.getValue() + " « " + infoEntry.getKey();
+                        text = infoEntry.getKey() + Formatting.GRAY + " « " + Formatting.WHITE + infoEntry.getValue();
                         textWidth = this.getTextWidth(text);
                         this.drawText(context, text, (this.getX() + this.width) - textWidth, this.getY() + height);
                         height += this.getTextHeight(text);
