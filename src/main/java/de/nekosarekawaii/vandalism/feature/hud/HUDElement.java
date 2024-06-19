@@ -18,23 +18,39 @@
 
 package de.nekosarekawaii.vandalism.feature.hud;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
+import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindowScreen;
+import de.nekosarekawaii.vandalism.render.Buffers;
+import de.nekosarekawaii.vandalism.render.gl.render.ImmediateRenderer;
+import de.nekosarekawaii.vandalism.render.text.AtlasFontRenderer;
+import de.nekosarekawaii.vandalism.render.text.SimpleFont;
+import de.nekosarekawaii.vandalism.render.text.TextAlign;
 import de.nekosarekawaii.vandalism.util.common.AlignmentX;
 import de.nekosarekawaii.vandalism.util.common.AlignmentY;
 import de.nekosarekawaii.vandalism.util.common.IName;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import lombok.Getter;
 import lombok.Setter;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.util.Formatting;
 
 import java.awt.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper {
+
+    private static final TextAlign TEXT_ALIGN = TextAlign.X_POSITIVE;
 
     protected static final AlignmentX DEFAULT_ALIGNMENT_X = AlignmentX.LEFT;
     protected static final AlignmentY DEFAULT_ALIGNMENT_Y = AlignmentY.TOP;
@@ -42,17 +58,19 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
     private final String name;
     private final List<Value<?>> values;
     private final BooleanValue active;
+    private final IntegerValue fontSize;
+    private AtlasFontRenderer fontRenderer;
 
     @Setter
     @Getter
     protected int width, height;
 
-    @Getter
     @Setter
+    @Getter
     protected AlignmentX alignmentX;
 
-    @Getter
     @Setter
+    @Getter
     protected AlignmentY alignmentY;
 
     public HUDElement(final String name) {
@@ -68,10 +86,39 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
                 "Whether this HUD element is active.",
                 defaultActive
         );
+        this.fontSize = new IntegerValue(
+                this,
+                "Font Size",
+                "The size of the font.",
+                20,
+                10,
+                72
+        ).onValueChange((oldValue, newValue) -> this.onFontSizeChange(newValue));
         this.width = 10;
         this.height = 10;
         this.alignmentX = DEFAULT_ALIGNMENT_X;
         this.alignmentY = DEFAULT_ALIGNMENT_Y;
+        this.onFontSizeChange(this.fontSize.getValue());
+    }
+
+    private void onFontSizeChange(final int newValue) {
+        final Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(FabricBootstrap.MOD_ID);
+        if (modContainer.isEmpty()) {
+            throw new IllegalStateException("Could not find mod container of " + FabricBootstrap.MOD_ID);
+        }
+        final String fontName = "roboto-regular";
+        final String pathString = "assets/" + FabricBootstrap.MOD_ID + "/font/" + fontName + ".ttf";
+        final Optional<Path> path = modContainer.get().findPath(pathString);
+        if (path.isEmpty()) {
+            throw new IllegalStateException("Could not find font file: " + pathString);
+        }
+        try {
+            this.fontRenderer = new AtlasFontRenderer(SimpleFont.compose(newValue, Files.readAllBytes(path.get())));
+        } catch (final Exception e) {
+            throw new IllegalStateException("Failed to load font: " + pathString, e);
+        }
+        this.width = 10;
+        this.height = 10;
     }
 
     public void reset() {
@@ -87,27 +134,25 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
     }
 
     public int getX() {
+        final int scaledWidth = this.mc.getWindow().getScaledWidth();
+        final int offset = 2;
         final int x;
         switch (this.alignmentX) {
-            case RIGHT -> x = this.mc.getWindow().getScaledWidth() - this.width - 2;
-            case LEFT -> x = 2;
-            default -> {
-                final int windowWidth = this.mc.getWindow().getScaledWidth();
-                x = (windowWidth - this.width) / 2;
-            }
+            case RIGHT -> x = scaledWidth - this.width - offset;
+            case LEFT -> x = offset;
+            default -> x = (scaledWidth - this.width) / 2;
         }
         return x;
     }
 
     public int getY() {
+        final int scaledHeight = this.mc.getWindow().getScaledHeight();
+        final int offset = (this.mc.currentScreen instanceof ClientWindowScreen) ? 8 : 0;
         final int y;
         switch (this.alignmentY) {
-            case BOTTOM -> y = this.mc.getWindow().getScaledHeight() - this.height - 2;
-            case TOP -> y = 2;
-            default -> {
-                final int windowHeight = this.mc.getWindow().getScaledHeight();
-                y = (windowHeight - this.height) / 2;
-            }
+            case BOTTOM -> y = scaledHeight - this.height - offset;
+            case TOP -> y = offset;
+            default -> y = (scaledHeight - this.height) / 2;
         }
         return y;
     }
@@ -115,26 +160,15 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
     protected abstract void onRender(final DrawContext context, final float delta, final boolean inGame);
 
     public void render(final DrawContext context, final float delta, final boolean inGame) {
-        if (!inGame) {
-            if (!this.isActive()) {
-                RenderSystem.setShaderColor(0.6f, 0.6f, 0.6f, 1f);
-            }
-            final int borderPosX = this.getX() - 2;
-            final int borderPosY = this.getY() - 2;
-            final int borderSizeX = this.width + 4;
-            final int borderSizeY = this.height + 3;
-            context.drawBorder(
-                    borderPosX,
-                    borderPosY,
-                    borderSizeX,
-                    borderSizeY,
-                    Color.WHITE.getRGB()
-            );
-        }
+        this.drawText(
+                Formatting.UNDERLINE + this.getName(),
+                context,
+                this.getX(),
+                this.getY() - 2,
+                true,
+                !inGame && !this.isActive() ? Color.RED.getRGB() : Color.WHITE.getRGB()
+        );
         this.onRender(context, delta, inGame);
-        if (!inGame) {
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        }
     }
 
     public boolean isActive() {
@@ -149,6 +183,50 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
     @Override
     public String getName() {
         return this.name;
+    }
+
+    public int getFontHeight() {
+        if (this.fontRenderer == null) {
+            return 0;
+        }
+        return (int) this.fontRenderer.getFontSize() / 2;
+    }
+
+    public int getTextHeight(final String text) {
+        if (this.fontRenderer == null) {
+            return 0;
+        }
+        return (int) this.fontRenderer.getTextHeight(text, TEXT_ALIGN, this.fontSize.getValue()) / 2;
+    }
+
+    public int getTextWidth(final String text) {
+        if (this.fontRenderer == null) {
+            return 0;
+        }
+        return (int) this.fontRenderer.getTextWidth(text, TEXT_ALIGN, this.fontSize.getValue()) / 2;
+    }
+
+    protected void drawText(final String text, final DrawContext context, final float x, final float y, final boolean shadow, final int color) {
+        if (this.fontRenderer == null) {
+            return;
+        }
+        try (final ImmediateRenderer renderer = new ImmediateRenderer(Buffers.getImmediateBufferPool())) {
+            this.fontRenderer.drawScaled(
+                    text,
+                    x,
+                    y,
+                    0.0f,
+                    shadow,
+                    color,
+                    TEXT_ALIGN,
+                    context.getMatrices().peek().getPositionMatrix(),
+                    renderer,
+                    null
+            );
+            renderer.draw();
+        } catch (final Exception e) {
+            Vandalism.getInstance().getLogger().error("Failed to draw text: {}", text, e);
+        }
     }
 
 }

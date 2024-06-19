@@ -51,8 +51,12 @@ public class HUDClientWindow extends ClientWindow {
                 if (ImGui.beginTabItem(name + tabId)) {
                     ImGui.pushStyleColor(ImGuiCol.ChildBg, 0.0f, 0.0f, 0.0f, 0.0f);
                     ImGui.beginChild(tabId + "values", ImGui.getColumnWidth(), - ImGui.getTextLineHeightWithSpacing() * 2.5f, true);
-                    final AlignmentX alignmentX = hudElement.getAlignmentX();
+                    hudElement.renderValue(hudElement.getValues().getFirst());
                     ImGui.text("Alignment X");
+                    ImGui.sameLine(ImGui.getColumnWidth() / 2f + 15f);
+                    ImGui.text("Alignment Y");
+                    final AlignmentX alignmentX = hudElement.getAlignmentX();
+                    ImGui.setNextItemWidth(ImGui.getColumnWidth() / 2f);
                     if (ImGui.beginCombo(id + "alignmentX", alignmentX.getName(), ImGuiComboFlags.HeightLargest)) {
                         for (final AlignmentX alignment : AlignmentX.values()) {
                             if (ImGui.selectable(alignment.getName(), alignmentX == alignment)) {
@@ -61,8 +65,9 @@ public class HUDClientWindow extends ClientWindow {
                         }
                         ImGui.endCombo();
                     }
+                    ImGui.sameLine();
                     final AlignmentY alignmentY = hudElement.getAlignmentY();
-                    ImGui.text("Alignment Y");
+                    ImGui.setNextItemWidth(ImGui.getColumnWidth());
                     if (ImGui.beginCombo(id + "alignmentY", alignmentY.getName(), ImGuiComboFlags.HeightLargest)) {
                         for (final AlignmentY alignment : AlignmentY.values()) {
                             if (ImGui.selectable(alignment.getName(), alignmentY == alignment)) {
@@ -71,7 +76,7 @@ public class HUDClientWindow extends ClientWindow {
                         }
                         ImGui.endCombo();
                     }
-                    hudElement.renderValues();
+                    hudElement.renderValuesExcept(hudElement.getValues().getFirst());
                     ImGui.endChild();
                     ImGui.popStyleColor();
                     if (ImGui.button("Reset " + name + " Config" + id + name + "resetConfigTab", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
