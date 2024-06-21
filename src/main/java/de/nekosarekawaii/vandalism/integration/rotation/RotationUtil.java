@@ -24,6 +24,7 @@ import net.minecraft.util.math.MathHelper;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class RotationUtil implements MinecraftWrapper {
 
@@ -77,24 +78,28 @@ public class RotationUtil implements MinecraftWrapper {
         return Math.abs(MathHelper.wrapDegrees(pseudoRotation.getYaw()) - MathHelper.wrapDegrees(target.getYaw())) > diff;
     }
 
-    private static float breatheYaw = 0.0f;
-    private static float breathePitch = 0.0f;
-    private static float breatheYawDirection = 1.0f;
-    private static float breathePitchDirection = 1.0f;
+    private static float breathingBaseAmplitude;
+    private static float breathingBaseFrequency;
+    private static float breathingAmplitude;
+    private static float breathingFrequency;
+    private static long breathingChangeTime;
+    private static final Random random = new Random();
 
-    public static Rotation applyBreatheEffect(final Rotation rotation, final float maxBreatheAngle, final float breatheSpeed) {
-        breatheYaw += breatheYawDirection * breatheSpeed;
-        if (Math.abs(breatheYaw) > maxBreatheAngle) {
-            breatheYawDirection *= -1; // Reverse direction when reaching the maximum angle
+    private static void updateBreathingParameters() {
+        breathingAmplitude = breathingBaseAmplitude + (random.nextFloat() - 0.5f) * 0.2f; // Slight random variation
+        breathingFrequency = breathingBaseFrequency + (random.nextFloat() - 0.5f) * 0.2f; // Slight random variation
+        breathingChangeTime = System.currentTimeMillis() + 1000 + random.nextInt(4000); // Change every 1-5 seconds
+    }
+
+    public static Rotation applyBreatheEffect(final Rotation rotation, final float breathingBaseAmplitude, final float breathingBaseFrequency) {
+        RotationUtil.breathingBaseAmplitude = breathingBaseAmplitude;
+        RotationUtil.breathingBaseFrequency = breathingBaseFrequency;
+        // Update breathing parameters periodically
+        if (System.currentTimeMillis() >= breathingChangeTime) {
+            updateBreathingParameters();
         }
-
-        // Update pitch breathe effect
-        breathePitch += breathePitchDirection * breatheSpeed;
-        if (Math.abs(breathePitch) > maxBreatheAngle) {
-            breathePitchDirection *= -1; // Reverse direction when reaching the maximum angle
-        }
-
-        return new Rotation(rotation.getYaw() + breatheYaw, rotation.getPitch() + breathePitch);
+        float pitch = rotation.getPitch() + MathHelper.sin((float) (System.currentTimeMillis() % 1000) / 1000.0f * (float) Math.PI * 2 * breathingFrequency) * breathingAmplitude;
+        return new Rotation(rotation.getYaw(), pitch);
     }
 
     public static boolean isLookingDiagonal(final float rotationYaw) {
