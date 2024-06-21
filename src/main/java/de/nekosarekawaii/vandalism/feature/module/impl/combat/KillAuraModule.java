@@ -534,6 +534,12 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 return Double.compare(health1, health2);
             });
 
+            case FOV -> entities.sort((entity1, entity2) -> {
+                final double distance1 = getAngleToPlayer(entity1);
+                final double distance2 = getAngleToPlayer(entity2);
+                return Double.compare(distance1, distance2);
+            });
+
             case ARMOR -> entities.sort((entity1, entity2) -> {
                 final double armor1 = entity1 instanceof LivingEntity living1 ? living1.getArmor() : 9999;
                 final double armor2 = entity2 instanceof LivingEntity living2 ? living2.getArmor() : 9999;
@@ -561,6 +567,31 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         }
 
         this.target = entities.get(this.targetIndex);
+    }
+
+    private double getAngleToPlayer(Entity entity) {
+        // Calculate direction vector from player to entity
+        double dx = entity.getX() - mc.player.getX();
+        double dz = entity.getZ() - mc.player.getZ();
+
+        // Normalize the direction vector
+        double length = Math.sqrt(dx * dx + dz * dz);
+        dx /= length;
+        dz /= length;
+
+        // Calculate the player's view direction vector
+        double playerYawRad = Math.toRadians(mc.player.getYaw());
+        double viewDirX = -Math.sin(playerYawRad);
+        double viewDirZ = Math.cos(playerYawRad);
+
+        // Calculate the dot product
+        double dotProduct = dx * viewDirX + dz * viewDirZ;
+
+        // Ensure the dot product is within the valid range for acos to avoid NaN results
+        dotProduct = Math.max(-1.0, Math.min(1.0, dotProduct));
+
+        // Calculate the angle using the arccosine of the dot product
+        return Math.acos(dotProduct);
     }
 
     private double getHealthFromScoreboard(Entity entity) {
@@ -833,6 +864,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
         RANGE,
         HEALTH,
+        FOV,
         ARMOR,
         GOMME_HEALTH;
 
