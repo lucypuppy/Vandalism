@@ -469,7 +469,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             }
 
             if(aimBreathe.getValue()) {
-                rotation = RotationUtil.applyBreatheEffect(rotation, 1.0f, 0.05f);
+                rotation = RotationUtil.applyBreatheEffect(rotation, 5f, 1.0f);
             }
 
             prevRotation = rotation;
