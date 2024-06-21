@@ -121,7 +121,7 @@ public class RotationManager implements MinecraftWrapper, OutgoingPacketListener
     @Override
     public void onCanSprint(CanSprintEvent event) {
         if(this.rotation == null || !this.movementFix) return;
-        event.canSprint = Math.abs(MathHelper.wrapDegrees(this.rotation.getYaw() - MovementUtil.getInputAngle(mc.player.getYaw()))) <= 45;
+        event.canSprint = event.canSprint && Math.abs(MathHelper.wrapDegrees(this.rotation.getYaw() - MovementUtil.getInputAngle(mc.player.getYaw()))) <= 45;
     }
 
     public void setRotation(final Rotation rotation, final float rotateSpeed, final float correlationStrength, final boolean movementFix) {
