@@ -42,3 +42,6 @@ replay_*.log
 /logs/*
 /qodana.yaml
 /output/*
+
+# special - remove this when you add new addons
+settings.gradle
