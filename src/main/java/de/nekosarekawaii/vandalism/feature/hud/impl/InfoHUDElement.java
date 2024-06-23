@@ -318,14 +318,14 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         if (this.glowOutline.getValue()) {
             context.fill(
                     x - 2,
-                    y - this.getFontHeight(),
+                    y + (!this.customFont.getValue() ? 8 : 0) - this.getFontHeight(),
                     x + this.getTextWidth(text) + 2,
-                    y + 2,
-                    new Color(0, 0, 0, 100).getRGB()
+                    y + 2 + (!this.customFont.getValue() ? 8 : 0),
+                    1677721600
             );
         }
         if (!isPostProcessing) {
-            this.drawText(text, context, x, y, this.shadow.getValue(), this.infoNameColor.getColor(-y * 20).getRGB());
+            this.drawText(text, context, x, y, this.glowOutline.getValue() || this.shadow.getValue(), this.infoNameColor.getColor(-y * 20).getRGB());
         }
     }
 
@@ -340,7 +340,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             Shaders.getGlowOutlineEffect().bindMask();
         }
 
-        int width = 0, height = this.getFontHeight();
+        int width = 0, height = this.getFontHeight() * 4;
 
         for (final Map.Entry<String, String> infoEntry : infoMap.entrySet()) {
             if (this.alignmentX.getValue() == AlignmentX.MIDDLE) {

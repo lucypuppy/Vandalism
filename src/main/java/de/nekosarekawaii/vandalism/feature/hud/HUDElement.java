@@ -56,7 +56,6 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
     private final String name;
     private final List<Value<?>> values;
     private final BooleanValue active;
-    private final IntegerValue fontSize;
     private AtlasFontRenderer fontRenderer;
 
     @Setter
@@ -67,6 +66,9 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
     protected final EnumModeValue<AlignmentY> alignmentY;
 
     protected final IntegerValue xOffset, yOffset;
+
+    protected final BooleanValue customFont;
+    private final IntegerValue fontSize;
 
     public HUDElement(final String name, final boolean defaultActive, final AlignmentX defaultAlignmentX, final AlignmentY defaultAlignmentY) {
         this.name = name;
@@ -107,6 +109,12 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
                 -100,
                 100
         );
+        this.customFont = new BooleanValue(
+                this,
+                "Custom Font",
+                "Whether to use a custom font.",
+                false
+        );
         this.fontSize = new IntegerValue(
                 this,
                 "Font Size",
@@ -114,7 +122,7 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
                 20,
                 10,
                 72
-        ).onValueChange((oldValue, newValue) -> this.onFontSizeChange(newValue));
+        ).onValueChange((oldValue, newValue) -> this.onFontSizeChange(newValue)).visibleCondition(this.customFont::getValue);
         this.width = 10;
         this.height = 10;
         this.onFontSizeChange(this.fontSize.getValue());
@@ -205,28 +213,29 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
     }
 
     public int getFontHeight() {
-        if (this.fontRenderer == null) {
-            return 0;
+        if (this.fontRenderer == null || !this.customFont.getValue()) {
+            return this.mc.textRenderer.fontHeight;
         }
         return (int) this.fontRenderer.getFontSize() / 2;
     }
 
     public int getTextHeight(final String text) {
-        if (this.fontRenderer == null) {
-            return 0;
+        if (this.fontRenderer == null || !this.customFont.getValue()) {
+            return this.mc.textRenderer.fontHeight;
         }
         return (int) this.fontRenderer.getTextHeight(text, TEXT_ALIGN, this.fontSize.getValue()) / 2;
     }
 
     public int getTextWidth(final String text) {
-        if (this.fontRenderer == null) {
-            return 0;
+        if (this.fontRenderer == null || !this.customFont.getValue()) {
+            return this.mc.textRenderer.getWidth(text);
         }
         return (int) this.fontRenderer.getTextWidth(text, TEXT_ALIGN, this.fontSize.getValue()) / 2;
     }
 
     protected void drawText(final String text, final DrawContext context, final float x, final float y, final boolean shadow, final int color) {
-        if (this.fontRenderer == null) {
+        if (this.fontRenderer == null || !this.customFont.getValue()) {
+            context.drawText(this.mc.textRenderer, text, (int) x, (int) y, color, shadow);
             return;
         }
         try (final ImmediateRenderer renderer = new ImmediateRenderer(Buffers.getImmediateBufferPool())) {
