@@ -69,30 +69,10 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
     );
 
     public ModuleListHUDElement() {
-        super("Module List");
-        this.alignmentX = AlignmentX.RIGHT;
-        this.alignmentY = AlignmentY.TOP;
+        super("Module List", true, AlignmentX.RIGHT, AlignmentY.TOP);
+        this.alignmentX.onValueChange((oldValue, newValue) -> this.sort = true);
+        this.alignmentY.onValueChange((oldValue, newValue) -> this.sort = true);
         Vandalism.getInstance().getEventSystem().subscribe(ModuleToggleEvent.ID, this);
-    }
-
-    @Override
-    public void setAlignmentX(final AlignmentX alignmentX) {
-        super.setAlignmentX(alignmentX);
-        this.sort = true;
-    }
-
-    @Override
-    public void setAlignmentY(final AlignmentY alignmentY) {
-        super.setAlignmentY(alignmentY);
-        this.sort = true;
-    }
-
-    @Override
-    public void reset() {
-        this.alignmentX = AlignmentX.RIGHT;
-        this.alignmentY = AlignmentY.TOP;
-        this.resetValues();
-        this.sort = true;
     }
 
     @Override
@@ -107,7 +87,7 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
         for (final String activatedModule : this.activatedModules) {
             final int textWidth = this.getTextWidth(activatedModule);
             final int textHeight = this.getTextHeight(activatedModule);
-            switch (this.alignmentX) {
+            switch (this.alignmentX.getValue()) {
                 case MIDDLE ->
                         this.drawText(context, activatedModule, (this.getX() + this.width / 2) - (textWidth / 2), this.getY() + yOffset + this.heightOffset.getValue());
                 case RIGHT ->
@@ -143,7 +123,7 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
             }
             this.activatedModules.sort((s1, s2) -> {
                 final int compare;
-                switch (this.alignmentY) {
+                switch (this.alignmentY.getValue()) {
                     case TOP, MIDDLE -> compare = Integer.compare(this.getTextWidth(s2), this.getTextWidth(s1));
                     case BOTTOM -> compare = Integer.compare(this.getTextWidth(s1), this.getTextWidth(s2));
                     default -> compare = 0;

@@ -22,11 +22,8 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
 import de.nekosarekawaii.vandalism.feature.hud.HUDManager;
-import de.nekosarekawaii.vandalism.util.common.AlignmentX;
-import de.nekosarekawaii.vandalism.util.common.AlignmentY;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
-import imgui.flag.ImGuiComboFlags;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
 
@@ -51,36 +48,11 @@ public class HUDClientWindow extends ClientWindow {
                 if (ImGui.beginTabItem(name + tabId)) {
                     ImGui.pushStyleColor(ImGuiCol.ChildBg, 0.0f, 0.0f, 0.0f, 0.0f);
                     ImGui.beginChild(tabId + "values", ImGui.getColumnWidth(), - ImGui.getTextLineHeightWithSpacing() * 2.5f, true);
-                    hudElement.renderValue(hudElement.getValues().getFirst());
-                    ImGui.text("Alignment X");
-                    ImGui.sameLine(ImGui.getColumnWidth() / 2f + 15f);
-                    ImGui.text("Alignment Y");
-                    final AlignmentX alignmentX = hudElement.getAlignmentX();
-                    ImGui.setNextItemWidth(ImGui.getColumnWidth() / 2f);
-                    if (ImGui.beginCombo(id + "alignmentX", alignmentX.getName(), ImGuiComboFlags.HeightLargest)) {
-                        for (final AlignmentX alignment : AlignmentX.values()) {
-                            if (ImGui.selectable(alignment.getName(), alignmentX == alignment)) {
-                                hudElement.setAlignmentX(alignment);
-                            }
-                        }
-                        ImGui.endCombo();
-                    }
-                    ImGui.sameLine();
-                    final AlignmentY alignmentY = hudElement.getAlignmentY();
-                    ImGui.setNextItemWidth(ImGui.getColumnWidth());
-                    if (ImGui.beginCombo(id + "alignmentY", alignmentY.getName(), ImGuiComboFlags.HeightLargest)) {
-                        for (final AlignmentY alignment : AlignmentY.values()) {
-                            if (ImGui.selectable(alignment.getName(), alignmentY == alignment)) {
-                                hudElement.setAlignmentY(alignment);
-                            }
-                        }
-                        ImGui.endCombo();
-                    }
-                    hudElement.renderValuesExcept(hudElement.getValues().getFirst());
+                    hudElement.renderValues();
                     ImGui.endChild();
                     ImGui.popStyleColor();
                     if (ImGui.button("Reset " + name + " Config" + id + name + "resetConfigTab", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
-                        hudElement.reset();
+                        hudElement.resetValues();
                         Vandalism.getInstance().getConfigManager().save();
                     }
                     if (ImGui.button("Close HUD Config" + id + "close", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
