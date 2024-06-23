@@ -19,7 +19,6 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.LongValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
@@ -39,16 +38,16 @@ public class ChestStealerModule extends AbstractModule implements PlayerUpdateLi
 
     private MSTimer timer;
     private MSTimer startTimer;
-    private MSTimer cpsTimer;
+    private MSTimer closeTimer;
     private long delay;
-    private long cpsDelay;
 
     private final LongValue startDelay = new LongValue(this, "Start Delay", "Delay before starting to take items.", 0L, 0L, 1000L);
     private final LongValue minDelay = new LongValue(this, "Min Delay", "Min delay between taking items.", 100L, 0L, 1000L);
     private final LongValue maxDelay = new LongValue(this, "Max Delay", "Max delay between taking items.", 100L, 0L, 1000L);
-    private final IntegerValue minCPS = new IntegerValue(this, "Min CPS", "Min clicks per second.", 3, 1, 20);
-    private final IntegerValue maxCPS = new IntegerValue(this, "Max CPS", "Max clicks per second.", 6, 1, 20);
+
     private final BooleanValue autoClose = new BooleanValue(this, "Auto Close", "Automatically closes the chest when it's empty.", true);
+    private final LongValue closeDelay = new LongValue(this, "Close Delay", "Delay before closing the chest.", 0L, 0L, 1000L).visibleCondition(autoClose::getValue);
+
     private final BooleanValue filterItems = new BooleanValue(this, "Filter Items", "Only take items that are useful.", true);
 
     public ChestStealerModule() {
@@ -60,9 +59,8 @@ public class ChestStealerModule extends AbstractModule implements PlayerUpdateLi
         Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID);
         timer = new MSTimer();
         startTimer = new MSTimer();
-        cpsTimer = new MSTimer();
+        closeTimer = new MSTimer();
         updateDelay();
-        updateCPS();
     }
 
     @Override
@@ -72,7 +70,8 @@ public class ChestStealerModule extends AbstractModule implements PlayerUpdateLi
 
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
-        if (!startTimer.hasReached(startDelay.getValue(), false)) return;
+        if (!startTimer.hasReached(startDelay.getValue(), false))
+            return;
 
         if (mc.currentScreen instanceof GenericContainerScreen screen) {
             boolean canClose = true;
@@ -90,12 +89,7 @@ public class ChestStealerModule extends AbstractModule implements PlayerUpdateLi
                     final ItemStack hotbarStack = screen.getScreenHandler().slots.get(slot + 54).getStack(); // TODO fix ioob when in smaller container like spectator menu on gomme
                     if (hotbarStack.getItem() instanceof AirBlockItem || InventoryUtil.isItemBetter(itemStack, hotbarStack)) {
                         canClose = false;
-
-                        if (cpsTimer.hasReached(cpsDelay, true) && timer.hasReached(delay, true)) {
-                            updateCPS();
-                            updateDelay();
-                            mc.interactionManager.clickSlot(screen.getScreenHandler().syncId, i, slot, SlotActionType.SWAP, mc.player);
-                        }
+                        stealItems(screen, i, slot, SlotActionType.SWAP);
                     }
                 }
             }
@@ -112,17 +106,15 @@ public class ChestStealerModule extends AbstractModule implements PlayerUpdateLi
                     continue;
 
                 canClose = false;
-
-                if (cpsTimer.hasReached(cpsDelay, true) && timer.hasReached(delay, true)) {
-                    updateCPS();
-                    updateDelay();
-
-                    mc.interactionManager.clickSlot(screen.getScreenHandler().syncId, i, 0, SlotActionType.QUICK_MOVE, mc.player);
-                }
+                stealItems(screen, i, 0, SlotActionType.QUICK_MOVE);
             }
 
-            if (canClose && autoClose.getValue()) {
-                mc.player.closeHandledScreen();
+            if (canClose) {
+                if (autoClose.getValue() && closeTimer.hasReached(closeDelay.getValue(), true)) {
+                    mc.player.closeHandledScreen();
+                }
+            } else {
+                closeTimer.reset();
             }
         } else {
             startTimer.reset();
@@ -133,8 +125,11 @@ public class ChestStealerModule extends AbstractModule implements PlayerUpdateLi
         this.delay = (int) (ThreadLocalRandom.current().nextGaussian() * (minDelay.getValue() - maxDelay.getValue())) + maxDelay.getValue();
     }
 
-    private void updateCPS() {
-        this.cpsDelay = this.delay = (int) (ThreadLocalRandom.current().nextGaussian() * (1000 / (minCPS.getValue() + 2) - 1000 / (maxCPS.getValue() + 2) + 1)) + 1000 / (maxCPS.getValue() + 2);
+    private void stealItems(final GenericContainerScreen screen, int slotId, int slot, SlotActionType actionType) {
+        if (timer.hasReached(delay, true)) {
+            updateDelay();
+            mc.interactionManager.clickSlot(screen.getScreenHandler().syncId, slotId, slot, actionType, mc.player);
+        }
     }
 
     private boolean canTakeItem(ItemStack itemStack) {
