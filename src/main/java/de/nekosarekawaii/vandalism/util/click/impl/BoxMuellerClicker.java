@@ -18,13 +18,10 @@
 
 package de.nekosarekawaii.vandalism.util.click.impl;
 
-import de.nekosarekawaii.vandalism.feature.module.impl.combat.KillAuraModule;
 import de.nekosarekawaii.vandalism.util.click.Clicker;
 import de.nekosarekawaii.vandalism.util.common.*;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
 import org.joml.Vector4d;
 
 import java.util.ArrayList;
@@ -32,59 +29,40 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class BoxMuellerClicker extends Clicker {
 
-    @Setter
-    private KillAuraModule killAuraModule;
-
     private int delay;
+
     @Setter
     private float mean;
+
     @Setter
     private float std;
     private float cps;
+
+    @Getter
+    @Setter
     private int clicks;
+
     @Setter
     private int minCps;
+
     @Setter
     private int maxCps;
     private final MSTimer msTimer = new MSTimer();
     private float partialDelays;
+
     @Setter
     private float cpsUpdatePossibility;
+
     @Getter
     private final EvictingList<Vector4d> cpsHistory = new EvictingList<>(new ArrayList<>(), 200);
 
     @Override
     public void onUpdate() {
-        if (this.killAuraModule != null) {
-            if (!this.killAuraModule.getPreHit().getValue()) {
-                if (mc.crosshairTarget == null || mc.crosshairTarget.getType() != HitResult.Type.ENTITY) {
-                    this.clickAction.accept(false);
-                    this.clicks = 0;
-                    return;
-                }
-
-                final EntityHitResult entityHitResult = (EntityHitResult) mc.crosshairTarget;
-                if (entityHitResult.getEntity().distanceTo(mc.player) > killAuraModule.getAimRange()) {
-                    this.clickAction.accept(false);
-                    this.clicks = 0;
-                    return;
-                }
-            } else {
-                if (killAuraModule.getTarget() == null) {
-                    this.clickAction.accept(false);
-                    this.clicks = 0;
-                    return;
-                }
-            }
-        }
-
-        final int extra = RandomUtils.randomInt(-1, 1);
-        while (this.clicks + extra > 0) {
+        while (this.clicks + RandomUtils.randomInt(-1, 1) > 0) {
             this.clickAction.accept(true);
             this.clicks--;
         }
     }
-
 
     @Override
     public void onRotate() {

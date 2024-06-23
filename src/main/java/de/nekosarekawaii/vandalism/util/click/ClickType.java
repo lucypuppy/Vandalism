@@ -32,6 +32,7 @@ public enum ClickType implements IName {
     BEZIER(new BezierClicker());
 
     private final String name;
+
     @Getter
     private final Clicker clicker;
 

@@ -43,7 +43,6 @@ import de.nekosarekawaii.vandalism.util.click.ClickType;
 import de.nekosarekawaii.vandalism.util.click.Clicker;
 import de.nekosarekawaii.vandalism.util.click.impl.BezierClicker;
 import de.nekosarekawaii.vandalism.util.click.impl.BoxMuellerClicker;
-import de.nekosarekawaii.vandalism.util.click.impl.CooldownClicker;
 import de.nekosarekawaii.vandalism.util.common.IName;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
@@ -57,6 +56,7 @@ import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardEntry;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
@@ -426,7 +426,50 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         }
 
         stopBlocking(BlockState.PRE_CLICKING);
-        this.clickType.getValue().getClicker().onUpdate();
+        boolean shouldUpdate = true;
+        final Clicker clicker = this.clickType.getValue().getClicker();
+        switch (this.clickType.getValue()) {
+            case COOLDOWN -> {
+                if (this.mc.crosshairTarget == null || this.mc.crosshairTarget.getType() != HitResult.Type.ENTITY) {
+                    clicker.clickAction.accept(false);
+                    shouldUpdate = false;
+                }
+                if (
+                        this.mc.crosshairTarget instanceof final EntityHitResult entityHitResult &&
+                                entityHitResult.getEntity().distanceTo(this.mc.player) >
+                                        (this.getPreHit().getValue() ? this.getAimRange() : this.getRange())
+                ) {
+                    clicker.clickAction.accept(false);
+                    shouldUpdate = false;
+                }
+            }
+            case BOXMUELLER -> {
+                if (clicker instanceof final BoxMuellerClicker boxMuellerClicker) {
+                    if (!this.getPreHit().getValue()) {
+                        if (this.mc.crosshairTarget == null || this.mc.crosshairTarget.getType() != HitResult.Type.ENTITY) {
+                            clicker.clickAction.accept(false);
+                            boxMuellerClicker.setClicks(0);
+                            shouldUpdate = false;
+                        }
+                        final EntityHitResult entityHitResult = (EntityHitResult) this.mc.crosshairTarget;
+                        if (entityHitResult.getEntity().distanceTo(this.mc.player) > this.getAimRange()) {
+                            clicker.clickAction.accept(false);
+                            boxMuellerClicker.setClicks(0);
+                            shouldUpdate = false;
+                        }
+                    } else {
+                        if (this.getTarget() == null) {
+                            clicker.clickAction.accept(false);
+                            boxMuellerClicker.setClicks(0);
+                            shouldUpdate = false;
+                        }
+                    }
+                }
+            }
+            default -> {
+            }
+        }
+        if (shouldUpdate) clicker.onUpdate();
         startBlocking(BlockState.POST_CLICKING);
     }
 
@@ -633,7 +676,6 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
     private void updateClicker(final Clicker clicker) {
         if (clicker instanceof final BoxMuellerClicker boxMuellerClicker) {
-            boxMuellerClicker.setKillAuraModule(this);
             boxMuellerClicker.setStd(this.std.getValue());
             boxMuellerClicker.setMean(this.mean.getValue());
             boxMuellerClicker.setMinCps(this.minCps.getValue());
@@ -642,8 +684,6 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         } else if (clicker instanceof final BezierClicker bezierClicker) {
             bezierClicker.setBezierValue(this.cpsBezier);
             bezierClicker.setCpsUpdatePossibility(this.updatePossibility.getValue());
-        } else if (clicker instanceof final CooldownClicker cooldownClicker) {
-            cooldownClicker.setKillAuraModule(this);
         }
 
         clicker.setClickAction(attack -> {
