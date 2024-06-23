@@ -248,7 +248,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             this,
             "Lag Meter Threshold",
             "The threshold in milliseconds for the lag meter to show.",
-            1000,
+            2000,
             500,
             10000
     ).visibleCondition(this.lagMeter::getValue);
