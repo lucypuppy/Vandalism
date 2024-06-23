@@ -22,6 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.BezierValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.player.RotationListener;
@@ -44,6 +45,13 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
         });
         this.updateClicker(newValue.getClicker());
     });
+
+    private final BooleanValue onlyWhenHolding = new BooleanValue(
+            this,
+            "Only When Holding",
+            "Only click when the attack key is pressed.",
+            true
+    );
 
     private final FloatValue std = new FloatValue(
             this,
@@ -128,14 +136,14 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.mc.options.attackKey.isPressed()) {
+        if (!this.onlyWhenHolding.getValue() || this.mc.options.attackKey.isPressed()) {
             this.clickType.getValue().getClicker().onUpdate();
         }
     }
 
     @Override
     public void onRotation(final RotationEvent event) {
-        if (this.mc.options.attackKey.isPressed()) {
+        if (!this.onlyWhenHolding.getValue() || this.mc.options.attackKey.isPressed()) {
             this.clickType.getValue().getClicker().onRotate();
         }
     }
@@ -147,7 +155,6 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
             boxMuellerClicker.setMinCps(this.minCps.getValue());
             boxMuellerClicker.setMaxCps(this.maxCps.getValue());
             boxMuellerClicker.setCpsUpdatePossibility(this.updatePossibility.getValue());
-            boxMuellerClicker.setKillAuraModule(null);
         }
 
         if (clicker instanceof final BezierClicker bezierClicker) {
