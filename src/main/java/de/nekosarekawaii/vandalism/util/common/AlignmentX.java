@@ -18,13 +18,10 @@
 
 package de.nekosarekawaii.vandalism.util.common;
 
-import lombok.Getter;
-
 /**
  * Enum for the alignment of an object. The alignment is used to determine the position of an object relative to another object.
  */
-@Getter
-public enum AlignmentX {
+public enum AlignmentX implements IName {
 
     LEFT, RIGHT, MIDDLE;
 
@@ -32,6 +29,11 @@ public enum AlignmentX {
 
     AlignmentX() {
         this.name = StringUtils.normalizeEnumName(this.name());
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
     }
 
     public static AlignmentX getAlignmentByName(final String name) {

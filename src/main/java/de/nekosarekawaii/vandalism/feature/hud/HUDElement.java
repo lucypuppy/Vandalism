@@ -24,6 +24,7 @@ import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindowScreen;
 import de.nekosarekawaii.vandalism.render.Buffers;
 import de.nekosarekawaii.vandalism.render.gl.render.ImmediateRenderer;
@@ -52,9 +53,6 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
 
     private static final TextAlign TEXT_ALIGN = TextAlign.X_POSITIVE;
 
-    protected static final AlignmentX DEFAULT_ALIGNMENT_X = AlignmentX.LEFT;
-    protected static final AlignmentY DEFAULT_ALIGNMENT_Y = AlignmentY.TOP;
-
     private final String name;
     private final List<Value<?>> values;
     private final BooleanValue active;
@@ -65,19 +63,12 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
     @Getter
     protected int width, height;
 
-    @Setter
-    @Getter
-    protected AlignmentX alignmentX;
+    protected final EnumModeValue<AlignmentX> alignmentX;
+    protected final EnumModeValue<AlignmentY> alignmentY;
 
-    @Setter
-    @Getter
-    protected AlignmentY alignmentY;
+    protected final IntegerValue xOffset, yOffset;
 
-    public HUDElement(final String name) {
-        this(name, true);
-    }
-
-    public HUDElement(final String name, final boolean defaultActive) {
+    public HUDElement(final String name, final boolean defaultActive, final AlignmentX defaultAlignmentX, final AlignmentY defaultAlignmentY) {
         this.name = name;
         this.values = new ArrayList<>();
         this.active = new BooleanValue(
@@ -85,6 +76,36 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
                 "Active",
                 "Whether this HUD element is active.",
                 defaultActive
+        );
+        this.alignmentX = new EnumModeValue<>(
+                this,
+                "Alignment X",
+                "The alignment of this HUD element on the x-axis.",
+                defaultAlignmentX,
+                AlignmentX.values()
+        );
+        this.alignmentY = new EnumModeValue<>(
+                this,
+                "Alignment Y",
+                "The alignment of this HUD element on the y-axis.",
+                defaultAlignmentY,
+                AlignmentY.values()
+        );
+        this.xOffset = new IntegerValue(
+                this,
+                "X Offset",
+                "The x offset of this HUD element.",
+                0,
+                -100,
+                100
+        );
+        this.yOffset = new IntegerValue(
+                this,
+                "Y Offset",
+                "The y offset of this HUD element.",
+                0,
+                -100,
+                100
         );
         this.fontSize = new IntegerValue(
                 this,
@@ -96,8 +117,6 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
         ).onValueChange((oldValue, newValue) -> this.onFontSizeChange(newValue));
         this.width = 10;
         this.height = 10;
-        this.alignmentX = DEFAULT_ALIGNMENT_X;
-        this.alignmentY = DEFAULT_ALIGNMENT_Y;
         this.onFontSizeChange(this.fontSize.getValue());
     }
 
@@ -121,13 +140,7 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
         this.height = 10;
     }
 
-    public void reset() {
-        this.alignmentX = DEFAULT_ALIGNMENT_X;
-        this.alignmentY = DEFAULT_ALIGNMENT_Y;
-        this.resetValues();
-    }
-
-    protected void resetValues() {
+    public void resetValues() {
         for (final Value<?> value : this.getValues()) {
             value.resetValue();
         }
@@ -137,24 +150,30 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
         final int scaledWidth = this.mc.getWindow().getScaledWidth();
         final int offset = 2;
         final int x;
-        switch (this.alignmentX) {
+        switch (this.alignmentX.getValue()) {
             case RIGHT -> x = scaledWidth - this.width - offset;
             case LEFT -> x = offset;
             default -> x = (scaledWidth - this.width) / 2;
         }
-        return x;
+        return x + this.xOffset.getValue();
     }
 
     public int getY() {
         final int scaledHeight = this.mc.getWindow().getScaledHeight();
-        final int offset = (this.mc.currentScreen instanceof ClientWindowScreen) ? 8 : 0;
+        final int offset = (this.mc.currentScreen instanceof ClientWindowScreen) ? 15 : 2;
         final int y;
-        switch (this.alignmentY) {
-            case BOTTOM -> y = scaledHeight - this.height - offset;
+        switch (this.alignmentY.getValue()) {
+            case BOTTOM -> {
+                if (this.alignmentX.getValue() == AlignmentX.MIDDLE) {
+                    y = scaledHeight - this.height - offset - this.getFontHeight() * 3;
+                } else {
+                    y = scaledHeight - this.height - offset;
+                }
+            }
             case TOP -> y = offset;
             default -> y = (scaledHeight - this.height) / 2;
         }
-        return y;
+        return y + this.yOffset.getValue();
     }
 
     protected abstract void onRender(final DrawContext context, final float delta, final boolean inGame);
@@ -164,7 +183,7 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
                 Formatting.UNDERLINE + this.getName(),
                 context,
                 this.getX(),
-                this.getY() - 2,
+                this.getY() - this.getFontHeight() + 2,
                 true,
                 !inGame && !this.isActive() ? Color.RED.getRGB() : Color.WHITE.getRGB()
         );

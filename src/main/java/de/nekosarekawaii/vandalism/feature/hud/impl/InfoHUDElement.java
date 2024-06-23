@@ -22,6 +22,7 @@ import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
@@ -30,6 +31,7 @@ import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.TickBaseModule;
 import de.nekosarekawaii.vandalism.injection.access.IRenderTickCounter;
+import de.nekosarekawaii.vandalism.render.Shaders;
 import de.nekosarekawaii.vandalism.util.click.CPSTracker;
 import de.nekosarekawaii.vandalism.util.common.AlignmentX;
 import de.nekosarekawaii.vandalism.util.common.AlignmentY;
@@ -46,6 +48,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.dimension.DimensionTypes;
 
+import java.awt.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -63,6 +66,47 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             "Info Name Color",
             "The color of the info name."
     );
+
+    public final BooleanValue glowOutline = new BooleanValue(
+            this,
+            "Glow Outline",
+            "Activates/Deactivates the glow outline.",
+            false
+    );
+
+    public final ColorValue glowOutlineColor = new ColorValue(
+            this,
+            "Glow Outline Color",
+            "The color of the glow outline.",
+            Color.lightGray
+    ).visibleCondition(this.glowOutline::getValue);
+
+    public final FloatValue glowOutlineWidth = new FloatValue(
+            this,
+            "Glow Outline Width",
+            "The width of the glow outline.",
+            6.0f,
+            1.0f,
+            20.0f
+    ).visibleCondition(this.glowOutline::getValue);
+
+    public final FloatValue glowOutlineAccuracy = new FloatValue(
+            this,
+            "Glow Outline Accuracy",
+            "The accuracy of the glow outline.",
+            1.0f,
+            1.0f,
+            8.0f
+    ).visibleCondition(this.glowOutline::getValue);
+
+    public final FloatValue glowOutlineExponent = new FloatValue(
+            this,
+            "Glow Outline Exponent",
+            "The exponent of the glow outline.",
+            0.22f,
+            0.01f,
+            4.0f
+    ).visibleCondition(this.glowOutline::getValue);
 
     private final BooleanValue fps = new BooleanValue(
             this,
@@ -237,17 +281,8 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
     private long clientPing = -1;
 
     public InfoHUDElement() {
-        super("Info");
-        this.alignmentX = AlignmentX.LEFT;
-        this.alignmentY = AlignmentY.MIDDLE;
+        super("Info", true, AlignmentX.LEFT, AlignmentY.MIDDLE);
         Vandalism.getInstance().getEventSystem().subscribe(this, IncomingPacketEvent.ID, PlayerUpdateEvent.ID);
-    }
-
-    @Override
-    public void reset() {
-        this.alignmentX = AlignmentX.LEFT;
-        this.alignmentY = AlignmentY.MIDDLE;
-        this.resetValues();
     }
 
     @Override
@@ -267,7 +302,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
     }
 
     @Override
-    public void onPrePlayerUpdate(PlayerUpdateEvent event) {
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         final long now = System.currentTimeMillis();
 
         if (now - this.lastPing > this.pingInterval.getValue() &&
@@ -279,8 +314,79 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         }
     }
 
-    private void drawText(final DrawContext context, final String text, final int x, final int y) {
-        this.drawText(text, context, x, y, this.shadow.getValue(), this.infoNameColor.getColor(-y * 20).getRGB());
+    private void drawText(final DrawContext context, final String text, final int x, final int y, final boolean isPostProcessing) {
+        if (this.glowOutline.getValue()) {
+            context.fill(
+                    x - 2,
+                    y - this.getFontHeight(),
+                    x + this.getTextWidth(text) + 2,
+                    y + 2,
+                    new Color(0, 0, 0, 100).getRGB()
+            );
+        }
+        if (!isPostProcessing) {
+            this.drawText(text, context, x, y, this.shadow.getValue(), this.infoNameColor.getColor(-y * 20).getRGB());
+        }
+    }
+
+    private void drawInfo(final DrawContext context, final Map<String, String> infoMap, final boolean isPostProcessing) {
+        final float outlineWidth = this.glowOutlineWidth.getValue();
+        final float outlineAccuracy = this.glowOutlineAccuracy.getValue();
+        final float outlineExponent = this.glowOutlineExponent.getValue();
+        final Color glowOutlineColor = this.glowOutlineColor.getColor();
+
+        if (isPostProcessing) {
+            Shaders.getGlowOutlineEffect().configure(outlineWidth, outlineAccuracy, outlineExponent);
+            Shaders.getGlowOutlineEffect().bindMask();
+        }
+
+        int width = 0, height = this.getFontHeight();
+
+        for (final Map.Entry<String, String> infoEntry : infoMap.entrySet()) {
+            if (this.alignmentX.getValue() == AlignmentX.MIDDLE) {
+                final String[] infoParts = new String[]{infoEntry.getKey(), infoEntry.getValue()};
+                for (int i = 0; i < infoParts.length; i++) {
+                    final String infoPart = infoParts[i];
+                    final int textWidth = this.getTextWidth(infoPart);
+                    final int textHeight = this.getTextHeight(infoPart);
+                    final String text = (i == 0 ? "" : Formatting.WHITE.toString()) + infoPart;
+                    this.drawText(context, text, (this.getX() + this.width / 2) - textWidth / 2, this.getY() + height, isPostProcessing);
+                    height += textHeight + 2;
+                    if (textWidth > width) {
+                        width = textWidth;
+                    }
+                }
+            } else {
+                final String text;
+                int textWidth = 0;
+                switch (this.alignmentX.getValue()) {
+                    case LEFT -> {
+                        text = infoEntry.getKey() + Formatting.GRAY + " » " + Formatting.WHITE + infoEntry.getValue();
+                        textWidth = this.getTextWidth(text);
+                        this.drawText(context, text, this.getX(), this.getY() + height, isPostProcessing);
+                        height += this.getTextHeight(text) + 2;
+                    }
+                    case RIGHT -> {
+                        text = infoEntry.getKey() + Formatting.GRAY + " « " + Formatting.WHITE + infoEntry.getValue();
+                        textWidth = this.getTextWidth(text);
+                        this.drawText(context, text, (this.getX() + this.width) - textWidth, this.getY() + height, isPostProcessing);
+                        height += this.getTextHeight(text) + 2;
+                    }
+                }
+                if (textWidth > width) {
+                    width = textWidth;
+                }
+            }
+        }
+
+        if (isPostProcessing) {
+            Shaders.getGlowOutlineEffect().renderFullscreen(Shaders.getColorFillEffect().maskFramebuffer().get(), false);
+            Shaders.getColorFillEffect().setColor(glowOutlineColor);
+            Shaders.getColorFillEffect().renderFullscreen(this.mc.getFramebuffer(), false);
+        }
+
+        this.width = width;
+        this.height = height - this.getFontHeight();
     }
 
     @Override
@@ -455,49 +561,10 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             infoMap.put("Client TPS", String.format("%.3f (%.3f)", tps, percentage));
         }
 
-        int width = 0, height = this.getFontHeight();
-        for (final Map.Entry<String, String> infoEntry : infoMap.entrySet()) {
-            if (this.alignmentX == AlignmentX.MIDDLE) {
-                final String[] infoParts = new String[]{infoEntry.getKey(), infoEntry.getValue()};
-                for (int i = 0; i < infoParts.length; i++) {
-                    final String infoPart = infoParts[i];
-                    final int textWidth = this.getTextWidth(infoPart);
-                    final int textHeight = this.getTextHeight(infoPart);
-                    this.drawText(
-                            context,
-                            (i == 0 ? Formatting.UNDERLINE : "") + infoPart,
-                            (this.getX() + this.width / 2) - textWidth / 2,
-                            this.getY() + height
-                    );
-                    height += textHeight + 3;
-                    if (textWidth > width) {
-                        width = textWidth;
-                    }
-                }
-            } else {
-                final String text;
-                int textWidth = 0;
-                switch (this.alignmentX) {
-                    case LEFT -> {
-                        text = infoEntry.getKey() + Formatting.GRAY + " » " + Formatting.WHITE + infoEntry.getValue();
-                        textWidth = this.getTextWidth(text);
-                        this.drawText(context, text, this.getX(), this.getY() + height);
-                        height += this.getTextHeight(text) + 1;
-                    }
-                    case RIGHT -> {
-                        text = infoEntry.getKey() + Formatting.GRAY + " « " + Formatting.WHITE + infoEntry.getValue();
-                        textWidth = this.getTextWidth(text);
-                        this.drawText(context, text, (this.getX() + this.width) - textWidth, this.getY() + height);
-                        height += this.getTextHeight(text);
-                    }
-                }
-                if (textWidth > width) {
-                    width = textWidth;
-                }
-            }
+        if (this.glowOutline.getValue()) {
+            this.drawInfo(context, infoMap, true);
         }
-        this.width = width;
-        this.height = height - this.getFontHeight();
+        this.drawInfo(context, infoMap, false);
     }
 
 }

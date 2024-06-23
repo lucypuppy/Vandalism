@@ -53,17 +53,8 @@ public class SpotifyHUDElement extends HUDElement {
     private final SpotifyManager spotifyManager;
 
     public SpotifyHUDElement(final SpotifyManager spotifyManager) {
-        super("Spotify");
-        this.alignmentX = AlignmentX.RIGHT;
-        this.alignmentY = AlignmentY.BOTTOM;
+        super("Spotify", true, AlignmentX.RIGHT, AlignmentY.BOTTOM);
         this.spotifyManager = spotifyManager;
-    }
-
-    @Override
-    public void reset() {
-        this.alignmentX = AlignmentX.RIGHT;
-        this.alignmentY = AlignmentY.BOTTOM;
-        this.resetValues();
     }
 
     @Override
