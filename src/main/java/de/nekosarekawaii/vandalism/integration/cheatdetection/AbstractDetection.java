@@ -22,7 +22,9 @@ import de.nekosarekawaii.vandalism.integration.cheatdetection.detectionplayer.De
 import de.nekosarekawaii.vandalism.util.common.IName;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
 public abstract class AbstractDetection implements IName, MinecraftWrapper {
@@ -45,7 +47,8 @@ public abstract class AbstractDetection implements IName, MinecraftWrapper {
         }
 
         if (debugInfo.length > 0) {
-            text.append(" ").append(String.join(" ", debugInfo));
+            text.styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                    Text.of(String.join("\n", debugInfo)))));
         }
 
         ChatUtil.chatMessage(text);

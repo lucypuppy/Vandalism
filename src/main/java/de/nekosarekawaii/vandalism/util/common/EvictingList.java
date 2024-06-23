@@ -18,6 +18,8 @@
 
 package de.nekosarekawaii.vandalism.util.common;
 
+import lombok.Getter;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -28,6 +30,7 @@ import java.util.List;
  */
 public class EvictingList<V> {
 
+    @Getter
     private final List<V> list;
     private final int maxSize;
 

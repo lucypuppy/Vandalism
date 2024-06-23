@@ -75,6 +75,7 @@ public class ChestStealerModule extends AbstractModule implements PlayerUpdateLi
         if (!startTimer.hasReached(startDelay.getValue(), false)) return;
 
         if (mc.currentScreen instanceof GenericContainerScreen screen) {
+            boolean canClose = true;
 
             // This swaps items directly into the hotbar.
             for (int i = 0; i < screen.getScreenHandler().slots.size() - 9; i++) {
@@ -88,6 +89,8 @@ public class ChestStealerModule extends AbstractModule implements PlayerUpdateLi
 
                     final ItemStack hotbarStack = screen.getScreenHandler().slots.get(slot + 54).getStack(); // TODO fix ioob when in smaller container like spectator menu on gomme
                     if (hotbarStack.getItem() instanceof AirBlockItem || InventoryUtil.isItemBetter(itemStack, hotbarStack)) {
+                        canClose = false;
+
                         if (cpsTimer.hasReached(cpsDelay, true) && timer.hasReached(delay, true)) {
                             updateCPS();
                             updateDelay();
@@ -108,21 +111,14 @@ public class ChestStealerModule extends AbstractModule implements PlayerUpdateLi
                 if (itemStack.isEmpty() || (filterItems.getValue() && !canTakeItem(itemStack)))
                     continue;
 
+                canClose = false;
+
                 if (cpsTimer.hasReached(cpsDelay, true) && timer.hasReached(delay, true)) {
                     updateCPS();
                     updateDelay();
 
                     mc.interactionManager.clickSlot(screen.getScreenHandler().syncId, i, 0, SlotActionType.QUICK_MOVE, mc.player);
                 }
-            }
-
-            boolean canClose = true;
-            for (int i = 0; i < screen.getScreenHandler().getRows() * 9; i++) {
-                ItemStack itemStack = screen.getScreenHandler().slots.get(i).getStack();
-                if (itemStack.isEmpty() || (filterItems.getValue() && !canTakeItem(itemStack)))
-                    continue;
-
-                canClose = false;
             }
 
             if (canClose && autoClose.getValue()) {
