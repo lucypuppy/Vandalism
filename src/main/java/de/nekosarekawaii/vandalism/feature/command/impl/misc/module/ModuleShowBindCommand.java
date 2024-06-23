@@ -19,12 +19,16 @@
 package de.nekosarekawaii.vandalism.feature.command.impl.misc.module;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
-import de.nekosarekawaii.vandalism.feature.command.arguments.ModuleArgumentType;
+import de.nekosarekawaii.vandalism.feature.command.arguments.KeyBindArgumentType;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import de.nekosarekawaii.vandalism.util.render.InputType;
 import net.minecraft.command.CommandSource;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ModuleShowBindCommand extends AbstractCommand {
 
@@ -34,12 +38,21 @@ public class ModuleShowBindCommand extends AbstractCommand {
 
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
-        builder.then(argument("module", ModuleArgumentType.create()).executes(context -> {
-            final AbstractModule module = ModuleArgumentType.get(context);
-            if (module.getKeyBind().isValid()) {
-                ChatUtil.infoChatMessage("Module " + module.getName() + " is bound to " + InputType.getName(module.getKeyBind().getValue()) + ".");
-            } else {
-                ChatUtil.infoChatMessage("Module " + module.getName() + " is not bound.");
+        builder.then(argument("key-bind", KeyBindArgumentType.create()).executes(context -> {
+            final int code = KeyBindArgumentType.get(context);
+            final List<String> boundModules = new ArrayList<>();
+            for (final AbstractModule module : Vandalism.getInstance().getModuleManager().getList()) {
+                if (module.getKeyBind().getValue() == code) {
+                    boundModules.add(module.getName());
+                }
+            }
+            if (boundModules.isEmpty()) {
+                ChatUtil.infoChatMessage("No module is bound to " + InputType.getName(code) + ".");
+                return SINGLE_SUCCESS;
+            }
+            ChatUtil.infoChatMessage("The following modules are bound to " + InputType.getName(code) + ":");
+            for (final String boundModule : boundModules) {
+                ChatUtil.infoChatMessage(" - " + boundModule);
             }
             return SINGLE_SUCCESS;
         }));

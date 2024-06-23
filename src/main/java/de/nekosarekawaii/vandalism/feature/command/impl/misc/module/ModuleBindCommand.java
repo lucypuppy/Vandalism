@@ -29,6 +29,9 @@ import de.nekosarekawaii.vandalism.util.render.InputType;
 import net.minecraft.command.CommandSource;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ModuleBindCommand extends AbstractCommand {
 
     public ModuleBindCommand() {
@@ -39,14 +42,20 @@ public class ModuleBindCommand extends AbstractCommand {
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.then(argument("module", ModuleArgumentType.create()).then(argument("key-bind", KeyBindArgumentType.create()).executes(context -> {
             final AbstractModule module = ModuleArgumentType.get(context);
-            final Integer code = KeyBindArgumentType.get(context);
+            final int code = KeyBindArgumentType.get(context);
             if (code == GLFW.GLFW_KEY_UNKNOWN && !module.getKeyBind().isValid()) {
                 ChatUtil.infoChatMessage("Module " + module.getName() + " is not bound.");
                 return SINGLE_SUCCESS;
             }
-            if (code.equals(module.getKeyBind().getValue())) {
+            if (module.getKeyBind().getValue() == code) {
                 ChatUtil.infoChatMessage("Module " + module.getName() + " is already bound to " + InputType.getName(code) + ".");
                 return SINGLE_SUCCESS;
+            }
+            final List<String> boundModules = new ArrayList<>();
+            for (final AbstractModule mod : Vandalism.getInstance().getModuleManager().getList()) {
+                if (mod.getKeyBind().getValue() == code) {
+                    boundModules.add(mod.getName());
+                }
             }
             module.getKeyBind().setValue(code);
             if (code == GLFW.GLFW_KEY_UNKNOWN) {
@@ -54,9 +63,10 @@ public class ModuleBindCommand extends AbstractCommand {
                 return SINGLE_SUCCESS;
             }
             ChatUtil.infoChatMessage("Bound module " + module.getName() + " to " + InputType.getName(code) + ".");
-            for (final AbstractModule mod : Vandalism.getInstance().getModuleManager().getList()) {
-                if (mod.getKeyBind().getValue().equals(code) && !mod.getName().equals(module.getName())) {
-                    ChatUtil.warningChatMessage("Module " + mod.getName() + " is also bound to " + InputType.getName(code) + ".");
+            if (!boundModules.isEmpty()) {
+                ChatUtil.warningChatMessage("The following modules are already bound to " + InputType.getName(code) + ":");
+                for (final String boundModule : boundModules) {
+                    ChatUtil.warningChatMessage(" - " + boundModule);
                 }
             }
             return SINGLE_SUCCESS;
