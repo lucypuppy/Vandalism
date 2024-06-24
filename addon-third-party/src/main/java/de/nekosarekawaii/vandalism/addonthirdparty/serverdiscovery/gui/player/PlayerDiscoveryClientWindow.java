@@ -184,7 +184,7 @@ public class PlayerDiscoveryClientWindow extends StateClientWindow implements Da
     public void renderDataEntryContextMenu(final String id, final int index, final DataEntry dataEntry) {
         if (dataEntry instanceof final ListDataEntry listDataEntry) {
             final String address = listDataEntry.getFirst().getRight();
-            final float buttonWidth = ImUtils.modulateDimension(150), buttonHeight = ImUtils.modulateDimension(28);
+            final float buttonWidth = ImUtils.modulateDimension(200), buttonHeight = ImUtils.modulateDimension(28);
             if (ImGui.button("Add to the Server List" + id + "addToServerList", buttonWidth, buttonHeight)) {
                 final ServerList serverList = new ServerList(MinecraftClient.getInstance());
                 serverList.loadFile();
