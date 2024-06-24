@@ -267,7 +267,7 @@ public class ServerInfoClientWindow extends StateClientWindow implements DataLis
             final String playerName = listDataEntry.getFirst().getRight();
             final String playerUUID = listDataEntry.getSecond().getRight();
             final String lastSeen = listDataEntry.getThird().getRight();
-            final float buttonWidth = ImUtils.modulateDimension(150), buttonHeight = ImUtils.modulateDimension(28);
+            final float buttonWidth = ImUtils.modulateDimension(200), buttonHeight = ImUtils.modulateDimension(28);
             if (ImGui.button("Add" + id + "player" + playerName + "add", buttonWidth, buttonHeight)) {
                 Vandalism.getInstance().getAccountManager().loginCracked(playerName, playerUUID, true);
             }
