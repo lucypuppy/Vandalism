@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.click.impl;
+package de.nekosarekawaii.vandalism.feature.module.template.clicking.impl;
 
 import de.nekosarekawaii.vandalism.base.value.impl.number.BezierValue;
-import de.nekosarekawaii.vandalism.util.click.Clicker;
+import de.nekosarekawaii.vandalism.feature.module.template.clicking.Clicker;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.common.RandomUtils;
 import lombok.Setter;
@@ -32,11 +32,17 @@ public class BezierClicker extends Clicker {
     private int delay;
     private float cps;
     private float partialDelays;
+
     @Setter
     private float cpsUpdatePossibility;
+
     private BezierValue value;
     private float percentage = 0.0f;
     private int clicks;
+
+    public BezierClicker() {
+        super("Bezier");
+    }
 
     @Override
     public void onUpdate() {

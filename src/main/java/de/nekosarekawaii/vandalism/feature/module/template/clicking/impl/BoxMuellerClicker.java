@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.click.impl;
+package de.nekosarekawaii.vandalism.feature.module.template.clicking.impl;
 
-import de.nekosarekawaii.vandalism.util.click.Clicker;
+import de.nekosarekawaii.vandalism.feature.module.template.clicking.Clicker;
 import de.nekosarekawaii.vandalism.util.common.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,6 +47,7 @@ public class BoxMuellerClicker extends Clicker {
 
     @Setter
     private int maxCps;
+
     private final MSTimer msTimer = new MSTimer();
     private float partialDelays;
 
@@ -55,6 +56,10 @@ public class BoxMuellerClicker extends Clicker {
 
     @Getter
     private final EvictingList<Vector4d> cpsHistory = new EvictingList<>(new ArrayList<>(), 200);
+
+    public BoxMuellerClicker() {
+        super("Box Mueller");
+    }
 
     @Override
     public void onUpdate() {
@@ -68,16 +73,13 @@ public class BoxMuellerClicker extends Clicker {
     public void onRotate() {
         if (this.msTimer.hasReached(this.delay, true)) {
             this.clickAction.accept(false);
-
             if (RandomUtils.randomInt(0, 100) <= this.cpsUpdatePossibility || this.cps < this.minCps) {
                 int depth = 0;
-
                 while (true) {
                     final double gaussian = ThreadLocalRandom.current().nextGaussian(this.mean, this.std);
                     final double gaussianPercentage = MathUtil.normalizeGaussian(gaussian, this.mean, this.std);
                     final double gaussianDensity = MathUtil.densityFunction(gaussian, this.mean, this.std) * this.mean;
                     depth++;
-
                     if (depth > 5 || gaussianPercentage < gaussianDensity) {
                         this.cps = (float) Arithmetics.interpolate(this.minCps, this.maxCps, gaussianPercentage);
                         this.cpsHistory.add(new Vector4d(this.cps, gaussian, gaussianPercentage, gaussianDensity));
@@ -85,11 +87,9 @@ public class BoxMuellerClicker extends Clicker {
                     }
                 }
             }
-
             final float delay = 1000.0f / this.cps;
             this.delay = (int) Math.floor(delay + this.partialDelays);
             this.partialDelays += delay - this.delay;
-
             this.clicks++;
         }
     }

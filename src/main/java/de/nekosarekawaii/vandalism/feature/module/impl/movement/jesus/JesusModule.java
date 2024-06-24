@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement.jesus;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.jesus.impl.StaticModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.jesus.impl.VulcanModuleMode;
-import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
+import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleModeValue;
 
 public class JesusModule extends AbstractModule {
 

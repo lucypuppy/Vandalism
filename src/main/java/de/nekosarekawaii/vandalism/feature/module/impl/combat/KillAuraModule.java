@@ -34,15 +34,16 @@ import de.nekosarekawaii.vandalism.event.player.RotationListener;
 import de.nekosarekawaii.vandalism.event.render.Render2DListener;
 import de.nekosarekawaii.vandalism.event.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.template.clicking.Clicker;
+import de.nekosarekawaii.vandalism.feature.module.template.clicking.ClickerModeValue;
+import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.BezierClicker;
+import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.BoxMuellerClicker;
+import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.CooldownClicker;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationBuilder;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationManager;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
-import de.nekosarekawaii.vandalism.util.click.ClickType;
-import de.nekosarekawaii.vandalism.util.click.Clicker;
-import de.nekosarekawaii.vandalism.util.click.impl.BezierClicker;
-import de.nekosarekawaii.vandalism.util.click.impl.BoxMuellerClicker;
 import de.nekosarekawaii.vandalism.util.common.IName;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
@@ -152,16 +153,14 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             "Settings for the clicking."
     );
 
-    private final EnumModeValue<ClickType> clickType = new EnumModeValue<>(
+    private final ClickerModeValue clickType = new ClickerModeValue(
             this.clicking,
             "Click Type",
-            "The type of clicking.",
-            ClickType.COOLDOWN,
-            ClickType.values()
+            "The type of clicking."
     ).onValueChange((oldValue, newValue) -> {
-        oldValue.getClicker().setClickAction(aBoolean -> {
+        oldValue.setClickAction(aBoolean -> {
         });
-        this.updateClicker(newValue.getClicker());
+        this.updateClicker(newValue);
     });
 
     private final FloatValue std = new FloatValue(
@@ -172,16 +171,16 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             1.0f,
             10.0f
     )
-            .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
-            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+            .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue()))
+            .visibleCondition(() -> this.clickType.getValue() instanceof BoxMuellerClicker);
 
     private final FloatValue mean = new FloatValue(
             this.clicking, "Mean",
             "The mean for the Box-Mueller clicker.",
             15.0f, 1.0f, 30.0f
     )
-            .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
-            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+            .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue()))
+            .visibleCondition(() -> this.clickType.getValue() instanceof BoxMuellerClicker);
 
     private final IntegerValue minCps = new IntegerValue(
             this.clicking,
@@ -191,8 +190,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             1,
             20
     )
-            .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
-            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+            .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue()))
+            .visibleCondition(() -> this.clickType.getValue() instanceof BoxMuellerClicker);
 
     private final IntegerValue maxCps = new IntegerValue(
             this.clicking,
@@ -202,8 +201,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             1,
             30
     )
-            .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
-            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+            .onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue()))
+            .visibleCondition(() -> this.clickType.getValue() instanceof BoxMuellerClicker);
 
     private final BezierValue cpsBezier = new BezierValue(
             this.clicking,
@@ -215,7 +214,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             25.0f,
             1.0f,
             25.0f
-    ).visibleCondition(() -> this.clickType.getValue() == ClickType.BEZIER);
+    ).visibleCondition(() -> this.clickType.getValue() instanceof BezierClicker);
 
     private final IntegerValue updatePossibility = new IntegerValue(
             this.clicking,
@@ -224,14 +223,14 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             80,
             0,
             100
-    ).visibleCondition(() -> this.clickType.getValue() != ClickType.COOLDOWN);
+    ).visibleCondition(() -> !(this.clickType.getValue() instanceof CooldownClicker));
 
     private final BooleanValue preHit = new BooleanValue(
             this.clicking,
             "Pre Hit",
             "Whether you want to pre hit in the extended range (doesnt work in cooldown mode).",
             false
-    ).visibleCondition(() -> this.clickType.getValue() != ClickType.COOLDOWN);
+    ).visibleCondition(() -> !(this.clickType.getValue() instanceof CooldownClicker));
 
     private final ValueGroup rotationGroup = new ValueGroup(
             this,
@@ -372,7 +371,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         );
 
         this.rotationManager = Vandalism.getInstance().getRotationManager();
-        this.updateClicker(this.clickType.getValue().getClicker());
+        this.updateClicker(this.clickType.getValue());
 
         this.deactivateAfterSessionDefault();
     }
@@ -383,7 +382,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 this,
                 PlayerUpdateEvent.ID, Render2DEvent.ID, RotationEvent.ID, RaytraceEvent.ID, Render3DEvent.ID
         );
-        updateClicker(this.clickType.getValue().getClicker());
+        this.updateClicker(this.clickType.getValue());
         if (mc.player != null) {
             this.prevRotation = new Rotation(mc.player.prevYaw, mc.player.prevPitch);
         }
@@ -414,7 +413,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         this.isLooking = Math.abs(MathHelper.wrapDegrees(pseudoRotation.getYaw()) - MathHelper.wrapDegrees(this.target.getYaw())) <= 80.0 &&
                 this.mc.player.getPos().distanceTo(this.target.getPos()) <= 6.0;
 
-        final double raytraceReach = this.preHit.getValue() && this.clickType.getValue() != ClickType.COOLDOWN ? this.getAimRange() : this.getRange();
+        final double raytraceReach = this.preHit.getValue() && !(this.clickType.getValue() instanceof CooldownClicker) ? this.getAimRange() : this.getRange();
         final Vec3d eyePos = mc.player.getEyePos();
         final HitResult raytrace = WorldUtil.raytrace(this.rotationManager.getRotation(), raytraceReach);
         this.raytraceDistance = raytrace != null && raytrace.getType() != HitResult.Type.MISS ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
@@ -427,46 +426,42 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
         stopBlocking(BlockState.PRE_CLICKING);
         boolean shouldUpdate = true;
-        final Clicker clicker = this.clickType.getValue().getClicker();
-        switch (this.clickType.getValue()) {
-            case COOLDOWN -> {
-                if (this.mc.crosshairTarget == null || this.mc.crosshairTarget.getType() != HitResult.Type.ENTITY) {
-                    clicker.clickAction.accept(false);
-                    shouldUpdate = false;
-                }
+        final Clicker clicker = this.clickType.getValue();
+        if (clicker instanceof final CooldownClicker cooldownClicker) {
+            if (this.mc.crosshairTarget == null || this.mc.crosshairTarget.getType() != HitResult.Type.ENTITY) {
+                cooldownClicker.clickAction.accept(false);
+                shouldUpdate = false;
+            }
+            if (shouldUpdate) {
                 if (
                         this.mc.crosshairTarget instanceof final EntityHitResult entityHitResult &&
                                 entityHitResult.getEntity().distanceTo(this.mc.player) >
                                         (this.getPreHit().getValue() ? this.getAimRange() : this.getRange())
                 ) {
-                    clicker.clickAction.accept(false);
+                    cooldownClicker.clickAction.accept(false);
                     shouldUpdate = false;
                 }
             }
-            case BOXMUELLER -> {
-                if (clicker instanceof final BoxMuellerClicker boxMuellerClicker) {
-                    if (!this.getPreHit().getValue()) {
-                        if (this.mc.crosshairTarget == null || this.mc.crosshairTarget.getType() != HitResult.Type.ENTITY) {
-                            clicker.clickAction.accept(false);
-                            boxMuellerClicker.setClicks(0);
-                            shouldUpdate = false;
-                        }
-                        final EntityHitResult entityHitResult = (EntityHitResult) this.mc.crosshairTarget;
-                        if (entityHitResult.getEntity().distanceTo(this.mc.player) > this.getAimRange()) {
-                            clicker.clickAction.accept(false);
-                            boxMuellerClicker.setClicks(0);
-                            shouldUpdate = false;
-                        }
-                    } else {
-                        if (this.getTarget() == null) {
-                            clicker.clickAction.accept(false);
-                            boxMuellerClicker.setClicks(0);
-                            shouldUpdate = false;
-                        }
+        } else if (clicker instanceof final BoxMuellerClicker boxMuellerClicker) {
+            if (!this.getPreHit().getValue()) {
+                if (this.mc.crosshairTarget == null || this.mc.crosshairTarget.getType() != HitResult.Type.ENTITY) {
+                    clicker.clickAction.accept(false);
+                    boxMuellerClicker.setClicks(0);
+                    shouldUpdate = false;
+                }
+                if (shouldUpdate) {
+                    if (this.mc.crosshairTarget instanceof final EntityHitResult entityHitResult && entityHitResult.getEntity().distanceTo(this.mc.player) > this.getAimRange()) {
+                        clicker.clickAction.accept(false);
+                        boxMuellerClicker.setClicks(0);
+                        shouldUpdate = false;
                     }
                 }
-            }
-            default -> {
+            } else {
+                if (this.getTarget() == null) {
+                    clicker.clickAction.accept(false);
+                    boxMuellerClicker.setClicks(0);
+                    shouldUpdate = false;
+                }
             }
         }
         if (shouldUpdate) clicker.onUpdate();
@@ -483,7 +478,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
         if (this.target != null) {
             if (this.raytraceDistance <= this.getAimRange()) {
-                this.clickType.getValue().getClicker().onRotate();
+                this.clickType.getValue().onRotate();
             }
 
             Rotation rotation = RotationBuilder.build(this.target, RotationPriority.HIGH,
@@ -685,7 +680,6 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             bezierClicker.setBezierValue(this.cpsBezier);
             bezierClicker.setCpsUpdatePossibility(this.updatePossibility.getValue());
         }
-
         clicker.setClickAction(attack -> {
             if (attack) {
                 final boolean possibleHit = this.raytraceDistance <= getRange();
