@@ -23,27 +23,25 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.BezierValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
-import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.player.RotationListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.click.ClickType;
-import de.nekosarekawaii.vandalism.util.click.Clicker;
-import de.nekosarekawaii.vandalism.util.click.impl.BezierClicker;
-import de.nekosarekawaii.vandalism.util.click.impl.BoxMuellerClicker;
+import de.nekosarekawaii.vandalism.feature.module.template.clicking.Clicker;
+import de.nekosarekawaii.vandalism.feature.module.template.clicking.ClickerModeValue;
+import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.BezierClicker;
+import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.BoxMuellerClicker;
+import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.CooldownClicker;
 
 public class AutoClickerModule extends AbstractModule implements PlayerUpdateListener, RotationListener {
 
-    private final EnumModeValue<ClickType> clickType = new EnumModeValue<>(
+    private final ClickerModeValue clickType = new ClickerModeValue(
             this,
             "Click Type",
-            "The type of clicking.",
-            ClickType.COOLDOWN,
-            ClickType.values()
+            "The type of clicking."
     ).onValueChange((oldValue, newValue) -> {
-        oldValue.getClicker().setClickAction(aBoolean -> {
+        oldValue.setClickAction(aBoolean -> {
         });
-        this.updateClicker(newValue.getClicker());
+        this.updateClicker(newValue);
     });
 
     private final BooleanValue onlyWhenHolding = new BooleanValue(
@@ -60,8 +58,8 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
             5.0f,
             1.0f,
             10.0f
-    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
-            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue()))
+            .visibleCondition(() -> this.clickType.getValue() instanceof BoxMuellerClicker);
 
     private final FloatValue mean = new FloatValue(
             this,
@@ -70,8 +68,8 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
             15.0f,
             1.0f,
             30.0f
-    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
-            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue()))
+            .visibleCondition(() -> this.clickType.getValue() instanceof BoxMuellerClicker);
 
     private final IntegerValue minCps = new IntegerValue(
             this,
@@ -80,8 +78,8 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
             10,
             1,
             20
-    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
-            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue()))
+            .visibleCondition(() -> this.clickType.getValue() instanceof BoxMuellerClicker);
 
     private final IntegerValue maxCps = new IntegerValue(
             this,
@@ -90,8 +88,8 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
             20,
             1,
             30
-    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue().getClicker()))
-            .visibleCondition(() -> this.clickType.getValue() == ClickType.BOXMUELLER);
+    ).onValueChange((oldValue, newValue) -> this.updateClicker(this.clickType.getValue()))
+            .visibleCondition(() -> this.clickType.getValue() instanceof BoxMuellerClicker);
 
     private final BezierValue cpsBezier = new BezierValue(
             this,
@@ -103,7 +101,7 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
             25.0f,
             1.0f,
             25.0f
-    ).visibleCondition(() -> this.clickType.getValue() == ClickType.BEZIER);
+    ).visibleCondition(() -> this.clickType.getValue() instanceof BezierClicker);
 
     private final IntegerValue updatePossibility = new IntegerValue(
             this,
@@ -112,7 +110,7 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
             80,
             0,
             100
-    ).visibleCondition(() -> this.clickType.getValue() != ClickType.COOLDOWN);
+    ).visibleCondition(() -> !(this.clickType.getValue() instanceof CooldownClicker));
 
 
     public AutoClickerModule() {
@@ -126,7 +124,7 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
     @Override
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID);
-        updateClicker(this.clickType.getValue().getClicker());
+        this.updateClicker(this.clickType.getValue());
     }
 
     @Override
@@ -137,14 +135,14 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (!this.onlyWhenHolding.getValue() || this.mc.options.attackKey.isPressed()) {
-            this.clickType.getValue().getClicker().onUpdate();
+            this.clickType.getValue().onUpdate();
         }
     }
 
     @Override
     public void onRotation(final RotationEvent event) {
         if (!this.onlyWhenHolding.getValue() || this.mc.options.attackKey.isPressed()) {
-            this.clickType.getValue().getClicker().onRotate();
+            this.clickType.getValue().onRotate();
         }
     }
 
@@ -156,12 +154,10 @@ public class AutoClickerModule extends AbstractModule implements PlayerUpdateLis
             boxMuellerClicker.setMaxCps(this.maxCps.getValue());
             boxMuellerClicker.setCpsUpdatePossibility(this.updatePossibility.getValue());
         }
-
         if (clicker instanceof final BezierClicker bezierClicker) {
             bezierClicker.setBezierValue(this.cpsBezier);
             bezierClicker.setCpsUpdatePossibility(this.updatePossibility.getValue());
         }
-
         clicker.setClickAction(attack -> {
             if (attack) {
                 this.mc.doAttack();

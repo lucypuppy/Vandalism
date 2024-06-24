@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement.speed;
 
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.impl.*;
-import de.nekosarekawaii.vandalism.feature.module.template.ModuleModeValue;
+import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleModeValue;
 
 public class SpeedModule extends AbstractModule {
 

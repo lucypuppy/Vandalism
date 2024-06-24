@@ -16,21 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.click;
+package de.nekosarekawaii.vandalism.util.game;
 
-import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
-import lombok.Setter;
+import net.minecraft.util.Util;
 
-import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.List;
 
-@Setter
-public abstract class Clicker implements MinecraftWrapper {
+public class CPSTracker {
 
-    public Consumer<Boolean> clickAction = attack -> {
-    };
+    private final List<Long> clicks = new ArrayList<>();
 
-    public abstract void onUpdate();
+    public void update() {
+        if (this.clicks.isEmpty()) return;
+        this.clicks.removeIf((click) -> Util.getMeasuringTimeMs() - click > 1000);
+    }
 
-    public abstract void onRotate();
+    public void click() {
+        this.clicks.add(Util.getMeasuringTimeMs());
+    }
+
+    public int clicks() {
+        return this.clicks.size();
+    }
 
 }

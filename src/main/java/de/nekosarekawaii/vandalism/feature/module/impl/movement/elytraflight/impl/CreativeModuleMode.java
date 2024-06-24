@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement.elytraflight.im
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.elytraflight.ElytraFlightModule;
-import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
+import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
 
 public class CreativeModuleMode extends ModuleMulti<ElytraFlightModule> implements PlayerUpdateListener {

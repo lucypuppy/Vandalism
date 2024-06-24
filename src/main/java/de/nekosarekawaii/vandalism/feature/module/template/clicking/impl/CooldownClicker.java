@@ -16,31 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.click.impl;
+package de.nekosarekawaii.vandalism.feature.module.template.clicking.impl;
 
-import de.nekosarekawaii.vandalism.util.click.Clicker;
+import de.nekosarekawaii.vandalism.feature.module.template.clicking.Clicker;
 import lombok.Setter;
 import net.minecraft.entity.attribute.EntityAttributes;
 
 @Setter
 public class CooldownClicker extends Clicker {
 
+    public CooldownClicker() {
+        super("Cooldown");
+    }
+
     @Override
     public void onUpdate() {
         final float baseAttackDamage = (float) this.mc.player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
         final float attackCooldown = this.mc.player.getAttackCooldownProgress(0);
         final float finalAttackDamage = baseAttackDamage * (0.2f + attackCooldown * attackCooldown * 0.8f);
-
         if (finalAttackDamage >= 0.98f) {
             this.clickAction.accept(true);
             this.mc.player.resetLastAttackedTicks();
         } else {
             this.clickAction.accept(false);
         }
-    }
-
-    @Override
-    public void onRotate() {
     }
 
 }

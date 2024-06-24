@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.network.BlockCollisionShapeListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.FlightModule;
-import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
+import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
 import de.nekosarekawaii.vandalism.util.game.MinecraftConstants;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;

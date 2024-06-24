@@ -24,7 +24,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.LongValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
 import de.nekosarekawaii.vandalism.event.player.MoveInputListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.VelocityModule;
-import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
+import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
 
 import java.util.Random;
 

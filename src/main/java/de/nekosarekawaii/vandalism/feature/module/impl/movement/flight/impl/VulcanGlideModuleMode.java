@@ -24,7 +24,7 @@ import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListe
 import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.FlightModule;
-import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
+import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 import de.nekosarekawaii.vandalism.util.game.PlayerDamageUtil;

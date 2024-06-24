@@ -24,7 +24,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.event.network.BlockCollisionShapeListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.phase.PhaseModule;
-import de.nekosarekawaii.vandalism.feature.module.template.ModuleMulti;
+import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 import net.minecraft.util.shape.VoxelShapes;
 import org.lwjgl.glfw.GLFW;
