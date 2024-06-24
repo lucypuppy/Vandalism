@@ -27,6 +27,7 @@ import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataen
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.field.IPPortFieldWidget;
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.SessionUtil;
 import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.common.Percentage;
 import de.nekosarekawaii.vandalism.util.game.PacketHelper;
@@ -323,7 +324,7 @@ public class PlayerKickerClientWindow extends StateClientWindow implements DataL
             ImGui.separator();
             final float buttonWidth = ImUtils.modulateDimension(200), buttonHeight = ImUtils.modulateDimension(28);
             if (ImGui.button("Login" + id + "login", buttonWidth, buttonHeight)) {
-                Vandalism.getInstance().getAccountManager().loginCracked(name, uuid);
+                SessionUtil.setSessionAsync(name, uuid);
             }
             if (ImGui.button("Copy Data" + id + "copyData", buttonWidth, buttonHeight)) {
                 this.mc.keyboard.setClipboard(dataEntry.getData());

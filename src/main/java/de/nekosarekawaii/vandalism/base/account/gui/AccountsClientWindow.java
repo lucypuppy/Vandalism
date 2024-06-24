@@ -175,11 +175,7 @@ public class AccountsClientWindow extends ClientWindow {
                     this.renderAccount(currentAccount, false);
                     this.renderHoveredAccountPopup(false);
                     if (ImUtils.subButton("Logout")) {
-                        try {
-                            this.accountManager.logout();
-                        } catch (Throwable t) {
-                            Vandalism.getInstance().getLogger().error("Failed to logout from account.", t);
-                        }
+                        this.accountManager.getFirstAccount().login();
                     }
                 }
                 ImGui.endTabItem();

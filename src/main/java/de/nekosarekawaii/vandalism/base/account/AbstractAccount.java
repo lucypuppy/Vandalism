@@ -20,25 +20,14 @@ package de.nekosarekawaii.vandalism.base.account;
 
 import com.google.gson.JsonObject;
 import com.mojang.authlib.Environment;
-import com.mojang.authlib.exceptions.AuthenticationException;
-import com.mojang.authlib.minecraft.UserApiService;
-import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilEnvironment;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.internal.UpdateSessionListener;
+import de.nekosarekawaii.vandalism.util.SessionUtil;
 import de.nekosarekawaii.vandalism.util.common.TimeFormatter;
 import de.nekosarekawaii.vandalism.util.encryption.AESEncryptionUtil;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.render.PlayerSkinRenderer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.SocialInteractionsManager;
-import net.minecraft.client.realms.RealmsClient;
-import net.minecraft.client.realms.RealmsPeriodicCheckers;
-import net.minecraft.client.session.ProfileKeys;
 import net.minecraft.client.session.Session;
-import net.minecraft.client.session.report.AbuseReportContext;
-import net.minecraft.client.session.report.ReporterEnvironment;
-import net.minecraft.util.Util;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -115,9 +104,7 @@ public abstract class AbstractAccount implements MinecraftWrapper {
     }
 
     public void updateSession(final Session session) {
-        final UpdateSessionListener.UpdateSessionEvent event = new UpdateSessionListener.UpdateSessionEvent(this.session, session);
-        Vandalism.getInstance().getEventSystem().postInternal(UpdateSessionListener.UpdateSessionEvent.ID, event);
-        this.session = event.newSession; // Allow the event to change the session
+        this.session = SessionUtil.markSession(session);
         this.playerSkin = new PlayerSkinRenderer(session.getUuidOrNull());
         this.lastLogin = TimeFormatter.currentDateTime();
     }
@@ -130,7 +117,7 @@ public abstract class AbstractAccount implements MinecraftWrapper {
         CompletableFuture.runAsync(() -> {
             try {
                 this.login0(); // Set the game session and reload the skins
-                if (reloadProfileKeys(this.session, getEnvironment())) {
+                if (SessionUtil.reloadProfileKeys(this.session, getEnvironment())) {
                     this.setStatus("Updated session and logged in");
                 } else {
                     this.setStatus("Failed to update UserApiService");
@@ -141,34 +128,6 @@ public abstract class AbstractAccount implements MinecraftWrapper {
                 throw new RuntimeException(t);
             }
         });
-    }
-
-    public static boolean reloadProfileKeys(final Session session, final Environment environment) {
-        final YggdrasilAuthenticationService authenticationService = new YggdrasilAuthenticationService(mc.getNetworkProxy(), environment);
-        mc.session = session; // We already did that in normal cases, but for people who use this as API we need to do it again
-        mc.getSplashTextLoader().session = session; // We will never know, right?
-        mc.sessionService = authenticationService.createMinecraftSessionService();
-        if (session.getAccountType().equals(Session.AccountType.MSA)) {
-            final UserApiService userApiService = authenticationService.createUserApiService(session.getAccessToken());
-            mc.userApiService = userApiService;
-            mc.userPropertiesFuture = CompletableFuture.supplyAsync(() -> {
-                try {
-                    return userApiService.fetchProperties();
-                } catch (AuthenticationException e) {
-                    MinecraftClient.LOGGER.error("Failed to fetch user properties", e);
-                    return UserApiService.OFFLINE_PROPERTIES;
-                }
-            }, Util.getDownloadWorkerExecutor());
-            mc.socialInteractionsManager = new SocialInteractionsManager(mc, userApiService);
-            mc.profileKeys = ProfileKeys.create(userApiService, session, mc.runDirectory.toPath());
-            mc.abuseReportContext = AbuseReportContext.create(mc.abuseReportContext != null ? mc.abuseReportContext.environment : ReporterEnvironment.ofIntegratedServer(), userApiService);
-            mc.realmsPeriodicCheckers = new RealmsPeriodicCheckers(RealmsClient.createRealmsClient(mc));
-            return userApiService != UserApiService.OFFLINE;
-        } else {
-            // Legacy account types doesn't need reloading the profile since we can't get the required fields (access token) for it
-            // So we just skip it
-            return true;
-        }
     }
 
     public void saveSession(final JsonObject node) throws Throwable {
