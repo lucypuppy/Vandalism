@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.base.account;
 
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.account.config.AccountsConfig;
 import de.nekosarekawaii.vandalism.base.account.gui.AccountsClientWindow;
 import de.nekosarekawaii.vandalism.base.account.type.EasyMCAccount;
@@ -27,25 +28,18 @@ import de.nekosarekawaii.vandalism.base.account.type.microsoft.MSDeviceCodeAccou
 import de.nekosarekawaii.vandalism.base.account.type.microsoft.MSLocalWebserverAccount;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.clientwindow.ClientWindowManager;
+import de.nekosarekawaii.vandalism.event.internal.UpdateSessionListener;
+import de.nekosarekawaii.vandalism.injection.access.ISession;
 import de.nekosarekawaii.vandalism.util.common.Storage;
-import de.nekosarekawaii.vandalism.util.common.UUIDUtil;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.session.Session;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Uuids;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-public class AccountManager extends Storage<AbstractAccount> {
-
-    private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
+public class AccountManager extends Storage<AbstractAccount> implements UpdateSessionListener {
 
     public static final Map<AbstractAccount, AccountFactory> ACCOUNT_TYPES = new LinkedHashMap<>();
 
@@ -71,8 +65,20 @@ public class AccountManager extends Storage<AbstractAccount> {
 
     @Override
     public void init() {
-        final Session session = MinecraftClient.getInstance().getSession();
-        this.firstAccount = this.currentAccount = new SessionAccount(
+        Vandalism.getInstance().getEventSystem().subscribe(UpdateSessionEvent.ID, this);
+    }
+
+    @Override
+    public void onUpdateSession(UpdateSessionEvent event) {
+        if (this.firstAccount == null) {
+            this.firstAccount = this.currentAccount = fromSession(event.newSession);
+        } else if (!((ISession) event.newSession).vandalism$isSelfInflicted()) {
+            this.currentAccount = fromSession(event.newSession);
+        }
+    }
+
+    private AbstractAccount fromSession(final Session session) {
+        return new SessionAccount(
                 session.getUsername(),
                 session.getUuidOrNull() != null ? session.getUuidOrNull().toString() : "",
                 session.getAccessToken(),
@@ -81,45 +87,8 @@ public class AccountManager extends Storage<AbstractAccount> {
         );
     }
 
-    public void logout() throws Throwable {
-        this.firstAccount.login();
-    }
-
-    public void loginCracked(final String username) {
-        this.loginCracked(username, "", false);
-    }
-
-    public void loginCracked(final String username, final boolean add) {
-        this.loginCracked(username, "", add);
-    }
-
-    public void loginCracked(final String username, final String uuid) {
-        this.loginCracked(username, uuid, false);
-    }
-
-    public void loginCracked(final String username, final String uuid, final boolean add) {
-        EXECUTOR.submit(() -> {
-            String fixedUUID = uuid;
-            if (fixedUUID.isBlank()) {
-                try {
-                    fixedUUID = UUIDUtil.getUUIDFromName(username);
-                } catch (final Throwable ignored) {
-                    fixedUUID = Uuids.getOfflinePlayerUuid(username).toString();
-                }
-            }
-            final SessionAccount sessionAccount = new SessionAccount(
-                    username,
-                    fixedUUID,
-                    "",
-                    "",
-                    ""
-            );
-            if (add) {
-                this.add(sessionAccount);
-            }
-            sessionAccount.login();
-            ChatUtil.infoChatMessage("Username changed to: " + Formatting.DARK_AQUA + username);
-        });
+    public AbstractAccount getFirstAccount() {
+        return firstAccount;
     }
 
 }
