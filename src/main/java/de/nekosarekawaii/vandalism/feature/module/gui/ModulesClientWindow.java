@@ -79,7 +79,7 @@ public class ModulesClientWindow extends ClientWindow {
                 for (final AbstractModule module : moduleManager.getList()) {
                     final String moduleName = module.getName();
                     final boolean doesContainName = StringUtils.contains(moduleName, searchInput) || StringUtils.contains(moduleName.replace(" ", ""), searchInput);
-                    if (doesContainName || StringUtils.contains(module.getDescription(), searchInput)) {
+                    if (doesContainName || (module.getDescription() != null && StringUtils.contains(module.getDescription(), searchInput))) {
                         this.renderModule(module, "search");
                     }
                 }
@@ -104,7 +104,8 @@ public class ModulesClientWindow extends ClientWindow {
                 ImGui.beginChild(modulesFavoritesIdentifier + "scrolllist", -1, -1, true);
                 for (final AbstractModule module : favoriteModules) {
                     if (!this.favoriteModulesSearchInput.get().isBlank()) {
-                        if (!(StringUtils.contains(module.getName(), this.favoriteModulesSearchInput.get()) || StringUtils.contains(module.getDescription(), this.favoriteModulesSearchInput.get()))) {
+                        if (!(StringUtils.contains(module.getName(), this.favoriteModulesSearchInput.get()) ||
+                                (module.getDescription() != null && StringUtils.contains(module.getDescription(), this.favoriteModulesSearchInput.get())))) {
                             continue;
                         }
                     }
@@ -131,7 +132,8 @@ public class ModulesClientWindow extends ClientWindow {
                 ImGui.beginChild(modulesActivatedIdentifier + "scrolllist", -1, -1, true);
                 for (final AbstractModule module : activatedModules) {
                     if (!this.activatedModulesSearchInput.get().isBlank()) {
-                        if (!(StringUtils.contains(module.getName(), this.activatedModulesSearchInput.get()) || StringUtils.contains(module.getDescription(), this.activatedModulesSearchInput.get()))) {
+                        if (!(StringUtils.contains(module.getName(), this.activatedModulesSearchInput.get()) ||
+                                (module.getDescription() != null && StringUtils.contains(module.getDescription(), this.activatedModulesSearchInput.get())))) {
                             continue;
                         }
                     }
@@ -258,7 +260,7 @@ public class ModulesClientWindow extends ClientWindow {
 
     private void renderModuleInfo(final AbstractModule module, final boolean wrapText) {
         final String description = module.getDescription();
-        if (description.isEmpty()) {
+        if (description == null) {
             return;
         }
         if (wrapText) ImGui.textWrapped(description);

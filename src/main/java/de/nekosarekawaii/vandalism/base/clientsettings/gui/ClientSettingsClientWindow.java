@@ -59,9 +59,9 @@ public class ClientSettingsClientWindow extends ClientWindow {
                     final String tabId = "##" + name + "settings";
                     boolean containsSearchInput = false;
                     if (!searchInput.isBlank()) {
-                        containsSearchInput = valueGroup.getValues().stream().anyMatch(v -> {
-                            return v.getName().toLowerCase().contains(searchInput.toLowerCase()) || v.getDescription().toLowerCase().contains(searchInput.toLowerCase());
-                        });
+                        containsSearchInput = valueGroup.getValues().stream().anyMatch(v ->
+                                v.getName().toLowerCase().contains(searchInput.toLowerCase())
+                                        || (v.getDescription() != null && v.getDescription().toLowerCase().contains(searchInput.toLowerCase())));
                     }
                     if (containsSearchInput) {
                         ImGui.pushStyleColor(ImGuiCol.Tab, 1.0f, 0.0f, 0.0f, 0.4f);

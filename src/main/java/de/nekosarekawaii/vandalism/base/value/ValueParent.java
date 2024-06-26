@@ -91,7 +91,7 @@ public interface ValueParent extends IName {
             if (!containingText.isEmpty() && (
                     !StringUtils.contains(name, containingText) &&
                             !StringUtils.contains(name.replace(" ", ""), containingText) &&
-                            !StringUtils.contains(value.getDescription(), containingText)
+                            (value.getDescription() == null || !StringUtils.contains(value.getDescription(), containingText))
             )) {
                 return;
             }
@@ -121,10 +121,7 @@ public interface ValueParent extends IName {
     }
 
     default void renderValueDescription(final Value<?> value) {
-        if (value.getDescription() == null) {
-            return;
-        }
-        if (ImGui.isItemHovered()) {
+        if (value.getDescription() != null && ImGui.isItemHovered()) {
             ImGui.beginTooltip();
             ImGui.text(value.getDescription());
             ImGui.endTooltip();
