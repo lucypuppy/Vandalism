@@ -39,7 +39,6 @@ public class ClientSettingsClientWindow extends ClientWindow {
     private final ClientSettings clientSettings;
 
     private final ImString searchInput = new ImString();
-    private final ImString perTabSearchInput = new ImString();
 
     public ClientSettingsClientWindow(final ClientSettings clientSettings) {
         super("Client Settings", Category.CONFIG);
@@ -71,19 +70,9 @@ public class ClientSettingsClientWindow extends ClientWindow {
                     }
                     if (ImGui.beginTabItem(name + tabId + "tab")) {
                         ImGui.pushStyleColor(ImGuiCol.ChildBg, 0.0f, 0.0f, 0.0f, 0.0f);
-                        if (searchInput.isBlank()) {
-                            ImGui.setNextItemWidth(-1);
-                            ImGui.inputText(tabId + "perTabSearchInput", this.perTabSearchInput);
-                            ImGui.separator();
-                        }
                         ImGui.beginChild(tabId + "values", ImGui.getColumnWidth(), (-ImGui.getTextLineHeightWithSpacing()) * 3, true);
-                        final String tabSearchInput = this.perTabSearchInput.get();
-                        if (searchInput.isBlank()) {
-                            if (!tabSearchInput.isBlank()) valueGroup.renderValues(tabSearchInput);
-                            else valueGroup.renderValues();
-                        } else {
-                            valueGroup.renderValues(searchInput);
-                        }
+                        if (searchInput.isBlank()) valueGroup.renderValues();
+                        else valueGroup.renderValues(searchInput);
                         ImGui.endChild();
                         ImGui.popStyleColor();
                         ImGui.separator();
