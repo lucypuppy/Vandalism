@@ -258,6 +258,9 @@ public class ModulesClientWindow extends ClientWindow {
 
     private void renderModuleInfo(final AbstractModule module, final boolean wrapText) {
         final String description = module.getDescription();
+        if (description.isEmpty()) {
+            return;
+        }
         if (wrapText) ImGui.textWrapped(description);
         else ImGui.text(description);
         if (module.isExperimental()) {
