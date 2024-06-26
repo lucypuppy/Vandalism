@@ -23,12 +23,13 @@ import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import lombok.Getter;
 import net.raphimc.vialoader.util.VersionRange;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public abstract class Feature implements IName, MinecraftWrapper {
 
     private final String name;
     @Getter
-    private final String description;
+    private final @Nullable String description;
     @Getter
     private final Category category;
     @Getter
@@ -36,11 +37,11 @@ public abstract class Feature implements IName, MinecraftWrapper {
     @Getter
     private boolean experimental;
 
-    public Feature(String name, String description, Category category) {
+    public Feature(String name, @Nullable String description, Category category) {
         this(name, description, category, null);
     }
 
-    public Feature(String name, String description, Category category, VersionRange supportedVersions) {
+    public Feature(String name, @Nullable String description, Category category, VersionRange supportedVersions) {
         this.name = name;
         this.description = description;
         this.category = category;

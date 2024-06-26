@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.base.value;
 import com.google.gson.JsonObject;
 import de.nekosarekawaii.vandalism.util.common.IName;
 import lombok.Getter;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
@@ -31,7 +32,7 @@ public abstract class Value<V> implements IName {
     private final ValueParent parent;
     private final String name;
     @Getter
-    private final String description;
+    private final @Nullable String description;
 
     @Getter
     private final V defaultValue;
@@ -40,7 +41,7 @@ public abstract class Value<V> implements IName {
     private BiConsumer<V, V> valueChangeConsumer;
     private BooleanSupplier visibleCondition;
 
-    public Value(ValueParent parent, String name, String description, V defaultValue) {
+    public Value(ValueParent parent, String name, @Nullable String description, V defaultValue) {
         this.parent = parent;
         this.name = name;
         this.description = description;

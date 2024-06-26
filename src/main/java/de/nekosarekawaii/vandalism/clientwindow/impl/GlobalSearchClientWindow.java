@@ -49,7 +49,9 @@ public class GlobalSearchClientWindow extends ClientWindow implements DataListWi
                     settingsList.add(new Pair<>("Type", "Client Setting"));
                     settingsList.add(new Pair<>("Category", settingsGroup.getName()));
                     settingsList.add(new Pair<>("Name", setting.getName()));
-                    settingsList.add(new Pair<>("Description", setting.getDescription()));
+                    if (setting.getDescription() != null) {
+                        settingsList.add(new Pair<>("Description", setting.getDescription()));
+                    }
                     this.searchEntries.add(new ListDataEntry(settingsList));
                 }
             }
@@ -59,7 +61,9 @@ public class GlobalSearchClientWindow extends ClientWindow implements DataListWi
             modulesList.add(new Pair<>("Type", "Module"));
             modulesList.add(new Pair<>("Category", abstractModule.getCategory().getName()));
             modulesList.add(new Pair<>("Name", abstractModule.getName()));
-            modulesList.add(new Pair<>("Description", abstractModule.getDescription()));
+            if (abstractModule.getDescription() != null) {
+                modulesList.add(new Pair<>("Description", abstractModule.getDescription()));
+            }
             this.searchEntries.add(new ListDataEntry(modulesList));
             for (int i = 1; i < abstractModule.getValues().size(); i++) {
                 final Value<?> value = abstractModule.getValues().get(i);
@@ -67,7 +71,9 @@ public class GlobalSearchClientWindow extends ClientWindow implements DataListWi
                 valuesList.add(new Pair<>("Type", "Module Value"));
                 valuesList.add(new Pair<>("Module", value.getParent().getName()));
                 valuesList.add(new Pair<>("Name", value.getName()));
-                valuesList.add(new Pair<>("Description", value.getDescription()));
+                if (value.getDescription() != null) {
+                    valuesList.add(new Pair<>("Description", value.getDescription()));
+                }
                 this.searchEntries.add(new ListDataEntry(valuesList));
             }
         }
@@ -77,10 +83,12 @@ public class GlobalSearchClientWindow extends ClientWindow implements DataListWi
             commandsList.add(new Pair<>("Category", abstractCommand.getCategory().getName()));
             commandsList.add(new Pair<>("Name", abstractCommand.getName()));
             String description = abstractCommand.getDescription();
-            if (description.contains("\n")) {
-                description = description.split("\n")[0];
+            if (description != null) {
+                if (description.contains("\n")) {
+                    description = description.split("\n")[0];
+                }
+                commandsList.add(new Pair<>("Description", description));
             }
-            commandsList.add(new Pair<>("Description", description));
             this.searchEntries.add(new ListDataEntry(commandsList));
         }
     }

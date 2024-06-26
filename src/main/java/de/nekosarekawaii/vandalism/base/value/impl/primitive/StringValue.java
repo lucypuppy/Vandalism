@@ -66,7 +66,7 @@ public class StringValue extends Value<String> {
         if (ImGui.inputText(id, input, flags)) {
             this.setValue(input.get());
         }
-        if (ImGui.isItemHovered()) {
+        if (this.getDescription() != null && ImGui.isItemHovered()) {
             ImGui.beginTooltip();
             ImGui.text(this.getDescription());
             ImGui.endTooltip();
