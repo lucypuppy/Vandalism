@@ -24,16 +24,19 @@ import de.nekosarekawaii.vandalism.integration.serverlist.ServerPingerWidget;
 import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -50,17 +53,21 @@ public abstract class MixinGameMenuScreen extends Screen {
     @Final
     private static Text REPORT_BUGS_TEXT;
 
+    @Shadow
+    public abstract void render(DrawContext context, int mouseX, int mouseY, float delta);
+
     protected MixinGameMenuScreen(final Text ignored) {
         super(ignored);
     }
 
-    @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/GameMenuScreen;addDrawableChild(Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;"), cancellable = true)
-    private void removeTitleText(final CallbackInfo ci) {
+    @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/GameMenuScreen;addDrawableChild(Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;"))
+    private Element removeTitleText(final GameMenuScreen instance, final Element element) {
         final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
         if (enhancedServerListSettings.enhancedServerList.getValue() && enhancedServerListSettings.serverPingerWidget.getValue()) {
-            ci.cancel();
             ServerPingerWidget.ping(this.client.getCurrentServerEntry());
+            return element;
         }
+        return instance.addDrawableChild((TextWidget) element);
     }
 
     @Inject(method = "render", at = @At(value = "RETURN"))
