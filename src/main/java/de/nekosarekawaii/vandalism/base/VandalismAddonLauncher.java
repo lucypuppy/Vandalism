@@ -19,7 +19,9 @@
 package de.nekosarekawaii.vandalism.base;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.feature.Feature;
 import net.fabricmc.loader.api.FabricLoader;
+import net.lenni0451.reflect.Enums;
 
 import java.util.function.Consumer;
 
@@ -52,6 +54,14 @@ public interface VandalismAddonLauncher {
         for (final VandalismAddonLauncher entrypoint : FabricLoader.getInstance().getEntrypoints("vandalism:onLaunch", VandalismAddonLauncher.class)) {
             consumer.accept(entrypoint);
         }
+    }
+
+    default Feature.Category createFeatureCategory(final String name) {
+        final Feature.Category category = Enums.newInstance(Feature.Category.class, name.toUpperCase(), Feature.Category.values().length,
+                new Class[]{ String.class }, new Object[]{ name });
+        Enums.addEnumInstance(Feature.Category.class, category);
+
+        return category;
     }
 
 }
