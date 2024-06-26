@@ -41,15 +41,11 @@ public abstract class Value<V> implements IName {
     private BooleanSupplier visibleCondition;
 
     public Value(ValueParent parent, String name, String description, V defaultValue) {
-        this(parent, name, description, defaultValue, defaultValue);
-    }
-
-    public Value(ValueParent parent, String name, String description, V defaultValue, V value) {
         this.parent = parent;
         this.name = name;
         this.description = description;
         this.defaultValue = defaultValue;
-        this.value = value;
+        this.value = defaultValue;
         parent.getValues().add(this);
     }
 
