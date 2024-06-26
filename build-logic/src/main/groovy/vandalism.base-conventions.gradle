@@ -1,5 +1,6 @@
 plugins {
     id "java-library"
+    id "maven-publish"
 }
 
 base {
@@ -60,6 +61,19 @@ jar {
     from("LICENSE") {
         rename {
             "${it}_${maven_name}"
+        }
+    }
+}
+
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = project.maven_group
+            artifactId = project.maven_name
+            version = project.maven_version
+
+            from components.java
         }
     }
 }
