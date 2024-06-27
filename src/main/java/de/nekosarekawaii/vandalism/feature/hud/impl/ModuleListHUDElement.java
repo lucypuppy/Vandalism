@@ -25,6 +25,9 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.internal.ModuleToggleListener;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.render.Buffers;
+import de.nekosarekawaii.vandalism.render.gl.render.AttribConsumerProvider;
+import de.nekosarekawaii.vandalism.render.gl.render.ImmediateRenderer;
 import de.nekosarekawaii.vandalism.util.common.AlignmentX;
 import de.nekosarekawaii.vandalism.util.common.AlignmentY;
 import net.minecraft.client.gui.DrawContext;
@@ -84,29 +87,29 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
     @Override
     protected void onRender(final DrawContext context, final float delta, final boolean inGame) {
         this.sort();
-        final Vector2f sizeVec = new Vector2f();
-        int yOffset = 0;
-        this.width = 0;
-        for (final String activatedModule : this.activatedModules) {
-            this.getTextSize(activatedModule, sizeVec);
-            final int textWidth = (int) sizeVec.x;
-            final int textHeight = (int) sizeVec.y;
-            switch (this.alignmentX.getValue()) {
-                case MIDDLE ->
-                        this.drawText(context, activatedModule, this.getX() - textWidth / 2, this.getY() + yOffset + this.heightOffset.getValue());
-                case RIGHT ->
-                        this.drawText(context, activatedModule, this.getX() - textWidth, this.getY() + yOffset + this.heightOffset.getValue());
-                default ->
-                        this.drawText(context, activatedModule, this.getX(), this.getY() + yOffset + this.heightOffset.getValue());
+        try (final ImmediateRenderer renderer = new ImmediateRenderer(Buffers.getImmediateBufferPool())) {
+            final Vector2f sizeVec = new Vector2f();
+            int yOffset = 0;
+            this.width = 0;
+            for (final String activatedModule : this.activatedModules) {
+                this.getTextSize(activatedModule, sizeVec);
+                final int textWidth = (int) sizeVec.x;
+                final int textHeight = (int) sizeVec.y;
+                switch (this.alignmentX.getValue()) {
+                    case MIDDLE -> this.drawText(renderer, context, activatedModule, this.getX() - textWidth / 2, this.getY() + yOffset + this.heightOffset.getValue());
+                    case RIGHT -> this.drawText(renderer, context, activatedModule, this.getX() - textWidth, this.getY() + yOffset + this.heightOffset.getValue());
+                    default -> this.drawText(renderer, context, activatedModule, this.getX(), this.getY() + yOffset + this.heightOffset.getValue());
+                }
+                this.width = Math.max(this.width, textWidth);
+                yOffset += textHeight + this.heightOffset.getValue();
             }
-            this.width = Math.max(this.width, textWidth);
-            yOffset += textHeight + this.heightOffset.getValue();
+            this.height = yOffset;
+            renderer.draw();
         }
-        this.height = yOffset;
     }
 
-    private void drawText(final DrawContext context, final String text, final int x, final int y) {
-        this.drawText(text, context, x, y, this.shadow.getValue(), this.color.getColor(-y * 20).getRGB());
+    private void drawText(AttribConsumerProvider batch, final DrawContext context, final String text, final int x, final int y) {
+        this.drawText(batch, text, context, x, y, this.shadow.getValue(), this.color.getColor(-y * 20).getRGB());
     }
 
     private void sort() {

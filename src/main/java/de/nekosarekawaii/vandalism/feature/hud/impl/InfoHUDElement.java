@@ -31,7 +31,10 @@ import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.TickBaseModule;
 import de.nekosarekawaii.vandalism.injection.access.IRenderTickCounter;
+import de.nekosarekawaii.vandalism.render.Buffers;
 import de.nekosarekawaii.vandalism.render.Shaders;
+import de.nekosarekawaii.vandalism.render.gl.render.AttribConsumerProvider;
+import de.nekosarekawaii.vandalism.render.gl.render.ImmediateRenderer;
 import de.nekosarekawaii.vandalism.util.common.AlignmentX;
 import de.nekosarekawaii.vandalism.util.common.AlignmentY;
 import de.nekosarekawaii.vandalism.util.game.CPSTracker;
@@ -318,90 +321,93 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         }
     }
 
-    private void drawText(final DrawContext context, final Text text, final int x, final int y, final boolean isPostProcessing) {
+    private void drawText(AttribConsumerProvider batch, final DrawContext context, final Text text, final int x, final int y, final boolean isPostProcessing) {
         if (this.glowOutline.getValue()) {
             context.fill(
                     x - 2,
-                    y + (!this.customFont.getValue() ? 8 : 0) - this.getFontHeight(),
+                    y - 1,
                     x + this.getTextWidth(text) + 2,
-                    y + 2 + (!this.customFont.getValue() ? 8 : 0),
+                    y + 1 + this.getFontHeight(),
                     1677721600
             );
         }
         if (!isPostProcessing) {
-            this.drawText(text, context, x, y, this.glowOutline.getValue() || this.shadow.getValue(), this.infoNameColor.getColor(-y * 20).getRGB());
+            this.drawText(batch, text, context, x, y, this.glowOutline.getValue() || this.shadow.getValue(), this.infoNameColor.getColor(-y * 20).getRGB());
         }
     }
 
     private void drawInfo(final DrawContext context, final Map<String, String> infoMap, final boolean isPostProcessing) {
-        final float outlineWidth = this.glowOutlineWidth.getValue();
-        final float outlineAccuracy = this.glowOutlineAccuracy.getValue();
-        final float outlineExponent = this.glowOutlineExponent.getValue();
-        final Color glowOutlineColor = this.glowOutlineColor.getColor();
-        final Vector2f sizeVec = new Vector2f();
+        try (final ImmediateRenderer renderer = new ImmediateRenderer(Buffers.getImmediateBufferPool())) {
+            final float outlineWidth = this.glowOutlineWidth.getValue();
+            final float outlineAccuracy = this.glowOutlineAccuracy.getValue();
+            final float outlineExponent = this.glowOutlineExponent.getValue();
+            final Color glowOutlineColor = this.glowOutlineColor.getColor();
+            final Vector2f sizeVec = new Vector2f();
 
-        if (isPostProcessing) {
-            Shaders.getGlowOutlineEffect().configure(outlineWidth, outlineAccuracy, outlineExponent);
-            Shaders.getGlowOutlineEffect().bindMask();
-        }
+            if (isPostProcessing) {
+                Shaders.getGlowOutlineEffect().configure(outlineWidth, outlineAccuracy, outlineExponent);
+                Shaders.getGlowOutlineEffect().bindMask();
+            }
 
-        int width = 0, height = 0;
+            int width = 0, height = 0;
 
-        for (final Map.Entry<String, String> infoEntry : infoMap.entrySet()) {
-            if (this.alignmentX.getValue() == AlignmentX.MIDDLE) {
-                final Text[] infoParts = new Text[]{Text.literal(infoEntry.getKey()), Text.literal(infoEntry.getValue())};
-                for (int i = 0; i < infoParts.length; i++) {
-                    final Text infoPart = infoParts[i];
-                    this.getTextSize(infoPart, sizeVec);
-                    final int textWidth = (int) sizeVec.x;
-                    final int textHeight = (int) sizeVec.y;
-                    final Text text = i == 0 ? infoPart : Text.empty().setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.WHITE))).append(infoPart);
-                    this.drawText(context, text, this.getX() - textWidth / 2, this.getY() + height, isPostProcessing);
-                    height += textHeight + 2;
+            for (final Map.Entry<String, String> infoEntry : infoMap.entrySet()) {
+                if (this.alignmentX.getValue() == AlignmentX.MIDDLE) {
+                    final Text[] infoParts = new Text[]{Text.literal(infoEntry.getKey()), Text.literal(infoEntry.getValue())};
+                    for (int i = 0; i < infoParts.length; i++) {
+                        final Text infoPart = infoParts[i];
+                        this.getTextSize(infoPart, sizeVec);
+                        final int textWidth = (int) sizeVec.x;
+                        final int textHeight = (int) sizeVec.y;
+                        final Text text = i == 0 ? infoPart : Text.empty().setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.WHITE))).append(infoPart);
+                        this.drawText(renderer, context, text, this.getX() - textWidth / 2, this.getY() + height, isPostProcessing);
+                        height += textHeight + 2;
+                        if (textWidth > width) {
+                            width = textWidth;
+                        }
+                    }
+                } else {
+                    final Text text;
+                    int textWidth = 0;
+                    switch (this.alignmentX.getValue()) {
+                        case LEFT -> {
+                            text = Text.empty()
+                                    .append(Text.literal(infoEntry.getKey()).withColor(this.infoNameColor.getColor().getRGB()))
+                                    .append(Text.literal(" » ").setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.GRAY))))
+                                    .append(infoEntry.getValue()).setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.WHITE)));
+                            this.getTextSize(text, sizeVec);
+                            textWidth = (int) sizeVec.x;
+                            this.drawText(renderer, context, text, this.getX(), this.getY() + height, isPostProcessing);
+                            height += sizeVec.y + 2;
+                        }
+                        case RIGHT -> {
+                            text = Text.empty()
+                                    .append(Text.literal(infoEntry.getKey()).withColor(this.infoNameColor.getColor().getRGB()))
+                                    .append(Text.literal(" « ").setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.GRAY))))
+                                    .append(infoEntry.getValue()).setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.WHITE)));
+                            this.getTextSize(text, sizeVec);
+                            textWidth = (int) sizeVec.x;
+                            this.drawText(renderer, context, text, this.getX() - textWidth, this.getY() + height, isPostProcessing);
+                            height += sizeVec.y + 2;
+                        }
+                    }
                     if (textWidth > width) {
                         width = textWidth;
                     }
                 }
-            } else {
-                final Text text;
-                int textWidth = 0;
-                switch (this.alignmentX.getValue()) {
-                    case LEFT -> {
-                        text = Text.empty()
-                                .append(Text.literal(infoEntry.getKey()).withColor(this.infoNameColor.getColor().getRGB()))
-                                .append(Text.literal(" » ").setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.GRAY))))
-                                .append(infoEntry.getValue()).setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.WHITE)));
-                        this.getTextSize(text, sizeVec);
-                        textWidth = (int) sizeVec.x;
-                        this.drawText(context, text, this.getX(), this.getY() + height, isPostProcessing);
-                        height += sizeVec.y + 2;
-                    }
-                    case RIGHT -> {
-                        text = Text.empty()
-                                .append(Text.literal(infoEntry.getKey()).withColor(this.infoNameColor.getColor().getRGB()))
-                                .append(Text.literal(" « ").setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.GRAY))))
-                                .append(infoEntry.getValue()).setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.WHITE)));
-                        this.getTextSize(text, sizeVec);
-                        textWidth = (int) sizeVec.x;
-                        this.drawText(context, text, this.getX() - textWidth, this.getY() + height, isPostProcessing);
-                        height += sizeVec.y + 2;
-                    }
-                }
-                if (textWidth > width) {
-                    width = textWidth;
-                }
             }
-        }
 
-        if (isPostProcessing) {
-            Shaders.getGlowOutlineEffect().renderFullscreen(Shaders.getColorFillEffect().maskFramebuffer().get(), false);
-            Shaders.getColorFillEffect().setColor(glowOutlineColor);
-            Shaders.getColorFillEffect().renderFullscreen(this.mc.getFramebuffer(), false);
-        }
+            renderer.draw();
 
-        this.width = width;
-        this.height = height - this.getFontHeight();
-//        context.fill(getX(), getY(), getX() + this.width, getY() + this.height, 0x80000000);
+            if (isPostProcessing) {
+                Shaders.getGlowOutlineEffect().renderFullscreen(Shaders.getColorFillEffect().maskFramebuffer().get(), false);
+                Shaders.getColorFillEffect().setColor(glowOutlineColor);
+                Shaders.getColorFillEffect().renderFullscreen(this.mc.getFramebuffer(), false);
+            }
+
+            this.width = width;
+            this.height = height - this.getFontHeight();
+        }
     }
 
     @Override
