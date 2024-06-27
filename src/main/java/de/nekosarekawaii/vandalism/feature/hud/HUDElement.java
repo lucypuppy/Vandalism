@@ -27,6 +27,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindowScreen;
 import de.nekosarekawaii.vandalism.render.Buffers;
+import de.nekosarekawaii.vandalism.render.gl.render.AttribConsumerProvider;
 import de.nekosarekawaii.vandalism.render.gl.render.ImmediateRenderer;
 import de.nekosarekawaii.vandalism.render.text.AtlasFont;
 import de.nekosarekawaii.vandalism.render.text.AtlasFontRenderer;
@@ -266,36 +267,42 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
     }
 
     protected void drawText(final Text text, final DrawContext context, final float x, final float y, final boolean shadow, final int color) {
+        try (final ImmediateRenderer renderer = new ImmediateRenderer(Buffers.getImmediateBufferPool())) {
+            this.drawText(renderer, text, context, x, y, shadow, color);
+            renderer.draw();
+        }
+    }
+
+    protected void drawText(AttribConsumerProvider batch, final Text text, final DrawContext context, final float x, final float y, final boolean shadow, final int color) {
         if (this.fontRenderer == null || !this.customFont.getValue()) {
             context.drawText(this.mc.textRenderer, text, (int) x, (int) y, color, shadow);
             return;
         }
+        this.fontRenderer.drawScaled(
+                text, x, y, 0.0f,
+                shadow, color, TEXT_ALIGN,
+                context.getMatrices().peek().getPositionMatrix(), batch, null
+        );
+    }
+
+    protected void drawText(final String text, final DrawContext context, final float x, final float y, final boolean shadow, final int color) {
         try (final ImmediateRenderer renderer = new ImmediateRenderer(Buffers.getImmediateBufferPool())) {
-            this.fontRenderer.drawScaled(
-                    text, x, y, 0.0f,
-                    shadow, color, TEXT_ALIGN,
-                    context.getMatrices().peek().getPositionMatrix(), renderer, null
-            );
+            this.drawText(renderer, text, context, x, y, shadow, color);
             renderer.draw();
         } catch (final Exception e) {
             Vandalism.getInstance().getLogger().error("Failed to draw text: {}", text, e);
         }
     }
 
-    protected void drawText(final String text, final DrawContext context, final float x, final float y, final boolean shadow, final int color) {
+    protected void drawText(AttribConsumerProvider batch, final String text, final DrawContext context, final float x, final float y, final boolean shadow, final int color) {
         if (this.fontRenderer == null || !this.customFont.getValue()) {
             context.drawText(this.mc.textRenderer, text, (int) x, (int) y, color, shadow);
             return;
         }
-        try (final ImmediateRenderer renderer = new ImmediateRenderer(Buffers.getImmediateBufferPool())) {
-            this.fontRenderer.drawScaled(
-                    text, x, y, 0.0f,
-                    shadow, color, TEXT_ALIGN,
-                    context.getMatrices().peek().getPositionMatrix(), renderer, null
-            );
-            renderer.draw();
-        } catch (final Exception e) {
-            Vandalism.getInstance().getLogger().error("Failed to draw text: {}", text, e);
-        }
+        this.fontRenderer.drawScaled(
+                text, x, y, 0.0f,
+                shadow, color, TEXT_ALIGN,
+                context.getMatrices().peek().getPositionMatrix(), batch, null
+        );
     }
 }
