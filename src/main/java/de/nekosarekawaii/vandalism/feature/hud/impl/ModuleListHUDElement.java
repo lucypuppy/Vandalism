@@ -28,6 +28,7 @@ import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.common.AlignmentX;
 import de.nekosarekawaii.vandalism.util.common.AlignmentY;
 import net.minecraft.client.gui.DrawContext;
+import org.joml.Vector2f;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -83,15 +84,18 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
     @Override
     protected void onRender(final DrawContext context, final float delta, final boolean inGame) {
         this.sort();
-        int yOffset = this.getFontHeight();
+        final Vector2f sizeVec = new Vector2f();
+        int yOffset = 0;
+        this.width = 0;
         for (final String activatedModule : this.activatedModules) {
-            final int textWidth = this.getTextWidth(activatedModule);
-            final int textHeight = this.getTextHeight(activatedModule);
+            this.getTextSize(activatedModule, sizeVec);
+            final int textWidth = (int) sizeVec.x;
+            final int textHeight = (int) sizeVec.y;
             switch (this.alignmentX.getValue()) {
                 case MIDDLE ->
-                        this.drawText(context, activatedModule, (this.getX() + this.width / 2) - (textWidth / 2), this.getY() + yOffset + this.heightOffset.getValue());
+                        this.drawText(context, activatedModule, this.getX() - textWidth / 2, this.getY() + yOffset + this.heightOffset.getValue());
                 case RIGHT ->
-                        this.drawText(context, activatedModule, (this.getX() + this.width) - textWidth, this.getY() + yOffset + this.heightOffset.getValue());
+                        this.drawText(context, activatedModule, this.getX() - textWidth, this.getY() + yOffset + this.heightOffset.getValue());
                 default ->
                         this.drawText(context, activatedModule, this.getX(), this.getY() + yOffset + this.heightOffset.getValue());
             }
@@ -121,14 +125,9 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
                 }
                 this.activatedModules.add(activatedModule);
             }
-            this.activatedModules.sort((s1, s2) -> {
-                final int compare;
-                switch (this.alignmentY.getValue()) {
-                    case TOP, MIDDLE -> compare = Integer.compare(this.getTextWidth(s2), this.getTextWidth(s1));
-                    case BOTTOM -> compare = Integer.compare(this.getTextWidth(s1), this.getTextWidth(s2));
-                    default -> compare = 0;
-                }
-                return compare;
+            this.activatedModules.sort((s1, s2) -> switch (this.alignmentY.getValue()) {
+                case TOP, MIDDLE -> this.getTextWidth(s2) - this.getTextWidth(s1);
+                case BOTTOM -> this.getTextWidth(s1) - this.getTextWidth(s2);
             });
         }
     }

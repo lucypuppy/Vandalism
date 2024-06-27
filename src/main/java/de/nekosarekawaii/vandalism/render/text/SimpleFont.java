@@ -65,6 +65,7 @@ public class SimpleFont extends AtlasFont {
     private float widestGlyph;
     private float fontHeight;
     private float fontMinY, fontMaxY;
+    private float fontAscent, fontDescent, fontLineGap;
 
     private SimpleFont(float fontSize) {
         this.fontSize = fontSize;
@@ -164,6 +165,12 @@ public class SimpleFont extends AtlasFont {
                 if (glyph.getOffsetY() + glyph.getHeight() > this.fontMaxY) this.fontMaxY = glyph.getOffsetY() + glyph.getHeight();
             }
         }
+        final int[] ascent = new int[1], descent = new int[1], lineGap = new int[1];
+        stbtt_GetFontVMetrics(this.fontInfos.get(0), ascent, descent, lineGap);
+        final float fontScale = stbtt_ScaleForPixelHeight(this.fontInfos.get(0), this.fontSize);
+        this.fontAscent = ascent[0] * fontScale;
+        this.fontDescent = descent[0] * fontScale;
+        this.fontLineGap = lineGap[0] * fontScale;
     }
 
     @Override
@@ -189,6 +196,21 @@ public class SimpleFont extends AtlasFont {
     @Override
     public float getFontMaxY() {
         return this.fontMaxY;
+    }
+
+    @Override
+    public float getFontAscent() {
+        return this.fontAscent;
+    }
+
+    @Override
+    public float getFontDescent() {
+        return this.fontDescent;
+    }
+
+    @Override
+    public float getFontLineGap() {
+        return this.fontLineGap;
     }
 
     @Override

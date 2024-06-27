@@ -28,6 +28,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindowScreen;
 import de.nekosarekawaii.vandalism.render.Buffers;
 import de.nekosarekawaii.vandalism.render.gl.render.ImmediateRenderer;
+import de.nekosarekawaii.vandalism.render.text.AtlasFont;
 import de.nekosarekawaii.vandalism.render.text.AtlasFontRenderer;
 import de.nekosarekawaii.vandalism.render.text.SimpleFont;
 import de.nekosarekawaii.vandalism.render.text.TextAlign;
@@ -40,7 +41,9 @@ import lombok.Setter;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.util.Formatting;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import org.joml.Vector2f;
 
 import java.awt.*;
 import java.nio.file.Files;
@@ -140,7 +143,13 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
             throw new IllegalStateException("Could not find font file: " + pathString);
         }
         try {
-            this.fontRenderer = new AtlasFontRenderer(SimpleFont.compose(newValue, Files.readAllBytes(path.get())));
+            final AtlasFont font = SimpleFont.compose(newValue, Files.readAllBytes(path.get()));
+            if (this.fontRenderer == null) {
+                this.fontRenderer = new AtlasFontRenderer(font);
+            } else {
+                this.fontRenderer.getFont().close();
+                this.fontRenderer.setFont(font);
+            }
         } catch (final Exception e) {
             throw new IllegalStateException("Failed to load font: " + pathString, e);
         }
@@ -159,9 +168,9 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
         final int offset = 2;
         final int x;
         switch (this.alignmentX.getValue()) {
-            case RIGHT -> x = scaledWidth - this.width - offset;
+            case RIGHT -> x = scaledWidth - offset;
             case LEFT -> x = offset;
-            default -> x = (scaledWidth - this.width) / 2;
+            default -> x = scaledWidth / 2;
         }
         return x + this.xOffset.getValue();
     }
@@ -188,7 +197,7 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
 
     public void render(final DrawContext context, final float delta, final boolean inGame) {
         this.drawText(
-                Formatting.UNDERLINE + this.getName(),
+                Text.literal(this.getName()).setStyle(Style.EMPTY.withUnderline(true)),
                 context,
                 this.getX(),
                 this.getY() - this.getFontHeight() + 2,
@@ -216,21 +225,61 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
         if (this.fontRenderer == null || !this.customFont.getValue()) {
             return this.mc.textRenderer.fontHeight;
         }
-        return (int) this.fontRenderer.getFontSize() / 2;
+        return (int) this.fontRenderer.getFontSizeScaled();
     }
 
-    public int getTextHeight(final String text) {
+    public void getTextSize(final Text text, Vector2f dest) {
+        if (this.fontRenderer == null || !this.customFont.getValue()) {
+            dest.set(this.mc.textRenderer.getWidth(text), this.mc.textRenderer.fontHeight);
+            return;
+        }
+        this.fontRenderer.getTextSizeScaled(text, TEXT_ALIGN, this.fontSize.getValue(), dest);
+    }
+
+    public void getTextSize(final String text, Vector2f dest) {
+        if (this.fontRenderer == null || !this.customFont.getValue()) {
+            dest.set(this.mc.textRenderer.getWidth(text), this.mc.textRenderer.fontHeight);
+            return;
+        }
+        this.fontRenderer.getTextSizeScaled(text, TEXT_ALIGN, this.fontSize.getValue(), dest);
+    }
+
+    public int getTextHeight(final Text text) {
         if (this.fontRenderer == null || !this.customFont.getValue()) {
             return this.mc.textRenderer.fontHeight;
         }
-        return (int) this.fontRenderer.getTextHeight(text, TEXT_ALIGN, this.fontSize.getValue()) / 2;
+        return (int) this.fontRenderer.getTextHeightScaled(text, TEXT_ALIGN, this.fontSize.getValue());
+    }
+
+    public int getTextWidth(final Text text) {
+        if (this.fontRenderer == null || !this.customFont.getValue()) {
+            return this.mc.textRenderer.getWidth(text);
+        }
+        return (int) this.fontRenderer.getTextWidthScaled(text, TEXT_ALIGN, this.fontSize.getValue());
     }
 
     public int getTextWidth(final String text) {
         if (this.fontRenderer == null || !this.customFont.getValue()) {
             return this.mc.textRenderer.getWidth(text);
         }
-        return (int) this.fontRenderer.getTextWidth(text, TEXT_ALIGN, this.fontSize.getValue()) / 2;
+        return (int) this.fontRenderer.getTextWidthScaled(text, TEXT_ALIGN, this.fontSize.getValue());
+    }
+
+    protected void drawText(final Text text, final DrawContext context, final float x, final float y, final boolean shadow, final int color) {
+        if (this.fontRenderer == null || !this.customFont.getValue()) {
+            context.drawText(this.mc.textRenderer, text, (int) x, (int) y, color, shadow);
+            return;
+        }
+        try (final ImmediateRenderer renderer = new ImmediateRenderer(Buffers.getImmediateBufferPool())) {
+            this.fontRenderer.drawScaled(
+                    text, x, y, 0.0f,
+                    shadow, color, TEXT_ALIGN,
+                    context.getMatrices().peek().getPositionMatrix(), renderer, null
+            );
+            renderer.draw();
+        } catch (final Exception e) {
+            Vandalism.getInstance().getLogger().error("Failed to draw text: {}", text, e);
+        }
     }
 
     protected void drawText(final String text, final DrawContext context, final float x, final float y, final boolean shadow, final int color) {
@@ -240,21 +289,13 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
         }
         try (final ImmediateRenderer renderer = new ImmediateRenderer(Buffers.getImmediateBufferPool())) {
             this.fontRenderer.drawScaled(
-                    text,
-                    x,
-                    y,
-                    0.0f,
-                    shadow,
-                    color,
-                    TEXT_ALIGN,
-                    context.getMatrices().peek().getPositionMatrix(),
-                    renderer,
-                    null
+                    text, x, y, 0.0f,
+                    shadow, color, TEXT_ALIGN,
+                    context.getMatrices().peek().getPositionMatrix(), renderer, null
             );
             renderer.draw();
         } catch (final Exception e) {
             Vandalism.getInstance().getLogger().error("Failed to draw text: {}", text, e);
         }
     }
-
 }

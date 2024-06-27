@@ -44,9 +44,13 @@ import net.minecraft.network.packet.c2s.query.QueryPingC2SPacket;
 import net.minecraft.network.packet.s2c.common.KeepAliveS2CPacket;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.query.PingResultS2CPacket;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.dimension.DimensionTypes;
+import org.joml.Vector2f;
 
 import java.awt.*;
 import java.util.LinkedHashMap;
@@ -314,7 +318,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         }
     }
 
-    private void drawText(final DrawContext context, final String text, final int x, final int y, final boolean isPostProcessing) {
+    private void drawText(final DrawContext context, final Text text, final int x, final int y, final boolean isPostProcessing) {
         if (this.glowOutline.getValue()) {
             context.fill(
                     x - 2,
@@ -334,43 +338,53 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         final float outlineAccuracy = this.glowOutlineAccuracy.getValue();
         final float outlineExponent = this.glowOutlineExponent.getValue();
         final Color glowOutlineColor = this.glowOutlineColor.getColor();
+        final Vector2f sizeVec = new Vector2f();
 
         if (isPostProcessing) {
             Shaders.getGlowOutlineEffect().configure(outlineWidth, outlineAccuracy, outlineExponent);
             Shaders.getGlowOutlineEffect().bindMask();
         }
 
-        int width = 0, height = this.getFontHeight() * 4;
+        int width = 0, height = 0;
 
         for (final Map.Entry<String, String> infoEntry : infoMap.entrySet()) {
             if (this.alignmentX.getValue() == AlignmentX.MIDDLE) {
-                final String[] infoParts = new String[]{infoEntry.getKey(), infoEntry.getValue()};
+                final Text[] infoParts = new Text[]{Text.literal(infoEntry.getKey()), Text.literal(infoEntry.getValue())};
                 for (int i = 0; i < infoParts.length; i++) {
-                    final String infoPart = infoParts[i];
-                    final int textWidth = this.getTextWidth(infoPart);
-                    final int textHeight = this.getTextHeight(infoPart);
-                    final String text = (i == 0 ? "" : Formatting.WHITE.toString()) + infoPart;
-                    this.drawText(context, text, (this.getX() + this.width / 2) - textWidth / 2, this.getY() + height, isPostProcessing);
+                    final Text infoPart = infoParts[i];
+                    this.getTextSize(infoPart, sizeVec);
+                    final int textWidth = (int) sizeVec.x;
+                    final int textHeight = (int) sizeVec.y;
+                    final Text text = i == 0 ? infoPart : Text.empty().setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.WHITE))).append(infoPart);
+                    this.drawText(context, text, this.getX() - textWidth / 2, this.getY() + height, isPostProcessing);
                     height += textHeight + 2;
                     if (textWidth > width) {
                         width = textWidth;
                     }
                 }
             } else {
-                final String text;
+                final Text text;
                 int textWidth = 0;
                 switch (this.alignmentX.getValue()) {
                     case LEFT -> {
-                        text = infoEntry.getKey() + Formatting.GRAY + " » " + Formatting.WHITE + infoEntry.getValue();
-                        textWidth = this.getTextWidth(text);
+                        text = Text.empty()
+                                .append(Text.literal(infoEntry.getKey()).withColor(this.infoNameColor.getColor().getRGB()))
+                                .append(Text.literal(" » ").setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.GRAY))))
+                                .append(infoEntry.getValue()).setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.WHITE)));
+                        this.getTextSize(text, sizeVec);
+                        textWidth = (int) sizeVec.x;
                         this.drawText(context, text, this.getX(), this.getY() + height, isPostProcessing);
-                        height += this.getTextHeight(text) + 2;
+                        height += sizeVec.y + 2;
                     }
                     case RIGHT -> {
-                        text = infoEntry.getKey() + Formatting.GRAY + " « " + Formatting.WHITE + infoEntry.getValue();
-                        textWidth = this.getTextWidth(text);
-                        this.drawText(context, text, (this.getX() + this.width) - textWidth, this.getY() + height, isPostProcessing);
-                        height += this.getTextHeight(text) + 2;
+                        text = Text.empty()
+                                .append(Text.literal(infoEntry.getKey()).withColor(this.infoNameColor.getColor().getRGB()))
+                                .append(Text.literal(" « ").setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.GRAY))))
+                                .append(infoEntry.getValue()).setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.WHITE)));
+                        this.getTextSize(text, sizeVec);
+                        textWidth = (int) sizeVec.x;
+                        this.drawText(context, text, this.getX() - textWidth, this.getY() + height, isPostProcessing);
+                        height += sizeVec.y + 2;
                     }
                 }
                 if (textWidth > width) {
@@ -387,6 +401,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
 
         this.width = width;
         this.height = height - this.getFontHeight();
+//        context.fill(getX(), getY(), getX() + this.width, getY() + this.height, 0x80000000);
     }
 
     @Override
