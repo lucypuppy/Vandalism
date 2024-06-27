@@ -117,7 +117,11 @@ public class WatermarkHUDElement extends HUDElement {
         );
         context.drawTexture(
                 identifier,
-                this.getX(),
+                this.getX() + switch (this.alignmentX.getValue()) {
+                    case MIDDLE -> -this.imageWidth.getValue() / 2;
+                    case RIGHT -> -this.imageWidth.getValue();
+                    default -> 0;
+                },
                 this.getY(),
                 0,
                 0,

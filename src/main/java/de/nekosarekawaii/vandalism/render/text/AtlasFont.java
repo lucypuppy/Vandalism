@@ -37,6 +37,12 @@ public abstract class AtlasFont implements AutoCloseable {
 
     public abstract float getFontMaxY();
 
+    public abstract float getFontAscent();
+
+    public abstract float getFontDescent();
+
+    public abstract float getFontLineGap();
+
     @NotNull
     public abstract GlyphInfo getGlyphInfo(int cp);
 
