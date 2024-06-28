@@ -34,7 +34,7 @@
   "accessWidener": "vandalism.accesswidener",
   "depends": {
     "fabricloader": ">=0.15.11",
-    "minecraft": "~1.21",
+    "minecraft": "1.21",
     "java": ">=21",
     "fabric-api-base": ">=0.4.35",
     "fabric-resource-loader-v0": ">=0.11.14",
