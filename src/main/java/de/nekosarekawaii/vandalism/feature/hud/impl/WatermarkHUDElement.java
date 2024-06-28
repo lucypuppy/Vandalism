@@ -50,7 +50,7 @@ public class WatermarkHUDElement extends HUDElement {
     private final ColorValue color;
 
     public WatermarkHUDElement(final File logoDirectory) {
-        super("Watermark", true, AlignmentX.LEFT, AlignmentY.TOP);
+        super("Watermark", true, AlignmentX.LEFT, AlignmentY.TOP, false);
 
         final File[] files = logoDirectory.listFiles();
         final List<LogoSelection> logoSelections = new ArrayList<>();

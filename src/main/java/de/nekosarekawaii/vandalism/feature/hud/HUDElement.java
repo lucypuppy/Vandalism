@@ -25,7 +25,6 @@ import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
-import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindowScreen;
 import de.nekosarekawaii.vandalism.render.Buffers;
 import de.nekosarekawaii.vandalism.render.gl.render.AttribConsumerProvider;
 import de.nekosarekawaii.vandalism.render.gl.render.ImmediateRenderer;
@@ -42,11 +41,9 @@ import lombok.Setter;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import org.joml.Vector2f;
 
-import java.awt.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -75,6 +72,10 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
     private final IntegerValue fontSize;
 
     public HUDElement(final String name, final boolean defaultActive, final AlignmentX defaultAlignmentX, final AlignmentY defaultAlignmentY) {
+        this(name, defaultActive, defaultAlignmentX, defaultAlignmentY, true);
+    }
+
+    public HUDElement(final String name, final boolean defaultActive, final AlignmentX defaultAlignmentX, final AlignmentY defaultAlignmentY, final boolean canUseCustomFont) {
         this.name = name;
         this.values = new ArrayList<>();
         this.active = new BooleanValue(
@@ -118,7 +119,7 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
                 "Custom Font",
                 "Whether to use a custom font.",
                 false
-        );
+        ).visibleCondition(() -> canUseCustomFont);
         this.fontSize = new IntegerValue(
                 this,
                 "Font Size",
@@ -126,7 +127,7 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
                 20,
                 10,
                 72
-        ).onValueChange((oldValue, newValue) -> this.onFontSizeChange(newValue)).visibleCondition(this.customFont::getValue);
+        ).onValueChange((oldValue, newValue) -> this.onFontSizeChange(newValue)).visibleCondition(() -> this.customFont.getValue() && canUseCustomFont);
         this.width = 10;
         this.height = 10;
         this.onFontSizeChange(this.fontSize.getValue());
@@ -178,7 +179,7 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
 
     public int getY() {
         final int scaledHeight = this.mc.getWindow().getScaledHeight();
-        final int offset = (this.mc.currentScreen instanceof ClientWindowScreen) ? 15 : 2;
+        final int offset = 2;
         final int y;
         switch (this.alignmentY.getValue()) {
             case BOTTOM -> {
@@ -197,14 +198,6 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
     protected abstract void onRender(final DrawContext context, final float delta, final boolean inGame);
 
     public void render(final DrawContext context, final float delta, final boolean inGame) {
-        this.drawText(
-                Text.literal(this.getName()).setStyle(Style.EMPTY.withUnderline(true)),
-                context,
-                this.getX(),
-                this.getY() - this.getFontHeight() + 2,
-                true,
-                !inGame && !this.isActive() ? Color.RED.getRGB() : Color.WHITE.getRGB()
-        );
         this.onRender(context, delta, inGame);
     }
 
