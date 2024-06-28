@@ -39,17 +39,19 @@ public class FabricBootstrap implements ClientModInitializer {
     public static boolean INITIALIZED = false;
     public static boolean SHUTTING_DOWN = false;
 
-    @Override
-    public void onInitializeClient() {
+    private void tryRenderDoc() {
         final Util.OperatingSystem os = Util.getOperatingSystem();
         if (os == Util.OperatingSystem.WINDOWS) {
             final File renderDoc = new File("C:\\Program Files\\RenderDoc\\renderdoc.dll");
             if (renderDoc.exists() && System.getProperty("vandalism.load.renderdoc", "false").equalsIgnoreCase("true")) {
                 System.load(renderDoc.getAbsolutePath());
             }
-        } else if (os != Util.OperatingSystem.LINUX) {
-            throw new UnsupportedOperationException("Unsupported operating system: " + os);
         }
+    }
+
+    @Override
+    public void onInitializeClient() {
+        tryRenderDoc();
         FabricLoader.getInstance().getModContainer(MOD_ID = "vandalism").ifPresent(modContainer -> {
             FabricBootstrap.MOD_NAME = modContainer.getMetadata().getName();
             FabricBootstrap.MOD_AUTHORS = String.join(", ", modContainer.getMetadata().getAuthors().stream().map(Person::getName).toList());
