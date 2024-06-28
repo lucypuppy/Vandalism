@@ -146,7 +146,7 @@ public class PortScannerClientWindow extends StateClientWindow implements DataLi
                         Vandalism.getInstance().getLogger().info("Starting Port Scanner Thread #{}...", threadID);
                         new Thread(() -> {
                             try {
-                                while (this.isRunning() && this.currentPort < this.maxPort.get()) {
+                                while (this.isRunning() && this.currentPort <= this.maxPort.get()) {
                                     this.currentPort++;
                                     final int port = this.currentPort;
                                     try {
