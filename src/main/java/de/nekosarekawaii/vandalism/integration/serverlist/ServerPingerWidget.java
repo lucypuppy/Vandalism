@@ -78,6 +78,9 @@ public class ServerPingerWidget implements MinecraftWrapper {
 
     public static boolean IN_USE = false;
 
+    private static final int GRAY = Color.GRAY.getRGB();
+    private static final int GREEN = Color.GREEN.getRGB();
+
     private static final CopyOnWriteArrayList<String> FORGE_MOD_DATA = new CopyOnWriteArrayList<>();
 
     private static void setServerInfo(final ServerInfo serverInfo) {
@@ -113,8 +116,8 @@ public class ServerPingerWidget implements MinecraftWrapper {
             final float progress = (ELEMENT_WIDTH / 100f) * PING_TIMER.getDelta() * (100f / pingDelay);
             context.enableScissor(x, y, x2, y2 + MAGICAL_OFFSET);
             WIDGET.render(context, mouseX, mouseY, delta);
-            context.drawHorizontalLine(x, x2, y2 + 1, Color.GRAY.getRGB());
-            context.drawHorizontalLine(x, (int) (x + progress), y2 + 1, Color.GREEN.getRGB());
+            context.drawHorizontalLine(x, x2, y2 + 1, GRAY);
+            context.drawHorizontalLine(x, (int) (x + progress), y2 + 1, GREEN);
             context.disableScissor();
             final Screen.PositionedTooltip tooltip = FAKE_MULTIPLAYER_SCREEN.tooltip;
             if (tooltip != null) {
