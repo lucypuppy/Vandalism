@@ -583,8 +583,9 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
 
         if (this.tickBaseCharge.getValue()) {
             final TickBaseModule tickBaseModule = Vandalism.getInstance().getModuleManager().getTickBaseModule();
-            if (tickBaseModule.isActive() || !inGame) {
-                infoMap.put("Tick Base Charge", (inGame ? tickBaseModule.getCharge() : 0) + " t");
+            final int charge = tickBaseModule.isActive() && inGame ? tickBaseModule.getCharge() : 0;
+            if (charge > 0) {
+                infoMap.put("Tick Base Charge", charge + " t");
             }
         }
 
