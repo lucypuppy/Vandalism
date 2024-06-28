@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Getter
 public class AccountManager extends Storage<AbstractAccount> implements UpdateSessionListener {
 
     public static final Map<AbstractAccount, AccountFactory> ACCOUNT_TYPES = new LinkedHashMap<>();
@@ -59,7 +60,6 @@ public class AccountManager extends Storage<AbstractAccount> implements UpdateSe
 
     private AbstractAccount firstAccount;
 
-    @Getter
     @Setter
     private AbstractAccount currentAccount;
 
@@ -85,10 +85,6 @@ public class AccountManager extends Storage<AbstractAccount> implements UpdateSe
                 session.getXuid().orElse(""),
                 session.getClientId().orElse("")
         );
-    }
-
-    public AbstractAccount getFirstAccount() {
-        return firstAccount;
     }
 
 }
