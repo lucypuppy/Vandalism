@@ -29,7 +29,7 @@ import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
-import de.nekosarekawaii.vandalism.feature.module.impl.exploit.TickBaseModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.misc.TickBaseModule;
 import de.nekosarekawaii.vandalism.injection.access.IRenderTickCounter;
 import de.nekosarekawaii.vandalism.render.Buffers;
 import de.nekosarekawaii.vandalism.render.Shaders;
