@@ -50,7 +50,6 @@ import net.minecraft.network.packet.s2c.query.PingResultS2CPacket;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
-import net.minecraft.util.Formatting;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.dimension.DimensionTypes;
 import org.joml.Vector2f;
@@ -72,6 +71,20 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             this,
             "Info Name Color",
             "The color of the info name."
+    );
+
+    private final ColorValue bracketColor = new ColorValue(
+            this,
+            "Bracket Color",
+            "The color of the brackets.",
+            Color.GRAY
+    );
+
+    private final ColorValue infoValueColor = new ColorValue(
+            this,
+            "Info Value Color",
+            "The color of the info value.",
+            Color.WHITE
     );
 
     public final BooleanValue glowOutline = new BooleanValue(
@@ -359,7 +372,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
                         this.getTextSize(infoPart, sizeVec);
                         final int textWidth = (int) sizeVec.x;
                         final int textHeight = (int) sizeVec.y;
-                        final Text text = i == 0 ? infoPart : Text.empty().setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.WHITE))).append(infoPart);
+                        final Text text = i == 0 ? infoPart : Text.empty().setStyle(Style.EMPTY.withColor(TextColor.fromRgb(this.infoValueColor.getColor().getRGB()))).append(infoPart);
                         this.drawText(renderer, context, text, this.getX() - textWidth / 2, this.getY() + height, isPostProcessing);
                         height += textHeight + 2;
                         if (textWidth > width) {
@@ -373,22 +386,22 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
                         case LEFT -> {
                             text = Text.empty()
                                     .append(Text.literal(infoEntry.getKey()).withColor(this.infoNameColor.getColor().getRGB()))
-                                    .append(Text.literal(" » ").setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.GRAY))))
-                                    .append(infoEntry.getValue()).setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.WHITE)));
+                                    .append(Text.literal(" » ").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(this.bracketColor.getColor().getRGB()))))
+                                    .append(infoEntry.getValue()).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(this.infoValueColor.getColor().getRGB())));
                             this.getTextSize(text, sizeVec);
                             textWidth = (int) sizeVec.x;
                             this.drawText(renderer, context, text, this.getX(), this.getY() + height, isPostProcessing);
-                            height += sizeVec.y + 2;
+                            height += (int) (sizeVec.y + 2);
                         }
                         case RIGHT -> {
                             text = Text.empty()
                                     .append(Text.literal(infoEntry.getKey()).withColor(this.infoNameColor.getColor().getRGB()))
-                                    .append(Text.literal(" « ").setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.GRAY))))
-                                    .append(infoEntry.getValue()).setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.WHITE)));
+                                    .append(Text.literal(" « ").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(this.bracketColor.getColor().getRGB()))))
+                                    .append(infoEntry.getValue()).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(this.infoValueColor.getColor().getRGB())));
                             this.getTextSize(text, sizeVec);
                             textWidth = (int) sizeVec.x;
                             this.drawText(renderer, context, text, this.getX() - textWidth, this.getY() + height, isPostProcessing);
-                            height += sizeVec.y + 2;
+                            height += (int) (sizeVec.y + 2);
                         }
                     }
                     if (textWidth > width) {
@@ -406,7 +419,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             }
 
             this.width = width;
-            this.height = height - this.getFontHeight();
+            this.height = height;
         }
     }
 

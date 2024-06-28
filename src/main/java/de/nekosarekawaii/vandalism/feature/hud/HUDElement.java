@@ -298,4 +298,5 @@ public abstract class HUDElement implements IName, ValueParent, MinecraftWrapper
                 context.getMatrices().peek().getPositionMatrix(), batch, null
         );
     }
+
 }
