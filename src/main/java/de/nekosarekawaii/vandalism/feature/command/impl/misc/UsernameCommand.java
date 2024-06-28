@@ -20,8 +20,8 @@ package de.nekosarekawaii.vandalism.feature.command.impl.misc;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
+import de.nekosarekawaii.vandalism.util.SessionUtil;
 import de.nekosarekawaii.vandalism.util.common.MathUtil;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
@@ -67,7 +67,8 @@ public class UsernameCommand extends AbstractCommand {
             ChatUtil.errorChatMessage("The name must be between 3 and 16 characters long.");
             return;
         }
-        Vandalism.getInstance().getAccountManager().loginCracked(name);
+        SessionUtil.setSessionAsync(name, "");
+        ChatUtil.infoChatMessage("Username changed to: " + Formatting.DARK_AQUA + name);
     }
 
 }

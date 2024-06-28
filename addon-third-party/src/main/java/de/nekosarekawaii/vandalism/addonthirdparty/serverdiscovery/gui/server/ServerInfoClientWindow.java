@@ -29,6 +29,7 @@ import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataen
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.field.IPPortFieldWidget;
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.SessionUtil;
 import de.nekosarekawaii.vandalism.util.common.TimeFormatter;
 import de.nekosarekawaii.vandalism.util.game.PingState;
 import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
@@ -257,7 +258,7 @@ public class ServerInfoClientWindow extends StateClientWindow implements DataLis
     @Override
     public void onDataEntryClick(final DataEntry dataEntry) {
         if (dataEntry instanceof final ListDataEntry listDataEntry) {
-            Vandalism.getInstance().getAccountManager().loginCracked(listDataEntry.getFirst().getRight(), listDataEntry.getSecond().getRight());
+            SessionUtil.setSessionAsync(listDataEntry.getFirst().getRight(), listDataEntry.getSecond().getRight());
         }
     }
 
@@ -269,7 +270,7 @@ public class ServerInfoClientWindow extends StateClientWindow implements DataLis
             final String lastSeen = listDataEntry.getThird().getRight();
             final float buttonWidth = ImUtils.modulateDimension(200), buttonHeight = ImUtils.modulateDimension(28);
             if (ImGui.button("Add" + id + "player" + playerName + "add", buttonWidth, buttonHeight)) {
-                Vandalism.getInstance().getAccountManager().loginCracked(playerName, playerUUID, true);
+                SessionUtil.setSessionAsync(playerName, playerUUID);
             }
             if (ImGui.button("Copy Name" + id + "player" + playerName + "copyName", buttonWidth, buttonHeight)) {
                 this.mc.keyboard.setClipboard(playerName);
