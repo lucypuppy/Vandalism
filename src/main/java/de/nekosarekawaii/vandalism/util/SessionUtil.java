@@ -81,6 +81,7 @@ public class SessionUtil implements MinecraftWrapper {
 
     public static boolean reloadProfileKeys(final Session session, final Environment environment) {
         final YggdrasilAuthenticationService authenticationService = new YggdrasilAuthenticationService(mc.getNetworkProxy(), environment);
+        mc.session = session;
         mc.getSplashTextLoader().session = session; // We will never know, right?
         mc.sessionService = authenticationService.createMinecraftSessionService();
         if (session.getAccountType().equals(Session.AccountType.MSA)) {
