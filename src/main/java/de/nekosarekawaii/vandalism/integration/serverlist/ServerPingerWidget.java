@@ -73,8 +73,8 @@ public class ServerPingerWidget implements MinecraftWrapper {
     );
 
     private static final int MAGICAL_OFFSET = 2;
-    private static final int ELEMENT_WIDTH = 304;
-    private static final int ELEMENT_HEIGHT = 42;
+    private static final int ELEMENT_WIDTH = 300;
+    private static final int ELEMENT_HEIGHT = 37;
 
     public static boolean IN_USE = false;
 
@@ -106,7 +106,7 @@ public class ServerPingerWidget implements MinecraftWrapper {
                 ping(currentServerInfo);
             }
             WIDGET.setWidth(mc.currentScreen.width);
-            final int x = WIDGET.getWidth() / 2 /* screen width / 2 */ - ELEMENT_WIDTH / 2;
+            final int x = mc.getWindow().getScaledWidth() / 2 - ELEMENT_WIDTH / 2 - MAGICAL_OFFSET;
             final int y = WIDGET.getY() + MAGICAL_OFFSET;
             final int x2 = x + ELEMENT_WIDTH + 4;
             final int y2 = WIDGET.getY() + ELEMENT_HEIGHT;
