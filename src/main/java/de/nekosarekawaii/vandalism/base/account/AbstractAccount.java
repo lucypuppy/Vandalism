@@ -22,6 +22,7 @@ import com.google.gson.JsonObject;
 import com.mojang.authlib.Environment;
 import com.mojang.authlib.yggdrasil.YggdrasilEnvironment;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.injection.access.ISession;
 import de.nekosarekawaii.vandalism.util.SessionUtil;
 import de.nekosarekawaii.vandalism.util.common.TimeFormatter;
 import de.nekosarekawaii.vandalism.util.encryption.AESEncryptionUtil;
@@ -104,7 +105,8 @@ public abstract class AbstractAccount implements MinecraftWrapper {
     }
 
     public void updateSession(final Session session) {
-        this.session = SessionUtil.markSession(session);
+        ((ISession) session).vandalism$markSelfInfliction();
+        this.session = session;
         this.playerSkin = new PlayerSkinRenderer(session.getUuidOrNull());
         this.lastLogin = TimeFormatter.currentDateTime();
     }
