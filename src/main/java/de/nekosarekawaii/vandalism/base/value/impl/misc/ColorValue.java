@@ -116,7 +116,8 @@ public class ColorValue extends Value<HSBColor> implements ValueParent, Minecraf
     @Override
     public void save(final JsonObject mainNode) {
         final JsonObject valueNode = new JsonObject();
-        if (this.mode.getValue() == ColorMode.STATIC || mc.currentScreen instanceof ClientWindowScreen) {
+        if (this.mode.getValue() == ColorMode.STATIC) {
+            // No need to save rainbow color fading
             valueNode.addProperty("color", super.getValue().getColor().getRGB());
         }
         valueNode.addProperty("mainColorFade", this.mainColorFade.getRGB());
