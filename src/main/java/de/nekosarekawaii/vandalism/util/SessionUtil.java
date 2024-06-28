@@ -79,26 +79,26 @@ public class SessionUtil implements MinecraftWrapper {
         mc.session = session;
         mc.getSplashTextLoader().session = session; // We will never know, right?
         mc.sessionService = authenticationService.createMinecraftSessionService();
-        if (session.getAccountType().equals(Session.AccountType.MSA)) {
-            final UserApiService userApiService = authenticationService.createUserApiService(session.getAccessToken());
-            mc.userApiService = userApiService;
-            mc.userPropertiesFuture = CompletableFuture.supplyAsync(() -> {
-                try {
-                    return userApiService.fetchProperties();
-                } catch (AuthenticationException e) {
-                    MinecraftClient.LOGGER.error("Failed to fetch user properties", e);
-                    return UserApiService.OFFLINE_PROPERTIES;
-                }
-            }, Util.getDownloadWorkerExecutor());
-            mc.socialInteractionsManager = new SocialInteractionsManager(mc, userApiService);
-            mc.profileKeys = ProfileKeys.create(userApiService, session, mc.runDirectory.toPath());
-            mc.abuseReportContext = AbuseReportContext.create(mc.abuseReportContext != null ? mc.abuseReportContext.environment : ReporterEnvironment.ofIntegratedServer(), userApiService);
-            mc.realmsPeriodicCheckers = new RealmsPeriodicCheckers(RealmsClient.createRealmsClient(mc));
-            return userApiService != UserApiService.OFFLINE;
+        if (!session.getAccountType().equals(Session.AccountType.MSA)) {
+            // Legacy account types don't need reloading the profile since we can't get the required fields (access token)
+            // for it, So we just skip it
+            return true;
         }
-        // Legacy account types don't need reloading the profile since we can't get the required fields (access token)
-        // for it, So we just skip it
-        return true;
+        final UserApiService userApiService = authenticationService.createUserApiService(session.getAccessToken());
+        mc.userApiService = userApiService;
+        mc.userPropertiesFuture = CompletableFuture.supplyAsync(() -> {
+            try {
+                return userApiService.fetchProperties();
+            } catch (AuthenticationException e) {
+                MinecraftClient.LOGGER.error("Failed to fetch user properties", e);
+                return UserApiService.OFFLINE_PROPERTIES;
+            }
+        }, Util.getDownloadWorkerExecutor());
+        mc.socialInteractionsManager = new SocialInteractionsManager(mc, userApiService);
+        mc.profileKeys = ProfileKeys.create(userApiService, session, mc.runDirectory.toPath());
+        mc.abuseReportContext = AbuseReportContext.create(mc.abuseReportContext != null ? mc.abuseReportContext.environment : ReporterEnvironment.ofIntegratedServer(), userApiService);
+        mc.realmsPeriodicCheckers = new RealmsPeriodicCheckers(RealmsClient.createRealmsClient(mc));
+        return userApiService != UserApiService.OFFLINE;
     }
 
 }
