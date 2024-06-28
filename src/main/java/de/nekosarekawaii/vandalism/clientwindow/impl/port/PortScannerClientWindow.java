@@ -123,7 +123,8 @@ public class PortScannerClientWindow extends StateClientWindow implements DataLi
                 if (ImGui.inputInt(id + "timeout", this.timeout, 1)) {
                     this.timeout.set(Math.max(1, Math.min(this.timeout.get(), 10000)));
                 }
-                if (this.minPort.get() != 1 || this.maxPort.get() != 65535 || this.threads.get() != 128 || this.timeout.get() != 500) {
+                boolean resetVisible = this.minPort.get() != 1 || this.maxPort.get() != 65535 || this.threads.get() != 128 || this.timeout.get() != 500;
+                if (resetVisible) {
                     if (ImGui.button("Reset Values" + id + "resetValues", ImGui.getColumnWidth() / (this.ports.isEmpty() ? 2f : 3f), ImGui.getTextLineHeightWithSpacing())) {
                         this.minPort.set(1);
                         this.maxPort.set(65535);
@@ -131,13 +132,18 @@ public class PortScannerClientWindow extends StateClientWindow implements DataLi
                         this.timeout.set(500);
                     }
                 }
-                if (!this.ports.isEmpty()) {
-                    ImGui.sameLine();
+                boolean clearVisible = !this.ports.isEmpty();
+                if (clearVisible) {
+                    if (resetVisible) {
+                        ImGui.sameLine();
+                    }
                     if (ImGui.button("Clear" + id + "clear", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
                         this.reset();
                     }
                 }
-                ImGui.sameLine();
+                if (resetVisible || clearVisible) {
+                    ImGui.sameLine();
+                }
                 if (ImGui.button("Start" + id + "start", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                     this.reset();
                     this.setState(State.RUNNING.getMessage());
