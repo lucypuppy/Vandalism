@@ -24,7 +24,6 @@ import com.mojang.authlib.minecraft.UserApiService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.internal.UpdateSessionListener;
-import de.nekosarekawaii.vandalism.injection.access.ISession;
 import de.nekosarekawaii.vandalism.util.common.UUIDUtil;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.minecraft.client.MinecraftClient;
@@ -50,16 +49,11 @@ public class SessionUtil implements MinecraftWrapper {
 
     private static Session prevSession;
 
-    public static void trackSessionUpdate(final Session session) {
+    public static void checkSessionUpdate(final Session session) {
         if (session != prevSession) {
             Vandalism.getInstance().getEventSystem().post(UpdateSessionListener.UpdateSessionEvent.ID, new UpdateSessionListener.UpdateSessionEvent(prevSession, session));
             prevSession = session;
         }
-    }
-
-    public static Session markSession(final Session session) {
-        ((ISession) session).vandalism$markSelfInfliction();
-        return session;
     }
 
     public static Session createSession(final String name, String uuid) {
@@ -75,6 +69,7 @@ public class SessionUtil implements MinecraftWrapper {
 
     public static void setSessionAsync(final String name, final String uuid) {
         EXECUTOR.submit(() -> {
+            // Wir drehen uns im Kreis und der shydev macht sogar seine logs hier!
             mc.session = createSession(name, uuid);
         });
     }

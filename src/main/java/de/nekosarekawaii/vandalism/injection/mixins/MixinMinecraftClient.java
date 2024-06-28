@@ -80,7 +80,7 @@ public abstract class MixinMinecraftClient {
 
     @Inject(method = "run", at = @At("HEAD"))
     private void updateSession(CallbackInfo ci) {
-        SessionUtil.trackSessionUpdate(this.session);
+        SessionUtil.checkSessionUpdate(this.session);
     }
 
 }
