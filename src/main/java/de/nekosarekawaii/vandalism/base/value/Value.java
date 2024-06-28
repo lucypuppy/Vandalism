@@ -48,6 +48,9 @@ public abstract class Value<V> implements IName {
         this.defaultValue = defaultValue;
         this.value = defaultValue;
         parent.getValues().add(this);
+        if (this.description != null && this.description.trim().isEmpty()) {
+            throw new IllegalStateException("Description cannot be empty, use null instead.");
+        }
     }
 
     public void setValue(V value) {

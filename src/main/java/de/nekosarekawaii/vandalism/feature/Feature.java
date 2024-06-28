@@ -46,6 +46,9 @@ public abstract class Feature implements IName, MinecraftWrapper {
         this.description = description;
         this.category = category;
         this.supportedVersions = supportedVersions;
+        if (this.description != null && this.description.trim().isEmpty()) {
+            throw new IllegalStateException("Description cannot be empty, use null instead.");
+        }
     }
 
     public enum Category {
