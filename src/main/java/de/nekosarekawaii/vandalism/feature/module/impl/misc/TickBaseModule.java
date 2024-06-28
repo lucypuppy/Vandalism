@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.impl.exploit;
+package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
@@ -43,7 +43,7 @@ public class TickBaseModule extends AbstractModule implements TimeTravelListener
     private final KeyBindValue unChargeKey = new KeyBindValue(generalGroup, "Un Charge Key", "The key to uncharge the tick base.", GLFW.GLFW_KEY_DOWN);
 
     public TickBaseModule() {
-        super("Tick Base", "Allows you to manipulate how minecraft handles ticks and speedup the game.", Category.EXPLOIT);
+        super("Tick Base", "Allows you to manipulate how minecraft handles ticks and speedup the game.", Category.MISC);
     }
 
     @Override
