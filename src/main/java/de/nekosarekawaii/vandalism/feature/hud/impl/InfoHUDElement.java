@@ -58,6 +58,7 @@ import java.awt.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+// TODO: Fix weird offset when opening config screen
 public class InfoHUDElement extends HUDElement implements IncomingPacketListener, PlayerUpdateListener {
 
     private final BooleanValue shadow = new BooleanValue(

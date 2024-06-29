@@ -39,6 +39,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+// TODO: Fix entire element because it's broken
 public class SpotifyHUDElement extends HUDElement {
 
     private final IntegerValue textWrapWidth = new IntegerValue(
