@@ -51,9 +51,9 @@ public class AddonWurstClient implements VandalismAddonLauncher {
 
 
         final WatermarkHUDElement watermarkHUDElement = vandalism.getHudManager().watermarkHUDElement;
-        this.wurstOffsetX = new IntegerValue(watermarkHUDElement, "Wurst Offset X", "",
+        this.wurstOffsetX = new IntegerValue(watermarkHUDElement, "Wurst Offset X", "The X offset of the Wurst client watermark.",
                 86, -512, 1024);
-        this.wurstOffsetY = new IntegerValue(watermarkHUDElement, "Wurst Offset Y", "",
+        this.wurstOffsetY = new IntegerValue(watermarkHUDElement, "Wurst Offset Y", "The Y offset of the Wurst client watermark.",
                 131, -512, 1024);
     }
 
