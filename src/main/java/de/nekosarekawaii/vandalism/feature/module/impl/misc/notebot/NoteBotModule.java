@@ -71,6 +71,7 @@ import net.raphimc.noteblocklib.util.MinecraftDefinitions;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class NoteBotModule extends AbstractModule implements PlayerUpdateListener, IncomingPacketListener, Render2DListener, Render3DListener {
@@ -223,6 +224,19 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         }
     };
 
+    private void playSong(final File file) {
+        try {
+            this.deactivate();
+            // Okay, so we're going to read the song extract info we might need and then recreate it as a NBS. This will make the playing at the end less cancer.
+            final Song<?, ?, ?> song = NoteBlockLib.readSong(file);
+            // We recreate the song as NBS here
+            this.song = new NoteSong((Song<NbsHeader, NbsData, NbsNote>) NoteBlockLib.createSongFromView(song.getView(), SongFormat.NBS), file);
+            this.activate();
+        } catch (final Exception e) {
+            Vandalism.getInstance().getLogger().error("Failed to play note block song: {}", file.getName(), e);
+        }
+    }
+
     private void renderSongFile(final File dir, final File file) {
         final SongFormat songFormat = NoteBlockLib.getFormat(file.toPath());
         if (songFormat == null) return;
@@ -230,16 +244,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         if (this.song == null || !this.song.getFile().getAbsolutePath().equals(file.getAbsolutePath())) {
             if (this.mc.player != null) {
                 if (ImUtils.subButton("Play " + file.getName() + "##" + identifier + "play")) {
-                    try {
-                        this.deactivate();
-                        // Okay, so we're going to read the song extract info we might need and then recreate it as a NBS. This will make the playing at the end less cancer.
-                        final Song<?, ?, ?> song = NoteBlockLib.readSong(file);
-                        // We recreate the song as NBS here
-                        this.song = new NoteSong((Song<NbsHeader, NbsData, NbsNote>) NoteBlockLib.createSongFromView(song.getView(), SongFormat.NBS), file);
-                        this.activate();
-                    } catch (final Exception e) {
-                        Vandalism.getInstance().getLogger().error("Failed to play note block song: {}", file.getName(), e);
-                    }
+                    this.playSong(file);
                 }
             }
         }
@@ -291,6 +296,23 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         }
     }
 
+    private List<File> getAllFiles(final File file) {
+        final List<File> files = new ArrayList<>();
+        if (file.isDirectory()) {
+            final File[] subFiles = file.listFiles();
+            if (subFiles != null) {
+                for (final File subFile : subFiles) {
+                    files.addAll(this.getAllFiles(subFile));
+                }
+            }
+        } else {
+            if (file.getName().toLowerCase().endsWith(".nbs")) {
+                files.add(file);
+            }
+        }
+        return files;
+    }
+
     private final RenderingValue songSelector = new RenderingValue(this, "Song Selector", "Select a song to play.", io -> {
         if (NOTE_BLOCK_SONGS_DIR.exists()) {
             if (NOTE_BLOCK_SONGS_DIR.isFile()) {
@@ -328,6 +350,12 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         ImGui.text("Search for a Song");
         ImGui.setNextItemWidth(-1);
         ImGui.inputText("##noteblocksongsearch", this.searchText);
+        if (ImUtils.subButton("Play random Song##noteblockrandom")) {
+            final List<File> files = this.getAllFiles(NOTE_BLOCK_SONGS_DIR);
+            if (!files.isEmpty()) {
+                this.playSong(files.get(ThreadLocalRandom.current().nextInt(files.size())));
+            }
+        }
         ImGui.text(" ".repeat(200));
         if (this.searchText.get().isBlank()) {
             this.renderSongDir(NOTE_BLOCK_SONGS_DIR);
