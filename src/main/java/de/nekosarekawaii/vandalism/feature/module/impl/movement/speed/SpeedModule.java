@@ -37,7 +37,8 @@ public class SpeedModule extends AbstractModule {
             new UpdatedNCPModuleMode(),
             new SpartanFlagModuleMode(),
             new SpartanOnGroundModuleMode(),
-            new VulcanModuleMode()
+            new VulcanModuleMode(),
+            new CheatGuardModuleMode()
     );
 
     public SpeedModule() {
