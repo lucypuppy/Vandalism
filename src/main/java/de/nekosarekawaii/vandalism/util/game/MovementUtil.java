@@ -97,6 +97,36 @@ public class MovementUtil implements MinecraftWrapper {
     }
 
     /**
+     * Check if the player is moving forwards.
+     *
+     * @return If the player is moving forwards.
+     */
+    public static boolean isMovingForwards() {
+        if (mc.player == null) return false;
+        return mc.player.forwardSpeed > 0;
+    }
+
+    /**
+     * Check if the player is moving backwards.
+     *
+     * @return If the player is moving backwards.
+     */
+    public static boolean isMovingBackwards() {
+        if (mc.player == null) return false;
+        return mc.player.forwardSpeed < 0;
+    }
+
+    /**
+     * Check if the player is moving sideways.
+     *
+     * @return If the player is moving sideways.
+     */
+    public static boolean isMovingSideways() {
+        if (mc.player == null) return false;
+        return mc.player.sidewaysSpeed != 0;
+    }
+
+    /**
      * Check if the player is moving.
      *
      * @return If the player is moving.
