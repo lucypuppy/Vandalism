@@ -39,7 +39,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-// TODO: Fix entire element because it's broken
 public class SpotifyHUDElement extends HUDElement {
 
     private final IntegerValue textWrapWidth = new IntegerValue(
@@ -56,6 +55,19 @@ public class SpotifyHUDElement extends HUDElement {
     public SpotifyHUDElement(final SpotifyManager spotifyManager) {
         super("Spotify", true, AlignmentX.RIGHT, AlignmentY.BOTTOM, false);
         this.spotifyManager = spotifyManager;
+    }
+
+    @Override
+    public int getX() {
+        final int scaledWidth = this.mc.getWindow().getScaledWidth();
+        final int offset = 2;
+        final int x;
+        switch (this.alignmentX.getValue()) {
+            case RIGHT -> x = scaledWidth - this.width - offset;
+            case LEFT -> x = offset;
+            default -> x = (scaledWidth - this.width) / 2;
+        }
+        return x + this.xOffset.getValue();
     }
 
     @Override
@@ -216,13 +228,10 @@ public class SpotifyHUDElement extends HUDElement {
                 (int) ((progressBarY + 5) / scale),
                 Color.WHITE.getRGB()
         );
-        matrices.pop();
         final int wrapWidth = this.textWrapWidth.getValue();
         final int textOffset = 34;
         final int textX = (int) ((this.getX() + textOffset) / scale);
         final int textY = (int) ((this.getY() + 4) / scale) + 7;
-        matrices.push();
-        matrices.scale(scale, scale, 1f);
         for (final Map.Entry<String, String> infoEntry : infoMap.entrySet()) {
             final List<OrderedText> wrappedTexts = this.mc.textRenderer.wrapLines(
                     Text.literal(infoEntry.getKey() + ": " + infoEntry.getValue()),
