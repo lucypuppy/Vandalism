@@ -37,6 +37,7 @@ import de.nekosarekawaii.vandalism.render.gl.render.AttribConsumerProvider;
 import de.nekosarekawaii.vandalism.render.gl.render.ImmediateRenderer;
 import de.nekosarekawaii.vandalism.util.common.AlignmentX;
 import de.nekosarekawaii.vandalism.util.common.AlignmentY;
+import de.nekosarekawaii.vandalism.util.common.DateUtil;
 import de.nekosarekawaii.vandalism.util.game.CPSTracker;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
@@ -527,7 +528,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
                     value = brand.replaceAll("\\(.*?\\)", "");
                 }
             }
-            infoMap.put("Server Brand", value);
+            infoMap.put("Server " + (DateUtil.isAprilFools() ? "Engine" : "Brand"), value);
         }
 
         if (this.serverAddress.getValue()) {
