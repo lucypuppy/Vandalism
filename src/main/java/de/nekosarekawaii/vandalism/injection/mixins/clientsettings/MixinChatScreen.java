@@ -30,10 +30,7 @@ import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
+import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
@@ -131,6 +128,26 @@ public abstract class MixinChatScreen extends Screen implements MinecraftWrapper
                 }
             }
         }
+    }
+
+    @Redirect(method = "mouseClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ChatScreen;handleTextClick(Lnet/minecraft/text/Style;)Z"))
+    private boolean addTPQuickActionToShowEntityComponent(final ChatScreen instance, final Style style) {
+        final ChatSettings chatSettings = Vandalism.getInstance().getClientSettings().getChatSettings();
+        if (chatSettings.addTPQuickActionToShowEntityComponent.getValue()) {
+            final ClickEvent clickEvent = style.getClickEvent();
+            if (clickEvent == null) {
+                final HoverEvent hoverEvent = style.getHoverEvent();
+                if (hoverEvent != null) {
+                    final HoverEvent.Action<?> action = hoverEvent.getAction();
+                    if (action == HoverEvent.Action.SHOW_ENTITY) {
+                        if (hoverEvent.getValue(action) instanceof final HoverEvent.EntityContent entityContent) {
+                            this.chatField.setText("/tp " + entityContent.uuid);
+                        }
+                    }
+                }
+            }
+        }
+        return instance.handleTextClick(style);
     }
 
 }
