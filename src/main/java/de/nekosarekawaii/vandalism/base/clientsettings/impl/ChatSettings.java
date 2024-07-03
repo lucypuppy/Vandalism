@@ -147,6 +147,13 @@ public class ChatSettings extends ValueGroup {
             ")"
     );
 
+    public final BooleanValue addTPQuickActionToShowEntityComponent = new BooleanValue(
+            this,
+            "Add TP Quick Action to Show Entity Component",
+            "Makes messages in the chat which contains a show entity component clickable to teleport to the entity.",
+            true
+    );
+
     public ChatSettings(final ClientSettings parent) {
         super(parent, "Chat", "Chat related settings.");
     }
