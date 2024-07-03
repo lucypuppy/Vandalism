@@ -59,7 +59,6 @@ import java.awt.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-// TODO: Fix weird offset when opening config screen
 public class InfoHUDElement extends HUDElement implements IncomingPacketListener, PlayerUpdateListener {
 
     private final BooleanValue shadow = new BooleanValue(
@@ -447,18 +446,10 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             infoMap.put("Username", username);
         }
 
-        final double posX, posY, posZ;
-        if (this.mc.player != null) {
-            posX = this.mc.player.getX();
-            posY = this.mc.player.getY();
-            posZ = this.mc.player.getZ();
-        } else {
-            posX = 0d;
-            posY = 0d;
-            posZ = 0d;
-        }
-
-        if (this.position.getValue()) {
+        if (this.position.getValue() && this.mc.player != null) {
+            final double posX = this.mc.player.getX();
+            final double posY = this.mc.player.getY();
+            final double posZ = this.mc.player.getZ();
             final int positionDecimalPlacesRawValue = this.positionDecimalPlaces.getValue();
             if (positionDecimalPlacesRawValue < 1) this.positionDecimalPlaces.setValue(1);
             else if (positionDecimalPlacesRawValue > 15) this.positionDecimalPlaces.setValue(15);
@@ -474,8 +465,11 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             );
         }
 
-        if (this.dimensionalPosition.getValue() && mc.world != null) {
-            final DimensionType dimensionType = mc.world.getDimension();
+        if (this.dimensionalPosition.getValue() && this.mc.world != null && this.mc.player != null) {
+            final double posX = this.mc.player.getX();
+            final double posY = this.mc.player.getY();
+            final double posZ = this.mc.player.getZ();
+            final DimensionType dimensionType = this.mc.world.getDimension();
             if (dimensionType != WorldUtil.uncoverDimensionType(DimensionTypes.THE_END)) {
                 final int positionDecimalPlacesRawValue = this.positionDecimalPlaces.getValue();
                 if (positionDecimalPlacesRawValue < 1) this.positionDecimalPlaces.setValue(1);
@@ -502,83 +496,68 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             }
         }
 
-        if (this.entities.getValue()) {
-            infoMap.put("Entities", this.mc.world != null ? String.valueOf(this.mc.world.getRegularEntityCount()) : "unknown");
+        if (this.entities.getValue() && this.mc.world != null) {
+            infoMap.put("Entities", String.valueOf(this.mc.world.getRegularEntityCount()));
         }
 
-        if (this.difficulty.getValue()) {
+        if (this.difficulty.getValue() && this.mc.world != null) {
             infoMap.put(
                     "Difficulty",
-                    this.mc.world != null ? this.mc.world.getDifficulty().getName() : "unknown"
+                    this.mc.world.getDifficulty().getName()
             );
         }
 
-        if (this.permissionsLevel.getValue()) {
-            infoMap.put(
-                    "Permissions Level",
-                    this.mc.player != null ? Integer.toString(this.mc.player.getPermissionLevel()) : "unknown"
-            );
-        }
-
-        if (this.serverBrand.getValue()) {
-            String value = "unknown";
-            if (this.mc.getNetworkHandler() != null) {
-                final String brand = this.mc.getNetworkHandler().getBrand();
-                if (brand != null) {
-                    value = brand.replaceAll("\\(.*?\\)", "");
-                }
+        if (this.permissionsLevel.getValue() && this.mc.player != null) {
+            final int permissionLevel = this.mc.player.getPermissionLevel();
+            if (permissionLevel != 0) {
+                infoMap.put(
+                        "Permissions Level",
+                        String.valueOf(permissionLevel)
+                );
             }
-            infoMap.put("Server " + (DateUtil.isAprilFools() ? "Engine" : "Brand"), value);
         }
 
-        if (this.serverAddress.getValue()) {
-            String value = "unknown";
-            if (this.mc.player != null && !this.mc.isInSingleplayer()) {
-                final ServerInfo currentServerInfo = ServerUtil.getLastServerInfo();
-                if (currentServerInfo != null) {
-                    value = currentServerInfo.address;
-                }
+        if (this.serverBrand.getValue() && this.mc.getNetworkHandler() != null) {
+            String brand = this.mc.getNetworkHandler().getBrand();
+            if (brand != null) {
+                brand = brand.replaceAll("\\(.*?\\)", "");
+                infoMap.put("Server " + (DateUtil.isAprilFools() ? "Engine" : "Brand"), brand);
             }
-            infoMap.put("Server Address", value);
         }
 
-        if (this.ping.getValue()) {
-            String value = "unknown";
+        if (this.serverAddress.getValue() && this.mc.player != null && !this.mc.isInSingleplayer()) {
+            final ServerInfo currentServerInfo = ServerUtil.getLastServerInfo();
+            if (currentServerInfo != null) {
+                infoMap.put("Server Address", currentServerInfo.address);
+            }
+        }
 
+        if (this.ping.getValue() && this.mc.getNetworkHandler() != null) {
+            int ping = 0;
             if (this.clientPing > 3 && this.fasterPings.getValue()) {
-                value = Long.toString(this.clientPing);
+                ping = (int) this.clientPing;
             } else {
-                if (this.mc.getNetworkHandler() != null) {
-                    final PlayerListEntry playerListEntry = this.mc.getNetworkHandler().getPlayerListEntry(this.mc.player.getGameProfile().getId());
-
-                    if (playerListEntry != null) {
-                        value = String.valueOf(playerListEntry.getLatency());
-                    }
+                final PlayerListEntry playerListEntry = this.mc.getNetworkHandler().getPlayerListEntry(this.mc.player.getGameProfile().getId());
+                if (playerListEntry != null) {
+                    ping = playerListEntry.getLatency();
                 }
             }
-
-            infoMap.put("Ping", value + " ms");
+            if (ping != 0) {
+                infoMap.put("Ping", ping + " ms");
+            }
         }
 
-        if (this.packetsSent.getValue()) {
-            String value = "unknown";
-            if (this.mc.getNetworkHandler() != null) {
-                value = String.format("%.0f", this.mc.getNetworkHandler().getConnection().getAveragePacketsSent());
-            }
-            infoMap.put("Packets Sent", value);
+        if (this.packetsSent.getValue() && this.mc.getNetworkHandler() != null) {
+            infoMap.put("Packets Sent", String.format("%.0f", this.mc.getNetworkHandler().getConnection().getAveragePacketsSent()));
         }
 
-        if (this.packetsReceived.getValue()) {
-            String value = "unknown";
-            if (this.mc.getNetworkHandler() != null) {
-                value = String.format("%.0f", this.mc.getNetworkHandler().getConnection().getAveragePacketsReceived());
-            }
-            infoMap.put("Packets Received", value);
+        if (this.packetsReceived.getValue() && this.mc.getNetworkHandler() != null) {
+            infoMap.put("Packets Received", String.format("%.0f", this.mc.getNetworkHandler().getConnection().getAveragePacketsReceived()));
         }
 
         if (this.lagMeter.getValue()) {
             final long lagMillis = this.mc.getNetworkHandler() != null && !(this.mc.isInSingleplayer() && this.mc.isPaused()) ? System.currentTimeMillis() - this.lastUpdate : 0L;
-            if (lagMillis > this.lagMeterThreshold.getValue() || !inGame) {
+            if (lagMillis > this.lagMeterThreshold.getValue()) {
                 infoMap.put("Lag", lagMillis + " ms");
             }
         }
@@ -594,7 +573,6 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
         if (this.clientTPS.getValue()) {
             final float tps = ((IRenderTickCounter) this.mc.getRenderTickCounter()).vandalism$getTPS();
             final float percentage = tps / 20.0f;
-
             infoMap.put("Client TPS", String.format("%.3f (%.3f)", tps, percentage));
         }
 
