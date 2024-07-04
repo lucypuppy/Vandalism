@@ -31,6 +31,13 @@ import org.lwjgl.glfw.GLFW;
 
 public class NetworkingSettings extends ValueGroup implements KeyboardInputListener {
 
+    public final BooleanValue noStupidLoggingMessages = new BooleanValue(
+            this,
+            "No Stupid Logging Messages",
+            "Prevents the game from spamming the console with useless shitty messages.",
+            true
+    );
+
     public final BooleanValue printPacketErrorsInConsole = new BooleanValue(
             this,
             "Print Packet Errors in Console",
