@@ -23,6 +23,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.LongValue;
 import de.nekosarekawaii.vandalism.base.value.impl.rendering.ButtonValue;
 import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.event.network.DisconnectListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.Placeholders;
@@ -30,7 +31,9 @@ import de.nekosarekawaii.vandalism.util.common.RandomUtils;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
+import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 
 import java.io.File;
@@ -41,7 +44,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ChatReactionModule extends AbstractModule implements IncomingPacketListener, PlayerUpdateListener {
+public class ChatReactionModule extends AbstractModule implements IncomingPacketListener, PlayerUpdateListener, DisconnectListener {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final Map<String[], String[]> contentMap = new HashMap<>();
@@ -88,12 +91,12 @@ public class ChatReactionModule extends AbstractModule implements IncomingPacket
     public void onActivate() {
         this.queuedMessages.clear();
         this.setup();
-        Vandalism.getInstance().getEventSystem().subscribe(this, IncomingPacketEvent.ID, PlayerUpdateEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, IncomingPacketEvent.ID, PlayerUpdateEvent.ID, DisconnectEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, IncomingPacketEvent.ID, PlayerUpdateEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, IncomingPacketEvent.ID, PlayerUpdateEvent.ID, DisconnectEvent.ID);
         this.contentMap.clear();
         this.queuedMessages.clear();
     }
@@ -213,6 +216,11 @@ public class ChatReactionModule extends AbstractModule implements IncomingPacket
                 this.queuedMessages.put(gameMessageS2CPacket.content().getString(), System.currentTimeMillis());
             }
         }
+    }
+
+    @Override
+    public void onDisconnect(final ClientConnection clientConnection, final Text disconnectReason) {
+        this.queuedMessages.clear();
     }
 
 }
