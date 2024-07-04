@@ -63,7 +63,7 @@ public class UsernameCommand extends AbstractCommand {
     }
 
     private void login(final String name) {
-        if (MathUtil.isBetween(name.length(), 3, 16)) {
+        if (!MathUtil.isBetween(name.length(), 3, 16)) {
             ChatUtil.errorChatMessage("The name must be between 3 and 16 characters long.");
             return;
         }
