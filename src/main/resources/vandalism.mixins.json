@@ -16,6 +16,7 @@
     "clientsettings.MixinClientBrandRetriever",
     "clientsettings.MixinClientConnection",
     "clientsettings.MixinClientPlayerInteractionManager",
+    "clientsettings.MixinClientPlayNetworkHandler",
     "clientsettings.MixinConnectScreen",
     "clientsettings.MixinDeathScreen",
     "clientsettings.MixinDirectConnectScreen",
