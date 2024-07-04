@@ -19,12 +19,33 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.VelocityModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 
 public class CancelModuleMode extends ModuleMulti<VelocityModule> implements IncomingPacketListener {
+
+    private final BooleanValue customizeCancel = new BooleanValue(
+            this, "Customize Cancel",
+            "Customizes the cancel velocity.",
+            false
+    );
+
+    private final BooleanValue cancelHorizontal = new BooleanValue(
+            this,
+            "Cancel Horizontal",
+            "Cancels the X and Z velocity.",
+            true
+    ).visibleCondition(this.customizeCancel::getValue);
+
+    private final BooleanValue cancelVertical = new BooleanValue(
+            this,
+            "Cancel Vertical",
+            "Cancels the Y velocity.",
+            true
+    ).visibleCondition(this.customizeCancel::getValue);
 
     public CancelModuleMode() {
         super("Cancel");
@@ -47,7 +68,17 @@ public class CancelModuleMode extends ModuleMulti<VelocityModule> implements Inc
                 this.mc.player != null &&
                 velocityPacket.getId() == this.mc.player.getId()
         ) {
-            event.cancel();
+            if (this.customizeCancel.getValue()) {
+                if (this.cancelHorizontal.getValue()) {
+                    velocityPacket.velocityX = 0;
+                    velocityPacket.velocityZ = 0;
+                }
+                if (this.cancelVertical.getValue()) {
+                    velocityPacket.velocityY = 0;
+                }
+            } else {
+                event.cancel();
+            }
         }
     }
 
