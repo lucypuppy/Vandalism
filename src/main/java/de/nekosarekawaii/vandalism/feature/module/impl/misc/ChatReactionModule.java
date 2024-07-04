@@ -20,13 +20,17 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import com.google.gson.*;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.value.impl.number.LongValue;
 import de.nekosarekawaii.vandalism.base.value.impl.rendering.ButtonValue;
-import de.nekosarekawaii.vandalism.event.player.ChatReceiveListener;
+import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.Placeholders;
 import de.nekosarekawaii.vandalism.util.common.RandomUtils;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.util.Util;
 
 import java.io.File;
@@ -34,15 +38,34 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ChatReactionModule extends AbstractModule implements ChatReceiveListener {
+public class ChatReactionModule extends AbstractModule implements IncomingPacketListener, PlayerUpdateListener {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-
     private final Map<String[], String[]> contentMap = new HashMap<>();
-
     private final File contentFile = new File(Vandalism.getInstance().getRunDirectory(), "chat-reaction.json");
+
+    private final Map<String, Long> queuedMessages = new ConcurrentHashMap<>();
+
+    private final LongValue minDelay = new LongValue(
+            this,
+            "Min Delay",
+            "The minimum delay in milliseconds.",
+            500L,
+            0L,
+            10000L
+    );
+
+    private final LongValue maxDelay = new LongValue(
+            this,
+            "Max Delay",
+            "The maximum delay in milliseconds.",
+            1000L,
+            0L,
+            10000L
+    );
 
     private final ButtonValue openFileButton = new ButtonValue(this, "Open File", "Opens the chat reaction file.", buttonValue -> {
         try {
@@ -63,14 +86,16 @@ public class ChatReactionModule extends AbstractModule implements ChatReceiveLis
 
     @Override
     public void onActivate() {
+        this.queuedMessages.clear();
         this.setup();
-        Vandalism.getInstance().getEventSystem().subscribe(ChatReceiveEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().subscribe(this, IncomingPacketEvent.ID, PlayerUpdateEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(ChatReceiveEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, IncomingPacketEvent.ID, PlayerUpdateEvent.ID);
         this.contentMap.clear();
+        this.queuedMessages.clear();
     }
 
     private void setup() {
@@ -141,44 +166,53 @@ public class ChatReactionModule extends AbstractModule implements ChatReceiveLis
     }
 
     @Override
-    public void onChatReceive(final ChatReceiveEvent event) {
-        final String message = event.text.getString();
-        if (
-                StringUtils.contains(message, "<" + this.mc.session.getUsername() + ">") ||
-                        StringUtils.contains(message, this.mc.session.getUsername() + ":") ||
-                        StringUtils.contains(message, this.mc.session.getUsername() + "]") ||
-                        StringUtils.contains(message, "] " + this.mc.session.getUsername())
-        ) {
-            return;
-        }
-        final AtomicReference<String> targetName = new AtomicReference<>("%target%");
-        for (final PlayerListEntry playerListEntry : this.mc.getNetworkHandler().getPlayerList()) {
-            final String playerName = playerListEntry.getProfile().getName();
-            if (!this.mc.session.getUsername().equalsIgnoreCase(playerName) && StringUtils.contains(message, playerName)) {
-                targetName.set(playerName);
-                break;
-            }
-        }
-        this.setup();
-        this.contentMap.forEach((triggers, responses) -> {
-            for (final String trigger : triggers) {
-                if (StringUtils.contains(Placeholders.applyReplacements(message), trigger)) {
-                    String answer = responses.length == 1 ? responses[0] : responses[RandomUtils.randomInt(0, responses.length)];
-                    answer = Placeholders.applyReplacements(answer);
-                    final String target = targetName.get();
-                    if (answer.contains("%target%") && !target.equals("%target%")) {
-                        answer = answer.replace("%target%", target);
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        for (final Map.Entry<String, Long> entry : this.queuedMessages.entrySet()) {
+            if (System.currentTimeMillis() - entry.getValue() >= RandomUtils.randomLong(this.minDelay.getValue(), this.maxDelay.getValue())) {
+                final String message = entry.getKey();
+                this.queuedMessages.remove(message);
+                final String targetPlaceholder = "%target%";
+                final AtomicReference<String> targetName = new AtomicReference<>(targetPlaceholder);
+                final ClientPlayNetworkHandler networkHandler = this.mc.getNetworkHandler();
+                if (networkHandler != null) {
+                    for (final PlayerListEntry playerListEntry : networkHandler.getPlayerList()) {
+                        final String playerName = playerListEntry.getProfile().getName();
+                        if (StringUtils.contains(message, playerName)) {
+                            targetName.set(playerName);
+                            break;
+                        }
                     }
-                    if (answer.startsWith("/")) {
-                        this.mc.getNetworkHandler().sendChatCommand(answer.substring(1));
-                    }
-                    else {
-                        this.mc.getNetworkHandler().sendChatMessage(answer);
-                    }
-                    break;
+                    this.setup();
+                    this.contentMap.forEach((triggers, responses) -> {
+                        for (final String trigger : triggers) {
+                            if (StringUtils.contains(Placeholders.applyReplacements(message), trigger)) {
+                                String answer = responses.length == 1 ? responses[0] : responses[RandomUtils.randomInt(0, responses.length)];
+                                answer = Placeholders.applyReplacements(answer);
+                                final String target = targetName.get();
+                                if (answer.contains(targetPlaceholder) && !target.equals(targetPlaceholder)) {
+                                    answer = answer.replace(targetPlaceholder, target);
+                                }
+                                if (answer.startsWith("/")) {
+                                    networkHandler.sendChatCommand(answer.substring(1));
+                                } else {
+                                    networkHandler.sendChatMessage(answer);
+                                }
+                                break;
+                            }
+                        }
+                    });
                 }
             }
-        });
+        }
+    }
+
+    @Override
+    public void onIncomingPacket(final IncomingPacketEvent event) {
+        if (event.packet instanceof final GameMessageS2CPacket gameMessageS2CPacket) {
+            if (!gameMessageS2CPacket.overlay()) {
+                this.queuedMessages.put(gameMessageS2CPacket.content().getString(), System.currentTimeMillis());
+            }
+        }
     }
 
 }
