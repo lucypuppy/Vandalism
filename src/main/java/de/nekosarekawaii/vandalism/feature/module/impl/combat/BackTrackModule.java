@@ -33,7 +33,6 @@ import de.nekosarekawaii.vandalism.event.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.PacketHelper;
 import de.nekosarekawaii.vandalism.util.network.SyncPosition;
-import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.debug.DebugRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -331,7 +330,6 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
         final boolean condition3 = this.resyncOnDistanceToPlayer.getValue() && distanceToRealPos > this.maxDistanceToPlayer.getValue();
 
         if (condition1 || condition2 || condition3) {
-            //ChatUtil.infoChatMessage("Resynced target. {" + condition1 + ", " + condition2 + ", " + condition3 + "}");
             handlePackets(true);
             return true;
         }
