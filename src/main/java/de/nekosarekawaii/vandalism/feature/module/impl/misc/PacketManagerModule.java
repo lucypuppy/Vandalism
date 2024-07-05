@@ -154,9 +154,10 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
         final StringBuilder text = new StringBuilder();
         text.append(outgoing ? "Outgoing: " : "Incoming: ");
         final String name = packetNamesContains ? this.packetNames.get(id) : "Unhandled Packet -> " + getSimpleName(packet.getClass());
+        final boolean isSelected = this.clientPackets.isSelected(name) || this.serverPackets.isSelected(name);
         if (this.log.getValue()) {
             if (packetNamesContains) {
-                if (this.clientPackets.isSelected(name) || this.serverPackets.isSelected(name)) {
+                if (isSelected) {
                     text.append(id).append(" | ").append(PacketManagerModule.dump(packet, 0, this.recursionDepthLimit.getValue()));
                     this.log(text, false);
                 }
@@ -165,7 +166,7 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
                 this.log(text, true);
             }
         }
-        return this.cancel.getValue() && packetNamesContains;
+        return this.cancel.getValue() && packetNamesContains && isSelected;
     }
 
     private static String dump(Object object, final int depth, final int depthLimit) {
