@@ -185,8 +185,14 @@ public class PortScannerClientWindow extends StateClientWindow implements DataLi
             }
         }
         if (!this.ports.isEmpty()) {
+            if (this.currentPortResult > -1) {
+                ImGui.separator();
+                ImGui.text("Pinging Progress");
+                ImGui.progressBar((float) this.currentPortResult / (float) this.ports.size());
+                ImGui.separator();
+            }
             ImGui.text("Open Ports: " + this.ports.size());
-            this.portsContainer.set(String.join(", ", this.ports.stream().map(port -> port + " ").toList()));
+            this.portsContainer.set(String.join(" ", this.ports.stream().map(port -> port + " ").toList()));
             String portsContainer = this.portsContainer.get();
             if (portsContainer.endsWith(" ")) {
                 this.portsContainer.set(portsContainer.substring(0, portsContainer.length() - 1));
@@ -195,17 +201,12 @@ public class PortScannerClientWindow extends StateClientWindow implements DataLi
             ImGui.beginChild(id + "openPorts" + "Child", -1, ImGui.getTextLineHeight() + ImGui.getTextLineHeight() * this.ports.size() / 10f, true);
             ImGui.textWrapped(portsContainer);
             ImGui.endChild();
-            if (ImUtils.subButton("Copy All Ports" + id + "copyAllPorts")) {
+            if (ImGui.button("Copy All Ports" + id + "copyAllPorts", ImGui.getColumnWidth() / (!this.portResults.isEmpty() ? 3 : 2), ImGui.getTextLineHeightWithSpacing())) {
                 this.mc.keyboard.setClipboard(portsContainer);
             }
-            if (this.currentPortResult > -1) {
-                ImGui.separator();
-                ImGui.text("Pinging Progress");
-                ImGui.progressBar((float) this.currentPortResult / (float) this.ports.size());
-                ImGui.separator();
-            }
             if (this.currentPortResult < 0) {
-                if (ImUtils.subButton("Ping All Ports" + id + "pingAllPorts")) {
+                ImGui.sameLine();
+                if (ImGui.button("Ping All Ports" + id + "pingAllPorts", ImGui.getColumnWidth() / (!this.portResults.isEmpty() ? 2 : 1), ImGui.getTextLineHeightWithSpacing())) {
                     this.portResults.clear();
                     this.portScanDataEntries.clear();
                     this.currentPortResult = 0;
