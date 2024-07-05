@@ -22,29 +22,37 @@ import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.IllegalInteractionModule;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerInteractionManager.class)
 public abstract class MixinClientPlayerInteractionManager {
 
-    @Redirect(method = "interactBlockInternal", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;useOnBlock(Lnet/minecraft/item/ItemUsageContext;)Lnet/minecraft/util/ActionResult;"))
-    private ActionResult hookIllegalBlockPlace(final ItemStack instance, final ItemUsageContext context) {
-        ActionResult actionResult = instance.useOnBlock(context);
+    @Inject(method = "interactBlock", at = @At(value = "RETURN"), cancellable = true)
+    private void hookIllegalInteraction(final ClientPlayerEntity player, final Hand hand, final BlockHitResult hitResult, final CallbackInfoReturnable<ActionResult> cir) {
         if (ProtocolTranslator.getTargetVersion().olderThanOrEqualTo(ProtocolVersion.v1_8)) {
             final IllegalInteractionModule illegalInteractionModule = Vandalism.getInstance().getModuleManager().getIllegalInteractionModule();
             if (illegalInteractionModule.isActive() && illegalInteractionModule.viaVersionBug.getValue()) {
-                if (actionResult == ActionResult.FAIL) {
-                    actionResult = ActionResult.SUCCESS;
-                }
+                cir.setReturnValue(ActionResult.SUCCESS);
             }
         }
-        return actionResult;
+    }
+
+    @Inject(method = "interactBlockInternal", at = @At(value = "RETURN"), cancellable = true)
+    private void hookIllegalInteraction2(final ClientPlayerEntity player, final Hand hand, final BlockHitResult hitResult, final CallbackInfoReturnable<ActionResult> cir) {
+        if (ProtocolTranslator.getTargetVersion().olderThanOrEqualTo(ProtocolVersion.v1_8)) {
+            final IllegalInteractionModule illegalInteractionModule = Vandalism.getInstance().getModuleManager().getIllegalInteractionModule();
+            if (illegalInteractionModule.isActive() && illegalInteractionModule.viaVersionBug.getValue()) {
+                cir.setReturnValue(ActionResult.SUCCESS);
+            }
+        }
     }
 
 }

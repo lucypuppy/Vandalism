@@ -18,6 +18,8 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
@@ -46,12 +48,13 @@ public class IllegalInteractionModule extends AbstractModule implements PlayerUp
             5.0
     );
 
+    // TODO: Fix this settings because it doesnt work anymore.
     public BooleanValue viaVersionBug = new BooleanValue(
             this,
             "ViaVersion Bug",
             "Allows you to place blocks inside yourself on versions lower than 1.9.0 on servers that are using the plugin ViaVersion.",
             true
-    );
+    ).visibleCondition(() -> ProtocolTranslator.getTargetVersion().olderThanOrEqualTo(ProtocolVersion.v1_8));
 
     public IllegalInteractionModule() {
         super(
