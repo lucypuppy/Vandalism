@@ -24,9 +24,10 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.event.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
+import net.minecraft.block.AirBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.FluidBlock;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import org.lwjgl.glfw.GLFW;
 
 public class SmartVClip extends AbstractModule implements KeyboardInputListener {
@@ -67,7 +68,7 @@ public class SmartVClip extends AbstractModule implements KeyboardInputListener 
                 final BlockState airBlock1State = this.mc.world.getBlockState(airBlock1);
                 final BlockState airBlock2State = this.mc.world.getBlockState(airBlock2);
 
-                if (safeBlock.isSolidSurface(this.mc.world, safeBlockPos, this.mc.player, Direction.UP) && airBlock1State.isAir() && airBlock2State.isAir()) {
+                if ((!(safeBlock.getBlock() instanceof AirBlock) && !(safeBlock.getBlock() instanceof FluidBlock)) && airBlock1State.isAir() && airBlock2State.isAir()) {
                     MovementUtil.bypassClip(
                             mc.player.getPos().getX(),
                             mc.player.getPos().getY(),
