@@ -35,7 +35,7 @@ public class LongJumpModule extends AbstractModule implements PlayerUpdateListen
     private float timer = 1;
 
     public LongJumpModule() {
-        super("Long Jump", "Lets you jump further than normal.", Category.MOVEMENT);
+        super("Long Jump", "Lets you jump further than normal. (Old CubeCraft Mode)", Category.MOVEMENT);
         this.markExperimental();
     }
 
