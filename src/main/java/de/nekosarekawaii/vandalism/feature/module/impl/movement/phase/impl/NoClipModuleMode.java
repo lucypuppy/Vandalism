@@ -89,9 +89,7 @@ public class NoClipModuleMode extends ModuleMulti<PhaseModule> implements Player
 
     @Override
     public void onBlockCollisionShape(final BlockCollisionShapeEvent event) {
-        if (event.pos.getY() < this.mc.player.getY()) {
-            event.shape = VoxelShapes.empty();
-        }
+        event.shape = VoxelShapes.empty();
     }
 
 }
