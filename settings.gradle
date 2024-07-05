@@ -9,4 +9,4 @@ pluginManagement {
 
 includeBuild "build-logic"
 
-include "addon-wurst", "addon-baritone", "addon-third-party"
+include "addon-baritone", "addon-third-party"
