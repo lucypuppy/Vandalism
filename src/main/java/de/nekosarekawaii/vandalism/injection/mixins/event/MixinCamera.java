@@ -20,20 +20,28 @@ package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.cancellable.render.CameraClipRaytraceListener;
+import de.nekosarekawaii.vandalism.event.render.CameraOverrideListener;
 import net.minecraft.client.render.Camera;
+import net.minecraft.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Camera.class)
 public abstract class MixinCamera {
 
+    @Inject(method = "update", at = @At("TAIL"))
+    public void callCameraOverrideListener(final net.minecraft.world.BlockView area, final Entity focusedEntity, final boolean thirdPerson, final boolean inverseView, final float tickDelta, final CallbackInfo ci) {
+        final Camera camera = (Camera) (Object) this;
+        Vandalism.getInstance().getEventSystem().postInternal(CameraOverrideListener.CameraOverrideEvent.ID, new CameraOverrideListener.CameraOverrideEvent(camera, tickDelta));
+    }
+
     @Inject(method = "clipToSpace", at = @At("HEAD"), cancellable = true)
-    public void callCameraClipRaytraceListener(float f, CallbackInfoReturnable<Float> cir) {
+    public void callCameraClipRaytraceListener(final float f, final CallbackInfoReturnable<Float> cir) {
         final CameraClipRaytraceListener.CameraClipRaytraceEvent event = new CameraClipRaytraceListener.CameraClipRaytraceEvent();
         Vandalism.getInstance().getEventSystem().postInternal(CameraClipRaytraceListener.CameraClipRaytraceEvent.ID, event);
-
         if (event.isCancelled()) {
             cir.setReturnValue(f);
         }
