@@ -51,20 +51,6 @@ public class MenuSettings extends ValueGroup {
             1_000
     );
 
-    public final BooleanValue moduleStateLogging = new BooleanValue(
-            this,
-            "Module State Logging",
-            "Activates/Deactivates the logging for the module state.",
-            true
-    );
-
-    public final BooleanValue reduceModuleToggleMessages = new BooleanValue(
-            this,
-            "Reduce Module Toggle Messages",
-            "Reduces the amount of module toggle messages in the chat by removing the old ones.",
-            false
-    ).visibleCondition(this.moduleStateLogging::getValue);
-
     public final BooleanValue moduleStateSound = new BooleanValue(
             this,
             "Module State Sound",

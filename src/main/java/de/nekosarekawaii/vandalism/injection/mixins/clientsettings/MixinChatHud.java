@@ -68,7 +68,7 @@ public abstract class MixinChatHud {
             final Text text = (Text) message;
             if (text.getSiblings().contains(ChatUtil.SAME_LINE_ID)) {
                 text.getSiblings().remove(ChatUtil.SAME_LINE_ID);
-                final int maxSameLineMessages = chatSettings.maxSameLineMessages.getValue();
+                final int maxSameLineMessages = chatSettings.maxSameLineMessages.getValue() - 1;
                 if (this.visibleMessages.size() > maxSameLineMessages) {
                     for (int i = maxSameLineMessages; i < this.visibleMessages.size(); i++) {
                         final ChatHudLine.Visible visibleMessage = this.visibleMessages.get(i);

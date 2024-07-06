@@ -36,6 +36,13 @@ public class ChatSettings extends ValueGroup {
             "."
     );
 
+    public final BooleanValue moduleStateLogging = new BooleanValue(
+            this,
+            "Module State Logging",
+            "Activates/Deactivates the logging for the module state.",
+            true
+    );
+
     public final BooleanValue sameLineMessages = new BooleanValue(
             this,
             "Same Line Messages",
@@ -47,10 +54,14 @@ public class ChatSettings extends ValueGroup {
             this,
             "Max Same Line Messages",
             "The max amount of chat messages that will be displayed in the same line.",
-            10,
-            0,
+            2,
+            1,
             20
-    ).visibleCondition(this.sameLineMessages::getValue);
+    ).visibleCondition(this.sameLineMessages::getValue).onValueChange((oldValue, newValue) -> {
+        if (newValue < 1) {
+            this.maxSameLineMessages.setValue(1);
+        }
+    });
 
     public final BooleanValue fixChatFieldWidth = new BooleanValue(
             this,
