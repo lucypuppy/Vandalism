@@ -77,7 +77,7 @@ public class ChestStealerModule extends AbstractModule implements PlayerUpdateLi
             boolean canClose = true;
 
             // This swaps items directly into the hotbar.
-            for (int i = 0; i < screen.getScreenHandler().slots.size() - 9; i++) {
+            for (int i = 0; i < screen.getScreenHandler().slots.size() - 36; i++) {
                 final ItemStack itemStack = screen.getScreenHandler().slots.get(i).getStack();
 
                 if (!itemStack.isEmpty()) {
@@ -86,7 +86,7 @@ public class ChestStealerModule extends AbstractModule implements PlayerUpdateLi
                     if (slot == -1) //Invalid Item
                         continue;
 
-                    final ItemStack hotbarStack = screen.getScreenHandler().slots.get(slot + 54).getStack(); // TODO fix ioob when in smaller container like spectator menu on gomme
+                    final ItemStack hotbarStack = screen.getScreenHandler().slots.get(slot + 54).getStack();
                     if (hotbarStack.getItem() instanceof AirBlockItem || InventoryUtil.isItemBetter(itemStack, hotbarStack)) {
                         canClose = false;
                         stealItems(screen, i, slot, SlotActionType.SWAP);
