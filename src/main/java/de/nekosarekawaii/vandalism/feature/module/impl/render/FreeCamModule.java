@@ -84,14 +84,21 @@ public class FreeCamModule extends AbstractModule implements
             this,
             "Allow Interaction",
             "Whether or not to allow interaction with the world.",
-            false
+            true
     );
 
     private final BooleanValue sendRotations = new BooleanValue(
             this,
             "Send Rotations",
             "Whether or not to send rotations to the server.",
-            false
+            true
+    );
+
+    private final BooleanValue deactivateOnPositionUpdate = new BooleanValue(
+            this,
+            "Deactivate On Position Update",
+            "Whether or not to deactivate the module when the server sends a position update.",
+            true
     );
 
     private final ColorValue serverSidePosColor = new ColorValue(
@@ -243,10 +250,21 @@ public class FreeCamModule extends AbstractModule implements
     @Override
     public void onIncomingPacket(final IncomingPacketEvent event) {
         final Packet<?> packet = event.packet;
-        if (packet instanceof PlayerPositionLookS2CPacket) {
-            this.receivedPositionUpdate = true;
+        if (packet instanceof final PlayerPositionLookS2CPacket positionLookPacket) {
+            if (this.deactivateOnPositionUpdate.getValue()) {
+                this.receivedPositionUpdate = true;
+            } else {
+                // On Ground could flag, but we ignore it for now because this module will be recoded in the future.
+                this.x = positionLookPacket.getX();
+                this.y = positionLookPacket.getY();
+                this.z = positionLookPacket.getZ();
+                this.yaw = positionLookPacket.getYaw();
+                this.pitch = positionLookPacket.getPitch();
+            }
         } else if (packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket && velocityPacket.getId() == this.mc.player.getId()) {
-            this.receivedPositionUpdate = true;
+            if (this.deactivateOnPositionUpdate.getValue()) {
+                this.receivedPositionUpdate = true;
+            }
         }
     }
 
@@ -273,7 +291,12 @@ public class FreeCamModule extends AbstractModule implements
         matrixStack.push();
         matrixStack.push();
         final double scale = 1.5;
-        matrixStack.translate(this.x, this.y + scale + 0.65, this.z);
+        final double x = this.x;
+        final double y = this.y;
+        final double z = this.z;
+        final double halfWidth = this.width / 2;
+        final double height = this.height;
+        matrixStack.translate(x, y + scale + 0.65, z);
         matrixStack.multiply(this.mc.getEntityRenderDispatcher().getRotation());
         matrixStack.scale(0.025F, -0.025F, 0.025F);
         final Matrix4f matrix4f = matrixStack.peek().getPositionMatrix();
@@ -284,14 +307,13 @@ public class FreeCamModule extends AbstractModule implements
         textRenderer.draw(text, g, 0f, Colors.WHITE, false, matrix4f, immediate, TextRenderer.TextLayerType.NORMAL, 0, 1);
         matrixStack.pop();
         final float[] startPosColor = ColorUtils.rgba(this.serverSidePosColor.getColor().getRGB());
-        final float halfPlayerWidth = this.width / 2f;
         final Box box = new Box(
-                this.x - halfPlayerWidth,
-                this.y,
-                this.z - halfPlayerWidth,
-                this.x + halfPlayerWidth,
-                this.y + this.height,
-                this.z + halfPlayerWidth
+                x - halfWidth,
+                y,
+                z - halfWidth,
+                x + halfWidth,
+                y + height,
+                z + halfWidth
         );
         final Vec3d center = box.getCenter();
         final double minX = (box.minX - center.x) * scale + center.x;
