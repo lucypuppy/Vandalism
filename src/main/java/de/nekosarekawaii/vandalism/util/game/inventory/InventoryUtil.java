@@ -24,7 +24,9 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.*;
 import net.minecraft.recipe.Recipe;
@@ -152,6 +154,14 @@ public class InventoryUtil implements MinecraftWrapper {
         }
 
         return false;
+    }
+
+    public static void setSlot(final int slot) {
+        final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
+        if (mc.player == null || mc.interactionManager == null || networkHandler == null || !PlayerInventory.isValidHotbarIndex(slot))
+            return;
+        mc.player.getInventory().selectedSlot = slot;
+        mc.interactionManager.syncSelectedSlot();
     }
 
 }
