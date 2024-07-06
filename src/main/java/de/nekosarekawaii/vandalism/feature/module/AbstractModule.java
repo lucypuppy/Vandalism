@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.clientsettings.impl.MenuSettings;
+import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
@@ -32,8 +32,12 @@ import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleModeValu
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import de.nekosarekawaii.vandalism.util.game.SoundHooks;
 import lombok.Getter;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.raphimc.vialoader.util.VersionRange;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,7 +89,7 @@ public abstract class AbstractModule extends Feature implements ValueParent {
             "Module State Logging",
             "Activates/Deactivates the logging for the module state in this module.",
             true
-    ).visibleCondition(() -> Vandalism.getInstance().getClientSettings().getMenuSettings().moduleStateLogging.getValue());
+    ).visibleCondition(() -> Vandalism.getInstance().getClientSettings().getChatSettings().moduleStateLogging.getValue());
 
     private final BooleanValue moduleStateSound = new BooleanValue(
             this.defaultSettings,
@@ -170,12 +174,16 @@ public abstract class AbstractModule extends Feature implements ValueParent {
                 } else {
                     this.onDeactivate();
                 }
-                final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
+                final ClientSettings clientSettings = Vandalism.getInstance().getClientSettings();
                 if (this.mc.player != null) {
-                    if (menuSettings.moduleStateLogging.getValue() && this.moduleStateLogging.getValue()) {
-                        ChatUtil.sendModuleToggleMessage(this, newValue);
+                    if (clientSettings.getChatSettings().moduleStateLogging.getValue() && this.moduleStateLogging.getValue()) {
+                        final MutableText text = Text.literal(Formatting.DARK_AQUA + this.getName() + Formatting.GRAY + " has been ");
+                        final MutableText state = newValue ? Text.literal("activated") : Text.literal("deactivated");
+                        state.withColor(newValue ? Color.GREEN.getRGB() : Color.RED.getRGB());
+                        text.append(state);
+                        ChatUtil.chatMessage(text, true, true);
                     }
-                    if (menuSettings.moduleStateSound.getValue() && this.moduleStateSound.getValue()) {
+                    if (clientSettings.getMenuSettings().moduleStateSound.getValue() && this.moduleStateSound.getValue()) {
                         if (newValue) SoundHooks.playModuleActivate();
                         else SoundHooks.playModuleDeactivate();
                     }
