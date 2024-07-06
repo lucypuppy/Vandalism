@@ -29,6 +29,29 @@ import java.awt.*;
 
 public class ChatSettings extends ValueGroup {
 
+    private final ValueGroup chatPrefix = new ValueGroup(this, "Chat Prefix", "Chat prefix related settings.");
+
+    public final ColorValue chatPrefixColor = new ColorValue(
+            this.chatPrefix,
+            "Chat Prefix Color",
+            "Change the color of the chat prefix.",
+            Color.WHITE
+    );
+
+    public final StringValue startBracket = new StringValue(
+            this.chatPrefix,
+            "Start Bracket",
+            "Change the start bracket of the chat prefix.",
+            "("
+    );
+
+    public final StringValue endBracket = new StringValue(
+            this.chatPrefix,
+            "End Bracket",
+            "Change the end bracket of the chat prefix.",
+            ")"
+    );
+
     public final StringValue commandPrefix = new StringValue(
             this,
             "Command Prefix",
@@ -134,29 +157,6 @@ public class ChatSettings extends ValueGroup {
             100,
             Short.MAX_VALUE / 2
     ).visibleCondition(this.moreChatHistory::getValue);
-
-    private final ValueGroup chatPrefix = new ValueGroup(this, "Chat Prefix", "Chat prefix related settings.");
-
-    public final ColorValue chatPrefixColor = new ColorValue(
-            this.chatPrefix,
-            "Chat Prefix Color",
-            "Change the color of the chat prefix.",
-            Color.WHITE
-    );
-
-    public final StringValue startBracket = new StringValue(
-            this.chatPrefix,
-            "Start Bracket",
-            "Change the start bracket of the chat prefix.",
-            "("
-    );
-
-    public final StringValue endBracket = new StringValue(
-            this.chatPrefix,
-            "End Bracket",
-            "Change the end bracket of the chat prefix.",
-            ")"
-    );
 
     public final BooleanValue addTPQuickActionToShowEntityComponent = new BooleanValue(
             this,
