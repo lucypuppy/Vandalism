@@ -25,7 +25,6 @@ import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.EntityPositionS2CPacket;
-import net.minecraft.network.packet.s2c.play.EntityS2CPacket;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +45,7 @@ public class AntiBotsModule extends AbstractModule implements TargetListener, In
     @Override
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(this, TargetEvent.ID, IncomingPacketEvent.ID);
+        movedEntities.clear();
     }
 
     @Override
@@ -59,7 +59,7 @@ public class AntiBotsModule extends AbstractModule implements TargetListener, In
 
     @Override
     public void onIncomingPacket(IncomingPacketEvent event) {
-        if(mc.world != null) return;
+        if (mc.world == null) return;
         if (event.packet instanceof EntityPositionS2CPacket packet) {
             Entity entity = mc.world.getEntityById(packet.getId());
             if (entity instanceof PlayerEntity && !movedEntities.contains(entity)) {
@@ -69,13 +69,13 @@ public class AntiBotsModule extends AbstractModule implements TargetListener, In
             }
         }
 
-        if (event.packet instanceof EntityS2CPacket packet) {
-            Entity entity = packet.getEntity(mc.world);
-            if (entity instanceof PlayerEntity && !movedEntities.contains(entity)) {
-                if (packet.getDeltaX() != 0 || packet.getDeltaY() != 0 || packet.getDeltaZ() != 0) {
-                    movedEntities.add(entity);
-                }
-            }
-        }
+//        if (event.packet instanceof EntityS2CPacket packet) {
+//            Entity entity = packet.getEntity(mc.world);
+//            if (entity instanceof PlayerEntity && !movedEntities.contains(entity)) {
+//                if (packet.getDeltaX() != 0 || packet.getDeltaY() != 0 || packet.getDeltaZ() != 0) {
+//                    movedEntities.add(entity);
+//                }
+//            }
+//        }
     }
 }
