@@ -75,8 +75,8 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
             shouldTap = true;
             timeSinceAttack = System.currentTimeMillis();
             targetEntity = (LivingEntity) event.target;
-            randomStopDelay = stopDelay.getValue() + random.nextInt(randomDelayRange.getValue());
-            randomStartDelay = Math.max(randomStopDelay, startDelay.getValue() + random.nextInt(randomDelayRange.getValue()));
+            randomStopDelay = stopDelay.getValue() + getRandomDelay();
+            randomStartDelay = Math.max(randomStopDelay, startDelay.getValue() + getRandomDelay());
         }
     }
 
@@ -115,5 +115,9 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
                 mc.options.backKey.setPressed(true);
                 break;
         }
+    }
+
+    private int getRandomDelay() {
+        return randomDelayRange.getValue() > 0 ? random.nextInt(randomDelayRange.getValue()) : 0;
     }
 }
