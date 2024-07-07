@@ -25,6 +25,8 @@ import de.nekosarekawaii.vandalism.event.player.AttackListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.MovementUtil;
+import de.nekosarekawaii.vandalism.util.render.InputType;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.entity.LivingEntity;
 
 import java.util.Random;
@@ -32,7 +34,6 @@ import java.util.Random;
 public class WTapModule extends AbstractModule implements AttackListener, PlayerUpdateListener {
 
     private final Random random = new Random();
-    private boolean wasSprinting, wasForward, wasBackwards;
     private boolean shouldTap, shouldStopTap;
     private LivingEntity targetEntity;
     private long timeSinceAttack;
@@ -52,9 +53,6 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
 
     @Override
     protected void onActivate() {
-        wasSprinting = mc.options.sprintKey.isPressed();
-        wasForward = mc.options.forwardKey.isPressed();
-        wasBackwards = mc.options.backKey.isPressed();
         Vandalism.getInstance().getEventSystem().subscribe(this, AttackSendEvent.ID, PlayerUpdateEvent.ID);
     }
 
@@ -62,9 +60,7 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
     protected void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(this, AttackSendEvent.ID, PlayerUpdateEvent.ID);
         if (shouldTap) {
-            mc.options.forwardKey.setPressed(wasForward);
-            mc.options.backKey.setPressed(wasBackwards);
-            mc.options.sprintKey.setPressed(wasSprinting);
+            resetKeys();
         }
         shouldTap = false;
         shouldStopTap = false;
@@ -86,9 +82,6 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
         final long currentTime = System.currentTimeMillis();
         if (shouldTap) {
             if (currentTime - timeSinceAttack > randomStopDelay && !shouldStopTap) {
-                wasSprinting = mc.options.sprintKey.isPressed();
-                wasForward = mc.options.forwardKey.isPressed();
-                wasBackwards = mc.options.backKey.isPressed();
                 doTap(tapMode.getSelectedIndex());
                 shouldTap = false;
                 shouldStopTap = true;
@@ -96,9 +89,7 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
         }
         if (shouldStopTap) {
             if (currentTime - timeSinceAttack > randomStopDelay + randomStartDelay) {
-                mc.options.sprintKey.setPressed(wasSprinting);
-                mc.options.forwardKey.setPressed(wasForward);
-                mc.options.backKey.setPressed(wasBackwards);
+                resetKeys();
                 shouldStopTap = false;
             }
         }
@@ -120,5 +111,15 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
 
     private int getRandomDelay() {
         return randomDelayRange.getValue() > 0 ? random.nextInt(randomDelayRange.getValue()) : 0;
+    }
+
+    private boolean isPressed(KeyBinding keyBinding) {
+        return InputType.isPressed(keyBinding.boundKey.getCode());
+    }
+
+    private void resetKeys() {
+        mc.options.sprintKey.setPressed(isPressed(mc.options.sprintKey));
+        mc.options.forwardKey.setPressed(isPressed(mc.options.forwardKey));
+        mc.options.backKey.setPressed(isPressed(mc.options.backKey));
     }
 }
