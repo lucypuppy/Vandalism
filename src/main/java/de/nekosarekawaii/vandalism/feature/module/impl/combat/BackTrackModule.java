@@ -201,6 +201,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
                         packet instanceof EnterReconfigurationS2CPacket ||
                         packet instanceof BundleS2CPacket ||
                         packet instanceof BundleDelimiterS2CPacket ||
+                        packet instanceof ScoreboardObjectiveUpdateS2CPacket ||
                         this.backTrackedEntities.isEmpty() || this.mc.player == null ||
                         this.mc.world == null || event.networkPhase != NetworkPhase.PLAY || event.isCancelled() //Ignore already cancelled packets
         ) {
