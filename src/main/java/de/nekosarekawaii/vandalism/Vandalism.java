@@ -36,6 +36,7 @@ import de.nekosarekawaii.vandalism.integration.friends.FriendsManager;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationManager;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerListManager;
 import de.nekosarekawaii.vandalism.render.Shaders;
+import de.nekosarekawaii.vandalism.util.game.NameGenerationUtil;
 import lombok.Getter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
@@ -196,6 +197,8 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.creativeTabManager.init();
 
         Shaders.loadAll();
+
+        NameGenerationUtil.loadUsernameParts();
 
         this.hudManager = new HUDManager(this.configManager, this.clientWindowManager, this.runDirectory);
         this.hudManager.init();
