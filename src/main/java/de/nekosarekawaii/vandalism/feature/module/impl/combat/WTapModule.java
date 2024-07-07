@@ -24,6 +24,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
 import de.nekosarekawaii.vandalism.event.player.AttackListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.game.MovementUtil;
 import net.minecraft.entity.LivingEntity;
 
 import java.util.Random;
@@ -71,12 +72,12 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
 
     @Override
     public void onAttackSend(AttackSendEvent event) {
-        if (event.target instanceof LivingEntity && !shouldTap && random.nextDouble() < chance.getValue() * 0.1 && mc.player.isSprinting()) {
+        if (event.target instanceof LivingEntity && !shouldTap && random.nextDouble() < chance.getValue() * 0.1 && MovementUtil.isMovingForwards() && mc.player.isSprinting()) {
             shouldTap = true;
             timeSinceAttack = System.currentTimeMillis();
             targetEntity = (LivingEntity) event.target;
             randomStopDelay = stopDelay.getValue() + getRandomDelay();
-            randomStartDelay = Math.max(randomStopDelay, startDelay.getValue() + getRandomDelay());
+            randomStartDelay = Math.max(startDelay.getValue(), startDelay.getValue() + getRandomDelay());
         }
     }
 
