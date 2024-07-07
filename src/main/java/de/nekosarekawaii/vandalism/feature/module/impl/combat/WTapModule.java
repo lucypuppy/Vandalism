@@ -19,111 +19,101 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
+import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
 import de.nekosarekawaii.vandalism.event.player.AttackListener;
-import de.nekosarekawaii.vandalism.event.player.MoveInputListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.AutoSprintModule;
-import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
-import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
-import de.nekosarekawaii.vandalism.util.game.MovementUtil;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 
-public class WTapModule extends AbstractModule implements AttackListener, PlayerUpdateListener, MoveInputListener {
+import java.util.Random;
 
-    private Entity movementTarget = null;
-    private LivingEntity lastTarget = null;
-    private boolean canW;
-    private AutoSprintModule autoSprintModule;
+public class WTapModule extends AbstractModule implements AttackListener, PlayerUpdateListener {
+
+    private final Random random = new Random();
+    private boolean wasSprinting, wasForward, wasBackwards;
+    private boolean shouldTap, shouldStopTap;
+    private LivingEntity targetEntity;
+    private long timeSinceAttack;
+    private long randomStopDelay, randomStartDelay;
 
     public WTapModule() {
-        super(
-                "W Tap",
+        super("W Tap",
                 "Automatically sprints and un-sprints when you are in combat which applies more velocity to your target.",
-                Category.COMBAT
-        );
+                Category.COMBAT);
     }
 
-    private void reset() {
-        this.movementTarget = null;
-        canW = true;
+    private final ModeValue tapMode = new ModeValue(this, "Tap Mode", "The type of tap to use.", "W Tap", "S Tap");
+    private final IntegerValue stopDelay = new IntegerValue(this, "Stop Delay", "The delay between hitting and stopping.", 100, 0, 1000);
+    private final IntegerValue startDelay = new IntegerValue(this, "Start Delay", "The delay between stopping and starting.", 100, 0, 1000);
+    private final IntegerValue randomDelayRange = new IntegerValue(this, "Random Delay Range", "The random delay range which will be added to the delay.", 30, 0, 100);
+    private final IntegerValue chance = new IntegerValue(this, "Chance", "The chance to tap.", 60, 0, 100);
+
+    @Override
+    protected void onActivate() {
+        wasSprinting = mc.options.sprintKey.isPressed();
+        wasForward = mc.options.forwardKey.isPressed();
+        wasBackwards = mc.options.backKey.isPressed();
+        Vandalism.getInstance().getEventSystem().subscribe(this, AttackSendEvent.ID, PlayerUpdateEvent.ID);
     }
 
     @Override
-    public void onActivate() {
-        this.reset();
-        Vandalism.getInstance().getEventSystem().subscribe(
-                this,
-                PlayerUpdateEvent.ID,
-                AttackSendEvent.ID,
-                MoveInputEvent.ID
-        );
-        this.autoSprintModule = Vandalism.getInstance().getModuleManager().getByClass(AutoSprintModule.class);
-        canW = true;
-    }
-
-    @Override
-    public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(
-                this,
-                PlayerUpdateEvent.ID,
-                AttackSendEvent.ID,
-                MoveInputEvent.ID
-        );
-        this.reset();
-    }
-
-    @Override
-    public void onAttackSend(final AttackSendEvent event) {
-        if (this.mc.player == null) {
-            return;
+    protected void onDeactivate() {
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, AttackSendEvent.ID, PlayerUpdateEvent.ID);
+        if (shouldTap) {
+            mc.options.forwardKey.setPressed(wasForward);
+            mc.options.backKey.setPressed(wasBackwards);
+            mc.options.sprintKey.setPressed(wasSprinting);
         }
-        if (event.target instanceof final LivingEntity livingEntity && this.movementTarget == null) {
-            this.lastTarget = livingEntity;
-            final boolean isLooking = RotationUtil.isEntityLookingAtEntity(this.mc.player, livingEntity, 80);
+        shouldTap = false;
+        shouldStopTap = false;
+    }
 
-            if (MovementUtil.isMoving() && (livingEntity.hurtTime <= 2 || livingEntity.hurtTime == 9) && isLooking) {
-//                this.mc.options.forwardKey.setPressed(false);
-//                autoSprintModule.stopSprinting(true);
-                canW = false;
-                this.movementTarget = livingEntity;
-            }
+    @Override
+    public void onAttackSend(AttackSendEvent event) {
+        if (event.target instanceof LivingEntity && !shouldTap && random.nextDouble() < chance.getValue() * 0.1 && mc.player.isSprinting()) {
+            shouldTap = true;
+            timeSinceAttack = System.currentTimeMillis();
+            targetEntity = (LivingEntity) event.target;
+            randomStopDelay = stopDelay.getValue() + random.nextInt(randomDelayRange.getValue());
+            randomStartDelay = Math.max(randomStopDelay, startDelay.getValue() + random.nextInt(randomDelayRange.getValue()));
         }
     }
 
     @Override
-    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.movementTarget != null) {
-            final boolean isLooking = RotationUtil.isEntityLookingAtEntity(this.mc.player, this.movementTarget, 80);
-            Rotation rotation = Vandalism.getInstance().getRotationManager().getRotation();
-            final double speed = MovementUtil.getSpeedRelatedToYaw(rotation != null ? rotation.getYaw() : this.mc.player.getYaw());
-//            final double speed = MovementUtil.getSpeedRelatedToYaw(this.mc.player.getYaw());
-
-            if (speed < 0.3D || !isLooking) {
-//                this.mc.options.forwardKey.setPressed(InputType.isPressed(this.mc.options.forwardKey.boundKey.getCode()));
-//                autoSprintModule.stopSprinting(false);
-                canW = true;
-                this.movementTarget = null;
+    public void onPrePlayerUpdate(PlayerUpdateEvent event) {
+        final long currentTime = System.currentTimeMillis();
+        if (shouldTap) {
+            if (currentTime - timeSinceAttack > randomStopDelay && !shouldStopTap) {
+                wasSprinting = mc.options.sprintKey.isPressed();
+                wasForward = mc.options.forwardKey.isPressed();
+                wasBackwards = mc.options.backKey.isPressed();
+                doTap(tapMode.getSelectedIndex());
+                shouldTap = false;
+                shouldStopTap = true;
             }
-
-            if (this.lastTarget == null) {
-                return;
-            }
-
-            if (this.lastTarget.hurtTime == 10 || this.lastTarget.hurtTime == 8) {
-//                this.mc.options.forwardKey.setPressed(InputType.isPressed(this.mc.options.forwardKey.boundKey.getCode()));
-//                autoSprintModule.stopSprinting(false);
-                canW = true;
-                if (this.lastTarget.hurtTime == 8) {
-                    this.lastTarget = null;
-                }
+        }
+        if (shouldStopTap) {
+            if (currentTime - timeSinceAttack > randomStopDelay + randomStartDelay) {
+                mc.options.sprintKey.setPressed(wasSprinting);
+                mc.options.forwardKey.setPressed(wasForward);
+                mc.options.backKey.setPressed(wasBackwards);
+                shouldStopTap = false;
             }
         }
     }
 
-    @Override
-    public void onMoveInput(MoveInputEvent event) {
-        event.movementForward = canW ? event.movementForward : 0.0F;
+    private void doTap(final int mode) {
+        switch (mode) {
+            case 0:
+                mc.options.sprintKey.setPressed(false);
+                mc.options.forwardKey.setPressed(false);
+                break;
+            case 1:
+                mc.options.sprintKey.setPressed(false);
+                mc.options.forwardKey.setPressed(false);
+                mc.options.backKey.setPressed(true);
+                break;
+        }
     }
 }
