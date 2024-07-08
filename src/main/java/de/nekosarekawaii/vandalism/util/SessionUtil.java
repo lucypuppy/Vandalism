@@ -98,6 +98,7 @@ public class SessionUtil implements MinecraftWrapper {
         mc.profileKeys = ProfileKeys.create(userApiService, session, mc.runDirectory.toPath());
         mc.abuseReportContext = AbuseReportContext.create(mc.abuseReportContext != null ? mc.abuseReportContext.environment : ReporterEnvironment.ofIntegratedServer(), userApiService);
         mc.realmsPeriodicCheckers = new RealmsPeriodicCheckers(RealmsClient.createRealmsClient(mc));
+        // TODO this needs updating and is missing some storages as well as ban details
         return userApiService != UserApiService.OFFLINE;
     }
 
