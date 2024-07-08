@@ -32,12 +32,19 @@ public abstract class MixinKeyboardInput extends Input {
 
     @Inject(method = "tick", at = @At("RETURN"))
     private void callMoveInputListener(final boolean slowDown, final float slowDownFactor, final CallbackInfo ci) {
-        final MoveInputListener.MoveInputEvent event = new MoveInputListener.MoveInputEvent(this.movementForward, this.movementSideways, this.jumping, slowDown, slowDownFactor);
+        final MoveInputListener.MoveInputEvent event = new MoveInputListener.MoveInputEvent(this.movementForward, this.movementSideways, this.jumping, this.sneaking, slowDown, slowDownFactor);
         Vandalism.getInstance().getEventSystem().postInternal(MoveInputListener.MoveInputEvent.ID, event);
-
+        if (event.isCancelled()) {
+            this.movementForward = 0;
+            this.movementSideways = 0;
+            this.jumping = false;
+            this.sneaking = false;
+            return;
+        }
         this.movementForward = event.movementForward;
         this.movementSideways = event.movementSideways;
         this.jumping = event.jumping;
+        this.sneaking = event.sneaking;
     }
 
 }

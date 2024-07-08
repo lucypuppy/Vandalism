@@ -18,25 +18,26 @@
 
 package de.nekosarekawaii.vandalism.event.player;
 
-import de.florianmichael.dietrichevents2.AbstractEvent;
+import de.florianmichael.dietrichevents2.CancellableEvent;
 
 public interface MoveInputListener {
 
     void onMoveInput(final MoveInputEvent event);
 
-    class MoveInputEvent extends AbstractEvent<MoveInputListener> {
+    class MoveInputEvent extends CancellableEvent<MoveInputListener> {
 
         public static final int ID = 21;
 
         public float movementForward, movementSideways;
-        public boolean jumping;
+        public boolean jumping, sneaking;
         public final boolean slowDown;
         public final float slowDownFactor;
 
-        public MoveInputEvent(final float movementForward, final float movementSideways, final boolean jumping, final boolean slowDown, final float slowDownFactor) {
+        public MoveInputEvent(final float movementForward, final float movementSideways, final boolean jumping, final boolean sneaking, final boolean slowDown, final float slowDownFactor) {
             this.movementForward = movementForward;
             this.movementSideways = movementSideways;
             this.jumping = jumping;
+            this.sneaking = sneaking;
             this.slowDown = slowDown;
             this.slowDownFactor = slowDownFactor;
         }
@@ -47,4 +48,5 @@ public interface MoveInputListener {
         }
 
     }
+
 }

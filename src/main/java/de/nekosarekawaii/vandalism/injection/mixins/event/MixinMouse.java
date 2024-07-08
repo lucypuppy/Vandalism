@@ -67,10 +67,14 @@ public abstract class MixinMouse implements MinecraftWrapper {
     }
 
 
-    @Inject(method = "updateMouse", at = @At("HEAD"))
+    @Inject(method = "updateMouse", at = @At("HEAD"), cancellable = true)
     public void callMouseDeltaListener(final CallbackInfo ci) {
         final MouseDeltaListener.MouseDeltaEvent event = new MouseDeltaListener.MouseDeltaEvent(this.cursorDeltaX, this.cursorDeltaY);
         Vandalism.getInstance().getEventSystem().postInternal(MouseDeltaListener.MouseDeltaEvent.ID, event);
+        if (event.isCancelled()) {
+            ci.cancel();
+            return;
+        }
         this.cursorDeltaX = event.cursorDeltaX;
         this.cursorDeltaY = event.cursorDeltaY;
     }

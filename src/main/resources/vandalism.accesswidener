@@ -153,3 +153,5 @@ accessible field net/minecraft/block/AbstractBlock$Settings instrument Lnet/mine
 accessible method net/minecraft/client/render/Camera setRotation (FF)V
 accessible method net/minecraft/client/render/Camera setPos (DDD)V
 accessible method net/minecraft/client/render/Camera setPos (Lnet/minecraft/util/math/Vec3d;)V
+accessible field net/minecraft/client/render/Camera thirdPerson Z
+accessible method net/minecraft/client/option/KeyBinding reset ()V
