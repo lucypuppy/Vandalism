@@ -30,7 +30,7 @@ public interface UpdateSessionListener {
         public static final int ID = 12;
 
         public final Session oldSession;
-        public Session newSession;
+        public final Session newSession;
 
         public UpdateSessionEvent(Session oldSession, Session newSession) {
             this.oldSession = oldSession;

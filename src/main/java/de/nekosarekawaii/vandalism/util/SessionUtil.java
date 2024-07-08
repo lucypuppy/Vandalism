@@ -69,8 +69,8 @@ public class SessionUtil implements MinecraftWrapper {
 
     public static void setSessionAsync(final String name, final String uuid) {
         EXECUTOR.submit(() -> {
-            // Wir drehen uns im Kreis und der shydev macht sogar seine logs hier!
             mc.session = createSession(name, uuid);
+            checkSessionUpdate(mc.session); // Enforce immediate update if possible
         });
     }
 
