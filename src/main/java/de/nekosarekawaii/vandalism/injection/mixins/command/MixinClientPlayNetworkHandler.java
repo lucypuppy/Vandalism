@@ -24,7 +24,6 @@ import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.injection.access.IClientPlayNetworkHandler;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import org.spongepowered.asm.mixin.Mixin;
@@ -49,7 +48,7 @@ public abstract class MixinClientPlayNetworkHandler implements IClientPlayNetwor
             return;
         }
         final String prefix = Vandalism.getInstance().getClientSettings().getChatSettings().commandPrefix.getValue();
-        if (message.startsWith(prefix) && MinecraftClient.getInstance().currentScreen instanceof ChatScreen) {
+        if (message.startsWith(prefix) && this.mc.currentScreen instanceof ChatScreen) {
             try {
                 Vandalism.getInstance().getCommandManager().getCommandDispatcher().execute(message.substring(prefix.length()), AbstractCommand.COMMAND_SOURCE);
             } catch (CommandSyntaxException e) {
