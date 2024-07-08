@@ -25,19 +25,13 @@ import de.nekosarekawaii.vandalism.util.common.IName;
 import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.render.ColorUtils;
 import lombok.Getter;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.encryption.NetworkEncryptionUtils;
-import net.minecraft.network.message.LastSeenMessagesCollector;
-import net.minecraft.network.message.MessageBody;
-import net.minecraft.network.message.MessageSignatureData;
-import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
 import java.awt.*;
-import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ChatUtil implements MinecraftWrapper {
 
@@ -141,16 +135,6 @@ public class ChatUtil implements MinecraftWrapper {
         mc.inGameHud.getChatHud().addMessage(text);
     }
 
-    public static void sendChatMessage(final String message) {
-        final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
-        if (networkHandler == null) return;
-        final Instant instant = Instant.now();
-        final long secureRandom = NetworkEncryptionUtils.SecureRandomUtil.nextLong();
-        final LastSeenMessagesCollector.LastSeenMessages lastSeenMessages = networkHandler.lastSeenMessagesCollector.collect();
-        final MessageSignatureData messageSignatureData = networkHandler.messagePacker.pack(new MessageBody(message, instant, secureRandom, lastSeenMessages.lastSeen()));
-        networkHandler.sendPacket(new ChatMessageC2SPacket(message, instant, secureRandom, messageSignatureData, lastSeenMessages.update()));
-    }
-
     public static Text trimText(final Text text, final int length) {
         if (text.getString().length() <= length) {
             return text;
@@ -181,6 +165,23 @@ public class ChatUtil implements MinecraftWrapper {
         }
 
         return mutableText;
+    }
+
+    public static Formatting getRandomColor() {
+        return Formatting.values()[ThreadLocalRandom.current().nextInt(1, 14)];
+    }
+
+    public static MutableText interpolateTextColor(final String text, final Color color1, final Color color2) {
+        if (color1 == null || color2 == null) {
+            throw new IllegalArgumentException("Colors can't be null.");
+        }
+        final MutableText newText = Text.empty();
+        final int textLength = text.length();
+        for (int i = 0; i < textLength; i++) {
+            final Color color = ColorUtils.colorInterpolate(color1, color2, i / (textLength - 1.0));
+            newText.append(Text.literal(String.valueOf(text.charAt(i))).setStyle(Style.EMPTY.withColor(color.getRGB())));
+        }
+        return newText;
     }
 
     public static MutableText getChatPrefix() {
