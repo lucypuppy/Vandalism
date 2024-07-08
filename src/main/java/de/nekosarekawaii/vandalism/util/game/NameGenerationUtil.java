@@ -39,11 +39,9 @@ public class NameGenerationUtil {
             final HttpRequest request = HttpRequest.newBuilder().uri(URI.create(usernameFileUrl)).build();
             client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenApply(HttpResponse::body).thenAccept(body -> {
                 final List<String> usernameParts = Arrays.asList(body.split("\n"));
-                if (usernameParts.size() > MAX_USERNAME_PARTS) {
-                    USERNAME_PARTS.addAll(usernameParts.subList(0, MAX_USERNAME_PARTS));
-                } else {
-                    USERNAME_PARTS.addAll(usernameParts);
-                }
+                Collections.shuffle(usernameParts);
+                USERNAME_PARTS.clear();
+                USERNAME_PARTS.addAll(usernameParts.subList(0, Math.min(usernameParts.size(), MAX_USERNAME_PARTS)));
             }).join();
             Vandalism.getInstance().getLogger().info("Loaded {} username parts.", USERNAME_PARTS.size());
         } catch (final Exception e) {
