@@ -21,16 +21,11 @@ package de.nekosarekawaii.vandalism.util.render;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.texture.AbstractTexture;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class RenderUtil {
 
@@ -67,23 +62,6 @@ public class RenderUtil {
             return ColorUtils.colorInterpolate(minColor, midColor, MathHelper.clamp(percent * 2d, 0, 1));
         }
         return ColorUtils.colorInterpolate(midColor, maxColor, MathHelper.clamp((percent - 0.5) * 2d, 0, 1));
-    }
-
-    public static Formatting getRandomColor() {
-        return Formatting.values()[ThreadLocalRandom.current().nextInt(1, 14)];
-    }
-
-    public static MutableText interpolateTextColor(final String text, final Color color1, final Color color2) {
-        if (color1 == null || color2 == null) {
-            throw new IllegalArgumentException("Colors can't be null.");
-        }
-        final MutableText newText = Text.empty();
-        final int textLength = text.length();
-        for (int i = 0; i < textLength; i++) {
-            final Color color = ColorUtils.colorInterpolate(color1, color2, i / (textLength - 1.0));
-            newText.append(Text.literal(String.valueOf(text.charAt(i))).setStyle(Style.EMPTY.withColor(color.getRGB())));
-        }
-        return newText;
     }
 
     public static void fillOutlined(final DrawContext drawContext, final int x1, final int y1, final int x2, final int y2, final int outlineWidth, final int color, final int outlineColor) {

@@ -22,7 +22,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.integration.Placeholders;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.util.game.SayUtil;
 import net.minecraft.command.CommandSource;
 
 public class SayCommand extends AbstractCommand {
@@ -42,7 +42,7 @@ public class SayCommand extends AbstractCommand {
             if (message.startsWith("/") && message.length() > 1) {
                 this.mc.getNetworkHandler().sendChatCommand(message.substring(1));
             } else {
-                ChatUtil.sendChatMessage(message);
+                SayUtil.sendChatMessage(message);
             }
             return SINGLE_SUCCESS;
         }));
