@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
-import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.VelocityModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;

@@ -19,8 +19,8 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.jesus.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
-import de.nekosarekawaii.vandalism.event.network.BlockCollisionShapeListener;
+import de.nekosarekawaii.vandalism.event.game.BlockCollisionShapeListener;
+import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.jesus.JesusModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;

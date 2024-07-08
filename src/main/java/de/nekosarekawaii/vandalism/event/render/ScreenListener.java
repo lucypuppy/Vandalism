@@ -16,22 +16,47 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.event.cancellable.render;
+package de.nekosarekawaii.vandalism.event.render;
 
 import de.florianmichael.dietrichevents2.CancellableEvent;
+import net.minecraft.client.gui.screen.Screen;
 
-public interface CameraClipRaytraceListener {
+public interface ScreenListener {
 
-    void onCameraClipRaytrace(final CameraClipRaytraceEvent event);
+    default void onOpenScreen(final ScreenEvent event) {
+    }
 
-    class CameraClipRaytraceEvent extends CancellableEvent<CameraClipRaytraceListener> {
+    default void onResizeScreen(final ScreenEvent event) {
+    }
 
-        public static final int ID = 4;
+    class ScreenEvent extends CancellableEvent<ScreenListener> {
+
+        public static final int ID = 5;
+
+        public final Type type;
+        public Screen screen;
+
+        public ScreenEvent(final Screen screen) {
+            this.type = Type.OPEN;
+            this.screen = screen;
+        }
+
+        public ScreenEvent() {
+            this.type = Type.RESIZE;
+        }
 
         @Override
-        public void call(final CameraClipRaytraceListener listener) {
-            listener.onCameraClipRaytrace(this);
+        public void call(final ScreenListener listener) {
+            if (this.type == Type.OPEN) {
+                listener.onOpenScreen(this);
+            } else {
+                listener.onResizeScreen(this);
+            }
         }
+    }
+
+    enum Type {
+        OPEN, RESIZE
     }
 
 }

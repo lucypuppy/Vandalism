@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.cancellable.render.CameraClipRaytraceListener;
+import de.nekosarekawaii.vandalism.event.render.CameraClipRaytraceListener;
 import de.nekosarekawaii.vandalism.event.render.CameraOverrideListener;
 import net.minecraft.client.render.Camera;
 import net.minecraft.entity.Entity;

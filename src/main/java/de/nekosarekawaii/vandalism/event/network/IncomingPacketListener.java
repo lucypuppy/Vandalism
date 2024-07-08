@@ -16,34 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.event.cancellable.network;
+package de.nekosarekawaii.vandalism.event.network;
 
 import de.florianmichael.dietrichevents2.CancellableEvent;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkPhase;
 import net.minecraft.network.packet.Packet;
 
-public interface OutgoingPacketListener {
+public interface IncomingPacketListener {
 
-    void onOutgoingPacket(final OutgoingPacketEvent event);
+    void onIncomingPacket(final IncomingPacketEvent event);
 
-    class OutgoingPacketEvent extends CancellableEvent<OutgoingPacketListener> {
+    class IncomingPacketEvent extends CancellableEvent<IncomingPacketListener> {
 
-        public static final int ID = 1;
+        public static final int ID = 0;
 
         public Packet<?> packet;
         public final NetworkPhase networkPhase;
         public final ClientConnection connection;
 
-        public OutgoingPacketEvent(final Packet<?> packet, final NetworkPhase networkPhase, final ClientConnection connection) {
+        public IncomingPacketEvent(final Packet<?> packet, final NetworkPhase networkPhase, final ClientConnection connection) {
             this.packet = packet;
             this.networkPhase = networkPhase;
             this.connection = connection;
         }
 
         @Override
-        public void call(final OutgoingPacketListener listener) {
-            listener.onOutgoingPacket(this);
+        public void call(final IncomingPacketListener listener) {
+            listener.onIncomingPacket(this);
         }
 
     }

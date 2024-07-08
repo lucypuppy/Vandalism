@@ -19,12 +19,8 @@
 package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.cancellable.player.EntityPushListener;
-import de.nekosarekawaii.vandalism.event.cancellable.player.FluidPushListener;
-import de.nekosarekawaii.vandalism.event.network.EntityRemoveListener;
-import de.nekosarekawaii.vandalism.event.player.StepListener;
-import de.nekosarekawaii.vandalism.event.player.StepSuccessListener;
-import de.nekosarekawaii.vandalism.event.player.StrafeListener;
+import de.nekosarekawaii.vandalism.event.game.EntityRemoveListener;
+import de.nekosarekawaii.vandalism.event.player.*;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;

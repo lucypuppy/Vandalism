@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.network.packet.s2c.play.CloseScreenS2CPacket;
 

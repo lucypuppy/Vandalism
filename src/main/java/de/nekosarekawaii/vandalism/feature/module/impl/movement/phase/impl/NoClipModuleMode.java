@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement.phase.impl;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
-import de.nekosarekawaii.vandalism.event.network.BlockCollisionShapeListener;
+import de.nekosarekawaii.vandalism.event.game.BlockCollisionShapeListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.phase.PhaseModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;

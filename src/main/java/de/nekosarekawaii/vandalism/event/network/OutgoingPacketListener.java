@@ -18,29 +18,34 @@
 
 package de.nekosarekawaii.vandalism.event.network;
 
-import de.florianmichael.dietrichevents2.AbstractEvent;
-import net.minecraft.entity.Entity;
+import de.florianmichael.dietrichevents2.CancellableEvent;
+import net.minecraft.network.ClientConnection;
+import net.minecraft.network.NetworkPhase;
+import net.minecraft.network.packet.Packet;
 
-public interface EntityRemoveListener {
+public interface OutgoingPacketListener {
 
-    void onEntityRemove(final EntityRemoveEvent event);
+    void onOutgoingPacket(final OutgoingPacketEvent event);
 
-    class EntityRemoveEvent extends AbstractEvent<EntityRemoveListener> {
+    class OutgoingPacketEvent extends CancellableEvent<OutgoingPacketListener> {
 
-        public static final int ID = 37;
+        public static final int ID = 1;
 
-        public final Entity entity;
-        public final Entity.RemovalReason reason;
+        public Packet<?> packet;
+        public final NetworkPhase networkPhase;
+        public final ClientConnection connection;
 
-        public EntityRemoveEvent(final Entity entity, final Entity.RemovalReason reason) {
-            this.entity = entity;
-            this.reason = reason;
+        public OutgoingPacketEvent(final Packet<?> packet, final NetworkPhase networkPhase, final ClientConnection connection) {
+            this.packet = packet;
+            this.networkPhase = networkPhase;
+            this.connection = connection;
         }
 
         @Override
-        public void call(EntityRemoveListener listener) {
-            listener.onEntityRemove(this);
+        public void call(final OutgoingPacketListener listener) {
+            listener.onOutgoingPacket(this);
         }
+
     }
 
 }

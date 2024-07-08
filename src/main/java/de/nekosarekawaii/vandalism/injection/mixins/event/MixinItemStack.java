@@ -36,8 +36,8 @@ import java.util.Optional;
 public abstract class MixinItemStack {
 
     @Inject(method = "getTooltipData", at = @At("RETURN"), cancellable = true)
-    private void getTooltipData(CallbackInfoReturnable<Optional<TooltipData>> info) {
-        ArrayList<TooltipData> tooltipData = new ArrayList<>();
+    private void getTooltipData(final CallbackInfoReturnable<Optional<TooltipData>> info) {
+        final ArrayList<TooltipData> tooltipData = new ArrayList<>();
         info.getReturnValue().ifPresent(tooltipData::add);
 
         Vandalism.getInstance().getEventSystem().postInternal(
@@ -56,4 +56,5 @@ public abstract class MixinItemStack {
             info.setReturnValue(Optional.of(comp));
         }
     }
+
 }

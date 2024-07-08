@@ -16,34 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.event.cancellable.network;
+package de.nekosarekawaii.vandalism.event.player;
 
 import de.florianmichael.dietrichevents2.CancellableEvent;
-import net.minecraft.network.ClientConnection;
-import net.minecraft.network.NetworkPhase;
-import net.minecraft.network.packet.Packet;
 
-public interface IncomingPacketListener {
+public interface FluidPushListener {
 
-    void onIncomingPacket(final IncomingPacketEvent event);
+    void onFluidPush(final FluidPushEvent event);
 
-    class IncomingPacketEvent extends CancellableEvent<IncomingPacketListener> {
+    class FluidPushEvent extends CancellableEvent<FluidPushListener> {
 
-        public static final int ID = 0;
+        public static final int ID = 3;
 
-        public Packet<?> packet;
-        public final NetworkPhase networkPhase;
-        public final ClientConnection connection;
+        public double speed;
 
-        public IncomingPacketEvent(final Packet<?> packet, final NetworkPhase networkPhase, final ClientConnection connection) {
-            this.packet = packet;
-            this.networkPhase = networkPhase;
-            this.connection = connection;
+        public FluidPushEvent(final double speed) {
+            this.speed = speed;
         }
 
         @Override
-        public void call(final IncomingPacketListener listener) {
-            listener.onIncomingPacket(this);
+        public void call(final FluidPushListener listener) {
+            listener.onFluidPush(this);
         }
 
     }

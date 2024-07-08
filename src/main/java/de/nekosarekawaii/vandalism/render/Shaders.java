@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.render;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
-import de.nekosarekawaii.vandalism.event.cancellable.render.ScreenListener;
+import de.nekosarekawaii.vandalism.event.render.ScreenListener;
 import de.nekosarekawaii.vandalism.render.effect.PostProcessEffect;
 import de.nekosarekawaii.vandalism.render.effect.fill.ColorFillEffect;
 import de.nekosarekawaii.vandalism.render.effect.fill.GaussianBlurFillEffect;

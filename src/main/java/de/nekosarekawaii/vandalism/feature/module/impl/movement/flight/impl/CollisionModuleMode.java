@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
-import de.nekosarekawaii.vandalism.event.network.BlockCollisionShapeListener;
+import de.nekosarekawaii.vandalism.event.game.BlockCollisionShapeListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.FlightModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;

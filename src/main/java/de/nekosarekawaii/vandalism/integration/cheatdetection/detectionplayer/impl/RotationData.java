@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.integration.cheatdetection.detectionplayer.i
 
 import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
+import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.integration.cheatdetection.detectionplayer.DetectionPlayer;
 import de.nekosarekawaii.vandalism.integration.cheatdetection.detectionplayer.PlayerData;
 import de.nekosarekawaii.vandalism.util.common.MathUtil;

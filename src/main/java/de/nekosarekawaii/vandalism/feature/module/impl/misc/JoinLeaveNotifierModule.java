@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 import com.mojang.authlib.GameProfile;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
-import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.client.network.PlayerListEntry;

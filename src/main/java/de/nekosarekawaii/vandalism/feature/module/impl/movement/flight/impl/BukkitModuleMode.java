@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.FlightModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
