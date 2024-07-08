@@ -41,10 +41,10 @@ import java.util.List;
 
 public class AutoToolModule extends AbstractModule implements BlockBreakListener, PlayerUpdateListener {
 
-    private final BooleanValue toolsOnly = new BooleanValue(
+    private final BooleanValue weaponsOnly = new BooleanValue(
             this,
-            "Tools Only",
-            "Only switch to tools.",
+            "Weapons Only",
+            "Only switch to weapons for entities.",
             false
     );
 
@@ -83,44 +83,43 @@ public class AutoToolModule extends AbstractModule implements BlockBreakListener
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (!this.toolsOnly.getValue()) {
-            if (this.mc.crosshairTarget instanceof final EntityHitResult entityHitResult) {
-                final Entity entity = entityHitResult.getEntity();
-                if (entity == null) return;
-                if (!Vandalism.getInstance().getTargetManager().isTarget(entity)) return;
-                final List<Pair<Float, Integer>> toolList = new ArrayList<>();
-                for (int i = 0; i < 9; i++) {
-                    if (!PlayerInventory.isValidHotbarIndex(i)) continue;
-                    final ItemStack itemStack = this.mc.player.getInventory().getStack(i);
-                    if (itemStack == null || itemStack.isEmpty()) continue;
-                    final Item item = itemStack.getItem();
-                    if (item instanceof final ToolItem toolItem) {
-                        if (!(item instanceof SwordItem) && !(item instanceof AxeItem)) {
-                            continue;
-                        }
-                        toolList.add(new Pair<>(toolItem.getMaterial().getAttackDamage(), i));
+        if (this.mc.crosshairTarget instanceof final EntityHitResult entityHitResult) {
+            final Entity entity = entityHitResult.getEntity();
+            if (entity == null) return;
+            if (!Vandalism.getInstance().getTargetManager().isTarget(entity)) return;
+            final List<Pair<Float, Integer>> toolList = new ArrayList<>();
+            for (int i = 0; i < 9; i++) {
+                if (!PlayerInventory.isValidHotbarIndex(i)) continue;
+                final ItemStack itemStack = this.mc.player.getInventory().getStack(i);
+                if (itemStack == null || itemStack.isEmpty()) continue;
+                final Item item = itemStack.getItem();
+                if (item instanceof final ToolItem toolItem) {
+                    if (!(item instanceof SwordItem) && !(item instanceof AxeItem)) {
+                        continue;
                     }
+                    toolList.add(new Pair<>(toolItem.getMaterial().getAttackDamage(), i));
                 }
-                if (toolList.isEmpty()) return;
-                toolList.sort((o1, o2) -> Float.compare(o1.getLeft(), o2.getLeft()));
-                final Pair<Float, Integer> bestTool = toolList.getFirst();
-                final ItemStack mainHandStack = this.mc.player.getInventory().getMainHandStack();
-                if (!mainHandStack.isEmpty() && mainHandStack.getItem() instanceof final ToolItem toolItem) {
-                    if (bestTool.getLeft() <= toolItem.getMaterial().getAttackDamage()) {
-                        return;
-                    }
-                }
-                this.oldSlot = this.mc.player.getInventory().selectedSlot;
-                InventoryUtil.setSlot(bestTool.getRight());
-            } else if (!(this.lastCrosshairTarget instanceof BlockHitResult)) {
-                this.resetSlot();
             }
+            if (toolList.isEmpty()) return;
+            toolList.sort((o1, o2) -> Float.compare(o1.getLeft(), o2.getLeft()));
+            final Pair<Float, Integer> bestTool = toolList.getFirst();
+            final ItemStack mainHandStack = this.mc.player.getInventory().getMainHandStack();
+            if (mainHandStack.getItem() instanceof final ToolItem toolItem) {
+                if (bestTool.getLeft() <= toolItem.getMaterial().getAttackDamage()) {
+                    return;
+                }
+            }
+            this.oldSlot = this.mc.player.getInventory().selectedSlot;
+            InventoryUtil.setSlot(bestTool.getRight());
+        } else if (!(this.lastCrosshairTarget instanceof BlockHitResult)) {
+            this.resetSlot();
         }
         this.lastCrosshairTarget = this.mc.crosshairTarget;
     }
 
     @Override
     public void onBlockBreak(final BlockBreakEvent event) {
+        if (this.weaponsOnly.getValue()) return;
         if (event.state.equals(BlockBreakState.START)) {
             final BlockState blockState = this.mc.world.getBlockState(event.pos);
             final Block block = blockState.getBlock();
@@ -142,10 +141,8 @@ public class AutoToolModule extends AbstractModule implements BlockBreakListener
             });
             final Pair<ItemStack, Integer> bestTool = toolList.getFirst();
             final ItemStack mainHandStack = this.mc.player.getInventory().getMainHandStack();
-            if (!mainHandStack.isEmpty()) {
-                if (bestTool.getLeft().getMiningSpeedMultiplier(blockState) <= mainHandStack.getMiningSpeedMultiplier(blockState)) {
-                    return;
-                }
+            if (bestTool.getLeft().getMiningSpeedMultiplier(blockState) <= mainHandStack.getMiningSpeedMultiplier(blockState)) {
+                return;
             }
             this.oldSlot = this.mc.player.getInventory().selectedSlot;
             InventoryUtil.setSlot(bestTool.getRight());
