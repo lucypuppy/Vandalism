@@ -19,48 +19,28 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
-import de.nekosarekawaii.vandalism.event.game.BlockCollisionShapeListener;
+import de.nekosarekawaii.vandalism.event.game.MouseDeltaListener;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
-import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
-import de.nekosarekawaii.vandalism.event.player.EntityPushListener;
-import de.nekosarekawaii.vandalism.event.player.FluidPushListener;
+import de.nekosarekawaii.vandalism.event.player.MoveInputListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
-import de.nekosarekawaii.vandalism.event.render.Render3DListener;
+import de.nekosarekawaii.vandalism.event.render.CameraOverrideListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.game.MovementUtil;
-import de.nekosarekawaii.vandalism.util.render.ColorUtils;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.debug.DebugRenderer;
+import net.minecraft.client.option.Perspective;
+import net.minecraft.client.render.Camera;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.c2s.common.CommonPongC2SPacket;
-import net.minecraft.network.packet.c2s.common.KeepAliveC2SPacket;
-import net.minecraft.network.packet.c2s.play.*;
-import net.minecraft.network.packet.c2s.query.QueryPingC2SPacket;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
-import net.minecraft.network.packet.s2c.play.PlayerRespawnS2CPacket;
-import net.minecraft.network.packet.s2c.play.SignEditorOpenS2CPacket;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.shape.VoxelShapes;
-import org.joml.Matrix4f;
-
-import java.awt.*;
 
 public class FreeCamModule extends AbstractModule implements
-        PlayerUpdateListener, OutgoingPacketListener, IncomingPacketListener,
-        BlockCollisionShapeListener, EntityPushListener,
-        FluidPushListener, Render3DListener {
+        IncomingPacketListener,
+        PlayerUpdateListener, CameraOverrideListener,
+        MouseDeltaListener, MoveInputListener {
 
     private final DoubleValue motionYOffset = new DoubleValue(
             this,
@@ -80,20 +60,6 @@ public class FreeCamModule extends AbstractModule implements
             5.0
     );
 
-    private final BooleanValue allowInteraction = new BooleanValue(
-            this,
-            "Allow Interaction",
-            "Whether or not to allow interaction with the world.",
-            true
-    );
-
-    private final BooleanValue sendRotations = new BooleanValue(
-            this,
-            "Send Rotations",
-            "Whether or not to send rotations to the server.",
-            true
-    );
-
     private final BooleanValue deactivateOnPositionUpdate = new BooleanValue(
             this,
             "Deactivate On Position Update",
@@ -101,18 +67,8 @@ public class FreeCamModule extends AbstractModule implements
             true
     );
 
-    private final ColorValue serverSidePosColor = new ColorValue(
-            this,
-            "Server Side Position Color",
-            "The color of the server side position.",
-            ColorUtils.withAlpha(Color.RED, 127)
-    );
-
     private double x = 0, y = 0, z = 0;
-    private float yaw = 0f, pitch = 0f, width = 0f, height = 0f;
-    private boolean isOnGround = false;
-
-    private boolean receivedPositionUpdate = false;
+    private float yaw = 0f, pitch = 0f;
 
     public FreeCamModule() {
         super("Free Cam", "Like spectator mode but client side only.", Category.RENDER);
@@ -127,18 +83,16 @@ public class FreeCamModule extends AbstractModule implements
         }
         Vandalism.getInstance().getEventSystem().subscribe(
                 this,
-                PlayerUpdateEvent.ID, OutgoingPacketEvent.ID, IncomingPacketEvent.ID,
-                BlockCollisionShapeEvent.ID, EntityPushEvent.ID,
-                FluidPushEvent.ID, Render3DEvent.ID
+                IncomingPacketEvent.ID,
+                PlayerUpdateEvent.ID, CameraOverrideEvent.ID,
+                MouseDeltaEvent.ID, MoveInputEvent.ID
         );
         this.x = this.mc.player.getX();
-        this.y = this.mc.player.getY();
+        this.y = this.mc.player.getY() + (this.mc.player.getHeight() * 2);
         this.z = this.mc.player.getZ();
         this.yaw = this.mc.player.getYaw();
         this.pitch = this.mc.player.getPitch();
-        this.width = this.mc.player.getWidth();
-        this.height = this.mc.player.getHeight();
-        this.isOnGround = this.mc.player.isOnGround();
+        this.mc.options.setPerspective(Perspective.THIRD_PERSON_BACK);
         final GameOptions options = this.mc.options;
         final KeyBinding[] bindings = {options.forwardKey, options.backKey, options.leftKey, options.rightKey, options.jumpKey, options.sneakKey};
         for (final KeyBinding keyBinding : bindings) {
@@ -150,100 +104,51 @@ public class FreeCamModule extends AbstractModule implements
     protected void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(
                 this,
-                PlayerUpdateEvent.ID, OutgoingPacketEvent.ID, IncomingPacketEvent.ID,
-                BlockCollisionShapeEvent.ID, EntityPushEvent.ID,
-                FluidPushEvent.ID, Render3DEvent.ID
+                IncomingPacketEvent.ID,
+                PlayerUpdateEvent.ID, CameraOverrideEvent.ID,
+                MouseDeltaEvent.ID, MoveInputEvent.ID
         );
-        if (this.mc.player != null) {
-            this.mc.player.setVelocity(Vec3d.ZERO);
-            this.mc.player.refreshPositionAndAngles(this.x, this.y, this.z, this.yaw, this.pitch);
-        }
-        if (this.mc.worldRenderer != null) {
-            this.mc.worldRenderer.reload();
-        }
         this.x = 0;
         this.y = 0;
         this.z = 0;
         this.yaw = 0;
         this.pitch = 0;
-        this.width = 0;
-        this.height = 0;
-        this.isOnGround = false;
-        this.receivedPositionUpdate = false;
+        if (this.mc.player != null) {
+            this.mc.options.setPerspective(Perspective.FIRST_PERSON);
+        }
     }
 
     @Override
-    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+    public void onMoveInput(final MoveInputEvent event) {
         double motionX = 0, motionZ = 0;
-        final double motionY = this.mc.options.jumpKey.isPressed() ? this.motionYOffset.getValue() : this.mc.options.sneakKey.isPressed() ? -this.motionYOffset.getValue() : 0;
-        if (MovementUtil.isMoving()) {
-            final Vec3d speedVelocity = MovementUtil.setSpeed(this.speed.getValue());
-            motionX = speedVelocity.x;
-            motionZ = speedVelocity.z;
+        final double motionY = event.jumping ? this.motionYOffset.getValue() : event.sneaking ? -this.motionYOffset.getValue() : 0;
+        if (event.movementForward != 0 || event.movementSideways != 0) {
+            float rotationYaw = this.mc.gameRenderer.getCamera().getYaw();
+            final float moveForward = event.movementForward;
+            final float moveStrafing = event.movementSideways;
+            if (moveForward < 0F) rotationYaw += 180F;
+            float forward = 1F;
+            if (moveForward < 0F) forward = -0.5F;
+            else if (moveForward > 0F) forward = 0.5F;
+            if (moveStrafing > 0F) rotationYaw -= 90F * forward;
+            if (moveStrafing < 0F) rotationYaw += 90F * forward;
+            final double direction = Math.toRadians(rotationYaw);
+            motionX = -Math.sin(direction) * this.speed.getValue();
+            motionZ = Math.cos(direction) * this.speed.getValue();
         }
-        this.mc.player.setVelocity(motionX, motionY, motionZ);
-        this.mc.player.getAbilities().flying = false;
-        this.mc.player.setOnGround(false);
+        final Vec3d currentPosition = new Vec3d(this.x, this.y, this.z);
+        final Vec3d currentVelocity = new Vec3d(motionX, motionY, motionZ);
+        final Vec3d newPosition = currentPosition.add(currentVelocity);
+        this.x = newPosition.x;
+        this.y = newPosition.y;
+        this.z = newPosition.z;
+        event.cancel();
     }
 
     @Override
-    public void onOutgoingPacket(final OutgoingPacketEvent event) {
-        final Packet<?> packet = event.packet;
-        if (this.allowInteraction.getValue()) {
-            if (
-                    packet instanceof PlayerInteractBlockC2SPacket ||
-                            packet instanceof PlayerInteractItemC2SPacket ||
-                            packet instanceof PlayerInteractEntityC2SPacket ||
-                            packet instanceof PlayerActionC2SPacket ||
-                            packet instanceof CreativeInventoryActionC2SPacket ||
-                            packet instanceof UpdateSelectedSlotC2SPacket ||
-                            packet instanceof CloseHandledScreenC2SPacket ||
-                            packet instanceof ClickSlotC2SPacket ||
-                            packet instanceof ButtonClickC2SPacket ||
-                            packet instanceof UpdateCommandBlockMinecartC2SPacket ||
-                            packet instanceof UpdateCommandBlockC2SPacket ||
-                            packet instanceof UpdateBeaconC2SPacket ||
-                            packet instanceof RenameItemC2SPacket ||
-                            packet instanceof UpdateStructureBlockC2SPacket ||
-                            packet instanceof UpdateJigsawC2SPacket ||
-                            packet instanceof HandSwingC2SPacket ||
-                            packet instanceof SignEditorOpenS2CPacket ||
-                            packet instanceof UpdateSignC2SPacket ||
-                            packet instanceof BookUpdateC2SPacket ||
-                            packet instanceof CraftRequestC2SPacket
-            ) {
-                return;
-            }
-        }
-        if (packet instanceof final PlayerMoveC2SPacket playerMoveC2SPacket) {
-            playerMoveC2SPacket.x = this.x;
-            playerMoveC2SPacket.y = this.y;
-            playerMoveC2SPacket.z = this.z;
-            playerMoveC2SPacket.onGround = this.isOnGround;
-            if (!this.sendRotations.getValue()) {
-                playerMoveC2SPacket.yaw = this.yaw;
-                playerMoveC2SPacket.pitch = this.pitch;
-            } else {
-                this.yaw = playerMoveC2SPacket.yaw;
-                this.pitch = playerMoveC2SPacket.pitch;
-            }
-            return;
-        }
-        if (
-                packet instanceof CommandExecutionC2SPacket ||
-                        packet instanceof UpdateDifficultyLockC2SPacket ||
-                        packet instanceof UpdateDifficultyC2SPacket ||
-                        packet instanceof ChatMessageC2SPacket ||
-                        packet instanceof ChatCommandSignedC2SPacket ||
-                        packet instanceof RequestCommandCompletionsC2SPacket ||
-                        packet instanceof CommonPongC2SPacket ||
-                        packet instanceof QueryPingC2SPacket ||
-                        packet instanceof KeepAliveC2SPacket ||
-                        packet instanceof TeleportConfirmC2SPacket ||
-                        packet instanceof PlayerRespawnS2CPacket
-        ) {
-            return;
-        }
+    public void onMouseDelta(final MouseDeltaEvent event) {
+        this.yaw += (float) event.cursorDeltaX;
+        this.pitch += (float) event.cursorDeltaY;
         event.cancel();
     }
 
@@ -252,9 +157,8 @@ public class FreeCamModule extends AbstractModule implements
         final Packet<?> packet = event.packet;
         if (packet instanceof final PlayerPositionLookS2CPacket positionLookPacket) {
             if (this.deactivateOnPositionUpdate.getValue()) {
-                this.receivedPositionUpdate = true;
+                this.deactivate();
             } else {
-                // On Ground could flag, but we ignore it for now because this module will be recoded in the future.
                 this.x = positionLookPacket.getX();
                 this.y = positionLookPacket.getY();
                 this.z = positionLookPacket.getZ();
@@ -263,84 +167,23 @@ public class FreeCamModule extends AbstractModule implements
             }
         } else if (packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket && velocityPacket.getId() == this.mc.player.getId()) {
             if (this.deactivateOnPositionUpdate.getValue()) {
-                this.receivedPositionUpdate = true;
+                this.deactivate();
             }
         }
     }
 
     @Override
-    public void onBlockCollisionShape(final BlockCollisionShapeEvent event) {
-        event.shape = VoxelShapes.empty();
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        this.mc.options.togglePerspectiveKey.setPressed(false);
+        this.mc.options.setPerspective(Perspective.THIRD_PERSON_BACK);
     }
 
     @Override
-    public void onEntityPush(final EntityPushEvent event) {
-        event.cancel();
-    }
-
-    @Override
-    public void onFluidPush(final FluidPushEvent event) {
-        event.cancel();
-    }
-
-    @Override
-    public void onRender3D(final float tickDelta, final MatrixStack matrixStack) {
-        matrixStack.push();
-        final Vec3d camPos = this.mc.gameRenderer.getCamera().getPos();
-        matrixStack.translate(-camPos.x, -camPos.y, -camPos.z);
-        matrixStack.push();
-        matrixStack.push();
-        final double scale = 1.5;
-        final double x = this.x;
-        final double y = this.y;
-        final double z = this.z;
-        final double halfWidth = this.width / 2;
-        final double height = this.height;
-        matrixStack.translate(x, y + scale + 0.65, z);
-        matrixStack.multiply(this.mc.getEntityRenderDispatcher().getRotation());
-        matrixStack.scale(0.025F, -0.025F, 0.025F);
-        final Matrix4f matrix4f = matrixStack.peek().getPositionMatrix();
-        final TextRenderer textRenderer = this.mc.textRenderer;
-        final Text text = Text.literal("Server Side Position");
-        final float g = (float) (-textRenderer.getWidth(text) / 2);
-        final VertexConsumerProvider.Immediate immediate = this.mc.getBufferBuilders().getEntityVertexConsumers();
-        textRenderer.draw(text, g, 0f, Colors.WHITE, false, matrix4f, immediate, TextRenderer.TextLayerType.NORMAL, 0, 1);
-        matrixStack.pop();
-        final float[] startPosColor = ColorUtils.rgba(this.serverSidePosColor.getColor().getRGB());
-        final Box box = new Box(
-                x - halfWidth,
-                y,
-                z - halfWidth,
-                x + halfWidth,
-                y + height,
-                z + halfWidth
-        );
-        final Vec3d center = box.getCenter();
-        final double minX = (box.minX - center.x) * scale + center.x;
-        final double minZ = (box.minZ - center.z) * scale + center.z;
-        final double maxX = (box.maxX - center.x) * scale + center.x;
-        final double maxZ = (box.maxZ - center.z) * scale + center.z;
-        DebugRenderer.drawBox(
-                matrixStack,
-                immediate,
-                minX,
-                box.minY,
-                minZ,
-                maxX,
-                box.maxY,
-                maxZ,
-                startPosColor[0],
-                startPosColor[1],
-                startPosColor[2],
-                startPosColor[3]
-        );
-
-        matrixStack.pop();
-        immediate.draw();
-        matrixStack.pop();
-        if (this.receivedPositionUpdate) {
-            this.deactivate();
-        }
+    public void onCameraOverride(final CameraOverrideEvent event) {
+        final Camera camera = event.camera;
+        camera.setRotation(this.yaw, this.pitch);
+        camera.setPos(this.x, this.y, this.z);
+        camera.thirdPerson = true;
     }
 
 }
