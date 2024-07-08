@@ -19,8 +19,8 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
-import de.nekosarekawaii.vandalism.event.network.WorldListener;
+import de.nekosarekawaii.vandalism.event.game.WorldListener;
+import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.client.gui.screen.world.LevelLoadingScreen;

@@ -16,29 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.event.cancellable.player;
+package de.nekosarekawaii.vandalism.event.game;
 
-import de.florianmichael.dietrichevents2.CancellableEvent;
+import de.florianmichael.dietrichevents2.AbstractEvent;
+import net.minecraft.entity.Entity;
 
-public interface EntityPushListener {
+public interface EntityRemoveListener {
 
-    void onEntityPush(final EntityPushEvent event);
+    void onEntityRemove(final EntityRemoveEvent event);
 
-    class EntityPushEvent extends CancellableEvent<EntityPushListener> {
+    class EntityRemoveEvent extends AbstractEvent<EntityRemoveListener> {
 
-        public static final int ID = 2;
+        public static final int ID = 37;
 
-        public double value;
+        public final Entity entity;
+        public final Entity.RemovalReason reason;
 
-        public EntityPushEvent(final double value) {
-            this.value = value;
+        public EntityRemoveEvent(final Entity entity, final Entity.RemovalReason reason) {
+            this.entity = entity;
+            this.reason = reason;
         }
 
         @Override
-        public void call(final EntityPushListener listener) {
-            listener.onEntityPush(this);
+        public void call(EntityRemoveListener listener) {
+            listener.onEntityRemove(this);
         }
-
     }
 
 }

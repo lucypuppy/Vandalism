@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.integration.rotation;
 import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.RotationSettings;
-import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
+import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.CanSprintListener;
 import de.nekosarekawaii.vandalism.event.player.RotationListener;
 import de.nekosarekawaii.vandalism.event.player.StrafeListener;

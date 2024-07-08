@@ -16,29 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.event.cancellable.player;
+package de.nekosarekawaii.vandalism.event.render;
 
 import de.florianmichael.dietrichevents2.CancellableEvent;
 
-public interface FluidPushListener {
+public interface CameraClipRaytraceListener {
 
-    void onFluidPush(final FluidPushEvent event);
+    void onCameraClipRaytrace(final CameraClipRaytraceEvent event);
 
-    class FluidPushEvent extends CancellableEvent<FluidPushListener> {
+    class CameraClipRaytraceEvent extends CancellableEvent<CameraClipRaytraceListener> {
 
-        public static final int ID = 3;
-
-        public double speed;
-
-        public FluidPushEvent(final double speed) {
-            this.speed = speed;
-        }
+        public static final int ID = 4;
 
         @Override
-        public void call(final FluidPushListener listener) {
-            listener.onFluidPush(this);
+        public void call(final CameraClipRaytraceListener listener) {
+            listener.onCameraClipRaytrace(this);
         }
-
     }
 
 }

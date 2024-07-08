@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
-import de.nekosarekawaii.vandalism.event.network.WorldListener;
+import de.nekosarekawaii.vandalism.event.game.WorldListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.cheatdetection.detectionplayer.DetectionPlayer;
 import net.minecraft.entity.player.PlayerEntity;

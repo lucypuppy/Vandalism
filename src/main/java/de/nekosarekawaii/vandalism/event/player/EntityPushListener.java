@@ -16,47 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.event.cancellable.render;
+package de.nekosarekawaii.vandalism.event.player;
 
 import de.florianmichael.dietrichevents2.CancellableEvent;
-import net.minecraft.client.gui.screen.Screen;
 
-public interface ScreenListener {
+public interface EntityPushListener {
 
-    default void onOpenScreen(final ScreenEvent event) {
-    }
+    void onEntityPush(final EntityPushEvent event);
 
-    default void onResizeScreen(final ScreenEvent event) {
-    }
+    class EntityPushEvent extends CancellableEvent<EntityPushListener> {
 
-    class ScreenEvent extends CancellableEvent<ScreenListener> {
+        public static final int ID = 2;
 
-        public static final int ID = 5;
+        public double value;
 
-        public final Type type;
-        public Screen screen;
-
-        public ScreenEvent(final Screen screen) {
-            this.type = Type.OPEN;
-            this.screen = screen;
-        }
-
-        public ScreenEvent() {
-            this.type = Type.RESIZE;
+        public EntityPushEvent(final double value) {
+            this.value = value;
         }
 
         @Override
-        public void call(final ScreenListener listener) {
-            if (this.type == Type.OPEN) {
-                listener.onOpenScreen(this);
-            } else {
-                listener.onResizeScreen(this);
-            }
+        public void call(final EntityPushListener listener) {
+            listener.onEntityPush(this);
         }
-    }
 
-    enum Type {
-        OPEN, RESIZE
     }
 
 }

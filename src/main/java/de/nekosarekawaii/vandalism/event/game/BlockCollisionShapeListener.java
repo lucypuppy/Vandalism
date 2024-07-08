@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.event.network;
+package de.nekosarekawaii.vandalism.event.game;
 
 import de.florianmichael.dietrichevents2.AbstractEvent;
 import net.minecraft.block.Block;

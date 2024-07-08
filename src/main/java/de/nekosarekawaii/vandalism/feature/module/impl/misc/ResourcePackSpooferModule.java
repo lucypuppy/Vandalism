@@ -19,8 +19,8 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
-import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
+import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.client.network.ClientCommonNetworkHandler;
 import net.minecraft.network.packet.c2s.common.ResourcePackStatusC2SPacket;

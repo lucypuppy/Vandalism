@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.feature.creativetab;
 
 import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.cancellable.network.OutgoingPacketListener;
+import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.feature.creativetab.impl.*;
 import de.nekosarekawaii.vandalism.util.common.Storage;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;

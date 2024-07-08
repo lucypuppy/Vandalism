@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import com.mojang.authlib.GameProfile;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.network.WorldListener;
+import de.nekosarekawaii.vandalism.event.game.WorldListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;

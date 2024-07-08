@@ -21,15 +21,14 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.DoubleValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
-import de.nekosarekawaii.vandalism.event.cancellable.player.EntityPushListener;
-import de.nekosarekawaii.vandalism.event.cancellable.player.FluidPushListener;
+import de.nekosarekawaii.vandalism.event.player.EntityPushListener;
+import de.nekosarekawaii.vandalism.event.player.FluidPushListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.registry.RegistryKeys;
 
 public class PushVelocityModule extends AbstractModule implements EntityPushListener, FluidPushListener {
 

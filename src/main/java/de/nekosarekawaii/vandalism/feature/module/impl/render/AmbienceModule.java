@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.render;
 import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
-import de.nekosarekawaii.vandalism.event.cancellable.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 
