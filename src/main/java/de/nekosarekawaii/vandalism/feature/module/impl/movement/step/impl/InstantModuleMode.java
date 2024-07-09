@@ -16,14 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.impl.movement;
+package de.nekosarekawaii.vandalism.feature.module.impl.movement.step.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.event.player.StepListener;
-import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.step.StepModule;
+import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
 
-public class StepModule extends AbstractModule implements StepListener {
+public class InstantModuleMode extends ModuleMulti<StepModule> implements StepListener {
 
     private final FloatValue stepHeight = new FloatValue(
             this,
@@ -34,8 +35,8 @@ public class StepModule extends AbstractModule implements StepListener {
             10.0f
     );
 
-    public StepModule() {
-        super("Step", "Changes the way you step up blocks.", Category.MOVEMENT);
+    public InstantModuleMode() {
+        super("Instant");
     }
 
     @Override

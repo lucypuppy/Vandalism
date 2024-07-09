@@ -16,29 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.event.player;
+package de.nekosarekawaii.vandalism.feature.module.impl.movement.step;
 
-import de.florianmichael.dietrichevents2.AbstractEvent;
+import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.step.impl.InstantModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.step.impl.NCPModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleModeValue;
 
-public interface StepListener {
+public class StepModule extends AbstractModule {
 
-    void onStep(final StepEvent event);
+    public final ModuleModeValue<StepModule> mode = new ModuleModeValue<>(this, "Mode", "The mode of the step.",
+            new InstantModuleMode(),
+            new NCPModuleMode()
+    );
 
-    class StepEvent extends AbstractEvent<StepListener> {
-
-        public static final int ID = 25;
-
-        public float stepHeight;
-
-        public StepEvent(final float stepHeight) {
-            this.stepHeight = stepHeight;
-        }
-
-        @Override
-        public void call(final StepListener listener) {
-            listener.onStep(this);
-        }
-
+    public StepModule() {
+        super("Step", "Changes the way you step up blocks.", Category.MOVEMENT);
     }
 
 }
