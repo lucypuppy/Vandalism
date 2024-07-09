@@ -23,8 +23,7 @@ import net.minecraft.util.math.Vec3d;
 
 public interface StepSuccessListener {
 
-    default void onStepSuccess(final StepSuccessEvent event) {
-    }
+    void onStepSuccess(final StepSuccessEvent event);
 
     class StepSuccessEvent extends AbstractEvent<StepSuccessListener> {
 

@@ -48,6 +48,7 @@ import de.nekosarekawaii.vandalism.feature.module.impl.movement.jesus.JesusModul
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.nofall.NoFallModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.phase.PhaseModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.SpeedModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.step.StepModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.VelocityModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.render.*;
 import de.nekosarekawaii.vandalism.util.common.NamedStorage;

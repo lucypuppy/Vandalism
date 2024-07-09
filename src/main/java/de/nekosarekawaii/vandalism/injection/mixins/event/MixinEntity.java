@@ -77,8 +77,28 @@ public abstract class MixinEntity implements MinecraftWrapper {
         return instance.updateMovementInFluid(tag, speed);
     }
 
-    @Redirect(method = "adjustMovementForCollisions(Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/Vec3d;", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getStepHeight()F"))
+    @Redirect(method = "adjustMovementForCollisions(Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/Vec3d;", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getStepHeight()F", ordinal = 0))
     private float callStepListener(final Entity instance) {
+        if (this.mc.player == (Object) this) {
+            final StepListener.StepEvent event = new StepListener.StepEvent(instance.getStepHeight());
+            Vandalism.getInstance().getEventSystem().postInternal(StepListener.StepEvent.ID, event);
+            return event.stepHeight;
+        }
+        return instance.getStepHeight();
+    }
+
+    @Redirect(method = "adjustMovementForCollisions(Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/Vec3d;", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getStepHeight()F", ordinal = 1))
+    private float callStepListener2(final Entity instance) {
+        if (this.mc.player == (Object) this) {
+            final StepListener.StepEvent event = new StepListener.StepEvent(instance.getStepHeight());
+            Vandalism.getInstance().getEventSystem().postInternal(StepListener.StepEvent.ID, event);
+            return event.stepHeight;
+        }
+        return instance.getStepHeight();
+    }
+
+    @Redirect(method = "adjustMovementForCollisions(Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/Vec3d;", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getStepHeight()F", ordinal = 2))
+    private float callStepListener3(final Entity instance) {
         if (this.mc.player == (Object) this) {
             final StepListener.StepEvent event = new StepListener.StepEvent(instance.getStepHeight());
             Vandalism.getInstance().getEventSystem().postInternal(StepListener.StepEvent.ID, event);
