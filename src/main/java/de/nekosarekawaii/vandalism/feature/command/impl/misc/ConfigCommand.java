@@ -151,7 +151,10 @@ public class ConfigCommand extends AbstractCommand {
                 final JsonObject jsonObject = GSON.fromJson(fr, JsonObject.class);
                 for (final AbstractModule module : moduleManager.getList()) {
                     final String moduleName = module.getName();
-                    if (!jsonObject.has(moduleName) && moduleManager.getByName(moduleName).getCategory() != Category.RENDER) {
+                    if (moduleManager.getByName(moduleName).getCategory() == Category.RENDER) {
+                        continue;
+                    }
+                    if (!jsonObject.has(moduleName)) {
                         for (final Value<?> value : module.getValues()) value.resetValue();
                         continue;
                     }
