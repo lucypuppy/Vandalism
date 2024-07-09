@@ -150,10 +150,10 @@ public class ConfigCommand extends AbstractCommand {
                 final ModuleManager moduleManager = Vandalism.getInstance().getModuleManager();
                 final JsonObject jsonObject = GSON.fromJson(fr, JsonObject.class);
                 for (final AbstractModule module : moduleManager.getList()) {
-                    final String moduleName = module.getName();
-                    if (moduleManager.getByName(moduleName).getCategory() == Category.RENDER) {
+                    if (module.getCategory() == Category.RENDER) {
                         continue;
                     }
+                    final String moduleName = module.getName();
                     if (!jsonObject.has(moduleName)) {
                         for (final Value<?> value : module.getValues()) value.resetValue();
                         continue;
