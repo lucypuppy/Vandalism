@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.feature.module.template.clicking;
 
-import de.nekosarekawaii.vandalism.util.common.IName;
+import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import lombok.Setter;
 

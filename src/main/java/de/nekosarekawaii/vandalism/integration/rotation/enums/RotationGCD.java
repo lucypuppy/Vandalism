@@ -19,9 +19,9 @@
 package de.nekosarekawaii.vandalism.integration.rotation.enums;
 
 import com.mojang.datafixers.util.Function4;
+import de.florianmichael.rclasses.common.StringUtils;
+import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
-import de.nekosarekawaii.vandalism.util.common.IName;
-import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import lombok.Getter;
 import net.minecraft.util.math.MathHelper;
 

@@ -23,6 +23,7 @@ import com.mojang.authlib.properties.PropertyMap;
 import de.florianmichael.asmfabricloader.AsmFabricLoader;
 import de.florianmichael.asmfabricloader.api.MapperBase;
 import de.florianmichael.dietrichevents2.Priorities;
+import de.florianmichael.rclasses.common.array.ArrayUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
@@ -30,7 +31,6 @@ import de.nekosarekawaii.vandalism.base.value.impl.selection.MultiModeValue;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.common.ArrayUtil;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.lenni0451.reflect.stream.RStream;
 import net.lenni0451.reflect.stream.field.FieldWrapper;
@@ -295,7 +295,7 @@ public class PacketManagerModule extends AbstractModule implements IncomingPacke
     }
 
     private static String getSimpleName(final Class<?> clazz) {
-        return PacketManagerModule.MAPPER_BASE == null ? clazz.getSimpleName() : ArrayUtil.last(PacketManagerModule.MAPPER_BASE.getClassName(clazz.getName().replace(".", "/")).split("/"));
+        return PacketManagerModule.MAPPER_BASE == null ? clazz.getSimpleName() : ArrayUtils.last(PacketManagerModule.MAPPER_BASE.getClassName(clazz.getName().replace(".", "/")).split("/"));
     }
 
     @Override

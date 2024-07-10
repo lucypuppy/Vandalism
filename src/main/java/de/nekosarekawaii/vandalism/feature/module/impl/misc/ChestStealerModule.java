@@ -18,12 +18,12 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
+import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.LongValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.game.inventory.InventoryUtil;
 import net.minecraft.block.FallingBlock;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;

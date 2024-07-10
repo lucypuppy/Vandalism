@@ -18,8 +18,12 @@
 
 package de.nekosarekawaii.vandalism.feature.module.template.clicking.impl;
 
+import de.florianmichael.rclasses.common.RandomUtils;
+import de.florianmichael.rclasses.math.Arithmetics;
+import de.florianmichael.rclasses.math.timer.MSTimer;
+import de.florianmichael.rclasses.pattern.evicting.EvictingList;
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.Clicker;
-import de.nekosarekawaii.vandalism.util.common.*;
+import de.nekosarekawaii.vandalism.util.math.MathUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Vector4d;

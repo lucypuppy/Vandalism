@@ -26,7 +26,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.game.MouseInputListener;
 import de.nekosarekawaii.vandalism.event.game.SmoothCameraRotationsListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.common.Easing;
+import de.nekosarekawaii.vandalism.util.math.Easing;
 
 public class ZoomModule extends AbstractModule implements MouseInputListener, SmoothCameraRotationsListener {
 

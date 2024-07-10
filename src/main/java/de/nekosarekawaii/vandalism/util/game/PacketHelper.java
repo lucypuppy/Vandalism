@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.util.game;
 
-import de.nekosarekawaii.vandalism.util.common.MathUtil;
+import de.nekosarekawaii.vandalism.util.math.MathUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;

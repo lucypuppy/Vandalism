@@ -20,6 +20,9 @@ package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.gui.server;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import com.viaversion.viaversion.api.protocol.version.VersionType;
+import de.florianmichael.rclasses.common.StringUtils;
+import de.florianmichael.rclasses.common.TimeFormatter;
+import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.ServerDiscoveryUtil;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.impl.ServersRequest;
@@ -29,9 +32,6 @@ import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataLi
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
-import de.nekosarekawaii.vandalism.util.common.MSTimer;
-import de.nekosarekawaii.vandalism.util.common.StringUtils;
-import de.nekosarekawaii.vandalism.util.common.TimeFormatter;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import imgui.ImGui;

@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.util.game;
 
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import de.nekosarekawaii.vandalism.util.common.IName;
+import de.florianmichael.rclasses.pattern.functional.IName;
 import net.minecraft.block.Block;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
