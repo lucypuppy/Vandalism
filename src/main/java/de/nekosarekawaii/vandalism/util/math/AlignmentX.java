@@ -16,12 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.common;
+package de.nekosarekawaii.vandalism.util.math;
 
-public class ArrayUtil {
+import de.florianmichael.rclasses.common.StringUtils;
+import de.florianmichael.rclasses.pattern.functional.IName;
 
-    public static <T> T last(final T[] array) {
-        return array[array.length - 1];
+/**
+ * Enum for the alignment of an object. The alignment is used to determine the position of an object relative to another object.
+ */
+public enum AlignmentX implements IName {
+
+    LEFT, RIGHT, MIDDLE;
+
+    private final String name;
+
+    AlignmentX() {
+        this.name = StringUtils.normalizeEnumName(this.name());
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    public static AlignmentX getAlignmentByName(final String name) {
+        for (final AlignmentX alignment : values()) {
+            if (alignment.name().equalsIgnoreCase(name)) {
+                return alignment;
+            }
+        }
+        return null;
     }
 
 }

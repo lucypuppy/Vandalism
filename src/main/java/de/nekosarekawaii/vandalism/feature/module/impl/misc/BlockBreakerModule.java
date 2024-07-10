@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
+import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryBlacklistValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
@@ -25,7 +26,6 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

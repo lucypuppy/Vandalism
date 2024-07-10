@@ -18,15 +18,15 @@
 
 package de.nekosarekawaii.vandalism.feature.hud.impl;
 
+import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
-import de.nekosarekawaii.vandalism.util.common.AlignmentX;
-import de.nekosarekawaii.vandalism.util.common.AlignmentY;
-import de.nekosarekawaii.vandalism.util.common.IName;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.math.AlignmentX;
+import de.nekosarekawaii.vandalism.util.math.AlignmentY;
 import de.nekosarekawaii.vandalism.util.render.GLStateTracker;
 import lombok.Getter;
 import net.minecraft.client.gui.DrawContext;

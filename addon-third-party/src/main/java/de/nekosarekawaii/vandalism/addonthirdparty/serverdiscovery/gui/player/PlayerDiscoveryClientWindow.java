@@ -18,6 +18,8 @@
 
 package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.gui.player;
 
+import de.florianmichael.rclasses.common.StringUtils;
+import de.florianmichael.rclasses.common.TimeFormatter;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.ServerDiscoveryUtil;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.impl.WhereIsRequest;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.Response;
@@ -27,10 +29,8 @@ import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataLi
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
-import de.nekosarekawaii.vandalism.util.common.MathUtil;
-import de.nekosarekawaii.vandalism.util.common.StringUtils;
-import de.nekosarekawaii.vandalism.util.common.TimeFormatter;
 import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
+import de.nekosarekawaii.vandalism.util.math.MathUtil;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;

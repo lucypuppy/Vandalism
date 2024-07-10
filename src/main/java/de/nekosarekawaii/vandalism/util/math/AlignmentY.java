@@ -16,35 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.encryption;
+package de.nekosarekawaii.vandalism.util.math;
 
-public class Rot13 implements Encryptor {
+import de.florianmichael.rclasses.common.StringUtils;
+import de.florianmichael.rclasses.pattern.functional.IName;
 
-    private final int offset;
+/**
+ * Enum for the alignment of an object. The alignment is used to determine the position of an object relative to another object.
+ */
+public enum AlignmentY implements IName {
 
-    public Rot13(int offset) {
-        this.offset = offset;
+    TOP, BOTTOM, MIDDLE;
+
+    private final String name;
+
+    AlignmentY() {
+        this.name = StringUtils.normalizeEnumName(this.name());
     }
 
     @Override
-    public byte[] encrypt(byte[] data) {
-        StringBuilder result = new StringBuilder();
+    public String getName() {
+        return this.name;
+    }
 
-        for (char c : new String(data).toCharArray()) {
-            if (Character.isLetter(c)) {
-                char base = Character.isLowerCase(c) ? 'a' : 'A';
-                result.append((char) (base + (c - base + offset) % 26));
-            } else {
-                result.append(c);
+    public static AlignmentY getAlignmentByName(final String name) {
+        for (final AlignmentY alignment : values()) {
+            if (alignment.name().equalsIgnoreCase(name)) {
+                return alignment;
             }
         }
-
-        return result.toString().getBytes();
+        return null;
     }
 
-    @Override
-    public byte[] decrypt(byte[] data) {
-        // Rot13 is its own inverse, so decrypting is the same as encrypting
-        return encrypt(data);
-    }
 }

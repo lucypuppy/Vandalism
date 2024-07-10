@@ -19,6 +19,8 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import de.florianmichael.rclasses.common.StringUtils;
+import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.BezierValue;
@@ -44,8 +46,6 @@ import de.nekosarekawaii.vandalism.integration.rotation.RotationBuilder;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationManager;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
-import de.nekosarekawaii.vandalism.util.common.IName;
-import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.game.WorldUtil;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.render.*;

@@ -18,9 +18,9 @@
 
 package de.nekosarekawaii.vandalism.integration.serverlist;
 
+import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
-import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.PingState;
 import net.lenni0451.mcping.MCPing;

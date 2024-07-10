@@ -32,7 +32,7 @@ import de.nekosarekawaii.vandalism.render.effect.outline.OuterOutlineEffect;
 import de.nekosarekawaii.vandalism.render.gl.shader.Shader;
 import de.nekosarekawaii.vandalism.render.gl.shader.ShaderProgram;
 import de.nekosarekawaii.vandalism.render.gl.shader.ShaderType;
-import de.nekosarekawaii.vandalism.util.common.DateUtil;
+import de.nekosarekawaii.vandalism.util.math.DateUtil;
 import lombok.Getter;
 import net.minecraft.client.MinecraftClient;
 

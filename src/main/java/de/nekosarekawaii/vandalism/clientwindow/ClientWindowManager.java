@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.clientwindow;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.MenuSettings;
@@ -33,7 +34,6 @@ import de.nekosarekawaii.vandalism.clientwindow.impl.ServerAddressResolverClient
 import de.nekosarekawaii.vandalism.clientwindow.impl.port.PortScannerClientWindow;
 import de.nekosarekawaii.vandalism.event.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.event.render.Render2DListener;
-import de.nekosarekawaii.vandalism.util.common.Storage;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.integration.imgui.ImLoader;
 import net.minecraft.client.MinecraftClient;

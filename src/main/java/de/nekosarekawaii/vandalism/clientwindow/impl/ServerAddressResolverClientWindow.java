@@ -18,10 +18,10 @@
 
 package de.nekosarekawaii.vandalism.clientwindow.impl;
 
+import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.field.IPFieldWidget;
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
-import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
@@ -46,7 +46,7 @@ public class ServerAddressResolverClientWindow extends ClientWindow implements I
         this.renderField(id);
         if (this.isValidIP()) {
             final String ip = this.getImIP().get();
-            if (StringUtils.hasLetter(ip)) {
+            if (StringUtils.containsLetter(ip)) {
                 if (ImUtils.subButton("Resolve Server Address" + id + "resolveAddress")) {
                     this.lastData.clear();
                     Executors.newSingleThreadExecutor().submit(() -> {

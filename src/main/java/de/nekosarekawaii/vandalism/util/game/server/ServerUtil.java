@@ -20,11 +20,11 @@ package de.nekosarekawaii.vandalism.util.game.server;
 
 import com.google.gson.Gson;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
 import de.nekosarekawaii.vandalism.integration.ViaFabricPlusAccess;
-import de.nekosarekawaii.vandalism.util.common.MSTimer;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.TitleScreen;

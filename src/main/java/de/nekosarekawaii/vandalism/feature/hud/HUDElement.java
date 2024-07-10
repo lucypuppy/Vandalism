@@ -18,6 +18,8 @@
 
 package de.nekosarekawaii.vandalism.feature.hud;
 
+import de.florianmichael.rclasses.math.geometry.Alignment;
+import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.value.Value;
@@ -32,10 +34,9 @@ import de.nekosarekawaii.vandalism.render.text.AtlasFont;
 import de.nekosarekawaii.vandalism.render.text.AtlasFontRenderer;
 import de.nekosarekawaii.vandalism.render.text.SimpleFont;
 import de.nekosarekawaii.vandalism.render.text.TextAlign;
-import de.nekosarekawaii.vandalism.util.common.AlignmentX;
-import de.nekosarekawaii.vandalism.util.common.AlignmentY;
-import de.nekosarekawaii.vandalism.util.common.IName;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.math.AlignmentX;
+import de.nekosarekawaii.vandalism.util.math.AlignmentY;
 import lombok.Getter;
 import lombok.Setter;
 import net.fabricmc.loader.api.FabricLoader;

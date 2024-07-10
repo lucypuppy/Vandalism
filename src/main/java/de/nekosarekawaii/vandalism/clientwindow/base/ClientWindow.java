@@ -18,8 +18,8 @@
 
 package de.nekosarekawaii.vandalism.clientwindow.base;
 
-import de.nekosarekawaii.vandalism.util.common.IName;
-import de.nekosarekawaii.vandalism.util.common.StringUtils;
+import de.florianmichael.rclasses.common.StringUtils;
+import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import imgui.ImGui;
 import lombok.Getter;

@@ -20,6 +20,8 @@ package de.nekosarekawaii.vandalism.clientwindow.impl;
 
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import com.viaversion.viaversion.api.protocol.version.VersionType;
+import de.florianmichael.rclasses.math.Percentage;
+import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.clientwindow.template.StateClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataListWidget;
@@ -28,8 +30,6 @@ import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataen
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.field.IPPortFieldWidget;
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.SessionUtil;
-import de.nekosarekawaii.vandalism.util.common.MSTimer;
-import de.nekosarekawaii.vandalism.util.common.Percentage;
 import de.nekosarekawaii.vandalism.util.game.PacketHelper;
 import de.nekosarekawaii.vandalism.util.game.PingState;
 import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;

@@ -19,13 +19,13 @@
 package de.nekosarekawaii.vandalism.base.account.type;
 
 import com.google.gson.JsonObject;
+import de.florianmichael.rclasses.common.array.ObjectTypeChecker;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.account.AbstractAccount;
 import de.nekosarekawaii.vandalism.base.account.AccountFactory;
-import de.nekosarekawaii.vandalism.util.common.ObjectTypeChecker;
-import de.nekosarekawaii.vandalism.util.common.UUIDUtil;
-import de.nekosarekawaii.vandalism.util.encryption.AESEncryptionUtil;
 import de.nekosarekawaii.vandalism.util.game.NameGenerationUtil;
+import de.nekosarekawaii.vandalism.util.game.UUIDUtil;
+import de.nekosarekawaii.vandalism.util.math.AESEncryptionUtil;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;

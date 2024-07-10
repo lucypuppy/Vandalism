@@ -18,8 +18,8 @@
 
 package de.nekosarekawaii.vandalism.clientwindow.template.widgets.field;
 
+import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
-import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
 import imgui.ImGui;
@@ -85,7 +85,7 @@ public interface IPFieldWidget extends MinecraftWrapper {
         if (this.isValidIP()) {
             String ip = this.getImIP().get();
             boolean resolved = false;
-            if (this.shouldResolve() && StringUtils.hasLetter(ip)) {
+            if (this.shouldResolve() && StringUtils.containsLetter(ip)) {
                 if (ImUtils.subButton("Resolve IP" + id + "resolve")) {
                     final Pair<String, Integer> serverAddress = ServerUtil.resolveServerAddress(ip);
                     ip = serverAddress.getLeft() + ":" + serverAddress.getRight();

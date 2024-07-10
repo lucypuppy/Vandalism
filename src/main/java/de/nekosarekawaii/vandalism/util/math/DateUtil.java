@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.common;
+package de.nekosarekawaii.vandalism.util.math;
 
 import org.apache.commons.lang3.time.CalendarUtils;
 

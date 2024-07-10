@@ -18,11 +18,11 @@
 
 package de.nekosarekawaii.vandalism.util.game;
 
+import de.florianmichael.rclasses.common.StringUtils;
+import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
-import de.nekosarekawaii.vandalism.util.common.IName;
-import de.nekosarekawaii.vandalism.util.common.StringUtils;
 import de.nekosarekawaii.vandalism.util.render.ColorUtils;
 import lombok.Getter;
 import net.minecraft.text.*;

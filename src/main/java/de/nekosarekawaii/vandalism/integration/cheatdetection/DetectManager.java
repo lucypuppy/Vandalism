@@ -18,9 +18,9 @@
 
 package de.nekosarekawaii.vandalism.integration.cheatdetection;
 
+import de.florianmichael.rclasses.pattern.storage.named.NamedStorage;
 import de.nekosarekawaii.vandalism.integration.cheatdetection.detectionplayer.DetectionPlayer;
 import de.nekosarekawaii.vandalism.integration.cheatdetection.impl.TestDetection;
-import de.nekosarekawaii.vandalism.util.common.NamedStorage;
 
 public class DetectManager extends NamedStorage<AbstractDetection> {
 

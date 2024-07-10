@@ -16,7 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.encryption;
+package de.nekosarekawaii.vandalism.util.math;
+
+import de.florianmichael.rclasses.common.encryption.EncryptionUtils;
 
 import javax.crypto.spec.IvParameterSpec;
 import java.nio.charset.StandardCharsets;

@@ -19,12 +19,12 @@
 package de.nekosarekawaii.vandalism.integration.friends;
 
 import com.mojang.authlib.GameProfile;
+import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.event.internal.TargetListener;
 import de.nekosarekawaii.vandalism.event.render.TextDrawListener;
 import de.nekosarekawaii.vandalism.integration.friends.config.FriendsConfig;
-import de.nekosarekawaii.vandalism.util.common.Storage;
 import de.nekosarekawaii.vandalism.util.game.ChatUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import org.apache.commons.lang3.StringUtils;

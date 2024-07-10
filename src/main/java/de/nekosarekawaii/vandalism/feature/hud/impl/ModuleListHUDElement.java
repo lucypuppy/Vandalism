@@ -28,8 +28,8 @@ import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.render.Buffers;
 import de.nekosarekawaii.vandalism.render.gl.render.AttribConsumerProvider;
 import de.nekosarekawaii.vandalism.render.gl.render.ImmediateRenderer;
-import de.nekosarekawaii.vandalism.util.common.AlignmentX;
-import de.nekosarekawaii.vandalism.util.common.AlignmentY;
+import de.nekosarekawaii.vandalism.util.math.AlignmentX;
+import de.nekosarekawaii.vandalism.util.math.AlignmentY;
 import net.minecraft.client.gui.DrawContext;
 import org.joml.Vector2f;
 
