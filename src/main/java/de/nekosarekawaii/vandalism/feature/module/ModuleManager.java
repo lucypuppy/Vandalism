@@ -181,7 +181,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new SmartVClip(),
                 new CheatDetectorModule(),
                 new FreeCamModule(),
-                new AutoToolModule()
+                new AutoToolModule(),
+                new AntiFireballModule()
         );
         this.configManager.add(new ModuleConfig(this));
     }
