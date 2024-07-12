@@ -46,7 +46,7 @@ public class FreeCamModule extends AbstractModule implements
             this,
             "Motion Y Offset",
             "The motion y offset of the free cam.",
-            1.0,
+            0.5,
             0.1,
             2.0
     );
@@ -55,7 +55,7 @@ public class FreeCamModule extends AbstractModule implements
             this,
             "Speed",
             "The speed amount of the free cam.",
-            2.0,
+            1.0,
             1.0,
             5.0
     );
@@ -147,8 +147,10 @@ public class FreeCamModule extends AbstractModule implements
 
     @Override
     public void onMouseDelta(final MouseDeltaEvent event) {
-        this.yaw += (float) event.cursorDeltaX;
-        this.pitch += (float) event.cursorDeltaY;
+        this.yaw += (float) (event.cursorDeltaX * this.mc.options.getMouseSensitivity().getValue());
+        this.pitch += (float) (event.cursorDeltaY * this.mc.options.getMouseSensitivity().getValue());
+        if (this.pitch > 90) this.pitch = 90;
+        if (this.pitch < -90) this.pitch = -90;
         event.cancel();
     }
 
