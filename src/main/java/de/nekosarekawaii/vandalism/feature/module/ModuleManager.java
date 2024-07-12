@@ -52,7 +52,7 @@ import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.SpeedModul
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.step.StepModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.VelocityModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.render.*;
-import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import lombok.Getter;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.text.Text;

@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.module;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.combat.KillAuraModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.FastBreakModule;
-import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;

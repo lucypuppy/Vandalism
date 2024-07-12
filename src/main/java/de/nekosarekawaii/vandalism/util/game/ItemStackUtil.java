@@ -20,6 +20,8 @@ package de.nekosarekawaii.vandalism.util.game;
 
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import de.florianmichael.rclasses.pattern.functional.IName;
+import de.nekosarekawaii.vandalism.util.ChatUtil;
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.block.Block;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;

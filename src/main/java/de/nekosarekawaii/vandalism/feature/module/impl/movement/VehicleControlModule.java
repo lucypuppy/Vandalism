@@ -25,7 +25,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.game.MovementUtil;
+import de.nekosarekawaii.vandalism.util.MovementUtil;
 import net.minecraft.entity.Entity;
 import org.lwjgl.glfw.GLFW;
 

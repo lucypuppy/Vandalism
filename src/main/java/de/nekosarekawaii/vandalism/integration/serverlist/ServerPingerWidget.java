@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.integration.serverlist;
 import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
-import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.game.PingState;
 import net.lenni0451.mcping.MCPing;
 import net.lenni0451.mcping.exception.ConnectTimeoutException;

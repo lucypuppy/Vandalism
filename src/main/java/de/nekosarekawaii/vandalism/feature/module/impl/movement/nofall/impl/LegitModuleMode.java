@@ -24,7 +24,7 @@ import de.nekosarekawaii.vandalism.event.player.RotationListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.nofall.NoFallModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 

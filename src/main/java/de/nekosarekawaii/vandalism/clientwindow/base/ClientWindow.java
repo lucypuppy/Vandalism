@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.clientwindow.base;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.florianmichael.rclasses.pattern.functional.IName;
-import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import imgui.ImGui;
 import lombok.Getter;
 import net.minecraft.client.gui.DrawContext;

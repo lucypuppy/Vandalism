@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.event;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.game.EntityRemoveListener;
 import de.nekosarekawaii.vandalism.event.player.*;
-import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.registry.tag.TagKey;

@@ -24,8 +24,8 @@ import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
 import de.nekosarekawaii.vandalism.event.player.AttackListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.game.MovementUtil;
-import de.nekosarekawaii.vandalism.util.render.InputType;
+import de.nekosarekawaii.vandalism.util.MovementUtil;
+import de.nekosarekawaii.vandalism.util.render.util.InputType;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.entity.LivingEntity;
 

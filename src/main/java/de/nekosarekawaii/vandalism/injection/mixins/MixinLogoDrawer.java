@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins;
 
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
-import de.nekosarekawaii.vandalism.util.render.GLStateTracker;
+import de.nekosarekawaii.vandalism.util.render.util.GLStateTracker;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.LogoDrawer;

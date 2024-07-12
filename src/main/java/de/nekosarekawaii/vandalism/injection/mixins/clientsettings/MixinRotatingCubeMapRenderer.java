@@ -20,9 +20,9 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.MenuSettings;
-import de.nekosarekawaii.vandalism.render.Shaders;
-import de.nekosarekawaii.vandalism.render.gl.shader.GlobalUniforms;
-import de.nekosarekawaii.vandalism.render.gl.shader.ShaderProgram;
+import de.nekosarekawaii.vandalism.util.render.Shaders;
+import de.nekosarekawaii.vandalism.util.render.gl.shader.GlobalUniforms;
+import de.nekosarekawaii.vandalism.util.render.gl.shader.ShaderProgram;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.RotatingCubeMapRenderer;

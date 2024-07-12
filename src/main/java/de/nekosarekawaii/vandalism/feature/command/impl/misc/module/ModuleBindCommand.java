@@ -24,8 +24,8 @@ import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.feature.command.arguments.KeyBindArgumentType;
 import de.nekosarekawaii.vandalism.feature.command.arguments.ModuleArgumentType;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
-import de.nekosarekawaii.vandalism.util.render.InputType;
+import de.nekosarekawaii.vandalism.util.ChatUtil;
+import de.nekosarekawaii.vandalism.util.render.util.InputType;
 import net.minecraft.command.CommandSource;
 import org.lwjgl.glfw.GLFW;
 

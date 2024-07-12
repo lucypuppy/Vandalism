@@ -24,7 +24,7 @@ import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.event.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.event.game.MouseInputListener;
-import de.nekosarekawaii.vandalism.util.render.InputType;
+import de.nekosarekawaii.vandalism.util.render.util.InputType;
 import imgui.ImGui;
 import net.minecraft.client.MinecraftClient;
 import org.lwjgl.glfw.GLFW;

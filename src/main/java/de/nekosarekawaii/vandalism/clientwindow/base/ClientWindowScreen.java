@@ -23,7 +23,7 @@ import de.nekosarekawaii.vandalism.clientwindow.ClientWindowManager;
 import de.nekosarekawaii.vandalism.clientwindow.impl.AboutClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.impl.GlobalSearchClientWindow;
 import de.nekosarekawaii.vandalism.feature.hud.gui.HUDClientWindow;
-import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
+import de.nekosarekawaii.vandalism.util.server.ServerUtil;
 import de.nekosarekawaii.vandalism.integration.imgui.ImLoader;
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import imgui.ImGui;

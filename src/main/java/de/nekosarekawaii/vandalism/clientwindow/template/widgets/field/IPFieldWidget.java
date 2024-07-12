@@ -20,8 +20,8 @@ package de.nekosarekawaii.vandalism.clientwindow.template.widgets.field;
 
 import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
-import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
-import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.server.ServerUtil;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;

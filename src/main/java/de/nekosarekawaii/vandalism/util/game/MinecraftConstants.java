@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.util.game;
 
+@Deprecated
 public class MinecraftConstants {
 
     // those constant gets used in shitty anti cheats with no proper collision handling, posY % const == 0 = ground True

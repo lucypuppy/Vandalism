@@ -29,7 +29,7 @@ import de.nekosarekawaii.vandalism.feature.hud.gui.HUDClientWindow;
 import de.nekosarekawaii.vandalism.feature.hud.impl.InfoHUDElement;
 import de.nekosarekawaii.vandalism.feature.hud.impl.ModuleListHUDElement;
 import de.nekosarekawaii.vandalism.feature.hud.impl.WatermarkHUDElement;
-import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.gui.DrawContext;
 
 import java.io.File;
