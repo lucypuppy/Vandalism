@@ -76,6 +76,7 @@ public class IllegalInteractionModule extends AbstractModule implements PlayerUp
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        if (!this.mc.options.useKey.isPressed()) return;
         final Entity cameraEntity = this.mc.getCameraEntity();
         final HitResult hitResult = cameraEntity.raycast(this.reach.getValue(), 0, false);
         final ItemStack mainHandStack = this.mc.player.getMainHandStack();
@@ -85,7 +86,7 @@ public class IllegalInteractionModule extends AbstractModule implements PlayerUp
             return;
         }
         final Block block = this.mc.world.getBlockState(blockHitResult.getBlockPos()).getBlock();
-        if ((block instanceof AirBlock || block instanceof FluidBlock) && this.mc.options.useKey.isPressed()) {
+        if ((block instanceof AirBlock || block instanceof FluidBlock)) {
             this.mc.interactionManager.interactBlock(this.mc.player, Hand.MAIN_HAND, blockHitResult);
         }
     }

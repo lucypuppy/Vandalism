@@ -24,6 +24,7 @@ import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.velocity.VelocityModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
+import net.minecraft.util.math.Vec3d;
 
 public class CancelModuleMode extends ModuleMulti<VelocityModule> implements IncomingPacketListener {
 
@@ -69,12 +70,13 @@ public class CancelModuleMode extends ModuleMulti<VelocityModule> implements Inc
                 velocityPacket.getId() == this.mc.player.getId()
         ) {
             if (this.customizeCancel.getValue()) {
+                final Vec3d velocity = this.mc.player.getVelocity();
                 if (this.cancelHorizontal.getValue()) {
-                    velocityPacket.velocityX = 0;
-                    velocityPacket.velocityZ = 0;
+                    velocityPacket.velocityX = (int) (velocity.x * 8000D);
+                    velocityPacket.velocityZ = (int) (velocity.z * 8000D);
                 }
                 if (this.cancelVertical.getValue()) {
-                    velocityPacket.velocityY = 0;
+                    velocityPacket.velocityY = (int) (velocity.y * 8000D);
                 }
             } else {
                 event.cancel();

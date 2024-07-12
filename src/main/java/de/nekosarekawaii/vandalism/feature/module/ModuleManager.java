@@ -82,6 +82,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     private ConsoleSpammerModule consoleSpammerModule;
     private FastBreakModule fastBreakModule;
     private ZoomModule zoomModule;
+    private GhostHandModule ghostHandModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientWindowManager clientWindowManager) {
         this.configManager = configManager;
@@ -115,6 +116,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.espModule = new ESPModule(),
                 this.fullBrightModule = new FullBrightModule(),
                 this.zoomModule = new ZoomModule(),
+                this.ghostHandModule = new GhostHandModule(),
                 new FakeLagModule(this.killAuraModule),
                 new AntiBotsModule(),
                 new AutoClickerModule(),
@@ -181,7 +183,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new SmartVClip(),
                 new CheatDetectorModule(),
                 new FreeCamModule(),
-                new AutoToolModule()
+                new AutoToolModule(),
+                new AntiFireballModule()
         );
         this.configManager.add(new ModuleConfig(this));
     }
