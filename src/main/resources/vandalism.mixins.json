@@ -85,6 +85,7 @@
     "integration.MixinLivingEntity",
     "integration.MixinLivingEntityRenderer",
     "integration.MixinPlayerEntity",
+    "module.MixinAbstractBlockState",
     "module.MixinAbstractHorseEntity",
     "module.MixinClientPlayerInteractionManager",
     "module.MixinClientPlayNetworkAddon",
