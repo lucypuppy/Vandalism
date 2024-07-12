@@ -28,7 +28,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.LongValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
-import de.nekosarekawaii.vandalism.util.render.HSBColor;
+import de.nekosarekawaii.vandalism.util.render.util.HSBColor;
 
 import java.awt.*;
 import java.util.ArrayList;

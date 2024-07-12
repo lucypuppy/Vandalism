@@ -22,13 +22,12 @@ import com.google.gson.JsonObject;
 import com.mojang.authlib.Environment;
 import com.mojang.authlib.yggdrasil.YggdrasilEnvironment;
 import de.florianmichael.rclasses.common.TimeFormatter;
-import de.florianmichael.rclasses.common.encryption.EncryptionUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.injection.access.ISession;
 import de.nekosarekawaii.vandalism.util.SessionUtil;
-import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.math.AESEncryptionUtil;
-import de.nekosarekawaii.vandalism.util.render.PlayerSkinRenderer;
+import de.nekosarekawaii.vandalism.util.render.util.PlayerSkinRenderer;
 import net.minecraft.client.session.Session;
 
 import java.util.Optional;

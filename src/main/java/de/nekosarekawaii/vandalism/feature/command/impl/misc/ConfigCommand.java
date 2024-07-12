@@ -33,7 +33,7 @@ import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.feature.command.arguments.ConfigArgumentType;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.module.ModuleManager;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.command.CommandSource;
 
 import java.io.File;

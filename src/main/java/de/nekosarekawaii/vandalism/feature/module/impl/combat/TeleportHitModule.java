@@ -23,7 +23,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
-import de.nekosarekawaii.vandalism.util.game.WorldUtil;
+import de.nekosarekawaii.vandalism.util.WorldUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;

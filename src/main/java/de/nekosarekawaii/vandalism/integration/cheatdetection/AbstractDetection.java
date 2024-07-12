@@ -20,8 +20,8 @@ package de.nekosarekawaii.vandalism.integration.cheatdetection;
 
 import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.integration.cheatdetection.detectionplayer.DetectionPlayer;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
-import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.ChatUtil;
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;

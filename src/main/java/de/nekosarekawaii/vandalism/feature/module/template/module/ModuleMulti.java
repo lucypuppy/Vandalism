@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.feature.module.template.module;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import lombok.Getter;
 
 import javax.annotation.Nullable;

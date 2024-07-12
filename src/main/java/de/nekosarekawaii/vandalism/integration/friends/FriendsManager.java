@@ -25,7 +25,7 @@ import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.event.internal.TargetListener;
 import de.nekosarekawaii.vandalism.event.render.TextDrawListener;
 import de.nekosarekawaii.vandalism.integration.friends.config.FriendsConfig;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import org.apache.commons.lang3.StringUtils;
 

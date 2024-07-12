@@ -22,7 +22,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.feature.command.arguments.ModuleArgumentType;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.command.CommandSource;
 
 public class ModuleUnbindCommand extends AbstractCommand {

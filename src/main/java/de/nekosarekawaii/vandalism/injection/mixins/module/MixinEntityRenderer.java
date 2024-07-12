@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.exploitfixer.ExploitFixerModule;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;

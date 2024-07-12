@@ -32,7 +32,7 @@ import de.nekosarekawaii.vandalism.clientwindow.template.widgets.field.IPPortFie
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import de.nekosarekawaii.vandalism.util.SessionUtil;
 import de.nekosarekawaii.vandalism.util.game.PingState;
-import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
+import de.nekosarekawaii.vandalism.util.server.ServerUtil;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImInt;

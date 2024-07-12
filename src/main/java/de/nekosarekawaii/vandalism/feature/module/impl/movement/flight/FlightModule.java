@@ -25,7 +25,7 @@ import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.impl.*;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleModeValue;
-import de.nekosarekawaii.vandalism.util.game.WorldUtil;
+import de.nekosarekawaii.vandalism.util.WorldUtil;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
 public class FlightModule extends AbstractModule implements OutgoingPacketListener, PlayerUpdateListener {

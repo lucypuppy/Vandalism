@@ -25,7 +25,7 @@ import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.feature.command.arguments.FriendArgumentType;
 import de.nekosarekawaii.vandalism.feature.command.arguments.PlayerArgumentType;
 import de.nekosarekawaii.vandalism.integration.friends.Friend;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.command.CommandSource;
 
 public class FriendsCommand extends AbstractCommand {

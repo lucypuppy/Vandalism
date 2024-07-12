@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.game.TickTimeListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.game.MovementUtil;
+import de.nekosarekawaii.vandalism.util.MovementUtil;
 import net.minecraft.util.math.Vec3d;
 
 public class LongJumpModule extends AbstractModule implements PlayerUpdateListener, TickTimeListener {

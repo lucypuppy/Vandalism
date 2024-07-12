@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.integration.rotation;
 
-import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 

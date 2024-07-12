@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.module.template.clicking;
 
 import de.florianmichael.rclasses.pattern.functional.IName;
-import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import lombok.Setter;
 
 import java.util.function.Consumer;

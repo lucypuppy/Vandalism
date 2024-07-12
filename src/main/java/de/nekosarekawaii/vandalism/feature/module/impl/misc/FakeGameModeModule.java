@@ -23,8 +23,8 @@ import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
 import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
-import de.nekosarekawaii.vandalism.util.game.WorldUtil;
+import de.nekosarekawaii.vandalism.util.ChatUtil;
+import de.nekosarekawaii.vandalism.util.WorldUtil;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 import net.minecraft.world.GameMode;
 

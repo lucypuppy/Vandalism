@@ -20,8 +20,8 @@ package de.nekosarekawaii.vandalism.feature.command.impl.misc.copy;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
-import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
+import de.nekosarekawaii.vandalism.util.ChatUtil;
+import de.nekosarekawaii.vandalism.util.server.ServerUtil;
 import net.minecraft.command.CommandSource;
 
 public class CopyServerVersionCommand extends AbstractCommand {

@@ -25,7 +25,7 @@ import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataen
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.field.IPFieldWidget;
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
-import de.nekosarekawaii.vandalism.util.game.server.ServerUtil;
+import de.nekosarekawaii.vandalism.util.server.ServerUtil;
 import de.nekosarekawaii.vandalism.util.math.DateUtil;
 import imgui.ImGui;
 import imgui.type.ImInt;

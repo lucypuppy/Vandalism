@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.feature.command.impl.misc;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
-import de.nekosarekawaii.vandalism.util.game.ChatUtil;
+import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.command.CommandSource;
 
 public class TestCommand extends AbstractCommand {

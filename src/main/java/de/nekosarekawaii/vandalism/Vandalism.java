@@ -35,7 +35,7 @@ import de.nekosarekawaii.vandalism.integration.TargetManager;
 import de.nekosarekawaii.vandalism.integration.friends.FriendsManager;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationManager;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerListManager;
-import de.nekosarekawaii.vandalism.render.Shaders;
+import de.nekosarekawaii.vandalism.util.render.Shaders;
 import de.nekosarekawaii.vandalism.util.game.NameGenerationUtil;
 import lombok.Getter;
 import net.minecraft.client.MinecraftClient;

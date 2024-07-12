@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.util.game;
 
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 

@@ -28,8 +28,8 @@ import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.render.ColorUtils;
-import de.nekosarekawaii.vandalism.util.render.RenderUtil;
+import de.nekosarekawaii.vandalism.util.render.util.ColorUtils;
+import de.nekosarekawaii.vandalism.util.render.util.RenderUtil;
 import net.minecraft.world.GameMode;
 import org.lwjgl.glfw.GLFW;
 

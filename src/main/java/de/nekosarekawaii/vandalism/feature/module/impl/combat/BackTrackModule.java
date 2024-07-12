@@ -32,7 +32,7 @@ import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.game.PacketHelper;
-import de.nekosarekawaii.vandalism.util.network.SyncPosition;
+import de.nekosarekawaii.vandalism.util.game.SyncPosition;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.debug.DebugRenderer;
 import net.minecraft.client.util.math.MatrixStack;

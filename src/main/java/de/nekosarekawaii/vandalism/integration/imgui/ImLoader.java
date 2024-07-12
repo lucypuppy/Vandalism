@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.integration.imgui;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.MenuSettings;
 import de.nekosarekawaii.vandalism.injection.access.IImGuiImplGlfw;
-import de.nekosarekawaii.vandalism.render.Shaders;
+import de.nekosarekawaii.vandalism.util.render.Shaders;
 import imgui.*;
 import imgui.extension.implot.ImPlot;
 import imgui.flag.ImGuiCol;

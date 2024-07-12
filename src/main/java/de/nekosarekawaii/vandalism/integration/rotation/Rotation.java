@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.integration.rotation;
 
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
-import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.util.math.Vec3d;

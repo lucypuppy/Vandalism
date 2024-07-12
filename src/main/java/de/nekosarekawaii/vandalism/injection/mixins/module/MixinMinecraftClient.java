@@ -21,7 +21,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.module;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.FastPlaceModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.render.ESPModule;
-import de.nekosarekawaii.vandalism.util.game.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
