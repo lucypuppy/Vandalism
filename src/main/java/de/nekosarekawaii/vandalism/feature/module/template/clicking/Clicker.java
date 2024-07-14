@@ -27,23 +27,12 @@ import java.util.function.Consumer;
 @Setter
 public abstract class Clicker implements IName, MinecraftWrapper {
 
-    private final String name;
-
-    public Clicker(final String name) {
-        this.name = name;
-    }
-
     public Consumer<Boolean> clickAction = attack -> {
     };
 
     public abstract void onUpdate();
 
     public void onRotate() {
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
     }
 
 }

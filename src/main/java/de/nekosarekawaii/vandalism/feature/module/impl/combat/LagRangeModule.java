@@ -29,7 +29,7 @@ import de.nekosarekawaii.vandalism.event.game.TimeTravelListener;
 import de.nekosarekawaii.vandalism.event.player.MoveInputListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.integration.rotation.RotationBuilder;
+import de.nekosarekawaii.vandalism.integration.rotation.hitpoint.hitpoints.entity.IcarusBHV;
 import de.nekosarekawaii.vandalism.util.game.Prediction;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.entity.LivingEntity;
@@ -94,7 +94,7 @@ public class LagRangeModule extends AbstractModule implements TimeTravelListener
             boolean isDamaged = this.noDamageCharge.getValue() && this.mc.player.hurtTime > 2;
             switch (this.mode.getValue().toLowerCase()) {
                 case "range": {
-                    double distance = this.mc.player.getEyePos().distanceTo(RotationBuilder.getNearestPoint(target));
+                    double distance = this.mc.player.getEyePos().distanceTo(new IcarusBHV().generateHitPoint(target));
 
                     if (!isCharging) {
                         this.isPredictedInRange = this.isPredictedInRange(target);
@@ -174,7 +174,7 @@ public class LagRangeModule extends AbstractModule implements TimeTravelListener
 
             double predictedDistance = predictedPlayer
                     .getEyePos()
-                    .distanceTo(RotationBuilder.getNearestPoint(predictedTarget));
+                    .distanceTo(new IcarusBHV().generateHitPoint(predictedTarget));
 
             if (Math.abs(predictedDistance) <= this.killAura.getRange()) {
                 isPredictedInRange = true;

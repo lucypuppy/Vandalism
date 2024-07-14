@@ -40,10 +40,6 @@ public class BezierClicker extends Clicker {
     private float percentage = 0.0f;
     private int clicks;
 
-    public BezierClicker() {
-        super("Bezier");
-    }
-
     @Override
     public void onUpdate() {
         if (this.value == null) {
@@ -82,6 +78,11 @@ public class BezierClicker extends Clicker {
 
     public void setBezierValue(final BezierValue value) {
         this.value = value;
+    }
+
+    @Override
+    public String getName() {
+        return "Bezier";
     }
 
 }

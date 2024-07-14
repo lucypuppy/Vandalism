@@ -27,8 +27,7 @@ import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.player.RotationListener;
 import de.nekosarekawaii.vandalism.event.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
-import de.nekosarekawaii.vandalism.integration.rotation.RotationBuilder;
+import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationManager;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
 import de.nekosarekawaii.vandalism.util.WorldUtil;
@@ -142,7 +141,7 @@ public class AutoRodModule extends AbstractModule implements PlayerUpdateListene
         double hookDistance = mc.player.fishHook != null ? mc.player.getEyePos().distanceTo(mc.player.fishHook.getPos()) : 9999;
 
         if (mc.player.fishHook == null && this.target != null && targetDistance > Vandalism.getInstance().getModuleManager().getKillAuraModule().getRange()+0.5) {
-            Rotation rotation = this.rotationManager.getRotation() != null ? this.rotationManager.getRotation() : new Rotation(mc.player.getYaw(), mc.player.getPitch());
+            PrioritizedRotation rotation = this.rotationManager.getClientRotation() != null ? this.rotationManager.getClientRotation() : new PrioritizedRotation(mc.player.getYaw(), mc.player.getPitch(), RotationPriority.NORMAL);
             hitResult = WorldUtil.raytrace(rotation, range.getValue());
 //            predictedTargetPos = Prediction.predictEntityMovement((LivingEntity) this.target, this.ticksToPredict.getValue(), false);
             predictedTargetPos = getPosToRod(this.target);
@@ -229,24 +228,24 @@ public class AutoRodModule extends AbstractModule implements PlayerUpdateListene
 
         updateTarget();
 
-        if (isEntityLookingAtEntity(mc.player, target, fov.getValue()) && !didRod) {
-            Rotation rotation = predict.getValue() && predictedTargetPos != null ? RotationBuilder.build(predictedTargetPos.add(0, target.getStandingEyeHeight()-0.2, 0), mc.player.getEyePos(), RotationPriority.NORMAL) : RotationBuilder.build(this.target, RotationPriority.NORMAL, true, this.range.getValue());
-
-            if (rotation == null) { // Sanity check, crashes if you sneak and have your reach set to 3.0
-                this.rotationManager.resetRotation();
-                return;
-            }
-
-            float rotateSpeed = (float) (this.rotateSpeed.getValue() + Math.random() * 5.0f);
-            this.rotationManager.setRotation(
-                    rotation,
-                    rotateSpeed,
-                    0.2f,
-                    true
-            );
-        } else {
-            this.rotationManager.resetRotation();
-        }
+//        if (isEntityLookingAtEntity(mc.player, target, fov.getValue()) && !didRod) {
+//            PrioritizedRotation rotation = predict.getValue() && predictedTargetPos != null ? RotationBuilder.build(predictedTargetPos.add(0, target.getStandingEyeHeight()-0.2, 0), mc.player.getEyePos(), RotationPriority.NORMAL) : RotationBuilder.build(this.target, RotationPriority.NORMAL, true, this.range.getValue());
+//
+//            if (rotation == null) { // Sanity check, crashes if you sneak and have your reach set to 3.0
+//                this.rotationManager.resetRotation();
+//                return;
+//            }
+//
+//            float rotateSpeed = (float) (this.rotateSpeed.getValue() + Math.random() * 5.0f);
+//            this.rotationManager.setRotation(
+//                    rotation,
+//                    rotateSpeed,
+//                    0.2f,
+//                    true
+//            );
+//        } else {
+//            this.rotationManager.resetRotation();
+//        }
 
     }
 
@@ -290,19 +289,19 @@ public class AutoRodModule extends AbstractModule implements PlayerUpdateListene
         }
 
         final Vec3d eyePos = this.mc.player.getEyePos();
-        entities.sort((entity1, entity2) -> {
-            final double distance1 = eyePos.distanceTo(RotationBuilder.getNearestPoint(entity1));
-            final double distance2 = eyePos.distanceTo(RotationBuilder.getNearestPoint(entity2));
-            return Double.compare(distance1, distance2);
-        });
+//        entities.sort((entity1, entity2) -> {
+//            final double distance1 = eyePos.distanceTo(RotationBuilder.getNearestPoint(entity1));
+//            final double distance2 = eyePos.distanceTo(RotationBuilder.getNearestPoint(entity2));
+//            return Double.compare(distance1, distance2);
+//        });
 
         this.target = entities.getFirst();
     }
 
     public Vec3d getPosToRod(Entity target) {
         Vec3d initialPosition = mc.player.getPos();
-        Rotation rotation = this.rotationManager.getRotation() != null ? this.rotationManager.getRotation() : new Rotation(mc.player.getYaw(), mc.player.getPitch());
-        Vec3d initialVelocity = rotation.getVector().multiply(1.5D); // Assume initial speed of 1.5 blocks/tick
+        PrioritizedRotation rotation = this.rotationManager.getClientRotation() != null ? this.rotationManager.getClientRotation() : new PrioritizedRotation(mc.player.getYaw(), mc.player.getPitch(), RotationPriority.NORMAL);
+        Vec3d initialVelocity = rotation.getVec().multiply(1.5D); // Assume initial speed of 1.5 blocks/tick
 
         for (int i = 0; i < ticksToPredict.getValue(); i++) { // Simulate for 100 ticks
             Vec3d futureTargetPos = target.getPos().add(target.getVelocity().multiply(i)); // Predict target's future position

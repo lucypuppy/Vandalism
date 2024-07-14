@@ -35,8 +35,8 @@ import de.nekosarekawaii.vandalism.integration.TargetManager;
 import de.nekosarekawaii.vandalism.integration.friends.FriendsManager;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationManager;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerListManager;
-import de.nekosarekawaii.vandalism.util.render.Shaders;
 import de.nekosarekawaii.vandalism.util.game.NameGenerationUtil;
+import de.nekosarekawaii.vandalism.util.render.Shaders;
 import lombok.Getter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
@@ -93,6 +93,7 @@ import java.io.File;
  *  - Add a better Autoblock to Killaura with FooFieOwO
  *  - Add double clicks to KillAura when recoding
  *  - Add prioritize criticals to KillAura when recoding
+ *  - Add jumping with prediction if in range to LagRange
  * <br><br>
  * TODO: mori <br>
  *  - Write all descriptions in the third person, without using the second person ('you')

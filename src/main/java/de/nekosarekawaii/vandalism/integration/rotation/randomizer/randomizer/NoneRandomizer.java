@@ -16,31 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.feature.module.template.clicking.impl;
+package de.nekosarekawaii.vandalism.integration.rotation.randomizer.randomizer;
 
-import de.nekosarekawaii.vandalism.feature.module.template.clicking.Clicker;
-import lombok.Setter;
-import net.minecraft.entity.attribute.EntityAttributes;
+import de.nekosarekawaii.vandalism.integration.rotation.randomizer.Randomizer;
+import net.minecraft.util.math.Vec3d;
 
-@Setter
-public class CooldownClicker extends Clicker {
+public class NoneRandomizer extends Randomizer {
 
     @Override
-    public void onUpdate() {
-        final float baseAttackDamage = (float) this.mc.player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
-        final float attackCooldown = this.mc.player.getAttackCooldownProgress(0);
-        final float finalAttackDamage = baseAttackDamage * (0.2f + attackCooldown * attackCooldown * 0.8f);
-        if (finalAttackDamage >= 0.98f) {
-            this.clickAction.accept(true);
-            this.mc.player.resetLastAttackedTicks();
-        } else {
-            this.clickAction.accept(false);
-        }
+    public Vec3d randomiseRotationVec3d(Vec3d vec3d) {
+        return vec3d;
     }
 
     @Override
     public String getName() {
-        return "Cooldown";
+        return "None";
     }
 
 }
