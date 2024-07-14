@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.integration;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
+import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,8 +31,8 @@ public abstract class MixinPlayerEntity implements MinecraftWrapper {
 
     @Redirect(method = "tickNewAi", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;getYaw()F"))
     private float modifyRotationYaw(final PlayerEntity instance) {
-        if (this.mc.player == (PlayerEntity) (Object) this) {
-            final Rotation rotation = Vandalism.getInstance().getRotationManager().getRotation();
+        if (this.mc.player == (Object) this) {
+            final PrioritizedRotation rotation = Vandalism.getInstance().getRotationManager().getClientRotation();
             if (rotation != null) return rotation.getYaw();
         }
         return instance.getYaw();

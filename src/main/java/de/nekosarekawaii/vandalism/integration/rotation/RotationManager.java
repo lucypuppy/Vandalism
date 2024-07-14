@@ -25,26 +25,25 @@ import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.CanSprintListener;
 import de.nekosarekawaii.vandalism.event.player.RotationListener;
 import de.nekosarekawaii.vandalism.event.player.StrafeListener;
-import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationGCD;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.util.MovementUtil;
-import de.nekosarekawaii.vandalism.util.render.util.RenderUtil;
-import lombok.Getter;
+import lombok.Data;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.MathHelper;
 
-public class RotationManager implements MinecraftWrapper, OutgoingPacketListener, StrafeListener, RotationListener, CanSprintListener {
+import java.util.Objects;
 
-    @Getter
-    private Rotation rotation;
-    private Rotation targetRotation;
+@Data
+public class RotationManager implements MinecraftWrapper, StrafeListener, RotationListener, CanSprintListener, OutgoingPacketListener {
 
-    private double partialIterations;
+    private PrioritizedRotation clientRotation, serverRotation, targetRotation;
 
     private float rotateSpeed;
     private float correlationStrength;
     private boolean movementFix;
+
+    private long lastMillis;
 
     public RotationManager() {
         Vandalism.getInstance().getEventSystem().subscribe(this, OutgoingPacketEvent.ID, StrafeEvent.ID, CanSprintEvent.ID);
@@ -55,77 +54,75 @@ public class RotationManager implements MinecraftWrapper, OutgoingPacketListener
 
     @Override
     public void onOutgoingPacket(OutgoingPacketEvent event) {
-        if (event.packet instanceof final PlayerMoveC2SPacket packet) { // Sanity check; if somewhere in the code is a packet and we didnt inject
-            if (this.rotation != null) {
-                packet.yaw = this.rotation.getYaw();
-                packet.pitch = this.rotation.getPitch();
+        if (event.packet instanceof final PlayerMoveC2SPacket packet) {
+            if (this.clientRotation != null) {
+                packet.yaw = this.clientRotation.getYaw();
+                packet.pitch = this.clientRotation.getPitch();
                 packet.changeLook = true;
             }
         }
     }
 
     @Override
-    public void onRotation(RotationEvent event) {
-        final float partialTicks = this.mc.getRenderTickCounter().getTickDelta(false);
-        final Rotation lastRotation = new Rotation(this.mc.player.lastYaw, this.mc.player.lastPitch);
-
-        if (this.targetRotation != null) {
-            final Rotation smoothedRotation = RotationUtil.rotationDistribution(this.targetRotation, lastRotation,
-                    this.rotateSpeed, this.correlationStrength);
-
-            this.rotation = this.applyGCDFix(smoothedRotation, lastRotation, partialTicks);
-            return;
-        }
-
-        if (this.rotation == null)
-            return;
-
-        final float yaw = MathHelper.wrapDegrees(this.mc.player.getYaw());
-        final float pitch = this.mc.player.getPitch();
-        final float yawDiff = Math.abs(yaw - MathHelper.wrapDegrees(this.rotation.getYaw()));
-        final float pitchDiff = Math.abs(pitch - this.rotation.getPitch());
-
-        if (yawDiff <= 0.5 && pitchDiff <= 0.5) {
-            this.rotation = null;
-            return;
-        }
-
-        final RotationSettings settings = Vandalism.getInstance().getClientSettings().getRotationSettings();
-        final Rotation smoothedRotation = RotationUtil.rotationDistribution(new Rotation(yaw, pitch), lastRotation,
-                settings.rotateSpeed.getValue(), settings.correlationStrength.getValue());
-
-        this.rotation = this.applyGCDFix(smoothedRotation, lastRotation, partialTicks);
-    }
-
-    @Override
     public void onStrafe(StrafeEvent event) {
-        if (this.rotation == null || !this.movementFix)
+        if (this.clientRotation == null || !this.movementFix)
             return;
 
         if (Vandalism.getInstance().getClientSettings().getRotationSettings().moveFixMode.getValue().equalsIgnoreCase("Silent")) {
             if (event.movementInput != null && MovementUtil.isMoving()) {
-                event.movementInput = MovementUtil.silentMoveFix(this.rotation, event);
+                event.movementInput = MovementUtil.silentMoveFix(this.clientRotation, event);
             }
         }
 
         // Thanks mojang...
         if (event.type == StrafeListener.Type.JUMP) {
-            event.yaw = (float) Math.toRadians(this.rotation.getYaw());
+            event.yaw = (float) Math.toRadians(this.clientRotation.getYaw());
             event.modified = true;
             return;
         }
 
-        event.yaw = this.rotation.getYaw();
+        event.yaw = this.clientRotation.getYaw();
     }
 
     @Override
     public void onCanSprint(CanSprintEvent event) {
-        if(this.rotation == null || !this.movementFix) return;
-        event.canSprint = event.canSprint && Math.abs(MathHelper.wrapDegrees(this.rotation.getYaw() - MovementUtil.getInputAngle(mc.player.getYaw()))) <= 45;
+        if (this.clientRotation == null || !this.movementFix) return;
+        event.canSprint = event.canSprint && Math.abs(MathHelper.wrapDegrees(this.clientRotation.getYaw() - MovementUtil.getInputAngle(mc.player.getYaw()))) <= 45;
     }
 
-    public void setRotation(final Rotation rotation, final float rotateSpeed, final float correlationStrength, final boolean movementFix) {
-        if (this.rotation == null || rotation.getPriority().getPriority() >= this.rotation.getPriority().getPriority()) {
+    @Override
+    public void onRotation(RotationEvent event) {
+        final long currentTime = System.currentTimeMillis();
+        final double deltaTime = currentTime - this.lastMillis;
+        this.lastMillis = currentTime;
+
+        this.serverRotation = Objects.requireNonNullElseGet(this.clientRotation, () -> new PrioritizedRotation(this.mc.player.lastYaw, this.mc.player.lastPitch, RotationPriority.NORMAL));
+
+        if (targetRotation != null) {
+            boolean didRotate = clientRotation != null;
+            this.clientRotation = RotationUtil.rotateMouse(this.targetRotation, this.serverRotation, this.rotateSpeed, deltaTime, didRotate);
+            return;
+        }
+
+        if (clientRotation == null)
+            return;
+
+        final float yaw = MathHelper.wrapDegrees(this.mc.player.getYaw());
+        final float pitch = this.mc.player.getPitch();
+        final float yawDiff = Math.abs(yaw - MathHelper.wrapDegrees(this.serverRotation.getYaw()));
+        final float pitchDiff = Math.abs(pitch - this.serverRotation.getPitch());
+
+        if (yawDiff <= 0.5 && pitchDiff <= 0.5) {
+            this.clientRotation = null;
+            return;
+        }
+
+        final RotationSettings settings = Vandalism.getInstance().getClientSettings().getRotationSettings();
+        this.clientRotation = RotationUtil.rotateMouse(new PrioritizedRotation(yaw, pitch, RotationPriority.NORMAL), this.serverRotation, settings.rotateSpeed.getValue(), deltaTime, this.clientRotation != null);
+    }
+
+    public void setRotation(final PrioritizedRotation rotation, final float rotateSpeed, final float correlationStrength, final boolean movementFix) {
+        if (this.clientRotation == null || rotation.getPriority().getPriority() >= this.clientRotation.getPriority().getPriority()) {
             this.targetRotation = rotation;
 
             // Settings
@@ -133,27 +130,6 @@ public class RotationManager implements MinecraftWrapper, OutgoingPacketListener
             this.correlationStrength = correlationStrength;
             this.movementFix = movementFix;
         }
-    }
-
-    private Rotation applyGCDFix(final Rotation rotation, final Rotation lastRotation, final float partialTicks) {
-        final boolean disallowGCD = this.mc.options.getPerspective().isFirstPerson() && this.mc.player.isUsingSpyglass();
-        final double f = this.mc.options.getMouseSensitivity().getValue() * 0.6f + 0.2f;
-        final double g = f * f * f;
-        final double gcd = g * 8.0;
-
-        final double iterationsNeeded = (RenderUtil.getFps() / 20.0) * partialTicks;
-        final int iterations = MathHelper.floor(iterationsNeeded + this.partialIterations);
-        this.partialIterations += iterationsNeeded - iterations;
-
-        final RotationGCD gcdMode = Vandalism.getInstance().getClientSettings().getRotationSettings().gcdMode.getValue();
-        final Rotation fixedRotation = gcdMode.getLambda().apply(rotation, lastRotation, disallowGCD ? g : gcd, iterations);
-
-        fixedRotation.setYaw(lastRotation.getYaw() + MathHelper.wrapDegrees(fixedRotation.getYaw() - lastRotation.getYaw()));
-        fixedRotation.setPitch(MathHelper.clamp(fixedRotation.getPitch(), -90.0f, 90.0f));
-
-        // Hand over the rotation Priority
-        fixedRotation.setPriority(rotation.getPriority());
-        return fixedRotation;
     }
 
     public void resetRotation(final RotationPriority priority) {
