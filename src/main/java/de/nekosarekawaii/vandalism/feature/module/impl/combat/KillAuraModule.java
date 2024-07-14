@@ -38,6 +38,7 @@ import de.nekosarekawaii.vandalism.event.player.RotationListener;
 import de.nekosarekawaii.vandalism.event.render.Render2DListener;
 import de.nekosarekawaii.vandalism.event.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.misc.AutoSoupModule;
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.Clicker;
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.ClickerModeValue;
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.BezierClicker;
@@ -451,6 +452,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
     public final EntityHitPoint points = new IcarusBHV();
 
+    private AutoSoupModule autoSoupModule;
+
     public KillAuraModule() {
         super(
                 "Kill Aura",
@@ -472,6 +475,9 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         );
 
         this.updateClicker(this.clickType.getValue());
+
+        if (this.autoSoupModule == null)
+            this.autoSoupModule = Vandalism.getInstance().getModuleManager().getByClass(AutoSoupModule.class);
     }
 
     @Override
@@ -513,6 +519,12 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         stopBlocking(BlockState.PRE_CLICKING);
         boolean shouldUpdate = true;
         final Clicker clicker = this.clickType.getValue();
+
+        if (autoSoupModule != null && autoSoupModule.isActive() && autoSoupModule.getState() != AutoSoupModule.State.WAITING) {
+            clicker.clickAction.accept(false);
+            shouldUpdate = false;
+        }
+
         if (clicker instanceof final CooldownClicker cooldownClicker) {
             if (this.mc.crosshairTarget == null || this.mc.crosshairTarget.getType() != HitResult.Type.ENTITY) {
                 cooldownClicker.clickAction.accept(false);
