@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.integration;
 
 import com.viaversion.nbt.tag.CompoundTag;
+import com.viaversion.viaversion.api.connection.UserConnection;
 import com.viaversion.viaversion.api.minecraft.BlockPosition;
 import com.viaversion.viaversion.api.minecraft.item.DataItem;
 import com.viaversion.viaversion.api.protocol.packet.PacketWrapper;
@@ -54,10 +55,16 @@ public class ViaFabricPlusAccess {
     }
 
     public static void send1_8CustomPayload(final String channel, final ByteBuf data) {
+        final UserConnection userConnection = getPlayNetworkUserConnection();
+        if (userConnection == null) {
+            return;
+        }
+
         if (channel.contains(":")) {
             throw new IllegalStateException("Channel name has to be unmapped");
         }
-        final PacketWrapper customPayload = PacketWrapper.create(ServerboundPackets1_8.CUSTOM_PAYLOAD, getPlayNetworkUserConnection());
+
+        final PacketWrapper customPayload = PacketWrapper.create(ServerboundPackets1_8.CUSTOM_PAYLOAD, userConnection);
         customPayload.write(Types.STRING, channel);
         customPayload.write(Types.REMAINING_BYTES, data.array());
 
@@ -65,7 +72,12 @@ public class ViaFabricPlusAccess {
     }
 
     public static void send1_8SignUpdatePacket(final BlockPos pos, final String line1, final String line2, final String line3, final String line4) {
-        final PacketWrapper signUpdate = PacketWrapper.create(ServerboundPackets1_8.SIGN_UPDATE, getPlayNetworkUserConnection());
+        final UserConnection userConnection = getPlayNetworkUserConnection();
+        if (userConnection == null) {
+            return;
+        }
+
+        final PacketWrapper signUpdate = PacketWrapper.create(ServerboundPackets1_8.SIGN_UPDATE, userConnection);
         signUpdate.write(Types.BLOCK_POSITION1_8, toPosition(pos));
         signUpdate.write(Types.STRING, line1);
         signUpdate.write(Types.STRING, line2);
@@ -76,7 +88,12 @@ public class ViaFabricPlusAccess {
     }
 
     public static void send1_8BlockPlacePacket(final BlockPos pos, final int face, final ItemStack item, final float cX, final float cY, final float cZ) {
-        final PacketWrapper blockPlacement = PacketWrapper.create(ServerboundPackets1_8.USE_ITEM_ON, getPlayNetworkUserConnection());
+        final UserConnection userConnection = getPlayNetworkUserConnection();
+        if (userConnection == null) {
+            return;
+        }
+
+        final PacketWrapper blockPlacement = PacketWrapper.create(ServerboundPackets1_8.USE_ITEM_ON, userConnection);
         blockPlacement.write(Types.BLOCK_POSITION1_8, toPosition(pos));
         blockPlacement.write(Types.UNSIGNED_BYTE, (short) face);
         blockPlacement.write(Types.ITEM1_8, ItemTranslator.mcToVia(item, ProtocolVersion.v1_8));
