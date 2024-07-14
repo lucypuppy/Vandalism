@@ -19,7 +19,9 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import de.florianmichael.rclasses.common.RandomUtils;
 import de.florianmichael.rclasses.common.StringUtils;
+import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.florianmichael.rclasses.pattern.functional.IName;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
@@ -36,16 +38,22 @@ import de.nekosarekawaii.vandalism.event.player.RotationListener;
 import de.nekosarekawaii.vandalism.event.render.Render2DListener;
 import de.nekosarekawaii.vandalism.event.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.misc.AutoSoupModule;
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.Clicker;
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.ClickerModeValue;
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.BezierClicker;
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.BoxMuellerClicker;
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.CooldownClicker;
+import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
-import de.nekosarekawaii.vandalism.integration.rotation.RotationBuilder;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationManager;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
+import de.nekosarekawaii.vandalism.integration.rotation.hitpoint.EntityHitPoint;
+import de.nekosarekawaii.vandalism.integration.rotation.hitpoint.hitpoints.entity.IcarusBHV;
+import de.nekosarekawaii.vandalism.integration.rotation.randomizer.Randomizer;
+import de.nekosarekawaii.vandalism.integration.rotation.randomizer.RandomizerModeValue;
+import de.nekosarekawaii.vandalism.integration.rotation.randomizer.randomizer.SimplexRandomizer;
 import de.nekosarekawaii.vandalism.util.WorldUtil;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.render.*;
@@ -282,11 +290,88 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             1.0f
     );
 
-    private final BooleanValue aimBreathe = new BooleanValue(
+    private final BooleanValue clientRotations = new BooleanValue(
             this.rotationGroup,
-            "Aim Breathe",
-            "Whether the aim breathe should be applied.",
+            "Client Rotations",
+            "Whenever the rotations are clientside or nor.",
             false
+    );
+
+    private final ValueGroup randomisation = new ValueGroup(
+            this.rotationGroup,
+            "Randomisation",
+            "Settings for the randomisation."
+    );
+
+    private final RandomizerModeValue randomizerMode = new RandomizerModeValue(
+            this.randomisation,
+            "Randomizer Mode",
+            "The mode of the randomizer."
+    );
+
+    private final DoubleValue maxRadius = new DoubleValue(
+            this.randomisation,
+            "Max Radius",
+            "The maximum radius for the randomiser.",
+            0.15,
+            0.0,
+            1.0
+    ).visibleCondition(() -> this.randomizerMode.getValue() instanceof SimplexRandomizer);
+
+    private final DoubleValue maxRadiusY = new DoubleValue(
+            this.randomisation,
+            "Max Radius Y",
+            "The maximum radius Y for the randomiser.",
+            0.25,
+            0.0,
+            1.0
+    ).visibleCondition(() -> this.randomizerMode.getValue() instanceof SimplexRandomizer);
+
+    private final DoubleValue mindDistanceToBHV = new DoubleValue(
+            this.randomisation,
+            "Mind Distance To BHV",
+            "The minimum distance to the Best Hit Vector.",
+            0.1,
+            0.0,
+            1.0
+    ).visibleCondition(() -> this.randomizerMode.getValue() instanceof SimplexRandomizer);
+
+    private final ValueGroup humanityGroup = new ValueGroup(
+            this.rotationGroup,
+            "Humanity",
+            "These settings make the Killaura more human"
+    );
+
+    private final BooleanValue reactionDelay = new BooleanValue(
+            this.humanityGroup,
+            "Reaction Delay",
+            "Whether the reaction delay should be used.",
+            true
+    );
+
+    private final IntegerValue reactionDelayMin = new IntegerValue(
+            this.humanityGroup,
+            "Reaction Delay Min",
+            "The minimum reaction delay.",
+            50,
+            0,
+            1000
+    ).visibleCondition(this.reactionDelay::getValue);
+
+    private final IntegerValue reactionDelayMax = new IntegerValue(
+            this.humanityGroup,
+            "Reaction Delay Max",
+            "The maximum reaction delay.",
+            100,
+            0,
+            1000
+    ).visibleCondition(this.reactionDelay::getValue);
+
+    private final BooleanValue outerHitbox = new BooleanValue(
+            this.humanityGroup,
+            "Outer Hitbox",
+            "Only aims if the rotations arent on the hitbox anymore",
+            true
     );
 
     private final BooleanValue movementFix = new BooleanValue(
@@ -361,7 +446,13 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
     private final RotationManager rotationManager;
 
     public boolean isBlocking = false;
-    private Rotation prevRotation;
+    public boolean shouldRotate;
+
+    public final MSTimer aimTimer = new MSTimer();
+
+    public final EntityHitPoint points = new IcarusBHV();
+
+    private AutoSoupModule autoSoupModule;
 
     public KillAuraModule() {
         super(
@@ -382,10 +473,11 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 this,
                 PlayerUpdateEvent.ID, Render2DEvent.ID, RotationEvent.ID, RaytraceEvent.ID, Render3DEvent.ID
         );
+
         this.updateClicker(this.clickType.getValue());
-        if (mc.player != null) {
-            this.prevRotation = new Rotation(mc.player.prevYaw, mc.player.prevPitch);
-        }
+
+        if (this.autoSoupModule == null)
+            this.autoSoupModule = Vandalism.getInstance().getModuleManager().getByClass(AutoSoupModule.class);
     }
 
     @Override
@@ -403,20 +495,20 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.target == null || this.rotationManager.getRotation() == null) {
+        if (this.target == null || this.rotationManager.getClientRotation() == null) {
             stopBlocking(BlockState.ERROR);
             return;
         }
 
         // Check if the target is looking at us
-        final Rotation pseudoRotation = RotationBuilder.build(this.mc.player.getPos(), this.target.getEyePos());
+        final Rotation pseudoRotation = RotationUtil.rotationToVec(this.target.getEyePos(), RotationPriority.NORMAL);
         this.isLooking = Math.abs(MathHelper.wrapDegrees(pseudoRotation.getYaw()) - MathHelper.wrapDegrees(this.target.getYaw())) <= 80.0 &&
                 this.mc.player.getPos().distanceTo(this.target.getPos()) <= 6.0;
 
         final double raytraceReach = this.preHit.getValue() && !(this.clickType.getValue() instanceof CooldownClicker) ? this.getAimRange() : this.getRange();
         final Vec3d eyePos = mc.player.getEyePos();
-        final HitResult raytrace = WorldUtil.raytrace(this.rotationManager.getRotation(), raytraceReach);
-        this.raytraceDistance = raytrace != null && raytrace.getType() != HitResult.Type.MISS ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
+        final HitResult raytrace = WorldUtil.raytrace(this.rotationManager.getClientRotation() != null ? this.rotationManager.getClientRotation() : new Rotation(mc.player.getYaw(), mc.player.getPitch()), raytraceReach);
+        this.raytraceDistance = raytrace != null && (preHit.getValue() || raytrace.getType() != HitResult.Type.MISS) ? eyePos.distanceTo(raytrace.getPos()) : -1.0;
 
         if (this.raytraceDistance > raytraceReach || this.raytraceDistance < 0) {
             stopBlocking(BlockState.ERROR);
@@ -427,6 +519,12 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         stopBlocking(BlockState.PRE_CLICKING);
         boolean shouldUpdate = true;
         final Clicker clicker = this.clickType.getValue();
+
+        if (autoSoupModule != null && autoSoupModule.isActive() && autoSoupModule.getState() != AutoSoupModule.State.WAITING) {
+            clicker.clickAction.accept(false);
+            shouldUpdate = false;
+        }
+
         if (clicker instanceof final CooldownClicker cooldownClicker) {
             if (this.mc.crosshairTarget == null || this.mc.crosshairTarget.getType() != HitResult.Type.ENTITY) {
                 cooldownClicker.clickAction.accept(false);
@@ -481,42 +579,73 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 this.clickType.getValue().onRotate();
             }
 
-            Rotation rotation = RotationBuilder.build(this.target, RotationPriority.HIGH,
-                    true, this.getAimRange());
+            Vec3d aimPos = this.points.generateHitPoint(this.target);
+            final Randomizer randomizer = randomizerMode.getValue();
+
+            if (randomizer instanceof final SimplexRandomizer simplexRandomizer) {
+                simplexRandomizer.setMaxRadius(maxRadius.getValue());
+                simplexRandomizer.setMaxRadiusY(maxRadiusY.getValue());
+                simplexRandomizer.setMindDistance(mindDistanceToBHV.getValue());
+            }
+
+            //final Vec3d oldVec = aimPos;
+            aimPos = randomizerMode.getValue().randomiseRotationVec3d(aimPos);
+
+            //final double mindDist = oldVec.distanceTo(aimPos);
+            //if (mindDist < 0.1) {
+            //    ChatUtil.infoChatMessage("Shit client gets detected" + mindDist);
+            //}
+
+            aimPos = RotationUtil.clampHitpointsToBoundingBox(aimPos, this.target.getBoundingBox());
+            final PrioritizedRotation rotation = RotationUtil.rotationToVec(aimPos, RotationPriority.HIGH);
 
             if (rotation == null) { // Sanity check, crashes if you sneak and have your reach set to 3.0
                 this.rotationManager.resetRotation(RotationPriority.HIGH);
                 return;
             }
 
-            float rotateSpeed = 0.0f;
-
-            if (this.rotationSpeedType.getValue() == SmoothingType.BEZIER) {
-                float rotationPercentage;
-
-                if (this.rotationManager.getRotation() == null) {
-                    final Rotation playerRotation = new Rotation(this.mc.player.getYaw(), this.mc.player.getPitch());
-                    rotationPercentage = RotationUtil.calculateRotationPercentage(playerRotation.getYaw(), rotation.getYaw(), true);
+            if (this.rotationManager.getClientRotation() == null || (!this.outerHitbox.getValue() && !this.reactionDelay.getValue())) {
+                this.shouldRotate = true;
+            } else {
+                if (this.outerHitbox.getValue() &&
+                        !WorldUtil.canHitEntity(mc.player, target, this.rotationManager.getClientRotation(), getAimRange())) {
+                    if (!this.reactionDelay.getValue() ||
+                            this.aimTimer.hasReached(RandomUtils.randomInt(this.reactionDelayMin.getMinValue(), this.reactionDelayMax.getValue()), true)) {
+                        this.shouldRotate = true;
+                    }
                 } else {
-                    rotationPercentage = RotationUtil.calculateRotationPercentage(rotationManager.getRotation().getYaw(), rotation.getYaw(), true);
+                    final float yaw = MathHelper.wrapDegrees(rotation.getYaw());
+                    final float pitch = rotation.getPitch();
+                    final float yawDiff = Math.abs(yaw - MathHelper.wrapDegrees(this.rotationManager.getClientRotation().getYaw()));
+                    final float pitchDiff = Math.abs(pitch - this.rotationManager.getClientRotation().getPitch());
+
+                    if (yawDiff <= 2 && pitchDiff <= 2) {
+                        this.shouldRotate = false;
+                    } else if (!this.outerHitbox.getValue() &&
+                            (!this.reactionDelay.getValue() ||
+                                    this.aimTimer.hasReached(RandomUtils.randomInt(this.reactionDelayMin.getMinValue(), this.reactionDelayMax.getValue()), true))) {
+                        this.shouldRotate = true;
+                    }
+
+                    this.aimTimer.reset();
                 }
-
-                rotateSpeed = this.rotationSpeedBezier.getValue(rotationPercentage);
-            } else if (this.rotationSpeedType.getValue() == SmoothingType.NORMAL) {
-                rotateSpeed = (float) (this.rotateSpeed.getValue() + Math.random() * 5.0f);
             }
 
-            if(aimBreathe.getValue()) {
-                rotation = RotationUtil.applyBreatheEffect(rotation, 5f, 1.0f);
+            if (this.shouldRotate) {
+                float rotateSpeed = this.rotateSpeed.getValue();
+                this.rotationManager.setRotation(
+                        rotation,
+                        rotateSpeed,
+                        this.correlationStrength.getValue(),
+                        this.movementFix.getValue()
+                );
             }
 
-            prevRotation = rotation;
-            this.rotationManager.setRotation(
-                    rotation,
-                    rotateSpeed,
-                    this.correlationStrength.getValue(),
-                    this.movementFix.getValue()
-            );
+            if (this.rotationManager.getClientRotation() != null && this.clientRotations.getValue()) {
+                final Rotation clientRotation = this.rotationManager.getClientRotation();
+                mc.player.setYaw(clientRotation.getYaw());
+                mc.player.setPitch(clientRotation.getPitch());
+            }
         } else {
             this.rotationManager.resetRotation(RotationPriority.HIGH);
         }
@@ -524,7 +653,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
 
     @Override
     public void onRaytrace(final RaytraceEvent event) {
-        if (this.target != null && this.rotationManager.getRotation() != null) {
+        if (this.target != null && this.rotationManager.getClientRotation() != null) {
             event.range = getRange();
         }
     }
@@ -561,8 +690,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
         final Vec3d eyePos = this.mc.player.getEyePos();
         switch (this.selectionMode.getValue()) {
             case RANGE -> entities.sort((entity1, entity2) -> {
-                final double distance1 = eyePos.distanceTo(RotationBuilder.getNearestPoint(entity1));
-                final double distance2 = eyePos.distanceTo(RotationBuilder.getNearestPoint(entity2));
+                final double distance1 = eyePos.distanceTo(new IcarusBHV().generateHitPoint(entity1));
+                final double distance2 = eyePos.distanceTo(new IcarusBHV().generateHitPoint(entity2));
                 return Double.compare(distance1, distance2);
             });
 
@@ -588,13 +717,13 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 double health1 = getHealthFromScoreboard(entity1);
                 double health2 = getHealthFromScoreboard(entity2);
                 if (health1 == 9999 && health2 == 9999) {
-                    final double distance1 = eyePos.distanceTo(RotationBuilder.getNearestPoint(entity1));
-                    final double distance2 = eyePos.distanceTo(RotationBuilder.getNearestPoint(entity2));
+                    final double distance1 = eyePos.distanceTo(new IcarusBHV().generateHitPoint(entity1));
+                    final double distance2 = eyePos.distanceTo(new IcarusBHV().generateHitPoint(entity2));
                     return Double.compare(distance1, distance2);
                 }
-                if(health1 > 0 && health2 <= 0)
+                if (health1 > 0 && health2 <= 0)
                     return -1;
-                if(health1 <= 0 && health2 > 0)
+                if (health1 <= 0 && health2 > 0)
                     return 1;
                 return Double.compare(health1, health2);
             });

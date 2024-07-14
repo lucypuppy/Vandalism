@@ -16,28 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.integration.rotation;
+package de.nekosarekawaii.vandalism.integration.rotation.hitpoint;
 
-import lombok.Data;
-import net.minecraft.util.math.Vec2f;
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 
-@Data
-public class Rotation {
+public abstract class EntityHitPoint implements MinecraftWrapper {
 
-    private float yaw, pitch;
-
-    public Rotation(final float yaw, final float pitch) {
-        this.yaw = yaw;
-        this.pitch = pitch;
-    }
-
-    public Vec3d getVec() {
-        return Vec3d.fromPolar(pitch, yaw);
-    }
-
-    public String toString(final Vec2f vec) {
-        return "Vec2f[" + vec.x + ", " + vec.y + "]";
-    }
+    public abstract Vec3d generateHitPoint(Entity entity);
 
 }

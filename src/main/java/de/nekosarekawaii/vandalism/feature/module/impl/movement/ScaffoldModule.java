@@ -25,8 +25,10 @@ import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.player.RotationListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
+import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
+import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
 import de.nekosarekawaii.vandalism.util.WorldUtil;
+import de.nekosarekawaii.vandalism.util.render.util.InputType;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Pair;
 import net.minecraft.util.hit.BlockHitResult;
@@ -38,9 +40,9 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
     private BlockPos pos = null;
     private Vec3d posVec = null;
     private Direction direction = null;
-    private Rotation rotation = null;
+    private PrioritizedRotation rotation = null;
     private AutoSprintModule autoSprintModule;
-    private Rotation prevRotation;
+    private PrioritizedRotation prevRotation;
 
     public ScaffoldModule() {
         super("Scaffold", "Places blocks underneath you.", Category.MOVEMENT);
@@ -62,54 +64,6 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
             180.0f
     );
 
-    private final ValueGroup windMouseGroup = new ValueGroup(
-            this.rotationGroup,
-            "Wind Mouse Settings",
-            "Settings for the WindMouse algorithm."
-    );
-
-    private final BooleanValue windMouse = new BooleanValue(
-            this.windMouseGroup,
-            "Wind Mouse",
-            "Whether the WindMouse algorithm should be used.",
-            true);
-
-    private final FloatValue gravitationalForce = new FloatValue(
-            this.windMouseGroup,
-            "Gravitational Force",
-            "The strength pf the Gravitational Force.",
-            9f,
-            0.0f,
-            20.0f
-    ).visibleCondition(this.windMouse::getValue);
-
-    private final FloatValue windForceMagnitude = new FloatValue(
-            this.windMouseGroup,
-            "Wind Force Magnitude",
-            "The strength of the Wind Force Magnitude.",
-            3f,
-            0.0f,
-            20.0f
-    ).visibleCondition(this.windMouse::getValue);
-
-    private final FloatValue maxStepSize = new FloatValue(
-            this.windMouseGroup,
-            "Max Step Size",
-            "The Max Step Size.",
-            15f,
-            0.0f,
-            20.0f
-    ).visibleCondition(this.windMouse::getValue);
-
-    private final FloatValue distanceThreshold = new FloatValue(
-            this.windMouseGroup,
-            "Distance threshold",
-            "The Distance Threshold.",
-            12f,
-            0.0f,
-            20.0f
-    ).visibleCondition(this.windMouse::getValue);
-
     private final BooleanValue movementFix = new BooleanValue(
             this.rotationGroup,
             "Movement Fix",
@@ -124,12 +78,19 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
             false
     );
 
+    private BooleanValue fastBridge = new BooleanValue(
+            this,
+            "Fast Bridge",
+            "Sneaks when placing.",
+            false
+    );
+
     @Override
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, RotationEvent.ID);
         this.autoSprintModule = Vandalism.getInstance().getModuleManager().getByClass(AutoSprintModule.class);
         if (mc.player != null) {
-            this.prevRotation = new Rotation(mc.player.prevYaw, mc.player.prevPitch);
+            this.prevRotation = new PrioritizedRotation(mc.player.prevYaw, mc.player.prevPitch, RotationPriority.NORMAL);
         }
     }
 
@@ -142,7 +103,7 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
         autoSprintModule.stopSprinting(!allowSprint.getValue());
-        final Pair<Vec3d, BlockPos> placeBlock = getPlaceBlock(6);
+        final Pair<Vec3d, BlockPos> placeBlock = getPlaceBlock((int) Math.round(mc.player.getBlockInteractionRange()));
 
         if (placeBlock == null) {
             return;
@@ -157,14 +118,22 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
 
         this.direction = getDirection(mc.player.getPos(), pos);
 
-        if (this.direction == null || Vandalism.getInstance().getRotationManager().getRotation() == null) {
+        if (this.direction == null || Vandalism.getInstance().getRotationManager().getClientRotation() == null) {
             return;
         }
 
-        final BlockHitResult raycastBlocks = WorldUtil.raytraceBlocks(Vandalism.getInstance().getRotationManager().getRotation(), 5.0);
+        final BlockHitResult raycastBlocks = WorldUtil.raytraceBlocks(Vandalism.getInstance().getRotationManager().getClientRotation(), mc.player.getBlockInteractionRange());
         if (raycastBlocks.getBlockPos().equals(this.pos)) {
             if (raycastBlocks.getSide() == this.direction || mc.options.jumpKey.isPressed()) {
+                if (fastBridge.getValue())
+                    mc.options.sneakKey.setPressed(true);
+
+//                if(mc.player.age % 2 == 0)
                 mc.doItemUse();
+
+            } else {
+                if (fastBridge.getValue())
+                    mc.options.sneakKey.setPressed(InputType.isPressed(this.mc.options.sneakKey.boundKey.getCode()));
             }
         }
     }
@@ -188,13 +157,49 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
         }
     }
 
+//    private Pair<Vec3d, BlockPos> getPlaceBlock(int scanRange) {
+//        double distance = -1;
+//        Pair<Vec3d, BlockPos> theChosenOne = null;
+//
+//        for (int x = -scanRange; x < scanRange; x++) {
+//            for (int y = -scanRange; y < 0; y++) {
+//                for (int z = -scanRange; z < scanRange; z++) {
+//                    final BlockPos pos = mc.player.getBlockPos().add(x, y, z);
+//                    final BlockState state = mc.world.getBlockState(pos);
+//
+//                    if (!state.isSolidBlock(mc.world, pos)) {
+//                        continue;
+//                    }
+//
+//                    final VoxelShape shape = state.getCollisionShape(mc.world, pos);
+//                    final Box box = shape.getBoundingBox().offset(pos);
+//
+//                    // Best hit vector for scaffold mu haha
+//                    final double nearestX = MathHelper.clamp(mc.player.getX(), box.minX, box.maxX);
+//                    final double nearestY = MathHelper.clamp(mc.player.getY(), box.minY, box.maxY);
+//                    final double nearestZ = MathHelper.clamp(mc.player.getZ(), box.minZ, box.maxZ);
+//
+//                    final Vec3d nearestPoint = new Vec3d(nearestX, nearestY, nearestZ);
+//                    final double currentDistance = mc.player.getPos().distanceTo(nearestPoint);
+//
+//                    if (distance == -1 || currentDistance < distance) {
+//                        distance = currentDistance;
+//                        theChosenOne = new Pair<>(nearestPoint, pos);
+//                    }
+//                }
+//            }
+//        }
+//
+//        return theChosenOne;
+//    }
+
     private Pair<Vec3d, BlockPos> getPlaceBlock(int scanRange) {
         double distance = -1;
         Pair<Vec3d, BlockPos> theChosenOne = null;
 
-        for (int x = -scanRange; x < scanRange; x++) {
-            for (int y = -scanRange; y < 0; y++) {
-                for (int z = -scanRange; z < scanRange; z++) {
+        for (int x = -scanRange; x <= scanRange; x++) {
+            for (int y = -scanRange; y <= scanRange; y++) {
+                for (int z = -scanRange; z <= scanRange; z++) {
                     final BlockPos pos = mc.player.getBlockPos().add(x, y, z);
                     final BlockState state = mc.world.getBlockState(pos);
 
@@ -205,7 +210,6 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
                     final VoxelShape shape = state.getCollisionShape(mc.world, pos);
                     final Box box = shape.getBoundingBox().offset(pos);
 
-                    // Best hit vector for scaffold mu haha
                     final double nearestX = MathHelper.clamp(mc.player.getX(), box.minX, box.maxX);
                     final double nearestY = MathHelper.clamp(mc.player.getY(), box.minY, box.maxY);
                     final double nearestZ = MathHelper.clamp(mc.player.getZ(), box.minZ, box.maxZ);
@@ -224,13 +228,13 @@ public class ScaffoldModule extends AbstractModule implements PlayerUpdateListen
         return theChosenOne;
     }
 
-    private Rotation rotation(final BlockPos blockPos) {
-        Rotation rotation = null;
+    private PrioritizedRotation rotation(final BlockPos blockPos) {
+        PrioritizedRotation rotation = null;
 
-        for (int yaw = -45; yaw < 45; yaw++) {
-            for (int pitch = 0; pitch < 90; pitch++) {
-                Rotation currentRotation = new Rotation(mc.player.getYaw() - (180 + yaw), pitch);
-                final BlockHitResult raycastBlocks = WorldUtil.raytraceBlocks(currentRotation, 5.0);
+        for (int yaw = -45; yaw <= 45; yaw++) {
+            for (int pitch = 0; pitch <= 90; pitch++) {
+                PrioritizedRotation currentRotation = new PrioritizedRotation(mc.player.getYaw() - (180 + yaw), pitch, RotationPriority.NORMAL);
+                final BlockHitResult raycastBlocks = WorldUtil.raytraceBlocks(currentRotation, mc.player.getBlockInteractionRange());
 
                 if (raycastBlocks.getSide() != this.direction || !raycastBlocks.getBlockPos().equals(blockPos)) {
                     continue;

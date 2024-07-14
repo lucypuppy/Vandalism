@@ -23,14 +23,15 @@ import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.player.RotationListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.nofall.NoFallModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
-import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
+import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
+import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
 public class LegitModuleMode extends ModuleMulti<NoFallModule> implements PlayerUpdateListener, RotationListener {
 
-    private Rotation rotation = null;
+    private PrioritizedRotation rotation = null;
     private int prevSlot;
 
     public LegitModuleMode() {
@@ -83,7 +84,7 @@ public class LegitModuleMode extends ModuleMulti<NoFallModule> implements Player
             Vandalism.getInstance().getRotationManager().resetRotation();
             return;
         }
-        this.rotation = new Rotation(mc.player.getYaw(), 90);
+        this.rotation = new PrioritizedRotation(mc.player.getYaw(), 90, RotationPriority.NORMAL);
         Vandalism.getInstance().getRotationManager().setRotation(this.rotation, 60f, 0.2f, true);
     }
 }

@@ -16,28 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.integration.rotation;
+package de.nekosarekawaii.vandalism.integration.rotation.randomizer;
 
-import lombok.Data;
-import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.math.Vec3d;
+import de.nekosarekawaii.vandalism.base.value.ValueParent;
+import de.nekosarekawaii.vandalism.base.value.impl.selection.ClassModeValue;
+import de.nekosarekawaii.vandalism.integration.rotation.randomizer.randomizer.NoneRandomizer;
+import de.nekosarekawaii.vandalism.integration.rotation.randomizer.randomizer.SimplexRandomizer;
 
-@Data
-public class Rotation {
+public class RandomizerModeValue extends ClassModeValue<Randomizer> {
 
-    private float yaw, pitch;
-
-    public Rotation(final float yaw, final float pitch) {
-        this.yaw = yaw;
-        this.pitch = pitch;
-    }
-
-    public Vec3d getVec() {
-        return Vec3d.fromPolar(pitch, yaw);
-    }
-
-    public String toString(final Vec2f vec) {
-        return "Vec2f[" + vec.x + ", " + vec.y + "]";
+    public RandomizerModeValue(ValueParent parent, String name, String description) {
+        super(parent, name, description, new NoneRandomizer(), new SimplexRandomizer());
     }
 
 }

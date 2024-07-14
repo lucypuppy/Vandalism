@@ -61,10 +61,6 @@ public class BoxMuellerClicker extends Clicker {
     @Getter
     private final EvictingList<Vector4d> cpsHistory = new EvictingList<>(new ArrayList<>(), 200);
 
-    public BoxMuellerClicker() {
-        super("Box Mueller");
-    }
-
     @Override
     public void onUpdate() {
         while (this.clicks + RandomUtils.randomInt(-1, 1) > 0) {
@@ -96,6 +92,11 @@ public class BoxMuellerClicker extends Clicker {
             this.partialDelays += delay - this.delay;
             this.clicks++;
         }
+    }
+
+    @Override
+    public String getName() {
+        return "Box Mueller";
     }
 
 }

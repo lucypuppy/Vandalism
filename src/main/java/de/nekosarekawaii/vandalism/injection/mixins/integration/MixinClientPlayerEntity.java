@@ -19,7 +19,7 @@
 package de.nekosarekawaii.vandalism.injection.mixins.integration;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
+import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
 import net.minecraft.client.network.ClientPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,7 +30,7 @@ public abstract class MixinClientPlayerEntity {
 
     @Redirect(method = {"sendMovementPackets", "tick"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getYaw()F"))
     private float modifyRotationYaw(final ClientPlayerEntity instance) {
-        final Rotation rotation = Vandalism.getInstance().getRotationManager().getRotation();
+        final PrioritizedRotation rotation = Vandalism.getInstance().getRotationManager().getClientRotation();
         if (rotation != null) {
             return rotation.getYaw();
         } else {
@@ -40,7 +40,7 @@ public abstract class MixinClientPlayerEntity {
 
     @Redirect(method = {"sendMovementPackets", "tick"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getPitch()F"))
     private float modifyRotationPitch(final ClientPlayerEntity instance) {
-        final Rotation rotation = Vandalism.getInstance().getRotationManager().getRotation();
+        final PrioritizedRotation rotation = Vandalism.getInstance().getRotationManager().getClientRotation();
         if (rotation != null) {
             return rotation.getPitch();
         } else {

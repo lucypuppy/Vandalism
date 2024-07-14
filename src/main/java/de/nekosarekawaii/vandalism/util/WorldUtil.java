@@ -72,7 +72,7 @@ public class WorldUtil implements MinecraftWrapper {
 
     public static boolean canHitEntity(final Entity from, final Entity target, final Rotation rotation, final double range) {
         final Vec3d eyePos = from.getEyePos();
-        final Vec3d rotationVector = rotation.getVector();
+        final Vec3d rotationVector = rotation.getVec();
 
         final double rangeSquared = range * range;
 
@@ -101,7 +101,7 @@ public class WorldUtil implements MinecraftWrapper {
 
     public static BlockHitResult raytraceBlocks(final Rotation rotation, final double range) {
         final Vec3d eyePos = mc.player.getEyePos();
-        final Vec3d rotationVector = rotation.getVector();
+        final Vec3d rotationVector = rotation.getVec();
         final Vec3d targetVec = eyePos.add(rotationVector.x * range, rotationVector.y * range, rotationVector.z * range);
 
         return mc.world.raycast(new RaycastContext(

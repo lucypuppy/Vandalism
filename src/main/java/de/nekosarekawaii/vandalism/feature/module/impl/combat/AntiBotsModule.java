@@ -19,6 +19,7 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.combat;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.internal.TargetListener;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
@@ -31,11 +32,14 @@ import java.util.List;
 
 public class AntiBotsModule extends AbstractModule implements TargetListener, IncomingPacketListener {
 
+    private final BooleanValue movement = new BooleanValue(this, "Movement", "Checks if the entities are moving", true);
+    private final BooleanValue playerList = new BooleanValue(this, "Player List", "Checks if the entities are in the player list", false);
+
+    private final List<Entity> movedEntities = new ArrayList<>();
+
     public AntiBotsModule() {
         super("Anti Bots", "Prevents bots from joining your server.", Category.COMBAT);
     }
-
-    private final List<Entity> movedEntities = new ArrayList<>();
 
     @Override
     public void onActivate() {
@@ -45,14 +49,18 @@ public class AntiBotsModule extends AbstractModule implements TargetListener, In
     @Override
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(this, TargetEvent.ID, IncomingPacketEvent.ID);
-        movedEntities.clear();
+        this.movedEntities.clear();
     }
 
     @Override
     public void onTarget(TargetEvent event) {
         if (!event.isTarget) return;
 
-        if (!movedEntities.contains(event.entity)) {
+        if (this.movement.getValue() && !this.movedEntities.contains(event.entity)) {
+            event.isTarget = false;
+        }
+
+        if (this.playerList.getValue() && mc.getNetworkHandler().getPlayerListEntry(event.entity.getUuid()) == null) {
             event.isTarget = false;
         }
     }
@@ -60,8 +68,10 @@ public class AntiBotsModule extends AbstractModule implements TargetListener, In
     @Override
     public void onIncomingPacket(IncomingPacketEvent event) {
         if (mc.world == null) return;
-        if (event.packet instanceof EntityPositionS2CPacket packet) {
-            Entity entity = mc.world.getEntityById(packet.getId());
+
+        if (this.movement.getValue() && event.packet instanceof final EntityPositionS2CPacket packet) {
+            final Entity entity = mc.world.getEntityById(packet.getId());
+
             if (entity instanceof PlayerEntity && !movedEntities.contains(entity)) {
                 if (packet.getX() != entity.getTrackedPosition().pos.x || packet.getY() != entity.getTrackedPosition().pos.y || packet.getZ() != entity.getTrackedPosition().pos.z) {
                     movedEntities.add(entity);

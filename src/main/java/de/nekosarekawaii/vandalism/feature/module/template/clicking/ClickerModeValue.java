@@ -18,57 +18,19 @@
 
 package de.nekosarekawaii.vandalism.feature.module.template.clicking;
 
-import com.google.gson.JsonObject;
-import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.ValueParent;
+import de.nekosarekawaii.vandalism.base.value.impl.selection.ClassModeValue;
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.BezierClicker;
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.BoxMuellerClicker;
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.CooldownClicker;
-import imgui.ImGui;
 
-public class ClickerModeValue extends Value<Clicker> {
-
-    private final Clicker[] options;
+public class ClickerModeValue extends ClassModeValue<Clicker> {
 
     public ClickerModeValue(ValueParent parent, String name, String description) {
-        super(parent, name, description, new CooldownClicker());
-        this.options = new Clicker[]{
-                this.getDefaultValue(),
+        super(parent, name, description,
+                new CooldownClicker(),
                 new BezierClicker(),
-                new BoxMuellerClicker()
-        };
-    }
-
-    @Override
-    public void load(final JsonObject mainNode) {
-        if (!mainNode.has(this.getName())) {
-            return;
-        }
-        final String selectedOption = mainNode.get(this.getName()).getAsString();
-        for (final Clicker value : this.options) {
-            if (value.getName().equals(selectedOption)) {
-                this.setValue(value);
-                break;
-            }
-        }
-    }
-
-    @Override
-    public void save(final JsonObject mainNode) {
-        mainNode.addProperty(this.getName(), this.getValue().getName());
-    }
-
-    @Override
-    public void render() {
-        ImGui.setNextItemWidth(ImGui.getColumnWidth() - 2);
-        if (ImGui.beginCombo("##" + this.getName() + this.getParent().getName(), this.getValue().getName())) {
-            for (final Clicker mode : this.options) {
-                if (ImGui.selectable(mode.getName(), mode.getName().equals(this.getValue().getName()))) {
-                    this.setValue(mode);
-                }
-            }
-            ImGui.endCombo();
-        }
+                new BoxMuellerClicker());
     }
 
 }
