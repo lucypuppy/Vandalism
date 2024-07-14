@@ -305,8 +305,9 @@ public class MovementUtil implements MinecraftWrapper {
 
     /**
      * Get the speed related to the yaw.
+     *
      * @param rotation The rotation to use.
-     * @param event The strafe event to use.
+     * @param event    The strafe event to use.
      * @return The speed related to the yaw.
      */
     public static Vec3d silentMoveFix(Rotation rotation, StrafeListener.StrafeEvent event) {

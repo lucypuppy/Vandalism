@@ -24,8 +24,9 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
-import de.nekosarekawaii.vandalism.integration.rotation.RotationBuilder;
+import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
+import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
+import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.ItemStack;
@@ -107,7 +108,7 @@ public class AutoShieldModule extends AbstractModule implements PlayerUpdateList
             entities.sort(Comparator.comparingDouble(entity -> this.mc.player.distanceTo(entity)));
             this.target = entities.getFirst();
         } else {
-            final Rotation rotation = RotationBuilder.build(this.target.getPos(), this.mc.player.getEyePos());
+            final PrioritizedRotation rotation = RotationUtil.rotationToVec(this.target.getPos(), RotationPriority.NORMAL);
             Vandalism.getInstance().getRotationManager().setRotation(rotation, this.rotateSpeed.getValue(),
                     0.0f, false);
             if (!this.mc.player.isBlocking()) {

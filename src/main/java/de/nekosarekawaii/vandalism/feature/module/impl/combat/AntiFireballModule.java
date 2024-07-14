@@ -23,7 +23,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.integration.rotation.RotationBuilder;
+import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.FireballEntity;
@@ -93,7 +93,7 @@ public class AntiFireballModule extends AbstractModule implements PlayerUpdateLi
             this.target = fireballEntities.getFirst();
         } else {
             Vandalism.getInstance().getRotationManager().setRotation(
-                    RotationBuilder.build(this.target.getPos(), this.mc.player.getEyePos(), RotationPriority.HIGHEST),
+                    RotationUtil.rotationToVec(this.target.getPos(), RotationPriority.HIGHEST),
                     this.rotateSpeed.getValue(), 0.0f, false
             );
         }

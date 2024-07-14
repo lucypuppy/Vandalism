@@ -18,26 +18,16 @@
 
 package de.nekosarekawaii.vandalism.integration.rotation;
 
-import lombok.Data;
-import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.math.Vec3d;
+import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
+import lombok.Getter;
 
-@Data
-public class Rotation {
+@Getter
+public class PrioritizedRotation extends Rotation {
 
-    private float yaw, pitch;
+    private final RotationPriority priority;
 
-    public Rotation(final float yaw, final float pitch) {
-        this.yaw = yaw;
-        this.pitch = pitch;
+    public PrioritizedRotation(float yaw, float pitch, RotationPriority priority) {
+        super(yaw, pitch);
+        this.priority = priority;
     }
-
-    public Vec3d getVec() {
-        return Vec3d.fromPolar(pitch, yaw);
-    }
-
-    public String toString(final Vec2f vec) {
-        return "Vec2f[" + vec.x + ", " + vec.y + "]";
-    }
-
 }
