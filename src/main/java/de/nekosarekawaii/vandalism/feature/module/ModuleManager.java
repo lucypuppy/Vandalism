@@ -122,6 +122,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new AutoClickerModule(),
                 new AutoRodModule(),
                 new AutoShieldModule(),
+                new AutoSoupModule(),
                 new BackTrackModule(),
                 new BowSpammerModule(),
                 new LagRangeModule(),
