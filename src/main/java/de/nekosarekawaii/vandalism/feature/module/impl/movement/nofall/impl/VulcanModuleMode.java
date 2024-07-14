@@ -19,65 +19,56 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.nofall.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
 import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
-import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.event.player.MoveInputListener;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.nofall.NoFallModule;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
-import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 
-import java.util.Random;
+public class VulcanModuleMode extends ModuleMulti<NoFallModule> implements OutgoingPacketListener, MoveInputListener {
 
-public class VulcanModuleMode extends ModuleMulti<NoFallModule> implements PlayerUpdateListener, OutgoingPacketListener {
-
-    private int ticks;
+    private boolean stopMove;
 
     public VulcanModuleMode() {
         super("Vulcan");
     }
 
+    private final ModeValue mode = new ModeValue(this, "Mode", "The mode of the no fall.", "Spoof", "Air Stop");
+
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, OutgoingPacketEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, OutgoingPacketEvent.ID, MoveInputEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, OutgoingPacketEvent.ID);
-    }
-
-    @Override
-    public void onPrePlayerUpdate(PlayerUpdateEvent event) {
-        if (mc.player.fallDistance > 2.25F) {
-            this.ticks++;
-
-            if (this.ticks == 1) {
-                mc.player.setVelocity(0, new Random().nextBoolean() ? -0.2 : 0.2, 0);
-            }
-
-            if (this.ticks > 2) {
-                mc.player.fallDistance = 0;
-                this.ticks = 0;
-            }
-        }
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, OutgoingPacketEvent.ID, MoveInputEvent.ID);
+        stopMove = false;
     }
 
 
     @Override
     public void onOutgoingPacket(final OutgoingPacketListener.OutgoingPacketEvent event) {
-        if (this.ticks > 1) {
-            if (event.packet instanceof PlayerMoveC2SPacket packet) {
-                packet.onGround = true;
+        if (event.packet instanceof final PlayerMoveC2SPacket playerPacket && this.mc.player.fallDistance > 3.0f) {
+            if (isAirStop()) {
+                mc.player.setVelocity(0, -0.029, 0);
+                stopMove = true;
             }
-
-            if (
-                    event.packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket &&
-                            this.mc.player != null &&
-                            velocityPacket.getId() == this.mc.player.getId()
-            ) {
-                event.cancel();
-            }
+            playerPacket.onGround = true;
+            mc.player.fallDistance = 0;
         }
     }
 
+    @Override
+    public void onMoveInput(MoveInputEvent event) {
+        if (stopMove && isAirStop()) {
+            event.cancel();
+            stopMove = false;
+        }
+    }
+
+    private boolean isAirStop() {
+        return mode.getValue().equalsIgnoreCase("Air Stop");
+    }
 }
