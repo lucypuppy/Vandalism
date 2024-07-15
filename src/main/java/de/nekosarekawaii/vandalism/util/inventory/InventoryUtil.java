@@ -158,8 +158,9 @@ public class InventoryUtil implements MinecraftWrapper {
 
     public static void setSlot(final int slot) {
         final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
-        if (mc.player == null || mc.interactionManager == null || networkHandler == null || !PlayerInventory.isValidHotbarIndex(slot))
+        if (mc.player == null || mc.interactionManager == null || networkHandler == null || !PlayerInventory.isValidHotbarIndex(slot)) {
             return;
+        }
         mc.player.getInventory().selectedSlot = slot;
         mc.interactionManager.syncSelectedSlot();
     }
