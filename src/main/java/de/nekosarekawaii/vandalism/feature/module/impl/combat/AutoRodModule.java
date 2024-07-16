@@ -27,6 +27,7 @@ import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.player.RotationListener;
 import de.nekosarekawaii.vandalism.event.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.template.target.TargetGroup;
 import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationManager;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
@@ -66,6 +67,8 @@ public class AutoRodModule extends AbstractModule implements PlayerUpdateListene
         this.rotationManager = Vandalism.getInstance().getRotationManager();
         this.deactivateAfterSessionDefault();
     }
+
+    private final TargetGroup entityGroup = new TargetGroup(this, "Entities", "The entities to target.");
 
     private final DoubleValue range = new DoubleValue(
             this,
@@ -267,7 +270,7 @@ public class AutoRodModule extends AbstractModule implements PlayerUpdateListene
                 continue;
             }
             if (
-                    Vandalism.getInstance().getTargetManager().isTarget(entity) &&
+                    this.entityGroup.isTarget(entity) &&
                             this.mc.player.distanceTo(entity) <= range.getValue() + 1.0 &&
                             entity.getWidth() > 0.0 && entity.getHeight() > 0.0
             ) {

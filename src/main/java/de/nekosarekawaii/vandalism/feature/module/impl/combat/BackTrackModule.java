@@ -31,6 +31,7 @@ import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.template.target.TargetGroup;
 import de.nekosarekawaii.vandalism.util.game.PacketHelper;
 import de.nekosarekawaii.vandalism.util.game.SyncPosition;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -54,6 +55,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class BackTrackModule extends AbstractModule implements PlayerUpdateListener,
         IncomingPacketListener, Render3DListener, WorldListener {
+
+    private final TargetGroup targetGroup = new TargetGroup(this, "Target", "The target to back track.");
 
     public final IntegerValue minDuration = new IntegerValue(
             this,
@@ -168,7 +171,7 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         for (final Entity entity : this.mc.world.getEntities()) {
             if (
-                    Vandalism.getInstance().getTargetManager().isTarget(entity)
+                    this.targetGroup.isTarget(entity)
                             && entity.getWidth() > 0.0
                             && entity.getHeight() > 0.0
                             && entity instanceof final LivingEntity livingEntity

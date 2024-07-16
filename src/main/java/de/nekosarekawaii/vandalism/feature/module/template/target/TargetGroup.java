@@ -16,11 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.base.clientsettings.impl;
+package de.nekosarekawaii.vandalism.feature.module.template.target;
 
-import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
+import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryBlacklistValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
@@ -31,7 +30,7 @@ import net.minecraft.registry.Registries;
 
 import java.util.Arrays;
 
-public class TargetSettings extends ValueGroup implements TargetListener {
+public class TargetGroup extends ValueGroup {
 
     private final MultiRegistryBlacklistValue<EntityType<?>> targets = new MultiRegistryBlacklistValue<>(
             this,
@@ -64,7 +63,8 @@ public class TargetSettings extends ValueGroup implements TargetListener {
                     EntityType.TNT,
                     EntityType.LLAMA_SPIT,
                     EntityType.EYE_OF_ENDER
-            )
+            ),
+            false
     );
 
     private final BooleanValue isAlive = new BooleanValue(
@@ -74,28 +74,20 @@ public class TargetSettings extends ValueGroup implements TargetListener {
             true
     );
 
-    public final BooleanValue ignoreFriends = new BooleanValue(
-            this,
-            "Ignore friends",
-            "Whether to ignore friends or not.",
-            false
-    );
-
-    public TargetSettings(final ClientSettings parent) {
-        super(parent, "Target", "Target related settings.");
-        Vandalism.getInstance().getEventSystem().subscribe(TargetEvent.ID, this, Priorities.HIGHEST);
+    public TargetGroup(final ValueParent parent, final String name, final String description) {
+        super(parent, name, description);
     }
 
-    @Override
-    public void onTarget(final TargetEvent event) {
-        final Entity entity = event.entity;
+    public boolean isTarget(final Entity entity) {
         if (entity == this.mc.player || (!entity.isAlive() && this.isAlive.getValue())) {
-            event.isTarget = false;
-            return;
+            return false;
         }
         if (!this.targets.isSelected(entity.getType())) {
-            event.isTarget = false;
+            return false;
         }
+        final TargetListener.TargetEvent event = new TargetListener.TargetEvent(entity);
+        Vandalism.getInstance().getEventSystem().postInternal(TargetListener.TargetEvent.ID, event);
+        return event.isTarget;
     }
 
 }

@@ -135,14 +135,14 @@ public class FOVFuckerModule extends AbstractModule implements PlayerUpdateListe
         if (this.target == null) {
             final Stream<AbstractClientPlayerEntity> players = this.mc.world.getPlayers().stream();
             this.target = players.sorted(Comparator.comparingDouble(player -> this.mc.player.distanceTo(player))).
-                    filter(player -> this.mc.player != player && this.mc.player.distanceTo(player) <= this.maxDistance.getValue() && Vandalism.getInstance().getTargetManager().isTarget(player)).
+                    filter(player -> this.mc.player != player && this.mc.player.distanceTo(player) <= this.maxDistance.getValue() && !Vandalism.getInstance().getFriendsManager().isFriend(player.getGameProfile().getName(), true)).
                     findFirst().
                     orElse(null);
 
             return;
         }
 
-        if (this.target.isDead() || this.mc.world.getEntityById(this.target.getId()) == null || !Vandalism.getInstance().getTargetManager().isTarget(this.target)) {
+        if (this.target.isDead() || this.mc.world.getEntityById(this.target.getId()) == null || !Vandalism.getInstance().getFriendsManager().isFriend(this.target.getGameProfile().getName(), true)) {
             this.reset();
             return;
         }

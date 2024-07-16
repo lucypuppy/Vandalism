@@ -27,12 +27,16 @@ import java.util.List;
 public class MultiRegistryBlacklistValue<K> extends MultiRegistryValue<K> {
 
     public MultiRegistryBlacklistValue(ValueParent parent, String name, String description, final Registry<K> registry, final List<K> blacklist) {
+        this(parent, name, description, registry, blacklist, true);
+    }
+
+    public MultiRegistryBlacklistValue(ValueParent parent, String name, String description, final Registry<K> registry, final List<K> blacklist, final boolean defaultEmpty) {
         super(
                 parent,
                 name,
                 description,
                 registry,
-                Collections.emptyList(),
+                defaultEmpty ? Collections.emptyList() : registry.stream().filter(k -> !blacklist.contains(k)).toList(),
                 registry.stream().filter(k -> !blacklist.contains(k)).toList().toArray((K[]) new Object[registry.size()])
         );
     }
