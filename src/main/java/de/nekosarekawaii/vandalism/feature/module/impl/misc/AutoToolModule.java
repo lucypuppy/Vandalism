@@ -23,10 +23,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.inventory.InventoryUtil;
-import net.minecraft.block.AirBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FluidBlock;
+import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.*;
@@ -37,6 +34,7 @@ import net.minecraft.util.hit.HitResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AutoToolModule extends AbstractModule implements PlayerUpdateListener {
 
@@ -122,6 +120,7 @@ public class AutoToolModule extends AbstractModule implements PlayerUpdateListen
                 final Block block = blockState.getBlock();
                 if (block instanceof AirBlock || block instanceof FluidBlock) return;
                 final List<Pair<ItemStack, Integer>> toolList = new ArrayList<>();
+                final AtomicBoolean foundSwordForBamboo = new AtomicBoolean(false);
                 for (int i = 0; i < 9; i++) {
                     if (!PlayerInventory.isValidHotbarIndex(i)) continue;
                     final ItemStack itemStack = this.mc.player.getInventory().getStack(i);
@@ -132,34 +131,56 @@ public class AutoToolModule extends AbstractModule implements PlayerUpdateListen
                     if (!(item instanceof ToolItem) && !(item instanceof ShearsItem)) {
                         continue;
                     }
+                    // Mojang is so smart...
+                    if (block instanceof BambooBlock) {
+                        if (item instanceof SwordItem) {
+                            foundSwordForBamboo.set(true);
+                        } else if (!(item instanceof AxeItem)) {
+                            continue;
+                        }
+                    }
                     toolList.add(new Pair<>(itemStack, i));
                 }
                 if (toolList.isEmpty()) return;
-                toolList.sort((o1, o2) -> {
-                    final float speed1 = o1.getLeft().getMiningSpeedMultiplier(blockState);
-                    final float speed2 = o2.getLeft().getMiningSpeedMultiplier(blockState);
+                toolList.sort((i1, i2) -> {
+                    final ItemStack first = i1.getLeft();
+                    final ItemStack second = i2.getLeft();
+                    if (foundSwordForBamboo.get()) {
+                        final Item firstItem = first.getItem();
+                        if (firstItem instanceof SwordItem) {
+                            return -1;
+                        }
+                        final Item secondItem = second.getItem();
+                        if (secondItem instanceof SwordItem) {
+                            return 1;
+                        }
+                    }
+                    final float speed1 = first.getMiningSpeedMultiplier(blockState);
+                    final float speed2 = second.getMiningSpeedMultiplier(blockState);
                     return Float.compare(speed2, speed1);
                 });
                 final Pair<ItemStack, Integer> bestTool = toolList.getFirst();
                 final ItemStack mainHandStack = this.mc.player.getInventory().getMainHandStack();
                 final float bestToolSpeed = bestTool.getLeft().getMiningSpeedMultiplier(blockState);
-                if (bestToolSpeed <= mainHandStack.getMiningSpeedMultiplier(blockState)) {
-                    for (int i = 0; i < this.mc.player.getInventory().main.size(); i++) {
-                        if (!PlayerInventory.isValidHotbarIndex(i)) {
-                            continue;
+                if (!foundSwordForBamboo.get()) {
+                    if (bestToolSpeed <= mainHandStack.getMiningSpeedMultiplier(blockState)) {
+                        for (int i = 0; i < this.mc.player.getInventory().main.size(); i++) {
+                            if (!PlayerInventory.isValidHotbarIndex(i)) {
+                                continue;
+                            }
+                            final ItemStack itemStack = this.mc.player.getInventory().getStack(i);
+                            if (itemStack == null) {
+                                continue;
+                            }
+                            final Item item = itemStack.getItem();
+                            if (!(item instanceof ToolItem) && !(item instanceof ShearsItem) && itemStack.getMiningSpeedMultiplier(blockState) == bestToolSpeed) {
+                                this.oldSlot = this.mc.player.getInventory().selectedSlot;
+                                InventoryUtil.setSlot(i);
+                                break;
+                            }
                         }
-                        final ItemStack itemStack = this.mc.player.getInventory().getStack(i);
-                        if (itemStack == null) {
-                            continue;
-                        }
-                        final Item item = itemStack.getItem();
-                        if (!(item instanceof ToolItem) && !(item instanceof ShearsItem) && itemStack.getMiningSpeedMultiplier(blockState) == bestToolSpeed) {
-                            this.oldSlot = this.mc.player.getInventory().selectedSlot;
-                            InventoryUtil.setSlot(i);
-                            break;
-                        }
+                        return;
                     }
-                    return;
                 }
                 this.oldSlot = this.mc.player.getInventory().selectedSlot;
                 InventoryUtil.setSlot(bestTool.getRight());
