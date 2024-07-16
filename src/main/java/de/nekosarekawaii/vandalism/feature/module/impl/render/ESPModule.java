@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
+import com.mojang.authlib.GameProfile;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryBlacklistValue;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
@@ -29,6 +30,7 @@ import de.nekosarekawaii.vandalism.event.game.WorldListener;
 import de.nekosarekawaii.vandalism.event.network.DisconnectListener;
 import de.nekosarekawaii.vandalism.event.render.Render3DListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.template.target.TargetGroup;
 import de.nekosarekawaii.vandalism.util.render.util.ColorUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -38,6 +40,7 @@ import net.minecraft.client.render.debug.DebugRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.network.ClientConnection;
@@ -53,10 +56,19 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ESPModule extends AbstractModule implements BlockStateListener, BlockStateUpdateListener, WorldListener, DisconnectListener, Render3DListener {
 
-    public final ColorValue entityColor = new ColorValue(
-            this,
+    private final TargetGroup entityGroup = new TargetGroup(this, "Entities", "The entities to target.");
+
+    private final ColorValue entityColor = new ColorValue(
+            this.entityGroup,
             "Entity Color",
             "The color of the ESP for entities."
+    );
+
+    private final ColorValue friendsColor = new ColorValue(
+            this.entityGroup,
+            "Friends Color",
+            "The color of the ESP for friends.",
+            Color.GREEN
     );
 
     private final BooleanValue items = new BooleanValue(
@@ -122,7 +134,27 @@ public class ESPModule extends AbstractModule implements BlockStateListener, Blo
     }
 
     public boolean isTarget(final Entity entity) {
-        return Vandalism.getInstance().getTargetManager().isTarget(entity) || entity instanceof final ItemEntity itemEntity && this.itemList.isSelected(itemEntity.getStack().getItem()) && this.items.getValue();
+        if (entity instanceof final PlayerEntity player) {
+            final GameProfile gameProfile = player.getGameProfile();
+            if (gameProfile != null) {
+                if (Vandalism.getInstance().getFriendsManager().isFriend(gameProfile.getName(), true)) {
+                    return true;
+                }
+            }
+        }
+        return this.entityGroup.isTarget(entity) || entity instanceof final ItemEntity itemEntity && this.itemList.isSelected(itemEntity.getStack().getItem()) && this.items.getValue();
+    }
+
+    public Color getEntityColor(final Entity entity) {
+        if (entity instanceof final PlayerEntity player) {
+            final GameProfile gameProfile = player.getGameProfile();
+            if (gameProfile != null) {
+                if (Vandalism.getInstance().getFriendsManager().isFriend(gameProfile.getName(), true)) {
+                    return this.friendsColor.getColor();
+                }
+            }
+        }
+        return this.entityColor.getColor();
     }
 
     @Override

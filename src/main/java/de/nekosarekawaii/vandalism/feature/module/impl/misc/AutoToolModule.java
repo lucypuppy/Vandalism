@@ -22,6 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.template.target.TargetGroup;
 import de.nekosarekawaii.vandalism.util.inventory.InventoryUtil;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
@@ -46,6 +47,8 @@ public class AutoToolModule extends AbstractModule implements PlayerUpdateListen
             "Tools",
             "Weapons"
     );
+
+    private final TargetGroup entityGroup = new TargetGroup(this, "Entities", "The entities to target.").visibleCondition(() -> !this.mode.getValue().equals("Tools"));
 
     private int oldSlot = -1;
     private HitResult lastCrosshairTarget;
@@ -86,7 +89,7 @@ public class AutoToolModule extends AbstractModule implements PlayerUpdateListen
             if (this.mc.crosshairTarget instanceof final EntityHitResult entityHitResult) {
                 final Entity entity = entityHitResult.getEntity();
                 if (entity == null) return;
-                if (!Vandalism.getInstance().getTargetManager().isTarget(entity)) return;
+                if (!this.entityGroup.isTarget(entity)) return;
                 final List<Pair<Float, Integer>> toolList = new ArrayList<>();
                 for (int i = 0; i < 9; i++) {
                     if (!PlayerInventory.isValidHotbarIndex(i)) continue;

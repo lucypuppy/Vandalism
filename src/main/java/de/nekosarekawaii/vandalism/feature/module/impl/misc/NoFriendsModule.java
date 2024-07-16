@@ -16,18 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.integration;
+package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
-import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.event.internal.TargetListener;
-import net.minecraft.entity.Entity;
+import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 
-public class TargetManager {
+public class NoFriendsModule extends AbstractModule {
 
-    public boolean isTarget(final Entity entity) {
-        final TargetListener.TargetEvent event = new TargetListener.TargetEvent(entity);
-        Vandalism.getInstance().getEventSystem().postInternal(TargetListener.TargetEvent.ID, event);
-        return event.isTarget;
+    public NoFriendsModule() {
+        super("No Friends", "If enabled friends are also targets.", Category.MISC);
     }
-    
+
 }

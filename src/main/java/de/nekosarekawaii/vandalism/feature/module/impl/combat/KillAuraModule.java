@@ -44,6 +44,7 @@ import de.nekosarekawaii.vandalism.feature.module.template.clicking.ClickerModeV
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.BezierClicker;
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.BoxMuellerClicker;
 import de.nekosarekawaii.vandalism.feature.module.template.clicking.impl.CooldownClicker;
+import de.nekosarekawaii.vandalism.feature.module.template.target.TargetGroup;
 import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
 import de.nekosarekawaii.vandalism.integration.rotation.Rotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationManager;
@@ -83,6 +84,8 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             "Target Selection",
             "Settings for the target selection."
     );
+
+    private final TargetGroup targetGroup = new TargetGroup(this.targetSelectionGroup, "Targets", "The entities to target.");
 
     private final DoubleValue range = new DoubleValue(
             this.targetSelectionGroup,
@@ -666,7 +669,7 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
                 continue;
             }
             if (
-                    Vandalism.getInstance().getTargetManager().isTarget(entity) &&
+                    this.targetGroup.isTarget(entity) &&
                             this.mc.player.distanceTo(entity) <= getAimRange() + 1.0 &&
                             entity.getWidth() > 0.0 && entity.getHeight() > 0.0
             ) {

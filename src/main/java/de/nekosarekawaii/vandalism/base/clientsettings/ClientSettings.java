@@ -53,9 +53,6 @@ public class ClientSettings implements ValueParent {
     private final RotationSettings rotationSettings = new RotationSettings(this);
 
     @Getter
-    private final TargetSettings targetSettings = new TargetSettings(this);
-
-    @Getter
     private final EnhancedServerListSettings enhancedServerListSettings = new EnhancedServerListSettings(this);
 
     public ClientSettings(final ConfigManager configManager, final ClientWindowManager clientWindowManager) {

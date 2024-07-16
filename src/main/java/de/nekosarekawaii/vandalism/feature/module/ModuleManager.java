@@ -83,6 +83,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
     private FastBreakModule fastBreakModule;
     private ZoomModule zoomModule;
     private GhostHandModule ghostHandModule;
+    private NoFriendsModule noFriendsModule;
 
     public ModuleManager(final DietrichEvents2 eventSystem, final ConfigManager configManager, final ClientWindowManager clientWindowManager) {
         this.configManager = configManager;
@@ -117,6 +118,7 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 this.fullBrightModule = new FullBrightModule(),
                 this.zoomModule = new ZoomModule(),
                 this.ghostHandModule = new GhostHandModule(),
+                this.noFriendsModule = new NoFriendsModule(),
                 new FakeLagModule(this.killAuraModule),
                 new AntiBotsModule(),
                 new AutoClickerModule(),

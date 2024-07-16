@@ -24,6 +24,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.feature.module.template.target.TargetGroup;
 import de.nekosarekawaii.vandalism.integration.rotation.PrioritizedRotation;
 import de.nekosarekawaii.vandalism.integration.rotation.RotationUtil;
 import de.nekosarekawaii.vandalism.integration.rotation.enums.RotationPriority;
@@ -38,6 +39,8 @@ import java.util.Comparator;
 import java.util.List;
 
 public class AutoShieldModule extends AbstractModule implements PlayerUpdateListener {
+
+    private final TargetGroup entityGroup = new TargetGroup(this, "Entities", "The entities to target.");
 
     private final FloatValue range = new FloatValue(
             this,
@@ -93,13 +96,13 @@ public class AutoShieldModule extends AbstractModule implements PlayerUpdateList
             return;
         }
         final float range = this.range.getValue();
-        if (this.target == null || !Vandalism.getInstance().getTargetManager().isTarget(this.target) || this.target.distanceTo(this.mc.player) >= range || this.target instanceof final ProjectileEntity projectileEntity && projectileEntity.getVelocity().y <= 0) {
+        if (this.target == null || !this.entityGroup.isTarget(this.target) || this.target.distanceTo(this.mc.player) >= range || this.target instanceof final ProjectileEntity projectileEntity && projectileEntity.getVelocity().y <= 0) {
             this.reset();
             final List<Entity> entities = new ArrayList<>();
             for (final Entity entity : this.mc.world.getEntities()) {
                 if (entity == this.mc.player) continue;
                 if (entity == this.mc.player.getVehicle()) continue;
-                if (!Vandalism.getInstance().getTargetManager().isTarget(entity)) continue;
+                if (!this.entityGroup.isTarget(entity)) continue;
                 if (this.mc.player.getPos().distanceTo(entity.getPos()) > range) continue;
                 entities.add(entity);
                 break;

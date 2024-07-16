@@ -44,14 +44,12 @@ public class FriendsManager extends Storage<Friend> implements TargetListener, T
 
     @Override
     public void onTarget(final TargetEvent event) {
-        if (Vandalism.getInstance().getClientSettings().getTargetSettings().ignoreFriends.getValue()) {
-            return;
-        }
         if (event.entity instanceof final PlayerEntity player) {
             final GameProfile gameProfile = player.getGameProfile();
-            if (gameProfile == null) return;
-
-            if (this.getList().stream().anyMatch(friend -> friend.getName().equalsIgnoreCase(gameProfile.getName()))) {
+            if (gameProfile == null) {
+                return;
+            }
+            if (this.isFriend(gameProfile.getName(), true)) {
                 event.isTarget = false;
             }
         }
@@ -91,6 +89,15 @@ public class FriendsManager extends Storage<Friend> implements TargetListener, T
     }
 
     public boolean isFriend(final String name) {
+        return this.isFriend(name, false);
+    }
+
+    public boolean isFriend(final String name, final boolean checkNoFriendsModule) {
+        if (checkNoFriendsModule) {
+            if (Vandalism.getInstance().getModuleManager().getNoFriendsModule().isActive()) {
+                return false;
+            }
+        }
         return this.getList().stream().anyMatch(friend -> friend.getName().equalsIgnoreCase(name));
     }
 

@@ -79,13 +79,14 @@ public class AntiBotsModule extends AbstractModule implements TargetListener, In
             }
         }
 
-//        if (event.packet instanceof EntityS2CPacket packet) {
-//            Entity entity = packet.getEntity(mc.world);
-//            if (entity instanceof PlayerEntity && !movedEntities.contains(entity)) {
-//                if (packet.getDeltaX() != 0 || packet.getDeltaY() != 0 || packet.getDeltaZ() != 0) {
-//                    movedEntities.add(entity);
-//                }
-//            }
-//        }
+        /*if (event.packet instanceof EntityS2CPacket packet) {
+            Entity entity = packet.getEntity(mc.world);
+            if (entity instanceof PlayerEntity && !movedEntities.contains(entity)) {
+                if (packet.getDeltaX() != 0 || packet.getDeltaY() != 0 || packet.getDeltaZ() != 0) {
+                    movedEntities.add(entity);
+                }
+            }
+        }*/
     }
+
 }

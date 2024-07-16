@@ -43,10 +43,10 @@ public class BetterTabListModule extends AbstractModule implements KeyboardInput
     public final IntegerValue tabSize = new IntegerValue(this, "Tab List Size", "How many players to display in the Tab List.", 100, 1, 1000);
 
     public final BooleanValue highlightSelf = new BooleanValue(this, "Highlight Self", "Highlights yourself in the Tab List.", true);
-    public final ColorValue selfColor = new ColorValue(this, "Self Color", "The color to highlight your name with.", ColorUtils.withAlpha(Color.GREEN, 100)).visibleCondition(this.highlightSelf::getValue);
+    public final ColorValue selfColor = new ColorValue(this, "Self Color", "The color to highlight your name with.", ColorUtils.withAlpha(Color.CYAN, 100)).visibleCondition(this.highlightSelf::getValue);
 
     public final BooleanValue highlightFriends = new BooleanValue(this, "Highlight Friends", "Highlights friends in the Tab List.", true);
-    public final ColorValue friendsColor = new ColorValue(this, "Friends Color", "The color to highlight your friends names with.", ColorUtils.withAlpha(Color.CYAN, 100)).visibleCondition(this.highlightFriends::getValue);
+    public final ColorValue friendsColor = new ColorValue(this, "Friends Color", "The color to highlight your friends names with.", ColorUtils.withAlpha(Color.GREEN, 100)).visibleCondition(this.highlightFriends::getValue);
 
     public final BooleanValue showAccuratePing = new BooleanValue(this, "Show Accurate Ping", "Shows the the game mode and the accurate ping right after every username.", true);
     public final LongValue maxPing = new LongValue(this, "Max Ping", "Sets the maximum ping value.", 999L, 100L, 9999L).visibleCondition(this.showAccuratePing::getValue);

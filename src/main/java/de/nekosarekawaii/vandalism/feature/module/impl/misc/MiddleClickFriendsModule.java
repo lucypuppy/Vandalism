@@ -51,6 +51,9 @@ public class MiddleClickFriendsModule extends AbstractModule implements MouseInp
 
     @Override
     public void onMouse(final MouseEvent event) {
+        if (this.mc.currentScreen != null) {
+            return;
+        }
         if (event.type == MouseInputListener.Type.BUTTON) {
             if (event.button == GLFW.GLFW_MOUSE_BUTTON_MIDDLE && event.action == GLFW.GLFW_PRESS) {
                 final HitResult hitResult = this.mc.crosshairTarget;
