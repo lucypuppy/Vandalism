@@ -38,7 +38,8 @@ public abstract class MixinWorldRenderer {
         final ESPModule espModule = Vandalism.getInstance().getModuleManager().getEspModule();
         if (espModule.isActive() && espModule.isTarget(entity)) {
             final Color color = espModule.getEntityColor(entity);
-            instance.setColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+            // TODO: Undo this big brain 360° Mojang moment because it's wrong.
+            instance.setColor(color.getBlue(), color.getGreen(), color.getRed(), color.getAlpha());
         } else {
             instance.setColor(red, green, blue, alpha);
         }
