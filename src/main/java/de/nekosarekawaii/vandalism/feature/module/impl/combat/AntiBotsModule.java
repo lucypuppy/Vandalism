@@ -88,6 +88,8 @@ public class AntiBotsModule extends AbstractModule implements TargetListener, In
 
         if (this.movement.getValue() && event.packet instanceof final EntityPositionS2CPacket packet) {
             final Entity entity = mc.world.getEntityById(packet.getId());
+            if (entity == mc.player)
+                return;
 
             if (entity != null && !this.movedEntities.contains(entity)) {
                 if (packet.getX() != entity.getTrackedPosition().pos.x || packet.getY() != entity.getTrackedPosition().pos.y || packet.getZ() != entity.getTrackedPosition().pos.z) {
@@ -100,6 +102,9 @@ public class AntiBotsModule extends AbstractModule implements TargetListener, In
             if (packet.getCategory() == SoundCategory.PLAYERS || packet.getCategory() == SoundCategory.BLOCKS ||
                     packet.getCategory() == SoundCategory.HOSTILE || packet.getCategory() == SoundCategory.NEUTRAL) {
                 for (final Entity entity : mc.world.getEntities()) {
+                    if (entity == mc.player)
+                        continue;
+
                     final double distance = entity.getPos().distanceTo(new Vec3d(packet.getX(), packet.getY(), packet.getZ()));
 
                     if (distance < 1.0 && !this.soundEntities.contains(entity)) {
