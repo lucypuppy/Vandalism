@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
+import de.nekosarekawaii.vandalism.event.player.BlockBreakListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.module.template.target.TargetGroup;
@@ -32,12 +33,13 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class AutoToolModule extends AbstractModule implements PlayerUpdateListener {
+public class AutoToolModule extends AbstractModule implements PlayerUpdateListener, BlockBreakListener {
 
     private final ModeValue mode = new ModeValue(
             this,
@@ -47,6 +49,14 @@ public class AutoToolModule extends AbstractModule implements PlayerUpdateListen
             "Tools",
             "Weapons"
     );
+
+    private final ModeValue toolMode = new ModeValue(
+            this,
+            "Tool Mode",
+            "The mode of the tool.",
+            "On Break",
+            "On Look"
+    ).visibleCondition(() -> !this.mode.getValue().equals("Weapons"));
 
     private final TargetGroup entityGroup = new TargetGroup(this, "Entities", "The entities to target.").visibleCondition(() -> !this.mode.getValue().equals("Tools"));
 
@@ -73,14 +83,85 @@ public class AutoToolModule extends AbstractModule implements PlayerUpdateListen
             this.oldSlot = this.mc.player.getInventory().selectedSlot;
             this.lastCrosshairTarget = this.mc.crosshairTarget;
         }
-        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, BlockBreakEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, BlockBreakEvent.ID);
         this.resetSlot();
         this.lastCrosshairTarget = null;
+    }
+
+    private void handleBlockInteraction(final BlockPos blockPos) {
+        final BlockState blockState = this.mc.world.getBlockState(blockPos);
+        final Block block = blockState.getBlock();
+        if (block instanceof AirBlock || block instanceof FluidBlock) return;
+        final List<Pair<ItemStack, Integer>> toolList = new ArrayList<>();
+        final AtomicBoolean foundSwordForBamboo = new AtomicBoolean(false);
+        for (int i = 0; i < 9; i++) {
+            if (!PlayerInventory.isValidHotbarIndex(i)) continue;
+            final ItemStack itemStack = this.mc.player.getInventory().getStack(i);
+            if (itemStack == null) {
+                continue;
+            }
+            final Item item = itemStack.getItem();
+            if (!(item instanceof ToolItem) && !(item instanceof ShearsItem)) {
+                continue;
+            }
+            // Mojang is so smart...
+            if (block instanceof BambooBlock) {
+                if (item instanceof SwordItem) {
+                    foundSwordForBamboo.set(true);
+                } else if (!(item instanceof AxeItem)) {
+                    continue;
+                }
+            }
+            toolList.add(new Pair<>(itemStack, i));
+        }
+        if (toolList.isEmpty()) return;
+        toolList.sort((i1, i2) -> {
+            final ItemStack first = i1.getLeft();
+            final ItemStack second = i2.getLeft();
+            if (foundSwordForBamboo.get()) {
+                final Item firstItem = first.getItem();
+                if (firstItem instanceof SwordItem) {
+                    return -1;
+                }
+                final Item secondItem = second.getItem();
+                if (secondItem instanceof SwordItem) {
+                    return 1;
+                }
+            }
+            final float speed1 = first.getMiningSpeedMultiplier(blockState);
+            final float speed2 = second.getMiningSpeedMultiplier(blockState);
+            return Float.compare(speed2, speed1);
+        });
+        final Pair<ItemStack, Integer> bestTool = toolList.getFirst();
+        final ItemStack mainHandStack = this.mc.player.getInventory().getMainHandStack();
+        final float bestToolSpeed = bestTool.getLeft().getMiningSpeedMultiplier(blockState);
+        if (!foundSwordForBamboo.get()) {
+            if (bestToolSpeed <= mainHandStack.getMiningSpeedMultiplier(blockState)) {
+                for (int i = 0; i < this.mc.player.getInventory().main.size(); i++) {
+                    if (!PlayerInventory.isValidHotbarIndex(i)) {
+                        continue;
+                    }
+                    final ItemStack itemStack = this.mc.player.getInventory().getStack(i);
+                    if (itemStack == null) {
+                        continue;
+                    }
+                    final Item item = itemStack.getItem();
+                    if (!(item instanceof ToolItem) && !(item instanceof ShearsItem) && itemStack.getMiningSpeedMultiplier(blockState) == bestToolSpeed) {
+                        this.oldSlot = this.mc.player.getInventory().selectedSlot;
+                        InventoryUtil.setSlot(i);
+                        break;
+                    }
+                }
+                return;
+            }
+        }
+        this.oldSlot = this.mc.player.getInventory().selectedSlot;
+        InventoryUtil.setSlot(bestTool.getRight());
     }
 
     @Override
@@ -117,82 +198,23 @@ public class AutoToolModule extends AbstractModule implements PlayerUpdateListen
                 InventoryUtil.setSlot(bestTool.getRight());
             }
         }
-        if (!this.mode.getValue().equals("Weapons")) {
-            if (this.mc.crosshairTarget instanceof final BlockHitResult blockHitResult) {
-                final BlockState blockState = this.mc.world.getBlockState(blockHitResult.getBlockPos());
-                final Block block = blockState.getBlock();
-                if (block instanceof AirBlock || block instanceof FluidBlock) return;
-                final List<Pair<ItemStack, Integer>> toolList = new ArrayList<>();
-                final AtomicBoolean foundSwordForBamboo = new AtomicBoolean(false);
-                for (int i = 0; i < 9; i++) {
-                    if (!PlayerInventory.isValidHotbarIndex(i)) continue;
-                    final ItemStack itemStack = this.mc.player.getInventory().getStack(i);
-                    if (itemStack == null) {
-                        continue;
-                    }
-                    final Item item = itemStack.getItem();
-                    if (!(item instanceof ToolItem) && !(item instanceof ShearsItem)) {
-                        continue;
-                    }
-                    // Mojang is so smart...
-                    if (block instanceof BambooBlock) {
-                        if (item instanceof SwordItem) {
-                            foundSwordForBamboo.set(true);
-                        } else if (!(item instanceof AxeItem)) {
-                            continue;
-                        }
-                    }
-                    toolList.add(new Pair<>(itemStack, i));
-                }
-                if (toolList.isEmpty()) return;
-                toolList.sort((i1, i2) -> {
-                    final ItemStack first = i1.getLeft();
-                    final ItemStack second = i2.getLeft();
-                    if (foundSwordForBamboo.get()) {
-                        final Item firstItem = first.getItem();
-                        if (firstItem instanceof SwordItem) {
-                            return -1;
-                        }
-                        final Item secondItem = second.getItem();
-                        if (secondItem instanceof SwordItem) {
-                            return 1;
-                        }
-                    }
-                    final float speed1 = first.getMiningSpeedMultiplier(blockState);
-                    final float speed2 = second.getMiningSpeedMultiplier(blockState);
-                    return Float.compare(speed2, speed1);
-                });
-                final Pair<ItemStack, Integer> bestTool = toolList.getFirst();
-                final ItemStack mainHandStack = this.mc.player.getInventory().getMainHandStack();
-                final float bestToolSpeed = bestTool.getLeft().getMiningSpeedMultiplier(blockState);
-                if (!foundSwordForBamboo.get()) {
-                    if (bestToolSpeed <= mainHandStack.getMiningSpeedMultiplier(blockState)) {
-                        for (int i = 0; i < this.mc.player.getInventory().main.size(); i++) {
-                            if (!PlayerInventory.isValidHotbarIndex(i)) {
-                                continue;
-                            }
-                            final ItemStack itemStack = this.mc.player.getInventory().getStack(i);
-                            if (itemStack == null) {
-                                continue;
-                            }
-                            final Item item = itemStack.getItem();
-                            if (!(item instanceof ToolItem) && !(item instanceof ShearsItem) && itemStack.getMiningSpeedMultiplier(blockState) == bestToolSpeed) {
-                                this.oldSlot = this.mc.player.getInventory().selectedSlot;
-                                InventoryUtil.setSlot(i);
-                                break;
-                            }
-                        }
-                        return;
-                    }
-                }
-                this.oldSlot = this.mc.player.getInventory().selectedSlot;
-                InventoryUtil.setSlot(bestTool.getRight());
-            }
+        if (!this.mode.getValue().equals("Weapons") && this.toolMode.getValue().equals("On Look") && this.mc.crosshairTarget instanceof final BlockHitResult blockHitResult) {
+            this.handleBlockInteraction(blockHitResult.getBlockPos());
         }
         if (!(this.lastCrosshairTarget instanceof BlockHitResult)) {
             this.resetSlot();
         }
         this.lastCrosshairTarget = this.mc.crosshairTarget;
+    }
+
+    @Override
+    public void onBlockBreak(final BlockBreakEvent event) {
+        if (this.toolMode.getValue().equals("On Look")) return;
+        if (event.state.equals(BlockBreakState.START)) {
+            this.handleBlockInteraction(event.pos);
+        } else {
+            this.resetSlot();
+        }
     }
 
 }
