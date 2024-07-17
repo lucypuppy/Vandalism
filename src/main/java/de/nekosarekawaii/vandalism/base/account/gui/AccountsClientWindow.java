@@ -26,6 +26,8 @@ import de.nekosarekawaii.vandalism.base.account.AccountManager;
 import de.nekosarekawaii.vandalism.base.account.type.EasyMCAccount;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.SessionUtil;
+import de.nekosarekawaii.vandalism.util.game.NameGenerationUtil;
 import de.nekosarekawaii.vandalism.util.render.util.PlayerSkinRenderer;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
@@ -211,6 +213,13 @@ public class AccountsClientWindow extends ClientWindow {
                         ImGui.treePop();
                     }
                 });
+                ImGui.endTabItem();
+            }
+            if (ImGui.beginTabItem("Quick Login")) {
+                this.renderAccount(this.accountManager.getCurrentAccount(), false);
+                if (ImGui.button("Login with random username", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
+                    SessionUtil.setSessionAsync(NameGenerationUtil.generateUsername(), "");
+                }
                 ImGui.endTabItem();
             }
             ImGui.endTabBar();
