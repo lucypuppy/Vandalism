@@ -21,7 +21,6 @@ package de.nekosarekawaii.vandalism.feature.module.impl.render;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.minecraft.MultiRegistryValue;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
-import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.render.EntityRenderBottomLayerListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.module.template.target.TargetGroup;
@@ -47,21 +46,14 @@ public class TrueSightModule extends AbstractModule implements EntityRenderBotto
             MARKER_BLOCK_ITEMS.toArray(Item[]::new)
     );
 
-    private final BooleanValue entities = new BooleanValue(
-            this,
-            "Entities",
-            "Makes invisible entities visible.",
-            true
-    );
-
-    private final TargetGroup entityGroup = new TargetGroup(this, "Entities", "The entities to target.").visibleCondition(this.entities::getValue);
+    private final TargetGroup entityGroup = new TargetGroup(this, "Entities", "The entities to target.");
 
     private final ColorValue entityColor = new ColorValue(
             this.entityGroup,
             "Entity Color",
             "The color of invisible entities.",
             ColorUtils.withAlpha(Color.WHITE, 100)
-    ).visibleCondition(this.entities::getValue);
+    );
 
     public TrueSightModule() {
         super("True Sight", "Makes invisible blocks or entities visible.", Category.RENDER);
@@ -85,7 +77,7 @@ public class TrueSightModule extends AbstractModule implements EntityRenderBotto
     }
 
     public boolean isValid(final Entity entity) {
-        return this.isActive() && this.entities.getValue() && entity.isInvisible() && this.entityGroup.isTarget(entity);
+        return this.isActive() && entity.isInvisible() && this.entityGroup.isTarget(entity);
     }
 
 }
