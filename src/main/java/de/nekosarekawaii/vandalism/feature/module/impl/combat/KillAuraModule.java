@@ -635,7 +635,12 @@ public class KillAuraModule extends AbstractModule implements PlayerUpdateListen
             }
 
             if (this.shouldRotate) {
-                float rotateSpeed = this.rotateSpeed.getValue();
+                float rotateSpeed = 360.0f;
+
+                if (rotationSpeedType.getValue() == SmoothingType.NORMAL) {
+                    rotateSpeed = this.rotateSpeed.getValue();
+                }
+
                 this.rotationManager.setRotation(
                         rotation,
                         rotateSpeed,
