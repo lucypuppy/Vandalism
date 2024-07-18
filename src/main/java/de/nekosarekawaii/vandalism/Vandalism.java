@@ -190,7 +190,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.serverListManager = new ServerListManager(this.runDirectory);
         this.serverListManager.loadConfig();
 
-        this.friendsManager = new FriendsManager(this.configManager);
+        this.friendsManager = new FriendsManager(this.configManager, this.clientWindowManager);
 
         this.creativeTabManager = new CreativeTabManager();
         this.creativeTabManager.init();

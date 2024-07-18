@@ -18,19 +18,36 @@
 
 package de.nekosarekawaii.vandalism.integration.friends;
 
+import de.nekosarekawaii.vandalism.util.game.UUIDUtil;
+import de.nekosarekawaii.vandalism.util.render.util.PlayerSkinRenderer;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.util.Uuids;
+
+import java.util.UUID;
 
 @Getter
 public class Friend {
 
     private final String name;
+    private final UUID uuid;
+
     @Setter
     private String alias;
+
+    private final PlayerSkinRenderer playerSkin;
 
     public Friend(final String name, final String alias) {
         this.name = name;
         this.alias = alias;
+        UUID uuid;
+        try {
+            uuid = UUID.fromString(UUIDUtil.getUUIDFromName(name));
+        } catch (final Exception ignored) {
+            uuid = Uuids.getOfflinePlayerUuid(name);
+        }
+        this.uuid = uuid;
+        this.playerSkin = new PlayerSkinRenderer(this.uuid);
     }
 
 }
