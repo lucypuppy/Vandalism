@@ -19,15 +19,21 @@
 package de.nekosarekawaii.vandalism.feature.creativetab.impl;
 
 import de.nekosarekawaii.vandalism.feature.creativetab.AbstractCreativeTab;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.SpawnEggItem;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import java.util.List;
 
-public class GriefItemsCreativeTab extends AbstractCreativeTab {
+import static de.nekosarekawaii.vandalism.util.game.ItemStackUtil.createSpawnEggItemStack;
+import static de.nekosarekawaii.vandalism.util.game.ItemStackUtil.withClientSide;
 
-    // TODO: Fix
+public class GriefItemsCreativeTab extends AbstractCreativeTab {
 
     public GriefItemsCreativeTab() {
         super(Text.literal("Grief Items"), Items.TNT);
@@ -35,36 +41,31 @@ public class GriefItemsCreativeTab extends AbstractCreativeTab {
 
     @Override
     public void exposeItems(final List<ItemStack> items) {
-/*        items.add(withClientSide(createGriefCreeper(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Grief Creeper")));
+        items.add(withClientSide(createGriefCreeper(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Grief Creeper")));
         items.add(withClientSide(createPoweredGriefCreeper(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Powered " + Formatting.RED + Formatting.BOLD + "Grief Creeper"), true));
-        items.add(withClientSide(ItemStackUtil.createSpawnEggItemStack((SpawnEggItem) Items.SHEEP_SPAWN_EGG, "minecraft:ender_dragon"), Text.literal(Formatting.LIGHT_PURPLE + Formatting.BOLD.toString() + "Ender Dragon")));
-        items.add(withClientSide(ItemStackUtil.createSpawnEggItemStack((SpawnEggItem) Items.COW_SPAWN_EGG, "minecraft:wither"), Text.literal(Formatting.WHITE + Formatting.BOLD.toString() + "Wither")));
-        */
+        items.add(withClientSide(createSpawnEggItemStack((SpawnEggItem) Items.SHEEP_SPAWN_EGG, "minecraft:ender_dragon"), Text.literal(Formatting.LIGHT_PURPLE + Formatting.BOLD.toString() + "Ender Dragon")));
+        items.add(withClientSide(createSpawnEggItemStack((SpawnEggItem) Items.COW_SPAWN_EGG, "minecraft:wither"), Text.literal(Formatting.WHITE + Formatting.BOLD.toString() + "Wither")));
     }
 
-/*    private static ItemStack createGriefCreeper() {
+    private static ItemStack createGriefCreeper() {
         final ItemStack item = new ItemStack(Items.PIG_SPAWN_EGG);
-        final NbtCompound base = new NbtCompound();
-        final NbtCompound entityTag = new NbtCompound();
-        entityTag.putInt("Fuse", 0);
-        entityTag.putInt("ExplosionRadius", 127);
-        entityTag.putString("id", "minecraft:creeper");
-        base.put("EntityTag", entityTag);
-        item.setNbt(base);
+        final NbtCompound entityData = new NbtCompound();
+        entityData.putInt("Fuse", 0);
+        entityData.putInt("ExplosionRadius", 127);
+        entityData.putString("id", "minecraft:creeper");
+        item.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(entityData));
         return item;
     }
 
     private static ItemStack createPoweredGriefCreeper() {
         final ItemStack item = new ItemStack(Items.COW_SPAWN_EGG);
-        final NbtCompound base = new NbtCompound();
-        final NbtCompound entityTag = new NbtCompound();
-        entityTag.putInt("Fuse", 0);
-        entityTag.putInt("ExplosionRadius", 127);
-        entityTag.putByte("powered", (byte) 1);
-        entityTag.putString("id", "minecraft:creeper");
-        base.put("EntityTag", entityTag);
-        item.setNbt(base);
+        final NbtCompound entityData = new NbtCompound();
+        entityData.putInt("Fuse", 0);
+        entityData.putInt("ExplosionRadius", 127);
+        entityData.putByte("powered", (byte) 1);
+        entityData.putString("id", "minecraft:creeper");
+        item.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(entityData));
         return item;
-    }*/
+    }
 
 }
