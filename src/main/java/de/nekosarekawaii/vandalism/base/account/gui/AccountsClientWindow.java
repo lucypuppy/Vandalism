@@ -40,9 +40,11 @@ import java.util.function.Consumer;
 
 public class AccountsClientWindow extends ClientWindow {
 
-    private static final float ACCOUNT_ENTRY_DIMENSION = 64F;
+    private static final float HEAD_ENTRY_DIMENSION = 64F;
 
     private final AccountManager accountManager;
+
+    private AbstractAccount hoveredAccount;
 
     public AccountsClientWindow(final AccountManager accountManager) {
         super("Accounts", Category.CONFIG);
@@ -63,8 +65,6 @@ public class AccountsClientWindow extends ClientWindow {
         });
     }
 
-    private AbstractAccount hoveredAccount;
-
     private void renderHoveredAccountPopup(final boolean allowDelete) {
         if (this.hoveredAccount == null) return;
         if (ImGui.beginPopupContextItem("account-popup")) {
@@ -72,7 +72,7 @@ public class AccountsClientWindow extends ClientWindow {
             if (allowDelete) {
                 if (ImUtils.subButton("Delete")) {
                     ImGui.closeCurrentPopup();
-                    Vandalism.getInstance().getAccountManager().remove(this.hoveredAccount);
+                    this.accountManager.remove(this.hoveredAccount);
                     this.hoveredAccount = null;
                 }
             }
@@ -106,7 +106,7 @@ public class AccountsClientWindow extends ClientWindow {
         }
     }
 
-    private void renderAccount(final AbstractAccount account, final boolean isEntry) {
+    private void renderAccount(final String id, final AbstractAccount account, final boolean isEntry) {
         if (account == null) return;
         final Session session = account.getSession();
         if (session == null) return;
@@ -115,7 +115,7 @@ public class AccountsClientWindow extends ClientWindow {
         if (accountPlayerSkin != null) {
             final int playerSkinId = accountPlayerSkin.getGlId();
             if (playerSkinId != -1) {
-                final float modulatedDimension = ImUtils.modulateDimension(ACCOUNT_ENTRY_DIMENSION);
+                final float modulatedDimension = ImUtils.modulateDimension(HEAD_ENTRY_DIMENSION);
                 ImUtils.texture(
                         playerSkinId,
                         modulatedDimension,
@@ -147,7 +147,7 @@ public class AccountsClientWindow extends ClientWindow {
             ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], color[3] - 0.1f);
             ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
         }
-        if (ImGui.button("##account" + playerName + account.getType(), ImGui.getColumnWidth(), ImUtils.modulateDimension(ACCOUNT_ENTRY_DIMENSION + 5f))) {
+        if (ImGui.button(id + "account" + playerName + account.getType(), ImGui.getColumnWidth(), ImUtils.modulateDimension(HEAD_ENTRY_DIMENSION + 5f))) {
             if (isEntry) {
                 try {
                     account.login();
@@ -170,11 +170,12 @@ public class AccountsClientWindow extends ClientWindow {
 
     @Override
     protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        if (ImGui.beginTabBar("##accountsTabBar")) {
+        final String id = "##" + this.getName();
+        if (ImGui.beginTabBar(id + "tabBar")) {
             if (ImGui.beginTabItem("Current Account")) {
                 final AbstractAccount currentAccount = this.accountManager.getCurrentAccount();
                 if (currentAccount != null) {
-                    this.renderAccount(currentAccount, false);
+                    this.renderAccount(id, currentAccount, false);
                     this.renderHoveredAccountPopup(false);
                     if (ImUtils.subButton("Logout")) {
                         this.accountManager.getFirstAccount().login();
@@ -184,7 +185,7 @@ public class AccountsClientWindow extends ClientWindow {
             }
             if (ImGui.beginTabItem("Accounts")) {
                 for (final AbstractAccount account : this.accountManager.getList()) {
-                    this.renderAccount(account, true);
+                    this.renderAccount(id, account, true);
                 }
                 this.renderHoveredAccountPopup(true);
                 ImGui.endTabItem();
@@ -192,7 +193,7 @@ public class AccountsClientWindow extends ClientWindow {
             if (ImGui.beginTabItem("Add Account")) {
                 AccountManager.ACCOUNT_TYPES.forEach((account, factory) -> {
                     if (!(account instanceof EasyMCAccount)) {
-                        if (ImGui.treeNodeEx(account.getType() + "##" + account.getType() + "AddAccount")) {
+                        if (ImGui.treeNodeEx(account.getType() + id + account.getType() + "addAccount")) {
                             factory.displayFactory();
                             if (ImGui.button("Add", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
                                 this.recallAccount(factory, this.accountManager::add);
@@ -205,7 +206,7 @@ public class AccountsClientWindow extends ClientWindow {
             }
             if (ImGui.beginTabItem("Direct Login")) {
                 AccountManager.ACCOUNT_TYPES.forEach((account, factory) -> {
-                    if (ImGui.treeNodeEx(account.getType() + "##" + account.getType() + "DirectLoginAccount")) {
+                    if (ImGui.treeNodeEx(account.getType() + id + account.getType() + "directLoginAccount")) {
                         factory.displayFactory();
                         if (ImGui.button("Login", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
                             this.recallAccount(factory, AbstractAccount::login);
@@ -216,7 +217,7 @@ public class AccountsClientWindow extends ClientWindow {
                 ImGui.endTabItem();
             }
             if (ImGui.beginTabItem("Quick Login")) {
-                this.renderAccount(this.accountManager.getCurrentAccount(), false);
+                this.renderAccount(id, this.accountManager.getCurrentAccount(), false);
                 if (ImGui.button("Login with random username", ImGui.getColumnWidth() - 4f, ImGui.getTextLineHeightWithSpacing())) {
                     SessionUtil.setSessionAsync(NameGenerationUtil.generateUsername(), "");
                 }
