@@ -227,12 +227,16 @@ public class NbtCommand extends AbstractCommand {
                 try {
                     final List<NbtElement> nbtElement = handPath.get(dataCommandObject.getNbt());
                     if (!nbtElement.isEmpty()) {
-                        tag.append(" ").append(NbtHelper.toPrettyPrintedText(nbtElement.getFirst()));
+                        tag.append(" ").append(nbtElement.getFirst());
                     }
                 } catch (final CommandSyntaxException ignored) {
                     tag.append("{}");
                 }
-                this.mc.keyboard.setClipboard(tag.toString());
+                String tagString = tag.toString();
+                if (tagString.startsWith(" ")) {
+                    tagString = tagString.substring(1);
+                }
+                this.mc.keyboard.setClipboard(tagString);
                 ChatUtil.infoChatMessage("NBT copied into the clipboard.");
             }
             return SINGLE_SUCCESS;
