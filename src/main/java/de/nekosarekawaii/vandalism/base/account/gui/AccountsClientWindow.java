@@ -69,6 +69,8 @@ public class AccountsClientWindow extends ClientWindow {
         if (this.hoveredAccount == null) return;
         if (ImGui.beginPopupContextItem("account-popup")) {
             ImGui.setNextItemWidth(400f);
+            ImGui.text(this.hoveredAccount.getDisplayName());
+            ImGui.separator();
             if (allowDelete) {
                 if (ImUtils.subButton("Delete")) {
                     ImGui.closeCurrentPopup();
