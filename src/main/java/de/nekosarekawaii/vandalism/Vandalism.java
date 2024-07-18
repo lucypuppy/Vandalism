@@ -28,7 +28,6 @@ import de.nekosarekawaii.vandalism.clientwindow.ClientWindowManager;
 import de.nekosarekawaii.vandalism.event.game.MinecraftBoostrapListener;
 import de.nekosarekawaii.vandalism.event.game.ShutdownProcessListener;
 import de.nekosarekawaii.vandalism.feature.command.CommandManager;
-import de.nekosarekawaii.vandalism.feature.creativetab.CreativeTabManager;
 import de.nekosarekawaii.vandalism.feature.hud.HUDManager;
 import de.nekosarekawaii.vandalism.feature.module.ModuleManager;
 import de.nekosarekawaii.vandalism.integration.friends.FriendsManager;
@@ -131,7 +130,6 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     private RotationManager rotationManager;
     private ServerListManager serverListManager;
     private FriendsManager friendsManager;
-    private CreativeTabManager creativeTabManager;
     private HUDManager hudManager;
 
     // Features
@@ -191,9 +189,6 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         this.serverListManager.loadConfig();
 
         this.friendsManager = new FriendsManager(this.configManager, this.clientWindowManager);
-
-        this.creativeTabManager = new CreativeTabManager();
-        this.creativeTabManager.init();
 
         Shaders.loadAll();
 

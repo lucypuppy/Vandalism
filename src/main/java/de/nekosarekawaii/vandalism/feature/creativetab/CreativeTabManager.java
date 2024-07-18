@@ -21,64 +21,75 @@ package de.nekosarekawaii.vandalism.feature.creativetab;
 import de.florianmichael.dietrichevents2.Priorities;
 import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.clientsettings.impl.NetworkingSettings;
 import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
-import de.nekosarekawaii.vandalism.feature.creativetab.impl.*;
+import de.nekosarekawaii.vandalism.feature.creativetab.impl.GriefItemsCreativeTab;
+import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
+import lombok.Getter;
+import net.minecraft.component.ComponentMap;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.text.Text;
 
 import java.util.UUID;
 
 public class CreativeTabManager extends Storage<AbstractCreativeTab> implements OutgoingPacketListener {
 
     public static final String CLIENTSIDE_NAME = UUID.randomUUID().toString();
+    public static final String CLIENTSIDE_GLINT = UUID.randomUUID().toString();
 
-    public CreativeTabManager() {
-        this.setAddConsumer(AbstractCreativeTab::publish);
-    }
+    @Getter
+    private static final CreativeTabManager instance = new CreativeTabManager();
 
     @Override
     public void init() {
+        this.setAddConsumer(AbstractCreativeTab::publish);
         this.add(
-                new CrashItemsCreativeTab(),
-                new KickItemsCreativeTab(),
-                new ConsoleSpamItemsCreativeTab(),
-                new GriefItemsCreativeTab(),
-                new TrollItemsCreativeTab()
+                // new CrashItemsCreativeTab(),
+                // new KickItemsCreativeTab(),
+                // new ConsoleSpamItemsCreativeTab(),
+                new GriefItemsCreativeTab()
+                // new TrollItemsCreativeTab()
         );
         Vandalism.getInstance().getEventSystem().subscribe(OutgoingPacketEvent.ID, this, Priorities.HIGH);
     }
 
-    // TODO: Fix
     @Override
     public void onOutgoingPacket(final OutgoingPacketEvent event) {
         if (event.packet instanceof final CreativeInventoryActionC2SPacket creativeInventoryActionC2SPacket) {
-          /*final ItemStack stack = creativeInventoryActionC2SPacket.stack.copy();
-            final NbtCompound nbt = stack.getNbt();
-            if (nbt == null) return;
-            final boolean isClientSide = nbt.contains(CLIENTSIDE_NAME) || nbt.contains(CLIENTSIDE_GLINT);
-            if (isClientSide) {
-                if (nbt.contains(CLIENTSIDE_NAME)) {
-                    final NbtCompound display = stack.getSubNbt(ItemStack.DISPLAY_KEY);
-                    if (display != null) {
-                        display.remove(ItemStack.NAME_KEY);
-                        display.remove(ItemStack.LORE_KEY);
-                        if (display.isEmpty()) stack.removeSubNbt(ItemStack.DISPLAY_KEY);
+            final ItemStack stack = creativeInventoryActionC2SPacket.stack.copy();
+            final ComponentMap components = stack.getComponents();
+            if (components == null) return;
+            if (components.contains(DataComponentTypes.CUSTOM_DATA)) {
+                final NbtComponent customData = components.get(DataComponentTypes.CUSTOM_DATA);
+                if (customData != null) {
+                    final NbtCompound customDataCompound = customData.copyNbt();
+                    if (customData.contains(CLIENTSIDE_NAME)) {
+                        final Text name = Text.Serialization.fromJson(customDataCompound.getString(CLIENTSIDE_NAME), DynamicRegistryManager.EMPTY);
+                        if (!stack.getName().equals(name)) stack.remove(DataComponentTypes.CUSTOM_NAME);
+                        customDataCompound.remove(CLIENTSIDE_NAME);
                     }
-                    final Text name = Text.Serialization.fromJson(nbt.getString(CLIENTSIDE_NAME));
-                    if (!stack.getName().equals(name)) stack.setCustomName(name);
-                    nbt.remove(CLIENTSIDE_NAME);
-                }
-                if (nbt.contains(CLIENTSIDE_GLINT)) nbt.remove(CLIENTSIDE_GLINT);
-
-                final NetworkingSettings networkingSettings = Vandalism.getInstance().getClientSettings().getNetworkingSettings();
-                if (networkingSettings.packageCreativeItems.getValue()) {
-                    if (ItemStackUtil.PackageType.isPackageItem(stack.getItem())) {
+                    if (customData.contains(CLIENTSIDE_GLINT)) {
+                        customDataCompound.remove(CLIENTSIDE_GLINT);
+                        stack.remove(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE);
+                    }
+                    if (customDataCompound.isEmpty()) stack.remove(DataComponentTypes.CUSTOM_DATA);
+                    else stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(customDataCompound));
+                    final NetworkingSettings networkingSettings = Vandalism.getInstance().getClientSettings().getNetworkingSettings();
+                    if (networkingSettings.packageCreativeItems.getValue()) {
+                        if (ItemStackUtil.PackageType.isPackageItem(stack.getItem())) {
+                            return;
+                        }
+                        creativeInventoryActionC2SPacket.stack = ItemStackUtil.packageStack(stack, networkingSettings.creativeItemsPackageType.getValue());
                         return;
                     }
-                    creativeInventoryActionC2SPacket.stack = ItemStackUtil.packageStack(stack, networkingSettings.creativeItemsPackageType.getValue());
-                    return;
                 }
             }
-            creativeInventoryActionC2SPacket.stack = stack;*/
+            creativeInventoryActionC2SPacket.stack = stack;
         }
     }
 

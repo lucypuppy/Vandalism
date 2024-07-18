@@ -20,29 +20,34 @@ package de.nekosarekawaii.vandalism.util.game;
 
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import de.florianmichael.rclasses.pattern.functional.IName;
+import de.nekosarekawaii.vandalism.feature.creativetab.CreativeTabManager;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.block.Block;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.BundleContentsComponent;
+import net.minecraft.component.type.ContainerComponent;
+import net.minecraft.component.type.LoreComponent;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.item.*;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.SpawnEggItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.*;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
-// TODO: Fix the entire class
+import java.util.Arrays;
+import java.util.Collections;
+
 public class ItemStackUtil implements MinecraftWrapper {
 
     private static final SimpleCommandExceptionType NOT_IN_GAME = new SimpleCommandExceptionType(Text.literal("You need to be in-game to get items!"));
@@ -202,76 +207,46 @@ public class ItemStackUtil implements MinecraftWrapper {
                  CAMPFIRE, SOUL_CAMPFIRE,
                  CHISELED_BOOKSHELF, BREWING_STAND -> {
                 final ItemStack item = new ItemStack(Registries.ITEM.get(type.id));
-                final NbtCompound base = new NbtCompound();
-                final NbtCompound blockEntityTag = new NbtCompound();
-                final NbtList items = new NbtList();
-                final NbtCompound child = new NbtCompound();
-                child.putByte("Slot", (byte) 0);
-                child.putString("id", getId(stack).toString());
-                child.putByte("Count", (byte) stack.getCount());
-                //  if (stack.getNbt() != null ) child.put("tag", stack.getNbt());
-                items.add(child);
-                blockEntityTag.put("Items", items);
-                base.put("BlockEntityTag", blockEntityTag);
-                //     item.setNbt(base);
+                item.set(DataComponentTypes.CONTAINER, ContainerComponent.fromStacks(Collections.singletonList(stack)));
                 yield item;
             }
             case JUKEBOX -> {
-                final ItemStack item = new ItemStack(Items.JUKEBOX);
-                final NbtCompound base = new NbtCompound();
-                final NbtCompound blockEntityTag = new NbtCompound();
-                final NbtCompound child = new NbtCompound();
-                child.putString("id", getId(stack).toString());
-                child.putByte("Count", (byte) stack.getCount());
-                //    if (stack.getNbt() != null ) child.put("tag", stack.getNbt());
-                blockEntityTag.put("RecordItem", child);
-                base.put("BlockEntityTag", blockEntityTag);
-                //     item.setNbt(base);
+                final ItemStack item = new ItemStack(Registries.ITEM.get(type.id));
+                final NbtCompound blockEntityData = new NbtCompound();
+                blockEntityData.putString("id", type.id.toString());
+                blockEntityData.put("RecordItem", stack.encode(DynamicRegistryManager.EMPTY));
+                item.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(blockEntityData));
                 yield item;
             }
             case LECTERN -> {
-                final ItemStack item = new ItemStack(Items.LECTERN);
-                final NbtCompound base = new NbtCompound();
-                final NbtCompound blockEntityTag = new NbtCompound();
-                final NbtCompound child = new NbtCompound();
-                child.putString("id", getId(stack).toString());
-                child.putByte("Count", (byte) stack.getCount());
-                //   if (stack.getNbt() != null ) child.put("tag", stack.getNbt());
-                blockEntityTag.put("Book", child);
-                base.put("BlockEntityTag", blockEntityTag);
-                //    item.setNbt(base);
+                final ItemStack item = new ItemStack(Registries.ITEM.get(type.id));
+                final NbtCompound blockEntityData = new NbtCompound();
+                blockEntityData.putString("id", type.id.toString());
+                blockEntityData.put("Book", stack.encode(DynamicRegistryManager.EMPTY));
+                item.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(blockEntityData));
                 yield item;
             }
             case BUNDLE -> {
-                final ItemStack item = new ItemStack(Items.BUNDLE);
-                final NbtCompound base = new NbtCompound();
-                final NbtList items = new NbtList();
-                final NbtCompound child = new NbtCompound();
-                child.putString("id", getId(stack).toString());
-                child.putByte("Count", (byte) stack.getCount());
-                //  if (stack.getNbt() != null ) child.put("tag", stack.getNbt());
-                items.add(child);
-                base.put("Items", items);
-                //   item.setNbt(base);
+                final ItemStack item = new ItemStack(Registries.ITEM.get(type.id));
+                item.set(DataComponentTypes.BUNDLE_CONTENTS, new BundleContentsComponent(Collections.singletonList(stack)));
                 yield item;
             }
         };
     }
 
     public static ItemStack withClientSide(final ItemStack stack, @Nullable final Text name, final boolean glint, @Nullable final Text... description) {
-//        final NbtCompound base = stack.getOrCreateNbt();
-//        base.putString(CreativeTabManager.CLIENTSIDE_NAME, Text.Serialization.toJsonString(stack.getName()));
-//        if (glint) base.put(CreativeTabManager.CLIENTSIDE_GLINT, new NbtCompound());
-//        if (name != null) stack.setCustomName(name);
-//        if (description != null) {
-//            final NbtList lore = new NbtList();
-//            for (final Text text : description) {
-//                if (text != null) {
-//                    lore.add(NbtString.of(Text.Serialization.toJsonString(text)));
-//                }
-//            }
-//            stack.getOrCreateSubNbt(ItemStack.DISPLAY_KEY).put(ItemStack.LORE_KEY, lore);
-//        }
+        final NbtComponent customData = stack.get(DataComponentTypes.CUSTOM_DATA);
+        final NbtCompound clientSideData = customData != null ? customData.copyNbt() : new NbtCompound();
+        clientSideData.putString(CreativeTabManager.CLIENTSIDE_NAME, Text.Serialization.toJsonString(stack.getName(), DynamicRegistryManager.EMPTY));
+        if (glint) {
+            clientSideData.put(CreativeTabManager.CLIENTSIDE_GLINT, new NbtCompound());
+            stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
+        }
+        if (name != null) stack.set(DataComponentTypes.CUSTOM_NAME, name);
+        if (description != null) {
+            stack.set(DataComponentTypes.LORE, new LoreComponent(Arrays.asList(description)));
+        }
+        stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(clientSideData));
         return stack;
     }
 

