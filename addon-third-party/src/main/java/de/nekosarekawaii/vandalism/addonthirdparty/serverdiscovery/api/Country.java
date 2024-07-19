@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.gui.server;
+package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api;
 
 public enum Country {
 

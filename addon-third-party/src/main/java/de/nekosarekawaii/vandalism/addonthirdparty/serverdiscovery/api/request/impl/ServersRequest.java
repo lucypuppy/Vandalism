@@ -21,9 +21,9 @@ package de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.florianmichael.rclasses.common.StringUtils;
+import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.Country;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.request.Request;
 import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.api.response.impl.ServersResponse;
-import de.nekosarekawaii.vandalism.addonthirdparty.serverdiscovery.gui.server.Country;
 import lombok.Getter;
 
 public class ServersRequest extends Request<ServersResponse> {
