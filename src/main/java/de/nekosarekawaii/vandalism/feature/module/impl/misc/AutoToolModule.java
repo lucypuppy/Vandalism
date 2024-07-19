@@ -20,8 +20,8 @@ package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
-import de.nekosarekawaii.vandalism.event.player.BlockBreakListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
+import de.nekosarekawaii.vandalism.event.player.PreBlockBreakListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.feature.module.template.target.TargetGroup;
 import de.nekosarekawaii.vandalism.util.inventory.InventoryUtil;
@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class AutoToolModule extends AbstractModule implements PlayerUpdateListener, BlockBreakListener {
+public class AutoToolModule extends AbstractModule implements PlayerUpdateListener, PreBlockBreakListener {
 
     private final ModeValue mode = new ModeValue(
             this,
@@ -49,14 +49,6 @@ public class AutoToolModule extends AbstractModule implements PlayerUpdateListen
             "Tools",
             "Weapons"
     );
-
-    private final ModeValue toolMode = new ModeValue(
-            this,
-            "Tool Mode",
-            "The mode of the tool.",
-            "On Break",
-            "On Look"
-    ).visibleCondition(() -> !this.mode.getValue().equals("Weapons"));
 
     private final TargetGroup entityGroup = new TargetGroup(this, "Entities", "The entities to target.").visibleCondition(() -> !this.mode.getValue().equals("Tools"));
 
@@ -83,12 +75,12 @@ public class AutoToolModule extends AbstractModule implements PlayerUpdateListen
             this.oldSlot = this.mc.player.getInventory().selectedSlot;
             this.lastCrosshairTarget = this.mc.crosshairTarget;
         }
-        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, BlockBreakEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, PreBlockBreakEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, BlockBreakEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, PreBlockBreakEvent.ID);
         this.resetSlot();
         this.lastCrosshairTarget = null;
     }
@@ -153,7 +145,7 @@ public class AutoToolModule extends AbstractModule implements PlayerUpdateListen
                     final Item item = itemStack.getItem();
                     if (!(item instanceof ToolItem) && !(item instanceof ShearsItem) && itemStack.getMiningSpeedMultiplier(blockState) == bestToolSpeed) {
                         this.oldSlot = this.mc.player.getInventory().selectedSlot;
-                        InventoryUtil.setSlot(i);
+                        this.mc.player.getInventory().selectedSlot = i;
                         break;
                     }
                 }
@@ -161,11 +153,14 @@ public class AutoToolModule extends AbstractModule implements PlayerUpdateListen
             }
         }
         this.oldSlot = this.mc.player.getInventory().selectedSlot;
-        InventoryUtil.setSlot(bestTool.getRight());
+        this.mc.player.getInventory().selectedSlot = bestTool.getRight();
     }
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        if (!this.mc.options.attackKey.isPressed()) {
+            this.resetSlot();
+        }
         if (!this.mode.getValue().equals("Tools")) {
             if (this.mc.crosshairTarget instanceof final EntityHitResult entityHitResult) {
                 final Entity entity = entityHitResult.getEntity();
@@ -198,9 +193,6 @@ public class AutoToolModule extends AbstractModule implements PlayerUpdateListen
                 InventoryUtil.setSlot(bestTool.getRight());
             }
         }
-        if (!this.mode.getValue().equals("Weapons") && this.toolMode.getValue().equals("On Look") && this.mc.crosshairTarget instanceof final BlockHitResult blockHitResult) {
-            this.handleBlockInteraction(blockHitResult.getBlockPos());
-        }
         if (!(this.lastCrosshairTarget instanceof BlockHitResult)) {
             this.resetSlot();
         }
@@ -208,13 +200,8 @@ public class AutoToolModule extends AbstractModule implements PlayerUpdateListen
     }
 
     @Override
-    public void onBlockBreak(final BlockBreakEvent event) {
-        if (this.toolMode.getValue().equals("On Look")) return;
-        if (event.state.equals(BlockBreakState.START)) {
-            this.handleBlockInteraction(event.pos);
-        } else {
-            this.resetSlot();
-        }
+    public void onPreBlockBreak(final PreBlockBreakEvent event) {
+        this.handleBlockInteraction(event.pos);
     }
 
 }

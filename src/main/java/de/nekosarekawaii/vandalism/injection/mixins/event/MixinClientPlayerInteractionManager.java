@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.event;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.player.AttackListener;
 import de.nekosarekawaii.vandalism.event.player.BlockBreakListener;
+import de.nekosarekawaii.vandalism.event.player.PreBlockBreakListener;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.entity.Entity;
@@ -42,6 +43,15 @@ public abstract class MixinClientPlayerInteractionManager {
     @Inject(method = "attackEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;syncSelectedSlot()V", shift = At.Shift.AFTER))
     private void callAttackListener(final PlayerEntity player, final Entity target, final CallbackInfo ci) {
         Vandalism.getInstance().getEventSystem().postInternal(AttackListener.AttackSendEvent.ID, new AttackListener.AttackSendEvent(target));
+    }
+
+    @Inject(method = "updateBlockBreakingProgress", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;syncSelectedSlot()V", shift = At.Shift.BEFORE), cancellable = true)
+    private void callPreBlockBreakListener(final BlockPos pos, final Direction direction, final CallbackInfoReturnable<Boolean> cir) {
+        final PreBlockBreakListener.PreBlockBreakEvent event = new PreBlockBreakListener.PreBlockBreakEvent(pos, direction);
+        Vandalism.getInstance().getEventSystem().postInternal(PreBlockBreakListener.PreBlockBreakEvent.ID, event);
+        if (event.isCancelled()) {
+            cir.setReturnValue(false);
+        }
     }
 
     @Inject(method = "attackBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;sendSequencedPacket(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/client/network/SequencedPacketCreator;)V", ordinal = 0), cancellable = true)
