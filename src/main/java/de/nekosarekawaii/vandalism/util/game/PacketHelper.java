@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.util.game;
 
 import de.nekosarekawaii.vandalism.util.math.MathUtil;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.ClientConnection;
@@ -91,7 +92,7 @@ public class PacketHelper {
         final DataOutputStream out = new DataOutputStream(bytes);
         writeVarInt(out, 0);
         writeString(out, username);
-        if (MathUtil.isBetween(protocolId, 761, 766)) {
+        if (MathUtil.isBetween(protocolId, 761, SharedConstants.getProtocolVersion())) {
             if (MathUtil.isBetween(protocolId, 761, 763)) {
                 out.writeBoolean(true);
             }
