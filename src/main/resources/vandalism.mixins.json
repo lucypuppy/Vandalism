@@ -112,7 +112,7 @@
     "module.MixinTextureUrlChecker",
     "module.MixinTextVisitFactory",
     "module.MixinTranslatableTextContent",
-    "module.MixinWorldRenderer",
+    "module.MixinEntity",
     "util.MixinConnectScreen",
     "util.MixinDrawContext",
     "util.MixinMinecraftClient",
