@@ -147,8 +147,22 @@ public class FreeCamModule extends AbstractModule implements
 
     @Override
     public void onMouseDelta(final MouseDeltaEvent event) {
-        this.yaw += (float) (event.cursorDeltaX * this.mc.options.getMouseSensitivity().getValue());
-        this.pitch += (float) (event.cursorDeltaY * this.mc.options.getMouseSensitivity().getValue());
+        final double d = this.mc.options.getMouseSensitivity().getValue() * 0.6000000238418579 + 0.20000000298023224;
+        final double e = d * d * d;
+        final double f = e * 8.0;
+
+        double cursorDeltaX;
+        double cursorDeltaY;
+        if (this.mc.options.getPerspective().isFirstPerson() && this.mc.player.isUsingSpyglass()) {
+            cursorDeltaX = event.cursorDeltaX * e;
+            cursorDeltaY = event.cursorDeltaY * e;
+        } else {
+            cursorDeltaX = event.cursorDeltaX * f;
+            cursorDeltaY = event.cursorDeltaY * f;
+        }
+
+        this.yaw += (float) (cursorDeltaX * 0.15F);
+        this.pitch += (float) (cursorDeltaY * 0.15F);
         if (this.pitch > 90) this.pitch = 90;
         if (this.pitch < -90) this.pitch = -90;
         event.cancel();
