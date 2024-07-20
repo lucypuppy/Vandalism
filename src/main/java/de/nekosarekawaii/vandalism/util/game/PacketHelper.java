@@ -18,9 +18,9 @@
 
 package de.nekosarekawaii.vandalism.util.game;
 
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import de.nekosarekawaii.vandalism.util.math.MathUtil;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.ClientConnection;
@@ -84,16 +84,16 @@ public class PacketHelper {
     }
 
     public static byte[] createLoginPacket(final int protocolId, final String username, final UUID uuid) throws Exception {
-        if (MathUtil.isBetween(protocolId, 759, 760)) {
-            throw new RuntimeException("No implementation for this protocol: " + protocolId + " (too lazy)");
+        if (MathUtil.isBetween(protocolId, ProtocolVersion.v1_19.getVersion(), ProtocolVersion.v1_19_1.getVersion())) {
+            throw new IllegalArgumentException("Nonce key would be required for this protocol version. Try to find the cause and fix it.");
         }
 
         final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         final DataOutputStream out = new DataOutputStream(bytes);
         writeVarInt(out, 0);
         writeString(out, username);
-        if (MathUtil.isBetween(protocolId, 761, SharedConstants.getProtocolVersion())) {
-            if (MathUtil.isBetween(protocolId, 761, 763)) {
+        if (protocolId >= ProtocolVersion.v1_19_3.getVersion()) {
+            if (protocolId <= ProtocolVersion.v1_20.getVersion()) {
                 out.writeBoolean(true);
             }
             writeUUID(out, uuid);
