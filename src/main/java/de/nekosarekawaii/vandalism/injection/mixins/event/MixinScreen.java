@@ -32,12 +32,12 @@ public abstract class MixinScreen {
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;renderBackground(Lnet/minecraft/client/gui/DrawContext;IIF)V", shift = At.Shift.BEFORE))
     private void callRender2DListener_Pre(final DrawContext context, final int mouseX, final int mouseY, final float delta, final CallbackInfo ci) {
-        Vandalism.getInstance().getEventSystem().postInternal(Render2DListener.Render2DEvent.ID, new Render2DListener.Render2DEvent(context, mouseX, mouseY, delta, false));
+        Vandalism.getInstance().getEventSystem().callExceptionally(Render2DListener.Render2DEvent.ID, new Render2DListener.Render2DEvent(context, mouseX, mouseY, delta, false));
     }
 
     @Inject(method = "render", at = @At(value = "RETURN"))
     private void callRender2DListener_Post(final DrawContext context, final int mouseX, final int mouseY, final float delta, final CallbackInfo ci) {
-        Vandalism.getInstance().getEventSystem().postInternal(Render2DListener.Render2DEvent.ID, new Render2DListener.Render2DEvent(context, mouseX, mouseY, delta, true));
+        Vandalism.getInstance().getEventSystem().callExceptionally(Render2DListener.Render2DEvent.ID, new Render2DListener.Render2DEvent(context, mouseX, mouseY, delta, true));
     }
 
 }

@@ -49,7 +49,7 @@ public abstract class MixinMinecraftClient {
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;onResolutionChanged()V"))
     private void callMinecraftBootstrapListener(final CallbackInfo ci) {
-        Vandalism.getInstance().getEventSystem().postInternal(
+        Vandalism.getInstance().getEventSystem().callExceptionally(
                 MinecraftBoostrapListener.MinecraftBootstrapEvent.ID,
                 new MinecraftBoostrapListener.MinecraftBootstrapEvent((MinecraftClient) (Object) this)
         );
@@ -57,7 +57,7 @@ public abstract class MixinMinecraftClient {
 
     @Inject(method = "close", at = @At(value = "HEAD"))
     private void callShutdownProcessListener(final CallbackInfo ci) {
-        Vandalism.getInstance().getEventSystem().postInternal(
+        Vandalism.getInstance().getEventSystem().callExceptionally(
                 ShutdownProcessListener.ShutdownProcessEvent.ID,
                 new ShutdownProcessListener.ShutdownProcessEvent()
         );
@@ -70,7 +70,7 @@ public abstract class MixinMinecraftClient {
             return;
         }
         final ScreenListener.ScreenEvent event = new ScreenListener.ScreenEvent(screen);
-        Vandalism.getInstance().getEventSystem().postInternal(ScreenListener.ScreenEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().callExceptionally(ScreenListener.ScreenEvent.ID, event);
         if (event.isCancelled()) {
             ci.cancel();
         }
@@ -82,23 +82,23 @@ public abstract class MixinMinecraftClient {
 
     @Inject(method = "setWorld", at = @At("HEAD"))
     private void callWorldListener_Pre(final ClientWorld world, final CallbackInfo ci) {
-        Vandalism.getInstance().getEventSystem().postInternal(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent(StateTypes.PRE));
+        Vandalism.getInstance().getEventSystem().callExceptionally(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent(StateTypes.PRE));
     }
 
     @Inject(method = "setWorld", at = @At("RETURN"))
     private void callWorldListener_Post(final ClientWorld world, final CallbackInfo ci) {
-        Vandalism.getInstance().getEventSystem().postInternal(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent(StateTypes.POST));
+        Vandalism.getInstance().getEventSystem().callExceptionally(WorldListener.WorldLoadEvent.ID, new WorldListener.WorldLoadEvent(StateTypes.POST));
     }
 
     @Inject(method = "onResolutionChanged", at = @At("RETURN"))
     public void callScreenListener(final CallbackInfo ci) {
-        Vandalism.getInstance().getEventSystem().postInternal(ScreenListener.ScreenEvent.ID, new ScreenListener.ScreenEvent());
+        Vandalism.getInstance().getEventSystem().callExceptionally(ScreenListener.ScreenEvent.ID, new ScreenListener.ScreenEvent());
     }
 
     @Inject(method = "getTargetMillisPerTick", at = @At("RETURN"), cancellable = true)
     public void callTickTimeListener(final float millis, final CallbackInfoReturnable<Float> cir) {
         final TickTimeListener.TickTimeEvent event = new TickTimeListener.TickTimeEvent(cir.getReturnValue());
-        Vandalism.getInstance().getEventSystem().postInternal(TickTimeListener.TickTimeEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().callExceptionally(TickTimeListener.TickTimeEvent.ID, event);
         cir.setReturnValue(event.tickTime);
     }
 
@@ -110,7 +110,7 @@ public abstract class MixinMinecraftClient {
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;getMeasuringTimeMs()J", ordinal = 0))
     public long getTime() {
         final TimeTravelListener.TimeTravelEvent event = new TimeTravelListener.TimeTravelEvent(Util.getMeasuringTimeMs());
-        Vandalism.getInstance().getEventSystem().postInternal(TimeTravelListener.TimeTravelEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().callExceptionally(TimeTravelListener.TimeTravelEvent.ID, event);
         return event.time;
     }
 

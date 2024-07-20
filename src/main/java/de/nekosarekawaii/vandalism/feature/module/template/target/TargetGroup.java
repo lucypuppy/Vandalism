@@ -86,7 +86,7 @@ public class TargetGroup extends ValueGroup {
             return false;
         }
         final TargetListener.TargetEvent event = new TargetListener.TargetEvent(entity);
-        Vandalism.getInstance().getEventSystem().postInternal(TargetListener.TargetEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().callExceptionally(TargetListener.TargetEvent.ID, event);
         return event.isTarget;
     }
 

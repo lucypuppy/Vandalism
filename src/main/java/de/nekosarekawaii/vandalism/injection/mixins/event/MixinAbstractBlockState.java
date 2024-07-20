@@ -49,7 +49,7 @@ public abstract class MixinAbstractBlockState {
             return shape;
         }
         final BlockCollisionShapeListener.BlockCollisionShapeEvent event = new BlockCollisionShapeListener.BlockCollisionShapeEvent(block, blockState, world, pos, context, shape);
-        Vandalism.getInstance().getEventSystem().postInternal(BlockCollisionShapeListener.BlockCollisionShapeEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().callExceptionally(BlockCollisionShapeListener.BlockCollisionShapeEvent.ID, event);
         return event.shape;
     }
 

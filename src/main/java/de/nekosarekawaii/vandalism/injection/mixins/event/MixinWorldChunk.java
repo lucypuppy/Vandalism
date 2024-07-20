@@ -34,12 +34,12 @@ public abstract class MixinWorldChunk {
 
     @Inject(method = "getBlockState", at = @At("RETURN"))
     private void callBlockStateEvent(final BlockPos pos, final CallbackInfoReturnable<BlockState> cir) {
-        Vandalism.getInstance().getEventSystem().postInternal(BlockStateListener.BlockStateEvent.ID, new BlockStateListener.BlockStateEvent(pos, cir.getReturnValue()));
+        Vandalism.getInstance().getEventSystem().callExceptionally(BlockStateListener.BlockStateEvent.ID, new BlockStateListener.BlockStateEvent(pos, cir.getReturnValue()));
     }
 
     @Inject(method = "setBlockState", at = @At("RETURN"))
     private void callBlockStateUpdateEvent(final BlockPos pos, final BlockState state, final boolean moved, final CallbackInfoReturnable<BlockState> cir) {
-        Vandalism.getInstance().getEventSystem().postInternal(BlockStateUpdateListener.BlockStateUpdateEvent.ID, new BlockStateUpdateListener.BlockStateUpdateEvent(pos, state, cir.getReturnValue()));
+        Vandalism.getInstance().getEventSystem().callExceptionally(BlockStateUpdateListener.BlockStateUpdateEvent.ID, new BlockStateUpdateListener.BlockStateUpdateEvent(pos, state, cir.getReturnValue()));
     }
 
 }

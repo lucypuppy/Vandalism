@@ -35,13 +35,13 @@ public abstract class MixinCamera {
     @Inject(method = "update", at = @At("TAIL"))
     public void callCameraOverrideListener(final net.minecraft.world.BlockView area, final Entity focusedEntity, final boolean thirdPerson, final boolean inverseView, final float tickDelta, final CallbackInfo ci) {
         final Camera camera = (Camera) (Object) this;
-        Vandalism.getInstance().getEventSystem().postInternal(CameraOverrideListener.CameraOverrideEvent.ID, new CameraOverrideListener.CameraOverrideEvent(camera, tickDelta));
+        Vandalism.getInstance().getEventSystem().callExceptionally(CameraOverrideListener.CameraOverrideEvent.ID, new CameraOverrideListener.CameraOverrideEvent(camera, tickDelta));
     }
 
     @Inject(method = "clipToSpace", at = @At("HEAD"), cancellable = true)
     public void callCameraClipRaytraceListener(final float f, final CallbackInfoReturnable<Float> cir) {
         final CameraClipRaytraceListener.CameraClipRaytraceEvent event = new CameraClipRaytraceListener.CameraClipRaytraceEvent();
-        Vandalism.getInstance().getEventSystem().postInternal(CameraClipRaytraceListener.CameraClipRaytraceEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().callExceptionally(CameraClipRaytraceListener.CameraClipRaytraceEvent.ID, event);
         if (event.isCancelled()) {
             cir.setReturnValue(f);
         }

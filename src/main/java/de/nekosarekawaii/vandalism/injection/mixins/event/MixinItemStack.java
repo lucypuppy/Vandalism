@@ -40,7 +40,7 @@ public abstract class MixinItemStack {
         final ArrayList<TooltipData> tooltipData = new ArrayList<>();
         info.getReturnValue().ifPresent(tooltipData::add);
 
-        Vandalism.getInstance().getEventSystem().postInternal(
+        Vandalism.getInstance().getEventSystem().callExceptionally(
                 TooltipDrawListener.TooltipDrawEvent.ID,
                 new TooltipDrawListener.TooltipDrawEvent((ItemStack) (Object) this, tooltipData));
 

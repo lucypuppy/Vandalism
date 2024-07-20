@@ -42,13 +42,13 @@ public abstract class MixinClientPlayerInteractionManager {
 
     @Inject(method = "attackEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;syncSelectedSlot()V", shift = At.Shift.AFTER))
     private void callAttackListener(final PlayerEntity player, final Entity target, final CallbackInfo ci) {
-        Vandalism.getInstance().getEventSystem().postInternal(AttackListener.AttackSendEvent.ID, new AttackListener.AttackSendEvent(target));
+        Vandalism.getInstance().getEventSystem().callExceptionally(AttackListener.AttackSendEvent.ID, new AttackListener.AttackSendEvent(target));
     }
 
     @Inject(method = "updateBlockBreakingProgress", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;syncSelectedSlot()V", shift = At.Shift.BEFORE), cancellable = true)
     private void callPreBlockBreakListener(final BlockPos pos, final Direction direction, final CallbackInfoReturnable<Boolean> cir) {
         final PreBlockBreakListener.PreBlockBreakEvent event = new PreBlockBreakListener.PreBlockBreakEvent(pos, direction);
-        Vandalism.getInstance().getEventSystem().postInternal(PreBlockBreakListener.PreBlockBreakEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().callExceptionally(PreBlockBreakListener.PreBlockBreakEvent.ID, event);
         if (event.isCancelled()) {
             cir.setReturnValue(false);
         }
@@ -57,7 +57,7 @@ public abstract class MixinClientPlayerInteractionManager {
     @Inject(method = "attackBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;sendSequencedPacket(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/client/network/SequencedPacketCreator;)V", ordinal = 0), cancellable = true)
     private void callBlockBreakListenerStart(final BlockPos pos, final Direction direction, final CallbackInfoReturnable<Boolean> cir) {
         final BlockBreakListener.BlockBreakEvent event = new BlockBreakListener.BlockBreakEvent(pos, direction, BlockBreakListener.BlockBreakState.START);
-        Vandalism.getInstance().getEventSystem().postInternal(BlockBreakListener.BlockBreakEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().callExceptionally(BlockBreakListener.BlockBreakEvent.ID, event);
         if (event.isCancelled()) {
             cir.setReturnValue(false);
         }
@@ -66,7 +66,7 @@ public abstract class MixinClientPlayerInteractionManager {
     @Inject(method = "attackBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;sendSequencedPacket(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/client/network/SequencedPacketCreator;)V", ordinal = 1), cancellable = true)
     private void callBlockBreakListenerStart2(final BlockPos pos, final Direction direction, final CallbackInfoReturnable<Boolean> cir) {
         final BlockBreakListener.BlockBreakEvent event = new BlockBreakListener.BlockBreakEvent(pos, direction, BlockBreakListener.BlockBreakState.START);
-        Vandalism.getInstance().getEventSystem().postInternal(BlockBreakListener.BlockBreakEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().callExceptionally(BlockBreakListener.BlockBreakEvent.ID, event);
         if (event.isCancelled()) {
             cir.setReturnValue(false);
         }
@@ -75,7 +75,7 @@ public abstract class MixinClientPlayerInteractionManager {
     @Inject(method = "updateBlockBreakingProgress", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;sendSequencedPacket(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/client/network/SequencedPacketCreator;)V", ordinal = 0), cancellable = true)
     private void callBlockBreakListenerStart3(final BlockPos pos, final Direction direction, final CallbackInfoReturnable<Boolean> cir) {
         final BlockBreakListener.BlockBreakEvent event = new BlockBreakListener.BlockBreakEvent(pos, direction, BlockBreakListener.BlockBreakState.START);
-        Vandalism.getInstance().getEventSystem().postInternal(BlockBreakListener.BlockBreakEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().callExceptionally(BlockBreakListener.BlockBreakEvent.ID, event);
         if (event.isCancelled()) {
             cir.setReturnValue(false);
         }
@@ -84,7 +84,7 @@ public abstract class MixinClientPlayerInteractionManager {
     @Inject(method = "updateBlockBreakingProgress", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;sendSequencedPacket(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/client/network/SequencedPacketCreator;)V", ordinal = 1), cancellable = true)
     private void callBlockBreakListenerStop(final BlockPos pos, final Direction direction, final CallbackInfoReturnable<Boolean> cir) {
         final BlockBreakListener.BlockBreakEvent event = new BlockBreakListener.BlockBreakEvent(pos, direction, BlockBreakListener.BlockBreakState.STOP);
-        Vandalism.getInstance().getEventSystem().postInternal(BlockBreakListener.BlockBreakEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().callExceptionally(BlockBreakListener.BlockBreakEvent.ID, event);
         if (event.isCancelled()) {
             cir.setReturnValue(false);
         }
@@ -93,7 +93,7 @@ public abstract class MixinClientPlayerInteractionManager {
     @Inject(method = "attackBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/packet/Packet;)V"), cancellable = true)
     private void callBlockBreakListenerAbort(final BlockPos pos, final Direction direction, final CallbackInfoReturnable<Boolean> cir) {
         final BlockBreakListener.BlockBreakEvent event = new BlockBreakListener.BlockBreakEvent(pos, direction, BlockBreakListener.BlockBreakState.ABORT);
-        Vandalism.getInstance().getEventSystem().postInternal(BlockBreakListener.BlockBreakEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().callExceptionally(BlockBreakListener.BlockBreakEvent.ID, event);
         if (event.isCancelled()) {
             cir.setReturnValue(false);
         }
@@ -103,7 +103,7 @@ public abstract class MixinClientPlayerInteractionManager {
     private void callBlockBreakListenerAbort2(final ClientPlayNetworkHandler instance, final Packet packet) {
         if (packet instanceof final PlayerActionC2SPacket playerActionC2SPacket) {
             final BlockBreakListener.BlockBreakEvent event = new BlockBreakListener.BlockBreakEvent(playerActionC2SPacket.getPos(), playerActionC2SPacket.getDirection(), BlockBreakListener.BlockBreakState.ABORT);
-            Vandalism.getInstance().getEventSystem().postInternal(BlockBreakListener.BlockBreakEvent.ID, event);
+            Vandalism.getInstance().getEventSystem().callExceptionally(BlockBreakListener.BlockBreakEvent.ID, event);
             if (event.isCancelled()) {
                 return;
             }

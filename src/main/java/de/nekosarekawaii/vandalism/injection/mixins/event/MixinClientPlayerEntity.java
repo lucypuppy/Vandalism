@@ -51,7 +51,7 @@ public abstract class MixinClientPlayerEntity {
             return;
         }
         final PlayerUpdateListener.PlayerUpdateEvent event = new PlayerUpdateListener.PlayerUpdateEvent(StateTypes.PRE);
-        Vandalism.getInstance().getEventSystem().postInternal(PlayerUpdateListener.PlayerUpdateEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().callExceptionally(PlayerUpdateListener.PlayerUpdateEvent.ID, event);
     }
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;sendMovementPackets()V", shift = At.Shift.AFTER))
@@ -60,7 +60,7 @@ public abstract class MixinClientPlayerEntity {
             return;
         }
         final PlayerUpdateListener.PlayerUpdateEvent event = new PlayerUpdateListener.PlayerUpdateEvent(StateTypes.POST);
-        Vandalism.getInstance().getEventSystem().postInternal(PlayerUpdateListener.PlayerUpdateEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().callExceptionally(PlayerUpdateListener.PlayerUpdateEvent.ID, event);
     }
 
     @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isUsingItem()Z", ordinal = 0))
@@ -73,7 +73,7 @@ public abstract class MixinClientPlayerEntity {
         input.movementForward /= movementValue;
         input.movementSideways /= movementValue;
         final PlayerSlowdownListener.PlayerSlowdownEvent playerUseMultiplier = new PlayerSlowdownListener.PlayerSlowdownEvent(movementValue, movementValue);
-        Vandalism.getInstance().getEventSystem().postInternal(PlayerSlowdownListener.PlayerSlowdownEvent.ID, playerUseMultiplier);
+        Vandalism.getInstance().getEventSystem().callExceptionally(PlayerSlowdownListener.PlayerSlowdownEvent.ID, playerUseMultiplier);
         input.movementForward *= playerUseMultiplier.movementForward;
         input.movementSideways *= playerUseMultiplier.movementSideways;
     }
@@ -84,7 +84,7 @@ public abstract class MixinClientPlayerEntity {
             return;
         }
         final ShouldSlowdownListener.ShouldSlowdownEvent shouldSlowdownEvent = new ShouldSlowdownListener.ShouldSlowdownEvent(cir.getReturnValue());
-        Vandalism.getInstance().getEventSystem().postInternal(ShouldSlowdownListener.ShouldSlowdownEvent.ID, shouldSlowdownEvent);
+        Vandalism.getInstance().getEventSystem().callExceptionally(ShouldSlowdownListener.ShouldSlowdownEvent.ID, shouldSlowdownEvent);
         cir.setReturnValue(shouldSlowdownEvent.shouldSlowdown);
     }
 
@@ -94,7 +94,7 @@ public abstract class MixinClientPlayerEntity {
             return;
         }
         final CanSprintListener.CanSprintEvent canSprintEvent = new CanSprintListener.CanSprintEvent(cir.getReturnValue());
-        Vandalism.getInstance().getEventSystem().postInternal(CanSprintListener.CanSprintEvent.ID, canSprintEvent);
+        Vandalism.getInstance().getEventSystem().callExceptionally(CanSprintListener.CanSprintEvent.ID, canSprintEvent);
         cir.setReturnValue(canSprintEvent.canSprint);
     }
 

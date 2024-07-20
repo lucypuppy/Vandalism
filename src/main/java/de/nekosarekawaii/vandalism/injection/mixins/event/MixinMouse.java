@@ -44,7 +44,7 @@ public abstract class MixinMouse implements MinecraftWrapper {
     @Inject(method = "onMouseButton", at = @At("HEAD"))
     private void callMouseButtonListener(final long window, final int button, final int action, final int mods, final CallbackInfo ci) {
         if (this.mc.getWindow().getHandle() == window) {
-            Vandalism.getInstance().getEventSystem().postInternal(MouseInputListener.MouseEvent.ID, new MouseInputListener.MouseEvent(button, action, mods));
+            Vandalism.getInstance().getEventSystem().callExceptionally(MouseInputListener.MouseEvent.ID, new MouseInputListener.MouseEvent(button, action, mods));
         }
     }
 
@@ -52,7 +52,7 @@ public abstract class MixinMouse implements MinecraftWrapper {
     private void callMouseScrollListener(final long window, final double horizontal, final double vertical, final CallbackInfo ci) {
         if (this.mc.getWindow().getHandle() == window) {
             final MouseInputListener.MouseEvent event = new MouseInputListener.MouseEvent(true, horizontal, vertical);
-            Vandalism.getInstance().getEventSystem().postInternal(MouseInputListener.MouseEvent.ID, event);
+            Vandalism.getInstance().getEventSystem().callExceptionally(MouseInputListener.MouseEvent.ID, event);
             if (event.isCancelled()) {
                 ci.cancel();
             }
@@ -62,7 +62,7 @@ public abstract class MixinMouse implements MinecraftWrapper {
     @Inject(method = "onCursorPos", at = @At("HEAD"))
     private void callMousePosListener(final long window, final double x, final double y, final CallbackInfo ci) {
         if (this.mc.getWindow().getHandle() == window) {
-            Vandalism.getInstance().getEventSystem().postInternal(MouseInputListener.MouseEvent.ID, new MouseInputListener.MouseEvent(false, x, y));
+            Vandalism.getInstance().getEventSystem().callExceptionally(MouseInputListener.MouseEvent.ID, new MouseInputListener.MouseEvent(false, x, y));
         }
     }
 
@@ -70,7 +70,7 @@ public abstract class MixinMouse implements MinecraftWrapper {
     @Inject(method = "updateMouse", at = @At("HEAD"), cancellable = true)
     public void callMouseDeltaListener(final CallbackInfo ci) {
         final MouseDeltaListener.MouseDeltaEvent event = new MouseDeltaListener.MouseDeltaEvent(this.cursorDeltaX, this.cursorDeltaY);
-        Vandalism.getInstance().getEventSystem().postInternal(MouseDeltaListener.MouseDeltaEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().callExceptionally(MouseDeltaListener.MouseDeltaEvent.ID, event);
         if (event.isCancelled()) {
             ci.cancel();
             return;
@@ -83,7 +83,7 @@ public abstract class MixinMouse implements MinecraftWrapper {
     private boolean callSmoothCameraRotationsEvent(final GameOptions instance) {
         final SmoothCameraRotationsListener.SmoothCameraRotationsEvent event = new SmoothCameraRotationsListener.SmoothCameraRotationsEvent();
         event.smoothCamera = instance.smoothCameraEnabled;
-        Vandalism.getInstance().getEventSystem().postInternal(SmoothCameraRotationsListener.SmoothCameraRotationsEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().callExceptionally(SmoothCameraRotationsListener.SmoothCameraRotationsEvent.ID, event);
         return event.smoothCamera;
     }
 

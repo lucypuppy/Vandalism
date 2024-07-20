@@ -67,7 +67,7 @@ public abstract class MixinClientConnection {
     @Unique
     private boolean vandalism$onIncomingPacket(final Packet<?> packet, final CallbackInfo ci) {
         final IncomingPacketListener.IncomingPacketEvent event = new IncomingPacketListener.IncomingPacketEvent(packet, this.packetListener.getPhase(), (ClientConnection) (Object) this);
-        Vandalism.getInstance().getEventSystem().postInternal(IncomingPacketListener.IncomingPacketEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().callExceptionally(IncomingPacketListener.IncomingPacketEvent.ID, event);
         if (event.isCancelled()) {
             return true;
         }
@@ -102,7 +102,7 @@ public abstract class MixinClientConnection {
         }
 
         final OutgoingPacketListener.OutgoingPacketEvent event = new OutgoingPacketListener.OutgoingPacketEvent(packet, this.packetListener.getPhase(), (ClientConnection) (Object) this);
-        Vandalism.getInstance().getEventSystem().postInternal(OutgoingPacketListener.OutgoingPacketEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().callExceptionally(OutgoingPacketListener.OutgoingPacketEvent.ID, event);
         if (event.isCancelled()) {
             ci.cancel();
             return;
@@ -119,7 +119,7 @@ public abstract class MixinClientConnection {
         final ClientConnection self = (ClientConnection) (Object) this;
         final ClientPlayNetworkHandler networkHandler = MinecraftClient.getInstance().getNetworkHandler();
         if (networkHandler != null && Objects.equals(self, networkHandler.getConnection())) {
-            Vandalism.getInstance().getEventSystem().postInternal(
+            Vandalism.getInstance().getEventSystem().callExceptionally(
                     DisconnectListener.DisconnectEvent.ID,
                     new DisconnectListener.DisconnectEvent(self, disconnectReason)
             );

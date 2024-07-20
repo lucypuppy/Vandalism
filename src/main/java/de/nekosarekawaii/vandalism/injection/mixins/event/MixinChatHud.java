@@ -46,7 +46,7 @@ public abstract class MixinChatHud {
     public ChatHudLine callChatModifyReceiveListener(final ChatHudLine hudLine) {
         if (this.client.player != null) {
             final ChatModifyReceiveListener.ChatModifyReceiveEvent event = new ChatModifyReceiveListener.ChatModifyReceiveEvent(hudLine.content().copy());
-            Vandalism.getInstance().getEventSystem().postInternal(ChatModifyReceiveListener.ChatModifyReceiveEvent.ID, event);
+            Vandalism.getInstance().getEventSystem().callExceptionally(ChatModifyReceiveListener.ChatModifyReceiveEvent.ID, event);
             return new ChatHudLine(hudLine.creationTick(), event.mutableText, hudLine.signature(), hudLine.indicator());
         }
 
@@ -60,7 +60,7 @@ public abstract class MixinChatHud {
         }
 
         final ChatReceiveListener.ChatReceiveEvent event = new ChatReceiveListener.ChatReceiveEvent(message, signatureData, indicator);
-        Vandalism.getInstance().getEventSystem().postInternal(ChatReceiveListener.ChatReceiveEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().callExceptionally(ChatReceiveListener.ChatReceiveEvent.ID, event);
     }
 
 }

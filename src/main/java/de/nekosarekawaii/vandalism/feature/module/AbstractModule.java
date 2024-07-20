@@ -163,7 +163,7 @@ public abstract class AbstractModule extends Feature implements ValueParent {
 
         this.active.onValueChange((oldValue, newValue) -> {
             final ModuleToggleListener.ModuleToggleEvent event = new ModuleToggleListener.ModuleToggleEvent(this, newValue);
-            Vandalism.getInstance().getEventSystem().postInternal(ModuleToggleListener.ModuleToggleEvent.ID, event);
+            Vandalism.getInstance().getEventSystem().callExceptionally(ModuleToggleListener.ModuleToggleEvent.ID, event);
             // Allows the event to change the active state of the module
             // It's important that people don't use the setActive method from the module itself in the event
             // because that would cause an infinite loop

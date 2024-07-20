@@ -107,6 +107,7 @@ import java.io.File;
  *  - Layered mappings with mojmap as fallback
  *  - Rewrite client startup using static priorities, 3000 settings load, 3001 post addon load, ...
  *  - Delete Vandalism#getInstance(), use main class for early loading but keep instances in manager classes: ModuleSystem.get(), ClientSettings.get(), ...
+ *  - Setup dependabot -> move lib versions directly to include command
  */
 @Getter
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
