@@ -18,30 +18,24 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.module;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.render.ESPModule;
-import net.minecraft.client.render.OutlineVertexConsumerProvider;
-import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.awt.*;
+@Mixin(Entity.class)
+public abstract class MixinEntity {
 
-@Mixin(WorldRenderer.class)
-public abstract class MixinWorldRenderer {
-
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/OutlineVertexConsumerProvider;setColor(IIII)V"))
-    private void hookESP(final OutlineVertexConsumerProvider instance, final int red, final int green, final int blue, final int alpha, final @Local Entity entity) {
+    @Inject(method = "getTeamColorValue", at = @At("RETURN"), cancellable = true)
+    private void hookESP(CallbackInfoReturnable<Integer> cir) {
         final ESPModule espModule = Vandalism.getInstance().getModuleManager().getEspModule();
+
+        final Entity entity = (Entity) (Object) this;
         if (espModule.isActive() && espModule.isTarget(entity)) {
-            final Color color = espModule.getEntityColor(entity);
-            // TODO: Undo this big brain 360° Mojang moment because it's wrong.
-            instance.setColor(color.getBlue(), color.getGreen(), color.getRed(), color.getAlpha());
-        } else {
-            instance.setColor(red, green, blue, alpha);
+            cir.setReturnValue(espModule.getEntityColor(entity).getRGB());
         }
     }
 
