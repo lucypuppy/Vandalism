@@ -47,7 +47,7 @@ public abstract class MixinInGameHud {
         if (this.debugHud.shouldShowDebugHud() || this.client.options.hudHidden) {
             return;
         }
-        Vandalism.getInstance().getEventSystem().postInternal(Render2DListener.Render2DEvent.ID, new Render2DListener.Render2DEvent(context, tickCounter.getTickDelta(false)));
+        Vandalism.getInstance().getEventSystem().callExceptionally(Render2DListener.Render2DEvent.ID, new Render2DListener.Render2DEvent(context, tickCounter.getTickDelta(false)));
     }
 
 }

@@ -43,7 +43,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
     @Redirect(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/model/EntityModel;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;III)V"))
     private void callEntityRenderBottomLayerListener(EntityModel instance, MatrixStack matrices, VertexConsumer vertices, int light, int overlay, int color, @Local T livingEntity) {
         final EntityRenderBottomLayerListener.EntityRenderBottomLayerEvent event = new EntityRenderBottomLayerListener.EntityRenderBottomLayerEvent(livingEntity, matrices, vertices, light, overlay, color);
-        Vandalism.getInstance().getEventSystem().postInternal(EntityRenderBottomLayerListener.EntityRenderBottomLayerEvent.ID, event);
+        Vandalism.getInstance().getEventSystem().callExceptionally(EntityRenderBottomLayerListener.EntityRenderBottomLayerEvent.ID, event);
         instance.render(matrices, vertices, event.light, event.overlay, event.color);
     }
 

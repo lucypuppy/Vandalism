@@ -45,7 +45,7 @@ public abstract class MixinLivingEntity implements MinecraftWrapper {
     private void callMoveFlyingListener(final Args args) {
         if (this.mc.player == (Object) this) {
             final MoveFlyingListener.MoveFlyingEvent event = new MoveFlyingListener.MoveFlyingEvent(args.get(0), args.get(1), args.get(2));
-            Vandalism.getInstance().getEventSystem().postInternal(MoveFlyingListener.MoveFlyingEvent.ID, event);
+            Vandalism.getInstance().getEventSystem().callExceptionally(MoveFlyingListener.MoveFlyingEvent.ID, event);
 
             args.set(0, event.sidewaysSpeed);
             args.set(1, event.upwardSpeed);
@@ -57,7 +57,7 @@ public abstract class MixinLivingEntity implements MinecraftWrapper {
     private void callStrafeListenerJump(CallbackInfo ci, @Local LocalFloatRef f) {
         if (mc.player == (Object) this) {
             event = new StrafeListener.StrafeEvent(null, -1, f.get(), StrafeListener.Type.JUMP);
-            Vandalism.getInstance().getEventSystem().postInternal(StrafeListener.StrafeEvent.ID, event);
+            Vandalism.getInstance().getEventSystem().callExceptionally(StrafeListener.StrafeEvent.ID, event);
             f.set(event.yaw);
         }
     }
@@ -74,7 +74,7 @@ public abstract class MixinLivingEntity implements MinecraftWrapper {
     private void callHealthUpdateListener(final Args args) {
         if (mc.player == (Object) this) {
             final HealthUpdateListener.HealthUpdateEvent event = new HealthUpdateListener.HealthUpdateEvent(args.get(1));
-            Vandalism.getInstance().getEventSystem().postInternal(HealthUpdateListener.HealthUpdateEvent.ID, event);
+            Vandalism.getInstance().getEventSystem().callExceptionally(HealthUpdateListener.HealthUpdateEvent.ID, event);
             args.set(1, event.health);
         }
     }

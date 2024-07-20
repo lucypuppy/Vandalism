@@ -46,7 +46,7 @@ public abstract class MixinGameRenderer implements IGameRenderer, MinecraftWrapp
 
     @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/Camera;update(Lnet/minecraft/world/BlockView;Lnet/minecraft/entity/Entity;ZZF)V", shift = At.Shift.AFTER))
     private void callRotationListener(final CallbackInfo ci) {
-        Vandalism.getInstance().getEventSystem().postInternal(RotationListener.RotationEvent.ID, new RotationListener.RotationEvent());
+        Vandalism.getInstance().getEventSystem().callExceptionally(RotationListener.RotationEvent.ID, new RotationListener.RotationEvent());
     }
 
     @Redirect(method = "updateCrosshairTarget", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getEntityInteractionRange()D"))
@@ -55,7 +55,7 @@ public abstract class MixinGameRenderer implements IGameRenderer, MinecraftWrapp
             return vandalism$range;
         } else {
             final RaytraceListener.RaytraceEvent event = new RaytraceListener.RaytraceEvent(instance.getEntityInteractionRange());
-            Vandalism.getInstance().getEventSystem().postInternal(RaytraceListener.RaytraceEvent.ID, event);
+            Vandalism.getInstance().getEventSystem().callExceptionally(RaytraceListener.RaytraceEvent.ID, event);
             return event.range;
         }
     }
@@ -88,7 +88,7 @@ public abstract class MixinGameRenderer implements IGameRenderer, MinecraftWrapp
     private void callRender3DListener(RenderTickCounter tickCounter, CallbackInfo ci, @Local(ordinal = 1) Matrix4f matrix4f2) {
         MatrixStack matrices = new MatrixStack();
         matrices.multiplyPositionMatrix(matrix4f2);
-        Vandalism.getInstance().getEventSystem().postInternal(
+        Vandalism.getInstance().getEventSystem().callExceptionally(
                 Render3DListener.Render3DEvent.ID,
                 new Render3DListener.Render3DEvent(tickCounter.getTickDelta(true), matrices)
         );
