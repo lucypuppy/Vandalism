@@ -27,6 +27,7 @@ import de.nekosarekawaii.vandalism.event.player.MoveInputListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.event.render.CameraOverrideListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.math.MathUtil;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.option.Perspective;
@@ -147,19 +148,10 @@ public class FreeCamModule extends AbstractModule implements
 
     @Override
     public void onMouseDelta(final MouseDeltaEvent event) {
-        final double d = this.mc.options.getMouseSensitivity().getValue() * 0.6000000238418579 + 0.20000000298023224;
-        final double e = d * d * d;
-        final double f = e * 8.0;
+        final double gcd = MathUtil.getGcd();
 
-        double cursorDeltaX;
-        double cursorDeltaY;
-        if (this.mc.options.getPerspective().isFirstPerson() && this.mc.player.isUsingSpyglass()) {
-            cursorDeltaX = event.cursorDeltaX * e;
-            cursorDeltaY = event.cursorDeltaY * e;
-        } else {
-            cursorDeltaX = event.cursorDeltaX * f;
-            cursorDeltaY = event.cursorDeltaY * f;
-        }
+        final double cursorDeltaX = event.cursorDeltaX * gcd;
+        final double cursorDeltaY = event.cursorDeltaY * gcd;
 
         this.yaw += (float) (cursorDeltaX * 0.15F);
         this.pitch += (float) (cursorDeltaY * 0.15F);

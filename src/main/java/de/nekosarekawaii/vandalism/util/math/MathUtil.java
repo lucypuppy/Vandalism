@@ -18,10 +18,24 @@
 
 package de.nekosarekawaii.vandalism.util.math;
 
-public class MathUtil {
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+
+public class MathUtil implements MinecraftWrapper {
 
     public static final double EXPANDER = 1.6777216E7D;
     public static final long MINIMUM_ROTATION_DIVISOR = 131072L;
+
+    public static double getGcd() {
+        final double sensitivity = mc.options.getMouseSensitivity().getValue() * 0.6D + 0.2D;
+        final double sensitivityPow3 = sensitivity * sensitivity * sensitivity;
+        final double sensitivityPow3Mult8 = sensitivityPow3 * 8.0;
+
+        if (mc.options.getPerspective().isFirstPerson() && mc.player.isUsingSpyglass()) {
+            return sensitivityPow3;
+        } else {
+            return sensitivityPow3Mult8;
+        }
+    }
 
     public static float cubicBezier(float p0, float p1, float p2, float p3, float t) {
         final float u = 1 - t;
