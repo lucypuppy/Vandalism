@@ -87,7 +87,7 @@ public class AntiBotsModule extends AbstractModule implements TargetListener, In
             return;
 
         if (this.movement.getValue() && event.packet instanceof final EntityPositionS2CPacket packet) {
-            final Entity entity = mc.world.getEntityById(packet.getId());
+            final Entity entity = mc.world.getEntityById(packet.getEntityId());
             if (entity == mc.player)
                 return;
 

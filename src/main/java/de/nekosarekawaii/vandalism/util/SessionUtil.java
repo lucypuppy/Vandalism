@@ -50,7 +50,7 @@ public class SessionUtil implements MinecraftWrapper {
 
     public static void checkSessionUpdate(final Session session) {
         if (session != prevSession) {
-            Vandalism.getInstance().getEventSystem().post(UpdateSessionListener.UpdateSessionEvent.ID, new UpdateSessionListener.UpdateSessionEvent(prevSession, session));
+            Vandalism.getInstance().getEventSystem().callExceptionally(UpdateSessionListener.UpdateSessionEvent.ID, new UpdateSessionListener.UpdateSessionEvent(prevSession, session));
             prevSession = session;
         }
     }

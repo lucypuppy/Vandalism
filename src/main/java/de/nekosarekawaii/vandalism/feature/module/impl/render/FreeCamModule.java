@@ -173,7 +173,7 @@ public class FreeCamModule extends AbstractModule implements
                 this.yaw = positionLookPacket.getYaw();
                 this.pitch = positionLookPacket.getPitch();
             }
-        } else if (packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket && velocityPacket.getId() == this.mc.player.getId()) {
+        } else if (packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket && velocityPacket.getEntityId() == this.mc.player.getId()) {
             if (this.deactivateOnPositionUpdate.getValue()) {
                 this.deactivate();
             }
