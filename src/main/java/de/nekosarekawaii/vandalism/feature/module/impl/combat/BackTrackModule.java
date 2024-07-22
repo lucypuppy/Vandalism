@@ -237,11 +237,11 @@ public class BackTrackModule extends AbstractModule implements PlayerUpdateListe
             if (this.checkForResync(trackedPosition, entityS2CPacket.id)) {
                 shouldCancel = true;
             }
-        } else if (packet instanceof final EntityPositionS2CPacket positionS2CPacket && this.backTrackedEntities.containsKey(positionS2CPacket.getId())) {
-            final SyncPosition trackedPosition = this.backTrackedEntities.get(positionS2CPacket.getId());
+        } else if (packet instanceof final EntityPositionS2CPacket positionS2CPacket && this.backTrackedEntities.containsKey(positionS2CPacket.getEntityId())) {
+            final SyncPosition trackedPosition = this.backTrackedEntities.get(positionS2CPacket.getEntityId());
             trackedPosition.setPos(new Vec3d(positionS2CPacket.getX(), positionS2CPacket.getY(), positionS2CPacket.getZ()), false);
 
-            if (this.checkForResync(trackedPosition, positionS2CPacket.getId())) {
+            if (this.checkForResync(trackedPosition, positionS2CPacket.getEntityId())) {
                 shouldCancel = true;
             }
         }

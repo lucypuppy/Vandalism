@@ -67,7 +67,7 @@ public class CancelModuleMode extends ModuleMulti<VelocityModule> implements Inc
         if (
                 event.packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket &&
                 this.mc.player != null &&
-                velocityPacket.getId() == this.mc.player.getId()
+                        velocityPacket.getEntityId() == this.mc.player.getId()
         ) {
             if (this.customizeCancel.getValue()) {
                 final Vec3d velocity = this.mc.player.getVelocity();

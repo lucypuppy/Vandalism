@@ -27,8 +27,8 @@ import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.FlightMod
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleMulti;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import de.nekosarekawaii.vandalism.util.MovementUtil;
-import de.nekosarekawaii.vandalism.util.game.PlayerDamageUtil;
 import de.nekosarekawaii.vandalism.util.WorldUtil;
+import de.nekosarekawaii.vandalism.util.game.PlayerDamageUtil;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.util.math.Vec3d;
@@ -112,7 +112,7 @@ public class VulcanGlideModuleMode extends ModuleMulti<FlightModule> implements 
         if (
                 event.packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket &&
                         this.mc.player != null &&
-                        velocityPacket.getId() == this.mc.player.getId()
+                        velocityPacket.getEntityId() == this.mc.player.getId()
         ) {
             event.cancel();
         }

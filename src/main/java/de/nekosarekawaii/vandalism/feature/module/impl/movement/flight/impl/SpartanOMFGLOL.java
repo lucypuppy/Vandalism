@@ -66,7 +66,7 @@ public class SpartanOMFGLOL extends ModuleMulti<FlightModule> implements PlayerU
         if (
                 event.packet instanceof final EntityVelocityUpdateS2CPacket velocityPacket &&
                         this.mc.player != null &&
-                        velocityPacket.getId() == this.mc.player.getId()
+                        velocityPacket.getEntityId() == this.mc.player.getId()
         ) {
             event.cancel();
         }
