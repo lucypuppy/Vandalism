@@ -24,6 +24,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.NetworkingSettings;
 import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.feature.creativetab.impl.GriefItemsCreativeTab;
+import de.nekosarekawaii.vandalism.util.ChatUtil;
 import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
 import lombok.Getter;
 import net.minecraft.component.ComponentMap;
@@ -72,6 +73,18 @@ public class CreativeTabManager extends Storage<AbstractCreativeTab> implements 
                         final Text name = Text.Serialization.fromJson(customDataCompound.getString(CLIENTSIDE_NAME), DynamicRegistryManager.EMPTY);
                         if (!stack.getName().equals(name)) stack.remove(DataComponentTypes.CUSTOM_NAME);
                         customDataCompound.remove(CLIENTSIDE_NAME);
+                        final NetworkingSettings networkingSettings = Vandalism.getInstance().getClientSettings().getNetworkingSettings();
+                        if (networkingSettings.packageCreativeItems.getValue()) {
+                            if (ItemStackUtil.PackageType.isPackageItem(stack.getItem())) {
+                                return;
+                            }
+                            try {
+                                creativeInventoryActionC2SPacket.stack = ItemStackUtil.packageStack(stack, networkingSettings.creativeItemsPackageType.getValue());
+                                return;
+                            } catch (final Exception ignored) {
+                                ChatUtil.errorChatMessage("Failed to package item: " + stack.getName().getString());
+                            }
+                        }
                     }
                     if (customData.contains(CLIENTSIDE_GLINT)) {
                         customDataCompound.remove(CLIENTSIDE_GLINT);
@@ -79,14 +92,6 @@ public class CreativeTabManager extends Storage<AbstractCreativeTab> implements 
                     }
                     if (customDataCompound.isEmpty()) stack.remove(DataComponentTypes.CUSTOM_DATA);
                     else stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(customDataCompound));
-                    final NetworkingSettings networkingSettings = Vandalism.getInstance().getClientSettings().getNetworkingSettings();
-                    if (networkingSettings.packageCreativeItems.getValue()) {
-                        if (ItemStackUtil.PackageType.isPackageItem(stack.getItem())) {
-                            return;
-                        }
-                        creativeInventoryActionC2SPacket.stack = ItemStackUtil.packageStack(stack, networkingSettings.creativeItemsPackageType.getValue());
-                        return;
-                    }
                 }
             }
             creativeInventoryActionC2SPacket.stack = stack;
