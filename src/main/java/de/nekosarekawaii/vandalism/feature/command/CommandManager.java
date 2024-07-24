@@ -78,7 +78,7 @@ public class CommandManager extends Storage<AbstractCommand> implements Minecraf
                 new CopyPositionCommand(),
                 new TeleportEntitySpawnEggCommand(),
                 new SoundEntitySpawnEggCommand(),
-                //new SoundHeadCommand(), TODO: Fix Component
+                new SoundHeadCommand(),
                 new ClipCommand(),
                 new VClipCommand(),
                 new HClipCommand(),
