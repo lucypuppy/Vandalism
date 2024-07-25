@@ -74,13 +74,17 @@ public class PacketHelper {
         writeVarInt(out, state);
     }
 
-    public static byte[] createHandshakePacket(final String ip, final int port, final int protocolVersion) throws IOException {
+    public static byte[] createHandshakePacket(final int protocolId, final String ip, final int port) throws IOException {
         final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         final DataOutputStream out = new DataOutputStream(bytes);
-        writeHandshakePacket(out, ip, port, protocolVersion, 2);
+        writeHandshakePacket(out, ip, port, protocolId, 2);
         final byte[] data = bytes.toByteArray();
         bytes.close();
         return data;
+    }
+
+    public static byte[] createLoginPacket(final int protocolId, final String username) throws Exception {
+        return createLoginPacket(protocolId, username, null);
     }
 
     public static byte[] createLoginPacket(final int protocolId, final String username, final UUID uuid) throws Exception {
@@ -95,6 +99,9 @@ public class PacketHelper {
         if (protocolId >= ProtocolVersion.v1_19_3.getVersion()) {
             if (protocolId <= ProtocolVersion.v1_20.getVersion()) {
                 out.writeBoolean(true);
+            }
+            if (uuid == null) {
+                throw new IllegalArgumentException("UUID is required for this protocol version.");
             }
             writeUUID(out, uuid);
         }

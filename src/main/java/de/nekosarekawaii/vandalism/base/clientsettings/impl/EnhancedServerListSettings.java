@@ -39,6 +39,13 @@ public class EnhancedServerListSettings extends ValueGroup {
         }
     });
 
+    public final BooleanValue directConnectInstantCrashButton = new BooleanValue(
+            this,
+            "Direct Connect Instant Crash Button",
+            "Adds a button to the direct connect screen which allows you to instant crasher a server from 1.8.0 to 1.9.4",
+            true
+    ).visibleCondition(this.enhancedServerList::getValue);
+
     public final BooleanValue directConnectAddressFix = new BooleanValue(
             this,
             "Direct Connect Address Fix",

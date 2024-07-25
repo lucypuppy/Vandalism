@@ -362,7 +362,7 @@ public class PlayerKickerClientWindow extends StateClientWindow implements DataL
                         ip += "\u0000";
                         ip += uuid.replace("-", "");
                     }
-                    PacketHelper.writePacket(PacketHelper.createHandshakePacket(ip, port, protocol), output);
+                    PacketHelper.writePacket(PacketHelper.createHandshakePacket(protocol, ip, port), output);
                     PacketHelper.writePacket(PacketHelper.createLoginPacket(protocol, name, UUID.fromString(uuid)), output);
                     Thread.sleep(1000);
                     connection.close();
