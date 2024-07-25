@@ -20,19 +20,22 @@ package de.nekosarekawaii.vandalism.feature.hud.impl;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.ColorValue;
+import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.internal.ModuleToggleListener;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.util.render.Buffers;
-import de.nekosarekawaii.vandalism.util.render.gl.render.AttribConsumerProvider;
-import de.nekosarekawaii.vandalism.util.render.gl.render.ImmediateRenderer;
 import de.nekosarekawaii.vandalism.util.math.AlignmentX;
 import de.nekosarekawaii.vandalism.util.math.AlignmentY;
+import de.nekosarekawaii.vandalism.util.render.Buffers;
+import de.nekosarekawaii.vandalism.util.render.Shaders;
+import de.nekosarekawaii.vandalism.util.render.gl.render.AttribConsumerProvider;
+import de.nekosarekawaii.vandalism.util.render.gl.render.ImmediateRenderer;
 import net.minecraft.client.gui.DrawContext;
 import org.joml.Vector2f;
 
+import java.awt.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -72,6 +75,47 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
             "The color of the text."
     );
 
+    private final BooleanValue glowOutline = new BooleanValue(
+            this,
+            "Glow Outline",
+            "Activates/Deactivates the glow outline.",
+            false
+    );
+
+    private final ColorValue glowOutlineColor = new ColorValue(
+            this,
+            "Glow Outline Color",
+            "The color of the glow outline.",
+            Color.lightGray
+    ).visibleCondition(this.glowOutline::getValue);
+
+    private final FloatValue glowOutlineWidth = new FloatValue(
+            this,
+            "Glow Outline Width",
+            "The width of the glow outline.",
+            6.0f,
+            1.0f,
+            20.0f
+    ).visibleCondition(this.glowOutline::getValue);
+
+    private final FloatValue glowOutlineAccuracy = new FloatValue(
+            this,
+            "Glow Outline Accuracy",
+            "The accuracy of the glow outline.",
+            1.0f,
+            1.0f,
+            8.0f
+    ).visibleCondition(this.glowOutline::getValue);
+
+    private final FloatValue glowOutlineExponent = new FloatValue(
+            this,
+            "Glow Outline Exponent",
+            "The exponent of the glow outline.",
+            0.22f,
+            0.01f,
+            4.0f
+    ).visibleCondition(this.glowOutline::getValue);
+
     public ModuleListHUDElement() {
         super("Module List", true, AlignmentX.RIGHT, AlignmentY.TOP);
         this.alignmentX.onValueChange((oldValue, newValue) -> this.sort = true);
@@ -87,8 +131,23 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
     @Override
     protected void onRender(final DrawContext context, final float delta, final boolean inGame) {
         this.sort();
+        if (this.glowOutline.getValue()) {
+            this.draw(context, true);
+        }
+        this.draw(context, false);
+    }
+
+    private void draw(final DrawContext context, final boolean isPostProcessing) {
         try (final ImmediateRenderer renderer = new ImmediateRenderer(Buffers.getImmediateBufferPool())) {
+            final float outlineWidth = this.glowOutlineWidth.getValue();
+            final float outlineAccuracy = this.glowOutlineAccuracy.getValue();
+            final float outlineExponent = this.glowOutlineExponent.getValue();
+            final Color glowOutlineColor = this.glowOutlineColor.getColor();
             final Vector2f sizeVec = new Vector2f();
+            if (isPostProcessing) {
+                Shaders.getGlowOutlineEffect().configure(outlineWidth, outlineAccuracy, outlineExponent);
+                Shaders.getGlowOutlineEffect().bindMask();
+            }
             int yOffset = 0;
             this.width = 0;
             for (final String activatedModule : this.activatedModules) {
@@ -96,20 +155,39 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
                 final int textWidth = (int) sizeVec.x;
                 final int textHeight = (int) sizeVec.y;
                 switch (this.alignmentX.getValue()) {
-                    case MIDDLE -> this.drawText(renderer, context, activatedModule, this.getX() - textWidth / 2, this.getY() + yOffset + this.heightOffset.getValue());
-                    case RIGHT -> this.drawText(renderer, context, activatedModule, this.getX() - textWidth, this.getY() + yOffset + this.heightOffset.getValue());
-                    default -> this.drawText(renderer, context, activatedModule, this.getX(), this.getY() + yOffset + this.heightOffset.getValue());
+                    case MIDDLE ->
+                            this.drawText(renderer, context, activatedModule, this.getX() - textWidth / 2, this.getY() + yOffset + this.heightOffset.getValue(), isPostProcessing);
+                    case RIGHT ->
+                            this.drawText(renderer, context, activatedModule, this.getX() - textWidth, this.getY() + yOffset + this.heightOffset.getValue(), isPostProcessing);
+                    default ->
+                            this.drawText(renderer, context, activatedModule, this.getX(), this.getY() + yOffset + this.heightOffset.getValue(), isPostProcessing);
                 }
                 this.width = Math.max(this.width, textWidth);
                 yOffset += textHeight + this.heightOffset.getValue();
             }
             this.height = yOffset;
             renderer.draw();
+            if (isPostProcessing) {
+                Shaders.getGlowOutlineEffect().renderFullscreen(Shaders.getColorFillEffect().maskFramebuffer().get(), false);
+                Shaders.getColorFillEffect().setColor(glowOutlineColor);
+                Shaders.getColorFillEffect().renderFullscreen(this.mc.getFramebuffer(), false);
+            }
         }
     }
 
-    private void drawText(AttribConsumerProvider batch, final DrawContext context, final String text, final int x, final int y) {
-        this.drawText(batch, text, context, x, y, this.shadow.getValue(), this.color.getColor(-y * 20).getRGB());
+    private void drawText(AttribConsumerProvider batch, final DrawContext context, final String text, final int x, final int y, final boolean isPostProcessing) {
+        if (this.glowOutline.getValue()) {
+            context.fill(
+                    x - 2,
+                    y,
+                    x + this.getTextWidth(text) + 2,
+                    y + this.getFontHeight() - 1,
+                    1677721600
+            );
+        }
+        if (!isPostProcessing) {
+            this.drawText(batch, text, context, x, y, this.glowOutline.getValue() || this.shadow.getValue(), this.color.getColor(-y * 20).getRGB());
+        }
     }
 
     private void sort() {

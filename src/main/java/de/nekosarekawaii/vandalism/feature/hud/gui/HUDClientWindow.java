@@ -40,7 +40,7 @@ public class HUDClientWindow extends ClientWindow {
 
     @Override
     protected void onRender(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        final String id = "##hudconfig";
+        final String id = "##" + this.getName().replace(" ", "");
         if (ImGui.beginTabBar(id)) {
             for (final HUDElement hudElement : this.hudManager.getList()) {
                 final String name = hudElement.getName();
@@ -51,7 +51,7 @@ public class HUDClientWindow extends ClientWindow {
                     hudElement.renderValues();
                     ImGui.endChild();
                     ImGui.popStyleColor();
-                    if (ImGui.button("Reset " + name + " Element" + id + name + "resetConfigTab", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                    if (ImGui.button("Reset " + name + " Element" + id + name + "resetElement", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                         hudElement.resetValues();
                         Vandalism.getInstance().getConfigManager().save();
                     }
