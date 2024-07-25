@@ -92,6 +92,7 @@
     "module.MixinClientWorld",
     "module.MixinCommandDispatcher",
     "module.MixinCraftRequestC2SPacket",
+    "module.MixinEntity",
     "module.MixinEntityRenderer",
     "module.MixinFeatureRenderer",
     "module.MixinGameRenderer",
@@ -112,10 +113,8 @@
     "module.MixinTextureUrlChecker",
     "module.MixinTextVisitFactory",
     "module.MixinTranslatableTextContent",
-    "module.MixinEntity",
     "util.MixinConnectScreen",
     "util.MixinDrawContext",
-    "util.MixinMinecraftClient",
     "util.MixinRenderTickCounter_Dynamic",
     "util.MixinToolTipComponent"
   ],
