@@ -145,15 +145,15 @@ public class FriendsClientWindow extends ClientWindow {
         }
         final String playerName = friend.getName();
         final GameProfile gameProfile = this.mc.getGameProfile();
-        final boolean isCurrentFriend = gameProfile.getName().equals(playerName) && gameProfile.getId().equals(playerUuid);
-        if (isCurrentFriend) {
+        final boolean isCurrentPlayer = gameProfile.getName().equals(playerName) && gameProfile.getId().equals(playerUuid);
+        if (isCurrentPlayer) {
             final float[] color = {0.1f, 0.8f, 0.1f, 0.30f};
             ImGui.pushStyleColor(ImGuiCol.Button, color[0], color[1], color[2], color[3]);
             ImGui.pushStyleColor(ImGuiCol.ButtonHovered, color[0], color[1], color[2], color[3] - 0.1f);
             ImGui.pushStyleColor(ImGuiCol.ButtonActive, color[0], color[1], color[2], color[3] + 0.1f);
         }
         ImGui.button(id + "friend" + playerName, ImGui.getColumnWidth(), ImUtils.modulateDimension(HEAD_ENTRY_DIMENSION));
-        if (isCurrentFriend) {
+        if (isCurrentPlayer) {
             ImGui.popStyleColor(3);
         }
         if (ImGui.isItemHovered() && ImGui.isItemClicked(ImGuiMouseButton.Right)) {
