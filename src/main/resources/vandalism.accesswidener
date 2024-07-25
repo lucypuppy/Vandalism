@@ -155,3 +155,4 @@ accessible method net/minecraft/client/render/Camera setPos (DDD)V
 accessible method net/minecraft/client/render/Camera setPos (Lnet/minecraft/util/math/Vec3d;)V
 accessible field net/minecraft/client/render/Camera thirdPerson Z
 accessible method net/minecraft/client/option/KeyBinding reset ()V
+accessible field net/minecraft/client/gui/screen/ingame/CreativeInventoryScreen selectedTab Lnet/minecraft/item/ItemGroup;

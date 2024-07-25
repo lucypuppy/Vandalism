@@ -187,7 +187,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new CheatDetectorModule(),
                 new FreeCamModule(),
                 new AutoToolModule(),
-                new AntiFireballModule()
+                new AntiFireballModule(),
+                new InventoryMoveModule()
         );
         this.configManager.add(new ModuleConfig(this));
     }
