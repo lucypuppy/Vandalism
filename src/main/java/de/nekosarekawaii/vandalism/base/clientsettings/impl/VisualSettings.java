@@ -28,6 +28,13 @@ import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 
 public class VisualSettings extends ValueGroup {
 
+    public final BooleanValue stopRenderingBullshitAtRespawn = new BooleanValue(
+            this,
+            "Stop Rendering Bullshit At Respawn",
+            "Prevents the game from rendering nether portal sprite when respawning.",
+            true
+    );
+
     public final BooleanValue fixTitleTextsOnConnect = new BooleanValue(
             this,
             "Fix Title Texts On Connect",
