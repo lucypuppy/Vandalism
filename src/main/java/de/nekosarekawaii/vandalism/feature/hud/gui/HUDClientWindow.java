@@ -51,7 +51,7 @@ public class HUDClientWindow extends ClientWindow {
                     hudElement.renderValues();
                     ImGui.endChild();
                     ImGui.popStyleColor();
-                    if (ImGui.button("Reset " + name + " Config" + id + name + "resetConfigTab", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
+                    if (ImGui.button("Reset " + name + " Element" + id + name + "resetConfigTab", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
                         hudElement.resetValues();
                         Vandalism.getInstance().getConfigManager().save();
                     }
