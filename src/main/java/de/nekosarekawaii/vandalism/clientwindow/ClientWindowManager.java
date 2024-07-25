@@ -24,6 +24,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.ClientSettings;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.MenuSettings;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
+import de.nekosarekawaii.vandalism.base.config.gui.ConfigsClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindowScreen;
 import de.nekosarekawaii.vandalism.clientwindow.config.ClientWindowConfig;
@@ -34,8 +35,8 @@ import de.nekosarekawaii.vandalism.clientwindow.impl.ServerAddressResolverClient
 import de.nekosarekawaii.vandalism.clientwindow.impl.port.PortScannerClientWindow;
 import de.nekosarekawaii.vandalism.event.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.event.render.Render2DListener;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import de.nekosarekawaii.vandalism.integration.imgui.ImLoader;
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.MessageScreen;
@@ -69,6 +70,7 @@ public class ClientWindowManager extends Storage<ClientWindow> implements Keyboa
     @Override
     public void init() {
         this.add(
+                new ConfigsClientWindow(),
                 new GlobalSearchClientWindow(),
                 new AboutClientWindow(),
                 new PortScannerClientWindow(),

@@ -46,11 +46,11 @@ import java.util.regex.Pattern;
 
 public class ConfigCommand extends AbstractCommand {
 
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     public static final Pattern INVALID_CONFIG_NAME_PATTERN = Pattern.compile("[^a-zA-Z0-9_.-]");
 
-    private static final File CONFIGS_DIR = new File(Vandalism.getInstance().getRunDirectory(), "configs");
+    public static final File CONFIGS_DIR = new File(Vandalism.getInstance().getRunDirectory(), "configs");
 
     public ConfigCommand() {
         super("Lets you load, save or delete configs.", Category.MISC, "config", "configs");
@@ -102,15 +102,15 @@ public class ConfigCommand extends AbstractCommand {
                         fw.write(GSON.toJson(modulesJsonObject));
                         fw.flush();
                         ChatUtil.infoChatMessage("Config " + name + " has been saved.");
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         ChatUtil.errorChatMessage("Failed to save config: " + name);
                         Vandalism.getInstance().getLogger().error("Failed to save config: {}", name, e);
                     }
-                } catch (IOException e) {
-                    ChatUtil.errorChatMessage("Failed to create config: " + name);
-                    Vandalism.getInstance().getLogger().error("Failed to create config: {}", name, e);
+                } catch (final IOException e) {
+                    ChatUtil.errorChatMessage("Failed to save config: " + name);
+                    Vandalism.getInstance().getLogger().error("Failed to save config: {}", name, e);
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 ChatUtil.errorChatMessage("Failed to save config: " + name);
                 Vandalism.getInstance().getLogger().error("Failed to save config: {}", name, e);
             }
