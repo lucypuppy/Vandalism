@@ -47,11 +47,14 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class ConfigsClientWindow extends ClientWindow {
+
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
     private static final ImGuiInputTextCallback NAME_FILTER = new ImGuiInputTextCallback() {
 
@@ -185,7 +188,7 @@ public class ConfigsClientWindow extends ClientWindow {
             ImGui.openPopup("config-popup");
         }
         ImGui.sameLine(ImUtils.modulateDimension(22));
-        ImGui.textWrapped("Name: " + name + "\n" + "Modified: " + new Date(config.lastModified()));
+        ImGui.textWrapped("Name: " + name + "\n" + "Modified: " + DATE_FORMAT.format(new Date(config.lastModified())));
     }
 
     @Override
