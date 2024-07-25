@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.feature.module.impl.movement;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindowScreen;
 import de.nekosarekawaii.vandalism.event.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
@@ -32,7 +33,17 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemGroups;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class InventoryMoveModule extends AbstractModule implements PlayerUpdateListener, KeyboardInputListener {
+
+    private final BooleanValue allowArrowKeyRotation = new BooleanValue(
+            this,
+            "Allow Arrow Key Rotation",
+            "Allows you to rotate yourself with the arrow keys.",
+            true
+    );
 
     private final FloatValue rotationSpeed = new FloatValue(
             this,
@@ -41,6 +52,27 @@ public class InventoryMoveModule extends AbstractModule implements PlayerUpdateL
             2.0F,
             0.1F,
             10.0F
+    ).visibleCondition(this.allowArrowKeyRotation::getValue);
+
+    private final BooleanValue allowSprint = new BooleanValue(
+            this,
+            "Allow Sprint",
+            "Allows you to sprint while being in a inventory.",
+            true
+    );
+
+    private final BooleanValue allowJump = new BooleanValue(
+            this,
+            "Allow Jump",
+            "Allows you to jump while being in a inventory.",
+            false
+    );
+
+    private final BooleanValue allowSneak = new BooleanValue(
+            this,
+            "Allow Sneak",
+            "Allows you to sneak while being in a inventory.",
+            false
     );
 
     public InventoryMoveModule() {
@@ -78,8 +110,21 @@ public class InventoryMoveModule extends AbstractModule implements PlayerUpdateL
                 }
             }
             final GameOptions options = this.mc.options;
-            final KeyBinding[] bindings = {options.forwardKey, options.backKey, options.leftKey, options.rightKey, options.jumpKey, options.sneakKey, options.sprintKey};
-            for (final KeyBinding keyBinding : bindings) {
+            final List<KeyBinding> keyBindings = new ArrayList<>();
+            if (this.allowSprint.getValue()) {
+                keyBindings.add(options.sprintKey);
+            }
+            if (this.allowJump.getValue()) {
+                keyBindings.add(options.jumpKey);
+            }
+            if (this.allowSneak.getValue()) {
+                keyBindings.add(options.sneakKey);
+            }
+            keyBindings.add(options.forwardKey);
+            keyBindings.add(options.backKey);
+            keyBindings.add(options.leftKey);
+            keyBindings.add(options.rightKey);
+            for (final KeyBinding keyBinding : keyBindings) {
                 keyBinding.setPressed(InputUtil.isKeyPressed(this.mc.getWindow().getHandle(), keyBinding.boundKey.getCode()));
             }
         }
@@ -87,6 +132,9 @@ public class InventoryMoveModule extends AbstractModule implements PlayerUpdateL
 
     @Override
     public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
+        if (!this.allowArrowKeyRotation.getValue()) {
+            return;
+        }
         if (this.mc.player != null) {
             if (this.mc.currentScreen instanceof AbstractInventoryScreen<?> || this.mc.currentScreen instanceof ClientWindowScreen) {
                 if (this.mc.currentScreen instanceof CreativeInventoryScreen) {
