@@ -18,15 +18,18 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.util.server.ServerUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.DownloadingTerrainScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -34,6 +37,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(DownloadingTerrainScreen.class)
 public abstract class MixinDownloadingTerrainScreen extends Screen {
+
+    @Shadow
+    protected abstract Sprite getBackgroundSprite();
 
     @Unique
     private static final String vandalism$CANCEL_MESSAGE = "Press [ESC] to cancel.";
@@ -68,6 +74,11 @@ public abstract class MixinDownloadingTerrainScreen extends Screen {
             }
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @WrapWithCondition(method = "renderBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawSprite(IIIIILnet/minecraft/client/texture/Sprite;)V"))
+    private boolean stopRenderingBullshitAtRespawn(final DrawContext instance, final int x, final int y, final int z, final int width, final int height, final Sprite sprite) {
+        return !Vandalism.getInstance().getClientSettings().getVisualSettings().stopRenderingBullshitAtRespawn.getValue();
     }
 
 }
