@@ -20,13 +20,13 @@ package de.nekosarekawaii.vandalism.injection.mixins;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.util.SessionUtil;
+import de.nekosarekawaii.vandalism.util.render.util.RenderUtil;
 import de.nekosarekawaii.vandalism.util.server.ServerUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.session.Session;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -43,7 +43,9 @@ public abstract class MixinMinecraftClient {
     @Shadow @Nullable
     public abstract ClientPlayNetworkHandler getNetworkHandler();
 
-    @Shadow @Final private Session session;
+    @Shadow
+    public Session session;
+
     @Unique
     private boolean vandalism$loadingDisplayed = false;
 
@@ -79,8 +81,13 @@ public abstract class MixinMinecraftClient {
     }
 
     @Inject(method = "run", at = @At("HEAD"))
-    private void updateSession(CallbackInfo ci) {
+    private void updateSession(final CallbackInfo ci) {
         SessionUtil.checkSessionUpdate(this.session);
+    }
+
+    @Inject(method = "render", at = @At("HEAD"))
+    public void onDrawFrame(final boolean tick, final CallbackInfo ci) {
+        RenderUtil.drawFrame();
     }
 
 }
