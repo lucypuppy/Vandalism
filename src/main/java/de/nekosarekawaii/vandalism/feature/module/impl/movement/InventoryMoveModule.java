@@ -1,0 +1,120 @@
+/*
+ * This file is part of Vandalism - https://github.com/NekosAreKawaii/Vandalism
+ * Copyright (C) 2023-2024 NekosAreKawaii, FooFieOwO, Verschlxfene, Recyz and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package de.nekosarekawaii.vandalism.feature.module.impl.movement;
+
+import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
+import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindowScreen;
+import de.nekosarekawaii.vandalism.event.game.KeyboardInputListener;
+import de.nekosarekawaii.vandalism.event.player.MoveInputListener;
+import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
+import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
+import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
+import net.minecraft.item.ItemGroups;
+import org.lwjgl.glfw.GLFW;
+
+public class InventoryMoveModule extends AbstractModule implements MoveInputListener, KeyboardInputListener {
+
+    private final FloatValue rotationSpeed = new FloatValue(
+            this,
+            "Rotation Speed",
+            "The speed of the rotation for the arrow keys.",
+            2.0F,
+            0.1F,
+            10.0F
+    );
+
+    public InventoryMoveModule() {
+        super(
+                "Inventory Move",
+                "Allows you to move while being in a inventory.",
+                Category.MOVEMENT
+        );
+    }
+
+    @Override
+    public void onActivate() {
+        Vandalism.getInstance().getEventSystem().subscribe(
+                this,
+                MoveInputEvent.ID,
+                KeyboardInputEvent.ID
+        );
+    }
+
+    @Override
+    public void onDeactivate() {
+        Vandalism.getInstance().getEventSystem().unsubscribe(
+                this,
+                MoveInputEvent.ID,
+                KeyboardInputEvent.ID
+        );
+    }
+
+    @Override
+    public void onMoveInput(final MoveInputEvent event) {
+        if (this.mc.currentScreen instanceof AbstractInventoryScreen<?> || this.mc.currentScreen instanceof ClientWindowScreen) {
+            if (this.mc.currentScreen instanceof CreativeInventoryScreen) {
+                if (CreativeInventoryScreen.selectedTab == ItemGroups.getSearchGroup()) {
+                    return;
+                }
+            }
+            final GameOptions options = this.mc.options;
+            final KeyBinding[] bindings = {options.forwardKey, options.backKey, options.leftKey, options.rightKey, options.jumpKey, options.sneakKey};
+            for (final KeyBinding keyBinding : bindings) {
+                keyBinding.setPressed(InputUtil.isKeyPressed(this.mc.getWindow().getHandle(), keyBinding.boundKey.getCode()));
+            }
+        }
+    }
+
+    @Override
+    public void onKeyInput(final long window, final int key, final int scanCode, final int action, final int modifiers) {
+        if (this.mc.player != null) {
+            if (this.mc.currentScreen instanceof AbstractInventoryScreen<?> || this.mc.currentScreen instanceof ClientWindowScreen) {
+                if (this.mc.currentScreen instanceof CreativeInventoryScreen) {
+                    if (CreativeInventoryScreen.selectedTab == ItemGroups.getSearchGroup()) {
+                        return;
+                    }
+                }
+                final float value = this.rotationSpeed.getValue();
+                switch (key) {
+                    case GLFW.GLFW_KEY_UP -> {
+                        float newPitch = this.mc.player.getPitch() - value;
+                        if (newPitch > 90) newPitch = 90;
+                        if (newPitch < -90) newPitch = -90;
+                        this.mc.player.setPitch(newPitch);
+                    }
+                    case GLFW.GLFW_KEY_DOWN -> {
+                        float newPitch = this.mc.player.getPitch() + value;
+                        if (newPitch > 90) newPitch = 90;
+                        if (newPitch < -90) newPitch = -90;
+                        this.mc.player.setPitch(newPitch);
+                    }
+                    case GLFW.GLFW_KEY_LEFT -> this.mc.player.setYaw(this.mc.player.getYaw() - value);
+                    case GLFW.GLFW_KEY_RIGHT -> this.mc.player.setYaw(this.mc.player.getYaw() + value);
+                    default -> {
+                    }
+                }
+            }
+        }
+    }
+
+}
