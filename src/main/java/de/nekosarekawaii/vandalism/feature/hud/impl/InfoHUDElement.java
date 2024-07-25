@@ -31,16 +31,16 @@ import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.hud.HUDElement;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.TickBaseModule;
 import de.nekosarekawaii.vandalism.injection.access.IRenderTickCounter;
+import de.nekosarekawaii.vandalism.util.WorldUtil;
+import de.nekosarekawaii.vandalism.util.game.CPSTracker;
+import de.nekosarekawaii.vandalism.util.math.AlignmentX;
+import de.nekosarekawaii.vandalism.util.math.AlignmentY;
+import de.nekosarekawaii.vandalism.util.math.DateUtil;
 import de.nekosarekawaii.vandalism.util.render.Buffers;
 import de.nekosarekawaii.vandalism.util.render.Shaders;
 import de.nekosarekawaii.vandalism.util.render.gl.render.AttribConsumerProvider;
 import de.nekosarekawaii.vandalism.util.render.gl.render.ImmediateRenderer;
-import de.nekosarekawaii.vandalism.util.game.CPSTracker;
-import de.nekosarekawaii.vandalism.util.WorldUtil;
 import de.nekosarekawaii.vandalism.util.server.ServerUtil;
-import de.nekosarekawaii.vandalism.util.math.AlignmentX;
-import de.nekosarekawaii.vandalism.util.math.AlignmentY;
-import de.nekosarekawaii.vandalism.util.math.DateUtil;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.network.ServerInfo;
@@ -88,21 +88,21 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             Color.WHITE
     );
 
-    public final BooleanValue glowOutline = new BooleanValue(
+    private final BooleanValue glowOutline = new BooleanValue(
             this,
             "Glow Outline",
             "Activates/Deactivates the glow outline.",
             false
     );
 
-    public final ColorValue glowOutlineColor = new ColorValue(
+    private final ColorValue glowOutlineColor = new ColorValue(
             this,
             "Glow Outline Color",
             "The color of the glow outline.",
             Color.lightGray
     ).visibleCondition(this.glowOutline::getValue);
 
-    public final FloatValue glowOutlineWidth = new FloatValue(
+    private final FloatValue glowOutlineWidth = new FloatValue(
             this,
             "Glow Outline Width",
             "The width of the glow outline.",
@@ -111,7 +111,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             20.0f
     ).visibleCondition(this.glowOutline::getValue);
 
-    public final FloatValue glowOutlineAccuracy = new FloatValue(
+    private final FloatValue glowOutlineAccuracy = new FloatValue(
             this,
             "Glow Outline Accuracy",
             "The accuracy of the glow outline.",
@@ -120,7 +120,7 @@ public class InfoHUDElement extends HUDElement implements IncomingPacketListener
             8.0f
     ).visibleCondition(this.glowOutline::getValue);
 
-    public final FloatValue glowOutlineExponent = new FloatValue(
+    private final FloatValue glowOutlineExponent = new FloatValue(
             this,
             "Glow Outline Exponent",
             "The exponent of the glow outline.",
