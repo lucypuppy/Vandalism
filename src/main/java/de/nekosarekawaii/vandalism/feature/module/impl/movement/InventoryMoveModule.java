@@ -22,7 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.FloatValue;
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindowScreen;
 import de.nekosarekawaii.vandalism.event.game.KeyboardInputListener;
-import de.nekosarekawaii.vandalism.event.player.MoveInputListener;
+import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
@@ -32,7 +32,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemGroups;
 import org.lwjgl.glfw.GLFW;
 
-public class InventoryMoveModule extends AbstractModule implements MoveInputListener, KeyboardInputListener {
+public class InventoryMoveModule extends AbstractModule implements PlayerUpdateListener, KeyboardInputListener {
 
     private final FloatValue rotationSpeed = new FloatValue(
             this,
@@ -55,7 +55,7 @@ public class InventoryMoveModule extends AbstractModule implements MoveInputList
     public void onActivate() {
         Vandalism.getInstance().getEventSystem().subscribe(
                 this,
-                MoveInputEvent.ID,
+                PlayerUpdateEvent.ID,
                 KeyboardInputEvent.ID
         );
     }
@@ -64,13 +64,13 @@ public class InventoryMoveModule extends AbstractModule implements MoveInputList
     public void onDeactivate() {
         Vandalism.getInstance().getEventSystem().unsubscribe(
                 this,
-                MoveInputEvent.ID,
+                PlayerUpdateEvent.ID,
                 KeyboardInputEvent.ID
         );
     }
 
     @Override
-    public void onMoveInput(final MoveInputEvent event) {
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (this.mc.currentScreen instanceof AbstractInventoryScreen<?> || this.mc.currentScreen instanceof ClientWindowScreen) {
             if (this.mc.currentScreen instanceof CreativeInventoryScreen) {
                 if (CreativeInventoryScreen.selectedTab == ItemGroups.getSearchGroup()) {
