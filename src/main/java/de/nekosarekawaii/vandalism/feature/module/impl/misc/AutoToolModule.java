@@ -97,19 +97,21 @@ public class AutoToolModule extends AbstractModule implements PlayerUpdateListen
             if (itemStack == null) {
                 continue;
             }
-            final Item item = itemStack.getItem();
-            if (!(item instanceof ToolItem) && !(item instanceof ShearsItem)) {
-                continue;
-            }
-            // Mojang is so smart...
-            if (block instanceof BambooBlock) {
-                if (item instanceof SwordItem) {
-                    foundSwordForBamboo.set(true);
-                } else if (!(item instanceof AxeItem)) {
+            if (!(block instanceof PlantBlock)) {
+                final Item item = itemStack.getItem();
+                if (!(item instanceof ToolItem) && !(item instanceof ShearsItem)) {
                     continue;
                 }
+                // Mojang is so smart...
+                if (block instanceof BambooBlock) {
+                    if (item instanceof SwordItem) {
+                        foundSwordForBamboo.set(true);
+                    } else if (!(item instanceof AxeItem)) {
+                        continue;
+                    }
+                }
+                toolList.add(new Pair<>(itemStack, i));
             }
-            toolList.add(new Pair<>(itemStack, i));
         }
         if (toolList.isEmpty()) return;
         toolList.sort((i1, i2) -> {
