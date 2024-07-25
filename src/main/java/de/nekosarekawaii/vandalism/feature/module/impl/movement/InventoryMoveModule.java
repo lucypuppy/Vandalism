@@ -78,7 +78,7 @@ public class InventoryMoveModule extends AbstractModule implements MoveInputList
                 }
             }
             final GameOptions options = this.mc.options;
-            final KeyBinding[] bindings = {options.forwardKey, options.backKey, options.leftKey, options.rightKey, options.jumpKey, options.sneakKey};
+            final KeyBinding[] bindings = {options.forwardKey, options.backKey, options.leftKey, options.rightKey, options.jumpKey, options.sneakKey, options.sprintKey};
             for (final KeyBinding keyBinding : bindings) {
                 keyBinding.setPressed(InputUtil.isKeyPressed(this.mc.getWindow().getHandle(), keyBinding.boundKey.getCode()));
             }
