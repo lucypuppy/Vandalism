@@ -25,8 +25,10 @@ import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindowScreen;
 import de.nekosarekawaii.vandalism.event.game.KeyboardInputListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -103,7 +105,7 @@ public class InventoryMoveModule extends AbstractModule implements PlayerUpdateL
 
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
-        if (this.mc.currentScreen instanceof AbstractInventoryScreen<?> || this.mc.currentScreen instanceof ClientWindowScreen) {
+        if (this.mc.currentScreen instanceof HandledScreen<?>) {
             if (this.mc.currentScreen instanceof CreativeInventoryScreen) {
                 if (CreativeInventoryScreen.selectedTab == ItemGroups.getSearchGroup()) {
                     return;
