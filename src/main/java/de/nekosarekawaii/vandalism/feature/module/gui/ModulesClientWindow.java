@@ -251,6 +251,7 @@ public class ModulesClientWindow extends ClientWindow {
             }
             ImGui.endPopup();
         }
+        // TODO: Fix random crash caused by this
         if (ImGui.isItemHovered()) {
             ImGui.beginTooltip();
             this.renderModuleInfo(module, false);
