@@ -343,11 +343,13 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         }
         ImGui.spacing();
         final NoteSong currentSong = this.song;
-        final boolean active = currentSong != null && currentSong.getFile() != null;
-        if (ImGui.button("Open Directory##noteblockopendir", ImGui.getColumnWidth() / (active ? 3f : 1f), ImGui.getTextLineHeightWithSpacing())) {
+        if (ImGui.button("Open Directory##noteblockopendir", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {
             Util.getOperatingSystem().open(NOTE_BLOCK_SONGS_DIR);
         }
-        if (active) {
+        if (currentSong != null && currentSong.getFile() != null && this.state == State.PLAYING) {
+            if (ImGui.button("Reset##noteblockreset", ImGui.getColumnWidth() / 3f, ImGui.getTextLineHeightWithSpacing())) {
+                this.player.setTick(0);
+            }
             ImGui.sameLine();
             if (ImGui.button((this.player.isPaused() ? "Resume" : "Pause") + "##noteblockpause", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
                 this.player.setPaused(!this.player.isPaused());
@@ -355,6 +357,13 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
             ImGui.sameLine();
             if (ImUtils.subButton("Stop##noteblockstop")) {
                 this.deactivate();
+            }
+            if (ImGui.button("Skip 5 seconds backwards##noteblockskipbackwards", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
+                this.player.setTick(Math.max(this.player.getTick() - 50, 0));
+            }
+            ImGui.sameLine();
+            if (ImUtils.subButton("Skip 5 seconds forwards##noteblockskipforwards")) {
+                this.player.setTick(Math.min(this.player.getTick() + 50, this.player.getSongView().getLength()));
             }
             ImGui.separator();
             if (this.player != null) {
