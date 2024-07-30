@@ -19,11 +19,29 @@
 package de.nekosarekawaii.vandalism.feature.creativetab.impl;
 
 import de.nekosarekawaii.vandalism.feature.creativetab.AbstractCreativeTab;
+import net.minecraft.block.Blocks;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.*;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.potion.Potions;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 
-import java.util.List;
+import java.util.*;
+
+import static de.nekosarekawaii.vandalism.util.game.ItemStackUtil.withClientSide;
 
 public class TrollItemsCreativeTab extends AbstractCreativeTab {
 
@@ -31,282 +49,285 @@ public class TrollItemsCreativeTab extends AbstractCreativeTab {
         super(Text.literal("Troll Items"), Items.END_CRYSTAL);
     }
 
-    // TODO: Fix
-
     @Override
     public void exposeItems(final List<ItemStack> items) {
-      /*  for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
+        final List<Item> potionTypes = Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION);
+        for (final Item item : potionTypes) {
             items.add(withClientSide(createTrollPotion(new ItemStack(item)), Text.literal(Formatting.GOLD + "Troll Potion")));
         }
-        for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
+        for (final Item item : potionTypes) {
             items.add(withClientSide(createKillPotion(new ItemStack(item)), Text.literal(Formatting.RED + "Kill Potion")));
         }
         items.add(withClientSide(createKillArea(), Text.literal(Formatting.RED + "Kill Area")));
         items.add(withClientSide(createWhiteHole(), Text.literal(Formatting.WHITE + "White Hole")));
         items.add(withClientSide(createBlackHole(), Text.literal(Formatting.WHITE + "Black Hole")));
         items.add(withClientSide(createEventHorizonArea(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area")));
-        for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
-            items.add(withClientSide(createOldTrollPotion(new ItemStack(item)), Text.literal(Formatting.GOLD + "Troll Potion (Old)")));
-        }
-        for (final Item item : Arrays.asList(Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION)) {
-            items.add(withClientSide(createOldKillPotion(new ItemStack(item)), Text.literal(Formatting.RED + "Kill Potion (Old)")));
-        }
-        items.add(withClientSide(createOldKillArea(), Text.literal(Formatting.RED + "Kill Area (Old)")));
-        items.add(withClientSide(createOldEventHorizonArea(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Event Horizon Area (Old)")));
         items.add(withClientSide(createStargazer(), Text.literal(Formatting.YELLOW + Formatting.BOLD.toString() + "Stargazer"), true));
         items.add(withClientSide(createGhostBlock(), Text.literal(Formatting.GOLD + Formatting.BOLD.toString() + "Ghost Block")));
         items.add(withClientSide(createWardenSummonBlock(), Text.literal(Formatting.DARK_AQUA + Formatting.BOLD.toString() + "Warden Summon Block")));
         items.add(withClientSide(createUnstableTNTBlock(), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Unstable TNT Block")));
         items.add(withClientSide(createGroundBugBoots(), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Ground Bug Boots")));
         items.add(withClientSide(createCreativeItemControlItem(true), Text.literal(Formatting.DARK_RED + Formatting.BOLD.toString() + "Creative Item Control (Kick)")));
-        items.add(withClientSide(createCreativeItemControlItem(false), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Creative Item Control (Clear Chat)")));*/
+        items.add(withClientSide(createCreativeItemControlItem(false), Text.literal(Formatting.RED + Formatting.BOLD.toString() + "Creative Item Control (Clear Chat)")));
     }
-/*
+
 
     private static ItemStack createTrollPotion(final ItemStack origin) {
-        final NbtCompound base = new NbtCompound();
-        final NbtList customPotionEffects = new NbtList();
+        final List<StatusEffectInstance> statusEffects = new ArrayList<>();
         for (final StatusEffect statusEffect : Registries.STATUS_EFFECT) {
             final Identifier id = Registries.STATUS_EFFECT.getId(statusEffect);
             if (id != null && id.getNamespace().equals("minecraft")) {
-                customPotionEffects.add(ItemStackUtil.createEffectNBT(id.getPath(), 10000, 255, false));
+                statusEffects.add(new StatusEffectInstance(
+                        Registries.STATUS_EFFECT.getEntry(statusEffect),
+                        10000,
+                        255,
+                        false,
+                        false
+                ));
             }
         }
-        base.put("custom_potion_effects", customPotionEffects);
-        origin.setNbt(base);
-        return origin;
-    }
-
-    private static ItemStack createOldTrollPotion(final ItemStack origin) {
-        final NbtCompound base = new NbtCompound();
-        final NbtList customPotionEffects = new NbtList();
-        int i = 0;
-        for (final StatusEffect statusEffect : Registries.STATUS_EFFECT) {
-            i++;
-            final Identifier id = Registries.STATUS_EFFECT.getId(statusEffect);
-            if (id != null && id.getNamespace().equals("minecraft")) {
-                customPotionEffects.add(ItemStackUtil.createOldEffectNBT(i, 10000, 255, false));
-            }
-        }
-        base.put("CustomPotionEffects", customPotionEffects);
-        origin.setNbt(base);
+        origin.set(DataComponentTypes.POTION_CONTENTS, new PotionContentsComponent(
+                Optional.of(Potions.LUCK),
+                Optional.empty(),
+                statusEffects
+        ));
         return origin;
     }
 
     private static ItemStack createKillPotion(final ItemStack origin) {
-        final NbtCompound base = new NbtCompound();
-        final NbtList customPotionEffects = new NbtList();
-        customPotionEffects.add(ItemStackUtil.createEffectNBT("instant_health", 2000, 125, false));
-        base.put("custom_potion_effects", customPotionEffects);
-        origin.setNbt(base);
-        return origin;
-    }
-
-    private static ItemStack createOldKillPotion(final ItemStack origin) {
-        final NbtCompound base = new NbtCompound();
-        final NbtList customPotionEffects = new NbtList();
-        customPotionEffects.add(ItemStackUtil.createOldEffectNBT(6, 2000, 125, false));
-        base.put("CustomPotionEffects", customPotionEffects);
-        origin.setNbt(base);
+        final List<StatusEffectInstance> statusEffects = List.of(new StatusEffectInstance(
+                StatusEffects.INSTANT_HEALTH,
+                2000,
+                125,
+                false,
+                false
+        ));
+        origin.set(DataComponentTypes.POTION_CONTENTS, new PotionContentsComponent(
+                Optional.of(Potions.HEALING),
+                Optional.empty(),
+                statusEffects
+        ));
         return origin;
     }
 
     private static ItemStack createKillArea() {
         final ItemStack item = new ItemStack(Items.SALMON_SPAWN_EGG);
-        final NbtCompound base = new NbtCompound();
-        final NbtCompound entityTag = new NbtCompound();
-        final NbtList effects = new NbtList();
-        effects.add(ItemStackUtil.createEffectNBT("instant_health", 20, 125, false));
-        entityTag.put("effects", effects);
-        entityTag.putFloat("RadiusOnUse", 0.1f);
-        entityTag.putFloat("RadiusPerTick", 0.01f);
-        entityTag.putInt("Duration", 20000);
-        entityTag.putFloat("Radius", 100f);
-        entityTag.putInt("ReapplicationDelay", 40);
-        entityTag.putString("Particle", "block cave_air");
-        entityTag.putString("id", "minecraft:area_effect_cloud");
-        base.put("EntityTag", entityTag);
-        item.setNbt(base);
-        return item;
-    }
-
-    private static ItemStack createOldKillArea() {
-        final ItemStack item = new ItemStack(Items.SALMON_SPAWN_EGG);
-        final NbtCompound base = new NbtCompound();
-        final NbtCompound entityTag = new NbtCompound();
-        final NbtList effects = new NbtList();
-        effects.add(ItemStackUtil.createOldEffectNBT(6, 20, 125, false));
-        entityTag.put("Effects", effects);
-        entityTag.putFloat("RadiusOnUse", 0.1f);
-        entityTag.putFloat("RadiusPerTick", 0.01f);
-        entityTag.putInt("Duration", 20000);
-        entityTag.putFloat("Radius", 100f);
-        entityTag.putInt("ReapplicationDelay", 40);
-        entityTag.putString("Particle", "block cave_air");
-        entityTag.putString("id", "minecraft:area_effect_cloud");
-        base.put("EntityTag", entityTag);
-        item.setNbt(base);
+        final NbtCompound entityData = new NbtCompound();
+        final NbtCompound potionContents = new NbtCompound();
+        potionContents.putString("potion", "minecraft:healing");
+        final NbtList customEffects = new NbtList();
+        final NbtCompound customEffect = new NbtCompound();
+        customEffect.putString("id", "minecraft:instant_health");
+        customEffect.putByte("show_particles", (byte) 0);
+        customEffect.putByte("show_icon", (byte) 0);
+        customEffect.putByte("ambient", (byte) 0);
+        customEffect.putInt("duration", 20);
+        customEffect.putByte("amplifier", (byte) 125);
+        customEffects.add(customEffect);
+        potionContents.put("custom_effects", customEffects);
+        entityData.put("potion_contents", potionContents);
+        entityData.putFloat("RadiusOnUse", 0.1f);
+        entityData.putFloat("RadiusPerTick", 0.01f);
+        entityData.putInt("Duration", 20000);
+        entityData.putFloat("Radius", 100f);
+        entityData.putInt("ReapplicationDelay", 40);
+        final NbtCompound particle = new NbtCompound();
+        particle.putString("type", "block");
+        particle.putString("block_state", "minecraft:cave_air");
+        entityData.put("Particle", particle);
+        entityData.putString("id", "minecraft:area_effect_cloud");
+        item.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(entityData));
         return item;
     }
 
     private static ItemStack createWhiteHole() {
-        final ItemStack item = new ItemStack(Items.CHICKEN_SPAWN_EGG);
-        final NbtCompound base = new NbtCompound();
-        final NbtCompound entityTag = new NbtCompound();
-        entityTag.putFloat("RadiusOnUse", 0.1f);
-        entityTag.putFloat("RadiusPerTick", 0.01f);
-        entityTag.putInt("Duration", 20000);
-        entityTag.putFloat("Radius", 100f);
-        entityTag.putInt("ReapplicationDelay", 40);
-        entityTag.putString("Particle", "flash");
-        entityTag.putString("id", "minecraft:area_effect_cloud");
-        base.put("EntityTag", entityTag);
-        item.setNbt(base);
+        final ItemStack item = new ItemStack(Items.PANDA_SPAWN_EGG);
+        final NbtCompound entityData = new NbtCompound();
+        final NbtCompound particle = new NbtCompound();
+        particle.putString("type", "flash");
+        entityData.put("Particle", particle);
+        entityData.putFloat("RadiusOnUse", 0.1f);
+        entityData.putFloat("RadiusPerTick", 0.01f);
+        entityData.putInt("Duration", 20000);
+        entityData.putFloat("Radius", 100f);
+        entityData.putInt("ReapplicationDelay", 40);
+        entityData.putString("id", "minecraft:area_effect_cloud");
+        item.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(entityData));
         return item;
     }
 
     private static ItemStack createBlackHole() {
         final ItemStack item = new ItemStack(Items.BAT_SPAWN_EGG);
-        final NbtCompound base = new NbtCompound();
-        final NbtCompound entityTag = new NbtCompound();
-        entityTag.putByte("shadow", (byte) 1);
-        entityTag.putFloat("shadow_strength", 10000000f);
-        entityTag.putFloat("shadow_radius", 10000000f);
-        entityTag.putFloat("view_range", 10000000f);
-        entityTag.putString("id", "minecraft:text_display");
-        base.put("EntityTag", entityTag);
-        item.setNbt(base);
+        final NbtCompound entityData = new NbtCompound();
+        entityData.putByte("shadow", (byte) 1);
+        entityData.putFloat("shadow_strength", 10000000f);
+        entityData.putFloat("shadow_radius", 10000000f);
+        entityData.putFloat("view_range", 10000000f);
+        entityData.putString("id", "minecraft:text_display");
+        item.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(entityData));
         return item;
     }
 
     private static ItemStack createEventHorizonArea() {
         final ItemStack item = new ItemStack(Items.BAT_SPAWN_EGG);
-        final NbtCompound base = new NbtCompound();
-        final NbtCompound entityTag = new NbtCompound();
-        final NbtList effects = new NbtList();
-        effects.add(ItemStackUtil.createEffectNBT("slowness", 170, 125, false));
-        effects.add(ItemStackUtil.createEffectNBT("mining_fatigue", 150, 125, false));
-        effects.add(ItemStackUtil.createEffectNBT("resistance ", 170, 125, false));
-        effects.add(ItemStackUtil.createEffectNBT("invisibility", 130, 1, false));
-        effects.add(ItemStackUtil.createEffectNBT("weakness", 170, 125, false));
-        effects.add(ItemStackUtil.createEffectNBT("wither", 160, 1, false));
-        effects.add(ItemStackUtil.createEffectNBT("levitation", 19, 125, false));
-        effects.add(ItemStackUtil.createEffectNBT("darkness", 170, 125, false));
-        entityTag.put("effects", effects);
-        entityTag.putFloat("RadiusOnUse", 0.1f);
-        entityTag.putFloat("RadiusPerTick", 0.01f);
-        entityTag.putInt("Duration", 20000);
-        entityTag.putFloat("Radius", 100f);
-        entityTag.putInt("ReapplicationDelay", 40);
-        entityTag.putString("Particle", "item air");
-        entityTag.putString("id", "minecraft:area_effect_cloud");
-        base.put("EntityTag", entityTag);
-        item.setNbt(base);
-        return item;
-    }
+        final NbtCompound entityData = new NbtCompound();
+        final NbtCompound potionContents = new NbtCompound();
+        potionContents.putString("potion", "minecraft:healing");
+        final NbtList customEffects = new NbtList();
 
-    private static ItemStack createOldEventHorizonArea() {
-        final ItemStack item = new ItemStack(Items.BAT_SPAWN_EGG);
-        final NbtCompound base = new NbtCompound();
-        final NbtCompound entityTag = new NbtCompound();
-        final NbtList effects = new NbtList();
-        effects.add(ItemStackUtil.createOldEffectNBT(2, 170, 125, false));
-        effects.add(ItemStackUtil.createOldEffectNBT(4, 150, 125, false));
-        effects.add(ItemStackUtil.createOldEffectNBT(11, 170, 125, false));
-        effects.add(ItemStackUtil.createOldEffectNBT(14, 130, 1, false));
-        effects.add(ItemStackUtil.createOldEffectNBT(18, 170, 125, false));
-        effects.add(ItemStackUtil.createOldEffectNBT(20, 160, 1, false));
-        effects.add(ItemStackUtil.createOldEffectNBT(25, 19, 125, false));
-        effects.add(ItemStackUtil.createOldEffectNBT(33, 170, 125, false));
-        entityTag.put("Effects", effects);
-        entityTag.putFloat("RadiusOnUse", 0.1f);
-        entityTag.putFloat("RadiusPerTick", 0.01f);
-        entityTag.putInt("Duration", 20000);
-        entityTag.putFloat("Radius", 100f);
-        entityTag.putInt("ReapplicationDelay", 40);
-        entityTag.putString("Particle", "item air");
-        entityTag.putString("id", "minecraft:area_effect_cloud");
-        base.put("EntityTag", entityTag);
-        item.setNbt(base);
+        final NbtCompound slownessEffect = new NbtCompound();
+        slownessEffect.putString("id", "minecraft:slowness");
+        slownessEffect.putByte("show_particles", (byte) 0);
+        slownessEffect.putByte("show_icon", (byte) 0);
+        slownessEffect.putByte("ambient", (byte) 0);
+        slownessEffect.putInt("duration", 170);
+        slownessEffect.putByte("amplifier", (byte) 125);
+        customEffects.add(slownessEffect);
+
+        final NbtCompound miningFatigueEffect = new NbtCompound();
+        miningFatigueEffect.putString("id", "minecraft:mining_fatigue");
+        miningFatigueEffect.putByte("show_particles", (byte) 0);
+        miningFatigueEffect.putByte("show_icon", (byte) 0);
+        miningFatigueEffect.putByte("ambient", (byte) 0);
+        miningFatigueEffect.putInt("duration", 150);
+        miningFatigueEffect.putByte("amplifier", (byte) 125);
+        customEffects.add(miningFatigueEffect);
+
+        final NbtCompound resistanceEffect = new NbtCompound();
+        resistanceEffect.putString("id", "minecraft:resistance");
+        resistanceEffect.putByte("show_particles", (byte) 0);
+        resistanceEffect.putByte("show_icon", (byte) 0);
+        resistanceEffect.putByte("ambient", (byte) 0);
+        resistanceEffect.putInt("duration", 170);
+        resistanceEffect.putByte("amplifier", (byte) 125);
+        customEffects.add(resistanceEffect);
+
+        final NbtCompound invisibilityEffect = new NbtCompound();
+        invisibilityEffect.putString("id", "minecraft:invisibility");
+        invisibilityEffect.putByte("show_particles", (byte) 0);
+        invisibilityEffect.putByte("show_icon", (byte) 0);
+        invisibilityEffect.putByte("ambient", (byte) 0);
+        invisibilityEffect.putInt("duration", 130);
+        invisibilityEffect.putByte("amplifier", (byte) 1);
+        customEffects.add(invisibilityEffect);
+
+        final NbtCompound weaknessEffect = new NbtCompound();
+        weaknessEffect.putString("id", "minecraft:weakness");
+        weaknessEffect.putByte("show_particles", (byte) 0);
+        weaknessEffect.putByte("show_icon", (byte) 0);
+        weaknessEffect.putByte("ambient", (byte) 0);
+        weaknessEffect.putInt("duration", 170);
+        weaknessEffect.putByte("amplifier", (byte) 125);
+        customEffects.add(weaknessEffect);
+
+        final NbtCompound witherEffect = new NbtCompound();
+        witherEffect.putString("id", "minecraft:wither");
+        witherEffect.putByte("show_particles", (byte) 0);
+        witherEffect.putByte("show_icon", (byte) 0);
+        witherEffect.putByte("ambient", (byte) 0);
+        witherEffect.putInt("duration", 160);
+        witherEffect.putByte("amplifier", (byte) 1);
+        customEffects.add(witherEffect);
+
+        final NbtCompound levitationEffect = new NbtCompound();
+        levitationEffect.putString("id", "minecraft:levitation");
+        levitationEffect.putByte("show_particles", (byte) 0);
+        levitationEffect.putByte("show_icon", (byte) 0);
+        levitationEffect.putByte("ambient", (byte) 0);
+        levitationEffect.putInt("duration", 19);
+        levitationEffect.putByte("amplifier", (byte) 125);
+        customEffects.add(levitationEffect);
+
+        final NbtCompound darknessEffect = new NbtCompound();
+        darknessEffect.putString("id", "minecraft:darkness");
+        darknessEffect.putByte("show_particles", (byte) 0);
+        darknessEffect.putByte("show_icon", (byte) 0);
+        darknessEffect.putByte("ambient", (byte) 0);
+        darknessEffect.putInt("duration", 170);
+        darknessEffect.putByte("amplifier", (byte) 125);
+        customEffects.add(darknessEffect);
+
+        potionContents.put("custom_effects", customEffects);
+        entityData.put("potion_contents", potionContents);
+        final NbtCompound particle = new NbtCompound();
+        particle.putString("type", "reverse_portal"); // R.I.P. bug particle
+        entityData.put("Particle", particle);
+        entityData.putFloat("RadiusOnUse", 0.1f);
+        entityData.putFloat("RadiusPerTick", 0.01f);
+        entityData.putInt("Duration", 20000);
+        entityData.putFloat("Radius", 100f);
+        entityData.putInt("ReapplicationDelay", 40);
+        entityData.putString("id", "minecraft:area_effect_cloud");
+        item.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(entityData));
         return item;
     }
 
     private static ItemStack createStargazer() {
         final ItemStack item = new ItemStack(Items.COW_SPAWN_EGG);
-        final NbtCompound base = new NbtCompound();
-        final NbtCompound entityTag = new NbtCompound();
-        entityTag.putInt("Steps", Integer.MIN_VALUE);
-        entityTag.putString("id", "minecraft:shulker_bullet");
-        entityTag.putString("CustomName", Text.Serialization.toJsonString(Text.literal("*").formatted(Formatting.YELLOW, Formatting.BOLD)));
-        entityTag.putByte("CustomNameVisible", (byte) 1);
-        entityTag.putByte("NoGravity", (byte) 1);
-        base.put("EntityTag", entityTag);
-        item.setNbt(base);
+        final NbtCompound entityData = new NbtCompound();
+        entityData.putString("id", "minecraft:shulker_bullet");
+        entityData.putInt("Steps", Integer.MIN_VALUE);
+        entityData.putByte("NoGravity", (byte) 1);
+        entityData.putByte("CustomNameVisible", (byte) 1);
+        entityData.putString("CustomName", Text.Serialization.toJsonString(Text.literal("*").formatted(Formatting.YELLOW, Formatting.BOLD), DynamicRegistryManager.EMPTY));
+        item.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(entityData));
         return item;
     }
 
     private static ItemStack createGhostBlock() {
         final ItemStack item = new ItemStack(Items.JIGSAW);
-        final NbtCompound base = new NbtCompound();
-        final NbtCompound blockEntityTag = new NbtCompound();
-        blockEntityTag.putString("pool", "Hacked:YouHaveBeenHacked");
-        base.put("BlockEntityTag", blockEntityTag);
-        item.setNbt(base);
+        final NbtCompound blockEntityData = new NbtCompound();
+        blockEntityData.putString("pool", "Hacked:YouHaveBeenHacked");
+        blockEntityData.putString("id", "minecraft:jigsaw");
+        item.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(blockEntityData));
         return item;
     }
 
     private static ItemStack createWardenSummonBlock() {
         final ItemStack item = new ItemStack(Blocks.SCULK_SHRIEKER);
-        final NbtCompound base = new NbtCompound();
-        final NbtCompound blockEntityTag = new NbtCompound();
-        blockEntityTag.putInt("warning_level", 4);
-        base.put("BlockEntityTag", blockEntityTag);
-        final NbtCompound blockStateTag = new NbtCompound();
-        blockStateTag.putString("can_summon", "true");
-        blockStateTag.putString("shrieking", "true");
-        base.put("BlockStateTag", blockStateTag);
-        item.setNbt(base);
+        final NbtCompound blockEntityData = new NbtCompound();
+        blockEntityData.putString("id", "minecraft:sculk_shrieker");
+        blockEntityData.putInt("warning_level", 4);
+        item.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(blockEntityData));
+        final Map<String, String> blockStateMap = new HashMap<>();
+        blockStateMap.put("can_summon", "true");
+        blockStateMap.put("shrieking", "true");
+        item.set(DataComponentTypes.BLOCK_STATE, new BlockStateComponent(blockStateMap));
         return item;
     }
 
     private static ItemStack createUnstableTNTBlock() {
         final ItemStack item = new ItemStack(Blocks.TNT);
-        final NbtCompound base = new NbtCompound();
-        final NbtCompound blockStateTag = new NbtCompound();
-        blockStateTag.putString("unstable", "true");
-        base.put("BlockStateTag", blockStateTag);
-        item.setNbt(base);
+        final Map<String, String> blockStateMap = new HashMap<>();
+        blockStateMap.put("unstable", "true");
+        item.set(DataComponentTypes.BLOCK_STATE, new BlockStateComponent(blockStateMap));
         return item;
     }
 
     private static ItemStack createGroundBugBoots() {
         final ItemStack item = new ItemStack(Items.DIAMOND_BOOTS);
-        final NbtCompound base = new NbtCompound();
-        final NbtList attributeModifiers = new NbtList();
-        final NbtCompound attributeModifier = new NbtCompound();
-        attributeModifier.putString("AttributeName", "generic.movementSpeed");
-        attributeModifier.putString("Name", " ");
-        attributeModifier.putDouble("Amount", Double.NaN);
-        attributeModifier.putInt("Operation", 0);
-        attributeModifier.putLong("UUIDLeast", 1);
-        attributeModifier.putLong("UUIDMost", 1);
-        attributeModifiers.add(attributeModifier);
-        base.put("AttributeModifiers", attributeModifiers);
-        item.setNbt(base);
+        final AttributeModifiersComponent.Builder builder = AttributeModifiersComponent.builder();
+        final EntityAttributeModifier attributeModifier = new EntityAttributeModifier(
+                Identifier.of("minecraft:movement_speed"),
+                Double.NaN,
+                EntityAttributeModifier.Operation.ADD_VALUE
+        );
+        builder.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, attributeModifier, AttributeModifierSlot.ANY);
+        item.set(DataComponentTypes.ATTRIBUTE_MODIFIERS, builder.build());
         return item;
     }
 
     private static ItemStack createCreativeItemControlItem(final boolean kick) {
         final ItemStack item = new ItemStack(Items.COMMAND_BLOCK);
-        final NbtCompound tag = new NbtCompound();
-        tag.putDouble(UUID.randomUUID().toString(), Double.NaN);
+        final NbtCompound blockEntityData = new NbtCompound();
+        blockEntityData.putString("id", "minecraft:command_block");
+        blockEntityData.putDouble(UUID.randomUUID().toString(), Double.NaN);
         final StringBuilder hacked = new StringBuilder(), toAdd = new StringBuilder();
         for (int i = 0; i < (kick ? 5 : 8); i++) toAdd.append(' ').append(toAdd);
         for (int i = 0; i < (kick ? 900 : 2000); i++) hacked.append(kick ? "§c§l" : "").append(toAdd);
-        tag.putString("z", hacked.toString());
-        item.setNbt(tag);
+        blockEntityData.putString("z", hacked.toString());
+        item.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(blockEntityData));
         return item;
     }
-*/
 
 }
