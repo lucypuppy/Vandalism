@@ -26,6 +26,7 @@ import de.florianmichael.rclasses.math.timer.MSTimer;
 import de.florianmichael.rclasses.pattern.functional.IName;
 import de.florianmichael.viafabricplus.protocoltranslator.ProtocolTranslator;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.rendering.RenderingValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
@@ -75,6 +76,15 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class NoteBotModule extends AbstractModule implements PlayerUpdateListener, IncomingPacketListener, Render2DListener, Render3DListener {
+
+    private final IntegerValue scanRange = new IntegerValue(
+            this,
+            "Scan Range",
+            "The range to scan for note blocks.",
+            6,
+            3,
+            10
+    );
 
     private final EnumModeValue<Mode> mode = new EnumModeValue<>(
             this,
@@ -224,9 +234,11 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         }
     };
 
-    private void playSong(final File file) {
+    private void playSong(final File file, final boolean shouldDeactivateFirst) {
         try {
-            this.deactivate();
+            if (shouldDeactivateFirst) {
+                this.deactivate();
+            }
             // Okay, so we're going to read the song extract info we might need and then recreate it as a NBS. This will make the playing at the end less cancer.
             final Song<?, ?, ?> song = NoteBlockLib.readSong(file);
             // We recreate the song as NBS here
@@ -237,6 +249,13 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         }
     }
 
+    private void playRandomSong(final boolean shouldDeactivateFirst) {
+        final List<File> files = this.getAllFiles(NOTE_BLOCK_SONGS_DIR);
+        if (!files.isEmpty()) {
+            this.playSong(files.get(ThreadLocalRandom.current().nextInt(files.size())), shouldDeactivateFirst);
+        }
+    }
+
     private void renderSongFile(final File dir, final File file) {
         final SongFormat songFormat = NoteBlockLib.getFormat(file.toPath());
         if (songFormat == null) return;
@@ -244,7 +263,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         if (this.song == null || !this.song.getFile().getAbsolutePath().equals(file.getAbsolutePath())) {
             if (this.mc.player != null) {
                 if (ImUtils.subButton("Play " + file.getName() + "##" + identifier + "play")) {
-                    this.playSong(file);
+                    this.playSong(file, true);
                 }
             }
         }
@@ -351,10 +370,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         ImGui.setNextItemWidth(-1);
         ImGui.inputText("##noteblocksongsearch", this.searchText);
         if (ImUtils.subButton("Play random Song##noteblockrandom")) {
-            final List<File> files = this.getAllFiles(NOTE_BLOCK_SONGS_DIR);
-            if (!files.isEmpty()) {
-                this.playSong(files.get(ThreadLocalRandom.current().nextInt(files.size())));
-            }
+            this.playRandomSong(true);
         }
         ImGui.text(" ".repeat(200));
         if (this.searchText.get().isBlank()) {
@@ -540,33 +556,29 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void onActivate() {
-        tunableBlocks.clear();
-        cachedPositions.clear();
-        customInstruments.clear();
-
+        this.tunableBlocks.clear();
+        this.cachedPositions.clear();
+        this.customInstruments.clear();
         this.state = State.DISCOVERING;
-
         if (this.song == null) {
-            ChatUtil.errorChatMessage("No song selected.");
+            this.playRandomSong(false);
+        }
+        if (this.song == null) {
+            ChatUtil.errorChatMessage("No note block songs found.");
             this.deactivate();
             return;
         }
-
         try {
             if (this.mode.getValue() == Mode.BLOCKS) {
-                // feel free to improve this while still having spaces, thanks!
                 final List<BlockPos> noteBlocks = scanNoteBlocks();
                 for (final NbsNote requirement : this.song.getRequirements()) {
                     final Instrument requiredInstrument = requirement.getInstrument();
-
                     for (final BlockPos noteBlock : noteBlocks) {
                         if (this.tunableBlocks.containsKey(noteBlock)) {
                             continue;
                         }
-
                         final Instrument instrument = getInstrument(noteBlock);
                         final int key = MinecraftDefinitions.nbsKeyToMcKey(requirement.getKey());
                         if (requiredInstrument == instrument) {
@@ -575,7 +587,6 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
                         }
                     }
                 }
-
                 ChatUtil.infoChatMessage("%d tunable blocks found".formatted(this.tunableBlocks.size()));
                 ChatUtil.infoChatMessage("%d total blocks found".formatted(noteBlocks.size()));
             } else if (this.mode.getValue() == Mode.COMMAND) {
@@ -584,7 +595,6 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
                     networkHandler.sendChatCommand("bossbar add " + BOSS_BAR_NAME + " \"Note Bot\"");
                 }
             }
-
             if (this.song == null) {
                 this.deactivate();
                 return;
@@ -593,14 +603,21 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         } catch (final Exception e) {
             ChatUtil.errorChatMessage("Failed to read song: " + e);
         }
-
-        Vandalism.getInstance().getEventSystem().subscribe(this, PlayerUpdateEvent.ID, IncomingPacketEvent.ID, Render2DEvent.ID, Render3DEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(
+                this,
+                PlayerUpdateEvent.ID, IncomingPacketEvent.ID,
+                Render2DEvent.ID, Render3DEvent.ID
+        );
     }
 
     @Override
     public void onDeactivate() {
         if (player != null) player.stop();
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, PlayerUpdateEvent.ID, IncomingPacketEvent.ID, Render2DEvent.ID, Render3DEvent.ID);
+        Vandalism.getInstance().getEventSystem().unsubscribe(
+                this,
+                PlayerUpdateEvent.ID, IncomingPacketEvent.ID,
+                Render2DEvent.ID, Render3DEvent.ID
+        );
         if (this.mode.getValue() == Mode.COMMAND) {
             final ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
             if (networkHandler != null) {
@@ -691,27 +708,21 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
      */
     private List<BlockPos> scanNoteBlocks() {
         final List<BlockPos> scannedBlocks = new ArrayList<>();
-
-        if (mc.interactionManager == null || mc.world == null || mc.player == null)
+        if (this.mc.interactionManager == null || this.mc.world == null || this.mc.player == null) {
             return scannedBlocks;
-
-        // TODO make it adjustable
-        int min = -6;
-        int max = 6;
-
-        for (int y = min; y < max; y++) {
-            for (int x = min; x < max; x++) {
-                for (int z = min; z < max; z++) {
-                    BlockPos pos = mc.player.getBlockPos().add(x, y + 1, z);
-
-                    if (isNotNoteBlock(pos))
+        }
+        final int range = this.scanRange.getValue();
+        for (int y = -range; y < range; y++) {
+            for (int x = -range; x < range; x++) {
+                for (int z = -range; z < range; z++) {
+                    final BlockPos pos = mc.player.getBlockPos().add(x, y + 1, z);
+                    if (this.isNotNoteBlock(pos)) {
                         continue;
-
+                    }
                     scannedBlocks.add(pos);
                 }
             }
         }
-
         return scannedBlocks;
     }
 
