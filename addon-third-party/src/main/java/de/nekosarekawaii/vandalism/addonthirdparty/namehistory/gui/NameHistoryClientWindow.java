@@ -129,7 +129,13 @@ public class NameHistoryClientWindow extends StateClientWindow implements DataLi
                                 if (jsonObject.has("username_history")) {
                                     final JsonArray usernameHistory = jsonObject.getAsJsonArray("username_history");
                                     for (final JsonElement element : usernameHistory) {
+                                        final CopyOnWriteArrayList<Pair<String, String>> list = new CopyOnWriteArrayList<>();
                                         final JsonObject usernameObject = element.getAsJsonObject();
+                                        final String username = usernameObject.get("username").getAsString();
+                                        if (username.hashCode() == 65293) {
+                                            continue;
+                                        }
+                                        list.add(new Pair<>("Username", username));
                                         String date =
                                                 usernameObject.get("changed_at").isJsonNull() ? "" :
                                                         usernameObject.get("changed_at").getAsString();
@@ -143,8 +149,6 @@ public class NameHistoryClientWindow extends StateClientWindow implements DataLi
                                         if (accurate.equals("true")) accurate = "Yes";
                                         else if (accurate.equals("false")) accurate = "No";
                                         else accurate = "Unknown";
-                                        final CopyOnWriteArrayList<Pair<String, String>> list = new CopyOnWriteArrayList<>();
-                                        list.add(new Pair<>("Username", usernameObject.get("username").getAsString()));
                                         list.add(new Pair<>("Date", date));
                                         list.add(new Pair<>("Accurate", accurate));
                                         this.nameHistoryDataEntries.add(new ListDataEntry(list));
