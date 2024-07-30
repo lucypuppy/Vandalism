@@ -75,24 +75,6 @@ public class ItemStackUtil implements MinecraftWrapper {
         return itemStack;
     }
 
-    public static NbtCompound createEffectNBT(final String id, final int duration, final int amplifier, final boolean showParticles) {
-        final NbtCompound effect = new NbtCompound();
-        effect.putString("id", "minecraft:" + id);
-        effect.putByte("show_particles", showParticles ? (byte) 1 : (byte) 0);
-        effect.putInt("duration", duration);
-        effect.putByte("amplifier", (byte) amplifier);
-        return effect;
-    }
-
-    public static NbtCompound createOldEffectNBT(final int id, final int duration, final int amplifier, final boolean showParticles) {
-        final NbtCompound effect = new NbtCompound();
-        effect.putInt("Id", id);
-        effect.putByte("ShowParticles", showParticles ? (byte) 1 : (byte) 0);
-        effect.putInt("Duration", duration);
-        effect.putByte("Amplifier", (byte) amplifier);
-        return effect;
-    }
-
     public static ItemStack createItemStack(final Item item, final String nbt) {
         return createItemStack(item, 1, nbt);
     }

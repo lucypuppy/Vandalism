@@ -24,6 +24,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.NetworkingSettings;
 import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.feature.creativetab.impl.GriefItemsCreativeTab;
+import de.nekosarekawaii.vandalism.feature.creativetab.impl.TrollItemsCreativeTab;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import de.nekosarekawaii.vandalism.util.game.ItemStackUtil;
 import lombok.Getter;
@@ -53,8 +54,8 @@ public class CreativeTabManager extends Storage<AbstractCreativeTab> implements 
                 // new CrashItemsCreativeTab(),
                 // new KickItemsCreativeTab(),
                 // new ConsoleSpamItemsCreativeTab(),
-                new GriefItemsCreativeTab()
-                // new TrollItemsCreativeTab()
+                new GriefItemsCreativeTab(),
+                new TrollItemsCreativeTab()
         );
         Vandalism.getInstance().getEventSystem().subscribe(OutgoingPacketEvent.ID, this, Priorities.HIGH);
     }

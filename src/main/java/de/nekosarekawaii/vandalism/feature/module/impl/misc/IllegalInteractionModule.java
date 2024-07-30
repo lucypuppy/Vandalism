@@ -48,7 +48,7 @@ public class IllegalInteractionModule extends AbstractModule implements PlayerUp
             5.0
     );
 
-    // TODO: Fix this settings because it doesnt work anymore.
+    // TODO: Fix this setting because it doesnt work anymore.
     public BooleanValue viaVersionBug = new BooleanValue(
             this,
             "ViaVersion Bug",
