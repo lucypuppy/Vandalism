@@ -10,3 +10,10 @@ pluginManagement {
 includeBuild "build-logic"
 
 include "addon-baritone", "addon-third-party"
+
+File buildOutput = new File(rootProject.projectDir, "binaries")
+for (final def file in buildOutput.listFiles()) {
+    if (file.name.contains("Wurst") && !file.name.contains("sources")) {
+        include "addon-wurst"
+    }
+}
