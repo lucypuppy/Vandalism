@@ -19,16 +19,30 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.misc;
 
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
 import de.nekosarekawaii.vandalism.event.network.OutgoingPacketListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import de.nekosarekawaii.vandalism.util.ChatUtil;
 import net.minecraft.client.network.ClientCommonNetworkHandler;
 import net.minecraft.network.packet.c2s.common.ResourcePackStatusC2SPacket;
 import net.minecraft.network.packet.s2c.common.ResourcePackSendS2CPacket;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import java.util.UUID;
 
 public class ResourcePackSpooferModule extends AbstractModule implements IncomingPacketListener, OutgoingPacketListener {
+
+    private final BooleanValue logResourcePackUrl = new BooleanValue(
+            this,
+            "Log Resource Pack URL",
+            "Logs the Resource Pack URL to the chat.",
+            true
+    );
 
     public ResourcePackSpooferModule() {
         super(
@@ -37,7 +51,6 @@ public class ResourcePackSpooferModule extends AbstractModule implements Incomin
                 Category.MISC
         );
     }
-
 
     @Override
     public void onActivate() {
@@ -53,8 +66,18 @@ public class ResourcePackSpooferModule extends AbstractModule implements Incomin
     public void onIncomingPacket(final IncomingPacketEvent event) {
         if (event.packet instanceof final ResourcePackSendS2CPacket resourcePackSendS2CPacket) {
             event.cancel();
+            final String resourcePackUrl = resourcePackSendS2CPacket.url();
+            if (this.logResourcePackUrl.getValue()) {
+                final MutableText text = Text.literal("Spoofed incoming resource pack").append(Text.literal(": ").formatted(Formatting.GRAY));
+                text.append(Text.literal(resourcePackUrl).formatted(Formatting.DARK_AQUA));
+                text.setStyle(text.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, resourcePackUrl)));
+                final MutableText hoverText = Text.literal("Click here to open the resource pack url.");
+                hoverText.formatted(Formatting.YELLOW);
+                text.setStyle(text.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText)));
+                ChatUtil.infoChatMessage(text);
+            }
             final UUID uuid = resourcePackSendS2CPacket.id();
-            if (ClientCommonNetworkHandler.getParsedResourcePackUrl(resourcePackSendS2CPacket.url()) == null) {
+            if (ClientCommonNetworkHandler.getParsedResourcePackUrl(resourcePackUrl) == null) {
                 event.connection.send(new ResourcePackStatusC2SPacket(uuid, ResourcePackStatusC2SPacket.Status.INVALID_URL));
             }
             else {
