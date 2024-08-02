@@ -225,10 +225,10 @@ public class MenuSettings extends ValueGroup {
             true
     );
 
-    public final BooleanValue replaceGameMenuScreenButtons = new BooleanValue(
+    public final BooleanValue addMoreButtonsToGameMenuScreen = new BooleanValue(
             this,
-            "Replace Game Menu Screen Buttons",
-            "Adds a multiplayer and a reconnect button to the game menu screen.",
+            "Add more buttons to Game Menu Screen",
+            "Adds more buttons to the game menu screen like the multiplayer and reconnect button.",
             true
     );
 
