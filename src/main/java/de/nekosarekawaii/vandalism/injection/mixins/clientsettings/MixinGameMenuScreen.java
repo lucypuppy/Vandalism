@@ -22,7 +22,6 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
 import de.nekosarekawaii.vandalism.integration.serverlist.ServerPingerWidget;
 import de.nekosarekawaii.vandalism.util.server.ServerUtil;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.GameMenuScreen;
@@ -31,27 +30,15 @@ import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.text.Text;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.net.URI;
 
 @Mixin(GameMenuScreen.class)
 public abstract class MixinGameMenuScreen extends Screen {
-
-    @Shadow
-    @Final
-    private static Text SEND_FEEDBACK_TEXT;
-
-    @Shadow
-    @Final
-    private static Text REPORT_BUGS_TEXT;
 
     @Shadow
     public abstract void render(DrawContext context, int mouseX, int mouseY, float delta);
@@ -78,18 +65,15 @@ public abstract class MixinGameMenuScreen extends Screen {
         }
     }
 
-    @Inject(method = "createUrlButton", at = @At(value = "HEAD"), cancellable = true)
-    private static void addMoreButtons(Screen parent, Text text, URI uri, CallbackInfoReturnable<ButtonWidget> cir) {
-        if (!Vandalism.getInstance().getClientSettings().getMenuSettings().replaceGameMenuScreenButtons.getValue()) {
+    @Inject(method = "init", at = @At(value = "RETURN"))
+    private void addMoreButtons(final CallbackInfo ci) {
+        if (!Vandalism.getInstance().getClientSettings().getMenuSettings().addMoreButtonsToGameMenuScreen.getValue()) {
             return;
         }
-        final MinecraftClient client = MinecraftClient.getInstance();
-        if (text == SEND_FEEDBACK_TEXT) {
-            cir.setReturnValue(ButtonWidget.builder(Text.translatable("menu.multiplayer"), b -> client.setScreen(new MultiplayerScreen(parent))).width(98).build());
-        } else if (text == REPORT_BUGS_TEXT && !client.isInSingleplayer()) {
-            final ButtonWidget button = ButtonWidget.builder(Text.literal("Reconnect"), b -> ServerUtil.connect(client.getCurrentServerEntry())).width(98).build();
-            cir.setReturnValue(button);
-        }
+        final ButtonWidget.Builder multiplayerButton = ButtonWidget.builder(Text.translatable("menu.multiplayer"), b -> this.client.setScreen(new MultiplayerScreen(this))).width(98);
+        this.addDrawableChild(multiplayerButton.position(4, this.height - 24).build());
+        final ButtonWidget.Builder reconnectButton = ButtonWidget.builder(Text.literal("Reconnect"), b -> ServerUtil.connect(this.client.getCurrentServerEntry())).width(98);
+        this.addDrawableChild(reconnectButton.position(this.width - 102, this.height - 24).build());
     }
 
 }
