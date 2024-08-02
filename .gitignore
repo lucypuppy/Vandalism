@@ -44,7 +44,7 @@ replay_*.log
 /output/*
 
 # special - remove this when you add new addons
-#settings.gradle
+settings.gradle
 binaries
 
 # smile emoji
