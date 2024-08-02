@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.event.player;
 
-import de.florianmichael.dietrichevents2.AbstractEvent;
+import de.florianmichael.dietrichevents2.CancellableEvent;
 import net.minecraft.client.gui.hud.MessageIndicator;
 import net.minecraft.network.message.MessageSignatureData;
 import net.minecraft.text.Text;
@@ -27,7 +27,7 @@ public interface ChatReceiveListener {
 
     void onChatReceive(final ChatReceiveEvent event);
 
-    class ChatReceiveEvent extends AbstractEvent<ChatReceiveListener> {
+    class ChatReceiveEvent extends CancellableEvent<ChatReceiveListener> {
 
         public static final int ID = 18;
 

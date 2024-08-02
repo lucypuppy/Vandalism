@@ -49,18 +49,19 @@ public abstract class MixinChatHud {
             Vandalism.getInstance().getEventSystem().callExceptionally(ChatModifyReceiveListener.ChatModifyReceiveEvent.ID, event);
             return new ChatHudLine(hudLine.creationTick(), event.mutableText, hudLine.signature(), hudLine.indicator());
         }
-
         return hudLine;
     }
 
-    @Inject(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;Lnet/minecraft/client/gui/hud/MessageIndicator;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;addVisibleMessage(Lnet/minecraft/client/gui/hud/ChatHudLine;)V"))
+    @Inject(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;Lnet/minecraft/client/gui/hud/MessageIndicator;)V", at = @At("HEAD"), cancellable = true)
     public void callChatReceiveListener(Text message, MessageSignatureData signatureData, MessageIndicator indicator, CallbackInfo ci) {
         if (this.client.player == null) {
             return;
         }
-
         final ChatReceiveListener.ChatReceiveEvent event = new ChatReceiveListener.ChatReceiveEvent(message, signatureData, indicator);
         Vandalism.getInstance().getEventSystem().callExceptionally(ChatReceiveListener.ChatReceiveEvent.ID, event);
+        if (event.isCancelled()) {
+            ci.cancel();
+        }
     }
 
 }

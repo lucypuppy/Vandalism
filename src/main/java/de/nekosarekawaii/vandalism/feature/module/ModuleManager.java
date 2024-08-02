@@ -42,6 +42,7 @@ import de.nekosarekawaii.vandalism.feature.module.impl.exploit.godmode.GodModeMo
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.servercrasher.ServerCrasherModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.misc.notebot.NoteBotModule;
+import de.nekosarekawaii.vandalism.feature.module.impl.misc.translator.TranslatorModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.*;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.elytraflight.ElytraFlightModule;
 import de.nekosarekawaii.vandalism.feature.module.impl.movement.flight.FlightModule;
@@ -188,7 +189,8 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new FreeCamModule(),
                 new AutoToolModule(),
                 new AntiFireballModule(),
-                new InventoryMoveModule()
+                new InventoryMoveModule(),
+                new TranslatorModule()
         );
         this.configManager.add(new ModuleConfig(this));
     }
