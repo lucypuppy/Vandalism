@@ -18,13 +18,13 @@
 
 package de.nekosarekawaii.vandalism.event.player;
 
-import de.florianmichael.dietrichevents2.AbstractEvent;
+import de.florianmichael.dietrichevents2.CancellableEvent;
 
 public interface ChatSendListener {
 
     void onChatSend(final ChatSendEvent event);
 
-    class ChatSendEvent extends AbstractEvent<ChatSendListener> {
+    class ChatSendEvent extends CancellableEvent<ChatSendListener> {
 
         public static final int ID = 19;
 

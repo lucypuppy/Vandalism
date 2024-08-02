@@ -27,7 +27,7 @@ import net.minecraft.util.Formatting;
 
 public class MessageEncryptorModule extends AbstractModule implements ChatSendListener, ChatModifyReceiveListener {
 
-    public static final MutableText ENCRYPTION_PREFIX = Text.empty()
+    private static final MutableText ENCRYPTION_PREFIX = Text.empty()
             .setStyle(Style.EMPTY.withFormatting(Formatting.GRAY))
             .append(" [")
             .append(Text.literal("E").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xff2626))))
