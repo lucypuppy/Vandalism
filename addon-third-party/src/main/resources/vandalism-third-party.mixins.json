@@ -1,9 +1,10 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "de.nekosarekawaii.vandalism.addonthirdparty.injection.mixins",
+  "package": "de.nekosarekawaii.vandalism.addonthirdparty.mixins",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "MixinEvents"
   ],
   "injectors": {
     "defaultRequire": 1
