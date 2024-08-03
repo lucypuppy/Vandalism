@@ -54,9 +54,6 @@ import java.io.File;
  *      - Add protection for ip addresses
  *      - Add protection for account manager
  *  - Fix spotify menu control buttons
- *  - Fix offsets for the new "teleport" method in the fov fucker module
- *  - Use hashmap storage instead of a default storage because that would improve the performance
- *      - (Search for FriendManager#getList())
  *  - Add anti vanish via. the player list hud
  *  - Add Proxy manager
  *  - Exploit Fixer Module:
@@ -69,15 +66,11 @@ import java.io.File;
  *  - Rewrite GCD fix to be accurate
  *  - Implement uncharge speed into tickbase
  *  - Add working defensive and counter mode to Tickbase
- *  - Fix calculations for the HUD:
- *      - Fix HUDElement#calculatePosition
- *      - Fix module list out of screen rendering when the alignment is for example at the bottom of the screen
  *  - Add lag engine to fix countless BackTrack issues
  *  - Improve bukkit fly not working at all
  *  - Fix SprintModule to be compatible with the rotation listener and also the backwards direction
  *  - KillAura#onPrePlayerUpdate | Frame event (entity renderer set angles) -> rotate / Mouse event -> attack
  *  - Add more stuff to fake lag (Ideas off clumsy)
- *  - Keksbye, Simon, FooFieOwO this is fixed find a new way for to bypasss a cubecraft disabler
  *  - Fix autoblock blocking without sword
  *  - Rework windmouse algorythm
  *  - Technically this should be legit but i need more investigation -> AutoGUICloseModule#onIncomingPacket
@@ -92,9 +85,6 @@ import java.io.File;
  *  - Add double clicks to KillAura when recoding
  *  - Add prioritize criticals to KillAura when recoding
  *  - Add jumping with prediction if in range to LagRange
- * <br><br>
- * TODO: mori <br>
- *  - Write all descriptions in the third person, without using the second person ('you')
  * <br><br>
  * TODO: EvilCodeZ <br>
  *  - Add Bold -> SimpleFont#SimpleGlyphRenderer#renderGlyph
