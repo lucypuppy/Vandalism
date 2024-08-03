@@ -110,6 +110,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     // Base handlers
     private File runDirectory;
     private double startTime;
+    private boolean isFirstTime;
 
     private ConfigManager configManager;
     private ClientWindowManager clientWindowManager;
@@ -161,6 +162,9 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
         FabricBootstrap.MOD_ICON = Identifier.of(FabricBootstrap.MOD_ID, "textures/icon/icon_1024x1024.png");
 
         this.runDirectory = new File(this.runDirectory, FabricBootstrap.MOD_ID);
+
+        this.isFirstTime = !this.runDirectory.exists();
+
         this.runDirectory.mkdirs();
 
         this.configManager = new ConfigManager();
