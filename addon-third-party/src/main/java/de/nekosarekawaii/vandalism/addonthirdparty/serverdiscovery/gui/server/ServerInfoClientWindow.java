@@ -66,7 +66,7 @@ public class ServerInfoClientWindow extends StateClientWindow implements DataLis
     private final CopyOnWriteArrayList<ListDataEntry> playerDataEntries = new CopyOnWriteArrayList<>();
 
     public ServerInfoClientWindow() {
-        super("Server Info", Category.SERVER);
+        super("Server Info", Category.SERVER, 650f, 600f);
     }
 
     @Override

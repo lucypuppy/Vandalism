@@ -41,7 +41,7 @@ public class SpotifyClientWindow extends ClientWindow {
     private final ImBoolean showClientSecret;
 
     public SpotifyClientWindow() {
-        super("Spotify", Category.MISC, ImGuiWindowFlags.MenuBar);
+        super("Spotify", Category.MISC, 550f, 200f, ImGuiWindowFlags.MenuBar);
         this.showClientSecret = new ImBoolean(false);
     }
 

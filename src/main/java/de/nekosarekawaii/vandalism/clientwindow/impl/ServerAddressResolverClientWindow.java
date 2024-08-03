@@ -33,11 +33,10 @@ import java.util.concurrent.Executors;
 public class ServerAddressResolverClientWindow extends ClientWindow implements IPFieldWidget {
 
     private final ImString ip = this.createImIP();
-
     private final ImString lastData = new ImString();
 
     public ServerAddressResolverClientWindow() {
-        super("Server Address Resolver", Category.SERVER);
+        super("Server Address Resolver", Category.SERVER, 700f, 600f);
     }
 
     @Override

@@ -74,7 +74,7 @@ public class NameHistoryClientWindow extends StateClientWindow implements DataLi
     private final CopyOnWriteArrayList<ListDataEntry> nameHistoryDataEntries = new CopyOnWriteArrayList<>();
 
     public NameHistoryClientWindow() {
-        super("Name History", Category.MISC);
+        super("Name History", Category.MISC, 600f, 500f);
     }
 
     private void clear() {

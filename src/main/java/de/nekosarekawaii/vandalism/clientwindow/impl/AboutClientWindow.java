@@ -19,7 +19,6 @@
 package de.nekosarekawaii.vandalism.clientwindow.impl;
 
 import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
-import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiWindowFlags;
@@ -31,7 +30,7 @@ public class AboutClientWindow extends ClientWindow {
     private final ImString text = new ImString(10000);
 
     public AboutClientWindow() {
-        super("About", null);
+        super("About", null, 1060f, 550f);
         final StringBuilder text = new StringBuilder();
         text.append("- Ein funktionierendes Haus mit einer funktionierenden Internetverbindung und funktionierendem Strom\n");
         text.append("- Einen PC, Keyboard, Mouse und Display (mindestens 100p, damit man noch gerade so Code lesen kann), der die oben genannten Ressourcen perfekt ausnutzt\n");
@@ -61,12 +60,6 @@ public class AboutClientWindow extends ClientWindow {
         text.append("- Jegliche ärztliche Untersuchungen am besten komplett vergessen oder aufschieben und wenn dann nur zuhause beim Coden\n");
         text.append("- Funktionierendes Herz, sonst Herzschrittmacher (muss aber auch richtig durchgehend klappen, weil sonst bist du zu ineffizient)\n");
         this.text.set(text.toString());
-    }
-
-    @Override
-    public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        ImGui.setNextWindowSizeConstraints(800, 300, ImUtils.modulateDimension(1200), ImUtils.modulateDimension(540));
-        super.render(context, mouseX, mouseY, delta);
     }
 
     @Override

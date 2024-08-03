@@ -41,7 +41,7 @@ public class GlobalSearchClientWindow extends ClientWindow implements DataListWi
     private final CopyOnWriteArrayList<ListDataEntry> searchEntries = new CopyOnWriteArrayList<>();
 
     public GlobalSearchClientWindow() {
-        super("Global Search", null);
+        super("Global Search", null, 600f, 500f);
         for (final Value<?> value : Vandalism.getInstance().getClientSettings().getValues()) {
             if (value instanceof final ValueGroup settingsGroup) {
                 for (final Value<?> setting : settingsGroup.getValues()) {
