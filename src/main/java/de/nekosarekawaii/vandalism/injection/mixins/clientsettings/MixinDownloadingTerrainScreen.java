@@ -26,21 +26,14 @@ import net.minecraft.client.gui.screen.DownloadingTerrainScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(DownloadingTerrainScreen.class)
 public abstract class MixinDownloadingTerrainScreen extends Screen {
-
-    @Shadow
-    @Final
-    private DownloadingTerrainScreen.WorldEntryReason worldEntryReason;
 
     @Unique
     private static final String vandalism$CANCEL_MESSAGE = "Press [ESC] to cancel.";
@@ -75,14 +68,6 @@ public abstract class MixinDownloadingTerrainScreen extends Screen {
             }
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    @Redirect(method = "renderBackground", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screen/DownloadingTerrainScreen;worldEntryReason:Lnet/minecraft/client/gui/screen/DownloadingTerrainScreen$WorldEntryReason;"))
-    private DownloadingTerrainScreen.WorldEntryReason stopRenderingBullshitAtRespawn(final DownloadingTerrainScreen downloadingTerrainScreen) {
-        if (Vandalism.getInstance().getClientSettings().getVisualSettings().stopRenderingBullshitAtRespawn.getValue()) {
-            return DownloadingTerrainScreen.WorldEntryReason.OTHER;
-        }
-        return this.worldEntryReason;
     }
 
 }
