@@ -28,13 +28,13 @@ public class StateClientWindow extends ClientWindow {
 
     private final ImString state = new ImString(200);
 
-    public StateClientWindow(final String name, final Category category) {
-        super(name, category);
+    public StateClientWindow(final String name, final Category category, final float defaultWidth, final float defaultHeight) {
+        super(name, category, defaultWidth, defaultHeight);
         this.resetState();
     }
 
-    public StateClientWindow(final String name, final Category category, final int defaultWindowFlags) {
-        super(name, category, defaultWindowFlags);
+    public StateClientWindow(final String name, final Category category, final float defaultWidth, final float defaultHeight, final int defaultWindowFlags) {
+        super(name, category, defaultWidth, defaultHeight, defaultWindowFlags);
         this.resetState();
     }
 

@@ -34,7 +34,7 @@ public class HUDClientWindow extends ClientWindow {
     private final HUDManager hudManager;
 
     public HUDClientWindow(final HUDManager hudManager) {
-        super("HUD Config", Category.CONFIG);
+        super("HUD Config", Category.CONFIG, 500f, 600f);
         this.hudManager = hudManager;
     }
 

@@ -63,7 +63,7 @@ public class FriendsClientWindow extends ClientWindow {
     private final ImString updatedFriendAlias = new ImString(16);
 
     public FriendsClientWindow(final FriendsManager friendsManager) {
-        super("Friends", Category.CONFIG);
+        super("Friends", Category.CONFIG, 450f, 500f);
         this.friendsManager = friendsManager;
     }
 

@@ -25,8 +25,8 @@ import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataen
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.field.IPFieldWidget;
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
-import de.nekosarekawaii.vandalism.util.server.ServerUtil;
 import de.nekosarekawaii.vandalism.util.math.DateUtil;
+import de.nekosarekawaii.vandalism.util.server.ServerUtil;
 import imgui.ImGui;
 import imgui.type.ImInt;
 import imgui.type.ImString;
@@ -59,7 +59,7 @@ public class PortScannerClientWindow extends StateClientWindow implements DataLi
     private int currentPortResult = -1;
 
     public PortScannerClientWindow() {
-        super("Port Scanner", Category.SERVER);
+        super("Port Scanner", Category.SERVER, 700f, 600f);
     }
 
     private void reset() {

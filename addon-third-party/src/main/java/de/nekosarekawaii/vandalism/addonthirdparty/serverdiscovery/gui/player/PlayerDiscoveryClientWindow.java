@@ -29,8 +29,8 @@ import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataLi
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
-import de.nekosarekawaii.vandalism.util.server.ServerUtil;
 import de.nekosarekawaii.vandalism.util.math.MathUtil;
+import de.nekosarekawaii.vandalism.util.server.ServerUtil;
 import imgui.ImGui;
 import imgui.ImGuiInputTextCallbackData;
 import imgui.callback.ImGuiInputTextCallback;
@@ -72,7 +72,7 @@ public class PlayerDiscoveryClientWindow extends StateClientWindow implements Da
     private boolean waitingForResponse = false;
 
     public PlayerDiscoveryClientWindow() {
-        super("Player Discovery", Category.SERVER);
+        super("Player Discovery", Category.SERVER, 550f, 600f);
     }
 
     @Override

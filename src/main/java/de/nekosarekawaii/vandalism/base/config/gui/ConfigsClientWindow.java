@@ -80,7 +80,7 @@ public class ConfigsClientWindow extends ClientWindow {
     private File lastConfig;
 
     public ConfigsClientWindow() {
-        super("Configs", Category.CONFIG);
+        super("Configs", Category.CONFIG, 450f, 500f);
     }
 
     private void renderHoveredConfigPopup(final String id) {

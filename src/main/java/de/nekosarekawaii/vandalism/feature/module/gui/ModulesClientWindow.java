@@ -58,7 +58,7 @@ public class ModulesClientWindow extends ClientWindow {
     private int lastMenuScale = -1;
 
     public ModulesClientWindow() {
-        super("Modules", Category.CONFIG);
+        super("Modules", Category.CONFIG, 300f, 800f);
         this.shouldReset = Vandalism.getInstance().isFirstTime();
     }
 

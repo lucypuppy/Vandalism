@@ -41,7 +41,7 @@ public class ClientSettingsClientWindow extends ClientWindow {
     private final ImString searchInput = new ImString();
 
     public ClientSettingsClientWindow(final ClientSettings clientSettings) {
-        super("Client Settings", Category.CONFIG);
+        super("Client Settings", Category.CONFIG, 600f, 500f);
         this.clientSettings = clientSettings;
     }
 

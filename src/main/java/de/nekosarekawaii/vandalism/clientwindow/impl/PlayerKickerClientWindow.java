@@ -85,7 +85,7 @@ public class PlayerKickerClientWindow extends StateClientWindow implements DataL
     private final CopyOnWriteArrayList<ListDataEntry> intervalDataEntries = new CopyOnWriteArrayList<>();
 
     public PlayerKickerClientWindow() {
-        super("Player Kicker", Category.SERVER);
+        super("Player Kicker", Category.SERVER, 600f, 650f);
     }
 
     @Override
