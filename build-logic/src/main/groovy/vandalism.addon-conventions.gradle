@@ -15,6 +15,7 @@ class BinaryExt {
                 return file
             }
         }
+        return null
     }
 }
 

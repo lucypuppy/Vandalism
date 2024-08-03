@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     File file = BinaryExt.includeMod(rootProject, "Wurst")
-
-    modImplementation files(file)
+    if (file != null) {
+        modImplementation files(file)
+    }
 }
