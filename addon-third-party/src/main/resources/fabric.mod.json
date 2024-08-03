@@ -20,6 +20,7 @@
       "de.nekosarekawaii.vandalism.addonthirdparty.AddonThirdParty"
     ]
   },
+  "accessWidener": "vandalism-third-party.accesswidener",
   "depends": {
     "vandalism": "*"
   },
