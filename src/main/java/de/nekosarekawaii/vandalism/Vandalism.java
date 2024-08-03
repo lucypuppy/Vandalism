@@ -192,7 +192,9 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
 
         Shaders.loadAll();
 
-        NameGenerationUtil.loadUsernameParts();
+        if (System.getProperty("vandalism.no_connections") == null) {
+            NameGenerationUtil.loadUsernameParts();
+        }
 
         this.hudManager = new HUDManager(this.configManager, this.clientWindowManager, this.runDirectory);
         this.hudManager.init();
