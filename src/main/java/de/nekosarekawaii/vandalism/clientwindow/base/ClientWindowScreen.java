@@ -23,9 +23,9 @@ import de.nekosarekawaii.vandalism.clientwindow.ClientWindowManager;
 import de.nekosarekawaii.vandalism.clientwindow.impl.AboutClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.impl.GlobalSearchClientWindow;
 import de.nekosarekawaii.vandalism.feature.hud.gui.HUDClientWindow;
-import de.nekosarekawaii.vandalism.util.server.ServerUtil;
 import de.nekosarekawaii.vandalism.integration.imgui.ImLoader;
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.server.ServerUtil;
 import imgui.ImGui;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -93,15 +93,18 @@ public class ClientWindowScreen extends Screen {
                     if (ImGui.button("About")) {
                         this.clientWindowManager.getByClass(AboutClientWindow.class).toggle();
                     }
-                    if (ImGui.button("Close")) {
-                        this.close();
-                    }
                     ImGui.endMainMenuBar();
                 }
                 for (final ClientWindow window : this.clientWindowManager.getList()) {
                     if (window.isActive()) {
                         window.render(context, mouseX, mouseY, delta);
                     }
+                }
+                if (ImGui.beginMainMenuBar()) {
+                    if (ImGui.button("Close")) {
+                        this.close();
+                    }
+                    ImGui.endMainMenuBar();
                 }
             }
         });

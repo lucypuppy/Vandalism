@@ -22,6 +22,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.florianmichael.rclasses.common.StringUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
+import de.nekosarekawaii.vandalism.base.clientsettings.impl.MenuSettings;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.base.value.Value;
 import de.nekosarekawaii.vandalism.base.value.impl.misc.KeyBindValue;
@@ -53,21 +54,48 @@ public class ModulesClientWindow extends ClientWindow {
 
     private String lastPopupId = "";
     private boolean closePopup = false;
+    private boolean shouldReset;
+    private int lastMenuScale = -1;
 
     public ModulesClientWindow() {
         super("Modules", Category.CONFIG);
+        this.shouldReset = Vandalism.getInstance().isFirstTime();
     }
 
     @Override
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
         final ModuleManager moduleManager = Vandalism.getInstance().getModuleManager();
         if (!moduleManager.getList().isEmpty()) {
-            float width = 195, minHeight = 140, maxHeight = Vandalism.getInstance().getClientSettings().getMenuSettings().moduleTabMaxHeight.getValue();
+            if (ImGui.beginMainMenuBar()) {
+                if (ImGui.button("Reset Module Tabs")) {
+                    this.shouldReset = true;
+                }
+                ImGui.endMainMenuBar();
+            }
+            final MenuSettings menuSettings = Vandalism.getInstance().getClientSettings().getMenuSettings();
+            final int menuScale = menuSettings.menuScale.getValue();
+            if (this.lastMenuScale == -1) {
+                this.lastMenuScale = menuScale;
+            }
+            if (this.lastMenuScale != menuScale) {
+                this.shouldReset = true;
+                this.lastMenuScale = menuScale;
+            }
+            float width = 195, minHeight = 140, maxHeight = menuSettings.moduleTabMaxHeight.getValue();
             final int windowFlags = ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse;
             width = ImUtils.modulateDimension(width);
             maxHeight = ImUtils.modulateDimension(maxHeight);
             ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
-            final String modulesIdentifier = "##modules", modulesSearchIdentifier = modulesIdentifier + "search";
+            final String modulesIdentifier = "##" + this.getName();
+            final String modulesSearchIdentifier = modulesIdentifier + "search";
+            final float offset = ImUtils.modulateDimension(200);
+            final float startY = ImUtils.modulateDimension(35);
+            float startX = ImUtils.modulateDimension(10);
+            if (this.shouldReset) {
+                ImGui.setNextWindowPos(startX, startY, ImGuiCond.Always);
+                ImGui.setNextWindowSize(width, maxHeight);
+                startX += offset;
+            }
             ImGui.begin("Search Modules" + modulesSearchIdentifier, windowFlags);
             ImGui.separator();
             ImGui.setNextItemWidth(-1);
@@ -94,6 +122,11 @@ public class ModulesClientWindow extends ClientWindow {
                 }
             }
             if (!favoriteModules.isEmpty()) {
+                if (this.shouldReset) {
+                    ImGui.setNextWindowPos(startX, startY, ImGuiCond.Always);
+                    ImGui.setNextWindowSize(width, maxHeight);
+                    startX += offset;
+                }
                 ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
                 final String modulesFavoritesIdentifier = modulesIdentifier + "favorites";
                 ImGui.begin("Favorite Modules" + modulesFavoritesIdentifier, windowFlags);
@@ -122,6 +155,10 @@ public class ModulesClientWindow extends ClientWindow {
                 }
             }
             if (!activatedModules.isEmpty()) {
+                if (this.shouldReset) {
+                    ImGui.setNextWindowPos(startX, startY, ImGuiCond.Always);
+                    ImGui.setNextWindowSize(width, maxHeight);
+                }
                 ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
                 final String modulesActivatedIdentifier = modulesIdentifier + "activated";
                 ImGui.begin("Activated Modules" + modulesActivatedIdentifier, windowFlags);
@@ -142,12 +179,22 @@ public class ModulesClientWindow extends ClientWindow {
                 ImGui.endChild();
                 ImGui.separator();
                 ImGui.end();
+                if (this.shouldReset) {
+                    ImGui.setNextWindowPos(startX, startY, ImGuiCond.Always);
+                    ImGui.setNextWindowSize(width, maxHeight);
+                    startX += offset;
+                }
             }
             for (final Feature.Category featureCategory : Feature.Category.values()) {
                 final List<AbstractModule> modulesByCategory = moduleManager.getByCategory(featureCategory);
                 if (modulesByCategory.isEmpty()) continue;
                 final String featureCategoryIdentifier = "##" + featureCategory.getName() + "modulesfeaturecategory";
                 ImGui.setNextWindowSizeConstraints(width, minHeight, width, maxHeight);
+                if (this.shouldReset) {
+                    ImGui.setNextWindowPos(startX, startY, ImGuiCond.Always);
+                    ImGui.setNextWindowSize(width, maxHeight);
+                    startX += offset;
+                }
                 ImGui.begin(featureCategory.getName() + " Modules" + featureCategoryIdentifier, windowFlags);
                 ImGui.separator();
                 ImGui.beginChild(featureCategoryIdentifier + "scrolllist", -1, -1, true);
@@ -158,6 +205,7 @@ public class ModulesClientWindow extends ClientWindow {
                 ImGui.separator();
                 ImGui.end();
             }
+            this.shouldReset = false;
         }
     }
 
