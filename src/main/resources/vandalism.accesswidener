@@ -156,3 +156,8 @@ accessible method net/minecraft/client/render/Camera setPos (Lnet/minecraft/util
 accessible field net/minecraft/client/render/Camera thirdPerson Z
 accessible method net/minecraft/client/option/KeyBinding reset ()V
 accessible field net/minecraft/client/gui/screen/ingame/CreativeInventoryScreen selectedTab Lnet/minecraft/item/ItemGroup;
+accessible field net/minecraft/entity/LivingEntity serverX D
+accessible field net/minecraft/entity/LivingEntity serverY D
+accessible field net/minecraft/entity/LivingEntity serverZ D
+accessible method net/minecraft/entity/Entity movementInputToVelocity (Lnet/minecraft/util/math/Vec3d;FF)Lnet/minecraft/util/math/Vec3d;
+accessible field net/minecraft/entity/LivingEntity serverYaw D

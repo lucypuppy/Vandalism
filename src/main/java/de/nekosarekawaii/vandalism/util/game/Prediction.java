@@ -18,13 +18,21 @@
 
 package de.nekosarekawaii.vandalism.util.game;
 
+import de.nekosarekawaii.vandalism.injection.access.ILivingEntity;
+import de.nekosarekawaii.vandalism.util.math.MCMathUtil;
+import net.minecraft.client.input.Input;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
+import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+
+import java.util.List;
 
 public class Prediction {
 
@@ -74,6 +82,46 @@ public class Prediction {
     public static Vec3d predictEntityPosition(LivingEntity entity, int ticks, boolean predictInput, boolean predictJumping) {
         LivingEntity predictedEntity = predictEntityMovement(entity, ticks, predictInput, predictJumping);
         return predictedEntity.getPos();
+    }
+
+    // Jump/sneak states are randomized as soon as getClosestInput is called
+    private static final List<Input> BRUTEFORCE_INPUTS = MCMathUtil.possibleInputs();
+
+    public static Input getClosestInput(final PlayerEntity player) {
+        final Vec3d serverPos = ((ILivingEntity) player).vandalism$prevServerPos();
+        if (serverPos == null) {
+            return new Input();
+        }
+
+        final Vec3d velocity = new Vec3d(player.serverX, player.serverY, player.serverZ).subtract(serverPos);
+        if (velocity.x == 0 && velocity.y == 0 && velocity.z == 0) {
+            return new Input();
+        }
+
+        Pair<Input, Double> bestPossibility = null;
+        for (Input input : BRUTEFORCE_INPUTS) {
+            input.jumping = !player.isOnGround();
+            input.sneaking = player.isSneaking();
+
+            final boolean moving = input.movementForward != 0 || input.movementSideways != 0;
+            if (velocity.horizontalLengthSquared() > 0.0 && !moving) {
+                continue;
+            }
+
+            Vec3d nextPos;
+            if (moving) {
+                final Vec3d movementVec = MCMathUtil.toVec3D(input.getMovementInput(), false);
+                nextPos = Entity.movementInputToVelocity(movementVec, 1F, (float) player.serverYaw);
+            } else {
+                nextPos = new Vec3d(0.0, 0.0, 0.0);
+            }
+
+            final double distance = velocity.distanceTo(nextPos);
+            if (bestPossibility == null || bestPossibility.getRight() > distance) {
+                bestPossibility = new Pair<>(input, distance);
+            }
+        }
+        return bestPossibility.getLeft();
     }
 
 }
