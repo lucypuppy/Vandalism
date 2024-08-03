@@ -6,6 +6,18 @@ dependencies {
     implementation project(":")
 }
 
+class BinaryExt {
+    static File includeMod(Project project, String fileMarker) {
+        File buildOutput = new File(project.projectDir, "binaries")
+
+        for (final def file in buildOutput.listFiles()) {
+            if (file.name.contains(fileMarker) && !file.name.contains("sources")) {
+                return file
+            }
+        }
+    }
+}
+
 tasks.register("installCompileAddon") {
     group "vandalism"
 
