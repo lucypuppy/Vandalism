@@ -1,3 +1,7 @@
 plugins {
     id "vandalism.addon-conventions"
 }
+
+loom {
+    accessWidenerPath = file("src/main/resources/vandalism-third-party.accesswidener")
+}
