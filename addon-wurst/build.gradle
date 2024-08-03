@@ -3,11 +3,7 @@ plugins {
 }
 
 dependencies {
-    File buildOutput = new File(rootProject.projectDir, "binaries")
+    File file = BinaryExt.includeMod(rootProject, "Wurst")
 
-    for (final def file in buildOutput.listFiles()) {
-        if (file.name.contains("Wurst") && !file.name.contains("sources")) {
-            modImplementation files(file)
-        }
-    }
+    modImplementation files(file)
 }
