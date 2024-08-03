@@ -27,20 +27,14 @@ import net.raphimc.minecraftauth.MinecraftAuth;
 import net.raphimc.minecraftauth.step.AbstractStep;
 import net.raphimc.minecraftauth.step.java.session.StepFullJavaSession;
 import net.raphimc.minecraftauth.step.msa.StepLocalWebServer;
-import net.raphimc.minecraftauth.util.MicrosoftConstants;
 
 import java.util.concurrent.CompletableFuture;
+
+import static de.nekosarekawaii.vandalism.integration.MinecraftAuthAccess.INGAME_ACCOUNT_SWITCHER;
 
 public class MSLocalWebserverAccount extends AbstractMicrosoftAccount {
 
     private static final String OPEN_URL = "Please open the url: ";
-
-    public static final AbstractStep<?, StepFullJavaSession.FullJavaSession> JAVA_LOCAL_WEBSERVER_LOGIN = MinecraftAuth.builder()
-            .withClientId(MicrosoftConstants.JAVA_TITLE_ID).withScope(MicrosoftConstants.SCOPE_TITLE_AUTH)
-            .localWebServer()
-            .withDeviceToken("Win32")
-            .sisuTitleAuthentication(MicrosoftConstants.JAVA_XSTS_RELYING_PARTY)
-            .buildMinecraftJavaProfileStep(true);
 
     private static final AccountFactory FACTORY = new AccountFactory() {
 
@@ -69,7 +63,7 @@ public class MSLocalWebserverAccount extends AbstractMicrosoftAccount {
             this.state = "";
             return CompletableFuture.supplyAsync(() -> {
                 try {
-                    final StepFullJavaSession.FullJavaSession javaSession = JAVA_LOCAL_WEBSERVER_LOGIN.getFromInput(MinecraftAuth.createHttpClient(), new StepLocalWebServer.LocalWebServerCallback(localWebServer -> {
+                    final StepFullJavaSession.FullJavaSession javaSession = INGAME_ACCOUNT_SWITCHER.getFromInput(MinecraftAuth.createHttpClient(), new StepLocalWebServer.LocalWebServerCallback(localWebServer -> {
                         final String url = localWebServer.getAuthenticationUrl();
                         this.state = OPEN_URL + url;
                         Util.getOperatingSystem().open(url);
@@ -98,7 +92,7 @@ public class MSLocalWebserverAccount extends AbstractMicrosoftAccount {
 
     @Override
     public AbstractStep<?, StepFullJavaSession.FullJavaSession> getStep() {
-        return JAVA_LOCAL_WEBSERVER_LOGIN;
+        return INGAME_ACCOUNT_SWITCHER;
     }
 
 }
