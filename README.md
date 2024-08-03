@@ -36,7 +36,4 @@ Ex: ``gradlew wrapper --gradle-version 8.8``
 ### General notes
 Build conventions are located in the ``build-logic`` folder.
 
-In case someone force pushes, you need to:
-1. ``git fetch``
-2. ``git reset --hard origin/main``
-NOTE: This will remove all your local changes, so make sure to backup them.
+In case someone force pushes, you can run ``scripts/force_pull.bat``.
