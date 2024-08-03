@@ -87,21 +87,21 @@ public class Prediction {
     // Jump/sneak states are randomized as soon as getClosestInput is called
     private static final List<Input> BRUTEFORCE_INPUTS = MCMathUtil.possibleInputs();
 
-    public static Input getClosestInput(final PlayerEntity player) {
-        final Vec3d serverPos = ((ILivingEntity) player).vandalism$prevServerPos();
+    public static Input getClosestInput(final LivingEntity baseEntity) {
+        final Vec3d serverPos = ((ILivingEntity) baseEntity).vandalism$prevServerPos();
         if (serverPos == null) {
             return new Input();
         }
 
-        final Vec3d velocity = new Vec3d(player.serverX, player.serverY, player.serverZ).subtract(serverPos);
+        final Vec3d velocity = new Vec3d(baseEntity.serverX, baseEntity.serverY, baseEntity.serverZ).subtract(serverPos);
         if (velocity.x == 0 && velocity.y == 0 && velocity.z == 0) {
             return new Input();
         }
 
         Pair<Input, Double> bestPossibility = null;
         for (Input input : BRUTEFORCE_INPUTS) {
-            input.jumping = !player.isOnGround();
-            input.sneaking = player.isSneaking();
+            input.jumping = !baseEntity.isOnGround();
+            input.sneaking = baseEntity.isSneaking();
 
             final boolean moving = input.movementForward != 0 || input.movementSideways != 0;
             if (velocity.horizontalLengthSquared() > 0.0 && !moving) {
@@ -111,7 +111,7 @@ public class Prediction {
             Vec3d nextPos;
             if (moving) {
                 final Vec3d movementVec = MCMathUtil.toVec3D(input.getMovementInput(), false);
-                nextPos = Entity.movementInputToVelocity(movementVec, 1F, (float) player.serverYaw);
+                nextPos = Entity.movementInputToVelocity(movementVec, 1F, (float) baseEntity.serverYaw);
             } else {
                 nextPos = new Vec3d(0.0, 0.0, 0.0);
             }
