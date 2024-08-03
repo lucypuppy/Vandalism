@@ -50,6 +50,9 @@ public class NameGenerationUtil {
     }
 
     public static String generateUsername() {
+        if (USERNAME_PARTS.isEmpty()) {
+            return "Player" + System.currentTimeMillis() % 1000L; // Main#main
+        }
         Collections.shuffle(USERNAME_PARTS);
         final Random random = ThreadLocalRandom.current();
         String username = USERNAME_PARTS.get(random.nextInt(USERNAME_PARTS.size()));
