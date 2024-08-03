@@ -115,7 +115,8 @@
     "util.MixinConnectScreen",
     "util.MixinDrawContext",
     "util.MixinRenderTickCounter_Dynamic",
-    "util.MixinToolTipComponent"
+    "util.MixinToolTipComponent",
+    "MixinLivingEntity"
   ],
   "injectors": {
     "defaultRequire": 1
