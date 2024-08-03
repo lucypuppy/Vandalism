@@ -3,7 +3,10 @@ plugins {
 }
 
 dependencies {
-    modImplementation files("binary/baritone-unoptimized-fabric-1.10.2-3-g323e6faa.jar")
+    File file = BinaryExt.includeMod(rootProject, "baritone")
+    if (file != null) {
+        modImplementation files(file)
+    }
 }
 
 loom {
