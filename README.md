@@ -8,7 +8,7 @@ Vandalism is a mod for Minecraft designed to train server administrators.
 2. Run ``gradle genSources`` to setup the project.
 3. Compile and install addons using ``gradle build`` and ``gradle installCompileAddon``.
 
-## Use the wurst addon
+## Use the Wurst addon
 
 1. Download the latest WurstClient binary file and put it in ``binaries`` (create the folder if it doesn't exist).
 2. Reload the Gradle project and the addon will be loaded.
