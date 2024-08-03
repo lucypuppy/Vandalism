@@ -43,9 +43,9 @@ replay_*.log
 /qodana.yaml
 /output/*
 
+# smile emoji
+binaries
+Wurst7/
+
 # special - remove this when you add new addons
 settings.gradle
-binaries
-
-# smile emoji
-Wurst7/
