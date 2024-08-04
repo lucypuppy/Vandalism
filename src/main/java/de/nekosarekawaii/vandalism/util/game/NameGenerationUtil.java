@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.util.game;
 
+import de.florianmichael.rclasses.common.RandomUtils;
 import de.nekosarekawaii.vandalism.Vandalism;
 
 import java.net.URI;
@@ -51,7 +52,11 @@ public class NameGenerationUtil {
 
     public static String generateUsername() {
         if (USERNAME_PARTS.isEmpty()) {
-            return "Player" + System.currentTimeMillis() % 1000L; // Main#main
+            return RandomUtils.randomString(
+                    3, 16,
+                    true, true,
+                    true, false
+            );
         }
         Collections.shuffle(USERNAME_PARTS);
         final Random random = ThreadLocalRandom.current();
