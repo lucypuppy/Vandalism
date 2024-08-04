@@ -52,11 +52,7 @@ public class NameGenerationUtil {
 
     public static String generateUsername() {
         if (USERNAME_PARTS.isEmpty()) {
-            return RandomUtils.randomString(
-                    3, 16,
-                    true, true,
-                    true, false
-            );
+            return RandomUtils.randomString(3, 17, true, true, true, false);
         }
         Collections.shuffle(USERNAME_PARTS);
         final Random random = ThreadLocalRandom.current();
