@@ -79,7 +79,7 @@ public abstract class MixinDirectConnectScreen extends Screen {
                         final Pair<String, Integer> serverAddress = ServerUtil.resolveServerAddress(address);
                         final String ip = serverAddress.getLeft();
                         final int port = serverAddress.getRight();
-                        final String username = RandomUtils.randomString(MinecraftConstants.MIN_USERNAME_LENGTH, MinecraftConstants.MAX_USERNAME_LENGTH + 1 /* good job ;) */, true, true, true, false);
+                        final String username = RandomUtils.randomString(MinecraftConstants.MIN_USERNAME_LENGTH, MinecraftConstants.MAX_USERNAME_LENGTH + 1, true, true, true, false);
                         final int connections = 3;
                         final int protocolId = targetVersion.getVersion();
                         for (int i = 0; i < connections; ++i) {

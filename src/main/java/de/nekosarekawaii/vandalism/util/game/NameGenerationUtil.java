@@ -51,7 +51,7 @@ public class NameGenerationUtil {
 
     public static String generateUsername() {
         if (USERNAME_PARTS.isEmpty()) {
-            return RandomUtils.randomString(MinecraftConstants.MIN_USERNAME_LENGTH, MinecraftConstants.MAX_USERNAME_LENGTH + 1 /* good job ;) */, true, true, true, false);
+            return RandomUtils.randomString(MinecraftConstants.MIN_USERNAME_LENGTH, MinecraftConstants.MAX_USERNAME_LENGTH + 1, true, true, true, false);
         }
         Collections.shuffle(USERNAME_PARTS);
         final Random random = ThreadLocalRandom.current();
