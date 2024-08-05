@@ -29,6 +29,7 @@ import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataLi
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.game.MinecraftConstants;
 import de.nekosarekawaii.vandalism.util.math.MathUtil;
 import de.nekosarekawaii.vandalism.util.server.ServerUtil;
 import imgui.ImGui;
@@ -64,7 +65,7 @@ public class PlayerDiscoveryClientWindow extends StateClientWindow implements Da
 
     };
 
-    private final ImString username = new ImString(16);
+    private final ImString username = new ImString(MinecraftConstants.MAX_USERNAME_LENGTH);
     private String lastUsername = "";
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final CopyOnWriteArrayList<ListDataEntry> playerRecordDataEntries = new CopyOnWriteArrayList<>();
@@ -83,7 +84,7 @@ public class PlayerDiscoveryClientWindow extends StateClientWindow implements Da
         ImGui.setNextItemWidth(-1);
         ImGui.inputText(id + "username", this.username, ImGuiInputTextFlags.CallbackCharFilter, USERNAME_NAME_FILTER);
         final String usernameValue = this.username.get();
-        if (!usernameValue.isBlank() && MathUtil.isBetween(usernameValue.length(), 3, 16) && !this.waitingForResponse) {
+        if (!usernameValue.isBlank() && MathUtil.isBetween(usernameValue.length(), MinecraftConstants.MIN_USERNAME_LENGTH, MinecraftConstants.MAX_USERNAME_LENGTH) && !this.waitingForResponse) {
             if (ImGui.button("Search" + id + "search", ImGui.getColumnWidth() / (!this.playerRecordDataEntries.isEmpty() ? 2f : 1f), ImGui.getTextLineHeightWithSpacing())) {
                 this.setState("Searching for " + usernameValue + "...");
                 this.playerRecordDataEntries.clear();

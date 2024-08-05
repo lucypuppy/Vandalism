@@ -23,6 +23,7 @@ import de.nekosarekawaii.vandalism.clientwindow.base.ClientWindow;
 import de.nekosarekawaii.vandalism.integration.friends.Friend;
 import de.nekosarekawaii.vandalism.integration.friends.FriendsManager;
 import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
+import de.nekosarekawaii.vandalism.util.game.MinecraftConstants;
 import de.nekosarekawaii.vandalism.util.math.MathUtil;
 import de.nekosarekawaii.vandalism.util.render.util.PlayerSkinRenderer;
 import imgui.ImGui;
@@ -58,9 +59,9 @@ public class FriendsClientWindow extends ClientWindow {
 
     private Friend hoveredFriend;
 
-    private final ImString friendName = new ImString(16);
-    private final ImString friendAlias = new ImString(16);
-    private final ImString updatedFriendAlias = new ImString(16);
+    private final ImString friendName = new ImString(MinecraftConstants.MAX_USERNAME_LENGTH);
+    private final ImString friendAlias = new ImString(MinecraftConstants.MAX_USERNAME_LENGTH);
+    private final ImString updatedFriendAlias = new ImString(MinecraftConstants.MAX_USERNAME_LENGTH);
 
     public FriendsClientWindow(final FriendsManager friendsManager) {
         super("Friends", Category.CONFIG, 450f, 500f);
@@ -78,7 +79,7 @@ public class FriendsClientWindow extends ClientWindow {
                 ImGui.setNextItemWidth(500f);
                 ImGui.inputText(id + "updatedFriendAlias", this.updatedFriendAlias, ImGuiInputTextFlags.CallbackCharFilter, NAME_FILTER);
                 final String updatedFriendAliasValue = this.updatedFriendAlias.get();
-                if ((!updatedFriendAliasValue.equals(this.hoveredFriend.getAlias()) || this.updatedFriendAlias.isEmpty()) && MathUtil.isBetween(updatedFriendAliasValue.length(), 3, 16)) {
+                if ((!updatedFriendAliasValue.equals(this.hoveredFriend.getAlias()) || this.updatedFriendAlias.isEmpty()) && MathUtil.isBetween(updatedFriendAliasValue.length(), MinecraftConstants.MIN_USERNAME_LENGTH, MinecraftConstants.MAX_USERNAME_LENGTH)) {
                     if (ImUtils.subButton("Update Alias")) {
                         this.hoveredFriend.setAlias(updatedFriendAliasValue.isEmpty() ? this.hoveredFriend.getName() : updatedFriendAliasValue);
                         this.updatedFriendAlias.set(updatedFriendAliasValue);
@@ -185,8 +186,8 @@ public class FriendsClientWindow extends ClientWindow {
                 ImGui.inputText(id + "friendAlias", this.friendAlias, ImGuiInputTextFlags.CallbackCharFilter, NAME_FILTER);
                 ImGui.spacing();
                 final String friendNameValue = this.friendName.get();
-                if (!friendNameValue.isBlank() && MathUtil.isBetween(friendNameValue.length(), 3, 16)) {
-                    if (this.friendAlias.isEmpty() || MathUtil.isBetween(this.friendAlias.get().length(), 3, 16)) {
+                if (!friendNameValue.isBlank() && MathUtil.isBetween(friendNameValue.length(), MinecraftConstants.MIN_USERNAME_LENGTH, MinecraftConstants.MAX_USERNAME_LENGTH)) {
+                    if (this.friendAlias.isEmpty() || MathUtil.isBetween(this.friendAlias.get().length(), MinecraftConstants.MIN_USERNAME_LENGTH, MinecraftConstants.MAX_USERNAME_LENGTH)) {
                         if (ImUtils.subButton("Add")) {
                             this.friendsManager.addFriend(this.friendName.get(), this.friendAlias.isEmpty() ? this.friendName.get() : this.friendAlias.get());
                             this.friendName.set("");

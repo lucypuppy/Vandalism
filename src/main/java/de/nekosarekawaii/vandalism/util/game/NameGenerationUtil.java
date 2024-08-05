@@ -31,7 +31,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public class NameGenerationUtil {
 
     private static final List<String> USERNAME_PARTS = new ArrayList<>();
-    private static final int MAX_USERNAME_LENGTH = 16;
     private static final int MAX_USERNAME_PARTS = 1000;
 
     public static void loadUsernameParts() {
@@ -52,14 +51,14 @@ public class NameGenerationUtil {
 
     public static String generateUsername() {
         if (USERNAME_PARTS.isEmpty()) {
-            return RandomUtils.randomString(3, 17, true, true, true, false);
+            return RandomUtils.randomString(MinecraftConstants.MIN_USERNAME_LENGTH, MinecraftConstants.MAX_USERNAME_LENGTH + 1 /* good job ;) */, true, true, true, false);
         }
         Collections.shuffle(USERNAME_PARTS);
         final Random random = ThreadLocalRandom.current();
         String username = USERNAME_PARTS.get(random.nextInt(USERNAME_PARTS.size()));
         username += USERNAME_PARTS.get(random.nextInt(USERNAME_PARTS.size()));
-        if (username.length() > MAX_USERNAME_LENGTH) {
-            username = username.substring(0, MAX_USERNAME_LENGTH);
+        if (username.length() > MinecraftConstants.MAX_USERNAME_LENGTH) {
+            username = username.substring(0, MinecraftConstants.MAX_USERNAME_LENGTH);
         }
         return username;
     }

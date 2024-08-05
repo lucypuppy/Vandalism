@@ -26,6 +26,7 @@ import de.nekosarekawaii.vandalism.clientwindow.template.StateClientWindow;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.DataListWidget;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.impl.ListDataEntry;
+import de.nekosarekawaii.vandalism.util.game.MinecraftConstants;
 import de.nekosarekawaii.vandalism.util.game.UUIDUtil;
 import de.nekosarekawaii.vandalism.util.math.MathUtil;
 import imgui.ImGui;
@@ -67,7 +68,7 @@ public class NameHistoryClientWindow extends StateClientWindow implements DataLi
 
     };
 
-    private final ImString username = new ImString(16);
+    private final ImString username = new ImString(MinecraftConstants.MAX_USERNAME_LENGTH);
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Gson gson = new Gson();
     private String lastUsername = "", lastUUID = "";
@@ -94,7 +95,7 @@ public class NameHistoryClientWindow extends StateClientWindow implements DataLi
                 USERNAME_NAME_FILTER
         );
         final String usernameValue = this.username.get();
-        if (!usernameValue.isBlank() && MathUtil.isBetween(usernameValue.length(), 3, 16)) {
+        if (!usernameValue.isBlank() && MathUtil.isBetween(usernameValue.length(), MinecraftConstants.MIN_USERNAME_LENGTH, MinecraftConstants.MAX_USERNAME_LENGTH)) {
             if (ImGui.button("Get" + id + "get", ImGui.getColumnWidth() / (this.nameHistoryDataEntries.isEmpty() ? 1f : 2f), ImGui.getTextLineHeightWithSpacing())) {
                 this.clear();
                 this.lastUsername = usernameValue;
@@ -178,7 +179,7 @@ public class NameHistoryClientWindow extends StateClientWindow implements DataLi
         }
         if (!this.lastUsername.isBlank() && !this.lastUUID.isBlank()) {
             if (!this.nameHistoryDataEntries.isEmpty()) {
-                if (!usernameValue.isBlank() && MathUtil.isBetween(usernameValue.length(), 3, 16)) {
+                if (!usernameValue.isBlank() && MathUtil.isBetween(usernameValue.length(), MinecraftConstants.MIN_USERNAME_LENGTH, MinecraftConstants.MAX_USERNAME_LENGTH)) {
                     ImGui.sameLine();
                 }
                 if (ImGui.button("Clear" + id + "clear", ImGui.getColumnWidth(), ImGui.getTextLineHeightWithSpacing())) {

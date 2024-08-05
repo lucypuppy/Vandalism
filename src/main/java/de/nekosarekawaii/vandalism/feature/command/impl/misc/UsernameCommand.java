@@ -21,10 +21,11 @@ package de.nekosarekawaii.vandalism.feature.command.impl.misc;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.nekosarekawaii.vandalism.feature.command.AbstractCommand;
-import de.nekosarekawaii.vandalism.util.SessionUtil;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
-import de.nekosarekawaii.vandalism.util.server.ServerUtil;
+import de.nekosarekawaii.vandalism.util.SessionUtil;
+import de.nekosarekawaii.vandalism.util.game.MinecraftConstants;
 import de.nekosarekawaii.vandalism.util.math.MathUtil;
+import de.nekosarekawaii.vandalism.util.server.ServerUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.Formatting;
 
@@ -63,8 +64,8 @@ public class UsernameCommand extends AbstractCommand {
     }
 
     private void login(final String name) {
-        if (!MathUtil.isBetween(name.length(), 3, 16)) {
-            ChatUtil.errorChatMessage("The name must be between 3 and 16 characters long.");
+        if (!MathUtil.isBetween(name.length(), MinecraftConstants.MIN_USERNAME_LENGTH, MinecraftConstants.MAX_USERNAME_LENGTH)) {
+            ChatUtil.errorChatMessage("The name must be between " + MinecraftConstants.MIN_USERNAME_LENGTH + " and " + MinecraftConstants.MAX_USERNAME_LENGTH + " characters long.");
             return;
         }
         SessionUtil.setSessionAsync(name, "");
