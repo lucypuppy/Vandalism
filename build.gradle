@@ -28,7 +28,7 @@ dependencies {
         exclude module: "lwjgl-opengl"
         exclude module: "lwjgl-bom"
     }
-    jij "io.github.spair:imgui-java-natives-macos:1.86.11"
+    jij "io.github.spair:imgui-java-natives-macos:1.86.12"
     jij "io.github.spair:imgui-java-natives-windows:1.86.12"
     jij "io.github.spair:imgui-java-natives-linux:1.86.12"
 
