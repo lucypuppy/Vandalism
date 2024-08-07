@@ -33,8 +33,13 @@ public abstract class MixinTextureUrlChecker {
     private static void hookExploitFixer(final String url, final CallbackInfoReturnable<Boolean> cir) {
         final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
         if (exploitFixerModule.isActive() && exploitFixerModule.miscSettings.blockInvalidTextureUrls.getValue()) {
+            if (url == null) {
+                cir.setReturnValue(false);
+                return;
+            }
+            final String lowerCaseUrl = url.toLowerCase();
             final String correctTextureUrlStart = exploitFixerModule.miscSettings.correctTextureUrlStart;
-            if (!url.toLowerCase().startsWith("https://" + correctTextureUrlStart) && !url.toLowerCase().startsWith("http://" + correctTextureUrlStart)) {
+            if (!lowerCaseUrl.startsWith("https://" + correctTextureUrlStart) && !lowerCaseUrl.startsWith("http://" + correctTextureUrlStart)) {
                 cir.setReturnValue(false);
             }
         }
