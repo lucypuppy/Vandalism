@@ -37,7 +37,7 @@ public class ServerDiscoveryClientWindow extends ClientWindow {
     private String currentServerTab = "";
 
     public ServerDiscoveryClientWindow() {
-        super("Server Discovery", Category.SERVER, 650f, 600f, ImGuiWindowFlags.MenuBar);
+        super("Server Discovery", Category.SERVER, 450f, 400f, ImGuiWindowFlags.MenuBar);
         this.serversTabs.put(DEFAULT_SERVER_TAB_NAME, new ServerDiscoveryTab());
     }
 
