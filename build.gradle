@@ -29,7 +29,7 @@ dependencies {
         exclude module: "lwjgl-bom"
     }
     jij "io.github.spair:imgui-java-natives-macos:1.86.11"
-    jij "io.github.spair:imgui-java-natives-windows:1.86.11"
+    jij "io.github.spair:imgui-java-natives-windows:1.86.12"
     jij "io.github.spair:imgui-java-natives-linux:1.86.11"
 
     jij "net.raphimc:NoteBlockLib:2.1.3"
