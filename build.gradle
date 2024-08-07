@@ -30,7 +30,7 @@ dependencies {
     }
     jij "io.github.spair:imgui-java-natives-macos:1.86.11"
     jij "io.github.spair:imgui-java-natives-windows:1.86.12"
-    jij "io.github.spair:imgui-java-natives-linux:1.86.11"
+    jij "io.github.spair:imgui-java-natives-linux:1.86.12"
 
     jij "net.raphimc:NoteBlockLib:2.1.3"
     jij "net.raphimc:MinecraftAuth:4.1.0"
