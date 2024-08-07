@@ -364,11 +364,14 @@ public class ServerDiscoveryTab implements MinecraftWrapper, DataListWidget {
             final String address = listDataEntry.getFirst().getRight();
             final float buttonWidth = ImUtils.modulateDimension(200), buttonHeight = ImUtils.modulateDimension(28);
             try {
-                final ProtocolVersion protocolVersion = ProtocolVersion.getProtocol(Integer.parseInt(listDataEntry.getFourth().getRight()));
-                if (protocolVersion.isKnown()) {
-                    if (ImGui.button("Connect with Server Version" + id + "connectWithServerVersion", buttonWidth, buttonHeight)) {
-                        this.lastAddress = address;
-                        ServerUtil.connectWithVFPFix(address, protocolVersion, false);
+                final Pair<String, String> protocolVersionPair = listDataEntry.getFourth();
+                if (protocolVersionPair != null) {
+                    final ProtocolVersion protocolVersion = ProtocolVersion.getProtocol(Integer.parseInt(protocolVersionPair.getRight()));
+                    if (protocolVersion.isKnown()) {
+                        if (ImGui.button("Connect with Server Version" + id + "connectWithServerVersion", buttonWidth, buttonHeight)) {
+                            this.lastAddress = address;
+                            ServerUtil.connectWithVFPFix(address, protocolVersion, false);
+                        }
                     }
                 }
             } catch (final NumberFormatException ignored) {

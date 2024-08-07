@@ -24,6 +24,7 @@ import net.minecraft.util.Pair;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
+@Deprecated
 @Getter
 public class ListDataEntry extends DataEntry {
 
@@ -34,43 +35,31 @@ public class ListDataEntry extends DataEntry {
     }
 
     public Pair<String, String> getFirst() {
+        if (this.list.isEmpty()) {
+            return null;
+        }
         return this.list.getFirst();
     }
 
     public Pair<String, String> getSecond() {
+        if (this.list.size() < 2) {
+            return null;
+        }
         return this.list.get(1);
     }
 
     public Pair<String, String> getThird() {
+        if (this.list.size() < 3) {
+            return null;
+        }
         return this.list.get(2);
     }
 
     public Pair<String, String> getFourth() {
+        if (this.list.size() < 4) {
+            return null;
+        }
         return this.list.get(3);
-    }
-
-    public Pair<String, String> getFifth() {
-        return this.list.get(4);
-    }
-
-    public Pair<String, String> getSixth() {
-        return this.list.get(5);
-    }
-
-    public Pair<String, String> getSeventh() {
-        return this.list.get(6);
-    }
-
-    public Pair<String, String> getEighth() {
-        return this.list.get(7);
-    }
-
-    public Pair<String, String> getNinth() {
-        return this.list.get(8);
-    }
-
-    public Pair<String, String> getTenth() {
-        return this.list.get(9);
     }
 
     @Override
