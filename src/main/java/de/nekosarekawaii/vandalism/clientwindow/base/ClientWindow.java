@@ -33,25 +33,23 @@ public class ClientWindow implements IName, MinecraftWrapper {
     @Getter
     private final Category category;
 
-    private final float defaultWidth;
-
-    private final float defaultHeight;
-
-    private final int defaultWindowFlags;
+    private final float width;
+    private final float height;
+    private final int windowFlags;
 
     @Getter
     private boolean active;
 
-    public ClientWindow(final String name, final Category category, final float defaultWidth, final float defaultHeight) {
-        this(name, category, defaultWidth, defaultHeight, -1);
+    public ClientWindow(final String name, final Category category, final float width, final float height) {
+        this(name, category, width, height, -1);
     }
 
-    public ClientWindow(final String name, final Category category, final float defaultWidth, final float defaultHeight, final int defaultWindowFlags) {
+    public ClientWindow(final String name, final Category category, final float width, final float height, final int windowFlags) {
         this.name = name;
         this.category = category;
-        this.defaultWidth = defaultWidth;
-        this.defaultHeight = defaultHeight;
-        this.defaultWindowFlags = defaultWindowFlags;
+        this.width = width;
+        this.height = height;
+        this.windowFlags = windowFlags;
     }
 
     protected void init() {
@@ -64,9 +62,9 @@ public class ClientWindow implements IName, MinecraftWrapper {
     }
 
     public void render(final DrawContext context, final int mouseX, final int mouseY, final float delta) {
-        ImGui.setNextWindowSizeConstraints(ImUtils.modulateDimension(this.defaultWidth), ImUtils.modulateDimension(this.defaultHeight), ImUtils.modulateDimension(1000000f), ImUtils.modulateDimension(1000000f));
-        if (this.defaultWindowFlags != -1) {
-            ImGui.begin(this.getName(), this.defaultWindowFlags);
+        ImGui.setNextWindowSizeConstraints(ImUtils.modulateDimension(this.width), ImUtils.modulateDimension(this.height), ImUtils.modulateDimension(1000000f), ImUtils.modulateDimension(1000000f));
+        if (this.windowFlags != -1) {
+            ImGui.begin(this.getName(), this.windowFlags);
         } else {
             ImGui.begin(this.getName());
         }
