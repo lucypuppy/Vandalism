@@ -18,6 +18,7 @@
 
 package de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry;
 
+@Deprecated
 public abstract class DataEntry {
 
     public abstract String getData();

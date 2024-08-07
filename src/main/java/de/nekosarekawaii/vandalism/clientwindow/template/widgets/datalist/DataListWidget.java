@@ -27,6 +27,7 @@ import imgui.flag.ImGuiWindowFlags;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
+@Deprecated
 public interface DataListWidget {
 
     boolean filterDataEntry(final DataEntry dataEntry);

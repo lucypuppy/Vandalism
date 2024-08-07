@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.datae
 
 import de.nekosarekawaii.vandalism.clientwindow.template.widgets.datalist.dataentry.DataEntry;
 
+@Deprecated
 public class SingleDataEntry extends DataEntry {
 
     private final String dataName, data;
