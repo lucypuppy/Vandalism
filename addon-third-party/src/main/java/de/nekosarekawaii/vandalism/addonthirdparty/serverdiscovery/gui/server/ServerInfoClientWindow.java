@@ -66,7 +66,7 @@ public class ServerInfoClientWindow extends StateClientWindow implements DataLis
     private final CopyOnWriteArrayList<ListDataEntry> playerDataEntries = new CopyOnWriteArrayList<>();
 
     public ServerInfoClientWindow() {
-        super("Server Info", Category.SERVER, 650f, 600f);
+        super("Server Info", Category.SERVER, 460f, 400f);
     }
 
     @Override
@@ -194,7 +194,7 @@ public class ServerInfoClientWindow extends StateClientWindow implements DataLis
                 }
                 ImGui.text("Players (" + this.serverInfo.players.size() + ")" + (this.filteredPlayers > 0 ? " | Filtered (" + this.filteredPlayers + ")" : ""));
                 ImGui.separator();
-                this.renderDataList(id + "playerList", -1, ImGui.getColumnWidth() - 20, 60f, this.playerDataEntries);
+                this.renderDataList(id + "playerList", ImGui.getWindowHeight() - 5, ImGui.getColumnWidth() - 20, 60f, this.playerDataEntries);
             } else {
                 ImGui.text("No players found.");
             }

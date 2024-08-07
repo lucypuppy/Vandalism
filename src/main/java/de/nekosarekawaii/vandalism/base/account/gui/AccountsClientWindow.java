@@ -47,7 +47,7 @@ public class AccountsClientWindow extends ClientWindow {
     private AbstractAccount hoveredAccount;
 
     public AccountsClientWindow(final AccountManager accountManager) {
-        super("Accounts", Category.CONFIG, 500f, 500f);
+        super("Accounts", Category.CONFIG, 500f, 400f);
         this.accountManager = accountManager;
     }
 
