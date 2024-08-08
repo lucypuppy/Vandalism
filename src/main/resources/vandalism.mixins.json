@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "MixinIcons",
+    "MixinLivingEntity",
     "MixinLogoDrawer",
     "MixinMinecraftClient",
     "MixinSession",
@@ -86,6 +87,7 @@
     "integration.MixinPlayerEntity",
     "module.MixinAbstractBlockState",
     "module.MixinAbstractHorseEntity",
+    "module.MixinAnvilScreen",
     "module.MixinClientPlayerInteractionManager",
     "module.MixinClientPlayNetworkAddon",
     "module.MixinClientWorld",
@@ -115,10 +117,12 @@
     "util.MixinConnectScreen",
     "util.MixinDrawContext",
     "util.MixinRenderTickCounter_Dynamic",
-    "util.MixinToolTipComponent",
-    "MixinLivingEntity"
+    "util.MixinToolTipComponent"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+    "module.MixinAbstractSignEditScreen"
+  ]
 }

@@ -46,6 +46,7 @@ import java.io.File;
 
 /**
  * TODO: NekosAreKawaii <br>
+ *  - experimental warning dialog
  *  - Change behavior of the echolocation module to use it as a chunk load detector
  *  - Protector Module:
  *      - Add protection for custom rank prefixes
