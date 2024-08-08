@@ -7,10 +7,10 @@
   "authors": [
     "NekosAreKawaii",
     "FooFieOwO",
-    "Verschlxfene",
     "Recyz"
   ],
   "contributors": [
+    "Verschlxfene",
     "cuddlycatgirl",
     "nellieldev",
     "xkeksi",
@@ -18,7 +18,8 @@
     "mori0",
     "richardletshacks",
     "EvilCodeZ",
-    "Flauschig"
+    "Flauschig",
+    "Outfluencer"
   ],
   "environment": "client",
   "license": "GPL-v3",

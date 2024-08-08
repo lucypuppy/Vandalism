@@ -1,6 +1,6 @@
 /*
  * This file is part of Vandalism - https://github.com/NekosAreKawaii/Vandalism
- * Copyright (C) 2023-2024 NekosAreKawaii, FooFieOwO, Verschlxfene, Recyz and contributors
+ * Copyright (C) 2023-2024 NekosAreKawaii, FooFieOwO, Recyz and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,6 +64,12 @@ import java.io.File;
  *      - Fix translateTextDepthLimit
  *      - Fix blockTooManyTextGlyphs
  *      - Fix blockTooLongTexts
+ *  - Restructure addon system/loader
+ *  - Networking optimizations and fixes
+ *  - Restructure codebase once again
+ *  - Layered mappings with mojmap as fallback
+ *  - Rewrite client startup using static priorities, 3000 settings load, 3001 post addon load, ...
+ *  - Delete Vandalism#getInstance(), use main class for early loading but keep instances in manager classes: ModuleSystem.get(), ClientSettings.get(), ...
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Rewrite GCD fix to be accurate
@@ -93,14 +99,6 @@ import java.io.File;
  *  - Add Bold -> SimpleFont#SimpleGlyphRenderer#renderGlyph
  *  - Also handle MINECRAFT_LINES and MINECRAFT_LINE_STRIP -> PersistentMeshProducer#addPass at "} else if (pass.getPrimitiveType() == PrimitiveType.QUADS) {"
  *  - Finish AtlasFontRenderer#substringText x2
- * TODO: Verschlxfene <br>
- *  - Restructure addon system/loader
- *  - Networking optimizations and fixes
- *  - Restructure codebase once again
- *  - Layered mappings with mojmap as fallback
- *  - Rewrite client startup using static priorities, 3000 settings load, 3001 post addon load, ...
- *  - Delete Vandalism#getInstance(), use main class for early loading but keep instances in manager classes: ModuleSystem.get(), ClientSettings.get(), ...
- *  - Check if MixinTextureUrlChecker is obsolete with newer changes
  */
 @Getter
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {

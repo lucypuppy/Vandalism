@@ -1,6 +1,6 @@
 /*
  * This file is part of Vandalism - https://github.com/NekosAreKawaii/Vandalism
- * Copyright (C) 2023-2024 NekosAreKawaii, FooFieOwO, Verschlxfene, Recyz and contributors
+ * Copyright (C) 2023-2024 NekosAreKawaii, FooFieOwO, Recyz and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,10 +18,10 @@
 
 package de.nekosarekawaii.vandalism.util.render.gl.render;
 
+import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.util.render.gl.buffer.BufferObject;
 import de.nekosarekawaii.vandalism.util.render.gl.buffer.BufferUsage;
 import de.nekosarekawaii.vandalism.util.render.gl.mem.BufferAlloc;
-import de.nekosarekawaii.vandalism.Vandalism;
 
 import java.nio.ByteBuffer;
 

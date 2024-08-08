@@ -1,6 +1,6 @@
 /*
  * This file is part of Vandalism - https://github.com/NekosAreKawaii/Vandalism
- * Copyright (C) 2023-2024 NekosAreKawaii, FooFieOwO, Verschlxfene, Recyz and contributors
+ * Copyright (C) 2023-2024 NekosAreKawaii, FooFieOwO, Recyz and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ package de.nekosarekawaii.vandalism.util.render;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
 import de.nekosarekawaii.vandalism.event.render.ScreenListener;
+import de.nekosarekawaii.vandalism.util.math.DateUtil;
 import de.nekosarekawaii.vandalism.util.render.effect.PostProcessEffect;
 import de.nekosarekawaii.vandalism.util.render.effect.fill.ColorFillEffect;
 import de.nekosarekawaii.vandalism.util.render.effect.fill.GaussianBlurFillEffect;
@@ -32,7 +33,6 @@ import de.nekosarekawaii.vandalism.util.render.effect.outline.OuterOutlineEffect
 import de.nekosarekawaii.vandalism.util.render.gl.shader.Shader;
 import de.nekosarekawaii.vandalism.util.render.gl.shader.ShaderProgram;
 import de.nekosarekawaii.vandalism.util.render.gl.shader.ShaderType;
-import de.nekosarekawaii.vandalism.util.math.DateUtil;
 import lombok.Getter;
 import net.minecraft.client.MinecraftClient;
 
