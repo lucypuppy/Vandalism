@@ -39,11 +39,7 @@ public abstract class MixinAnvilScreen {
             return instance.getName();
         }
 
-        final Text r = ComponentResolverContainer.compute(instance.getName());
-
-        System.out.println("ANVIL " + instance.getName().getString() + " | " + r.getString() + " | " + Text.Serialization.toJsonString(instance.getName(), DynamicRegistryManager.EMPTY));
-
-        return r;
+        return ComponentResolverContainer.compute(instance.getName());
     }
 
     @Redirect(method = "onRenamed", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getName()Lnet/minecraft/text/Text;"))

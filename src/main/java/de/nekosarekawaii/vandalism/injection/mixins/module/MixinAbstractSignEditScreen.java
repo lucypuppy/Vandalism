@@ -41,10 +41,7 @@ public abstract class MixinAbstractSignEditScreen {
         }
 
         final Text text = cir.getReturnValue();
-        final Text r = ComponentResolverContainer.compute(text);
-        System.out.println("SIGN " + text.getString() + " | " + r.getString() + " | " + Text.Serialization.toJsonString(text, DynamicRegistryManager.EMPTY));
-
-        cir.setReturnValue(r);
+        cir.setReturnValue(ComponentResolverContainer.compute(text));
     }
 
 }
