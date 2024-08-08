@@ -18,9 +18,12 @@
 
 package de.nekosarekawaii.vandalism.injection.mixins.module;
 
+import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 import com.mojang.authlib.yggdrasil.TextureUrlChecker;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.feature.module.impl.exploit.exploitfixer.ExploitFixerModule;
+import de.nekosarekawaii.vandalism.util.game.MinecraftConstants;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -30,18 +33,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinTextureUrlChecker {
 
     @Inject(method = "isAllowedTextureDomain", at = @At("HEAD"), cancellable = true)
-    private static void hookExploitFixer(final String url, final CallbackInfoReturnable<Boolean> cir) {
-        final ExploitFixerModule exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
-        if (exploitFixerModule.isActive() && exploitFixerModule.miscSettings.blockInvalidTextureUrls.getValue()) {
-            if (url == null) {
-                cir.setReturnValue(false);
-                return;
-            }
-            final String lowerCaseUrl = url.toLowerCase();
-            final String correctTextureUrlStart = exploitFixerModule.miscSettings.correctTextureUrlStart;
-            if (!lowerCaseUrl.startsWith("https://" + correctTextureUrlStart) && !lowerCaseUrl.startsWith("http://" + correctTextureUrlStart)) {
-                cir.setReturnValue(false);
-            }
+    private static void hookExploitFixer(final String url, final CallbackInfoReturnable<Boolean> cir, @Share("state") LocalBooleanRef state) {
+        final var exploitFixerModule = Vandalism.getInstance().getModuleManager().getExploitFixerModule();
+        state.set(exploitFixerModule.isActive() && exploitFixerModule.miscSettings.blockInvalidTextureUrls.getValue());
+        if (state.get() && url == null) {
+            // Null values can be passed in invalid skull items to the client
+            cir.setReturnValue(false);
+        }
+    }
+
+    @Inject(method = "isAllowedTextureDomain", at = @At(value = "INVOKE", target = "Lcom/mojang/authlib/yggdrasil/TextureUrlChecker;isDomainOnList(Ljava/lang/String;Ljava/util/List;)Z", ordinal = 0, shift = At.Shift.BEFORE), cancellable = true)
+    private static void hookExploitFixer(String url, CallbackInfoReturnable<Boolean> cir, @Local(ordinal = 3) String lowerCaseDomain, @Share("state") LocalBooleanRef state) {
+        if (state.get() && !lowerCaseDomain.equals(MinecraftConstants.TEXTURE_ENDPOINT)) {
+            // Validate against the only possible texture endpoint and drop everything else
+            cir.setReturnValue(false);
         }
     }
 
