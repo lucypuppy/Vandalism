@@ -25,10 +25,10 @@ public class MinecraftConstants {
     public static final int MIN_USERNAME_LENGTH = 3;
 
     @Deprecated // those constant gets used in shitty anti cheats with no proper collision handling, posY % const == 0 = ground True
-    public static double MAGIC_ON_GROUND_MODULO_FACTOR = 0.015625;
+    public static final double MAGIC_ON_GROUND_MODULO_FACTOR = 0.015625;
 
-    public static int FIRST_SLOT_IN_HOTBAR = 36;
-    public static int LAST_SLOT_IN_HOTBAR = 44;
+    public static final int FIRST_SLOT_IN_HOTBAR = 36;
+    public static final int LAST_SLOT_IN_HOTBAR = 44;
 
     public static final String TEXTURE_ENDPOINT = "textures.minecraft.net";
 
