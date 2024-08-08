@@ -1,6 +1,6 @@
 /*
  * This file is part of Vandalism - https://github.com/NekosAreKawaii/Vandalism
- * Copyright (C) 2023-2024 NekosAreKawaii, FooFieOwO, Verschlxfene, Recyz and contributors
+ * Copyright (C) 2023-2024 NekosAreKawaii, FooFieOwO, Recyz and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@ import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.template.ValueNumber;
 import imgui.ImGui;
 import imgui.flag.ImGuiDataType;
-import imgui.type.ImInt;
 import imgui.type.ImLong;
 
 public class LongValue extends ValueNumber<Long> {

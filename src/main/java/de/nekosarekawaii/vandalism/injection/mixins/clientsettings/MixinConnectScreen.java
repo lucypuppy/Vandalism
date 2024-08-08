@@ -1,6 +1,6 @@
 /*
  * This file is part of Vandalism - https://github.com/NekosAreKawaii/Vandalism
- * Copyright (C) 2023-2024 NekosAreKawaii, FooFieOwO, Verschlxfene, Recyz and contributors
+ * Copyright (C) 2023-2024 NekosAreKawaii, FooFieOwO, Recyz and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@ package de.nekosarekawaii.vandalism.injection.mixins.clientsettings;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
 import net.minecraft.client.network.CookieStorage;
 import net.minecraft.client.network.ServerAddress;

@@ -1,6 +1,6 @@
 /*
  * This file is part of Vandalism - https://github.com/NekosAreKawaii/Vandalism
- * Copyright (C) 2023-2024 NekosAreKawaii, FooFieOwO, Verschlxfene, Recyz and contributors
+ * Copyright (C) 2023-2024 NekosAreKawaii, FooFieOwO, Recyz and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,9 @@ import de.nekosarekawaii.vandalism.base.value.ValueParent;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
+import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
+import de.nekosarekawaii.vandalism.util.math.AlignmentX;
+import de.nekosarekawaii.vandalism.util.math.AlignmentY;
 import de.nekosarekawaii.vandalism.util.render.Buffers;
 import de.nekosarekawaii.vandalism.util.render.gl.render.AttribConsumerProvider;
 import de.nekosarekawaii.vandalism.util.render.gl.render.ImmediateRenderer;
@@ -33,9 +36,6 @@ import de.nekosarekawaii.vandalism.util.render.text.AtlasFont;
 import de.nekosarekawaii.vandalism.util.render.text.AtlasFontRenderer;
 import de.nekosarekawaii.vandalism.util.render.text.SimpleFont;
 import de.nekosarekawaii.vandalism.util.render.text.TextAlign;
-import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
-import de.nekosarekawaii.vandalism.util.math.AlignmentX;
-import de.nekosarekawaii.vandalism.util.math.AlignmentY;
 import lombok.Getter;
 import lombok.Setter;
 import net.fabricmc.loader.api.FabricLoader;

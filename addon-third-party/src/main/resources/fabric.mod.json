@@ -7,8 +7,10 @@
   "authors": [
     "NekosAreKawaii",
     "FooFieOwO",
-    "Verschlxfene",
     "Recyz"
+  ],
+  "contributors": [
+    "Verschlxfene"
   ],
   "license": "GPL-v3",
   "environment": "client",
