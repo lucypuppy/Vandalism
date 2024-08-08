@@ -30,4 +30,6 @@ public class MinecraftConstants {
     public static int FIRST_SLOT_IN_HOTBAR = 36;
     public static int LAST_SLOT_IN_HOTBAR = 44;
 
+    public static final String TEXTURE_ENDPOINT = "textures.minecraft.net";
+
 }
