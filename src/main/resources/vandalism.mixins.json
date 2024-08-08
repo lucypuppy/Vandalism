@@ -123,6 +123,7 @@
     "defaultRequire": 1
   },
   "mixins": [
-    "module.MixinAbstractSignEditScreen"
+    "module.MixinAbstractSignEditScreen",
+    "module.MixinAnvilScreenHandler"
   ]
 }

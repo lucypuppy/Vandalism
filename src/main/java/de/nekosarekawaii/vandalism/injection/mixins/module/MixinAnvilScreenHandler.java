@@ -19,23 +19,18 @@
 package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
-import net.minecraft.client.gui.screen.ingame.AnvilScreen;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.AnvilScreenHandler;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(AnvilScreen.class)
-public abstract class MixinAnvilScreen {
+@Mixin(AnvilScreenHandler.class)
+public abstract class MixinAnvilScreenHandler {
 
-    @Redirect(method = "onSlotUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getName()Lnet/minecraft/text/Text;"))
-    private Text hookExploitFixer1(final ItemStack instance) {
-        return Vandalism.getInstance().getModuleManager().getExploitFixerModule().redirectComponentResolverContainer(instance);
-    }
-
-    @Redirect(method = "onRenamed", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getName()Lnet/minecraft/text/Text;"))
-    private Text hookExploitFixer2(final ItemStack instance) {
+    @Redirect(method = "updateResult", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getName()Lnet/minecraft/text/Text;"))
+    private Text hookExploitFixer(final ItemStack instance) {
         return Vandalism.getInstance().getModuleManager().getExploitFixerModule().redirectComponentResolverContainer(instance);
     }
 }
