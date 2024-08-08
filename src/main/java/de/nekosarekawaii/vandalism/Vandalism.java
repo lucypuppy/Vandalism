@@ -36,7 +36,9 @@ import de.nekosarekawaii.vandalism.integration.serverlist.ServerListManager;
 import de.nekosarekawaii.vandalism.util.game.NameGenerationUtil;
 import de.nekosarekawaii.vandalism.util.render.Shaders;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.RunArgs;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
@@ -128,6 +130,9 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     // Features
     private ModuleManager moduleManager;
     private CommandManager commandManager;
+
+    @Setter
+    private RunArgs runArgs; // TODO Is it okay to have this here?
 
     public void printStartup() {
         this.logger.info("");

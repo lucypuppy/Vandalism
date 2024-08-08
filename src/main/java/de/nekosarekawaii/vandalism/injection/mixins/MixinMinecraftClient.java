@@ -23,6 +23,7 @@ import de.nekosarekawaii.vandalism.util.SessionUtil;
 import de.nekosarekawaii.vandalism.util.render.util.RenderUtil;
 import de.nekosarekawaii.vandalism.util.server.ServerUtil;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.RunArgs;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.session.Session;
@@ -48,6 +49,11 @@ public abstract class MixinMinecraftClient {
 
     @Unique
     private boolean vandalism$loadingDisplayed = false;
+
+    @Inject(method = "<init>", at = @At(value = "RETURN"))
+    private void scrapeRunArgs(final RunArgs args, final CallbackInfo ci) {
+        Vandalism.getInstance().setRunArgs(args); // Stores the run args in vandalism
+    }
 
     @Inject(method = "onFinishedLoading", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;collectLoadTimes(Lnet/minecraft/client/MinecraftClient$LoadingContext;)V", shift = At.Shift.AFTER))
     private void displayLoadingTime(final CallbackInfo ci) {
