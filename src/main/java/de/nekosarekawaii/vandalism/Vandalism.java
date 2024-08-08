@@ -97,6 +97,7 @@ import java.io.File;
  *  - Layered mappings with mojmap as fallback
  *  - Rewrite client startup using static priorities, 3000 settings load, 3001 post addon load, ...
  *  - Delete Vandalism#getInstance(), use main class for early loading but keep instances in manager classes: ModuleSystem.get(), ClientSettings.get(), ...
+ *  - Check if MixinTextureUrlChecker is obsolete with newer changes
  */
 @Getter
 public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessListener {
