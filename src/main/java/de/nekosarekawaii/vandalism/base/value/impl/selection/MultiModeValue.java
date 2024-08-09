@@ -29,15 +29,17 @@ import de.nekosarekawaii.vandalism.integration.imgui.ImUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiComboFlags;
+import imgui.type.ImBoolean;
 import imgui.type.ImString;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MultiModeValue extends Value<List<String>> {
 
     private final ImString searchInput = new ImString();
+    private final ImBoolean onlyShowSelected = new ImBoolean(false);
 
     private final List<String> options;
 
@@ -98,6 +100,13 @@ public class MultiModeValue extends Value<List<String>> {
             ImGui.text("Search for " + this.getName() + " (" + this.options.size() + ")");
             ImGui.setNextItemWidth(Math.max(350, ImGui.getColumnWidth()));
             ImGui.inputText(id + "search", this.searchInput);
+            int selectedCount = 0;
+            for (final String value : this.options) {
+                if (this.isSelected(value)) {
+                    selectedCount++;
+                }
+            }
+            ImGui.checkbox("Only Show Selected (" + selectedCount + ")", this.onlyShowSelected);
             if (ImGui.button("Select All" + id + "selectAll", ImGui.getColumnWidth() / 2f, ImGui.getTextLineHeightWithSpacing())) {
                 this.getValue().clear();
                 if (this.searchInput.isEmpty()) {
@@ -138,6 +147,8 @@ public class MultiModeValue extends Value<List<String>> {
                     ImGui.pushStyleColor(ImGuiCol.Button, colorArray[0], colorArray[1], colorArray[2], colorArray[3]);
                     ImGui.pushStyleColor(ImGuiCol.ButtonHovered, colorArray[0], colorArray[1], colorArray[2], colorArray[3]);
                     ImGui.pushStyleColor(ImGuiCol.ButtonActive, colorArray[0], colorArray[1], colorArray[2], colorArray[3]);
+                } else if (this.onlyShowSelected.get()) {
+                    continue;
                 }
                 if (ImUtils.subButton(value)) {
                     if (isSelected) this.getValue().remove(value);
