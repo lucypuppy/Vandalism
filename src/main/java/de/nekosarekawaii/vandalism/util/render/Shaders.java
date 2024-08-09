@@ -20,7 +20,7 @@ package de.nekosarekawaii.vandalism.util.render;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
-import de.nekosarekawaii.vandalism.event.render.ScreenListener;
+import de.nekosarekawaii.vandalism.event.render.ResizeScreenListener;
 import de.nekosarekawaii.vandalism.util.math.DateUtil;
 import de.nekosarekawaii.vandalism.util.render.effect.PostProcessEffect;
 import de.nekosarekawaii.vandalism.util.render.effect.fill.ColorFillEffect;
@@ -121,12 +121,14 @@ public class Shaders {
                     final PostProcessEffect effect = (PostProcessEffect) field.getType().newInstance();
                     field.set(null, effect);
                     postProcessEffects.add(effect);
-                    Vandalism.getInstance().getEventSystem().subscribe(ScreenListener.ScreenEvent.ID, new ScreenListener() {
+                    Vandalism.getInstance().getEventSystem().subscribe(ResizeScreenListener.ResizeScreenEvent.ID, new ResizeScreenListener() {
+
                         @Override
-                        public void onResizeScreen(ScreenEvent event) {
+                        public void onPostResizeScreen() {
                             final MinecraftClient mc = MinecraftClient.getInstance();
                             effect.resizeBuffers(mc.getWindow().getFramebufferWidth(), mc.getWindow().getFramebufferHeight());
                         }
+
                     });
                 } catch (ReflectiveOperationException e) {
                     throw new RuntimeException("Failed to initialize post-process effect " + field.getType().getSimpleName(), e);
@@ -141,7 +143,7 @@ public class Shaders {
         initialized = false;
         for (PostProcessEffect effect : postProcessEffects) {
             effect.close();
-            Vandalism.getInstance().getEventSystem().unsubscribe(effect, ScreenListener.ScreenEvent.ID);
+            Vandalism.getInstance().getEventSystem().unsubscribe(effect, ResizeScreenListener.ResizeScreenEvent.ID);
         }
         postProcessEffects.clear();
         for (ShaderProgram shader : shaders) {

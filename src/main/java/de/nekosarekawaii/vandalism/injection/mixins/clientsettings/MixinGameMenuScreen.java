@@ -72,8 +72,10 @@ public abstract class MixinGameMenuScreen extends Screen {
         }
         final ButtonWidget.Builder multiplayerButton = ButtonWidget.builder(Text.translatable("menu.multiplayer"), b -> this.client.setScreen(new MultiplayerScreen(this))).width(98);
         this.addDrawableChild(multiplayerButton.position(4, this.height - 24).build());
-        final ButtonWidget.Builder reconnectButton = ButtonWidget.builder(Text.literal("Reconnect"), b -> ServerUtil.connect(this.client.getCurrentServerEntry())).width(98);
-        this.addDrawableChild(reconnectButton.position(this.width - 102, this.height - 24).build());
+        if (!this.client.isIntegratedServerRunning()) {
+            final ButtonWidget.Builder reconnectButton = ButtonWidget.builder(Text.literal("Reconnect"), b -> ServerUtil.connect(this.client.getCurrentServerEntry())).width(98);
+            this.addDrawableChild(reconnectButton.position(this.width - 102, this.height - 24).build());
+        }
     }
 
 }
