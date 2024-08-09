@@ -22,6 +22,7 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
 import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
 import de.nekosarekawaii.vandalism.event.player.AttackListener;
+import de.nekosarekawaii.vandalism.event.player.CanSprintListener;
 import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import de.nekosarekawaii.vandalism.util.MovementUtil;
@@ -31,13 +32,13 @@ import net.minecraft.entity.LivingEntity;
 
 import java.util.Random;
 
-public class WTapModule extends AbstractModule implements AttackListener, PlayerUpdateListener {
+public class WTapModule extends AbstractModule implements AttackListener, PlayerUpdateListener, CanSprintListener {
 
+    private State state = State.IDLE;
     private final Random random = new Random();
-    private boolean shouldTap, shouldStopTap;
     private LivingEntity targetEntity;
-    private long timeSinceAttack;
-    private long randomStopDelay, randomStartDelay;
+    private int ticks;
+    private int addTicks;
 
     public WTapModule() {
         super("W Tap",
@@ -46,71 +47,72 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
     }
 
     private final ModeValue tapMode = new ModeValue(this, "Tap Mode", "The type of tap to use.", "W Tap", "S Tap");
-    private final IntegerValue stopDelay = new IntegerValue(this, "Stop Delay", "The delay between hitting and stopping.", 100, 0, 1000);
-    private final IntegerValue startDelay = new IntegerValue(this, "Start Delay", "The delay between stopping and starting.", 100, 0, 1000);
-    private final IntegerValue randomDelayRange = new IntegerValue(this, "Random Delay Range", "The random delay range which will be added to the delay.", 30, 0, 100);
+    private final IntegerValue stopTicks = new IntegerValue(this, "Stop Ticks", "The amount of ticks to wait before stopping.", 3, 0, 20);
+    private final IntegerValue startTicks = new IntegerValue(this, "Start Ticks", "The amount of ticks to wait before starting.", 3, 0, 20);
+    private final IntegerValue randomTicks = new IntegerValue(this, "Random Ticks", "The random ticks which will be added to the delay.", 2, 0, 10);
     private final IntegerValue chance = new IntegerValue(this, "Chance", "The chance to tap.", 60, 0, 100);
 
     @Override
     protected void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(this, AttackSendEvent.ID, PlayerUpdateEvent.ID);
+        Vandalism.getInstance().getEventSystem().subscribe(this, AttackSendEvent.ID, PlayerUpdateEvent.ID, CanSprintEvent.ID);
     }
 
     @Override
     protected void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(this, AttackSendEvent.ID, PlayerUpdateEvent.ID);
-        if (shouldTap) {
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, AttackSendEvent.ID, PlayerUpdateEvent.ID, CanSprintEvent.ID);
+        if (this.state == State.IDLE) {
             resetKeys();
         }
-        shouldTap = false;
-        shouldStopTap = false;
+        this.state = State.IDLE;
     }
 
     @Override
     public void onAttackSend(AttackSendEvent event) {
-        if (event.target instanceof LivingEntity && !shouldTap && random.nextDouble() < chance.getValue() * 0.1 && MovementUtil.isMovingForwards() && mc.player.isSprinting()) {
-            shouldTap = true;
-            timeSinceAttack = System.currentTimeMillis();
+        if (event.target instanceof LivingEntity && this.state == State.IDLE && random.nextDouble() < chance.getValue() * 0.1 && MovementUtil.isMovingForwards() && mc.player.isSprinting()) {
+            this.state = State.START;
             targetEntity = (LivingEntity) event.target;
-            randomStopDelay = stopDelay.getValue() + getRandomDelay();
-            randomStartDelay = Math.max(startDelay.getValue(), startDelay.getValue() + getRandomDelay());
+            addTicks = getRandomTicks();
         }
     }
 
     @Override
     public void onPrePlayerUpdate(PlayerUpdateEvent event) {
-        final long currentTime = System.currentTimeMillis();
-        if (shouldTap) {
-            if (currentTime - timeSinceAttack > randomStopDelay && !shouldStopTap) {
+        if (this.state == State.START) {
+            ticks++;
+            if (ticks >= stopTicks.getValue() + addTicks) {
                 doTap(tapMode.getSelectedIndex());
-                shouldTap = false;
-                shouldStopTap = true;
+                this.state = State.STOP;
+                ticks = 0;
+                addTicks = getRandomTicks();
+            }
+        } else if (this.state == State.STOP) {
+            ticks++;
+            if (ticks >= startTicks.getValue() + addTicks) {
+                resetKeys();
+                this.state = State.IDLE;
             }
         }
-        if (shouldStopTap) {
-            if (currentTime - timeSinceAttack > randomStopDelay + randomStartDelay) {
-                resetKeys();
-                shouldStopTap = false;
-            }
+    }
+
+    @Override
+    public void onCanSprint(CanSprintEvent event) {
+        if (this.state == State.START && ticks >= stopTicks.getValue()) {
+            event.canSprint = false;
+        } else if (this.state == State.STOP && ticks >= startTicks.getValue()) {
+            event.canSprint = isPressed(mc.options.sprintKey);
         }
     }
 
     private void doTap(final int mode) {
-        switch (mode) {
-            case 0:
-                mc.options.sprintKey.setPressed(false);
-                mc.options.forwardKey.setPressed(false);
-                break;
-            case 1:
-                mc.options.sprintKey.setPressed(false);
-                mc.options.forwardKey.setPressed(false);
-                mc.options.backKey.setPressed(true);
-                break;
+        mc.options.sprintKey.setPressed(false);
+        mc.options.forwardKey.setPressed(false);
+        if (mode == 1) {
+            mc.options.backKey.setPressed(true);
         }
     }
 
-    private int getRandomDelay() {
-        return randomDelayRange.getValue() > 0 ? random.nextInt(randomDelayRange.getValue()) : 0;
+    private int getRandomTicks() {
+        return randomTicks.getValue() > 0 ? random.nextInt(randomTicks.getValue() + 1) : 0;
     }
 
     private boolean isPressed(KeyBinding keyBinding) {
@@ -121,5 +123,11 @@ public class WTapModule extends AbstractModule implements AttackListener, Player
         mc.options.sprintKey.setPressed(isPressed(mc.options.sprintKey));
         mc.options.forwardKey.setPressed(isPressed(mc.options.forwardKey));
         mc.options.backKey.setPressed(isPressed(mc.options.backKey));
+    }
+
+    private enum State {
+        IDLE,
+        START,
+        STOP
     }
 }
