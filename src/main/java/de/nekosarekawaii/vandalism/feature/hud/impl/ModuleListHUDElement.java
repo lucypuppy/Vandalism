@@ -35,7 +35,7 @@ import de.nekosarekawaii.vandalism.util.render.gl.render.ImmediateRenderer;
 import net.minecraft.client.gui.DrawContext;
 import org.joml.Vector2f;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -225,6 +225,10 @@ public class ModuleListHUDElement extends HUDElement implements ModuleToggleList
     public void removeExternalModule(final String source, final String name) {
         this.externalModules.remove(source + " " + name);
         this.sort = true;
+    }
+
+    public void markForSorting() {
+        sort = true;
     }
 
 }
