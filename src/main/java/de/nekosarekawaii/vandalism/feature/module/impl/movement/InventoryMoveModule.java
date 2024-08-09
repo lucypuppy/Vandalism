@@ -105,11 +105,6 @@ public class InventoryMoveModule extends AbstractModule implements PlayerUpdateL
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (this.mc.currentScreen instanceof HandledScreen<?>) {
-            if (this.mc.currentScreen instanceof CreativeInventoryScreen) {
-                if (CreativeInventoryScreen.selectedTab == ItemGroups.getSearchGroup()) {
-                    return;
-                }
-            }
             final GameOptions options = this.mc.options;
             final List<KeyBinding> keyBindings = new ArrayList<>();
             if (this.allowSprint.getValue()) {
@@ -125,6 +120,14 @@ public class InventoryMoveModule extends AbstractModule implements PlayerUpdateL
             keyBindings.add(options.backKey);
             keyBindings.add(options.leftKey);
             keyBindings.add(options.rightKey);
+            if (this.mc.currentScreen instanceof CreativeInventoryScreen) {
+                if (CreativeInventoryScreen.selectedTab == ItemGroups.getSearchGroup()) {
+                    for (final KeyBinding keyBinding : keyBindings) {
+                        keyBinding.setPressed(false);
+                    }
+                    return;
+                }
+            }
             for (final KeyBinding keyBinding : keyBindings) {
                 keyBinding.setPressed(InputUtil.isKeyPressed(this.mc.getWindow().getHandle(), keyBinding.boundKey.getCode()));
             }
