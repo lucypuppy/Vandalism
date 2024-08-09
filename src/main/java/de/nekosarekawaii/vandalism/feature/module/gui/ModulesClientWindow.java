@@ -42,7 +42,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.raphimc.vialoader.util.VersionRange;
 import org.lwjgl.glfw.GLFW;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,6 +105,9 @@ public class ModulesClientWindow extends ClientWindow {
             final String searchInput = this.searchInput.get();
             if (!searchInput.isBlank()) {
                 for (final AbstractModule module : moduleManager.getList()) {
+                    if (menuSettings.hideExperimentalModules.getValue() && module.isExperimental()) {
+                        continue;
+                    }
                     final String moduleName = module.getName();
                     final boolean doesContainName = StringUtils.contains(moduleName, searchInput) || StringUtils.contains(moduleName.replace(" ", ""), searchInput);
                     if (doesContainName || (module.getDescription() != null && StringUtils.contains(module.getDescription(), searchInput))) {
@@ -199,6 +202,9 @@ public class ModulesClientWindow extends ClientWindow {
                 ImGui.separator();
                 ImGui.beginChild(featureCategoryIdentifier + "scrolllist", -1, -1, true);
                 for (final AbstractModule module : modulesByCategory) {
+                    if (menuSettings.hideExperimentalModules.getValue() && module.isExperimental()) {
+                        continue;
+                    }
                     this.renderModule(module, "category");
                 }
                 ImGui.endChild();

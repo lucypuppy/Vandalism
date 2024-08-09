@@ -30,7 +30,7 @@ import de.nekosarekawaii.vandalism.base.value.impl.selection.EnumModeValue;
 import de.nekosarekawaii.vandalism.base.value.template.ValueGroup;
 import org.lwjgl.glfw.GLFW;
 
-import java.awt.Color;
+import java.awt.*;
 
 public class MenuSettings extends ValueGroup {
 
@@ -58,12 +58,11 @@ public class MenuSettings extends ValueGroup {
             false
     );
 
-    @Deprecated(forRemoval = true)
-    public final BooleanValue scriptExecutionLogging = new BooleanValue(
+    public final BooleanValue hideExperimentalModules = new BooleanValue(
             this,
-            "Script Execution Logging",
-            "Activates/Deactivates the logging for the script execution.",
-            false
+            "Hide Experimental Modules",
+            "Hides experimental modules in module tabs.",
+            true
     );
 
     public final FloatValue moduleTabMaxHeight = new FloatValue(
