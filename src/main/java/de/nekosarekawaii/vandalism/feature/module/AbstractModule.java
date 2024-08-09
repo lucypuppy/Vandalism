@@ -37,7 +37,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.raphimc.vialoader.util.VersionRange;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,7 +82,9 @@ public abstract class AbstractModule extends Feature implements ValueParent {
             "Show in HUD",
             "Whether this module should be shown in the HUD.",
             true
-    );
+    ).onValueChange((oldValue, newValue) -> {
+        Vandalism.getInstance().getHudManager().moduleListHUDElement.markForSorting();
+    });
 
     private final BooleanValue moduleStateLogging = new BooleanValue(
             this.defaultSettings,
