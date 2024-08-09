@@ -48,7 +48,6 @@ import java.io.File;
 
 /**
  * TODO: NekosAreKawaii <br>
- *  - experimental warning dialog
  *  - Change behavior of the echolocation module to use it as a chunk load detector
  *  - Protector Module:
  *      - Add protection for custom rank prefixes
@@ -59,17 +58,8 @@ import java.io.File;
  *  - Fix spotify menu control buttons
  *  - Add anti vanish via. the player list hud
  *  - Add Proxy manager
- *  - Exploit Fixer Module:
- *      - Fix blockTooManyTranslateTexts
- *      - Fix translateTextDepthLimit
- *      - Fix blockTooManyTextGlyphs
- *      - Fix blockTooLongTexts
  *  - Restructure addon system/loader
  *  - Networking optimizations and fixes
- *  - Restructure codebase once again
- *  - Layered mappings with mojmap as fallback
- *  - Rewrite client startup using static priorities, 3000 settings load, 3001 post addon load, ...
- *  - Delete Vandalism#getInstance(), use main class for early loading but keep instances in manager classes: ModuleSystem.get(), ClientSettings.get(), ...
  * <br><br>
  * TODO: FooFieOwO <br>
  *  - Rewrite GCD fix to be accurate
@@ -106,7 +96,7 @@ public class Vandalism implements MinecraftBoostrapListener, ShutdownProcessList
     @Getter
     private static final Vandalism instance = new Vandalism();
 
-    private final DietrichEvents2 eventSystem = new DietrichEvents2(47 /* This value has to be incremented for every new event */, Throwable::printStackTrace);
+    private final DietrichEvents2 eventSystem = new DietrichEvents2(48 /* This value has to be incremented for every new event */, Throwable::printStackTrace);
     private final Logger logger = LoggerFactory.getLogger(FabricBootstrap.MOD_NAME);
 
     // Base handlers
