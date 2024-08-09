@@ -163,3 +163,14 @@ accessible method net/minecraft/entity/Entity movementInputToVelocity (Lnet/mine
 accessible field net/minecraft/entity/LivingEntity serverYaw D
 accessible method net/minecraft/text/TranslatableTextContent updateTranslations ()V
 accessible field net/minecraft/text/TranslatableTextContent translations Ljava/util/List;
+accessible field net/minecraft/client/resource/server/ServerResourcePackLoader manager Lnet/minecraft/client/resource/server/ServerResourcePackManager;
+accessible field net/minecraft/client/resource/server/ServerResourcePackManager queuer Lnet/minecraft/client/resource/server/DownloadQueuer;
+accessible field net/minecraft/client/resource/server/ServerResourcePackLoader downloader Lnet/minecraft/util/Downloader;
+accessible method net/minecraft/client/resource/server/ServerResourcePackLoader createDownloadQueuer (Lnet/minecraft/util/Downloader;Ljava/util/concurrent/Executor;Lnet/minecraft/client/session/Session;Ljava/net/Proxy;)Lnet/minecraft/client/resource/server/DownloadQueuer;
+accessible class net/minecraft/client/resource/server/ServerResourcePackManager$DiscardReason
+accessible class net/minecraft/client/resource/server/ServerResourcePackManager$PackEntry
+accessible class net/minecraft/client/resource/server/ServerResourcePackManager$LoadStatus
+accessible class net/minecraft/client/resource/server/ServerResourcePackManager$Status
+accessible field net/minecraft/client/resource/server/ServerResourcePackManager$DiscardReason state Lnet/minecraft/client/resource/server/PackStateChangeCallback$FinishState;
+accessible method net/minecraft/client/resource/server/ServerResourcePackLoader toProfiles (Ljava/util/List;)Ljava/util/List;
+accessible method net/minecraft/client/resource/server/ServerResourcePackLoader toHashCode (Ljava/lang/String;)Lcom/google/common/hash/HashCode;
