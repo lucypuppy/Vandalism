@@ -33,7 +33,7 @@ import de.nekosarekawaii.vandalism.util.render.util.RenderUtil;
 import net.minecraft.world.GameMode;
 import org.lwjgl.glfw.GLFW;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.HashMap;
 
 public class BetterTabListModule extends AbstractModule implements KeyboardInputListener {

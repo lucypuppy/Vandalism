@@ -33,7 +33,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import java.awt.*;
+import java.awt.Color;
 
 @Mixin(SliderWidget.class)
 public abstract class MixinSliderWidget extends ClickableWidget {

@@ -26,7 +26,7 @@ import org.joml.Vector3fc;
 import org.joml.Vector4fc;
 import org.lwjgl.opengl.GL45C;
 
-import java.awt.*;
+import java.awt.Color;
 
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class ShaderUniform {

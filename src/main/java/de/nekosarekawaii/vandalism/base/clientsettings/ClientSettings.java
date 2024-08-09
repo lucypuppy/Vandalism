@@ -19,7 +19,13 @@
 package de.nekosarekawaii.vandalism.base.clientsettings;
 
 import de.nekosarekawaii.vandalism.base.clientsettings.gui.ClientSettingsClientWindow;
-import de.nekosarekawaii.vandalism.base.clientsettings.impl.*;
+import de.nekosarekawaii.vandalism.base.clientsettings.impl.ChatSettings;
+import de.nekosarekawaii.vandalism.base.clientsettings.impl.EnhancedServerListSettings;
+import de.nekosarekawaii.vandalism.base.clientsettings.impl.MenuSettings;
+import de.nekosarekawaii.vandalism.base.clientsettings.impl.MovementSettings;
+import de.nekosarekawaii.vandalism.base.clientsettings.impl.NetworkingSettings;
+import de.nekosarekawaii.vandalism.base.clientsettings.impl.RotationSettings;
+import de.nekosarekawaii.vandalism.base.clientsettings.impl.VisualSettings;
 import de.nekosarekawaii.vandalism.base.config.ConfigManager;
 import de.nekosarekawaii.vandalism.base.config.template.ConfigWithValues;
 import de.nekosarekawaii.vandalism.base.value.Value;

@@ -27,7 +27,11 @@ import de.nekosarekawaii.vandalism.util.render.gl.vertex.VertexLayout;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class PersistentMeshProducer implements AttribConsumerProvider, AutoCloseable {
 

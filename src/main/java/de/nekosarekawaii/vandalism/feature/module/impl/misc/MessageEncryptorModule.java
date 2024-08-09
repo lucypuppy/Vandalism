@@ -22,7 +22,11 @@ import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.player.ChatModifyReceiveListener;
 import de.nekosarekawaii.vandalism.event.player.ChatSendListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import net.minecraft.text.*;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 
 public class MessageEncryptorModule extends AbstractModule implements ChatSendListener, ChatModifyReceiveListener {

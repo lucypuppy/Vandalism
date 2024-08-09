@@ -42,7 +42,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.raphimc.vialoader.util.VersionRange;
 import org.lwjgl.glfw.GLFW;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -30,7 +30,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
 
 public class TrueSightModule extends AbstractModule implements EntityRenderBottomLayerListener {

@@ -19,7 +19,17 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.speed;
 
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.impl.*;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.impl.BlocksMCModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.impl.CheatGuardModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.impl.CubeCraftModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.impl.LongJumpModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.impl.LowHopModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.impl.SpartanFlagModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.impl.SpartanOnGroundModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.impl.UpdatedNCPModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.impl.VerusModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.impl.VulcanModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.speed.impl.YPortModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleModeValue;
 
 public class SpeedModule extends AbstractModule {

@@ -32,7 +32,7 @@ import imgui.type.ImString;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Pair;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GlobalSearchClientWindow extends ClientWindow implements DataListWidget {

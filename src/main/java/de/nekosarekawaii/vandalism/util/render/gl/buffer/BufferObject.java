@@ -21,7 +21,13 @@ package de.nekosarekawaii.vandalism.util.render.gl.buffer;
 import lombok.extern.log4j.Log4j2;
 import org.lwjgl.opengl.GL45C;
 
-import java.nio.*;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.LongBuffer;
+import java.nio.ShortBuffer;
 
 @Log4j2
 public class BufferObject implements AutoCloseable {

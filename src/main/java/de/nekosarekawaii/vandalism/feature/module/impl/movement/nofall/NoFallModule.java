@@ -19,7 +19,11 @@
 package de.nekosarekawaii.vandalism.feature.module.impl.movement.nofall;
 
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
-import de.nekosarekawaii.vandalism.feature.module.impl.movement.nofall.impl.*;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.nofall.impl.CubeCraftModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.nofall.impl.GroundSpoofModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.nofall.impl.LegitModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.nofall.impl.PositionSpoofModuleMode;
+import de.nekosarekawaii.vandalism.feature.module.impl.movement.nofall.impl.VulcanModuleMode;
 import de.nekosarekawaii.vandalism.feature.module.template.module.ModuleModeValue;
 
 public class NoFallModule extends AbstractModule {

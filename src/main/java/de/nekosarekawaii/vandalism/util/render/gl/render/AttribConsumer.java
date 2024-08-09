@@ -20,9 +20,30 @@ package de.nekosarekawaii.vandalism.util.render.gl.render;
 
 import de.nekosarekawaii.vandalism.util.render.gl.utils.TemporaryValues;
 import de.nekosarekawaii.vandalism.util.render.gl.vertex.DataType;
-import org.joml.*;
+import org.joml.Matrix3dc;
+import org.joml.Matrix3fc;
+import org.joml.Matrix4dc;
+import org.joml.Matrix4fc;
+import org.joml.Vector2d;
+import org.joml.Vector2dc;
+import org.joml.Vector2f;
+import org.joml.Vector2fc;
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
+import org.joml.Vector3d;
+import org.joml.Vector3dc;
+import org.joml.Vector3f;
+import org.joml.Vector3fc;
+import org.joml.Vector3i;
+import org.joml.Vector3ic;
+import org.joml.Vector4d;
+import org.joml.Vector4dc;
+import org.joml.Vector4f;
+import org.joml.Vector4fc;
+import org.joml.Vector4i;
+import org.joml.Vector4ic;
 
-import java.awt.*;
+import java.awt.Color;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 

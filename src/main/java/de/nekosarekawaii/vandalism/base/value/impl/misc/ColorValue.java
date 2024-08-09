@@ -33,7 +33,7 @@ import imgui.flag.ImGuiColorEditFlags;
 import imgui.flag.ImGuiMouseButton;
 import lombok.Getter;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 

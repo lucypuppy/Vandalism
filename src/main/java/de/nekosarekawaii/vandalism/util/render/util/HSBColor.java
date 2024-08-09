@@ -18,7 +18,7 @@
 
 package de.nekosarekawaii.vandalism.util.render.util;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * Represents a color in the HSB color space. This class is used to store colors in a more convenient way.

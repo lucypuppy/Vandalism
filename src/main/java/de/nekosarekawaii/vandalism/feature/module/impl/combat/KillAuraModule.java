@@ -57,7 +57,12 @@ import de.nekosarekawaii.vandalism.integration.rotation.randomizer.RandomizerMod
 import de.nekosarekawaii.vandalism.integration.rotation.randomizer.randomizer.SimplexRandomizer;
 import de.nekosarekawaii.vandalism.util.WorldUtil;
 import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.client.render.*;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -73,7 +78,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 

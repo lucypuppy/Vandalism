@@ -21,7 +21,11 @@ package de.nekosarekawaii.vandalism.util.render.gl.texture;
 import de.nekosarekawaii.vandalism.util.render.gl.vertex.DataType;
 import org.lwjgl.opengl.GL45C;
 
-import java.nio.*;
+import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 
 public class Texture2D implements AutoCloseable {
 

@@ -18,7 +18,11 @@
 
 package de.nekosarekawaii.vandalism.util.render.gl.vertex;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @ToString
 @EqualsAndHashCode

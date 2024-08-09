@@ -55,7 +55,7 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.dimension.DimensionTypes;
 import org.joml.Vector2f;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
