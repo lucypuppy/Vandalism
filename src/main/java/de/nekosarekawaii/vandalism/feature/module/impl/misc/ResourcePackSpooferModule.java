@@ -35,6 +35,7 @@ import net.minecraft.client.resource.server.ServerResourcePackManager;
 import net.minecraft.client.session.Session;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.c2s.common.ResourcePackStatusC2SPacket;
+import net.minecraft.network.packet.s2c.common.ResourcePackRemoveS2CPacket;
 import net.minecraft.network.packet.s2c.common.ResourcePackSendS2CPacket;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
@@ -53,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -118,7 +120,32 @@ public class ResourcePackSpooferModule extends AbstractModule implements Incomin
             }
 
             this.add(id, new PackEntry(id, url, ServerResourcePackLoader.toHashCode(hash)));
+        } else if (event.packet instanceof final ResourcePackRemoveS2CPacket packet) {
+            event.cancel();
+            packet.id().ifPresentOrElse(this::remove, this::removeAll);
         }
+    }
+
+    public final void remove(final UUID id) {
+        final PackEntry packEntry = this.get(id);
+        if (packEntry != null) {
+            packEntry.discard(ServerResourcePackManager.DiscardReason.SERVER_REMOVED);
+            this.onPackChanged();
+        }
+
+    }
+
+    public void removeAll() {
+        for (final PackEntry packEntry : this.packEntries) {
+            packEntry.discard(ServerResourcePackManager.DiscardReason.SERVER_REMOVED);
+        }
+
+        this.onPackChanged();
+    }
+
+    @Nullable
+    private PackEntry get(UUID id) {
+        return this.packEntries.stream().filter(packEntry -> !packEntry.isDiscarded() && packEntry.id.equals(id)).findFirst().orElse(null);
     }
 
     public final List<PackEntry> getActivatedPacks() {
@@ -323,20 +350,7 @@ public class ResourcePackSpooferModule extends AbstractModule implements Incomin
                 map.put(packEntry.id, new Downloader.DownloadEntry(packEntry.url, packEntry.hashCode));
             }
 
-            if (this.queuer == null) {
-                final MinecraftClient client = MinecraftClient.getInstance();
-
-                final ServerResourcePackLoader loader = client.getServerResourcePackProvider();
-                final Downloader downloader = loader.downloader;
-                final RunArgs.Network runArgs = Vandalism.getInstance().getRunArgs().network;
-                final Session session = runArgs.session;
-                final Proxy proxy = runArgs.netProxy;
-                final Executor executor = client::send;
-
-                this.queuer = loader.createDownloadQueuer(downloader, executor, session, proxy);
-            }
-
-            this.queuer.enqueue(map, (result) -> {
+            MinecraftClient.getInstance().getServerResourcePackProvider().manager.queuer.enqueue(map, (result) -> {
                 this.onDownload(list, result);
             });
         }

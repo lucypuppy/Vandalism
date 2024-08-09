@@ -20,6 +20,7 @@ package de.nekosarekawaii.vandalism.injection.mixins.module;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
+import de.nekosarekawaii.vandalism.feature.module.impl.exploit.exploitfixer.ComponentResolverContainer;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.exploitfixer.ExploitFixerModule;
 import de.nekosarekawaii.vandalism.util.ChatUtil;
 import de.nekosarekawaii.vandalism.util.math.Counter;
@@ -27,16 +28,17 @@ import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
+import net.minecraft.util.Language;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Mixin(TranslatableTextContent.class)
@@ -69,7 +71,22 @@ public abstract class MixinTranslatableTextContent {
                 cir.setReturnValue(Optional.empty());
             }
         }
+    }
 
+    @Redirect(method = "updateTranslations", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Language;get(Ljava/lang/String;)Ljava/lang/String;"))
+    private String hookExploitFixer(final Language instance, final String key) {
+        if (((Object) this) instanceof ComponentResolverContainer.TranslationResolvedTranslatableTextContent resolved) {
+            return resolved.resolved();
+        }
+        return instance.get(key);
+    }
+
+    @Redirect(method = "updateTranslations", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Language;get(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"))
+    private String hookExploitFixer(final Language instance, final String key, final String fallback) {
+        if (((Object) this) instanceof ComponentResolverContainer.TranslationResolvedTranslatableTextContent resolved) {
+            return resolved.resolved();
+        }
+        return instance.get(key, fallback);
     }
 
     @Inject(method = "visit(Lnet/minecraft/text/StringVisitable$StyledVisitor;Lnet/minecraft/text/Style;)Ljava/util/Optional;", at = @At("HEAD"), cancellable = true)
