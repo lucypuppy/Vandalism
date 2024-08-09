@@ -110,6 +110,7 @@
     "module.MixinPlayerListHud",
     "module.MixinRecipeBookDataC2SPacket",
     "module.MixinSodiumWorldRenderer",
+    "module.MixinSoundManager",
     "module.MixinStriderEntity",
     "module.MixinStructureBlockBlockEntityRenderer",
     "module.MixinTextureUrlChecker",
