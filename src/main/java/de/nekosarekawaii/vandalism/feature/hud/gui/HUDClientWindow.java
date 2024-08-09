@@ -27,7 +27,7 @@ import imgui.flag.ImGuiCol;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class HUDClientWindow extends ClientWindow {
 

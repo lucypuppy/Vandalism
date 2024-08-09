@@ -31,7 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class ContainerTooltipComponent implements TooltipComponent, MinecraftWrapper, ConvertibleTooltipData {
 

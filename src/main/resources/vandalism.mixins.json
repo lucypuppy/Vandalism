@@ -87,7 +87,9 @@
     "integration.MixinPlayerEntity",
     "module.MixinAbstractBlockState",
     "module.MixinAbstractHorseEntity",
+    "module.MixinAbstractSignEditScreen",
     "module.MixinAnvilScreen",
+    "module.MixinAnvilScreenHandler",
     "module.MixinClientPlayerInteractionManager",
     "module.MixinClientPlayNetworkAddon",
     "module.MixinClientWorld",
@@ -110,7 +112,6 @@
     "module.MixinSodiumWorldRenderer",
     "module.MixinStriderEntity",
     "module.MixinStructureBlockBlockEntityRenderer",
-    "module.MixinTextRendererDrawer",
     "module.MixinTextureUrlChecker",
     "module.MixinTextVisitFactory",
     "module.MixinTranslatableTextContent",
@@ -121,9 +122,5 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "mixins": [
-    "module.MixinAbstractSignEditScreen",
-    "module.MixinAnvilScreenHandler"
-  ]
+  }
 }

@@ -21,7 +21,11 @@ package de.nekosarekawaii.vandalism.feature.creativetab.impl;
 import de.nekosarekawaii.vandalism.feature.creativetab.AbstractCreativeTab;
 import net.minecraft.block.Blocks;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.*;
+import net.minecraft.component.type.AttributeModifierSlot;
+import net.minecraft.component.type.AttributeModifiersComponent;
+import net.minecraft.component.type.BlockStateComponent;
+import net.minecraft.component.type.NbtComponent;
+import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
@@ -39,7 +43,13 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 import static de.nekosarekawaii.vandalism.util.game.ItemStackUtil.withClientSide;
 

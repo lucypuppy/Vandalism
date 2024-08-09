@@ -29,7 +29,13 @@ import de.nekosarekawaii.vandalism.event.player.PlayerSlowdownListener;
 import de.nekosarekawaii.vandalism.event.player.ShouldSlowdownListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.item.*;
+import net.minecraft.item.BowItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.PotionItem;
+import net.minecraft.item.ShieldItem;
+import net.minecraft.item.SwordItem;
+import net.minecraft.item.TridentItem;
 
 public class NoSlowModule extends AbstractModule implements PlayerSlowdownListener, CanSprintListener, ShouldSlowdownListener {
 

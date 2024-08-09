@@ -27,7 +27,7 @@ import net.minecraft.client.texture.NativeImage;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import java.awt.*;
+import java.awt.Color;
 
 @Mixin(LightmapTextureManager.class)
 public abstract class MixinLightmapTextureManager {

@@ -44,7 +44,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.lwjgl.stb.STBTruetype.*;
+import static org.lwjgl.stb.STBTruetype.stbtt_FindGlyphIndex;
+import static org.lwjgl.stb.STBTruetype.stbtt_FreeBitmap;
+import static org.lwjgl.stb.STBTruetype.stbtt_GetCodepointKernAdvance;
+import static org.lwjgl.stb.STBTruetype.stbtt_GetFontVMetrics;
+import static org.lwjgl.stb.STBTruetype.stbtt_GetGlyphBitmap;
+import static org.lwjgl.stb.STBTruetype.stbtt_GetGlyphHMetrics;
+import static org.lwjgl.stb.STBTruetype.stbtt_InitFont;
+import static org.lwjgl.stb.STBTruetype.stbtt_ScaleForPixelHeight;
 
 public class SimpleFont extends AtlasFont {
 

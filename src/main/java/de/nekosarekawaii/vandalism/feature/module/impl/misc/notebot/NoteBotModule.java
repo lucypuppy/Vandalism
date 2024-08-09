@@ -71,7 +71,11 @@ import net.raphimc.noteblocklib.util.Instrument;
 import net.raphimc.noteblocklib.util.MinecraftDefinitions;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicReference;
 

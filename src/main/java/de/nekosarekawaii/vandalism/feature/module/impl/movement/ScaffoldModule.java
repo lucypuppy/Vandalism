@@ -32,7 +32,11 @@ import de.nekosarekawaii.vandalism.util.render.util.InputType;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Pair;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 
 public class ScaffoldModule extends AbstractModule implements PlayerUpdateListener, RotationListener {

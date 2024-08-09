@@ -20,7 +20,11 @@ package de.nekosarekawaii.vandalism.injection.mixins.event;
 
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.event.game.EntityRemoveListener;
-import de.nekosarekawaii.vandalism.event.player.*;
+import de.nekosarekawaii.vandalism.event.player.EntityPushListener;
+import de.nekosarekawaii.vandalism.event.player.FluidPushListener;
+import de.nekosarekawaii.vandalism.event.player.StepListener;
+import de.nekosarekawaii.vandalism.event.player.StepSuccessListener;
+import de.nekosarekawaii.vandalism.event.player.StrafeListener;
 import de.nekosarekawaii.vandalism.util.MinecraftWrapper;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
@@ -28,7 +32,11 @@ import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 

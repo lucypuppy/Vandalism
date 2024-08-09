@@ -35,7 +35,7 @@ import de.nekosarekawaii.vandalism.util.render.gl.render.ImmediateRenderer;
 import net.minecraft.client.gui.DrawContext;
 import org.joml.Vector2f;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 

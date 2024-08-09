@@ -1,6 +1,6 @@
 /*
  * This file is part of Vandalism - https://github.com/NekosAreKawaii/Vandalism
- * Copyright (C) 2023-2024 NekosAreKawaii, FooFieOwO, Recyz and contributors
+ * Copyright (C) 2023-2024 NekosAreKawaii, FooFieOwO, Verschlxfene, Recyz and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,33 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.nekosarekawaii.vandalism.util.render.effect.fill;
+package de.nekosarekawaii.vandalism.util.math;
 
-import de.nekosarekawaii.vandalism.util.render.gl.shader.ShaderProgram;
-import lombok.Getter;
-import lombok.Setter;
+public class Counter {
 
-import java.awt.Color;
+    private int value;
+    private final int max;
 
-@Setter
-@Getter
-public class ColorFillEffect extends FillEffect {
-
-    private Color color = Color.WHITE;
-
-    public ColorFillEffect() {
-        super("ColorFill");
-        this.addDefaultPass();
+    public Counter(final int value, final int max) {
+        this.value = value;
+        this.max = max;
     }
 
-    @Override
-    protected String getShaderPath() {
-        return "postprocess/fill/color_fill";
+    public final int value() {
+        return this.value;
     }
 
-    @Override
-    protected void setupUniforms(ShaderProgram shader) {
-        super.setupUniforms(shader);
-        shader.uniform("u_FillColor").set(this.color);
+    public final void count() throws CounterMaxReachedException {
+        this.value++;
+        if (this.value > this.max) {
+            throw new CounterMaxReachedException();
+        }
+    }
+
+    public static class CounterMaxReachedException extends RuntimeException {
+
     }
 }

@@ -25,7 +25,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.glfw.GLFW;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class RenderUtil {
 

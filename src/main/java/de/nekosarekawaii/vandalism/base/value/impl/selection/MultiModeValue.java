@@ -31,7 +31,7 @@ import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiComboFlags;
 import imgui.type.ImString;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 

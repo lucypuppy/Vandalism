@@ -37,7 +37,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.raphimc.vialoader.util.VersionRange;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 

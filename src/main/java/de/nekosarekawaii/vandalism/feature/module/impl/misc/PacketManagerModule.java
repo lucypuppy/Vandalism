@@ -37,7 +37,16 @@ import net.lenni0451.reflect.stream.field.FieldWrapper;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.network.NetworkSide;
-import net.minecraft.network.packet.*;
+import net.minecraft.network.packet.CommonPackets;
+import net.minecraft.network.packet.ConfigPackets;
+import net.minecraft.network.packet.CookiePackets;
+import net.minecraft.network.packet.HandshakePackets;
+import net.minecraft.network.packet.LoginPackets;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.PacketType;
+import net.minecraft.network.packet.PingPackets;
+import net.minecraft.network.packet.PlayPackets;
+import net.minecraft.network.packet.StatusPackets;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -46,7 +55,15 @@ import net.minecraft.util.math.Vec3i;
 
 import java.lang.reflect.InaccessibleObjectException;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class PacketManagerModule extends AbstractModule implements IncomingPacketListener, OutgoingPacketListener {
