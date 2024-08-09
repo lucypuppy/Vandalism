@@ -18,45 +18,33 @@
 
 package de.nekosarekawaii.vandalism.event.render;
 
-import de.florianmichael.dietrichevents2.CancellableEvent;
-import net.minecraft.client.gui.screen.Screen;
+import de.florianmichael.dietrichevents2.AbstractEvent;
+import de.florianmichael.dietrichevents2.StateTypes;
 
-public interface ScreenListener {
+public interface ResizeScreenListener {
 
-    default void onOpenScreen(final ScreenEvent event) {
+    default void onPreResizeScreen() {
     }
 
-    default void onResizeScreen(final ScreenEvent event) {
+    default void onPostResizeScreen() {
     }
 
-    class ScreenEvent extends CancellableEvent<ScreenListener> {
+    class ResizeScreenEvent extends AbstractEvent<ResizeScreenListener> {
 
-        public static final int ID = 5;
+        public static final int ID = 47;
 
-        public final Type type;
-        public Screen screen;
+        private final StateTypes state;
 
-        public ScreenEvent(final Screen screen) {
-            this.type = Type.OPEN;
-            this.screen = screen;
-        }
-
-        public ScreenEvent() {
-            this.type = Type.RESIZE;
+        public ResizeScreenEvent(final StateTypes state) {
+            this.state = state;
         }
 
         @Override
-        public void call(final ScreenListener listener) {
-            if (this.type == Type.OPEN) {
-                listener.onOpenScreen(this);
-            } else {
-                listener.onResizeScreen(this);
-            }
+        public void call(final ResizeScreenListener listener) {
+            if (this.state == StateTypes.PRE) listener.onPreResizeScreen();
+            else listener.onPostResizeScreen();
         }
-    }
 
-    enum Type {
-        OPEN, RESIZE
     }
 
 }
