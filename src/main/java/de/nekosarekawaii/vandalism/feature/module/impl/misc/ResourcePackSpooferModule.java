@@ -64,14 +64,19 @@ import java.util.zip.ZipFile;
 
 public class ResourcePackSpooferModule extends AbstractModule implements IncomingPacketListener {
 
+    private final BooleanValue logStatus = new BooleanValue(
+            this,
+            "Log resource pack status",
+            "Logs resource pack status to the chat.",
+            true
+    );
+
     private final BooleanValue logResourcePackUrl = new BooleanValue(
             this,
             "Log Resource Pack URL",
             "Logs the Resource Pack URL to the chat.",
             true
     );
-
-    private DownloadQueuer queuer;
 
     private final List<PackEntry> packEntries;
     private ClientConnection connection;
@@ -101,22 +106,20 @@ public class ResourcePackSpooferModule extends AbstractModule implements Incomin
         if (event.packet instanceof final ResourcePackSendS2CPacket packet) {
             event.cancel();
             final String resourcePackUrl = packet.url();
-            if (this.logResourcePackUrl.getValue()) {
-                final MutableText text = Text.literal("Spoofed incoming resource pack").append(Text.literal(": ").formatted(Formatting.GRAY));
-                text.append(Text.literal(resourcePackUrl).formatted(Formatting.DARK_AQUA));
-                text.setStyle(text.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, resourcePackUrl)));
-                final MutableText hoverText = Text.literal("Click here to open the resource pack url.");
-                hoverText.formatted(Formatting.YELLOW);
-                text.setStyle(text.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText)));
-                ChatUtil.infoChatMessage(text);
-            }
             final UUID id = packet.id();
             final URL url = ClientCommonNetworkHandler.getParsedResourcePackUrl(resourcePackUrl);
             final String hash = packet.hash();
 
             if (url == null) {
                 event.connection.send(new ResourcePackStatusC2SPacket(id, ResourcePackStatusC2SPacket.Status.INVALID_URL));
+                if (this.logStatus.getValue()) {
+                    ChatUtil.warningChatMessage(Text.literal("Received invalid resource pack URL from server: ").append(Text.literal(resourcePackUrl).formatted(Formatting.DARK_AQUA)), true);
+                }
                 return;
+            }
+
+            if (this.logResourcePackUrl.getValue()) {
+                ChatUtil.infoChatMessage(Text.literal("Spoofed incoming resource pack").append(Text.literal(": ").formatted(Formatting.GRAY)).append(Text.literal(resourcePackUrl).styled(style -> style.withFormatting(Formatting.DARK_AQUA).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, resourcePackUrl)).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Click here to open the resource pack url.").formatted(Formatting.YELLOW))))));
             }
 
             this.add(id, new PackEntry(id, url, ServerResourcePackLoader.toHashCode(hash)));
@@ -207,9 +210,9 @@ public class ResourcePackSpooferModule extends AbstractModule implements Incomin
     }
 
     private void applyDownloadedPacks() {
-        boolean bl = false;
+        boolean reload = false;
         final List<PackEntry> availablePacks = new ArrayList<>();
-        final List<PackEntry> unavailableActivePacks = new ArrayList<>();
+        final List<PackEntry> unavailablePacks = new ArrayList<>();
 
         for (final PackEntry packEntry : this.packEntries) {
             if (packEntry.status == ServerResourcePackManager.Status.PENDING) {
@@ -219,55 +222,45 @@ public class ResourcePackSpooferModule extends AbstractModule implements Incomin
             boolean available = packEntry.accepted && packEntry.loadStatus == ServerResourcePackManager.LoadStatus.DONE && !packEntry.isDiscarded();
             if (available && packEntry.status == ServerResourcePackManager.Status.INACTIVE) {
                 availablePacks.add(packEntry);
-                bl = true;
+                reload = true;
             }
 
             if (packEntry.status == ServerResourcePackManager.Status.ACTIVE) {
                 if (!available) {
-                    bl = true;
-                    unavailableActivePacks.add(packEntry);
+                    reload = true;
+                    unavailablePacks.add(packEntry);
                 } else {
                     availablePacks.add(packEntry);
                 }
             }
         }
 
-        if (bl) {
+        if (reload) {
             for (final PackEntry packEntry : availablePacks) {
                 if (packEntry.status != ServerResourcePackManager.Status.ACTIVE) {
                     packEntry.status = ServerResourcePackManager.Status.PENDING;
                 }
             }
 
-            for (final PackEntry packEntry : unavailableActivePacks) {
+            for (final PackEntry packEntry : unavailablePacks) {
                 packEntry.status = ServerResourcePackManager.Status.PENDING;
             }
 
-            final Runnable fail = () -> {
-                availablePacks.clear();
+            this.reload(false, availablePacks, unavailablePacks);
+        }
+    }
 
-                for (final PackEntry packEntry : this.packEntries) {
-                    switch (packEntry.status) {
-                        case INACTIVE:
-                            packEntry.discard(ServerResourcePackManager.DiscardReason.DISCARDED);
-                            break;
-                        case PENDING:
-                            packEntry.status = ServerResourcePackManager.Status.INACTIVE;
-                            packEntry.discard(ServerResourcePackManager.DiscardReason.ACTIVATION_FAILED);
-                            break;
-                        case ACTIVE:
-                            availablePacks.add(packEntry);
-                            break;
-                    }
-                }
+    private void reload(final boolean force, final List<PackEntry> availablePacks, final List<PackEntry> unavailablePacks) {
+        boolean valid = true;
 
-                this.onPackChanged();
-            };
-
+        if (!ResourcePackSpooferModule.valid(availablePacks.stream().map((pack) -> new ReloadScheduler.PackInfo(pack.id, pack.path)).toList())) {
+            this.reloadFail(force, availablePacks);
             if (!ResourcePackSpooferModule.valid(availablePacks.stream().map((pack) -> new ReloadScheduler.PackInfo(pack.id, pack.path)).toList())) {
-                fail.run();
+                valid = false;
             }
+        }
 
+        if (valid) {
             for (final PackEntry packEntry : availablePacks) {
                 final Path path = packEntry.path;
 
@@ -301,25 +294,43 @@ public class ResourcePackSpooferModule extends AbstractModule implements Incomin
                     }
 
                     packEntry.translations = translations;
-                } catch (final IOException exception) {
-                    fail.run();
-                }
+                } catch (final IOException ignored) { }
             }
-
-            for (final PackEntry packEntry : availablePacks) {
-                packEntry.status = ServerResourcePackManager.Status.ACTIVE;
-                if (packEntry.discardReason == null) {
-                    this.finish(packEntry.id, PackStateChangeCallback.FinishState.APPLIED);
-                }
-            }
-
-            for (final PackEntry packEntry : unavailableActivePacks) {
-                packEntry.status = ServerResourcePackManager.Status.INACTIVE;
-            }
-
-            this.onPackChanged();
         }
 
+        this.reloadSuccess(availablePacks, unavailablePacks);
+    }
+
+    private void reloadSuccess(final List<PackEntry> availablePacks, final List<PackEntry> unavailablePacks) {
+        for (final PackEntry packEntry : availablePacks) {
+            packEntry.status = ServerResourcePackManager.Status.ACTIVE;
+            if (packEntry.discardReason == null) {
+                this.finish(packEntry.id, PackStateChangeCallback.FinishState.APPLIED);
+            }
+        }
+
+        for (final PackEntry packEntry : unavailablePacks) {
+            packEntry.status = ServerResourcePackManager.Status.INACTIVE;
+        }
+
+        this.onPackChanged();
+    }
+
+    private void reloadFail(final boolean force, final List<PackEntry> availablePacks) {
+        availablePacks.clear();
+
+        for (final PackEntry packEntry : this.packEntries) {
+            switch (packEntry.status) {
+                case INACTIVE -> packEntry.discard(ServerResourcePackManager.DiscardReason.DISCARDED);
+                case PENDING -> {
+                    packEntry.status = ServerResourcePackManager.Status.INACTIVE;
+                    packEntry.discard(ServerResourcePackManager.DiscardReason.ACTIVATION_FAILED);
+                }
+                case ACTIVE -> availablePacks.add(packEntry);
+            }
+        }
+
+        this.onPackChanged();
     }
 
     private static boolean valid(final List<ReloadScheduler.PackInfo> info) {
@@ -405,6 +416,10 @@ public class ResourcePackSpooferModule extends AbstractModule implements Incomin
     }
 
     public void stateChanged(final UUID id, final PackStateChangeCallback.State state) {
+        if (this.connection == null) {
+            return; // Might happen if closed
+        }
+
         this.connection.send(new ResourcePackStatusC2SPacket(id, switch (state) {
             case ACCEPTED -> ResourcePackStatusC2SPacket.Status.ACCEPTED;
             case DOWNLOADED -> ResourcePackStatusC2SPacket.Status.DOWNLOADED;
@@ -412,6 +427,10 @@ public class ResourcePackSpooferModule extends AbstractModule implements Incomin
     }
 
     public void finish(final UUID id, final PackStateChangeCallback.FinishState state) {
+        if (this.connection == null) {
+            return; // Might happen if closed
+        }
+
         this.connection.send(new ResourcePackStatusC2SPacket(id, switch (state) {
             case APPLIED -> ResourcePackStatusC2SPacket.Status.SUCCESSFULLY_LOADED;
             case DOWNLOAD_FAILED -> ResourcePackStatusC2SPacket.Status.FAILED_DOWNLOAD;
