@@ -18,23 +18,50 @@
 
 package de.nekosarekawaii.vandalism.feature.module.impl.render;
 
-import de.florianmichael.dietrichevents2.Priorities;
 import de.nekosarekawaii.vandalism.Vandalism;
-import de.nekosarekawaii.vandalism.base.value.impl.number.IntegerValue;
+import de.nekosarekawaii.vandalism.base.value.impl.primitive.BooleanValue;
+import de.nekosarekawaii.vandalism.base.value.impl.selection.ModeValue;
 import de.nekosarekawaii.vandalism.event.network.IncomingPacketListener;
+import de.nekosarekawaii.vandalism.event.player.PlayerUpdateListener;
 import de.nekosarekawaii.vandalism.feature.module.AbstractModule;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.play.GameStateChangeS2CPacket;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 
-public class AmbienceModule extends AbstractModule implements IncomingPacketListener {
+public class AmbienceModule extends AbstractModule implements IncomingPacketListener, PlayerUpdateListener {
 
-    private final IntegerValue worldTime = new IntegerValue(
+    private final BooleanValue overwriteWorldTime = new BooleanValue(
             this,
-            "World time",
-            "Time of the world.",
-            14000,
-            0,
-            20000
+            "Overwrite World Time",
+            "Whether to overwrite the world time.",
+            true
     );
+
+    private final ModeValue worldTime = new ModeValue(
+            this,
+            "World Time",
+            "Time of the world.",
+            "Day",
+            "Noon",
+            "Night",
+            "Midnight"
+    ).visibleCondition(this.overwriteWorldTime::getValue);
+
+    private final BooleanValue overwriteWeather = new BooleanValue(
+            this,
+            "Overwrite Weather",
+            "Whether to overwrite the weather.",
+            true
+    );
+
+    private final ModeValue weather = new ModeValue(
+            this,
+            "Mode",
+            "Mode of the ambience.",
+            "Clear",
+            "Rain",
+            "Thunder"
+    ).visibleCondition(this.overwriteWeather::getValue);
 
     public AmbienceModule() {
         super("Ambience", "Allows you to customize your ambience.", Category.RENDER);
@@ -42,18 +69,79 @@ public class AmbienceModule extends AbstractModule implements IncomingPacketList
 
     @Override
     public void onActivate() {
-        Vandalism.getInstance().getEventSystem().subscribe(IncomingPacketEvent.ID, this, Priorities.LOW);
+        Vandalism.getInstance().getEventSystem().subscribe(this, IncomingPacketEvent.ID, PlayerUpdateEvent.ID);
     }
 
     @Override
     public void onDeactivate() {
-        Vandalism.getInstance().getEventSystem().unsubscribe(IncomingPacketEvent.ID, this);
+        Vandalism.getInstance().getEventSystem().unsubscribe(this, IncomingPacketEvent.ID, PlayerUpdateEvent.ID);
+    }
+
+    @Override
+    public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
+        if (this.overwriteWorldTime.getValue()) {
+            switch (this.worldTime.getValue()) {
+                case "Day" -> {
+                    this.mc.world.setTimeOfDay(-1000);
+                }
+                case "Noon" -> {
+                    this.mc.world.setTimeOfDay(-6000);
+                }
+                case "Night" -> {
+                    this.mc.world.setTimeOfDay(-13000);
+                }
+                case "Midnight" -> {
+                    this.mc.world.setTimeOfDay(-18000);
+                }
+                default -> {
+                }
+            }
+        }
+        if (this.overwriteWeather.getValue()) {
+            switch (this.weather.getValue()) {
+                case "Clear" -> {
+                    this.mc.world.setRainGradient(0.0F);
+                    this.mc.world.setThunderGradient(0.0F);
+                }
+                case "Rain" -> {
+                    this.mc.world.setRainGradient(1.0F);
+                    this.mc.world.setThunderGradient(0.0F);
+                }
+                case "Thunder" -> {
+                    this.mc.world.setRainGradient(1.0F);
+                    this.mc.world.setThunderGradient(1.0F);
+                }
+                default -> {
+                }
+            }
+        }
     }
 
     @Override
     public void onIncomingPacket(final IncomingPacketEvent event) {
-        if (event.packet instanceof final WorldTimeUpdateS2CPacket worldTimePacket) {
-            worldTimePacket.timeOfDay = this.worldTime.getValue();
+        final Packet<?> packet = event.packet;
+        if (packet instanceof final WorldTimeUpdateS2CPacket timePacket) {
+            if (this.overwriteWorldTime.getValue()) {
+                timePacket.timeOfDay = switch (this.worldTime.getValue()) {
+                    case "Day" -> -1000;
+                    case "Noon" -> -6000;
+                    case "Night" -> -13000;
+                    case "Midnight" -> -18000;
+                    default -> timePacket.timeOfDay;
+                };
+            }
+        } else if (packet instanceof final GameStateChangeS2CPacket changePacket) {
+            if (this.overwriteWeather.getValue()) {
+                final GameStateChangeS2CPacket.Reason reason = changePacket.getReason();
+                if (
+                        reason.equals(GameStateChangeS2CPacket.RAIN_STARTED) ||
+                                reason.equals(GameStateChangeS2CPacket.RAIN_STOPPED) ||
+                                reason.equals(GameStateChangeS2CPacket.RAIN_GRADIENT_CHANGED) ||
+                                reason.equals(GameStateChangeS2CPacket.THUNDER_GRADIENT_CHANGED)
+                ) {
+                    event.cancel();
+                }
+            }
         }
     }
 
