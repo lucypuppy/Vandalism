@@ -71,11 +71,7 @@ import net.raphimc.noteblocklib.util.Instrument;
 import net.raphimc.noteblocklib.util.MinecraftDefinitions;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -98,13 +94,31 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
             Mode.values()
     );
 
+    private final IntegerValue maxConcurrentTuneBlocks = new IntegerValue(
+            this,
+            "Max Concurrent Tune Blocks",
+            "The maximum amount of blocks to tune at once.",
+            2,
+            1,
+            5
+    ).visibleCondition(() -> this.mode.getValue() == Mode.BLOCKS);
+
+    private final IntegerValue tuningDelay = new IntegerValue(
+            this,
+            "Tuning Delay",
+            "The delay between tuning note blocks.",
+            70,
+            0,
+            100
+    ).visibleCondition(() -> this.mode.getValue() == Mode.BLOCKS);
+
     private final EnumModeValue<TuneMode> tuneMode = new EnumModeValue<>(
             this,
             "Tune Mode",
             "The tune mode to use.",
             TuneMode.SINGLE,
             TuneMode.values()
-    ).visibleCondition(() -> mode.getValue() == Mode.BLOCKS);
+    ).visibleCondition(() -> this.mode.getValue() == Mode.BLOCKS);
 
     private final BooleanValue loopSong = new BooleanValue(
             this,
@@ -125,7 +139,7 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
 
     private final Map<BlockPos, Integer> cachedPositions = new HashMap<>();
     private final Map<BlockPos, Note> tunableBlocks = new HashMap<>();
-    private final MSTimer tuningDelay = new MSTimer();
+    private final MSTimer tuningDelayTimer = new MSTimer();
     private final HashMap<String, String> customInstruments = new HashMap<>();
     private final ImString searchText = new ImString();
 
@@ -480,6 +494,38 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
         }
     }
 
+    private void tuneBlock(final BlockPos pos) {
+        final Note note = this.tunableBlocks.get(pos);
+        switch (this.tuneMode.getValue()) {
+            case SINGLE -> this.mc.interactionManager.interactBlock(
+                    this.mc.player,
+                    Hand.MAIN_HAND,
+                    new BlockHitResult(
+                            Vec3d.ofCenter(pos, 1.0f),
+                            Direction.DOWN,
+                            pos,
+                            false
+                    )
+            );
+            case BATCH -> {
+                final int neededNote = note.key() < this.getNote(pos) ? note.key() + 25 : note.key();
+                final int tuningBatch = Math.min(22, neededNote - this.getNote(pos));
+                for (int i = 0; i < tuningBatch; i++) {
+                    this.mc.interactionManager.interactBlock(
+                            this.mc.player,
+                            Hand.MAIN_HAND,
+                            new BlockHitResult(
+                                    Vec3d.ofCenter(pos, 1),
+                                    Direction.DOWN,
+                                    pos,
+                                    false
+                            )
+                    );
+                }
+            }
+        }
+    }
+
     @Override
     public void onPrePlayerUpdate(final PlayerUpdateEvent event) {
         if (this.mode.getValue().equals(Mode.BLOCKS) && this.mc.interactionManager.getCurrentGameMode().isCreative()) {
@@ -487,61 +533,47 @@ public class NoteBotModule extends AbstractModule implements PlayerUpdateListene
             this.deactivate();
             return;
         }
-
-        if (!isEverythingTuned() && state == State.PLAYING) {
-            state = State.TUNING;
-            player.stop();
+        if (!this.isEverythingTuned() && this.state == State.PLAYING) {
+            this.state = State.TUNING;
+            this.player.stop();
         }
-
-        switch (state) {
+        switch (this.state) {
             case DISCOVERING -> {
                 if (this.mode.getValue() == Mode.BLOCKS) {
-                    if (tunableBlocks.isEmpty()) {
+                    if (this.tunableBlocks.isEmpty()) {
                         ChatUtil.errorChatMessage("No tunable blocks collected, please try to restart the module.");
                         this.deactivate();
                         return;
                     }
-                    tunableBlocks.keySet().forEach(p -> mc.interactionManager.attackBlock(p, Direction.UP));
-                    state = State.TUNING;
+                    this.tunableBlocks.keySet().forEach(p -> this.mc.interactionManager.attackBlock(p, Direction.UP));
+                    this.state = State.TUNING;
                 } else {
-                    state = State.PLAYING;
+                    this.state = State.PLAYING;
                 }
             }
             case TUNING -> {
                 if (this.mode.getValue() == Mode.BLOCKS) {
-                    final List<BlockPos> nonTunedPositions = tunableBlocks.keySet()
-                            .stream()
-                            .filter(p -> tunableBlocks.get(p).key() != getNote(p)).toList();
-
+                    final List<BlockPos> nonTunedPositions = this.tunableBlocks.keySet()
+                            .stream().filter(p -> this.tunableBlocks.get(p).key() != this.getNote(p))
+                            .toList();
                     if (nonTunedPositions.isEmpty()) {
-                        state = State.PLAYING;
-                        player.play();
+                        this.state = State.PLAYING;
+                        this.player.play();
                         return;
                     }
-
-                    if (!tuningDelay.hasReached(70, true))
+                    if (!this.tuningDelayTimer.hasReached(this.tuningDelay.getValue(), true)) {
                         return;
-
-                    final BlockPos pos = nonTunedPositions.getFirst();
-                    final Note note = tunableBlocks.get(pos);
-
-                    // tune mode start
-                    switch (tuneMode.getValue()) {
-                        case SINGLE -> mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND,
-                                new BlockHitResult(Vec3d.ofCenter(pos, 1.0f), Direction.DOWN, pos, false));
-                        case BATCH -> {
-                            final int neededNote = note.key() < getNote(pos) ? note.key() + 25 : note.key();
-                            final int tuningBatch = Math.min(22, neededNote - getNote(pos));
-
-                            for (int i = 0; i < tuningBatch; i++) {
-                                mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND,
-                                        new BlockHitResult(Vec3d.ofCenter(pos, 1), Direction.DOWN, pos, false));
-                            }
+                    }
+                    int count = 0;
+                    for (final BlockPos pos : nonTunedPositions) {
+                        if (count >= this.maxConcurrentTuneBlocks.getValue()) {
+                            continue;
                         }
+                        this.tuneBlock(pos);
+                        count++;
                     }
-                    // tune mode end
                 } else {
-                    state = State.PLAYING;
+                    this.state = State.PLAYING;
                 }
             }
             case PLAYING -> {
