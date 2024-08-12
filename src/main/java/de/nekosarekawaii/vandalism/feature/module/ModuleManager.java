@@ -160,7 +160,6 @@ public class ModuleManager extends NamedStorage<AbstractModule> implements
                 new MiddleClickFriendsModule(),
                 new NoteBotModule(),
                 new PacketManagerModule(),
-                new AntiGUICloseModule(),
                 new AirJumpModule(),
                 new BlinkModule(),
                 new ElytraFlightModule(),
