@@ -30,6 +30,7 @@ import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -42,6 +43,9 @@ public abstract class MixinGameMenuScreen extends Screen {
 
     @Shadow
     public abstract void render(DrawContext context, int mouseX, int mouseY, float delta);
+
+    @Shadow
+    private @Nullable ButtonWidget exitButton;
 
     protected MixinGameMenuScreen(final Text ignored) {
         super(ignored);
@@ -65,16 +69,21 @@ public abstract class MixinGameMenuScreen extends Screen {
         }
     }
 
-    @Inject(method = "init", at = @At(value = "RETURN"))
+    @Inject(method = "initWidgets()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/GridWidget;forEachChild(Ljava/util/function/Consumer;)V", shift = At.Shift.AFTER))
     private void addMoreButtons(final CallbackInfo ci) {
         if (!Vandalism.getInstance().getClientSettings().getMenuSettings().addMoreButtonsToGameMenuScreen.getValue()) {
             return;
         }
+
+        final int offset = 4;
+        final int y = this.exitButton.getY() + this.exitButton.getHeight() + offset;
+
         final ButtonWidget.Builder multiplayerButton = ButtonWidget.builder(Text.translatable("menu.multiplayer"), b -> this.client.setScreen(new MultiplayerScreen(this))).width(98);
-        this.addDrawableChild(multiplayerButton.position(4, this.height - 24).build());
+        this.addDrawableChild(multiplayerButton.position(this.exitButton.getX(), y).build());
+
         if (!this.client.isIntegratedServerRunning()) {
             final ButtonWidget.Builder reconnectButton = ButtonWidget.builder(Text.literal("Reconnect"), b -> ServerUtil.connect(this.client.getCurrentServerEntry())).width(98);
-            this.addDrawableChild(reconnectButton.position(this.width - 102, this.height - 24).build());
+            this.addDrawableChild(reconnectButton.position(this.exitButton.getX() + offset + (this.exitButton.getWidth() / 2), y).build());
         }
     }
 
