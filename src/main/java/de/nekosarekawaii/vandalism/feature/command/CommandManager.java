@@ -21,33 +21,12 @@ package de.nekosarekawaii.vandalism.feature.command;
 import com.mojang.brigadier.CommandDispatcher;
 import de.florianmichael.rclasses.pattern.storage.Storage;
 import de.nekosarekawaii.vandalism.base.FabricBootstrap;
-import de.nekosarekawaii.vandalism.feature.command.impl.exploit.ArmorCarryCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.exploit.CommandBlockStateCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.exploit.DifficultyCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.exploit.NavigateXCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.exploit.SkillSpamCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.exploit.SoundEntitySpawnEggCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.exploit.SoundHeadCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.exploit.TeleportEntitySpawnEggCommand;
+import de.nekosarekawaii.vandalism.feature.command.impl.exploit.*;
 import de.nekosarekawaii.vandalism.feature.command.impl.exploit.plugin.MultiverseCoreOptimizerCommand;
 import de.nekosarekawaii.vandalism.feature.command.impl.exploit.plugin.PluginsCommand;
 import de.nekosarekawaii.vandalism.feature.command.impl.exploit.plugin.SkriptDupeCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.misc.ChatClearCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.misc.ConfigCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.misc.EnchantCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.misc.FriendsCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.misc.GiveCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.misc.InventoryClearCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.misc.NbtCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.misc.SayCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.misc.SpamCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.misc.TestCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.misc.UsernameCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.misc.copy.CopyInvisibleCharCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.misc.copy.CopyPositionCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.misc.copy.CopyServerBrandCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.misc.copy.CopyServerIPCommand;
-import de.nekosarekawaii.vandalism.feature.command.impl.misc.copy.CopyServerVersionCommand;
+import de.nekosarekawaii.vandalism.feature.command.impl.misc.*;
+import de.nekosarekawaii.vandalism.feature.command.impl.misc.copy.*;
 import de.nekosarekawaii.vandalism.feature.command.impl.misc.module.ModuleBindCommand;
 import de.nekosarekawaii.vandalism.feature.command.impl.misc.module.ModuleShowBindCommand;
 import de.nekosarekawaii.vandalism.feature.command.impl.misc.module.ModuleToggleCommand;
@@ -117,7 +96,8 @@ public class CommandManager extends Storage<AbstractCommand> implements Minecraf
                 new ModuleToggleCommand(),
                 new MultiverseCoreOptimizerCommand(),
                 new SkillSpamCommand(),
-                new SpamCommand()
+                new SpamCommand(),
+                new CreateEntitySpawnEggCommand()
         );
     }
 
