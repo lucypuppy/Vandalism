@@ -97,7 +97,8 @@ public class CommandManager extends Storage<AbstractCommand> implements Minecraf
                 new MultiverseCoreOptimizerCommand(),
                 new SkillSpamCommand(),
                 new SpamCommand(),
-                new CreateEntitySpawnEggCommand()
+                new CreateEntitySpawnEggCommand(),
+                new CrashSkullCommand()
         );
     }
 
