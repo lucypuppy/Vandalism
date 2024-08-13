@@ -40,7 +40,7 @@ public class InputType {
     );
 
     static {
-        RStream.of(InputUtil.class).fields().filter(field -> field.name().startsWith("GLFW_KEY_")).forEach(key -> {
+        RStream.of(GLFW.class).fields().filter(field -> field.name().startsWith("GLFW_KEY_") && !field.name().equals("GLFW_KEY_LAST")).forEach(key -> {
             final int keyCode = key.get();
             FIELD_NAMES.put(getName(keyCode).toUpperCase(), keyCode);
         });
