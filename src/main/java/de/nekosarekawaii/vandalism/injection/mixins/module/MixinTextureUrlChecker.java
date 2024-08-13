@@ -24,7 +24,9 @@ import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 import com.mojang.authlib.yggdrasil.TextureUrlChecker;
 import de.nekosarekawaii.vandalism.Vandalism;
 import de.nekosarekawaii.vandalism.feature.module.impl.exploit.exploitfixer.ExploitFixerModule;
+import de.nekosarekawaii.vandalism.util.ChatUtil;
 import de.nekosarekawaii.vandalism.util.game.MinecraftConstants;
+import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -39,6 +41,7 @@ public abstract class MixinTextureUrlChecker {
         state.set(exploitFixerModule.isActive() && exploitFixerModule.miscSettings.blockInvalidTextureUrls.getValue());
         if (state.get() && url == null) {
             // URL can be set to null which crashes vanilla clients
+            ChatUtil.warningChatMessage(Text.literal("Blocked null texture url"), Vandalism.getInstance().getModuleManager().getExploitFixerModule().sameLineWarnings.getValue());
             cir.setReturnValue(false);
         }
     }
@@ -47,6 +50,7 @@ public abstract class MixinTextureUrlChecker {
     private static void hookExploitFixer(String url, CallbackInfoReturnable<Boolean> cir, @Local(ordinal = 3) String lowerCaseDomain, @Share("state") LocalBooleanRef state) {
         if (state.get() && !lowerCaseDomain.equals(MinecraftConstants.TEXTURE_ENDPOINT)) {
             // Validate against the only possible texture endpoint and drop everything else
+            ChatUtil.warningChatMessage(Text.literal("Blocked invalid texture endpoint: " + url), Vandalism.getInstance().getModuleManager().getExploitFixerModule().sameLineWarnings.getValue());
             cir.setReturnValue(false);
         }
     }
