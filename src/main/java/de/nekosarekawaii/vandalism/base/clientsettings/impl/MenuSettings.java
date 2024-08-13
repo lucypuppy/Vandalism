@@ -352,6 +352,20 @@ public class MenuSettings extends ValueGroup {
             4.0f
     ).visibleCondition(this.imguiGlowOutline::getValue);
 
+    public final BooleanValue runDirectoryButton = new BooleanValue(
+            this,
+            "Run Directory Button",
+            "Adds a button to open the run directory inside the options screen.",
+            true
+    );
+
+    public final BooleanValue skinsDirectoryButton = new BooleanValue(
+            this,
+            "Skins Directory Button",
+            "Adds a button to open the skins directory inside the skin options screen.",
+            true
+    );
+
     public MenuSettings(final ClientSettings parent) {
         super(parent, "Menu", "Menu related settings.");
     }
